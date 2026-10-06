@@ -21,3 +21,8 @@
 {"t":"2026-10-06T12:26:46.710Z","offerId":"9b5ff8ba359d","productId":"me04-etb","storeId":"canal40","seller":null,"price":24.99,"priceKind":"pix","shipping":null,"total":24.99,"stock":"IN_STOCK","quantity":103}
 {"t":"2026-10-06T12:26:46.710Z","offerId":"270304204608","productId":"me04-etb","storeId":"canal40","seller":null,"price":39.99,"priceKind":"pix","shipping":null,"total":39.99,"stock":"IN_STOCK","quantity":108}
 {"t":"2026-10-06T12:26:46.710Z","offerId":"cde3dfdac500","productId":"me02-etb","storeId":"gatogingado","seller":null,"price":19,"priceKind":"pix","shipping":null,"total":19,"stock":"UNKNOWN","quantity":null}
+{"t":"2026-10-06T15:23:02.028Z","offerId":"18772ddae3bb","productId":"me01-box36","storeId":"ludostation","seller":null,"price":55.99,"priceKind":"pix","shipping":null,"total":55.99,"stock":"OUT_OF_STOCK","quantity":0}
+{"t":"2026-10-06T15:23:02.028Z","offerId":"1873d050ef24","productId":"me03-etb","storeId":"ludostation","seller":null,"price":42.99,"priceKind":"pix","shipping":null,"total":42.99,"stock":"IN_STOCK","quantity":2}
+{"t":"2026-10-06T15:23:02.028Z","offerId":"64991dbbe6f0","productId":"me03-etb","storeId":"ludostation","seller":null,"price":55.99,"priceKind":"pix","shipping":null,"total":55.99,"stock":"IN_STOCK","quantity":2}
+{"t":"2026-10-06T15:23:02.028Z","offerId":"e6fc3fbc7944","productId":"me03-etb","storeId":"ludostation","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T15:23:02.028Z","offerId":"fbef310d53ec","productId":"me03-etb","storeId":"ludostation","stock":"UNAVAILABLE","event":"removed"}
