@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Price Hunter — Pokémon TCG Brasil</title>
+<meta name="theme-color" content="#172033">
+<style>
+:root{
+  --bg:#ECEFF4;--surface:#FFFFFF;--sunk:#E2E6EE;--ink:#172033;--muted:#5B6578;--line:#D3D8E2;
+  --tag:#FFCB05;--tag-ink:#1C1A08;--ok:#0F7A54;--ok-bg:#DDF2E8;--warn:#9A5B00;--warn-bg:#FCEFD6;--bad:#B4232F;--bad-bg:#FBE3E5;
+  --r-s:6px;--r-m:12px;
+  --font:"Avenir Next","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  color-scheme:light dark;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E131C;--surface:#172031;--sunk:#111826;--ink:#E7EBF2;--muted:#97A1B4;--line:#263247;--ok:#4CC995;--ok-bg:#12352A;--warn:#F0B44C;--warn-bg:#3A2A0E;--bad:#FF7A84;--bad-bg:#3D1A1F}}
+:root[data-theme="dark"]{--bg:#0E131C;--surface:#172031;--sunk:#111826;--ink:#E7EBF2;--muted:#97A1B4;--line:#263247;--ok:#4CC995;--ok-bg:#12352A;--warn:#F0B44C;--warn-bg:#3A2A0E;--bad:#FF7A84;--bad-bg:#3D1A1F}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--tag);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 64px}
+header.top{display:grid;grid-template-columns:1fr auto;gap:12px 16px;align-items:start;padding:8px 0 20px}header.top .pulse{grid-column:1/-1}
+h1{font-size:clamp(26px,4.4vw,40px);line-height:1.08;font-weight:800;letter-spacing:-.02em;margin:0;max-width:20ch}
+.pulse{color:var(--muted);font-size:13px;display:flex;gap:14px;flex-wrap:wrap}
+.pulse b{color:var(--ink);font-weight:700}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:14px;scrollbar-width:none}
+nav.tabs button{background:none;border:0;padding:10px 12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--ink)}
+nav.tabs .n{font-weight:500;margin-left:4px;color:var(--muted)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filters select,.filters input{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-s);padding:8px 10px;min-height:40px}
+.filters input[type=number]{width:150px}
+.filters .more{display:contents}.more-toggle{display:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-s);padding:8px 12px;min-height:40px;cursor:pointer}
+.filters label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.list{display:grid;gap:10px}
+.deal{display:grid;grid-template-columns:auto 1fr auto;gap:14px 18px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m);padding:14px 16px;cursor:pointer;text-align:left;width:100%}
+.deal:hover{border-color:var(--muted)}
+.sticker{position:relative;width:108px;height:74px;padding-left:10px;display:grid;place-items:center;background:var(--tag);color:var(--tag-ink);border-radius:8px 8px 8px 22px;transform:rotate(-3deg);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.sticker::before{content:"";position:absolute;top:50%;left:8px;margin-top:-4px;width:8px;height:8px;border-radius:50%;background:var(--surface);box-shadow:inset 0 1px 1px rgba(0,0,0,.3)}
+.sticker strong{font-size:21px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.sticker small{display:block;font-size:11px;font-weight:600;text-align:center;margin-top:2px}
+.sticker.none{background:var(--sunk);color:var(--muted);transform:none;border-radius:8px;padding-left:0}.sticker.none::before{display:none}
+.sticker.none strong{font-size:14px;font-weight:700;text-align:center;line-height:1.15}
+.what h3{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em}
+.what .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.b{font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.b.ok{background:var(--ok-bg);color:var(--ok)}.b.warn{background:var(--warn-bg);color:var(--warn)}.b.bad{background:var(--bad-bg);color:var(--bad)}
+.b.fire{background:var(--ink);color:var(--surface)}
+.nums{text-align:right;min-width:150px}
+.price{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.copag{font-size:13px;color:var(--muted);margin-top:4px}
+.copag s{text-decoration-thickness:1px}
+.ppb{font-size:14px;font-weight:700;margin-top:6px}
+.score{display:inline-block;margin-top:6px;font-size:12px;color:var(--muted)}
+.score b{font-size:15px;color:var(--ink)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r-m);padding:28px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right}
+.scroll{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-m)}
+dialog{border:0;padding:0;width:min(760px,100vw);max-height:92vh;border-radius:var(--r-m);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,14,22,.55)}
+.sheet{padding:20px}
+.sheet h2{margin:0 0 4px;font-size:22px;letter-spacing:-.01em}
+.sheet .close{float:right;background:var(--sunk);border:0;border-radius:999px;width:36px;height:36px;font-size:18px;cursor:pointer}
+.ref{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0}
+.ref div{background:var(--sunk);border-radius:var(--r-s);padding:10px 12px}
+.ref span{display:block;font-size:12px;color:var(--muted)}
+.ref b{font-size:18px}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:12px 0;font-size:14px}
+dl.facts dt{color:var(--muted)}dl.facts dd{margin:0;word-break:break-word}
+a{color:inherit}
+.buy{display:inline-block;background:var(--ink);color:var(--surface);text-decoration:none;font-weight:700;padding:12px 18px;border-radius:var(--r-s);margin-top:8px}
+.drop{margin:40px auto;max-width:520px}
+.theme{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:13px}
+@media (max-width:640px){
+  .deal{grid-template-columns:auto 1fr;padding:12px}
+  .nums{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-end;text-align:left;min-width:0;border-top:1px solid var(--line);padding-top:10px}
+  .nums .right{text-align:right}
+  .filters select,.filters input[type=number]{flex:1 1 140px;min-width:0}.more-toggle{display:block}.filters .more{display:none}.filters.open .more{display:contents}
+  .sticker{width:92px;height:62px}.sticker strong{font-size:18px}
+  dialog{width:100vw;max-height:94vh;margin:auto 0 0;border-radius:var(--r-m) var(--r-m) 0 0}
+}
+@media (prefers-reduced-motion:no-preference){dialog[open]{animation:up .18s ease-out}@keyframes up{from{transform:translateY(16px);opacity:0}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Quanto abaixo da Copag dá para comprar agora?</h1>
+    <button class="theme" id="theme" type="button">Alternar tema</button>
+    <div class="pulse" id="pulse"></div>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="filters" id="filters"></div>
+  <main id="view" aria-live="polite"></main>
+</div>
+<dialog id="sheet"><div class="sheet" id="sheetBody"></div></dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+const money=v=>v==null?'—':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const pct=v=>v==null?'—':(v*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ago=iso=>{if(!iso)return '—';const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?'agora':m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
+const PARTS={copag:'vs Copag',historico:'histórico',porBooster:'por booster',estoque:'estoque',loja:'loja',frete:'frete',lacrado:'lacrado',disponibilidade:'disponibilidade'};
+const STOCK={IN_STOCK:['ok','Estoque confirmado'],OUT_OF_STOCK:['','Sem estoque'],PRE_ORDER:['warn','Pré-venda'],UNKNOWN:['warn','Estoque não confirmado'],BLOCKED:['bad','Fonte bloqueada'],UNAVAILABLE:['','Indisponível']};
+const SRC={ACTIVE:['ok','Ativa'],BLOCKED:['bad','Bloqueada'],ERROR:['bad','Com erro'],PENDING:['warn','Domínio a confirmar'],UNAVAILABLE:['','Sem integração'],PAUSED:['','Pausada']};
+let S=null,P={},tab='deals';
+const F={collection:'',type:'',store:'',maxPrice:'',maxPPB:'',minDisc:'',minScore:'',sort:'score',pix:false};
+
+try{const t=localStorage.getItem('hunter-theme');if(t)document.documentElement.dataset.theme=t}catch{}
+$('#theme').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('hunter-theme',r.dataset.theme)}catch{}};
+
+async function load(){
+  for(const u of ['../data/state.json','./data/state.json','/data/state.json']){try{const r=await fetch(u,{cache:'no-store'});if(r.ok){return init(await r.json())}}catch{}}
+  $('#view').innerHTML=`<div class="empty drop"><strong>Painel sem dados</strong>Rode <code>npm run hunt</code> para gerar <code>data/state.json</code>, ou abra o arquivo aqui.<br><br><input type="file" accept="application/json" id="file"></div>`;
+  $('#file').onchange=async e=>init(JSON.parse(await e.target.files[0].text()));
+}
+function init(state){
+  S=state;P=Object.fromEntries(S.products.map(p=>[p.id,p]));
+  const c=S.coverage;
+  $('#pulse').innerHTML=`<span><b>${c.active}</b> de ${c.found} fontes ativas</span><span><b>${c.blocked}</b> bloqueadas</span><span><b>${c.error}</b> com erro</span><span><b>${S.totals.offers}</b> ofertas</span><span>Atualizado ${ago(S.generatedAt)}</span>`;
+  render();
+}
+const live=o=>o.stock==='IN_STOCK'&&!o.stale;
+function groups(){
+  const o=S.offers;
+  return{
+    deals:S.bestDeals.map(id=>o.find(x=>x.id===id)),
+    nocopag:o.filter(x=>live(x)&&!x.anomalous&&!P[x.productId].copagConfirmed),
+    preorder:o.filter(x=>x.stock==='PRE_ORDER'),
+    review:o.filter(x=>x.anomalous||x.stock==='UNKNOWN'),
+  }
+}
+function tabs(){
+  const g=groups();
+  const T=[['deals','Melhores ofertas',g.deals.length],['nocopag','Sem preço Copag',g.nocopag.length],['products','Produtos',S.products.length],['preorder','Pré-venda',g.preorder.length],['review','Revisar',g.review.length+S.unmatched.length],['sources','Fontes',S.sources.length],['alerts','Alertas',(S.recentAlerts||[]).length]];
+  $('#tabs').innerHTML=T.map(([k,l,n])=>`<button role="tab" aria-selected="${k===tab}" data-t="${k}">${l}<span class="n">${n}</span></button>`).join('');
+  $('#tabs').onclick=e=>{const b=e.target.closest('button');if(b){tab=b.dataset.t;render()}};
+}
+function filters(){
+  const show=['deals','nocopag','preorder'].includes(tab);
+  if(!show){$('#filters').innerHTML='';return}
+  const stores=[...new Set(S.offers.map(o=>o.storeName))].sort();
+  const opt=(v,l,cur)=>`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(l)}</option>`;
+  $('#filters').innerHTML=`
+    <select data-f="collection" aria-label="Coleção">${opt('','Todas as coleções',F.collection)}${S.collections.map(c=>opt(c.id,c.name,F.collection)).join('')}</select>
+    <select data-f="type" aria-label="Tipo">${opt('','Todos os tipos',F.type)}${opt('booster_box','Booster Box',F.type)}${opt('etb','ETB',F.type)}${opt('collection_box','Box Coleção',F.type)}${opt('blister_3','Blister Triplo',F.type)}</select>
+    <button type="button" class="more-toggle" aria-expanded="false">Mais filtros</button><span class="more"><select data-f="store" aria-label="Loja">${opt('','Todas as lojas',F.store)}${stores.map(s=>opt(s,s,F.store)).join('')}</select>
+    <input data-f="maxPrice" type="number" inputmode="decimal" placeholder="Preço máx." value="${F.maxPrice}" aria-label="Preço máximo">
+    <input data-f="maxPPB" type="number" inputmode="decimal" placeholder="R$/booster máx." value="${F.maxPPB}" aria-label="Preço por booster máximo">
+    <input data-f="minDisc" type="number" inputmode="decimal" placeholder="Desconto mín. (%)" value="${F.minDisc}" aria-label="Desconto mínimo vs Copag">
+    <input data-f="minScore" type="number" inputmode="numeric" placeholder="Score mín." value="${F.minScore}" aria-label="Deal Score mínimo">
+    <label><input data-f="pix" type="checkbox"${F.pix?' checked':''}> Só preço Pix</label></span>
+    <select data-f="sort" aria-label="Ordenar">${opt('score','Maior Deal Score',F.sort)}${opt('disc','Maior desconto vs Copag',F.sort)}${opt('price','Menor preço',F.sort)}${opt('ppb','Menor preço por booster',F.sort)}${opt('qty','Maior disponibilidade',F.sort)}</select>`;
+  $('.more-toggle').onclick=e=>{const f=$('#filters');f.classList.toggle('open');e.target.setAttribute('aria-expanded',f.classList.contains('open'))};
+  $('#filters').oninput=e=>{const k=e.target.dataset.f;if(!k)return;F[k]=e.target.type==='checkbox'?e.target.checked:e.target.value;renderView()};
+}
+function apply(list){
+  const n=v=>v===''?null:Number(v);
+  list=list.filter(o=>{const p=P[o.productId];return(!F.collection||p.collection===F.collection)&&(!F.type||p.type===F.type)&&(!F.store||o.storeName===F.store)
+    &&(n(F.maxPrice)==null||o.total<=n(F.maxPrice))&&(n(F.maxPPB)==null||(o.perBooster!=null&&o.perBooster<=n(F.maxPPB)))
+    &&(n(F.minDisc)==null||(o.discount!=null&&o.discount*100>=n(F.minDisc)))&&(n(F.minScore)==null||(o.dealScore??-1)>=n(F.minScore))&&(!F.pix||o.priceKind==='pix')});
+  const by={score:(a,b)=>(b.dealScore??-1)-(a.dealScore??-1),disc:(a,b)=>(b.discount??-9)-(a.discount??-9),price:(a,b)=>(a.total??1e9)-(b.total??1e9),ppb:(a,b)=>(a.perBooster??1e9)-(b.perBooster??1e9),qty:(a,b)=>(b.quantity??0)-(a.quantity??0)}[F.sort];
+  return list.sort(by);
+}
+function stockBadge(o){const[c,l]=STOCK[o.stock]||['',o.stock];return`<span class="b ${c}">${o.stock==='IN_STOCK'&&o.quantity?`${o.quantity} em estoque`:l}</span>`}
+function card(o){
+  const p=P[o.productId];
+  const sticker=o.discount!=null&&o.discount>0?`<div class="sticker" aria-label="${pct(o.discount)} abaixo do preço sugerido Copag"><div><strong>−${pct(o.discount)}</strong><small>vs Copag</small></div></div>`
+    :`<div class="sticker none"><strong>${p.copagConfirmed?'Acima da Copag':'Copag não confirmado'}</strong></div>`;
+  const badges=[o.opportunity?'<span class="b fire">🔥 Oportunidade</span>':'',stockBadge(o),o.anomalous?'<span class="b bad">⚠️ Preço anormal</span>':'',o.stale?'<span class="b warn">Leitura antiga</span>':'',!o.storeValidated?'<span class="b">Loja sem validação</span>':'',o.dealScore!=null?`<span class="b">${esc(o.classification.label)}</span>`:''].join('');
+  return`<button class="deal" data-o="${o.id}">${sticker}
+    <div class="what"><h3>${esc(p.collectionName)}</h3><div class="sub">${esc(p.typeLabel)}${p.boosters?` com ${p.boosters} boosters`:''} na ${esc(o.storeName)}${o.seller&&o.seller!==o.storeName?` (${esc(o.seller)})`:''}</div><div class="badges">${badges}</div></div>
+    <div class="nums"><div><div class="price">${money(o.total)}</div><div class="copag">${p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>`:'Copag não confirmado'}</div></div>
+    <div class="right">${o.perBooster?`<div class="ppb">${money(o.perBooster)} por booster</div>`:''}${o.dealScore!=null?`<span class="score">Deal Score <b>${o.dealScore}</b></span>`:''}</div></div></button>`;
+}
+function emptyFor(k){return{deals:'<strong>Nenhuma oferta passou em todas as regras</strong>Uma oferta só entra aqui com estoque confirmado, produto identificado e preço Copag confirmado. Cadastre o preço sugerido no catálogo para liberar o ranking.',nocopag:'<strong>Tudo coberto</strong>Todos os produtos em estoque têm preço Copag confirmado.',preorder:'<strong>Sem pré-vendas no momento</strong>'}[k]}
+function renderView(){
+  const g=groups();const v=$('#view');
+  if(['deals','nocopag','preorder'].includes(tab)){
+    const l=apply(g[tab].slice());
+    v.innerHTML=tab==='nocopag'?`<p class="copag" style="margin:0 0 12px">⚠️ Preço sugerido Copag não confirmado: estas ofertas não recebem desconto, score nem selo.</p>`:'';
+    v.innerHTML+=l.length?`<div class="list">${l.map(card).join('')}</div>`:`<div class="empty">${emptyFor(tab)}</div>`;
+  }
+  else if(tab==='products'){
+    v.innerHTML=`<div class="scroll"><table><thead><tr><th>Produto</th><th class="r">Copag</th><th class="r">Melhor agora</th><th class="r">R$/booster</th><th class="r">Média</th><th class="r">Menor histórico</th><th class="r">Em estoque</th></tr></thead><tbody>${S.products.map(p=>{
+      const best=S.offers.filter(o=>o.productId===p.id&&live(o)&&!o.anomalous).sort((a,b)=>a.total-b.total)[0];
+      return`<tr data-p="${p.id}" style="cursor:pointer"><td><b>${esc(p.collectionName)}</b><br><span class="copag">${esc(p.typeLabel)}${p.boosters?` ${p.boosters}`:''}</span></td><td class="r">${p.copagConfirmed?money(p.msrp):`<span class="b warn" title="${esc(p.copagReason)}">Não confirmado</span>`}</td><td class="r">${best?money(best.total):'—'}</td><td class="r">${best?.perBooster?money(best.perBooster):'—'}</td><td class="r">${money(p.marketAverage)}</td><td class="r">${money(p.lowestHistorical?.total)}</td><td class="r">${p.inStockCount}</td></tr>`}).join('')}</tbody></table></div>`;
+  }
+  else if(tab==='review'){
+    const l=g.review;
+    v.innerHTML=`<h2 style="font-size:17px;margin:0 0 10px">Preço anormal ou estoque não confirmado</h2>${l.length?`<div class="list">${l.map(card).join('')}</div>`:'<div class="empty">Nada para revisar.</div>'}
+    <h2 style="font-size:17px;margin:28px 0 10px">Anúncios não identificados (${S.unmatched.length})</h2><p class="copag">Ficam fora do ranking. Se for um produto real, adicione ao catálogo.</p>
+    <div class="scroll"><table><thead><tr><th>Título</th><th>Loja</th><th>Motivo</th></tr></thead><tbody>${S.unmatched.map(u=>`<tr><td><a href="${esc(u.url)}" target="_blank" rel="noopener">${esc(u.title)}</a></td><td>${esc(u.store)}</td><td>${esc(u.why.join('; '))}</td></tr>`).join('')||'<tr><td colspan="3">Nenhum.</td></tr>'}</tbody></table></div>`;
+  }
+  else if(tab==='sources'){
+    v.innerHTML=addStoreForm()+`<div class="scroll"><table><thead><tr><th>Fonte</th><th>Status</th><th>Plataforma</th><th class="r">Anúncios</th><th class="r">Casados</th><th>Reputação</th><th>Última verificação</th><th>Observação</th></tr></thead><tbody>${S.sources.map(s=>{const[c,l]=SRC[s.status]||['',s.status];return`<tr><td><b>${esc(s.name)}</b></td><td><span class="b ${c}">${l}</span></td><td>${esc(s.platform||'—')}</td><td class="r">${s.listings??'—'}</td><td class="r">${s.matched??'—'}</td><td>${s.score?.score!=null?`${s.score.score}/100<br><span class="copag">${esc(s.score.evidence.join(', '))}</span>`:'<span class="copag">Sem evidência</span>'}</td><td>${ago(s.lastCheck)}</td><td class="copag">${esc(s.reason||'')}</td></tr>`}).join('')}</tbody></table></div>`;
+  }
+  else if(tab==='alerts'){
+    const a=S.recentAlerts||[];
+    v.innerHTML=`<h2 style="font-size:17px;margin:0 0 10px">Regras ativas</h2><div class="list" style="margin-bottom:24px">${S.rules.map(r=>`<div class="deal" style="cursor:default;grid-template-columns:1fr"><div><b>${esc(r.label)}</b><div class="copag">${esc(r.id)}</div></div></div>`).join('')}</div>
+    <h2 style="font-size:17px;margin:0 0 10px">Últimos alertas</h2>${a.length?`<div class="list">${a.map(x=>`<a class="deal" style="grid-template-columns:1fr;text-decoration:none" href="${esc(x.url)}" target="_blank" rel="noopener"><div><pre style="margin:0;font:inherit;white-space:pre-wrap">${esc(x.text)}</pre><div class="copag" style="margin-top:8px">${ago(x.at)}, via ${esc(x.channels.join(', ')||'painel')}</div></div></a>`).join('')}</div>`:'<div class="empty">Nenhum alerta enviado ainda.</div>'}`;
+  }
+}
+// Botão "Adicionar loja": abre o GitHub já com o arquivo preenchido; você só confirma o commit.
+// Nenhuma senha ou token fica no painel: a gravação acontece na sua sessão do GitHub.
+function repoInfo(){
+  const h=location.hostname.match(/^([^.]+)\.github\.io$/);const seg=location.pathname.split('/').filter(Boolean)[0];
+  return h&&seg?{owner:h[1],repo:seg}:null;
+}
+function addStoreForm(){
+  const r=repoInfo();
+  if(!r)return`<p class="copag" style="margin:0 0 14px">Para adicionar lojas, cole o endereço numa linha nova de <code>config/lojas.txt</code>.</p>`;
+  return`<form id="addStore" class="filters" style="align-items:center;margin-bottom:6px" onsubmit="return addStore(event)">
+    <input id="storeUrl" type="text" inputmode="url" autocomplete="off" placeholder="Endereço da loja, ex.: minhaloja.com.br" aria-label="Endereço da loja" style="flex:1 1 260px;min-width:0">
+    <button type="submit" class="buy" style="margin:0;border:0;cursor:pointer;font:inherit;font-weight:700">Adicionar loja</button>
+  </form><p class="copag" id="storeMsg" style="margin:0 0 14px">O GitHub abre com a loja preenchida. Confirme em <b>Commit changes</b> e ela entra na próxima rodada.</p>`;
+}
+function addStore(e){
+  e.preventDefault();const r=repoInfo();const raw=$('#storeUrl').value.trim();const msg=$('#storeMsg');
+  let u;try{u=new URL(/^https?:\/\//i.test(raw)?raw:'https://'+raw)}catch{u=null}
+  if(!u||!/\.[a-z]{2,}$/i.test(u.hostname)){msg.textContent='Endereço inválido. Use algo como minhaloja.com.br.';return false}
+  const host=u.hostname.replace(/^www\./,'').toLowerCase();
+  const known=S.sources.find(s=>s.url&&new URL(s.url).hostname.replace(/^www\./,'').toLowerCase()===host)||S.sources.find(s=>s.name===host);
+  if(known){msg.textContent=`${host} já está na lista (status: ${(SRC[known.status]||['',known.status])[1]}).`;return false}
+  const link=`https://github.com/${r.owner}/${r.repo}/new/main/config/lojas?filename=${encodeURIComponent(host+'.txt')}&value=${encodeURIComponent(u.origin+'\n')}`;
+  window.open(link,'_blank','noopener');
+  msg.innerHTML=`Abri o GitHub com <b>${esc(host)}</b> preenchida. Toque em <b>Commit changes</b> para confirmar.`;
+  return false;
+}
+function render(){tabs();filters();renderView()}
+
+function openProduct(pid,focus){
+  const p=P[pid];const offers=S.offers.filter(o=>o.productId===pid).sort((a,b)=>(a.anomalous-b.anomalous)||(live(b)-live(a))||((a.total??1e9)-(b.total??1e9)));
+  const o=focus&&offers.find(x=>x.id===focus);
+  const parts=o?.scoreParts?Object.entries(o.scoreParts).map(([k,v])=>`${PARTS[k]||k} ${v}`).join(', '):null;
+  $('#sheetBody').innerHTML=`<button class="close" aria-label="Fechar" onclick="sheet.close()">×</button>
+  <h2>${esc(p.collectionName)}</h2><div class="copag">${esc(p.typeLabel)}${p.boosters?` com ${p.boosters} boosters`:''}</div>
+  <div class="ref"><div><span>Preço sugerido Copag</span><b>${p.copagConfirmed?money(p.msrp):'Não confirmado'}</b></div><div><span>Média monitorada</span><b>${money(p.marketAverage)}</b></div><div><span>Menor histórico</span><b>${money(p.lowestHistorical?.total)}</b></div></div>
+  ${o?`<h3 style="margin:18px 0 4px">Oferta selecionada</h3><dl class="facts">
+    <dt>Fonte</dt><dd>${esc(o.storeName)}${o.seller?` (${esc(o.seller)})`:''}</dd><dt>URL</dt><dd><a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.url)}</a></dd>
+    <dt>Última verificação</dt><dd>${ago(o.source_timestamp)}${o.stale?' (fonte falhou depois disso)':''}</dd><dt>Estoque</dt><dd>${stockBadge(o)}</dd>
+    <dt>Preço</dt><dd>${money(o.price)} (${esc(o.priceKindLabel)})${o.listPrice?`, de ${money(o.listPrice)}`:''}</dd>
+    <dt>Frete</dt><dd>${o.shipping===0?'Grátis':o.shipping>0?money(o.shipping):'Não informado (total sem frete)'}</dd><dt>Total</dt><dd><b>${money(o.total)}</b></dd>
+    <dt>Vs Copag</dt><dd>${o.discount!=null?`${pct(o.discount)} abaixo, economia de ${money(o.savings)}`:'DADO NÃO CONFIRMADO'}</dd>
+    <dt>Vs média</dt><dd>${o.vsMarket!=null?`${pct(o.vsMarket)} abaixo da média monitorada`:'—'}</dd>
+    <dt>Deal Score</dt><dd>${o.dealScore??'—'}${parts?`<br><span class="copag">${esc(parts)}</span>`:''}</dd>
+    <dt>Confiança</dt><dd>${o.confidence_score}% (título: “${esc(o.title)}”)</dd></dl>
+    ${live(o)?`<a class="buy" href="${esc(o.url)}" target="_blank" rel="noopener">Comprar na ${esc(o.storeName)}</a>`:''}`:''}
+  <h3 style="margin:22px 0 8px">Comparador</h3><div class="scroll"><table><thead><tr><th>Loja</th><th class="r">Preço</th><th class="r">Frete</th><th class="r">Total</th><th class="r">R$/boost</th><th class="r">Vs Copag</th><th>Estoque</th></tr></thead><tbody>
+  ${offers.map(x=>`<tr data-o="${x.id}" style="cursor:pointer"><td>${esc(x.storeName)}</td><td class="r">${money(x.price)}</td><td class="r">${x.shipping===0?'grátis':x.shipping>0?money(x.shipping):'—'}</td><td class="r"><b>${money(x.total)}</b></td><td class="r">${x.perBooster?money(x.perBooster):'—'}</td><td class="r">${x.discount!=null&&!x.anomalous?'−'+pct(x.discount):'—'}</td><td>${x.anomalous?'<span class="b bad">⚠️ Preço anormal</span>':stockBadge(x)}</td></tr>`).join('')}</tbody></table></div>`;
+  if(!sheet.open)sheet.showModal();
+}
+const sheet=$('#sheet');
+document.addEventListener('click',e=>{
+  const o=e.target.closest('[data-o]');if(o&&!e.target.closest('a')){const off=S.offers.find(x=>x.id===o.dataset.o);openProduct(off.productId,off.id);return}
+  const p=e.target.closest('tr[data-p]');if(p)openProduct(p.dataset.p);
+});
+sheet.addEventListener('click',e=>{if(e.target===sheet)sheet.close()});
+load();
+</script>
+</body>
+</html>
