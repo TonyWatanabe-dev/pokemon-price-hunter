@@ -123,3 +123,7 @@
 {"t":"2026-10-06T16:00:35.433Z","offerId":"e2d34275d658","productId":"me04-box36","storeId":"dalarancombr","seller":null,"price":427.4,"priceKind":"pix","shipping":null,"total":427.4,"stock":"UNKNOWN","quantity":null}
 {"t":"2026-10-06T16:00:35.433Z","offerId":"68856e9bb35e","productId":"me04-etb","storeId":"dalarancombr","seller":null,"price":322.9,"priceKind":"pix","shipping":null,"total":322.9,"stock":"UNKNOWN","quantity":null}
 {"t":"2026-10-06T16:00:35.433Z","offerId":"02df8f4cf7e1","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T16:15:30.040Z","offerId":"a95bf4d4b1cc","productId":"me05-etb","storeId":"pbkidscombr","seller":"Starhouse","price":399.9,"priceKind":"base","shipping":14.33,"total":414.23,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T16:15:30.040Z","offerId":"02df8f4cf7e1","productId":"me04-etb","storeId":"rihappycombr","seller":"4Best Play","price":395,"priceKind":"base","shipping":null,"total":395,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T16:15:30.040Z","offerId":"059586e65c2a","productId":"me02-box36","storeId":"lifegeek","seller":null,"price":39.9,"priceKind":"pix","shipping":null,"total":39.9,"stock":"UNKNOWN","quantity":null}
+{"t":"2026-10-06T16:15:30.040Z","offerId":"04c786585f9e","productId":"me03-etb","storeId":"paladinsgamescombr","seller":null,"price":399.9,"priceKind":"base","shipping":null,"total":399.9,"stock":"IN_STOCK","quantity":null}
