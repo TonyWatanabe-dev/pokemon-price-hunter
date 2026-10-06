@@ -252,3 +252,5 @@
 {"t":"2026-10-06T21:00:36.224Z","offerId":"be85b3909ab8","productId":"me05-box18","storeId":"rihappycombr","seller":"Midgard Toys","price":249.9,"priceKind":"base","shipping":11.45,"total":261.35,"stock":"IN_STOCK","quantity":100}
 {"t":"2026-10-06T21:00:36.224Z","offerId":"193f3a510047","productId":"me04-etb","storeId":"rihappycombr","seller":"LKToys Colecionáveis","price":455.99,"priceKind":"base","shipping":null,"total":455.99,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-06T21:00:36.224Z","offerId":"dc042dd82dcb","productId":"me05-box18","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T21:15:24.426Z","offerId":"be85b3909ab8","productId":"me05-box18","storeId":"rihappycombr","seller":"Midgard Toys","price":249.9,"priceKind":"base","shipping":null,"total":249.9,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-06T21:15:24.426Z","offerId":"c6504551f78d","productId":"me01-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
