@@ -269,3 +269,6 @@
 {"t":"2026-10-06T22:30:26.470Z","offerId":"9f5e57b3ad5e","productId":"me05-box18","storeId":"pbkidscombr","seller":"Fantastic Toys","price":249.99,"priceKind":"base","shipping":12.18,"total":262.17,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-06T22:30:26.470Z","offerId":"be31294b75a5","productId":"me05-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-06T22:30:26.470Z","offerId":"3c7b3504b3dc","productId":"me02-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T22:45:23.118Z","offerId":"be31294b75a5","productId":"me05-box36","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T22:45:23.118Z","offerId":"3c7b3504b3dc","productId":"me02-box36","storeId":"rihappycombr","seller":"Gourmande","price":549.99,"priceKind":"base","shipping":null,"total":549.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T22:45:23.118Z","offerId":"9f5e57b3ad5e","productId":"me05-box18","storeId":"pbkidscombr","seller":"Fantastic Toys","price":249.99,"priceKind":"base","shipping":null,"total":249.99,"stock":"IN_STOCK","quantity":1}
