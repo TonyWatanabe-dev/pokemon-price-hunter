@@ -16,6 +16,7 @@ fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: 
   { id: 'ld', name: 'Loja Nuvem', url: 'https://ld.test', platform: 'auto', kind: 'specialist', evidence: {} },
   { id: 'blk', name: 'Bloqueada', url: 'https://blk.test', platform: 'auto', kind: 'specialist', evidence: {} },
   { id: 'nope', name: 'Sem domínio', url: null, platform: 'auto', kind: 'specialist', evidence: {} },
+  { id: 'cop', name: 'Loja Copag (oficial)', url: 'https://cop.test', platform: 'vtex', kind: 'official', copagSource: true, evidence: { officialStore: true, cnpj: 'x' } },
 ] }));
 fs.copyFileSync(path.join(root, 'config/watchlist.json'), path.join(tmp, 'config/watchlist.json'));
 
@@ -39,8 +40,11 @@ http.setFetch(async (url, opt) => {
   }
   if (u.host === 'vtex.test') {
     if (u.pathname === '/products.json') return html('', 404);
-    if (u.pathname.startsWith('/api/catalog_system')) return json(/pokemon$|caos/i.test(u.searchParams.get('ft')) ? [{ productName: 'Caixa Pokémon Caos Ascendente 36 Boosters Copag', link: 'https://vtex.test/caos-36/p', items: [{ itemId: '77', ean: '789', name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: 379.9, ListPrice: 449.99, AvailableQuantity: vtexQty } }] }] }] : []);
+    if (u.pathname.startsWith('/api/catalog_system')) return json(/pokemon$|caos/i.test(u.searchParams.get('ft')) ? [{ productName: 'Caixa Pokémon Caos Ascendente 36 Boosters Copag', link: 'https://vtex.test/caos-36/p', items: [{ itemId: '77', ean: '196214156098', name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: 379.9, ListPrice: 449.99, AvailableQuantity: vtexQty } }] }] }] : []);
     if (u.pathname.includes('simulation')) return json({ logisticsInfo: [{ slas: [{ price: 1990 }, { price: 2590 }] }] });
+  }
+  if (u.host === 'cop.test') {
+    if (u.pathname.startsWith('/api/catalog_system')) return json(/escuridao|Escuridão/i.test(u.searchParams.get('ft')) ? [{ productName: 'Box Display Pokémon ME05 Escuridão Absoluta', link: 'https://cop.test/box-display-me05/p', items: [{ itemId: '9', ean: null, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Copag', commertialOffer: { Price: 449.99, ListPrice: 449.99, AvailableQuantity: 3 } }] }] }] : []);
   }
   if (u.host === 'ld.test') {
     if (u.pathname === '/products.json' || u.pathname.startsWith('/api/')) return html('', 404);
@@ -70,11 +74,14 @@ const susp = by((o) => o.price === 99); assert.ok(susp.anomalous && susp.dealSco
 const etb = by((o) => o.productId === 'me04-etb'); assert.equal(etb.discount, null); assert.equal(etb.dealScore, null, 'sem Copag: sem desconto nem score');
 const vtexOff = by((o) => o.storeId === 'vtex'); assert.equal(vtexOff.stock, 'OUT_OF_STOCK'); assert.ok(!s.bestDeals.includes(vtexOff.id));
 const ldBox = by((o) => o.productId === 'me05-box36'); assert.equal(ldBox.price, 369.9); assert.equal(ldBox.priceKind, 'pix', 'Pix tem prioridade');
-assert.equal(s.products.find((p) => p.id === 'me05-box36').copagConfirmed, false, 'marketplace não vale como MSRP');
+const me05 = s.products.find((p) => p.id === 'me05-box36');
+assert.equal(me05.copagConfirmed, true, 'MSRP capturado na loja oficial substitui o de marketplace');
+assert.equal(me05.msrp, 449.99); assert.match(me05.copag.source_url, /cop\.test/);
+assert.equal(ldBox.discount, +(1 - 369.9 / 449.99).toFixed(4), 'desconto calculado com o MSRP oficial');
 assert.equal(by((o) => /pre-venda|Pré-venda/i.test(o.title)).stock, 'PRE_ORDER');
 assert.equal(s.sources.find((x) => x.id === 'blk').status, 'BLOCKED');
 assert.equal(s.sources.find((x) => x.id === 'nope').status, 'PENDING');
-assert.equal(s.coverage.found, 5);
+assert.equal(s.coverage.found, 6);
 const r1 = sentMsgs.length; assert.ok(sentMsgs.some((m) => m.title.includes('PREÇO-ALVO')), 'alvo R$350 atingido');
 assert.ok(sentMsgs.every((m) => !/99,00/.test(m.text)), 'anomalia não alerta');
 
@@ -85,7 +92,7 @@ assert.equal(sentMsgs.length, r1, 'anti-spam');
 // Rodada 3: queda na Shopify e restock na VTEX (com frete por CEP)
 shopPrice = '329.00'; vtexQty = 4; process.env.HUNTER_CEP = '01310-100';
 s = await runOnce({ log: quiet, send, now: new Date('2026-10-06T10:20:00Z') });
-const v = s.offers.find((o) => o.storeId === 'vtex'); assert.equal(v.stock, 'IN_STOCK'); assert.equal(v.shipping, 19.9); assert.equal(v.total, 399.8); assert.equal(v.quantity, 4);
+const v = s.offers.find((o) => o.storeId === 'vtex'); assert.equal(v.stock, 'IN_STOCK'); assert.equal(v.matchConfidence, 0.99, 'EAN oficial confirma o produto'); assert.equal(v.shipping, 19.9); assert.equal(v.total, 399.8); assert.equal(v.quantity, 4);
 const novos = sentMsgs.slice(r1);
 assert.ok(novos.some((m) => m.title.includes('QUEDA')), 'alerta de queda');
 assert.ok(novos.some((m) => m.title.includes('PREÇO-ALVO') && /329,00/.test(m.text)), 'novo alvo com preço menor');

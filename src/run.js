@@ -27,6 +27,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const sources = readJson(dataPath('sources.json'), {});
   const lowest = readJson(dataPath('lowest.json'), {});
   const sent = readJson(dataPath('alerts-sent.json'), {});
+  const copagSeen = readJson(dataPath('copag-msrp.json'), {}); // preço capturado na loja oficial Copag
   const cep = process.env.HUNTER_CEP || watch.settings?.cep;
 
   const offers = {}; const unmatched = []; const touched = new Set();
@@ -54,6 +55,13 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         let ship = l.shipping ?? null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') { try { ship = await vtexShipping(l, cep); } catch { ship = null; } }
         const pp = pickPrice(l.price);
+        // Loja oficial Copag = fonte nº 1 do preço sugerido (regra 4). Preço "de" vence o promocional.
+        if (store.copagSource && l.price?.base > 0) {
+          const msrp = l.listPrice > l.price.base ? l.listPrice : l.price.base;
+          const old = copagSeen[m.productId];
+          if (!old || old.msrp !== msrp) copagSeen[m.productId] = { msrp, source_url: l.url, source_timestamp: T, confidence: 'OFICIAL', previous_msrp: old?.msrp ?? null, msrp_updated_at: T };
+          else old.source_timestamp = T;
+        }
         const total = pp.value != null ? round2(pp.value + (ship || 0)) : null;
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         offers[id] = {
@@ -88,9 +96,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
 
-  // Agregados por produto
+  // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
   const products = {};
   for (const p of catalog.products) {
+    if (!copagStatus(p).confirmed && copagSeen[p.id]) p.copag = { ...p.copag, ...copagSeen[p.id] };
     const cs = copagStatus(p);
     const list = Object.values(offers).filter((o) => o.productId === p.id);
     const live = list.filter((o) => o.stock === 'IN_STOCK' && !o.stale && o.total > 0);
@@ -141,6 +150,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('offers.json'), offers);
   writeJson(dataPath('sources.json'), sources);
   writeJson(dataPath('lowest.json'), lowest);
+  writeJson(dataPath('copag-msrp.json'), copagSeen);
   writeJson(dataPath('alerts-sent.json'), sent);
   writeJson(dataPath('state.json'), state);
   appendJsonl(dataPath('history.jsonl'), history);

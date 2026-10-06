@@ -17,13 +17,13 @@ A cada rodada o agente:
 
 ## Preço sugerido Copag
 
-Não encontrei tabela pública de MSRP da Copag. A venda oficial acontece por lojas oficiais no Mercado Livre e na Amazon, e marketplace não vale como fonte. Por isso **o MSRP é cadastrado por você** em `config/catalog.json`:
+A fonte principal é a loja oficial da Copag (copagloja.com.br). Quando um produto está à venda lá, o agente captura o preço sozinho, com a URL e a data, e registra o valor anterior se ele mudar (`data/copag-msrp.json`). Produto esgotado na Copag não mostra preço, então ele fica "não confirmado" até voltar ao estoque ou até você cadastrar à mão em `config/catalog.json`:
 
 ```json
-"copag": { "msrp": 449.99, "source_url": "https://…", "confidence": "OFICIAL", "source_timestamp": "2026-10-06" }
+"copag": { "msrp": 449.99, "source_url": "https://www.copagloja.com.br/…", "confidence": "OFICIAL" }
 ```
 
-Sem esses três campos válidos, o produto aparece como "Preço sugerido Copag não confirmado" e não recebe desconto, score, selo nem alerta de preço. `npm run copag-check` confere a fonte diariamente e marca divergências para revisão. O valor oficial nunca muda sozinho.
+O cadastro manual vence o capturado. Marketplace nunca vale como fonte. Sem preço confirmado, o produto não recebe desconto, score, selo nem alerta de preço.
 
 ## Instalação (GitHub, custo zero)
 
@@ -54,7 +54,7 @@ Rodar em casa usa IP residencial brasileiro, que muitas lojas bloqueiam menos qu
 
 ## Limites reais
 
-- **Lojas dos 10 nomes iniciais:** só Liga Pokémon e MYP Cards vieram com domínio. As outras ficam como "Domínio a confirmar" até você preencher `url` em `config/stores.json`. Não inventei endereço.
+- **Lojas sem domínio:** Nerb Store, GRB Cards, Cardora, MatosTCG, Gorupa e Culture TCG ficam como "Domínio a confirmar" até você preencher `url` em `config/stores.json`. Liga Pokémon e MYP Cards bloqueiam robôs e estão pausadas (`enabled: false`).
 - **Marketplaces:** Mercado Livre só com token OAuth (a busca pública retorna 403 desde 2025). Amazon, Shopee e Magalu não têm API pública de busca e protegem as páginas contra robôs, então ficam como "Sem integração". O agente não contorna bloqueio.
 - **Lojas com plataforma própria:** se não forem Shopify, VTEX nem tiverem JSON-LD, aparecem como erro. Para elas, liste URLs de produto em `productUrls` da loja.
 - **Frete:** calculado por CEP só em VTEX. Nas demais aparece "não informado" e o total é só o produto.
