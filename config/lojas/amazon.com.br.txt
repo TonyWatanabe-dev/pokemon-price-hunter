@@ -13,8 +13,6 @@ https://www.leitura.com.br/
 https://www.uzgames.com.br/
 https://www.copag.com.br/
 https://supertcg.com.br/
-https://www.ligapokemon.com.br/
-https://mypcards.com/
 https://freitastcg.com.br/
 https://meruru.com.br/
 https://www.newstation.com.br/
@@ -61,3 +59,5 @@ https://www.shogunlivraria.com.br/
 https://www.pluspowershop.com.br/
 https://www.lumosstore.com.br/
 https://lojaarenagames.com.br/
+https://www.ligapokemon.com.br/
+https://mypcards.com/
