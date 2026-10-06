@@ -22,5 +22,53 @@
     "at": "2026-10-06T12:26:46.710Z",
     "storeId": "tocadotabuleiro",
     "offerId": "c358fd12a7b9"
+  },
+  "me01-box36": {
+    "total": 499.99,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "rihappycombr",
+    "offerId": "c6504551f78d"
+  },
+  "me01-box18": {
+    "total": 251.91,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "lojaarenagamescombr",
+    "offerId": "05cc0d98fd8c"
+  },
+  "me01-etb": {
+    "total": 399.9,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "2954f8d4a061"
+  },
+  "me02-box36": {
+    "total": 549.99,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "rihappycombr",
+    "offerId": "3c7b3504b3dc"
+  },
+  "me03-box18": {
+    "total": 229.9,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "rihappycombr",
+    "offerId": "f6c80dfe704a"
+  },
+  "me04-box18": {
+    "total": 299.99,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "pbkidscombr",
+    "offerId": "60945b925763"
+  },
+  "me05-box18": {
+    "total": 249.9,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "pbkidscombr",
+    "offerId": "696cab3628ad"
+  },
+  "me05-etb": {
+    "total": 388,
+    "at": "2026-10-06T15:45:24.540Z",
+    "storeId": "shogunlivrariacombr",
+    "offerId": "6fc15d69a4be"
   }
 }
