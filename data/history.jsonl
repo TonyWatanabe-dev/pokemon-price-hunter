@@ -225,3 +225,7 @@
 {"t":"2026-10-06T19:30:29.155Z","offerId":"396adc4cc987","productId":"me04-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":11.76,"total":611.75,"stock":"IN_STOCK","quantity":10}
 {"t":"2026-10-06T19:30:29.155Z","offerId":"6ce869f48633","productId":"me04-box18","storeId":"rihappycombr","seller":"Gourmande","price":299.99,"priceKind":"base","shipping":11.76,"total":311.75,"stock":"IN_STOCK","quantity":10}
 {"t":"2026-10-06T19:30:29.155Z","offerId":"cff41ff51f70","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:45:23.357Z","offerId":"396adc4cc987","productId":"me04-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":null,"total":599.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:45:23.357Z","offerId":"6ce869f48633","productId":"me04-box18","storeId":"rihappycombr","seller":"Gourmande","price":299.99,"priceKind":"base","shipping":null,"total":299.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:45:23.357Z","offerId":"f6c80dfe704a","productId":"me03-box18","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:45:23.357Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
