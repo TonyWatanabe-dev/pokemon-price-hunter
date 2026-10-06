@@ -265,3 +265,4 @@
 {"t":"2026-10-06T22:00:34.558Z","offerId":"da31666a597c","productId":"me03-etb","storeId":"rihappycombr","seller":"Fantastic Toys","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-06T22:00:34.558Z","offerId":"c6dc1ad60475","productId":"me05-box36","storeId":"rihappycombr","seller":"Doce Diversão","price":419.9,"priceKind":"base","shipping":15.88,"total":435.78,"stock":"IN_STOCK","quantity":10}
 {"t":"2026-10-06T22:00:34.558Z","offerId":"a9c6e9197acd","productId":"me03-box18","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T22:15:21.732Z","offerId":"c6dc1ad60475","productId":"me05-box36","storeId":"rihappycombr","seller":"Doce Diversão","price":419.9,"priceKind":"base","shipping":null,"total":419.9,"stock":"IN_STOCK","quantity":10}
