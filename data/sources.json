@@ -1,0 +1,118 @@
+{
+  "ligapokemon": {
+    "checks": 1,
+    "ok": 0,
+    "name": "Liga Pokémon",
+    "kind": "specialist",
+    "lastCheck": "2026-10-06T10:53:35.947Z",
+    "status": "BLOCKED",
+    "reason": "Acesso bloqueado (403) em www.ligapokemon.com.br"
+  },
+  "mypcards": {
+    "checks": 1,
+    "ok": 0,
+    "name": "MYP Cards",
+    "kind": "specialist",
+    "lastCheck": "2026-10-06T10:53:35.947Z",
+    "status": "BLOCKED",
+    "reason": "Acesso bloqueado (403) em mypcards.com"
+  },
+  "nerbstore": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Nerb Store",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "grbcards": {
+    "checks": 0,
+    "ok": 0,
+    "name": "GRB Cards",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "cardora": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Cardora",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "tocadotabuleiro": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Toca do Tabuleiro",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "matostcg": {
+    "checks": 0,
+    "ok": 0,
+    "name": "MatosTCG",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "lifegeek": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Life Geek",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "gorupa": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Gorupa",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "culturetcg": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Culture TCG",
+    "kind": "specialist",
+    "status": "PENDING",
+    "reason": "domínio ainda não confirmado"
+  },
+  "mercadolivre": {
+    "checks": 1,
+    "ok": 0,
+    "name": "Mercado Livre",
+    "kind": "marketplace",
+    "lastCheck": "2026-10-06T10:53:35.947Z",
+    "platform": "mercadolivre",
+    "status": "BLOCKED",
+    "reason": "Mercado Livre exige token OAuth (ML_ACCESS_TOKEN); a busca pública retorna 403 desde 2025"
+  },
+  "amazon": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Amazon Brasil",
+    "kind": "marketplace",
+    "status": "UNAVAILABLE",
+    "reason": "Sem API pública de busca; a Product Advertising API exige conta de afiliado."
+  },
+  "shopee": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Shopee Brasil",
+    "kind": "marketplace",
+    "status": "UNAVAILABLE",
+    "reason": "Sem API pública; páginas protegidas contra bots."
+  },
+  "magalu": {
+    "checks": 0,
+    "ok": 0,
+    "name": "Magalu",
+    "kind": "marketplace",
+    "status": "UNAVAILABLE",
+    "reason": "Sem API pública de busca para terceiros."
+  }
+}

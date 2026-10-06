@@ -1,0 +1,832 @@
+{
+  "generatedAt": "2026-10-06T10:53:35.947Z",
+  "coverage": {
+    "found": 14,
+    "active": 0,
+    "blocked": 3,
+    "error": 0,
+    "pending": 8,
+    "unavailable": 3,
+    "paused": 0
+  },
+  "totals": {
+    "products": 18,
+    "offers": 0,
+    "copagConfirmed": 0
+  },
+  "collections": [
+    {
+      "id": "me01",
+      "name": "Megaevolução"
+    },
+    {
+      "id": "me02",
+      "name": "Fogo Fantasmagórico"
+    },
+    {
+      "id": "me03",
+      "name": "Equilíbrio Perfeito"
+    },
+    {
+      "id": "me04",
+      "name": "Caos Ascendente"
+    },
+    {
+      "id": "me05",
+      "name": "Escuridão Absoluta"
+    },
+    {
+      "id": "ev09",
+      "name": "Amigos de Jornada"
+    }
+  ],
+  "products": [
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me01-box36",
+      "collection": "me01",
+      "type": "booster_box",
+      "boosters": 36,
+      "name": "Megaevolução — Booster Box 36",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Megaevolução",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me01-box24",
+      "collection": "me01",
+      "type": "booster_box",
+      "boosters": 24,
+      "name": "Megaevolução — Kit 24 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Megaevolução",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me01-box18",
+      "collection": "me01",
+      "type": "booster_box",
+      "boosters": 18,
+      "name": "Megaevolução — Combo 18 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Megaevolução",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me01-etb",
+      "collection": "me01",
+      "type": "etb",
+      "boosters": null,
+      "name": "Megaevolução — Treinador Avançado (ETB)",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Megaevolução",
+      "typeLabel": "Treinador Avançado (ETB)",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me02-box36",
+      "collection": "me02",
+      "type": "booster_box",
+      "boosters": 36,
+      "name": "Fogo Fantasmagórico — Booster Box 36",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Fogo Fantasmagórico",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me02-box18",
+      "collection": "me02",
+      "type": "booster_box",
+      "boosters": 18,
+      "name": "Fogo Fantasmagórico — Combo 18 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Fogo Fantasmagórico",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me02-etb",
+      "collection": "me02",
+      "type": "etb",
+      "boosters": null,
+      "name": "Fogo Fantasmagórico — Treinador Avançado (ETB)",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Fogo Fantasmagórico",
+      "typeLabel": "Treinador Avançado (ETB)",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me03-box36",
+      "collection": "me03",
+      "type": "booster_box",
+      "boosters": 36,
+      "name": "Equilíbrio Perfeito — Booster Box 36",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Equilíbrio Perfeito",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me03-box18",
+      "collection": "me03",
+      "type": "booster_box",
+      "boosters": 18,
+      "name": "Equilíbrio Perfeito — Combo 18 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Equilíbrio Perfeito",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me03-etb",
+      "collection": "me03",
+      "type": "etb",
+      "boosters": null,
+      "name": "Equilíbrio Perfeito — Treinador Avançado (ETB)",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Equilíbrio Perfeito",
+      "typeLabel": "Treinador Avançado (ETB)",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me04-box36",
+      "collection": "me04",
+      "type": "booster_box",
+      "boosters": 36,
+      "name": "Caos Ascendente — Booster Box 36",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Caos Ascendente",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me04-box24",
+      "collection": "me04",
+      "type": "booster_box",
+      "boosters": 24,
+      "name": "Caos Ascendente — Box 24 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Caos Ascendente",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me04-box18",
+      "collection": "me04",
+      "type": "booster_box",
+      "boosters": 18,
+      "name": "Caos Ascendente — Combo 18 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Caos Ascendente",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me04-etb",
+      "collection": "me04",
+      "type": "etb",
+      "boosters": null,
+      "name": "Caos Ascendente — Treinador Avançado (ETB)",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Caos Ascendente",
+      "typeLabel": "Treinador Avançado (ETB)",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me05-box36",
+      "collection": "me05",
+      "type": "booster_box",
+      "boosters": 36,
+      "name": "Escuridão Absoluta — Booster Box 36",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Escuridão Absoluta",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me05-box18",
+      "collection": "me05",
+      "type": "booster_box",
+      "boosters": 18,
+      "name": "Escuridão Absoluta — Combo 18 Boosters",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Escuridão Absoluta",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "me05-etb",
+      "collection": "me05",
+      "type": "etb",
+      "boosters": null,
+      "name": "Escuridão Absoluta — Treinador Avançado (ETB)",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Escuridão Absoluta",
+      "typeLabel": "Treinador Avançado (ETB)",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    },
+    {
+      "language": "PT",
+      "manufacturer": "Copag",
+      "ean": null,
+      "sku": null,
+      "release_date": null,
+      "status": "ATIVO",
+      "id": "ev09-box36",
+      "collection": "ev09",
+      "type": "booster_box",
+      "boosters": 36,
+      "name": "Amigos de Jornada — Booster Box 36",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "source_timestamp": null,
+        "confidence": null,
+        "previous_msrp": null,
+        "msrp_updated_at": null
+      },
+      "collectionName": "Amigos de Jornada",
+      "typeLabel": "Booster Box",
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "marketAverage": null,
+      "lowestHistorical": null,
+      "offerCount": 0,
+      "inStockCount": 0
+    }
+  ],
+  "bestDeals": [],
+  "offers": [],
+  "sources": [
+    {
+      "id": "ligapokemon",
+      "checks": 1,
+      "ok": 0,
+      "name": "Liga Pokémon",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T10:53:35.947Z",
+      "status": "BLOCKED",
+      "reason": "Acesso bloqueado (403) em www.ligapokemon.com.br",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "mypcards",
+      "checks": 1,
+      "ok": 0,
+      "name": "MYP Cards",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T10:53:35.947Z",
+      "status": "BLOCKED",
+      "reason": "Acesso bloqueado (403) em mypcards.com",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "nerbstore",
+      "checks": 0,
+      "ok": 0,
+      "name": "Nerb Store",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "grbcards",
+      "checks": 0,
+      "ok": 0,
+      "name": "GRB Cards",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "cardora",
+      "checks": 0,
+      "ok": 0,
+      "name": "Cardora",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "tocadotabuleiro",
+      "checks": 0,
+      "ok": 0,
+      "name": "Toca do Tabuleiro",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "matostcg",
+      "checks": 0,
+      "ok": 0,
+      "name": "MatosTCG",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "lifegeek",
+      "checks": 0,
+      "ok": 0,
+      "name": "Life Geek",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "gorupa",
+      "checks": 0,
+      "ok": 0,
+      "name": "Gorupa",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "culturetcg",
+      "checks": 0,
+      "ok": 0,
+      "name": "Culture TCG",
+      "kind": "specialist",
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "mercadolivre",
+      "checks": 1,
+      "ok": 0,
+      "name": "Mercado Livre",
+      "kind": "marketplace",
+      "lastCheck": "2026-10-06T10:53:35.947Z",
+      "platform": "mercadolivre",
+      "status": "BLOCKED",
+      "reason": "Mercado Livre exige token OAuth (ML_ACCESS_TOKEN); a busca pública retorna 403 desde 2025",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "amazon",
+      "checks": 0,
+      "ok": 0,
+      "name": "Amazon Brasil",
+      "kind": "marketplace",
+      "status": "UNAVAILABLE",
+      "reason": "Sem API pública de busca; a Product Advertising API exige conta de afiliado.",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "shopee",
+      "checks": 0,
+      "ok": 0,
+      "name": "Shopee Brasil",
+      "kind": "marketplace",
+      "status": "UNAVAILABLE",
+      "reason": "Sem API pública; páginas protegidas contra bots.",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "magalu",
+      "checks": 0,
+      "ok": 0,
+      "name": "Magalu",
+      "kind": "marketplace",
+      "status": "UNAVAILABLE",
+      "reason": "Sem API pública de busca para terceiros.",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    }
+  ],
+  "unmatched": [],
+  "rules": [
+    {
+      "id": "caca-caos-box",
+      "label": "Caos Ascendente Box abaixo de R$350",
+      "mode": "target",
+      "filter": {
+        "productId": "me04-box36"
+      },
+      "maxPrice": 350
+    },
+    {
+      "id": "box-10-booster",
+      "label": "Qualquer box abaixo de R$10 por booster",
+      "filter": {
+        "productType": "booster_box"
+      },
+      "maxPerBooster": 10
+    },
+    {
+      "id": "copag-25",
+      "label": "Qualquer produto 25% abaixo da Copag",
+      "filter": {},
+      "minDiscount": 0.25
+    },
+    {
+      "id": "restock-escuridao",
+      "label": "Escuridão Absoluta voltou ao estoque",
+      "filter": {
+        "productId": "me05-box36"
+      },
+      "restock": true
+    },
+    {
+      "id": "etb-300",
+      "label": "Qualquer ETB abaixo de R$300",
+      "filter": {
+        "productType": "etb"
+      },
+      "maxPrice": 300
+    }
+  ],
+  "recentAlerts": []
+}
