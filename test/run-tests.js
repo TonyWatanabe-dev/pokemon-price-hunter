@@ -19,14 +19,17 @@ fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: 
   { id: 'cop', name: 'Loja Copag (oficial)', url: 'https://cop.test', platform: 'vtex', kind: 'official', copagSource: true, evidence: { officialStore: true, cnpj: 'x' } },
 ] }));
 fs.copyFileSync(path.join(root, 'config/watchlist.json'), path.join(tmp, 'config/watchlist.json'));
+fs.writeFileSync(path.join(tmp, 'config/lojas.txt'), '# comentário\nnova.test\nhttps://www.shop.test/qualquer\nhttps://www.amazon.com.br/\n');
+fs.mkdirSync(path.join(tmp, 'config/lojas')); fs.writeFileSync(path.join(tmp, 'config/lojas/botao.test.txt'), 'https://botao.test\n');
 
 let shopPrice = '339.00'; let vtexQty = 0;
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json' } });
 const html = (s, status = 200) => new Response(s, { status, headers: { 'content-type': 'text/html' } });
 const page = (name, price, avail, extra = '') => html(`<html><head><script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name, offers: { '@type': 'Offer', price, priceCurrency: 'BRL', availability: 'https://schema.org/' + avail } })}</script></head><body>${extra}${'x'.repeat(40000)}</body></html>`);
 const http = await import('../src/http.js');
+const requested = [];
 http.setFetch(async (url, opt) => {
-  const u = new URL(url);
+  const u = new URL(url); requested.push(url);
   if (u.host === 'blk.test') return html('Just a moment...', 403);
   if (u.pathname === '/robots.txt') return u.host === 'ld.test' ? html('User-agent: *\nDisallow: /admin\nDisallow: /*bloqueado') : html('', 404);
   if (u.host === 'shop.test') {
@@ -81,7 +84,11 @@ assert.equal(ldBox.discount, +(1 - 369.9 / 449.99).toFixed(4), 'desconto calcula
 assert.equal(by((o) => /pre-venda|Pré-venda/i.test(o.title)).stock, 'PRE_ORDER');
 assert.equal(s.sources.find((x) => x.id === 'blk').status, 'BLOCKED');
 assert.equal(s.sources.find((x) => x.id === 'nope').status, 'PENDING');
-assert.equal(s.coverage.found, 6);
+assert.equal(s.coverage.found, 9, 'lojas.txt e config/lojas/ adicionam lojas e ignoram duplicadas');
+assert.equal(s.sources.find((x) => x.id === 'amazoncombr').status, 'UNAVAILABLE', 'marketplace grande não é rastreado');
+assert.ok(!requested.some((u) => /amazon/.test(u)), 'nenhuma requisição para a Amazon');
+assert.ok(s.sources.find((x) => x.id === 'botaotest'), 'loja criada pelo botão monitorada');
+assert.ok(s.sources.find((x) => x.id === 'novatest'), 'loja do lojas.txt monitorada');
 const r1 = sentMsgs.length; assert.ok(sentMsgs.some((m) => m.title.includes('PREÇO-ALVO')), 'alvo R$350 atingido');
 assert.ok(sentMsgs.every((m) => !/99,00/.test(m.text)), 'anomalia não alerta');
 
@@ -100,6 +107,14 @@ const hist = fs.readFileSync(path.join(tmp, 'data/history.jsonl'), 'utf8').trim(
 assert.ok(hist.length >= 8, 'histórico registra mudanças');
 assert.equal(s.products.find((p) => p.id === 'me04-box36').lowestHistorical.total, 329);
 
+// Rodada 3b: prazo esgotado -> lojas puladas mantêm a leitura recente, sem virar "estoque desconhecido"
+const cache = JSON.parse(fs.readFileSync(path.join(tmp, 'data/url-cache.json'), 'utf8'));
+assert.ok(cache.ld.candidates.length === 3 && cache.ld.relevant.length === 2, 'sitemap em cache e páginas relevantes guardadas');
+process.env.HUNTER_BUDGET_MIN = '0';
+s = await runOnce({ log: quiet, send, now: new Date('2026-10-06T10:25:00Z') });
+const kept = s.offers.find((o) => o.storeId === 'shop' && o.productId === 'me04-box36' && o.price === 329);
+assert.ok(kept && !kept.stale && kept.stock === 'IN_STOCK', 'oferta recente preservada quando a loja fica para a próxima rodada');
+delete process.env.HUNTER_BUDGET_MIN;
 fs.copyFileSync(path.join(tmp, 'data/state.json'), path.join(root, 'test/.demo-state.json'));
 
 // Rodada 4: loja Shopify cai -> ofertas viram estoque desconhecido, saem do ranking

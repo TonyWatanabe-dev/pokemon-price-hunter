@@ -4,6 +4,10 @@ import fs from 'node:fs';
 import { readJson, writeJson, appendJsonl, dataPath, configPath } from './db.js';
 import { adapters, detectPlatform } from './adapters/index.js';
 import { shipping as vtexShipping } from './adapters/vtex.js';
+import { productUrls as jsonldUrls } from './adapters/jsonld.js';
+
+const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
+async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, isAnomalous, opportunityBadge } from './score.js';
 import { evaluate, dedupe, dispatch, transports } from './alerts.js';
@@ -45,20 +49,39 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const copagSeen = readJson(dataPath('copag-msrp.json'), {}); // preço capturado na loja oficial Copag
   const cep = process.env.HUNTER_CEP || watch.settings?.cep;
 
-  const offers = {}; const unmatched = []; const touched = new Set();
-  for (const store of stores) {
+  const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set();
+  // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio), prazo por rodada
+  // e rodízio — quem ficou para trás numa rodada vai primeiro na seguinte.
+  const deadline = Date.now() + Number(process.env.HUNTER_BUDGET_MIN || 7) * 60e3;
+  const urlCache = readJson(dataPath('url-cache.json'), {});
+  const order = [...stores].sort((a, b) => (sources[a.id]?.lastCheck || '').localeCompare(sources[b.id]?.lastCheck || ''));
+  await pool(order, Number(process.env.HUNTER_CONCURRENCY || 8), async (store) => {
     const src = (sources[store.id] ||= { checks: 0, ok: 0 });
     src.name = store.name; src.kind = store.kind; src.url = store.url;
-    if (store.platform === 'unsupported') { Object.assign(src, { status: 'UNAVAILABLE', reason: store.note }); continue; }
-    if (!store.url) { Object.assign(src, { status: 'PENDING', reason: 'domínio ainda não confirmado' }); continue; }
-    if (store.enabled === false) { Object.assign(src, { status: 'PAUSED', reason: 'pausada manualmente' }); continue; }
+    if (store.platform === 'unsupported') { Object.assign(src, { status: 'UNAVAILABLE', reason: store.note }); return; }
+    if (!store.url) { Object.assign(src, { status: 'PENDING', reason: 'domínio ainda não confirmado' }); return; }
+    if (store.enabled === false) { Object.assign(src, { status: 'PAUSED', reason: 'pausada manualmente' }); return; }
+    if (BIG_MARKETPLACES.test(new URL(store.url).host) && store.platform !== 'mercadolivre') { Object.assign(src, { status: 'UNAVAILABLE', reason: 'Marketplace grande: bloqueia robôs e não tem API pública de busca' }); return; }
+    if (Date.now() > deadline) { skipped.add(store.id); return; }
     src.checks++; src.lastCheck = T;
     try {
       const base = store.url.replace(/\/$/, '');
       const platform = store.platform !== 'auto' ? store.platform : (src.platform || await detectPlatform(base));
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });
       src.platform = platform;
+      // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas.
+      let cache = null;
+      if (platform === 'jsonld') {
+        cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
+        if (!cache.at || Date.now() - Date.parse(cache.at) > 864e5) {
+          cache.candidates = await jsonldUrls(base, 3000); cache.at = T; cache.visited = cache.visited.filter((u) => cache.candidates.includes(u));
+        }
+        const fresh = cache.candidates.filter((u) => !cache.visited.includes(u)).slice(0, 25);
+        cache.visited.push(...fresh);
+        store = { ...store, plannedUrls: [...new Set([...cache.relevant, ...fresh, ...(store.productUrls || [])])] };
+      }
       const listings = await adapters[platform].search(store, catalog);
+      if (cache) cache.relevant = [...new Set(listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url))];
       let matched = 0;
       for (const l of listings) {
         const m = matchProduct(l, catalog);
@@ -95,9 +118,14 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message });
       log(`[${store.id}] ${src.status}: ${e.message}`);
     }
-  }
+  });
+  if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
   // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
-  for (const [id, o] of Object.entries(prev)) if (!offers[id] && !touched.has(o.storeId) && stores.some((s) => s.id === o.storeId)) offers[id] = { ...o, stale: true, stock: 'UNKNOWN' };
+  for (const [id, o] of Object.entries(prev)) {
+    if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
+    const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
+    offers[id] = recent ? { ...o } : { ...o, stale: true, stock: 'UNKNOWN' };
+  }
 
   // Histórico e eventos
   const events = []; const history = [];
@@ -166,6 +194,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('sources.json'), sources);
   writeJson(dataPath('lowest.json'), lowest);
   writeJson(dataPath('copag-msrp.json'), copagSeen);
+  writeJson(dataPath('url-cache.json'), urlCache);
   writeJson(dataPath('alerts-sent.json'), sent);
   writeJson(dataPath('state.json'), state);
   appendJsonl(dataPath('history.jsonl'), history);

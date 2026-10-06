@@ -7,7 +7,7 @@ const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|bl
 
 export async function productUrls(base, max = 60) {
   const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = [];
-  while (queue.length && seen.size < 15 && urls.length < max * 3) {
+  while (queue.length && seen.size < 15 && urls.length < max) {
     const sm = queue.shift(); if (seen.has(sm)) continue; seen.add(sm);
     try { await guard(sm); } catch { continue; }
     let xml; try { xml = (await get(sm, { accept: 'application/xml' })).text; } catch { continue; }
@@ -16,7 +16,7 @@ export async function productUrls(base, max = 60) {
       else if (PRODUCT_URL.test(loc) && SEALED_HINT.test(loc)) urls.push(loc);
     }
   }
-  return urls.slice(0, max);
+  return [...new Set(urls)].slice(0, max);
 }
 
 function flatten(node, acc = []) {
@@ -54,7 +54,7 @@ export async function detect(base) {
 
 export async function search(store) {
   const base = store.url.replace(/\/$/, '');
-  const urls = [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
+  const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
   const out = [];
   for (const u of urls) {
     try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
