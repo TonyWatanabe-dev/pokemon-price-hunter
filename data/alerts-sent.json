@@ -1,1 +1,14 @@
-{}
+{
+  "copag-25|me04-etb": {
+    "at": "2026-10-06T18:45:28.412Z",
+    "total": 239.99,
+    "discount": 0.4,
+    "offerId": "1a848aa3d9e3"
+  },
+  "etb-300|me04-etb": {
+    "at": "2026-10-06T18:45:28.412Z",
+    "total": 239.99,
+    "discount": 0.4,
+    "offerId": "1a848aa3d9e3"
+  }
+}
