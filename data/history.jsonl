@@ -187,3 +187,25 @@
 {"t":"2026-10-06T18:45:28.412Z","offerId":"4d4330feae6e","productId":"me02-etb","storeId":"canal40","seller":null,"price":124.99,"priceKind":"pix","shipping":null,"total":124.99,"stock":"OUT_OF_STOCK","quantity":0}
 {"t":"2026-10-06T18:45:28.412Z","offerId":"8669d2df2ee8","productId":"me03-etb","storeId":"canal40","seller":null,"price":139.99,"priceKind":"pix","shipping":null,"total":139.99,"stock":"IN_STOCK","quantity":8}
 {"t":"2026-10-06T18:45:28.412Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"e0a52c2c88c8","productId":"me03-etb","storeId":"pbkidscombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":11.76,"total":611.75,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"ebb9876e420a","productId":"me03-etb","storeId":"pbkidscombr","seller":"Fantastic Toys","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"8ba494cbc592","productId":"me03-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":11.76,"total":611.75,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"60945b925763","productId":"me04-box18","storeId":"pbkidscombr","seller":"Gourmande","price":299.99,"priceKind":"base","shipping":null,"total":299.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"a95bf4d4b1cc","productId":"me05-etb","storeId":"pbkidscombr","seller":"Starhouse","price":399.9,"priceKind":"base","shipping":null,"total":399.9,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","seller":"Loja Copag","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"6eb8d2865c83","productId":"me05-box36","storeId":"pbkidscombr","seller":"Doce Diversão","price":419.9,"priceKind":"base","shipping":null,"total":419.9,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"5abd36b3db1a","productId":"me03-etb","storeId":"canal40","seller":null,"price":34.99,"priceKind":"pix","shipping":null,"total":34.99,"stock":"IN_STOCK","quantity":8}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"531064d639dc","productId":"me04-etb","storeId":"canal40","seller":null,"price":329.99,"priceKind":"pix","shipping":null,"total":329.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"3d2ab8f5b87b","productId":"me03-etb","storeId":"canal40","seller":null,"price":447.99,"priceKind":"pix","shipping":null,"total":447.99,"stock":"IN_STOCK","quantity":8}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"44392892fb8d","productId":"me03-etb","storeId":"canal40","seller":null,"price":379.99,"priceKind":"pix","shipping":null,"total":379.99,"stock":"IN_STOCK","quantity":8}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"a9c6e9197acd","productId":"me03-box18","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"18772ddae3bb","productId":"me01-box36","storeId":"ludostation","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"1873d050ef24","productId":"me03-etb","storeId":"ludostation","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"64991dbbe6f0","productId":"me03-etb","storeId":"ludostation","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"c0a8c25d6e02","productId":"me04-box36","storeId":"ludostation","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"46d1dc59ceea","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"dab4bdcf29ff","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"5a1b5a0cc379","productId":"me05-box18","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"ea1e81b88414","productId":"me05-box18","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"eeb8d92778c8","productId":"me05-box18","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T19:00:37.073Z","offerId":"7221151a39a3","productId":"me05-box18","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
