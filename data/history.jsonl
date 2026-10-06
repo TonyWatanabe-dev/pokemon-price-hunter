@@ -245,3 +245,7 @@
 {"t":"2026-10-06T20:30:28.656Z","offerId":"6eb8d2865c83","productId":"me05-box36","storeId":"pbkidscombr","seller":"Doce Diversão","price":419.9,"priceKind":"base","shipping":15.88,"total":435.78,"stock":"IN_STOCK","quantity":10}
 {"t":"2026-10-06T20:30:28.656Z","offerId":"396adc4cc987","productId":"me04-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":11.76,"total":611.75,"stock":"IN_STOCK","quantity":10}
 {"t":"2026-10-06T20:30:28.656Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T20:45:24.207Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","seller":"Loja Copag","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-06T20:45:24.207Z","offerId":"6eb8d2865c83","productId":"me05-box36","storeId":"pbkidscombr","seller":"Doce Diversão","price":419.9,"priceKind":"base","shipping":null,"total":419.9,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T20:45:24.207Z","offerId":"396adc4cc987","productId":"me04-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":null,"total":599.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T20:45:24.207Z","offerId":"193f3a510047","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
