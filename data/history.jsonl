@@ -163,3 +163,9 @@
 {"t":"2026-10-06T18:00:33.255Z","offerId":"1efa1670d7d0","productId":"me04-etb","storeId":"canal40","seller":null,"price":159.99,"priceKind":"pix","shipping":null,"total":159.99,"stock":"IN_STOCK","quantity":110}
 {"t":"2026-10-06T18:00:33.255Z","offerId":"41a8145e7ac4","productId":"me05-box18","storeId":"canal40","seller":null,"price":43.99,"priceKind":"pix","shipping":null,"total":43.99,"stock":"IN_STOCK","quantity":311}
 {"t":"2026-10-06T18:00:33.255Z","offerId":"c6504551f78d","productId":"me01-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T18:15:23.245Z","offerId":"c6504551f78d","productId":"me01-box36","storeId":"rihappycombr","seller":"Luccas Brinquedos","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T18:15:23.245Z","offerId":"279c53397794","productId":"me04-etb","storeId":"canal40","seller":null,"price":119.99,"priceKind":"pix","shipping":null,"total":119.99,"stock":"IN_STOCK","quantity":110}
+{"t":"2026-10-06T18:15:23.245Z","offerId":"eeb8d92778c8","productId":"me05-box18","storeId":"canal40","seller":null,"price":39.99,"priceKind":"pix","shipping":null,"total":39.99,"stock":"IN_STOCK","quantity":316}
+{"t":"2026-10-06T18:15:23.245Z","offerId":"7221151a39a3","productId":"me05-box18","storeId":"canal40","seller":null,"price":329.99,"priceKind":"pix","shipping":null,"total":329.99,"stock":"IN_STOCK","quantity":316}
+{"t":"2026-10-06T18:15:23.245Z","offerId":"be31294b75a5","productId":"me05-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T18:15:23.245Z","offerId":"3c7b3504b3dc","productId":"me02-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
