@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-06T10:53:35.947Z",
+  "generatedAt": "2026-10-06T12:26:46.710Z",
   "coverage": {
-    "found": 14,
-    "active": 0,
-    "blocked": 3,
+    "found": 20,
+    "active": 7,
+    "blocked": 2,
     "error": 0,
-    "pending": 8,
+    "pending": 6,
     "unavailable": 3,
-    "paused": 0
+    "paused": 2
   },
   "totals": {
     "products": 18,
-    "offers": 0,
-    "copagConfirmed": 0
+    "offers": 23,
+    "copagConfirmed": 2
   },
   "collections": [
     {
@@ -68,7 +68,7 @@
       "copagReason": "sem valor",
       "marketAverage": null,
       "lowestHistorical": null,
-      "offerCount": 0,
+      "offerCount": 1,
       "inStockCount": 0
     },
     {
@@ -158,7 +158,7 @@
       "copagReason": "sem valor",
       "marketAverage": null,
       "lowestHistorical": null,
-      "offerCount": 0,
+      "offerCount": 1,
       "inStockCount": 0
     },
     {
@@ -188,7 +188,7 @@
       "copagReason": "sem valor",
       "marketAverage": null,
       "lowestHistorical": null,
-      "offerCount": 0,
+      "offerCount": 1,
       "inStockCount": 0
     },
     {
@@ -248,7 +248,7 @@
       "copagReason": "sem valor",
       "marketAverage": null,
       "lowestHistorical": null,
-      "offerCount": 0,
+      "offerCount": 3,
       "inStockCount": 0
     },
     {
@@ -336,15 +336,20 @@
       "copagConfirmed": false,
       "msrp": null,
       "copagReason": "sem valor",
-      "marketAverage": null,
-      "lowestHistorical": null,
-      "offerCount": 0,
-      "inStockCount": 0
+      "marketAverage": 399.99,
+      "lowestHistorical": {
+        "total": 399.99,
+        "at": "2026-10-06T12:26:46.710Z",
+        "storeId": "ludostation",
+        "offerId": "e6fc3fbc7944"
+      },
+      "offerCount": 3,
+      "inStockCount": 2
     },
     {
       "language": "PT",
       "manufacturer": "Copag",
-      "ean": null,
+      "ean": "0196214156098",
       "sku": null,
       "release_date": null,
       "status": "ATIVO",
@@ -353,6 +358,7 @@
       "type": "booster_box",
       "boosters": 36,
       "name": "Caos Ascendente — Booster Box 36",
+      "ean_source": "https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p",
       "copag": {
         "msrp": null,
         "source_url": null,
@@ -367,9 +373,14 @@
       "msrp": null,
       "copagReason": "sem valor",
       "marketAverage": null,
-      "lowestHistorical": null,
-      "offerCount": 0,
-      "inStockCount": 0
+      "lowestHistorical": {
+        "total": 449.99,
+        "at": "2026-10-06T12:26:46.710Z",
+        "storeId": "ludostation",
+        "offerId": "afd92b3c9fcb"
+      },
+      "offerCount": 2,
+      "inStockCount": 1
     },
     {
       "language": "PT",
@@ -444,22 +455,27 @@
       "boosters": null,
       "name": "Caos Ascendente — Treinador Avançado (ETB)",
       "copag": {
-        "msrp": null,
-        "source_url": null,
-        "source_timestamp": null,
-        "confidence": null,
+        "msrp": 399.99,
+        "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
+        "source_timestamp": "2026-10-06T12:26:46.710Z",
+        "confidence": "OFICIAL",
         "previous_msrp": null,
-        "msrp_updated_at": null
+        "msrp_updated_at": "2026-10-06T12:26:46.710Z"
       },
       "collectionName": "Caos Ascendente",
       "typeLabel": "Treinador Avançado (ETB)",
-      "copagConfirmed": false,
-      "msrp": null,
-      "copagReason": "sem valor",
+      "copagConfirmed": true,
+      "msrp": 399.99,
+      "copagReason": null,
       "marketAverage": null,
-      "lowestHistorical": null,
-      "offerCount": 0,
-      "inStockCount": 0
+      "lowestHistorical": {
+        "total": 389.9,
+        "at": "2026-10-06T12:26:46.710Z",
+        "storeId": "tocadotabuleiro",
+        "offerId": "4a709d988dc3"
+      },
+      "offerCount": 7,
+      "inStockCount": 1
     },
     {
       "language": "PT",
@@ -486,10 +502,15 @@
       "copagConfirmed": false,
       "msrp": null,
       "copagReason": "sem valor",
-      "marketAverage": null,
-      "lowestHistorical": null,
-      "offerCount": 0,
-      "inStockCount": 0
+      "marketAverage": 621.77,
+      "lowestHistorical": {
+        "total": 55.9,
+        "at": "2026-10-06T12:26:46.710Z",
+        "storeId": "tocadotabuleiro",
+        "offerId": "c358fd12a7b9"
+      },
+      "offerCount": 3,
+      "inStockCount": 2
     },
     {
       "language": "PT",
@@ -534,21 +555,21 @@
       "boosters": null,
       "name": "Escuridão Absoluta — Treinador Avançado (ETB)",
       "copag": {
-        "msrp": null,
-        "source_url": null,
-        "source_timestamp": null,
-        "confidence": null,
+        "msrp": 399.99,
+        "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
+        "source_timestamp": "2026-10-06T12:26:46.710Z",
+        "confidence": "OFICIAL",
         "previous_msrp": null,
-        "msrp_updated_at": null
+        "msrp_updated_at": "2026-10-06T12:26:46.710Z"
       },
       "collectionName": "Escuridão Absoluta",
       "typeLabel": "Treinador Avançado (ETB)",
-      "copagConfirmed": false,
-      "msrp": null,
-      "copagReason": "sem valor",
+      "copagConfirmed": true,
+      "msrp": 399.99,
+      "copagReason": null,
       "marketAverage": null,
       "lowestHistorical": null,
-      "offerCount": 0,
+      "offerCount": 2,
       "inStockCount": 0
     },
     {
@@ -582,8 +603,1099 @@
       "inStockCount": 0
     }
   ],
-  "bestDeals": [],
-  "offers": [],
+  "bestDeals": [
+    "4a709d988dc3"
+  ],
+  "offers": [
+    {
+      "id": "37582e9e0b9b",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "copagloja",
+      "storeName": "Loja Copag (oficial)",
+      "storeKind": "official",
+      "seller": "copag",
+      "sellerKind": "store",
+      "title": "Treinador Avançado Pokémon ME04 Caos Ascendente",
+      "url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
+      "sku": "2544",
+      "ean": "0196214156036",
+      "prices": {
+        "base": 399.99
+      },
+      "listPrice": null,
+      "price": 399.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 399.99,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 60,
+      "storeValidated": true,
+      "discount": 0,
+      "savings": 0,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "9769077cd42a",
+      "productId": "me05-etb",
+      "matchConfidence": 0.8,
+      "storeId": "copagloja",
+      "storeName": "Loja Copag (oficial)",
+      "storeKind": "official",
+      "seller": "copag",
+      "sellerKind": "store",
+      "title": "Treinador Avançado Pokémon ME05 Escuridão Absoluta",
+      "url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
+      "sku": "2578",
+      "ean": "0196214156036",
+      "prices": {
+        "base": 399.99
+      },
+      "listPrice": null,
+      "price": 399.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 399.99,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 60,
+      "storeValidated": true,
+      "discount": 0,
+      "savings": 0,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "1cba2d1597c4",
+      "productId": "me02-etb",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Fogo Fantasmagórico ME02 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-treinador-avancado-fogo-fantasmagorico-me02-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 39.9,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 39.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 39.9,
+      "perBooster": null,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-fogo-fantasmagorico-me02-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "1e3307d8443a",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Caos Ascendente ME04 ETB- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-treinador-avancado-caos-ascendente-me04-etb-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 13.3,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 13.3,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 13.3,
+      "perBooster": null,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-caos-ascendente-me04-etb-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.9667,
+      "savings": 386.69,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "3e653c11cac0",
+      "productId": "me02-etb",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Heróis Excelsos ME2.5 ETB- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-treinador-avancado-herois-excelsos-me25-etb-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 379.05,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 379.05,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 379.05,
+      "perBooster": null,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-herois-excelsos-me25-etb-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "4cec9a741bf6",
+      "productId": "me04-box36",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Caixa de Booster Caos Ascendente ME04 36un- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/caixa-de-booster-caos-ascendente-me04-36un-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 426.55,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 426.55,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 426.55,
+      "perBooster": 11.85,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-caos-ascendente-me04-36un-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "7fbbaef625d9",
+      "productId": "me05-box36",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Caixa de Booster Escuridão Absoluta ME05 36un- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/caixa-de-booster-escuridao-absoluta-me05-36un-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 426.55,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 426.55,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 426.55,
+      "perBooster": 11.85,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-escuridao-absoluta-me05-36un-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0.314,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "002dd7d20175",
+      "productId": "me05-etb",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Escuridão Absoluta ME05 ETB- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 379.05,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 379.05,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 379.05,
+      "perBooster": null,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.0524,
+      "savings": 20.94,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "5fbe4cc7eb61",
+      "productId": "me01-etb",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Megaevolução ME01 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-treinador-avancado-megaevolucao-me01-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 39.9,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 39.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 39.9,
+      "perBooster": null,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-megaevolucao-me01-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "20d7c0d9eb4f",
+      "productId": "me01-box36",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Caixa de Booster Megaevolução ME01  36un- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/caixa-de-booster-megaevolucao-me01-36un-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 39.9,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 39.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 39.9,
+      "perBooster": 1.11,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-megaevolucao-me01-36un-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "059586e65c2a",
+      "productId": "me02-box36",
+      "matchConfidence": 0.8,
+      "storeId": "lifegeek",
+      "storeName": "Life Geek",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Caixa de Booster Fogo Fantasmagórico ME02 36un- Pokémon",
+      "url": "https://www.lojalifegeek.com.br/caixa-de-booster-fogo-fantasmagorico-me02-36un-pokemon",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 39.9,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 39.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 39.9,
+      "perBooster": 1.11,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-fogo-fantasmagorico-me02-36un-pokemon",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "c358fd12a7b9",
+      "productId": "me05-box36",
+      "matchConfidence": 0.7,
+      "storeId": "tocadotabuleiro",
+      "storeName": "Toca do Tabuleiro",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon - Box Display Mega Evolução - Escuridão Absoluta (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-mega-evolucao-escuridao-absoluta-blister-quadruplo-h060t/",
+      "sku": "CRD-CPG-PKMN-PAK72",
+      "ean": null,
+      "prices": {
+        "pix": 55.9,
+        "base": 449.9
+      },
+      "listPrice": null,
+      "price": 55.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 55.9,
+      "perBooster": 1.55,
+      "stock": "IN_STOCK",
+      "quantity": 5,
+      "sourceType": "json_ld",
+      "source_url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-mega-evolucao-escuridao-absoluta-blister-quadruplo-h060t/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 5,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0.9101,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 70
+    },
+    {
+      "id": "de07ba70da6b",
+      "productId": "me05-box36",
+      "matchConfidence": 0.7,
+      "storeId": "tocadotabuleiro",
+      "storeName": "Toca do Tabuleiro",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon - Box Display Mega Evolução - Escuridão Absoluta (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-tcg-mega-evolution-pitch-black-booster-ingles-1p9ut/",
+      "sku": "CRD-CPG-PKMN-PAK72",
+      "ean": null,
+      "prices": {
+        "pix": 1187.64,
+        "base": 449.9
+      },
+      "listPrice": null,
+      "price": 1187.64,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 1187.64,
+      "perBooster": 32.99,
+      "stock": "IN_STOCK",
+      "quantity": 5,
+      "sourceType": "json_ld",
+      "source_url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-tcg-mega-evolution-pitch-black-booster-ingles-1p9ut/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 5,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": -0.9101,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 70
+    },
+    {
+      "id": "4a709d988dc3",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "tocadotabuleiro",
+      "storeName": "Toca do Tabuleiro",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon - Coleção Treinador Avançado Megaevolução - Caos Ascendente (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-tcg-mega-evolution-pitch-black-elite-trainer-box-ingles-1bp94/",
+      "sku": "CRD-CPG-PKMN-CMB61",
+      "ean": null,
+      "prices": {
+        "pix": 389.9,
+        "base": 399.9
+      },
+      "listPrice": null,
+      "price": 389.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 389.9,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 2,
+      "sourceType": "json_ld",
+      "source_url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-tcg-mega-evolution-pitch-black-elite-trainer-box-ingles-1bp94/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 5,
+      "storeValidated": false,
+      "discount": 0.0252,
+      "savings": 10.09,
+      "vsMarket": null,
+      "dealScore": 43,
+      "scoreParts": {
+        "copag": 2.9,
+        "historico": 15,
+        "porBooster": 7.5,
+        "estoque": 10,
+        "loja": 0.5,
+        "frete": 0,
+        "lacrado": 2.5,
+        "disponibilidade": 5
+      },
+      "classification": {
+        "label": "⚪ IGNORAR",
+        "tier": "ignore"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "e6fc3fbc7944",
+      "productId": "me03-etb",
+      "matchConfidence": 0.8,
+      "storeId": "ludostation",
+      "storeName": "Ludostation",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Coleção Treinador Avançado – Equilíbrio Perfeito",
+      "url": "https://ludostation.com.br/produtos/pokemon-tcg-scarlet-violet-white-flare-elite-trainer-box-ingles/",
+      "sku": "PKM149",
+      "ean": null,
+      "prices": {
+        "pix": 399.99,
+        "base": 399.9
+      },
+      "listPrice": null,
+      "price": 399.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 399.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 2,
+      "sourceType": "json_ld",
+      "source_url": "https://ludostation.com.br/produtos/pokemon-tcg-scarlet-violet-white-flare-elite-trainer-box-ingles/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "fbef310d53ec",
+      "productId": "me03-etb",
+      "matchConfidence": 0.8,
+      "storeId": "ludostation",
+      "storeName": "Ludostation",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Coleção Treinador Avançado – Equilíbrio Perfeito",
+      "url": "https://ludostation.com.br/produtos/pokemon-tcg-mega-evolutionperfect-order-elite-trainer-box-16zu9/",
+      "sku": "PKM149",
+      "ean": null,
+      "prices": {
+        "pix": 399.99,
+        "base": 399.9
+      },
+      "listPrice": null,
+      "price": 399.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 399.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 2,
+      "sourceType": "json_ld",
+      "source_url": "https://ludostation.com.br/produtos/pokemon-tcg-mega-evolutionperfect-order-elite-trainer-box-16zu9/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "c0a8c25d6e02",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "ludostation",
+      "storeName": "Ludostation",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Coleção Treinador Avançado - Caos Ascendente",
+      "url": "https://ludostation.com.br/produtos/pokemon-blister-triplo-megaevolucao-caos-ascendente-1uknf/",
+      "sku": "028D109400000BX",
+      "ean": null,
+      "prices": {
+        "pix": 42.99,
+        "base": 399.99
+      },
+      "listPrice": null,
+      "price": 42.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 42.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 3,
+      "sourceType": "json_ld",
+      "source_url": "https://ludostation.com.br/produtos/pokemon-blister-triplo-megaevolucao-caos-ascendente-1uknf/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.8925,
+      "savings": 357,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "afd92b3c9fcb",
+      "productId": "me04-box36",
+      "matchConfidence": 0.7,
+      "storeId": "ludostation",
+      "storeName": "Ludostation",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Display Caos Ascendente",
+      "url": "https://ludostation.com.br/pokemon/booster/",
+      "sku": "PKM159",
+      "ean": null,
+      "prices": {
+        "pix": null,
+        "base": 449.99
+      },
+      "listPrice": null,
+      "price": 449.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 449.99,
+      "perBooster": 12.5,
+      "stock": "IN_STOCK",
+      "quantity": 1,
+      "sourceType": "json_ld",
+      "source_url": "https://ludostation.com.br/pokemon/booster/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 70
+    },
+    {
+      "id": "e55fc5b3bd97",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "canal40",
+      "storeName": "Canal 40",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "BOX COLEÇÃO TREINADOR AVANÇADO ETB MEGA GRENINJA EX CAOS ASCENDENTE ME04 POKÉMON TCG BOOSTERS CARTAS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-venusaur-vmax-colecao-de-batalha/",
+      "sku": "1808",
+      "ean": null,
+      "prices": {
+        "pix": 109.99,
+        "base": 799.97
+      },
+      "listPrice": null,
+      "price": 109.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 109.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 115,
+      "sourceType": "json_ld",
+      "source_url": "https://www.canal40.com.br/produtos/box-pokemon-venusaur-vmax-colecao-de-batalha/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.725,
+      "savings": 290,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "4391b97e5341",
+      "productId": "me03-etb",
+      "matchConfidence": 0.8,
+      "storeId": "canal40",
+      "storeName": "Canal 40",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "BOX COLEÇÃO TREINADOR AVANÇADO ETB MEGA ZYGARDE EX EQUILÍBRIO PERFEITO ME3 POKÉMON TCG BOOSTER CARTA",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-kalos-edicao-especial-25-anos/",
+      "sku": "1712",
+      "ean": null,
+      "prices": {
+        "pix": 19.99,
+        "base": 799.97
+      },
+      "listPrice": null,
+      "price": 19.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 19.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 8,
+      "sourceType": "json_ld",
+      "source_url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-kalos-edicao-especial-25-anos/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0.95,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "9b5ff8ba359d",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "canal40",
+      "storeName": "Canal 40",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "BOX COLEÇÃO TREINADOR AVANÇADO ETB MEGA GRENINJA EX CAOS ASCENDENTE ME04 POKÉMON TCG BOOSTERS CARTAS",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-galar-edicao-especial-25-anos/",
+      "sku": "1808",
+      "ean": null,
+      "prices": {
+        "pix": 24.99,
+        "base": 799.97
+      },
+      "listPrice": null,
+      "price": 24.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 24.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 103,
+      "sourceType": "json_ld",
+      "source_url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-galar-edicao-especial-25-anos/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.9375,
+      "savings": 375,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "270304204608",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "canal40",
+      "storeName": "Canal 40",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "BOX COLEÇÃO TREINADOR AVANÇADO ETB MEGA GRENINJA EX CAOS ASCENDENTE ME04 POKÉMON TCG BOOSTERS CARTAS",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-kanto-edicao-especial-25-anos/",
+      "sku": "1808",
+      "ean": null,
+      "prices": {
+        "pix": 39.99,
+        "base": 799.97
+      },
+      "listPrice": null,
+      "price": 39.99,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 39.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 108,
+      "sourceType": "json_ld",
+      "source_url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-kanto-edicao-especial-25-anos/",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.9,
+      "savings": 360,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "cde3dfdac500",
+      "productId": "me02-etb",
+      "matchConfidence": 0.8,
+      "storeId": "gatogingado",
+      "storeName": "Gato Gingado",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Coleção Treinador Avançado ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/colecao-treinador-avancado-me02-fogo-fantasmagorico-pokemon-tcg",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 19,
+        "base": null
+      },
+      "listPrice": null,
+      "price": 19,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 19,
+      "perBooster": null,
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.gatogingado.com.br/colecao-treinador-avancado-me02-fogo-fantasmagorico-pokemon-tcg",
+      "source_timestamp": "2026-10-06T12:26:46.710Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    }
+  ],
   "sources": [
     {
       "id": "ligapokemon",
@@ -592,8 +1704,8 @@
       "name": "Liga Pokémon",
       "kind": "specialist",
       "lastCheck": "2026-10-06T10:53:35.947Z",
-      "status": "BLOCKED",
-      "reason": "Acesso bloqueado (403) em www.ligapokemon.com.br",
+      "status": "PAUSED",
+      "reason": "pausada manualmente",
       "score": {
         "score": null,
         "validated": false,
@@ -607,8 +1719,8 @@
       "name": "MYP Cards",
       "kind": "specialist",
       "lastCheck": "2026-10-06T10:53:35.947Z",
-      "status": "BLOCKED",
-      "reason": "Acesso bloqueado (403) em mypcards.com",
+      "status": "PAUSED",
+      "reason": "pausada manualmente",
       "score": {
         "score": null,
         "validated": false,
@@ -659,16 +1771,23 @@
     },
     {
       "id": "tocadotabuleiro",
-      "checks": 0,
-      "ok": 0,
+      "checks": 1,
+      "ok": 1,
       "name": "Toca do Tabuleiro",
       "kind": "specialist",
-      "status": "PENDING",
-      "reason": "domínio ainda não confirmado",
+      "status": "ACTIVE",
+      "reason": null,
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "jsonld",
+      "listings": 23,
+      "matched": 3,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
       "score": {
-        "score": null,
+        "score": 5,
         "validated": false,
-        "evidence": []
+        "evidence": [
+          "contato"
+        ]
       }
     },
     {
@@ -687,12 +1806,17 @@
     },
     {
       "id": "lifegeek",
-      "checks": 0,
-      "ok": 0,
+      "checks": 1,
+      "ok": 1,
       "name": "Life Geek",
       "kind": "specialist",
-      "status": "PENDING",
-      "reason": "domínio ainda não confirmado",
+      "status": "ACTIVE",
+      "reason": null,
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "jsonld",
+      "listings": 56,
+      "matched": 9,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
       "score": {
         "score": null,
         "validated": false,
@@ -729,11 +1853,11 @@
     },
     {
       "id": "mercadolivre",
-      "checks": 1,
+      "checks": 2,
       "ok": 0,
       "name": "Mercado Livre",
       "kind": "marketplace",
-      "lastCheck": "2026-10-06T10:53:35.947Z",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
       "platform": "mercadolivre",
       "status": "BLOCKED",
       "reason": "Mercado Livre exige token OAuth (ML_ACCESS_TOKEN); a busca pública retorna 403 desde 2025",
@@ -784,9 +1908,1352 @@
         "validated": false,
         "evidence": []
       }
+    },
+    {
+      "id": "copagloja",
+      "checks": 1,
+      "ok": 1,
+      "name": "Loja Copag (oficial)",
+      "kind": "official",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "vtex",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 12,
+      "matched": 2,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
+      "score": {
+        "score": 60,
+        "validated": true,
+        "evidence": [
+          "CNPJ",
+          "política de troca",
+          "contato",
+          "loja oficial"
+        ]
+      }
+    },
+    {
+      "id": "ludostation",
+      "checks": 1,
+      "ok": 1,
+      "name": "Ludostation",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "jsonld",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 50,
+      "matched": 4,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "canal40",
+      "checks": 1,
+      "ok": 1,
+      "name": "Canal 40",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "jsonld",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 60,
+      "matched": 4,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "gatogingado",
+      "checks": 1,
+      "ok": 1,
+      "name": "Gato Gingado",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "jsonld",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 15,
+      "matched": 1,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "happynerd",
+      "checks": 1,
+      "ok": 1,
+      "name": "Happy Nerd",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "platform": "jsonld",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 0,
+      "matched": 0,
+      "lastSuccess": "2026-10-06T12:26:46.710Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "meruru",
+      "checks": 1,
+      "ok": 0,
+      "name": "Meruru",
+      "kind": "specialist",
+      "lastCheck": "2026-10-06T12:26:46.710Z",
+      "status": "BLOCKED",
+      "reason": "Acesso bloqueado (403) em www.meruru.com.br",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
     }
   ],
-  "unmatched": [],
+  "unmatched": [
+    {
+      "store": "copagloja",
+      "title": "Blister Quadrúplo Pokémon Chikorita ME03 Equilíbrio Perfeito",
+      "url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-chikorita-me03-equilibrio-perfeito/p",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Blister Unitário Pokémon ME04 Caos Ascendente",
+      "url": "https://www.copagloja.com.br/blister-unitario-pokemon-me04-caos-ascendente/p",
+      "why": [
+        "fora do catálogo (me04/blister)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Blister Quadrúplo Pokémon ME04 Caos Ascendente",
+      "url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-me04-caos-ascendente/p",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Box Display Pokémon ME04 Caos Ascendente",
+      "url": "https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p",
+      "why": [
+        "EAN diverge do catálogo"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Blister Triplo Pokémon ME04 Caos Ascendente",
+      "url": "https://www.copagloja.com.br/blister-triplo-pokemon-me04-caos-ascendente/p",
+      "why": [
+        "fora do catálogo (me04/blister_3)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Combo de Booster Pokémon ME04 Caos Ascendente",
+      "url": "https://www.copagloja.com.br/combo-de-booster-pokemon-me04-caos-ascendente/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Blister Triplo Pokémon ME05 Escuridão Absoluta",
+      "url": "https://www.copagloja.com.br/blister-triplo-pokemon-me05-escuridao-absoluta/p",
+      "why": [
+        "fora do catálogo (me05/blister_3)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Blister Unitário Pokémon ME05 Escuridão Absoluta",
+      "url": "https://www.copagloja.com.br/blister-unitario-pokemon-me05-escuridao-absoluta/p",
+      "why": [
+        "fora do catálogo (me05/blister)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Blister Quadrúplo Pokémon ME05 Escuridão Absoluta",
+      "url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-me05-escuridao-absoluta/p",
+      "why": [
+        "fora do catálogo (me05/blister_4)"
+      ]
+    },
+    {
+      "store": "copagloja",
+      "title": "Combo de Booster Pokémon ME05 Escuridão Absoluta",
+      "url": "https://www.copagloja.com.br/combo-de-booster-pokemon-me05-escuridao-absoluta/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Charizard ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-charizard-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Venossaur ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-venossaur-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Combo de Booster Heróis Excelsos ME2.5 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/combo-de-booster-herois-excelsos-me25-pokemon",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Caos Ascendente ME04 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-caos-ascendente-me04-pokemon",
+      "why": [
+        "fora do catálogo (me04/blister_3)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quádruplo Caos Ascendente ME04 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-caos-ascendente-me04-pokemon",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Combo de Booster Caos Ascendente ME04 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/combo-de-booster-caos-ascendente-me04-pokemon",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Luar - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-luar-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Coleção Mega Zygarde ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/colecao-mega-zygarde-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Heróis Excelsos ME2.5 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-herois-excelsos-me25-pokemon",
+      "why": [
+        "fora do catálogo (me02/blister_3)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quádruplo Heróis Excelsos ME2.5 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-herois-excelsos-me25-pokemon",
+      "why": [
+        "fora do catálogo (me02/blister_4)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Deck Box Pokemon: Pikachu - Ultra Pro",
+      "url": "https://www.lojalifegeek.com.br/deck-box-pokemon-pikachu-ultra-pro",
+      "why": [
+        "acessório"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Escarlate e Violeta - Coroa Estelar EV7 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-escarlate-e-violeta-coroa-estelar-ev7-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo EV8,5 - Evoluções Prismáticas - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-escarlate-e-violeta-evolucoes-prismaticas-ev85-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quadruplo EV9 - Amigos de Jornada - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-ev9-amigos-de-jornada-pokemon",
+      "why": [
+        "fora do catálogo (ev09/blister_4)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo EV9 - Amigos de Jornada - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-ev9-amigos-de-jornada-pokemon",
+      "why": [
+        "fora do catálogo (ev09/blister_3)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quádruplo Escarlate e Violeta - Rivais Predestinados – Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-escarlate-e-violeta-rivais-predestinados-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Charizard ex em Dobro - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-charizard-ex-em-dobro-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quádruplo Escarlate e Violeta – Coroa Estelar – Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-escarlate-e-violeta-tinkaton-ou-latias-coroa-estelar-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Escarlate e Violeta - Rivais Predestinados – Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-escarlate-e-violeta-rivais-predestinados-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Garchomp ex da Cíntia - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-garchomp-ex-da-cintia-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Mewtwo ex da Equipe Rocket - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/pokemon-box-mewtwo-ex-da-equipe-rocket",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Ilustração Parceiro Inicial - Serie 3 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-ilustracao-parceiro-inicial-serie-3-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Forças Temporais EV5 Carvanha - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-forcas-temporais-ev5-carvanha-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Charizard Y ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-charizard-y-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Forças Mega Dragonite - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-forcas-mega-dragonite-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Forças Mega Zeraora - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-forcas-mega-zeraora-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Forças Mega Darkrai - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-forcas-mega-darkrai-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Meganium Emboar e Feraligtr ex ME2.5 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-meganium-emboar-e-feraligtr-ex-me25-pokemon",
+      "why": [
+        "fora do catálogo (me02/collection_box)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Elite Trainer Box Perfect Order Ingles ETB - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/elite-trainer-box-perfect-order-ingles-etb-pokemon",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Unitário Caos Ascendente ME04 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-unitario-caos-ascendente-me04-pokemon",
+      "why": [
+        "fora do catálogo (me04/blister)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Elite Trainer Box Pitch Black ME05 Ingles ETB - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/elite-trainer-box-pitch-black-ingles-etb-pokemon",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Combo de Booster Escuridão Absoluta ME05 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/combo-de-booster-escuridao-absoluta-me05-pokemon",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Unitário Escuridão Absoluta ME05 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-unitario-escuridao-absoluta-me05-pokemon",
+      "why": [
+        "fora do catálogo (me05/blister)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Escuridão Absoluta ME05 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-escuridao-absoluta-me05-pokemon",
+      "why": [
+        "fora do catálogo (me05/blister_3)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quádruplo Escuridão Absoluta ME05 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-escuridao-absoluta-me05-pokemon",
+      "why": [
+        "fora do catálogo (me05/blister_4)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Greninja ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-mega-greninja-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Megaevolução ME01 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-megaevolucao-me01-pokemon",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Combo Booster Box ME01 Megaevolução - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/combo-booster-box-me01-megaevolucao-pokemon",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Coleção Premium Evoluções Prismáticas EV8.5 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/colecao-premium-evolucoes-prismaticas-ev85-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quádruplo Megaevolção ME01 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-megaevolcao-me01-pokemon",
+      "why": [
+        "fora do catálogo (me01/blister_4)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Combo Booster Box EV8.5 Evoluções Prismáticas - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/combo-booster-box-ev85-evolucoes-prismaticas-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Arco-Iris EV8.5 Promo Eevee - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-colecao-arco-iris-ev85-promo-eevee-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Box Coleção Mega Latias ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/box-mega-latias-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Triplo Fogo Fantasmagórico ME02 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-triplo-fogo-fantasmagorico-me02-pokemon",
+      "why": [
+        "fora do catálogo (me02/blister_3)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Coleção Mega Lucário ex - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/colecao-mega-lucario-ex-pokemon",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Blister Quadruplo Fogo Fantasmagórico ME02 - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/blister-quadruplo-megaevolucao-me02-pokemon",
+      "why": [
+        "fora do catálogo (me02/blister_4)"
+      ]
+    },
+    {
+      "store": "lifegeek",
+      "title": "Combo de Booster ME02 Fogo Fantasmagórico - Pokémon",
+      "url": "https://www.lojalifegeek.com.br/combo-booster-box-me02-fogo-fantasmagorico-pokemon",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Combo de Pacotes de Booster Megaevolução - Caos Ascendente (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-colecao-treinador-avancado-megaevolucao-caos-ascendente-pt-br/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Equilíbrio Perfeito - Chikorita (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-combo-de-pacotes-de-booster-megaevolucao-equilibrio-perfeito-pt-br/",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Equilíbrio Perfeito - Chikorita (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-colecao-treinador-avancado-megaevolucao-equilibrio-perfeito-pt-br/",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Equilíbrio Perfeito - Chikorita (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-box-display-megaevolucao-equilibrio-perfeito-36-pacote-de-booster-pt-br/",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Equilíbrio Perfeito - Chikorita (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-pacote-de-booster-individual-megaevolucao-equilibrio-perfeito-blister-pt-br/",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Equilíbrio Perfeito - Chikorita (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-blister-triplo-megaevolucao-equilibrio-perfeito-makuhita-pt-br/",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Triplo Megaevolução - Equilíbrio Perfeito - Makuhita (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-blister-quadruplo-megaevolucao-equilibrio-perfeito-chikorita-pt-br/",
+      "why": [
+        "fora do catálogo (me03/blister_3)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Caos Ascendente - Toxel (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-combo-de-pacotes-de-booster-megaevolucao-caos-ascendente-pt-br/",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Triplo Megaevolução - Caos Ascendente - Charmeleon (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-blister-quadruplo-megaevolucao-caos-ascendente-toxel-pt-br/",
+      "why": [
+        "fora do catálogo (me04/blister_3)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Caos Ascendente - Toxel (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-blister-triplo-megaevolucao-caos-ascendente-charmeleon-pt-br/",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Megaevolução - Caos Ascendente - Toxel (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-pacote-de-booster-individual-megaevolucao-caos-ascendente-blister-pt-br/",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Combo de Pacotes de Booster Megaevolução - Caos Ascendente (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-box-display-megaevolucao-caos-ascendente-36-pacote-de-booster-pt-br/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Mega Evolução - Escuridão Absoluta - Binacle (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-mega-evolucao-escuridao-absoluta-booster-display-1erll/",
+      "why": [
+        "fora do catálogo (me05/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon - Blister Quádruplo Mega Evolução - Escuridão Absoluta - Binacle (PT-BR)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-mega-evolucao-escuridao-absoluta-blister-triplo-esa2i/",
+      "why": [
+        "fora do catálogo (me05/blister_4)"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon TCG: Booster Display Box Mega Evolution - Pitch Black (Inglês)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-mega-evolution-pitch-black-booster-bundle-ingles-9dz4d/",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon TCG: Booster Display Box Mega Evolution - Pitch Black (Inglês)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-premium-checklane-blister-mega-evolution-pitch-black-luxray-ingles-1myd4/",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon TCG: 30th Celebration - Binder Collection (Inglês)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-30th-tech-sticker-collection-assorted-display-ingles-exeggutor-alola-1kqlo/",
+      "why": [
+        "acessório",
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon TCG: 30th Celebration - Elite Trainer Box (Inglês)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-30th-tech-sticker-collection-assorted-display-ingles-lucario-16yyu/",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon TCG: 30th Celebration - Binder Collection (Inglês)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-30th-elite-trainer-box-ingles-8n51i/",
+      "why": [
+        "acessório",
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "tocadotabuleiro",
+      "title": "Pokémon TCG: Mega Greninja ex Premium Collection (Inglês)",
+      "url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-colecao-ilustracao-parceiro-inicial-serie-3-pt-br-1bha9/",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Deck De Batalha Pokémon Houndoom Ex",
+      "url": "https://ludostation.com.br/produtos/ferramenta-de-treinador-pokemon-tcg-squawkabilly-ex/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Deck De Batalha Pokémon Houndoom Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-tcg-houndstone-ex/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Box Pokémon TCG Houndstone Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-ursaluna-lua-sangrenta-ex/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Box Pokémon TCG Houndstone Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-tcg-premium-ogerpon-ex/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-colecao-lendas-azuis-dialga-ex-certificado-fsc/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-colecao-lendas-azuis-kyogre-ex-certificado-fsc/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-colecao-lendas-azuis-xerneas-ex-certificado-fsc/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Deck De Batalha Pokémon Houndoom Ex",
+      "url": "https://ludostation.com.br/produtos/box-especial-pokemon-calendario-de-festas-de-fim-de-ano-2025/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Coleção Parceiros Iniciais – Heróis Excelsos do Pokémon",
+      "url": "https://ludostation.com.br/produtos/booster-box-pokemon-36-booster-mega-evolucao-copag/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-mega-venusaur-ex-jawv5/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
+      "url": "https://ludostation.com.br/produtos/box-pokemon-mega-lucario-ex-mega-evolucao-ylboe/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
+      "url": "https://ludostation.com.br/produtos/pokemon-ferramentas-de-treinador-fezandipiti-ex-8yyrf/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Deck De Batalha Pokémon Houndoom Ex",
+      "url": "https://ludostation.com.br/produtos/treinador-avancado-pokemon-me02-fogo-fantasmagorico-y8i63/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "ludostation",
+      "title": "Coleção Parceiros Iniciais – Heróis Excelsos do Pokémon",
+      "url": "https://ludostation.com.br/produtos/pokemon-tcg-mega-evolutionascended-heroes-elite-trainer-box-8obt1/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Starter Deck Baralho de Batalha V - Pokémon Gardevoir V",
+      "url": "https://www.canal40.com.br/produtos/blister-unitario-pokemon-espada-e-escudo-6-reinado-arrepiante/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Starter Deck Baralho de Batalha V - Pokémon Gardevoir V",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-morpeko-pokemon-espada-escudo-6-reinado-arrepiante/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Unitário Pokémon Espada e Escudo 6 - Reinado Arrepiante",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-phanpy-pokemon-espada-escudo-6-reinado-arrepiante/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Booster Box Pokémon Espada e Escudo 6 - Reinado Arrepiante",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-snorlax-pokemon-espada-escudo-6-reinado-arrepiante/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Starter Deck Baralho de Batalha V - Pokémon Victini V",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-eevee-pokemon-espada-escudo-6-reinado-arrepiante/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOOSTER BOX MEGAEVOLUÇÃO CAOS ASCENDENTE ME04 COPAG POKÉMON TCG CARTAS CARD DISPLAY MEGA GRENINJA EX",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-unova-edicao-especial-25-anos/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON DESAFIO ESTRATÉGICO EQUILÍBRIO PERFEITO ME3 KIT PRÉ RELEASE MEGAEVOLUÇÃO COPAG CARTA TCG",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-pikachu-edicao-especial-25-anos/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Booster Box Pokémon Espada e Escudo 5 - Estilos de Batalha",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-urshifu-v-golpe-fluido/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Booster Box Pokémon Espada e Escudo 5 - Estilos de Batalha",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-urshifu-v-golpe-decisivo/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Starter Deck Baralho de Batalha V - Pokémon Victini V",
+      "url": "https://www.canal40.com.br/produtos/booster-box-pokemon-espada-e-escudo-6-reinado-arrepiante/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-premium-pokemon-umbreon-gx/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-premium-pokemon-espeon-gx/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-colecao-dubwool-v/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Triplo Slowpoke de Galar Pokémon Espada Escudo 7 - Céus em Evolução",
+      "url": "https://www.canal40.com.br/produtos/booster-box-pokemon-espada-e-escudo-7-ceus-em-evolucao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Quádruplo Eiscue Pokémon Espada Escudo 7 - Céus em Evolução",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-umbreon-pokemon-espada-escudo-7-ceus-em-evolucao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Unitário Pokémon Espada Escudo 7 - Céus em Evolução",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-eevee-pokemon-espada-escudo-7-ceus-em-evolucao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Booster Box Pokémon Espada e Escudo 7 - Céus em Evolução",
+      "url": "https://www.canal40.com.br/produtos/blister-unitario-pokemon-espada-escudo-7-ceus-em-evolucao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-eevee-pokemon-espada-e-escudo-escuridao-incandescente/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-flareon-pokemon-espada-e-escudo-escuridao-incandescente/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-hatenna-pokemon-espada-e-escudo-escuridao-incandescente/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-pikachu-pokemon-espada-e-escudo-escuridao-incandescente/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Urshifu V - Golpe Decisivo",
+      "url": "https://www.canal40.com.br/produtos/booster-box-pokemon-espada-e-escudo-5-estilos-de-batalha/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Charizard V - Celebrações",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-pikachu-v-uniao-celebracoes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-tapu-koko-com-miniatura-broche/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON COLEÇÃO MEGA FORÇAS ZERAORA DRAGONITE DARKRAI EX COPAG EVOLUÇÃO CARTAS BOOSTERS TCG CARD",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-johto-edicao-especial-25-anos/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BLISTER QUÁDRUPLO MEGA EVOLUÇÃO ME01 COPAG POKÉMON TCG BOOSTER CARTAS LUCARIO GARDEVOIR EX QUAD PACK",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-blastoise-vmax-colecao-de-batalha/",
+      "why": [
+        "fora do catálogo (me01/blister_4)"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON COLEÇÃO MEGA FORÇAS ZERAORA DRAGONITE DARKRAI EX COPAG EVOLUÇÃO CARTAS BOOSTERS TCG CARD",
+      "url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-alola-edicao-especial-25-anos/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Pikachu VMAX - Celebrações",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-sylveon-sombrio-v-celebracoes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Pikachu V-União - Celebrações",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-pikachu-vmax-celebracoes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Urshifu V - Golpe Decisivo",
+      "url": "https://www.canal40.com.br/produtos/blister-unitario-pokemon-espada-escudo-5-estilo-de-batalha/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Unitário Pokémon Espada Escudo 8 - Golpe Fusão",
+      "url": "https://www.canal40.com.br/produtos/booster-box-pokemon-espada-e-escudo-8-golpe-fusao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Unitário Pokémon Espada Escudo 8 - Golpe Fusão",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-blitzle-pokemon-espada-e-escudo-8-golpe-fusao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Starter Deck Baralho de Batalha V - Pokémon Noivern V",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-eevee-pokemon-espada-e-escudo-8-golpe-fusao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Triplo Blitzle Pokémon Espada e Escudo 8 - Golpe Fusão",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-espeon-pokemon-espada-e-escudo-8-golpe-fusao/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Charizard V - Celebrações",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-colecao-dourada-celebracoes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Lata Pokémon Cramorant V | Destinos Brilhantes",
+      "url": "https://www.canal40.com.br/produtos/lata-pokemon-solgaleo-deck-box-porta-cartas/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Lata Pokémon Realeza Absoluta COPAG Original 5 Booster Carta TCG",
+      "url": "https://www.canal40.com.br/produtos/lata-pokemon-lunala-deck-box-porta-cartas/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-lycanroc-gx/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-snorlax-gx/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-colecao-alola-lunala/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-evolucao-turbo-empoleon/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/lata-pokemon-zygarde-ex-deck-box-porta-cartas/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-noctowl-pokemon-espada-escudo-2-rixa-rebelde/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "BOX POKÉMON SÉRIE 3 COLEÇÃO ILUSTRAÇÃO PARCEIRO INICIAL COPAG 30 ANOS MEGA EVOLUÇÃO CARTAS BOOSTERS",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-mantine-pokemon-espada-escudo-2-rixa-rebelde/",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Sleeve Pokémon GO - Coleção Japonesa",
+      "url": "https://www.canal40.com.br/produtos/booster-unitario-pokemon-vmax-climax-colecao-especial-japonesa/",
+      "why": [
+        "acessório",
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Carta TCG Pesquisa de Professores: Professor Willow - Japonesa com CÓDIGO JÁ EXPIRADO PARA O JOGO POKÉMON GO",
+      "url": "https://www.canal40.com.br/produtos/booster-box-pokemon-star-birth-colecao-japonesa/",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Jolteon VMAX",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-glaceon-pokemon-espada-e-escudo-9-astros-cintilantes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Triplo Eevee Pokémon Espada e Escudo 9 - Astros Cintilantes",
+      "url": "https://www.canal40.com.br/produtos/blister-quadruplo-leafeon-pokemon-espada-e-escudo-9-astros-cintilantes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Triplo Eevee Pokémon Espada e Escudo 9 - Astros Cintilantes",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-flapple-pokemon-espada-e-escudo-9-astros-cintilantes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Glaceon V Astro",
+      "url": "https://www.canal40.com.br/produtos/blister-triplo-eevee-pokemon-espada-e-escudo-9-astros-cintilantes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Box Pokémon Glaceon V Astro",
+      "url": "https://www.canal40.com.br/produtos/booster-box-pokemon-espada-e-escudo-9-astros-cintilantes/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "canal40",
+      "title": "Blister Triplo Flapple Pokémon Espada e Escudo 9 - Astros Cintilantes",
+      "url": "https://www.canal40.com.br/produtos/box-pokemon-calyrex-cavaleiro-glacial-v/",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Booster Bundle ME02.5 Ascended Heroes Pokémon TCG (En)",
+      "url": "https://www.gatogingado.com.br/booster-bundle-me025-ascended-heroes-pokemon-tcg-en",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Quádruplo ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-quadruplo-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "fora do catálogo (me02/blister_4)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Triplo ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-triplo-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "fora do catálogo (me02/blister_3)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Booster Box ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/booster-box-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Combo de Pacotes de Booster ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/combo-de-pacotes-de-booster-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Unitário ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-unitario-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "fora do catálogo (me02/blister)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Box Coleção Dia de Pokémon 2026 (Pt-Br)",
+      "url": "https://www.gatogingado.com.br/box-colecao-dia-de-pokemon-2026-pt-br",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Quádruplo Megaevolução Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-quadruplo-pokemon-tcg-megaevolucao",
+      "why": [
+        "fora do catálogo (me01/blister_4)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Triplo Megaevolução Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-triplo-pokemon-tcg-megaevolucao",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Booster Box Megaevolução Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/booster-box-pokemon-tcg-megaevolucao",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    }
+  ],
   "rules": [
     {
       "id": "caca-caos-box",

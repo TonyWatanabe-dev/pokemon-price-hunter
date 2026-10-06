@@ -1,1 +1,26 @@
-{}
+{
+  "me03-etb": {
+    "total": 399.99,
+    "at": "2026-10-06T12:26:46.710Z",
+    "storeId": "ludostation",
+    "offerId": "e6fc3fbc7944"
+  },
+  "me04-box36": {
+    "total": 449.99,
+    "at": "2026-10-06T12:26:46.710Z",
+    "storeId": "ludostation",
+    "offerId": "afd92b3c9fcb"
+  },
+  "me04-etb": {
+    "total": 389.9,
+    "at": "2026-10-06T12:26:46.710Z",
+    "storeId": "tocadotabuleiro",
+    "offerId": "4a709d988dc3"
+  },
+  "me05-box36": {
+    "total": 55.9,
+    "at": "2026-10-06T12:26:46.710Z",
+    "storeId": "tocadotabuleiro",
+    "offerId": "c358fd12a7b9"
+  }
+}
