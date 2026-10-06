@@ -137,3 +137,11 @@
 {"t":"2026-10-06T16:45:22.072Z","offerId":"3c7b3504b3dc","productId":"me02-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-06T17:04:58.183Z","offerId":"3c7b3504b3dc","productId":"me02-box36","storeId":"rihappycombr","seller":"Gourmande","price":549.99,"priceKind":"base","shipping":null,"total":549.99,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-06T17:04:58.183Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"ebb9876e420a","productId":"me03-etb","storeId":"pbkidscombr","seller":"Fantastic Toys","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","seller":"Loja Copag","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"396adc4cc987","productId":"me04-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":11.76,"total":611.75,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"71344b2c93be","productId":"me05-etb","storeId":"rihappycombr","seller":"Starhouse","price":399.9,"priceKind":"base","shipping":14.33,"total":414.23,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"46d1dc59ceea","productId":"me04-etb","storeId":"canal40","seller":null,"price":799.99,"priceKind":"pix","shipping":null,"total":799.99,"stock":"IN_STOCK","quantity":115}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"c5e7defd7b18","productId":"me05-etb","storeId":"dalarancombr","seller":null,"price":13.2,"priceKind":"pix","shipping":null,"total":13.2,"stock":"UNKNOWN","quantity":null}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"929373f0e7b9","productId":"me05-box36","storeId":"dalarancombr","seller":null,"price":427.4,"priceKind":"pix","shipping":null,"total":427.4,"stock":"UNKNOWN","quantity":null}
+{"t":"2026-10-06T17:15:26.337Z","offerId":"3c7b3504b3dc","productId":"me02-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
