@@ -260,3 +260,8 @@
 {"t":"2026-10-06T21:46:46.935Z","offerId":"da31666a597c","productId":"me03-etb","storeId":"rihappycombr","seller":"Fantastic Toys","price":399.99,"priceKind":"base","shipping":14.89,"total":414.88,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-06T21:46:46.935Z","offerId":"a95bf4d4b1cc","productId":"me05-etb","storeId":"pbkidscombr","seller":"Starhouse","price":399.9,"priceKind":"base","shipping":null,"total":399.9,"stock":"IN_STOCK","quantity":10}
 {"t":"2026-10-06T21:46:46.935Z","offerId":"7ceaac64985a","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T22:00:34.558Z","offerId":"8ab33c50afb4","productId":"me04-box36","storeId":"pbkidscombr","seller":"LKToys Colecionáveis","price":549.99,"priceKind":"base","shipping":null,"total":549.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T22:00:34.558Z","offerId":"83fdfff4f097","productId":"me04-box36","storeId":"pbkidscombr","seller":"PBKIDS","price":null,"priceKind":null,"shipping":null,"total":null,"stock":"OUT_OF_STOCK","quantity":null}
+{"t":"2026-10-06T22:00:34.558Z","offerId":"da31666a597c","productId":"me03-etb","storeId":"rihappycombr","seller":"Fantastic Toys","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T22:00:34.558Z","offerId":"c6dc1ad60475","productId":"me05-box36","storeId":"rihappycombr","seller":"Doce Diversão","price":419.9,"priceKind":"base","shipping":15.88,"total":435.78,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T22:00:34.558Z","offerId":"a9c6e9197acd","productId":"me03-box18","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
