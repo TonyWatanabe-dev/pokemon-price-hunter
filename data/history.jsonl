@@ -275,3 +275,5 @@
 {"t":"2026-10-06T23:00:31.560Z","offerId":"c7fced32192c","productId":"me04-etb","storeId":"canal40","seller":null,"price":15.99,"priceKind":"pix","shipping":null,"total":15.99,"stock":"IN_STOCK","quantity":95}
 {"t":"2026-10-06T23:00:31.560Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-06T23:00:31.560Z","offerId":"1a848aa3d9e3","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T23:15:20.554Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","seller":"Loja Copag","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-06T23:15:20.554Z","offerId":"371a02f71341","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}

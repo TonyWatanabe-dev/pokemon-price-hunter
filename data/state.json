@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-06T23:00:31.560Z",
+  "generatedAt": "2026-10-06T23:15:20.554Z",
   "coverage": {
     "found": 72,
     "active": 26,
@@ -492,7 +492,7 @@
       "copag": {
         "msrp": 399.99,
         "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
-        "source_timestamp": "2026-10-06T23:00:31.560Z",
+        "source_timestamp": "2026-10-06T23:15:20.554Z",
         "confidence": "OFICIAL",
         "previous_msrp": null,
         "msrp_updated_at": "2026-10-06T12:26:46.710Z"
@@ -502,7 +502,7 @@
       "copagConfirmed": true,
       "msrp": 399.99,
       "copagReason": null,
-      "marketAverage": 451.55,
+      "marketAverage": 445.11,
       "lowestHistorical": {
         "total": 239.99,
         "at": "2026-10-06T18:45:28.412Z",
@@ -510,7 +510,7 @@
         "offerId": "1a848aa3d9e3"
       },
       "offerCount": 28,
-      "inStockCount": 7
+      "inStockCount": 8
     },
     {
       "language": "PT",
@@ -597,7 +597,7 @@
       "copag": {
         "msrp": 399.99,
         "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
-        "source_timestamp": "2026-10-06T23:00:31.560Z",
+        "source_timestamp": "2026-10-06T23:15:20.554Z",
         "confidence": "OFICIAL",
         "previous_msrp": null,
         "msrp_updated_at": "2026-10-06T12:26:46.710Z"
@@ -658,6 +658,7 @@
     "5c64d501e3be",
     "193f3a510047",
     "6f2def6e13b3",
+    "b4cbd397bae7",
     "396adc4cc987",
     "02df8f4cf7e1",
     "e752c53a333e"
@@ -691,7 +692,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
@@ -699,7 +700,7 @@
       "storeValidated": true,
       "discount": 0,
       "savings": 0,
-      "vsMarket": 0.1142,
+      "vsMarket": 0.1014,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -737,7 +738,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
@@ -783,7 +784,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/caixa-booster-pokemon-megaevolucao-36-unidades---carta-exclusiva---copag-35652-1003250184/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T21:30:27.221Z",
       "stale": false,
       "anomalous": false,
@@ -829,99 +830,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/caixa-booster-pokemon-megaevolucao-36-unidades---carta-exclusiva---copag-35652-1003250184/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 60
-    },
-    {
-      "id": "2dfb01ec446d",
-      "productId": "me05-box36",
-      "matchConfidence": 0.75,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
-      "storeKind": "specialist",
-      "seller": "Midgard Toys",
-      "sellerKind": "store",
-      "title": "Box Display Megaevolução Escuridão Absoluta - 216 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
-      "sku": "1003190810",
-      "ean": "0196214156173",
-      "prices": {
-        "base": 479.9
-      },
-      "listPrice": null,
-      "price": 479.9,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 479.9,
-      "perBooster": 13.33,
-      "stock": "IN_STOCK",
-      "quantity": 10,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": 0.1743,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 75
-    },
-    {
-      "id": "aa29e878ad8c",
-      "productId": "me05-box36",
-      "matchConfidence": 0.75,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
-      "storeKind": "specialist",
-      "seller": "Ri Happy",
-      "sellerKind": "store",
-      "title": "Box Display Megaevolução Escuridão Absoluta - 216 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
-      "sku": "1003190810",
-      "ean": "0196214156173",
-      "prices": {
-        "base": null
-      },
-      "listPrice": null,
-      "price": null,
-      "priceKind": null,
-      "priceKindLabel": "—",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": null,
-      "perBooster": null,
-      "stock": "OUT_OF_STOCK",
-      "quantity": null,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -967,7 +876,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1013,7 +922,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1032,42 +941,42 @@
       "confidence_score": 60
     },
     {
-      "id": "be85b3909ab8",
-      "productId": "me05-box18",
-      "matchConfidence": 0.85,
+      "id": "be31294b75a5",
+      "productId": "me05-box36",
+      "matchConfidence": 0.8,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
-      "seller": "Midgard Toys",
+      "seller": "Gourmande",
       "sellerKind": "store",
-      "title": "Mini Display Megaevolução Escuridão Absoluta 18 Booster - 108 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
-      "sku": "1003190813",
-      "ean": "0196214156180",
+      "title": "Pokémon Caixa Booster 36un Megaevolução Escuridão Absoluta",
+      "url": "https://www.rihappy.com.br/pokemon-caixa-booster-36un-megaevolucao-escuridao-absoluta-1003298507/p",
+      "sku": "1003192371",
+      "ean": "7896192368836",
       "prices": {
-        "base": 249.9
+        "base": 499.99
       },
       "listPrice": null,
-      "price": 249.9,
+      "price": 499.99,
       "priceKind": "base",
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "total": 249.9,
-      "perBooster": 13.88,
+      "total": 499.99,
+      "perBooster": 13.89,
       "stock": "IN_STOCK",
-      "quantity": 100,
+      "quantity": 1,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-caixa-booster-36un-megaevolucao-escuridao-absoluta-1003298507/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T22:45:23.118Z",
       "stale": false,
       "anomalous": false,
       "storeScore": 20,
       "storeValidated": false,
       "discount": null,
       "savings": null,
-      "vsMarket": 0.0002,
+      "vsMarket": 0.1397,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -1075,53 +984,7 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 85
-    },
-    {
-      "id": "648d687a85d4",
-      "productId": "me05-box18",
-      "matchConfidence": 0.85,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
-      "storeKind": "specialist",
-      "seller": "Ri Happy",
-      "sellerKind": "store",
-      "title": "Mini Display Megaevolução Escuridão Absoluta 18 Booster - 108 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
-      "sku": "1003190813",
-      "ean": "0196214156180",
-      "prices": {
-        "base": null
-      },
-      "listPrice": null,
-      "price": null,
-      "priceKind": null,
-      "priceKindLabel": "—",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": null,
-      "perBooster": null,
-      "stock": "OUT_OF_STOCK",
-      "quantity": null,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 68
+      "confidence_score": 80
     },
     {
       "id": "392eb820506d",
@@ -1151,7 +1014,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-caixa-booster-36un-megaevolucao-escuridao-absoluta-1003298507/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1197,7 +1060,7 @@
       "quantity": 100,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1243,7 +1106,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1289,7 +1152,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/caixa-booster-pokemon-megaevolucao-36-unidades---carta-exclusiva---copag-35652-1003250184/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1335,7 +1198,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-caixa-booster-36un-megaevolucao-escuridao-absoluta-1003298507/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1381,7 +1244,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1400,42 +1263,42 @@
       "confidence_score": 64
     },
     {
-      "id": "3c7b3504b3dc",
-      "productId": "me02-box36",
-      "matchConfidence": 0.8,
+      "id": "2dfb01ec446d",
+      "productId": "me05-box36",
+      "matchConfidence": 0.75,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
-      "seller": "Gourmande",
+      "seller": "Midgard Toys",
       "sellerKind": "store",
-      "title": "Pokémon Box 36 Booster Fogo Fantasmagórico Mega Charizard - Pokemon - Portugues",
-      "url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
-      "sku": "1003121080",
-      "ean": "7896192356727",
+      "title": "Box Display Megaevolução Escuridão Absoluta - 216 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
+      "sku": "1003190810",
+      "ean": "0196214156173",
       "prices": {
-        "base": 549.99
+        "base": 479.9
       },
       "listPrice": null,
-      "price": 549.99,
+      "price": 479.9,
       "priceKind": "base",
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "total": 549.99,
-      "perBooster": 15.28,
+      "total": 479.9,
+      "perBooster": 13.33,
       "stock": "IN_STOCK",
-      "quantity": 1,
+      "quantity": 10,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T22:45:23.118Z",
+      "source_url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
       "storeScore": 20,
       "storeValidated": false,
       "discount": null,
       "savings": null,
-      "vsMarket": null,
+      "vsMarket": 0.1743,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -1443,21 +1306,21 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 80
+      "confidence_score": 75
     },
     {
-      "id": "543b0dbbcd0a",
-      "productId": "me02-box36",
-      "matchConfidence": 0.8,
+      "id": "aa29e878ad8c",
+      "productId": "me05-box36",
+      "matchConfidence": 0.75,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
       "seller": "Ri Happy",
       "sellerKind": "store",
-      "title": "Pokémon Box 36 Booster Fogo Fantasmagórico Mega Charizard - Pokemon - Portugues",
-      "url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
-      "sku": "1003121080",
-      "ean": "7896192356727",
+      "title": "Box Display Megaevolução Escuridão Absoluta - 216 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
+      "sku": "1003190810",
+      "ean": "0196214156173",
       "prices": {
         "base": null
       },
@@ -1472,8 +1335,8 @@
       "stock": "OUT_OF_STOCK",
       "quantity": null,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/box-display-megaevolucao-escuridao-absoluta---216-cartas---pokemon-tcg---copag-1003296977/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1489,54 +1352,7 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 64
-    },
-    {
-      "id": "cde3dfdac500",
-      "productId": "me02-etb",
-      "matchConfidence": 0.8,
-      "storeId": "gatogingado",
-      "storeName": "Gato Gingado",
-      "storeKind": "specialist",
-      "seller": null,
-      "sellerKind": "store",
-      "title": "Coleção Treinador Avançado ME02 Fogo Fantasmagórico Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/colecao-treinador-avancado-me02-fogo-fantasmagorico-pokemon-tcg",
-      "sku": null,
-      "ean": null,
-      "prices": {
-        "pix": 19,
-        "base": null
-      },
-      "listPrice": null,
-      "price": 19,
-      "priceKind": "pix",
-      "priceKindLabel": "Pix",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 19,
-      "perBooster": null,
-      "stock": "UNKNOWN",
-      "quantity": null,
-      "sourceType": "open_graph",
-      "source_url": "https://www.gatogingado.com.br/colecao-treinador-avancado-me02-fogo-fantasmagorico-pokemon-tcg",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T12:26:46.710Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 64
+      "confidence_score": 60
     },
     {
       "id": "e0a52c2c88c8",
@@ -1566,7 +1382,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1612,7 +1428,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1631,34 +1447,34 @@
       "confidence_score": 68
     },
     {
-      "id": "8ba494cbc592",
-      "productId": "me03-etb",
+      "id": "be85b3909ab8",
+      "productId": "me05-box18",
       "matchConfidence": 0.85,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
-      "seller": "Gourmande",
+      "seller": "Midgard Toys",
       "sellerKind": "store",
-      "title": "Pokémon Box Treinador Avançado Equilibrio Perfeito - Copag",
-      "url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
-      "sku": "1003156691",
-      "ean": "0196214152106",
+      "title": "Mini Display Megaevolução Escuridão Absoluta 18 Booster - 108 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
+      "sku": "1003190813",
+      "ean": "0196214156180",
       "prices": {
-        "base": 599.99
+        "base": 249.9
       },
       "listPrice": null,
-      "price": 599.99,
+      "price": 249.9,
       "priceKind": "base",
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "total": 599.99,
-      "perBooster": null,
+      "total": 249.9,
+      "perBooster": 13.88,
       "stock": "IN_STOCK",
-      "quantity": 10,
+      "quantity": 100,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1666,7 +1482,7 @@
       "storeValidated": false,
       "discount": null,
       "savings": null,
-      "vsMarket": -0.3275,
+      "vsMarket": 0.0002,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -1677,18 +1493,18 @@
       "confidence_score": 85
     },
     {
-      "id": "46fc55dffa90",
-      "productId": "me03-etb",
+      "id": "648d687a85d4",
+      "productId": "me05-box18",
       "matchConfidence": 0.85,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
       "seller": "Ri Happy",
       "sellerKind": "store",
-      "title": "Pokémon Box Treinador Avançado Equilibrio Perfeito - Copag",
-      "url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
-      "sku": "1003156691",
-      "ean": "0196214152106",
+      "title": "Mini Display Megaevolução Escuridão Absoluta 18 Booster - 108 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
+      "sku": "1003190813",
+      "ean": "0196214156180",
       "prices": {
         "base": null
       },
@@ -1703,8 +1519,8 @@
       "stock": "OUT_OF_STOCK",
       "quantity": null,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/mini-display-megaevolucao-escuridao-absoluta-18-booster---108-cartas---pokemon-tcg---copag-1003296980/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1750,7 +1566,7 @@
       "quantity": 1,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1796,7 +1612,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1842,7 +1658,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1861,42 +1677,43 @@
       "confidence_score": 56
     },
     {
-      "id": "da31666a597c",
-      "productId": "me03-etb",
-      "matchConfidence": 0.85,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
+      "id": "cde3dfdac500",
+      "productId": "me02-etb",
+      "matchConfidence": 0.8,
+      "storeId": "gatogingado",
+      "storeName": "Gato Gingado",
       "storeKind": "specialist",
-      "seller": "Fantastic Toys",
+      "seller": null,
       "sellerKind": "store",
-      "title": "POKEMON TCG BOX TREINADOR AVANÇADO - EQUILIBRIO PERFEITO - COPAG",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
-      "sku": "1003158465",
+      "title": "Coleção Treinador Avançado ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/colecao-treinador-avancado-me02-fogo-fantasmagorico-pokemon-tcg",
+      "sku": null,
       "ean": null,
       "prices": {
-        "base": 399.99
+        "pix": 19,
+        "base": null
       },
-      "listPrice": 449.9,
-      "price": 399.99,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
+      "listPrice": null,
+      "price": 19,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
       "shipping": null,
       "shippingKnown": false,
-      "total": 399.99,
+      "total": 19,
       "perBooster": null,
-      "stock": "IN_STOCK",
-      "quantity": 1,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stock": "UNKNOWN",
+      "quantity": null,
+      "sourceType": "open_graph",
+      "source_url": "https://www.gatogingado.com.br/colecao-treinador-avancado-me02-fogo-fantasmagorico-pokemon-tcg",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
       "storeScore": 20,
       "storeValidated": false,
       "discount": null,
       "savings": null,
-      "vsMarket": 0.115,
+      "vsMarket": null,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -1904,21 +1721,67 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 85
+      "confidence_score": 64
     },
     {
-      "id": "065ca7f4fcc4",
-      "productId": "me03-etb",
-      "matchConfidence": 0.85,
+      "id": "3c7b3504b3dc",
+      "productId": "me02-box36",
+      "matchConfidence": 0.8,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "Gourmande",
+      "sellerKind": "store",
+      "title": "Pokémon Box 36 Booster Fogo Fantasmagórico Mega Charizard - Pokemon - Portugues",
+      "url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
+      "sku": "1003121080",
+      "ean": "7896192356727",
+      "prices": {
+        "base": 549.99
+      },
+      "listPrice": null,
+      "price": 549.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 549.99,
+      "perBooster": 15.28,
+      "stock": "IN_STOCK",
+      "quantity": 1,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T22:45:23.118Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "543b0dbbcd0a",
+      "productId": "me02-box36",
+      "matchConfidence": 0.8,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
       "seller": "Ri Happy",
       "sellerKind": "store",
-      "title": "POKEMON TCG BOX TREINADOR AVANÇADO - EQUILIBRIO PERFEITO - COPAG",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
-      "sku": "1003158465",
-      "ean": null,
+      "title": "Pokémon Box 36 Booster Fogo Fantasmagórico Mega Charizard - Pokemon - Portugues",
+      "url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
+      "sku": "1003121080",
+      "ean": "7896192356727",
       "prices": {
         "base": null
       },
@@ -1933,8 +1796,8 @@
       "stock": "OUT_OF_STOCK",
       "quantity": null,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-box-36-booster-fogo-fantasmagorico-mega-charizard---pokemon---portugues-1003235227/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -1950,7 +1813,7 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 68
+      "confidence_score": 64
     },
     {
       "id": "8ab33c50afb4",
@@ -1980,7 +1843,7 @@
       "quantity": 1,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2026,7 +1889,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T22:00:34.558Z",
       "stale": false,
       "anomalous": false,
@@ -2045,89 +1908,42 @@
       "confidence_score": 79
     },
     {
-      "id": "afd92b3c9fcb",
-      "productId": "me04-box36",
-      "matchConfidence": 0.7,
-      "storeId": "ludostation",
-      "storeName": "Ludostation",
-      "storeKind": "specialist",
-      "seller": null,
-      "sellerKind": "store",
-      "title": "Box Display Caos Ascendente",
-      "url": "https://ludostation.com.br/pokemon/booster/",
-      "sku": "PKM159",
-      "ean": null,
-      "prices": {
-        "pix": null,
-        "base": 449.99
-      },
-      "listPrice": null,
-      "price": 449.99,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 449.99,
-      "perBooster": 12.5,
-      "stock": "IN_STOCK",
-      "quantity": 1,
-      "sourceType": "json_ld",
-      "source_url": "https://ludostation.com.br/pokemon/booster/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T16:00:35.433Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": 0.129,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 70
-    },
-    {
-      "id": "f6c80dfe704a",
-      "productId": "me03-box18",
-      "matchConfidence": 0.7,
+      "id": "8ba494cbc592",
+      "productId": "me03-etb",
+      "matchConfidence": 0.85,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
-      "seller": "Doce Diversão",
+      "seller": "Gourmande",
       "sellerKind": "store",
-      "title": "Pokemon Cartas Combo De Booster Mega Evolução Equilíbrio Perfeito – 108 Cartas",
-      "url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
-      "sku": "1003156766",
-      "ean": "0196214152144",
+      "title": "Pokémon Box Treinador Avançado Equilibrio Perfeito - Copag",
+      "url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
+      "sku": "1003156691",
+      "ean": "0196214152106",
       "prices": {
-        "base": 229.9
+        "base": 599.99
       },
-      "listPrice": 239.9,
-      "price": 229.9,
+      "listPrice": null,
+      "price": 599.99,
       "priceKind": "base",
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "total": 229.9,
-      "perBooster": 12.77,
+      "total": 599.99,
+      "perBooster": null,
       "stock": "IN_STOCK",
-      "quantity": 1,
+      "quantity": 10,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T20:00:33.040Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
       "storeScore": 20,
       "storeValidated": false,
       "discount": null,
       "savings": null,
-      "vsMarket": null,
+      "vsMarket": -0.3275,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -2135,21 +1951,21 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 70
+      "confidence_score": 85
     },
     {
-      "id": "ef6bf3743eaf",
-      "productId": "me03-box18",
-      "matchConfidence": 0.7,
+      "id": "46fc55dffa90",
+      "productId": "me03-etb",
+      "matchConfidence": 0.85,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
       "seller": "Ri Happy",
       "sellerKind": "store",
-      "title": "Pokemon Cartas Combo De Booster Mega Evolução Equilíbrio Perfeito – 108 Cartas",
-      "url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
-      "sku": "1003156766",
-      "ean": "0196214152144",
+      "title": "Pokémon Box Treinador Avançado Equilibrio Perfeito - Copag",
+      "url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
+      "sku": "1003156691",
+      "ean": "0196214152106",
       "prices": {
         "base": null
       },
@@ -2164,8 +1980,8 @@
       "stock": "OUT_OF_STOCK",
       "quantity": null,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-box-treinador-avancado-equilibrio-perfeito---copag-1003269903/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2181,7 +1997,7 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 56
+      "confidence_score": 68
     },
     {
       "id": "6f2def6e13b3",
@@ -2211,7 +2027,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/etb-colecao-treinador-avancado-caos-ascendente-pokemon-me04-1003285476/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2219,7 +2035,7 @@
       "storeValidated": false,
       "discount": -0.5,
       "savings": -200,
-      "vsMarket": -0.3287,
+      "vsMarket": -0.348,
       "dealScore": 27,
       "scoreParts": {
         "copag": 0,
@@ -2266,7 +2082,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/etb-colecao-treinador-avancado-caos-ascendente-pokemon-me04-1003285476/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2285,73 +2101,64 @@
       "confidence_score": 64
     },
     {
-      "id": "193f3a510047",
-      "productId": "me04-etb",
+      "id": "da31666a597c",
+      "productId": "me03-etb",
       "matchConfidence": 0.85,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
-      "seller": "LKToys Colecionáveis",
+      "seller": "Fantastic Toys",
       "sellerKind": "store",
-      "title": "Treinador Avancado Pokemon ME04 Caos Ascendente - Copag",
-      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
-      "sku": "1003191381",
-      "ean": "0196214156036",
+      "title": "POKEMON TCG BOX TREINADOR AVANÇADO - EQUILIBRIO PERFEITO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
+      "sku": "1003158465",
+      "ean": null,
       "prices": {
-        "base": 455.99
+        "base": 399.99
       },
-      "listPrice": null,
-      "price": 455.99,
+      "listPrice": 449.9,
+      "price": 399.99,
       "priceKind": "base",
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "total": 455.99,
+      "total": 399.99,
       "perBooster": null,
       "stock": "IN_STOCK",
       "quantity": 1,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T21:00:36.224Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
       "storeScore": 20,
       "storeValidated": false,
-      "discount": -0.14,
-      "savings": -56,
-      "vsMarket": -0.0098,
-      "dealScore": 28,
-      "scoreParts": {
-        "copag": 0,
-        "historico": 0,
-        "porBooster": 7.5,
-        "estoque": 10,
-        "loja": 2,
-        "frete": 0,
-        "lacrado": 5,
-        "disponibilidade": 3
-      },
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0.115,
+      "dealScore": null,
+      "scoreParts": null,
       "classification": {
-        "label": "⚪ IGNORAR",
-        "tier": "ignore"
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
       },
       "opportunity": false,
       "confidence_score": 85
     },
     {
-      "id": "9a3a10cb0c79",
-      "productId": "me04-etb",
+      "id": "065ca7f4fcc4",
+      "productId": "me03-etb",
       "matchConfidence": 0.85,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
       "seller": "Ri Happy",
       "sellerKind": "store",
-      "title": "Treinador Avancado Pokemon ME04 Caos Ascendente - Copag",
-      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
-      "sku": "1003191381",
-      "ean": "0196214156036",
+      "title": "POKEMON TCG BOX TREINADOR AVANÇADO - EQUILIBRIO PERFEITO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
+      "sku": "1003158465",
+      "ean": null,
       "prices": {
         "base": null
       },
@@ -2366,8 +2173,8 @@
       "stock": "OUT_OF_STOCK",
       "quantity": null,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado---equilibrio-perfeito---copag-1003271644/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2413,7 +2220,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-combo-pacotes-de-booster-caos-ascendente-me04-108-cartas-1003285376/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2459,7 +2266,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-combo-pacotes-de-booster-caos-ascendente-me04-108-cartas-1003285376/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2505,7 +2312,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2551,7 +2358,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2597,7 +2404,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/pokemon-tcg-box-treinador-avancado-caos-ascendente-1003292979/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2616,42 +2423,43 @@
       "confidence_score": 64
     },
     {
-      "id": "0b3402bf5e3e",
+      "id": "afd92b3c9fcb",
       "productId": "me04-box36",
-      "matchConfidence": 0.99,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
+      "matchConfidence": 0.7,
+      "storeId": "ludostation",
+      "storeName": "Ludostation",
       "storeKind": "specialist",
-      "seller": "LKToys Colecionáveis",
+      "seller": null,
       "sellerKind": "store",
-      "title": "Box Display Pokemon ME04 Caos Ascendente - Copag",
-      "url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
-      "sku": "1003191314",
-      "ean": "0196214156098",
+      "title": "Box Display Caos Ascendente",
+      "url": "https://ludostation.com.br/pokemon/booster/",
+      "sku": "PKM159",
+      "ean": null,
       "prices": {
-        "base": 549.99
+        "pix": null,
+        "base": 449.99
       },
       "listPrice": null,
-      "price": 549.99,
+      "price": 449.99,
       "priceKind": "base",
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "total": 549.99,
-      "perBooster": 15.28,
+      "total": 449.99,
+      "perBooster": 12.5,
       "stock": "IN_STOCK",
       "quantity": 1,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "sourceType": "json_ld",
+      "source_url": "https://ludostation.com.br/pokemon/booster/",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
       "storeScore": 20,
       "storeValidated": false,
       "discount": null,
       "savings": null,
-      "vsMarket": -0.0645,
+      "vsMarket": 0.129,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -2659,21 +2467,67 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 99
+      "confidence_score": 70
     },
     {
-      "id": "ebcaa2fc1e5e",
-      "productId": "me04-box36",
-      "matchConfidence": 0.99,
+      "id": "f6c80dfe704a",
+      "productId": "me03-box18",
+      "matchConfidence": 0.7,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "Doce Diversão",
+      "sellerKind": "store",
+      "title": "Pokemon Cartas Combo De Booster Mega Evolução Equilíbrio Perfeito – 108 Cartas",
+      "url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
+      "sku": "1003156766",
+      "ean": "0196214152144",
+      "prices": {
+        "base": 229.9
+      },
+      "listPrice": 239.9,
+      "price": 229.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 229.9,
+      "perBooster": 12.77,
+      "stock": "IN_STOCK",
+      "quantity": 1,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T20:00:33.040Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 70
+    },
+    {
+      "id": "ef6bf3743eaf",
+      "productId": "me03-box18",
+      "matchConfidence": 0.7,
       "storeId": "rihappycombr",
       "storeName": "rihappy.com.br",
       "storeKind": "specialist",
       "seller": "Ri Happy",
       "sellerKind": "store",
-      "title": "Box Display Pokemon ME04 Caos Ascendente - Copag",
-      "url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
-      "sku": "1003191314",
-      "ean": "0196214156098",
+      "title": "Pokemon Cartas Combo De Booster Mega Evolução Equilíbrio Perfeito – 108 Cartas",
+      "url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
+      "sku": "1003156766",
+      "ean": "0196214152144",
       "prices": {
         "base": null
       },
@@ -2688,8 +2542,8 @@
       "stock": "OUT_OF_STOCK",
       "quantity": null,
       "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_url": "https://www.rihappy.com.br/pokemon-cartas-combo-de-booster-mega-evolucao-equilibrio-perfeito-–-108-cartas-1003269978/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2705,7 +2559,7 @@
         "tier": "none"
       },
       "opportunity": false,
-      "confidence_score": 79
+      "confidence_score": 56
     },
     {
       "id": "a95bf4d4b1cc",
@@ -2735,7 +2589,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/box-treinador-avancado-pokemon-escuridao-absoluta-copag-1003309060/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2790,7 +2644,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.pbkids.com.br/box-treinador-avancado-pokemon-escuridao-absoluta-copag-1003309060/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2807,6 +2661,530 @@
       },
       "opportunity": false,
       "confidence_score": 68
+    },
+    {
+      "id": "b4cbd397bae7",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "Loja Copag",
+      "sellerKind": "store",
+      "title": "Treinador Avançado Pokémon ME04 Caos Ascendente",
+      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
+      "sku": "1003174542",
+      "ean": "0196214156036",
+      "prices": {
+        "base": 399.99
+      },
+      "listPrice": null,
+      "price": 399.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 399.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 100,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T23:15:20.554Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": 0,
+      "savings": 0,
+      "vsMarket": 0.1014,
+      "dealScore": 27,
+      "scoreParts": {
+        "copag": 0,
+        "historico": 0,
+        "porBooster": 7.5,
+        "estoque": 10,
+        "loja": 2,
+        "frete": 0,
+        "lacrado": 2.5,
+        "disponibilidade": 5
+      },
+      "classification": {
+        "label": "⚪ IGNORAR",
+        "tier": "ignore"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "4133dc31fca0",
+      "productId": "me04-etb",
+      "matchConfidence": 0.8,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "Ri Happy",
+      "sellerKind": "store",
+      "title": "Treinador Avançado Pokémon ME04 Caos Ascendente",
+      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
+      "sku": "1003174542",
+      "ean": "0196214156036",
+      "prices": {
+        "base": null
+      },
+      "listPrice": null,
+      "price": null,
+      "priceKind": null,
+      "priceKindLabel": "—",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": null,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "6eb8d2865c83",
+      "productId": "me05-box36",
+      "matchConfidence": 0.7,
+      "storeId": "pbkidscombr",
+      "storeName": "pbkids.com.br",
+      "storeKind": "specialist",
+      "seller": "Doce Diversão",
+      "sellerKind": "store",
+      "title": "Pokemon TCG Combo De Booster Mega Evolução Escuridão Absoluta  – 216 Cartas",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
+      "sku": "1003190375",
+      "ean": "0196214156173",
+      "prices": {
+        "base": 419.9
+      },
+      "listPrice": 449.9,
+      "price": 419.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 419.9,
+      "perBooster": 11.66,
+      "stock": "IN_STOCK",
+      "quantity": 10,
+      "sourceType": "store_api",
+      "source_url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": 0.2775,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 70
+    },
+    {
+      "id": "bb7c2be01924",
+      "productId": "me05-box36",
+      "matchConfidence": 0.7,
+      "storeId": "pbkidscombr",
+      "storeName": "pbkids.com.br",
+      "storeKind": "specialist",
+      "seller": "PBKIDS",
+      "sellerKind": "store",
+      "title": "Pokemon TCG Combo De Booster Mega Evolução Escuridão Absoluta  – 216 Cartas",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
+      "sku": "1003190375",
+      "ean": "0196214156173",
+      "prices": {
+        "base": null
+      },
+      "listPrice": null,
+      "price": null,
+      "priceKind": null,
+      "priceKindLabel": "—",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": null,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 56
+    },
+    {
+      "id": "193f3a510047",
+      "productId": "me04-etb",
+      "matchConfidence": 0.85,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "LKToys Colecionáveis",
+      "sellerKind": "store",
+      "title": "Treinador Avancado Pokemon ME04 Caos Ascendente - Copag",
+      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
+      "sku": "1003191381",
+      "ean": "0196214156036",
+      "prices": {
+        "base": 455.99
+      },
+      "listPrice": null,
+      "price": 455.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 455.99,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": 1,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T21:00:36.224Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": -0.14,
+      "savings": -56,
+      "vsMarket": -0.0244,
+      "dealScore": 28,
+      "scoreParts": {
+        "copag": 0,
+        "historico": 0,
+        "porBooster": 7.5,
+        "estoque": 10,
+        "loja": 2,
+        "frete": 0,
+        "lacrado": 5,
+        "disponibilidade": 3
+      },
+      "classification": {
+        "label": "⚪ IGNORAR",
+        "tier": "ignore"
+      },
+      "opportunity": false,
+      "confidence_score": 85
+    },
+    {
+      "id": "9a3a10cb0c79",
+      "productId": "me04-etb",
+      "matchConfidence": 0.85,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "Ri Happy",
+      "sellerKind": "store",
+      "title": "Treinador Avancado Pokemon ME04 Caos Ascendente - Copag",
+      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
+      "sku": "1003191381",
+      "ean": "0196214156036",
+      "prices": {
+        "base": null
+      },
+      "listPrice": null,
+      "price": null,
+      "priceKind": null,
+      "priceKindLabel": "—",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": null,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente---copag-1003297525/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 68
+    },
+    {
+      "id": "9f5e57b3ad5e",
+      "productId": "me05-box18",
+      "matchConfidence": 0.85,
+      "storeId": "pbkidscombr",
+      "storeName": "pbkids.com.br",
+      "storeKind": "specialist",
+      "seller": "Fantastic Toys",
+      "sellerKind": "store",
+      "title": "COMBO DE 18 BOOSTERS DE MEGAEVOLUÇÃO ESCURIDAO ABSOLUTA - COPAG",
+      "url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
+      "sku": "1003188945",
+      "ean": null,
+      "prices": {
+        "base": 249.99
+      },
+      "listPrice": 299.9,
+      "price": 249.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 249.99,
+      "perBooster": 13.89,
+      "stock": "IN_STOCK",
+      "quantity": 1,
+      "sourceType": "store_api",
+      "source_url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": -0.0002,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 85
+    },
+    {
+      "id": "1e7732fec915",
+      "productId": "me05-box18",
+      "matchConfidence": 0.85,
+      "storeId": "pbkidscombr",
+      "storeName": "pbkids.com.br",
+      "storeKind": "specialist",
+      "seller": "PBKIDS",
+      "sellerKind": "store",
+      "title": "COMBO DE 18 BOOSTERS DE MEGAEVOLUÇÃO ESCURIDAO ABSOLUTA - COPAG",
+      "url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
+      "sku": "1003188945",
+      "ean": null,
+      "prices": {
+        "base": null
+      },
+      "listPrice": null,
+      "price": null,
+      "priceKind": null,
+      "priceKindLabel": "—",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": null,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 68
+    },
+    {
+      "id": "e3bfbf156eb9",
+      "productId": "me05-etb",
+      "matchConfidence": 0.8,
+      "storeId": "pbkidscombr",
+      "storeName": "pbkids.com.br",
+      "storeKind": "specialist",
+      "seller": "PBKIDS",
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Escuridão Absoluta Me05 Etb- Pokémon",
+      "url": "https://www.pbkids.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb--pokemon-1003296675/p",
+      "sku": "1003190343",
+      "ean": "0196214156111",
+      "prices": {
+        "base": null
+      },
+      "listPrice": null,
+      "price": null,
+      "priceKind": null,
+      "priceKindLabel": "—",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": null,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.pbkids.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb--pokemon-1003296675/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "0b3402bf5e3e",
+      "productId": "me04-box36",
+      "matchConfidence": 0.99,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "LKToys Colecionáveis",
+      "sellerKind": "store",
+      "title": "Box Display Pokemon ME04 Caos Ascendente - Copag",
+      "url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
+      "sku": "1003191314",
+      "ean": "0196214156098",
+      "prices": {
+        "base": 549.99
+      },
+      "listPrice": null,
+      "price": 549.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 549.99,
+      "perBooster": 15.28,
+      "stock": "IN_STOCK",
+      "quantity": 1,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": -0.0645,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 99
+    },
+    {
+      "id": "ebcaa2fc1e5e",
+      "productId": "me04-box36",
+      "matchConfidence": 0.99,
+      "storeId": "rihappycombr",
+      "storeName": "rihappy.com.br",
+      "storeKind": "specialist",
+      "seller": "Ri Happy",
+      "sellerKind": "store",
+      "title": "Box Display Pokemon ME04 Caos Ascendente - Copag",
+      "url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
+      "sku": "1003191314",
+      "ean": "0196214156098",
+      "prices": {
+        "base": null
+      },
+      "listPrice": null,
+      "price": null,
+      "priceKind": null,
+      "priceKindLabel": "—",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": null,
+      "perBooster": null,
+      "stock": "OUT_OF_STOCK",
+      "quantity": null,
+      "sourceType": "store_api",
+      "source_url": "https://www.rihappy.com.br/box-display-pokemon-me04-caos-ascendente---copag-1003297458/p",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
+      "firstSeen": "2026-10-06T15:45:24.540Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 20,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 79
     },
     {
       "id": "02df8f4cf7e1",
@@ -2836,7 +3214,7 @@
       "quantity": 1,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado-caos-ascendente-1003292979/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T20:15:22.108Z",
       "stale": false,
       "anomalous": false,
@@ -2844,7 +3222,7 @@
       "storeValidated": false,
       "discount": 0.0125,
       "savings": 4.99,
-      "vsMarket": 0.1252,
+      "vsMarket": 0.1126,
       "dealScore": 26,
       "scoreParts": {
         "copag": 1.5,
@@ -2891,7 +3269,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-tcg-box-treinador-avancado-caos-ascendente-1003292979/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -2908,98 +3286,6 @@
       },
       "opportunity": false,
       "confidence_score": 64
-    },
-    {
-      "id": "6eb8d2865c83",
-      "productId": "me05-box36",
-      "matchConfidence": 0.7,
-      "storeId": "pbkidscombr",
-      "storeName": "pbkids.com.br",
-      "storeKind": "specialist",
-      "seller": "Doce Diversão",
-      "sellerKind": "store",
-      "title": "Pokemon TCG Combo De Booster Mega Evolução Escuridão Absoluta  – 216 Cartas",
-      "url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
-      "sku": "1003190375",
-      "ean": "0196214156173",
-      "prices": {
-        "base": 419.9
-      },
-      "listPrice": 449.9,
-      "price": 419.9,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 419.9,
-      "perBooster": 11.66,
-      "stock": "IN_STOCK",
-      "quantity": 10,
-      "sourceType": "store_api",
-      "source_url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": 0.2775,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 70
-    },
-    {
-      "id": "bb7c2be01924",
-      "productId": "me05-box36",
-      "matchConfidence": 0.7,
-      "storeId": "pbkidscombr",
-      "storeName": "pbkids.com.br",
-      "storeKind": "specialist",
-      "seller": "PBKIDS",
-      "sellerKind": "store",
-      "title": "Pokemon TCG Combo De Booster Mega Evolução Escuridão Absoluta  – 216 Cartas",
-      "url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
-      "sku": "1003190375",
-      "ean": "0196214156173",
-      "prices": {
-        "base": null
-      },
-      "listPrice": null,
-      "price": null,
-      "priceKind": null,
-      "priceKindLabel": "—",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": null,
-      "perBooster": null,
-      "stock": "OUT_OF_STOCK",
-      "quantity": null,
-      "sourceType": "store_api",
-      "source_url": "https://www.pbkids.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 56
     },
     {
       "id": "396adc4cc987",
@@ -3029,7 +3315,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/etb-colecao-treinador-avancado-caos-ascendente-pokemon-me04-1003285476/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3037,7 +3323,7 @@
       "storeValidated": false,
       "discount": -0.5,
       "savings": -200,
-      "vsMarket": -0.3287,
+      "vsMarket": -0.348,
       "dealScore": 27,
       "scoreParts": {
         "copag": 0,
@@ -3084,145 +3370,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/etb-colecao-treinador-avancado-caos-ascendente-pokemon-me04-1003285476/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 64
-    },
-    {
-      "id": "9f5e57b3ad5e",
-      "productId": "me05-box18",
-      "matchConfidence": 0.85,
-      "storeId": "pbkidscombr",
-      "storeName": "pbkids.com.br",
-      "storeKind": "specialist",
-      "seller": "Fantastic Toys",
-      "sellerKind": "store",
-      "title": "COMBO DE 18 BOOSTERS DE MEGAEVOLUÇÃO ESCURIDAO ABSOLUTA - COPAG",
-      "url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
-      "sku": "1003188945",
-      "ean": null,
-      "prices": {
-        "base": 249.99
-      },
-      "listPrice": 299.9,
-      "price": 249.99,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 249.99,
-      "perBooster": 13.89,
-      "stock": "IN_STOCK",
-      "quantity": 1,
-      "sourceType": "store_api",
-      "source_url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": -0.0002,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 85
-    },
-    {
-      "id": "1e7732fec915",
-      "productId": "me05-box18",
-      "matchConfidence": 0.85,
-      "storeId": "pbkidscombr",
-      "storeName": "pbkids.com.br",
-      "storeKind": "specialist",
-      "seller": "PBKIDS",
-      "sellerKind": "store",
-      "title": "COMBO DE 18 BOOSTERS DE MEGAEVOLUÇÃO ESCURIDAO ABSOLUTA - COPAG",
-      "url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
-      "sku": "1003188945",
-      "ean": null,
-      "prices": {
-        "base": null
-      },
-      "listPrice": null,
-      "price": null,
-      "priceKind": null,
-      "priceKindLabel": "—",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": null,
-      "perBooster": null,
-      "stock": "OUT_OF_STOCK",
-      "quantity": null,
-      "sourceType": "store_api",
-      "source_url": "https://www.pbkids.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 68
-    },
-    {
-      "id": "e3bfbf156eb9",
-      "productId": "me05-etb",
-      "matchConfidence": 0.8,
-      "storeId": "pbkidscombr",
-      "storeName": "pbkids.com.br",
-      "storeKind": "specialist",
-      "seller": "PBKIDS",
-      "sellerKind": "store",
-      "title": "Box Treinador Avançado Escuridão Absoluta Me05 Etb- Pokémon",
-      "url": "https://www.pbkids.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb--pokemon-1003296675/p",
-      "sku": "1003190343",
-      "ean": "0196214156111",
-      "prices": {
-        "base": null
-      },
-      "listPrice": null,
-      "price": null,
-      "priceKind": null,
-      "priceKindLabel": "—",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": null,
-      "perBooster": null,
-      "stock": "OUT_OF_STOCK",
-      "quantity": null,
-      "sourceType": "store_api",
-      "source_url": "https://www.pbkids.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb--pokemon-1003296675/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3268,7 +3416,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-combo-pacotes-de-booster-caos-ascendente-me04-108-cartas-1003285376/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3314,7 +3462,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-combo-pacotes-de-booster-caos-ascendente-me04-108-cartas-1003285376/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3331,52 +3479,6 @@
       },
       "opportunity": false,
       "confidence_score": 56
-    },
-    {
-      "id": "4133dc31fca0",
-      "productId": "me04-etb",
-      "matchConfidence": 0.8,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
-      "storeKind": "specialist",
-      "seller": "Ri Happy",
-      "sellerKind": "store",
-      "title": "Treinador Avançado Pokémon ME04 Caos Ascendente",
-      "url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
-      "sku": "1003174542",
-      "ean": "0196214156036",
-      "prices": {
-        "base": null
-      },
-      "listPrice": null,
-      "price": null,
-      "priceKind": null,
-      "priceKindLabel": "—",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": null,
-      "perBooster": null,
-      "stock": "OUT_OF_STOCK",
-      "quantity": null,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/treinador-avancado-pokemon-me04-caos-ascendente-1003287320/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T15:45:24.540Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 64
     },
     {
       "id": "71344b2c93be",
@@ -3406,7 +3508,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/box-treinador-avancado-pokemon-escuridao-absoluta-copag-1003309060/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3461,7 +3563,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/box-treinador-avancado-pokemon-escuridao-absoluta-copag-1003309060/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3478,52 +3580,6 @@
       },
       "opportunity": false,
       "confidence_score": 68
-    },
-    {
-      "id": "be31294b75a5",
-      "productId": "me05-box36",
-      "matchConfidence": 0.8,
-      "storeId": "rihappycombr",
-      "storeName": "rihappy.com.br",
-      "storeKind": "specialist",
-      "seller": "Gourmande",
-      "sellerKind": "store",
-      "title": "Pokémon Caixa Booster 36un Megaevolução Escuridão Absoluta",
-      "url": "https://www.rihappy.com.br/pokemon-caixa-booster-36un-megaevolucao-escuridao-absoluta-1003298507/p",
-      "sku": "1003192371",
-      "ean": "7896192368836",
-      "prices": {
-        "base": 499.99
-      },
-      "listPrice": null,
-      "price": 499.99,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 499.99,
-      "perBooster": 13.89,
-      "stock": "IN_STOCK",
-      "quantity": 1,
-      "sourceType": "store_api",
-      "source_url": "https://www.rihappy.com.br/pokemon-caixa-booster-36un-megaevolucao-escuridao-absoluta-1003298507/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T22:45:23.118Z",
-      "stale": false,
-      "anomalous": false,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": null,
-      "savings": null,
-      "vsMarket": 0.1397,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 80
     },
     {
       "id": "e752c53a333e",
@@ -3553,7 +3609,7 @@
       "quantity": 1,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb--pokemon-1003296675/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T20:15:22.108Z",
       "stale": false,
       "anomalous": false,
@@ -3608,7 +3664,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb--pokemon-1003296675/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3655,7 +3711,7 @@
       "quantity": 5,
       "sourceType": "json_ld",
       "source_url": "https://tcg.tocadotabuleiro.com/produtos/pokemon-tcg-mega-evolucao-escuridao-absoluta-blister-quadruplo-h060t/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": true,
@@ -3702,7 +3758,7 @@
       "quantity": 5,
       "sourceType": "json_ld",
       "source_url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-tcg-mega-evolution-pitch-black-booster-ingles-1p9ut/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
@@ -3749,7 +3805,7 @@
       "quantity": 2,
       "sourceType": "json_ld",
       "source_url": "https://tcg.tocadotabuleiro.com/produtos/pre-venda-pokemon-tcg-mega-evolution-pitch-black-elite-trainer-box-ingles-1bp94/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
@@ -3757,7 +3813,7 @@
       "storeValidated": false,
       "discount": 0.0252,
       "savings": 10.09,
-      "vsMarket": 0.1365,
+      "vsMarket": 0.124,
       "dealScore": 30,
       "scoreParts": {
         "copag": 2.9,
@@ -3804,7 +3860,7 @@
       "quantity": 10,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3850,7 +3906,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/pokemon-tcg-combo-de-booster-mega-evolucao-escuridao-absoluta--–-216-cartas-1003296705/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3896,7 +3952,7 @@
       "quantity": 1,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3942,7 +3998,7 @@
       "quantity": null,
       "sourceType": "store_api",
       "source_url": "https://www.rihappy.com.br/combo-de-18-boosters-de-megaevolucao-escuridao-absoluta---copag-1003295485/p",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -3989,7 +4045,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://metacards.com.br/product/pokemon-booster-box-fogo-fantasmagorico-me02-pt",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4036,7 +4092,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://metacards.com.br/product/pokemon-megaevolucao-fogo-fantasmagorico-elite-trainer-box-me02-pt",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4083,7 +4139,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-fogo-fantasmagorico-me02-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
@@ -4130,7 +4186,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-caos-ascendente-me04-etb-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": true,
@@ -4138,7 +4194,7 @@
       "storeValidated": false,
       "discount": 0.9667,
       "savings": 386.69,
-      "vsMarket": 0.9705,
+      "vsMarket": 0.9701,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -4177,7 +4233,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-herois-excelsos-me25-etb-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": false,
@@ -4224,7 +4280,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-caos-ascendente-me04-36un-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4271,7 +4327,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-escuridao-absoluta-me05-36un-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4318,7 +4374,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-escuridao-absoluta-me05-etb-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4365,7 +4421,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/box-treinador-avancado-megaevolucao-me01-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4412,7 +4468,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-megaevolucao-me01-36un-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4459,7 +4515,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.lojalifegeek.com.br/caixa-de-booster-fogo-fantasmagorico-me02-36un-pokemon",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:15:30.040Z",
       "stale": false,
       "anomalous": false,
@@ -4506,7 +4562,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-mini-display-booster-megaevolucao-108-cartas-18-boosters-novo/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4553,7 +4609,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://www.shogunlivraria.com.br/box-treinador-avancado-equilibrio-perfeito-pokemon-tcg-port-196214152106",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4600,7 +4656,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://www.shogunlivraria.com.br/box-treinador-avancado-megaevolucao-fogo-fantasmagorico-pokemon-tcg-port",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4647,7 +4703,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://www.shogunlivraria.com.br/box-treinador-avancado-escuridao-absoluta-pokemon-tcg-port",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4703,7 +4759,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://paladinsgames.com.br/pokemon-me01-megaevolucao-treinador-avancado-gardevoir",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4750,7 +4806,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://paladinsgames.com.br/pokemon-me01-megaevolucao-treinador-avancado-lucario",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4797,7 +4853,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://paladinsgames.com.br/pokemon-me03-equilibrio-perfeito-treinador-avancado",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:15:30.040Z",
       "stale": false,
       "anomalous": false,
@@ -4844,7 +4900,7 @@
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://paladinsgames.com.br/pokemon-me5-escuridao-absoluta-treinador-avancado",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:30:32.259Z",
       "stale": false,
       "anomalous": false,
@@ -4900,7 +4956,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.dalaran.com.br/pokemon-tcg-fogo-fantasmagorico-colecao-treinador-avancado",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T15:45:24.540Z",
       "stale": false,
       "anomalous": false,
@@ -4947,7 +5003,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.dalaran.com.br/pokemon-tcg-caos-ascendente-caixa-de-booster",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -4994,7 +5050,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.dalaran.com.br/pokemon-tcg-caos-ascendente-colecao-treinador-avancado",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": false,
@@ -5002,7 +5058,7 @@
       "storeValidated": false,
       "discount": 0.1927,
       "savings": 77.09,
-      "vsMarket": 0.2849,
+      "vsMarket": 0.2746,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5041,7 +5097,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.dalaran.com.br/pokemon-tcg-megaevolucao-colecao-treinador-avancado-pt",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:30:32.259Z",
       "stale": false,
       "anomalous": false,
@@ -5088,7 +5144,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.dalaran.com.br/pokemon-tcg-escuridao-absoluta-treinador-avancado",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T17:15:26.337Z",
       "stale": false,
       "anomalous": true,
@@ -5135,7 +5191,7 @@
       "quantity": null,
       "sourceType": "open_graph",
       "source_url": "https://www.dalaran.com.br/pokemon-tcg-escuridao-absoluta-caixa-de-boosters",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T17:15:26.337Z",
       "stale": false,
       "anomalous": false,
@@ -5182,7 +5238,7 @@
       "quantity": 103,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-galar-edicao-especial-25-anos/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T12:26:46.710Z",
       "stale": false,
       "anomalous": true,
@@ -5190,7 +5246,7 @@
       "storeValidated": false,
       "discount": 0.9375,
       "savings": 375,
-      "vsMarket": 0.9447,
+      "vsMarket": 0.9439,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5229,7 +5285,7 @@
       "quantity": 108,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-kanto-edicao-especial-25-anos/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T16:00:35.433Z",
       "stale": false,
       "anomalous": true,
@@ -5237,7 +5293,7 @@
       "storeValidated": false,
       "discount": 0.9,
       "savings": 360,
-      "vsMarket": 0.9114,
+      "vsMarket": 0.9102,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5276,7 +5332,7 @@
       "quantity": 8,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-gigante-pokemon-regiao-de-johto-edicao-especial-25-anos/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T19:00:37.073Z",
       "stale": false,
       "anomalous": true,
@@ -5323,7 +5379,7 @@
       "quantity": 101,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/booster-unitario-1-pacote-avulso-colecao-especial-151-ev-3-5-lacrado-e-original-copag-cartas-pokemon-tcg-mini-display/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T17:45:21.927Z",
       "stale": false,
       "anomalous": true,
@@ -5331,7 +5387,7 @@
       "storeValidated": false,
       "discount": 0.9625,
       "savings": 385,
-      "vsMarket": 0.9668,
+      "vsMarket": 0.9663,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5370,7 +5426,7 @@
       "quantity": 308,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-kit-pre-release-desafio-estrategico-forcas-temporais-escarlate-e-violeta-5-nv-2-contem-88-cartas-original/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T17:45:21.927Z",
       "stale": false,
       "anomalous": true,
@@ -5417,7 +5473,7 @@
       "quantity": 110,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-ex-brilhante-iniciais-destinos-de-paldea-8-pacotes-ev-4-5-original-copag-colecao-premium-cartas-tcg-jumbo/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:00:33.255Z",
       "stale": false,
       "anomalous": true,
@@ -5425,7 +5481,7 @@
       "storeValidated": false,
       "discount": 0.605,
       "savings": 242,
-      "vsMarket": 0.6501,
+      "vsMarket": 0.6451,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5464,7 +5520,7 @@
       "quantity": 100,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-triplo-pokemon-mascaras-do-crepusculo-ev6-colecao-escarlate-e-violeta-19-cartas-tcg-copag/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:45:28.412Z",
       "stale": false,
       "anomalous": true,
@@ -5472,7 +5528,7 @@
       "storeValidated": false,
       "discount": 0.915,
       "savings": 366,
-      "vsMarket": 0.9247,
+      "vsMarket": 0.9236,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5511,7 +5567,7 @@
       "quantity": 110,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/lata-pokemon-onda-ando-ou-folhas-ferreas-ex-batalha-paradoxal-copag-orginal-4-boosters-25-cartas-tcg/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:00:33.255Z",
       "stale": false,
       "anomalous": true,
@@ -5519,7 +5575,7 @@
       "storeValidated": false,
       "discount": 0.6,
       "savings": 240,
-      "vsMarket": 0.6457,
+      "vsMarket": 0.6406,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5558,7 +5614,7 @@
       "quantity": 100,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-colecao-treinador-avancado-etb-terapagos-coroa-estelar-121-cartas-ev7-pokemon-tcg-20-boosters/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T19:00:37.073Z",
       "stale": false,
       "anomalous": false,
@@ -5566,7 +5622,7 @@
       "storeValidated": false,
       "discount": 0.175,
       "savings": 70,
-      "vsMarket": 0.2692,
+      "vsMarket": 0.2586,
       "dealScore": 47,
       "scoreParts": {
         "copag": 20.4,
@@ -5614,7 +5670,7 @@
       "quantity": 311,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-quadruplo-pokemon-coroa-estelar-ev7-latias-tinkaton-escarlate-copag-booster-cartas-tcg-pt-br/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:00:33.255Z",
       "stale": false,
       "anomalous": true,
@@ -5661,7 +5717,7 @@
       "quantity": 110,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-ursaluna-lua-sangrenta-ex-fagulhas-impetuosas-ev8-copag-carta-tcg-jumbo-pacote-booster/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:15:23.245Z",
       "stale": false,
       "anomalous": true,
@@ -5669,7 +5725,7 @@
       "storeValidated": false,
       "discount": 0.7,
       "savings": 280,
-      "vsMarket": 0.7343,
+      "vsMarket": 0.7304,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5708,7 +5764,7 @@
       "quantity": 100,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-quadruplo-fogo-branco-raio-preto-ev10-5-snivy-tepig-oshawott-copag-pokemon-tcg-booster-black/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:30:30.656Z",
       "stale": false,
       "anomalous": true,
@@ -5716,54 +5772,7 @@
       "storeValidated": false,
       "discount": 0.875,
       "savings": 350,
-      "vsMarket": 0.8893,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 80
-    },
-    {
-      "id": "371a02f71341",
-      "productId": "me04-etb",
-      "matchConfidence": 0.8,
-      "storeId": "canal40",
-      "storeName": "Canal 40",
-      "storeKind": "specialist",
-      "seller": null,
-      "sellerKind": "store",
-      "title": "BOX COLEÇÃO TREINADOR AVANÇADO ETB MEGA GRENINJA EX CAOS ASCENDENTE ME04 POKÉMON TCG BOOSTERS CARTAS",
-      "url": "https://www.canal40.com.br/produtos/blister-triplo-mega-evolucao-me01-copag-pokemon-tcg-boosters-cartas-lucario-gardevoir-ex-trilpe-pack/",
-      "sku": "1808",
-      "ean": null,
-      "prices": {
-        "pix": 39.99,
-        "base": 799.97
-      },
-      "listPrice": null,
-      "price": 39.99,
-      "priceKind": "pix",
-      "priceKindLabel": "Pix",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 39.99,
-      "perBooster": null,
-      "stock": "IN_STOCK",
-      "quantity": 110,
-      "sourceType": "json_ld",
-      "source_url": "https://www.canal40.com.br/produtos/blister-triplo-mega-evolucao-me01-copag-pokemon-tcg-boosters-cartas-lucario-gardevoir-ex-trilpe-pack/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
-      "firstSeen": "2026-10-06T18:45:28.412Z",
-      "stale": false,
-      "anomalous": true,
-      "storeScore": 20,
-      "storeValidated": false,
-      "discount": 0.9,
-      "savings": 360,
-      "vsMarket": 0.9114,
+      "vsMarket": 0.8877,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5802,7 +5811,7 @@
       "quantity": 95,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/blister-unitario-mega-evolucao-me01-copag-cartas-pokemon-booster-pacote-tcg-megaevolucao-lucario-489rf/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T23:00:31.560Z",
       "stale": false,
       "anomalous": true,
@@ -5810,7 +5819,7 @@
       "storeValidated": false,
       "discount": 0.96,
       "savings": 384,
-      "vsMarket": 0.9646,
+      "vsMarket": 0.9641,
       "dealScore": null,
       "scoreParts": null,
       "classification": {
@@ -5849,7 +5858,7 @@
       "quantity": 0,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-colecao-mega-venusaur-ex-copag-evolucao-me02-tcg-61-cartas-boosters-megaevolucao-6fysm/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:45:28.412Z",
       "stale": false,
       "anomalous": false,
@@ -5896,7 +5905,7 @@
       "quantity": 0,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-colecao-mega-charizard-x-ex-copag-evolucao-me02-tcg-cartas-boosters-megaevolucao-fogo-7qvte/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:45:28.412Z",
       "stale": false,
       "anomalous": false,
@@ -5943,7 +5952,7 @@
       "quantity": 0,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-deck-baralho-batalha-de-liga-mewtwo-ex-copag-60-cartas-nivel-3-tcg-equipe-rocket-m2-jogo-98lf7/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:45:28.412Z",
       "stale": false,
       "anomalous": false,
@@ -5990,7 +5999,7 @@
       "quantity": 8,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pikachu-colecao-30-anos-dia-de-pokemon-2026-copag-mega-me2-5-tcg-49-cartas-booster-megaevolucao-j3fg3/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T18:45:28.412Z",
       "stale": false,
       "anomalous": true,
@@ -6037,7 +6046,7 @@
       "quantity": 8,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/booster-box-megaevolucao-equilibrio-perfeito-me3-copag-pokemon-tcg-carta-display-mega-zygarde-ex-1heml/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T19:00:37.073Z",
       "stale": false,
       "anomalous": false,
@@ -6084,7 +6093,7 @@
       "quantity": 8,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-colecao-treinador-avancado-etb-mega-greninja-ex-caos-ascendente-me04-pokemon-tcg-boosters-cartas-uvf4q/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T19:00:37.073Z",
       "stale": false,
       "anomalous": false,
@@ -6131,7 +6140,7 @@
       "quantity": 100,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-colecao-treinador-avancado-mega-darkrai-escuridao-absoluta-etb-me05-pokemon-tcg-booster-carta-ex-1ar4m/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T19:15:41.923Z",
       "stale": false,
       "anomalous": false,
@@ -6139,7 +6148,7 @@
       "storeValidated": false,
       "discount": 0.025,
       "savings": 10,
-      "vsMarket": 0.1363,
+      "vsMarket": 0.1238,
       "dealScore": 30,
       "scoreParts": {
         "copag": 2.9,
@@ -6187,7 +6196,7 @@
       "quantity": 8,
       "sourceType": "json_ld",
       "source_url": "https://www.canal40.com.br/produtos/box-pokemon-colecao-mega-forcas-zeraora-dragonite-darkrai-ex-copag-evolucao-cartas-boosters-tcg-card-1j2py/",
-      "source_timestamp": "2026-10-06T23:00:31.560Z",
+      "source_timestamp": "2026-10-06T23:15:20.554Z",
       "firstSeen": "2026-10-06T19:15:41.923Z",
       "stale": false,
       "anomalous": true,
@@ -6286,17 +6295,17 @@
     },
     {
       "id": "tocadotabuleiro",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Toca do Tabuleiro",
       "kind": "specialist",
       "status": "ACTIVE",
       "reason": null,
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "listings": 23,
       "matched": 3,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://tcg.tocadotabuleiro.com",
       "score": {
         "score": 25,
@@ -6324,17 +6333,17 @@
     },
     {
       "id": "lifegeek",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Life Geek",
       "kind": "specialist",
       "status": "ACTIVE",
       "reason": null,
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "listings": 56,
       "matched": 9,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://www.lojalifegeek.com.br",
       "score": {
         "score": 20,
@@ -6376,11 +6385,11 @@
     },
     {
       "id": "mercadolivre",
-      "checks": 34,
+      "checks": 35,
       "ok": 0,
       "name": "Mercado Livre",
       "kind": "marketplace",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "mercadolivre",
       "status": "BLOCKED",
       "reason": "Mercado Livre exige token OAuth (ML_ACCESS_TOKEN); a busca pública retorna 403 desde 2025",
@@ -6440,17 +6449,17 @@
     },
     {
       "id": "copagloja",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Loja Copag (oficial)",
       "kind": "official",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
       "listings": 11,
       "matched": 2,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://www.copagloja.com.br",
       "score": {
         "score": 80,
@@ -6466,17 +6475,17 @@
     },
     {
       "id": "ludostation",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Ludostation",
       "kind": "specialist",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 14,
       "matched": 1,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://ludostation.com.br",
       "score": {
         "score": 20,
@@ -6488,17 +6497,17 @@
     },
     {
       "id": "canal40",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Canal 40",
       "kind": "specialist",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 316,
-      "matched": 22,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "matched": 21,
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://www.canal40.com.br",
       "score": {
         "score": 20,
@@ -6510,17 +6519,17 @@
     },
     {
       "id": "gatogingado",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Gato Gingado",
       "kind": "specialist",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 11,
       "matched": 1,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://www.gatogingado.com.br",
       "score": {
         "score": 20,
@@ -6532,17 +6541,17 @@
     },
     {
       "id": "happynerd",
-      "checks": 33,
-      "ok": 33,
+      "checks": 34,
+      "ok": 34,
       "name": "Happy Nerd",
       "kind": "specialist",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "url": "https://www.happynerd.com.br",
       "score": {
         "score": 20,
@@ -6554,11 +6563,11 @@
     },
     {
       "id": "meruru",
-      "checks": 33,
+      "checks": 34,
       "ok": 0,
       "name": "Meruru",
       "kind": "specialist",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.meruru.com.br",
       "url": "https://www.meruru.com.br",
@@ -6632,18 +6641,18 @@
     },
     {
       "id": "rihappycombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "rihappy.com.br",
       "kind": "specialist",
       "url": "https://www.rihappy.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
-      "listings": 239,
-      "matched": 35,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "listings": 243,
+      "matched": 36,
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -6654,18 +6663,18 @@
     },
     {
       "id": "pbkidscombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "pbkids.com.br",
       "kind": "specialist",
       "url": "https://www.pbkids.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
       "listings": 204,
       "matched": 28,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -6691,12 +6700,12 @@
     },
     {
       "id": "carrefourcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "carrefour.com.br",
       "kind": "specialist",
       "url": "https://www.carrefour.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.carrefour.com.br",
       "score": {
@@ -6739,12 +6748,12 @@
     },
     {
       "id": "kalungacombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "kalunga.com.br",
       "kind": "specialist",
       "url": "https://www.kalunga.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
       "score": {
@@ -6757,12 +6766,12 @@
     },
     {
       "id": "leituracombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "leitura.com.br",
       "kind": "specialist",
       "url": "https://www.leitura.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.leitura.com.br",
       "score": {
@@ -6775,12 +6784,12 @@
     },
     {
       "id": "uzgamescombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "uzgames.com.br",
       "kind": "specialist",
       "url": "https://www.uzgames.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "robots.txt não permite /",
       "score": {
@@ -6793,12 +6802,12 @@
     },
     {
       "id": "copagcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "copag.com.br",
       "kind": "specialist",
       "url": "https://www.copag.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.copag.com.br",
       "score": {
@@ -6811,18 +6820,18 @@
     },
     {
       "id": "supertcgcombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "supertcg.com.br",
       "kind": "specialist",
       "url": "https://supertcg.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -6833,12 +6842,12 @@
     },
     {
       "id": "freitastcgcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "freitastcg.com.br",
       "kind": "specialist",
       "url": "https://freitastcg.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em freitastcg.com.br",
       "score": {
@@ -6851,18 +6860,18 @@
     },
     {
       "id": "newstationcombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "newstation.com.br",
       "kind": "specialist",
       "url": "https://www.newstation.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -6873,12 +6882,12 @@
     },
     {
       "id": "epicgamecombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "epicgame.com.br",
       "kind": "specialist",
       "url": "https://www.epicgame.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.epicgame.com.br",
       "score": {
@@ -6891,18 +6900,18 @@
     },
     {
       "id": "viptcgcom",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "vip-tcg.com",
       "kind": "specialist",
       "url": "https://vip-tcg.com",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -6913,12 +6922,12 @@
     },
     {
       "id": "geekshopcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "geek-shop.com.br",
       "kind": "specialist",
       "url": "https://www.geek-shop.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "robots.txt não permite /",
       "score": {
@@ -6931,12 +6940,12 @@
     },
     {
       "id": "collectandplaycombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "collectandplay.com.br",
       "kind": "specialist",
       "url": "https://collectandplay.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "robots.txt não permite /",
       "score": {
@@ -6949,12 +6958,12 @@
     },
     {
       "id": "mestracardscombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "mestracards.com.br",
       "kind": "specialist",
       "url": "https://mestracards.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em mestracards.com.br",
       "score": {
@@ -6967,12 +6976,12 @@
     },
     {
       "id": "monsterstcgcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "monsterstcg.com.br",
       "kind": "specialist",
       "url": "https://monsterstcg.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "robots.txt não permite /",
       "score": {
@@ -6985,12 +6994,12 @@
     },
     {
       "id": "cardshallcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "cardshall.com.br",
       "kind": "specialist",
       "url": "https://www.cardshall.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.cardshall.com.br",
       "score": {
@@ -7003,12 +7012,12 @@
     },
     {
       "id": "playgroundgamescombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "playgroundgames.com.br",
       "kind": "specialist",
       "url": "https://www.playgroundgames.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.playgroundgames.com.br",
       "score": {
@@ -7021,12 +7030,12 @@
     },
     {
       "id": "magicstorebrasilcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "magicstorebrasil.com.br",
       "kind": "specialist",
       "url": "https://magicstorebrasil.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em magicstorebrasil.com.br",
       "score": {
@@ -7039,12 +7048,12 @@
     },
     {
       "id": "ggtcgonline",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "ggtcg.online",
       "kind": "specialist",
       "url": "https://ggtcg.online",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
       "score": {
@@ -7057,12 +7066,12 @@
     },
     {
       "id": "misustorecombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "misustore.com.br",
       "kind": "specialist",
       "url": "https://misustore.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em misustore.com.br",
       "score": {
@@ -7075,18 +7084,18 @@
     },
     {
       "id": "dalarancombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "dalaran.com.br",
       "kind": "specialist",
       "url": "https://www.dalaran.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 176,
       "matched": 6,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7097,12 +7106,12 @@
     },
     {
       "id": "bazardebagdacombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "bazardebagda.com.br",
       "kind": "specialist",
       "url": "https://www.bazardebagda.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.bazardebagda.com.br",
       "score": {
@@ -7115,12 +7124,12 @@
     },
     {
       "id": "mtgbrasilcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "mtgbrasil.com.br",
       "kind": "specialist",
       "url": "https://www.mtgbrasil.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.mtgbrasil.com.br",
       "score": {
@@ -7133,12 +7142,12 @@
     },
     {
       "id": "salvaiastorecombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "salvaiastore.com.br",
       "kind": "specialist",
       "url": "https://salvaiastore.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em salvaiastore.com.br",
       "score": {
@@ -7151,12 +7160,12 @@
     },
     {
       "id": "cardsofparadisecombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "cardsofparadise.com.br",
       "kind": "specialist",
       "url": "https://cardsofparadise.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em cardsofparadise.com.br",
       "score": {
@@ -7169,12 +7178,12 @@
     },
     {
       "id": "rasengancombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "rasengan.com.br",
       "kind": "specialist",
       "url": "https://rasengan.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em rasengan.com.br",
       "score": {
@@ -7187,12 +7196,12 @@
     },
     {
       "id": "brofistcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "brofist.com.br",
       "kind": "specialist",
       "url": "https://brofist.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "robots.txt não permite /",
       "score": {
@@ -7205,18 +7214,18 @@
     },
     {
       "id": "lojadrop1combr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "loja.drop1.com.br",
       "kind": "specialist",
       "url": "https://loja.drop1.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 42,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7227,18 +7236,18 @@
     },
     {
       "id": "thedragonshopcombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "thedragonshop.com.br",
       "kind": "specialist",
       "url": "http://www.thedragonshop.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7249,18 +7258,18 @@
     },
     {
       "id": "paladinsgamescombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "paladinsgames.com.br",
       "kind": "specialist",
       "url": "https://www.paladinsgames.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 82,
       "matched": 4,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7271,18 +7280,18 @@
     },
     {
       "id": "tcgprocombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "tcgpro.com.br",
       "kind": "specialist",
       "url": "https://tcgpro.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7293,18 +7302,18 @@
     },
     {
       "id": "matostcgcombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "matostcg.com.br",
       "kind": "specialist",
       "url": "https://www.matostcg.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7315,18 +7324,18 @@
     },
     {
       "id": "metacardscombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "metacards.com.br",
       "kind": "specialist",
       "url": "https://metacards.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 8,
       "matched": 2,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7337,18 +7346,18 @@
     },
     {
       "id": "bynxgg",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "bynx.gg",
       "kind": "specialist",
       "url": "https://bynx.gg",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 26,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7359,12 +7368,12 @@
     },
     {
       "id": "aguildacolecionaveiscombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "aguildacolecionaveis.com.br",
       "kind": "specialist",
       "url": "http://www.aguildacolecionaveis.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.aguildacolecionaveis.com.br",
       "score": {
@@ -7377,18 +7386,18 @@
     },
     {
       "id": "thesaintcollectioncom",
-      "checks": 30,
-      "ok": 29,
+      "checks": 31,
+      "ok": 30,
       "name": "thesaintcollection.com",
       "kind": "specialist",
       "url": "https://www.thesaintcollection.com",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "shopify",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 19,
         "validated": false,
@@ -7399,12 +7408,12 @@
     },
     {
       "id": "insidegamestorecom",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "insidegamestore.com",
       "kind": "specialist",
       "url": "https://www.insidegamestore.com",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.insidegamestore.com",
       "score": {
@@ -7417,12 +7426,12 @@
     },
     {
       "id": "supernovahobbystorecombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "supernovahobbystore.com.br",
       "kind": "specialist",
       "url": "https://www.supernovahobbystore.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.supernovahobbystore.com.br",
       "score": {
@@ -7435,18 +7444,18 @@
     },
     {
       "id": "miragemhobbywordpresscom",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "miragemhobby.wordpress.com",
       "kind": "specialist",
       "url": "https://miragemhobby.wordpress.com",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7457,18 +7466,18 @@
     },
     {
       "id": "livrariacolecionadorcombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "livrariacolecionador.com.br",
       "kind": "specialist",
       "url": "https://livrariacolecionador.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 0,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7479,18 +7488,18 @@
     },
     {
       "id": "shogunlivrariacombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "shogunlivraria.com.br",
       "kind": "specialist",
       "url": "https://www.shogunlivraria.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 56,
       "matched": 3,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7501,12 +7510,12 @@
     },
     {
       "id": "pluspowershopcombr",
-      "checks": 30,
+      "checks": 31,
       "ok": 0,
       "name": "pluspowershop.com.br",
       "kind": "specialist",
       "url": "https://www.pluspowershop.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado (403) em www.pluspowershop.com.br",
       "score": {
@@ -7519,18 +7528,18 @@
     },
     {
       "id": "lumosstorecombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "lumosstore.com.br",
       "kind": "specialist",
       "url": "https://www.lumosstore.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 7,
       "matched": 0,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7541,18 +7550,18 @@
     },
     {
       "id": "lojaarenagamescombr",
-      "checks": 30,
-      "ok": 30,
+      "checks": 31,
+      "ok": 31,
       "name": "lojaarenagames.com.br",
       "kind": "specialist",
       "url": "https://lojaarenagames.com.br",
-      "lastCheck": "2026-10-06T23:00:31.560Z",
+      "lastCheck": "2026-10-06T23:15:20.554Z",
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
       "listings": 22,
       "matched": 1,
-      "lastSuccess": "2026-10-06T23:00:31.560Z",
+      "lastSuccess": "2026-10-06T23:15:20.554Z",
       "score": {
         "score": 20,
         "validated": false,
@@ -7700,134 +7709,6 @@
       ]
     },
     {
-      "store": "rihappycombr",
-      "title": "BLISTER UNITARIO POKEMON TCG MEGAEVOLUCAO FOGO FANTASMAGORICO - COPAG",
-      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-tcg-megaevolucao-fogo-fantasmagorico---copag-1003271908/p",
-      "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "BLISTER UNITARIO POKEMON TCG MEGAEVOLUCAO FOGO FANTASMAGORICO - COPAG",
-      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-tcg-megaevolucao-fogo-fantasmagorico---copag-1003271908/p",
-      "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "BLISTER PLAST. UNITARIO POKEMON TCG MEGAEVOLUCAO CAOS ASCENDENTE - COPAG",
-      "url": "https://www.rihappy.com.br/blister-plast--unitario-pokemon-tcg-megaevolucao-caos-ascendente---copag-1003288345/p",
-      "why": [
-        "fora do catálogo (me04/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "BLISTER PLAST. UNITARIO POKEMON TCG MEGAEVOLUCAO CAOS ASCENDENTE - COPAG",
-      "url": "https://www.rihappy.com.br/blister-plast--unitario-pokemon-tcg-megaevolucao-caos-ascendente---copag-1003288345/p",
-      "why": [
-        "fora do catálogo (me04/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Triplo Megaevolução Drifloon Copag",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifloon-copag-1003225668/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Triplo Megaevolução Drifloon Copag",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifloon-copag-1003225668/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225661/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225661/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "POKEMON BLISTER TRIPLO MEGAEVOLUCAO - COPAG",
-      "url": "https://www.rihappy.com.br/pokemon-blister-triplo-megaevolucao---copag-1003213243/p",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "POKEMON BLISTER TRIPLO MEGAEVOLUCAO - COPAG",
-      "url": "https://www.rihappy.com.br/pokemon-blister-triplo-megaevolucao---copag-1003213243/p",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225660/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225660/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifloon",
-      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifloon-1003222676/p",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifloon",
-      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifloon-1003222676/p",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifblim",
-      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifblim-1003222669/p",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifblim",
-      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifblim-1003222669/p",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
       "store": "pbkidscombr",
       "title": "Blister Triplo Pokémon Megaevolução Fogo Fantasmagórico Português Whimsicott",
       "url": "https://www.pbkids.com.br/blister-triplo-pokemon-megaevolucao-fogo-fantasmagorico-portugues-whimsicott-1003235230/p",
@@ -7925,34 +7806,34 @@
     },
     {
       "store": "rihappycombr",
-      "title": "Kit 2 Blister (7 Booster) Megaevolução Equilibrio Perfeito ME03 - 44 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-equilibrio-perfeito-me03---44-cartas---pokemon-tcg---copag-1003287407/p",
+      "title": "BLISTER UNITARIO POKEMON TCG MEGAEVOLUCAO FOGO FANTASMAGORICO - COPAG",
+      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-tcg-megaevolucao-fogo-fantasmagorico---copag-1003271908/p",
       "why": [
-        "fora do catálogo (me03/blister/7)"
+        "fora do catálogo (me02/blister)"
       ]
     },
     {
       "store": "rihappycombr",
-      "title": "Kit 2 Blister (7 Booster) Megaevolução Equilibrio Perfeito ME03 - 44 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-equilibrio-perfeito-me03---44-cartas---pokemon-tcg---copag-1003287407/p",
+      "title": "BLISTER UNITARIO POKEMON TCG MEGAEVOLUCAO FOGO FANTASMAGORICO - COPAG",
+      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-tcg-megaevolucao-fogo-fantasmagorico---copag-1003271908/p",
       "why": [
-        "fora do catálogo (me03/blister/7)"
+        "fora do catálogo (me02/blister)"
       ]
     },
     {
       "store": "rihappycombr",
-      "title": "Kit 2 Blister (7 Booster) Megaevolução Escuridão Absoluta ME05 - 44 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-escuridao-absoluta-me05---44-cartas---pokemon-tcg---copag-1003296981/p",
+      "title": "BLISTER PLAST. UNITARIO POKEMON TCG MEGAEVOLUCAO CAOS ASCENDENTE - COPAG",
+      "url": "https://www.rihappy.com.br/blister-plast--unitario-pokemon-tcg-megaevolucao-caos-ascendente---copag-1003288345/p",
       "why": [
-        "fora do catálogo (me05/blister/7)"
+        "fora do catálogo (me04/blister)"
       ]
     },
     {
       "store": "rihappycombr",
-      "title": "Kit 2 Blister (7 Booster) Megaevolução Escuridão Absoluta ME05 - 44 Cartas - Pokémon TCG - Copag",
-      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-escuridao-absoluta-me05---44-cartas---pokemon-tcg---copag-1003296981/p",
+      "title": "BLISTER PLAST. UNITARIO POKEMON TCG MEGAEVOLUCAO CAOS ASCENDENTE - COPAG",
+      "url": "https://www.rihappy.com.br/blister-plast--unitario-pokemon-tcg-megaevolucao-caos-ascendente---copag-1003288345/p",
       "why": [
-        "fora do catálogo (me05/blister/7)"
+        "fora do catálogo (me04/blister)"
       ]
     },
     {
@@ -7965,6 +7846,110 @@
     },
     {
       "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifloon Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifloon-copag-1003225662/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifloon Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifloon-copag-1003225668/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifloon Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifloon-copag-1003225668/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225661/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225661/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "POKEMON BLISTER TRIPLO MEGAEVOLUCAO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-blister-triplo-megaevolucao---copag-1003213243/p",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "POKEMON BLISTER TRIPLO MEGAEVOLUCAO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-blister-triplo-megaevolucao---copag-1003213243/p",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225660/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Triplo Megaevolução Drifblim Copag",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-triplo-megaevolucao-drifblim-copag-1003225660/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifloon",
+      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifloon-1003222676/p",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifloon",
+      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifloon-1003222676/p",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifblim",
+      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifblim-1003222669/p",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Pokemon Cartas TCG Megaevolução Blister Triplo Drifblim",
+      "url": "https://www.rihappy.com.br/pokemon-cartas-tcg-megaevolucao-blister-triplo-drifblim-1003222669/p",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
       "title": "Pokemon Blister Triplo Megaevolucao Unidade - Copag 35657",
       "url": "https://www.rihappy.com.br/pokemon-blister-triplo-megaevolucao-unidade---copag-35657-1003250178/p",
       "why": [
@@ -7973,98 +7958,10 @@
     },
     {
       "store": "rihappycombr",
-      "title": "Blister Unitário Pokémon ME02 Fogo Fantasmagórico",
-      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-me02-fogo-fantasmagorico-1003288634/p",
+      "title": "Pokemon Blister Triplo Megaevolucao Unidade - Copag 35657",
+      "url": "https://www.rihappy.com.br/pokemon-blister-triplo-megaevolucao-unidade---copag-35657-1003250178/p",
       "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Unitário Pokémon ME02 Fogo Fantasmagórico",
-      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-me02-fogo-fantasmagorico-1003288634/p",
-      "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Fogo Fantasmagórico Pokemon - Copag 35674",
-      "url": "https://www.rihappy.com.br/blister-fogo-fantasmagorico-pokemon---copag-35674-1003256072/p",
-      "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Fogo Fantasmagórico Pokemon - Copag 35674",
-      "url": "https://www.rihappy.com.br/blister-fogo-fantasmagorico-pokemon---copag-35674-1003256072/p",
-      "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Booster Fogo Fantasmagórico Pokemon - Copag 35671",
-      "url": "https://www.rihappy.com.br/booster-fogo-fantasmagorico-pokemon---copag-35671-1003257225/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Booster Fogo Fantasmagórico Pokemon - Copag 35671",
-      "url": "https://www.rihappy.com.br/booster-fogo-fantasmagorico-pokemon---copag-35671-1003257225/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Box Pokémon Coleção Mega Venusaur Ex Fogo Fantasmagórico",
-      "url": "https://www.rihappy.com.br/box-pokemon-colecao-mega-venusaur-ex-fogo-fantasmagorico-1003253636/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Box Pokémon Coleção Mega Venusaur Ex Fogo Fantasmagórico",
-      "url": "https://www.rihappy.com.br/box-pokemon-colecao-mega-venusaur-ex-fogo-fantasmagorico-1003253636/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Triplo Pokémon Whimsicott ME02 fogo Fantasmagórico - Copag",
-      "url": "https://www.rihappy.com.br/blister-triplo-pokemon-whimsicott-me02-fogo-fantasmagorico---copag-1003273057/p",
-      "why": [
-        "fora do catálogo (me02/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Triplo Pokémon Whimsicott ME02 fogo Fantasmagórico - Copag",
-      "url": "https://www.rihappy.com.br/blister-triplo-pokemon-whimsicott-me02-fogo-fantasmagorico---copag-1003273057/p",
-      "why": [
-        "fora do catálogo (me02/blister_3)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Quadruplo Pokémon Sneasel ME02 Fogo Fantasmagórico - Copag",
-      "url": "https://www.rihappy.com.br/blister-quadruplo-pokemon-sneasel-me02-fogo-fantasmagorico---copag-1003273060/p",
-      "why": [
-        "fora do catálogo (me02/blister_4)"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Blister Quadruplo Pokémon Sneasel ME02 Fogo Fantasmagórico - Copag",
-      "url": "https://www.rihappy.com.br/blister-quadruplo-pokemon-sneasel-me02-fogo-fantasmagorico---copag-1003273060/p",
-      "why": [
-        "fora do catálogo (me02/blister_4)"
+        "fora do catálogo (me01/blister_3)"
       ]
     },
     {
@@ -8468,6 +8365,334 @@
       ]
     },
     {
+      "store": "pbkidscombr",
+      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Kit 2 Blister (7 Booster) Megaevolução Equilibrio Perfeito ME03 - 44 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-equilibrio-perfeito-me03---44-cartas---pokemon-tcg---copag-1003287407/p",
+      "why": [
+        "fora do catálogo (me03/blister/7)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Kit 2 Blister (7 Booster) Megaevolução Equilibrio Perfeito ME03 - 44 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-equilibrio-perfeito-me03---44-cartas---pokemon-tcg---copag-1003287407/p",
+      "why": [
+        "fora do catálogo (me03/blister/7)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Kit 2 Blister (7 Booster) Megaevolução Escuridão Absoluta ME05 - 44 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-escuridao-absoluta-me05---44-cartas---pokemon-tcg---copag-1003296981/p",
+      "why": [
+        "fora do catálogo (me05/blister/7)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Kit 2 Blister (7 Booster) Megaevolução Escuridão Absoluta ME05 - 44 Cartas - Pokémon TCG - Copag",
+      "url": "https://www.rihappy.com.br/kit-2-blister--7-booster--megaevolucao-escuridao-absoluta-me05---44-cartas---pokemon-tcg---copag-1003296981/p",
+      "why": [
+        "fora do catálogo (me05/blister/7)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Fogo Fantasmagórico Pokemon - Copag 35674",
+      "url": "https://www.rihappy.com.br/blister-fogo-fantasmagorico-pokemon---copag-35674-1003256072/p",
+      "why": [
+        "fora do catálogo (me02/blister)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Fogo Fantasmagórico Pokemon - Copag 35674",
+      "url": "https://www.rihappy.com.br/blister-fogo-fantasmagorico-pokemon---copag-35674-1003256072/p",
+      "why": [
+        "fora do catálogo (me02/blister)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Booster Fogo Fantasmagórico Pokemon - Copag 35671",
+      "url": "https://www.rihappy.com.br/booster-fogo-fantasmagorico-pokemon---copag-35671-1003257225/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Booster Fogo Fantasmagórico Pokemon - Copag 35671",
+      "url": "https://www.rihappy.com.br/booster-fogo-fantasmagorico-pokemon---copag-35671-1003257225/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Box Pokémon Coleção Mega Venusaur Ex Fogo Fantasmagórico",
+      "url": "https://www.rihappy.com.br/box-pokemon-colecao-mega-venusaur-ex-fogo-fantasmagorico-1003253636/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Box Pokémon Coleção Mega Venusaur Ex Fogo Fantasmagórico",
+      "url": "https://www.rihappy.com.br/box-pokemon-colecao-mega-venusaur-ex-fogo-fantasmagorico-1003253636/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Triplo Pokémon Whimsicott ME02 fogo Fantasmagórico - Copag",
+      "url": "https://www.rihappy.com.br/blister-triplo-pokemon-whimsicott-me02-fogo-fantasmagorico---copag-1003273057/p",
+      "why": [
+        "fora do catálogo (me02/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Triplo Pokémon Whimsicott ME02 fogo Fantasmagórico - Copag",
+      "url": "https://www.rihappy.com.br/blister-triplo-pokemon-whimsicott-me02-fogo-fantasmagorico---copag-1003273057/p",
+      "why": [
+        "fora do catálogo (me02/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Quadruplo Pokémon Sneasel ME02 Fogo Fantasmagórico - Copag",
+      "url": "https://www.rihappy.com.br/blister-quadruplo-pokemon-sneasel-me02-fogo-fantasmagorico---copag-1003273060/p",
+      "why": [
+        "fora do catálogo (me02/blister_4)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Quadruplo Pokémon Sneasel ME02 Fogo Fantasmagórico - Copag",
+      "url": "https://www.rihappy.com.br/blister-quadruplo-pokemon-sneasel-me02-fogo-fantasmagorico---copag-1003273060/p",
+      "why": [
+        "fora do catálogo (me02/blister_4)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Combo De Booster Equilíbrio Perfeito - Pokémon Tcg",
+      "url": "https://www.pbkids.com.br/combo-de-booster-equilibrio-perfeito---pokemon-tcg-1003267512/p",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pokemon Blister Quádruplo Equilibrio Perfeito Copag - 36862",
+      "url": "https://www.pbkids.com.br/pokemon-blister-quadruplo-equilibrio-perfeito-copag---36862-1003269245/p",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "POKEMON BLISTER TRIPLO - EQUILIBRIO PERFEITO - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-blister-triplo---equilibrio-perfeito---copag-1003267465/p",
+      "why": [
+        "fora do catálogo (me03/blister_3)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pokémon Blister Quádruplo Com 25 Cartas Equilíbrio Perfeito Mega Evolução Português Original, Copag",
+      "url": "https://www.pbkids.com.br/pokemon-blister-quadruplo-com-25-cartas-equilibrio-perfeito-mega-evolucao-portugues-original-copag-1003271892/p",
+      "why": [
+        "fora do catálogo (me03/blister_4)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pokemon Cartas Caixa Lacrada ME03 Mega Evolução Equilíbrio Perfeito – 144 Cartas",
+      "url": "https://www.pbkids.com.br/pokemon-cartas-caixa-lacrada-me03-mega-evolucao-equilibrio-perfeito-–-144-cartas-1003270476/p",
+      "why": [
+        "fora do catálogo (me03/booster_box/24)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Box Coleção Mega Zygarde Ex - Equilíbrio Perfeito - Pokémon - Copag",
+      "url": "https://www.pbkids.com.br/box-colecao-mega-zygarde-ex---equilibrio-perfeito---pokemon---copag-1003298397/p",
+      "why": [
+        "fora do catálogo (me03/collection_box)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pelúcia Pokémon Capitão Pikachu Sunny | Personagem Oficial, Super Fofo e Perfeito para Presentear ou Colecionar",
+      "url": "https://www.pbkids.com.br/pelucia-pokemon-capitao-pikachu-sunny-|-personagem-oficial-super-fofo-e-perfeito-para-presentear-ou-colecionar-1003137147/p",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pokémon Blister Caos Ascendente - Copag",
+      "url": "https://www.pbkids.com.br/pokemon-blister-caos-ascendente---copag-1003296448/p",
+      "why": [
+        "fora do catálogo (me04/blister)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Pokémon Blister Caos Ascendente - Copag",
+      "url": "https://www.pbkids.com.br/pokemon-blister-caos-ascendente---copag-1003296448/p",
+      "why": [
+        "fora do catálogo (me04/blister)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Blister Unitário Pokémon ME04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-unitario-pokemon-me04-caos-ascendente-1003287991/p",
+      "why": [
+        "fora do catálogo (me04/blister)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Blister Unitário Pokémon ME04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-unitario-pokemon-me04-caos-ascendente-1003287991/p",
+      "why": [
+        "fora do catálogo (me04/blister)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Blister Quadrúplo Pokémon ME04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-quadruplo-pokemon-me04-caos-ascendente-1003287340/p",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Blister Quadrúplo Pokémon ME04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-quadruplo-pokemon-me04-caos-ascendente-1003287340/p",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Booster Bundle ME02.5 Ascended Heroes Pokémon TCG (En)",
+      "url": "https://www.gatogingado.com.br/booster-bundle-me025-ascended-heroes-pokemon-tcg-en",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Quádruplo ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-quadruplo-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "fora do catálogo (me02/blister_4)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Triplo ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-triplo-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "fora do catálogo (me02/blister_3)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Booster Box ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/booster-box-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Combo de Pacotes de Booster ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/combo-de-pacotes-de-booster-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Unitário ME02 Fogo Fantasmagórico Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-unitario-me02-fogo-fantasmagorico-pokemon-tcg",
+      "why": [
+        "fora do catálogo (me02/blister)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Box Coleção Dia de Pokémon 2026 (Pt-Br)",
+      "url": "https://www.gatogingado.com.br/box-colecao-dia-de-pokemon-2026-pt-br",
+      "why": [
+        "coleção não identificada"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Quádruplo Megaevolução Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-quadruplo-pokemon-tcg-megaevolucao",
+      "why": [
+        "fora do catálogo (me01/blister_4)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Blister Triplo Megaevolução Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/blister-triplo-pokemon-tcg-megaevolucao",
+      "why": [
+        "fora do catálogo (me01/blister_3)"
+      ]
+    },
+    {
+      "store": "gatogingado",
+      "title": "Booster Box Megaevolução Pokémon TCG",
+      "url": "https://www.gatogingado.com.br/booster-box-pokemon-tcg-megaevolucao",
+      "why": [
+        "tipo de produto não identificado"
+      ]
+    },
+    {
       "store": "rihappycombr",
       "title": "Pokemon Cartas - Mega Evolução - Fogo Fantasmagórico - Blister Triplo com 19 Cards",
       "url": "https://www.rihappy.com.br/pokemon-cartas---mega-evolucao---fogo-fantasmagorico---blister-triplo-com-19-cards-1003262065/p",
@@ -8529,6 +8754,14 @@
       "url": "https://www.rihappy.com.br/box-pokemon-ilustracao-fogo-branco-raio-preto-35909-1-1003221199/p",
       "why": [
         "coleção não identificada"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "Blister Unitário Pokémon ME02 Fogo Fantasmagórico",
+      "url": "https://www.rihappy.com.br/blister-unitario-pokemon-me02-fogo-fantasmagorico-1003288634/p",
+      "why": [
+        "fora do catálogo (me02/blister)"
       ]
     },
     {
@@ -8756,255 +8989,23 @@
       ]
     },
     {
-      "store": "gatogingado",
-      "title": "Booster Bundle ME02.5 Ascended Heroes Pokémon TCG (En)",
-      "url": "https://www.gatogingado.com.br/booster-bundle-me025-ascended-heroes-pokemon-tcg-en",
-      "why": [
-        "idioma diferente de PT"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Blister Quádruplo ME02 Fogo Fantasmagórico Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/blister-quadruplo-me02-fogo-fantasmagorico-pokemon-tcg",
-      "why": [
-        "fora do catálogo (me02/blister_4)"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Blister Triplo ME02 Fogo Fantasmagórico Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/blister-triplo-me02-fogo-fantasmagorico-pokemon-tcg",
-      "why": [
-        "fora do catálogo (me02/blister_3)"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Booster Box ME02 Fogo Fantasmagórico Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/booster-box-me02-fogo-fantasmagorico-pokemon-tcg",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Combo de Pacotes de Booster ME02 Fogo Fantasmagórico Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/combo-de-pacotes-de-booster-me02-fogo-fantasmagorico-pokemon-tcg",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Blister Unitário ME02 Fogo Fantasmagórico Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/blister-unitario-me02-fogo-fantasmagorico-pokemon-tcg",
-      "why": [
-        "fora do catálogo (me02/blister)"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Box Coleção Dia de Pokémon 2026 (Pt-Br)",
-      "url": "https://www.gatogingado.com.br/box-colecao-dia-de-pokemon-2026-pt-br",
-      "why": [
-        "coleção não identificada"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Blister Quádruplo Megaevolução Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/blister-quadruplo-pokemon-tcg-megaevolucao",
-      "why": [
-        "fora do catálogo (me01/blister_4)"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Blister Triplo Megaevolução Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/blister-triplo-pokemon-tcg-megaevolucao",
-      "why": [
-        "fora do catálogo (me01/blister_3)"
-      ]
-    },
-    {
-      "store": "gatogingado",
-      "title": "Booster Box Megaevolução Pokémon TCG",
-      "url": "https://www.gatogingado.com.br/booster-box-pokemon-tcg-megaevolucao",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
-      "url": "https://www.pbkids.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
-      "url": "https://www.pbkids.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
-      "url": "https://www.pbkids.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
-      "url": "https://www.pbkids.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
       "store": "rihappycombr",
-      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
-      "url": "https://www.rihappy.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
-      "url": "https://www.rihappy.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "rihappycombr",
-      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
-      "url": "https://www.rihappy.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Combo De Booster Equilíbrio Perfeito - Pokémon Tcg",
-      "url": "https://www.pbkids.com.br/combo-de-booster-equilibrio-perfeito---pokemon-tcg-1003267512/p",
-      "why": [
-        "tipo de produto não identificado"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pokemon Blister Quádruplo Equilibrio Perfeito Copag - 36862",
-      "url": "https://www.pbkids.com.br/pokemon-blister-quadruplo-equilibrio-perfeito-copag---36862-1003269245/p",
-      "why": [
-        "fora do catálogo (me03/blister_4)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
       "title": "POKEMON BLISTER TRIPLO - EQUILIBRIO PERFEITO - COPAG",
-      "url": "https://www.pbkids.com.br/pokemon-blister-triplo---equilibrio-perfeito---copag-1003267465/p",
+      "url": "https://www.rihappy.com.br/pokemon-blister-triplo---equilibrio-perfeito---copag-1003267465/p",
+      "why": [
+        "fora do catálogo (me03/blister_3)"
+      ]
+    },
+    {
+      "store": "rihappycombr",
+      "title": "POKEMON BLISTER TRIPLO - EQUILIBRIO PERFEITO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-blister-triplo---equilibrio-perfeito---copag-1003267465/p",
       "why": [
         "fora do catálogo (me03/blister_3)"
       ]
     },
     {
       "store": "pbkidscombr",
-      "title": "Pokémon Blister Quádruplo Com 25 Cartas Equilíbrio Perfeito Mega Evolução Português Original, Copag",
-      "url": "https://www.pbkids.com.br/pokemon-blister-quadruplo-com-25-cartas-equilibrio-perfeito-mega-evolucao-portugues-original-copag-1003271892/p",
-      "why": [
-        "fora do catálogo (me03/blister_4)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pokemon Cartas Caixa Lacrada ME03 Mega Evolução Equilíbrio Perfeito – 144 Cartas",
-      "url": "https://www.pbkids.com.br/pokemon-cartas-caixa-lacrada-me03-mega-evolucao-equilibrio-perfeito-–-144-cartas-1003270476/p",
-      "why": [
-        "fora do catálogo (me03/booster_box/24)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Box Coleção Mega Zygarde Ex - Equilíbrio Perfeito - Pokémon - Copag",
-      "url": "https://www.pbkids.com.br/box-colecao-mega-zygarde-ex---equilibrio-perfeito---pokemon---copag-1003298397/p",
-      "why": [
-        "fora do catálogo (me03/collection_box)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pelúcia Pokémon Capitão Pikachu Sunny | Personagem Oficial, Super Fofo e Perfeito para Presentear ou Colecionar",
-      "url": "https://www.pbkids.com.br/pelucia-pokemon-capitao-pikachu-sunny-|-personagem-oficial-super-fofo-e-perfeito-para-presentear-ou-colecionar-1003137147/p",
-      "why": [
-        "coleção não identificada"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pokémon Blister Caos Ascendente - Copag",
-      "url": "https://www.pbkids.com.br/pokemon-blister-caos-ascendente---copag-1003296448/p",
-      "why": [
-        "fora do catálogo (me04/blister)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Pokémon Blister Caos Ascendente - Copag",
-      "url": "https://www.pbkids.com.br/pokemon-blister-caos-ascendente---copag-1003296448/p",
-      "why": [
-        "fora do catálogo (me04/blister)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Blister Unitário Pokémon ME04 Caos Ascendente",
-      "url": "https://www.pbkids.com.br/blister-unitario-pokemon-me04-caos-ascendente-1003287991/p",
-      "why": [
-        "fora do catálogo (me04/blister)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Blister Unitário Pokémon ME04 Caos Ascendente",
-      "url": "https://www.pbkids.com.br/blister-unitario-pokemon-me04-caos-ascendente-1003287991/p",
-      "why": [
-        "fora do catálogo (me04/blister)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Blister Quadrúplo Pokémon ME04 Caos Ascendente",
-      "url": "https://www.pbkids.com.br/blister-quadruplo-pokemon-me04-caos-ascendente-1003287340/p",
-      "why": [
-        "fora do catálogo (me04/blister_4)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
-      "title": "Blister Quadrúplo Pokémon ME04 Caos Ascendente",
-      "url": "https://www.pbkids.com.br/blister-quadruplo-pokemon-me04-caos-ascendente-1003287340/p",
-      "why": [
-        "fora do catálogo (me04/blister_4)"
-      ]
-    },
-    {
-      "store": "pbkidscombr",
       "title": "Blister Quadruplo Pokemon ME04 Caos Ascendente - Toxel - Copag",
       "url": "https://www.pbkids.com.br/blister-quadruplo-pokemon-me04-caos-ascendente---toxel---copag-1003298422/p",
       "why": [
@@ -9068,99 +9069,107 @@
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Deck De Batalha Pokémon Houndoom Ex",
-      "url": "https://ludostation.com.br/produtos/ferramenta-de-treinador-pokemon-tcg-squawkabilly-ex/",
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
       "why": [
-        "coleção não identificada"
+        "tipo de produto não identificado"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Deck De Batalha Pokémon Houndoom Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-tcg-houndstone-ex/",
+      "store": "rihappycombr",
+      "title": "Pokémon TCG Mega Evolução Equilíbrio Perfeito Booster Box M3",
+      "url": "https://www.rihappy.com.br/pokemon-tcg-mega-evolucao-equilibrio-perfeito-booster-box-m3-1003296679/p",
       "why": [
-        "coleção não identificada"
+        "tipo de produto não identificado"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Box Pokémon TCG Houndstone Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-ursaluna-lua-sangrenta-ex/",
+      "store": "rihappycombr",
+      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
       "why": [
-        "coleção não identificada"
+        "tipo de produto não identificado"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Box Pokémon TCG Houndstone Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-tcg-premium-ogerpon-ex/",
+      "store": "rihappycombr",
+      "title": "POKEMON TCG - ME03 EQUILIBRIO PERFEITO DESAFIO ESTRATEGICO - COPAG",
+      "url": "https://www.rihappy.com.br/pokemon-tcg---me03-equilibrio-perfeito-desafio-estrategico---copag-1003307154/p",
       "why": [
-        "coleção não identificada"
+        "tipo de produto não identificado"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-colecao-lendas-azuis-dialga-ex-certificado-fsc/",
+      "store": "pbkidscombr",
+      "title": "POKEMON TCG BLISTER QUADRUPLO - CAOS ASCENDENTE - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-blister-quadruplo---caos-ascendente---copag-1003292965/p",
       "why": [
-        "coleção não identificada"
+        "fora do catálogo (me04/blister_4)"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-colecao-lendas-azuis-kyogre-ex-certificado-fsc/",
+      "store": "pbkidscombr",
+      "title": "POKEMON TCG BLISTER QUADRUPLO - CAOS ASCENDENTE - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-blister-quadruplo---caos-ascendente---copag-1003292965/p",
       "why": [
-        "coleção não identificada"
+        "fora do catálogo (me04/blister_4)"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-colecao-lendas-azuis-xerneas-ex-certificado-fsc/",
+      "store": "pbkidscombr",
+      "title": "POKEMON TCG BOOSTER BLISTER UNITARIO - CAOS ASCENDENTE - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-booster-blister-unitario---caos-ascendente---copag-1003286752/p",
       "why": [
-        "coleção não identificada"
+        "fora do catálogo (me04/blister)"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Deck De Batalha Pokémon Houndoom Ex",
-      "url": "https://ludostation.com.br/produtos/box-especial-pokemon-calendario-de-festas-de-fim-de-ano-2025/",
+      "store": "pbkidscombr",
+      "title": "POKEMON TCG BOOSTER BLISTER UNITARIO - CAOS ASCENDENTE - COPAG",
+      "url": "https://www.pbkids.com.br/pokemon-tcg-booster-blister-unitario---caos-ascendente---copag-1003286752/p",
       "why": [
-        "coleção não identificada"
+        "fora do catálogo (me04/blister)"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Blister Quadruplo Pokémon TCG Mega Evolução",
-      "url": "https://ludostation.com.br/produtos/booster-box-pokemon-36-booster-mega-evolucao-copag/",
+      "store": "pbkidscombr",
+      "title": "Cartas Pokémon Booster Mega Evolução Caos Ascendente Pacote com 6 cartas Originais Oficiais Copag",
+      "url": "https://www.pbkids.com.br/cartas-pokemon-booster-mega-evolucao-caos-ascendente-pacote-com-6-cartas-originais-oficiais-copag-1003302093/p",
       "why": [
-        "fora do catálogo (me01/blister_4)"
+        "tipo de produto não identificado"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-mega-venusaur-ex-jawv5/",
+      "store": "pbkidscombr",
+      "title": "Cartas Pokémon Booster Mega Evolução Caos Ascendente Pacote com 6 cartas Originais Oficiais Copag",
+      "url": "https://www.pbkids.com.br/cartas-pokemon-booster-mega-evolucao-caos-ascendente-pacote-com-6-cartas-originais-oficiais-copag-1003302093/p",
       "why": [
-        "coleção não identificada"
+        "tipo de produto não identificado"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
-      "url": "https://ludostation.com.br/produtos/box-pokemon-mega-lucario-ex-mega-evolucao-ylboe/",
+      "store": "pbkidscombr",
+      "title": "Blister Triplo Pokémon ME04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-triplo-pokemon-me04-caos-ascendente-1003287347/p",
       "why": [
-        "coleção não identificada"
+        "fora do catálogo (me04/blister_3)"
       ]
     },
     {
-      "store": "ludostation",
-      "title": "Ferramenta De Treinador Pokémon TCG Squawkabilly Ex",
-      "url": "https://ludostation.com.br/produtos/pokemon-ferramentas-de-treinador-fezandipiti-ex-8yyrf/",
+      "store": "pbkidscombr",
+      "title": "Blister Triplo Pokémon Me04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-triplo-pokemon-me04-caos-ascendente-1003293370/p",
       "why": [
-        "coleção não identificada"
+        "fora do catálogo (me04/blister_3)"
+      ]
+    },
+    {
+      "store": "pbkidscombr",
+      "title": "Blister Quadruplo Pokémon Me04 Caos Ascendente",
+      "url": "https://www.pbkids.com.br/blister-quadruplo-pokemon-me04-caos-ascendente-1003293362/p",
+      "why": [
+        "fora do catálogo (me04/blister_4)"
       ]
     }
   ],
