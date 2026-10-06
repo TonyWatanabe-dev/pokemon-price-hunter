@@ -1,0 +1,32 @@
+{
+  "_nota": "copag.msrp só conta como CONFIRMADO com msrp > 0, source_url de fonte oficial Copag (não marketplace) e confidence = \"OFICIAL\". Nunca preencher com média, histórico ou preço de loja.",
+  "collections": [
+    { "id": "me01", "name": "Megaevolução", "aliases": ["megaevolucao 1", "mega evolucao 1", "me01", "me 01", "me1"], "fallbackAliases": ["megaevolucao", "mega evolucao"] },
+    { "id": "me02", "name": "Fogo Fantasmagórico", "aliases": ["fogo fantasmagorico", "me02", "me 02", "me2"] },
+    { "id": "me03", "name": "Equilíbrio Perfeito", "aliases": ["equilibrio perfeito", "me03", "me 03", "me3"] },
+    { "id": "me04", "name": "Caos Ascendente", "aliases": ["caos ascendente", "me04", "me 04", "me4"] },
+    { "id": "me05", "name": "Escuridão Absoluta", "aliases": ["escuridao absoluta", "me05", "me 05", "me5"] },
+    { "id": "ev09", "name": "Amigos de Jornada", "aliases": ["amigos de jornada", "ev09", "ev 09", "ev9"] }
+  ],
+  "products": [
+    { "id": "me01-box36", "collection": "me01", "type": "booster_box", "boosters": 36, "name": "Megaevolução — Booster Box 36" },
+    { "id": "me01-box24", "collection": "me01", "type": "booster_box", "boosters": 24, "name": "Megaevolução — Kit 24 Boosters" },
+    { "id": "me01-box18", "collection": "me01", "type": "booster_box", "boosters": 18, "name": "Megaevolução — Combo 18 Boosters" },
+    { "id": "me01-etb",   "collection": "me01", "type": "etb", "boosters": null, "name": "Megaevolução — Treinador Avançado (ETB)" },
+    { "id": "me02-box36", "collection": "me02", "type": "booster_box", "boosters": 36, "name": "Fogo Fantasmagórico — Booster Box 36" },
+    { "id": "me02-box18", "collection": "me02", "type": "booster_box", "boosters": 18, "name": "Fogo Fantasmagórico — Combo 18 Boosters" },
+    { "id": "me02-etb",   "collection": "me02", "type": "etb", "boosters": null, "name": "Fogo Fantasmagórico — Treinador Avançado (ETB)" },
+    { "id": "me03-box36", "collection": "me03", "type": "booster_box", "boosters": 36, "name": "Equilíbrio Perfeito — Booster Box 36" },
+    { "id": "me03-box18", "collection": "me03", "type": "booster_box", "boosters": 18, "name": "Equilíbrio Perfeito — Combo 18 Boosters" },
+    { "id": "me03-etb",   "collection": "me03", "type": "etb", "boosters": null, "name": "Equilíbrio Perfeito — Treinador Avançado (ETB)" },
+    { "id": "me04-box36", "collection": "me04", "type": "booster_box", "boosters": 36, "name": "Caos Ascendente — Booster Box 36" },
+    { "id": "me04-box24", "collection": "me04", "type": "booster_box", "boosters": 24, "name": "Caos Ascendente — Box 24 Boosters" },
+    { "id": "me04-box18", "collection": "me04", "type": "booster_box", "boosters": 18, "name": "Caos Ascendente — Combo 18 Boosters" },
+    { "id": "me04-etb",   "collection": "me04", "type": "etb", "boosters": null, "name": "Caos Ascendente — Treinador Avançado (ETB)" },
+    { "id": "me05-box36", "collection": "me05", "type": "booster_box", "boosters": 36, "name": "Escuridão Absoluta — Booster Box 36" },
+    { "id": "me05-box18", "collection": "me05", "type": "booster_box", "boosters": 18, "name": "Escuridão Absoluta — Combo 18 Boosters" },
+    { "id": "me05-etb",   "collection": "me05", "type": "etb", "boosters": null, "name": "Escuridão Absoluta — Treinador Avançado (ETB)" },
+    { "id": "ev09-box36", "collection": "ev09", "type": "booster_box", "boosters": 36, "name": "Amigos de Jornada — Booster Box 36" }
+  ],
+  "defaults": { "language": "PT", "manufacturer": "Copag", "copag": { "msrp": null, "source_url": null, "source_timestamp": null, "confidence": null, "previous_msrp": null, "msrp_updated_at": null } }
+}

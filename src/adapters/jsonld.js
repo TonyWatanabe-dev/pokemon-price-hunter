@@ -1,0 +1,64 @@
+// Genérico: sitemap -> páginas de produto -> JSON-LD Product / Open Graph. Funciona em Nuvemshop, Tray, Loja Integrada, WooCommerce etc.
+import { get } from '../http.js';
+import { guard, brl, findPix } from './common.js';
+
+const PRODUCT_URL = /pokemon/i;
+const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|blister|colecao|cole%c3%a7%c3%a3o)/i;
+
+export async function productUrls(base, max = 60) {
+  const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = [];
+  while (queue.length && seen.size < 15 && urls.length < max * 3) {
+    const sm = queue.shift(); if (seen.has(sm)) continue; seen.add(sm);
+    try { await guard(sm); } catch { continue; }
+    let xml; try { xml = (await get(sm, { accept: 'application/xml' })).text; } catch { continue; }
+    for (const [, loc] of xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)) {
+      if (/\.xml(\.gz)?$/i.test(loc)) { if (/product|produto|sitemap/i.test(loc)) queue.push(loc); }
+      else if (PRODUCT_URL.test(loc) && SEALED_HINT.test(loc)) urls.push(loc);
+    }
+  }
+  return urls.slice(0, max);
+}
+
+function flatten(node, acc = []) {
+  if (Array.isArray(node)) node.forEach((n) => flatten(n, acc));
+  else if (node && typeof node === 'object') { acc.push(node); if (node['@graph']) flatten(node['@graph'], acc); }
+  return acc;
+}
+const AVAIL = { instock: 'IN_STOCK', outofstock: 'OUT_OF_STOCK', soldout: 'OUT_OF_STOCK', preorder: 'PRE_ORDER', presale: 'PRE_ORDER', backorder: 'PRE_ORDER', discontinued: 'UNAVAILABLE', limitedavailability: 'IN_STOCK', instoreonly: 'UNAVAILABLE' };
+
+export function parseProductPage(html, url) {
+  const nodes = [];
+  for (const [, raw] of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) { try { flatten(JSON.parse(raw.trim()), nodes); } catch { /* JSON-LD inválido */ } }
+  const prod = nodes.find((n) => [].concat(n['@type']).some((t) => /product/i.test(t)));
+  const meta = (p) => html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${p}["'][^>]+content=["']([^"']+)`, 'i'))?.[1];
+  let title = prod?.name || meta('og:title'); let price = null; let stock = 'UNKNOWN'; let ean = prod?.gtin13 || prod?.gtin || null; let sku = prod?.sku || null; let quantity = null;
+  if (prod) {
+    const offers = [].concat(prod.offers || []).flatMap((o) => (o['@type'] === 'AggregateOffer' && o.offers ? [].concat(o.offers) : [o]));
+    const o = offers.find((x) => x && (x.priceCurrency || 'BRL') === 'BRL') || offers[0];
+    if (o) {
+      price = brl(o.price ?? o.lowPrice ?? o.priceSpecification?.price);
+      const av = String(o.availability || '').split('/').pop().toLowerCase();
+      stock = AVAIL[av] || 'UNKNOWN';
+      if (o.inventoryLevel?.value != null) quantity = Number(o.inventoryLevel.value);
+    }
+  }
+  if (price == null) price = brl(meta('product:price:amount') || meta('og:price:amount'));
+  if (stock === 'UNKNOWN') { const a = (meta('product:availability') || meta('og:availability') || '').toLowerCase().replace(/\s/g, ''); stock = AVAIL[a] || (a === 'instock' ? 'IN_STOCK' : 'UNKNOWN'); }
+  if (!title) return null;
+  return { title: String(title).trim(), url, price: { pix: findPix(html), base: price }, stock, quantity, sku, ean, seller: null, sourceType: prod ? 'json_ld' : 'open_graph' };
+}
+
+export async function detect(base) {
+  try { await guard(base + '/'); const html = (await get(base + '/')).text; return /pok[eé]mon/i.test(html); } catch (e) { if (e.blocked) throw e; return false; }
+}
+
+export async function search(store) {
+  const base = store.url.replace(/\/$/, '');
+  const urls = [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
+  const out = [];
+  for (const u of urls) {
+    try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
+    catch (e) { if (e.blocked && e.status !== 'robots') throw e; }
+  }
+  return out;
+}

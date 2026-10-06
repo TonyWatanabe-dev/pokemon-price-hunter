@@ -1,0 +1,11 @@
+{
+  "_nota": "filter: productId | productType | collection. Condições: maxPrice, maxPerBooster, minDiscount (0.25 = 25%), minDealScore, restock. Toda regra exige estoque confirmado e produto identificado; preço-alvo, desconto e score exigem Copag confirmado.",
+  "settings": { "cep": null, "cooldownHours": 6, "minDropPct": 0.01 },
+  "rules": [
+    { "id": "caca-caos-box", "label": "Caos Ascendente Box abaixo de R$350", "mode": "target", "filter": { "productId": "me04-box36" }, "maxPrice": 350 },
+    { "id": "box-10-booster", "label": "Qualquer box abaixo de R$10 por booster", "filter": { "productType": "booster_box" }, "maxPerBooster": 10 },
+    { "id": "copag-25", "label": "Qualquer produto 25% abaixo da Copag", "filter": {}, "minDiscount": 0.25 },
+    { "id": "restock-escuridao", "label": "Escuridão Absoluta voltou ao estoque", "filter": { "productId": "me05-box36" }, "restock": true },
+    { "id": "etb-300", "label": "Qualquer ETB abaixo de R$300", "filter": { "productType": "etb" }, "maxPrice": 300 }
+  ]
+}

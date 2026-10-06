@@ -1,0 +1,19 @@
+{
+  "_nota": "platform: auto | shopify | vtex | jsonld | mercadolivre | unsupported. url null = domínio ainda não confirmado (PENDING). evidence alimenta o STORE_SCORE; sem evidência a loja não é validada.",
+  "stores": [
+    { "id": "ligapokemon", "name": "Liga Pokémon", "url": "https://www.ligapokemon.com.br", "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "mypcards", "name": "MYP Cards", "url": "https://mypcards.com", "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "nerbstore", "name": "Nerb Store", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "grbcards", "name": "GRB Cards", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "cardora", "name": "Cardora", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "tocadotabuleiro", "name": "Toca do Tabuleiro", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "matostcg", "name": "MatosTCG", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "lifegeek", "name": "Life Geek", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "gorupa", "name": "Gorupa", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "culturetcg", "name": "Culture TCG", "url": null, "platform": "auto", "kind": "specialist", "evidence": {} },
+    { "id": "mercadolivre", "name": "Mercado Livre", "url": "https://api.mercadolibre.com", "platform": "mercadolivre", "kind": "marketplace", "evidence": {} },
+    { "id": "amazon", "name": "Amazon Brasil", "url": null, "platform": "unsupported", "kind": "marketplace", "evidence": {}, "note": "Sem API pública de busca; a Product Advertising API exige conta de afiliado." },
+    { "id": "shopee", "name": "Shopee Brasil", "url": null, "platform": "unsupported", "kind": "marketplace", "evidence": {}, "note": "Sem API pública; páginas protegidas contra bots." },
+    { "id": "magalu", "name": "Magalu", "url": null, "platform": "unsupported", "kind": "marketplace", "evidence": {}, "note": "Sem API pública de busca para terceiros." }
+  ]
+}

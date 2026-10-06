@@ -1,0 +1,15 @@
+{
+  "name": "pokemon-price-hunter-br",
+  "version": "1.0.0",
+  "description": "Agente autônomo de monitoramento de preços Pokémon TCG no Brasil, referenciado no preço sugerido Copag",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "hunt": "node src/run.js",
+    "loop": "node src/run.js --loop",
+    "discover": "node src/discover.js",
+    "copag-check": "node src/copag-check.js",
+    "serve": "node src/server.js",
+    "test": "node test/run-tests.js"
+  }
+}
