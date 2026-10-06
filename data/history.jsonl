@@ -235,3 +235,9 @@
 {"t":"2026-10-06T20:00:33.040Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","seller":"Loja Copag","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":100}
 {"t":"2026-10-06T20:00:33.040Z","offerId":"02df8f4cf7e1","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-06T20:00:33.040Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T20:15:22.108Z","offerId":"da31666a597c","productId":"me03-etb","storeId":"rihappycombr","seller":"Fantastic Toys","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T20:15:22.108Z","offerId":"a95bf4d4b1cc","productId":"me05-etb","storeId":"pbkidscombr","seller":"Starhouse","price":399.9,"priceKind":"base","shipping":null,"total":399.9,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-06T20:15:22.108Z","offerId":"02df8f4cf7e1","productId":"me04-etb","storeId":"rihappycombr","seller":"4Best Play","price":395,"priceKind":"base","shipping":null,"total":395,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T20:15:22.108Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-06T20:15:22.108Z","offerId":"c6504551f78d","productId":"me01-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-06T20:15:22.108Z","offerId":"e55fc5b3bd97","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
