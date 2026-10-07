@@ -4,7 +4,7 @@ on:
     inputs:
       urls: { description: 'URLs separadas por espaço', required: true }
 permissions:
-  contents: read
+  contents: write
 jobs:
   dump:
     runs-on: ubuntu-latest
@@ -15,5 +15,8 @@ jobs:
         with: { node-version: 22 }
       - run: node tools/dump-pages.mjs dump
         env: { DUMP_URLS: '${{ inputs.urls }}' }
-      - uses: actions/upload-artifact@v4
-        with: { name: dump, path: dump, retention-days: 3 }
+      - name: Publicar no ramo diag
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          cd dump && git init -q -b diag && git config user.name bot && git config user.email bot@users.noreply.github.com
+          git add . && git commit -qm diag && git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" diag
