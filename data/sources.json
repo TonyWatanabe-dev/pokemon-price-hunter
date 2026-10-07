@@ -53,11 +53,11 @@
     "kind": "specialist",
     "status": "ACTIVE",
     "reason": null,
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "listings": 23,
     "matched": 3,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://tcg.tocadotabuleiro.com"
   },
   "matostcg": {
@@ -76,11 +76,11 @@
     "kind": "specialist",
     "status": "ACTIVE",
     "reason": null,
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "listings": 56,
     "matched": 9,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://www.lojalifegeek.com.br"
   },
   "gorupa": {
@@ -106,7 +106,7 @@
     "ok": 0,
     "name": "Mercado Livre",
     "kind": "marketplace",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "mercadolivre",
     "status": "BLOCKED",
     "reason": "Mercado Livre exige token OAuth (ML_ACCESS_TOKEN); a busca pública retorna 403 desde 2025",
@@ -144,13 +144,13 @@
     "ok": 41,
     "name": "Loja Copag (oficial)",
     "kind": "official",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "vtex",
     "status": "ACTIVE",
     "reason": null,
     "listings": 11,
     "matched": 2,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://www.copagloja.com.br"
   },
   "ludostation": {
@@ -158,13 +158,13 @@
     "ok": 41,
     "name": "Ludostation",
     "kind": "specialist",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 14,
     "matched": 1,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://ludostation.com.br"
   },
   "canal40": {
@@ -172,13 +172,13 @@
     "ok": 41,
     "name": "Canal 40",
     "kind": "specialist",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 308,
     "matched": 17,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://www.canal40.com.br"
   },
   "gatogingado": {
@@ -186,13 +186,13 @@
     "ok": 41,
     "name": "Gato Gingado",
     "kind": "specialist",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 11,
     "matched": 1,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://www.gatogingado.com.br"
   },
   "happynerd": {
@@ -200,13 +200,13 @@
     "ok": 41,
     "name": "Happy Nerd",
     "kind": "specialist",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z",
+    "lastSuccess": "2026-10-07T01:08:27.011Z",
     "url": "https://www.happynerd.com.br"
   },
   "meruru": {
@@ -214,7 +214,7 @@
     "ok": 0,
     "name": "Meruru",
     "kind": "specialist",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.meruru.com.br",
     "url": "https://www.meruru.com.br"
@@ -261,13 +261,13 @@
     "name": "rihappy.com.br",
     "kind": "specialist",
     "url": "https://www.rihappy.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "vtex",
     "status": "ACTIVE",
     "reason": null,
-    "listings": 235,
-    "matched": 34,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "listings": 241,
+    "matched": 35,
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "pbkidscombr": {
     "checks": 38,
@@ -275,13 +275,13 @@
     "name": "pbkids.com.br",
     "kind": "specialist",
     "url": "https://www.pbkids.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "vtex",
     "status": "ACTIVE",
     "reason": null,
     "listings": 203,
     "matched": 28,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "americanascombr": {
     "checks": 0,
@@ -298,7 +298,7 @@
     "name": "carrefour.com.br",
     "kind": "specialist",
     "url": "https://www.carrefour.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.carrefour.com.br"
   },
@@ -326,7 +326,7 @@
     "name": "kalunga.com.br",
     "kind": "specialist",
     "url": "https://www.kalunga.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "ERROR",
     "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)"
   },
@@ -336,7 +336,7 @@
     "name": "leitura.com.br",
     "kind": "specialist",
     "url": "https://www.leitura.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.leitura.com.br"
   },
@@ -346,7 +346,7 @@
     "name": "uzgames.com.br",
     "kind": "specialist",
     "url": "https://www.uzgames.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "robots.txt não permite /"
   },
@@ -356,7 +356,7 @@
     "name": "copag.com.br",
     "kind": "specialist",
     "url": "https://www.copag.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.copag.com.br"
   },
@@ -366,13 +366,13 @@
     "name": "supertcg.com.br",
     "kind": "specialist",
     "url": "https://supertcg.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "freitastcgcombr": {
     "checks": 38,
@@ -380,7 +380,7 @@
     "name": "freitastcg.com.br",
     "kind": "specialist",
     "url": "https://freitastcg.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em freitastcg.com.br"
   },
@@ -390,13 +390,13 @@
     "name": "newstation.com.br",
     "kind": "specialist",
     "url": "https://www.newstation.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "epicgamecombr": {
     "checks": 38,
@@ -404,7 +404,7 @@
     "name": "epicgame.com.br",
     "kind": "specialist",
     "url": "https://www.epicgame.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.epicgame.com.br"
   },
@@ -414,13 +414,13 @@
     "name": "vip-tcg.com",
     "kind": "specialist",
     "url": "https://vip-tcg.com",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "geekshopcombr": {
     "checks": 38,
@@ -428,7 +428,7 @@
     "name": "geek-shop.com.br",
     "kind": "specialist",
     "url": "https://www.geek-shop.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "robots.txt não permite /"
   },
@@ -438,7 +438,7 @@
     "name": "collectandplay.com.br",
     "kind": "specialist",
     "url": "https://collectandplay.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "robots.txt não permite /"
   },
@@ -448,7 +448,7 @@
     "name": "mestracards.com.br",
     "kind": "specialist",
     "url": "https://mestracards.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em mestracards.com.br"
   },
@@ -458,7 +458,7 @@
     "name": "monsterstcg.com.br",
     "kind": "specialist",
     "url": "https://monsterstcg.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "robots.txt não permite /"
   },
@@ -468,7 +468,7 @@
     "name": "cardshall.com.br",
     "kind": "specialist",
     "url": "https://www.cardshall.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.cardshall.com.br"
   },
@@ -478,7 +478,7 @@
     "name": "playgroundgames.com.br",
     "kind": "specialist",
     "url": "https://www.playgroundgames.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.playgroundgames.com.br"
   },
@@ -488,7 +488,7 @@
     "name": "magicstorebrasil.com.br",
     "kind": "specialist",
     "url": "https://magicstorebrasil.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em magicstorebrasil.com.br"
   },
@@ -498,7 +498,7 @@
     "name": "ggtcg.online",
     "kind": "specialist",
     "url": "https://ggtcg.online",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "ERROR",
     "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)"
   },
@@ -508,7 +508,7 @@
     "name": "misustore.com.br",
     "kind": "specialist",
     "url": "https://misustore.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em misustore.com.br"
   },
@@ -518,13 +518,13 @@
     "name": "dalaran.com.br",
     "kind": "specialist",
     "url": "https://www.dalaran.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 176,
     "matched": 6,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "bazardebagdacombr": {
     "checks": 38,
@@ -532,7 +532,7 @@
     "name": "bazardebagda.com.br",
     "kind": "specialist",
     "url": "https://www.bazardebagda.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.bazardebagda.com.br"
   },
@@ -542,7 +542,7 @@
     "name": "mtgbrasil.com.br",
     "kind": "specialist",
     "url": "https://www.mtgbrasil.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.mtgbrasil.com.br"
   },
@@ -552,7 +552,7 @@
     "name": "salvaiastore.com.br",
     "kind": "specialist",
     "url": "https://salvaiastore.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em salvaiastore.com.br"
   },
@@ -562,7 +562,7 @@
     "name": "cardsofparadise.com.br",
     "kind": "specialist",
     "url": "https://cardsofparadise.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em cardsofparadise.com.br"
   },
@@ -572,7 +572,7 @@
     "name": "rasengan.com.br",
     "kind": "specialist",
     "url": "https://rasengan.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em rasengan.com.br"
   },
@@ -582,7 +582,7 @@
     "name": "brofist.com.br",
     "kind": "specialist",
     "url": "https://brofist.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "robots.txt não permite /"
   },
@@ -592,13 +592,13 @@
     "name": "loja.drop1.com.br",
     "kind": "specialist",
     "url": "https://loja.drop1.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 42,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "thedragonshopcombr": {
     "checks": 38,
@@ -606,13 +606,13 @@
     "name": "thedragonshop.com.br",
     "kind": "specialist",
     "url": "http://www.thedragonshop.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "paladinsgamescombr": {
     "checks": 38,
@@ -620,13 +620,13 @@
     "name": "paladinsgames.com.br",
     "kind": "specialist",
     "url": "https://www.paladinsgames.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 82,
     "matched": 4,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "tcgprocombr": {
     "checks": 38,
@@ -634,13 +634,13 @@
     "name": "tcgpro.com.br",
     "kind": "specialist",
     "url": "https://tcgpro.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "matostcgcombr": {
     "checks": 38,
@@ -648,13 +648,13 @@
     "name": "matostcg.com.br",
     "kind": "specialist",
     "url": "https://www.matostcg.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "metacardscombr": {
     "checks": 38,
@@ -662,13 +662,13 @@
     "name": "metacards.com.br",
     "kind": "specialist",
     "url": "https://metacards.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 8,
     "matched": 2,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "bynxgg": {
     "checks": 38,
@@ -676,13 +676,13 @@
     "name": "bynx.gg",
     "kind": "specialist",
     "url": "https://bynx.gg",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 26,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "aguildacolecionaveiscombr": {
     "checks": 38,
@@ -690,7 +690,7 @@
     "name": "aguildacolecionaveis.com.br",
     "kind": "specialist",
     "url": "http://www.aguildacolecionaveis.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.aguildacolecionaveis.com.br"
   },
@@ -700,13 +700,13 @@
     "name": "thesaintcollection.com",
     "kind": "specialist",
     "url": "https://www.thesaintcollection.com",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "shopify",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "insidegamestorecom": {
     "checks": 38,
@@ -714,7 +714,7 @@
     "name": "insidegamestore.com",
     "kind": "specialist",
     "url": "https://www.insidegamestore.com",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.insidegamestore.com"
   },
@@ -724,7 +724,7 @@
     "name": "supernovahobbystore.com.br",
     "kind": "specialist",
     "url": "https://www.supernovahobbystore.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.supernovahobbystore.com.br"
   },
@@ -734,13 +734,13 @@
     "name": "miragemhobby.wordpress.com",
     "kind": "specialist",
     "url": "https://miragemhobby.wordpress.com",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "livrariacolecionadorcombr": {
     "checks": 38,
@@ -748,13 +748,13 @@
     "name": "livrariacolecionador.com.br",
     "kind": "specialist",
     "url": "https://livrariacolecionador.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 0,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "shogunlivrariacombr": {
     "checks": 38,
@@ -762,13 +762,13 @@
     "name": "shogunlivraria.com.br",
     "kind": "specialist",
     "url": "https://www.shogunlivraria.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 56,
     "matched": 3,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "pluspowershopcombr": {
     "checks": 38,
@@ -776,7 +776,7 @@
     "name": "pluspowershop.com.br",
     "kind": "specialist",
     "url": "https://www.pluspowershop.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "status": "BLOCKED",
     "reason": "Acesso bloqueado (403) em www.pluspowershop.com.br"
   },
@@ -786,13 +786,13 @@
     "name": "lumosstore.com.br",
     "kind": "specialist",
     "url": "https://www.lumosstore.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 7,
     "matched": 0,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   },
   "lojaarenagamescombr": {
     "checks": 38,
@@ -800,12 +800,12 @@
     "name": "lojaarenagames.com.br",
     "kind": "specialist",
     "url": "https://lojaarenagames.com.br",
-    "lastCheck": "2026-10-07T01:00:35.450Z",
+    "lastCheck": "2026-10-07T01:08:27.011Z",
     "platform": "jsonld",
     "status": "ACTIVE",
     "reason": null,
     "listings": 22,
     "matched": 1,
-    "lastSuccess": "2026-10-07T01:00:35.450Z"
+    "lastSuccess": "2026-10-07T01:08:27.011Z"
   }
 }
