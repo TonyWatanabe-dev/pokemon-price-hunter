@@ -35,13 +35,16 @@ async function load(origin) {
   }
 }
 
-export async function allowed(url) {
+// Motivo explícito: o robots.txt proíbe, ou o site nem deixa ler o robots.txt (bloqueio de robô/firewall).
+export async function check(url) {
   const u = new URL(url);
   if (!cache.has(u.origin)) cache.set(u.origin, load(u.origin));
   const r = await cache.get(u.origin);
-  if (r.blocked || r.unreachable) return false;
+  if (r.blocked) return { ok: false, why: 'blocked' };
+  if (r.unreachable) return { ok: false, why: 'unreachable' };
   const path = u.pathname + u.search; let best = null;
   for (const rule of r.rules) if (rule.re.test(path) && (!best || rule.path.length > best.path.length || (rule.path.length === best.path.length && rule.allow))) best = rule;
-  return !best || best.allow;
+  return !best || best.allow ? { ok: true } : { ok: false, why: 'robots' };
 }
+export async function allowed(url) { return (await check(url)).ok; }
 export const _resetRobots = () => cache.clear();

@@ -6,7 +6,10 @@ export function copagStatus(product) {
   if (!(c.msrp > 0)) return { confirmed: false, reason: 'sem valor' };
   if (!c.source_url) return { confirmed: false, reason: 'sem fonte' };
   if (MARKETPLACE_HOSTS.test(c.source_url)) return { confirmed: false, reason: 'fonte é marketplace (não aceita como MSRP)' };
-  if (!['OFICIAL', 'CATALOGO_COPAG'].includes(c.confidence)) return { confirmed: false, reason: 'fonte não marcada como oficial' };
+  // Só vale preço verificável na fonte oficial (loja oficial Copag ou página oficial cadastrada à mão).
+  // Catálogo divulgado por terceiros fica como referência, sem calcular desconto nem disparar alerta.
+  if (c.confidence === 'CATALOGO_COPAG') return { confirmed: false, reason: 'preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável', reference: c.msrp, referenceUrl: c.source_url };
+  if (c.confidence !== 'OFICIAL') return { confirmed: false, reason: 'fonte não marcada como oficial' };
   return { confirmed: true, msrp: c.msrp, source: c.confidence };
 }
 

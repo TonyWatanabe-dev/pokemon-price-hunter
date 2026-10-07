@@ -23,7 +23,7 @@ export function loadCatalog() {
   return cat;
 }
 
-// Preço Copag de um produto: cadastro OFICIAL > loja oficial Copag > catálogo Copag publicado (CATALOGO_COPAG).
+// Preço Copag de um produto: cadastro OFICIAL > loja oficial Copag > catálogo Copag divulgado por terceiros (só referência).
 function resolveCopag(p, catalog, copagSeen) {
   const keys = msrpKeys(p);
   const pick = (map, ok) => { for (const k of keys) if (map[k] && ok(map[k])) return { ...map[k], key: k }; return null; };
@@ -163,7 +163,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const clean = live.filter((o) => !o.anomalous);
     const marketAverage = clean.length >= 2 ? round2(clean.reduce((a, o) => a + o.total, 0) / clean.length) : null;
     for (const o of clean) if (!lowest[p.id] || o.total < lowest[p.id].total) lowest[p.id] = { total: o.total, at: T, storeId: o.storeId, offerId: o.id };
-    products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
+    products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
   }
   const bestPPB = {};
   for (const o of Object.values(offers)) if (o.perBooster && o.stock === 'IN_STOCK' && !o.anomalous && !o.stale) { const c = products[o.productId].collection; if (!bestPPB[c] || o.perBooster < bestPPB[c]) bestPPB[c] = o.perBooster; }
