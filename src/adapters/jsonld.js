@@ -61,7 +61,7 @@ export async function search(store) {
   const out = [];
   for (const u of urls) {
     try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
-    catch (e) { if (e.blocked && e.status !== 'robots') throw e; }
+    catch (e) { if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e; }
   }
   return out;
 }

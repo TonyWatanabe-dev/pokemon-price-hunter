@@ -1,6 +1,12 @@
-import { allowed } from '../robots.js';
+import { check } from '../robots.js';
 import { BlockedError } from '../http.js';
-export async function guard(url) { if (!(await allowed(url))) throw new BlockedError(`robots.txt não permite ${new URL(url).pathname}`, 'robots'); }
+export async function guard(url) {
+  const r = await check(url); if (r.ok) return;
+  const u = new URL(url);
+  if (r.why === 'blocked') throw new BlockedError(`Acesso bloqueado em ${u.host} (o site barra robôs, nem o robots.txt abre)`, 403);
+  if (r.why === 'unreachable') throw new BlockedError(`${u.host} fora do ar ou lento para responder`, 'unreachable');
+  throw new BlockedError(`robots.txt não permite ${u.pathname}`, 'robots');
+}
 export const brl = (s) => { if (s == null) return null; if (typeof s === 'number') return s; const v = Number(String(s).replace(/[^\d,.-]/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')); return Number.isFinite(v) && v > 0 ? v : null; };
 // "R$ 339,00 no Pix" / "à vista no PIX R$ 339,00"
 export function findPix(html) {

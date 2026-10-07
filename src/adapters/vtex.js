@@ -3,12 +3,12 @@ import { getJson, request } from '../http.js';
 import { guard, searchTerms } from './common.js';
 
 export async function detect(base) {
-  try { const j = await getJson(`${base}/api/catalog_system/pub/products/search?ft=pokemon&_from=0&_to=0`); return Array.isArray(j); } catch (e) { if (e.blocked) throw e; return false; }
+  try { const j = await getJson(`${base}/api/catalog_system/pub/products/search?ft=pokemon&_from=0&_to=0`); return Array.isArray(j); } catch (e) { if (e.blocked && e.status === 429) throw e; return false; /* 401/403 numa rota de teste = não é essa plataforma; o bloqueio real aparece na home */ }
 }
 
 export async function search(store, catalog) {
   const base = store.url.replace(/\/$/, ''); const out = new Map();
-  for (const term of searchTerms(catalog)) {
+  for (const term of ['pokemon', ...searchTerms(catalog)]) {
     const url = `${base}/api/catalog_system/pub/products/search?ft=${encodeURIComponent(term)}&_from=0&_to=49`;
     await guard(url);
     const arr = await getJson(url);
