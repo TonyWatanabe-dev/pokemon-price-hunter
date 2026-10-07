@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /conta
+Disallow: /favoritos
+Disallow: /alertas
+Disallow: /configuracoes
+Disallow: /api/
+
+Sitemap: https://tcg-price-hunter.vercel.app/sitemap.xml

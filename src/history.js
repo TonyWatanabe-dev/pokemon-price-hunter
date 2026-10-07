@@ -80,3 +80,17 @@ export function trimJsonl(file, days = 45) {
     fs.writeFileSync(file, keep.join('\n') + (keep.length ? '\n' : ''));
   } catch { /* sem arquivo */ }
 }
+
+// Resumo do histórico de um produto (menor preço do dia entre todas as lojas), usado no ranking "maior queda".
+// Só calcula o que os dados sustentam: com menos de 2 dias, não há queda.
+export function histSummary(pid) {
+  const h = readJson(histPath(pid), null); if (!h) return null;
+  const byDay = {};
+  for (const s of Object.values(h.stores || {})) for (const [d, v] of s.pts) if (!byDay[d] || v < byDay[d]) byDay[d] = v;
+  const days = Object.keys(byDay).sort(); if (!days.length) return null;
+  const today = days[days.length - 1]; const cur = byDay[today];
+  const cut = day(new Date(Date.parse(today) - 7 * 864e5).toISOString());
+  const prev = days.filter((d) => d < today && d >= cut).map((d) => byDay[d]);
+  const ref = prev.length ? Math.max(...prev) : null;
+  return { days: days.length, from: days[0], drop7d: ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
+}

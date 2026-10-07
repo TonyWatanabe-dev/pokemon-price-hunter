@@ -12,7 +12,7 @@ import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, isAnomalous, opportunityBadge } from './score.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips } from './tips.js';
-import { backfill, recordDay, trimJsonl } from './history.js';
+import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { processInbox } from './inbox.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
@@ -235,11 +235,19 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const all = Object.values(offers);
   const ranked = all.filter((o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.dealScore != null).sort((a, b) => b.dealScore - a.dealScore);
   const cov = Object.values(sources).reduce((a, s) => { a.found++; a[s.status] = (a[s.status] || 0) + 1; return a; }, { found: 0 });
+  // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
+  try {
+    const nb = backfill(Object.fromEntries(stores.map((x) => [x.id, x.name])));
+    const nd = recordDay(all, products, T);
+    if (nb || nd) log(`Histórico: ${nb ? nb + ' produtos montados do log, ' : ''}${nd} atualizados`);
+    
+  } catch (e) { log(`[histórico] ${e.message}`); }
+  for (const p of Object.values(products)) { try { p.hist = histSummary(p.id); } catch { p.hist = null; } }
   const state = {
     generatedAt: T,
     coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0 },
     totals: { products: Object.keys(products).length, offers: all.length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
-    collections: catalog.collections.map(({ id, name, series }) => ({ id, name, series, products: Object.values(products).filter((p) => p.collection === id).length })).filter((c) => c.products),
+    collections: catalog.collections.map(({ id, name, series, aliases }) => ({ id, name, series, aliases: aliases || [], products: Object.values(products).filter((p) => p.collection === id).length })).filter((c) => c.products),
     types: Object.entries(TYPE_LABEL).map(([id, label]) => ({ id, label, group: groupOf(id), products: Object.values(products).filter((p) => p.type === id).length })).filter((t) => t.products),
     products: Object.values(products),
     bestDeals: ranked.map((o) => o.id),
@@ -262,13 +270,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('inbox.json'), inbox);
   writeJson(dataPath('state.json'), state);
   appendJsonl(dataPath('history.jsonl'), history);
-  // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
-  try {
-    const nb = backfill(Object.fromEntries(stores.map((x) => [x.id, x.name])));
-    const nd = recordDay(all, products, T);
-    if (nb || nd) log(`Histórico: ${nb ? nb + ' produtos montados do log, ' : ''}${nd} atualizados`);
-    trimJsonl(dataPath('history.jsonl'));
-  } catch (e) { log(`[histórico] ${e.message}`); }
+  try { trimJsonl(dataPath('history.jsonl')); } catch { /* sem log */ }
   appendJsonl(dataPath('alerts.jsonl'), delivered);
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;

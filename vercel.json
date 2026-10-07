@@ -1,6 +1,6 @@
 {
   "installCommand": "echo sem-install",
-  "buildCommand": "mkdir -p public/data && cp index.html account.js favicon.png apple-touch-icon.png og.jpg public/ && cp data/state.json public/data/",
+  "buildCommand": "mkdir -p public/data && cp index.html account.js robots.txt favicon.png apple-touch-icon.png og.jpg public/ && cp data/state.json public/data/",
   "outputDirectory": "public",
   "headers": [
     {
@@ -31,7 +31,15 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!data/|_vercel/).*)",
+      "source": "/produto/:slug",
+      "destination": "/api/produto?slug=:slug"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/((?!data/|_vercel/|api/).*)",
       "destination": "/index.html"
     }
   ],
