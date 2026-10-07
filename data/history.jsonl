@@ -1128,3 +1128,6 @@
 {"t":"2026-10-07T08:30:29.651Z","offerId":"06991f622394","productId":"me01-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T08:30:29.651Z","offerId":"8f031a780bc4","productId":"me04-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T08:30:29.651Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T08:45:23.765Z","offerId":"6c5c431252c9","productId":"sv8_5-colecao_premium","storeId":"pbkidscombr","seller":"Noy Brinquedos","price":184.79,"priceKind":"base","shipping":25.74,"total":210.53,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T08:45:23.765Z","offerId":"df655f0a5178","productId":"sv10_5w-etb","storeId":"pbkidscombr","seller":"Gourmande","price":49.99,"priceKind":"base","shipping":11.76,"total":61.75,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T08:45:23.765Z","offerId":"145777250e4e","productId":"me04-etb","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
