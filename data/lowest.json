@@ -406,5 +406,59 @@
     "at": "2026-10-07T07:23:11.746Z",
     "storeId": "canal40",
     "offerId": "450995852587"
+  },
+  "me05-combo7": {
+    "total": 101.9,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "pbkidscombr",
+    "offerId": "9c04f059dcee"
+  },
+  "sv10_5-blister4": {
+    "total": 54.99,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "rihappycombr",
+    "offerId": "1efff9d4f771"
+  },
+  "sv10_5-colecao_ilustracao": {
+    "total": 149.99,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "rihappycombr",
+    "offerId": "330edf8ea37d"
+  },
+  "me02_5-combo18": {
+    "total": 499.9,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "pbkidscombr",
+    "offerId": "cab0f153b94f"
+  },
+  "me02_5-combo": {
+    "total": 299.89,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "rihappycombr",
+    "offerId": "e47dd5bfdc19"
+  },
+  "me02_5-colecao_ex-mega-emboar": {
+    "total": 119.89,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "rihappycombr",
+    "offerId": "cb76c4932ebf"
+  },
+  "me02_5-colecao_ex-mega-feraligatr": {
+    "total": 139.9,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "f832d2f53188"
+  },
+  "me02_5-colecao_ex-mega-lucario": {
+    "total": 179.9,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "d70fd16de6a3"
+  },
+  "me02_5-colecao_ex-mega-meganium": {
+    "total": 139.9,
+    "at": "2026-10-07T08:00:36.317Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "6e98d86fd045"
   }
 }
