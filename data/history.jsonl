@@ -1535,3 +1535,18 @@
 {"t":"2026-10-07T11:15:22.790Z","offerId":"445842f444db","productId":"me05-box36","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T11:15:22.790Z","offerId":"9457fe96b3b1","productId":"me05-combo","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T11:15:22.790Z","offerId":"39ab34cd4824","productId":"me05-etb","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"3698f119852d","productId":"c30-colecao_fichario","storeId":"pbkidscombr","seller":"PBKIDS","price":349.99,"priceKind":"base","shipping":0,"total":349.99,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"6c5c431252c9","productId":"sv8_5-colecao_premium","storeId":"pbkidscombr","seller":"Noy Brinquedos","price":184.79,"priceKind":"base","shipping":null,"total":184.79,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"cabb5979e215","productId":"sv8_5-colecao_premium","storeId":"rihappycombr","seller":"Noy Brinquedos","price":184.79,"priceKind":"base","shipping":null,"total":184.79,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"7ca22c0ba108","productId":"me01-blister3","storeId":"rihappycombr","seller":"Reino Encantado","price":37.89,"priceKind":"base","shipping":null,"total":37.89,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"0b2a90b1360d","productId":"me04-box36","storeId":"pbkidscombr","seller":"Paulo da Venda","price":549.9,"priceKind":"base","shipping":17.18,"total":567.08,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"01ac5563bd1c","productId":"me03-blister3","storeId":"rihappycombr","seller":"Reino Encantado","price":37.89,"priceKind":"base","shipping":null,"total":37.89,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"f173c3627ffc","productId":"sv8_5-blister3","storeId":"lojaarenagamescombr","seller":null,"price":89.91,"priceKind":"base","shipping":null,"total":89.91,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"959a36f6fef2","productId":"sv8_5-blister3","storeId":"lojaarenagamescombr","seller":null,"price":89.91,"priceKind":"base","shipping":null,"total":89.91,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"0e9dac9092ed","productId":"sv8_5-blister3","storeId":"lojaarenagamescombr","seller":null,"price":89.91,"priceKind":"base","shipping":null,"total":89.91,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"e47dd5bfdc19","productId":"me02_5-combo","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"e4360c8a3d9f","productId":"me03-combo","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"09390f269a00","productId":"me03-colecao_ex-mega-zygarde","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"8f031a780bc4","productId":"me04-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"92e7ebda2570","productId":"me04-booster","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:30:31.461Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
