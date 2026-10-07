@@ -301,103 +301,109 @@
   },
   "sv8_5-colecao": {
     "total": 219.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "rihappycombr",
     "offerId": "9c86a3a4166f"
   },
   "sv8_5-blister3": {
     "total": 62.91,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "lojaarenagamescombr",
     "offerId": "f173c3627ffc"
   },
   "sv8_5-colecao_premium": {
     "total": 184.79,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "pbkidscombr",
     "offerId": "6c5c431252c9"
   },
   "c30-colecao_fichario": {
     "total": 230.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "rihappycombr",
     "offerId": "65c775e5f3f4"
   },
   "c30-colecao_poster": {
     "total": 89.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "lumosstorecombr",
     "offerId": "0c05ffb3fad6"
   },
   "c30-etb": {
     "total": 399.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "rihappycombr",
     "offerId": "a26b556251f3"
   },
   "c30-blister2": {
     "total": 99.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "pbkidscombr",
     "offerId": "e2a2be3fefe0"
   },
   "c30-blister3": {
     "total": 149.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "pbkidscombr",
     "offerId": "a7a52627493e"
   },
   "sv8_5-etb": {
     "total": 49.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "pbkidscombr",
     "offerId": "adce9b674cb3"
   },
   "sv10_5w-etb": {
     "total": 49.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "pbkidscombr",
     "offerId": "df655f0a5178"
   },
   "sv1-box36": {
     "total": 4879.9,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "metacardscombr",
     "offerId": "feea9e9691ec"
   },
   "sv6_5-colecao_ex-kingdra": {
     "total": 159.9,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "paladinsgamescombr",
     "offerId": "abb3de8538a1"
   },
   "c30-colecao_ex-greninja": {
     "total": 119.9,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "lumosstorecombr",
     "offerId": "17ec84b26b2c"
   },
+  "c30-colecao_ex-estampas": {
+    "total": 169.99,
+    "at": "2026-10-07T07:23:11.746Z",
+    "storeId": "rihappycombr",
+    "offerId": "57eebb95e68c"
+  },
   "sv7-booster": {
     "total": 11.9,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "paladinsgamescombr",
     "offerId": "9bd559978189"
   },
   "sv9-booster": {
     "total": 12,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "paladinsgamescombr",
     "offerId": "51ac5771328b"
   },
   "sv10_5w-combo": {
     "total": 239.9,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "paladinsgamescombr",
     "offerId": "53a3f863e619"
   },
   "c30-colecao_ilustracao": {
     "total": 127.99,
-    "at": "2026-10-07T07:15:23.594Z",
+    "at": "2026-10-07T07:23:11.746Z",
     "storeId": "canal40",
     "offerId": "450995852587"
   }
