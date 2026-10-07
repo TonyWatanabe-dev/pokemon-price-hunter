@@ -350,52 +350,59 @@
   "copag": {
     "c30-blister2": {
       "msrp": 69.99,
-      "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-etb": {
       "msrp": 399.99,
-      "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-colecao_poster": {
       "msrp": 115.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-colecao_fichario": {
       "msrp": 230.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-colecao_ex": {
       "msrp": 160.99,
       "source_url": "https://www.instagram.com/voltztcg/",
       "source_timestamp": "2026-10-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Imagem 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards) e coletada na internet; não confirmada na loja oficial Copag. Antes: R$ 169,99 em blog especializado"
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-combo6": {
       "msrp": 199.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-combo": {
       "msrp": 199.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-deck": {
       "msrp": 115.99,
@@ -406,38 +413,43 @@
     },
     "c30-minilata": {
       "msrp": 77.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-colecao_miniatura": {
       "msrp": 245.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-colecao_porta_retrato": {
       "msrp": 305.99,
-      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-colecao": {
       "msrp": 599.99,
-      "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
-      "source_timestamp": "2026-08-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+      "source_url": "https://www.instagram.com/voltztcg/",
+      "source_timestamp": "2026-10-07",
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     },
     "c30-blister3": {
       "msrp": 99.99,
       "source_url": "https://www.instagram.com/voltztcg/",
       "source_timestamp": "2026-10-07",
-      "confidence": "CATALOGO_COPAG",
-      "note": "Imagem 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards) e coletada na internet; não confirmada na loja oficial Copag"
+      "confidence": "OFICIAL",
+      "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+      "manual": true
     }
   }
 }

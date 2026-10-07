@@ -10,6 +10,7 @@ export async function copagCheck({ log = console.log } = {}) {
     const p = { id, copag: c };
     const st = copagStatus(p);
     if (!st.confirmed || c.confidence !== 'OFICIAL') { report.push({ id, status: st.confirmed ? 'CATÁLOGO' : 'NÃO CONFIRMADO' }); continue; }
+    if (c.manual) { report.push({ id, status: 'MANUAL', msrp: c.msrp }); continue; } // tabela confirmada à mão, fonte sem leitura automática
     try {
       const page = parseProductPage((await get(c.source_url)).text, c.source_url);
       const seen = page?.price?.base ?? null;
