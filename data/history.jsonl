@@ -1953,3 +1953,13 @@
 {"t":"2026-10-07T13:30:29.225Z","offerId":"be31294b75a5","productId":"me05-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T13:30:29.225Z","offerId":"1c56eabb145c","productId":"me02_5-colecao_ex-mega-feraligatr","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T13:30:29.225Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"10d6f352c969","productId":"c30-colecao_fichario","storeId":"rihappycombr","seller":"Ri Happy","price":349.99,"priceKind":"base","shipping":0,"total":349.99,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"3698f119852d","productId":"c30-colecao_fichario","storeId":"pbkidscombr","seller":"PBKIDS","price":349.99,"priceKind":"base","shipping":null,"total":349.99,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"a7a52627493e","productId":"c30-blister3","storeId":"pbkidscombr","seller":"PBKIDS","price":149.99,"priceKind":"base","shipping":0,"total":149.99,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"cd33b7b54af5","productId":"me03-blister4","storeId":"pbkidscombr","seller":"Reino Encantado","price":47.89,"priceKind":"base","shipping":null,"total":47.89,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"be31294b75a5","productId":"me05-box36","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"de0793c8da89","productId":"me01-blister3","storeId":"rihappycombr","seller":"4Best Play","price":55,"priceKind":"base","shipping":null,"total":55,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"1c56eabb145c","productId":"me02_5-colecao_ex-mega-feraligatr","storeId":"rihappycombr","seller":"Gourmande","price":229.99,"priceKind":"base","shipping":null,"total":229.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"43848a283954","productId":"me04-box36","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":null,"total":599.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T13:45:26.327Z","offerId":"c018f25cf263","productId":"me04-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
