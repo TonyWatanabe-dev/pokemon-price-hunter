@@ -179,6 +179,13 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   const c = parseProductPage('<meta property="og:title" content="Blister Chikorita - Loja X">' + ld({ ...rel, url: undefined }), 'https://x.test/produtos/blister-chikorita/');
   assert.equal(c.price.base, 55.9, 'produto único com nome compatível continua valendo');
 }
+// --- histórico por produto e loja ---
+{
+  const h = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_DATA_DIR, 'hist/me04-box36.json'), 'utf8'));
+  assert.ok(h.stores.shop && h.stores.vtex, 'histórico por loja');
+  assert.ok(Object.values(h.stores).every((x) => x.pts.every((pt) => pt[1] > 200)), 'preço suspeito (R$ 99) fora do histórico');
+  assert.equal(h.stores.shop.pts.at(-1)[1], 329, 'menor preço do dia da loja');
+}
 // --- regressões do teste ao vivo (07/10) ---
 {
   const { parseListing, msrpKeys } = await import('../src/match.js');

@@ -1,0 +1,35 @@
+name: Vigia do robô
+# Confere a cada 30 min se os dados estão frescos. Se o robô parar, avisa no Telegram
+# (logo depois de 1 hora parado e, enquanto continuar parado, a cada 6 horas).
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Conferir idade dos dados
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          T=$(curl -sf "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/data/data/state.json" | jq -r .generatedAt || true)
+          if [ -z "$T" ] || [ "$T" = "null" ]; then
+            T=$(curl -sf "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/data/state.json" | jq -r .generatedAt || true)
+          fi
+          [ -n "$T" ] && [ "$T" != "null" ] || { echo "sem dados"; exit 0; }
+          AGE=$(( ( $(date +%s) - $(date -d "$T" +%s) ) / 60 ))
+          echo "Dados de $T ($AGE min)"
+          H=$(date -u +%H); M=$(date -u +%M)
+          SEND=0
+          if [ $AGE -gt 60 ] && [ $AGE -le 95 ]; then SEND=1; fi
+          if [ $AGE -gt 95 ] && [ $((10#$H % 6)) -eq 0 ] && [ $((10#$M)) -lt 30 ]; then SEND=1; fi
+          if [ $SEND -eq 1 ] && [ -n "$TELEGRAM_BOT_TOKEN" ]; then
+            curl -s -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=⚠️ TCG Price Hunter: os preços não atualizam há ${AGE} minutos. Confira o cron-job.org e a aba Actions do GitHub."
+          fi

@@ -170,6 +170,30 @@ dialog.sheet.small{max-height:70dvh}
 @media (min-width:860px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:reduce){.mini,.toast{transition:none}.refresh.spin .icon{animation:none}}
 
+/* Histórico de preço */
+.hist{margin:14px 0 6px}
+.hist h3{margin:0 0 4px;font-size:16px}
+.hist .hsub{margin:0 0 8px;font-size:13.5px;color:var(--muted)}
+.hist{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4}
+.hchart{position:relative}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])) .hist{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181}}
+:root[data-theme="dark"] .hist{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181}
+.hchart svg{width:100%;height:auto;display:block;touch-action:pan-y}
+.hchart .grid{stroke:var(--line);stroke-width:1}
+.hchart .ax{fill:var(--muted);font-size:12px}
+.hchart .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.hchart .dot{stroke:var(--surface);stroke-width:2}
+.hchart .cop{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.hchart .cross{stroke:var(--ink);stroke-width:1;opacity:.35}
+.htip{position:absolute;top:4px;pointer-events:none;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:10px;padding:8px 10px;font-size:12.5px;min-width:150px;z-index:2}
+.htip b{display:block;margin-bottom:4px;font-size:12px;color:var(--muted);font-weight:600}
+.htip div{display:flex;align-items:center;gap:6px;justify-content:space-between}.htip div span{display:flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.hleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:13px;color:var(--ink)}
+.hleg span{display:inline-flex;align-items:center;gap:6px}
+.hleg .copk{width:14px;border-top:2px dashed var(--muted)}
+.hnote{font-size:13.5px;color:var(--muted);margin:6px 0 0}
+
 /* Explicação do Deal Score */
 .scorebtn{display:inline-flex;align-items:center;gap:5px;border:0;font:inherit;cursor:pointer}
 button.score{background:none;padding:0;color:var(--ink);font-weight:700}
@@ -620,11 +644,11 @@ function renderLegal(kind){
   <h3>8. Mudanças e lei aplicável</h3><p>Estes termos podem ser atualizados, sempre com a data acima. Valem as leis brasileiras, incluindo o Código de Defesa do Consumidor quando aplicável.</p>
   <h3>Contato</h3><p>${contato}</p>`,
   privacidade:`<h2>Política de privacidade</h2><p>Última atualização: 7 de outubro de 2026. Esta política segue a Lei Geral de Proteção de Dados (Lei 13.709/2018).</p>
-  <h3>Resumo</h3><p>O TCG Price Hunter não tem cadastro, login, formulário nem anúncios, e não coleta dados pessoais para si.</p>
+  <h3>Resumo</h3><p>O TCG Price Hunter não tem cadastro, login, formulário nem anúncios, e não coleta dados pessoais para si. A única medição é uma contagem anônima de visitas, sem cookies.</p>
   <h3>O que fica no seu aparelho</h3><p>Suas preferências (filtros, tema claro ou escuro) ficam salvas só no seu navegador, no armazenamento local. Elas não são enviadas a ninguém e você pode apagar limpando os dados do site no navegador. Não usamos cookies de rastreamento.</p>
-  <h3>Serviços de terceiros que você acessa ao usar o site</h3><ul><li><b>Vercel</b> hospeda o site e, como qualquer servidor, registra dados técnicos de acesso (como endereço IP e navegador) para segurança e funcionamento, conforme a política dela.</li><li><b>GitHub</b> fornece o arquivo de preços que o site carrega, com registros técnicos semelhantes.</li><li><b>Imagens dos produtos</b> são carregadas direto das lojas, sem enviar a página de origem.</li><li><b>Lojas</b>: ao clicar em "Ver na loja" você passa a seguir a política daquela loja.</li><li><b>Canal no Telegram</b>: se você entrar, vale a política do Telegram. Não temos acesso aos seus dados de lá além do que o Telegram mostra a administradores de canal.</li></ul>
+  <h3>Serviços de terceiros que você acessa ao usar o site</h3><ul><li><b>Vercel</b> hospeda o site e, como qualquer servidor, registra dados técnicos de acesso (como endereço IP e navegador) para segurança e funcionamento, conforme a política dela.</li><li><b>Contagem de visitas (Vercel Web Analytics)</b>: estatística anônima e agregada (páginas vistas, país, tipo de aparelho e navegador), sem cookies e sem identificar quem visita. Serve só para saber se o site está sendo útil.</li><li><b>GitHub</b> fornece o arquivo de preços que o site carrega, com registros técnicos semelhantes.</li><li><b>Imagens dos produtos</b> são carregadas direto das lojas, sem enviar a página de origem.</li><li><b>Lojas</b>: ao clicar em "Ver na loja" você passa a seguir a política daquela loja.</li><li><b>Canal no Telegram</b>: se você entrar, vale a política do Telegram. Não temos acesso aos seus dados de lá além do que o Telegram mostra a administradores de canal.</li></ul>
   <h3>Seus direitos</h3><p>Você pode pedir informação, correção ou exclusão de dados pessoais a qualquer momento pelo contato abaixo. Como não guardamos dados pessoais seus, normalmente não haverá nada a excluir.</p>
-  <h3>Mudanças</h3><p>Se um dia o site passar a ter cadastro, alertas por e-mail ou estatísticas de visita, esta política será atualizada antes, dizendo quais dados, para quê e por quanto tempo.</p>
+  <h3>Mudanças</h3><p>Se um dia o site passar a ter cadastro ou alertas por e-mail, esta política será atualizada antes, dizendo quais dados, para quê e por quanto tempo.</p>
   <h3>Contato</h3><p>${contato}</p>`};
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide legal">${T[kind]}</section></div>`;
 }
@@ -681,6 +705,53 @@ function showScore(btn){
     pop.style.left=left+"px";pop.style.top=top+"px"}
 }
 /* Alertas criados pelo site: abre o GitHub com o arquivo preenchido em config/alertas/ */
+/* Histórico de preço por loja: arquivo data/hist/<produto>.json, carregado ao abrir a ficha */
+async function loadHist(pid){
+  const box=$("#hist");if(!box)return;
+  const h=await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`);
+  if($("#hist")!==box)return;
+  const p=P[pid]||{};const msrp=p.msrp||null;
+  const stores=h?Object.entries(h.stores||{}).map(([id,x])=>({id,name:x.name,pts:x.pts})).filter((x)=>x.pts.length):[];
+  if(!stores.length){box.innerHTML=`<h3>Histórico de preço por loja</h3><p class="hnote">Ainda não há histórico com estoque confirmado para este produto.</p>`;return}
+  const last=(x)=>x.pts[x.pts.length-1][1];
+  stores.sort((a,b)=>last(a)-last(b));
+  const shown=stores.slice(0,5);
+  const days=[...new Set(shown.flatMap((x)=>x.pts.map((pt)=>pt[0])))].sort();
+  const all=shown.flatMap((x)=>x.pts.map((pt)=>pt[1]));let best=null;
+  for(const x of stores)for(const [d,v] of x.pts)if(!best||v<best.v)best={v,d,name:x.name};
+  const fmtD=(d)=>{const [y,m,dd]=d.split("-");return`${dd}/${m}`};
+  const sub=`Menor preço com estoque: <b style="color:var(--ink)">${money(best.v)}</b> em ${esc(best.name)}, ${fmtD(best.d)}. ${stores.length>5?`Mostrando as 5 lojas mais baratas de ${stores.length}.`:""}`;
+  if(days.length<2){
+    box.innerHTML=`<h3>Histórico de preço por loja</h3><p class="hsub">${sub}</p><p class="hnote">O histórico começou em ${fmtD(days[0])}. A linha do tempo aparece a partir do segundo dia.</p>
+    <div class="hleg">${shown.map((x,i)=>`<span><i class="sw" style="background:var(--s${i+1})"></i>${esc(x.name)}: ${money(last(x))}</span>`).join("")}</div>`;
+    box.querySelector(".hleg").closest(".hist").classList.add("hchart");return}
+  const W=Math.max(300,Math.round(box.clientWidth||600)),H=Math.round(Math.min(230,Math.max(180,W*.42))),L=60,R=10,T=12,B=26;
+  let lo=Math.min(...all,msrp||Infinity),hi=Math.max(...all,msrp||0);const pad=(hi-lo)*.12||hi*.05;lo=Math.max(0,lo-pad);hi=hi+pad;
+  const X=(i)=>L+(W-L-R)*(days.length===1?.5:i/(days.length-1));const Y=(v)=>T+(H-T-B)*(1-(v-lo)/(hi-lo));
+  const ticks=[0,1,2,3].map((k)=>lo+(hi-lo)*k/3);
+  const di=Object.fromEntries(days.map((d,i)=>[d,i]));
+  const path=(x)=>{let d="",prev=-2;for(const [day,v] of x.pts){const i=di[day];d+=(i===prev+1&&d?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)+" ";prev=i}return d};
+  box.innerHTML=`<h3>Histórico de preço por loja</h3><p class="hsub">${sub}</p>
+  <div class="hchart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Preço por dia em cada loja">
+    ${ticks.map((t)=>`<line class="grid" x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}"/><text class="ax" x="${L-6}" y="${(Y(t)+4).toFixed(1)}" text-anchor="end">R$ ${Math.round(t)}</text>`).join("")}
+    <text class="ax" x="${X(0)}" y="${H-6}" text-anchor="start">${fmtD(days[0])}</text><text class="ax" x="${X(days.length-1)}" y="${H-6}" text-anchor="end">${fmtD(days[days.length-1])}</text>
+    ${msrp?`<line class="cop" x1="${L}" x2="${W-R}" y1="${Y(msrp).toFixed(1)}" y2="${Y(msrp).toFixed(1)}"/>`:""}
+    ${shown.map((x,i)=>`<path class="ln" d="${path(x)}" style="stroke:var(--s${i+1})"/>${x.pts.length===1?`<circle class="dot" r="4.5" cx="${X(di[x.pts[0][0]])}" cy="${Y(x.pts[0][1])}" style="fill:var(--s${i+1})"/>`:""}`).join("")}
+    <line class="cross" id="hx" y1="${T}" y2="${H-B}" x1="-10" x2="-10"/>
+    <g id="hdots"></g>
+    <rect x="${L}" y="0" width="${W-L-R}" height="${H}" fill="transparent" id="hhit"/>
+  </svg><div class="htip" id="htip" hidden></div></div>
+  <div class="hleg">${shown.map((x,i)=>`<span><i class="sw" style="background:var(--s${i+1})"></i>${esc(x.name)}</span>`).join("")}${msrp?`<span><i class="copk"></i>Copag ${money(msrp)}</span>`:""}</div>`;
+  const svg=box.querySelector("svg"),tip=$("#htip"),hx=$("#hx"),hd=$("#hdots");
+  const at=(ev)=>{const r=svg.getBoundingClientRect();const x=(ev.clientX-r.left)/r.width*W;let i=Math.round((x-L)/((W-L-R)/Math.max(1,days.length-1)));i=Math.max(0,Math.min(days.length-1,i));
+    const d=days[i];hx.setAttribute("x1",X(i));hx.setAttribute("x2",X(i));
+    const rows=shown.map((s,k)=>{const pt=s.pts.find((q)=>q[0]===d);return pt?{k,name:s.name,v:pt[1]}:null}).filter(Boolean).sort((a,b)=>a.v-b.v);
+    hd.innerHTML=rows.map((q)=>`<circle class="dot" r="4.5" cx="${X(i)}" cy="${Y(q.v)}" style="fill:var(--s${q.k+1})"/>`).join("");
+    tip.innerHTML=`<b>${fmtD(d)}</b>${rows.length?rows.map((q)=>`<div><span><i class="sw" style="background:var(--s${q.k+1})"></i>${esc(q.name)}</span><strong>${money(q.v)}</strong></div>`).join(""):"Sem estoque confirmado"}`;
+    tip.hidden=false;const px=X(i)/W*r.width;tip.style.left=Math.max(0,Math.min(r.width-tip.offsetWidth,px+12>r.width/2?px-tip.offsetWidth-12:px+12))+"px"};
+  const hit=$("#hhit");hit.addEventListener("pointermove",at);hit.addEventListener("pointerdown",at);
+  hit.addEventListener("pointerleave",()=>{tip.hidden=true;hd.innerHTML="";hx.setAttribute("x1",-10);hx.setAttribute("x2",-10)});
+}
 /* Ficha do produto com todas as lojas */
 function openProduct(pid){
   const p=P[pid];if(!p)return;const gg=g(p);
@@ -696,6 +767,7 @@ function openProduct(pid){
       <div class="fact"><span>Média das lojas</span><b>${money(p.marketAverage)}</b></div>
       <div class="fact"><span>Menor já visto</span><b>${money(p.lowestHistorical?.total)}</b>${p.lowestHistorical?`<small>${ago(p.lowestHistorical.at)}</small>`:""}</div>
     </div>
+    <section class="hist" id="hist" aria-label="Histórico de preço por loja"><h3>Histórico de preço por loja</h3><div class="skel" style="height:180px;border-radius:12px"></div></section>
     ${offers.map((o)=>`<div class="offer">
       <span class="st">${esc(o.storeName)}${o.seller&&o.seller!==o.storeName?` <span class="dt">(${esc(o.seller)})</span>`:""}</span>
       <span class="pr">${money(o.total)}</span>
@@ -706,6 +778,7 @@ function openProduct(pid){
     <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. O frete para o seu endereço pode ser diferente. Verificado ${ago(offers[0]?.source_timestamp)}.</p>
   </div>`;
   if(!sh.open)sh.showModal();
+  loadHist(pid);
 }
 
 /* Brilho holográfico: segue o dedo ou o mouse, e a inclinação do celular */
@@ -759,8 +832,10 @@ function init(st){
 function loading(){
   $("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
 }
-const RAW=`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/data/state.json`;
-async function fetchState(){const gh=/\.github\.io$/.test(location.hostname);for(const u of gh?["./data/state.json",RAW]:[RAW,"./data/state.json","../data/state.json"]){try{const r=await fetch(u,{cache:"no-store"});if(r.ok)return await r.json()}catch{}}return null}
+const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
+const DATA_BASES=[RAWB("data"),RAWB("main"),"./data/"];
+async function fetchData(path){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(r.ok)return await r.json()}catch{}}return null}
+async function fetchState(){return fetchData("state.json")}
 async function refresh(){
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
   const st=await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
@@ -809,5 +884,6 @@ new IntersectionObserver(([en])=>{const m=$("#mini");m.classList.toggle("show",!
   document.querySelectorAll(".theme-btn").forEach((b)=>b.onclick=()=>{document.documentElement.dataset.theme=dark()?"light":"dark";store.set("theme",document.documentElement.dataset.theme);sync()})})();
 load();
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
