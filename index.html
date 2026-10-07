@@ -101,7 +101,6 @@ a{color:inherit}
 
 /* Destaque: a melhor oferta agora */
 .toploader{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow-lift);overflow:hidden}
-.toploader::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--ok),var(--e-water))}
 .tl-top{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px}
 .tl-top .icon{color:var(--ok)}
 .tl-top .chip{margin-left:auto;text-transform:none;letter-spacing:0}
@@ -345,7 +344,7 @@ a.navbtn{text-decoration:none}
 @media (max-width:640px){.hero-search h1{font-size:24px}}
 .sbox{position:relative}
 .sbox-in{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:4px 4px 4px 16px;transition:border-color var(--t-fast) ease,box-shadow var(--t-fast) ease}
-.sbox-in:focus-within{border-color:var(--ink);box-shadow:0 0 0 4px color-mix(in srgb,var(--e-water) 18%,transparent)}
+.sbox-in:focus-within{border-color:var(--ink);outline:2px solid var(--e-water);outline-offset:2px}
 .sbox-in>.icon{color:var(--muted);flex:none;width:20px;height:20px}
 .sbox input{flex:1;min-width:0;border:0;background:transparent;outline:0;font-size:16px;padding:10px 0}
 .sbox input::-webkit-search-cancel-button{display:none}
@@ -378,7 +377,10 @@ a.navbtn{text-decoration:none}
 .deals.row4 .deal{scroll-snap-align:start;display:flex}
 @media (min-width:1100px){.deals.row4{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible;margin:0;padding:0}}
 .deal{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0;transition:transform var(--t-med) var(--ease-out),box-shadow var(--t-med) ease,border-color var(--t-med) ease}
-@media (hover:hover) and (pointer:fine){.deal:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}}
+@media (hover:hover) and (pointer:fine){.deal:hover{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-4px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+  .deal::after,.fan-c::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity 240ms ease;mix-blend-mode:soft-light;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%),rgb(255 255 255 / .75),transparent 42%),conic-gradient(from 200deg at var(--mx,50%) var(--my,0%),#ff5f6d,#ffc371,#fff36b,#7cf29a,#53c7ff,#8a7bff,#ff6ad5,#ff5f6d)}
+  .deal:hover::after,.fan-c:hover::after{opacity:.55}}
 .deal:has(.deal-hit:focus-visible){outline:3px solid var(--e-water);outline-offset:2px}
 .deal-hit{position:absolute;inset:0;z-index:1;border-radius:inherit}
 .deal-hit:focus-visible{outline:0}
@@ -503,6 +505,64 @@ a.navbtn{text-decoration:none}
 @media (max-width:760px){.fbar2{align-items:center}.fbar2-row{display:none}.fbar2-btn{display:inline-flex}.fbar2-n{padding:0;margin-left:auto}}
 .fsheet-f{display:grid;gap:10px;margin:8px 0 14px}
 .fsheet-f .field select{padding-right:34px}
+
+
+/* ===== Início: herói de busca, leque de ofertas e cartas distribuídas ===== */
+.hx{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:28px;align-items:center;margin-top:16px;padding:34px 34px 30px;border-radius:24px;color:#fff;
+  background:radial-gradient(110% 130% at 92% 0%,color-mix(in srgb,var(--e-water) 42%,transparent),transparent 55%),radial-gradient(80% 120% at 0% 110%,color-mix(in srgb,var(--e-psychic) 34%,transparent),transparent 60%),var(--cover);box-shadow:var(--shadow-lift)}
+.hx h1{margin:0;font-size:clamp(28px,4.2vw,46px);font-weight:800;line-height:1.04;letter-spacing:-.03em;text-wrap:balance}
+.hx h1 span{color:var(--sticker)}
+.hx-copy>p{margin:12px 0 18px;color:var(--cover-muted);font-size:15px;max-width:52ch}.hx-copy>p b{color:#fff;font-weight:600}
+.hx .sbox-in{background:#fff;border-color:transparent;box-shadow:0 10px 30px rgb(0 0 0 / .25)}
+.hx .sbox-in input{color:#131F49}.hx .sbox-in input::placeholder{color:#556079}.hx .sbox-in>.icon{color:#556079}
+.hx .sbox-in:focus-within{outline:3px solid var(--sticker);outline-offset:3px}
+.hx .sbox .btn{background:#1B2C74;color:#fff}
+.hx .qchip{background:rgb(255 255 255 / .08);border-color:rgb(255 255 255 / .22);color:#fff}
+@media (hover:hover) and (pointer:fine){.hx .qchip:hover{background:rgb(255 255 255 / .16);border-color:rgb(255 255 255 / .5)}}
+.hx .ac{color:var(--ink)}
+.fan{position:relative;height:290px}
+.fan-c{--base:translate(-50%,0) rotate(calc((var(--i) - 1) * 10deg));position:absolute;left:calc(50% + (var(--i) - 1) * 31%);top:28px;width:44%;max-width:190px;display:flex;flex-direction:column;background:#fff;color:#131F49;border-radius:16px;overflow:hidden;text-decoration:none;box-shadow:0 18px 40px rgb(0 0 0 / .35);transform:var(--base);z-index:calc(2 - (var(--i) - 1) * (var(--i) - 1));
+  animation:fanFloat 7s ease-in-out calc(var(--i) * -2.3s) infinite alternate,fanIn 900ms cubic-bezier(.16,1,.3,1) calc(120ms + var(--i) * 120ms) backwards}
+.fan-c:nth-child(2){top:0}
+.fan-ph{aspect-ratio:1;border-radius:0}
+.fan-t{display:flex;flex-direction:column;gap:2px;padding:9px 11px 11px}
+.fan-t small{font-size:11.5px;color:#556079;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fan-t b{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.fan-t .off{align-self:flex-start}
+.hx.off .fan-c{animation-play-state:paused}
+@keyframes fanFloat{from{transform:var(--base) translateY(-7px)}to{transform:var(--base) translateY(7px)}}
+@keyframes fanIn{from{opacity:0;transform:translate(-50%,70px) rotate(0deg) scale(.9)}}
+@media (max-width:860px){.hx{grid-template-columns:minmax(0,1fr);padding:24px 18px 20px}.fan{display:none}}
+.page-title h2 small{font-size:13px;color:var(--muted);font-weight:500;margin-left:4px}
+@media (max-width:640px){.page-title h2 small{display:none}.page-title h2{font-size:18px}}
+.icon.tgi{color:var(--e-water)}
+/* Cartas distribuídas: viram do verso para a frente, uma vez por sessão */
+.deal-back{position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:inherit;opacity:0;transform:scaleX(-1);
+  background:center/62% no-repeat var(--logo),radial-gradient(80% 60% at 50% 40%,color-mix(in srgb,var(--e-water) 40%,transparent),transparent 70%),radial-gradient(120% 90% at 50% 120%,color-mix(in srgb,var(--e-psychic) 45%,transparent),transparent 60%),var(--cover)}
+.deals.dealing .deal{animation:dealIn 1050ms linear calc(var(--i) * 110ms) backwards}
+.deals.dealing .deal-back{animation:dealBack 1050ms linear calc(var(--i) * 110ms) backwards}
+@keyframes dealIn{0%{opacity:0;transform:perspective(1100px) translate3d(calc(var(--i) * -100% - var(--i) * 14px),40px,0) rotateY(-180deg) rotateZ(-7deg);animation-timing-function:cubic-bezier(.16,1,.3,1)}8%{opacity:1}48%{opacity:1;transform:perspective(1100px) translate3d(0,0,0) rotateY(-180deg) rotateZ(0deg);animation-timing-function:cubic-bezier(.65,0,.35,1)}100%{opacity:1;transform:perspective(1100px) rotateY(0deg)}}
+@keyframes dealBack{0%,73%{opacity:1}75%,100%{opacity:0}}
+/* Promoções do Telegram em cards */
+.home-tg{margin-top:8px}
+.tiprow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(290px,340px);gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px var(--gutter) 6px;margin:0 calc(var(--gutter) * -1);scrollbar-width:none}
+.tiprow::-webkit-scrollbar{display:none}.tiprow .tipc{scroll-snap-align:start}
+.tipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}.tipgrid.one{grid-template-columns:minmax(0,1fr)}
+.tipc{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:center;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;text-decoration:none;color:inherit;transition:transform 220ms var(--ease-out),box-shadow 220ms ease,border-color 220ms ease}
+.tipc:active{transform:scale(.985)}
+@media (hover:hover) and (pointer:fine){.tipc:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}}
+.tipc-ph{width:76px;height:76px;border-radius:12px}
+.tipc-b{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tipc-src{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);min-width:0;white-space:nowrap}
+.tipc-src img{width:16px;height:16px;border-radius:4px;flex:none;background:#fff}
+.tipc-src b{color:var(--ink);font-weight:700}.tipc-src span{overflow:hidden;text-overflow:ellipsis}
+.tipc-n{font-size:14px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tipc-p{display:flex;align-items:center;gap:8px}.tipc-p b{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.tipc small{font-size:11.5px;color:var(--muted)}
+/* Referência coletada na internet */
+.off.ref{background:color-mix(in srgb,var(--e-water) 14%,var(--surface));color:var(--e-water)}
+.refnet{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--e-water);cursor:help}
+.refline{display:flex;gap:6px;align-items:flex-start;margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.4}.refline .icon{width:14px;height:14px;flex:none;margin-top:1px}.refline a{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion:reduce){.fan-c{animation:fanIn 1ms both}.deals.dealing .deal,.deals.dealing .deal-back{animation:none}.deal:hover{transform:none}}
 
 /* Histórico de preço */
 .hist h3{margin:0 0 4px;font-size:16px}
@@ -849,8 +909,50 @@ function entries(){
 }
 function sortEntries(list){
   const s=F.sort||(F.mode==="abrir"?"ppb":"score");
-  const cmp={score:(a,b)=>(b.o.dealScore??-1)-(a.o.dealScore??-1)||(b.o.discount??-9)-(a.o.discount??-9),disc:(a,b)=>(b.o.discount??-9)-(a.o.discount??-9),price:(a,b)=>a.o.total-b.o.total,ppb:(a,b)=>(a.o.perBooster??1e9)-(b.o.perBooster??1e9),new:(a,b)=>String(b.p.firstSeen||"").localeCompare(String(a.p.firstSeen||""))||(a.o.total-b.o.total)}[s]||(()=>0);
+  const cmp={score:(a,b)=>(b.o.dealScore??-1)-(a.o.dealScore??-1)||(b.o.discount??-9)-(a.o.discount??-9),disc:(a,b)=>(discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9),price:(a,b)=>a.o.total-b.o.total,ppb:(a,b)=>(a.o.perBooster??1e9)-(b.o.perBooster??1e9),new:(a,b)=>String(b.p.firstSeen||"").localeCompare(String(a.p.firstSeen||""))||(a.o.total-b.o.total)}[s]||(()=>0);
   return list.sort(cmp);
+}
+
+/* Referência de preço: oficial (loja Copag) ou coletada na internet (não oficial, só para comparação) */
+const refOf=(p)=>p.copagConfirmed?{v:p.msrp,net:false}:p.copagReference?{v:p.copagReference,net:true,url:p.copagReferenceUrl}:null;
+const discOf=(p,o)=>{if(!o||o.anomalous)return null;if(p.copagConfirmed)return o.discount;const r=refOf(p);return r?+(1-o.total/r.v).toFixed(4):null};
+const REFNOTE="Preço sugerido coletado na internet (imagens de lojas e perfis especializados), não confirmado na loja oficial da Copag. Serve só para comparação: não entra no Deal Score nem nos alertas.";
+
+/* Promoções do Telegram como cards: canal + loja onde está à venda (ícone do próprio site da loja) */
+const MK={"Shopee":"shopee.com.br","Amazon":"amazon.com.br","Mercado Livre":"mercadolivre.com.br","Magalu":"magazineluiza.com.br","AliExpress":"aliexpress.com","Americanas":"americanas.com.br","Casas Bahia":"casasbahia.com.br"};
+const mkDomain=(t)=>{const s=t.store||"";if(MK[s])return MK[s];if(/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(s))return s.replace(/^www\./,"");try{return new URL(t.url).hostname.replace(/^www\./,"")}catch{return null}};
+const mkName=(t)=>t.store&&MK[t.store]?t.store:(t.store||mkDomain(t)||"Loja");
+const chan=(t)=>"@"+String(t.source||"").replace(/^Telegram\s+@?/,"").replace(/^Pelando$/,"pelando");
+function tipCard(t){
+  const p=P[t.productId];const dom=mkDomain(t);const ref=p?refOf(p):null;const d=ref&&t.price?1-t.price/ref.v:null;
+  return`<a class="tipc" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">
+    ${p?photo(p,null,"photo tipc-ph"):`<span class="photo tipc-ph fallback" style="--ec:var(--e-water)">${ic("lightbulb")}</span>`}
+    <span class="tipc-b">
+      <span class="tipc-src">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="16" height="16" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}<b>${esc(mkName(t))}</b><span>via ${esc(chan(t))}</span></span>
+      <span class="tipc-n">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</span>
+      <span class="tipc-p"><b>${money(t.price)}</b>${t.anomalous?`<span class="chip bad">Barato demais</span>`:d!=null&&d>=.0005?`<span class="off sm${ref.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:""}</span>
+      <small>${ago(t.postedAt||t.firstSeen)} · não verificado</small>
+    </span></a>`;
+}
+const liveTips=()=>(S.tips||[]).filter((t)=>t.productId&&!t.expired&&t.price>0).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen)));
+
+/* Motion da Início: cartas distribuídas e viradas (uma vez por sessão), leque flutuante e brilho holográfico */
+const reduceMotion=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
+let heroIO=null;
+function homeMotion(){
+  const row=$(".home-opp .deals");let first=false;try{first=!sessionStorage.getItem("ph:dealt");sessionStorage.setItem("ph:dealt","1")}catch{}
+  if(row&&first&&!reduceMotion()){row.classList.add("dealing");setTimeout(()=>row.classList.remove("dealing"),1400)}
+  const hx=$(".hx");if(heroIO)heroIO.disconnect();
+  if(hx&&"IntersectionObserver" in window){heroIO=new IntersectionObserver(([e])=>hx.classList.toggle("off",!e.isIntersecting));heroIO.observe(hx)}
+}
+let tiltEl=null,tiltRaf=0;
+if(matchMedia("(hover:hover) and (pointer:fine)").matches){
+  document.addEventListener("pointermove",(e)=>{const el=e.target.closest?.(".deal,.fan-c");
+    if(tiltEl&&tiltEl!==el){tiltEl.style.removeProperty("--rx");tiltEl.style.removeProperty("--ry");tiltEl=null}
+    if(!el||reduceMotion())return;tiltEl=el;cancelAnimationFrame(tiltRaf);
+    tiltRaf=requestAnimationFrame(()=>{const r=el.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+      el.style.setProperty("--mx",(x*100).toFixed(1)+"%");el.style.setProperty("--my",(y*100).toFixed(1)+"%");
+      el.style.setProperty("--rx",((.5-y)*6).toFixed(2)+"deg");el.style.setProperty("--ry",((x-.5)*8).toFixed(2)+"deg")})},{passive:true});
 }
 
 /* DealScore: faixas de leitura (só apresentação; o cálculo continua no robô) */
@@ -864,20 +966,20 @@ function scoreBlock(o){
 }
 /* PriceDisplay: preço atual em destaque, Copag logo abaixo, desconto e economia já calculados */
 function priceBlock(p,o,abrir){
-  const d=o.discount;const hasD=p.copagConfirmed&&d!=null&&!o.anomalous;
-  const off=hasD?(d>=.0005?`<span class="off">${ic("trend-down")}${pct(d)}</span>`:d<=-.0005?`<span class="off up">+${pct(-d)}</span>`:`<span class="off eq">Preço Copag</span>`):"";
+  const r=refOf(p);const d=discOf(p,o);const hasD=!!(r&&d!=null);
+  const off=hasD?(d>=.0005?`<span class="off${r.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:d<=-.0005?`<span class="off up">+${pct(-d)}</span>`:`<span class="off eq">Preço Copag</span>`):"";
   return`<div class="pblock"><span class="big" data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</span>${off}</div>
-  <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`Ref. Copag ${money(p.copagReference)} (não oficial)`:"Sem preço Copag oficial"}</p>`;
+  <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
 /* DealCard: o card de oferta usado em todo o site */
 function dealCard(e,opt={}){
   const{p,o,n}=e;const gg=g(p);const abrir=!opt.plain&&F.mode==="abrir"&&view==="deals";
-  const d=o?.discount;const hasD=o&&p.copagConfirmed&&d!=null&&!o.anomalous;
+  const r=refOf(p);const d=discOf(p,o);const hasD=!!(o&&r&&d!=null);
   const state=!o?"none":o.stock==="PRE_ORDER"?"pre":!live(o)?"oos":"";
   const fav=isFav(p.id);const href="/produto/"+(SLUG[p.id]||encodeURIComponent(p.id));
   const sc=o&&o.dealScore!=null&&live(o)?o.dealScore:null;
-  return`<article class="deal${state?" "+state:""}${CHANGED.has(p.id)?" upd":""}" style="--ec:${gg.c}">
+  return`<article class="deal${state?" "+state:""}${CHANGED.has(p.id)?" upd":""}" style="--ec:${gg.c}${opt.i!=null?`;--i:${opt.i}`:""}">${opt.i!=null?`<span class="deal-back" aria-hidden="true"></span>`:""}
   <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" aria-label="${esc(p.collectionName+" "+label(p))}"></a>
   <div class="deal-top">${sc!=null?`<span class="deal-score" style="--sc:${scoreColor(sc)}">${dial(sc,"sm")}<span>${band(sc)[2]}</span></span>`:state==="pre"?`<span class="chip warn">Pré-venda</span>`:state?`<span class="chip">${state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:`<span class="chip">Sem nota</span>`}
     <button class="deal-fav" type="button" data-fav="${esc(p.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
@@ -885,8 +987,8 @@ function dealCard(e,opt={}){
   <div class="deal-body">
     <span class="deal-col">${ic(gg.icon)}<span>${esc(p.collectionName)}</span></span>
     <h3 class="deal-name">${esc(label(p))}</h3>
-    ${o?`<div class="deal-price"><span>${money(abrir?o.perBooster:o.total)}</span>${hasD&&d>=.0005&&!abrir?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:""}</div>
-    <p class="deal-sub">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?(hasD&&d<=-.0005?`Copag ${money(p.msrp)} · acima`:`Copag <s>${money(p.msrp)}</s>`):p.copagReference?`Ref. Copag ${money(p.copagReference)}`:"Sem preço Copag oficial"}</p>
+    ${o?`<div class="deal-price"><span>${money(abrir?o.perBooster:o.total)}</span>${hasD&&d>=.0005&&!abrir?`<span class="off sm${r.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:""}</div>
+    <p class="deal-sub">${abrir?`por booster · total ${money(o.total)}`:r?`${r.net?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span>`:"Copag"} ${hasD&&d<=-.0005?`${money(r.v)} · acima`:`<s>${money(r.v)}</s>`}`:"Sem preço Copag oficial"}</p>
     ${o.releaseDate?`<p class="deal-sub">Lançamento: <b>${new Date(o.releaseDate).toLocaleDateString("pt-BR")}</b></p>`:""}
     <p class="deal-store">${ic("storefront")}<span>${esc(o.storeName)}${n>1?` <em>+${n-1} ${n-1>1?"lojas":"loja"}</em>`:""}</span></p>
     <a class="btn deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a>`
@@ -933,23 +1035,34 @@ function searchBox(id,q,big){
 }
 function renderDeals(){
   const raw=entries();
-  const base=F.mode==="guardar"?raw.filter((e)=>e.p.copagConfirmed):raw;
-  const noCopag=F.mode==="guardar"?raw.filter((e)=>!e.p.copagConfirmed):[];
+  const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
+  const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
   const opp=oppPool().slice(0,4);
   const nLive=OFF.filter(live).length,nStores=new Set(OFF.filter(live).map((o)=>o.storeId)).size;
-  $("#view").innerHTML=`<section class="hero-search"><h1>Encontre seu próximo Pokémon TCG</h1><p>Preços de ${nStores} lojas comparados com o preço sugerido oficial da Copag. ${nLive} ofertas com estoque agora.</p>${searchBox("hq","",true)}
-    <div class="qchips" aria-label="Buscas rápidas">${["ETB","Booster box","Blister","Escuridão Absoluta","Caos Ascendente","30 anos"].map((q)=>`<button type="button" class="qchip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div></section>
-  <section class="home-opp"><div class="page-title"><h2>${ic("flame-f","icon fire")}Oportunidades agora</h2><a class="seeall" href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></div>
-    ${opp.length?`<div class="deals row4">${opp.map((e)=>dealCard(e,{plain:true})).join("")}</div>`:`<div class="empty"><h3>Nenhuma oferta abaixo da Copag agora</h3><p>O robô confere as lojas a cada 15 minutos.</p></div>`}</section>
+  const fan=opp.slice(0,3);const tips=liveTips().slice(0,8);
+  const avgOff=opp.length?opp.reduce((x,e)=>x+e.o.discount,0)/opp.length:0;
+  $("#view").innerHTML=`<section class="hx">
+    <div class="hx-copy"><h1>Encontre seu próximo <span>Pokémon TCG</span></h1>
+      <p>Preços de <b>${nStores} lojas</b> comparados com o preço sugerido oficial da Copag. <b>${nLive}</b> ofertas com estoque agora.</p>
+      ${searchBox("hq","",true)}
+      <div class="qchips" aria-label="Buscas rápidas">${["ETB","Booster box","Blister","Escuridão Absoluta","Caos Ascendente","30 anos"].map((q)=>`<button type="button" class="qchip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div></div>
+    ${fan.length?`<div class="fan" aria-label="Melhores ofertas agora">${fan.map((e,i)=>`<a class="fan-c" style="--i:${i}" href="/produto/${SLUG[e.p.id]}" data-p="${esc(e.p.id)}">${photo(e.p,e.o,"photo fan-ph")}<span class="fan-t"><small>${esc(e.p.collectionName)}</small><b>${money(e.o.total)}</b><span class="off sm">${ic("trend-down")}${pct(e.o.discount)}</span></span></a>`).join("")}</div>`:""}
+  </section>
+  <section class="home-opp"><div class="page-title"><h2>${ic("flame-f","icon fire")}Oportunidades agora${avgOff?` <small>até ${pct(Math.max(...opp.map((e)=>e.o.discount)))} abaixo da Copag</small>`:""}</h2><a class="seeall" href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></div>
+    ${opp.length?`<div class="deals row4">${opp.map((e,i)=>dealCard(e,{plain:true,i})).join("")}</div>`:`<div class="empty"><h3>Nenhuma oferta abaixo da Copag agora</h3><p>O robô confere as lojas a cada 15 minutos.</p></div>`}</section>
+  ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram</h2><a class="seeall" href="/pistas" data-go="pistas">Ver todas ${ic("caret-down","icon chev")}</a></div>
+    <div class="tiprow">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar.</p></section>`:""}
   <section class="home-all"><div class="page-title"><h2>Todos os preços</h2><span>${list.length} ${list.length===1?"produto":"produtos"}</span></div>
   <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
   <p class="seg-hint">${F.mode==="abrir"?"Boosters lacrados pelo menor preço por pacote, para abrir.":"Lacrados com o maior desconto sobre o preço sugerido Copag."}</p>
   ${filtersHTML(all)}
   ${list.length?`<div class="deals">${list.map((e)=>dealCard(e)).join("")}</div>`:`<div class="empty"><h3>Nenhuma oferta com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
-  ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço Copag confirmado (${noCopag.length})</summary><p>Sem o preço sugerido não dá para medir desconto. Ficam fora do ranking até a Copag publicar o preço.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
+  ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço sugerido conhecido (${noCopag.length})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
+  ${base.some((e)=>!e.p.copagConfirmed)?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
   </section>`;
+  homeMotion();
 }
 
 function renderList(title,intro,list,emptyMsg){
@@ -969,7 +1082,7 @@ function renderCopag(){
   const ps=(S.products||[]).slice();const cols=(S.collections||[]);
   const off=ps.filter((p)=>p.copagConfirmed).length,ref=ps.filter((p)=>!p.copagConfirmed&&p.copagReference).length,none=ps.length-off-ref;
   const day=(iso)=>iso?new Date(iso).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}):"";
-  const row=(p)=>{const c=p.copag||{};return`<tr class="click" data-p="${esc(p.id)}" tabindex="0"><td>${esc(label(p))}</td><td class="r">${p.copagConfirmed?`<b>${money(p.msrp)}</b>`:p.copagReference?`<span style="color:var(--muted)">${money(p.copagReference)}</span>`:`<span style="color:var(--muted)">-</span>`}</td><td>${p.copagConfirmed?`<a href="${esc(safeUrl(c.source_url))}" target="_blank" rel="noopener">Loja oficial Copag</a><br><small style="color:var(--muted)">${day(c.source_timestamp||c.msrp_updated_at)}</small>`:p.copagReference?`<span class="chip warn">Não oficial</span>`:`<span class="chip">Sem preço</span>`}</td></tr>`};
+  const row=(p)=>{const c=p.copag||{};return`<tr class="click" data-p="${esc(p.id)}" tabindex="0"><td>${esc(label(p))}</td><td class="r">${p.copagConfirmed?`<b>${money(p.msrp)}</b>`:p.copagReference?`<span style="color:var(--muted)">${money(p.copagReference)}</span>`:`<span style="color:var(--muted)">-</span>`}</td><td>${p.copagConfirmed?`<a href="${esc(safeUrl(c.source_url))}" target="_blank" rel="noopener">Loja oficial Copag</a><br><small style="color:var(--muted)">${day(c.source_timestamp||c.msrp_updated_at)}</small>`:p.copagReference?`<span class="chip warn" title="${esc(REFNOTE)}">Ref. internet</span>${p.copagReferenceUrl?`<br><small><a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">fonte</a></small>`:""}`:`<span class="chip">Sem preço</span>`}</td></tr>`};
   const order=(p)=>(p.copagConfirmed?0:p.copagReference?1:2);
   const meta=cols.map((c,i)=>({c,i,k:ps.filter((p)=>p.collection===c.id&&p.copagConfirmed).length,r:ps.filter((p)=>p.collection===c.id&&p.copagReference).length})).sort((x,y)=>y.k-x.k||y.r-x.r||y.i-x.i);
   const sec=({c})=>{const l=ps.filter((p)=>p.collection===c.id).sort((a,b)=>order(a)-order(b)||String(a.typeLabel).localeCompare(b.typeLabel));if(!l.length)return"";const k=l.filter((p)=>p.copagConfirmed).length;
@@ -1026,13 +1139,10 @@ function tipHits(q){
     .sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))).slice(0,8);
 }
 function renderTips(){
-  const t=S.tips||[];const src=S.tipSources||[];
-  const ok=t.filter((x)=>x.productId&&!x.expired),other=t.filter((x)=>!x.productId||x.expired);
-  const table=tipTable;
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
-  <section class="panel"><h2>Pistas</h2><p>Promoções postadas por pessoas em canais públicos do Telegram. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p>
-  ${ok.length?table(ok):`<p style="padding:0 16px 16px">Nenhuma pista com produto identificado agora.</p>`}</section>
-  ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${table(other)}</details>`:""}</div>`;
+  const t=S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
+  $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
+  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada 15 minutos.</p></div>`}
+  ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
 }
 
 /* Como calculamos: o Deal Score critério por critério (dados reais da oferta) */
@@ -1209,7 +1319,7 @@ function renderProduct(pid){
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span></div>
       ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
-      ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:`<p class="hnote">Sem preço Copag oficial para comparar${p.copagReference?` (referência não oficial: ${money(p.copagReference)})`:""}.</p>`}
+      ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
       <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)} ${ic("arrow-square-out")}</a>
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
@@ -1230,6 +1340,7 @@ function renderProduct(pid){
       ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));return`${on.length?`<div class="solist">${on.map((o)=>storeOffer(o,p)).join("")}</div>`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
       <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete.</p></section>
+    ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
 </div>`;
@@ -1546,7 +1657,7 @@ function renderSearch(){
   ${cols.length?`<div class="qchips">${cols.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)} <small>${c.products}</small></button>`).join("")}</div>`:""}
   ${res.length?`<div class="deals">${cards.map((e)=>dealCard(e,{plain:true})).join("")}</div>`
     :`<div class="empty"><h3>Não achamos esse produto</h3><p>Confira a escrita ou tente o nome da coleção, o tipo (ETB, box, blister) ou o código de barras.</p>${sugg.length?`<p>Talvez você quis dizer: ${sugg.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)}</button>`).join(" ")}</p>`:""}<button class="btn ghost" type="button" data-go="">Ver todas as ofertas</button></div>`}
-  ${tips.length?`<section class="panel tipsearch"><h2>${ic("lightbulb")}No Telegram <small>${tips.length}</small></h2><p>Promoções postadas nos canais que o site acompanha. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p>${tipTable(tips)}</section>`:""}`;
+  ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}No Telegram <small>${tips.length}</small></h2></div><div class="tipgrid">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p></section>`:""}`;
 }
 
 /* Oportunidades: ofertas verificadas (estoque confirmado + Copag oficial) abaixo da Copag, ranqueadas pelo Deal Score */
@@ -1640,6 +1751,7 @@ document.addEventListener("click",(e)=>{
   if(t.closest("#retry")){loading();load();return}
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
+  const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
   const stb=t.closest("[data-store]");if(stb){const o=OFF.find((x)=>x.id===stb.dataset.store);if(o)track("click_store",{store:o.storeId,id:o.productId,price:o.total});return}
   const qb=t.closest("[data-q]");if(qb){if(qb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();doSearch(qb.dataset.q);return}
   const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();openProduct(pb.dataset.p);return}
@@ -1681,7 +1793,7 @@ document.addEventListener("change",(e)=>{const t=e.target;
   if(t.id==="osort"){offerSort=t.value;renderProduct(curPid);return}
   const ok=t.dataset?.of;if(ok){OF[ok]=["disc","score"].includes(ok)?Number(t.value):t.value;store.set("opp",OF);renderOpp();if($("#fsheet").open)openFilterSheet();track("filter_used",{f:ok,v:String(OF[ok])});return}
   const k=t.dataset?.f;if(!k)return;F[k]=t.type==="checkbox"?t.checked:t.value;store.set("f",F);renderDeals();track("filter_used",{f:k})});
-$("#mini-img").style.backgroundImage=`url("${$(".brand img").src}")`;
+$("#mini-img").style.backgroundImage=`url("${$(".brand img").src}")`;document.documentElement.style.setProperty("--logo",`url("${$(".brand img").src}")`);
 new IntersectionObserver(([en])=>{const m=$("#mini");m.classList.toggle("show",!en.isIntersecting);m.setAttribute("aria-hidden",String(en.isIntersecting))},{threshold:0}).observe($(".cover"));
 const isDark=()=>document.documentElement.dataset.theme?document.documentElement.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
 function themeSync(){document.querySelectorAll(".theme-btn use").forEach((u)=>u.setAttribute("href",isDark()?"#i-sun":"#i-moon"));const l=document.querySelector(".theme-lbl");if(l)l.firstChild.textContent=isDark()?"Tema claro":"Tema escuro"}

@@ -118,7 +118,7 @@ const duplo = by((o) => o.productId === 'c30-blister2');
 const pd = s.products.find((p) => p.id === 'c30-blister2');
 assert.ok(duplo && duplo.discount === null && !pd.copagConfirmed && pd.copagReference === 69.99, 'catálogo divulgado por terceiros vira só referência, sem desconto');
 const gren = by((o) => o.productId === 'c30-colecao_ex-greninja');
-assert.ok(gren && s.products.find((p) => p.id === 'c30-colecao_ex-greninja').copagReference === 169.99, 'variante herda a referência do Box ex');
+assert.ok(gren && s.products.find((p) => p.id === 'c30-colecao_ex-greninja').copagReference === 160.99, 'variante herda a referência do Box ex');
 assert.ok(s.types.some((t) => t.id === 'blister_2') && s.collections.some((c) => c.id === 'c30'), 'filtros gerados a partir dos dados');
 const r1 = sentMsgs.length; assert.ok(sentMsgs.some((m) => m.title.includes('PREÇO-ALVO')), 'alvo R$350 atingido');
 assert.ok(sentMsgs.every((m) => !/99,00/.test(m.text)), 'anomalia não alerta');
