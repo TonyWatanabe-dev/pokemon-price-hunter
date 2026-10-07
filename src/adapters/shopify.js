@@ -6,6 +6,7 @@ export async function detect(base) {
   try { const j = await getJson(base + '/products.json?limit=1'); return Array.isArray(j.products); } catch (e) { if (e.blocked) throw e; return false; }
 }
 
+const absImg = (base, u) => { if (!u || typeof u !== 'string') return null; try { return new URL(u.startsWith('//') ? 'https:' + u : u, base).href; } catch { return null; } };
 function toListing(base, p, v, multi) {
   return {
     title: p.title + (multi && v.title && v.title !== 'Default Title' ? ' ' + v.title : ''),
@@ -13,6 +14,7 @@ function toListing(base, p, v, multi) {
     price: { base: brl(v.price ?? p.price) }, listPrice: brl(v.compare_at_price ?? p.compare_at_price_max) || null,
     stock: v.available === true ? 'IN_STOCK' : v.available === false ? 'OUT_OF_STOCK' : 'UNKNOWN', quantity: null,
     sku: v.sku || null, ean: v.barcode || null, seller: null, sourceType: 'store_json',
+    image: absImg(base, v.featured_image?.src || p.featured_image?.url || p.featured_image || p.image || p.images?.[0]?.src || p.images?.[0]),
   };
 }
 
