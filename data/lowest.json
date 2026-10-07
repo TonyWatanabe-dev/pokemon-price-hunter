@@ -6,10 +6,10 @@
     "offerId": "1873d050ef24"
   },
   "me04-box36": {
-    "total": 449.99,
-    "at": "2026-10-06T12:26:46.710Z",
-    "storeId": "ludostation",
-    "offerId": "afd92b3c9fcb"
+    "total": 409,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "9cc3ba13b68f"
   },
   "me04-etb": {
     "total": 239.99,
@@ -90,10 +90,10 @@
     "offerId": "b2b824fad461"
   },
   "me04-blister1": {
-    "total": 13.99,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "copagloja",
-    "offerId": "6af328e1dec6"
+    "total": 12.97,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "99c341cdee77"
   },
   "me02-blister3": {
     "total": 42.9,
@@ -120,10 +120,10 @@
     "offerId": "b47b4e94e581"
   },
   "me04-combo": {
-    "total": 389.9,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "tocadotabuleiro",
-    "offerId": "70fd08890837"
+    "total": 247,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "40d7acc42597"
   },
   "me05-blister1": {
     "total": 319.99,
@@ -132,10 +132,10 @@
     "offerId": "27c19e28bf79"
   },
   "me05-blister4": {
-    "total": 50.44,
-    "at": "2026-10-07T12:00:35.997Z",
-    "storeId": "shogunlivrariacombr",
-    "offerId": "b2c991105fa8"
+    "total": 47,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "a6b8de999be6"
   },
   "me05-combo": {
     "total": 224.89,
@@ -198,16 +198,16 @@
     "offerId": "ec24ae3bd801"
   },
   "me03-blister3": {
-    "total": 37.89,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "rihappycombr",
-    "offerId": "01ac5563bd1c"
+    "total": 37,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "22fff1f39277"
   },
   "me03-blister1": {
-    "total": 15.89,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "pbkidscombr",
-    "offerId": "494f79735a4d"
+    "total": 12.97,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "6a2ffc0c3fc9"
   },
   "me03-combo": {
     "total": 232.8,
@@ -246,10 +246,10 @@
     "offerId": "71aea22499d2"
   },
   "me05-blister3": {
-    "total": 39.99,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "pbkidscombr",
-    "offerId": "a396427d173d"
+    "total": 37,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "45da16b7a73e"
   },
   "me05-booster": {
     "total": 489.99,
@@ -342,10 +342,10 @@
     "offerId": "e2a2be3fefe0"
   },
   "c30-blister3": {
-    "total": 149.99,
-    "at": "2026-10-07T07:23:11.746Z",
-    "storeId": "pbkidscombr",
-    "offerId": "a7a52627493e"
+    "total": 117.99,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "canal40",
+    "offerId": "37cc4866967f"
   },
   "sv8_5-etb": {
     "total": 49.99,
@@ -468,9 +468,21 @@
     "offerId": "f76f9d51eda1"
   },
   "c30-colecao_ex-sylveon": {
-    "total": 699.99,
-    "at": "2026-10-07T12:15:21.210Z",
-    "storeId": "lumosstorecombr",
-    "offerId": "8c10103236ec"
+    "total": 447,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "da7c41cfbf5e"
+  },
+  "c30-combo": {
+    "total": 897,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "4b1e30aaed01"
+  },
+  "c30-colecao": {
+    "total": 199.99,
+    "at": "2026-10-07T12:30:29.207Z",
+    "storeId": "rihappycombr",
+    "offerId": "14ac1c08f414"
   }
 }
