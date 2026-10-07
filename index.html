@@ -1482,7 +1482,7 @@ function track(name,data){try{window.va&&window.va("event",{name,data:data||{}})
 /* URLs amigáveis: /produto/escuridao-absoluta-blister-quadruplo (o id antigo continua valendo) */
 const slugify=(t)=>norm(t).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
 let SLUG={},BYSLUG={};
-function buildSlugs(){SLUG={};BYSLUG={};for(const p of [...(S.products||[])].sort((a,b)=>a.id.localeCompare(b.id))){const base=slugify(p.collectionName+" "+label(p))||slugify(p.id);let s=base,i=2;while(BYSLUG[s])s=base+"-"+i++;SLUG[p.id]=s;BYSLUG[s]=p.id}}
+function buildSlugs(){SLUG={};BYSLUG={};for(const p of [...(S.products||[])].sort((a,b)=>(b.offerCount||0)-(a.offerCount||0)||a.id.localeCompare(b.id))){const base=slugify(p.collectionName+" "+label(p))||slugify(p.id);let s=base,i=2;while(BYSLUG[s])s=base+"-"+i++;SLUG[p.id]=s;BYSLUG[s]=p.id}}
 const pidFromSlug=(x)=>BYSLUG[x]||(P[x]?x:null);
 let CHANGED=new Set();
 
@@ -1497,7 +1497,7 @@ let IDX=[],CIDX=[];
 function buildIndex(){
   const cols=Object.fromEntries((S.collections||[]).map((c)=>[c.id,c]));
   const codes={};for(const o of OFF){const k=o.productId;(codes[k]||=new Set());for(const v of [o.sku,o.ean])if(v&&String(v).length>=4)codes[k].add(norm(String(v)))}
-  IDX=(S.products||[]).map((p)=>{const c=cols[p.collection]||{};
+  IDX=(S.products||[]).filter((p)=>p.offerCount>0).map((p)=>{const c=cols[p.collection]||{};
     const colT=new Set(toks([p.collectionName,c.series,(c.aliases||[]).join(" "),EN[p.collection]||""].join(" ")));
     const typT=new Set(toks([p.typeLabel,p.variant,TSYN[p.type]||"",p.group,p.boosters?p.boosters+" boosters":""].join(" ")));
     return{p,colT:[...colT],typT:[...typT],codes:[...(codes[p.id]||[]),p.ean?norm(String(p.ean)):""].filter(Boolean)}});

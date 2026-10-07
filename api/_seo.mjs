@@ -6,7 +6,7 @@ const slugify = (t) => norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '
 export const label = (p) => p.typeLabel + (p.boosters && (p.type === 'booster_box' || p.type === 'combo') ? ` ${p.boosters}` : '') + (p.variant ? ` ${p.variant}` : '');
 export function slugs(products) {
   const by = {}, of = {};
-  for (const p of [...products].sort((a, b) => a.id.localeCompare(b.id))) {
+  for (const p of [...products].sort((a, b) => (b.offerCount || 0) - (a.offerCount || 0) || a.id.localeCompare(b.id))) {
     const base = slugify(p.collectionName + ' ' + label(p)) || slugify(p.id); let s = base, i = 2;
     while (by[s]) s = base + '-' + i++;
     by[s] = p.id; of[p.id] = s;
