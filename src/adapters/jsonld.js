@@ -45,7 +45,10 @@ export function parseProductPage(html, url) {
   if (price == null) price = brl(meta('product:price:amount') || meta('og:price:amount'));
   if (stock === 'UNKNOWN') { const a = (meta('product:availability') || meta('og:availability') || '').toLowerCase().replace(/\s/g, ''); stock = AVAIL[a] || (a === 'instock' ? 'IN_STOCK' : 'UNKNOWN'); }
   if (!title) return null;
-  return { title: String(title).trim(), url, price: { pix: findPix(html), base: price }, stock, quantity, sku, ean, seller: null, sourceType: prod ? 'json_ld' : 'open_graph' };
+  let image = prod?.image; if (Array.isArray(image)) image = image[0]; if (image && typeof image === 'object') image = image.url || image.contentUrl;
+  image = image || meta('og:image') || null;
+  try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }
+  return { title: String(title).trim(), url, image, price: { pix: findPix(html), base: price }, stock, quantity, sku, ean, seller: null, sourceType: prod ? 'json_ld' : 'open_graph' };
 }
 
 export async function detect(base) {
