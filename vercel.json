@@ -28,5 +28,12 @@
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!data/|_vercel/).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "cleanUrls": false
 }
