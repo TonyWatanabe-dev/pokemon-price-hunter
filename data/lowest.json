@@ -114,10 +114,10 @@
     "offerId": "335b7a7e183e"
   },
   "me04-blister3": {
-    "total": 39.99,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "rihappycombr",
-    "offerId": "c018f25cf263"
+    "total": 31.9,
+    "at": "2026-10-07T12:00:35.997Z",
+    "storeId": "grbcardscombr",
+    "offerId": "b47b4e94e581"
   },
   "me04-combo": {
     "total": 389.9,
@@ -132,10 +132,10 @@
     "offerId": "27c19e28bf79"
   },
   "me05-blister4": {
-    "total": 55.9,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "paladinsgamescombr",
-    "offerId": "b9c9b10ffb06"
+    "total": 50.44,
+    "at": "2026-10-07T12:00:35.997Z",
+    "storeId": "shogunlivrariacombr",
+    "offerId": "b2c991105fa8"
   },
   "me05-combo": {
     "total": 224.89,
@@ -216,10 +216,10 @@
     "offerId": "47f849e19501"
   },
   "me03-combo18": {
-    "total": 229.9,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "rihappycombr",
-    "offerId": "f6c80dfe704a"
+    "total": 92.32,
+    "at": "2026-10-07T12:00:35.997Z",
+    "storeId": "gorupacombr",
+    "offerId": "8bac2385dcc3"
   },
   "me03-box24": {
     "total": 299.99,
@@ -270,10 +270,10 @@
     "offerId": "c35637da275c"
   },
   "me01-combo18": {
-    "total": 251.91,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "lojaarenagamescombr",
-    "offerId": "05cc0d98fd8c"
+    "total": 110.86,
+    "at": "2026-10-07T12:00:35.997Z",
+    "storeId": "gorupacombr",
+    "offerId": "1de0ead6e597"
   },
   "ev09-booster": {
     "total": 12,
@@ -460,5 +460,11 @@
     "at": "2026-10-07T08:00:36.317Z",
     "storeId": "paladinsgamescombr",
     "offerId": "6e98d86fd045"
+  },
+  "sv8_5-combo18": {
+    "total": 92.32,
+    "at": "2026-10-07T12:00:35.997Z",
+    "storeId": "gorupacombr",
+    "offerId": "f76f9d51eda1"
   }
 }

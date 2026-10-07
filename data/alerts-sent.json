@@ -22,5 +22,11 @@
     "total": 479.9,
     "discount": null,
     "offerId": "2dfb01ec446d"
+  },
+  "copag-25|me04-blister3": {
+    "at": "2026-10-07T12:00:35.997Z",
+    "total": 31.9,
+    "discount": 0.258,
+    "offerId": "b47b4e94e581"
   }
 }
