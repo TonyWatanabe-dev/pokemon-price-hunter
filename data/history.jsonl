@@ -1513,3 +1513,25 @@
 {"t":"2026-10-07T11:00:40.460Z","offerId":"525f2eb5efcc","productId":"me03-blister4","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T11:00:40.460Z","offerId":"627002a4a43f","productId":"me04-blister4","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T11:00:40.460Z","offerId":"c0234a122930","productId":"me05-blister4","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"6c5c431252c9","productId":"sv8_5-colecao_premium","storeId":"pbkidscombr","seller":"Noy Brinquedos","price":184.79,"priceKind":"base","shipping":25.74,"total":210.53,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"cabb5979e215","productId":"sv8_5-colecao_premium","storeId":"rihappycombr","seller":"Noy Brinquedos","price":184.79,"priceKind":"base","shipping":25.74,"total":210.53,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"cab0f153b94f","productId":"me02_5-combo18","storeId":"pbkidscombr","seller":"Fantastic Toys","price":499.9,"priceKind":"base","shipping":null,"total":499.9,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"1556667e23d3","productId":"me03-blister3","storeId":"pbkidscombr","seller":"Gourmande","price":54.99,"priceKind":"base","shipping":null,"total":54.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"e4360c8a3d9f","productId":"me03-combo","storeId":"rihappycombr","seller":"Fabrica da Alegria","price":269.9,"priceKind":"base","shipping":null,"total":269.9,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"525f2eb5efcc","productId":"me03-blister4","storeId":"rihappycombr","seller":"Fabrica da Alegria","price":55.76,"priceKind":"base","shipping":null,"total":55.76,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"f173c3627ffc","productId":"sv8_5-blister3","storeId":"lojaarenagamescombr","seller":null,"price":62.91,"priceKind":"base","shipping":null,"total":62.91,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"959a36f6fef2","productId":"sv8_5-blister3","storeId":"lojaarenagamescombr","seller":null,"price":62.91,"priceKind":"base","shipping":null,"total":62.91,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"0e9dac9092ed","productId":"sv8_5-blister3","storeId":"lojaarenagamescombr","seller":null,"price":62.91,"priceKind":"base","shipping":null,"total":62.91,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"627002a4a43f","productId":"me04-blister4","storeId":"rihappycombr","seller":"4Best Play","price":49,"priceKind":"base","shipping":null,"total":49,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"c0234a122930","productId":"me05-blister4","storeId":"rihappycombr","seller":"Loja Copag","price":55.99,"priceKind":"base","shipping":null,"total":55.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"e061322abd54","productId":"me03-combo","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"7ca22c0ba108","productId":"me01-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"1d35eaf9a64f","productId":"me03-blister4","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"e2dd6f04a007","productId":"me03-blister3","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"a9c6e9197acd","productId":"me03-combo18","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"082a450db9e8","productId":"me03-blister4","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"ebaeb5bcdb61","productId":"me03-box24","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"01ac5563bd1c","productId":"me03-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"445842f444db","productId":"me05-box36","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"9457fe96b3b1","productId":"me05-combo","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T11:15:22.790Z","offerId":"39ab34cd4824","productId":"me05-etb","storeId":"pbkidscombr","stock":"UNAVAILABLE","event":"removed"}
