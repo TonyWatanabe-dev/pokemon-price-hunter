@@ -1,0 +1,1300 @@
+{
+  "generatedAt": "2026-10-06T10:25:00.000Z",
+  "coverage": {
+    "found": 10,
+    "active": 5,
+    "blocked": 1,
+    "error": 2,
+    "pending": 1,
+    "unavailable": 1,
+    "paused": 0
+  },
+  "totals": {
+    "products": 6,
+    "offers": 10,
+    "copagConfirmed": 2
+  },
+  "collections": [
+    {
+      "id": "me04",
+      "name": "Caos Ascendente",
+      "series": "Megaevolução",
+      "products": 3
+    },
+    {
+      "id": "me05",
+      "name": "Escuridão Absoluta",
+      "series": "Megaevolução",
+      "products": 1
+    },
+    {
+      "id": "c30",
+      "name": "Celebração de 30 Anos",
+      "series": "Especial",
+      "products": 2
+    }
+  ],
+  "types": [
+    {
+      "id": "booster_box",
+      "label": "Booster Box",
+      "group": "Boosters",
+      "products": 2
+    },
+    {
+      "id": "etb",
+      "label": "Treinador Avançado (ETB)",
+      "group": "ETB",
+      "products": 1
+    },
+    {
+      "id": "blister_2",
+      "label": "Blister Duplo",
+      "group": "Blisters",
+      "products": 1
+    },
+    {
+      "id": "blister_3",
+      "label": "Blister Triplo",
+      "group": "Blisters",
+      "products": 1
+    },
+    {
+      "id": "colecao_ex",
+      "label": "Box Pokémon ex",
+      "group": "Coleções",
+      "products": 1
+    }
+  ],
+  "products": [
+    {
+      "id": "me04-blister3",
+      "collection": "me04",
+      "collectionName": "Caos Ascendente",
+      "series": "Megaevolução",
+      "type": "blister_3",
+      "typeLabel": "Blister Triplo",
+      "group": "Blisters",
+      "boosters": 3,
+      "variant": null,
+      "name": "Caos Ascendente - Blister Triplo",
+      "ean": null,
+      "image": null,
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "confidence": null
+      },
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "copagReference": null,
+      "copagReferenceUrl": null,
+      "marketAverage": null,
+      "lowestHistorical": {
+        "total": 39.9,
+        "at": "2026-10-06T10:00:00.000Z",
+        "storeId": "waf",
+        "offerId": "5e1d20bdd89d"
+      },
+      "offerCount": 1,
+      "inStockCount": 1
+    },
+    {
+      "id": "me05-box36",
+      "collection": "me05",
+      "collectionName": "Escuridão Absoluta",
+      "series": "Megaevolução",
+      "type": "booster_box",
+      "typeLabel": "Booster Box",
+      "group": "Boosters",
+      "boosters": 36,
+      "variant": null,
+      "name": "Escuridão Absoluta - Booster Box 36",
+      "ean": null,
+      "image": null,
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
+      "copag": {
+        "msrp": 449.99,
+        "source_url": "https://cop.test/box-display-me05/p",
+        "source_timestamp": "2026-10-06T10:20:00.000Z",
+        "confidence": "OFICIAL",
+        "previous_msrp": null,
+        "msrp_updated_at": "2026-10-06T10:00:00.000Z",
+        "key": "me05-box36"
+      },
+      "copagConfirmed": true,
+      "msrp": 449.99,
+      "copagReason": null,
+      "copagReference": null,
+      "copagReferenceUrl": null,
+      "marketAverage": 409.95,
+      "lowestHistorical": {
+        "total": 369.9,
+        "at": "2026-10-06T10:00:00.000Z",
+        "storeId": "ld",
+        "offerId": "8d8f8ee7b35b"
+      },
+      "offerCount": 2,
+      "inStockCount": 2
+    },
+    {
+      "id": "me04-box36",
+      "collection": "me04",
+      "collectionName": "Caos Ascendente",
+      "series": "Megaevolução",
+      "type": "booster_box",
+      "typeLabel": "Booster Box",
+      "group": "Boosters",
+      "boosters": 36,
+      "variant": null,
+      "name": "Caos Ascendente - Booster Box 36",
+      "ean": "0196214156098",
+      "image": "https://cdn.shop.test/caos.jpg",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "copag": {
+        "msrp": 449.99,
+        "source_url": "https://www.copag.com.br/exemplo-teste",
+        "confidence": "OFICIAL",
+        "source_timestamp": "2026-10-01",
+        "key": "me04-box36"
+      },
+      "copagConfirmed": true,
+      "msrp": 449.99,
+      "copagReason": null,
+      "copagReference": null,
+      "copagReferenceUrl": null,
+      "marketAverage": 364.4,
+      "lowestHistorical": {
+        "total": 329,
+        "at": "2026-10-06T10:20:00.000Z",
+        "storeId": "shop",
+        "offerId": "ddc1fabe36e4"
+      },
+      "offerCount": 4,
+      "inStockCount": 2
+    },
+    {
+      "id": "me04-etb",
+      "collection": "me04",
+      "collectionName": "Caos Ascendente",
+      "series": "Megaevolução",
+      "type": "etb",
+      "typeLabel": "Treinador Avançado (ETB)",
+      "group": "ETB",
+      "boosters": null,
+      "variant": null,
+      "name": "Caos Ascendente - Treinador Avançado (ETB)",
+      "ean": null,
+      "image": null,
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "copag": {
+        "msrp": null,
+        "source_url": null,
+        "confidence": null
+      },
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "sem valor",
+      "copagReference": null,
+      "copagReferenceUrl": null,
+      "marketAverage": null,
+      "lowestHistorical": {
+        "total": 289.9,
+        "at": "2026-10-06T10:00:00.000Z",
+        "storeId": "shop",
+        "offerId": "bf3db3a74583"
+      },
+      "offerCount": 1,
+      "inStockCount": 1
+    },
+    {
+      "id": "c30-blister2",
+      "collection": "c30",
+      "collectionName": "Celebração de 30 Anos",
+      "series": "Especial",
+      "type": "blister_2",
+      "typeLabel": "Blister Duplo",
+      "group": "Blisters",
+      "boosters": 2,
+      "variant": null,
+      "name": "Celebração de 30 Anos - Blister Duplo",
+      "ean": null,
+      "image": null,
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "copag": {
+        "msrp": 69.99,
+        "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
+        "source_timestamp": "2026-08-07",
+        "confidence": "CATALOGO_COPAG",
+        "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada",
+        "key": "c30-blister2"
+      },
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável",
+      "copagReference": 69.99,
+      "copagReferenceUrl": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
+      "marketAverage": null,
+      "lowestHistorical": {
+        "total": 59.9,
+        "at": "2026-10-06T10:00:00.000Z",
+        "storeId": "shop",
+        "offerId": "0284958481fb"
+      },
+      "offerCount": 1,
+      "inStockCount": 1
+    },
+    {
+      "id": "c30-colecao_ex-greninja",
+      "collection": "c30",
+      "collectionName": "Celebração de 30 Anos",
+      "series": "Especial",
+      "type": "colecao_ex",
+      "typeLabel": "Box Pokémon ex",
+      "group": "Coleções",
+      "boosters": null,
+      "variant": "Greninja ex",
+      "name": "Celebração de 30 Anos - Box Pokémon ex Greninja ex",
+      "ean": null,
+      "image": null,
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "copag": {
+        "msrp": 169.99,
+        "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+        "source_timestamp": "2026-08-07",
+        "confidence": "CATALOGO_COPAG",
+        "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada",
+        "key": "c30-colecao_ex"
+      },
+      "copagConfirmed": false,
+      "msrp": null,
+      "copagReason": "preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável",
+      "copagReference": 169.99,
+      "copagReferenceUrl": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "marketAverage": null,
+      "lowestHistorical": {
+        "total": 149.9,
+        "at": "2026-10-06T10:00:00.000Z",
+        "storeId": "shop",
+        "offerId": "cc15648751e3"
+      },
+      "offerCount": 1,
+      "inStockCount": 1
+    }
+  ],
+  "bestDeals": [
+    "ddc1fabe36e4",
+    "8d8f8ee7b35b",
+    "af9a476be6e6",
+    "3faf55a38213"
+  ],
+  "offers": [
+    {
+      "id": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "matchConfidence": 0.85,
+      "storeId": "shop",
+      "storeName": "Loja Shopify",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon TCG Booster Box c/36 - Caos Ascendente - Copag Lacrado",
+      "url": "https://shop.test/products/box-caos",
+      "image": "https://cdn.shop.test/caos.jpg",
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "base": 329
+      },
+      "listPrice": null,
+      "price": 329,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 329,
+      "perBooster": 9.14,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "store_json",
+      "source_url": "https://shop.test/products/box-caos",
+      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 79,
+      "storeValidated": true,
+      "discount": 0.2689,
+      "savings": 120.99,
+      "vsMarket": 0.0971,
+      "dealScore": 87,
+      "scoreParts": {
+        "copag": 31.4,
+        "historico": 15,
+        "porBooster": 15,
+        "estoque": 10,
+        "loja": 7.9,
+        "frete": 0,
+        "lacrado": 5,
+        "disponibilidade": 3
+      },
+      "classification": {
+        "label": "🟢 EXCELENTE",
+        "tier": "excellent"
+      },
+      "opportunity": true,
+      "confidence_score": 85
+    },
+    {
+      "id": "bf3db3a74583",
+      "productId": "me04-etb",
+      "matchConfidence": 0.85,
+      "storeId": "shop",
+      "storeName": "Loja Shopify",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Box Treinador Avançado Caos Ascendente Copag",
+      "url": "https://shop.test/products/etb",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "base": 289.9
+      },
+      "listPrice": null,
+      "price": 289.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 289.9,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "store_json",
+      "source_url": "https://shop.test/products/etb",
+      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 79,
+      "storeValidated": true,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 85
+    },
+    {
+      "id": "f93636f37413",
+      "productId": "me04-box36",
+      "matchConfidence": 0.8,
+      "storeId": "shop",
+      "storeName": "Loja Shopify",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon Booster Box Caos Ascendente 36 boosters",
+      "url": "https://shop.test/products/suspeito",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "base": 99
+      },
+      "listPrice": null,
+      "price": 99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 99,
+      "perBooster": 2.75,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "store_json",
+      "source_url": "https://shop.test/products/suspeito",
+      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": true,
+      "storeScore": 79,
+      "storeValidated": true,
+      "discount": 0.78,
+      "savings": 350.99,
+      "vsMarket": 0.7283,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "0284958481fb",
+      "productId": "c30-blister2",
+      "matchConfidence": 0.85,
+      "storeId": "shop",
+      "storeName": "Loja Shopify",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon - Celebração de 30 Anos - Blister Duplo com Moeda Copag",
+      "url": "https://shop.test/products/c30-duplo",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "base": 59.9
+      },
+      "listPrice": null,
+      "price": 59.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 59.9,
+      "perBooster": 29.95,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "store_json",
+      "source_url": "https://shop.test/products/c30-duplo",
+      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 79,
+      "storeValidated": true,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 85
+    },
+    {
+      "id": "cc15648751e3",
+      "productId": "c30-colecao_ex-greninja",
+      "matchConfidence": 0.8,
+      "storeId": "shop",
+      "storeName": "Loja Shopify",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Celebração de 30 anos – Box Pokémon Ex Greninja",
+      "url": "https://shop.test/products/c30-greninja",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "base": 149.9
+      },
+      "listPrice": null,
+      "price": 149.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 149.9,
+      "perBooster": null,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "store_json",
+      "source_url": "https://shop.test/products/c30-greninja",
+      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 79,
+      "storeValidated": true,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 80
+    },
+    {
+      "id": "5e1d20bdd89d",
+      "productId": "me04-blister3",
+      "matchConfidence": 0.85,
+      "storeId": "waf",
+      "storeName": "Loja com firewall nas APIs",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon Blister Triplo Caos Ascendente Copag",
+      "url": "https://waf.test/pokemon-blister-triplo-caos-ascendente",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": null,
+        "base": 39.9
+      },
+      "listPrice": null,
+      "price": 39.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 39.9,
+      "perBooster": 13.3,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "json_ld",
+      "source_url": "https://waf.test/pokemon-blister-triplo-caos-ascendente",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": null,
+      "savings": null,
+      "vsMarket": null,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 85
+    },
+    {
+      "id": "8d8f8ee7b35b",
+      "productId": "me05-box36",
+      "matchConfidence": 0.85,
+      "storeId": "ld",
+      "storeName": "Loja Nuvem",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pokémon Booster Box Escuridão Absoluta 36 Pacotes Copag",
+      "url": "https://ld.test/pokemon-booster-box-escuridao-absoluta-36",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": 369.9,
+        "base": 389.9
+      },
+      "listPrice": null,
+      "price": 369.9,
+      "priceKind": "pix",
+      "priceKindLabel": "Pix",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 369.9,
+      "perBooster": 10.27,
+      "stock": "IN_STOCK",
+      "quantity": null,
+      "sourceType": "json_ld",
+      "source_url": "https://ld.test/pokemon-booster-box-escuridao-absoluta-36",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.178,
+      "savings": 80.09,
+      "vsMarket": 0.0977,
+      "dealScore": 69,
+      "scoreParts": {
+        "copag": 20.8,
+        "historico": 15,
+        "porBooster": 15,
+        "estoque": 10,
+        "loja": 0,
+        "frete": 0,
+        "lacrado": 5,
+        "disponibilidade": 3
+      },
+      "classification": {
+        "label": "🟡 BOM",
+        "tier": "good"
+      },
+      "opportunity": false,
+      "confidence_score": 85
+    },
+    {
+      "id": "5968edb0ca57",
+      "productId": "me04-box36",
+      "matchConfidence": 0.8,
+      "storeId": "ld",
+      "storeName": "Loja Nuvem",
+      "storeKind": "specialist",
+      "seller": null,
+      "sellerKind": "store",
+      "title": "Pré-venda Pokémon Booster Box Caos Ascendente 36 boosters",
+      "url": "https://ld.test/pokemon-box-caos-ascendente-pre-venda",
+      "image": null,
+      "sku": null,
+      "ean": null,
+      "prices": {
+        "pix": null,
+        "base": 359.9
+      },
+      "listPrice": null,
+      "price": 359.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 359.9,
+      "perBooster": 10,
+      "stock": "PRE_ORDER",
+      "quantity": null,
+      "sourceType": "json_ld",
+      "source_url": "https://ld.test/pokemon-box-caos-ascendente-pre-venda",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.2002,
+      "savings": 90.09,
+      "vsMarket": 0.0123,
+      "dealScore": null,
+      "scoreParts": null,
+      "classification": {
+        "label": "DADO NÃO CONFIRMADO",
+        "tier": "none"
+      },
+      "opportunity": false,
+      "confidence_score": 64
+    },
+    {
+      "id": "af9a476be6e6",
+      "productId": "me04-box36",
+      "matchConfidence": 0.99,
+      "storeId": "vtex",
+      "storeName": "Loja VTEX",
+      "storeKind": "specialist",
+      "seller": "Loja VTEX",
+      "sellerKind": "store",
+      "title": "Caixa Pokémon Caos Ascendente 36 Boosters Copag",
+      "url": "https://vtex.test/caos-36/p",
+      "image": null,
+      "sku": "77",
+      "ean": "196214156098",
+      "prices": {
+        "base": 379.9
+      },
+      "listPrice": 449.99,
+      "price": 379.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": 19.9,
+      "shippingKnown": true,
+      "total": 399.8,
+      "perBooster": 11.11,
+      "stock": "IN_STOCK",
+      "quantity": 4,
+      "sourceType": "store_api",
+      "source_url": "https://vtex.test/caos-36/p",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.1115,
+      "savings": 50.19,
+      "vsMarket": -0.0971,
+      "dealScore": 48,
+      "scoreParts": {
+        "copag": 13,
+        "historico": 0,
+        "porBooster": 12.3,
+        "estoque": 10,
+        "loja": 0,
+        "frete": 3,
+        "lacrado": 5,
+        "disponibilidade": 5
+      },
+      "classification": {
+        "label": "⚪ IGNORAR",
+        "tier": "ignore"
+      },
+      "opportunity": false,
+      "confidence_score": 99
+    },
+    {
+      "id": "3faf55a38213",
+      "productId": "me05-box36",
+      "matchConfidence": 0.7,
+      "storeId": "cop",
+      "storeName": "Loja Copag (oficial)",
+      "storeKind": "official",
+      "seller": "Copag",
+      "sellerKind": "store",
+      "title": "Box Display Pokémon ME05 Escuridão Absoluta",
+      "url": "https://cop.test/box-display-me05/p",
+      "image": null,
+      "sku": "9",
+      "ean": null,
+      "prices": {
+        "base": 449.99
+      },
+      "listPrice": null,
+      "price": 449.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 449.99,
+      "perBooster": 12.5,
+      "stock": "IN_STOCK",
+      "quantity": 3,
+      "sourceType": "store_api",
+      "source_url": "https://cop.test/box-display-me05/p",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "anomalous": false,
+      "storeScore": 45,
+      "storeValidated": false,
+      "discount": 0,
+      "savings": 0,
+      "vsMarket": -0.0977,
+      "dealScore": 34,
+      "scoreParts": {
+        "copag": 0,
+        "historico": 0,
+        "porBooster": 12.3,
+        "estoque": 10,
+        "loja": 4.5,
+        "frete": 0,
+        "lacrado": 2.5,
+        "disponibilidade": 5
+      },
+      "classification": {
+        "label": "⚪ IGNORAR",
+        "tier": "ignore"
+      },
+      "opportunity": false,
+      "confidence_score": 70
+    }
+  ],
+  "sources": [
+    {
+      "id": "shop",
+      "checks": 4,
+      "ok": 4,
+      "name": "Loja Shopify",
+      "kind": "specialist",
+      "url": "https://shop.test",
+      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "platform": "shopify",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 6,
+      "matched": 5,
+      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "score": {
+        "score": 79,
+        "validated": true,
+        "evidence": [
+          "CNPJ",
+          "avaliação 4.8/5 (900)",
+          "8 anos",
+          "política de troca",
+          "contato"
+        ]
+      }
+    },
+    {
+      "id": "vtex",
+      "checks": 3,
+      "ok": 3,
+      "name": "Loja VTEX",
+      "kind": "specialist",
+      "url": "https://vtex.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "platform": "vtex",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 1,
+      "matched": 1,
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "ld",
+      "checks": 3,
+      "ok": 3,
+      "name": "Loja Nuvem",
+      "kind": "specialist",
+      "url": "https://ld.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "platform": "jsonld",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 2,
+      "matched": 2,
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "waf",
+      "checks": 3,
+      "ok": 3,
+      "name": "Loja com firewall nas APIs",
+      "kind": "specialist",
+      "url": "https://waf.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "platform": "jsonld",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 1,
+      "matched": 1,
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "blk",
+      "checks": 3,
+      "ok": 0,
+      "name": "Bloqueada",
+      "kind": "specialist",
+      "url": "https://blk.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "status": "BLOCKED",
+      "reason": "Acesso bloqueado em blk.test (o site barra robôs, nem o robots.txt abre)",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "nope",
+      "checks": 0,
+      "ok": 0,
+      "name": "Sem domínio",
+      "kind": "specialist",
+      "url": null,
+      "status": "PENDING",
+      "reason": "domínio ainda não confirmado",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "cop",
+      "checks": 3,
+      "ok": 3,
+      "name": "Loja Copag (oficial)",
+      "kind": "official",
+      "url": "https://cop.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "platform": "vtex",
+      "status": "ACTIVE",
+      "reason": null,
+      "listings": 1,
+      "matched": 1,
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "score": {
+        "score": 45,
+        "validated": false,
+        "evidence": [
+          "CNPJ",
+          "loja oficial"
+        ]
+      }
+    },
+    {
+      "id": "novatest",
+      "checks": 3,
+      "ok": 0,
+      "name": "nova.test",
+      "kind": "specialist",
+      "url": "https://nova.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "status": "ERROR",
+      "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "amazoncombr",
+      "checks": 0,
+      "ok": 0,
+      "name": "amazon.com.br",
+      "kind": "specialist",
+      "url": "https://www.amazon.com.br",
+      "status": "UNAVAILABLE",
+      "reason": "Marketplace grande: bloqueia robôs e não tem API pública de busca",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    },
+    {
+      "id": "botaotest",
+      "checks": 3,
+      "ok": 0,
+      "name": "botao.test",
+      "kind": "specialist",
+      "url": "https://botao.test",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "status": "ERROR",
+      "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
+      "score": {
+        "score": null,
+        "validated": false,
+        "evidence": []
+      }
+    }
+  ],
+  "unmatched": [
+    {
+      "store": "shop",
+      "title": "Pokémon Chaos Rising Booster Box 36 Packs EN",
+      "url": "https://shop.test/products/en",
+      "why": [
+        "idioma diferente de PT"
+      ]
+    }
+  ],
+  "tips": [
+    {
+      "key": "pelando:box-velho-esgotado-aaaa",
+      "source": "Pelando",
+      "title": "Booster Box Pokémon Caos Ascendente 36 boosters",
+      "price": 300,
+      "store": null,
+      "url": "https://www.pelando.com.br/d/box-velho-esgotado-aaaa",
+      "expired": true,
+      "postedAt": null,
+      "id": "b79ba645050e",
+      "productId": "me04-box36",
+      "matchConfidence": 0.8,
+      "why": [],
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "isNew": false,
+      "collectionName": "Caos Ascendente",
+      "label": "Booster Box com 36 boosters",
+      "msrp": 449.99,
+      "discount": 0.3333,
+      "perBooster": 8.33,
+      "anomalous": false
+    },
+    {
+      "key": "pelando:box-pokemon-tcg-caos-ascendente-36-boosters-5c8c",
+      "source": "Pelando",
+      "title": "Booster Box Pokémon Caos Ascendente 36 boosters Copag",
+      "price": 319.9,
+      "store": "Mercado Livre",
+      "url": "https://www.pelando.com.br/d/box-pokemon-tcg-caos-ascendente-36-boosters-5c8c",
+      "expired": false,
+      "postedAt": null,
+      "id": "21735912dc00",
+      "productId": "me04-box36",
+      "matchConfidence": 0.85,
+      "why": [],
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "isNew": false,
+      "collectionName": "Caos Ascendente",
+      "label": "Booster Box com 36 boosters",
+      "msrp": 449.99,
+      "discount": 0.2891,
+      "perBooster": 8.89,
+      "anomalous": false
+    },
+    {
+      "key": "pelando:blister-triplo-pokemon-tcg-30-anos-lucario-e972",
+      "source": "Pelando",
+      "title": "Blister Triplo Pokémon TCG 30 Anos Lucario",
+      "price": 129,
+      "store": "Amazon",
+      "url": "https://www.pelando.com.br/d/blister-triplo-pokemon-tcg-30-anos-lucario-e972",
+      "expired": false,
+      "postedAt": null,
+      "id": "c3fa0827177d",
+      "productId": "c30-blister3",
+      "matchConfidence": 0.8,
+      "why": [],
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "isNew": false,
+      "collectionName": "Celebração de 30 Anos",
+      "label": "Blister Triplo",
+      "msrp": null,
+      "discount": null,
+      "perBooster": 43,
+      "anomalous": false
+    },
+    {
+      "key": "tg:promopoke/77",
+      "source": "Telegram promopoke",
+      "title": "🔥 Box Treinador Avançado Escuridão Absoluta",
+      "text": "🔥 Box Treinador Avançado Escuridão Absoluta\nPor R$ 299,90\nhttps://www.amazon.com.br/dp/B0TEST",
+      "price": 299.9,
+      "store": "Amazon",
+      "url": "https://www.amazon.com.br/dp/B0TEST",
+      "postUrl": "https://t.me/promopoke/77",
+      "expired": false,
+      "postedAt": "2026-10-07T13:29:46.166Z",
+      "id": "fe220ca5587c",
+      "productId": "me05-etb",
+      "matchConfidence": 0.8,
+      "why": [],
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "isNew": false,
+      "collectionName": "Escuridão Absoluta",
+      "label": "Treinador Avançado (ETB)",
+      "msrp": null,
+      "discount": null,
+      "perBooster": null,
+      "anomalous": false
+    }
+  ],
+  "tipSources": [
+    {
+      "source": "Pelando: pokemon tcg",
+      "ok": true,
+      "found": 3
+    },
+    {
+      "source": "Telegram @promopoke",
+      "ok": true,
+      "found": 1
+    },
+    {
+      "source": "Telegram @grupo_privado",
+      "ok": false,
+      "reason": "canal privado, grupo ou nome errado (só canais públicos têm prévia)"
+    }
+  ],
+  "rules": [
+    {
+      "id": "caca-caos-box",
+      "label": "Caos Ascendente Box abaixo de R$350",
+      "mode": "target",
+      "filter": {
+        "productId": "me04-box36"
+      },
+      "maxPrice": 350
+    },
+    {
+      "id": "box-10-booster",
+      "label": "Qualquer box abaixo de R$10 por booster",
+      "filter": {
+        "productType": "booster_box"
+      },
+      "maxPerBooster": 10
+    },
+    {
+      "id": "copag-25",
+      "label": "Qualquer produto 25% abaixo da Copag",
+      "filter": {},
+      "minDiscount": 0.25
+    },
+    {
+      "id": "restock-escuridao",
+      "label": "Escuridão Absoluta voltou ao estoque",
+      "filter": {
+        "productId": "me05-box36"
+      },
+      "restock": true
+    },
+    {
+      "id": "etb-300",
+      "label": "Qualquer ETB abaixo de R$300",
+      "filter": {
+        "productType": "etb"
+      },
+      "maxPrice": 300
+    },
+    {
+      "label": "Blister Duplo 30 Anos até R$ 70",
+      "mode": "target",
+      "filter": {
+        "productId": "c30-blister2"
+      },
+      "maxPrice": 70,
+      "id": "c30-blister2-abaixo-70",
+      "file": "config/alertas/c30-blister2-abaixo-70.json"
+    }
+  ],
+  "recentAlerts": [
+    {
+      "at": "2026-10-06T10:20:00.000Z",
+      "kind": "target",
+      "rule": "caca-caos-box",
+      "ruleLabel": "Caos Ascendente Box abaixo de R$350",
+      "offerId": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "total": 329,
+      "channels": [
+        "capture"
+      ],
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "url": "https://shop.test/products/box-caos"
+    },
+    {
+      "at": "2026-10-06T10:20:00.000Z",
+      "kind": "deal",
+      "rule": "box-10-booster",
+      "ruleLabel": "Qualquer box abaixo de R$10 por booster",
+      "offerId": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "total": 329,
+      "channels": [
+        "capture"
+      ],
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "url": "https://shop.test/products/box-caos"
+    },
+    {
+      "at": "2026-10-06T10:20:00.000Z",
+      "kind": "deal",
+      "rule": "copag-25",
+      "ruleLabel": "Qualquer produto 25% abaixo da Copag",
+      "offerId": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "total": 329,
+      "channels": [
+        "capture"
+      ],
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "url": "https://shop.test/products/box-caos"
+    },
+    {
+      "at": "2026-10-06T10:20:00.000Z",
+      "kind": "drop",
+      "rule": "drop",
+      "ruleLabel": "Queda de preço",
+      "offerId": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "total": 329,
+      "channels": [
+        "capture"
+      ],
+      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "url": "https://shop.test/products/box-caos"
+    },
+    {
+      "at": "2026-10-06T10:00:00.000Z",
+      "kind": "target",
+      "rule": "caca-caos-box",
+      "ruleLabel": "Caos Ascendente Box abaixo de R$350",
+      "offerId": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "total": 339,
+      "channels": [
+        "capture"
+      ],
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 85/100",
+      "url": "https://shop.test/products/box-caos"
+    },
+    {
+      "at": "2026-10-06T10:00:00.000Z",
+      "kind": "deal",
+      "rule": "box-10-booster",
+      "ruleLabel": "Qualquer box abaixo de R$10 por booster",
+      "offerId": "ddc1fabe36e4",
+      "productId": "me04-box36",
+      "total": 339,
+      "channels": [
+        "capture"
+      ],
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 85/100",
+      "url": "https://shop.test/products/box-caos"
+    },
+    {
+      "at": "2026-10-06T10:00:00.000Z",
+      "kind": "deal",
+      "rule": "etb-300",
+      "ruleLabel": "Qualquer ETB abaixo de R$300",
+      "offerId": "bf3db3a74583",
+      "productId": "me04-etb",
+      "total": 289.9,
+      "channels": [
+        "capture"
+      ],
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 (preço da loja)\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "url": "https://shop.test/products/etb"
+    },
+    {
+      "at": "2026-10-06T10:00:00.000Z",
+      "kind": "target",
+      "rule": "c30-blister2-abaixo-70",
+      "ruleLabel": "Blister Duplo 30 Anos até R$ 70",
+      "offerId": "0284958481fb",
+      "productId": "c30-blister2",
+      "total": 59.9,
+      "channels": [
+        "capture"
+      ],
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: sem preço oficial\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "url": "https://shop.test/products/c30-duplo"
+    },
+    {
+      "at": "2026-10-06T10:00:00.000Z",
+      "kind": "tip",
+      "rule": "pista",
+      "ruleLabel": "Pista",
+      "productId": "me04-box36",
+      "total": 319.9,
+      "channels": [
+        "capture"
+      ],
+      "text": "💡 PISTA (NÃO VERIFICADA)\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 319,90\nLoja: Mercado Livre\n\nCopag: R$ 449,99\n↓ 28,9%\nR$ 8,89 / booster\n\nFonte: Pelando\nEstoque e vendedor não confirmados. Confira antes de comprar.",
+      "url": "https://www.pelando.com.br/d/box-pokemon-tcg-caos-ascendente-36-boosters-5c8c"
+    }
+  ]
+}
