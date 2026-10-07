@@ -1115,3 +1115,16 @@
 {"t":"2026-10-07T08:15:22.333Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-07T08:15:22.333Z","offerId":"3d05a46c999f","productId":"me04-blister4","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-07T08:15:22.333Z","offerId":"c0234a122930","productId":"me05-blister4","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"10d6f352c969","productId":"c30-colecao_fichario","storeId":"rihappycombr","seller":"Ri Happy","price":349.99,"priceKind":"base","shipping":0,"total":349.99,"stock":"IN_STOCK","quantity":null}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"cabb5979e215","productId":"sv8_5-colecao_premium","storeId":"rihappycombr","seller":"Noy Brinquedos","price":184.79,"priceKind":"base","shipping":null,"total":184.79,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"145777250e4e","productId":"me04-etb","storeId":"pbkidscombr","seller":"4Best Play","price":395,"priceKind":"base","shipping":null,"total":395,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"e96ab12134e7","productId":"me03-blister4","storeId":"rihappycombr","seller":"Reino Encantado","price":47.89,"priceKind":"base","shipping":null,"total":47.89,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"85b6f759a127","productId":"me05-blister4","storeId":"pbkidscombr","seller":"4Best Play","price":62,"priceKind":"base","shipping":null,"total":62,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"3d05a46c999f","productId":"me04-blister4","storeId":"rihappycombr","seller":"MooveGames","price":69.99,"priceKind":"base","shipping":null,"total":69.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"c0234a122930","productId":"me05-blister4","storeId":"rihappycombr","seller":"Loja Copag","price":55.99,"priceKind":"base","shipping":null,"total":55.99,"stock":"IN_STOCK","quantity":100}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"f6e33a47ce61","productId":"me05-blister3","storeId":"rihappycombr","seller":"Fantastic Toys","price":39.99,"priceKind":"base","shipping":null,"total":39.99,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"c6504551f78d","productId":"me01-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"6862b4c405e9","productId":"me01-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"06991f622394","productId":"me01-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"8f031a780bc4","productId":"me04-blister3","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T08:30:29.651Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
