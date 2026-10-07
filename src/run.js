@@ -8,24 +8,32 @@ import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
-import { matchProduct } from './match.js';
+import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, isAnomalous, opportunityBadge } from './score.js';
 import { evaluate, dedupe, dispatch, transports } from './alerts.js';
 
-const TYPE_LABEL = { booster_box: 'Booster Box', etb: 'Treinador Avançado (ETB)', premium_collection: 'Coleção Premium', collection_box: 'Box Coleção', blister: 'Blister', blister_3: 'Blister Triplo', blister_4: 'Blister Quádruplo', deck: 'Deck', booster_pack: 'Booster unitário' };
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
 
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
-  const cols = Object.fromEntries(cat.collections.map((c) => [c.id, c]));
-  cat.products = cat.products.map((p) => ({ language: 'PT', manufacturer: 'Copag', ean: null, sku: null, release_date: null, status: 'ATIVO', ...p, copag: { ...cat.defaults.copag, ...(p.copag || {}) }, collectionName: cols[p.collection]?.name || p.collection, typeLabel: TYPE_LABEL[p.type] || p.type }));
+  cat.products ||= []; cat.copag ||= {};
   return cat;
+}
+
+// Preço Copag de um produto: cadastro OFICIAL > loja oficial Copag > catálogo Copag publicado (CATALOGO_COPAG).
+function resolveCopag(p, catalog, copagSeen) {
+  const keys = msrpKeys(p);
+  const pick = (map, ok) => { for (const k of keys) if (map[k] && ok(map[k])) return { ...map[k], key: k }; return null; };
+  const valid = (c) => copagStatus({ copag: c }).confirmed;
+  return pick(catalog.copag, (c) => c.confidence === 'OFICIAL' && valid(c)) || pick(copagSeen, valid) || pick(catalog.copag, valid) || pick(catalog.copag, () => true)
+    || { msrp: null, source_url: null, confidence: null };
 }
 
 export async function runOnce({ log = console.log, send = transports, now = new Date() } = {}) {
   const T = now.toISOString();
   const catalog = loadCatalog();
+  const registry = readJson(dataPath('products.json'), {}); // catálogo automático: todo produto já visto
   const { stores } = readJson(configPath('stores.json'));
   // Lojas extras: um endereço por linha em config/lojas.txt (linhas com # são ignoradas)
   try {
@@ -87,7 +95,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const m = matchProduct(l, catalog);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
         matched++;
-        const product = catalog.products.find((p) => p.id === m.productId);
+        const product = m.product;
+        const prevImg = registry[product.id]?.image;
+        registry[product.id] = { ...registry[product.id], ...product, image: (store.copagSource && l.image) || prevImg || l.image || null, firstSeen: registry[product.id]?.firstSeen || T, lastSeen: T };
         let stock = l.stock || 'UNKNOWN';
         if (m.parsed.preorder && stock !== 'OUT_OF_STOCK') stock = 'PRE_ORDER';
         let ship = l.shipping ?? null;
@@ -105,8 +115,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         offers[id] = {
           id, productId: m.productId, matchConfidence: m.confidence, storeId: store.id, storeName: store.name, storeKind: store.kind,
           seller: l.seller || null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
-          title: l.title, url: l.url, sku: l.sku || null, ean: l.ean || null,
-          prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '—',
+          title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
+          prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
           shipping: ship, shippingKnown: ship != null, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
           stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
@@ -141,8 +151,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
 
   // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
   const products = {};
-  for (const p of catalog.products) {
-    if (!copagStatus(p).confirmed && copagSeen[p.id]) p.copag = { ...p.copag, ...copagSeen[p.id] };
+  for (const base of Object.values(registry)) {
+    const p = { ...base, copag: resolveCopag(base, catalog, copagSeen) };
     const cs = copagStatus(p);
     const list = Object.values(offers).filter((o) => o.productId === p.id);
     const live = list.filter((o) => o.stock === 'IN_STOCK' && !o.stale && o.total > 0);
@@ -180,8 +190,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const state = {
     generatedAt: T,
     coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0 },
-    totals: { products: catalog.products.length, offers: all.length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
-    collections: catalog.collections.map(({ id, name }) => ({ id, name })),
+    totals: { products: Object.keys(products).length, offers: all.length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
+    collections: catalog.collections.map(({ id, name, series }) => ({ id, name, series, products: Object.values(products).filter((p) => p.collection === id).length })).filter((c) => c.products),
+    types: Object.entries(TYPE_LABEL).map(([id, label]) => ({ id, label, group: groupOf(id), products: Object.values(products).filter((p) => p.type === id).length })).filter((t) => t.products),
     products: Object.values(products),
     bestDeals: ranked.map((o) => o.id),
     offers: all,
@@ -195,6 +206,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('lowest.json'), lowest);
   writeJson(dataPath('copag-msrp.json'), copagSeen);
   writeJson(dataPath('url-cache.json'), urlCache);
+  writeJson(dataPath('products.json'), registry);
   writeJson(dataPath('alerts-sent.json'), sent);
   writeJson(dataPath('state.json'), state);
   appendJsonl(dataPath('history.jsonl'), history);
