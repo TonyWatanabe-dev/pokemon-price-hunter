@@ -10,7 +10,9 @@ const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazin
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, isAnomalous, opportunityBadge } from './score.js';
-import { evaluate, dedupe, dispatch, transports } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
+import { collectTips } from './tips.js';
+import { processInbox } from './inbox.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -178,9 +180,35 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     o.confidence_score = Math.round(100 * o.matchConfidence * (o.stale ? 0.5 : 1) * (o.stock === 'IN_STOCK' ? 1 : 0.8));
   }
 
+  // Pistas (Pelando e canais do Telegram): separadas das ofertas, sem estoque confirmado, fora do ranking.
+  const copagOf = (p) => { const cs = copagStatus({ ...p, copag: resolveCopag(p, catalog, copagSeen) }); return cs.confirmed ? { msrp: cs.msrp } : null; };
+  const tipsCfg = readJson(configPath('pistas.json'), null);
+  const tipStore = readJson(dataPath('tips.json'), {});
+  let tipStatus = [];
+  if (tipsCfg && process.env.HUNTER_TIPS !== '0') {
+    try {
+      const r = await collectTips(tipsCfg, catalog, log); tipStatus = r.status;
+      for (const t of r.tips) {
+        const old = tipStore[t.id]; const p = t.product; const c = p ? copagOf(p) : null;
+        const discount = c && t.price ? +(1 - t.price / c.msrp).toFixed(4) : null;
+        const { product, ...rest } = t;
+        tipStore[t.id] = { ...rest, firstSeen: old?.firstSeen || T, lastSeen: T, isNew: !old,
+          collectionName: p?.collectionName || null, label: p ? p.typeLabel + (p.boosters && /box|combo/.test(p.type) ? ` com ${p.boosters} boosters` : '') + (p.variant ? ' ' + p.variant : '') : null,
+          msrp: c?.msrp ?? null, discount, perBooster: p?.boosters && t.price ? round2(t.price / p.boosters) : null, anomalous: !!(c && t.price && t.price < c.msrp * 0.55) };
+      }
+    } catch (e) { log(`[pistas] ${e.message}`); }
+  }
+  const maxAge = (tipsCfg?.horasMaximas || 72) * 3600e3;
+  for (const [id, t] of Object.entries(tipStore)) { if (t.lastSeen !== T) t.isNew = false; if (now.getTime() - Date.parse(t.postedAt || t.firstSeen) > maxAge) delete tipStore[id]; }
+  const tips = Object.values(tipStore).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
+
+  // Bot: analisa links/promoções que você encaminhar para ele no Telegram.
+  const inbox = readJson(dataPath('inbox.json'), {});
+  try { const r = await processInbox(inbox, catalog, copagOf, log); if (r.handled) log(`[bot] ${r.handled} mensagens respondidas`); } catch (e) { log(`[bot] ${e.message}`); }
+
   // Alertas
   const hits = dedupe(evaluate(watch.rules || [], Object.values(offers), events, products), sent, watch.settings, now.getTime(), offers);
-  const delivered = await dispatch(hits, sent, { send, now });
+  const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
   for (const d of delivered) log(`ALERTA ${d.kind} -> ${d.channels.join(', ') || 'só painel'}: ${d.productId} ${d.total}`);
 
   // Estado para painel e API
@@ -198,6 +226,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     offers: all,
     sources: Object.entries(sources).map(([id, s]) => ({ id, ...s, score: storeScores[id] || null })),
     unmatched: unmatched.slice(0, 200),
+    tips: tips.slice(0, 150),
+    tipSources: tipStatus,
     rules: watch.rules || [],
     recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].slice(0, 50),
   };
@@ -208,6 +238,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('url-cache.json'), urlCache);
   writeJson(dataPath('products.json'), registry);
   writeJson(dataPath('alerts-sent.json'), sent);
+  writeJson(dataPath('tips.json'), tipStore);
+  writeJson(dataPath('inbox.json'), inbox);
   writeJson(dataPath('state.json'), state);
   appendJsonl(dataPath('history.jsonl'), history);
   appendJsonl(dataPath('alerts.jsonl'), delivered);

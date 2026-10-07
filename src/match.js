@@ -3,7 +3,7 @@
 // Princípio: na dúvida, NÃO casa. Falso negativo custa menos que falso positivo.
 
 export const normalize = (s = '') => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-  .replace(/[^a-z0-9/\s.,-]/g, ' ').replace(/\s+/g, ' ').trim();
+  .replace(/(\d),(\d)/g, '$1.$2').replace(/[^a-z0-9/\s.,-]/g, ' ').replace(/\s+/g, ' ').trim();
 
 const has = (t, re) => re.test(t);
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -34,7 +34,13 @@ export const groupOf = (type) => TYPE_GROUP[type] || 'Coleções';
 export function detectCollection(t, collections) {
   const hits = collections.filter((c) => c.aliases.some((a) => wordRe(a).test(t)));
   if (hits.length === 1) return { id: hits[0].id };
-  if (hits.length > 1) return { id: null, ambiguous: hits.map((h) => h.id) };
+  if (hits.length > 1) {
+    // Produto conjunto (ex.: "Fogo Branco e Raio Preto"): só quando o título cita exatamente as coleções combinadas.
+    const ids = hits.map((h) => h.id).sort().join('|');
+    const combo = collections.find((c) => c.combines && [...c.combines].sort().join('|') === ids);
+    if (combo) return { id: combo.id };
+    return { id: null, ambiguous: hits.map((h) => h.id) };
+  }
   const fb = collections.filter((c) => (c.fallbackAliases || []).some((a) => wordRe(a).test(t)));
   return fb.length === 1 ? { id: fb[0].id, fallback: true } : { id: null };
 }
@@ -69,7 +75,7 @@ export function detectType(t) {
   const b = detectBoosters(t);
   const r = (type, boosters = null, inferred = false, variant = null) => ({ type, boosters, inferred, variant });
   if (has(t, /\b(treinador avancado|elite trainer|etb)\b/)) return r('etb', b.count, b.inferred);
-  if (has(t, /\bblister (unitario|simples)\b|\bpacote unico\b/)) return r('blister_1', 1);
+  if (has(t, /\bblister (plast\.? |plastico )?(unitario|simples)\b|\bpacote unico\b/)) return r('blister_1', 1);
   if (has(t, /\b(blister|pacote) (duplo|dupla)\b|\b2 ?pack\b|\bdouble pack\b/)) return r('blister_2', 2);
   if (has(t, /\b(blister|pacote) (triplo|tripla)\b|\btriple blister\b|\b3 ?pack\b/)) return r('blister_3', 3);
   if (has(t, /\b(blister|pacote) (quadruplo|quadrupla)\b|\b4 ?pack\b/)) return r('blister_4', 4);
@@ -79,6 +85,11 @@ export function detectType(t) {
   if (has(t, /\bdesafio estrategico\b/)) return r('desafio');
   if (has(t, /\bkit (do |de )?treinador\b/)) return r('kit_treinador');
   if (has(t, /\bcombo\b/)) return r('combo', b.count, b.inferred);
+  // "Pokémon TCG Triplo Megaevolução Drifloon": triplo/quadruplo sozinho, sem box/coleção no título = blister
+  if (!has(t, /\b(box|caixa|colecao|kit|lata|deck|baralho)\b/)) {
+    if (has(t, /\b(triplo|tripla)\b/)) return r('blister_3', 3);
+    if (has(t, /\b(quadruplo|quadrupla)\b/)) return r('blister_4', 4);
+  }
   if (b.count >= 24 && has(t, /\b(booster box|display|caixa|kit|box|expositor)\b/)) return r('booster_box', b.count, b.inferred);
   if (b.count >= 6 && has(t, /\b(booster box|display|caixa|kit|box)\b/)) return r('combo', b.count, b.inferred);
   if (has(t, /\bbooster box\b/)) return r('booster_box', b.count, b.inferred); // sem contagem: não casa (18 ou 36?)
@@ -87,7 +98,7 @@ export function detectType(t) {
   if (has(t, /\b(fichario|binder)\b/)) return r('colecao_fichario', b.count);
   if (has(t, /\bminiatura\b/)) return r('colecao_miniatura', b.count, false, detectVariant(t));
   if (has(t, /\bporta ?retrato\b/)) return r('colecao_porta_retrato', b.count);
-  if (has(t, /\b(colecao|box) (de )?ilustracao\b/)) return r('colecao_ilustracao', b.count, false, detectVariant(t));
+  if (has(t, /\b(colecao|box) (de |pokemon )?ilustracao\b/)) return r('colecao_ilustracao', b.count, false, detectVariant(t));
   if (has(t, /\b(colecao|box) premium\b|\bultra ?premium\b/)) return r('colecao_premium', b.count, false, detectVariant(t));
   const v = detectVariant(t);
   if (v && has(t, /\b(box|colecao|caixa)\b/)) return r('colecao_ex', b.count, false, v);
@@ -108,7 +119,7 @@ export function productIdOf(collection, type, boosters, variant) {
   return `${collection}-${base}${variant ? '-' + variant : ''}`;
 }
 /** Chaves para herdar o preço Copag: a variante (Sylveon ex / Greninja ex) e o combo sem contagem custam o mesmo. */
-export const msrpKeys = (p) => [...new Set([p.id, productIdOf(p.collection, p.type, p.boosters, null), p.type === 'combo' ? productIdOf(p.collection, 'combo', null, null) : p.id])];
+export const msrpKeys = (p) => [...new Set([p.id, productIdOf(p.collection, p.type, p.boosters, null), p.type === 'combo' && !p.boosters ? productIdOf(p.collection, 'combo', null, null) : p.id])];
 
 export function parseListing(title, catalog) {
   const t = normalize(title);
