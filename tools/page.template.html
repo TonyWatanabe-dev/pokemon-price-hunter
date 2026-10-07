@@ -371,7 +371,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   </div>
   <p class="seg-hint" id="hint">Lacrados com o maior desconto sobre o preço sugerido Copag.</p>
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar.</p><p class="foot-links"><a href="#guia" data-go="guia">Como funciona</a><a href="#termos" data-go="termos">Termos de uso</a><a href="#privacidade" data-go="privacidade">Privacidade</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar.</p><p class="foot-links"><a href="#guia" data-go="guia">Como funciona</a><a href="#termos" data-go="termos">Termos de uso</a><a href="#privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -415,7 +415,7 @@ const SRC={ACTIVE:["ok","Ativa"],BLOCKED:["bad","Bloqueia robôs"],ERROR:["bad",
 let S=null,P={},OFF=[];
 const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:true,q:"",type:"",max:"",below:false},store.get("f",{}));
 const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"#";
-const CONTATO="";
+const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const VIEWS=["pistas","copag","prevenda","lojas","guia","termos","privacidade"];
 let view=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"deals",xfOpen=false,fOpen=false;
