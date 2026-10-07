@@ -162,10 +162,10 @@
     "offerId": "dab4bdcf29ff"
   },
   "me05-combo18": {
-    "total": 249.9,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "pbkidscombr",
-    "offerId": "696cab3628ad"
+    "total": 166.85,
+    "at": "2026-10-07T12:15:21.210Z",
+    "storeId": "gorupacombr",
+    "offerId": "2700039341b1"
   },
   "me03-combo7": {
     "total": 101.9,
@@ -240,10 +240,10 @@
     "offerId": "60945b925763"
   },
   "me04-booster": {
-    "total": 13.9,
-    "at": "2026-10-07T07:01:45.749Z",
-    "storeId": "paladinsgamescombr",
-    "offerId": "724039d53576"
+    "total": 11.99,
+    "at": "2026-10-07T12:15:21.210Z",
+    "storeId": "gorupacombr",
+    "offerId": "71aea22499d2"
   },
   "me05-blister3": {
     "total": 39.99,
@@ -466,5 +466,11 @@
     "at": "2026-10-07T12:00:35.997Z",
     "storeId": "gorupacombr",
     "offerId": "f76f9d51eda1"
+  },
+  "c30-colecao_ex-sylveon": {
+    "total": 699.99,
+    "at": "2026-10-07T12:15:21.210Z",
+    "storeId": "lumosstorecombr",
+    "offerId": "8c10103236ec"
   }
 }
