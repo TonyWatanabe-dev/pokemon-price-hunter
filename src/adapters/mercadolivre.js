@@ -13,7 +13,7 @@ export async function search(store, catalog) {
       out.set(r.id, {
         title: r.title, url: r.permalink, price: { base: r.price }, listPrice: r.original_price || null,
         stock: r.available_quantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: r.available_quantity > 1 ? r.available_quantity : null,
-        shipping: r.shipping?.free_shipping ? 0 : null, sku: r.id, ean: null,
+        shipping: r.shipping?.free_shipping ? 0 : null, sku: r.id, ean: null, image: r.thumbnail ? r.thumbnail.replace(/^http:/, 'https:') : null,
         seller: r.official_store_name || r.seller?.nickname || String(r.seller?.id || ''), sellerId: r.seller?.id,
         sellerKind: r.official_store_id ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
       });
