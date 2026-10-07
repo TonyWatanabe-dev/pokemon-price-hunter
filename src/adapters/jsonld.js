@@ -29,8 +29,21 @@ const AVAIL = { instock: 'IN_STOCK', outofstock: 'OUT_OF_STOCK', soldout: 'OUT_O
 export function parseProductPage(html, url) {
   const nodes = [];
   for (const [, raw] of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) { try { flatten(JSON.parse(raw.trim()), nodes); } catch { /* JSON-LD inválido */ } }
-  const prod = nodes.find((n) => [].concat(n['@type']).some((t) => /product/i.test(t)));
   const meta = (p) => html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${p}["'][^>]+content=["']([^"']+)`, 'i'))?.[1];
+  // Páginas de loja costumam trazer vários Product (relacionados, "compre junto"). Fica com o da própria página:
+  // mesma URL, ou mesmo nome do og:title / <title>. Na dúvida com vários, usa o primeiro só se os nomes baterem.
+  const prods = nodes.filter((n) => [].concat(n['@type']).some((t) => /product/i.test(t)));
+  const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const path = (u) => { try { return new URL(u, url).pathname.replace(/\/$/, ''); } catch { return ''; } };
+  const pageTitle = meta('og:title') || html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1] || '';
+  const here = path(url);
+  let prod = prods.find((n) => [n.url, n['@id'], n.offers?.url].some((u) => u && path(u) === here));
+  const sim = (x, y) => { const A = new Set(norm(x).split(' ').filter((w) => w.length > 1)); const B = new Set(norm(y).split(' ').filter((w) => w.length > 1)); if (!A.size || !B.size) return 0; let k = 0; for (const w of A) if (B.has(w)) k++; return k / Math.min(A.size, B.size); };
+  const TYPEW = /^(blister|box|display|combo|treinador|avancado|etb|lata|latas|minilata|booster|colecao|deck|baralho|unitario|simples|duplo|triplo|quadruplo|premium|ilustracao|poster|fichario|kit|\d{1,3})$/;
+  const tw = (t) => new Set(norm(t).split(' ').filter((w) => TYPEW.test(w)));
+  const sameAsPage = (n) => { if (!pageTitle) return true; const pt = tw(pageTitle), nt = tw(n.name); for (const w of pt) if (!nt.has(w)) return false; return sim(n.name, pageTitle) >= 0.5; };
+  if (prod && !sameAsPage(prod) && !(prods.length === 1 && !pageTitle)) prod = sameAsPage(prod) ? prod : (prods.find((n) => n.name && sameAsPage(n)) || null);
+  if (!prod) prod = prods.find((n) => n.name && pageTitle && sameAsPage(n)) || (prods.length === 1 && sameAsPage(prods[0]) ? prods[0] : null);
   let title = prod?.name || meta('og:title'); let price = null; let stock = 'UNKNOWN'; let ean = prod?.gtin13 || prod?.gtin || null; let sku = prod?.sku || null; let quantity = null;
   if (prod) {
     const offers = [].concat(prod.offers || []).flatMap((o) => (o['@type'] === 'AggregateOffer' && o.offers ? [].concat(o.offers) : [o]));
