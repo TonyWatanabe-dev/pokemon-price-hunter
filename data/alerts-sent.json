@@ -32,5 +32,23 @@
   "tip|56d56dcc4d6f": {
     "at": "2026-10-07T12:15:21.210Z",
     "total": 149.99
+  },
+  "etb-300|sv8_5-etb": {
+    "at": "2026-10-07T12:45:21.589Z",
+    "total": 49.99,
+    "discount": null,
+    "offerId": "b7f220d0a6c6"
+  },
+  "etb-300|sv10_5w-etb": {
+    "at": "2026-10-07T12:45:21.589Z",
+    "total": 49.99,
+    "discount": null,
+    "offerId": "df655f0a5178"
+  },
+  "etb-300|me03-etb": {
+    "at": "2026-10-07T12:45:21.589Z",
+    "total": 222.09,
+    "discount": null,
+    "offerId": "6c15ec412fe4"
   }
 }
