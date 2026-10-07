@@ -1,0 +1,19 @@
+name: Diagnóstico de páginas
+on:
+  workflow_dispatch:
+    inputs:
+      urls: { description: 'URLs separadas por espaço', required: true }
+permissions:
+  contents: read
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node tools/dump-pages.mjs dump
+        env: { DUMP_URLS: '${{ inputs.urls }}' }
+      - uses: actions/upload-artifact@v4
+        with: { name: dump, path: dump, retention-days: 3 }
