@@ -7,8 +7,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const nm = process.argv[2];
 if (!nm) { console.error('Informe a pasta node_modules.'); process.exit(1); }
 const font = fs.readFileSync(path.join(nm, '@fontsource-variable/rubik/files/rubik-latin-wght-normal.woff2')).toString('base64');
-const ICONS = { bold: ['tag', 'storefront', 'bell', 'warning', 'x', 'arrow-square-out', 'plus', 'check-circle', 'clock', 'truck', 'caret-down', 'seal-check', 'trend-down', 'moon', 'sun', 'info', 'arrow-clockwise', 'package', 'funnel', 'calendar-blank', 'magnifying-glass', 'lightbulb', 'house', 'dots-three'],
-  fill: ['lightning', 'flame', 'drop', 'leaf', 'sparkle', 'cylinder', 'tag', 'seal-check'] };
+const ICONS = { bold: ['tag', 'storefront', 'bell', 'warning', 'x', 'arrow-square-out', 'plus', 'check-circle', 'clock', 'truck', 'caret-down', 'seal-check', 'trend-down', 'moon', 'sun', 'info', 'arrow-clockwise', 'package', 'funnel', 'calendar-blank', 'magnifying-glass', 'lightbulb', 'house', 'dots-three', 'heart', 'user-circle', 'sign-out', 'google-logo', 'trash', 'bell-ringing'],
+  fill: ['lightning', 'flame', 'drop', 'leaf', 'sparkle', 'cylinder', 'tag', 'seal-check', 'heart'] };
 let sprite = '';
 for (const [w, names] of Object.entries(ICONS)) for (const n of names) {
   const svg = fs.readFileSync(path.join(nm, `@phosphor-icons/core/assets/${w}/${n}${w === 'regular' ? '' : '-' + w}.svg`), 'utf8');
