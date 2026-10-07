@@ -6,8 +6,8 @@ export function copagStatus(product) {
   if (!(c.msrp > 0)) return { confirmed: false, reason: 'sem valor' };
   if (!c.source_url) return { confirmed: false, reason: 'sem fonte' };
   if (MARKETPLACE_HOSTS.test(c.source_url)) return { confirmed: false, reason: 'fonte é marketplace (não aceita como MSRP)' };
-  if (c.confidence !== 'OFICIAL') return { confirmed: false, reason: 'fonte não marcada como oficial' };
-  return { confirmed: true, msrp: c.msrp };
+  if (!['OFICIAL', 'CATALOGO_COPAG'].includes(c.confidence)) return { confirmed: false, reason: 'fonte não marcada como oficial' };
+  return { confirmed: true, msrp: c.msrp, source: c.confidence };
 }
 
 // Pix > à vista > cartão > preço base da plataforma.

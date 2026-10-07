@@ -6,14 +6,15 @@ import { copagStatus } from './score.js';
 
 export async function copagCheck({ log = console.log } = {}) {
   const cat = readJson(configPath('catalog.json')); const report = [];
-  for (const p of cat.products) {
-    const st = copagStatus({ copag: { ...cat.defaults.copag, ...(p.copag || {}) } });
-    if (!st.confirmed) { report.push({ id: p.id, status: 'NÃO CONFIRMADO' }); continue; }
+  for (const [id, c] of Object.entries(cat.copag || {})) {
+    const p = { id, copag: c };
+    const st = copagStatus(p);
+    if (!st.confirmed || c.confidence !== 'OFICIAL') { report.push({ id, status: st.confirmed ? 'CATÁLOGO' : 'NÃO CONFIRMADO' }); continue; }
     try {
-      const page = parseProductPage((await get(p.copag.source_url)).text, p.copag.source_url);
+      const page = parseProductPage((await get(c.source_url)).text, c.source_url);
       const seen = page?.price?.base ?? null;
-      p.copag.last_check = { at: new Date().toISOString(), pagePrice: seen, matches: seen === p.copag.msrp };
-      report.push({ id: p.id, status: seen === p.copag.msrp ? 'OK' : 'REVISAR', msrp: p.copag.msrp, pagePrice: seen });
+      c.last_check = { at: new Date().toISOString(), pagePrice: seen, matches: seen === c.msrp };
+      report.push({ id: p.id, status: seen === c.msrp ? 'OK' : 'REVISAR', msrp: c.msrp, pagePrice: seen });
     } catch (e) { report.push({ id: p.id, status: 'FONTE INDISPONÍVEL', error: e.message }); }
   }
   writeJson(configPath('catalog.json'), cat);
