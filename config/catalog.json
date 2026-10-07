@@ -226,6 +226,16 @@
       ]
     },
     {
+      "id": "sv10_5",
+      "name": "Fogo Branco e Raio Preto",
+      "series": "Escarlate e Violeta",
+      "aliases": [],
+      "combines": [
+        "sv10_5r",
+        "sv10_5w"
+      ]
+    },
+    {
       "id": "me01",
       "name": "Megaevolução",
       "series": "Megaevolução",
@@ -252,6 +262,18 @@
         "me2",
         "mega evolucao 2",
         "megaevolucao 2"
+      ]
+    },
+    {
+      "id": "me02_5",
+      "name": "Heróis Excelsos",
+      "series": "Megaevolução",
+      "aliases": [
+        "herois excelsos",
+        "heroi excelso",
+        "me2.5",
+        "me 2.5",
+        "me02.5"
       ]
     },
     {

@@ -1,0 +1,7 @@
+{
+  "_nota": "Pistas = promoções postadas por pessoas. Não têm estoque confirmado e nunca entram no ranking. telegram: só canais PÚBLICOS (use o @ ou o link t.me do canal). descontoMinimoAlerta 0.15 = avisa a partir de 15% abaixo da Copag.",
+  "pelando": { "buscas": ["pokemon tcg", "pokemon copag", "booster pokemon", "pokemon 30 anos"] },
+  "telegram": ["mecpromo", "anjostcg", "ofertascuponstcg"],
+  "descontoMinimoAlerta": 0.15,
+  "horasMaximas": 72
+}
