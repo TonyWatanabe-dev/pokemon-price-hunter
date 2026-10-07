@@ -28,7 +28,7 @@ fs.mkdirSync(path.join(tmp, 'config/alertas')); fs.writeFileSync(path.join(tmp, 
 let shopPrice = '339.00'; let vtexQty = 0;
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json' } });
 const html = (s, status = 200) => new Response(s, { status, headers: { 'content-type': 'text/html' } });
-const page = (name, price, avail, extra = '') => html(`<html><head><script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name, offers: { '@type': 'Offer', price, priceCurrency: 'BRL', availability: 'https://schema.org/' + avail } })}</script></head><body>${extra}${'x'.repeat(40000)}</body></html>`);
+const page = (name, price, avail, extra = '') => html(`<html><head><script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name, offers: { '@type': 'Offer', price, priceCurrency: 'BRL', availability: 'https://schema.org/' + avail } })}</script></head><body><h1>${name}</h1><p>R$ ${Number(price).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}</p>${extra}${'x'.repeat(40000)}</body></html>`);
 const http = await import('../src/http.js');
 const requested = [];
 const mainFetch = async (url, opt) => {
@@ -180,11 +180,11 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   const rel = { '@type': 'Product', name: 'Pokémon - Blister Quádruplo Megaevolução - Equilíbrio Perfeito - Chikorita (PT-BR)', url: 'https://x.test/produtos/blister-chikorita/', offers: { '@type': 'Offer', price: '55.90', priceCurrency: 'BRL', availability: 'https://schema.org/InStock' } };
   const own = { '@type': 'Product', name: 'Pokémon - Box Display Megaevolução - Equilíbrio Perfeito 36 Pacotes (PT-BR)', offers: { '@type': 'Offer', price: '449.90', priceCurrency: 'BRL', availability: 'https://schema.org/InStock' } };
   const head = '<meta property="og:title" content="Pokémon - Box Display Megaevolução - Equilíbrio Perfeito 36 Pacotes (PT-BR)">';
-  const a = parseProductPage(head + ld(rel) + ld(own), 'https://x.test/produtos/box-display-equilibrio/');
+  const a = parseProductPage(head + ld(rel) + ld(own) + '<p>R$ 449,90</p>', 'https://x.test/produtos/box-display-equilibrio/');
   assert.match(a.title, /Box Display/); assert.equal(a.price.base, 449.9, 'preço do produto da página, não do relacionado');
   const b = parseProductPage(head + ld(rel), 'https://x.test/produtos/box-display-equilibrio/');
   assert.equal(b, null, 'só o relacionado no JSON-LD e sem preço próprio: não publica (nunca usa o preço do relacionado)');
-  const c = parseProductPage('<meta property="og:title" content="Blister Chikorita - Loja X">' + ld({ ...rel, url: undefined }), 'https://x.test/produtos/blister-chikorita/');
+  const c = parseProductPage('<meta property="og:title" content="Blister Chikorita - Loja X">' + ld({ ...rel, url: undefined }) + '<p>R$ 55,90</p>', 'https://x.test/produtos/blister-chikorita/');
   assert.equal(c.price.base, 55.9, 'produto único com nome compatível continua valendo');
 }
 // --- Nuvemshop: o produto da página vem de LS.product/LS.variants; JSON-LD só tem vitrine de outros produtos ---
@@ -193,7 +193,7 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`;
   const rel = { '@type': 'Product', name: 'Blister Quadrúplo Pokémon Megaevolução Escuridão Absoluta - ME05', offers: { '@type': 'Offer', price: '55', priceCurrency: 'BRL', url: 'https://g.test/produtos/blister-me05/', availability: 'https://schema.org/InStock' } };
   const vars = [{ product_id: 1, price_number: 44, price_with_payment_discount_short: 'R$41,80', compare_at_price_number: 55, stock: 8, sku: 'ME04-04', available: true, is_visible: true }, { product_id: 2, price_number: 52, available: true }];
-  const htmlNs = `<meta property="og:title" content="Blister Quadrúplo Pokémon Caos Ascendente - ME04">${ld(rel)}<script>LS.product = {\n id : 1,\n name : 'Blister\\u0020Quadr\\u00FAplo\\u0020Pok\\u00E9mon\\u0020Caos\\u0020Ascendente\\u0020\\u002D\\u0020ME04'\n};\nLS.variants = ${JSON.stringify(vars)};\n</script><p>3 x de R$16,31</p><p>5% de desconto pagando com Pix</p>`;
+  const htmlNs = `<meta property="og:title" content="Blister Quadrúplo Pokémon Caos Ascendente - ME04">${ld(rel)}<script>LS.product = {\n id : 1,\n name : 'Blister\\u0020Quadr\\u00FAplo\\u0020Pok\\u00E9mon\\u0020Caos\\u0020Ascendente\\u0020\\u002D\\u0020ME04'\n};\nLS.variants = ${JSON.stringify(vars)};\n</script><p>R$44,00</p><p>3 x de R$16,31</p><p>5% de desconto pagando com Pix</p>`;
   const n = parseProductPage(htmlNs, 'https://g.test/produtos/blister-me04/');
   assert.match(n.title, /Caos Ascendente/, 'título do produto da página, não da vitrine');
   assert.equal(n.price.base, 44); assert.equal(n.price.pix, 41.8, 'Pix da própria variação'); assert.equal(n.stock, 'IN_STOCK'); assert.equal(n.quantity, 8);
@@ -201,6 +201,16 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   const li = '<meta property="og:title" content="Pokemon TCG: Escuridão Absoluta - Treinador Avançado"><div itemprop="offers"><meta itemprop="price" content="399.90"/><meta itemprop="availability" content="http://schema.org/OutOfStock"/></div><p>Ops! Esse produto encontra-se indisponível.</p><h2>Produtos relacionados</h2><p>Blister Unitário R$ 13,90 ou R$ 13,20 via Pix</p>';
   const l = parseProductPage(li, 'https://d.test/pokemon-tcg-escuridao-absoluta-treinador-avancado');
   assert.equal(l.price.base, 399.9); assert.equal(l.price.pix, null, 'Pix de produto relacionado não vale'); assert.equal(l.stock, 'OUT_OF_STOCK');
+  // Preço precisa estar escrito na página (loja que só mostra "Fale conosco" não entra)
+  const hidden = '<meta property="og:title" content="Blister Quádruplo Caos Ascendente - Pokemon Tcg">' + ld({ '@type': 'Product', name: 'Blister Quádruplo Caos Ascendente - Pokemon Tcg', offers: { '@type': 'Offer', price: '50.44', priceCurrency: 'BRL', availability: 'https://schema.org/InStock' } }) + '<p>Fale conosco</p>';
+  assert.equal(parseProductPage(hidden, 'https://s.test/blister-quadruplo-caos-ascendente-pokemon-tcg'), null, 'preço que não aparece na página não é publicado');
+  // Loja Integrada / WooCommerce: o código traz o preço do Pix como se fosse o normal
+  const liPix = '<meta property="og:title" content="Blister Triplo Caos Ascendente ME04 - Pokémon"><div itemprop="offers"><meta itemprop="price" content="39.90"/><meta itemprop="availability" content="http://schema.org/InStock"/></div><p>Blister Triplo Caos Ascendente ME04 - Pokémon</p><strong>R$ 42,00</strong> <span>ou <strong>R$ 39,90</strong> via Pix</span>';
+  const lp = parseProductPage(liPix, 'https://l.test/blister-triplo-caos-ascendente-me04-pokemon');
+  assert.equal(lp.price.pix, 39.9); assert.equal(lp.price.base, 42, 'Pix não se passa por preço normal');
+  const woo = '<meta property="og:title" content="Pokémon Blister Quádruplo Caos Ascendente">' + ld({ '@type': 'Product', name: 'Pokémon Blister Quádruplo Caos Ascendente', offers: { '@type': 'Offer', price: '53.91', priceCurrency: 'BRL', availability: 'https://schema.org/InStock' } }) + '<p>&#082;&#036;&nbsp;59,90 &#082;&#036;&nbsp;53,91 no pix</p>';
+  const w = parseProductPage(woo, 'https://a.test/pokemon-blister-quadruplo-caos-ascendente/');
+  assert.equal(w.price.pix, 53.91); assert.equal(w.price.base, 59.9, 'WooCommerce: Pix separado do preço normal');
   // Trava do link: título de uma coleção com link de outra não publica
   const { linkAgrees } = await import('../src/gate.js'); const { matchProduct } = await import('../src/match.js');
   const cat = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_CONFIG_DIR, 'catalog.json'), 'utf8'));

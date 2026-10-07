@@ -87,6 +87,24 @@ function microdata(html) {
   return { platform: 'microdata', price: { pix, base }, stock: AVAIL[av] || 'UNKNOWN' };
 }
 
+const fmtBR = (v) => v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+/** Onde o preço aparece escrito no texto principal da página: { pix: bool, regular: número | null } ou null se não aparece. */
+export function visiblePrice(html, value) {
+  const t = mainText(html).replace(/&#0?82;&#0?36;/g, 'R$'); const b = fmtBR(value);
+  const re = new RegExp('R\\$\\s?' + b.replace(/\./g, '\\.') + '(?!\\d)', 'g');
+  let found = null; let seen = false;
+  for (const m of t.matchAll(re)) {
+    seen = true;
+    const after = t.slice(m.index + m[0].length, m.index + m[0].length + 30); const before = t.slice(Math.max(0, m.index - 140), m.index);
+    const isPix = /^\s*(\(?\s*)?(via|no|pelo|com|à vista no|a vista no|pagando (no|com))?\s*pix/i.test(after) || /(pix|à vista|a vista)[^R]{0,25}$/i.test(before);
+    if (!isPix) continue;
+    const prev = [...before.matchAll(/R\$\s?([\d.]+,\d{2})/g)].map((x) => brl(x[1])).filter((v) => v > value && v <= value * 1.25);
+    if (!found || (!found.regular && prev.length)) found = { pix: true, regular: prev.length ? prev[prev.length - 1] : null };
+  }
+  // Rótulo de Pix só vale quando a página também mostra o preço normal (maior); sem ele, fica como preço da loja.
+  return seen ? (found?.regular ? found : { pix: false, regular: null }) : null;
+}
+
 export function parseProductPage(html, url) {
   const nodes = [];
   for (const [, raw] of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) { try { flatten(JSON.parse(raw.trim()), nodes); } catch { /* JSON-LD inválido */ } }
@@ -136,6 +154,13 @@ export function parseProductPage(html, url) {
   }
   // Sem preço do próprio produto não publica (nunca usa preço de parcela ou de vitrine).
   if (!(price.base > 0)) return null;
+  // O preço publicado precisa estar ESCRITO na página do produto (antes da vitrine). Loja que só mostra
+  // "Fale conosco" ou esconde o preço não entra, mesmo que o código da página traga um número.
+  const shown = visiblePrice(html, price.base);
+  if (!shown && stock !== 'OUT_OF_STOCK') return null; // esgotado pode esconder o preço: entra só como "sem estoque"
+  // Várias plataformas (Loja Integrada, WooCommerce) põem no código o preço do Pix como se fosse o preço normal.
+  // Se a página escreve esse valor como Pix/à vista e mostra um preço maior logo antes, separamos os dois.
+  if (shown?.pix && !price.pix) price = { pix: price.base, base: shown.regular || price.base };
   let image = prod?.image; if (Array.isArray(image)) image = image[0]; if (image && typeof image === 'object') image = image.url || image.contentUrl;
   image = image || meta('og:image') || null;
   try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }

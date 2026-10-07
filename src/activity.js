@@ -7,7 +7,8 @@ import { trustedPoint } from './distrust.js';
 const KEEP_MS = 7 * 864e5;
 const FILE = () => dataPath('activity.json');
 const WIN = 48 * 3600e3; // preço que vai e volta (vendedores alternando) não é queda: precisa ser o menor das últimas 48 h
-const plausible = (to, from, msrp) => to > 0 && !(msrp && to < msrp * 0.55) && !(from && to < from * 0.5);
+// Preço de partida acima de 1,8x a Copag quase sempre é leitura errada (outro produto, kit): não vira "queda".
+const plausible = (to, from, msrp) => to > 0 && !(msrp && to < msrp * 0.55) && !(from && to < from * 0.5) && !(from && msrp && from > msrp * 1.8);
 
 // Primeira vez: monta a atividade a partir do history.jsonl (sem "novo menor preço", que precisa do estado da rodada).
 function backfill(products, storeNames, now) {
@@ -35,16 +36,21 @@ export function recordActivity({ T, offers, prev, products, newLowest, quiet = n
   for (const o of Object.values(offers)) {
     if (o.stale || o.anomalous || o.stock !== 'IN_STOCK' || !(o.total > 0) || quiet.has(o.storeId)) continue;
     const p = products[o.productId]; if (!p) continue;
+    if (o.confirmed === false) continue; // leitura ainda não confirmada pela rodada seguinte
     const old = prev[o.id];
     const base = { t: T, productId: o.productId, offerId: o.id, storeName: o.storeName, to: o.total, msrp: p.msrp ?? null };
-    if (!old) { if (!firstEver && p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
+    if (o.justConfirmed === 'new') { if (p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
+    else if (o.justConfirmed === 'drop') { if (plausible(o.total, o.dropFrom, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: o.dropFrom }); }
+    else if (!old) { if (!firstEver && p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
     else if (old.stock === 'OUT_OF_STOCK' && !old.stale) fresh.push({ ...base, type: 'restock' });
     else if (old.total > 0 && o.total < old.total && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
-    if (newLowest.has(o.id)) fresh.push({ ...base, type: 'lowest', from: newLowest.get(o.id) });
+    // Recorde que se repete a cada rodada (mesmo produto, mesmo valor ou maior) não é novidade.
+    if (newLowest.has(o.id) && !log.some((e) => e.type === 'lowest' && e.productId === o.productId && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'lowest', from: newLowest.get(o.id) });
   }
   log = [...log, ...fresh].filter((e) => now - Date.parse(e.t) <= KEEP_MS).slice(-600);
   writeJson(FILE(), log);
   // Eventos de lojas com leitura antiga não confiável ficam no arquivo, mas não vão para o site.
   const sid = (e) => offers[e.offerId]?.storeId || prev[e.offerId]?.storeId;
-  return [...log].filter((e) => trustedPoint(distrust, sid(e), e.t)).sort((a, b) => b.t.localeCompare(a.t));
+  // Só vai para o site evento de oferta que ainda existe (anúncio removido ou recusado pela trava some junto) e com valores plausíveis.
+  return [...log].filter((e) => trustedPoint(distrust, sid(e), e.t) && offers[e.offerId] && offers[e.offerId].productId === e.productId && plausible(e.to, e.from, products[e.productId]?.msrp)).sort((a, b) => b.t.localeCompare(a.t));
 }

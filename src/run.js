@@ -170,6 +170,24 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     offers[id] = recent ? { ...o } : { ...o, stale: true, stock: 'UNKNOWN' };
   }
 
+  // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
+  // quando a leitura seguinte (15 min depois) repete o valor. Uma leitura isolada errada nunca vira destaque.
+  const bootstrap = !Object.keys(prev).length; // primeira rodada de todas: não há leitura anterior para comparar
+  for (const o of Object.values(offers)) {
+    if (o.stale) continue;
+    if (bootstrap) { o.confirmed = true; o.pendingFrom = null; continue; }
+    const old = prev[o.id];
+    const same = !!(old && old.productId === o.productId && old.total > 0 && o.total > 0);
+    delete o.justConfirmed; delete o.dropFrom;
+    if (!same) { o.confirmed = false; o.pendingFrom = null; continue; }
+    const wasPending = old.confirmed === false;
+    if (o.total < old.total * 0.97) { o.confirmed = false; o.pendingFrom = wasPending ? old.pendingFrom ?? null : old.total; continue; }
+    if (wasPending && Math.abs(o.total - old.total) > o.total * 0.03) { o.confirmed = false; o.pendingFrom = old.pendingFrom ?? null; continue; }
+    o.confirmed = true;
+    if (wasPending) { if (old.pendingFrom > o.total) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new'; }
+    o.pendingFrom = null;
+  }
+
   // Histórico e eventos
   const events = []; const history = [];
   for (const o of Object.values(offers)) {
@@ -195,7 +213,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     for (const o of list) o.anomalous = o.total > 0 && isAnomalous(o.total, cs.msrp, live.length >= 3 ? rawAvg : null);
     const clean = live.filter((o) => !o.anomalous);
     const marketAverage = clean.length >= 2 ? round2(clean.reduce((a, o) => a + o.total, 0) / clean.length) : null;
-    for (const o of clean) if (!lowest[p.id] || o.total < lowest[p.id].total) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(o.id, lowest[p.id].total); lowest[p.id] = { total: o.total, at: T, storeId: o.storeId, offerId: o.id }; }
+    // Novo menor preço: só a oferta mais barata (confirmada) do produto, e só se for abaixo do recorde anterior.
+    const champ = clean.filter((x) => x.confirmed !== false).reduce((a, o) => (!a || o.total < a.total ? o : a), null);
+    if (champ && (!lowest[p.id] || champ.total < lowest[p.id].total)) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(champ.id, lowest[p.id].total); lowest[p.id] = { total: champ.total, at: T, storeId: champ.storeId, offerId: champ.id }; }
     products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
   }
   const bestPPB = {};
@@ -207,9 +227,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     o.storeScore = st.score; o.storeValidated = st.validated;
     if (p.msrp && o.total) { o.discount = +(1 - o.total / p.msrp).toFixed(4); o.savings = round2(p.msrp - o.total); } else { o.discount = null; o.savings = null; }
     o.vsMarket = p.marketAverage && o.total ? +(1 - o.total / p.marketAverage).toFixed(4) : null;
-    const ds = o.anomalous || o.stale ? { score: null, parts: null } : dealScore(o, { msrp: p.msrp, lowestHistorical: p.lowestHistorical?.total, bestPerBoosterInCollection: bestPPB[p.collection], store: st });
+    const ds = o.anomalous || o.stale || o.confirmed === false ? { score: null, parts: null } : dealScore(o, { msrp: p.msrp, lowestHistorical: p.lowestHistorical?.total, bestPerBoosterInCollection: bestPPB[p.collection], store: st });
     o.dealScore = ds.score; o.scoreParts = ds.parts; o.classification = classify(ds.score);
-    o.opportunity = opportunityBadge(o, { msrp: p.msrp, store: st });
+    o.opportunity = o.confirmed === false ? false : opportunityBadge(o, { msrp: p.msrp, store: st });
     o.confidence_score = Math.round(100 * o.matchConfidence * (o.stale ? 0.5 : 1) * (o.stock === 'IN_STOCK' ? 1 : 0.8));
   }
 
@@ -247,7 +267,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try { const r = await processInbox(inbox, catalog, copagOf, log); if (r.handled) log(`[bot] ${r.handled} mensagens respondidas`); } catch (e) { log(`[bot] ${e.message}`); }
 
   // Alertas
-  const hits = dedupe(evaluate(watch.rules || [], Object.values(offers), events, products), sent, watch.settings, now.getTime(), offers);
+  const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
+  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products), sent, watch.settings, now.getTime(), offers);
   const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
   for (const d of delivered) log(`ALERTA ${d.kind} -> ${d.channels.join(', ') || 'só painel'}: ${d.productId} ${d.total}`);
 
@@ -258,7 +279,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
   try {
     const nb = backfill(Object.fromEntries(stores.map((x) => [x.id, x.name])));
-    const nd = recordDay(all, products, T);
+    const nd = recordDay(all.filter((o) => o.confirmed !== false), products, T);
     if (nb || nd) log(`Histórico: ${nb ? nb + ' produtos montados do log, ' : ''}${nd} atualizados`);
     
   } catch (e) { log(`[histórico] ${e.message}`); }

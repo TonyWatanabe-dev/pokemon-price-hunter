@@ -531,9 +531,9 @@ a.navbtn{text-decoration:none}
 
 
 /* ===== Início 2: painel editorial de oportunidades ===== */
-.hero2{padding:52px 0 8px;max-width:900px}
+.hero2{padding:52px 0 8px}
 .hero2 h1{margin:0;font-size:clamp(38px,5.6vw,66px);font-weight:800;line-height:1.02;letter-spacing:-.035em;text-wrap:balance}
-.hero2 h1 span{color:var(--hot)}
+.hero2 h1 .hot{color:var(--hot)}
 .hero2-sub{margin:16px 0 26px;font-size:clamp(16px,1.6vw,19px);line-height:1.5;color:var(--muted);max-width:56ch}
 .sbox-lg .sbox-in{min-height:64px;padding:6px 6px 6px 22px;border:1px solid var(--line);box-shadow:var(--shadow-sm),0 14px 40px rgb(19 31 73 / .07);transition:border-color 160ms ease,box-shadow 200ms ease}
 .sbox-lg input{font-size:18px;padding:14px 0}
@@ -554,6 +554,101 @@ a.navbtn{text-decoration:none}
 .tk time{font-variant-numeric:tabular-nums;color:var(--muted)}.tk b{color:var(--ink)}
 .tk-t{display:inline-flex;align-items:center;gap:4px;font-weight:600}.tk-t .icon{width:14px;height:14px}
 .tk-t.hot,.ai-tag.hot{color:var(--hot)}.tk-t.ok,.ai-tag.ok{color:var(--ok)}.tk-t.info,.ai-tag.info{color:var(--e-water)}
+/* ===== A caçada: baralho vivo das melhores oportunidades no topo ===== */
+.hero2{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;max-width:none}
+.hero2-copy{min-width:0;max-width:720px}
+@media (min-width:980px){.hero2{grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);align-items:center;gap:48px;padding-top:44px}}
+.hero2 h1 .ln{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.hero2 h1 .ln>span{display:inline-block}
+@media (prefers-reduced-motion:no-preference){
+  .intro .hero2 h1 .ln>span{animation:lineUp 820ms cubic-bezier(.16,1,.3,1) calc(var(--l) * 110ms + 60ms) both}
+  .intro .hero2-sub,.intro .hero2 .sbox-wrap,.intro .hero2 .live{animation:softIn 700ms cubic-bezier(.16,1,.3,1) calc(var(--d) * 1ms) both}
+}
+@keyframes lineUp{from{transform:translateY(105%)}}
+@keyframes softIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}}
+.hunt{position:relative;min-width:0;--cw:min(340px,100%)}
+.hunt-stage{position:relative;width:var(--cw);margin:0 auto;aspect-ratio:34/43;perspective:1400px;touch-action:pan-y}
+@media (max-width:979px){.hunt-stage{aspect-ratio:auto;height:430px}.hunt{--cw:min(360px,100%)}}
+.hc{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-soft);border-radius:22px;overflow:hidden;color:inherit;
+  box-shadow:0 1px 2px rgb(19 31 73 / .06),0 24px 60px -18px rgb(19 31 73 / .28);
+  transform:translate3d(0,calc(var(--k) * -14px),calc(var(--k) * -60px)) rotate(calc(var(--k) * var(--tilt,0deg))) scale(calc(1 - var(--k) * .045));
+  z-index:calc(10 - var(--k));transition:transform 520ms cubic-bezier(.16,1,.3,1),opacity 300ms ease,filter 300ms ease;user-select:none;-webkit-user-select:none}
+.hc:nth-child(odd){--tilt:-1.6deg}.hc:nth-child(even){--tilt:1.8deg}
+.hc[data-k="0"]{--tilt:0deg}
+.hc:not([data-k="0"]){pointer-events:none}
+.hc:not([data-k="0"]) .hc-body{opacity:.0}
+.hc[data-k="3"],.hc[data-k="4"]{opacity:0}
+.hc.drag{transition:none;cursor:grabbing}
+.hc.fly{transition:transform 360ms cubic-bezier(.4,0,.9,.5),opacity 300ms ease 60ms;opacity:0}
+.hc-media{position:relative;flex:1 1 auto;min-height:0;background:var(--img-bg);display:grid;place-items:center;padding:22px 30px 14px;overflow:hidden}
+.hc-media .photo{width:100%;height:100%;background:transparent;border-radius:0;aspect-ratio:auto}
+.hc-media .photo img{object-fit:contain;mix-blend-mode:multiply;padding:0;-webkit-user-drag:none}
+:root[data-theme="dark"] .hc-media .photo img{mix-blend-mode:normal;border-radius:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hc-media .photo img{mix-blend-mode:normal;border-radius:10px}}
+/* feixe do scanner: passa uma vez quando a carta chega ao topo */
+.hc-media::after{content:"";position:absolute;left:0;right:0;top:0;height:38%;pointer-events:none;opacity:0;
+  background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--hot) 22%,transparent) 70%,color-mix(in srgb,var(--hot) 75%,#fff) 100%);mix-blend-mode:var(--scan-blend,multiply);transform:translateY(-100%)}
+:root[data-theme="dark"] .hc-media::after{--scan-blend:screen}
+.hc.scan .hc-media::after{animation:scan 900ms cubic-bezier(.65,0,.35,1) 80ms both}
+@keyframes scan{0%{opacity:0;transform:translateY(-100%)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(265%)}}
+.hc-tag{position:absolute;top:14px;left:14px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:var(--r-pill);background:var(--surface);box-shadow:0 1px 3px rgb(0 0 0 / .08);font-size:12px;font-weight:700;color:var(--sc)}
+.hc-tag i{width:7px;height:7px;border-radius:50%;background:var(--sc)}
+.hc-rank{position:absolute;top:14px;right:14px;z-index:2;font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;background:var(--surface);padding:6px 10px;border-radius:var(--r-pill);box-shadow:0 1px 3px rgb(0 0 0 / .08)}
+.hc-body{padding:16px 20px 18px;transition:opacity 240ms ease}
+.hc-col{margin:0;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-name{margin:2px 0 12px;font-size:18px;font-weight:700;letter-spacing:-.015em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-deal{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hc-price{display:flex;flex-direction:column;gap:3px;min-width:0}
+.hc-now{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px}.hc-now .pixk{margin:0}
+.hc-price b{font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.hc-ref{position:relative;font-size:13px;color:var(--muted);width:max-content}
+.hc-ref s{text-decoration:none;position:relative}
+.hc-ref s::after{content:"";position:absolute;left:-2px;right:-2px;top:52%;height:1.5px;background:currentColor;transform-origin:left;transform:scaleX(1)}
+.hc.scan .hc-ref s::after{animation:strike 420ms cubic-bezier(.16,1,.3,1) 160ms both}
+@keyframes strike{from{transform:scaleX(0)}}
+.hc-off{display:flex;flex-direction:column;align-items:flex-end;flex:none}
+.hc-off b{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ok);font-variant-numeric:tabular-nums}
+.hc-off small{font-size:12px;color:var(--ok);font-weight:600;margin-top:4px}
+.hc.scan .hc-off{animation:offPop 520ms cubic-bezier(.16,1,.3,1) 620ms both}
+@keyframes offPop{from{opacity:0;transform:translateY(6px) scale(.92);filter:blur(3px)}}
+.hc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:13px}
+.hc-foot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hc-foot .meter{margin:0;flex:none;grid-template-columns:auto 64px auto}
+.hc-foot .meter>span{display:none}
+.hc .deal-hit{z-index:3}.hc .deal-fav{z-index:4;top:12px;right:12px}
+.hc.foil{border:2px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,conic-gradient(from var(--fa),#ff5f6d,#ffc371,#fff36b,#7cf29a,#53c7ff,#8a7bff,#ff6ad5,#ff5f6d) border-box;animation:foilSpin 6s linear infinite}
+.hunt.paused .hc.foil{animation-play-state:paused}
+.hunt-ctl{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:18px}
+.hunt-ctl button{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);transition:transform 140ms var(--ease-out),background-color 160ms ease}
+.hunt-ctl button:active{transform:scale(.92)}
+.hunt-ctl .icon{width:18px;height:18px}
+.hunt-ctl .prev .icon{transform:rotate(90deg)}.hunt-ctl .next .icon{transform:rotate(-90deg)}
+.hunt-dots{display:flex;gap:6px}
+.hunt-dots i{position:relative;width:22px;height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.hunt-dots i.on::after{content:"";position:absolute;inset:0;background:var(--ink);transform-origin:left;animation:dotRun var(--dur,5600ms) linear both}
+.hunt.paused .hunt-dots i.on::after,.hunt.hold .hunt-dots i.on::after{animation-play-state:paused}
+.hunt.still .hunt-dots i.on::after{animation:none}
+@keyframes dotRun{from{transform:scaleX(0)}}
+.hunt-cap{margin:10px 0 0;text-align:center;font-size:12.5px;color:var(--muted)}
+.hunt-empty{display:grid;place-items:center;text-align:center;padding:28px;border:1px dashed var(--line);border-radius:22px;color:var(--muted);min-height:260px}
+@media (hover:hover) and (pointer:fine){.hc[data-k="0"]{cursor:grab}.hunt-ctl button:hover{background:var(--sunk)}}
+@media (prefers-reduced-motion:reduce){.hc{transition:opacity 200ms ease}.hc.scan .hc-media::after,.hc.scan .hc-off,.hc.scan .hc-ref s::after{animation:none}.hc.foil{animation:none}}
+/* Revelações com propósito: números contam, barras crescem, preço antigo é riscado */
+@media (prefers-reduced-motion:no-preference){
+  .radar:not(.seen) .spark i{transform:scaleY(0)}
+  .radar .spark i{transform-origin:bottom;transition:transform 700ms cubic-bezier(.16,1,.3,1) calc(var(--j) * 22ms)}
+  .drops:not(.seen) .dl-v s{text-decoration-color:transparent}
+  .drops .dl-v s{transition:text-decoration-color 300ms ease calc(var(--j) * 90ms + 200ms)}
+  .drops:not(.seen) .dl-v b,.drops:not(.seen) .dl-pct{opacity:0;transform:translateY(6px)}
+  .drops .dl-v b,.drops .dl-pct{transition:opacity 400ms ease calc(var(--j) * 90ms + 420ms),transform 500ms cubic-bezier(.16,1,.3,1) calc(var(--j) * 90ms + 420ms)}
+  .deals:not(.seen) .meter i b{animation:none;transform:scaleX(0)}
+  .cascade .deal:not(.seen){opacity:0;transform:translateY(14px) scale(.98)}
+  .cascade .deal{transition:opacity 500ms ease var(--cd,0ms),transform 700ms cubic-bezier(.16,1,.3,1) var(--cd,0ms)}
+  .cascade .deal:nth-child(2){--cd:70ms}.cascade .deal:nth-child(3){--cd:140ms}.cascade .deal:nth-child(4){--cd:210ms}
+  .hl:not(.seen) .hl-v{opacity:0;filter:blur(6px)}
+  .hl .hl-v{transition:opacity 500ms ease calc(var(--j) * 80ms),filter 600ms ease calc(var(--j) * 80ms)}
+}
+.deal:active,.hl-t:active,.pre-c:active,.drop-list a:active{transform:scale(.985)}
 /* SectionHeader */
 .sh2{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 18px}
 .sh2 h2{margin:0;font-size:clamp(21px,2.2vw,26px);font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
@@ -563,7 +658,7 @@ a.navbtn{text-decoration:none}
 .seeall .chev{transform:rotate(-90deg);width:16px;height:16px;transition:transform 160ms var(--ease-out)}
 .seeall:hover .chev{transform:rotate(-90deg) translateY(2px)}
 .home-opp,.radar,.duo,.hl,.pre,.home-all{margin-top:64px}
-.home-opp{margin-top:48px}
+.home-opp{margin-top:48px}.opp-all{margin:20px 0 0;text-align:center}
 @media (max-width:760px){.home-opp,.radar,.duo,.hl,.pre,.home-all{margin-top:44px}.hero2{padding-top:28px}.sh2{align-items:flex-start;flex-direction:column;gap:6px}}
 /* DealCard */
 .deals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
@@ -605,6 +700,7 @@ a.navbtn{text-decoration:none}
 .meter strong{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}.meter small{font-size:11px;color:var(--muted);font-weight:500}
 .deal-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px}
 .deal-body>.meter+.deal-foot,.deal-body>.deal-price+.deal-foot{margin-top:14px;border-top:1px solid var(--line-soft)}
+.pixk{font-style:normal;font-size:12px;font-weight:600;color:var(--muted);margin-left:6px;letter-spacing:0}
 .deal-store{font-size:13px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.deal-store em{font-style:normal;color:var(--muted)}
 .deal-cta{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:var(--hot);text-decoration:none;white-space:nowrap;padding:6px 0;transition:gap 160ms var(--ease-out)}
 .deal-cta .icon{width:15px;height:15px}.deal-cta:hover{gap:8px}.deal-cta:active{opacity:.7}
@@ -623,7 +719,7 @@ a.navbtn{text-decoration:none}
 .pulse-k span{display:block;margin-top:8px;font-size:14px;color:var(--cover-muted)}
 .pulse-k.zero b{opacity:.4}
 .spark{position:relative;display:flex;align-items:flex-end;gap:3px;height:54px;margin-top:28px;padding-bottom:18px}
-.spark i{flex:1;height:max(2px,var(--h));border-radius:2px 2px 0 0;background:rgb(255 255 255 / .22);transform-origin:bottom;animation:sparkIn 700ms cubic-bezier(.16,1,.3,1) both}
+.spark i{flex:1;height:max(2px,var(--h));border-radius:2px 2px 0 0;background:rgb(255 255 255 / .22);transform-origin:bottom}
 .spark i:nth-last-child(-n+3){background:var(--sticker)}
 @keyframes sparkIn{from{transform:scaleY(0)}}
 .spark-l,.spark-r{position:absolute;bottom:0;font-size:11.5px;color:var(--cover-muted)}.spark-l{left:0}.spark-r{right:0}
@@ -997,6 +1093,11 @@ function photo(p,o,cls="photo"){
   return`<div class="${cls}"><img src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.photo').outerHTML=this.closest('.photo').dataset.fb" ></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
 }
 const live=(o)=>o.stock==="IN_STOCK"&&!o.stale&&!o.anomalous&&o.total>0;
+/* Quem vende: em marketplace (Ri Happy, PBKIDS...) o preço é do vendedor parceiro, não da loja. Nunca atribuir à loja o preço de outro. */
+const nrm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"");
+const thirdParty=(o)=>{const a=nrm(o.seller),b=nrm(o.storeName);return !!(a&&b&&!a.includes(b)&&!b.includes(a))};
+const storeTxt=(o)=>thirdParty(o)?`${o.seller} via ${o.storeName}`:o.storeName;
+const pixTag=(o)=>o.priceKind==="pix"?`<em class="pixk">no Pix</em>`:"";
 const label=(p)=>p.typeLabel+(p.boosters&&(p.type==="booster_box"||p.type==="combo")?` ${p.boosters}`:"")+(p.variant?` ${p.variant}`:"");
 
 /* Agrupa ofertas por produto e escolhe a melhor de cada um conforme o objetivo */
@@ -1109,9 +1210,9 @@ function dealCard(e,opt={}){
     <p class="deal-col">${esc(p.collectionName)}</p>
     <h3 class="deal-name">${esc(label(p))}</h3>
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
-    <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
+    <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${sc!=null?scoreMeter(sc):""}
-    <div class="deal-foot"><span class="deal-store">${esc(o.storeName)}${n>1?` <em>+${n-1}</em>`:""}</span><a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span><a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1178,7 +1279,7 @@ function radarHTML(){
   return`<section class="radar" aria-label="Radar do Hunter"><div class="radar-in">
     ${sectionHead("","Radar do Hunter",`O que mudou no mercado ${sinceTxt}.`)}
     <div class="pulse">${items.map(([t,l])=>{const n=cnt(t);return`<div class="pulse-k${n?"":" zero"}"><b data-n="${n}">${n}</b><span>${l}</span></div>`}).join("")}</div>
-    <div class="spark" role="img" aria-label="Eventos por hora nas últimas 24 horas">${bins.map((v,i)=>`<i style="--h:${Math.round(v/mx*100)}%" title="${v} ${v===1?"evento":"eventos"}"></i>`).join("")}<span class="spark-l">24 h atrás</span><span class="spark-r">agora</span></div>
+    <div class="spark" role="img" aria-label="Eventos por hora nas últimas 24 horas">${bins.map((v,i)=>`<i style="--h:${Math.round(v/mx*100)}%;--j:${i}" title="${v} ${v===1?"evento":"eventos"}"></i>`).join("")}<span class="spark-l">24 h atrás</span><span class="spark-r">agora</span></div>
   </div></section>`;
 }
 function actItem(e){
@@ -1206,7 +1307,7 @@ function dropsHTML(){
   const by={};for(const e of activity().filter((x)=>x.type==="drop"&&x.from>0)){const k=e.productId;const pc=1-e.to/e.from;if(!by[k]||pc>by[k].pc)by[k]={e,pc}}
   const list=Object.values(by).sort((a,b)=>b.pc-a.pc).slice(0,5);
   return`<section class="drops">${sectionHead("","Maiores quedas","Reduções de preço confirmadas nos últimos dias.")}
-  ${list.length?`<ol class="drop-list">${list.map(({e,pc})=>{const p=P[e.productId];const o=bestLive(p.id);return`<li><a href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${photo(p,o,"photo dl-ph")}<span class="dl-b"><b>${esc(label(p))}</b><small>${esc(p.collectionName)} · ${esc(e.storeName||"")} · ${dayLabel(e.t)}</small></span>
+  ${list.length?`<ol class="drop-list">${list.map(({e,pc},j)=>{const p=P[e.productId];const o=bestLive(p.id);return`<li style="--j:${j}"><a href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${photo(p,o,"photo dl-ph")}<span class="dl-b"><b>${esc(label(p))}</b><small>${esc(p.collectionName)} · ${esc(e.storeName||"")} · ${dayLabel(e.t)}</small></span>
     <span class="dl-v"><s>${money(e.from)}</s><b>${money(e.to)}</b><span class="dl-pct">${ic("trend-down")}${pct(pc)}</span></span>${o?.dealScore!=null?`<span class="dl-sc" style="--sc:${scoreColor(o.dealScore)}">${o.dealScore}</span>`:""}</a></li>`}).join("")}</ol>`
   :`<p class="soft-empty">Ainda não encontramos quedas de preço confirmadas. Preço que vai e volta entre vendedores não conta como queda.</p>`}</section>`;
 }
@@ -1218,7 +1319,7 @@ function highlightsHTML(pool){
   const tiles=[["Melhor oportunidade",best,`${best.o.dealScore}<small>/100</small>`,"Deal Score"],["Maior desconto",disc,pct(disc.o.discount),"abaixo da Copag"],["Maior economia",save,money(save.o.savings),"em relação à Copag"]];
   if(ppb)tiles.push(["Booster mais barato",{p:P[ppb.productId],o:ppb},money(ppb.perBooster),"por booster"]);
   return`<section class="hl">${sectionHead("","Destaques do Hunter","Os recordes do mercado agora.")}
-  <div class="hl-grid">${tiles.map(([k,e,v,u])=>`<a class="hl-t" href="/produto/${SLUG[e.p.id]}" data-p="${esc(e.p.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(e.p,e.o,"photo hl-ph")}<span class="hl-n">${esc(e.p.collectionName)} · ${esc(label(e.p))}</span><span class="hl-s">${esc(e.o.storeName)} · ${money(e.o.total)}</span></a>`).join("")}</div></section>`;
+  <div class="hl-grid">${tiles.map(([k,e,v,u],j)=>`<a class="hl-t" style="--j:${j}" href="/produto/${SLUG[e.p.id]}" data-p="${esc(e.p.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(e.p,e.o,"photo hl-ph")}<span class="hl-n">${esc(e.p.collectionName)} · ${esc(label(e.p))}</span><span class="hl-s">${esc(storeTxt(e.o))} · ${money(e.o.total)}${e.o.priceKind==="pix"?" no Pix":""}</span></a>`).join("")}</div></section>`;
 }
 function preHTML(){
   const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].total))by[o.productId]=o;
@@ -1235,23 +1336,104 @@ let tickT=0;
 function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMotion())return;const it=[...t.querySelectorAll(".tk")];if(it.length<2)return;let k=0;
   tickT=setInterval(()=>{if(!document.contains(t)){clearInterval(tickT);return}if(document.hidden||$(".hero2")?.classList.contains("paused"))return;it[k].classList.remove("on");k=(k+1)%it.length;it[k].classList.add("on")},4200)}
 
+/* A caçada: as melhores oportunidades verificadas, em pilha. A carta do topo é "escaneada":
+   o feixe passa, o preço Copag é riscado e o preço desce da referência até o valor real da loja. */
+function huntCard(e,k,n){
+  const{p,o}=e;const r=refOf(p);const d=discOf(p,o);const sc=o.dealScore;const href="/produto/"+(SLUG[p.id]||encodeURIComponent(p.id));
+  return`<article class="hc${sc>=70||k===0?" foil":""}" data-k="${k}" data-i="${k}" style="--k:${k};--sc:${scoreColor(sc)}" aria-roledescription="carta" aria-label="${k+1} de ${n}">
+    <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" draggable="false" aria-label="${esc(p.collectionName+" "+label(p))}: ${money(o.total)}${o.priceKind==="pix"?" no Pix":""} em ${esc(storeTxt(o))}"></a>
+    <div class="hc-media">${photo(p,o,"photo")}<span class="hc-tag"><i></i>${band(sc)[1]}</span><button class="deal-fav" type="button" data-fav="${esc(p.id)}" aria-pressed="${isFav(p.id)}" aria-label="${isFav(p.id)?"Tirar dos favoritos":"Favoritar"}">${ic(isFav(p.id)?"heart-f":"heart")}</button></div>
+    <div class="hc-body"><p class="hc-col">${esc(p.collectionName)}</p><h3 class="hc-name">${esc(label(p))}</h3>
+      <div class="hc-deal"><div class="hc-price"><span class="hc-now"><b data-to="${o.total}" data-from="${r?r.v:o.total}">${money(o.total)}</b>${pixTag(o)}</span>${r?`<span class="hc-ref">${r.net?"Ref.":"Copag"} <s>${money(r.v)}</s></span>`:""}</div>
+      ${d!=null&&d>=.0005?`<div class="hc-off"><b>−${pct(d)}</b><small>economize ${money(r.v-o.total)}</small></div>`:""}</div>
+      <div class="hc-foot"><span>${esc(storeTxt(o))}</span>${scoreMeter(sc)}</div></div></article>`;
+}
+function huntHTML(pool){
+  const top=pool.slice(0,5);
+  if(!top.length)return`<div class="hunt"><div class="hunt-empty"><p><b>Nenhuma oportunidade verificada agora.</b><br>O Hunter só mostra ofertas com estoque e preço Copag confirmados. Nova varredura a cada 15 minutos.</p></div></div>`;
+  return`<div class="hunt" aria-roledescription="carrossel" aria-label="Melhores oportunidades agora">
+    <div class="hunt-stage">${top.map((e,k)=>huntCard(e,k,top.length)).join("")}</div>
+    ${top.length>1?`<div class="hunt-ctl"><button class="prev" type="button" aria-label="Oportunidade anterior">${ic("caret-down")}</button><span class="hunt-dots" aria-hidden="true">${top.map((_,k)=>`<i${k?"":` class="on"`}></i>`).join("")}</span><button class="next" type="button" aria-label="Próxima oportunidade">${ic("caret-down")}</button></div>`:""}
+    <p class="hunt-cap" aria-live="polite">Arraste para o lado · ofertas verificadas há ${ago(S.generatedAt).replace(/^há /,"")}</p></div>`;
+}
+let huntT=0,huntIO=null;
+function huntInit(){
+  clearTimeout(huntT);if(huntIO)huntIO.disconnect();
+  const root=$(".hunt");const stage=root?.querySelector(".hunt-stage");if(!stage)return;
+  const cards=[...stage.querySelectorAll(".hc")];const n=cards.length;const dots=[...root.querySelectorAll(".hunt-dots i")];
+  const RM=reduceMotion();const DUR=5600;let order=cards.map((_,i)=>i);let busy=false;
+  if(RM||n<2)root.classList.add("still");
+  const money2=(v)=>money(Math.round(v*100)/100);
+  function scan(c){
+    c.classList.remove("scan");void c.offsetWidth;c.classList.add("scan");
+    const b=c.querySelector(".hc-price b");const to=+b.dataset.to,from=+b.dataset.from;
+    if(RM||!(from>to)){b.textContent=money(to);return}
+    const t0=performance.now()+260,dur=900;
+    const step=(now)=>{const x=Math.min(1,Math.max(0,(now-t0)/dur));const ez=1-Math.pow(1-x,4);b.textContent=money2(from-(from-to)*ez);if(x<1&&document.contains(b))requestAnimationFrame(step)};
+    b.textContent=money(from);requestAnimationFrame(step);
+  }
+  function lay(){order.forEach((ci,k)=>{const c=cards[ci];c.dataset.k=k;c.style.setProperty("--k",k);c.querySelector(".deal-hit").tabIndex=k?-1:0});
+    const top=order[0];dots.forEach((d,i)=>{d.classList.toggle("on",i===top);if(i===top){d.style.setProperty("--dur",DUR+"ms");d.style.animation="none";void d.offsetWidth;d.style.animation=""}})}
+  function go(dir,fromDrag){
+    if(busy||n<2)return;busy=true;clearTimeout(huntT);
+    const c=cards[order[0]];
+    if(dir>0){ // a carta do topo sai voando e volta para o fundo da pilha
+      const dx=fromDrag?Math.sign(fromDrag)*1:-1;
+      c.classList.add("fly");c.style.transform=`translate3d(${dx*120}%,-4%,0) rotate(${dx*14}deg)`;
+      setTimeout(()=>{order.push(order.shift());c.classList.remove("fly");c.style.transform="";c.style.transition="none";lay();void c.offsetWidth;c.style.transition="";scan(cards[order[0]]);busy=false;arm()},RM?0:330);
+    }else{ // volta: a última carta vem do fundo para o topo
+      order.unshift(order.pop());lay();scan(cards[order[0]]);setTimeout(()=>{busy=false;arm()},RM?0:300);
+    }
+  }
+  function arm(){clearTimeout(huntT);if(RM||n<2||root.classList.contains("paused")||root.classList.contains("hold"))return;huntT=setTimeout(()=>{if(document.contains(root)&&!document.hidden)go(1);else arm()},DUR)}
+  root.querySelector(".next")?.addEventListener("click",()=>go(1));
+  root.querySelector(".prev")?.addEventListener("click",()=>go(-1));
+  root.addEventListener("keydown",(e)=>{if(e.key==="ArrowRight"){e.preventDefault();go(1)}if(e.key==="ArrowLeft"){e.preventDefault();go(-1)}});
+  const hold=(on)=>{root.classList.toggle("hold",on);if(on)clearTimeout(huntT);else arm()};
+  root.addEventListener("pointerenter",(e)=>{if(e.pointerType==="mouse")hold(true)});root.addEventListener("pointerleave",(e)=>{if(e.pointerType==="mouse")hold(false)});
+  root.addEventListener("focusin",()=>hold(true));root.addEventListener("focusout",()=>hold(false));
+  /* arrastar: segue o dedo com atrito; solta rápido ou passa de 80px = próxima */
+  let sx=0,sy=0,st=0,dx=0,drag=null,moved=false;
+  stage.addEventListener("pointerdown",(e)=>{if(busy||n<2||e.button>0)return;const c=e.target.closest('.hc[data-k="0"]');if(!c)return;drag=c;sx=e.clientX;sy=e.clientY;st=performance.now();dx=0;moved=false});
+  stage.addEventListener("pointermove",(e)=>{if(!drag)return;dx=e.clientX-sx;const dy=e.clientY-sy;
+    if(!moved){if(Math.abs(dx)<6)return;if(Math.abs(dy)>Math.abs(dx)){drag=null;return}moved=true;drag.classList.add("drag");try{drag.setPointerCapture(e.pointerId)}catch{}clearTimeout(huntT)}
+    drag.style.transform=`translate3d(${dx}px,${Math.abs(dx)*-.04}px,0) rotate(${dx*.05}deg)`});
+  const end=()=>{if(!drag)return;const c=drag;drag=null;c.classList.remove("drag");if(!moved)return;
+    const v=Math.abs(dx)/Math.max(1,performance.now()-st);
+    if(Math.abs(dx)>80||v>.11){if(dx<0)go(1,-1);else{c.style.transform="";go(-1)}}else{c.style.transform="";arm()}
+    const kill=(ev)=>{ev.preventDefault();ev.stopPropagation()};c.addEventListener("click",kill,{capture:true,once:true});setTimeout(()=>c.removeEventListener("click",kill,{capture:true}),400)};
+  stage.addEventListener("pointerup",end);stage.addEventListener("pointercancel",end);
+  if("IntersectionObserver" in window){huntIO=new IntersectionObserver(([e])=>{root.classList.toggle("paused",!e.isIntersecting);if(e.isIntersecting)arm();else clearTimeout(huntT)});huntIO.observe(root)}
+  lay();scan(cards[order[0]]);arm();
+}
+/* Seções da Início ganham .seen ao entrar na tela (uma vez): números contam, barras crescem */
+let seenIO=null;
+function countUp(el){const to=+el.dataset.n;if(!(to>0)||reduceMotion())return;const t0=performance.now();const step=(now)=>{const x=Math.min(1,(now-t0)/800);el.textContent=Math.round(to*(1-Math.pow(1-x,3)));if(x<1)requestAnimationFrame(step)};el.textContent="0";requestAnimationFrame(step)}
+function revealInit(){
+  if(seenIO)seenIO.disconnect();const els=[...document.querySelectorAll(".radar,.drops,.hl,#view .deals,.cascade .deal")];
+  if(!("IntersectionObserver" in window)||reduceMotion()){els.forEach((x)=>x.classList.add("seen"));return}
+  seenIO=new IntersectionObserver((es)=>es.forEach((e)=>{if(!e.isIntersecting)return;const t=e.target;seenIO.unobserve(t);t.classList.add("seen");t.querySelectorAll(".pulse-k b[data-n]").forEach(countUp)}),{threshold:0,rootMargin:"0px 0px -12% 0px"});
+  els.forEach((x)=>seenIO.observe(x));
+}
 function renderDeals(){
   const raw=entries();
   const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
   const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
-  const pool=oppPool();const opp=pool.slice(0,4);
+  const pool=oppPool();const opp=pool.slice(5).filter((e)=>e.o.dealScore>=50).slice(0,4);
   const nLive=OFF.filter(live).length,nStores=new Set(OFF.filter(live).map((o)=>o.storeId)).size;
-  $("#view").innerHTML=`<section class="hero2">
-    <h1>Não procure preço.<br><span>Procure oportunidade.</span></h1>
-    <p class="hero2-sub">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-    ${searchBox("hq","",true)}
-    <div class="live"><span class="live-dot" aria-hidden="true"></span><span><b>Hunter ativo</b> · varredura ${ago(S.generatedAt)} · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
-    ${tickerHTML()}
+  const intro=!renderDeals.done;renderDeals.done=true;document.body.classList.toggle("intro",intro);
+  $("#view").innerHTML=`<section class="hero2"><div class="hero2-copy">
+    <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="hot">Procure oportunidade.</span></span></h1>
+    <p class="hero2-sub" style="--d:380">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
+    <div class="sbox-wrap" style="--d:480">${searchBox("hq","",true)}</div>
+    <div class="live" style="--d:580"><span class="live-dot" aria-hidden="true"></span><span><b>Hunter ativo</b> · varredura ${ago(S.generatedAt)} · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
+    ${tickerHTML()}</div>
+    ${huntHTML(pool)}
   </section>
-  <section class="home-opp">${sectionHead("flame-f","Oportunidades agora","As melhores oportunidades encontradas pelo Hunter, pela qualidade do negócio e não só pelo desconto.",seeAll("oportunidades"))}
-    ${opp.length?`<div class="packstage"><div class="deals row4">${opp.map((e,i)=>dealCard(e,{plain:true,i,rank:i,foil:i===0||e.o.dealScore>=70})).join("")}</div><div class="pack" aria-hidden="true"><span class="pack-top"></span><span class="pack-body"></span></div></div>`:`<div class="empty"><h3>Nenhuma oferta abaixo da Copag agora</h3><p>O Hunter confere as lojas a cada 15 minutos.</p></div>`}</section>
+  ${opp.length?`<section class="home-opp">${sectionHead("flame-f","Mais oportunidades","Depois das cinco do topo, pela qualidade do negócio e não só pelo desconto.",seeAll("oportunidades"))}
+    <div class="deals row4 cascade">${opp.map((e,i)=>dealCard(e,{plain:true,rank:i+5,foil:e.o.dealScore>=80})).join("")}</div></section>`:pool.length?`<p class="opp-all">${seeAll("oportunidades","Ver todas as oportunidades com filtros")}</p>`:""}
   ${radarHTML()}
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
   ${highlightsHTML(pool)}
@@ -1263,7 +1445,7 @@ function renderDeals(){
   ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço sugerido conhecido (${noCopag.length})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
   ${base.some((e)=>!e.p.copagConfirmed)?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
   </section>`;
-  homeMotion();startTicker();
+  homeMotion();startTicker();huntInit();revealInit();
 }
 
 function renderList(title,intro,list,emptyMsg){
@@ -1489,7 +1671,7 @@ function openProduct(pid,{push=true}={}){
 function storeOffer(o,p){
   const d=o.discount;const hasD=p.copagConfirmed&&d!=null&&!o.anomalous;
   return`<article class="so${live(o)?"":" dim"}">
-    <div class="so-top"><b>${esc(o.storeName)}</b>${o.seller&&o.seller!==o.storeName?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}</div>
+    <div class="so-top"><b>${esc(o.storeName)}</b>${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
       <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>
@@ -1876,7 +2058,7 @@ const OSORTS=[["score","Melhor oportunidade"],["disc","Maior desconto"],["save",
 function oppPool(){
   const by={},n={};
   for(const o of OFF){if(!live(o))continue;n[o.productId]=(n[o.productId]||0)+1;
-    const p=P[o.productId];if(!p?.copagConfirmed||o.dealScore==null||!(o.discount>0))continue;
+    const p=P[o.productId];if(!p?.copagConfirmed||o.dealScore==null||o.confirmed===false||!(o.discount>0))continue;
     const cur=by[p.id];if(!cur||o.dealScore>cur.o.dealScore||(o.dealScore===cur.o.dealScore&&o.total<cur.o.total))by[p.id]={p,o}}
   return Object.values(by).map((e)=>({...e,n:n[e.p.id]||1})).sort((a,b)=>b.o.dealScore-a.o.dealScore||(b.o.discount-a.o.discount));
 }

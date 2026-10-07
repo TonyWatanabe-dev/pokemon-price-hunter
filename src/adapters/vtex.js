@@ -12,14 +12,16 @@ export async function search(store, catalog) {
     const url = `${base}/api/catalog_system/pub/products/search?ft=${encodeURIComponent(term)}&_from=0&_to=49`;
     await guard(url);
     const arr = await getJson(url);
-    for (const p of Array.isArray(arr) ? arr : []) for (const it of p.items || []) for (const s of it.sellers || []) {
+    // Só o vendedor padrão: é o preço que a página do link mostra. Vendedor secundário do marketplace
+    // tem outro preço na mesma página, e publicar o dele levaria o visitante a um valor diferente.
+    for (const p of Array.isArray(arr) ? arr : []) for (const it of p.items || []) for (const s of (it.sellers || []).filter((x, _, all) => !all.some((y) => y.sellerDefault) || x.sellerDefault)) {
       const o = s.commertialOffer || {};
       const qty = Number(o.AvailableQuantity ?? 0);
       const l = {
         title: p.productName + (p.items.length > 1 ? ' ' + it.name : ''),
         url: (p.link || `${base}/${p.linkText}/p`) + (p.items.length > 1 ? `?skuId=${it.itemId}` : ''),
         price: { base: o.Price > 0 ? o.Price : null }, listPrice: o.ListPrice > o.Price ? o.ListPrice : null,
-        stock: qty > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: qty > 0 && qty < 99999 ? qty : null,
+        stock: qty > 0 && o.IsAvailable !== false && o.Price > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: qty > 0 && qty < 99999 ? qty : null,
         sku: it.itemId, ean: it.ean || null, image: it.images?.[0]?.imageUrl || null, seller: s.sellerName || null, sellerId: s.sellerId, sourceType: 'store_api',
         _vtex: { base, itemId: it.itemId, sellerId: s.sellerId },
       };
