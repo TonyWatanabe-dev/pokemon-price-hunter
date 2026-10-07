@@ -283,3 +283,5 @@
 {"t":"2026-10-06T23:30:31.492Z","offerId":"279c53397794","productId":"me04-etb","storeId":"canal40","stock":"UNAVAILABLE","event":"removed"}
 {"t":"2026-10-06T23:45:22.659Z","offerId":"b4cbd397bae7","productId":"me04-etb","storeId":"rihappycombr","seller":"Loja Copag","price":399.99,"priceKind":"base","shipping":null,"total":399.99,"stock":"IN_STOCK","quantity":100}
 {"t":"2026-10-06T23:45:22.659Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T00:00:38.289Z","offerId":"396adc4cc987","productId":"me04-etb","storeId":"rihappycombr","seller":"Gourmande","price":599.99,"priceKind":"base","shipping":11.76,"total":611.75,"stock":"IN_STOCK","quantity":10}
+{"t":"2026-10-07T00:00:38.289Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
