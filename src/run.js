@@ -11,9 +11,11 @@ async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ le
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, isAnomalous, opportunityBadge } from './score.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
-import { collectTips } from './tips.js';
+import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
+import { linkAgrees } from './gate.js';
+import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
@@ -65,6 +67,11 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const prev = readJson(dataPath('offers.json'), {});
   const sources = readJson(dataPath('sources.json'), {});
   const lowest = readJson(dataPath('lowest.json'), {});
+  const distrust = loadDistrust({ sources, prev, T });
+  // Menor preço vindo de leitura antiga não confiável é descartado (o cache é refeito com as leituras novas).
+  for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && !trustedPoint(distrust, l.storeId, l.at)) delete lowest[pid];
+  // Na rodada da correção, essas lojas não geram eventos (o "antes" delas não era confiável).
+  const quiet = new Set(distrust.fresh ? distrust.stores : []);
   // Uma vez: refaz o "menor já visto" a partir do histórico filtrado (o antigo podia ter preço de anúncio trocado).
   let rebuiltLowest = false;
   if (!lowest.__fromHist && fs.existsSync(dataPath('hist'))) {
@@ -72,7 +79,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     for (const k of Object.keys(lowest)) delete lowest[k];
     for (const f of fs.readdirSync(dataPath('hist'))) {
       const h = readJson(dataPath('hist/' + f), null); if (!h?.productId) continue;
-      for (const [sid, x] of Object.entries(h.stores || {})) for (const [d, v] of x.pts) if (!lowest[h.productId] || v < lowest[h.productId].total) lowest[h.productId] = { total: v, at: d + 'T12:00:00.000Z', storeId: sid, offerId: null };
+      for (const [sid, x] of Object.entries(h.stores || {})) for (const [d, v] of x.pts) if (trustedPoint(distrust, sid, d) && (!lowest[h.productId] || v < lowest[h.productId].total)) lowest[h.productId] = { total: v, at: d + 'T12:00:00.000Z', storeId: sid, offerId: null };
     }
     lowest.__fromHist = true;
   }
@@ -117,6 +124,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       for (const l of listings) {
         const m = matchProduct(l, catalog);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
+        // Trava de publicação: o link precisa falar do mesmo produto que o título (coleção e formato).
+        const gate = linkAgrees(l, m, catalog);
+        if (!gate.ok) { unmatched.push({ store: store.id, title: l.title, url: l.url, why: [gate.why] }); continue; }
         matched++;
         const product = m.product;
         const prevImg = registry[product.id]?.image;
@@ -223,6 +233,13 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
   const maxAge = (tipsCfg?.horasMaximas || 72) * 3600e3;
   for (const [id, t] of Object.entries(tipStore)) { if (t.lastSeen !== T) t.isNew = false; if (now.getTime() - Date.parse(t.postedAt || t.firstSeen) > maxAge) delete tipStore[id]; }
+  // Pistas antigas: relê o preço do texto com a regra atual (ignora parcela e preço condicionado a cartão).
+  for (const t of Object.values(tipStore)) {
+    if (t.lastSeen === T || !t.text) continue;
+    const v = firstPrice(t.text); if (!(v > 0) || v === t.price) continue;
+    if (t.perBooster && t.price) t.perBooster = round2(t.perBooster * v / t.price);
+    t.price = v; t.discount = t.msrp ? +(1 - v / t.msrp).toFixed(4) : null; t.anomalous = !!(t.msrp && v < t.msrp * 0.55);
+  }
   const tips = Object.values(tipStore).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
 
   // Bot: analisa links/promoções que você encaminhar para ele no Telegram.
@@ -245,27 +262,30 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (nb || nd) log(`Histórico: ${nb ? nb + ' produtos montados do log, ' : ''}${nd} atualizados`);
     
   } catch (e) { log(`[histórico] ${e.message}`); }
-  for (const p of Object.values(products)) { try { p.hist = histSummary(p.id); } catch { p.hist = null; } }
+  for (const p of Object.values(products)) { try { p.hist = histSummary(p.id, distrust); } catch { p.hist = null; } }
   let activity = [];
-  try { activity = recordActivity({ T, offers, prev, products, newLowest, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])) }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
+  try { activity = recordActivity({ T, offers, prev, products, newLowest, quiet, distrust, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])) }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
   const state = {
     generatedAt: T,
     coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0 },
-    totals: { products: Object.keys(products).length, offers: all.length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
+    totals: { products: Object.keys(products).length, offers: all.filter((o) => !o.anomalous).length, review: all.filter((o) => o.anomalous).length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
     collections: catalog.collections.map(({ id, name, series, aliases }) => ({ id, name, series, aliases: aliases || [], products: Object.values(products).filter((p) => p.collection === id).length })).filter((c) => c.products),
     types: Object.entries(TYPE_LABEL).map(([id, label]) => ({ id, label, group: groupOf(id), products: Object.values(products).filter((p) => p.type === id).length })).filter((t) => t.products),
     products: Object.values(products),
     bestDeals: ranked.map((o) => o.id),
-    offers: all,
+    // Preço fora do plausível não é publicado: fica em data/review.json para conferência.
+    offers: all.filter((o) => !o.anomalous),
     sources: Object.entries(sources).map(([id, s]) => ({ id, ...s, score: storeScores[id] || null })),
     unmatched: unmatched.slice(0, 200),
     tips: tips.slice(0, 150),
     activity,
+    distrust: { stores: distrust.stores, until: distrust.until },
     tipSources: tipStatus,
     rules: watch.rules || [],
     recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].slice(0, 50),
   };
   writeJson(dataPath('offers.json'), offers);
+  writeJson(dataPath('review.json'), all.filter((o) => o.anomalous).map(({ id, storeId, productId, title, url, total, prices }) => ({ id, storeId, productId, title, url, total, prices })));
   writeJson(dataPath('sources.json'), sources);
   writeJson(dataPath('lowest.json'), lowest);
   writeJson(dataPath('copag-msrp.json'), copagSeen);

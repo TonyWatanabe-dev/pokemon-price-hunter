@@ -1392,7 +1392,10 @@ const HIST={};const HV={period:30,mode:"best"};
 const PERIODS=[[7,"7D"],[30,"30D"],[90,"90D"],[365,"1A"]];
 const fmtD=(d)=>{const [y,m,dd]=d.split("-");return`${dd}/${m}`};
 async function loadHist(pid){
-  if(!(pid in HIST))HIST[pid]=await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`);
+  if(!(pid in HIST)){const h=await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`);
+    /* leituras antigas não confiáveis (antes da correção do leitor de páginas) não entram no gráfico */
+    const D=S.distrust;if(h&&D&&D.stores)for(const[sid,x]of Object.entries(h.stores||{})){if(D.stores.includes(sid))x.pts=x.pts.filter((p)=>p[0]>D.until);if(!x.pts.length)delete h.stores[sid]}
+    HIST[pid]=h}
   if(view==="produto"&&curPid===pid)drawHist(pid);
 }
 function histSeries(h,period){

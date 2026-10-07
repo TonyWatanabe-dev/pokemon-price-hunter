@@ -61,8 +61,9 @@ export function detectBoosters(t) {
   return { count: null, inferred: false };
 }
 
-const VARIANT_STOP = new Set(['box', 'colecao', 'pokemon', 'de', 'da', 'do', 'com', 'e', 'tcg', 'mega', 'cartas', 'copag', 'booster', 'premium', 'especial']);
+const VARIANT_STOP = new Set(['box', 'colecao', 'pokemon', 'de', 'da', 'do', 'com', 'e', 'tcg', 'mega', 'cartas', 'copag', 'booster', 'premium', 'especial', 'estampas', 'ilustradas', 'sortidas', 'sortidos', 'sortida', 'sortido', 'modelos', 'variados', 'brilhante', 'brilhantes', 'jumbo']);
 function detectVariant(t) {
+  if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
   let m = t.match(/\b(mega )?([a-z]{3,}) ex\b/);
   if (m && !VARIANT_STOP.has(m[2])) return (m[1] ? 'mega-' : '') + m[2];
   m = t.match(/\bex (mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
@@ -70,6 +71,7 @@ function detectVariant(t) {
   return null;
 }
 
+const GENERIC_OK = new Set(['pokemon', 'tcg', 'copag', 'box', 'colecao', 'caixa', 'de', 'da', 'do', 'das', 'dos', 'com', 'e', 'original', 'originais', 'lacrado', 'lacrada', 'br', 'pt', 'ptbr', 'pt-br', 'cartas', 'carta', 'cards', 'card', 'booster', 'boosters', 'pacote', 'pacotes', 'escarlate', 'violeta', 'megaevolucao', 'mega', 'evolucao', 'estampas', 'ilustradas', 'jogo', 'game', 'trading', 'oficial', 'novo', 'nova', '-', 'tcg.', 'colecionavel', 'em', 'portugues']);
 /** -> { type, boosters, inferred, variant } ou { type: null } */
 export function detectType(t) {
   const b = detectBoosters(t);
@@ -91,7 +93,8 @@ export function detectType(t) {
     if (has(t, /\b(quadruplo|quadrupla)\b/)) return r('blister_4', 4);
   }
   if (b.count >= 24 && has(t, /\b(booster box|display|caixa|kit|box|expositor)\b/)) return r('booster_box', b.count, b.inferred);
-  if (b.count >= 6 && has(t, /\b(booster box|display|caixa|kit|box)\b/)) return r('combo', b.count, b.inferred);
+  // "Kit/caixa com N boosters" só vira combo se nada no título indicar outro formato (box ex, coleção, blister, fichário...).
+  if (b.count >= 6 && has(t, /\b(kit|caixa|combo)\b/) && !has(t, /\b(box|colecao|blister|blisters|fichario|binder|poster|miniatura|lata|latas|ex|deck|baralho)\b/)) return r('combo', b.count, b.inferred);
   if (has(t, /\bbooster box\b/)) return r('booster_box', b.count, b.inferred); // sem contagem: não casa (18 ou 36?)
   if (has(t, /\b(booster unitario|pacote de booster|booster avulso|1 booster|booster com embalagem especial)\b/) || /^(pokemon )?(tcg )?booster\b/.test(t)) return r('booster_pack', 1);
   if (has(t, /\bposter\b/)) return r('colecao_poster', b.count);
@@ -103,7 +106,13 @@ export function detectType(t) {
   const v = detectVariant(t);
   if (v && has(t, /\b(box|colecao|caixa)\b/)) return r('colecao_ex', b.count, false, v);
   if (has(t, /\b(colecao|box) especial\b/)) return r('colecao_especial', b.count);
-  if (has(t, /\b(box|caixa)( de)? colecao\b|\bcolecao\b.*\b(box|caixa)\b|\bbox\b.*\bcolecao\b|^colecao\b/)) return r('colecao', b.count);
+  if (has(t, /\b(box|caixa)( de)? colecao\b|\bcolecao\b.*\b(box|caixa)\b|\bbox\b.*\bcolecao\b|^colecao\b/)) {
+    // "Coleção" genérica só casa quando o título não traz nenhum nome que diferencie a caixa
+    // (ex.: "Coleção Dia de Pokémon", "Parceiros Iniciais", "Promo Eevee" são produtos diferentes).
+    const extra = t.split(' ').filter((w) => !GENERIC_OK.has(w) && !/^\d{1,3}$/.test(w) && !/^(ev|sv|me|swsh|sm)\d/.test(w) && w.length > 1);
+    if (extra.length) return r(null);
+    return r('colecao', b.count);
+  }
   return r(null);
 }
 

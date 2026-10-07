@@ -28,7 +28,7 @@ export async function request(url, { method = 'GET', accept = 'text/html', body,
       method, body, signal: ctrl.signal, redirect: 'follow',
       headers: { 'user-agent': UA, accept, 'accept-language': 'pt-BR,pt;q=0.9', ...headers },
     });
-    const text = await res.text();
+    const text = await decodeBody(res);
     const finalUrl = res.url || url;
     const looksChallenge = text.length < 30000 && CHALLENGE.test(text.slice(0, 8000));
     if ([401, 403, 429].includes(res.status) || /account-verification|captcha/i.test(finalUrl) || (res.status >= 400 && looksChallenge) || (looksChallenge && !/application\/json/.test(accept))) {
@@ -40,6 +40,16 @@ export async function request(url, { method = 'GET', accept = 'text/html', body,
     if (e.name === 'AbortError') { const t = new Error(`Timeout em ${host}`); t.status = 0; throw t; }
     throw e;
   } finally { clearTimeout(timer); }
+}
+
+// Algumas lojas ainda servem ISO-8859-1: decodifica pelo charset declarado para não publicar "ESCURID�O".
+async function decodeBody(res) {
+  if (typeof res.arrayBuffer !== 'function') return res.text();
+  const buf = new Uint8Array(await res.arrayBuffer());
+  let cs = (res.headers?.get?.('content-type') || '').match(/charset=([\w-]+)/i)?.[1];
+  if (!cs) { const head = new TextDecoder('latin1').decode(buf.slice(0, 4096)); cs = head.match(/<meta[^>]+charset=["']?([\w-]+)/i)?.[1]; }
+  cs = (cs || 'utf-8').toLowerCase();
+  try { return new TextDecoder(/^(iso-8859-1|latin1|windows-1252|cp1252)$/.test(cs) ? 'windows-1252' : cs).decode(buf); } catch { return new TextDecoder('utf-8').decode(buf); }
 }
 
 export const get = (url, opts) => request(url, opts);

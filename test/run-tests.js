@@ -66,7 +66,7 @@ const mainFetch = async (url, opt) => {
     if (u.pathname === '/products.json' || u.pathname.startsWith('/api/')) return html('', 404);
     if (u.pathname === '/') return html('<title>Loja Pokémon</title>');
     if (u.pathname === '/sitemap.xml') return html('<urlset><url><loc>https://ld.test/pokemon-booster-box-escuridao-absoluta-36</loc></url><url><loc>https://ld.test/pokemon-box-caos-ascendente-pre-venda</loc></url><url><loc>https://ld.test/pokemon-box-bloqueado</loc></url><url><loc>https://ld.test/camiseta</loc></url></urlset>');
-    if (u.pathname === '/pokemon-booster-box-escuridao-absoluta-36') return page('Pokémon Booster Box Escuridão Absoluta 36 Pacotes Copag', '389.90', 'InStock', '<span>R$ 369,90 no Pix</span>');
+    if (u.pathname === '/pokemon-booster-box-escuridao-absoluta-36') return page('Pokémon Booster Box Escuridão Absoluta 36 Pacotes Copag', '389.90', 'InStock', '<span>R$ 389,90</span> <span>R$ 369,90 no Pix</span>');
     if (u.pathname === '/pokemon-box-caos-ascendente-pre-venda') return page('Pré-venda Pokémon Booster Box Caos Ascendente 36 boosters', '359.90', 'PreOrder');
     if (u.pathname === '/pokemon-box-bloqueado') throw new Error('robots deveria ter barrado');
   }
@@ -99,7 +99,9 @@ assert.equal(shopBox.discount, 0.2466); assert.equal(shopBox.perBooster, 9.42); 
 assert.ok(shopBox.dealScore >= 80 && shopBox.storeValidated && shopBox.opportunity, 'oportunidade com loja validada');
 assert.ok(!s.offers.some((o) => /EN$/.test(o.title)), 'inglês rejeitado');
 assert.ok(s.unmatched.some((u) => /EN$/.test(u.title)), 'inglês listado para revisão');
-const susp = by((o) => o.price === 99); assert.ok(susp.anomalous && susp.dealScore == null && !s.bestDeals.includes(susp.id), 'preço anormal fora do ranking');
+assert.ok(!by((o) => o.price === 99), 'preço anormal não é publicado');
+{ const rv = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_DATA_DIR, 'review.json'), 'utf8')); const susp = rv.find((o) => o.total === 99);
+  assert.ok(susp && !s.bestDeals.includes(susp.id) && s.totals.review >= 1, 'preço anormal vai para conferência'); }
 const etb = by((o) => o.productId === 'me04-etb'); assert.equal(etb.discount, null); assert.equal(etb.dealScore, null, 'sem Copag: sem desconto nem score');
 const vtexOff = by((o) => o.storeId === 'vtex'); assert.equal(vtexOff.stock, 'OUT_OF_STOCK'); assert.ok(!s.bestDeals.includes(vtexOff.id));
 const ldBox = by((o) => o.productId === 'me05-box36'); assert.equal(ldBox.price, 369.9); assert.equal(ldBox.priceKind, 'pix', 'Pix tem prioridade');
@@ -181,9 +183,39 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   const a = parseProductPage(head + ld(rel) + ld(own), 'https://x.test/produtos/box-display-equilibrio/');
   assert.match(a.title, /Box Display/); assert.equal(a.price.base, 449.9, 'preço do produto da página, não do relacionado');
   const b = parseProductPage(head + ld(rel), 'https://x.test/produtos/box-display-equilibrio/');
-  assert.match(b.title, /Box Display/, 'só o relacionado no JSON-LD: usa o título da página'); assert.equal(b.price.base, null, 'e não pega o preço do relacionado');
+  assert.equal(b, null, 'só o relacionado no JSON-LD e sem preço próprio: não publica (nunca usa o preço do relacionado)');
   const c = parseProductPage('<meta property="og:title" content="Blister Chikorita - Loja X">' + ld({ ...rel, url: undefined }), 'https://x.test/produtos/blister-chikorita/');
   assert.equal(c.price.base, 55.9, 'produto único com nome compatível continua valendo');
+}
+// --- Nuvemshop: o produto da página vem de LS.product/LS.variants; JSON-LD só tem vitrine de outros produtos ---
+{
+  const { parseProductPage } = await import('../src/adapters/jsonld.js');
+  const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o)}</script>`;
+  const rel = { '@type': 'Product', name: 'Blister Quadrúplo Pokémon Megaevolução Escuridão Absoluta - ME05', offers: { '@type': 'Offer', price: '55', priceCurrency: 'BRL', url: 'https://g.test/produtos/blister-me05/', availability: 'https://schema.org/InStock' } };
+  const vars = [{ product_id: 1, price_number: 44, price_with_payment_discount_short: 'R$41,80', compare_at_price_number: 55, stock: 8, sku: 'ME04-04', available: true, is_visible: true }, { product_id: 2, price_number: 52, available: true }];
+  const htmlNs = `<meta property="og:title" content="Blister Quadrúplo Pokémon Caos Ascendente - ME04">${ld(rel)}<script>LS.product = {\n id : 1,\n name : 'Blister\\u0020Quadr\\u00FAplo\\u0020Pok\\u00E9mon\\u0020Caos\\u0020Ascendente\\u0020\\u002D\\u0020ME04'\n};\nLS.variants = ${JSON.stringify(vars)};\n</script><p>3 x de R$16,31</p><p>5% de desconto pagando com Pix</p>`;
+  const n = parseProductPage(htmlNs, 'https://g.test/produtos/blister-me04/');
+  assert.match(n.title, /Caos Ascendente/, 'título do produto da página, não da vitrine');
+  assert.equal(n.price.base, 44); assert.equal(n.price.pix, 41.8, 'Pix da própria variação'); assert.equal(n.stock, 'IN_STOCK'); assert.equal(n.quantity, 8);
+  // Loja Integrada esgotada: preço via microdata, estoque esgotado; Pix dos "relacionados" é ignorado
+  const li = '<meta property="og:title" content="Pokemon TCG: Escuridão Absoluta - Treinador Avançado"><div itemprop="offers"><meta itemprop="price" content="399.90"/><meta itemprop="availability" content="http://schema.org/OutOfStock"/></div><p>Ops! Esse produto encontra-se indisponível.</p><h2>Produtos relacionados</h2><p>Blister Unitário R$ 13,90 ou R$ 13,20 via Pix</p>';
+  const l = parseProductPage(li, 'https://d.test/pokemon-tcg-escuridao-absoluta-treinador-avancado');
+  assert.equal(l.price.base, 399.9); assert.equal(l.price.pix, null, 'Pix de produto relacionado não vale'); assert.equal(l.stock, 'OUT_OF_STOCK');
+  // Trava do link: título de uma coleção com link de outra não publica
+  const { linkAgrees } = await import('../src/gate.js'); const { matchProduct } = await import('../src/match.js');
+  const cat = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_CONFIG_DIR, 'catalog.json'), 'utf8'));
+  const bad = { title: 'Blister Quadrúplo Pokémon Caos Ascendente - ME04', url: 'https://g.test/produtos/blister-quadruplo-pokemon-tcg-escuridao-absoluta-me05-25-cartas/' };
+  assert.equal(linkAgrees(bad, matchProduct(bad, cat), cat).ok, false, 'link de outra coleção bloqueia');
+  const good = { title: 'Combo de Booster 18 Pacotes Coleção 151', url: 'https://c.test/produtos/combo-de-booster-18-pacotes-colecao-151-escarlate-e-violeta-3-5' };
+  assert.equal(linkAgrees(good, matchProduct(good, cat), cat).ok, true, '"3-5" no link é 3.5');
+  // Coleção genérica com nome próprio não casa com a coleção do catálogo
+  assert.equal(matchProduct({ title: 'Box de 30 Anos de Pokémon - Coleção Dia de Pokémon 2026' }, cat).productId, null, 'coleção com nome diferente não casa');
+  assert.notEqual(matchProduct({ title: 'Kit Colecionável Pokémon Celebração 30 Anos com Fichário + 6 Booster' }, cat).productId, 'c30-combo6', 'fichário com 6 boosters não é combo');
+}
+{
+  const { firstPrice } = await import('../src/tips.js');
+  assert.equal(firstPrice('R$ 399,99 ➡️ R$ 251,99 🟢 37% OFF\n💳 ou 12x de R$ 27,39'), 251.99, 'parcela não é preço');
+  assert.equal(firstPrice('R$ 129,99 ➡️ R$ 116,99\n💳 Tem cartão Porto Bank Visa? sai por R$ 110,49'), 116.99, 'preço condicionado a cartão não vale');
 }
 // --- histórico por produto e loja ---
 {

@@ -15,7 +15,13 @@ const PRICE = /R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:,\d{2})?)/;
 const POR = /\b(?:por|agora|apenas|só)\b[^R\n]{0,12}R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:,\d{2})?)/i;
 const DE = /\bde\b[^R\n]{0,12}R\$\s?\d/i;
 export const firstPrice = (txt) => {
-  const t = String(txt); const por = t.match(POR); if (por) return brl(por[1]);
+  // Parcela ("12x de R$ 27,39") e preço condicionado a cartão/cashback nunca são o preço da oferta.
+  const t = String(txt).split('\n').filter((l) => !/\btem cart[aã]o\b|\bcom (o )?cart[aã]o\b|\bcashback\b|\bpagando com (o )?cart/i.test(l)).join('\n')
+    .replace(/\b\d{1,2}\s?x\s?(?:de\s?|sem juros de\s?)?R\$\s?[\d.]+(?:,\d{2})?/gi, ' ');
+  const N = '(\\d{1,3}(?:\\.\\d{3})*(?:,\\d{2})?|\\d+(?:,\\d{2})?)';
+  const arrow = t.match(new RegExp(`R\\$\\s?${N}\\s*(?:➡️|➡|→|->|=>|⏩|»)\\s*R\\$\\s?${N}`));
+  if (arrow) return brl(arrow[2]);
+  const por = t.match(POR); if (por) return brl(por[1]);
   const all = [...t.matchAll(new RegExp(PRICE.source, 'g'))].map((m) => brl(m[1])).filter((v) => v > 0);
   if (!all.length) return null;
   return DE.test(t) && all.length > 1 ? Math.min(...all) : all[0];

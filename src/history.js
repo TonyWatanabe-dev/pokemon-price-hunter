@@ -3,6 +3,7 @@
 // O site carrega só o arquivo do produto que a pessoa abrir.
 import fs from 'node:fs';
 import { readJson, readJsonl, dataPath } from './db.js';
+import { trustedPoint } from './distrust.js';
 
 const KEEP_DAYS = 180;
 const day = (iso) => String(iso).slice(0, 10);
@@ -83,10 +84,10 @@ export function trimJsonl(file, days = 45) {
 
 // Resumo do histórico de um produto (menor preço do dia entre todas as lojas), usado no ranking "maior queda".
 // Só calcula o que os dados sustentam: com menos de 2 dias, não há queda.
-export function histSummary(pid) {
+export function histSummary(pid, distrust = null) {
   const h = readJson(histPath(pid), null); if (!h) return null;
   const byDay = {};
-  for (const s of Object.values(h.stores || {})) for (const [d, v] of s.pts) if (!byDay[d] || v < byDay[d]) byDay[d] = v;
+  for (const [sid, s] of Object.entries(h.stores || {})) for (const [d, v] of s.pts) if (trustedPoint(distrust, sid, d) && (!byDay[d] || v < byDay[d])) byDay[d] = v;
   const days = Object.keys(byDay).sort(); if (!days.length) return null;
   const today = days[days.length - 1]; const cur = byDay[today];
   const cut = day(new Date(Date.parse(today) - 7 * 864e5).toISOString());

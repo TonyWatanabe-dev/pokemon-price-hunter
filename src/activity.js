@@ -2,6 +2,7 @@
 // Só eventos com estoque confirmado e preço plausível. Guarda 7 dias em data/activity.json; o site mostra os mais recentes.
 import fs from 'node:fs';
 import { readJson, readJsonl, writeJson, dataPath } from './db.js';
+import { trustedPoint } from './distrust.js';
 
 const KEEP_MS = 7 * 864e5;
 const FILE = () => dataPath('activity.json');
@@ -26,13 +27,13 @@ function backfill(products, storeNames, now) {
   return out;
 }
 
-export function recordActivity({ T, offers, prev, products, newLowest, storeNames }) {
+export function recordActivity({ T, offers, prev, products, newLowest, quiet = new Set(), distrust = null, storeNames }) {
   const now = Date.parse(T);
   let log = readJson(FILE(), null);
   if (!Array.isArray(log)) log = backfill(products, storeNames, now);
   const fresh = []; const firstEver = !Object.keys(prev).length;
   for (const o of Object.values(offers)) {
-    if (o.stale || o.anomalous || o.stock !== 'IN_STOCK' || !(o.total > 0)) continue;
+    if (o.stale || o.anomalous || o.stock !== 'IN_STOCK' || !(o.total > 0) || quiet.has(o.storeId)) continue;
     const p = products[o.productId]; if (!p) continue;
     const old = prev[o.id];
     const base = { t: T, productId: o.productId, offerId: o.id, storeName: o.storeName, to: o.total, msrp: p.msrp ?? null };
@@ -43,5 +44,7 @@ export function recordActivity({ T, offers, prev, products, newLowest, storeName
   }
   log = [...log, ...fresh].filter((e) => now - Date.parse(e.t) <= KEEP_MS).slice(-600);
   writeJson(FILE(), log);
-  return [...log].sort((a, b) => b.t.localeCompare(a.t));
+  // Eventos de lojas com leitura antiga não confiável ficam no arquivo, mas não vão para o site.
+  const sid = (e) => offers[e.offerId]?.storeId || prev[e.offerId]?.storeId;
+  return [...log].filter((e) => trustedPoint(distrust, sid(e), e.t)).sort((a, b) => b.t.localeCompare(a.t));
 }
