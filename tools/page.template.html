@@ -57,6 +57,7 @@ a{color:inherit}
 :focus-visible{outline:3px solid var(--e-water);outline-offset:2px;border-radius:6px}
 ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;border:2px solid var(--ground)}
 .icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em;fill:currentColor}
+[hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* Capa do fichário */
@@ -349,9 +350,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
       <button class="navbtn" data-go="pistas" type="button"><svg class="icon"><use href="#i-lightbulb"/></svg><span class="lbl">Pistas</span><span class="count c-tip" hidden></span></button>
       <button class="navbtn" data-go="copag" type="button"><svg class="icon"><use href="#i-tag"/></svg><span class="lbl">Preços Copag</span></button>
       <button class="navbtn" data-go="prevenda" type="button"><svg class="icon"><use href="#i-calendar-blank"/></svg><span class="lbl">Pré-venda</span><span class="count c-pre" hidden></span></button>
-      <button class="navbtn" data-go="revisar" type="button"><svg class="icon"><use href="#i-warning"/></svg><span class="lbl">Revisar</span><span class="count c-rev" hidden></span></button>
       <button class="navbtn" data-go="lojas" type="button"><svg class="icon"><use href="#i-storefront"/></svg><span class="lbl">Lojas</span></button>
-      <button class="navbtn" data-go="alertas" type="button"><svg class="icon"><use href="#i-bell"/></svg><span class="lbl">Alertas</span></button>
       <button class="navbtn" data-go="guia" type="button" aria-label="Como funciona"><svg class="icon"><use href="#i-info"/></svg></button>
       <button class="navbtn theme-btn" type="button" aria-label="Alternar tema claro ou escuro"><svg class="icon"><use href="#i-moon"/></svg></button>
     </nav>
@@ -379,10 +378,9 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 <dialog class="sheet small" id="more" aria-label="Mais opções">
   <div class="sh-grip" aria-hidden="true"></div>
   <div class="more-list">
-    <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-venda<small>Produtos anunciados que ainda não chegaram</small></span><span class="count c-pre" hidden></span></button>
-    <button type="button" data-go="revisar"><svg class="icon"><use href="#i-warning"/></svg><span>Revisar<small>Preços suspeitos e anúncios não identificados</small></span><span class="count c-rev" hidden></span></button>
-    <button type="button" data-go="lojas"><svg class="icon"><use href="#i-storefront"/></svg><span>Lojas<small>Situação de cada loja e adicionar nova</small></span></button>
+    <button type="button" data-go="lojas"><svg class="icon"><use href="#i-storefront"/></svg><span>Lojas<small>Onde o site procura os preços</small></span></button>
     <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Deal Score, preço Copag e dicas de compra</small></span></button>
+    <button type="button" data-go="termos"><svg class="icon"><use href="#i-info"/></svg><span>Termos e privacidade<small>Regras de uso e o que o site guarda</small></span></button>
     <button type="button" class="theme-btn"><svg class="icon"><use href="#i-moon"/></svg><span class="theme-lbl">Tema escuro<small>Muda as cores do site</small></span></button>
   </div>
 </dialog>
@@ -390,8 +388,8 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   <button type="button" data-go=""><svg class="icon"><use href="#i-house"/></svg><span>Início</span></button>
   <button type="button" data-go="pistas"><svg class="icon"><use href="#i-lightbulb"/></svg><span>Pistas</span><span class="count c-tip" hidden></span></button>
   <button type="button" data-go="copag"><svg class="icon"><use href="#i-tag"/></svg><span>Copag</span></button>
-  <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas</span></button>
-  <button type="button" data-more><svg class="icon"><use href="#i-dots-three"/></svg><span>Mais</span><span class="count c-more" hidden></span></button>
+  <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-venda</span><span class="count c-pre" hidden></span></button>
+  <button type="button" data-more><svg class="icon"><use href="#i-dots-three"/></svg><span>Mais</span></button>
 </nav>
 <div id="scorepop" class="scorepop" popover="auto" role="dialog" aria-label="Por que essa nota"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -419,7 +417,7 @@ const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:tru
 const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"#";
 const CONTATO="";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-const VIEWS=["pistas","copag","prevenda","revisar","lojas","alertas","guia","termos","privacidade"];
+const VIEWS=["pistas","copag","prevenda","lojas","guia","termos","privacidade"];
 let view=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"deals",xfOpen=false,fOpen=false;
 function go(v){const h=v&&v!=="deals"?"#"+v:"";if(location.hash!==h){if(h)location.hash=h;else history.pushState(null,"",location.pathname+location.search)}view=v||"deals";if($("#more").open)$("#more").close();if($("#sheet").open)$("#sheet").close();try{$("#scorepop").hidePopover()}catch{}render();scrollTo({top:0})}
 addEventListener("popstate",()=>{const v=location.hash.slice(1);view=VIEWS.includes(v)?v:"deals";render();scrollTo({top:0})});
@@ -573,34 +571,13 @@ function renderList(title,intro,list,emptyMsg){
   ${list.length?`<div class="tablewrap"><table><thead><tr><th>Produto</th><th>Loja</th><th class="r">Total</th><th>Situação</th></tr></thead><tbody>${list.map((o)=>{const p=P[o.productId]||{};return`<tr class="click" data-p="${esc(o.productId)}" tabindex="0"><td><b>${esc(p.collectionName)}</b><br><span style="color:var(--muted)">${esc(label(p))}</span></td><td>${esc(o.storeName)}</td><td class="r">${money(o.total)}</td><td>${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}</td></tr>`}).join("")}</tbody></table></div>`:`<p style="padding:0 16px 16px">${emptyMsg}</p>`}
   </section></div>`;
 }
-function renderReview(){
-  const list=OFF.filter((o)=>o.anomalous);
-  renderList("Preços suspeitos","Bom demais para ser verdade: mais de 45% abaixo da Copag ou da média das lojas. Pode ser erro de cadastro, usado ou golpe. Nada daqui entra no ranking nem dispara alerta.",list,"Nenhum preço suspeito agora.");
-  const unk=OFF.filter((o)=>!o.anomalous&&o.stock==="UNKNOWN");
-  if(unk.length)$("#view .stack").insertAdjacentHTML("beforeend",`<details class="more"><summary>${ic("caret-down")}Estoque não informado pela loja (${unk.length})</summary><p>A loja mostra o preço mas não diz se tem estoque. Ficam fora do ranking por segurança.</p><div class="tablewrap" style="background:var(--surface);border-radius:14px"><table><tbody>${unk.slice(0,150).map((o)=>{const p=P[o.productId]||{};return`<tr class="click" data-p="${esc(o.productId)}" tabindex="0"><td><b>${esc(p.collectionName)}</b><br><span style="color:var(--muted)">${esc(label(p))}</span></td><td>${esc(o.storeName)}</td><td class="r">${money(o.total)}</td></tr>`}).join("")}</tbody></table></div></details>`);
-  const u=S.unmatched||[];
-  $("#view .stack").insertAdjacentHTML("beforeend",`<section class="panel"><h2>Anúncios não identificados (${u.length})</h2><p>Títulos que o agente não conseguiu casar com um produto lacrado em português. Ficam fora por segurança.</p>${u.length?`<div class="tablewrap"><table><thead><tr><th>Título</th><th>Loja</th><th>Motivo</th></tr></thead><tbody>${u.slice(0,120).map((x)=>`<tr><td><a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title)}</a></td><td>${esc(x.store)}</td><td>${esc(x.why.join("; "))}</td></tr>`).join("")}</tbody></table></div>`:`<p style="padding:0 16px 16px">Nenhum.</p>`}</section>`);
-}
 const REPO={owner:"tonywatanabe-dev",repo:"pokemon-price-hunter"};
 function repoInfo(){const h=location.hostname.match(/^([^.]+)\.github\.io$/);const seg=location.pathname.split("/").filter(Boolean)[0];return h&&seg?{owner:h[1],repo:seg}:REPO}
 function renderStores(){
-  const src=(S.sources||[]).slice().sort((a,b)=>(a.status==="ACTIVE"?0:1)-(b.status==="ACTIVE"?0:1)||(b.matched||0)-(a.matched||0));
-  const c=S.coverage||{};
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
-  <section class="panel"><h2>Adicionar loja</h2><p>O GitHub abre com a loja preenchida. Confirme em Commit changes e ela entra na próxima rodada.</p>
-    <form class="addstore" id="addStore"><div class="field"><label for="storeUrl">Endereço da loja</label><input id="storeUrl" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="minhaloja.com.br"></div><button class="btn" type="submit">${ic("plus")}Adicionar</button><p class="msg" id="storeMsg" aria-live="polite"></p></form>
-  </section>
-  <p class="summary" style="margin:0 2px"><span><b>${c.active||0}</b> ativas</span><span><b>${c.blocked||0}</b> bloqueiam robôs</span><span><b>${c.error||0}</b> com erro</span><span><b>${c.pending||0}</b> sem endereço</span></p>
-  <div class="store-list">${src.map((s)=>{const[cl,l]=SRC[s.status]||["",s.status];return`<div class="store"><b>${esc(s.name)}</b><span class="chip ${cl}">${l}</span><span class="why">${s.status==="ACTIVE"?`${s.matched??0} produtos identificados de ${s.listings??0} anúncios. Verificada ${ago(s.lastCheck)}.`:esc(s.reason||"")}</span></div>`}).join("")}</div></div>`;
-  $("#addStore").onsubmit=(e)=>{e.preventDefault();const r=repoInfo();const raw=$("#storeUrl").value.trim();const msg=$("#storeMsg");
-    let u;try{u=new URL(/^https?:\/\//i.test(raw)?raw:"https://"+raw)}catch{u=null}
-    if(!u||!/\.[a-z]{2,}$/i.test(u.hostname)){msg.textContent="Endereço inválido. Use algo como minhaloja.com.br.";return}
-    const host=u.hostname.replace(/^www\./,"").toLowerCase();
-    const known=(S.sources||[]).find((s)=>{try{return s.url&&new URL(s.url).hostname.replace(/^www\./,"").toLowerCase()===host}catch{return false}});
-    if(known){msg.textContent=`${host} já está na lista.`;return}
-    if(!r){msg.textContent=`Adicione ${host} numa linha nova de config/lojas.txt.`;return}
-    window.open(`https://github.com/${r.owner}/${r.repo}/new/main/config/lojas?filename=${encodeURIComponent(host+".txt")}&value=${encodeURIComponent(u.origin+"\n")}`,"_blank","noopener");
-    msg.textContent=`O GitHub abriu com ${host}. Toque em Commit changes para confirmar.`};
+  const act=(S.sources||[]).filter((x)=>x.status==="ACTIVE"&&(x.matched||0)>0).sort((a,b)=>(b.matched||0)-(a.matched||0));
+  const host=(u)=>{try{return new URL(u).hostname.replace(/^www\./,"")}catch{return""}};
+  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Lojas acompanhadas</h2><p>O site lê as páginas públicas destas ${act.length} lojas a cada 15 minutos. Só entra produto lacrado em português, com estoque confirmado pela loja.</p>
+  <div class="store-list" style="padding:0 16px 16px">${act.map((x)=>`<div class="store"><b>${x.url?`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`:esc(x.name)}</b>${x.kind==="official"?`<span class="chip ok">Loja oficial Copag</span>`:""}<span class="why">${x.matched} ${x.matched>1?"anúncios":"anúncio"} de Pokémon TCG lacrado${x.url&&host(x.url)!==x.name?` · ${esc(host(x.url))}`:""}</span></div>`).join("")}</div></section></div>`;
 }
 function renderCopag(){
   const ps=(S.products||[]).slice();const cols=(S.collections||[]);
@@ -658,17 +635,9 @@ function renderTips(){
   const row=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(x.source)}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:vs(x)}</td></tr>`;
   const table=(l)=>`<div class="tablewrap"><table><thead><tr><th>Promoção</th><th class="r">Preço e Copag</th></tr></thead><tbody>${l.map(row).join("")}</tbody></table></div>`;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
-  <section class="panel"><h2>Pistas</h2><p>Promoções postadas por pessoas no Pelando e em canais do Telegram. O agente não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p>
+  <section class="panel"><h2>Pistas</h2><p>Promoções postadas por pessoas em canais públicos do Telegram. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p>
   ${ok.length?table(ok):`<p style="padding:0 16px 16px">Nenhuma pista com produto identificado agora.</p>`}</section>
-  ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${table(other)}</details>`:""}
-  <section class="panel"><h2>Viu uma promoção no WhatsApp?</h2><p>Compartilhe a mensagem ou o link com o seu bot do Telegram. Em até 15 minutos ele responde com o produto, o preço Copag e se vale a pena.</p></section>
-  <section class="panel"><h2>Fontes de pistas</h2><p>Para incluir um canal público do Telegram, coloque o @ dele em config/pistas.json.</p>${src.length?src.map((x)=>`<div class="rule">${ic(x.ok?"check-circle":"warning")}<span>${esc(x.source)}: ${x.ok?`${x.found} promoções lidas`:esc(x.reason||"falhou")}</span></div>`).join(""):`<p style="padding:0 16px 16px">Ainda não rodou.</p>`}</section></div>`;
-}
-function renderAlerts(){
-  const rules=S.rules||[];const a=S.recentAlerts||[];
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
-  <section class="panel"><h2>Regras ativas</h2><p>Avisam no Telegram e no celular. Toda regra exige estoque confirmado e produto identificado. Para criar um alerta de um produto, abra o produto e use "Me avisa".</p>${rules.map((r)=>{const ri=repoInfo();return`<div class="rule">${ic("bell")}<span>${esc(r.label)}</span>${r.file&&ri?`<a class="rule-del" href="https://github.com/${ri.owner}/${ri.repo}/delete/main/${esc(r.file)}" target="_blank" rel="noopener">Apagar</a>`:r.file?"":`<small class="rule-fix">fixa</small>`}</div>`}).join("")||`<p style="padding:0 16px 16px">Nenhuma regra.</p>`}</section>
-  <section class="panel"><h2>Últimos alertas</h2>${a.length?a.map((x)=>`<div class="alert"><pre>${esc(x.text)}</pre><small>${ago(x.at)}, ${x.channels?.length?"via "+esc(x.channels.join(" e ")):"só no painel"}. <a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">Abrir oferta</a></small></div>`).join(""):`<p style="padding:0 16px 16px">Nenhum alerta enviado ainda.</p>`}</section></div>`;
+  ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${table(other)}</details>`:""}</div>`;
 }
 
 /* Por que essa nota: explica o Deal Score de uma oferta, critério por critério */
@@ -712,26 +681,6 @@ function showScore(btn){
     pop.style.left=left+"px";pop.style.top=top+"px"}
 }
 /* Alertas criados pelo site: abre o GitHub com o arquivo preenchido em config/alertas/ */
-function alertBox(p,offers){
-  const best=offers.filter(live).map((o)=>o.total)[0];
-  const base=best||p.msrp||p.copagReference;const sug=base?Math.max(1,Math.floor(base*0.9/5)*5):"";
-  const mine=(S.rules||[]).filter((r)=>r.filter?.productId===p.id);const ri=repoInfo();
-  return`<div class="alertbox"><h3>${ic("bell")}Me avisa</h3>
-  <div class="alrow"><div class="field"><label for="al-price">Quando custar até (R$)</label><input id="al-price" type="number" inputmode="decimal" min="1" step="5" value="${sug}"></div><button class="btn" type="button" data-alert="price" data-pid="${esc(p.id)}">Criar alerta</button></div>
-  <button class="btn ghost" type="button" data-alert="stock" data-pid="${esc(p.id)}">${ic("package")}Avisar quando tiver em estoque</button>
-  ${mine.length?`<ul>${mine.map((r)=>`<li>${ic("check-circle")}<span>${esc(r.label)}</span>${r.file&&ri?`<a class="rule-del" href="https://github.com/${ri.owner}/${ri.repo}/delete/main/${esc(r.file)}" target="_blank" rel="noopener">Apagar</a>`:""}</li>`).join("")}</ul>`:""}
-  <p class="note">O GitHub abre com o alerta pronto. Toque em Commit changes e ele vale a partir da próxima rodada.</p></div>`;
-}
-function createAlert(kind,pid){
-  const p=P[pid];if(!p)return;const ri=repoInfo();const name=`${p.collectionName} ${label(p)}`;
-  let rule,file;
-  if(kind==="price"){const v=Number(String($("#al-price")?.value||"").replace(",","."));if(!(v>0)){toast("Digite um preço válido.");$("#al-price")?.focus();return}
-    rule={label:`${name} até ${money(v)}`,mode:"target",filter:{productId:pid},maxPrice:v};file=`${pid}-ate-${Math.round(v)}.json`}
-  else{rule={label:`${name} voltou ao estoque`,restock:true,filter:{productId:pid}};file=`${pid}-estoque.json`}
-  if(!ri){toast("Abra pelo endereço do GitHub Pages para criar alertas.");return}
-  window.open(`https://github.com/${ri.owner}/${ri.repo}/new/main/config/alertas?filename=${encodeURIComponent(file)}&value=${encodeURIComponent(JSON.stringify(rule,null,2)+"\n")}`,"_blank","noopener");
-  toast("GitHub aberto. Toque em Commit changes para confirmar.");
-}
 /* Ficha do produto com todas as lojas */
 function openProduct(pid){
   const p=P[pid];if(!p)return;const gg=g(p);
@@ -747,7 +696,6 @@ function openProduct(pid){
       <div class="fact"><span>Média das lojas</span><b>${money(p.marketAverage)}</b></div>
       <div class="fact"><span>Menor já visto</span><b>${money(p.lowestHistorical?.total)}</b>${p.lowestHistorical?`<small>${ago(p.lowestHistorical.at)}</small>`:""}</div>
     </div>
-    ${alertBox(p,offers)}
     ${offers.map((o)=>`<div class="offer">
       <span class="st">${esc(o.storeName)}${o.seller&&o.seller!==o.storeName?` <span class="dt">(${esc(o.seller)})</span>`:""}</span>
       <span class="pr">${money(o.total)}</span>
@@ -755,7 +703,7 @@ function openProduct(pid){
       <span class="dt r">${o.discount!=null&&!o.anomalous?(Math.abs(o.discount)<.0005?"Preço Copag":o.discount>0?`-${pct(o.discount)} vs Copag`:`+${pct(-o.discount)} vs Copag`):""}</span>
       <div class="act">${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.dealScore!=null?`<button class="chip scorebtn" type="button" data-score="${esc(o.id)}" aria-label="Deal Score ${o.dealScore}: por que essa nota?">Deal Score ${o.dealScore}, ${TIER[o.classification?.tier]||""}${ic("info")}</button>`:""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}<a class="btn ${live(o)?"":"ghost"}" style="margin-left:auto;padding:9px 14px;font-size:14px" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener">Ver na loja ${ic("arrow-square-out")}</a></div>
     </div>`).join("")}
-    <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete calculado para o seu CEP quando a loja permite. Verificado ${ago(offers[0]?.source_timestamp)}.</p>
+    <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. O frete para o seu endereço pode ser diferente. Verificado ${ago(offers[0]?.source_timestamp)}.</p>
   </div>`;
   if(!sh.open)sh.showModal();
 }
@@ -776,7 +724,7 @@ if(window.DeviceOrientationEvent&&!matchMedia("(prefers-reduced-motion: reduce)"
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
-  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["prevenda","revisar","lojas","guia"].includes(view)?"page":"false");
+  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["lojas","guia","termos","privacidade"].includes(view)?"page":"false");
   $("#seg").hidden=view!=="deals";$("#hint").hidden=view!=="deals";
   const seg=$("#seg");seg.dataset.v=view==="deals"?F.mode:"none";
   seg.querySelectorAll("button").forEach((b)=>b.setAttribute("aria-pressed",String(view==="deals"&&b.dataset.v===F.mode)));
@@ -789,9 +737,7 @@ function render(){
   else if(view==="termos")renderLegal("termos");
   else if(view==="privacidade")renderLegal("privacidade");
   else if(view==="prevenda")renderList("Pré-venda","Produtos anunciados que ainda não chegaram. Não entram no ranking.",OFF.filter((o)=>o.stock==="PRE_ORDER"),"Nenhuma pré-venda encontrada nesta rodada.");
-  else if(view==="revisar")renderReview();
   else if(view==="lojas")renderStores();
-  else if(view==="alertas")renderAlerts();
 }
 
 function fresh(){
@@ -807,7 +753,7 @@ function init(st){
   const pre=OFF.filter((o)=>o.stock==="PRE_ORDER").length,rev=OFF.filter((o)=>o.anomalous).length;
   const tp=(S.tips||[]).filter((x)=>x.productId&&!x.expired&&x.discount>=.15&&!x.anomalous).length;
   const setc=(cls,n)=>document.querySelectorAll(cls).forEach((el)=>{el.hidden=!n;el.textContent=n});
-  setc(".c-tip",tp);setc(".c-pre",pre);setc(".c-rev",rev);setc(".c-more",rev);
+  setc(".c-tip",tp);setc(".c-pre",pre);
   fresh();render();
 }
 function loading(){
@@ -840,7 +786,6 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-more]")){$("#more").showModal();return}
   if(t.closest("[data-refresh]")){refresh();return}
   if(t.closest("#ftoggle")){fOpen=!fOpen;renderDeals();return}
-  const al=t.closest("[data-alert]");if(al){createAlert(al.dataset.alert,al.dataset.pid);return}
   if(t.closest("#clear")){F.group="";F.col="";F.store="";F.type="";F.max="";F.below=false;F.q="";store.set("f",F);renderDeals();return}
   if(t.closest("#clear-all")){Object.assign(F,{group:"",col:"",store:"",type:"",max:"",below:false,q:"",stock:true});store.set("f",F);renderDeals();return}
   if(t.closest("#q-clear")){F.q="";store.set("f",F);renderDeals();$("#f-q")?.focus();return}
