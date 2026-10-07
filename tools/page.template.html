@@ -30,21 +30,25 @@
   --r-card:14px; --r-input:10px; --r-pill:999px;
   --ease-out:cubic-bezier(.23,1,.32,1); --ease-drawer:cubic-bezier(.32,.72,0,1);
   --gutter:16px; --btn:#1B2C74; --btn-ink:#FFFFFF; --btn-hover:#24398F;
+  --hot:#D9432A; --img-bg:#F3F4F7; --line-soft:#E3E7EF; --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --shadow-sm:0 1px 2px rgb(19 31 73 / .05),0 2px 8px rgb(19 31 73 / .04);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ground:#0B1029; --surface:#151D42; --sunk:#0F1636; --ink:#EEF1FA; --muted:#A4AECC; --line:#27315D;
-  --cover:#0F1840; --cover-2:#1A2558; --cover-ink:#FFFFFF; --cover-muted:#9FAAD3;
+  --ground:#090B11; --surface:#11141D; --sunk:#0D1017; --ink:#ECEEF3; --muted:#9AA1B4; --line:#222736;
+  --cover:#0E1330; --cover-2:#19214C; --cover-ink:#FFFFFF; --cover-muted:#A3ACCF;
   --ok:#4CD49A; --ok-bg:#103A2C; --warn:#F2B451; --warn-bg:#3A2A0E; --bad:#FF8478; --bad-bg:#43191A;
   --e-lightning:#F5C431; --e-fire:#FF7A52; --e-water:#5EA2FF; --e-grass:#52C47B; --e-psychic:#B47CFF; --e-metal:#9AA6BC;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 22px rgb(0 0 0 / .28); --shadow-lift:0 2px 6px rgb(0 0 0 / .35), 0 18px 40px rgb(0 0 0 / .45); --btn:#FFCF33; --btn-ink:#231C00; --btn-hover:#FFDA5C;
+  --hot:#FF6B55; --img-bg:#171A24; --line-soft:#1C2130; --shadow-sm:0 1px 2px rgb(0 0 0 / .4);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --ground:#0B1029; --surface:#151D42; --sunk:#0F1636; --ink:#EEF1FA; --muted:#A4AECC; --line:#27315D;
-  --cover:#0F1840; --cover-2:#1A2558; --cover-ink:#FFFFFF; --cover-muted:#9FAAD3;
+  --ground:#090B11; --surface:#11141D; --sunk:#0D1017; --ink:#ECEEF3; --muted:#9AA1B4; --line:#222736;
+  --cover:#0E1330; --cover-2:#19214C; --cover-ink:#FFFFFF; --cover-muted:#A3ACCF;
   --ok:#4CD49A; --ok-bg:#103A2C; --warn:#F2B451; --warn-bg:#3A2A0E; --bad:#FF8478; --bad-bg:#43191A;
   --e-lightning:#F5C431; --e-fire:#FF7A52; --e-water:#5EA2FF; --e-grass:#52C47B; --e-psychic:#B47CFF; --e-metal:#9AA6BC;
   --shadow:0 1px 2px rgb(0 0 0 / .3), 0 8px 22px rgb(0 0 0 / .28); --shadow-lift:0 2px 6px rgb(0 0 0 / .35), 0 18px 40px rgb(0 0 0 / .45); --btn:#FFCF33; --btn-ink:#231C00; --btn-hover:#FFDA5C;
+  --hot:#FF6B55; --img-bg:#171A24; --line-soft:#1C2130; --shadow-sm:0 1px 2px rgb(0 0 0 / .4);
   color-scheme:dark}
 
 *,*::before,*::after{box-sizing:border-box}
@@ -367,52 +371,6 @@ a.navbtn{text-decoration:none}
 .page-title h2{display:flex;align-items:center;gap:8px}
 .home-all .seg{margin:4px 0 0}
 .home-all .filters{margin-top:12px}
-/* DealCard */
-.deals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-@media (min-width:760px){.deals{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}}
-@media (min-width:1100px){.deals{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (max-width:420px){.deals{grid-template-columns:minmax(0,1fr)}.deal{display:grid;grid-template-columns:116px 1fr;grid-template-rows:auto 1fr}.deal .photo{grid-row:1 / span 2;aspect-ratio:auto;height:100%;min-height:150px}.deal-top{grid-column:2;padding:10px 10px 0 12px}.deal-body{grid-column:2;padding-top:4px}}
-.deals.row4{grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);grid-template-columns:none;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;margin:0 calc(var(--gutter) * -1);padding-left:var(--gutter);padding-right:var(--gutter);scrollbar-width:none}
-.deals.row4::-webkit-scrollbar{display:none}
-.deals.row4 .deal{scroll-snap-align:start;display:flex}
-@media (min-width:1100px){.deals.row4{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible;margin:0;padding:0}}
-.deal{position:relative;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0;transition:transform var(--t-med) var(--ease-out),box-shadow var(--t-med) ease,border-color var(--t-med) ease}
-@media (hover:hover) and (pointer:fine){.deal:hover{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-4px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
-  .deal::after,.fan-c::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity 240ms ease;mix-blend-mode:soft-light;
-    background:radial-gradient(circle at var(--mx,50%) var(--my,0%),rgb(255 255 255 / .75),transparent 42%),conic-gradient(from 200deg at var(--mx,50%) var(--my,0%),#ff5f6d,#ffc371,#fff36b,#7cf29a,#53c7ff,#8a7bff,#ff6ad5,#ff5f6d)}
-  .deal:hover::after,.fan-c:hover::after{opacity:.55}}
-.deal:has(.deal-hit:focus-visible){outline:3px solid var(--e-water);outline-offset:2px}
-.deal-hit{position:absolute;inset:0;z-index:1;border-radius:inherit}
-.deal-hit:focus-visible{outline:0}
-.deal-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 10px 0;pointer-events:none}
-.deal-top>*{pointer-events:auto}
-.deal .photo{border-radius:0;aspect-ratio:4/3;margin-top:-44px}
-@media (max-width:420px){.deal .photo{margin-top:0}}
-.deal-score{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border-radius:var(--r-pill);padding:2px 10px 2px 2px;font-size:12.5px;font-weight:700;color:var(--sc);box-shadow:0 1px 4px rgb(0 0 0 / .14)}
-.deal-score .dial b{color:var(--ink)}
-.deal-top .chip{box-shadow:0 1px 4px rgb(0 0 0 / .12);background:var(--surface)}
-.deal-top .chip.warn{background:var(--warn-bg)}
-.deal-fav{width:34px;height:34px;border-radius:50%;border:0;background:var(--surface);display:grid;place-items:center;box-shadow:0 1px 4px rgb(0 0 0 / .16);color:var(--muted);transition:transform var(--t-fast) var(--ease-out),color var(--t-fast) ease}
-.deal-fav .icon{width:18px;height:18px}
-.deal-fav[aria-pressed="true"]{color:#E5484D}
-.deal-fav:active{transform:scale(.88)}
-@media (hover:hover) and (pointer:fine){.deal-fav:hover{color:#E5484D}}
-.deal-body{display:flex;flex-direction:column;gap:2px;padding:10px 12px 12px;flex:1;min-width:0}
-.deal-col{display:flex;align-items:center;gap:5px;font-size:var(--fs-xs);color:var(--muted);font-weight:500;min-width:0}
-.deal-col .icon{width:14px;height:14px;color:var(--ec);flex:none}.deal-col span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.deal-name{margin:1px 0 8px;font-size:14.5px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.deal-price{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:var(--fs-xl);font-weight:800;letter-spacing:-.02em;line-height:1.05}
-.deal-sub{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
-.deal-store{display:flex;align-items:center;gap:5px;margin:8px 0 0;font-size:12.5px;color:var(--ink);min-width:0}
-.deal-store .icon{width:14px;height:14px;color:var(--muted);flex:none}.deal-store span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.deal-store em{font-style:normal;color:var(--muted)}
-.deal-cta{position:relative;z-index:2;margin-top:10px;padding:9px 12px;font-size:14px}
-.deal.oos .photo,.deal.pre .photo,.deal.none .photo{opacity:.55;filter:saturate(.4)}
-.deal.oos .deal-price{color:var(--muted)}
-.deal.oos .deal-cta,.deal.none .deal-cta{background:var(--sunk);color:var(--ink)}
-.deal.pre{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
-.deal.upd .deal-price{animation:upd 1.6s var(--ease-out)}
-@keyframes upd{0%{background:var(--warn-bg);box-shadow:0 0 0 6px var(--warn-bg)}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
-@media (prefers-reduced-motion:reduce){.deal.upd .deal-price{animation:none}}
 /* Página de produto */
 .pp{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"crumbs" "head" "side" "main";gap:16px;margin-top:14px}
 .pp>.crumbs{grid-area:crumbs}.pp>.pp-head{grid-area:head}.pp>.pp-side{grid-area:side}.pp>.pp-main{grid-area:main}
@@ -507,33 +465,7 @@ a.navbtn{text-decoration:none}
 .fsheet-f .field select{padding-right:34px}
 
 
-/* ===== Início: herói de busca, leque de ofertas e cartas distribuídas ===== */
-.hx{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:28px;align-items:center;margin-top:16px;padding:34px 34px 30px;border-radius:24px;color:#fff;
-  background:radial-gradient(110% 130% at 92% 0%,color-mix(in srgb,var(--e-water) 42%,transparent),transparent 55%),radial-gradient(80% 120% at 0% 110%,color-mix(in srgb,var(--e-psychic) 34%,transparent),transparent 60%),var(--cover);box-shadow:var(--shadow-lift)}
-.hx h1{margin:0;font-size:clamp(28px,4.2vw,46px);font-weight:800;line-height:1.04;letter-spacing:-.03em;text-wrap:balance}
-.hx h1 span{color:var(--sticker)}
-.hx-copy>p{margin:12px 0 18px;color:var(--cover-muted);font-size:15px;max-width:52ch}.hx-copy>p b{color:#fff;font-weight:600}
-.hx .sbox-in{background:#fff;border-color:transparent;box-shadow:0 10px 30px rgb(0 0 0 / .25)}
-.hx .sbox-in input{color:#131F49}.hx .sbox-in input::placeholder{color:#556079}.hx .sbox-in>.icon{color:#556079}
-.hx .sbox-in:focus-within{outline:3px solid var(--sticker);outline-offset:3px}
-.hx .sbox .btn{background:#1B2C74;color:#fff}
-.hx .qchip{background:rgb(255 255 255 / .08);border-color:rgb(255 255 255 / .22);color:#fff}
-@media (hover:hover) and (pointer:fine){.hx .qchip:hover{background:rgb(255 255 255 / .16);border-color:rgb(255 255 255 / .5)}}
-.hx .ac{color:var(--ink)}
-.fan{position:relative;height:290px}
-.fan-c{--base:translate(-50%,0) rotate(calc((var(--i) - 1) * 10deg));position:absolute;left:calc(50% + (var(--i) - 1) * 31%);top:28px;width:44%;max-width:190px;display:flex;flex-direction:column;background:#fff;color:#131F49;border-radius:16px;overflow:hidden;text-decoration:none;box-shadow:0 18px 40px rgb(0 0 0 / .35);transform:var(--base);z-index:calc(2 - (var(--i) - 1) * (var(--i) - 1));
-  animation:fanFloat 7s ease-in-out calc(var(--i) * -2.3s) infinite alternate,fanIn 900ms cubic-bezier(.16,1,.3,1) calc(120ms + var(--i) * 120ms) backwards}
-.fan-c:nth-child(2){top:0}
-.fan-ph{aspect-ratio:1;border-radius:0}
-.fan-t{display:flex;flex-direction:column;gap:2px;padding:9px 11px 11px}
-.fan-t small{font-size:11.5px;color:#556079;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fan-t b{font-size:20px;font-weight:800;letter-spacing:-.02em}
-.fan-t .off{align-self:flex-start}
-.hx.off .fan-c{animation-play-state:paused}
-@keyframes fanFloat{from{transform:var(--base) translateY(-7px)}to{transform:var(--base) translateY(7px)}}
-@keyframes fanIn{from{opacity:0;transform:translate(-50%,70px) rotate(0deg) scale(.9)}}
-@media (max-width:860px){.hx{grid-template-columns:minmax(0,1fr);padding:24px 18px 20px}.fan{display:none}}
 .page-title h2 small{font-size:13px;color:var(--muted);font-weight:500;margin-left:4px}
-@media (max-width:640px){.page-title h2 small{display:none}.page-title h2{font-size:18px}}
 .icon.tgi{color:var(--e-water)}
 /* Abertura do pacote: o pacote rasga, as cartas saem dele, vão para o lugar e viram (uma vez por sessão) */
 @property --fa{syntax:"<angle>";inherits:false;initial-value:0deg}
@@ -596,6 +528,150 @@ a.navbtn{text-decoration:none}
 .refnet{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--e-water);cursor:help}
 .refline{display:flex;gap:6px;align-items:flex-start;margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.4}.refline .icon{width:14px;height:14px;flex:none;margin-top:1px}.refline a{color:var(--ink);font-weight:600}
 @media (prefers-reduced-motion:reduce){.fan-c{animation:fanIn 1ms both}.packstage .pack{display:none}.packstage.opening .deal,.packstage.opening .deal-back{animation:none}.deal:hover{transform:none}.deal.foil,.deal.foil .photo::after{animation:none}}
+
+
+/* ===== Início 2: painel editorial de oportunidades ===== */
+.hero2{padding:52px 0 8px;max-width:900px}
+.hero2 h1{margin:0;font-size:clamp(38px,5.6vw,66px);font-weight:800;line-height:1.02;letter-spacing:-.035em;text-wrap:balance}
+.hero2 h1 span{color:var(--hot)}
+.hero2-sub{margin:16px 0 26px;font-size:clamp(16px,1.6vw,19px);line-height:1.5;color:var(--muted);max-width:56ch}
+.sbox-lg .sbox-in{min-height:64px;padding:6px 6px 6px 22px;border:1px solid var(--line);box-shadow:var(--shadow-sm),0 14px 40px rgb(19 31 73 / .07);transition:border-color 160ms ease,box-shadow 200ms ease}
+.sbox-lg input{font-size:18px;padding:14px 0}
+.sbox-lg .btn{padding:14px 26px;font-size:16px}
+.sbox-lg .sbox-in>.icon{width:22px;height:22px}
+.sbox-x{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:0;background:transparent;color:var(--muted);flex:none;transition:background-color 150ms ease}
+.sbox-x:hover{background:var(--sunk);color:var(--ink)}.sbox-x .icon{width:18px;height:18px}
+.ac-load{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--ink);margin-right:8px;vertical-align:-2px;animation:spin 700ms linear infinite}
+.live{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:13.5px;color:var(--muted)}
+.live b{color:var(--ink);font-weight:600}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex:none;position:relative}
+.live-dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--ok);opacity:0;animation:livePulse 2.4s cubic-bezier(.16,1,.3,1) infinite}
+.hero2.off .live-dot::after{animation-play-state:paused}
+@keyframes livePulse{0%{transform:scale(.6);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+.ticker{position:relative;height:22px;margin-top:8px;overflow:hidden;font-size:13.5px;color:var(--muted)}
+.tk{position:absolute;inset:0;display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transform:translateY(8px);transition:opacity 280ms ease,transform 380ms cubic-bezier(.16,1,.3,1)}
+.tk.on{opacity:1;transform:none}
+.tk time{font-variant-numeric:tabular-nums;color:var(--muted)}.tk b{color:var(--ink)}
+.tk-t{display:inline-flex;align-items:center;gap:4px;font-weight:600}.tk-t .icon{width:14px;height:14px}
+.tk-t.hot,.ai-tag.hot{color:var(--hot)}.tk-t.ok,.ai-tag.ok{color:var(--ok)}.tk-t.info,.ai-tag.info{color:var(--e-water)}
+/* SectionHeader */
+.sh2{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 18px}
+.sh2 h2{margin:0;font-size:clamp(21px,2.2vw,26px);font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.sh2 p{margin:4px 0 0;color:var(--muted);font-size:15px;max-width:60ch}
+.sh2-i{width:22px;height:22px;color:var(--hot)}
+.seeall{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none;white-space:nowrap;padding:6px 0}
+.seeall .chev{transform:rotate(-90deg);width:16px;height:16px;transition:transform 160ms var(--ease-out)}
+.seeall:hover .chev{transform:rotate(-90deg) translateY(2px)}
+.home-opp,.radar,.duo,.hl,.pre,.home-all{margin-top:64px}
+.home-opp{margin-top:48px}
+@media (max-width:760px){.home-opp,.radar,.duo,.hl,.pre,.home-all{margin-top:44px}.hero2{padding-top:28px}.sh2{align-items:flex-start;flex-direction:column;gap:6px}}
+/* DealCard */
+.deals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+@media (max-width:1100px){.deals{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:860px){.deals{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
+@media (max-width:560px){.deals{grid-template-columns:minmax(0,1fr)}}
+.deal{position:relative;display:flex;flex-direction:column;min-width:0;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow:hidden;transition:transform 220ms var(--ease-out),box-shadow 220ms ease,border-color 220ms ease}
+@media (hover:hover) and (pointer:fine){.deal:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgb(19 31 73 / .05),0 18px 40px rgb(19 31 73 / .10);border-color:var(--line)}.deal:hover .deal-ph img{transform:scale(1.035)}}
+.deal:has(.deal-hit:focus-visible){outline:3px solid var(--e-water);outline-offset:2px}
+.deal-hit{position:absolute;inset:0;z-index:1;border-radius:inherit}.deal-hit:focus-visible{outline:0}
+.deal-media{position:relative;aspect-ratio:4/3;background:var(--img-bg);display:grid;place-items:center;padding:22px 26px}
+.deal-ph{width:100%;height:100%;background:transparent;border-radius:0;aspect-ratio:auto}
+.deal-ph img{padding:0;object-fit:contain;mix-blend-mode:multiply;transition:transform 450ms cubic-bezier(.16,1,.3,1)}
+:root[data-theme="dark"] .deal-ph img{mix-blend-mode:normal;border-radius:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .deal-ph img{mix-blend-mode:normal;border-radius:10px}}
+.deal-ph.fallback{background:transparent}
+.deal-badge{position:absolute;top:12px;left:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;max-width:calc(100% - 64px);padding:5px 10px;border-radius:var(--r-pill);background:var(--surface);box-shadow:0 1px 3px rgb(0 0 0 / .08);font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--sc,var(--muted));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deal-badge i{width:7px;height:7px;border-radius:50%;background:var(--sc);flex:none}
+.deal-badge.pre{color:var(--warn)}.deal-badge.muted{color:var(--muted)}
+.deal-fav{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);display:grid;place-items:center;box-shadow:0 1px 3px rgb(0 0 0 / .1);color:var(--muted);transition:transform 160ms var(--ease-out),color 160ms ease}
+.deal-fav .icon{width:18px;height:18px}.deal-fav[aria-pressed="true"]{color:#E5484D}.deal-fav:active{transform:scale(.88)}
+@media (hover:hover) and (pointer:fine){.deal-fav:hover{color:#E5484D}}
+.deal-body{display:flex;flex-direction:column;padding:16px 18px 16px;flex:1;min-width:0}
+.deal-col{margin:0;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deal-name{margin:3px 0 14px;font-size:16.5px;font-weight:600;line-height:1.25;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.deal-save{display:flex;align-items:center;gap:10px;margin:0 0 6px}
+.deal-save b{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ok)}
+.deal-save span{font-size:12.5px;line-height:1.3;color:var(--muted)}.deal-save em{font-style:normal;font-weight:600;color:var(--ok)}
+.deal-save.up span{font-size:13px}
+.deal-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:0}
+.deal-price b{font-size:20px;font-weight:700;letter-spacing:-.015em;color:var(--ink)}
+.deal-price span{font-size:13px;color:var(--muted)}.deal-price s{text-decoration-thickness:1px}
+.deal-price .refnet{font-style:normal}
+.meter{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-top:14px}
+.meter>span{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.meter i{display:block;height:4px;border-radius:2px;background:var(--sunk);overflow:hidden}
+.meter i b{display:block;height:100%;border-radius:2px;background:var(--sc);transform-origin:left;animation:meterIn 900ms cubic-bezier(.16,1,.3,1) both}
+@keyframes meterIn{from{transform:scaleX(0)}}
+.meter strong{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}.meter small{font-size:11px;color:var(--muted);font-weight:500}
+.deal-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px}
+.deal-body>.meter+.deal-foot,.deal-body>.deal-price+.deal-foot{margin-top:14px;border-top:1px solid var(--line-soft)}
+.deal-store{font-size:13px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.deal-store em{font-style:normal;color:var(--muted)}
+.deal-cta{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:var(--hot);text-decoration:none;white-space:nowrap;padding:6px 0;transition:gap 160ms var(--ease-out)}
+.deal-cta .icon{width:15px;height:15px}.deal-cta:hover{gap:8px}.deal-cta:active{opacity:.7}
+.deal.oos .deal-ph,.deal.pre .deal-ph,.deal.none .deal-ph{opacity:.5;filter:saturate(.3)}
+.deal.oos .deal-price b{color:var(--muted)}
+.deal.foil .deal-ph{isolation:isolate}
+.deal .foil-tag{top:auto;bottom:12px;left:12px}
+/* Radar do Hunter (market pulse) */
+.radar{border-radius:24px;background:radial-gradient(110% 140% at 100% 0%,color-mix(in srgb,var(--e-water) 28%,transparent),transparent 55%),var(--cover);color:#fff;overflow:hidden}
+.radar-in{padding:34px 36px 28px}
+.radar .sh2 h2{color:#fff}.radar .sh2 p{color:var(--cover-muted)}
+.pulse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:6px}
+.pulse-k{padding:6px 22px 6px 0;margin-right:22px;border-right:1px solid rgb(255 255 255 / .12)}
+.pulse-k:last-child{border-right:0;margin-right:0}
+.pulse-k b{display:block;font-size:clamp(36px,4.4vw,54px);font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.pulse-k span{display:block;margin-top:8px;font-size:14px;color:var(--cover-muted)}
+.pulse-k.zero b{opacity:.4}
+.spark{position:relative;display:flex;align-items:flex-end;gap:3px;height:54px;margin-top:28px;padding-bottom:18px}
+.spark i{flex:1;height:max(2px,var(--h));border-radius:2px 2px 0 0;background:rgb(255 255 255 / .22);transform-origin:bottom;animation:sparkIn 700ms cubic-bezier(.16,1,.3,1) both}
+.spark i:nth-last-child(-n+3){background:var(--sticker)}
+@keyframes sparkIn{from{transform:scaleY(0)}}
+.spark-l,.spark-r{position:absolute;bottom:0;font-size:11.5px;color:var(--cover-muted)}.spark-l{left:0}.spark-r{right:0}
+.radar-empty{margin:4px 0 0;color:var(--cover-muted);max-width:60ch}
+@media (max-width:760px){.radar-in{padding:24px 20px 20px}.pulse{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 0}.pulse-k:nth-child(2n){border-right:0;margin-right:0}}
+/* Pistas recentes + Maiores quedas */
+.duo{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:start}
+@media (max-width:1000px){.duo{grid-template-columns:minmax(0,1fr);gap:44px}}
+.ai-list{list-style:none;margin:0;padding:0;position:relative}
+.ai-list::before{content:"";position:absolute;left:62px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.ai{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:24px;padding:12px 0}
+.ai::before{content:"";position:absolute;left:59px;top:19px;width:7px;height:7px;border-radius:50%;background:var(--surface);border:1.5px solid var(--muted)}
+.ai time{grid-row:1 / span 3;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:2px;text-align:right}
+.ai-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;letter-spacing:.02em}.ai-tag .icon,.ai-tag img{width:14px;height:14px;border-radius:3px}
+.ai-p{margin-top:2px;font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.3}.ai-p:hover{text-decoration:underline;text-underline-offset:3px}
+.ai-d{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;margin-top:3px;font-size:14px}.ai-d small{font-size:12.5px;color:var(--muted)}
+.ai-move{display:inline-flex;align-items:center;gap:4px}.ai-move s{color:var(--muted)}.ai-arrow{transform:rotate(-90deg);width:12px;height:12px;color:var(--muted)}
+.drop-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.drop-list li{border-bottom:1px solid var(--line)}
+.drop-list a{display:grid;grid-template-columns:56px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:12px 4px;text-decoration:none;color:inherit;border-radius:12px;transition:background-color 160ms ease}
+.drop-list a:hover{background:var(--sunk)}
+.dl-ph{width:56px;height:56px;border-radius:12px;background:var(--img-bg)}.dl-ph img{mix-blend-mode:multiply}
+.dl-b{min-width:0}.dl-b b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dl-b small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dl-v{display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums}.dl-v s{font-size:12px;color:var(--muted)}.dl-v b{font-size:16px;font-weight:700}
+.dl-pct{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;font-weight:700;color:var(--ok)}.dl-pct .icon{width:13px;height:13px}
+.dl-sc{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--sc);font-size:12.5px;font-weight:800}
+.soft-empty{margin:0;padding:18px 20px;border-radius:var(--r-md);background:var(--sunk);color:var(--muted);font-size:14.5px;line-height:1.5}
+/* Destaques do Hunter */
+.hl-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+@media (max-width:1000px){.hl-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.hl-grid{grid-template-columns:minmax(0,1fr)}}
+.hl-t{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 72px;grid-template-areas:"k ph" "v ph" "u ph" "n n" "s s";column-gap:12px;padding:20px;border-radius:var(--r-lg);border:1px solid var(--line-soft);background:var(--surface);text-decoration:none;color:inherit;transition:transform 220ms var(--ease-out),box-shadow 220ms ease}
+@media (hover:hover) and (pointer:fine){.hl-t:hover{transform:translateY(-2px);box-shadow:var(--shadow)}}
+.hl-k{grid-area:k;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hl-v{grid-area:v;margin-top:6px;font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}.hl-v small{font-size:15px;color:var(--muted);font-weight:600}
+.hl-u{grid-area:u;font-size:13px;color:var(--muted)}
+.hl-ph{grid-area:ph;width:72px;height:72px;border-radius:14px;background:var(--img-bg)}.hl-ph img{mix-blend-mode:multiply}
+.hl-n{grid-area:n;margin-top:16px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:14px;font-weight:600;line-height:1.3}
+.hl-s{grid-area:s;font-size:12.5px;color:var(--muted)}
+/* Pré-vendas compactas */
+.pre-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(300px,1fr);gap:14px;overflow-x:auto;scrollbar-width:none}
+.pre-c{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:center;padding:12px;border-radius:var(--r-md);border:1px solid var(--line-soft);background:var(--surface);text-decoration:none;color:inherit}
+.pre-ph{width:64px;height:64px;border-radius:10px;background:var(--img-bg)}
+.pre-c b{display:block;font-size:14px;line-height:1.3}.pre-c span span{font-size:13px;color:var(--muted)}.pre-st{font-size:11.5px;font-weight:700;color:var(--warn);text-transform:uppercase;letter-spacing:.04em}
+/* Header refinado */
+.topnav .navbtn{font-weight:500}
+@media (min-width:860px){.topnav .nav-ico{display:none}}
+.navbtn.usr .count{position:absolute;top:2px;right:0}
 
 /* Histórico de preço */
 .hist h3{margin:0 0 4px;font-size:16px}
@@ -809,13 +885,15 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   <div class="cover-in">
     <a class="brand" href="/" data-home aria-label="TCG Price Hunter, início"><img src="data:image/webp;base64,/*LOGO*/" alt="TCG Price Hunter" width="720" height="361"></a>
     <nav class="topnav" aria-label="Seções">
-      <a class="navbtn" data-go="" href="/"><svg class="icon"><use href="#i-house"/></svg><span class="lbl">Início</span></a>
-      <a class="navbtn" data-go="oportunidades" href="/oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span class="lbl">Oportunidades</span></a>
-      <a class="navbtn" data-go="copag" href="/precos"><svg class="icon"><use href="#i-tag"/></svg><span class="lbl">Preços</span></a>
-      <a class="navbtn" data-go="prevenda" href="/pre-vendas"><svg class="icon"><use href="#i-calendar-blank"/></svg><span class="lbl">Pré-vendas</span><span class="count c-pre" hidden></span></a>
-      <a class="navbtn" data-go="lojas" href="/lojas"><svg class="icon"><use href="#i-storefront"/></svg><span class="lbl">Lojas</span></a>
+      <a class="navbtn" data-go="" href="/"><span class="lbl">Início</span><svg class="icon nav-ico"><use href="#i-house"/></svg></a>
+      <a class="navbtn" data-go="pistas" href="/pistas"><span class="lbl">Pistas</span><svg class="icon nav-ico"><use href="#i-lightbulb"/></svg><span class="count c-tip" hidden></span></a>
+      <a class="navbtn" data-go="copag" href="/precos"><span class="lbl">Preços Copag</span><svg class="icon nav-ico"><use href="#i-tag"/></svg></a>
+      <a class="navbtn" data-go="prevenda" href="/pre-vendas"><span class="lbl">Pré-vendas</span><svg class="icon nav-ico"><use href="#i-calendar-blank"/></svg><span class="count c-pre" hidden></span></a>
+      <a class="navbtn" data-go="lojas" href="/lojas"><span class="lbl">Lojas</span><svg class="icon nav-ico"><use href="#i-storefront"/></svg></a>
       <span class="navsep" aria-hidden="true"></span>
       <button class="navbtn theme-btn" type="button" aria-label="Alternar tema claro ou escuro"><svg class="icon"><use href="#i-moon"/></svg></button>
+      <a class="navbtn usr" data-go="favoritos" href="/favoritos" aria-label="Favoritos" hidden><svg class="icon"><use href="#i-heart"/></svg></a>
+      <a class="navbtn usr" data-go="alertas" href="/alertas" aria-label="Alertas de preço" hidden><svg class="icon"><use href="#i-bell"/></svg><span class="count c-hit" hidden></span></a>
       <button class="accbtn" data-acc type="button" aria-label="Entrar ou criar conta"><svg class="icon"><use href="#i-user-circle"/></svg><span>Entrar</span></button>
     </nav>
   </div>
@@ -843,7 +921,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <button type="button" data-go="favoritos"><svg class="icon"><use href="#i-heart"/></svg><span>Favoritos<small>Os produtos que você acompanha</small></span></button>
     <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas de preço<small>Aviso quando chegar no seu preço</small></span><span class="count c-hit" hidden></span></button>
     <button type="button" data-go="lojas"><svg class="icon"><use href="#i-storefront"/></svg><span>Lojas<small>Onde o site procura os preços</small></span></button>
-    <button type="button" data-go="pistas"><svg class="icon"><use href="#i-lightbulb"/></svg><span>Pistas<small>Promoções do Telegram, sem verificação</small></span><span class="count c-tip" hidden></span></button>
+    <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades<small>Todas as ofertas abaixo da Copag, com filtros</small></span></button>
     <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Deal Score, preço Copag e dicas de compra</small></span></button>
     <button type="button" data-go="termos"><svg class="icon"><use href="#i-info"/></svg><span>Termos e privacidade<small>Regras de uso e o que o site guarda</small></span></button>
     <button type="button" class="theme-btn"><svg class="icon"><use href="#i-moon"/></svg><span class="theme-lbl">Tema escuro<small>Muda as cores do site</small></span></button>
@@ -851,7 +929,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 </dialog>
 <nav class="tabbar" aria-label="Seções">
   <button type="button" data-go=""><svg class="icon"><use href="#i-house"/></svg><span>Início</span></button>
-  <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades</span></button>
+  <button type="button" data-go="pistas"><svg class="icon"><use href="#i-lightbulb"/></svg><span>Pistas</span><span class="count c-tip" hidden></span></button>
   <button type="button" data-go="copag"><svg class="icon"><use href="#i-tag"/></svg><span>Preços</span></button>
   <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-vendas</span><span class="count c-pre" hidden></span></button>
   <button type="button" data-more><svg class="icon"><use href="#i-dots-three"/></svg><span>Mais</span><span class="count c-hit" hidden></span></button>
@@ -982,7 +1060,7 @@ function homeMotion(){
       stage.classList.remove("armed");stage.classList.add("opening");setTimeout(()=>stage.classList.remove("opening"),2700)})},{threshold:.35});
     io.observe(stage);
   }
-  const hx=$(".hx");if(heroIO)heroIO.disconnect();
+  const hx=$(".hero2");if(heroIO)heroIO.disconnect();
   if("IntersectionObserver" in window){heroIO=new IntersectionObserver((es)=>es.forEach((e)=>e.target.classList.toggle("off",!e.isIntersecting)));if(hx)heroIO.observe(hx);const ho=$(".home-opp");if(ho)heroIO.observe(ho)}
 }
 let tiltEl=null,tiltRaf=0;
@@ -1012,7 +1090,8 @@ function priceBlock(p,o,abrir){
   <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
-/* DealCard: o card de oferta usado em todo o site */
+/* DealCard: oportunidade → economia → Deal Score → Copag → preço → loja */
+function scoreMeter(n){const b=band(n);return`<div class="meter" style="--sc:${b[3]}"><span>Deal Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,n))}%"></b></i><strong>${n}<small>/100</small></strong></div>`}
 function dealCard(e,opt={}){
   const{p,o,n}=e;const gg=g(p);const abrir=!opt.plain&&F.mode==="abrir"&&view==="deals";
   const r=refOf(p);const d=discOf(p,o);const hasD=!!(o&&r&&d!=null);
@@ -1020,23 +1099,24 @@ function dealCard(e,opt={}){
   const fav=isFav(p.id);const href="/produto/"+(SLUG[p.id]||encodeURIComponent(p.id));
   const sc=o&&o.dealScore!=null&&live(o)?o.dealScore:null;
   const foil=!!opt.foil&&!state;
-  return`<article class="deal${state?" "+state:""}${foil?" foil":""}${CHANGED.has(p.id)?" upd":""}" style="--ec:${gg.c}${opt.i!=null?`;--i:${opt.i}`:""}">${opt.i!=null?`<span class="deal-back" aria-hidden="true"></span>`:""}${foil?`<span class="foil-tag">${ic("sparkle-f")}${opt.rank===0?"Melhor oferta":"Oferta foil"}</span>`:""}
+  const badge=state==="pre"?`<span class="deal-badge pre">Pré-venda${o.releaseDate?` · ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</span>`:state?`<span class="deal-badge muted">${state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:sc!=null?`<span class="deal-badge" style="--sc:${scoreColor(sc)}"><i></i>${band(sc)[1]}</span>`:"";
+  const save=hasD&&d>=.0005&&!abrir;
+  return`<article class="deal${state?" "+state:""}${foil?" foil":""}${CHANGED.has(p.id)?" upd":""}" style="--ec:${gg.c}${opt.i!=null?`;--i:${opt.i}`:""}">${opt.i!=null?`<span class="deal-back" aria-hidden="true"></span>`:""}
   <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" aria-label="${esc(p.collectionName+" "+label(p))}"></a>
-  <div class="deal-top">${sc!=null?`<span class="deal-score" style="--sc:${scoreColor(sc)}">${dial(sc,"sm")}<span>${band(sc)[2]}</span></span>`:state==="pre"?`<span class="chip warn">Pré-venda</span>`:state?`<span class="chip">${state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:`<span class="chip">Sem nota</span>`}
+  <div class="deal-media">${photo(p,o,"photo deal-ph")}${badge}${foil?`<span class="foil-tag">${ic("sparkle-f")}${opt.rank===0?"Melhor oferta":"Oferta foil"}</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(p.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
-  ${photo(p,o)}
   <div class="deal-body">
-    <span class="deal-col">${ic(gg.icon)}<span>${esc(p.collectionName)}</span></span>
+    <p class="deal-col">${esc(p.collectionName)}</p>
     <h3 class="deal-name">${esc(label(p))}</h3>
-    ${o?`<div class="deal-price"><span>${money(abrir?o.perBooster:o.total)}</span>${hasD&&d>=.0005&&!abrir?`<span class="off sm${r.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:""}</div>
-    <p class="deal-sub">${abrir?`por booster · total ${money(o.total)}`:r?`${r.net?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span>`:"Copag"} ${hasD&&d<=-.0005?`${money(r.v)} · acima`:`<s>${money(r.v)}</s>`}`:"Sem preço Copag oficial"}</p>
-    ${o.releaseDate?`<p class="deal-sub">Lançamento: <b>${new Date(o.releaseDate).toLocaleDateString("pt-BR")}</b></p>`:""}
-    <p class="deal-store">${ic("storefront")}<span>${esc(o.storeName)}${n>1?` <em>+${n-1} ${n-1>1?"lojas":"loja"}</em>`:""}</span></p>
-    <a class="btn deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a>`
-    :`<p class="deal-sub">${p.copagConfirmed?`Copag ${money(p.msrp)}`:"Nenhuma loja com oferta agora"}</p>`}
+    ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
+    <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
+    ${sc!=null?scoreMeter(sc):""}
+    <div class="deal-foot"><span class="deal-store">${esc(o.storeName)}${n>1?` <em>+${n-1}</em>`:""}</span><a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
+    :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
 }
+
 const pocket=dealCard;
 
 function filtersHTML(all){
@@ -1071,39 +1151,119 @@ function filtersHTML(all){
 /* Início: busca em destaque, oportunidades agora e todos os preços */
 function searchBox(id,q,big){
   return`<form class="sbox${big?" sbox-lg":""}" role="search" data-search="${id}" autocomplete="off">
-  <div class="sbox-in">${ic("magnifying-glass")}<input id="${id}" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscar produto, coleção, SKU ou EAN" value="${esc(q||"")}" aria-label="Buscar produto, coleção, SKU ou EAN" aria-autocomplete="list" aria-controls="${id}-ac" aria-expanded="false" autocomplete="off"><button class="btn" type="submit">Buscar</button></div>
+  <div class="sbox-in">${ic("magnifying-glass")}<input id="${id}" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscar produto, coleção ou SKU…" value="${esc(q||"")}" aria-label="Buscar produto, coleção, SKU ou EAN" aria-autocomplete="list" aria-controls="${id}-ac" aria-expanded="false" autocomplete="off"><button class="sbox-x" type="button" data-sclear aria-label="Limpar busca"${q?"":" hidden"}>${ic("x")}</button><button class="btn" type="submit">Buscar</button></div>
   <div class="ac" id="${id}-ac" role="listbox" hidden></div></form>`;
 }
+/* Início: painel editorial de oportunidades. Descoberta → Oportunidade → Inteligência → Novidades → Compra */
+const ACT_LABEL={new:["Nova oportunidade","flame-f","hot"],drop:["Queda de preço","trend-down","ok"],restock:["Voltou ao estoque","package","info"],lowest:["Novo menor preço","seal-check-f","ok"],tip:["Telegram","lightbulb","info"]};
+const hhmm=(iso)=>new Date(iso).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+const dayLabel=(iso)=>{const d=new Date(iso),n=new Date();const y=new Date(n);y.setDate(n.getDate()-1);return d.toDateString()===n.toDateString()?hhmm(iso):d.toDateString()===y.toDateString()?"ontem "+hhmm(iso):d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})};
+/* "Desde a última visita": a referência vale a sessão inteira; sem visita anterior, últimas 24 h */
+const SINCE=(()=>{let s=null;try{s=sessionStorage.getItem("ph:since")}catch{}if(!s){s=store.get("lastVisit",null)||new Date(Date.now()-864e5).toISOString();try{sessionStorage.setItem("ph:since",s)}catch{}store.set("lastVisit",new Date().toISOString())}return{iso:s,first:!store.get("seenBefore",false)}})();
+store.set("seenBefore",true);
+function activity(){return(S.activity||[]).filter((e)=>P[e.productId])}
+function dedupeAct(list){const seen=new Set();return list.filter((e)=>{const k=e.type+e.productId;if(seen.has(k))return false;seen.add(k);return true})}
+function sectionHead(icon,title,sub,action){return`<header class="sh2"><div><h2>${icon?ic(icon,"icon sh2-i"):""}${title}</h2>${sub?`<p>${sub}</p>`:""}</div>${action||""}</header>`}
+const seeAll=(go,label="Ver todas")=>`<a class="seeall" href="/${PATHS[go]??""}" data-go="${go}">${label} ${ic("caret-down","icon chev")}</a>`;
+
+function radarHTML(){
+  const act=activity();const since=Date.parse(SINCE.iso);const recent=act.filter((e)=>Date.parse(e.t)>since);
+  const cnt=(t)=>dedupeAct(recent.filter((e)=>e.type===t)).length;
+  const items=[["new","novas oportunidades"],["drop","quedas de preço"],["restock","voltaram ao estoque"],["lowest","novos menores preços"]];
+  const firstVisit=SINCE.first;const sinceTxt=firstVisit?"nas últimas 24 horas":`desde sua última visita, ${dayLabel(SINCE.iso)}`;
+  /* pulso: quantos eventos o Hunter registrou em cada hora das últimas 24 h (dados reais) */
+  const now=Date.now();const bins=Array(24).fill(0);for(const e of act){const h=Math.floor((now-Date.parse(e.t))/36e5);if(h>=0&&h<24)bins[23-h]++}
+  const mx=Math.max(1,...bins);
+  if(!act.length)return`<section class="radar"><div class="radar-in">${sectionHead("","Radar do Hunter","O que mudou no mercado desde sua última visita.")}<p class="radar-empty">Ainda não temos dados suficientes para identificar movimentos. O Hunter registra quedas de preço, estoques e oportunidades novas a cada varredura.</p></div></section>`;
+  return`<section class="radar" aria-label="Radar do Hunter"><div class="radar-in">
+    ${sectionHead("","Radar do Hunter",`O que mudou no mercado ${sinceTxt}.`)}
+    <div class="pulse">${items.map(([t,l])=>{const n=cnt(t);return`<div class="pulse-k${n?"":" zero"}"><b data-n="${n}">${n}</b><span>${l}</span></div>`}).join("")}</div>
+    <div class="spark" role="img" aria-label="Eventos por hora nas últimas 24 horas">${bins.map((v,i)=>`<i style="--h:${Math.round(v/mx*100)}%" title="${v} ${v===1?"evento":"eventos"}"></i>`).join("")}<span class="spark-l">24 h atrás</span><span class="spark-r">agora</span></div>
+  </div></section>`;
+}
+function actItem(e){
+  const p=P[e.productId];const [lbl,icn,tone]=ACT_LABEL[e.type]||ACT_LABEL.new;
+  const d=e.msrp&&e.to?1-e.to/e.msrp:null;
+  const detail=e.type==="drop"||e.type==="lowest"?`<span class="ai-move"><s>${money(e.from)}</s>${ic("caret-down","icon ai-arrow")}<b>${money(e.to)}</b></span>`:`<b>${money(e.to)}</b>`;
+  return`<li class="ai"><time datetime="${esc(e.t)}">${dayLabel(e.t)}</time><span class="ai-tag ${tone}">${ic(icn)}${lbl}</span>
+    <a class="ai-p" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${esc(p.collectionName)} · ${esc(label(p))}</a>
+    <span class="ai-d">${detail}${d!=null&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:""}<small>${esc(e.storeName||"")}</small></span></li>`;
+}
+function tipItem(t){
+  const p=P[t.productId];const dom=mkDomain(t);
+  return`<li class="ai"><time datetime="${esc(t.postedAt||t.firstSeen)}">${dayLabel(t.postedAt||t.firstSeen)}</time><span class="ai-tag info">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:ic("lightbulb")}${esc(mkName(t))} · Telegram</span>
+    <a class="ai-p" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</a>
+    <span class="ai-d"><b>${money(t.price)}</b><small>via ${esc(chan(t))} · não verificado</small></span></li>`;
+}
+function feedHTML(){
+  const ev=dedupeAct(activity()).slice(0,10).map((e)=>({t:e.t,html:actItem(e)}));
+  const tp=liveTips().slice(0,6).map((t)=>({t:t.postedAt||t.firstSeen,html:tipItem(t)}));
+  const all=[...ev,...tp].sort((a,b)=>String(b.t).localeCompare(String(a.t))).slice(0,9);
+  return`<section class="feed">${sectionHead("","Pistas recentes","O Hunter está sempre procurando. Isto foi o que ele encontrou por último.",seeAll("pistas","Telegram"))}
+  ${all.length?`<ol class="ai-list">${all.map((x)=>x.html).join("")}</ol>`:`<p class="soft-empty">Ainda não temos dados suficientes para mostrar movimentos recentes.</p>`}</section>`;
+}
+function dropsHTML(){
+  const by={};for(const e of activity().filter((x)=>x.type==="drop"&&x.from>0)){const k=e.productId;const pc=1-e.to/e.from;if(!by[k]||pc>by[k].pc)by[k]={e,pc}}
+  const list=Object.values(by).sort((a,b)=>b.pc-a.pc).slice(0,5);
+  return`<section class="drops">${sectionHead("","Maiores quedas","Reduções de preço confirmadas nos últimos dias.")}
+  ${list.length?`<ol class="drop-list">${list.map(({e,pc})=>{const p=P[e.productId];const o=bestLive(p.id);return`<li><a href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${photo(p,o,"photo dl-ph")}<span class="dl-b"><b>${esc(label(p))}</b><small>${esc(p.collectionName)} · ${esc(e.storeName||"")} · ${dayLabel(e.t)}</small></span>
+    <span class="dl-v"><s>${money(e.from)}</s><b>${money(e.to)}</b><span class="dl-pct">${ic("trend-down")}${pct(pc)}</span></span>${o?.dealScore!=null?`<span class="dl-sc" style="--sc:${scoreColor(o.dealScore)}">${o.dealScore}</span>`:""}</a></li>`}).join("")}</ol>`
+  :`<p class="soft-empty">Ainda não encontramos quedas de preço confirmadas. Preço que vai e volta entre vendedores não conta como queda.</p>`}</section>`;
+}
+function highlightsHTML(pool){
+  if(pool.length<2)return"";
+  const pick=(f)=>pool.reduce((a,b)=>f(b)>f(a)?b:a);
+  const best=pick((e)=>e.o.dealScore),disc=pick((e)=>e.o.discount),save=pick((e)=>e.o.savings??0);
+  const ppbPool=OFF.filter((o)=>live(o)&&o.perBooster&&P[o.productId]?.copagConfirmed);const ppb=ppbPool.length?ppbPool.reduce((a,b)=>b.perBooster<a.perBooster?b:a):null;
+  const tiles=[["Melhor oportunidade",best,`${best.o.dealScore}<small>/100</small>`,"Deal Score"],["Maior desconto",disc,pct(disc.o.discount),"abaixo da Copag"],["Maior economia",save,money(save.o.savings),"em relação à Copag"]];
+  if(ppb)tiles.push(["Booster mais barato",{p:P[ppb.productId],o:ppb},money(ppb.perBooster),"por booster"]);
+  return`<section class="hl">${sectionHead("","Destaques do Hunter","Os recordes do mercado agora.")}
+  <div class="hl-grid">${tiles.map(([k,e,v,u])=>`<a class="hl-t" href="/produto/${SLUG[e.p.id]}" data-p="${esc(e.p.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(e.p,e.o,"photo hl-ph")}<span class="hl-n">${esc(e.p.collectionName)} · ${esc(label(e.p))}</span><span class="hl-s">${esc(e.o.storeName)} · ${money(e.o.total)}</span></a>`).join("")}</div></section>`;
+}
+function preHTML(){
+  const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].total))by[o.productId]=o;
+  const list=Object.values(by).slice(0,6);
+  return`<section class="pre">${sectionHead("","Pré-vendas","Lançamentos anunciados pelas lojas. Não entram no ranking.",list.length?seeAll("prevenda","Ver todas"):"")}
+  ${list.length?`<div class="pre-row">${list.map((o)=>{const p=P[o.productId];const r=refOf(p);return`<a class="pre-c" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${photo(p,o,"photo pre-ph")}<span><small class="pre-st">Pré-venda${o.releaseDate?` · lança ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</small><b>${esc(p.collectionName)} · ${esc(label(p))}</b><span>${money(o.total)}${r?` <s>${money(r.v)}</s>`:""} · ${esc(o.storeName)}</span></span></a>`}).join("")}</div>`
+  :`<p class="soft-empty">Nenhuma pré-venda aberta agora. Quando uma loja anunciar um lançamento em português, ele aparece aqui.</p>`}</section>`;
+}
+function tickerHTML(){
+  const ev=dedupeAct(activity()).slice(0,6);if(!ev.length)return"";
+  return`<div class="ticker" aria-live="off">${ev.map((e,i)=>{const p=P[e.productId];const [lbl,icn,tone]=ACT_LABEL[e.type];return`<span class="tk${i?"":" on"}"><time>${hhmm(e.t)}</time><span class="tk-t ${tone}">${ic(icn)}${lbl}</span>${esc(p.collectionName)} · ${esc(label(p))}${e.type==="drop"||e.type==="lowest"?` <s>${money(e.from)}</s> → <b>${money(e.to)}</b>`:` <b>${money(e.to)}</b>`}</span>`}).join("")}</div>`;
+}
+let tickT=0;
+function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMotion())return;const it=[...t.querySelectorAll(".tk")];if(it.length<2)return;let k=0;
+  tickT=setInterval(()=>{if(!document.contains(t)){clearInterval(tickT);return}if(document.hidden||$(".hero2")?.classList.contains("off"))return;it[k].classList.remove("on");k=(k+1)%it.length;it[k].classList.add("on")},4200)}
+
 function renderDeals(){
   const raw=entries();
   const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
   const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
-  const opp=oppPool().slice(0,4);
+  const pool=oppPool();const opp=pool.slice(0,4);
   const nLive=OFF.filter(live).length,nStores=new Set(OFF.filter(live).map((o)=>o.storeId)).size;
-  const fan=opp.slice(0,3);const tips=liveTips().slice(0,8);
-  const avgOff=opp.length?opp.reduce((x,e)=>x+e.o.discount,0)/opp.length:0;
-  $("#view").innerHTML=`<section class="hx">
-    <div class="hx-copy"><h1>Encontre seu próximo <span>Pokémon TCG</span></h1>
-      <p>Preços de <b>${nStores} lojas</b> comparados com o preço sugerido oficial da Copag. <b>${nLive}</b> ofertas com estoque agora.</p>
-      ${searchBox("hq","",true)}
-      <div class="qchips" aria-label="Buscas rápidas">${["ETB","Booster box","Blister","Escuridão Absoluta","Caos Ascendente","30 anos"].map((q)=>`<button type="button" class="qchip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div></div>
-    ${fan.length?`<div class="fan" aria-label="Melhores ofertas agora">${fan.map((e,i)=>`<a class="fan-c" style="--i:${i}" href="/produto/${SLUG[e.p.id]}" data-p="${esc(e.p.id)}">${photo(e.p,e.o,"photo fan-ph")}<span class="fan-t"><small>${esc(e.p.collectionName)}</small><b>${money(e.o.total)}</b><span class="off sm">${ic("trend-down")}${pct(e.o.discount)}</span></span></a>`).join("")}</div>`:""}
+  $("#view").innerHTML=`<section class="hero2">
+    <h1>Não procure preço.<br><span>Procure oportunidade.</span></h1>
+    <p class="hero2-sub">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
+    ${searchBox("hq","",true)}
+    <div class="live"><span class="live-dot" aria-hidden="true"></span><span><b>Hunter ativo</b> · varredura ${ago(S.generatedAt)} · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
+    ${tickerHTML()}
   </section>
-  <section class="home-opp"><div class="page-title"><h2>${ic("flame-f","icon fire")}Oportunidades agora${avgOff?` <small>até ${pct(Math.max(...opp.map((e)=>e.o.discount)))} abaixo da Copag</small>`:""}</h2><a class="seeall" href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></div>
-    ${opp.length?`<div class="packstage"><div class="deals row4">${opp.map((e,i)=>dealCard(e,{plain:true,i,rank:i,foil:i===0||e.o.dealScore>=70})).join("")}</div><div class="pack" aria-hidden="true"><span class="pack-top"></span><span class="pack-body"></span></div></div>`:`<div class="empty"><h3>Nenhuma oferta abaixo da Copag agora</h3><p>O robô confere as lojas a cada 15 minutos.</p></div>`}</section>
-  ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram</h2><a class="seeall" href="/pistas" data-go="pistas">Ver todas ${ic("caret-down","icon chev")}</a></div>
-    <div class="tiprow">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar.</p></section>`:""}
-  <section class="home-all"><div class="page-title"><h2>Todos os preços</h2><span>${list.length} ${list.length===1?"produto":"produtos"}</span></div>
+  <section class="home-opp">${sectionHead("flame-f","Oportunidades agora","As melhores oportunidades encontradas pelo Hunter, pela qualidade do negócio e não só pelo desconto.",seeAll("oportunidades"))}
+    ${opp.length?`<div class="packstage"><div class="deals row4">${opp.map((e,i)=>dealCard(e,{plain:true,i,rank:i,foil:i===0||e.o.dealScore>=70})).join("")}</div><div class="pack" aria-hidden="true"><span class="pack-top"></span><span class="pack-body"></span></div></div>`:`<div class="empty"><h3>Nenhuma oferta abaixo da Copag agora</h3><p>O Hunter confere as lojas a cada 15 minutos.</p></div>`}</section>
+  ${radarHTML()}
+  <div class="duo">${feedHTML()}${dropsHTML()}</div>
+  ${highlightsHTML(pool)}
+  ${preHTML()}
+  <section class="home-all">${sectionHead("","Explorar todos os preços",`${list.length} ${list.length===1?"produto":"produtos"} comparados com a Copag.`)}
   <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
-  <p class="seg-hint">${F.mode==="abrir"?"Boosters lacrados pelo menor preço por pacote, para abrir.":"Lacrados com o maior desconto sobre o preço sugerido Copag."}</p>
   ${filtersHTML(all)}
   ${list.length?`<div class="deals">${list.map((e)=>dealCard(e)).join("")}</div>`:`<div class="empty"><h3>Nenhuma oferta com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
   ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço sugerido conhecido (${noCopag.length})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
   ${base.some((e)=>!e.p.copagConfirmed)?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
   </section>`;
-  homeMotion();
+  homeMotion();startTicker();
 }
 
 function renderList(title,intro,list,emptyMsg){
@@ -1442,6 +1602,7 @@ function openAccount(){if(ACC.user)go("conta");else authGate({type:"page"})}
 function accSync(rerender=true){
   const u=ACC.user,loading=authPending();
   document.querySelectorAll(".accbtn").forEach((b)=>{b.classList.toggle("is-loading",loading);b.classList.toggle("in",!!u);b.innerHTML=(u?.photo?`<img class="av" src="${esc(safeUrl(u.photo))}" alt="" referrerpolicy="no-referrer">`:ic("user-circle"))+`<span>${u?"Minha conta":"Entrar"}</span>`;b.setAttribute("aria-label",u?"Minha conta":"Entrar ou criar conta")});
+  document.querySelectorAll(".navbtn.usr").forEach((b)=>{b.hidden=!u});
   document.querySelectorAll(".accfab").forEach((b)=>{b.classList.toggle("is-loading",loading);b.innerHTML=u?.photo?`<img src="${esc(safeUrl(u.photo))}" alt="" referrerpolicy="no-referrer">`:ic("user-circle");b.setAttribute("aria-label",u?"Minha conta":"Entrar ou criar conta")});
   const am=document.querySelector(".acc-more span");if(am)am.innerHTML=u?`Minha conta<small>${esc(u.email||"")}</small>`:`Entrar ou criar conta<small>Salve favoritos e alertas de preço</small>`;
   const n=S&&u?hits().length:0;document.querySelectorAll(".c-hit").forEach((el)=>{el.hidden=!n;el.textContent=n});
@@ -1610,7 +1771,7 @@ const TITLES={busca:"Busca",oportunidades:"Oportunidades",copag:"Preços Copag",
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
-  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["lojas","pistas","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
+  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["lojas","oportunidades","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   if(view==="conta")return renderConta();
@@ -1676,7 +1837,8 @@ const nLiveOf=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).length;
 let acSel=-1;
 function acRender(input){
   const box=document.getElementById(input.id+"-ac");if(!box)return;const q=input.value.trim();
-  if(q.length<2||!S){box.hidden=true;input.setAttribute("aria-expanded","false");return}
+  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;return}
+  if(q.length<2){box.hidden=true;input.setAttribute("aria-expanded","false");return}
   const cols=searchCollections(q).slice(0,3);const prods=searchProducts(q).slice(0,6);
   if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;return}
   acSel=-1;
@@ -1803,6 +1965,7 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-fsheet]")){openFilterSheet();return}
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
   if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",disc:0,score:0});store.set("opp",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
+  const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
   if(t.closest("[data-searchfocus]")){if(view!=="deals")go("");setTimeout(()=>{const i=$("#hq");if(i){i.scrollIntoView({block:"center"});i.focus()}},60);return}
   const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);renderDeals();track("filter_used",{f:"group",v:F.group});return}
   const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);if(view!=="deals")go("");else render();return}
@@ -1817,7 +1980,7 @@ document.addEventListener("submit",(e)=>{const f=e.target;
   if(f.dataset.search){e.preventDefault();const i=f.querySelector("input");const sel=f.querySelector(".ac-i.sel");if(sel){sel.click();return}doSearch(i.value);return}
   if(f.id==="accf"){e.preventDefault();submitAcc(f)}else if(f.id==="delf"){e.preventDefault();submitDel(f)}else if(f.id==="af"){e.preventDefault();submitAlert(f)}});
 let acT=0;
-document.addEventListener("input",(e)=>{const i=e.target;if(i.closest?.(".sbox")){clearTimeout(acT);acT=setTimeout(()=>acRender(i),60)}});
+document.addEventListener("input",(e)=>{const i=e.target;if(i.closest?.(".sbox")){const x=i.closest(".sbox").querySelector(".sbox-x");if(x)x.hidden=!i.value;clearTimeout(acT);acT=setTimeout(()=>acRender(i),60)}});
 document.addEventListener("focusin",(e)=>{const i=e.target;if(i.closest?.(".sbox")&&i.value.trim().length>=2)acRender(i)});
 document.addEventListener("keydown",(e)=>{
   const i=e.target;

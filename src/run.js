@@ -13,6 +13,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, i
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
+import { recordActivity } from './activity.js';
 import { processInbox } from './inbox.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
@@ -65,7 +66,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const sources = readJson(dataPath('sources.json'), {});
   const lowest = readJson(dataPath('lowest.json'), {});
   // Uma vez: refaz o "menor já visto" a partir do histórico filtrado (o antigo podia ter preço de anúncio trocado).
+  let rebuiltLowest = false;
   if (!lowest.__fromHist && fs.existsSync(dataPath('hist'))) {
+    rebuiltLowest = true;
     for (const k of Object.keys(lowest)) delete lowest[k];
     for (const f of fs.readdirSync(dataPath('hist'))) {
       const h = readJson(dataPath('hist/' + f), null); if (!h?.productId) continue;
@@ -170,7 +173,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
 
   // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
-  const products = {};
+  const products = {}; const newLowest = new Map();
   for (const base of Object.values(registry)) {
     const p = { ...base, copag: resolveCopag(base, catalog, copagSeen) };
     const cs = copagStatus(p);
@@ -182,7 +185,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     for (const o of list) o.anomalous = o.total > 0 && isAnomalous(o.total, cs.msrp, live.length >= 3 ? rawAvg : null);
     const clean = live.filter((o) => !o.anomalous);
     const marketAverage = clean.length >= 2 ? round2(clean.reduce((a, o) => a + o.total, 0) / clean.length) : null;
-    for (const o of clean) if (!lowest[p.id] || o.total < lowest[p.id].total) lowest[p.id] = { total: o.total, at: T, storeId: o.storeId, offerId: o.id };
+    for (const o of clean) if (!lowest[p.id] || o.total < lowest[p.id].total) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(o.id, lowest[p.id].total); lowest[p.id] = { total: o.total, at: T, storeId: o.storeId, offerId: o.id }; }
     products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
   }
   const bestPPB = {};
@@ -243,6 +246,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     
   } catch (e) { log(`[histórico] ${e.message}`); }
   for (const p of Object.values(products)) { try { p.hist = histSummary(p.id); } catch { p.hist = null; } }
+  let activity = [];
+  try { activity = recordActivity({ T, offers, prev, products, newLowest, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])) }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
   const state = {
     generatedAt: T,
     coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0 },
@@ -255,6 +260,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     sources: Object.entries(sources).map(([id, s]) => ({ id, ...s, score: storeScores[id] || null })),
     unmatched: unmatched.slice(0, 200),
     tips: tips.slice(0, 150),
+    activity,
     tipSources: tipStatus,
     rules: watch.rules || [],
     recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].slice(0, 50),

@@ -94,6 +94,7 @@ assert.equal(shopBox.image, 'https://cdn.shop.test/caos.jpg', 'foto do anúncio 
 assert.equal(s.products.find((p) => p.id === 'me04-box36').image, 'https://cdn.shop.test/caos.jpg', 'produto herda a foto');
 { const h = s.products.find((p) => p.id === 'me04-box36').hist; assert.ok(h && h.days >= 1 && typeof h.drop7d === 'number', 'produto traz resumo do histórico');
   assert.ok(Array.isArray(s.collections[0].aliases), 'coleções trazem apelidos para a busca'); }
+assert.ok(Array.isArray(s.activity), 'estado traz a atividade do mercado');
 assert.equal(shopBox.discount, 0.2466); assert.equal(shopBox.perBooster, 9.42); assert.equal(shopBox.priceKind, 'base');
 assert.ok(shopBox.dealScore >= 80 && shopBox.storeValidated && shopBox.opportunity, 'oportunidade com loja validada');
 assert.ok(!s.offers.some((o) => /EN$/.test(o.title)), 'inglês rejeitado');
