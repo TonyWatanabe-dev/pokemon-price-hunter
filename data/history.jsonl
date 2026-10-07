@@ -312,3 +312,4 @@
 {"t":"2026-10-07T01:30:28.055Z","offerId":"4133dc31fca0","productId":"me04-etb","storeId":"rihappycombr","seller":"Ri Happy","price":null,"priceKind":null,"shipping":null,"total":null,"stock":"OUT_OF_STOCK","quantity":null}
 {"t":"2026-10-07T01:30:28.055Z","offerId":"193f3a510047","productId":"me04-etb","storeId":"rihappycombr","seller":"LKToys Colecionáveis","price":455.99,"priceKind":"base","shipping":null,"total":455.99,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-07T01:30:28.055Z","offerId":"771f9db877e7","productId":"me05-box18","storeId":"rihappycombr","seller":"Fantastic Toys","price":249.99,"priceKind":"base","shipping":12.18,"total":262.17,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T01:45:21.440Z","offerId":"771f9db877e7","productId":"me05-box18","storeId":"rihappycombr","seller":"Fantastic Toys","price":249.99,"priceKind":"base","shipping":null,"total":249.99,"stock":"IN_STOCK","quantity":1}
