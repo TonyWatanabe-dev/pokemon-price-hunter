@@ -20,7 +20,7 @@ export async function search(store, catalog) {
         url: (p.link || `${base}/${p.linkText}/p`) + (p.items.length > 1 ? `?skuId=${it.itemId}` : ''),
         price: { base: o.Price > 0 ? o.Price : null }, listPrice: o.ListPrice > o.Price ? o.ListPrice : null,
         stock: qty > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: qty > 0 && qty < 99999 ? qty : null,
-        sku: it.itemId, ean: it.ean || null, seller: s.sellerName || null, sellerId: s.sellerId, sourceType: 'store_api',
+        sku: it.itemId, ean: it.ean || null, image: it.images?.[0]?.imageUrl || null, seller: s.sellerName || null, sellerId: s.sellerId, sourceType: 'store_api',
         _vtex: { base, itemId: it.itemId, sellerId: s.sellerId },
       };
       out.set(l.url + '|' + s.sellerId, l);
