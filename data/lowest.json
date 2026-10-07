@@ -76,5 +76,227 @@
     "at": "2026-10-06T16:00:35.433Z",
     "storeId": "metacardscombr",
     "offerId": "fb7c014c63f2"
+  },
+  "me03-blister4": {
+    "total": 139.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "8f11383f4534"
+  },
+  "me01-booster": {
+    "total": 19.15,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "b2b824fad461"
+  },
+  "me04-blister1": {
+    "total": 13.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "copagloja",
+    "offerId": "6af328e1dec6"
+  },
+  "me02-blister3": {
+    "total": 42.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "41965573b69e"
+  },
+  "me04-blister4": {
+    "total": 119.97,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "9061ee4f066b"
+  },
+  "me02-blister1": {
+    "total": 320.1,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "shogunlivrariacombr",
+    "offerId": "bdf5e70f0209"
+  },
+  "me04-blister3": {
+    "total": 39.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "c018f25cf263"
+  },
+  "me04-combo": {
+    "total": 389.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "tocadotabuleiro",
+    "offerId": "70fd08890837"
+  },
+  "me05-blister1": {
+    "total": 319.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "27c19e28bf79"
+  },
+  "me05-blister4": {
+    "total": 55.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "b9c9b10ffb06"
+  },
+  "me05-combo": {
+    "total": 224.89,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "8ae5246e5f5e"
+  },
+  "me01-blister3": {
+    "total": 37.89,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "7ca22c0ba108"
+  },
+  "me02-blister4": {
+    "total": 50.44,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "shogunlivrariacombr",
+    "offerId": "501a64edc324"
+  },
+  "me01-blister4": {
+    "total": 89.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "dab4bdcf29ff"
+  },
+  "me05-combo18": {
+    "total": 249.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "696cab3628ad"
+  },
+  "me03-combo7": {
+    "total": 101.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "91a5bd067ddd"
+  },
+  "me02-booster": {
+    "total": 19.15,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "4492d7abcbb3"
+  },
+  "me02-colecao_ex-mega-venusaur": {
+    "total": 399.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "8f61ccdbc288"
+  },
+  "me03-booster": {
+    "total": 13.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "64297cd7c29e"
+  },
+  "me03-desafio": {
+    "total": 99.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "ec24ae3bd801"
+  },
+  "me03-blister3": {
+    "total": 37.89,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "01ac5563bd1c"
+  },
+  "me03-blister1": {
+    "total": 15.89,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "494f79735a4d"
+  },
+  "me03-combo": {
+    "total": 232.8,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "shogunlivrariacombr",
+    "offerId": "47f849e19501"
+  },
+  "me03-combo18": {
+    "total": 229.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "f6c80dfe704a"
+  },
+  "me03-box24": {
+    "total": 299.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "rihappycombr",
+    "offerId": "fd7c96286c95"
+  },
+  "me03-colecao_ex-mega-zygarde": {
+    "total": 137.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "5e1c09ba3ee3"
+  },
+  "me04-combo18": {
+    "total": 299.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "60945b925763"
+  },
+  "me04-booster": {
+    "total": 13.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "724039d53576"
+  },
+  "me05-blister3": {
+    "total": 39.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "a396427d173d"
+  },
+  "me05-booster": {
+    "total": 489.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "ec76c6325fc4"
+  },
+  "me05-combo36": {
+    "total": 419.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "pbkidscombr",
+    "offerId": "6eb8d2865c83"
+  },
+  "me01-combo": {
+    "total": 249.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "c35637da275c"
+  },
+  "me01-combo18": {
+    "total": 251.91,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "lojaarenagamescombr",
+    "offerId": "05cc0d98fd8c"
+  },
+  "ev09-booster": {
+    "total": 12,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "51ac5771328b"
+  },
+  "me01-colecao": {
+    "total": 179.9,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "508702a17b9a"
+  },
+  "me01-colecao_ilustracao": {
+    "total": 127.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "450995852587"
+  },
+  "me01-blister1": {
+    "total": 19.99,
+    "at": "2026-10-07T07:01:45.749Z",
+    "storeId": "canal40",
+    "offerId": "7b91033e81d1"
   }
 }
