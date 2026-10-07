@@ -1,15 +1,240 @@
 {
-  "_nota": "O preço sugerido é capturado sozinho na loja oficial Copag (copagloja.com.br) quando o produto está à venda lá. Para cadastrar à mão: copag.msrp > 0, source_url de fonte oficial Copag (não marketplace) e confidence = \"OFICIAL\". O cadastro manual vence o capturado.",
+  "_nota": "Catálogo automático: os produtos são montados a partir dos anúncios (coleção + tipo + boosters + variante). Aqui ficam as coleções conhecidas, produtos com EAN oficial e preços Copag cadastrados. Confiança OFICIAL (cadastro manual com fonte Copag) vence a loja oficial; a loja oficial vence CATALOGO_COPAG.",
   "collections": [
+    {
+      "id": "sv1",
+      "name": "Escarlate e Violeta",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "escarlate e violeta 1",
+        "ev1",
+        "ev 1",
+        "ev01",
+        "sv1",
+        "sv 1",
+        "sv01"
+      ],
+      "fallbackAliases": [
+        "escarlate e violeta"
+      ]
+    },
+    {
+      "id": "sv2",
+      "name": "Evoluções em Paldea",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "evolucoes em paldea",
+        "escarlate e violeta 2",
+        "ev2",
+        "ev 2",
+        "ev02",
+        "sv2",
+        "sv 2",
+        "sv02"
+      ]
+    },
+    {
+      "id": "sv3",
+      "name": "Obsidiana em Chamas",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "obsidiana em chamas",
+        "escarlate e violeta 3",
+        "ev3",
+        "ev 3",
+        "ev03",
+        "sv3",
+        "sv 3",
+        "sv03"
+      ]
+    },
+    {
+      "id": "sv3_5",
+      "name": "Coleção Especial 151",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "colecao especial 151",
+        "pokemon 151",
+        "escarlate e violeta 151",
+        "escarlate e violeta 3.5",
+        "ev3.5",
+        "ev 3.5",
+        "sv3.5",
+        "sv 3.5"
+      ]
+    },
+    {
+      "id": "sv4",
+      "name": "Fenda Paradoxal",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "fenda paradoxal",
+        "escarlate e violeta 4",
+        "ev4",
+        "ev 4",
+        "ev04",
+        "sv4",
+        "sv 4",
+        "sv04"
+      ]
+    },
+    {
+      "id": "sv4_5",
+      "name": "Destinos de Paldea",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "destinos de paldea",
+        "escarlate e violeta 4.5",
+        "ev4.5",
+        "ev 4.5",
+        "sv4.5",
+        "sv 4.5"
+      ]
+    },
+    {
+      "id": "sv5",
+      "name": "Forças Temporais",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "forcas temporais",
+        "escarlate e violeta 5",
+        "ev5",
+        "ev 5",
+        "ev05",
+        "sv5",
+        "sv 5",
+        "sv05"
+      ]
+    },
+    {
+      "id": "sv6",
+      "name": "Máscaras do Crepúsculo",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "mascaras do crepusculo",
+        "mascara do crepusculo",
+        "escarlate e violeta 6",
+        "ev6",
+        "ev 6",
+        "ev06",
+        "sv6",
+        "sv 6",
+        "sv06"
+      ]
+    },
+    {
+      "id": "sv6_5",
+      "name": "Fábulas Nebulosas",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "fabulas nebulosas",
+        "escarlate e violeta 6.5",
+        "ev6.5",
+        "ev 6.5",
+        "sv6.5",
+        "sv 6.5"
+      ]
+    },
+    {
+      "id": "sv7",
+      "name": "Coroa Estelar",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "coroa estelar",
+        "escarlate e violeta 7",
+        "ev7",
+        "ev 7",
+        "ev07",
+        "sv7",
+        "sv 7",
+        "sv07"
+      ]
+    },
+    {
+      "id": "sv8",
+      "name": "Fagulhas Impetuosas",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "fagulhas impetuosas",
+        "escarlate e violeta 8",
+        "ev8",
+        "ev 8",
+        "ev08",
+        "sv8",
+        "sv 8",
+        "sv08"
+      ]
+    },
+    {
+      "id": "sv8_5",
+      "name": "Evoluções Prismáticas",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "evolucoes prismaticas",
+        "evolucao prismatica",
+        "escarlate e violeta 8.5",
+        "ev8.5",
+        "ev 8.5",
+        "sv8.5",
+        "sv 8.5"
+      ]
+    },
+    {
+      "id": "sv9",
+      "name": "Amigos de Jornada",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "amigos de jornada",
+        "escarlate e violeta 9",
+        "ev9",
+        "ev 9",
+        "ev09",
+        "sv9",
+        "sv 9",
+        "sv09"
+      ]
+    },
+    {
+      "id": "sv10",
+      "name": "Rivais Predestinados",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "rivais predestinados",
+        "escarlate e violeta 10",
+        "ev10",
+        "ev 10",
+        "sv10",
+        "sv 10"
+      ]
+    },
+    {
+      "id": "sv10_5r",
+      "name": "Raio Preto",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "raio preto",
+        "raio negro"
+      ]
+    },
+    {
+      "id": "sv10_5w",
+      "name": "Fogo Branco",
+      "series": "Escarlate e Violeta",
+      "aliases": [
+        "fogo branco",
+        "chama branca"
+      ]
+    },
     {
       "id": "me01",
       "name": "Megaevolução",
+      "series": "Megaevolução",
       "aliases": [
-        "megaevolucao 1",
-        "mega evolucao 1",
-        "me01",
         "me 01",
-        "me1"
+        "me01",
+        "me1",
+        "mega evolucao 1",
+        "megaevolucao 1"
       ],
       "fallbackAliases": [
         "megaevolucao",
@@ -19,194 +244,171 @@
     {
       "id": "me02",
       "name": "Fogo Fantasmagórico",
+      "series": "Megaevolução",
       "aliases": [
         "fogo fantasmagorico",
-        "me02",
         "me 02",
-        "me2"
+        "me02",
+        "me2",
+        "mega evolucao 2",
+        "megaevolucao 2"
       ]
     },
     {
       "id": "me03",
       "name": "Equilíbrio Perfeito",
+      "series": "Megaevolução",
       "aliases": [
         "equilibrio perfeito",
-        "me03",
         "me 03",
-        "me3"
+        "me03",
+        "me3",
+        "mega evolucao 3",
+        "megaevolucao 3"
       ]
     },
     {
       "id": "me04",
       "name": "Caos Ascendente",
+      "series": "Megaevolução",
       "aliases": [
         "caos ascendente",
-        "me04",
         "me 04",
-        "me4"
+        "me04",
+        "me4",
+        "mega evolucao 4",
+        "megaevolucao 4"
       ]
     },
     {
       "id": "me05",
       "name": "Escuridão Absoluta",
+      "series": "Megaevolução",
       "aliases": [
         "escuridao absoluta",
-        "me05",
         "me 05",
-        "me5"
+        "me05",
+        "me5",
+        "mega evolucao 5",
+        "megaevolucao 5"
       ]
     },
     {
-      "id": "ev09",
-      "name": "Amigos de Jornada",
+      "id": "c30",
+      "name": "Celebração de 30 Anos",
+      "series": "Especial",
       "aliases": [
-        "amigos de jornada",
-        "ev09",
-        "ev 09",
-        "ev9"
+        "celebracao de 30 anos",
+        "celebracao 30 anos",
+        "celebracoes 30 anos",
+        "celebracao dos 30 anos",
+        "comemoracao 30 anos",
+        "comemoracao pokemon 30 anos",
+        "especial 30 anos",
+        "30 anos"
       ]
     }
   ],
   "products": [
     {
-      "id": "me01-box36",
-      "collection": "me01",
-      "type": "booster_box",
-      "boosters": 36,
-      "name": "Megaevolução — Booster Box 36"
-    },
-    {
-      "id": "me01-box24",
-      "collection": "me01",
-      "type": "booster_box",
-      "boosters": 24,
-      "name": "Megaevolução — Kit 24 Boosters"
-    },
-    {
-      "id": "me01-box18",
-      "collection": "me01",
-      "type": "booster_box",
-      "boosters": 18,
-      "name": "Megaevolução — Combo 18 Boosters"
-    },
-    {
-      "id": "me01-etb",
-      "collection": "me01",
-      "type": "etb",
-      "boosters": null,
-      "name": "Megaevolução — Treinador Avançado (ETB)"
-    },
-    {
-      "id": "me02-box36",
-      "collection": "me02",
-      "type": "booster_box",
-      "boosters": 36,
-      "name": "Fogo Fantasmagórico — Booster Box 36"
-    },
-    {
-      "id": "me02-box18",
-      "collection": "me02",
-      "type": "booster_box",
-      "boosters": 18,
-      "name": "Fogo Fantasmagórico — Combo 18 Boosters"
-    },
-    {
-      "id": "me02-etb",
-      "collection": "me02",
-      "type": "etb",
-      "boosters": null,
-      "name": "Fogo Fantasmagórico — Treinador Avançado (ETB)"
-    },
-    {
-      "id": "me03-box36",
-      "collection": "me03",
-      "type": "booster_box",
-      "boosters": 36,
-      "name": "Equilíbrio Perfeito — Booster Box 36"
-    },
-    {
-      "id": "me03-box18",
-      "collection": "me03",
-      "type": "booster_box",
-      "boosters": 18,
-      "name": "Equilíbrio Perfeito — Combo 18 Boosters"
-    },
-    {
-      "id": "me03-etb",
-      "collection": "me03",
-      "type": "etb",
-      "boosters": null,
-      "name": "Equilíbrio Perfeito — Treinador Avançado (ETB)"
-    },
-    {
       "id": "me04-box36",
       "collection": "me04",
       "type": "booster_box",
       "boosters": 36,
-      "name": "Caos Ascendente — Booster Box 36",
       "ean": "0196214156098",
       "ean_source": "https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p"
     },
     {
-      "id": "me04-box24",
-      "collection": "me04",
-      "type": "booster_box",
-      "boosters": 24,
-      "name": "Caos Ascendente — Box 24 Boosters"
-    },
-    {
-      "id": "me04-box18",
-      "collection": "me04",
-      "type": "booster_box",
-      "boosters": 18,
-      "name": "Caos Ascendente — Combo 18 Boosters"
-    },
-    {
-      "id": "me04-etb",
-      "collection": "me04",
-      "type": "etb",
-      "boosters": null,
-      "name": "Caos Ascendente — Treinador Avançado (ETB)"
-    },
-    {
-      "id": "me05-box36",
-      "collection": "me05",
-      "type": "booster_box",
-      "boosters": 36,
-      "name": "Escuridão Absoluta — Booster Box 36"
-    },
-    {
-      "id": "me05-box18",
-      "collection": "me05",
-      "type": "booster_box",
-      "boosters": 18,
-      "name": "Escuridão Absoluta — Combo 18 Boosters"
-    },
-    {
-      "id": "me05-etb",
-      "collection": "me05",
-      "type": "etb",
-      "boosters": null,
-      "name": "Escuridão Absoluta — Treinador Avançado (ETB)"
-    },
-    {
-      "id": "ev09-box36",
-      "collection": "ev09",
-      "type": "booster_box",
-      "boosters": 36,
-      "name": "Amigos de Jornada — Booster Box 36"
+      "id": "c30-colecao",
+      "collection": "c30",
+      "type": "colecao",
+      "boosters": 20
     }
   ],
-  "defaults": {
-    "language": "PT",
-    "manufacturer": "Copag",
-    "copag": {
-      "msrp": null,
-      "source_url": null,
-      "source_timestamp": null,
-      "confidence": null,
-      "previous_msrp": null,
-      "msrp_updated_at": null
+  "copag": {
+    "c30-blister2": {
+      "msrp": 69.99,
+      "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-etb": {
+      "msrp": 399.99,
+      "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-colecao_poster": {
+      "msrp": 115.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-colecao_fichario": {
+      "msrp": 230.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-colecao_ex": {
+      "msrp": 169.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-combo6": {
+      "msrp": 199.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-combo": {
+      "msrp": 199.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-deck": {
+      "msrp": 115.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-minilata": {
+      "msrp": 77.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-colecao_miniatura": {
+      "msrp": 245.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-colecao_porta_retrato": {
+      "msrp": 305.99,
+      "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
+    },
+    "c30-colecao": {
+      "msrp": 599.99,
+      "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
+      "source_timestamp": "2026-08-07",
+      "confidence": "CATALOGO_COPAG",
+      "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada"
     }
   }
 }
