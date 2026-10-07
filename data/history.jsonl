@@ -387,3 +387,5 @@
 {"t":"2026-10-07T06:15:21.698Z","offerId":"f6c80dfe704a","productId":"me03-box18","storeId":"rihappycombr","seller":"Doce Diversão","price":229.9,"priceKind":"base","shipping":null,"total":229.9,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-07T06:15:21.698Z","offerId":"02df8f4cf7e1","productId":"me04-etb","storeId":"rihappycombr","seller":"4Best Play","price":395,"priceKind":"base","shipping":null,"total":395,"stock":"IN_STOCK","quantity":1}
 {"t":"2026-10-07T06:30:28.455Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
+{"t":"2026-10-07T06:45:19.775Z","offerId":"e752c53a333e","productId":"me05-etb","storeId":"rihappycombr","seller":"Gourmande","price":499.99,"priceKind":"base","shipping":null,"total":499.99,"stock":"IN_STOCK","quantity":1}
+{"t":"2026-10-07T06:45:19.775Z","offerId":"c6504551f78d","productId":"me01-box36","storeId":"rihappycombr","stock":"UNAVAILABLE","event":"removed"}
