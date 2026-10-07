@@ -48,6 +48,9 @@ export function classify(score) {
 export function isAnomalous(price, msrp, marketAvg) {
   if (msrp && price < msrp * 0.55) return true;
   if (marketAvg && price < marketAvg * 0.55) return true;
+  // Três vezes acima da referência quase sempre é anúncio casado errado (ex.: box anunciada como blister).
+  if (msrp && price > msrp * 3) return true;
+  if (marketAvg && price > marketAvg * 3) return true;
   return false;
 }
 

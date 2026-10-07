@@ -52,6 +52,14 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     }
   } catch { /* sem lojas.txt */ }
   const watch = readJson(configPath('watchlist.json'), { settings: {}, rules: [] });
+  // Alertas criados pelo site: um arquivo .json por alerta em config/alertas/
+  try {
+    for (const f of fs.readdirSync(configPath('alertas'))) {
+      if (!f.endsWith('.json')) continue;
+      const r = readJson(configPath('alertas/' + f), null);
+      if (r && typeof r === 'object' && r.filter) (watch.rules ||= []).push({ ...r, id: r.id || f.replace(/\.json$/, ''), file: 'config/alertas/' + f });
+    }
+  } catch { /* sem pasta de alertas */ }
   const prev = readJson(dataPath('offers.json'), {});
   const sources = readJson(dataPath('sources.json'), {});
   const lowest = readJson(dataPath('lowest.json'), {});
@@ -158,7 +166,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const cs = copagStatus(p);
     const list = Object.values(offers).filter((o) => o.productId === p.id);
     const live = list.filter((o) => o.stock === 'IN_STOCK' && !o.stale && o.total > 0);
-    const rawAvg = live.length ? live.reduce((a, o) => a + o.total, 0) / live.length : null;
+    // Mediana (não média): um anúncio errado de R$ 400 num blister não pode puxar a referência e marcar os preços certos como suspeitos.
+    const srt = live.map((o) => o.total).sort((x, y) => x - y);
+    const rawAvg = srt.length ? (srt.length % 2 ? srt[(srt.length - 1) / 2] : (srt[srt.length / 2 - 1] + srt[srt.length / 2]) / 2) : null;
     for (const o of list) o.anomalous = o.total > 0 && isAnomalous(o.total, cs.msrp, live.length >= 3 ? rawAvg : null);
     const clean = live.filter((o) => !o.anomalous);
     const marketAverage = clean.length >= 2 ? round2(clean.reduce((a, o) => a + o.total, 0) / clean.length) : null;

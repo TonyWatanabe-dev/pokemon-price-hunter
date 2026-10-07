@@ -16,7 +16,7 @@ export function evaluate(rules, offers, events, products) {
       let kind = null;
       if (r.restock) { if (evBy.has(o.id + '|restock')) kind = 'restock'; }
       else {
-        if (!p.copagConfirmed) continue; // preço-alvo, desconto e score exigem Copag confirmado
+        if ((r.minDiscount != null || r.minDealScore != null) && !p.copagConfirmed) continue; // desconto e score exigem Copag oficial; preço-alvo em R$ não
         const ok = (r.maxPrice == null || o.total <= r.maxPrice) && (r.maxPerBooster == null || (o.perBooster != null && o.perBooster <= r.maxPerBooster))
           && (r.minDiscount == null || o.discount >= r.minDiscount) && (r.minDealScore == null || o.dealScore >= r.minDealScore);
         if (ok) kind = r.mode === 'target' ? 'target' : 'deal';
@@ -25,7 +25,7 @@ export function evaluate(rules, offers, events, products) {
       const key = r.id + '|' + o.productId; const cur = hits.get(key);
       if (!cur || o.total < cur.offer.total) hits.set(key, { rule: r, offer: o, product: p, kind });
     }
-    if (watched.has(o.productId) && evBy.has(o.id + '|drop') && products[o.productId].copagConfirmed) {
+    if (watched.has(o.productId) && evBy.has(o.id + '|drop')) {
       const key = 'drop|' + o.id; hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: products[o.productId], kind: 'drop', from: evBy.get(o.id + '|drop').from });
     }
   }
@@ -52,7 +52,7 @@ export function compose(h) {
   const head = { target: '🎯 PREÇO-ALVO ATINGIDO', deal: '🔥 POKÉMON DEAL', restock: '🟢 RESTOCK', drop: '📉 QUEDA DE PREÇO' }[kind];
   const lines = [head, '', p.collectionName.toUpperCase(), p.typeLabel + (p.boosters ? ` com ${p.boosters} boosters` : '')];
   if (kind === 'drop') lines.push('', `${money(h.from)} → ${money(o.total)}`); else lines.push('', money(o.total) + ` (${o.priceKindLabel})`);
-  lines.push('', p.copagConfirmed ? `Copag: ${money(p.msrp)}` : '⚠️ PREÇO SUGERIDO COPAG NÃO CONFIRMADO');
+  lines.push('', p.copagConfirmed ? `Copag: ${money(p.msrp)}` : 'Copag: sem preço oficial');
   if (o.discount != null) lines.push(`↓ ${pct(o.discount)}`);
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
   lines.push('', `Estoque: ${o.quantity ? o.quantity + ' unidades' : 'confirmado'}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
