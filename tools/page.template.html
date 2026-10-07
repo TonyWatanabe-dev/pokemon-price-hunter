@@ -330,6 +330,7 @@ a.navbtn{text-decoration:none}
 .cfg .tabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
 .delf{display:flex;flex-direction:column;gap:10px;padding:0 16px;max-width:420px}.delf .field input{padding-right:12px}
 .opp-intro p{padding-bottom:16px}
+.tipsearch{margin-top:20px}.tipsearch h2{display:flex;align-items:center;gap:8px}.tipsearch h2 .icon{color:var(--warn)}.tipsearch h2 small{font-size:13px;color:var(--muted);font-weight:500}
 .err-state .icon{width:34px;height:34px;color:var(--warn);margin-bottom:6px}
 
 /* Histórico de preço */
@@ -768,8 +769,9 @@ function renderDeals(){
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
   const top=list[0];
+  const tips=F.q?tipHits(F.q):[];
   const stores=new Set(OFF.filter(live).map((o)=>o.storeId)).size;
-  const filtered=!!(F.group||F.col||F.store);
+  const filtered=!!(F.group||F.col||F.store||F.q);
   const side=top?toploader(top):filtered
     ?`<div class="empty"><h3>Nenhuma oferta com esses filtros</h3><p>${noCopag.length?`Há ${noCopag.length} ${noCopag.length>1?"produtos":"produto"} sem preço Copag confirmado mais abaixo. `:""}Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear">Limpar filtros</button></div>`
     :`<div class="empty"><h3>Nada para destacar ainda</h3><p>${F.mode==="guardar"?"Uma oferta entra aqui com estoque confirmado e preço Copag confirmado.":"Uma oferta entra aqui com estoque confirmado e quantidade de boosters conhecida."}</p></div>`;
@@ -781,6 +783,7 @@ function renderDeals(){
   <div class="list">
     ${list.length?`<div class="page-title"><h2>${F.mode==="abrir"?"Mais boosters pelo dinheiro":F.below?"Abaixo da Copag":"Comparadas com a Copag"}</h2><span>${list.length} ${list.length>1?"produtos":"produto"}</span></div>`:""}
     ${list.length>1?`<div class="binder">${list.slice(1).map(pocket).join("")}</div>`:list.length===1?`<p class="note">Só a oferta em destaque passa nos filtros.</p>`:""}
+    ${F.q&&tips.length?`<section class="panel tipsearch"><h2>${ic("lightbulb")}No Telegram <small>${tips.length}</small></h2><p>Promoções postadas nos canais que o site acompanha. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p>${tipTable(tips)}</section>`:""}
     ${noCopag.length?`<details class="more"${list.length?"":" open"}><summary>${ic("caret-down")}Sem preço Copag confirmado (${noCopag.length})</summary><p>Sem o preço sugerido não dá para medir desconto. Ficam fora do ranking até a Copag publicar o preço.</p><div class="binder">${sortEntries(noCopag).map(pocket).join("")}</div></details>`:""}
   </div>
 </div>`;
@@ -850,12 +853,19 @@ function renderLegal(kind){
   <h3>Contato</h3><p>${contato}</p>`};
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide legal">${T[kind]}</section></div>`;
 }
+const tipVs=(x)=>x.anomalous?`<span class="chip bad">Barato demais</span>`:x.discount==null?`<span class="chip">Sem Copag</span>`:x.discount>=.0005?`<span class="chip ok">-${pct(x.discount)}</span>`:x.discount<=-.0005?`<span class="chip warn">+${pct(-x.discount)}</span>`:`<span class="chip">Preço Copag</span>`;
+const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(x.source.replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
+const tipTable=(l)=>`<div class="tablewrap"><table><thead><tr><th>Promoção</th><th class="r">Preço e Copag</th></tr></thead><tbody>${l.map(tipRow).join("")}</tbody></table></div>`;
+/* Na busca: promoções dos canais do Telegram que batem com o termo (sem verificação, fora do ranking) */
+function tipHits(q){
+  const ws=norm(q).split(/\s+/).filter(Boolean);if(!ws.length)return[];
+  return(S.tips||[]).filter((x)=>!x.expired).filter((x)=>{const hay=norm([x.collectionName,x.label,x.title,x.text,x.store].join(" "));return ws.every((w)=>hay.includes(w))})
+    .sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))).slice(0,8);
+}
 function renderTips(){
   const t=S.tips||[];const src=S.tipSources||[];
   const ok=t.filter((x)=>x.productId&&!x.expired),other=t.filter((x)=>!x.productId||x.expired);
-  const vs=(x)=>x.anomalous?`<span class="chip bad">Barato demais</span>`:x.discount==null?`<span class="chip">Sem Copag</span>`:x.discount>=.0005?`<span class="chip ok">-${pct(x.discount)}</span>`:x.discount<=-.0005?`<span class="chip warn">+${pct(-x.discount)}</span>`:`<span class="chip">Preço Copag</span>`;
-  const row=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(x.source)}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:vs(x)}</td></tr>`;
-  const table=(l)=>`<div class="tablewrap"><table><thead><tr><th>Promoção</th><th class="r">Preço e Copag</th></tr></thead><tbody>${l.map(row).join("")}</tbody></table></div>`;
+  const table=tipTable;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
   <section class="panel"><h2>Pistas</h2><p>Promoções postadas por pessoas em canais públicos do Telegram. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p>
   ${ok.length?table(ok):`<p style="padding:0 16px 16px">Nenhuma pista com produto identificado agora.</p>`}</section>

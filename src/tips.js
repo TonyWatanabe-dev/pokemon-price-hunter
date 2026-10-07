@@ -11,7 +11,15 @@ const decode = (s) => s.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/
   .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))).replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)));
 const strip = (html) => decode(html.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, ' ')).replace(/[ \t]+/g, ' ').replace(/\n\s+/g, '\n').trim();
 const PRICE = /R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:,\d{2})?)/;
-export const firstPrice = (txt) => { const m = String(txt).match(PRICE); return m ? brl(m[1]) : null; };
+// Preço da promoção: em "De: R$ 56,79 Por: R$ 46,00" vale o "Por". Sem isso, o primeiro preço do texto.
+const POR = /\b(?:por|agora|apenas|só)\b[^R\n]{0,12}R\$\s?(\d{1,3}(?:\.\d{3})*(?:,\d{2})?|\d+(?:,\d{2})?)/i;
+const DE = /\bde\b[^R\n]{0,12}R\$\s?\d/i;
+export const firstPrice = (txt) => {
+  const t = String(txt); const por = t.match(POR); if (por) return brl(por[1]);
+  const all = [...t.matchAll(new RegExp(PRICE.source, 'g'))].map((m) => brl(m[1])).filter((v) => v > 0);
+  if (!all.length) return null;
+  return DE.test(t) && all.length > 1 ? Math.min(...all) : all[0];
+};
 const STORE_NAMES = { amazon: 'Amazon', 'mercado-livre': 'Mercado Livre', mercadolivre: 'Mercado Livre', shopee: 'Shopee', magalu: 'Magalu', 'magazine-luiza': 'Magalu', americanas: 'Americanas', 'casas-bahia': 'Casas Bahia', aliexpress: 'AliExpress' };
 const storeFromHost = (u) => { try { const h = new URL(u).hostname.replace(/^www\./, ''); for (const [k, v] of Object.entries(STORE_NAMES)) if (h.includes(k.replace('-', ''))) return v; if (/amzn\./.test(h)) return 'Amazon'; if (/meli\.la|mercadolivre/.test(h)) return 'Mercado Livre'; return h; } catch { return null; } };
 

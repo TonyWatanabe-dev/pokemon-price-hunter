@@ -243,4 +243,10 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   assert.match(replies[0].text, /Caos Ascendente/); assert.match(replies[0].text, /Vale: 26,7% abaixo da Copag|26,7%/); assert.match(replies[0].text, /amazon\.com\.br (bloqueia|não abriu)/);
   assert.match(replies[1].text, /Escuridão Absoluta/); assert.match(replies[1].text, /Li a página \(ld\.test\)/); assert.match(replies[1].text, /369,90|389,90/); assert.match(replies[1].text, /em estoque/);
 }
+{ // Preço da pista: "De ... Por ..." vale o "Por"
+  const { firstPrice } = await import('../src/tips.js');
+  assert.equal(firstPrice('De: ❌ R$ 56,79 ❌ \nPor: R$ 46,00'), 46);
+  assert.equal(firstPrice('De R$ 299,90 por R$ 249,90'), 249.9);
+  assert.equal(firstPrice('Blister R$ 59,90 no Pix'), 59.9);
+}
 console.log(`OK — todos os testes passaram (${sentMsgs.length} alertas). Exemplo:\n\n${sentMsgs[0].text}`);
