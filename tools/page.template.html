@@ -1142,10 +1142,17 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 .colc{--rx:0deg;--ry:0deg;position:relative;display:flex;flex-direction:column;border-radius:18px;text-decoration:none;color:#F4F6FF;overflow:hidden;isolation:isolate;
   background:linear-gradient(180deg,#18204a,#0d1128) padding-box,conic-gradient(from var(--fa),#ff5f6d,#ffc371,#fff36b,#7cf29a,#53c7ff,#8a7bff,#ff6ad5,#ff5f6d) border-box;border:2px solid transparent;
   box-shadow:0 14px 34px -14px rgb(9 13 35 / .55);transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform 450ms cubic-bezier(.16,1,.3,1),box-shadow 250ms ease;will-change:transform}
-.colc-art{position:relative;display:grid;place-items:center;aspect-ratio:1/1;margin:10px 10px 0;border-radius:12px;background:radial-gradient(circle at 50% 40%,#ffffff,#e9edf7);overflow:hidden}
-.colc-art img{width:100%;height:100%;object-fit:contain;padding:8px;transition:transform 450ms cubic-bezier(.16,1,.3,1)}
-.colc-art .colc-fb{display:none;width:44px;height:44px;color:#8a7bff}
-.colc-art.noimg .colc-fb{display:block}
+.colc-art{container-type:inline-size;position:relative;display:grid;place-items:center;aspect-ratio:16/10;margin:10px 10px 0;padding:10px;border-radius:12px;overflow:hidden;text-align:center;
+  background:radial-gradient(120% 90% at 50% 35%,rgb(255 255 255 / .10),transparent 60%),linear-gradient(160deg,#20295c,#0b0f26)}
+.colc[data-s="mega"] .colc-art{background:radial-gradient(120% 90% at 50% 30%,rgb(255 190 60 / .22),transparent 62%),linear-gradient(160deg,#2a2150,#0c0d24)}
+.colc[data-s="sv"] .colc-art{background:radial-gradient(120% 90% at 50% 30%,rgb(190 80 255 / .22),transparent 62%),linear-gradient(160deg,#341a3f,#0e0c22)}
+.colc-logo{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgb(0 0 0 / .45));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
+.colc-word{display:block;font-weight:900;font-size:min(30px,calc(var(--a) * 1cqi),calc(var(--b) * 1cqi));line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance;font-style:italic;
+  background:linear-gradient(180deg,#FFF4C2 0%,#FFD23F 45%,#FF9F1C 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  -webkit-text-stroke:1.2px rgb(10 12 30 / .9);paint-order:stroke fill;filter:drop-shadow(0 3px 0 #0a0c1e) drop-shadow(0 8px 14px rgb(0 0 0 / .5));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
+.colc-word[data-s="sv"]{background-image:linear-gradient(180deg,#FFE1E1 0%,#FF5A6E 45%,#A05BFF 100%)}
+.colc-word[data-s="esp"]{background-image:linear-gradient(180deg,#FFFFFF 0%,#FFE27A 50%,#E0A100 100%)}
+
 .colc::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:color-dodge;opacity:0;transition:opacity 250ms ease;
   background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgb(255 255 255 / .55),transparent 45%),linear-gradient(115deg,transparent 20%,rgb(255 60 180 / .35) 32%,rgb(255 230 60 / .35) 42%,rgb(60 255 200 / .35) 52%,rgb(60 150 255 / .35) 62%,transparent 74%) var(--mx,50%) var(--my,50%)/250% 250%}
 .colc-txt{display:flex;flex-direction:column;gap:2px;padding:10px 12px 12px}
@@ -1157,7 +1164,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 @media (hover:hover) and (pointer:fine){
   .colc:hover{box-shadow:0 26px 50px -18px rgb(9 13 35 / .7)}
   .colc:hover::before{opacity:1}
-  .colc:hover .colc-art img{transform:scale(1.06)}
+  .colc:hover .colc-logo,.colc:hover .colc-word{transform:scale(1.06)}
 }
 .colc:active{transform:perspective(900px) scale(.98)}
 .colmore{margin-top:14px}
@@ -1610,23 +1617,24 @@ const colSlugOf=(c)=>slugify(c.name);const typeSlugOf=(t)=>slugify(t.label);
 const colHref=(id)=>{const c=(S.collections||[]).find((x)=>x.id===id);return c?"/colecao/"+colSlugOf(c):null};
 const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo/"+typeSlugOf(t):null};
 function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0})}
-/* Coleções como cartas: arte do produto principal da coleção (foto da loja), borda holográfica e inclinação.
-   Clique abre /produtos já filtrado pela coleção. */
-const artRank=(p)=>p.type==="etb"?0:p.type==="booster_box"?1:/^colecao/.test(p.type)?2:p.type==="combo"?3:5;
-function colArt(cid){
-  let best=null;
-  for(const o of OFF){const p=P[o.productId];if(!p||p.collection!==cid||!(o.image||p.image)||o.anomalous)continue;
-    const r=artRank(p)+(live(o)?0:10);if(!best||r<best.r)best={r,src:o.image||p.image}}
-  return best?.src||null;
+/* Coleções como cartas: logo oficial da coleção (arquivo em logos/colecoes, enviado pelo responsável do site)
+   ou o nome escrito em destaque. Borda holográfica e inclinação. Clique abre /produtos filtrado pela coleção. */
+const COL_LOGOS=/*COLLOGOS*/{};
+const seriesKey=(c)=>/mega/i.test(c.series||"")?"mega":/escarlate/i.test(c.series||"")?"sv":"esp";
+function colMark(c){
+  const f=COL_LOGOS[c.id];
+  const word=`<span class="colc-word" data-s="${seriesKey(c)}" style="--a:${(124/Math.max(...c.name.split(/\s+/).map((w)=>w.length))).toFixed(1)};--b:${(290/c.name.length).toFixed(1)}">${esc(c.name)}</span>`;
+  if(!f)return word;
+  return`<img class="colc-logo" src="/logos/colecoes/${esc(f)}" alt="${esc(c.name)}" loading="lazy" decoding="async" onerror="this.outerHTML=this.dataset.w" data-w="${esc(word)}">`;
 }
 function colWallHTML(){
   const stats={};
   for(const o of OFF){if(!live(o))continue;const p=P[o.productId];if(!p)continue;const st=(stats[p.collection]||={ids:new Set(),min:Infinity});st.ids.add(p.id);if(o.total<st.min)st.min=o.total}
   const cols=(S.collections||[]).filter((c)=>stats[c.id]).reverse();
   if(!cols.length)return"";
-  const card=(c,i)=>{const st=stats[c.id];const src=String(colArt(c.id)||"").replace(/^http:\/\//i,"https://");
-    return`<a class="colc" href="/produtos" data-col="${esc(c.id)}" style="--i:${Math.min(i,11)}" aria-label="${esc(c.name)}: ver os ${st.ids.size} produtos">
-      <span class="colc-art${src?"":" noimg"}">${ic("sparkle-f","icon colc-fb")}${src?`<img src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('noimg');this.remove()">`:""}</span>
+  const card=(c,i)=>{const st=stats[c.id];
+    return`<a class="colc" href="/produtos" data-col="${esc(c.id)}" data-s="${seriesKey(c)}" style="--i:${Math.min(i,11)}" aria-label="${esc(c.name)}: ver os ${st.ids.size} produtos">
+      <span class="colc-art">${colMark(c)}</span>
       <span class="colc-txt"><small>${esc(c.series||"")}</small><b>${esc(c.name)}</b><em>${st.ids.size} ${st.ids.size===1?"produto":"produtos"} · a partir de ${money(st.min)}</em></span>
     </a>`};
   const fmts=GROUP_ORDER.filter((gr)=>(S.products||[]).some((p)=>p.group===gr&&p.offerCount>0));

@@ -17,6 +17,9 @@ for (const [w, names] of Object.entries(ICONS)) for (const n of names) {
 }
 const tpl = fs.readFileSync(path.join(root, 'tools/page.template.html'), 'utf8');
 const logo = fs.readFileSync(path.join(root, 'tools/logo.webp')).toString('base64');
-const out = tpl.replaceAll('/*LOGO*/', logo).replace('/*FONT_RUBIK*/', font).replace('<!--SPRITE-->', `<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">${sprite}</svg>`);
+// Logos oficiais das coleções (logos/colecoes/<id>.png|webp|svg), enviados pelo responsável do site.
+const colLogos = {};
+try { for (const f of fs.readdirSync(path.join(root, 'logos/colecoes'))) { const m = f.match(/^([a-z0-9_]+)\.(png|webp|svg)$/i); if (m) colLogos[m[1]] = f; } } catch { /* sem pasta */ }
+const out = tpl.replaceAll('/*LOGO*/', logo).replace('/*COLLOGOS*/{}', JSON.stringify(colLogos)).replace('/*FONT_RUBIK*/', font).replace('<!--SPRITE-->', `<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">${sprite}</svg>`);
 fs.writeFileSync(path.join(root, 'index.html'), out);
 console.log(`index.html: ${(out.length / 1024).toFixed(0)} KB`);
