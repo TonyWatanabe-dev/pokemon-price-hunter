@@ -80,5 +80,10 @@
       "destination": "/app.html"
     }
   ],
-  "cleanUrls": false
+  "cleanUrls": false,
+  "functions": {
+    "api/pagina.mjs": {
+      "includeFiles": "index.html"
+    }
+  }
 }

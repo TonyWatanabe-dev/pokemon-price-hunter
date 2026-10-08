@@ -1,9 +1,19 @@
+import fs from 'node:fs';
+import path from 'node:path';
 // Todas as páginas públicas passam por aqui: a mesma página do site, já com título, descrição, endereço canônico,
 // prévia de compartilhamento, dados estruturados e o conteúdo principal em HTML (para buscadores e prévias que não rodam JavaScript).
 // O site carrega por cima e substitui esse conteúdo pela versão interativa.
 import { state, slugs, label, live, SITE, colSlug, typeSlug, esc, brl, pct, bestBy, pix } from './_seo.mjs';
 
 let page = { t: 0, html: null };
+const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
+const shell = (h) => (isShell(h) ? h : null);
+function readLocal() {
+  for (const f of [path.join(process.cwd(), 'index.html'), path.join(process.cwd(), 'public', 'app.html')]) {
+    try { return fs.readFileSync(f, 'utf8'); } catch {}
+  }
+  return null;
+}
 const NAME = 'TCG Price Hunter';
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const crumbs = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + u })) });
@@ -92,7 +102,11 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
 export default async function handler(req, res) {
   const q = new URL(req.url, SITE).searchParams; const t = q.get('t') || 'home'; const slug = decodeURIComponent(q.get('slug') || '');
   const host = req.headers['x-forwarded-host'] || req.headers.host;
-  if (!page.html || Date.now() - page.t > 10 * 60e3) { const r = await fetch(`https://${host}/app.html`); page = { t: Date.now(), html: await r.text() }; }
+  if (!page.html) page = { t: Date.now(), html: shell(readLocal()) };
+  if (!page.html) {
+    try { const r = await fetch(`https://${host}/app.html`); const h = r.ok ? shell(await r.text()) : null; if (h) page = { t: Date.now(), html: h }; } catch {}
+  }
+  if (!page.html) { res.setHeader('Cache-Control', 'no-store'); res.statusCode = 302; res.setHeader('Location', '/app.html'); return res.end(); }
   let html = page.html; let status = 200;
   try {
     const s = await state(); const m = build(t, slug, s);
