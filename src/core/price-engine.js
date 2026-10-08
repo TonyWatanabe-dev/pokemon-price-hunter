@@ -125,7 +125,7 @@ export function historyAnchorOf({ reference, currentInStock = [], historyPrices 
  *   reference = Copag oficial ATUAL verificada (ou null). Histórico e comunitária não são entrada do motor.
  *   Fase 6A: a REFERÊNCIA ATUAL gravada é resolvida aqui — Copag atual > mercado atual robusto (mediana das ofertas elegíveis
  *   em estoque, ver marketReferenceOf) > NONE. O desconto (discount_vs_reference) é contra essa referência.
- * offers[i]: { id, store_id, marketplace_id, status, condition, confirmed, price, stock_status, shipping_status, total_price, last_seen_at, events }
+ * offers[i]: { id, store_id, marketplace_id, seller_key, status, condition, confirmed, price, stock_status, shipping_status, total_price, last_seen_at, events }
  */
 export function computeProductStats({ product, offers, reference = null, distrust = null, asOf }) {
   // defesa: preço de lançamento (histórico) ou referência comunitária nunca entram como referência atual, mesmo se alguém as passar
@@ -179,7 +179,9 @@ export function computeProductStats({ product, offers, reference = null, distrus
   const refOk = reference?.status === 'verified' && validPrice(reference.value);
   // referência ATUAL (Copag atual > mercado robusto > NONE); mercado só com ofertas elegíveis em estoque de lojas confiáveis
   const implausibleInStock = live.filter((o) => o.stock_status === 'in_stock').length - inStock.length;
-  const market = marketReferenceOf(inStock, { implausibleInStock, isTrusted: (o) => trusted(distrust, o.store_id, asOf) });
+  // fonte confiável: loja fora da janela de desconfiança; vendedor de marketplace também pode ter janela própria ('<marketplace>:<vendedor>')
+  const isTrusted = (src, o) => trusted(distrust, o.store_id, asOf) && (src.type !== 'MARKETPLACE_SELLER' || trusted(distrust, src.key, asOf));
+  const market = marketReferenceOf(inStock, { implausibleInStock, isTrusted });
   const cur = resolveCurrentReference({ copag: refOk ? { reference_kind: 'COPAG_OFFICIAL_CURRENT', verification_status: 'verified', value: reference.value,
     source: reference.source, confidence: reference.confidence ?? null, verified_at: reference.verified_at } : null, market });
 
@@ -219,8 +221,9 @@ export function computeProductStats({ product, offers, reference = null, distrus
       number_of_marketplaces: new Set(elig.map((o) => o.marketplace_id).filter(Boolean)).size,
       shipping_coverage: inStock.length ? round4(withTotal.length / inStock.length) : null,
       quality: { ...q, anchor: round2(anchor), anchor_source: refOk ? 'reference' : anchor == null ? null : 'current_median',
-        market_reference: { ok: market.ok, reason: market.reason, offers: market.offers, stores: market.stores, marketplaces: market.marketplaces,
-          untrusted: market.untrusted, implausible: market.implausible, price: market.ok ? market.price : null },
+        market_reference: { ok: market.ok, reason: market.reason, offers: market.offers, sources: market.sources, stores: market.stores,
+          marketplace_sellers: market.marketplace_sellers, marketplaces: market.marketplaces, untrusted: market.untrusted,
+          untrusted_sources: market.untrusted_sources, implausible: market.implausible, price: market.ok ? market.price : null },
         history_anchor: round2(hAnchor), history_anchor_source: hAnchor == null ? null : hAnchor === anchor ? (refOk ? 'reference' : 'current_median') : curIn.length ? 'current_median_small' : 'history_median' },
       engine_version: ENGINE_VERSION,
     },

@@ -43,6 +43,12 @@ jobs:
         run: node tools/db-migrate.mjs 2>&1 | tee out/migrate-2.log
       - name: Sincronizar e validar
         run: node tools/db-validate.mjs data out/supabase.json out/migrate-1.log out/migrate-2.log
+      - name: Fotografia depois da validação + comparação com a linha de base (v2 antes da 6A.1)
+        if: always()
+        continue-on-error: true
+        run: |
+          node tools/opportunity-snapshot.mjs out/opportunity-snapshot-after.json "supabase-after-validate" | tee out/opportunity-snapshot-after.log
+          node tools/opportunity-diff.mjs db/snapshots/opportunity-v2-before-6a1.json out/opportunity-snapshot-after.json out/opportunity-diff.json | tee out/opportunity-diff.log
       - name: Permissões do usuário só-leitura da API
         if: always()
         run: node tools/db-grants.mjs | tee out/grants.log

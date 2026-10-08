@@ -67,29 +67,60 @@ export function validateImportEntry(e, { excluded = [] } = {}) {
 // CURRENT_REFERENCE = Copag oficial atual verificada > mercado atual ROBUSTO > NONE. Histórico e comunitária nunca entram.
 export const NONE = 'NONE';
 export const CURRENT_KINDS = ['COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT'];
-/** Critério conservador do mercado atual (documentado no relatório da 6A). */
-export const MARKET_RULE = { minOffers: 3, minStores: 2, maxAnomalyShare: 1 / 3 };
+/** Critério conservador do mercado atual (documentado nos relatórios da 6A e 6A.1). */
+export const MARKET_RULE = { minOffers: 3, minSources: 2, maxAnomalyShare: 1 / 3 };
 const med = (xs) => { const a = [...xs].sort((x, y) => x - y); const n = a.length; if (!n) return null;
   const m = n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2; return Math.round(m * 100) / 100; };
 
 /**
+ * Fonte INDEPENDENTE de uma oferta (Fase 6A.1):
+ *   • loja tradicional (marketplace 'direct')            → { type: 'STORE', id: store_id }            (a loja inteira é UMA fonte,
+ *     inclusive parceiros vendendo dentro dela)
+ *   • vendedor em marketplace (Mercado Livre etc.)       → { type: 'MARKETPLACE_SELLER', marketplace, seller }  (id estável do vendedor,
+ *     nunca o nome); vários anúncios do mesmo vendedor = UMA fonte
+ *   • anúncio de marketplace sem vendedor identificado   → { type: 'STORE', id: store_id }  (conservador: todos juntos = uma fonte)
+ * Oferta sem loja → sem fonte (não conta).
+ */
+export function sourceOf(o) {
+  const mk = o.marketplace_id || 'direct';
+  if (mk !== 'direct' && o.seller_key) return { type: 'MARKETPLACE_SELLER', key: `${mk}:${o.seller_key}`, marketplace: mk, seller: String(o.seller_key) };
+  if (o.store_id) return { type: 'STORE', key: `store:${o.store_id}`, id: o.store_id };
+  return null;
+}
+/** Fontes independentes entre as ofertas. isTrusted(source, offer): fonte fora da janela de desconfiança. */
+export function getIndependentMarketSources(offers, { isTrusted = () => true } = {}) {
+  const by = new Map(); const untrusted = new Set();
+  for (const o of offers || []) {
+    const src = sourceOf(o); if (!src) continue;
+    if (!isTrusted(src, o)) { untrusted.add(src.key); continue; }
+    if (!by.has(src.key)) by.set(src.key, { ...src, offers: 0 });
+    by.get(src.key).offers++;
+  }
+  const sources = [...by.values()].sort((a, b) => a.key.localeCompare(b.key));
+  return { count: sources.length, sources, stores: sources.filter((x) => x.type === 'STORE').length,
+    marketplace_sellers: sources.filter((x) => x.type === 'MARKETPLACE_SELLER').length, untrusted_sources: untrusted.size };
+}
+
+/**
  * Mercado atual robusto. Entrada: as ofertas que o Price Engine já considera ELEGÍVEIS e EM ESTOQUE (ativas, preço confirmado,
  * mesma condição, preço plausível) + quantas ofertas em estoque foram descartadas como implausíveis.
- * Regra: ≥ 3 ofertas de lojas confiáveis (fora da janela de desconfiança), em ≥ 2 lojas, e anomalias ≤ 1/3 das ofertas em estoque.
- * Preço = MEDIANA (não média, não menor preço). Sem isso → null (não força referência).
+ * Regra: ≥ 3 ofertas de fontes confiáveis, em ≥ 2 FONTES INDEPENDENTES (loja ou vendedor de marketplace, ver sourceOf),
+ * e anomalias ≤ 1/3 das ofertas em estoque. Preço = MEDIANA (não média, não menor preço). Sem isso → null (não força referência).
  * Confiança (informativa, não entra no score): 0,60 no mínimo do critério; +0,05 por oferta além de 3 (até +0,15);
- * +0,05 por loja além de 2 (até +0,10). Máximo 0,85 — sempre abaixo da Copag oficial verificada.
+ * +0,05 por fonte independente além de 2 (até +0,10). Máximo 0,85 — sempre abaixo da Copag oficial verificada.
  */
 export function marketReferenceOf(offers, { implausibleInStock = 0, isTrusted = () => true } = {}) {
-  const sample = (offers || []).filter((o) => Number(o.price) > 0 && isTrusted(o));
+  const ind = getIndependentMarketSources(offers, { isTrusted });
+  const okKeys = new Set(ind.sources.map((x) => x.key));
+  const sample = (offers || []).filter((o) => Number(o.price) > 0 && okKeys.has(sourceOf(o)?.key));
   const untrusted = (offers || []).length - sample.length;
-  const stores = new Set(sample.map((o) => o.store_id).filter(Boolean)).size;
   const marketplaces = new Set(sample.map((o) => o.marketplace_id).filter(Boolean)).size;
-  const base = { offers: sample.length, stores, marketplaces, untrusted, implausible: implausibleInStock };
+  const base = { offers: sample.length, sources: ind.count, stores: ind.stores, marketplace_sellers: ind.marketplace_sellers, marketplaces,
+    untrusted, untrusted_sources: ind.untrusted_sources, implausible: implausibleInStock };
   if (sample.length < MARKET_RULE.minOffers) return { ok: false, reason: 'insufficient_offers', ...base };
-  if (stores < MARKET_RULE.minStores) return { ok: false, reason: 'single_store', ...base };
+  if (ind.count < MARKET_RULE.minSources) return { ok: false, reason: 'single_source', ...base };
   if (implausibleInStock / (sample.length + implausibleInStock) > MARKET_RULE.maxAnomalyShare) return { ok: false, reason: 'too_many_anomalies', ...base };
-  const confidence = Math.round((0.6 + Math.min(0.15, 0.05 * (sample.length - 3)) + Math.min(0.1, 0.05 * (stores - 2))) * 1000) / 1000;
+  const confidence = Math.round((0.6 + Math.min(0.15, 0.05 * (sample.length - 3)) + Math.min(0.1, 0.05 * (ind.count - 2))) * 1000) / 1000;
   return { ok: true, price: med(sample.map((o) => Number(o.price))), confidence, reason: 'robust_current_market', ...base };
 }
 
@@ -113,7 +144,9 @@ const conf01 = (c) => (c == null ? null : Number(c) > 1 ? Math.round(Number(c)) 
 export function currentReferenceView(r) {
   if (!r || !r.kind || r.kind === NONE) return { kind: NONE, label: null, price: null, source: null, confidence: null, reason: r?.reason ?? 'no_current_reference' };
   return { kind: r.kind, label: LABEL[r.kind], price: r.price != null ? Number(r.price) : null, source: r.kind === 'MARKET_CURRENT' ? 'market' : 'Copag',
-    confidence: conf01(r.confidence), reason: r.reason ?? null };
+    confidence: conf01(r.confidence), reason: r.reason ?? null,
+    // transparência do mercado: quantas fontes independentes (lojas + vendedores de marketplace) formam a mediana
+    ...(r.kind === 'MARKET_CURRENT' ? { market_sources: r.market_sources != null ? Number(r.market_sources) : null } : {}) };
 }
 /** linha de reference_price → contexto (histórico/comunitário) no contrato da API */
 export function contextReferenceView(row) {

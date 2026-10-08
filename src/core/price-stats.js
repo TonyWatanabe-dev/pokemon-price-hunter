@@ -18,8 +18,8 @@ export async function loadInputs(c) {
   const q = async (sql) => (await c.query(sql)).rows;
   const sqls = [
     `SELECT id, condition FROM product ORDER BY id`,
-    `SELECT id, product_id, store_id, marketplace_id, status, condition, confirmed, price::float8 AS price, stock_status, shipping_status,
-         total_price::float8 AS total_price, last_seen_at FROM offer`,
+    `SELECT o.id, o.product_id, o.store_id, o.marketplace_id, se.external_id AS seller_key, o.status, o.condition, o.confirmed, o.price::float8 AS price,
+         o.stock_status, o.shipping_status, o.total_price::float8 AS total_price, o.last_seen_at FROM offer o LEFT JOIN seller se ON se.id = o.seller_id`,
     `SELECT offer_id, observed_at AS t, price::float8 AS price, stock_status FROM price_history`,
     `SELECT offer_id, observed_at AS t FROM stock_event WHERE to_status = 'removed'`,
     // Copag oficial ATUAL verificada (mesma regra da view reference_price_current). Histórico e comunitária NUNCA entram;

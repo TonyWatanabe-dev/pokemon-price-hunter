@@ -155,7 +155,8 @@ const STATS_PUBLIC = `as_of_day, data_status, current_price, current_total_price
   history_days, history_from, history_status, historical_min, historical_max, historical_average, historical_median,
   variation_24h, variation_7d, variation_30d, distance_from_historical_average, distance_from_historical_min,
   reference_price, reference_status, reference_source, reference_kind, reference_verified_at, reference_confidence, reference_reason, discount_vs_reference,
-  number_of_active_offers, number_of_in_stock_offers, number_of_stores, number_of_marketplaces, shipping_coverage, engine_version, computed_at`;
+  number_of_active_offers, number_of_in_stock_offers, number_of_stores, number_of_marketplaces, shipping_coverage, engine_version, computed_at,
+  (quality->'market_reference'->>'sources')::int AS market_sources`;
 const statsOut = (s) => (s ? {
   as_of_day: s.as_of_day ? iso(s.as_of_day).slice(0, 10) : null, status: s.data_status,
   market: { current_price: num(s.current_price), current_total_price: num(s.current_total_price), lowest: num(s.lowest_current_price), highest: num(s.highest_current_price),
@@ -194,7 +195,7 @@ export async function getProduct(key) {
 function referenceBlocks(stats, refs) {
   const comm = refs.filter((r) => r.reference_scope === 'community');
   return {
-    current_reference: currentReferenceView(stats ? { kind: stats.reference_kind, price: stats.reference_price, confidence: stats.reference_confidence, reason: stats.reference_reason } : null),
+    current_reference: currentReferenceView(stats ? { kind: stats.reference_kind, price: stats.reference_price, confidence: stats.reference_confidence, reason: stats.reference_reason, market_sources: stats.market_sources } : null),
     historical_context: historicalContext(refs).map(contextReferenceView),
     community_reference: comm.length ? contextReferenceView(comm[0]) : null,
   };
@@ -279,7 +280,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
     SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
            o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
-           s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason,
+           s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources,
            (SELECT coalesce(jsonb_agg(jsonb_build_object('reference_kind', r.reference_kind, 'value', r.value, 'published_at', r.published_at, 'effective_date', r.effective_date,
                'confidence', r.confidence, 'source_url', r.source_url, 'source', r.source, 'verification_status', r.verification_status)
                ORDER BY r.published_at DESC NULLS LAST, r.id DESC), '[]') FROM hunter.reference_price r WHERE r.product_id = o.product_id AND r.reference_scope = 'historical') AS historical,
@@ -304,7 +305,7 @@ const opportunityOut = (r) => ({
   price: num(r.price), total: r.shipping_status === 'unknown' ? null : num(r.total_price), shipping: r.shipping_status, stock: r.stock_status,
   store: { id: r.store_id, name: r.store_name }, marketplace: r.marketplace_id,
   opportunity_score: r.opportunity_score, opportunity_band: r.opportunity_band, confidence: num(r.confidence),
-  current_reference: currentReferenceView({ kind: r.reference_kind, price: r.reference_price, confidence: r.reference_confidence, reason: r.reference_reason }),
+  current_reference: currentReferenceView({ kind: r.reference_kind, price: r.reference_price, confidence: r.reference_confidence, reason: r.reference_reason, market_sources: r.market_sources }),
   historical_context: (r.historical || []).map(contextReferenceView),
   community_reference: r.community ? contextReferenceView(r.community) : null,
   warnings: r.warnings || [], reasons: r.reasons || [],

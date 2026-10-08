@@ -202,9 +202,29 @@ try {
   check('Copag atual na referência ⇔ linha verificada em reference_price_current (mesmo valor)', (await n(`SELECT count(*) FROM hunter.product_stats s
     FULL JOIN (SELECT * FROM hunter.reference_price_current WHERE reference_kind = 'COPAG_OFFICIAL_CURRENT') c ON c.product_id = s.product_id
     WHERE (s.reference_kind = 'COPAG_OFFICIAL_CURRENT') <> (c.product_id IS NOT NULL) OR (c.product_id IS NOT NULL AND s.reference_price <> c.value)`)) === 0);
-  check('mercado só sem Copag atual e com critério robusto (≥ 3 ofertas, ≥ 2 lojas)', (await n(`SELECT count(*) FROM hunter.product_stats
+  check('mercado só sem Copag atual e com critério robusto (≥ 3 ofertas, ≥ 2 fontes independentes)', (await n(`SELECT count(*) FROM hunter.product_stats
     WHERE reference_kind = 'MARKET_CURRENT' AND (reference_reason <> 'robust_current_market' OR (quality->'market_reference'->>'ok')::boolean IS NOT TRUE
-      OR (quality->'market_reference'->>'offers')::int < 3 OR (quality->'market_reference'->>'stores')::int < 2 OR number_of_in_stock_offers < 3)`)) === 0);
+      OR (quality->'market_reference'->>'offers')::int < 3 OR (quality->'market_reference'->>'sources')::int < 2 OR number_of_in_stock_offers < 3)`)) === 0);
+  // fontes independentes recontadas em SQL: loja tradicional = 1; vendedor de marketplace = 1 (por id estável); anúncios repetidos não somam;
+  // loja em janela de desconfiança não conta. As fontes gravadas nunca podem passar dessa contagem (nem do nº de ofertas).
+  const srcSql = `WITH s AS (SELECT product_id, as_of_day, (quality->>'anchor')::numeric AS anchor, (quality->'market_reference'->>'sources')::int AS src,
+        (quality->'market_reference'->>'offers')::int AS offs, reference_kind, reference_price FROM hunter.product_stats),
+      e AS (SELECT o.product_id, o.price, CASE WHEN o.marketplace_id <> 'direct' AND se.external_id IS NOT NULL THEN o.marketplace_id || ':' || se.external_id ELSE 'store:' || o.store_id END AS k
+        FROM hunter.offer o JOIN hunter.product p ON p.id = o.product_id JOIN s ON s.product_id = o.product_id LEFT JOIN hunter.seller se ON se.id = o.seller_id
+       WHERE o.status = 'active' AND o.confirmed AND o.price > 0 AND o.stock_status = 'in_stock' AND o.condition = p.condition
+         AND (s.anchor IS NULL OR (o.price >= round(s.anchor * 0.55, 2) AND o.price <= round(s.anchor * 3, 2)))
+         AND NOT EXISTS (SELECT 1 FROM hunter.source_distrust d WHERE d.store_id = o.store_id AND d.until_day >= s.as_of_day))
+    SELECT s.product_id, s.src, s.offs, s.reference_kind, s.reference_price, count(DISTINCT e.k)::int AS keys, count(e.k)::int AS n,
+           round(percentile_cont(0.5) WITHIN GROUP (ORDER BY e.price)::numeric, 2) AS med
+      FROM s LEFT JOIN e ON e.product_id = s.product_id GROUP BY 1, 2, 3, 4, 5`;
+  const srcRows = await q(srcSql);
+  const srcBad = srcRows.filter((r) => r.src != null && (r.src > r.keys || r.offs > r.n));
+  check('fontes independentes: vendedor repetido e loja em desconfiança não contam (recontagem em SQL)', srcBad.length === 0, srcBad.slice(0, 5));
+  const medBad = srcRows.filter((r) => r.reference_kind === 'MARKET_CURRENT' && (r.src !== r.keys || Math.abs(Number(r.med) - Number(r.reference_price)) > 0.005));
+  check('referência de mercado = mediana das ofertas elegíveis de fontes confiáveis (SQL)', medBad.length === 0, medBad.slice(0, 5));
+  rep.referencePolicy = rep.referencePolicy || {};
+  rep.referencePolicy.marketSources = await q(`SELECT (quality->'market_reference'->>'sources')::int AS sources, count(*)::int n FROM hunter.product_stats
+    WHERE reference_kind = 'MARKET_CURRENT' GROUP BY 1 ORDER BY 1`);
   check('COPAG_OFFICIAL_HISTORICAL nunca é referência atual', (await n(`SELECT count(*) FROM hunter.product_stats s
     WHERE s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND NOT EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = s.product_id
       AND r.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND r.verification_status = 'verified' AND r.value = s.reference_price)`)) === 0);
@@ -215,7 +235,7 @@ try {
   check('confiança da referência atual: Copag = linha/100; mercado ≤ 0,85; NONE nula', (await n(`SELECT count(*) FROM hunter.product_stats s
     WHERE (s.reference_kind = 'NONE' AND s.reference_confidence IS NOT NULL) OR (s.reference_kind = 'MARKET_CURRENT' AND NOT (s.reference_confidence BETWEEN 0.6 AND 0.85))
       OR (s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND s.reference_confidence IS DISTINCT FROM (SELECT c.confidence / 100.0 FROM hunter.reference_price_current c WHERE c.product_id = s.product_id))`)) === 0);
-  rep.referencePolicy = { byKind: await q(`SELECT reference_kind, count(*)::int n, count(*) FILTER (WHERE number_of_in_stock_offers > 0)::int with_stock FROM hunter.product_stats GROUP BY 1 ORDER BY 1`),
+  rep.referencePolicy = { ...(rep.referencePolicy || {}), byKind: await q(`SELECT reference_kind, count(*)::int n, count(*) FILTER (WHERE number_of_in_stock_offers > 0)::int with_stock FROM hunter.product_stats GROUP BY 1 ORDER BY 1`),
     noneReasons: await q(`SELECT reference_reason, count(*)::int n FROM hunter.product_stats WHERE reference_kind = 'NONE' GROUP BY 1 ORDER BY 2 DESC`),
     onlyHistorical: await n(`SELECT count(*) FROM hunter.product_stats s WHERE s.reference_kind = 'NONE' AND EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = s.product_id AND r.reference_scope = 'historical')`),
     onlyCommunity: await n(`SELECT count(*) FROM hunter.product_stats s WHERE s.reference_kind = 'NONE' AND EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = s.product_id AND r.reference_scope = 'community')`) };
@@ -255,6 +275,10 @@ try {
   check('oportunidade: referência comunitária só como aviso (todo produto com ela tem o aviso)', (await n(`SELECT count(*) FROM hunter.opportunity o
     WHERE EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = o.product_id AND r.reference_scope = 'community')
       AND NOT (o.warnings @> '[{"code":"COMMUNITY_REFERENCE"}]' OR o.warnings @> '[{"code":"COMMUNITY_REFERENCE_ONLY"}]')`)) === 0);
+  check('oportunidade: com mercado como referência, o sinal de mercado não conta de novo', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
+    WHERE s.reference_kind = 'MARKET_CURRENT' AND (o.market_signal IS NOT NULL OR o.reasons @> '[{"code":"BELOW_MARKET"}]' OR o.reasons @> '[{"code":"ABOVE_MARKET"}]')`)) === 0);
+  check('oportunidade: com Copag atual, referência e mercado seguem independentes', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
+    WHERE s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND s.number_of_in_stock_offers >= 2 AND s.median_price > 0 AND o.market_signal IS NULL`)) === 0);
   check('oportunidade: texto nunca chama mercado de Copag', (await n(`SELECT count(*) FROM hunter.opportunity o, jsonb_array_elements(o.reasons) x
     WHERE x->>'reference_kind' = 'MARKET_CURRENT' AND x->>'text' ILIKE '%copag%'`)) === 0);
   check('oportunidade: frete desconhecido → sinal nulo (nunca R$ 0)', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id

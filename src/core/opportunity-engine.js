@@ -23,7 +23,10 @@ import { CURRENT_KINDS } from './references.js';
 
 // v2 (Fase 6A): mesma fórmula, pesos, travas, faixas e confiança da v1; o sinal de 30% passou de "Copag" para REFERÊNCIA ATUAL
 // (Copag oficial atual > mercado atual robusto > nenhuma). Histórico e comunitária só geram aviso/contexto.
-export const OPP_VERSION = 'opportunity-v2';
+// v2.1 (Fase 6A.1): quando a referência atual É o mercado (MARKET_CURRENT), o sinal de mercado (mediana) é a MESMA evidência
+// e não conta de novo — fica indisponível (absorvido pela referência) e a cobertura cai como para qualquer sinal ausente.
+// Com Copag atual, referência e mercado continuam independentes (30% + 20%). Fórmula, pesos, travas, faixas e confiança: iguais.
+export const OPP_VERSION = 'opportunity-v2.1';
 export const WEIGHTS = { reference: 0.30, historical: 0.20, market: 0.20, price: 0.10, freight: 0.10, reliability: 0.10 };
 const W_TOTAL = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
 export const BANDS = [[90, 'excelente'], [75, 'boa'], [50, 'normal'], [0, 'baixa']];
@@ -73,13 +76,15 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   let reference = null; let discount = null;
   if (refOk) {
     const copag = refKind === 'COPAG_OFFICIAL_CURRENT';
+    const mr = st.quality?.market_reference || {};
+    const mk = !copag && mr.offers ? `mediana de ${mr.offers} ofertas${mr.sources ? ` de ${mr.sources} fontes independentes` : ''}, ` : '';
     const of = copag ? 'do preço sugerido Copag' : 'da referência de mercado'; const at = copag ? 'no preço sugerido Copag' : 'na referência de mercado';
     discount = (ref - price) / ref;
     reference = pw(discount, [[-0.15, 0], [0, 0.35], [0.10, 0.6], [0.20, 0.85], [0.30, 1]]);
     const rr = (code, text, impact) => reasons.push({ code, text, impact, reference_kind: refKind });
-    if (discount >= 0.005) rr('BELOW_REFERENCE', `${pct(discount)} abaixo ${of} (${brl(ref)})`, '+');
-    else if (discount <= -0.005) rr('ABOVE_REFERENCE', `${pct(discount)} acima ${of} (${brl(ref)})`, '-');
-    else rr('AT_REFERENCE', `${at} (${brl(ref)})`, '=');
+    if (discount >= 0.005) rr('BELOW_REFERENCE', `${pct(discount)} abaixo ${of} (${mk}${brl(ref)})`, '+');
+    else if (discount <= -0.005) rr('ABOVE_REFERENCE', `${pct(discount)} acima ${of} (${mk}${brl(ref)})`, '-');
+    else rr('AT_REFERENCE', `${at} (${mk}${brl(ref)})`, '=');
   } else w('NO_CURRENT_REFERENCE', 'Não há referência atual suficiente: desconto não considerado');
   // contexto (nunca entra no score): preço de lançamento e referência comunitária
   const ctx = st.reference_context || {}; const histCtx = ctx.historical || []; const commCtx = ctx.community || [];
@@ -105,8 +110,11 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   } else w('SHORT_HISTORY', `Histórico ainda insuficiente para uma comparação confiável (${num(st.history_days) || 0} ${num(st.history_days) === 1 ? 'dia' : 'dias'})`);
 
   // --- mercado agora (só com ≥ 2 ofertas em estoque; 2 = meio peso)
+  // dependência explícita: se a referência atual É o mercado, a mediana já entrou pelo sinal de referência → não conta de novo
+  const marketAbsorbed = refOk && refKind === 'MARKET_CURRENT';
   let market = null; let marketWeight = WEIGHTS.market; let priceSig = null;
-  if (nStock >= 2 && median > 0) {
+  if (marketAbsorbed) { /* evidência única: o sinal de mercado fica indisponível e a cobertura normaliza o resto */ }
+  else if (nStock >= 2 && median > 0) {
     market = pw((median - price) / median, [[-0.2, 0], [0, 0.5], [0.2, 1]]);
     if (nStock === 2) marketWeight = WEIGHTS.market / 2;
     const m = (median - price) / median;
@@ -182,7 +190,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
     reasons, warnings, caps,
     price_signal: round4(priceSig), historical_signal: round4(historical), reference_signal: round4(reference),
     stock_signal: round4(stockSig), freight_signal: round4(freight), market_signal: round4(market), reliability_signal: round4(reliability),
-    is_anomaly: isAnomaly, price, raw_score: round2(raw), coverage: round4(coverage),
+    is_anomaly: isAnomaly, price, raw_score: round2(raw), coverage: round4(coverage), market_signal_absorbed: marketAbsorbed,
   };
 }
 

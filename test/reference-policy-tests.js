@@ -104,8 +104,8 @@ t('8. preço muito abaixo do mercado: plausibilidade continua valendo', () => {
   const d = stats(market5.slice(0, 3), null, new Map([['c', '2026-10-09']]));
   assert.equal(d.reference_kind, 'NONE'); assert.equal(d.quality.market_reference.untrusted, 1);
   // uma loja só não é mercado
-  assert.equal(marketReferenceOf([off(1, 'a', 300), off(2, 'a', 310), off(3, 'a', 320)]).reason, 'single_store');
-  assert.equal(MARKET_RULE.minOffers, 3); assert.equal(MARKET_RULE.minStores, 2);
+  assert.equal(marketReferenceOf([off(1, 'a', 300), off(2, 'a', 310), off(3, 'a', 320)]).reason, 'single_source');
+  assert.equal(MARKET_RULE.minOffers, 3); assert.equal(MARKET_RULE.minSources, 2);
 });
 
 t('9. frete desconhecido não vira zero', () => {
@@ -131,7 +131,7 @@ t('NONE não é zero nem 50: sinal indisponível e cobertura menor', () => {
 });
 
 t('contrato da API: referência atual, contexto e comunitária', () => {
-  assert.deepEqual(currentReferenceView({ kind: 'NONE', reason: 'no_copag_single_store' }), { kind: 'NONE', label: null, price: null, source: null, confidence: null, reason: 'no_copag_single_store' });
+  assert.deepEqual(currentReferenceView({ kind: 'NONE', reason: 'no_copag_single_source' }), { kind: 'NONE', label: null, price: null, source: null, confidence: null, reason: 'no_copag_single_source' });
   const m = currentReferenceView({ kind: 'MARKET_CURRENT', price: 319.9, confidence: 0.75, reason: 'robust_current_market' });
   assert.equal(m.label, 'Referência de mercado'); assert.equal(m.source, 'market');
   const c = currentReferenceView({ kind: 'COPAG_OFFICIAL_CURRENT', price: 349.99, confidence: 0.95 });

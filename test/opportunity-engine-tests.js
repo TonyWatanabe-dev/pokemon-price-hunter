@@ -16,7 +16,7 @@ t('contrato da saída', () => {
   const r = C(S(), O());
   for (const k of ['opportunity_score', 'opportunity_band', 'confidence', 'reasons', 'warnings', 'price_signal', 'historical_signal', 'reference_signal',
     'stock_signal', 'freight_signal', 'market_signal', 'calculated_at', 'engine_version']) assert.ok(k in r, k);
-  assert.equal(r.engine_version, OPP_VERSION); assert.equal(r.engine_version, 'opportunity-v2');
+  assert.equal(r.engine_version, OPP_VERSION); assert.equal(r.engine_version, 'opportunity-v2.1');
   assert.equal(r.calculated_at, now.toISOString());
   assert.equal(Object.values(WEIGHTS).reduce((a, b) => a + b, 0).toFixed(2), '1.00');
   assert.equal(bandOf(90), 'excelente'); assert.equal(bandOf(89), 'boa'); assert.equal(bandOf(75), 'boa'); assert.equal(bandOf(74), 'normal'); assert.equal(bandOf(50), 'normal'); assert.equal(bandOf(49), 'baixa');

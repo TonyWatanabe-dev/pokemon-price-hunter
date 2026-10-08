@@ -141,7 +141,7 @@ r = await call('/api/v1/home'); assert.equal(r.headers['X-Data-Source'], 'db');
 // oportunidades: lidas do resultado persistido do Opportunity Engine (nada é recalculado no request)
 { const { runOpportunityEngine } = await import('../src/core/opportunity-run.js'); await tx((c) => runOpportunityEngine(c)); _cache.clear();
   const ro = await call('/api/v1/oportunidades?limite=50'); assert.equal(ro.status, 200); assert.equal(ro.headers['X-Data-Source'], 'db');
-  assert.ok(ro.json.data.length > 0); assert.equal(ro.json.meta.engine, 'opportunity-v2');
+  assert.ok(ro.json.data.length > 0); assert.equal(ro.json.meta.engine, 'opportunity-v2.1');
   for (const x of ro.json.data) {
     for (const k of ['product', 'offer', 'price', 'total', 'stock', 'store', 'marketplace', 'opportunity_score', 'opportunity_band', 'confidence', 'current_reference', 'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at']) assert.ok(k in x, k);
     assert.ok(['COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT', 'NONE'].includes(x.current_reference.kind));
