@@ -303,6 +303,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     distrust: { stores: distrust.stores, until: distrust.until },
     tipSources: tipStatus,
     rules: watch.rules || [],
+    // Reputação no Reclame Aqui: tabela consultada à mão (config/reclameaqui.json); o robô não acessa o site.
+    reputation: (() => { const r = readJson(configPath('reclameaqui.json'), null); return r ? { consultadoEm: r.consultadoEm, lojas: r.lojas } : null; })(),
     recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].slice(0, 50),
   };
   writeJson(dataPath('offers.json'), offers);

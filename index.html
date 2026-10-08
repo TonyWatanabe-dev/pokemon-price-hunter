@@ -706,6 +706,23 @@ a.navbtn{text-decoration:none}
 :root[data-theme="dark"] .pixk,.stage .pixk{color:#5FE3C8;background:rgb(95 227 200 / .12)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pixk{color:#5FE3C8;background:rgb(95 227 200 / .12)}}
 
+
+/* Selo do Reclame Aqui */
+.ra{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 8px 3px 5px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:filter 160ms ease}
+.ra img{width:14px;height:14px;border-radius:3px;flex:none}
+.ra b{font-weight:700}.ra span{font-weight:600;opacity:.8}.ra em{font-style:normal;font-weight:800}
+.ra-top,.ra-ok{background:#DCF5E6;color:#0B6B3A}.ra-good{background:#E8F6DA;color:#3D6B12}.ra-mid{background:#FFF3CC;color:#7A5300}.ra-bad{background:#FFE3D6;color:#9A3412}.ra-worst{background:#FDE0DE;color:#A11B12}
+.ra-none{background:var(--sunk);color:var(--muted);border-color:var(--line-soft)}.ra-none img{filter:grayscale(1);opacity:.7}
+:root[data-theme="dark"] .ra-top,:root[data-theme="dark"] .ra-ok,.stage .ra-ok,.stage .ra-top{background:rgb(76 212 154 / .14);color:#6FE0AE}
+:root[data-theme="dark"] .ra-good,.stage .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}
+:root[data-theme="dark"] .ra-mid,.stage .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}
+:root[data-theme="dark"] .ra-bad,:root[data-theme="dark"] .ra-worst,.stage .ra-bad,.stage .ra-worst{background:rgb(255 132 120 / .15);color:#FF9A8F}
+.stage .ra-none{background:rgb(255 255 255 / .06);color:rgb(228 233 255 / .65);border-color:rgb(255 255 255 / .1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(.ra-top,.ra-ok){background:rgb(76 212 154 / .14);color:#6FE0AE}:root:not([data-theme="light"]) .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}:root:not([data-theme="light"]) .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}:root:not([data-theme="light"]) :is(.ra-bad,.ra-worst){background:rgb(255 132 120 / .15);color:#FF9A8F}}
+@media (hover:hover) and (pointer:fine){.ra:hover{filter:brightness(.95)}}
+.deal-foot .ra{margin-right:auto;margin-left:-4px}.deal-foot{flex-wrap:wrap}
+.pod-store .ra{margin-top:5px}
+.so-top .ra{margin-left:2px}
 /* Revelações com propósito: números contam, barras crescem, preço antigo é riscado */
 @media (prefers-reduced-motion:no-preference){
   .radar:not(.seen) .spark i{transform:scaleY(0)}
@@ -1077,7 +1094,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -1174,6 +1191,17 @@ const nrm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toL
 const thirdParty=(o)=>{const a=nrm(o.seller),b=nrm(o.storeName);return !!(a&&b&&!a.includes(b)&&!b.includes(a))};
 const storeTxt=(o)=>thirdParty(o)?`${o.seller} via ${o.storeName}`:o.storeName;
 const pixTag=(o)=>o?.priceKind==="pix"?`<em class="pixk" title="Valor para pagamento no Pix. No cartão a loja cobra mais.">no Pix</em>`:"";
+/* Reclame Aqui: reputação pública da loja, com link. Sem página ou sem índice também aparece, com o ícone do próprio site. */
+const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-good"],REGULAR:["Regular","ra-mid"],RUIM:["Ruim","ra-bad"],NAO_RECOMENDADA:["Não recomendada","ra-worst"],SEM_INDICE:["Sem índice","ra-none"],EM_ANALISE:["Em análise","ra-none"],INATIVA:["Inativa","ra-none"],NAO_ENCONTRADA:["Sem cadastro","ra-none"]};
+const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
+function raBadge(o,full){
+  const r=raOf(o.storeId);if(!r)return"";const [lb,cls]=RA_ST[r.status]||RA_ST.NAO_ENCONTRADA;
+  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(o.storeName.replace(/\.com(\.br)?$/,""))}`;
+  const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
+  const nota=r.nota!=null?String(r.nota).replace(".",","):null;
+  const tip=r.status==="NAO_ENCONTRADA"?`Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
+  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
+}
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
 const label=(p)=>p.typeLabel+(p.boosters&&(p.type==="booster_box"||p.type==="combo")?` ${p.boosters}`:"")+(p.variant?` ${p.variant}`:"");
@@ -1290,7 +1318,7 @@ function dealCard(e,opt={}){
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${sc!=null?scoreMeter(sc):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span><a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1426,7 +1454,7 @@ function podCard(e,r){
     <div class="pod-body"><p class="pod-col">${esc(p.collectionName)}</p><h3 class="pod-name">${esc(label(p))}</h3>
       ${d!=null&&d>=.0005?`<div class="pod-off"><b>−${pct(d)}</b><span>abaixo da ${ref.net?"ref. internet":"Copag"}<br>economize ${money(ref.v-o.total)}</span></div>`:""}
       <div class="pod-price"><strong data-price="${esc(o.id)}">${money(o.total)}</strong>${pixTag(o)}${ref?`<s>${ref.net?"Ref.":"Copag"} ${money(ref.v)}</s>`:""}</div>
-      <div class="pod-foot"><span class="ring" style="--v:${sc}" title="Deal Score ${sc}/100: ${band(sc)[1]}"><span>${sc}</span></span><span class="pod-store">${esc(storeTxt(o))}</span>
+      <div class="pod-foot"><span class="ring" style="--v:${sc}" title="Deal Score ${sc}/100: ${band(sc)[1]}"><span>${sc}</span></span><span class="pod-store">${esc(storeTxt(o))}<br>${raBadge(o)}</span>
         <a class="pod-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
   </article>`;
 }
@@ -1507,8 +1535,8 @@ function repoInfo(){const h=location.hostname.match(/^([^.]+)\.github\.io$/);con
 function renderStores(){
   const act=(S.sources||[]).filter((x)=>x.status==="ACTIVE"&&(x.matched||0)>0).sort((a,b)=>(b.matched||0)-(a.matched||0));
   const host=(u)=>{try{return new URL(u).hostname.replace(/^www\./,"")}catch{return""}};
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Lojas acompanhadas</h2><p>O site lê as páginas públicas destas ${act.length} lojas a cada 15 minutos. Só entra produto lacrado em português, com estoque confirmado pela loja.</p>
-  <div class="store-list" style="padding:0 16px 16px">${act.map((x)=>`<div class="store"><b>${x.url?`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`:esc(x.name)}</b>${x.kind==="official"?`<span class="chip ok">Loja oficial Copag</span>`:""}<span class="why">${x.matched} ${x.matched>1?"ofertas":"oferta"} · atualizada ${ago(x.lastCheck)}${x.url&&host(x.url)!==x.name?` · ${esc(host(x.url))}`:""}</span></div>`).join("")}</div></section></div>`;
+  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Lojas acompanhadas</h2><p>O site lê as páginas públicas destas ${act.length} lojas a cada 15 minutos. Só entra produto lacrado em português, com estoque confirmado pela loja.</p>${S.reputation?`<p class="hnote">Reputação: nota e selo do <a href="https://www.reclameaqui.com.br" target="_blank" rel="noopener nofollow">Reclame Aqui</a>, consultados nas páginas públicas em ${new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR")}. "Sem cadastro" quer dizer que não achamos a loja lá, não que ela seja ruim. O TCG Price Hunter não tem ligação com o Reclame Aqui.</p>`:""}<p class="hnote">É lojista e não quer sua loja no Hunter? Envie um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a> com o endereço do site, e a loja sai da busca.</p>
+  <div class="store-list" style="padding:0 16px 16px">${act.map((x)=>`<div class="store"><b>${x.url?`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`:esc(x.name)}</b>${x.kind==="official"?`<span class="chip ok">Loja oficial Copag</span>`:""}${raBadge({storeId:x.id,storeName:x.name},true)}<span class="why">${x.matched} ${x.matched>1?"ofertas":"oferta"} · atualizada ${ago(x.lastCheck)}${x.url&&host(x.url)!==x.name?` · ${esc(host(x.url))}`:""}</span></div>`).join("")}</div></section></div>`;
 }
 function renderCopag(){
   const ps=(S.products||[]).slice();const cols=(S.collections||[]);
@@ -1540,13 +1568,13 @@ function renderGuide(){
 }
 function renderLegal(kind){
   const contato=CONTATO?`<a href="mailto:${esc(CONTATO)}">${esc(CONTATO)}</a>`:`<b>(e-mail de contato a definir)</b>`;
-  const T={termos:`<h2>Termos de uso</h2><p>Última atualização: 7 de outubro de 2026.</p>
+  const T={termos:`<h2>Termos de uso</h2><p>Última atualização: 8 de outubro de 2026.</p>
   <h3>1. O que é o TCG Price Hunter</h3><p>Um site gratuito que reúne preços de produtos lacrados de Pokémon TCG anunciados em lojas brasileiras e compara com o preço sugerido publicado pela Copag. O site não vende nada, não intermedeia compras e não recebe pagamentos.</p>
   <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente em intervalos de cerca de 15 minutos. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
   <h3>3. Deal Score e alertas são opinião automatizada</h3><p>A nota, as classificações, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
   <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p>
   <h3>5. Marcas</h3><p>O TCG Price Hunter não é afiliado, patrocinado nem endossado pela Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon, os nomes das coleções e as imagens dos produtos pertencem a seus donos e aparecem apenas para identificar os produtos anunciados.</p>
-  <h3>6. Lojas</h3><p>O robô respeita o robots.txt de cada site e não tenta contornar bloqueios. Se você representa uma loja e quer corrigir dados ou sair da lista, fale pelo contato abaixo.</p>
+  <h3>6. Lojas</h3><p>O robô respeita o robots.txt de cada site e não tenta contornar bloqueios. <b>Se a sua loja não quiser fazer parte da busca, basta enviar um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a></b> com o endereço do site: a loja é retirada da lista e o robô deixa de visitá-la. O mesmo e-mail serve para corrigir qualquer dado.</p><p>A reputação mostrada ao lado de cada loja vem das páginas públicas do Reclame Aqui, com a data da consulta e o link para a fonte. O TCG Price Hunter não tem ligação com o Reclame Aqui e não altera essas notas.</p>
   <h3>7. Uso do site</h3><p>Você pode usar o site livremente para uso pessoal. Não é permitido usá-lo para atividades ilegais ou para sobrecarregar o serviço.</p>
   <h3>8. Conta</h3><p>A conta é opcional e gratuita. Serve para salvar favoritos e alertas de preço. Você é responsável por manter sua senha em segurança. Alertas são um recurso de conveniência: podem atrasar ou falhar e não garantem que o preço ou o estoque continuem disponíveis na loja. Você pode excluir sua conta a qualquer momento em Minha conta. Contas usadas para abuso podem ser encerradas.</p>
   <h3>9. Mudanças e lei aplicável</h3><p>Estes termos podem ser atualizados, sempre com a data acima. Valem as leis brasileiras, incluindo o Código de Defesa do Consumidor quando aplicável.</p>
@@ -1720,7 +1748,7 @@ function openProduct(pid,{push=true}={}){
 function storeOffer(o,p){
   const d=o.discount;const hasD=p.copagConfirmed&&d!=null&&!o.anomalous;
   return`<article class="so${live(o)?"":" dim"}">
-    <div class="so-top"><b>${esc(o.storeName)}</b>${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
+    <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
       <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>

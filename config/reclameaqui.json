@@ -1,0 +1,430 @@
+{
+ "_nota": "Reputação no Reclame Aqui, consultada manualmente nas páginas públicas /empresa/ (o robots.txt permite). O robô não acessa o Reclame Aqui. Só entra loja cuja página confirma o site ou o CNPJ; sem confirmação = NAO_ENCONTRADA.",
+ "consultadoEm": "2026-10-08",
+ "lojas": {
+  "radiantetcgcombr": {
+   "status": "SEM_INDICE",
+   "nota": null,
+   "periodo": "01/04/2026 a 30/09/2026",
+   "respondidas": 100,
+   "url": "https://www.reclameaqui.com.br/empresa/radiante-tcg/",
+   "nome": "RADIANTE TCG"
+  },
+  "moxland": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "arenacwgcom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "geekstorebrasilcombr": {
+   "status": "SEM_INDICE",
+   "nota": null,
+   "periodo": "01/04/2026 a 30/09/2026",
+   "respondidas": null,
+   "url": "https://www.reclameaqui.com.br/empresa/geek-store-brasil/",
+   "nome": "Geek Store Brasil"
+  },
+  "pittasboardgamescombr": {
+   "status": "SEM_INDICE",
+   "nota": null,
+   "periodo": "01/04/2026 a 30/09/2026",
+   "respondidas": null,
+   "url": "https://www.reclameaqui.com.br/empresa/pittas-board-games/",
+   "nome": "Pittas Board Games"
+  },
+  "omniversecombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "facilshoppingcombr": {
+   "status": "NAO_RECOMENDADA",
+   "nota": 3.5,
+   "periodo": "01/03/2026 a 31/08/2026",
+   "respondidas": 0,
+   "url": "https://www.reclameaqui.com.br/empresa/facil-shopping/",
+   "nome": "Fácil Shopping"
+  },
+  "geekworldcascavelcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "pensanddollscombr": {
+   "status": "SEM_INDICE",
+   "nota": null,
+   "periodo": "01/02/2026 a 31/07/2026",
+   "respondidas": 100,
+   "url": "https://www.reclameaqui.com.br/empresa/pens-and-dolls/",
+   "nome": "Pens and Dolls"
+  },
+  "ludostation": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "gatogingado": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "copagloja": {
+   "status": "NAO_RECOMENDADA",
+   "nota": 2.5,
+   "periodo": "01/04/2026 a 30/09/2026",
+   "respondidas": 37.2,
+   "url": "https://www.reclameaqui.com.br/empresa/copag/",
+   "nome": "Copag"
+  },
+  "tocadotabuleiro": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "lifegeek": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "metacardscombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "rihappycombr": {
+   "status": "OTIMO",
+   "nota": 8.3,
+   "periodo": "01/03/2026 a 31/08/2026",
+   "respondidas": 100,
+   "url": "https://www.reclameaqui.com.br/empresa/ri-happy-brinquedos/",
+   "nome": "Ri Happy Brinquedos"
+  },
+  "pbkidscombr": {
+   "status": "OTIMO",
+   "nota": 9,
+   "periodo": "01/03/2026 a 31/08/2026",
+   "respondidas": 98.4,
+   "url": "https://www.reclameaqui.com.br/empresa/pbkids-brinquedos/",
+   "nome": "PBKIDS Brinquedos"
+  },
+  "lumosstorecombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "shogunlivrariacombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "lojaarenagamescombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "grbcardscombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "lojadrop1combr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "gorupacombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "ilusoeslindoiacombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "lojabrmetaversocombr": {
+   "status": "OTIMO",
+   "nota": 8.6,
+   "periodo": "01/03/2026 a 31/08/2026",
+   "respondidas": 100,
+   "url": "https://www.reclameaqui.com.br/empresa/br-metaverso/",
+   "nome": "BR METAVERSO"
+  },
+  "brinkcentercombr": {
+   "status": "BOM",
+   "nota": 7.6,
+   "periodo": "01/08/2025 a 31/07/2026",
+   "respondidas": 96.4,
+   "url": "https://www.reclameaqui.com.br/empresa/brink-center/",
+   "nome": "Brink Center"
+  },
+  "dalarancombr": {
+   "status": "SEM_INDICE",
+   "nota": null,
+   "periodo": "01/02/2026 a 31/07/2026",
+   "respondidas": null,
+   "url": "https://www.reclameaqui.com.br/empresa/dalaran-games/",
+   "nome": "Dalaran Games"
+  },
+  "canal40": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "happynerd": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "supertcgcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "newstationcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "viptcgcom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "thedragonshopcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "paladinsgamescombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "tcgprocombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "matostcgcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "bynxgg": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "thesaintcollectioncom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "miragemhobbywordpresscom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "livrariacolecionadorcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "resetnerdstorecombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "cardoracombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "tcgculturecom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "lojapokemonsupercom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "fatimacriancacombr": {
+   "status": "SEM_INDICE",
+   "nota": null,
+   "periodo": "01/03/2026 a 31/08/2026",
+   "respondidas": null,
+   "url": "https://www.reclameaqui.com.br/empresa/fatima-crianca/",
+   "nome": "Fátima Criança"
+  },
+  "kantonerdcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "bravojogoscombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "shisuistorecombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "maximuxtcgcom": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "pokepoliscombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "grifogeekcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "pokebolacombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  },
+  "cavernatcgcombr": {
+   "status": "NAO_ENCONTRADA",
+   "nota": null,
+   "periodo": null,
+   "respondidas": null,
+   "url": null,
+   "nome": null
+  }
+ }
+}
