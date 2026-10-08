@@ -15,7 +15,7 @@ export class BlockedError extends Error {
 
 const CHALLENGE = /cf-chl|challenge-platform|captcha-delivery|just a moment\.\.\.|account-verification|are you a robot|access denied/i;
 
-export async function request(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 15000 } = {}) {
+export async function request(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 10000 } = {}) {
   const host = new URL(url).host;
   const wait = (lastHit.get(host) || 0) + DELAY - Date.now();
   if (wait > 0) await sleep(wait);

@@ -26,12 +26,25 @@ jobs:
             git checkout FETCH_HEAD -- data
             git reset -q
           fi
+      # Intervalo mínimo entre rodadas (padrão 8 min desde a última gravação), mesmo que o gatilho
+      # externo chame mais vezes: evita visitar as lojas sem parar.
+      - name: Intervalo entre rodadas
+        id: gap
+        env:
+          GAP: ${{ vars.HUNTER_MIN_GAP_MIN || '8' }}
+        run: |
+          last=$(git log -1 --format=%ct FETCH_HEAD 2>/dev/null || echo 0)
+          age=$(( ($(date +%s) - last) / 60 ))
+          if [ "${{ github.event.schedule }}" != "17 9 * * *" ] && [ "$age" -lt "$GAP" ]; then
+            echo "Última rodada há ${age} min (mínimo ${GAP}). Pulando."; echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Descoberta e verificação Copag (diário)
         if: github.event.schedule == '17 9 * * *'
         run: npm run discover && npm run copag-check
         env:
           BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
       - name: Caçar preços
+        if: steps.gap.outputs.skip != 'true'
         run: npm run hunt
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -40,6 +53,7 @@ jobs:
           ML_ACCESS_TOKEN: ${{ secrets.ML_ACCESS_TOKEN }}
           HUNTER_CEP: ${{ vars.HUNTER_CEP }}
       - name: Salvar dados (ramo data)
+        if: steps.gap.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -54,6 +68,7 @@ jobs:
           git commit -qm "dados $(date -u +%Y-%m-%dT%H:%MZ)"
           git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
       - name: Salvar configuração (se mudou)
+        if: steps.gap.outputs.skip != 'true'
         run: |
           # os dados já foram para o ramo data; o main só recebe mudanças em config/
           git checkout -q -- data 2>/dev/null || true

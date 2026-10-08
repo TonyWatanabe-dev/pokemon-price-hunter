@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>document.documentElement.classList.add("js")</script>
 <title>Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter</title>
-<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Estoque conferido a cada 15 minutos.">
+<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque em tempo real.">
 <meta property="og:title" content="TCG Price Hunter">
 <meta property="og:description" content="Ofertas de Pokémon TCG lacrado no Brasil, comparadas com o preço sugerido oficial da Copag.">
 <meta name="theme-color" content="#1B2C74" media="(prefers-color-scheme: light)">
@@ -1485,7 +1485,7 @@ function podCard(e,r){
 }
 function podiumHTML(pool){
   const top=pool.slice(0,3);
-  if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade verificada agora. O Hunter só destaca ofertas com estoque e preço Copag confirmados; nova varredura a cada 15 minutos.</p>`;
+  if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade verificada agora. O Hunter só destaca ofertas com estoque e preço Copag confirmados; preços em tempo real.</p>`;
   return`<div class="podium" aria-label="As 3 melhores oportunidades agora">${top.map((e,i)=>podCard(e,i+1)).join("")}</div>`;
 }
 function railHTML(pool){
@@ -1561,7 +1561,7 @@ function renderDeals(){
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><b>Hunter ativo</b> · varredura ${ago(S.generatedAt)} · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
+      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><b>Ao vivo</b> · preços em tempo real · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
       ${tickerHTML()}
     </div>
     ${podiumHTML(pool)}
@@ -1621,7 +1621,7 @@ function renderLegal(kind){
   const contato=CONTATO?`<a href="mailto:${esc(CONTATO)}">${esc(CONTATO)}</a>`:`<b>(e-mail de contato a definir)</b>`;
   const T={termos:`<h2>Termos de uso</h2><p>Última atualização: 8 de outubro de 2026.</p>
   <h3>1. O que é o TCG Price Hunter</h3><p>Um site gratuito que reúne preços de produtos lacrados de Pokémon TCG anunciados em lojas brasileiras e compara com o preço sugerido publicado pela Copag. O site não vende nada, não intermedeia compras e não recebe pagamentos.</p>
-  <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente em intervalos de cerca de 15 minutos. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
+  <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente pelo robô. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
   <h3>3. Deal Score e alertas são opinião automatizada</h3><p>A nota, as classificações, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
   <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p>
   <h3>5. Marcas</h3><p>O TCG Price Hunter não é afiliado, patrocinado nem endossado pela Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon, os nomes das coleções e as imagens dos produtos pertencem a seus donos e aparecem apenas para identificar os produtos anunciados.</p>
@@ -1652,7 +1652,7 @@ function tipHits(q){
 function renderTips(){
   const t=S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
-  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada 15 minutos.</p></div>`}
+  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos em tempo real.</p></div>`}
   ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
 }
 
@@ -2205,7 +2205,7 @@ function renderOpp(){
   <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>Os melhores preços encontrados pelo Hunter. Só entram ofertas com estoque confirmado pela loja e abaixo do preço sugerido oficial da Copag, ordenadas pela qualidade da oportunidade (Deal Score).</p></header>
   <div class="fbar2"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${nAct?`<span class="count">${nAct}</span>`:""}</button><span class="fbar2-n">${list.length} ${list.length===1?"oferta":"ofertas"}</span></div>
   ${drop?`<p class="hnote">"Maior queda" compara com os últimos 7 dias. Ainda há poucos dias de histórico, então nenhuma queda aparece por enquanto.</p>`:""}
-  ${list.length?`<div class="deals">${list.map((e,i)=>dealCard(e,{plain:true,rank:i,foil:(i===0&&OF.sort==="score")||e.o.dealScore>=70})).join("")}</div>`:`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppPool().length?"Ainda não encontramos produtos com esse nível de desconto ou de nota.":"Nenhuma loja está abaixo do preço Copag com estoque confirmado agora. O robô confere a cada 15 minutos."}</p>${nAct?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
+  ${list.length?`<div class="deals">${list.map((e,i)=>dealCard(e,{plain:true,rank:i,foil:(i===0&&OF.sort==="score")||e.o.dealScore>=70})).join("")}</div>`:`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppPool().length?"Ainda não encontramos produtos com esse nível de desconto ou de nota.":"Nenhuma loja está abaixo do preço Copag com estoque confirmado agora. O robô segue conferindo as lojas em tempo real."}</p>${nAct?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
   </div>`;
 }
 function openFilterSheet(){const d=$("#fsheet");d.innerHTML=`<div class="sh-grip" aria-hidden="true"></div><div class="acc"><div class="acc-head"><h2>Filtros</h2><button class="iconbtn" type="button" data-fclose aria-label="Fechar">${ic("x")}</button></div><div class="fsheet-f">${filterControls()}</div><div class="gate-actions"><button class="btn" type="button" data-fclose>Ver ${oppList().length} ofertas</button><button class="btn ghost" type="button" data-ofclear>Limpar filtros</button></div></div>`;if(!d.open)d.showModal()}
@@ -2220,10 +2220,9 @@ function renderPre(){
 
 function fresh(){
   const el=$("#fresh");if(!S||!el)return;
-  const m=(Date.now()-Date.parse(S.generatedAt))/6e4;const hora=new Date(S.generatedAt).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-  el.className="fresh"+(m>90?" bad":m>30?" warn":"");
-  $("#mini-t").innerHTML=`<b>${m>90?"Parado":"Atualizado"} ${ago(S.generatedAt)}</b>`;
-  $("#fresh-t").innerHTML=m>90?`<b>Sem atualização ${ago(S.generatedAt)}</b> (às ${hora}). O robô pode estar parado.`:`<b>Atualizado ${ago(S.generatedAt)}</b>, às ${hora}. Busca nova a cada 15 min.`;
+  const m=(Date.now()-Date.parse(S.generatedAt))/6e4;el.className="fresh"+(m>90?" bad":"");
+  $("#mini-t").innerHTML=m>90?`<b>Robô pausado</b>`:`<b>Ao vivo</b> · preços em tempo real`;
+  $("#fresh-t").innerHTML=m>90?`<b>Robô pausado.</b> Os preços podem estar desatualizados.`:`<b>Ao vivo</b> · preços em tempo real`;
 }
 setInterval(fresh,30e3);
 function init(st){
@@ -2257,7 +2256,7 @@ async function refresh(){
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
   const st=await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
   if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
-  const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. A próxima busca sai em até 15 min.");
+  const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
 }
 async function load(){
   loading();

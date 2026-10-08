@@ -88,12 +88,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const cep = process.env.HUNTER_CEP || watch.settings?.cep;
 
   const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set();
-  // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio), prazo por rodada
+  // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio: mais lojas ao mesmo tempo, nunca mais pressa numa loja), prazo por rodada
   // e rodízio — quem ficou para trás numa rodada vai primeiro na seguinte.
   const deadline = Date.now() + Number(process.env.HUNTER_BUDGET_MIN || 7) * 60e3;
   const urlCache = readJson(dataPath('url-cache.json'), {});
   const order = [...stores].sort((a, b) => (sources[a.id]?.lastCheck || '').localeCompare(sources[b.id]?.lastCheck || ''));
-  await pool(order, Number(process.env.HUNTER_CONCURRENCY || 8), async (store) => {
+  await pool(order, Number(process.env.HUNTER_CONCURRENCY || 16), async (store) => {
     const src = (sources[store.id] ||= { checks: 0, ok: 0 });
     src.name = store.name; src.kind = store.kind; src.url = store.url;
     if (store.platform === 'unsupported') { Object.assign(src, { status: 'UNAVAILABLE', reason: store.note }); return; }
@@ -101,6 +101,11 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (store.enabled === false) { Object.assign(src, { status: 'PAUSED', reason: 'pausada manualmente' }); return; }
     if (BIG_MARKETPLACES.test(new URL(store.url).host) && store.platform !== 'mercadolivre') { Object.assign(src, { status: 'UNAVAILABLE', reason: 'Marketplace grande: bloqueia robôs e não tem API pública de busca' }); return; }
     if (Date.now() > deadline) { skipped.add(store.id); return; }
+    // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (15 min, 30, 1 h… até 6 h).
+    if (['BLOCKED', 'ERROR'].includes(src.status) && src.fails > 0 && src.lastCheck) {
+      const waitMin = Math.min(360, 15 * 2 ** (src.fails - 1));
+      if (Date.now() - Date.parse(src.lastCheck) < waitMin * 60e3) return;
+    }
     src.checks++; src.lastCheck = T;
     try {
       const base = store.url.replace(/\/$/, '');
@@ -155,10 +160,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
-      Object.assign(src, { status: 'ACTIVE', reason: null, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T });
+      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T });
       touched.add(store.id);
     } catch (e) {
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message });
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
       log(`[${store.id}] ${src.status}: ${e.message}`);
     }
   });

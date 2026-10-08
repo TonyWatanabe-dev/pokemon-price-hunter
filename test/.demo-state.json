@@ -11,26 +11,53 @@
   },
   "totals": {
     "products": 6,
-    "offers": 10,
-    "copagConfirmed": 2
+    "offers": 9,
+    "review": 1,
+    "copagConfirmed": 4
   },
   "collections": [
     {
       "id": "me04",
       "name": "Caos Ascendente",
       "series": "Megaevolução",
+      "aliases": [
+        "caos ascendente",
+        "me 04",
+        "me04",
+        "me4",
+        "mega evolucao 4",
+        "megaevolucao 4"
+      ],
       "products": 3
     },
     {
       "id": "me05",
       "name": "Escuridão Absoluta",
       "series": "Megaevolução",
+      "aliases": [
+        "escuridao absoluta",
+        "me 05",
+        "me05",
+        "me5",
+        "mega evolucao 5",
+        "megaevolucao 5"
+      ],
       "products": 1
     },
     {
       "id": "c30",
       "name": "Celebração de 30 Anos",
       "series": "Especial",
+      "aliases": [
+        "celebracao de 30 anos",
+        "celebracao 30 anos",
+        "celebracoes 30 anos",
+        "celebracao dos 30 anos",
+        "comemoracao 30 anos",
+        "comemoracao pokemon 30 anos",
+        "especial 30 anos",
+        "30 anos"
+      ],
       "products": 2
     }
   ],
@@ -100,7 +127,12 @@
         "offerId": null
       },
       "offerCount": 1,
-      "inStockCount": 1
+      "inStockCount": 1,
+      "hist": {
+        "days": 1,
+        "from": "2026-10-06",
+        "drop7d": 0
+      }
     },
     {
       "id": "me05-box36",
@@ -120,7 +152,7 @@
       "copag": {
         "msrp": 449.99,
         "source_url": "https://cop.test/box-display-me05/p",
-        "source_timestamp": "2026-10-06T10:25:00.000Z",
+        "source_timestamp": "2026-10-06T10:20:00.000Z",
         "confidence": "OFICIAL",
         "previous_msrp": null,
         "msrp_updated_at": "2026-10-06T10:00:00.000Z",
@@ -139,7 +171,12 @@
         "offerId": null
       },
       "offerCount": 2,
-      "inStockCount": 2
+      "inStockCount": 2,
+      "hist": {
+        "days": 1,
+        "from": "2026-10-06",
+        "drop7d": 0
+      }
     },
     {
       "id": "me04-box36",
@@ -176,7 +213,12 @@
         "offerId": "ddc1fabe36e4"
       },
       "offerCount": 4,
-      "inStockCount": 2
+      "inStockCount": 2,
+      "hist": {
+        "days": 1,
+        "from": "2026-10-06",
+        "drop7d": 0
+      }
     },
     {
       "id": "me04-etb",
@@ -211,7 +253,12 @@
         "offerId": null
       },
       "offerCount": 1,
-      "inStockCount": 1
+      "inStockCount": 1,
+      "hist": {
+        "days": 1,
+        "from": "2026-10-06",
+        "drop7d": 0
+      }
     },
     {
       "id": "c30-blister2",
@@ -230,17 +277,18 @@
       "lastSeen": "2026-10-06T10:25:00.000Z",
       "copag": {
         "msrp": 69.99,
-        "source_url": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
-        "source_timestamp": "2026-08-07",
-        "confidence": "CATALOGO_COPAG",
-        "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada",
+        "source_url": "https://www.instagram.com/voltztcg/",
+        "source_timestamp": "2026-10-07",
+        "confidence": "OFICIAL",
+        "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+        "manual": true,
         "key": "c30-blister2"
       },
-      "copagConfirmed": false,
-      "msrp": null,
-      "copagReason": "preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável",
-      "copagReference": 69.99,
-      "copagReferenceUrl": "https://topdrawblog.com.br/news/pokemon-tcg-30-anos-precos-sugeridos/",
+      "copagConfirmed": true,
+      "msrp": 69.99,
+      "copagReason": null,
+      "copagReference": null,
+      "copagReferenceUrl": null,
       "marketAverage": null,
       "lowestHistorical": {
         "total": 59.9,
@@ -249,7 +297,12 @@
         "offerId": null
       },
       "offerCount": 1,
-      "inStockCount": 1
+      "inStockCount": 1,
+      "hist": {
+        "days": 1,
+        "from": "2026-10-06",
+        "drop7d": 0
+      }
     },
     {
       "id": "c30-colecao_ex-greninja",
@@ -267,18 +320,19 @@
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
       "copag": {
-        "msrp": 169.99,
-        "source_url": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
-        "source_timestamp": "2026-08-07",
-        "confidence": "CATALOGO_COPAG",
-        "note": "Catálogo de lançamentos da Copag ao varejo, publicado pela imprensa especializada",
+        "msrp": 160.99,
+        "source_url": "https://www.instagram.com/voltztcg/",
+        "source_timestamp": "2026-10-07",
+        "confidence": "OFICIAL",
+        "note": "Tabela 'Preços de 30 anos' com os preços sugeridos Copag, divulgada por lojas no Instagram (ex.: Voltz Cards); confirmada como oficial pelo responsável do site em 07/10/2026. Sem verificação automática.",
+        "manual": true,
         "key": "c30-colecao_ex"
       },
-      "copagConfirmed": false,
-      "msrp": null,
-      "copagReason": "preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável",
-      "copagReference": 169.99,
-      "copagReferenceUrl": "https://mestrepull.com.br/blog/posts/celebracao-30-anos-copag-datas-precos-brasil-605ba13083d9/",
+      "copagConfirmed": true,
+      "msrp": 160.99,
+      "copagReason": null,
+      "copagReference": null,
+      "copagReferenceUrl": null,
       "marketAverage": null,
       "lowestHistorical": {
         "total": 149.9,
@@ -287,12 +341,19 @@
         "offerId": null
       },
       "offerCount": 1,
-      "inStockCount": 1
+      "inStockCount": 1,
+      "hist": {
+        "days": 1,
+        "from": "2026-10-06",
+        "drop7d": 0
+      }
     }
   ],
   "bestDeals": [
     "ddc1fabe36e4",
+    "0284958481fb",
     "8d8f8ee7b35b",
+    "cc15648751e3",
     "af9a476be6e6",
     "3faf55a38213"
   ],
@@ -330,6 +391,8 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": null,
       "storeValidated": false,
@@ -378,6 +441,8 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": null,
       "storeValidated": false,
@@ -435,6 +500,8 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": null,
       "storeValidated": false,
@@ -482,6 +549,8 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": 79,
       "storeValidated": true,
@@ -538,6 +607,8 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": 79,
       "storeValidated": true,
@@ -552,53 +623,6 @@
       },
       "opportunity": false,
       "confidence_score": 85
-    },
-    {
-      "id": "f93636f37413",
-      "productId": "me04-box36",
-      "matchConfidence": 0.8,
-      "storeId": "shop",
-      "storeName": "Loja Shopify",
-      "storeKind": "specialist",
-      "seller": null,
-      "sellerKind": "store",
-      "title": "Pokémon Booster Box Caos Ascendente 36 boosters",
-      "url": "https://shop.test/products/suspeito",
-      "image": null,
-      "sku": null,
-      "ean": null,
-      "prices": {
-        "base": 99
-      },
-      "listPrice": null,
-      "price": 99,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "total": 99,
-      "perBooster": 2.75,
-      "stock": "IN_STOCK",
-      "quantity": null,
-      "sourceType": "store_json",
-      "source_url": "https://shop.test/products/suspeito",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
-      "firstSeen": "2026-10-06T10:00:00.000Z",
-      "stale": false,
-      "anomalous": true,
-      "storeScore": 79,
-      "storeValidated": true,
-      "discount": 0.78,
-      "savings": 350.99,
-      "vsMarket": 0.7283,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
-      "confidence_score": 80
     },
     {
       "id": "0284958481fb",
@@ -632,17 +656,28 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": 79,
       "storeValidated": true,
-      "discount": null,
-      "savings": null,
+      "discount": 0.1442,
+      "savings": 10.09,
       "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
+      "dealScore": 73,
+      "scoreParts": {
+        "copag": 16.8,
+        "historico": 15,
+        "porBooster": 15,
+        "estoque": 10,
+        "loja": 7.9,
+        "frete": 0,
+        "lacrado": 5,
+        "disponibilidade": 3
+      },
       "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
+        "label": "🟢 MUITO BOM",
+        "tier": "verygood"
       },
       "opportunity": false,
       "confidence_score": 85
@@ -679,17 +714,28 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": 79,
       "storeValidated": true,
-      "discount": null,
-      "savings": null,
+      "discount": 0.0689,
+      "savings": 11.09,
       "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
+      "dealScore": 54,
+      "scoreParts": {
+        "copag": 8,
+        "historico": 15,
+        "porBooster": 7.5,
+        "estoque": 10,
+        "loja": 7.9,
+        "frete": 0,
+        "lacrado": 2.5,
+        "disponibilidade": 3
+      },
       "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
+        "label": "🟡 NORMAL",
+        "tier": "normal"
       },
       "opportunity": false,
       "confidence_score": 80
@@ -726,6 +772,8 @@
       "source_timestamp": "2026-10-06T10:25:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": null,
       "storeValidated": false,
@@ -779,9 +827,11 @@
       "quantity": 3,
       "sourceType": "store_api",
       "source_url": "https://cop.test/box-display-me05/p",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
       "anomalous": false,
       "storeScore": 45,
       "storeValidated": false,
@@ -819,6 +869,7 @@
       "platform": "shopify",
       "status": "ACTIVE",
       "reason": null,
+      "fails": 0,
       "listings": 6,
       "matched": 5,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
@@ -845,6 +896,7 @@
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
+      "fails": 0,
       "listings": 1,
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
@@ -865,6 +917,7 @@
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
+      "fails": 0,
       "listings": 2,
       "matched": 2,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
@@ -885,6 +938,7 @@
       "platform": "jsonld",
       "status": "ACTIVE",
       "reason": null,
+      "fails": 0,
       "listings": 1,
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
@@ -904,6 +958,7 @@
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "status": "BLOCKED",
       "reason": "Acesso bloqueado em blk.test (o site barra robôs, nem o robots.txt abre)",
+      "fails": 4,
       "score": {
         "score": null,
         "validated": false,
@@ -927,18 +982,19 @@
     },
     {
       "id": "cop",
-      "checks": 4,
-      "ok": 4,
+      "checks": 3,
+      "ok": 3,
       "name": "Loja Copag (oficial)",
       "kind": "official",
       "url": "https://cop.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
+      "fails": 0,
       "listings": 1,
       "matched": 1,
-      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
       "score": {
         "score": 45,
         "validated": false,
@@ -950,14 +1006,15 @@
     },
     {
       "id": "novatest",
-      "checks": 4,
+      "checks": 3,
       "ok": 0,
       "name": "nova.test",
       "kind": "specialist",
       "url": "https://nova.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
+      "fails": 3,
       "score": {
         "score": null,
         "validated": false,
@@ -981,14 +1038,15 @@
     },
     {
       "id": "botaotest",
-      "checks": 4,
+      "checks": 3,
       "ok": 0,
       "name": "botao.test",
       "kind": "specialist",
       "url": "https://botao.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
+      "fails": 3,
       "score": {
         "score": null,
         "validated": false,
@@ -1071,8 +1129,8 @@
       "isNew": false,
       "collectionName": "Celebração de 30 Anos",
       "label": "Blister Triplo",
-      "msrp": null,
-      "discount": null,
+      "msrp": 99.99,
+      "discount": -0.2901,
       "perBooster": 43,
       "anomalous": false
     },
@@ -1086,7 +1144,7 @@
       "url": "https://www.amazon.com.br/dp/B0TEST",
       "postUrl": "https://t.me/promopoke/77",
       "expired": false,
-      "postedAt": "2026-10-07T13:52:47.176Z",
+      "postedAt": "2026-10-08T11:32:33.805Z",
       "id": "fe220ca5587c",
       "productId": "me05-etb",
       "matchConfidence": 0.8,
@@ -1102,6 +1160,41 @@
       "anomalous": false
     }
   ],
+  "activity": [
+    {
+      "t": "2026-10-06T10:20:00.000Z",
+      "productId": "me04-box36",
+      "offerId": "ddc1fabe36e4",
+      "storeName": "Loja Shopify",
+      "to": 329,
+      "msrp": 449.99,
+      "type": "drop",
+      "from": 339
+    },
+    {
+      "t": "2026-10-06T10:20:00.000Z",
+      "productId": "me04-box36",
+      "offerId": "ddc1fabe36e4",
+      "storeName": "Loja Shopify",
+      "to": 329,
+      "msrp": 449.99,
+      "type": "lowest",
+      "from": 339
+    },
+    {
+      "t": "2026-10-06T10:20:00.000Z",
+      "productId": "me04-box36",
+      "offerId": "af9a476be6e6",
+      "storeName": "Loja VTEX",
+      "to": 399.8,
+      "msrp": 449.99,
+      "type": "restock"
+    }
+  ],
+  "distrust": {
+    "stores": [],
+    "until": "2026-10-06"
+  },
   "tipSources": [
     {
       "source": "Pelando: pokemon tcg",
@@ -1170,6 +1263,7 @@
       "file": "config/alertas/c30-blister2-abaixo-70.json"
     }
   ],
+  "reputation": null,
   "recentAlerts": [
     {
       "at": "2026-10-06T10:20:00.000Z",
@@ -1280,7 +1374,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: sem preço oficial\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 73/100",
       "url": "https://shop.test/products/c30-duplo"
     },
     {
