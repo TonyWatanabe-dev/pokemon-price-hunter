@@ -40,8 +40,8 @@ export function computeAll({ products, offers, hist, removed, refs, dist }, asOf
   for (const o of offers) { const k = String(o.product_id); if (!byProduct.has(k)) byProduct.set(k, []); byProduct.get(k).push({ ...o, id: String(o.id), events: ev.get(String(o.id)) || [] }); }
   const refBy = new Map(refs.map((r) => [String(r.product_id), r]));
   return products.map((p) => {
-    const { stats, series } = computeProductStats({ product: p, offers: byProduct.get(String(p.id)) || [], reference: refBy.get(String(p.id)) || null, distrust, asOf });
-    return { product_id: String(p.id), stats, series };
+    const { stats, series, storeSeries } = computeProductStats({ product: p, offers: byProduct.get(String(p.id)) || [], reference: refBy.get(String(p.id)) || null, distrust, asOf });
+    return { product_id: String(p.id), stats, series, storeSeries };
   });
 }
 
@@ -56,17 +56,19 @@ export async function runPriceEngine(c, { asOf = new Date() } = {}) {
     SELECT product_id, ${cols.join(', ')} FROM jsonb_to_recordset($1::jsonb) AS x(product_id bigint, ${cols.map((k) => `${k} ${STATS_COLS[k]}`).join(', ')})
     ON CONFLICT (product_id) DO UPDATE SET ${cols.map((k) => `${k} = EXCLUDED.${k}`).join(', ')}, computed_at = now()
     WHERE (${cols.map((k) => `product_stats.${k}`).join(', ')}) IS DISTINCT FROM (${cols.map((k) => `EXCLUDED.${k}`).join(', ')})`, [J(rows)]);
-  const daily = all.flatMap((r) => r.series.map((d) => ({ product_id: r.product_id, day: d.day, min_price: d.min, max_price: d.max, avg_price: d.avg, close_price: d.close, offers: d.offers })));
+  const row = (r, store, d) => ({ product_id: r.product_id, store_id: store, day: d.day, min_price: d.min, max_price: d.max, avg_price: d.avg, close_price: d.close, offers: d.offers });
+  // store_id '' = produto (todas as lojas); demais = uma série por loja
+  const daily = all.flatMap((r) => [...r.series.map((d) => row(r, '', d)), ...Object.entries(r.storeSeries || {}).flatMap(([sid, ss]) => ss.map((d) => row(r, sid, d)))]);
   const dd = await c.query(`INSERT INTO price_daily (product_id, store_id, day, min_price, max_price, avg_price, close_price, offers, engine_version)
-    SELECT product_id, '', day, min_price, max_price, avg_price, close_price, offers, $2 FROM jsonb_to_recordset($1::jsonb)
-      AS x(product_id bigint, day date, min_price numeric, max_price numeric, avg_price numeric, close_price numeric, offers int)
+    SELECT product_id, store_id, day, min_price, max_price, avg_price, close_price, offers, $2 FROM jsonb_to_recordset($1::jsonb)
+      AS x(product_id bigint, store_id text, day date, min_price numeric, max_price numeric, avg_price numeric, close_price numeric, offers int)
     ON CONFLICT (product_id, store_id, day) DO UPDATE SET min_price = EXCLUDED.min_price, max_price = EXCLUDED.max_price, avg_price = EXCLUDED.avg_price,
       close_price = EXCLUDED.close_price, offers = EXCLUDED.offers, engine_version = EXCLUDED.engine_version
     WHERE (price_daily.min_price, price_daily.max_price, price_daily.avg_price, price_daily.close_price, price_daily.offers, price_daily.engine_version)
       IS DISTINCT FROM (EXCLUDED.min_price, EXCLUDED.max_price, EXCLUDED.avg_price, EXCLUDED.close_price, EXCLUDED.offers, EXCLUDED.engine_version)`, [J(daily), ENGINE_VERSION]);
   // dia que deixou de existir na série (ex.: nova janela de desconfiança) sai da tabela derivada
-  const gone = await c.query(`DELETE FROM price_daily p WHERE p.store_id = '' AND NOT EXISTS (
-      SELECT 1 FROM jsonb_to_recordset($1::jsonb) AS x(product_id bigint, day date) WHERE x.product_id = p.product_id AND x.day = p.day)`,
-    [J(daily.map((d) => ({ product_id: d.product_id, day: d.day })))]);
+  const gone = await c.query(`DELETE FROM price_daily p WHERE NOT EXISTS (
+      SELECT 1 FROM jsonb_to_recordset($1::jsonb) AS x(product_id bigint, store_id text, day date) WHERE x.product_id = p.product_id AND x.store_id = p.store_id AND x.day = p.day)`,
+    [J(daily.map((d) => ({ product_id: d.product_id, store_id: d.store_id, day: d.day })))]);
   return { products: rows.length, statsWritten: st.rowCount, dailyRows: daily.length, dailyWritten: dd.rowCount, dailyDeleted: gone.rowCount, seconds: (Date.now() - t0) / 1000 };
 }

@@ -75,6 +75,36 @@ export async function compareEndpoints(st, DB, ST) {
   return out;
 }
 
+
+/** FASE 4 — páginas: lista (matriz de filtros), produto (todas as ofertas), coleção e tipo; banco × state.json. */
+export function comparePages(dbSt, st, SITE) {
+  const out = { lists: { combos: 0, equal: 0, diffs: [] }, products: { total: 0, equal: 0, diffs: [] }, groups: { total: 0, equal: 0, diffs: [] } };
+  const groups = ['', ...SITE.GROUP_ORDER];
+  for (const mode of ['guardar', 'abrir']) for (const group of groups) for (const stock of [true, false]) for (const sort of ['', 'price', 'disc', 'new']) for (const semref of [false, true]) {
+    if (semref && mode === 'abrir') continue;
+    const F = { mode, group, stock, sort, semref }; out.lists.combos++;
+    const a = SITE.siteProducts(dbSt, F, { page: 1, limit: 1000 }); const b = SITE.siteProducts(st, F, { page: 1, limit: 1000 });
+    const k = (r) => r.items.map((e) => `${e.p.id}:${e.o.id}:${e.o.total}:${e.o.dealScore ?? ''}`);
+    const ka = k(a), kb = k(b);
+    if (ka.join() === kb.join() && JSON.stringify(a.facets) === JSON.stringify(b.facets)) out.lists.equal++;
+    else out.lists.diffs.push({ F, db: a.total, state: b.total, first: ka.map((x, i) => (x !== kb[i] ? { i, db: x, state: kb[i] } : null)).filter(Boolean).slice(0, 3) });
+  }
+  const pk = (o) => `${o.id}:${o.price}:${o.total}:${o.stock}:${o.shipping ?? ''}:${o.seller ?? ''}:${o.dealScore ?? ''}`;
+  for (const p of st.products || []) {
+    const a = SITE.siteProduct(dbSt, p.id); const b = SITE.siteProduct(st, p.id); if (!a && !b) continue; out.products.total++;
+    const ka = (a?.offers || []).map(pk).sort(), kb = (b?.offers || []).map(pk).sort();
+    if (ka.join() === kb.join() && a?.liveCount === b?.liveCount) out.products.equal++; else out.products.diffs.push({ id: p.id, db: ka.filter((x) => !kb.includes(x)).slice(0, 3), state: kb.filter((x) => !ka.includes(x)).slice(0, 3) });
+  }
+  for (const [kind, ids] of [['col', (st.collections || []).map((c) => c.id)], ['type', (st.types || []).map((t) => t.id)]]) for (const id of ids) {
+    out.groups.total++;
+    const args = kind === 'col' ? { col: id } : { type: id };
+    const a = SITE.siteOffers(dbSt, args), b = SITE.siteOffers(st, args);
+    const ka = a.offers.map((o) => o.id).sort().join(), kb = b.offers.map((o) => o.id).sort().join();
+    if (ka === kb && JSON.stringify(a.liveCount) === JSON.stringify(b.liveCount)) out.groups.equal++; else out.groups.diffs.push({ [kind]: id });
+  }
+  for (const k of ['lists', 'products', 'groups']) { out[k].diffCount = out[k].diffs.length; out[k].diffs = out[k].diffs.slice(0, 10); }
+  return out;
+}
 // ---------------------------------------------------------------- CLI
 if (import.meta.url === `file://${process.argv[1]}`) {
   const dir = process.argv[2] || 'data'; const outFile = process.argv[3] || null;
@@ -84,15 +114,17 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const DB = await import('../api/_lib/read-db.mjs'); const ST = await import('../api/_lib/read-state.mjs'); const { closeApiPool } = await import('../api/_lib/db.mjs');
   const now = Date.parse(st.generatedAt) || Date.now();
   const t0 = Date.now();
-  const hDb = slimHome(await DB.stateLikeFromDb(st), { source: 'db', now }); const tDb = Date.now() - t0;
+  const dbSt = await DB.stateLikeFromDb(st); const hDb = slimHome(dbSt, { source: 'db', now }); const tDb = Date.now() - t0;
   const hSt = slimHome(st, { source: 'state', now });
   const home = compareHome(hDb, hSt);
   const endpoints = await compareEndpoints(st, DB, ST);
+  const SITE = await import('../api/_lib/site.mjs');
+  const pages = comparePages(dbSt, st, SITE);
   // desempenho das consultas (ms; 1ª chamada e média de 5), no mesmo banco
   const perf = {};
   const id = (st.products || []).find((p) => p.offerCount > 5)?.id || st.products?.[0]?.id;
   for (const [k, fn] of Object.entries({ home: () => DB.stateLikeFromDb(st), produtos: () => DB.listProducts({ page: 1, limit: 24 }), produtos_filtro: () => DB.listProducts({ page: 2, limit: 24, estoque: true, ordem: 'desconto' }),
-    produto: () => DB.getProduct(id), ofertas: () => DB.productOffers(id, { page: 1, limit: 24 }), historico: () => DB.productHistory(id, { dias: 30 }), estatisticas: () => DB.productStats(id), referencias: () => DB.listReferences({ page: 1, limit: 24 }) })) {
+    produto: () => DB.getProduct(id), ofertas: () => DB.productOffers(id, { page: 1, limit: 24 }), historico: () => DB.productHistory(id, { dias: 30 }), estatisticas: () => DB.productStats(id), referencias: () => DB.listReferences({ page: 1, limit: 24 }), site_produtos: () => SITE.siteProducts(dbSt, {}, { page: 1, limit: 48 }), site_produto: () => SITE.siteProduct(dbSt, id), site_colecao: () => SITE.siteOffers(dbSt, { col: (st.collections || [])[0]?.id }) })) {
     const t = []; for (let i = 0; i < 6; i++) { const a = performance.now(); await fn(); t.push(performance.now() - a); }
     perf[k] = { first: Math.round(t[0]), avg: Math.round(t.slice(1).reduce((x, y) => x + y, 0) / 5) };
   }
@@ -100,11 +132,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     ofertas24: Buffer.byteLength(JSON.stringify(await DB.productOffers(id, { page: 1, limit: 24 }))), historico30: Buffer.byteLength(JSON.stringify(await DB.productHistory(id, { dias: 30 }))),
     referencias24: Buffer.byteLength(JSON.stringify(await DB.listReferences({ page: 1, limit: 24 }))), stateJson: Buffer.byteLength(JSON.stringify(st)) };
   await closeApiPool();
-  const rep = { at: new Date().toISOString(), stateGeneratedAt: st.generatedAt, buildHomeFromDbMs: tDb, perf, sizes, home, endpoints };
+  const rep = { at: new Date().toISOString(), stateGeneratedAt: st.generatedAt, buildHomeFromDbMs: tDb, perf, sizes, home, endpoints, pages };
   if (outFile) fs.writeFileSync(outFile, JSON.stringify(rep, null, 2));
   console.log('Desempenho (ms):', JSON.stringify(perf)); console.log('Tamanhos (bytes):', JSON.stringify(sizes));
   console.log('Home:', JSON.stringify(home.summary), 'tamanho', JSON.stringify(home.sizes), 'críticas', home.critical);
   console.log('Endpoints:', JSON.stringify({ produtos: endpoints.products, precoAtual: [endpoints.currentPrice.equal, endpoints.currentPrice.diffCount], estoque: [endpoints.inStock.equal, endpoints.inStock.diffCount],
     referencia: [endpoints.reference.equal, endpoints.reference.diffCount], ofertas: [endpoints.offers.equal, endpoints.offers.diffCount] }));
+  console.log('Páginas:', JSON.stringify({ listas: [pages.lists.equal, pages.lists.combos], produtos: [pages.products.equal, pages.products.total], colecoesTipos: [pages.groups.equal, pages.groups.total] }));
   process.exitCode = home.critical || endpoints.reference.diffCount ? 1 : 0;
 }

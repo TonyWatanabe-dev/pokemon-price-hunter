@@ -158,6 +158,12 @@ export function computeProductStats({ product, offers, reference = null, distrus
     return { id: o.id, store_id: o.store_id, status: o.status, last_seen_at: o.last_seen_at, events: ev };
   });
   const series = dailySeries(seriesOffers, { asOf, anchor: hAnchor, distrust });
+  // a mesma série, loja por loja (gráfico do site: uma linha por loja + a do melhor preço)
+  const storeSeries = {};
+  for (const sid of [...new Set(seriesOffers.map((o) => o.store_id).filter(Boolean))].sort()) {
+    const ss = dailySeries(seriesOffers.filter((o) => o.store_id === sid), { asOf, anchor: hAnchor, distrust });
+    if (ss.length) storeSeries[sid] = ss;
+  }
   const lows = series.map((d) => d.min);
   const enough = series.length >= MIN_HISTORY_DAYS;
   const today = dayOf(asOf);
@@ -202,5 +208,6 @@ export function computeProductStats({ product, offers, reference = null, distrus
       engine_version: ENGINE_VERSION,
     },
     series,
+    storeSeries,
   };
 }

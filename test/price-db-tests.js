@@ -61,16 +61,20 @@ assert.equal(st.number_of_active_offers, 3); assert.equal(st.number_of_in_stock_
 assert.equal(st.number_of_stores, 3); assert.equal(st.number_of_marketplaces, 1); assert.equal(n(st.shipping_coverage), 0.5);
 assert.equal(n(st.reference_price), 400); assert.equal(st.reference_status, 'verified'); assert.equal(n(st.discount_vs_reference), 0.1);
 // histórico: 05 = 420 (39,90 da loja desconfiável fora), 06 = 350 (oferta que sumiu depois), 07 = 350, 08 = 380, 09 = 360, 10 = 360
-const daily = await q(`SELECT day::text, min_price::float8 AS v FROM hunter.price_daily d JOIN hunter.product p ON p.id = d.product_id WHERE p.legacy_id = 'me05-etb' ORDER BY day`);
+const daily = await q(`SELECT day::text, min_price::float8 AS v FROM hunter.price_daily d JOIN hunter.product p ON p.id = d.product_id WHERE p.legacy_id = 'me05-etb' AND d.store_id = '' ORDER BY day`);
 assert.deepEqual(daily.map((d) => [d.day, d.v]), [['2026-10-05', 420], ['2026-10-06', 350], ['2026-10-07', 350], ['2026-10-08', 380], ['2026-10-09', 360], ['2026-10-10', 360]]);
 assert.equal(st.history_status, 'ok'); assert.equal(st.history_days, 6);
+// série por loja: a do produto é o menor valor entre as lojas, dia a dia
+const per = await q(`SELECT store_id, day::text, min_price::float8 v FROM hunter.price_daily d JOIN hunter.product p ON p.id = d.product_id WHERE p.legacy_id = 'me05-etb' AND d.store_id <> '' ORDER BY day, store_id`);
+assert.ok(per.length > 0 && !per.some((r) => r.store_id === 'velha'), 'loja desconfiável sem série');
+for (const d of daily) assert.equal(Math.min(...per.filter((r) => r.day === d.day).map((r) => r.v)), d.v, `dia ${d.day}`);
 assert.equal(n(st.historical_min), 350); assert.equal(n(st.historical_max), 420); assert.equal(n(st.historical_median), 360);
 assert.equal(n(st.historical_average), Math.round(((420 + 350 + 350 + 380 + 360 + 360) / 6) * 100) / 100);
 assert.equal(n(st.variation_24h), 0); assert.equal(st.variation_7d, null); assert.equal(st.variation_30d, null);
 assert.equal(n(st.distance_from_historical_min), Math.round(((360 - 350) / 350) * 1e4) / 1e4);
 // as estatísticas históricas são reproduzíveis em SQL a partir de price_daily
 const sqlHist = (await q(`SELECT min(min_price)::float8 mn, max(min_price)::float8 mx, round(avg(min_price), 2)::float8 av, percentile_cont(0.5) WITHIN GROUP (ORDER BY min_price)::float8 md
-  FROM hunter.price_daily d JOIN hunter.product p ON p.id = d.product_id WHERE p.legacy_id = 'me05-etb'`))[0];
+  FROM hunter.price_daily d JOIN hunter.product p ON p.id = d.product_id WHERE p.legacy_id = 'me05-etb' AND d.store_id = ''`))[0];
 assert.deepEqual([sqlHist.mn, sqlHist.mx, sqlHist.av, sqlHist.md], [n(st.historical_min), n(st.historical_max), n(st.historical_average), n(st.historical_median)]);
 // produto sem oferta
 const empty = (await q(`SELECT s.* FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id WHERE p.legacy_id = 'sv9-etb'`))[0];

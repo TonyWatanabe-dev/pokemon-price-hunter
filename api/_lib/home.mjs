@@ -74,7 +74,7 @@ export function slimHome(st, { source = 'state', now = Date.now(), activityDays 
       tips: allTips.filter((x) => x.productId && !x.expired && x.discount >= 0.15 && !x.anomalous).length,
       offersIncluded: kept.length,
     },
-    collections: (st.collections || []).map((c) => pick(c, ['id', 'name', 'series', 'aliases', 'logo'])),
+    collections: (st.collections || []).map((c) => pick(c, ['id', 'name', 'series', 'aliases', 'logo', 'products'])),   // products: nº de produtos (atalhos da busca)
     types: st.types || [],
     // produto sem nenhuma oferta não aparece na Home nem muda o endereço dos outros (slugs ordenam por nº de ofertas)
     products: products.filter((p) => byP.has(p.id) || activity.some((e) => e.productId === p.id))
@@ -95,6 +95,7 @@ export function slimHome(st, { source = 'state', now = Date.now(), activityDays 
     offerKinds,
     tips: liveTips.slice(0, tipsMax).map((t) => Object.fromEntries(Object.entries(t).filter(([k]) => !TIP_DROP.has(k)))),
     sources: (st.sources || []).filter((s) => stores.has(s.id)).map((s) => ({ id: s.id, name: s.name, score: s.score?.evidence ? { evidence: s.score.evidence } : undefined })),
+    distrust: st.distrust || null,      // janela de leituras não confiáveis (o gráfico de reserva do produto usa)
     reputation: rep ? { consultadoEm: rep.consultadoEm, lojas: Object.fromEntries(Object.entries(rep.lojas || {}).filter(([k]) => stores.has(k))) } : null,
   };
 }

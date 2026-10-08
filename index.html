@@ -1346,12 +1346,12 @@ function entries(){
     (by[p.id]||=[]).push(o);
   }
   const key=F.mode==="abrir"?(o)=>o.perBooster:(o)=>o.total;
-  return Object.entries(by).map(([id,list])=>{list.sort((a,b)=>key(a)-key(b)||(b.dealScore??-1)-(a.dealScore??-1));return{p:P[id],o:list[0],n:list.length}});
+  return Object.entries(by).map(([id,list])=>{list.sort((a,b)=>key(a)-key(b)||(b.dealScore??-1)-(a.dealScore??-1)||String(a.id).localeCompare(String(b.id)));return{p:P[id],o:list[0],n:list.length}});
 }
 function sortEntries(list){
   const s=F.sort||(F.mode==="abrir"?"ppb":"score");
   const cmp={score:(a,b)=>(b.o.dealScore??-1)-(a.o.dealScore??-1)||(b.o.discount??-9)-(a.o.discount??-9),disc:(a,b)=>(discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9),price:(a,b)=>a.o.total-b.o.total,ppb:(a,b)=>(a.o.perBooster??1e9)-(b.o.perBooster??1e9),new:(a,b)=>String(b.p.firstSeen||"").localeCompare(String(a.p.firstSeen||""))||(a.o.total-b.o.total)}[s]||(()=>0);
-  return list.sort(cmp);
+  return list.sort((a,b)=>cmp(a,b)||String(a.p.id).localeCompare(String(b.p.id)));   /* desempate fixo (igual à API) */
 }
 
 /* Referência de preço: oficial (loja Copag) ou coletada na internet (não oficial, só para comparação) */
@@ -1449,18 +1449,26 @@ function dealCard(e,opt={}){
 
 const pocket=dealCard;
 
+/* Dados dos filtros: do estado completo (aqui) ou prontos da API (/api/v1/site/produtos → facets, mesma regra) */
+function facetsOf(all){
+  return{groups:GROUP_ORDER.filter((gr)=>all.some((e)=>e.p.group===gr)).map((gr)=>[gr,all.filter((e)=>e.p.group===gr).length]),
+    cols:(S.collections||[]).filter((c)=>all.some((e)=>e.p.collection===c.id)).map((c)=>({id:c.id,name:c.name,series:c.series||"Outras"})),
+    stores:[...new Map(all.map((e)=>[e.o.storeId,e.o.storeName])).entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1]))),
+    types:[...new Map(all.filter((e)=>!F.group||e.p.group===F.group).map((e)=>[e.p.type,e.p.typeLabel])).entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1])))};
+}
 function filtersHTML(all){
-  const groups=GROUP_ORDER.filter((gr)=>all.some((e)=>e.p.group===gr));
-  const cols=(S.collections||[]).filter((c)=>all.some((e)=>e.p.collection===c.id));
+  const fc=Array.isArray(all)?facetsOf(all):all;
+  const gcount=Object.fromEntries(fc.groups);const groups=fc.groups.map(([gr])=>gr);
+  const cols=fc.cols;
   const series=[...new Set(cols.map((c)=>c.series||"Outras"))];
-  const stores=[...new Map(all.map((e)=>[e.o.storeId,e.o.storeName])).entries()].sort((a,b)=>a[1].localeCompare(b[1]));
+  const stores=fc.stores;
   const sorts=F.mode==="abrir"?[["ppb","Preço por booster"],["price","Menor preço"],["score","Deal Score"],["new","Novidades"]]:[["score","Melhor oportunidade"],["disc","Maior desconto"],["price","Menor preço"],["new","Novidades"]];
   const chip=(v,l,icon,c,count)=>`<button class="fchip" type="button" data-g="${v}" aria-pressed="${F.group===v}" ${c?`style="--ec:${c}"`:""}>${icon?ic(icon):""}${l}${count!=null?` <small>${count}</small>`:""}</button>`;
-  const types=[...new Map(all.filter((e)=>!F.group||e.p.group===F.group).map((e)=>[e.p.type,e.p.typeLabel])).entries()].sort((a,b)=>a[1].localeCompare(b[1]));
+  const types=fc.types;
   const extra=[F.type,F.store,F.max,F.below,!F.stock].filter(Boolean).length;
   const any=extra||F.group||F.col;
   return`<div class="filters">
-  <div class="chips" role="group" aria-label="Tipo de produto">${chip("","Todos",null,null,null)}${groups.map((gr)=>chip(gr,gr,GROUP[gr].icon,GROUP[gr].c,all.filter((e)=>e.p.group===gr).length)).join("")}</div>
+  <div class="chips" role="group" aria-label="Tipo de produto">${chip("","Todos",null,null,null)}${groups.map((gr)=>chip(gr,gr,GROUP[gr].icon,GROUP[gr].c,gcount[gr])).join("")}</div>
   <div class="selects">
     <div class="field"><label for="f-col">Coleção</label><select id="f-col" data-f="col"><option value="">Todas as coleções</option>${series.map((sr)=>`<optgroup label="${esc(sr)}">${cols.filter((c)=>(c.series||"Outras")===sr).map((c)=>`<option value="${esc(c.id)}"${F.col===c.id?" selected":""}>${esc(c.name)}</option>`).join("")}</optgroup>`).join("")}</select></div>
     <div class="field"><label for="f-sort">Ordenar por</label><select id="f-sort" data-f="sort">${sorts.map(([v,l])=>`<option value="${v}"${(F.sort||sorts[0][0])===v?" selected":""}>${l}</option>`).join("")}</select></div>
@@ -1663,8 +1671,8 @@ function renderGroup(kind,slug){
   if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Página não encontrada</h3><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
   const name=isCol?g0.name:g0.label;
   const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:p.type===g0.id));
-  const best={},n={};for(const o of OFF){if(!live(o))continue;n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||o.total<best[o.productId].total)best[o.productId]=o}
-  const list=ps.map((p)=>({p,o:best[p.id]||OFF.filter((o)=>o.productId===p.id).sort((a,b)=>a.total-b.total)[0]||null,n:n[p.id]||0}))
+  const best={},n={};if(S.slim)for(const p of ps)n[p.id]=p.liveCount||0;for(const o of OFF){if(!live(o))continue;if(!S.slim)n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||byTot(o,best[o.productId])<0)best[o.productId]=o}
+  const list=ps.map((p)=>({p,o:best[p.id]||OFF.filter((o)=>o.productId===p.id).sort(byTot)[0]||null,n:n[p.id]||0}))
     .sort((a,b)=>((b.n?1:0)-(a.n?1:0))||((b.o?.dealScore??-1)-(a.o?.dealScore??-1))||((discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9)));
   const inStock=list.filter((e)=>e.n).length;const low=list.filter((e)=>e.n).map((e)=>e.o.total).sort((a,b)=>a-b)[0];
   document.title=isCol?`${name} Pokémon TCG: preços | TCG Price Hunter`:`Preço de ${name} Pokémon TCG no Brasil | TCG Price Hunter`;
@@ -1707,21 +1715,26 @@ function renderDeals(){
 /* Produtos: todos os produtos com oferta, com filtros (coleção, formato, loja, preço, estoque, abaixo da Copag) */
 function rerenderList(){if(view==="produtos")renderProdutos();else renderDeals()}
 function renderProdutos(){
+  if(S.slim)return renderProdutosApi();   /* FASE 4: lista vem pronta da API */
   const raw=entries();
   const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
   const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
+  paintProdutos({list,total:list.length,facets:facetsOf(all),noCopag:sortEntries(noCopag),noCopagCount:noCopag.length,refNet:base.some((e)=>!e.p.copagConfirmed),next:null});
+}
+function paintProdutos(d){
   $("#view").innerHTML=`<div class="opp prods">
   <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}<span>Produtos</span></nav>
-  <header class="opp-head"><h1>${ic("package")}Todos os produtos</h1><p>${list.length} ${list.length===1?"produto":"produtos"} com oferta nas lojas, cada um com o menor preço encontrado e comparado com o preço sugerido da Copag.</p></header>
+  <header class="opp-head"><h1>${ic("package")}Todos os produtos</h1><p>${d.total} ${d.total===1?"produto":"produtos"} com oferta nas lojas, cada um com o menor preço encontrado e comparado com o preço sugerido da Copag.</p></header>
   <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
-  ${filtersHTML(all)}
-  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e)).join("")}</div>`:`<div class="empty"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
-  ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço sugerido conhecido (${noCopag.length})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
-  ${base.some((e)=>!e.p.copagConfirmed)?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
+  ${filtersHTML(d.facets)}
+  ${d.list.length?`<div class="deals">${d.list.map((e)=>dealCard(e)).join("")}</div>${d.next?moreSentinel(d.next):""}`:`<div class="empty"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
+  ${d.noCopagCount?`<details class="more"${d.noCopag?"":` data-semref="1"`}><summary>${ic("caret-down")}Sem preço sugerido conhecido (${d.noCopagCount})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${d.noCopag?d.noCopag.map((e)=>dealCard(e)).join(""):""}</div></details>`:""}
+  ${d.refNet?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
   </div>`;
   if(typeof revealInit==="function")revealInit();
+  if(d.next)watchMore();
 }
 function renderList(title,intro,list,emptyMsg){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>${title}</h2><p>${intro}</p>
@@ -1843,7 +1856,7 @@ const HIST={};const HV={period:30,mode:"best"};
 const PERIODS=[[7,"7D"],[30,"30D"],[90,"90D"],[365,"1A"]];
 const fmtD=(d)=>{const [y,m,dd]=d.split("-");return`${dd}/${m}`};
 async function loadHist(pid){
-  if(!(pid in HIST)){const h=await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`);
+  if(!(pid in HIST)){const h=(await histFromApi(pid))||await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`);
     /* leituras antigas não confiáveis (antes da correção do leitor de páginas) não entram no gráfico */
     const D=S.distrust;if(h&&D&&D.stores)for(const[sid,x]of Object.entries(h.stores||{})){if(D.stores.includes(sid))x.pts=x.pts.filter((p)=>p[0]>D.until);if(!x.pts.length)delete h.stores[sid]}
     HIST[pid]=h}
@@ -2012,7 +2025,9 @@ const favs=()=>ACC.data?.favorites||[];
 const alertsL=()=>ACC.data?.alerts||[];
 const isFav=(pid)=>favs().includes(pid);
 const alertOf=(pid)=>alertsL().find((a)=>a.p===pid);
-const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort((a,b)=>a.total-b.total)[0];
+/* desempate fixo (preço, Deal Score, id): o mesmo no site e na API, não depende da ordem das ofertas na lista */
+const byTot=(a,b)=>a.total-b.total||(b.dealScore??-1)-(a.dealScore??-1)||String(a.id).localeCompare(String(b.id));
+const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort(byTot)[0];
 const hits=()=>alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v);
 const authPending=()=>!ACC.ready&&store.get("acc",false);
 function accMod(){return accP||=import("/account.js").then((m)=>{ACC.mod=m;m.watch(onUser);return m}).catch((e)=>{accP=null;throw e})}
@@ -2229,13 +2244,14 @@ function render(){
   const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
-  if(S?.slim&&view!=="deals")ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
+  if(S?.slim&&PRIVATE.includes(view))ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
   if(view==="conta")return renderConta();
   if(view==="favoritos")return renderFavs();
   if(view==="alertas")return renderAlerts();
   if(view==="configuracoes")return renderConfig();
   if(!S)return;
-  if(S.slim&&view!=="deals"){loading();ensureFull();return}
+  if(S.slim&&!API_VIEWS.has(view)){loading();ensureFull();return}
+  if(S.slim&&!apiPageReady()){return}   /* FASE 4: dados da página chegando da API (ou caindo no state.json) */
   if(view==="produto")renderProduct(curPid);
   else if(view==="busca")renderSearch();
   else if(view==="deals")renderDeals();
@@ -2288,7 +2304,7 @@ function searchProducts(q){
   return out.sort((a,b)=>b.score-a.score||(!!bl[b.p.id]-!!bl[a.p.id])||((bl[b.p.id]?.dealScore??-1)-(bl[a.p.id]?.dealScore??-1)));
 }
 function searchCollections(q){const qs=toks(q);if(!qs.length)return[];return CIDX.map((x)=>({c:x.c,s:qs.reduce((a,w)=>{const s=tokScore(w,x.t);return a<0||!s?-1:a+s},0)})).filter((x)=>x.s>0).sort((a,b)=>b.s-a.s).map((x)=>x.c)}
-function bestOfferFor(pid){return bestLive(pid)||OFF.filter((o)=>o.productId===pid&&!o.anomalous).sort((a,b)=>(a.stock==="PRE_ORDER"?0:1)-(b.stock==="PRE_ORDER"?0:1)||a.total-b.total)[0]||null}
+function bestOfferFor(pid){return bestLive(pid)||OFF.filter((o)=>o.productId===pid&&!o.anomalous).sort((a,b)=>(a.stock==="PRE_ORDER"?0:1)-(b.stock==="PRE_ORDER"?0:1)||byTot(a,b))[0]||null}
 const nLiveOf=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).length;
 
 /* SearchInput com autocomplete: rápido, sem buscar nada na rede */
@@ -2312,8 +2328,8 @@ function doSearch(q){q=String(q||"").trim().slice(0,80);acClose();if(!q){go("");
 
 /* Resultados da busca */
 function renderSearch(){
-  const q=F.q||"";const res=searchProducts(q);const cols=searchCollections(q).slice(0,6);const tips=q?tipHits(q):[];
-  const cards=res.map(({p})=>({p,o:bestOfferFor(p.id),n:nLiveOf(p.id)}));
+  const q=F.q||"";const res=searchProducts(q);const cols=searchCollections(q).slice(0,6);const tips=q?(S.slim?(SEARCH_TIPS.get(q)||[]):tipHits(q)):[];
+  const cards=res.map(({p})=>({p,o:bestOfferFor(p.id),n:S.slim?(p.liveCount||0):nLiveOf(p.id)}));
   const sugg=!res.length?(S.collections||[]).map((c)=>({c,d:lev(norm(q),norm(c.name),6)})).sort((a,b)=>a.d-b.d).slice(0,3).map((x)=>x.c):[];
   $("#view").innerHTML=`<div class="page-title"><h2>${res.length?`${res.length} ${res.length===1?"produto":"produtos"} para "${esc(q)}"`:`Nenhum produto para "${esc(q)}"`}</h2>${q?`<button class="linkbtn" type="button" data-go="">${ic("x")}Limpar busca</button>`:""}</div>
   ${cols.length?`<div class="qchips">${cols.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)} <small>${c.products}</small></button>`).join("")}</div>`:""}
@@ -2372,7 +2388,7 @@ setInterval(fresh,30e3);
 (()=>{const h=$("#hsearch");if(h)h.innerHTML=searchBox("tq",view==="busca"?F.q:"",true)})();
 function init(st,opt={}){
   const prevBest=S?Object.fromEntries((S.products||[]).map((p)=>[p.id,bestLive(p.id)?.total])):null;
-  S=st;P=Object.fromEntries((S.products||[]).map((p)=>[p.id,p]));OFF=S.offers||[];
+  S=st;P=Object.fromEntries((S.products||[]).map((p)=>[p.id,p]));OFF=S.offers||[];if(st.slim)apiReset();
   buildSlugs();buildIndex();
   CHANGED=new Set(prevBest?Object.keys(P).filter((id)=>prevBest[id]!=null&&bestLive(id)?.total!==prevBest[id]):[]);
   if(view==="produto"){const r=parseLoc();curPid=r.slug?pidFromSlug(r.slug):curPid;if(curPid&&location.pathname!=="/produto/"+SLUG[curPid])history.replaceState(null,"","/produto/"+SLUG[curPid])}
@@ -2407,6 +2423,83 @@ async function fetchHome(){
   try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),6000);const r=await fetch("/api/v1/home",{signal:ac.signal});clearTimeout(tm);
     if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts?hydrateHome(h):null}catch{return null}
 }
+/* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
+   preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
+   Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
+const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca"]);
+const APIC=new Map();const APITTL=60e3;
+async function apiGet(path,ms=8000){
+  const hit=APIC.get(path);if(hit&&Date.now()-hit.at<APITTL)return hit.j;
+  try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),ms);const r=await fetch("/api/v1/"+path,{signal:ac.signal});clearTimeout(tm);
+    if(r.status===404)return{notFound:true};if(!r.ok)return null;const j=await r.json();APIC.set(path,{at:Date.now(),j});if(APIC.size>120)APIC.delete(APIC.keys().next().value);return j}catch{return null}
+}
+const PAGE_DONE=new Set();const SEARCH_TIPS=new Map();let pageP=null,pageKey="";
+function apiReset(){APIC.clear();PAGE_DONE.clear();SEARCH_TIPS.clear();pageKey="";pageP=null;for(const k of Object.keys(HIST))delete HIST[k]}
+function hydP(p){const c=(S.collections||[]).find((x)=>x.id===p.collection),t=(S.types||[]).find((x)=>x.id===p.type);
+  p.collectionName??=c?.name;p.typeLabel??=t?.label;p.group??=t?.group;p.copagConfirmed=!!p.copagConfirmed;return p}
+function mergeProducts(list){for(const p0 of list){const p=hydP({...p0});if(P[p.id])Object.assign(P[p.id],p);else{P[p.id]=p;S.products.push(p)}}}
+function mergeOffers(list,replacePid){const ids=new Set(list.map((o)=>o.id));OFF=OFF.filter((o)=>!ids.has(o.id)&&(!replacePid||o.productId!==replacePid)).concat(list);S.offers=OFF}
+function mergeSide(d){
+  if(d.sources)for(const s of d.sources)if(!(S.sources||=[]).some((x)=>x.id===s.id))S.sources.push(s);
+  if(d.reputation){S.reputation||={consultadoEm:d.reputation.consultadoEm,lojas:{}};Object.assign(S.reputation.lojas||={},d.reputation.lojas||{})}
+  if(d.tips)for(const t of d.tips)if(!(S.tips||=[]).some((x)=>(x.key||x.id)===(t.key||t.id)))S.tips.push(t);
+}
+/* a página atual já tem seus dados? Senão busca na API e redesenha quando chegar */
+function apiPageReady(){
+  const key=view==="produto"?"p:"+(curPid||parseLoc().slug):view==="colecao"||view==="tipo"?view+":"+curGroup:view==="busca"?"b:"+(F.q||""):"";
+  if(!key||PAGE_DONE.has(key))return true;
+  if(pageKey!==key){pageKey=key;loading();pageP=loadPage(key).then((ok)=>{pageP=null;if(pageKey!==key)return;if(ok)PAGE_DONE.add(key);else{pageKey="";return ensureFull()}render()})}
+  return false;
+}
+async function loadPage(key){
+  if(key.startsWith("p:")){const id=key.slice(2);if(!id)return true;
+    const d=await apiGet("site/produto/"+encodeURIComponent(id));if(!d)return false;
+    if(d.notFound){if(curPid)return false;PAGE_DONE.add(key);return true}   /* sem produto: "não encontrado"; produto conhecido sem resposta: state.json */
+    mergeProducts([d.product]);mergeOffers(d.offers,d.product.id);mergeSide(d);
+    if(!curPid||curPid!==d.product.id){curPid=d.product.id;if(!SLUG[curPid]){SLUG[curPid]=parseLoc().slug||curPid;BYSLUG[SLUG[curPid]]=curPid}}
+    PAGE_DONE.add("p:"+curPid);return true}
+  if(key.startsWith("colecao:")||key.startsWith("tipo:")){const isCol=key.startsWith("colecao:");const slug=key.slice(key.indexOf(":")+1);
+    const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):(S.types||[]).find((t)=>typeSlugOf(t)===slug);if(!g0)return true;
+    const d=await apiGet(`site/ofertas?${isCol?"colecao":"tipo"}=${encodeURIComponent(g0.id)}`);if(!d||d.notFound)return false;
+    mergeProducts(d.products);mergeOffers(d.offers);mergeSide(d);return true}
+  if(key.startsWith("b:")){const q=key.slice(2);const ids=q?searchProducts(q).slice(0,60).map(({p})=>p.id):[];
+    if(!q)return true;const d=await apiGet(`site/ofertas?busca=${encodeURIComponent(q)}${ids.length?"&produtos="+ids.map(encodeURIComponent).join(","):""}`);if(!d||d.notFound)return false;
+    mergeProducts(d.products||[]);mergeOffers(d.offers||[]);mergeSide({sources:d.sources,reputation:d.reputation});SEARCH_TIPS.set(q,d.tips||[]);return true}
+  return true;
+}
+/* histórico do produto: série diária do Price Engine, por loja (o gráfico monta o "melhor preço" igual antes) */
+async function histFromApi(pid){
+  if(!S?.slim&&!HOME_API)return null;
+  const d=await apiGet(`produtos/${encodeURIComponent(pid)}/historico?dias=365&lojas=1`);const h=d?.data;
+  if(!h||!h.stores)return null;
+  return{productId:pid,source:"price_engine",stores:Object.fromEntries(Object.entries(h.stores).map(([sid,x])=>[sid,{name:x.name,pts:x.series.map((q)=>[q.day,q.min])}]))};
+}
+/* /produtos pela API: lista filtrada/ordenada/paginada no servidor (mesmas regras), carrega mais ao rolar */
+function prodQuery(page,semref){const q=new URLSearchParams({modo:F.mode,pagina:String(page),limite:"48"});if(semref)q.set("semref","1");
+  if(F.sort)q.set("ordem",F.sort);if(F.group)q.set("grupo",F.group);if(F.col)q.set("colecao",F.col);if(F.store)q.set("loja",F.store);if(F.type)q.set("tipo",F.type);
+  if(F.max)q.set("max",F.max);if(F.below)q.set("abaixo","1");if(!F.stock)q.set("estoque","0");return"site/produtos?"+q}
+const cardE=(e)=>({p:hydP({...(P[e.p.id]||{}),...e.p}),o:e.o,n:e.n});
+let prodReq="";
+async function renderProdutosApi(){
+  const key=prodQuery(1);prodReq=key;
+  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
+  const d=await apiGet(key);if(prodReq!==key||view!=="produtos")return;
+  if(!d||d.notFound){ensureFull();return}
+  mergeSide(d);paintProdutos({list:d.items.map(cardE),total:d.total,facets:d.facets,noCopag:null,noCopagCount:d.noCopagCount,refNet:d.refNet,next:d.pages>1?2:null});
+}
+async function moreProdutos(page){
+  const key=prodQuery(page);const d=await apiGet(key);if(!d||view!=="produtos"||prodQuery(page)!==key)return;
+  const box=$("#view .prods .deals");if(!box)return;mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((e)=>dealCard(cardE(e))).join(""));
+  $("#prod-more")?.remove();if(page<d.pages)box.insertAdjacentHTML("afterend",moreSentinel(page+1));watchMore();if(typeof revealInit==="function")revealInit();
+}
+/* "Sem preço sugerido": a API manda só a contagem; os cartões vêm quando o bloco abre (todas as páginas) */
+document.addEventListener("toggle",async(e)=>{const el=e.target;if(!el.matches?.("details[data-semref]")||!el.open||el.dataset.loaded)return;el.dataset.loaded="1";
+  const box=el.querySelector(".deals");let page=1,pages=1;do{const d=await apiGet(prodQuery(page,true));if(!d||d.notFound){el.dataset.loaded="";return}
+    mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((x)=>dealCard(cardE(x))).join(""));pages=d.pages;page++}while(page<=pages&&page<=20);if(typeof revealInit==="function")revealInit()},true);
+const moreSentinel=(n)=>`<div id="prod-more" class="prod-more" data-page="${n}" style="height:1px"></div>`;
+let moreIO=null;
+function watchMore(){const el=$("#prod-more");if(!el)return;if(!("IntersectionObserver" in window)){moreProdutos(+el.dataset.page);return}
+  moreIO?.disconnect();moreIO=new IntersectionObserver((xs)=>{if(xs.some((x)=>x.isIntersecting)){moreIO.disconnect();moreProdutos(+el.dataset.page)}},{rootMargin:"900px 0px"});moreIO.observe(el)}
 let fullP=null;
 function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
@@ -2415,19 +2508,15 @@ function ensureFull(){
     else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
-/* na primeira intenção de sair da Home (passar o mouse num link, focar a busca), o estado completo já vem baixando */
-/* (foco automático não conta: só mouse/toque num link interno ou digitar na busca) */
-["pointermove","pointerdown"].forEach((ev)=>document.addEventListener(ev,(e)=>{if(S?.slim&&!fullP&&e.isTrusted&&e.target.closest?.("[data-p],[data-go],[data-col],a[href^='/']"))ensureFull()},{passive:true}));   /* pointermove: o ponteiro parado sobre um link enquanto a página monta não conta */
-document.addEventListener("keydown",(e)=>{if(S?.slim&&e.isTrusted&&e.target.closest?.("#tq,.sbox"))ensureFull()},{passive:true});
 async function refresh(){
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
-  const st=S?.slim&&view==="deals"?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
+  const st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
   if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
   const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
 }
 async function load(){
   loading();
-  const st=view==="deals"?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
+  const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)){render();return}
   $("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
 }

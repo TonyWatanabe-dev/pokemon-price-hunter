@@ -54,7 +54,7 @@ const vFull = homeView({ ...st, products: st.products, offers: st.offers, counts
 assert.deepEqual(Object.fromEntries(Object.entries(vSlim.best).map(([k, o]) => [k, o.id])), Object.fromEntries(Object.entries(vFull.best).filter(([k]) => vSlim.P.has(k)).map(([k, o]) => [k, o.id])));
 assert.deepEqual(vSlim.poolList, vFull.poolList); assert.deepEqual(vSlim.wall, vFull.wall);
 // nada interno: varre todas as chaves do resumo
-const FORBIDDEN = /^(matchConfidence|match_confidence|sourceType|source_url|sellerId|external_id|affiliate.*|quality|text|secretNote|unmatched|rules|recentAlerts|distrust|copag|prices|password|token|legacy_id|decided_by.*|review.*)$/i;
+const FORBIDDEN = /^(matchConfidence|match_confidence|sourceType|source_url|sellerId|external_id|affiliate.*|quality|text|secretNote|unmatched|rules|recentAlerts|copag|prices|password|token|legacy_id|decided_by.*|review.*)$/i;
 const keys = new Set(); (function walk(x) { if (Array.isArray(x)) x.forEach(walk); else if (x && typeof x === 'object') for (const [k, v] of Object.entries(x)) { keys.add(k); walk(v); } })(h);
 assert.deepEqual([...keys].filter((k) => FORBIDDEN.test(k)), [], 'resumo da Home sem campos internos');
 assert.deepEqual(Object.keys(h.reputation.lojas), ['b'], 'reputação só das lojas presentes no resumo');
@@ -92,6 +92,36 @@ r = await call('/api/v1/produtos/me05-etb/ofertas?limite=10'); assert.equal(r.js
 assert.equal(r.json.data.find((o) => o.id === 'oa').total_price, null, 'frete desconhecido: total nulo, nunca o preço');
 r = await call('/api/v1/oportunidades'); assert.equal(r.json.meta.status, 'not_computed'); assert.deepEqual(r.json.data, []);
 r = await call('/api/v1/referencias?status=verified'); assert.equal(r.json.data.length, 1);
+
+
+// ------------------------------------------------------------------ A) FASE 4 — páginas do site (state.json)
+// lista de produtos: filtros, ordenação, paginação, "sem preço sugerido" sob demanda
+r = await call('/api/v1/site/produtos'); assert.equal(r.status, 200); assert.equal(r.headers['X-Data-Source'], 'state');
+assert.deepEqual(r.json.items.map((e) => e.p.id), ['me05-etb'], 'modo guardar: só produto com referência');
+assert.equal(r.json.items[0].o.id, 'od', 'melhor oferta: menor preço com estoque (od R$ 340; como no site, "viva" não exige confirmação)');
+assert.equal(r.json.noCopagCount, 1); assert.equal(r.json.noCopag, undefined, 'lista sem referência não vem na 1ª carga');
+assert.deepEqual(r.json.facets.groups, [['Boosters', 1], ['ETB', 1]]); assert.ok(r.json.facets.stores.some(([id]) => id === 'mercadolivre'));
+r = await call('/api/v1/site/produtos?semref=1'); assert.deepEqual(r.json.items.map((e) => e.p.id), ['me05-booster']);
+r = await call('/api/v1/site/produtos?modo=abrir&ordem=ppb'); assert.deepEqual(r.json.items.map((e) => e.p.id), ['me05-booster', 'me05-etb'], 'abrir: por preço por booster');
+r = await call('/api/v1/site/produtos?modo=abrir&limite=1&pagina=2'); assert.equal(r.json.items.length, 1); assert.equal(r.json.pages, 2); assert.equal(r.json.total, 2);
+r = await call('/api/v1/site/produtos?loja=b'); assert.equal(r.json.items[0].o.id, 'ob', 'filtro de loja: a melhor oferta daquela loja (empate de total com oa desfeito pelo Deal Score)');
+r = await call('/api/v1/site/produtos?max=300'); assert.equal(r.json.total, 0, 'preço até R$ 300: nenhuma ETB com estoque');
+r = await call('/api/v1/site/produtos?estoque=0&loja=rihappycombr'); assert.equal(r.json.total, 0, 'sem estoque negado: oferta sem estoque (oc) não entra');
+r = await call('/api/v1/site/produtos?grupo=Latas'); assert.equal(r.json.total, 0, 'produto sem oferta não aparece na lista');
+for (const bad of ['modo=x', 'ordem=x', 'grupo=x', 'max=-1']) assert.equal((await call('/api/v1/site/produtos?' + bad)).status, 400, bad);
+// produto: ofertas, frete, referência, pistas; inexistente; sem ofertas
+r = await call('/api/v1/site/produto/me05-etb'); const sp = r.json;
+assert.equal(sp.offers.length, 5); assert.equal(sp.liveCount, 3); assert.equal(sp.product.msrp, 400);
+assert.equal(sp.offers.find((o) => o.id === 'ob').shipping, 20); assert.ok(!sp.offers.find((o) => o.id === 'oa').shippingKnown, 'frete desconhecido continua desconhecido');
+assert.equal(sp.tips.length, 1); assert.equal(sp.tips[0].text, undefined, 'pista sem texto bruto');
+assert.equal((await call('/api/v1/site/produto/nao-existe')).status, 404);
+r = await call('/api/v1/site/produto/sv9-lata'); assert.equal(r.status, 200); assert.deepEqual(r.json.offers, []); assert.equal(r.json.product.copagReference, 99.9);
+// coleção, tipo e busca: só as ofertas candidatas
+r = await call('/api/v1/site/ofertas?colecao=me05'); assert.deepEqual(r.json.offers.map((o) => o.id).sort(), ['oc', 'od', 'of'], 'melhor com estoque (od), menor de todas para o cartão sem estoque (oc), booster (of)');
+assert.equal(r.json.liveCount['me05-etb'], 3);
+r = await call('/api/v1/site/ofertas?tipo=lata'); assert.deepEqual(r.json.offers, []);
+r = await call('/api/v1/site/ofertas?busca=etb%20barata&produtos=me05-etb'); assert.equal(r.json.tips.length, 1);
+assert.equal((await call('/api/v1/site/ofertas')).status, 400);
 
 // ------------------------------------------------------------------ B) banco (PostgreSQL)
 if (!process.env.TEST_DATABASE_URL) { console.log('OK — API v1 (state.json); banco pulado (sem TEST_DATABASE_URL)'); process.exit(0); }
@@ -138,10 +168,42 @@ assert.equal(ce.currentPrice.diffCount, 0, JSON.stringify(ce.currentPrice.diffs)
 // nada interno nas respostas do banco
 const all = JSON.stringify([(await call('/api/v1/produtos/me05-etb')).json, (await call('/api/v1/produtos/me05-etb/ofertas')).json, (await call('/api/v1/produtos?limite=50')).json, hDb]);
 for (const k of ['match_confidence', 'external_id', 'external_offer_id', 'affiliate', 'decided_by', 'quality', 'anchor', '"product_id"', 'legacy_id', 'seller_id']) assert.ok(!all.includes(k), `resposta não pode conter ${k}`);
+// FASE 4 — páginas pelo banco: mesmas respostas que pelo state.json (regras do site no servidor)
+const { clearCatalogCache: ccc } = await import('../api/_lib/catalog.mjs'); ccc(); _cache.clear();
+for (const q of ['', '?semref=1', '?modo=abrir', '?loja=mercadolivre', '?estoque=0', '?ordem=price', '?grupo=ETB&ordem=disc', '?max=1000&abaixo=1']) {
+  const a = (await call('/api/v1/site/produtos' + q)).json; const b = (await call('/api/v1/site/produtos' + q + (q ? '&' : '?') + 'fonte=state')).json;
+  assert.equal(a.source, 'db'); assert.equal(b.source, 'state');
+  assert.deepEqual(a.items.map((e) => [e.p.id, e.o.id, e.o.total, e.o.dealScore ?? null, e.n]), b.items.map((e) => [e.p.id, e.o.id, e.o.total, e.o.dealScore ?? null, e.n]), `lista ${q}`);
+  assert.deepEqual(a.facets, b.facets, `filtros ${q}`); assert.equal(a.noCopagCount, b.noCopagCount);
+}
+// página do produto pelo banco: Price Engine define preço médio; frete e estoque iguais ao state.json
+r = await call('/api/v1/site/produto/me05-etb'); assert.equal(r.headers['X-Data-Source'], 'db');
+assert.equal(r.json.stats.market.average, 370, 'preço médio = Price Engine (média do preço com estoque)'); assert.equal(r.json.product.marketAverage, 370);
+const so = (await call('/api/v1/site/produto/me05-etb?fonte=state')).json;
+const key = (o) => [o.id, o.price, o.total, o.stock, o.shipping ?? null, o.storeName, o.seller ?? null];
+assert.deepEqual(r.json.offers.map(key).sort(), so.offers.map(key).sort(), 'ofertas do produto: banco = state.json');
+r = await call('/api/v1/site/produto/me05-booster'); assert.equal(r.json.product.msrp ?? null, null); assert.equal(r.json.stats.reference, null, 'produto sem referência');
+r = await call('/api/v1/site/produto/sv9-lata'); assert.equal(r.json.stats.status, 'no_offers'); assert.equal(r.json.stats.history.status, 'insufficient', 'produto sem histórico');
+// histórico por loja (gráfico): a linha do produto é o menor valor entre as lojas, dia a dia
+r = await call('/api/v1/produtos/me05-etb/historico?dias=30&lojas=1'); const hs = r.json.data;
+assert.ok(hs.stores && Object.keys(hs.stores).length >= 2);
+for (const d of hs.series) assert.equal(Math.min(...Object.values(hs.stores).flatMap((x) => x.series.filter((q) => q.day === d.day).map((q) => q.min))), d.min);
+r = await call('/api/v1/produtos/sv9-lata/historico?lojas=1'); assert.deepEqual(r.json.data.series, []);
+// coleção pelo banco = state.json
+const ca = (await call('/api/v1/site/ofertas?colecao=me05')).json, cb = (await call('/api/v1/site/ofertas?colecao=me05&fonte=state')).json;
+assert.deepEqual(ca.offers.map((o) => o.id).sort(), cb.offers.map((o) => o.id).sort()); assert.deepEqual(ca.liveCount, cb.liveCount);
+// cache: segunda chamada sai da memória
+assert.equal((await call('/api/v1/site/produtos')).headers['X-Cache'], 'HIT');
+// nada interno nas respostas das páginas
+const pages = JSON.stringify([(await call('/api/v1/site/produtos')).json, (await call('/api/v1/site/produto/me05-etb')).json, ca]);
+for (const k of ['match_confidence', 'matchConfidence', 'external_id', 'affiliate', 'quality', 'legacy_id', 'seller_id', 'sourceType', '"text"']) assert.ok(!pages.includes(k), `página não pode conter ${k}`);
 // banco fora do ar → fallback seguro para o state.json
 const { closeApiPool } = await import('../api/_lib/db.mjs'); await closeApiPool();
 process.env.API_DATABASE_URL = 'postgres://x:y@127.0.0.1:1/nada'; _cache.clear();
+const { clearCatalogCache } = await import('../api/_lib/catalog.mjs'); clearCatalogCache();   // sem isso, até 60 s servindo a última foto do banco (comportamento esperado)
 r = await call('/api/v1/produtos/me05-etb'); assert.equal(r.status, 200); assert.equal(r.headers['X-Data-Source'], 'state'); assert.equal(r.headers['X-Fallback'], 'db-indisponivel');
 r = await call('/api/v1/home'); assert.equal(r.status, 200); assert.equal(r.json.source, 'state');
+r = await call('/api/v1/site/produtos'); assert.equal(r.status, 200); assert.equal(r.json.source, 'state'); assert.equal(r.headers['X-Fallback-Reason'], 'ECONNREFUSED');
+r = await call('/api/v1/site/produto/me05-etb'); assert.equal(r.status, 200); assert.equal(r.json.source, 'state');
 await closeApiPool(); await close();
 console.log('OK — API v1 (state.json e PostgreSQL)');

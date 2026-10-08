@@ -11,18 +11,18 @@ const STOCK_OUT = { in_stock: 'IN_STOCK', out_of_stock: 'OUT_OF_STOCK', preorder
 // ---------------------------------------------------------------- Home (formato do state.json, só o necessário)
 const PRODUCTS_SQL = `
   SELECT p.id, p.legacy_id, p.units, p.variant, p.image_url, p.attrs, c.code AS col_code, c.name AS col_name,
-         r.value AS ref_value, r.verification_status AS ref_status, r.source_url AS ref_url,
+         r.value AS ref_value, r.verification_status AS ref_status, r.source_url AS ref_url, r.source AS ref_source, r.verified_at AS ref_verified_at,
          (SELECT i.value FROM hunter.product_identifier i WHERE i.product_id = p.id AND i.kind = 'ean' ORDER BY i.value LIMIT 1) AS ean
     FROM hunter.product p
     LEFT JOIN hunter.collection c ON c.id = p.collection_id
-    LEFT JOIN LATERAL (SELECT value, verification_status, source_url FROM hunter.reference_price r
+    LEFT JOIN LATERAL (SELECT value, verification_status, source_url, source, verified_at FROM hunter.reference_price r
                         WHERE r.product_id = p.id AND r.verification_status IN ('verified', 'pending')
                         ORDER BY (r.verification_status = 'verified') DESC, r.verified_at DESC NULLS LAST, r.confidence DESC, r.id DESC LIMIT 1) r ON true
    WHERE p.legacy_id IS NOT NULL`;
 const OFFERS_SQL = `
   SELECT o.legacy_id, p.legacy_id AS product_legacy, o.store_id, st.name AS store_name, se.name AS seller_name, o.url, o.image_url,
          o.price, o.price_kind, o.shipping_price, o.shipping_status, o.total_price, o.stock_status, o.quantity, o.confirmed, o.anomalous,
-         o.status, o.first_seen_at
+         o.status, o.first_seen_at, o.last_seen_at
     FROM hunter.offer o
     JOIN hunter.product p ON p.id = o.product_id
     LEFT JOIN hunter.store st ON st.id = o.store_id
@@ -46,7 +46,9 @@ export async function stateLikeFromDb(legacy) {
       boosters: r.units ?? null, variant: r.variant ?? null, ean: r.ean ?? null, image: r.image_url ?? null,
       copagConfirmed: verified, msrp: verified ? num(r.ref_value) : null,
       copagReference: !verified && r.ref_value != null ? num(r.ref_value) : null, copagReferenceUrl: !verified ? r.ref_url ?? null : null,
+      copag: verified ? { source_url: r.ref_url, source_timestamp: iso(r.ref_verified_at), manual: r.ref_source === 'manual' } : null,
       firstSeen: l.firstSeen ?? null, lowestHistorical: l.lowestHistorical ?? null,   // ainda do robô (Price Engine sem histórico suficiente)
+      marketAverage: l.marketAverage ?? null, hist: l.hist ?? null,                    // trocados pelo Price Engine na página do produto
     };
   });
   const PB = new Map(products.map((p) => [p.id, p]));
@@ -60,25 +62,29 @@ export async function stateLikeFromDb(legacy) {
       id: r.legacy_id, productId: r.product_legacy, storeId: r.store_id, storeName: r.store_name, seller: r.seller_name ?? null,
       url: r.url, image: r.image_url ?? null, price, priceKind: r.price_kind ?? null,
       shipping: known ? (r.shipping_status === 'free' ? 0 : num(r.shipping_price)) : null, shippingKnown: known, total,
-      perBooster: p.boosters && total ? round2(total / p.boosters) : null,
+      // preço por booster: o do robô quando existe (entra no Deal Score e no modo "Para abrir"; comportamento atual
+      // preservado até o Opportunity Engine); senão, calculado do produto
+      perBooster: l.perBooster !== undefined ? l.perBooster : p.boosters && total ? round2(total / p.boosters) : null,
       stock: STOCK_OUT[r.stock_status] || 'UNKNOWN', quantity: r.quantity ?? null, firstSeen: iso(r.first_seen_at),
       stale: r.status === 'pending', confirmed: r.confirmed, anomalous: r.anomalous,
       discount: p.msrp && total ? +(1 - total / p.msrp).toFixed(4) : null, savings: p.msrp && total ? round2(p.msrp - total) : null,
       // ainda do robô:
       dealScore: l.dealScore ?? null, scoreParts: l.scoreParts ?? null, storeValidated: l.storeValidated ?? false, releaseDate: l.releaseDate ?? null,
-      sku: l.sku ?? null, ean: l.ean ?? null,
+      sku: l.sku ?? null, ean: l.ean ?? null, source_timestamp: iso(r.last_seen_at),
+      priceKindLabel: l.priceKindLabel ?? null, storeKind: l.storeKind ?? null, sellerKind: l.sellerKind ?? null,
     };
   });
   const count = {}; for (const o of offers) count[o.productId] = (count[o.productId] || 0) + 1;
   for (const p of products) p.offerCount = count[p.id] || 0;
   // ordem das coleções = a do robô (o mural da Home depende dela); nomes e apelidos do banco
   const pos = new Map((legacy.collections || []).map((c, i) => [c.id, i]));
-  const collections = crows.map((c) => ({ id: c.id, name: c.name, series: c.series, aliases: c.aliases || [] }))
+  const nByCol = {}; for (const p of products) nByCol[p.collection] = (nByCol[p.collection] || 0) + 1;
+  const collections = crows.map((c) => ({ id: c.id, name: c.name, series: c.series, aliases: c.aliases || [], products: nByCol[c.id] || 0 }))
     .sort((a, b) => (pos.get(a.id) ?? 1e6) - (pos.get(b.id) ?? 1e6) || a.id.localeCompare(b.id));
   return {
     generatedAt: legacy.generatedAt, coverage: legacy.coverage, totals: legacy.totals, types: legacy.types,
     collections, products, offers,
-    activity: legacy.activity, tips: legacy.tips, sources: legacy.sources, reputation: legacy.reputation,
+    activity: legacy.activity, tips: legacy.tips, sources: legacy.sources, reputation: legacy.reputation, distrust: legacy.distrust ?? null,
   };
 }
 
@@ -199,12 +205,21 @@ export async function productOffers(key, { page, limit, todas = false }) {
 }
 
 // ---------------------------------------------------------------- Histórico (série diária do Price Engine)
-export async function productHistory(key, { dias }) {
+export async function productHistory(key, { dias, lojas = false }) {
   const p = await productRow(key); if (!p) return null;
-  const rows = await q(`SELECT day, min_price, max_price, avg_price, close_price, offers FROM hunter.price_daily
-     WHERE product_id = $1 AND store_id = '' AND day >= (current_date - $2::int) ORDER BY day`, [p.id, dias]);
-  return { product: { id: p.legacy_id, slug: p.slug, name: p.canonical_name }, days: dias,
-    series: rows.map((r) => ({ day: iso(r.day).slice(0, 10), min: num(r.min_price), max: num(r.max_price), avg: num(r.avg_price), close: num(r.close_price), offers: r.offers })) };
+  const rows = await q(`SELECT d.store_id, s.name AS store_name, d.day, d.min_price, d.max_price, d.avg_price, d.close_price, d.offers FROM hunter.price_daily d
+     LEFT JOIN hunter.store s ON s.id = d.store_id
+     WHERE d.product_id = $1 AND ($3::boolean OR d.store_id = '') AND d.day >= (current_date - $2::int) ORDER BY d.store_id, d.day`, [p.id, dias, !!lojas]);
+  const pt = (r) => ({ day: iso(r.day).slice(0, 10), min: num(r.min_price), max: num(r.max_price), avg: num(r.avg_price), close: num(r.close_price), offers: r.offers });
+  const out = { product: { id: p.legacy_id, slug: p.slug, name: p.canonical_name }, days: dias, series: rows.filter((r) => r.store_id === '').map(pt) };
+  if (lojas) { out.stores = {}; for (const r of rows) if (r.store_id) (out.stores[r.store_id] ||= { name: r.store_name || r.store_id, series: [] }).series.push(pt(r)); }
+  return out;
+}
+/** dia do menor preço da série do produto (para "menor já visto" com data) */
+export async function productMinDay(key) {
+  const r = await q(`SELECT d.day FROM hunter.price_daily d JOIN hunter.product p ON p.id = d.product_id
+     WHERE (p.legacy_id = $1 OR p.slug = $1) AND d.store_id = '' ORDER BY d.min_price, d.day LIMIT 1`, [key]);
+  return r[0] ? iso(r[0].day).slice(0, 10) : null;
 }
 
 // ---------------------------------------------------------------- Estatísticas

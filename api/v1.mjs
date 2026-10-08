@@ -7,17 +7,25 @@
 //   GET /api/v1/produtos/:id/estatisticas
 //   GET /api/v1/referencias?pagina&limite&status
 //   GET /api/v1/oportunidades                       → estrutura reservada (Opportunity Engine ainda não calcula)
+// FASE 4 — formato do site (mesmas regras de lista do tools/page.template.html, aplicadas no servidor):
+//   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&ordem&pagina&limite → página de /produtos
+//   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
+//   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
+//   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 // Fonte: banco (API_DATABASE_URL, só leitura) com fallback seguro para o state.json. ?fonte=state força o fallback.
 // Cache: memória da função (por URL) + CDN da Vercel (s-maxage), com stale-while-revalidate.
 import { apiDbEnabled } from './_lib/db.mjs';
 import { legacyState } from './_lib/legacy.mjs';
 import { slimHome } from './_lib/home.mjs';
+import { catalogState } from './_lib/catalog.mjs';
+import * as SITE from './_lib/site.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 
 export const config = { maxDuration: 15 };
-const TTL = { home: 60_000, default: 120_000 };
-const CDN = { home: 'public, max-age=30, s-maxage=60, stale-while-revalidate=300', default: 'public, max-age=60, s-maxage=120, stale-while-revalidate=600' };
+const TTL = { home: 60_000, site: 60_000, default: 120_000 };
+const CDN = { home: 'public, max-age=30, s-maxage=60, stale-while-revalidate=300', site: 'public, max-age=30, s-maxage=60, stale-while-revalidate=300',
+  default: 'public, max-age=60, s-maxage=120, stale-while-revalidate=600' };
 const MAX_CACHE = 300;
 const cache = new Map();
 export const _cache = cache;                            // testes
@@ -42,7 +50,7 @@ function route(segs, qs) {
     if (!SLUG_RE.test(id)) throw new HttpError(400, 'identificador de produto inválido');
     if (!sub) return { name: 'produto', id };
     if (sub === 'ofertas' && segs.length === 3) return { name: 'ofertas', id, page, limit, args: { page, limit, todas: bool(qs.get('todas')) } };
-    if (sub === 'historico' && segs.length === 3) return { name: 'historico', id, args: { dias: intIn(qs.get('dias'), 30, 1, 180) } };
+    if (sub === 'historico' && segs.length === 3) return { name: 'historico', id, args: { dias: intIn(qs.get('dias'), 30, 1, 365), lojas: bool(qs.get('lojas')) } };
     if (sub === 'estatisticas' && segs.length === 3) return { name: 'estatisticas', id };
   }
   if (a === 'referencias' && segs.length === 1) {
@@ -50,6 +58,27 @@ function route(segs, qs) {
     return { name: 'referencias', page, limit, args: { page, limit, status } };
   }
   if (a === 'oportunidades' && segs.length === 1) return { name: 'oportunidades' };
+  // ---- FASE 4: formato do site (listas e página de produto), regras iguais às do site
+  if (a === 'site') {
+    if (id === 'produtos' && segs.length === 2) {
+      const modo = str(qs.get('modo'), 10) || 'guardar'; if (!['guardar', 'abrir'].includes(modo)) throw new HttpError(400, 'modo inválido');
+      const ordem = str(qs.get('ordem'), 10) || ''; if (ordem && !['score', 'disc', 'price', 'ppb', 'new'].includes(ordem)) throw new HttpError(400, 'ordem inválida');
+      const grupo = str(qs.get('grupo'), 20) || ''; if (grupo && !SITE.GROUP_ORDER.includes(grupo)) throw new HttpError(400, 'grupo inválido');
+      const max = str(qs.get('max'), 12) || ''; if (max && !(Number(max) >= 0)) throw new HttpError(400, 'preço máximo inválido');
+      const sp = intIn(qs.get('pagina'), 1, 1, 1000); const sl = intIn(qs.get('limite'), 48, 1, 60);
+      return { name: 'site-produtos', kind: 'site', page: sp, limit: sl, F: { mode: modo, sort: ordem, group: grupo, col: str(qs.get('colecao'), 40) || '', store: str(qs.get('loja'), 60) || '',
+        type: str(qs.get('tipo'), 40) || '', max, below: bool(qs.get('abaixo')), stock: qs.get('estoque') !== '0', semref: bool(qs.get('semref')) } };
+    }
+    if (id === 'ofertas' && segs.length === 2) {
+      const ids = (str(qs.get('produtos'), 4000) || '').split(',').map((x) => x.trim()).filter(Boolean);
+      if (ids.length > 60 || ids.some((x) => !SLUG_RE.test(x))) throw new HttpError(400, 'lista de produtos inválida (até 60 ids)');
+      const col = str(qs.get('colecao'), 40); const type = str(qs.get('tipo'), 40);
+      const busca = str(qs.get('busca'), 80);
+      if (!ids.length && !col && !type && busca == null) throw new HttpError(400, 'informe produtos, colecao, tipo ou busca');
+      return { name: 'site-ofertas', kind: 'site', args: { ids: ids.length || (!col && !type) ? ids : null, col, type }, busca };
+    }
+    if (id === 'produto' && sub && segs.length === 3) { if (!SLUG_RE.test(sub)) throw new HttpError(400, 'identificador de produto inválido'); return { name: 'site-produto', kind: 'site', id: sub }; }
+  }
   throw new HttpError(404, 'rota não encontrada');
 }
 
@@ -58,10 +87,18 @@ const paged = (r, page, limit) => ({ data: r.items, meta: { page, limit, total: 
 async function run(rt, source) {
   const useDb = source === 'db';
   switch (rt.name) {
-    case 'home': {
-      const L = await legacyState();                       // campos que ainda só o robô tem (Deal Score, atividade...)
-      if (useDb) return { body: slimHome(await DB.stateLikeFromDb(L.st), { source: 'db' }) };
-      return { body: slimHome(L.st, { source: 'state' }) };
+    case 'home': return { body: slimHome(await catalogState(source), { source }) };   // banco + campos que ainda só o robô tem
+    case 'site-produtos': return { body: { v: 1, source, ...SITE.siteProducts(await catalogState(source), rt.F, { page: rt.page, limit: rt.limit }) } };
+    case 'site-ofertas': { const st = await catalogState(source);
+      return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
+    case 'site-produto': {
+      const st = await catalogState(source);
+      const key = st.products?.some((p) => p.id === rt.id) ? rt.id : useDb ? (await DB.getProduct(rt.id))?.id : ST.stateGetProduct(st, rt.id)?.id;   // aceita slug
+      if (!key) throw new HttpError(404, 'produto não encontrado');
+      const stats = useDb ? (await DB.productStats(key))?.stats ?? null : null;
+      const minDay = useDb && stats?.history?.status === 'ok' ? await DB.productMinDay(key) : null;
+      const d = SITE.siteProduct(st, key, { stats, minDay }); if (!d) throw new HttpError(404, 'produto não encontrado');
+      return { body: { v: 1, source, ...d } };
     }
     case 'produtos': return { body: paged(useDb ? await DB.listProducts(rt.args) : ST.stateListProducts((await legacyState()).st, rt.args), rt.page, rt.limit) };
     case 'produto': { const d = useDb ? await DB.getProduct(rt.id) : ST.stateGetProduct((await legacyState()).st, rt.id); if (!d) throw new HttpError(404, 'produto não encontrado'); return { body: { data: d } }; }
