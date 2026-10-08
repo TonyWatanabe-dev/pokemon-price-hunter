@@ -22,12 +22,14 @@ function marketOf(list) {
   return { elig, current: prices.length ? Math.min(...prices) : null, total: withTotal.length ? Math.min(...withTotal.map((o) => o.total)) : null, median: median(prices) };
 }
 const refOf = (p) => (p.copagConfirmed && p.msrp ? { value: p.msrp, status: 'verified' } : p.copagReference ? { value: p.copagReference, status: 'pending' } : null);
+// referência ATUAL no fallback: só Copag verificada no domínio Copag (tabela comunitária nunca vira referência/desconto; sem mercado derivado)
+const curRefOf = (p) => { const r = refOf(p); return r?.status === 'verified' && robotReferenceKind({ source_url: p.copag?.source_url }) === 'COPAG_OFFICIAL_CURRENT' ? r : null; };
 const nameOf = (p) => `${p.collectionName} - ${label(p)}`;
 
 export function stateListProducts(st, { page, limit, colecao = null, tipo = null, estoque = false, busca = null, ordem = 'relevancia' }) {
   const { of, byP } = index(st);
   let items = (st.products || []).map((p) => {
-    const list = byP.get(p.id) || []; const m = marketOf(list); const r = refOf(p);
+    const list = byP.get(p.id) || []; const m = marketOf(list); const r = curRefOf(p);
     return { id: p.id, slug: of[p.id], name: nameOf(p), collection: { code: p.collection, name: p.collectionName }, category: null, type: p.type, boosters: p.boosters ?? null,
       image: p.image ?? null, price: { current: m.current, current_total: m.total, median: m.median }, reference: r,
       discount_vs_reference: r?.status === 'verified' && m.current != null ? +((r.value - m.current) / r.value).toFixed(4) : null,
@@ -56,7 +58,7 @@ export function stateGetProduct(st, key) {
     collection: { code: p.collection, name: p.collectionName, series: p.series ?? null }, boosters: p.boosters ?? null, variant: p.variant ?? null,
     language: 'pt-BR', condition: 'new', image: p.image ?? null, status: 'active',
     identifiers: p.ean ? [{ kind: 'ean', value: String(p.ean) }] : [],
-    ...stateRefs(p, r), stats: stateStatsOf(p, list, m, r) };
+    ...stateRefs(p, r), stats: stateStatsOf(p, list, m, curRefOf(p)) };
 }
 // mesmo contrato do banco: referência atual × contexto histórico (o state.json não tem histórico Copag)
 function stateRefs(p, r) {
