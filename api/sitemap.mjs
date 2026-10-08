@@ -1,7 +1,7 @@
 // /sitemap.xml: páginas públicas e todos os produtos com endereço amigável.
 import { state, slugs, SITE } from './_seo.mjs';
 export default async function handler(req, res) {
-  let urls = ['', 'oportunidades', 'precos', 'pre-vendas', 'lojas', 'como-funciona'].map((p) => `${SITE}/${p}`);
+  let urls = ['', 'oportunidades', 'precos', 'pre-vendas', 'como-funciona'].map((p) => `${SITE}/${p}`);
   try { const s = await state(); const { of } = slugs(s.products || []); urls = urls.concat((s.products || []).filter((p) => p.offerCount > 0).map((p) => `${SITE}/produto/${of[p.id]}`)); } catch { /* só as páginas fixas */ }
   res.setHeader('content-type', 'application/xml; charset=utf-8');
   res.setHeader('cache-control', 'public, max-age=0, s-maxage=3600');

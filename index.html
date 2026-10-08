@@ -1074,7 +1074,6 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
       <a class="navbtn" data-go="pistas" href="/pistas"><span class="lbl">Pistas</span><svg class="icon nav-ico"><use href="#i-lightbulb"/></svg><span class="count c-tip" hidden></span></a>
       <a class="navbtn" data-go="copag" href="/precos"><span class="lbl">Preços Copag</span><svg class="icon nav-ico"><use href="#i-tag"/></svg></a>
       <a class="navbtn" data-go="prevenda" href="/pre-vendas"><span class="lbl">Pré-vendas</span><svg class="icon nav-ico"><use href="#i-calendar-blank"/></svg><span class="count c-pre" hidden></span></a>
-      <a class="navbtn" data-go="lojas" href="/lojas"><span class="lbl">Lojas</span><svg class="icon nav-ico"><use href="#i-storefront"/></svg></a>
       <span class="navsep" aria-hidden="true"></span>
       <button class="navbtn theme-btn" type="button" aria-label="Alternar tema claro ou escuro"><svg class="icon"><use href="#i-moon"/></svg></button>
       <a class="navbtn usr" data-go="favoritos" href="/favoritos" aria-label="Favoritos" hidden><svg class="icon"><use href="#i-heart"/></svg></a>
@@ -1105,7 +1104,6 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <button type="button" data-acc class="acc-more"><svg class="icon"><use href="#i-user-circle"/></svg><span>Entrar ou criar conta<small>Salve favoritos e alertas de preço</small></span></button>
     <button type="button" data-go="favoritos"><svg class="icon"><use href="#i-heart"/></svg><span>Favoritos<small>Os produtos que você acompanha</small></span></button>
     <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas de preço<small>Aviso quando chegar no seu preço</small></span><span class="count c-hit" hidden></span></button>
-    <button type="button" data-go="lojas"><svg class="icon"><use href="#i-storefront"/></svg><span>Lojas<small>Onde o site procura os preços</small></span></button>
     <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades<small>Todas as ofertas abaixo da Copag, com filtros</small></span></button>
     <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Deal Score, preço Copag e dicas de compra</small></span></button>
     <button type="button" data-go="termos"><svg class="icon"><use href="#i-info"/></svg><span>Termos e privacidade<small>Regras de uso e o que o site guarda</small></span></button>
@@ -1150,16 +1148,17 @@ const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
-const ROUTES={"":"deals",busca:"busca",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",lojas:"lojas",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
-const PATHS={deals:"",busca:"busca",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",lojas:"lojas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const ROUTES={"":"deals",busca:"busca",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const PATHS={deals:"",busca:"busca",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PRIVATE=["conta","favoritos","alertas","configuracoes"];
-const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"lojas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
+const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
 function parseLoc(){
   const seg=location.pathname.replace(/^\/+|\/+$/g,"").split("/");
   if(seg[0]==="produto"&&seg[1])return{view:"produto",slug:decodeURIComponent(seg[1])};
   return{view:ROUTES[seg[0]]||"deals",pid:null};
 }
 (function(){const h=location.hash.slice(1);if(h&&OLDHASH[h])history.replaceState(null,"","/"+OLDHASH[h]);
+  if(/^\/lojas\/?$/.test(location.pathname))history.replaceState(null,"","/"+location.search); /* página Lojas foi retirada */
   const q=new URLSearchParams(location.search).get("q");if(location.pathname.startsWith("/busca"))F.q=(q||"").slice(0,80)})();
 const pathOf=(v)=>"/"+(PATHS[v]??"");
 let view=parseLoc().view||"deals",xfOpen=false,fOpen=false,prodPushed=false;
@@ -1532,12 +1531,6 @@ function renderList(title,intro,list,emptyMsg){
 }
 const REPO={owner:"tonywatanabe-dev",repo:"pokemon-price-hunter"};
 function repoInfo(){const h=location.hostname.match(/^([^.]+)\.github\.io$/);const seg=location.pathname.split("/").filter(Boolean)[0];return h&&seg?{owner:h[1],repo:seg}:REPO}
-function renderStores(){
-  const act=(S.sources||[]).filter((x)=>x.status==="ACTIVE"&&(x.matched||0)>0).sort((a,b)=>(b.matched||0)-(a.matched||0));
-  const host=(u)=>{try{return new URL(u).hostname.replace(/^www\./,"")}catch{return""}};
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Lojas acompanhadas</h2><p>O site lê as páginas públicas destas ${act.length} lojas a cada 15 minutos. Só entra produto lacrado em português, com estoque confirmado pela loja.</p>${S.reputation?`<p class="hnote">Reputação: nota e selo do <a href="https://www.reclameaqui.com.br" target="_blank" rel="noopener nofollow">Reclame Aqui</a>, consultados nas páginas públicas em ${new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR")}. "Sem cadastro" quer dizer que não achamos a loja lá, não que ela seja ruim. O TCG Price Hunter não tem ligação com o Reclame Aqui.</p>`:""}<p class="hnote">É lojista e não quer sua loja no Hunter? Envie um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a> com o endereço do site, e a loja sai da busca.</p>
-  <div class="store-list" style="padding:0 16px 16px">${act.map((x)=>`<div class="store"><b>${x.url?`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener" style="color:inherit">${esc(x.name)}</a>`:esc(x.name)}</b>${x.kind==="official"?`<span class="chip ok">Loja oficial Copag</span>`:""}${raBadge({storeId:x.id,storeName:x.name},true)}<span class="why">${x.matched} ${x.matched>1?"ofertas":"oferta"} · atualizada ${ago(x.lastCheck)}${x.url&&host(x.url)!==x.name?` · ${esc(host(x.url))}`:""}</span></div>`).join("")}</div></section></div>`;
-}
 function renderCopag(){
   const ps=(S.products||[]).slice();const cols=(S.collections||[]);
   const off=ps.filter((p)=>p.copagConfirmed).length,ref=ps.filter((p)=>!p.copagConfirmed&&p.copagReference).length,none=ps.length-off-ref;
@@ -2029,11 +2022,11 @@ function renderConfig(){
 }
 
 const BASE_TITLE=document.title;
-const TITLES={busca:"Busca",oportunidades:"Oportunidades",copag:"Preços Copag",prevenda:"Pré-vendas",lojas:"Lojas",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
+const TITLES={busca:"Busca",oportunidades:"Oportunidades",copag:"Preços Copag",prevenda:"Pré-vendas",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
-  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["lojas","oportunidades","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
+  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   if(view==="conta")return renderConta();
@@ -2051,7 +2044,6 @@ function render(){
   else if(view==="termos")renderLegal("termos");
   else if(view==="privacidade")renderLegal("privacidade");
   else if(view==="prevenda")renderPre();
-  else if(view==="lojas")renderStores();
 }
 /* Analytics: eventos prontos (o Vercel só os mostra no plano Pro; no gratuito não fazem nada) */
 function track(name,data){try{window.va&&window.va("event",{name,data:data||{}})}catch{}}
