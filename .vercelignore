@@ -6,5 +6,3 @@ site-assets/
 .impeccable/
 node_modules/
 *.md
-package.json
-package-lock.json

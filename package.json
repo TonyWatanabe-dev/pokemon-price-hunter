@@ -1,7 +1,7 @@
 {
   "name": "pokemon-price-hunter-br",
   "version": "1.0.0",
-  "description": "Agente aut\u00f4nomo de monitoramento de pre\u00e7os Pok\u00e9mon TCG no Brasil, referenciado no pre\u00e7o sugerido Copag",
+  "description": "Agente autônomo de monitoramento de preços Pokémon TCG no Brasil, referenciado no preço sugerido Copag",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -12,9 +12,10 @@
     "discover": "node src/discover.js",
     "copag-check": "node src/copag-check.js",
     "serve": "node src/server.js",
-    "test": "node test/run-tests.js && node test/ml-tests.js && node test/core-tests.js && node test/price-engine-tests.js && node test/db-tests.js && node test/price-db-tests.js",
+    "test": "node test/run-tests.js && node test/ml-tests.js && node test/core-tests.js && node test/price-engine-tests.js && node test/db-tests.js && node test/price-db-tests.js && node test/api-tests.js",
     "db:migrate": "node tools/db-migrate.mjs",
-    "db:stats": "node tools/db-stats.mjs"
+    "db:stats": "node tools/db-stats.mjs",
+    "api:compare": "node tools/api-compare.mjs data"
   },
   "dependencies": {
     "pg": "^8.23.1"

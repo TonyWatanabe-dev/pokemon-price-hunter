@@ -83,6 +83,7 @@ jobs:
           [ -n "$DATABASE_URL" ] || { echo "Banco desligado (sem DATABASE_URL)."; exit 0; }
           npm install --omit=dev --no-audit --no-fund --silent
           node tools/db-migrate.mjs
+          node tools/db-grants.mjs || true
           node tools/db-sync.mjs data
           node tools/db-stats.mjs
       - name: Salvar configuração (se mudou)

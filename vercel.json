@@ -1,5 +1,5 @@
 {
-  "installCommand": "echo sem-install",
+  "installCommand": "npm ci --omit=dev --no-audit --no-fund",
   "buildCommand": "mkdir -p public/data && cp account.js robots.txt favicon.png apple-touch-icon.png og.jpg icon-512.png public/ && cp index.html public/app.html && mkdir -p public/logos && cp -r logos/colecoes public/logos/ && cp data/state.json public/data/",
   "outputDirectory": "public",
   "headers": [
@@ -84,6 +84,10 @@
       "destination": "/api/ml-callback"
     },
     {
+      "source": "/api/v1/:path*",
+      "destination": "/api/v1?path=:path*"
+    },
+    {
       "source": "/((?!data/|_vercel/|api/).*)",
       "destination": "/app.html"
     }
@@ -92,6 +96,12 @@
   "functions": {
     "api/pagina.mjs": {
       "includeFiles": "index.html"
+    },
+    "api/v1.mjs": {
+      "maxDuration": 15
     }
-  }
+  },
+  "regions": [
+    "gru1"
+  ]
 }

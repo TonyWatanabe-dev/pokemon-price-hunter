@@ -24,6 +24,10 @@ assert.equal(o2.shipping_status, 'free'); assert.equal(o2.total_price, 100);
 const [o3] = offersRows([{ ...base, storeId: 'mercadolivre', sku: 'MLB123', seller: 'LOJA_TCG', sellerId: '77', sellerKind: 'marketplace_seller' }]);
 assert.equal(o3.marketplace_id, 'mercadolivre'); assert.equal(o3.external_offer_id, 'MLB123'); assert.equal(o3.seller.external_id, '77');
 assert.equal(marketplaceOf({ storeId: 'tocadotabuleiro' }), 'direct');
+// vendedor parceiro em loja (Ri Happy): guardado com o nome, prefixado pela loja; loja sem vendedor não cria vendedor
+const [o4] = offersRows([{ ...base, storeId: 'rihappycombr', seller: 'Gourmande', sellerKind: 'store' }]);
+assert.equal(o4.marketplace_id, 'direct'); assert.deepEqual(o4.seller, { external_id: 'rihappycombr:Gourmande', name: 'Gourmande', is_official: false });
+assert.equal(o1.seller, null);
 
 // histórico: total só com frete conhecido; saída de oferta marcada
 const h = historyRows([{ t: '2026-10-08T10:00:00Z', offerId: 'h1', productId: 'me05-etb', price: 100, shipping: null, total: 100, stock: 'IN_STOCK' },

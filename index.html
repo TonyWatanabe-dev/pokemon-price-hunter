@@ -1325,7 +1325,7 @@ function raBadge(o,full){
   const tip=r.status==="NAO_ENCONTRADA"?`Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
   return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
 }
-const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id));
+const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
 const label=(p)=>p.typeLabel+(p.boosters&&(p.type==="booster_box"||p.type==="combo")?` ${p.boosters}`:"")+(p.variant?` ${p.variant}`:"");
 
@@ -1682,7 +1682,7 @@ function renderDeals(){
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
   const pool=oppPool();
-  const nLive=OFF.filter(live).length,nStores=new Set(OFF.filter(live).map((o)=>o.storeId)).size;
+  const nLive=S.slim?S.counts.liveOffers:OFF.filter(live).length,nStores=S.slim?S.counts.stores:new Set(OFF.filter(live).map((o)=>o.storeId)).size;
   const intro=!renderDeals.done;renderDeals.done=true;document.body.classList.toggle("intro",intro);
   $("#view").innerHTML=`<section class="stage"><div class="stage-in">
     <div class="stage-copy">
@@ -2229,11 +2229,13 @@ function render(){
   const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
+  if(S?.slim&&view!=="deals")ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
   if(view==="conta")return renderConta();
   if(view==="favoritos")return renderFavs();
   if(view==="alertas")return renderAlerts();
   if(view==="configuracoes")return renderConfig();
   if(!S)return;
+  if(S.slim&&view!=="deals"){loading();ensureFull();return}
   if(view==="produto")renderProduct(curPid);
   else if(view==="busca")renderSearch();
   else if(view==="deals")renderDeals();
@@ -2271,7 +2273,7 @@ function buildIndex(){
   IDX=(S.products||[]).filter((p)=>p.offerCount>0).map((p)=>{const c=cols[p.collection]||{};
     const colT=new Set(toks([p.collectionName,c.series,(c.aliases||[]).join(" "),EN[p.collection]||""].join(" ")));
     const typT=new Set(toks([p.typeLabel,p.variant,TSYN[p.type]||"",p.group,p.boosters?p.boosters+" boosters":""].join(" ")));
-    return{p,colT:[...colT],typT:[...typT],codes:[...(codes[p.id]||[]),p.ean?norm(String(p.ean)):""].filter(Boolean)}});
+    return{p,colT:[...colT],typT:[...typT],codes:[...(codes[p.id]||[]),...(p.codes||[]).map((c)=>norm(String(c))),p.ean?norm(String(p.ean)):""].filter(Boolean)}});
   CIDX=(S.collections||[]).map((c)=>({c,t:[...new Set(toks([c.name,c.series,(c.aliases||[]).join(" "),EN[c.id]||""].join(" ")))]}));
 }
 function tokScore(q,list){let best=0;for(const t of list){if(t===q)return 3;if(t.startsWith(q)&&q.length>=2)best=Math.max(best,2.2);else if(q.length>=4&&t.startsWith(q.slice(0,-1)))best=Math.max(best,1.4);else if(q.length>=4){const d=lev(q,t,q.length>=8?2:1);if(d<=(q.length>=8?2:1))best=Math.max(best,1.2)}}return best}
@@ -2330,7 +2332,7 @@ function oppPool(){
   for(const o of OFF){if(!live(o))continue;n[o.productId]=(n[o.productId]||0)+1;
     const p=P[o.productId];if(!p?.copagConfirmed||o.dealScore==null||o.confirmed===false||!(o.discount>0))continue;
     const cur=by[p.id];if(!cur||o.dealScore>cur.o.dealScore||(o.dealScore===cur.o.dealScore&&o.total<cur.o.total))by[p.id]={p,o}}
-  return Object.values(by).map((e)=>({...e,n:n[e.p.id]||1})).sort((a,b)=>b.o.dealScore-a.o.dealScore||(b.o.discount-a.o.discount));
+  return Object.values(by).map((e)=>({...e,n:(S.slim?e.p.liveCount:n[e.p.id])||1})).sort((a,b)=>b.o.dealScore-a.o.dealScore||(b.o.discount-a.o.discount));
 }
 function oppList(){
   const cmp={score:(a,b)=>b.o.dealScore-a.o.dealScore||b.o.discount-a.o.discount,disc:(a,b)=>b.o.discount-a.o.discount,save:(a,b)=>(b.o.savings??0)-(a.o.savings??0),drop:(a,b)=>(b.p.hist?.drop7d??0)-(a.p.hist?.drop7d??0)||b.o.dealScore-a.o.dealScore,new:(a,b)=>String(b.o.firstSeen||"").localeCompare(String(a.o.firstSeen||""))}[OF.sort]||(()=>0);
@@ -2368,17 +2370,17 @@ function fresh(){
 }
 setInterval(fresh,30e3);
 (()=>{const h=$("#hsearch");if(h)h.innerHTML=searchBox("tq",view==="busca"?F.q:"",true)})();
-function init(st){
+function init(st,opt={}){
   const prevBest=S?Object.fromEntries((S.products||[]).map((p)=>[p.id,bestLive(p.id)?.total])):null;
   S=st;P=Object.fromEntries((S.products||[]).map((p)=>[p.id,p]));OFF=S.offers||[];
   buildSlugs();buildIndex();
   CHANGED=new Set(prevBest?Object.keys(P).filter((id)=>prevBest[id]!=null&&bestLive(id)?.total!==prevBest[id]):[]);
   if(view==="produto"){const r=parseLoc();curPid=r.slug?pidFromSlug(r.slug):curPid;if(curPid&&location.pathname!=="/produto/"+SLUG[curPid])history.replaceState(null,"","/produto/"+SLUG[curPid])}
-  const pre=OFF.filter((o)=>o.stock==="PRE_ORDER").length,rev=OFF.filter((o)=>o.anomalous).length;
-  const tp=(S.tips||[]).filter((x)=>x.productId&&!x.expired&&x.discount>=.15&&!x.anomalous).length;
+  const pre=S.slim?S.counts.pre:OFF.filter((o)=>o.stock==="PRE_ORDER").length;
+  const tp=S.slim?S.counts.tips:(S.tips||[]).filter((x)=>x.productId&&!x.expired&&x.discount>=.15&&!x.anomalous).length;
   const setc=(cls,n)=>document.querySelectorAll(cls).forEach((el)=>{el.hidden=!n;el.textContent=n});
   setc(".c-tip",tp);setc(".c-pre",pre);
-  fresh();render();accSync(false);
+  fresh();if(!opt.silent)render();accSync(false);
 }
 function loading(){
   /* Início: o palco (busca e frase) não depende dos preços, então já aparece pronto; só o pódio espera os dados */
@@ -2395,15 +2397,37 @@ const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/$
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
 async function fetchData(path){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(r.ok)return await r.json()}catch{}}return null}
 async function fetchState(){return fetchData("state.json")}
+/* FASE 3: a Home lê o resumo da API (banco + Price Engine, ~130 KB) em vez do state.json inteiro (~1,7 MB).
+   Qualquer falha cai no state.json, como antes. ?fonte=state força o caminho antigo. */
+const HOME_API=true;
+function hydrateHome(h){const c=Object.fromEntries((h.collections||[]).map((x)=>[x.id,x])),t=Object.fromEntries((h.types||[]).map((x)=>[x.id,x]));
+  for(const p of h.products){p.collectionName??=c[p.collection]?.name;p.typeLabel??=t[p.type]?.label;p.group??=t[p.type]?.group;p.copagConfirmed=!!p.copagConfirmed}return h}
+async function fetchHome(){
+  if(!HOME_API||new URLSearchParams(location.search).get("fonte")==="state")return null;
+  try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),6000);const r=await fetch("/api/v1/home",{signal:ac.signal});clearTimeout(tm);
+    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts?hydrateHome(h):null}catch{return null}
+}
+let fullP=null;
+function ensureFull(){
+  if(!S||!S.slim)return Promise.resolve();
+  return fullP||=fetchState().then((st)=>{fullP=null;
+    if(st)init(st,{silent:view==="deals"});
+    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  });
+}
+/* na primeira intenção de sair da Home (passar o mouse num link, focar a busca), o estado completo já vem baixando */
+/* (foco automático não conta: só mouse/toque num link interno ou digitar na busca) */
+["pointermove","pointerdown"].forEach((ev)=>document.addEventListener(ev,(e)=>{if(S?.slim&&!fullP&&e.isTrusted&&e.target.closest?.("[data-p],[data-go],[data-col],a[href^='/']"))ensureFull()},{passive:true}));   /* pointermove: o ponteiro parado sobre um link enquanto a página monta não conta */
+document.addEventListener("keydown",(e)=>{if(S?.slim&&e.isTrusted&&e.target.closest?.("#tq,.sbox"))ensureFull()},{passive:true});
 async function refresh(){
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
-  const st=await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
+  const st=S?.slim&&view==="deals"?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
   if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
   const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
 }
 async function load(){
   loading();
-  const st=await fetchState();if(st)return init(st);
+  const st=view==="deals"?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)){render();return}
   $("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
 }

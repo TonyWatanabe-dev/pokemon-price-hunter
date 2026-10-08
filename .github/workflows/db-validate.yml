@@ -40,6 +40,12 @@ jobs:
         run: node tools/db-migrate.mjs 2>&1 | tee out/migrate-2.log
       - name: Sincronizar e validar
         run: node tools/db-validate.mjs data out/supabase.json out/migrate-1.log out/migrate-2.log
+      - name: Permissões do usuário só-leitura da API
+        if: always()
+        run: node tools/db-grants.mjs | tee out/grants.log
+      - name: Comparar state.json × API (banco)
+        if: always()
+        run: node tools/api-compare.mjs data out/api-compare.json | tee out/api-compare.log
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: supabase, path: out }
@@ -74,6 +80,7 @@ jobs:
           node tools/db-migrate.mjs 2>&1 | tee out/compat-migrate-1.log
           node tools/db-migrate.mjs 2>&1 | tee out/compat-migrate-2.log
           node tools/db-validate.mjs data out/compat.json out/compat-migrate-1.log out/compat-migrate-2.log
+          node tools/api-compare.mjs data out/compat-api-compare.json | tee out/compat-api-compare.log
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: compat, path: out }

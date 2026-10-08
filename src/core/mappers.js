@@ -66,7 +66,9 @@ export function offersRows(offers) {
     const known = !!o.shippingKnown && o.shipping != null;
     return {
       legacy_id: o.id, product_legacy_id: o.productId, store_id: o.storeId, marketplace_id: mk,
-      seller: mk !== 'direct' && (o.sellerId || o.seller) ? { external_id: String(o.sellerId || o.seller), name: o.seller || null, is_official: o.sellerKind === 'official_store' } : null,
+      // vendedor: no ML, o id numérico; em loja com vendedores parceiros (Ri Happy, PBKids...), o nome do vendedor
+      // prefixado pela loja (o preço é do parceiro, não da loja — o site mostra "Vendedor via Loja")
+      seller: (o.sellerId || o.seller) ? { external_id: mk === 'direct' ? `${o.storeId}:${o.sellerId || o.seller}` : String(o.sellerId || o.seller), name: o.seller || null, is_official: o.sellerKind === 'official_store' } : null,
       external_offer_id: mk === 'mercadolivre' ? o.sku || null : null,
       title_raw: o.title, url: o.url, image_url: o.image || null,
       price: money(o.price), price_kind: o.priceKind || null, list_price: money(o.listPrice), pix_price: money(o.prices?.pix),
