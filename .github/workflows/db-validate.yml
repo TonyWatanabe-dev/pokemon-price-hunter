@@ -28,10 +28,11 @@ jobs:
         run: |
           git fetch --depth 1 origin data && rm -rf data && git checkout FETCH_HEAD -- data && git reset -q
           git rev-parse FETCH_HEAD > out/data-commit.txt
-      - name: Versão do Postgres
+      - name: Conexão e versão do Postgres
         id: ver
         run: |
-          v=$(node -e "import('./src/db/pg.js').then(async m=>{const p=await m.pool();const r=await p.query('show server_version');console.log(r.rows[0].server_version.split(' ')[0]);await m.close()})")
+          node tools/db-diagnose.mjs out/connect.json > out/connect.log
+          v=$(tail -1 out/connect.log)
           echo "version=$v" >> "$GITHUB_OUTPUT"; echo "Supabase: PostgreSQL $v"
       - name: Migrations (1ª execução)
         run: node tools/db-migrate.mjs 2>&1 | tee out/migrate-1.log

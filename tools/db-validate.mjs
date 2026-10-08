@@ -44,7 +44,7 @@ try {
   const hf = path.join(dir, 'history.jsonl');
   const lines = fs.existsSync(hf) ? fs.readFileSync(hf, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
   const catalog = JSON.parse(fs.readFileSync(new URL('../config/catalog.json', import.meta.url), 'utf8'));
-  rep.source = { generatedAt: state.generatedAt || state.updatedAt || null, products: state.products?.length, offers: state.offers?.length,
+  rep.source = { generatedAt: state.generatedAt || state.updatedAt || null, products: state.products?.length, offers: state.offers?.length, stale: (state.offers || []).filter((o) => o.stale).length,
     stores: state.sources?.length, historyLines: lines.length, priceLines: lines.filter((h) => h.price != null).length };
 
   // ---------- sincronização real, duas vezes ----------
@@ -99,7 +99,9 @@ try {
   // ---------- invariantes ----------
   check('9 TCGs, só Pokémon com coleta', rep.counts.tcg.length === 9 && rep.counts.tcg.filter((t) => t.collect_enabled).map((t) => t.id).join() === 'pokemon');
   check('8 grupos e 47 tipos de categoria', Number(rep.counts.categories.groups) === 8 && Number(rep.counts.categories.types) === 47, rep.counts.categories);
-  check('ofertas ativas = ofertas do state.json', rep.counts.offersActive.total === rep.source.offers, { db: rep.counts.offersActive.total, state: rep.source.offers });
+  const live = await one(`SELECT count(*) FILTER (WHERE status='active')::int active, count(*) FILTER (WHERE status='pending')::int pending FROM hunter.offer`);
+  check('ofertas vivas (ativas + pendentes) = ofertas do state.json', live.active + live.pending === rep.source.offers, { ...live, state: rep.source.offers, stale: rep.source.stale });
+  check('pendentes = ofertas "stale" do state.json', live.pending === rep.source.stale, { pending: live.pending, stale: rep.source.stale });
   check('produtos = state.json − duplicatas', rep.counts.products === rep.source.products - rep.sync1.stats.duplicatesToReview, { db: rep.counts.products, state: rep.source.products, dups: rep.sync1.stats.duplicatesToReview });
   const removedWithHist = await one(`SELECT count(DISTINCT o.id)::int offers, count(h.*)::int rows FROM hunter.offer o JOIN hunter.price_history h ON h.offer_id = o.id WHERE o.status='removed'`);
   rep.removedOffers = removedWithHist;
