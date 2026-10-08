@@ -1084,6 +1084,61 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   .toploader.shine::before{animation:sweep 1100ms var(--ease-out) 250ms 1 both}
   @keyframes sweep{from{background-position:120% 0}to{background-position:-20% 0}}
 }
+
+/* Topo estilo marketplace: logo | busca | menu. A busca fica em todas as páginas. */
+.cover{overflow:visible;z-index:40}
+.cover .pattern{overflow:hidden}
+.hsearch{min-width:0;position:relative;z-index:5}
+.cover-in{z-index:3}
+.hsearch .sbox-lg .sbox-in{background:#fff;border:1px solid rgb(255 255 255 / .9);box-shadow:0 10px 30px rgb(0 0 0 / .25);-webkit-backdrop-filter:none;backdrop-filter:none}
+.hsearch .sbox-lg input{color:#15193a}
+.hsearch .sbox-lg input::placeholder{color:#6b7190}
+.hsearch .sbox-lg .sbox-in>.icon,.hsearch .sbox-x{color:#6b7190}
+.hsearch .sbox-x:hover{background:#eef0f7;color:#15193a}
+.hsearch .sbox-lg .btn{background:var(--cover,#1c2a6b);color:#fff}
+.hsearch .sbox-lg .sbox-in:focus-within{border-color:var(--sticker);box-shadow:0 0 0 4px rgb(255 207 51 / .35),0 10px 30px rgb(0 0 0 / .25)}
+.hsearch .ac{color:var(--ink);text-align:left}
+.hsearch .sbox-lg{max-width:none;margin:0}
+.hsearch .sbox-lg .sbox-in{min-height:50px;padding:4px 4px 4px 18px}
+.hsearch .sbox-lg input{font-size:16px;padding:9px 0}
+.hsearch .sbox-lg .btn{padding:10px 20px;font-size:15px}
+.hsearch .sbox-lg .sbox-in>.icon{width:20px;height:20px}
+.hsearch .ac{z-index:70}
+@media (min-width:860px){
+  .cover-in{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:24px;flex-wrap:nowrap}
+  .cover .brand img{height:68px}
+  .hsearch{width:100%;max-width:720px;justify-self:center}
+  .cover nav.topnav{margin:0!important}
+}
+@media (max-width:859px){
+  .cover-in{display:grid;grid-template-columns:1fr;gap:10px}
+  .cover .brand{width:auto;display:flex;justify-content:flex-start}
+  .cover .brand img{width:auto;height:50px}
+  .hsearch{grid-column:1/-1}
+  .hsearch .sbox-lg .btn{padding:10px 16px}
+}
+.stage-copy{margin-top:28px}
+/* Atalho para todos os produtos */
+.home-cta{margin-top:28px}
+.allcta{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:var(--r-lg,18px);background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none;box-shadow:var(--shadow-sm);transition:transform 160ms ease,box-shadow 200ms ease,border-color 160ms ease}
+.allcta-i{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--sticker);color:var(--sticker-ink);flex:none}
+.allcta-i .icon{width:24px;height:24px}
+.allcta b{display:block;font-size:18px}
+.allcta small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.allcta>.chev{margin-left:auto;transform:rotate(-90deg);color:var(--muted)}
+@media (hover:hover) and (pointer:fine){.allcta:hover{transform:translateY(-2px);border-color:var(--ink);box-shadow:var(--shadow-md,0 10px 30px rgb(0 0 0 / .12))}}
+.prods .seg{margin:6px 0 4px}
+/* Título da home: brilho metálico passando em "Procure oportunidade." e traço que se desenha embaixo */
+.stage h1 .gold{position:relative;background:linear-gradient(100deg,var(--sticker) 0%,var(--sticker) 42%,#fff7d1 50%,var(--sticker) 58%,var(--sticker) 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--sticker)}
+.stage h1 .gold::after{content:"";position:absolute;left:.04em;right:.3em;bottom:.02em;height:.075em;border-radius:99px;background:linear-gradient(90deg,var(--sticker),#ffe48a);transform:scaleX(0);transform-origin:left center;-webkit-text-fill-color:initial}
+.stage h1 .ln:first-child>span{position:relative}
+@media (prefers-reduced-motion:no-preference){
+  .stage h1 .ln>span.gold{animation:lineUp 900ms cubic-bezier(.16,1,.3,1) 200ms both,hShine 5.2s cubic-bezier(.45,0,.2,1) 1.5s infinite}
+  .stage h1 .gold::after{animation:hDraw 900ms cubic-bezier(.65,0,.35,1) 1.05s forwards}
+  @keyframes hShine{0%{background-position:100% 0}45%,100%{background-position:0 0}}
+  @keyframes hDraw{to{transform:scaleX(1)}}
+}
+@media (prefers-reduced-motion:reduce){.stage h1 .gold::after{transform:scaleX(1)}}
 </style>
 </head>
 <body>
@@ -1093,8 +1148,10 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   <button class="accfab" data-acc type="button" aria-label="Entrar ou criar conta"><svg class="icon"><use href="#i-user-circle"/></svg></button>
   <div class="cover-in">
     <a class="brand" href="/" data-home aria-label="TCG Price Hunter, início"><img src="data:image/webp;base64,/*LOGO*/" alt="TCG Price Hunter" width="733" height="310"></a>
+    <div class="hsearch" id="hsearch"></div>
     <nav class="topnav" aria-label="Seções">
       <a class="navbtn" data-go="" href="/"><span class="lbl">Início</span><svg class="icon nav-ico"><use href="#i-house"/></svg></a>
+      <a class="navbtn" data-go="produtos" href="/produtos"><span class="lbl">Produtos</span><svg class="icon nav-ico"><use href="#i-package"/></svg></a>
       <a class="navbtn" data-go="pistas" href="/pistas"><span class="lbl">Pistas</span><svg class="icon nav-ico"><use href="#i-lightbulb"/></svg><span class="count c-tip" hidden></span></a>
       <a class="navbtn" data-go="copag" href="/precos"><span class="lbl">Preços Copag</span><svg class="icon nav-ico"><use href="#i-tag"/></svg></a>
       <a class="navbtn" data-go="prevenda" href="/pre-vendas"><span class="lbl">Pré-vendas</span><svg class="icon nav-ico"><use href="#i-calendar-blank"/></svg><span class="count c-pre" hidden></span></a>
@@ -1128,6 +1185,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <button type="button" data-acc class="acc-more"><svg class="icon"><use href="#i-user-circle"/></svg><span>Entrar ou criar conta<small>Salve favoritos e alertas de preço</small></span></button>
     <button type="button" data-go="favoritos"><svg class="icon"><use href="#i-heart"/></svg><span>Favoritos<small>Os produtos que você acompanha</small></span></button>
     <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas de preço<small>Aviso quando chegar no seu preço</small></span><span class="count c-hit" hidden></span></button>
+    <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-vendas<small>Lançamentos que ainda não chegaram</small></span><span class="count c-pre" hidden></span></button>
     <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades<small>Todas as ofertas abaixo da Copag, com filtros</small></span></button>
     <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Deal Score, preço Copag e dicas de compra</small></span></button>
     <button type="button" data-go="termos"><svg class="icon"><use href="#i-info"/></svg><span>Termos e privacidade<small>Regras de uso e o que o site guarda</small></span></button>
@@ -1136,9 +1194,9 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 </dialog>
 <nav class="tabbar" aria-label="Seções">
   <button type="button" data-go=""><svg class="icon"><use href="#i-house"/></svg><span>Início</span></button>
+  <button type="button" data-go="produtos"><svg class="icon"><use href="#i-package"/></svg><span>Produtos</span></button>
   <button type="button" data-go="pistas"><svg class="icon"><use href="#i-lightbulb"/></svg><span>Pistas</span><span class="count c-tip" hidden></span></button>
   <button type="button" data-go="copag"><svg class="icon"><use href="#i-tag"/></svg><span>Preços</span></button>
-  <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-vendas</span><span class="count c-pre" hidden></span></button>
   <button type="button" data-more><svg class="icon"><use href="#i-dots-three"/></svg><span>Mais</span><span class="count c-hit" hidden></span></button>
 </nav>
 <div id="scorepop" class="scorepop" popover="auto" role="dialog" aria-label="Por que essa nota"></div>
@@ -1172,8 +1230,8 @@ const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
-const ROUTES={"":"deals",busca:"busca",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
-const PATHS={deals:"",busca:"busca",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const ROUTES={"":"deals",busca:"busca",produtos:"produtos",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const PATHS={deals:"",busca:"busca",produtos:"produtos",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PRIVATE=["conta","favoritos","alertas","configuracoes"];
 const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
 function parseLoc(){
@@ -1557,7 +1615,6 @@ function renderDeals(){
   const nLive=OFF.filter(live).length,nStores=new Set(OFF.filter(live).map((o)=>o.storeId)).size;
   const intro=!renderDeals.done;renderDeals.done=true;document.body.classList.toggle("intro",intro);
   $("#view").innerHTML=`<section class="stage"><div class="stage-in">
-    <div class="sbox-wrap" style="--d:0">${searchBox("hq","",true)}</div>
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
@@ -1572,16 +1629,30 @@ function renderDeals(){
   ${highlightsHTML(pool)}
   ${preHTML()}
   ${groupNav()}
-  <section class="home-all">${sectionHead("","Explorar todos os preços",`${list.length} ${list.length===1?"produto":"produtos"} comparados com a Copag.`)}
-  <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
-  ${filtersHTML(all)}
-  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e)).join("")}</div>`:`<div class="empty"><h3>Nenhuma oferta com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
-  ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço sugerido conhecido (${noCopag.length})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
-  ${base.some((e)=>!e.p.copagConfirmed)?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
+  <section class="home-all home-cta"><a class="allcta" href="/produtos" data-go="produtos"><span class="allcta-i">${ic("package")}</span><span><b>Ver todos os ${all.length} produtos</b><small>Filtre por coleção, formato, loja, preço e estoque.</small></span>${ic("caret-down","icon chev")}</a>
   </section>`;
   homeMotion();startTicker();stageInit();revealInit();
 }
 
+/* Produtos: todos os produtos com oferta, com filtros (coleção, formato, loja, preço, estoque, abaixo da Copag) */
+function rerenderList(){if(view==="produtos")renderProdutos();else renderDeals()}
+function renderProdutos(){
+  const raw=entries();
+  const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
+  const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
+  const list=sortEntries(base.slice());
+  const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
+  $("#view").innerHTML=`<div class="opp prods">
+  <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}<span>Produtos</span></nav>
+  <header class="opp-head"><h1>${ic("package")}Todos os produtos</h1><p>${list.length} ${list.length===1?"produto":"produtos"} com oferta nas lojas, cada um com o menor preço encontrado e comparado com o preço sugerido da Copag.</p></header>
+  <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
+  ${filtersHTML(all)}
+  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e)).join("")}</div>`:`<div class="empty"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
+  ${noCopag.length?`<details class="more"><summary>${ic("caret-down")}Sem preço sugerido conhecido (${noCopag.length})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${sortEntries(noCopag).map((e)=>dealCard(e)).join("")}</div></details>`:""}
+  ${base.some((e)=>!e.p.copagConfirmed)?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
+  </div>`;
+  if(typeof revealInit==="function")revealInit();
+}
 function renderList(title,intro,list,emptyMsg){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>${title}</h2><p>${intro}</p>
   ${list.length?`<div class="tablewrap"><table><thead><tr><th>Produto</th><th>Loja</th><th class="r">Total</th><th>Situação</th></tr></thead><tbody>${list.map((o)=>{const p=P[o.productId]||{};return`<tr class="click" data-p="${esc(o.productId)}" tabindex="0"><td><b>${esc(p.collectionName)}</b><br><span style="color:var(--muted)">${esc(label(p))}</span></td><td>${esc(o.storeName)}</td><td class="r">${money(o.total)}${pixTag(o)}</td><td>${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}</td></tr>`}).join("")}</tbody></table></div>`:`<p style="padding:0 16px 16px">${emptyMsg}</p>`}
@@ -2080,11 +2151,12 @@ function renderConfig(){
 }
 
 const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
-const TITLES={busca:"Busca",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
+const TITLES={busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
-  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
+  const tq=$("#tq");if(tq&&document.activeElement!==tq){tq.value=view==="busca"?(F.q||""):"";const x=tq.closest(".sbox")?.querySelector(".sbox-x");if(x)x.hidden=!tq.value}
+  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   if(view==="conta")return renderConta();
@@ -2095,6 +2167,7 @@ function render(){
   if(view==="produto")renderProduct(curPid);
   else if(view==="busca")renderSearch();
   else if(view==="deals")renderDeals();
+  else if(view==="produtos")renderProdutos();
   else if(view==="oportunidades")renderOpp();
   else if(view==="pistas")renderTips();
   else if(view==="copag")renderCopag();
@@ -2170,8 +2243,7 @@ function renderSearch(){
   const q=F.q||"";const res=searchProducts(q);const cols=searchCollections(q).slice(0,6);const tips=q?tipHits(q):[];
   const cards=res.map(({p})=>({p,o:bestOfferFor(p.id),n:nLiveOf(p.id)}));
   const sugg=!res.length?(S.collections||[]).map((c)=>({c,d:lev(norm(q),norm(c.name),6)})).sort((a,b)=>a.d-b.d).slice(0,3).map((x)=>x.c):[];
-  $("#view").innerHTML=`<section class="hero-search compact">${searchBox("sq",q,false)}</section>
-  <div class="page-title"><h2>${res.length?`${res.length} ${res.length===1?"produto":"produtos"} para "${esc(q)}"`:`Nenhum produto para "${esc(q)}"`}</h2>${q?`<button class="linkbtn" type="button" data-go="">${ic("x")}Limpar busca</button>`:""}</div>
+  $("#view").innerHTML=`<div class="page-title"><h2>${res.length?`${res.length} ${res.length===1?"produto":"produtos"} para "${esc(q)}"`:`Nenhum produto para "${esc(q)}"`}</h2>${q?`<button class="linkbtn" type="button" data-go="">${ic("x")}Limpar busca</button>`:""}</div>
   ${cols.length?`<div class="qchips">${cols.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)} <small>${c.products}</small></button>`).join("")}</div>`:""}
   ${res.length?`<div class="deals">${cards.map((e)=>dealCard(e,{plain:true})).join("")}</div>`
     :`<div class="empty"><h3>Não achamos esse produto</h3><p>Confira a escrita ou tente o nome da coleção, o tipo (ETB, box, blister) ou o código de barras.</p>${sugg.length?`<p>Talvez você quis dizer: ${sugg.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)}</button>`).join(" ")}</p>`:""}<button class="btn ghost" type="button" data-go="">Ver todas as ofertas</button></div>`}
@@ -2225,6 +2297,7 @@ function fresh(){
   $("#fresh-t").innerHTML=m>90?`<b>Robô pausado.</b> Os preços podem estar desatualizados.`:`<b>Ao vivo</b> · preços em tempo real`;
 }
 setInterval(fresh,30e3);
+(()=>{const h=$("#hsearch");if(h)h.innerHTML=searchBox("tq",view==="busca"?F.q:"",true)})();
 function init(st){
   const prevBest=S?Object.fromEntries((S.products||[]).map((p)=>[p.id,bestLive(p.id)?.total])):null;
   S=st;P=Object.fromEntries((S.products||[]).map((p)=>[p.id,p]));OFF=S.offers||[];
@@ -2240,7 +2313,7 @@ function init(st){
 function loading(){
   /* Início: o palco (busca e frase) não depende dos preços, então já aparece pronto; só o pódio espera os dados */
   if(view==="deals"){
-    $("#view").innerHTML=`<section class="stage"><div class="stage-in"><div class="sbox-wrap" style="--d:0">${searchBox("hq","",true)}</div>
+    $("#view").innerHTML=`<section class="stage"><div class="stage-in"><div class="sbox-wrap" style="--d:0">${""}</div>
     <div class="stage-copy"><h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
     <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p></div>
     <div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div></div></section>`;
@@ -2287,14 +2360,14 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
   if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",disc:0,score:0});store.set("opp",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
   const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
-  if(t.closest("[data-searchfocus]")){if(view!=="deals")go("");setTimeout(()=>{const i=$("#hq");if(i){i.scrollIntoView({block:"center"});i.focus()}},60);return}
-  const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);renderDeals();track("filter_used",{f:"group",v:F.group});return}
-  const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);if(view!=="deals")go("");else render();return}
+  if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
+  const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);rerenderList();track("filter_used",{f:"group",v:F.group});return}
+  const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);if(view!=="produtos")go("produtos");else render();return}
   const nb=t.closest("[data-go]");if(nb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();go(nb.dataset.go);return}
   if(t.closest("[data-home]")){e.preventDefault();go("");return}
   if(t.closest("[data-more]")){$("#more").showModal();return}
   if(t.closest("[data-refresh]")){refresh();return}
-  if(t.closest("#clear-all")){Object.assign(F,{group:"",col:"",store:"",type:"",max:"",below:false,stock:true});store.set("f",F);renderDeals();return}
+  if(t.closest("#clear-all")){Object.assign(F,{group:"",col:"",store:"",type:"",max:"",below:false,stock:true});store.set("f",F);rerenderList();return}
   if(t.closest("[data-close]"))$("#sheet").close();
 });
 document.addEventListener("submit",(e)=>{const f=e.target;
@@ -2319,7 +2392,7 @@ document.addEventListener("toggle",(e)=>{if(e.target.id==="xf")xfOpen=e.target.o
 document.addEventListener("change",(e)=>{const t=e.target;
   if(t.id==="osort"){offerSort=t.value;renderProduct(curPid);return}
   const ok=t.dataset?.of;if(ok){OF[ok]=["disc","score"].includes(ok)?Number(t.value):t.value;store.set("opp",OF);renderOpp();if($("#fsheet").open)openFilterSheet();track("filter_used",{f:ok,v:String(OF[ok])});return}
-  const k=t.dataset?.f;if(!k)return;F[k]=t.type==="checkbox"?t.checked:t.value;store.set("f",F);renderDeals();track("filter_used",{f:k})});
+  const k=t.dataset?.f;if(!k)return;F[k]=t.type==="checkbox"?t.checked:t.value;store.set("f",F);rerenderList();track("filter_used",{f:k})});
 $("#mini-img").style.backgroundImage=`url("${$(".brand img").src}")`;document.documentElement.style.setProperty("--logo",`url("${$(".brand img").src}")`);
 new IntersectionObserver(([en])=>{const m=$("#mini");m.classList.toggle("show",!en.isIntersecting);m.setAttribute("aria-hidden",String(en.isIntersecting))},{threshold:0}).observe($(".cover"));
 const isDark=()=>document.documentElement.dataset.theme?document.documentElement.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;

@@ -1,7 +1,7 @@
 // /sitemap.xml: páginas públicas, coleções, formatos e todos os produtos com endereço amigável.
 import { state, slugs, SITE, colSlug, typeSlug } from './_seo.mjs';
 export default async function handler(req, res) {
-  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['como-funciona', 'monthly', '0.4']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
+  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['produtos', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['como-funciona', 'monthly', '0.4']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
   let lastmod = new Date().toISOString().slice(0, 10);
   try {
     const s = await state(); lastmod = String(s.generatedAt || '').slice(0, 10) || lastmod; const { of } = slugs(s.products || []);
