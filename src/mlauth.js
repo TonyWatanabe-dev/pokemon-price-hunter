@@ -8,7 +8,8 @@ import { dataPath } from './db.js';
 const FILE = () => dataPath('ml-auth.enc');
 const TOKEN_URL = 'https://api.mercadolibre.com/oauth/token';
 export const REDIRECT = () => process.env.ML_REDIRECT_URI || 'https://tcg-price-hunter.vercel.app/ml/callback';
-const cfg = () => ({ id: process.env.ML_CLIENT_ID, secret: process.env.ML_CLIENT_SECRET });
+// App ID é público (aparece na URL de autorização); só a Secret Key é segredo.
+const cfg = () => ({ id: process.env.ML_CLIENT_ID || '7868227182755647', secret: process.env.ML_CLIENT_SECRET });
 const key = (secret) => crypto.createHash('sha256').update('tcgph-ml|' + secret).digest();
 
 export function seal(obj, secret = cfg().secret) {
