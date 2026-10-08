@@ -35,7 +35,8 @@ export function mlReject(name, productId, catalog) {
   if (colId === 'me01' && /cottonee?|whimsicott|sneasel|weavile|charmeleon|toxel|makuhita/.test(t)) return 'mascote de outra coleção';
   return null;
 }
-const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto de catálogo
+const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto nosso
+const MIN_SALES = Number(process.env.ML_MIN_SALES || 50); // vendas concluídas mínimas do vendedor
 
 export async function search(store, catalog, { log = () => {} } = {}) {
   let auth;
@@ -81,28 +82,48 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     cache.products = found; cache.at = new Date().toISOString();
   }
 
-  const listings = [];
+  // Vendedor: só publica quem tem reputação no ML (termômetro verde/amarelo e vendas concluídas).
+  // Conta nova ou termômetro vermelho/laranja fica de fora — protege quem clica.
+  const sellerInfo = async (sid) => {
+    let v = cache.sellers[sid];
+    if (v && typeof v === 'object' && Date.now() - Date.parse(v.at) < 7 * DAY) return v;
+    try {
+      const u = await call(`/users/${sid}`); const r = u.seller_reputation || {};
+      v = { name: u.nickname || `Vendedor ${sid}`, level: r.level_id || null, sales: r.transactions?.completed ?? r.transactions?.total ?? 0, at: new Date().toISOString() };
+    } catch { v = { name: `Vendedor ${sid}`, level: null, sales: 0, at: new Date().toISOString() }; }
+    cache.sellers[sid] = v; return v;
+  };
+  const trusted = (v) => /^(3_yellow|4_light_green|5_green)$/.test(v.level || '') && v.sales >= MIN_SALES;
+
+  const byProduct = {};
   for (const [pid, p] of Object.entries(cache.products)) {
     if (mlReject(p.name, p.productId, catalog)) continue;
     let j;
     try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
-    const items = (j.results || []).filter((it) => (!it.condition || it.condition === 'new') && Number(it.price) > 0)
-      .sort((a, b) => a.price - b.price).filter((it, i) => i < PER_PRODUCT || it.official_store_id);
-    for (const it of items) {
+    for (const it of j.results || []) {
+      if (it.condition && it.condition !== 'new') continue;
       const id = it.item_id || it.id; const price = Number(it.price);
       if (!id || !(price > 0)) continue;
-      const sid = it.seller_id;
-      let seller = it.official_store_name || cache.sellers[sid];
-      if (!seller && sid) {
-        try { const u = await call(`/users/${sid}`); seller = u.nickname || null; } catch { seller = null; }
-        cache.sellers[sid] = seller || `Vendedor ${sid}`; seller = cache.sellers[sid];
-      }
+      (byProduct[p.productId] ||= []).push({ it, p, id, price });
+    }
+  }
+  const listings = [];
+  for (const list of Object.values(byProduct)) {
+    list.sort((a, b) => a.price - b.price);
+    let kept = 0; const seen = new Set();
+    for (const { it, p, id, price } of list) {
+      if (kept >= PER_PRODUCT) break;
+      const sid = it.seller_id; if (seen.has(sid)) continue; // um anúncio por vendedor
+      const official = !!it.official_store_id;
+      const v = sid ? await sellerInfo(sid) : { name: null, level: null, sales: 0 };
+      if (!official && !trusted(v)) continue;
+      seen.add(sid); kept++;
       listings.push({
         title: p.name, url: itemUrl(id), price: { base: price }, listPrice: it.original_price > price ? it.original_price : null,
         stock: 'IN_STOCK', quantity: null, // /items do catálogo só lista ofertas ativas
         shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
-        seller: seller || 'Vendedor no Mercado Livre', sellerId: sid,
-        sellerKind: it.official_store_id ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
+        seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: sid,
+        sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
       });
     }
   }

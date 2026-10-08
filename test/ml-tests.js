@@ -52,8 +52,10 @@ http.setFetch(async (url, opt) => {
   if (url.endsWith('/products/MLB111/items')) return j({ results: [
     { item_id: 'MLB5551', price: 299.9, seller_id: 77, condition: 'new', shipping: { free_shipping: true } },
     { item_id: 'MLB5552', price: 250, seller_id: 78, condition: 'used' },
+    { item_id: 'MLB5553', price: 99, seller_id: 79, condition: 'new' },
   ] });
-  if (url.endsWith('/users/77')) return j({ nickname: 'LOJA_TCG' });
+  if (url.endsWith('/users/77')) return j({ nickname: 'LOJA_TCG', seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
+  if (url.endsWith('/users/79')) return j({ nickname: 'CONTA_NOVA', seller_reputation: { level_id: null, transactions: { completed: 0 } } });
   return j({}, 404);
 });
 const L = await search({ id: 'mercadolivre' }, catalog);
@@ -62,6 +64,7 @@ const o = L.find((x) => x.sku === 'MLB5551');
 assert.equal(o.url, 'https://produto.mercadolivre.com.br/MLB-5551-_JM');
 assert.equal(o.price.base, 299.9); assert.equal(o.shipping, 0); assert.equal(o.seller, 'LOJA_TCG');
 assert.ok(!L.some((x) => x.sku === 'MLB5552'), 'usado fica de fora');
+assert.ok(!L.some((x) => x.sku === 'MLB5553'), 'vendedor sem reputação fica de fora');
 assert.ok(!seen.some((u) => u.includes('MLB222')), 'produto fora do catálogo não é consultado');
 assert.ok(fs.existsSync(path.join(dir, 'ml-catalog.json')));
 
