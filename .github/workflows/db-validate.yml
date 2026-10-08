@@ -34,6 +34,9 @@ jobs:
           node tools/db-diagnose.mjs out/connect.json > out/connect.log
           v=$(tail -1 out/connect.log)
           echo "version=$v" >> "$GITHUB_OUTPUT"; echo "Supabase: PostgreSQL $v"
+      - name: Fotografia do Opportunity Engine (estado do robô, antes de qualquer recálculo)
+        continue-on-error: true
+        run: node tools/opportunity-snapshot.mjs out/opportunity-snapshot.json "supabase-before-validate" | tee out/opportunity-snapshot.log
       - name: Migrations (1ª execução)
         run: node tools/db-migrate.mjs 2>&1 | tee out/migrate-1.log
       - name: Migrations (2ª execução, deve não fazer nada)
