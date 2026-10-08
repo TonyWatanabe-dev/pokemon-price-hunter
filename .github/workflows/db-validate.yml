@@ -48,7 +48,8 @@ jobs:
         continue-on-error: true
         run: |
           node tools/opportunity-snapshot.mjs out/opportunity-snapshot-after.json "supabase-after-validate" | tee out/opportunity-snapshot-after.log
-          node tools/opportunity-diff.mjs db/snapshots/opportunity-v2-before-6a1.json out/opportunity-snapshot-after.json out/opportunity-diff.json | tee out/opportunity-diff.log
+          # mesma base de dados: estado do robô (antes) × recálculo desta validação (depois)
+          node tools/opportunity-diff.mjs out/opportunity-snapshot.json out/opportunity-snapshot-after.json out/opportunity-diff.json | tee out/opportunity-diff.log
       - name: Permissões do usuário só-leitura da API
         if: always()
         run: node tools/db-grants.mjs | tee out/grants.log

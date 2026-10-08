@@ -10,7 +10,7 @@ const p = await pool();
 const rows = (await p.query(`
   SELECT pr.legacy_id AS product, f.legacy_id AS offer, f.store_id AS store, f.marketplace_id AS marketplace,
          se.external_id AS seller, f.stock_status AS stock, o.price::float8 AS price,
-         s.reference_kind AS ref_kind, s.reference_price::float8 AS ref_price, s.reference_reason AS ref_reason,
+         s.reference_kind AS ref_kind, s.reference_price::float8 AS ref_price, s.reference_reason AS ref_reason, s.reference_confidence::float8 AS ref_confidence,
          s.quality->'market_reference' AS market_reference, s.number_of_in_stock_offers AS in_stock, s.number_of_stores AS stores,
          o.opportunity_score AS score, o.opportunity_band AS band, o.confidence::float8 AS confidence,
          o.reference_signal::float8 AS s_reference, o.market_signal::float8 AS s_market, o.price_signal::float8 AS s_price,

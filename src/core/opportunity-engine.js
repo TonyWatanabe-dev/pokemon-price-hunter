@@ -19,14 +19,16 @@
 //    queda não confirmada ≤ 74; loja mal avaliada ≤ 74; desconto > 40% ≤ 89.
 // 5) Confiança separada do score (0–1): cobertura × fatores de incerteza (histórico curto, frete, poucas lojas...).
 import { plausible, round2, round4 } from './price-engine.js';
-import { CURRENT_KINDS } from './references.js';
+import { CURRENT_KINDS, MARKETPLACE_ONLY_FACTOR, historyDeviation } from './references.js';
 
 // v2 (Fase 6A): mesma fórmula, pesos, travas, faixas e confiança da v1; o sinal de 30% passou de "Copag" para REFERÊNCIA ATUAL
 // (Copag oficial atual > mercado atual robusto > nenhuma). Histórico e comunitária só geram aviso/contexto.
 // v2.1 (Fase 6A.1): quando a referência atual É o mercado (MARKET_CURRENT), o sinal de mercado (mediana) é a MESMA evidência
 // e não conta de novo — fica indisponível (absorvido pela referência) e a cobertura cai como para qualquer sinal ausente.
 // Com Copag atual, referência e mercado continuam independentes (30% + 20%). Fórmula, pesos, travas, faixas e confiança: iguais.
-export const OPP_VERSION = 'opportunity-v2.1';
+// v2.2 (Fase 6A.2): mercado formado só por marketplace reduz a CONFIANÇA (× 0,85) e gera aviso; o score não muda.
+// Aviso informativo quando o mercado foge da régua de plausibilidade (55%–300%) em relação ao histórico disponível.
+export const OPP_VERSION = 'opportunity-v2.2';
 export const WEIGHTS = { reference: 0.30, historical: 0.20, market: 0.20, price: 0.10, freight: 0.10, reliability: 0.10 };
 const W_TOTAL = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
 export const BANDS = [[90, 'excelente'], [75, 'boa'], [50, 'normal'], [0, 'baixa']];
@@ -90,6 +92,16 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   const ctx = st.reference_context || {}; const histCtx = ctx.historical || []; const commCtx = ctx.community || [];
   if (!refOk && histCtx.length) { const h = histCtx[0];
     w('HISTORICAL_REFERENCE_ONLY', `Existe apenas referência histórica: ${h.kind === 'MARKET_HISTORICAL' ? 'histórico de mercado' : 'preço sugerido de lançamento'} de ${brl(h.price)}${h.published_at ? ` (${h.published_at})` : ''}, que não é usado como referência atual`); }
+  // qualidade do mercado (só aviso/confiança; nunca score)
+  const mrq = st.quality?.market_reference || {}; const marketplaceOnly = refOk && refKind === 'MARKET_CURRENT' && mrq.composition === 'MARKETPLACE_ONLY';
+  if (marketplaceOnly) w('MARKETPLACE_ONLY', `Referência de mercado formada exclusivamente por vendedores de marketplace (${mrq.sources} fontes): preço real, mas possivelmente especulativo`);
+  if (refOk && refKind === 'MARKET_CURRENT') {
+    // histórico disponível: média do próprio histórico (≥ 3 dias) ou, sem ela, o preço sugerido de lançamento Copag
+    const own = histOk ? { price: hAvg, kind: 'PRICE_HISTORY', label: 'média do histórico de preços' } : null;
+    const launch = histCtx.find((h) => h.kind === 'COPAG_OFFICIAL_HISTORICAL');
+    const dev = historyDeviation(ref, own || (launch ? { ...launch, label: `preço sugerido de lançamento${launch.published_at ? ` de ${launch.published_at}` : ''}${launch.status === 'pending' ? ' (confiança média)' : ''}` } : null));
+    if (dev) w('MARKET_HIGHLY_DEVIATED_FROM_HISTORY', `O mercado atual (${brl(ref)}) está ${String(dev.ratio).replace('.', ',')}× o ${dev.history.label} (${brl(dev.history.price)}): ${dev.direction === 'above' ? 'muito acima' : 'muito abaixo'} do histórico disponível. Só informativo; não altera o score`);
+  }
   if (commCtx.length) { const c = commCtx[0]; const d = (price - c.price) / c.price;
     w(!refOk && !histCtx.length ? 'COMMUNITY_REFERENCE_ONLY' : 'COMMUNITY_REFERENCE',
       `Existe uma referência comunitária de ${brl(c.price)} (não é preço oficial Copag nem referência atual e não entra no score)${Math.abs(d) >= 0.005 ? `; esta oferta está ${pct(d)} ${d > 0 ? 'acima' : 'abaixo'} dela` : ''}`); }
@@ -183,6 +195,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   if (offer.confirmed === false) conf *= 0.6;
   if (isAnomaly) conf *= 0.4;
   if (!ra || ra === 'NAO_ENCONTRADA' || ra === 'SEM_INDICE') conf *= 0.95;
+  if (marketplaceOnly) conf *= MARKETPLACE_ONLY_FACTOR;   // referência só de marketplace: dado menos representativo
   const confidence = round2(clamp(conf));
 
   return {
@@ -190,7 +203,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
     reasons, warnings, caps,
     price_signal: round4(priceSig), historical_signal: round4(historical), reference_signal: round4(reference),
     stock_signal: round4(stockSig), freight_signal: round4(freight), market_signal: round4(market), reliability_signal: round4(reliability),
-    is_anomaly: isAnomaly, price, raw_score: round2(raw), coverage: round4(coverage), market_signal_absorbed: marketAbsorbed,
+    is_anomaly: isAnomaly, price, raw_score: round2(raw), coverage: round4(coverage), market_signal_absorbed: marketAbsorbed, market_composition: refOk && refKind === 'MARKET_CURRENT' ? (mrq.composition ?? null) : null,
   };
 }
 

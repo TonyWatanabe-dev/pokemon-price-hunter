@@ -20,7 +20,7 @@ const contrib = (o) => ({ reference: o.reference_signal == null ? 0 : WEIGHTS.re
   market: o.market_signal == null ? 0 : WEIGHTS.market * (100 * o.market_signal - 50) });
 
 t('versão e pesos preservados', () => {
-  assert.equal(OPP_VERSION, 'opportunity-v2.1');
+  assert.equal(OPP_VERSION, 'opportunity-v2.2');
   assert.deepEqual(WEIGHTS, { reference: 0.30, historical: 0.20, market: 0.20, price: 0.10, freight: 0.10, reliability: 0.10 });
 });
 

@@ -62,7 +62,7 @@ export function stateGetProduct(st, key) {
 }
 // mesmo contrato do banco: referência atual × contexto histórico (o state.json não tem histórico Copag)
 function stateRefs(p, r) {
-  if (!r) return { current_reference: currentReferenceView(null), historical_context: [], community_reference: null, references: [] };
+  if (!r) return { current_reference: currentReferenceView(null), historical_context: [], community_reference: null, market_composition: 'NONE', references: [] };
   const url = r.status === 'verified' ? p.copag?.source_url ?? null : p.copagReferenceUrl ?? null; const kind = robotReferenceKind({ source_url: url });
   const ref = { ...r, source: r.status === 'verified' ? 'copag_loja' : 'internet', source_url: url, verified_at: r.status === 'verified' ? p.copag?.source_timestamp ?? null : null,
     kind, scope: SCOPE[kind], label: LABEL[kind] };
@@ -70,7 +70,7 @@ function stateRefs(p, r) {
   const current = r.status === 'verified' && SCOPE[kind] === 'current' ? currentReferenceView({ kind, price: r.value, confidence: 0.95, reason: 'verified_current_copag' })
     : currentReferenceView({ kind: 'NONE', reason: 'state_fallback' });
   const community = kind === 'COMMUNITY_REFERENCE' ? { kind, label: LABEL[kind], price: r.value, source: url, url, published_at: null, effective_date: null, confidence: null, status: r.status } : null;
-  return { current_reference: current, historical_context: [], community_reference: community, references: [ref] };
+  return { current_reference: current, historical_context: [], community_reference: community, market_composition: 'NONE', references: [ref] };
 }
 function stateStatsOf(p, list, m, r) {
   return { as_of_day: null, status: !list.length ? 'no_offers' : m.elig.length ? 'ok' : 'no_stock',

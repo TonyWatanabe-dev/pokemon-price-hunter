@@ -20,7 +20,7 @@ export async function loadOpportunityInputs(c) {
      WHERE o.status IN ('active', 'pending') AND o.condition = p.condition`);
   // contexto de referência (não entra no score): preço de lançamento/histórico e referência comunitária — uma consulta só
   const context = await q(`SELECT product_id,
-      coalesce(jsonb_agg(jsonb_build_object('kind', reference_kind, 'price', value::float8, 'published_at', published_at)
+      coalesce(jsonb_agg(jsonb_build_object('kind', reference_kind, 'price', value::float8, 'published_at', published_at, 'status', verification_status)
         ORDER BY published_at DESC NULLS LAST, id DESC) FILTER (WHERE reference_scope = 'historical'), '[]') AS historical,
       coalesce(jsonb_agg(jsonb_build_object('kind', reference_kind, 'price', value::float8, 'source_url', source_url)
         ORDER BY verified_at DESC NULLS LAST, id DESC) FILTER (WHERE reference_scope = 'community'), '[]') AS community

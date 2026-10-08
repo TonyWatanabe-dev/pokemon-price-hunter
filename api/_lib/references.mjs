@@ -84,7 +84,7 @@ const med = (xs) => { const a = [...xs].sort((x, y) => x - y); const n = a.lengt
 export function sourceOf(o) {
   const mk = o.marketplace_id || 'direct';
   if (mk !== 'direct' && o.seller_key) return { type: 'MARKETPLACE_SELLER', key: `${mk}:${o.seller_key}`, marketplace: mk, seller: String(o.seller_key) };
-  if (o.store_id) return { type: 'STORE', key: `store:${o.store_id}`, id: o.store_id };
+  if (o.store_id) return { type: 'STORE', key: `store:${o.store_id}`, id: o.store_id, marketplace: mk };
   return null;
 }
 /** Fontes independentes entre as ofertas. isTrusted(source, offer): fonte fora da janela de desconfiança. */
@@ -97,8 +97,35 @@ export function getIndependentMarketSources(offers, { isTrusted = () => true } =
     by.get(src.key).offers++;
   }
   const sources = [...by.values()].sort((a, b) => a.key.localeCompare(b.key));
+  const direct = sources.filter((x) => (x.marketplace || 'direct') === 'direct').length;
   return { count: sources.length, sources, stores: sources.filter((x) => x.type === 'STORE').length,
-    marketplace_sellers: sources.filter((x) => x.type === 'MARKETPLACE_SELLER').length, untrusted_sources: untrusted.size };
+    marketplace_sellers: sources.filter((x) => x.type === 'MARKETPLACE_SELLER').length, untrusted_sources: untrusted.size,
+    direct_sources: direct, marketplace_sources: sources.length - direct, composition: compositionOf(direct, sources.length - direct) };
+}
+
+// ---------------------------------------------------------------- Fase 6A.2 — composição do mercado (qualidade, não preço)
+// MARKET_STORES: só lojas tradicionais · MARKET_MIXED: lojas tradicionais + fontes de marketplace · MARKETPLACE_ONLY: só marketplace
+// (vendedores identificados ou anúncios sem vendedor). Sem mercado robusto, a composição da REFERÊNCIA é NONE.
+export const COMPOSITIONS = ['MARKET_STORES', 'MARKET_MIXED', 'MARKETPLACE_ONLY', 'NONE'];
+export function compositionOf(direct, marketplace) {
+  if (!direct && !marketplace) return 'NONE';
+  return !marketplace ? 'MARKET_STORES' : !direct ? 'MARKETPLACE_ONLY' : 'MARKET_MIXED';
+}
+/** Fator de incerteza para mercado só de marketplace. Reaproveita a MESMA magnitude (0,85) que a confiança do Opportunity Engine
+ *  já usa para uma lacuna de dado de uma dimensão (histórico curto, < 3 ofertas). Não mexe em preço nem em score. */
+export const MARKETPLACE_ONLY_FACTOR = 0.85;
+
+/** Desvio entre o mercado atual e o histórico disponível, pela MESMA régua de plausibilidade do Price Engine (55%–300% da âncora).
+ *  history: { price, kind, published_at, status } — preço de lançamento Copag ou média do próprio histórico (≥ 3 dias).
+ *  Devolve null quando não há histórico ou quando o mercado está dentro da faixa. Só informativo. */
+export const DEVIATION_BOUNDS = { low: 0.55, high: 3 };
+export function historyDeviation(marketPrice, history) {
+  const m = Number(marketPrice); const h = Number(history?.price);
+  if (!(m > 0) || !(h > 0)) return null;
+  const ratio = m / h;
+  if (ratio > DEVIATION_BOUNDS.high) return { direction: 'above', ratio: Math.round(ratio * 100) / 100, history };
+  if (ratio < DEVIATION_BOUNDS.low) return { direction: 'below', ratio: Math.round(ratio * 100) / 100, history };
+  return null;
 }
 
 /**
@@ -108,6 +135,7 @@ export function getIndependentMarketSources(offers, { isTrusted = () => true } =
  * e anomalias ≤ 1/3 das ofertas em estoque. Preço = MEDIANA (não média, não menor preço). Sem isso → null (não força referência).
  * Confiança (informativa, não entra no score): 0,60 no mínimo do critério; +0,05 por oferta além de 3 (até +0,15);
  * +0,05 por fonte independente além de 2 (até +0,10). Máximo 0,85 — sempre abaixo da Copag oficial verificada.
+ * Fase 6A.2: mercado só de marketplace multiplica por 0,85 (faixa 0,51–0,72).
  */
 export function marketReferenceOf(offers, { implausibleInStock = 0, isTrusted = () => true } = {}) {
   const ind = getIndependentMarketSources(offers, { isTrusted });
@@ -116,12 +144,15 @@ export function marketReferenceOf(offers, { implausibleInStock = 0, isTrusted = 
   const untrusted = (offers || []).length - sample.length;
   const marketplaces = new Set(sample.map((o) => o.marketplace_id).filter(Boolean)).size;
   const base = { offers: sample.length, sources: ind.count, stores: ind.stores, marketplace_sellers: ind.marketplace_sellers, marketplaces,
-    untrusted, untrusted_sources: ind.untrusted_sources, implausible: implausibleInStock };
-  if (sample.length < MARKET_RULE.minOffers) return { ok: false, reason: 'insufficient_offers', ...base };
-  if (ind.count < MARKET_RULE.minSources) return { ok: false, reason: 'single_source', ...base };
-  if (implausibleInStock / (sample.length + implausibleInStock) > MARKET_RULE.maxAnomalyShare) return { ok: false, reason: 'too_many_anomalies', ...base };
-  const confidence = Math.round((0.6 + Math.min(0.15, 0.05 * (sample.length - 3)) + Math.min(0.1, 0.05 * (ind.count - 2))) * 1000) / 1000;
-  return { ok: true, price: med(sample.map((o) => Number(o.price))), confidence, reason: 'robust_current_market', ...base };
+    direct_sources: ind.direct_sources, marketplace_sources: ind.marketplace_sources, untrusted, untrusted_sources: ind.untrusted_sources, implausible: implausibleInStock };
+  if (sample.length < MARKET_RULE.minOffers) return { ok: false, reason: 'insufficient_offers', composition: 'NONE', ...base };
+  if (ind.count < MARKET_RULE.minSources) return { ok: false, reason: 'single_source', composition: 'NONE', ...base };
+  if (implausibleInStock / (sample.length + implausibleInStock) > MARKET_RULE.maxAnomalyShare) return { ok: false, reason: 'too_many_anomalies', composition: 'NONE', ...base };
+  const composition = ind.composition;
+  // escala original (0,60–0,85) × fator de composição: só marketplace = 0,85 (ver MARKETPLACE_ONLY_FACTOR); lojas ou misto = 1
+  const scale = 0.6 + Math.min(0.15, 0.05 * (sample.length - 3)) + Math.min(0.1, 0.05 * (ind.count - 2));
+  const confidence = Math.round(scale * (composition === 'MARKETPLACE_ONLY' ? MARKETPLACE_ONLY_FACTOR : 1) * 1000) / 1000;
+  return { ok: true, price: med(sample.map((o) => Number(o.price))), confidence, reason: 'robust_current_market', composition, ...base };
 }
 
 /**
@@ -146,7 +177,7 @@ export function currentReferenceView(r) {
   return { kind: r.kind, label: LABEL[r.kind], price: r.price != null ? Number(r.price) : null, source: r.kind === 'MARKET_CURRENT' ? 'market' : 'Copag',
     confidence: conf01(r.confidence), reason: r.reason ?? null,
     // transparência do mercado: quantas fontes independentes (lojas + vendedores de marketplace) formam a mediana
-    ...(r.kind === 'MARKET_CURRENT' ? { market_sources: r.market_sources != null ? Number(r.market_sources) : null } : {}) };
+    ...(r.kind === 'MARKET_CURRENT' ? { market_sources: r.market_sources != null ? Number(r.market_sources) : null, market_composition: r.market_composition ?? null } : {}) };
 }
 /** linha de reference_price → contexto (histórico/comunitário) no contrato da API */
 export function contextReferenceView(row) {
