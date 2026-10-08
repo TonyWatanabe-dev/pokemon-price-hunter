@@ -1,0 +1,121 @@
+pokemontcg.io: HTTP 200, 21968 bytes
+EN me55c | 30th Celebration: Classic Collection | Mega Evolution | 2026/09/16 | 200
+EN me55 | 30th Celebration | Mega Evolution | 2026/09/16 | 200
+EN me5 | Pitch Black | Mega Evolution | 2026/07/17 | 200
+EN me4 | Chaos Rising | Mega Evolution | 2026/05/22 | 200
+EN me3 | Perfect Order | Mega Evolution | 2026/03/27 | 200
+EN me2pt5 | Ascended Heroes | Mega Evolution | 2026/01/30 | 200
+EN me2 | Phantasmal Flames | Mega Evolution | 2025/11/14 | 200
+EN me1 | Mega Evolution | Mega Evolution | 2025/09/26 | 200
+EN rsv10pt5 | White Flare | Scarlet & Violet | 2025/07/18 | 200
+EN zsv10pt5 | Black Bolt | Scarlet & Violet | 2025/07/18 | 200
+EN sv10 | Destined Rivals | Scarlet & Violet | 2025/05/30 | 200
+EN sv9 | Journey Together | Scarlet & Violet | 2025/03/28 | 200
+EN sv8pt5 | Prismatic Evolutions | Scarlet & Violet | 2025/01/17 | 200
+EN sv8 | Surging Sparks | Scarlet & Violet | 2024/11/08 | 200
+EN sv7 | Stellar Crown | Scarlet & Violet | 2024/09/13 | 200
+EN sv6pt5 | Shrouded Fable | Scarlet & Violet | 2024/08/02 | 200
+EN sv6 | Twilight Masquerade | Scarlet & Violet | 2024/05/24 | 200
+EN sv5 | Temporal Forces | Scarlet & Violet | 2024/03/22 | 200
+EN sv4pt5 | Paldean Fates | Scarlet & Violet | 2024/01/26 | 200
+EN sv4 | Paradox Rift | Scarlet & Violet | 2023/11/03 | 200
+EN sv3pt5 | 151 | Scarlet & Violet | 2023/09/22 | 200
+EN sv3 | Obsidian Flames | Scarlet & Violet | 2023/08/11 | 200
+EN sv2 | Paldea Evolved | Scarlet & Violet | 2023/06/09 | 200
+EN sv1 | Scarlet & Violet | Scarlet & Violet | 2023/03/31 | 200
+EN sve | Scarlet & Violet Energies | Scarlet & Violet | 2023/03/31 | 200
+EN swsh12pt5 | Crown Zenith | Sword & Shield | 2023/01/20 | 200
+EN swsh12pt5gg | Crown Zenith Galarian Gallery | Sword & Shield | 2023/01/20 | 200
+EN svp | Scarlet & Violet Black Star Promos | Scarlet & Violet | 2023/01/01 | 200
+EN swsh12 | Silver Tempest | Sword & Shield | 2022/11/11 | 200
+EN swsh12tg | Silver Tempest Trainer Gallery | Sword & Shield | 2022/11/11 | 200
+EN swsh11 | Lost Origin | Sword & Shield | 2022/09/09 | 200
+EN swsh11tg | Lost Origin Trainer Gallery | Sword & Shield | 2022/09/09 | 200
+EN mcd22 | McDonald's Collection 2022 | Other | 2022/08/03 | 200
+EN pgo | Pokémon GO | Sword & Shield | 2022/07/01 | 200
+EN swsh10 | Astral Radiance | Sword & Shield | 2022/05/27 | 200
+EN swsh10tg | Astral Radiance Trainer Gallery | Sword & Shield | 2022/05/27 | 200
+EN swsh9 | Brilliant Stars | Sword & Shield | 2022/02/25 | 200
+EN swsh9tg | Brilliant Stars Trainer Gallery | Sword & Shield | 2022/02/25 | 200
+EN swsh8 | Fusion Strike | Sword & Shield | 2021/11/12 | 200
+EN cel25c | Celebrations: Classic Collection | Sword & Shield | 2021/10/08 | 200
+EN cel25 | Celebrations | Sword & Shield | 2021/10/08 | 200
+EN swsh7 | Evolving Skies | Sword & Shield | 2021/08/27 | 200
+EN swsh6 | Chilling Reign | Sword & Shield | 2021/06/18 | 200
+EN swsh5 | Battle Styles | Sword & Shield | 2021/03/19 | 200
+EN swsh45 | Shining Fates | Sword & Shield | 2021/02/19 | 200
+EN swsh45sv | Shining Fates Shiny Vault | Sword & Shield | 2021/02/19 | 200
+EN mcd21 | McDonald's Collection 2021 | Other | 2021/02/09 | 200
+EN swsh4 | Vivid Voltage | Sword & Shield | 2020/11/13 | 200
+EN swsh35 | Champion's Path | Sword & Shield | 2020/09/25 | 200
+EN fut20 | Pokémon Futsal Collection | Other | 2020/09/11 | 200
+EN swsh3 | Darkness Ablaze | Sword & Shield | 2020/08/14 | 200
+EN swsh2 | Rebel Clash | Sword & Shield | 2020/05/01 | 200
+EN swsh1 | Sword & Shield | Sword & Shield | 2020/02/07 | 200
+EN swshp | SWSH Black Star Promos | Sword & Shield | 2019/11/15 | 200
+EN sm12 | Cosmic Eclipse | Sun & Moon | 2019/11/01 | 200
+EN mcd19 | McDonald's Collection 2019 | Other | 2019/10/15 | 200
+EN sma | Hidden Fates Shiny Vault | Sun & Moon | 2019/08/23 | 200
+EN sm115 | Hidden Fates | Sun & Moon | 2019/08/23 | 200
+EN sm11 | Unified Minds | Sun & Moon | 2019/08/02 | 200
+EN sm10 | Unbroken Bonds | Sun & Moon | 2019/05/03 | 200
+TCGdex pt-br: HTTP 200, 1149 bytes
+TCGdex pt: HTTP 200, 17898 bytes
+  pt sv01 | Escarlate e Violeta | 200 | https://assets.tcgdex.net/pt/sv/sv01/logo
+  pt sve | Escarlate e Violeta Energia | sem logo
+  pt svp | SVP Black Star Promos | sem logo
+  pt sv02 | Evoluções em Paldea | 200 | https://assets.tcgdex.net/pt/sv/sv02/logo
+  pt sv03 | Obsidiana em Chamas | 200 | https://assets.tcgdex.net/pt/sv/sv03/logo
+  pt sv03.5 | 151 | 200 | https://assets.tcgdex.net/pt/sv/sv03.5/logo
+  pt sv04 | Fenda Paradoxal | 200 | https://assets.tcgdex.net/pt/sv/sv04/logo
+  pt sv04.5 | Destinos de Paldea | 200 | https://assets.tcgdex.net/pt/sv/sv04.5/logo
+  pt sv05 | Forças Temporais | 200 | https://assets.tcgdex.net/pt/sv/sv05/logo
+  pt sv06 | Máscaras do Crepúsculo | 200 | https://assets.tcgdex.net/pt/sv/sv06/logo
+  pt sv06.5 | Fábulas Nebulosas | 200 | https://assets.tcgdex.net/pt/sv/sv06.5/logo
+  pt sv07 | Coroa Estelar | 200 | https://assets.tcgdex.net/pt/sv/sv07/logo
+  pt sv08 | Fagulhas Impetuosas | sem logo
+  pt sv08.5 | Evoluções Prismáticas | 200 | https://assets.tcgdex.net/pt/sv/sv08.5/logo
+  pt sv09 | Amigos de Jornada | 200 | https://assets.tcgdex.net/pt/sv/sv09/logo
+  pt sv10 | Rivais Predestinados | 200 | https://assets.tcgdex.net/pt/sv/sv10/logo
+  pt sv10.5b | Raio Preto | sem logo
+  pt sv10.5w | Fogo Branco | sem logo
+  pt mee | Megaevolução Energia | sem logo
+  pt me01 | Megaevolução | 200 | https://assets.tcgdex.net/pt/me/me01/logo
+  pt mep | MEP Black Star Promos | sem logo
+  pt me02 | Fogo Fantasmagórico | 200 | https://assets.tcgdex.net/pt/me/me02/logo
+  pt me02.5 | Heróis Excelsos | 200 | https://assets.tcgdex.net/pt/me/me02.5/logo
+  pt me03 | Equilíbrio Perfeito | 200 | https://assets.tcgdex.net/pt/me/me03/logo
+  pt me04 | Caos Ascendente | 200 | https://assets.tcgdex.net/pt/me/me04/logo
+  pt me05 | Escuridão Absoluta | 200 | https://assets.tcgdex.net/pt/me/me05/logo
+  pt 30th | Celebração de 30 Anos | sem logo
+  pt 30th-c | Coleção Clássica de 30 Anos | sem logo
+TCGdex en: HTTP 200, 35669 bytes
+  en sv01 | Scarlet & Violet | 404 | https://assets.tcgdex.net/en/sv/sv01/logo
+  en sve | Scarlet & Violet Energy | sem logo
+  en svp | SVP Black Star Promos | sem logo
+  en sv02 | Paldea Evolved | 200 | https://assets.tcgdex.net/en/sv/sv02/logo
+  en sv03 | Obsidian Flames | 200 | https://assets.tcgdex.net/en/sv/sv03/logo
+  en sv03.5 | 151 | 200 | https://assets.tcgdex.net/en/sv/sv03.5/logo
+  en sv04 | Paradox Rift | 200 | https://assets.tcgdex.net/en/sv/sv04/logo
+  en sv04.5 | Paldean Fates | 200 | https://assets.tcgdex.net/en/sv/sv04.5/logo
+  en sv05 | Temporal Forces | sem logo
+  en sv06 | Twilight Masquerade | 200 | https://assets.tcgdex.net/en/sv/sv06/logo
+  en sv06.5 | Shrouded Fable | 200 | https://assets.tcgdex.net/en/sv/sv06.5/logo
+  en sv07 | Stellar Crown | 200 | https://assets.tcgdex.net/en/sv/sv07/logo
+  en sv08 | Surging Sparks | 200 | https://assets.tcgdex.net/en/sv/sv08/logo
+  en sv08.5 | Prismatic Evolutions | 200 | https://assets.tcgdex.net/en/sv/sv08.5/logo
+  en sv09 | Journey Together | 200 | https://assets.tcgdex.net/en/sv/sv09/logo
+  en sv10 | Destined Rivals | 200 | https://assets.tcgdex.net/en/sv/sv10/logo
+  en sv10.5b | Black Bolt | 200 | https://assets.tcgdex.net/en/sv/sv10.5b/logo
+  en sv10.5w | White Flare | 200 | https://assets.tcgdex.net/en/sv/sv10.5w/logo
+  en mee | Mega Evolution Energy | sem logo
+  en me01 | Mega Evolution | 200 | https://assets.tcgdex.net/en/me/me01/logo
+  en mep | MEP Black Star Promos | sem logo
+  en me02 | Phantasmal Flames | 200 | https://assets.tcgdex.net/en/me/me02/logo
+  en me02.5 | Ascended Heroes | 200 | https://assets.tcgdex.net/en/me/me02.5/logo
+  en me03 | Perfect Order | 200 | https://assets.tcgdex.net/en/me/me03/logo
+  en me04 | Chaos Rising | 200 | https://assets.tcgdex.net/en/me/me04/logo
+  en me05 | Pitch Black | 200 | https://assets.tcgdex.net/en/me/me05/logo
+  en 30th | 30th Celebration | sem logo
+  en 30th-c | 30th Classic Collection | sem logo
+EXTRA c30 | 403 | text/html | https://d1i787aglh9bmb.cloudfront.net/assets/img/me-expansions/thirty/logo/pt-br/Logo-30th.png

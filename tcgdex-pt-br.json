@@ -1,0 +1,95 @@
+[
+ {
+  "id": "P-A",
+  "name": "Promo-A",
+  "cardCount": {
+   "total": 73,
+   "official": 0
+  }
+ },
+ {
+  "id": "A1",
+  "name": "Dominação Genética",
+  "symbol": "https://assets.tcgdex.net/univ/tcgp/A1/symbol",
+  "cardCount": {
+   "total": 286,
+   "official": 226
+  }
+ },
+ {
+  "id": "A1a",
+  "name": "Ilha Mítica",
+  "cardCount": {
+   "total": 86,
+   "official": 68
+  }
+ },
+ {
+  "id": "A2",
+  "name": "Embate do Tempo e Espaço",
+  "cardCount": {
+   "total": 207,
+   "official": 140
+  }
+ },
+ {
+  "id": "A2a",
+  "name": "Luz Triunfante",
+  "symbol": "https://assets.tcgdex.net/univ/tcgp/A2a/symbol",
+  "cardCount": {
+   "total": 96,
+   "official": 75
+  }
+ },
+ {
+  "id": "A2b",
+  "name": "Festival Brilhante",
+  "symbol": "https://assets.tcgdex.net/univ/tcgp/A2b/symbol",
+  "cardCount": {
+   "total": 111,
+   "official": 72
+  }
+ },
+ {
+  "id": "A3",
+  "name": "Guardiões Celestiais",
+  "cardCount": {
+   "total": 239,
+   "official": 155
+  }
+ },
+ {
+  "id": "A4a",
+  "name": "Nascentes Reclusas",
+  "symbol": "https://assets.tcgdex.net/univ/tcgp/A4a/symbol",
+  "cardCount": {
+   "total": 71,
+   "official": 71
+  }
+ },
+ {
+  "id": "B1a",
+  "name": "Chama Carmesim",
+  "cardCount": {
+   "total": 69,
+   "official": 69
+  }
+ },
+ {
+  "id": "B2",
+  "name": "Desfile Onírico",
+  "symbol": "https://assets.tcgdex.net/univ/tcgp/B2/symbol",
+  "cardCount": {
+   "total": 155,
+   "official": 155
+  }
+ },
+ {
+  "id": "B2a",
+  "name": "Paldean Wonders",
+  "cardCount": {
+   "total": 93,
+   "official": 93
+  }
+ }
+]
