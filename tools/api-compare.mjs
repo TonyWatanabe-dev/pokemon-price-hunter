@@ -100,7 +100,8 @@ export function comparePages(dbSt, st, SITE) {
     const args = kind === 'col' ? { col: id } : { type: id };
     const a = SITE.siteOffers(dbSt, args), b = SITE.siteOffers(st, args);
     const ka = a.offers.map((o) => o.id).sort().join(), kb = b.offers.map((o) => o.id).sort().join();
-    if (ka === kb && JSON.stringify(a.liveCount) === JSON.stringify(b.liveCount)) out.groups.equal++; else out.groups.diffs.push({ [kind]: id, onlyDb: a.offers.map((o) => o.id).filter((x) => !kb.includes(x)).slice(0, 3), onlyState: b.offers.map((o) => o.id).filter((x) => !ka.includes(x)).slice(0, 3), liveDb: a.liveCount, liveState: b.liveCount });
+    const lc = (x) => JSON.stringify(Object.entries(x).sort());
+    if (ka === kb && lc(a.liveCount) === lc(b.liveCount) && a.products.map((p) => p.id).join() === b.products.map((p) => p.id).join()) out.groups.equal++; else out.groups.diffs.push({ [kind]: id, onlyDb: a.offers.map((o) => o.id).filter((x) => !kb.includes(x)).slice(0, 3), onlyState: b.offers.map((o) => o.id).filter((x) => !ka.includes(x)).slice(0, 3), liveDb: a.liveCount, liveState: b.liveCount });
   }
   for (const k of ['lists', 'products', 'groups']) { out[k].diffCount = out[k].diffs.length; out[k].diffs = out[k].diffs.slice(0, 10); }
   return out;

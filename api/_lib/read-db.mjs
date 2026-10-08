@@ -74,6 +74,10 @@ export async function stateLikeFromDb(legacy) {
       priceKindLabel: l.priceKindLabel ?? null, storeKind: l.storeKind ?? null, sellerKind: l.sellerKind ?? null,
     };
   });
+  // mesma ordem do state.json (o banco não garante ordem): empates nas listas do site saem iguais aos de hoje
+  const pPos = new Map((legacy.products || []).map((p, i) => [p.id, i])); const oPos = new Map((legacy.offers || []).map((o, i) => [o.id, i]));
+  products.sort((a, b) => (pPos.get(a.id) ?? 1e9) - (pPos.get(b.id) ?? 1e9) || String(a.id).localeCompare(String(b.id)));
+  offers.sort((a, b) => (oPos.get(a.id) ?? 1e9) - (oPos.get(b.id) ?? 1e9) || String(a.id).localeCompare(String(b.id)));
   const count = {}; for (const o of offers) count[o.productId] = (count[o.productId] || 0) + 1;
   for (const p of products) p.offerCount = count[p.id] || 0;
   // ordem das coleções = a do robô (o mural da Home depende dela); nomes e apelidos do banco
