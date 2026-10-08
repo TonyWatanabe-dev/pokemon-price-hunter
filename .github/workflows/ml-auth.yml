@@ -1,0 +1,43 @@
+name: "Mercado Livre: autorizar"
+# Rode uma vez (e de novo só se o ML pedir): cole o código que aparece em
+# https://tcg-price-hunter.vercel.app/ml/callback depois de autorizar o app.
+on:
+  workflow_dispatch:
+    inputs:
+      code:
+        description: "Código do Mercado Livre (começa com TG-)"
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: hunter
+  cancel-in-progress: false
+jobs:
+  auth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Esconder o código no log
+        env:
+          ML_CODE: ${{ inputs.code }}
+        run: echo "::add-mask::$ML_CODE"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Carregar dados
+        run: |
+          if git fetch --depth 1 origin data 2>/dev/null; then
+            rm -rf data
+            git checkout FETCH_HEAD -- data
+            git reset -q
+          fi
+      - name: Trocar o código pelo acesso
+        env:
+          ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
+          ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+          ML_CODE: ${{ inputs.code }}
+        run: node tools/ml-token.mjs exchange "$ML_CODE"
+      - name: Guardar (criptografado) no ramo data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash tools/push-data.sh

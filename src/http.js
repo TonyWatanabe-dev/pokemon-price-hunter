@@ -6,6 +6,8 @@ let _fetch = globalThis.fetch;
 export const setFetch = (f) => { _fetch = f; };
 export const userAgent = UA;
 
+// APIs oficiais aguentam mais ritmo que sites de loja.
+const HOST_DELAY = { 'api.mercadolibre.com': 300 };
 const lastHit = new Map();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -17,7 +19,7 @@ const CHALLENGE = /cf-chl|challenge-platform|captcha-delivery|just a moment\.\.\
 
 export async function request(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 10000 } = {}) {
   const host = new URL(url).host;
-  const wait = (lastHit.get(host) || 0) + DELAY - Date.now();
+  const wait = (lastHit.get(host) || 0) + (HOST_DELAY[host] ?? DELAY) - Date.now();
   if (wait > 0) await sleep(wait);
   lastHit.set(host, Date.now());
 

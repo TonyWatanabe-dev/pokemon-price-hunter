@@ -43,6 +43,19 @@ jobs:
         run: npm run discover && npm run copag-check
         env:
           BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
+      - name: Renovar acesso ao Mercado Livre
+        id: ml
+        if: steps.gap.outputs.skip != 'true'
+        env:
+          ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
+          ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+        run: node tools/ml-token.mjs refresh
+      # O token renovável do ML é de uso único: grava já, mesmo que a caça falhe depois.
+      - name: Guardar acesso renovado
+        if: steps.ml.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash tools/push-data.sh
       - name: Caçar preços
         if: steps.gap.outputs.skip != 'true'
         run: npm run hunt
@@ -51,22 +64,14 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           ML_ACCESS_TOKEN: ${{ secrets.ML_ACCESS_TOKEN }}
+          ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
+          ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
           HUNTER_CEP: ${{ vars.HUNTER_CEP }}
       - name: Salvar dados (ramo data)
         if: steps.gap.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          set -e
-          D=$(mktemp -d)
-          cp -r data "$D/"
-          cd "$D"
-          git init -q -b data
-          git config user.name "price-hunter-bot"
-          git config user.email "bot@users.noreply.github.com"
-          git add data
-          git commit -qm "dados $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
+        run: bash tools/push-data.sh
       - name: Salvar configuração (se mudou)
         if: steps.gap.outputs.skip != 'true'
         run: |

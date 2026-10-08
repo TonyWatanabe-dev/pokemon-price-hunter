@@ -1,13 +1,31 @@
-// Mercado Livre: só via API oficial com token OAuth (ML_ACCESS_TOKEN). Sem token = BLOCKED, sem scraping.
+// Mercado Livre: só pela API oficial, com acesso OAuth (ver src/mlauth.js). Sem acesso = BLOCKED, sem raspar páginas.
+// Caminho 1: busca de anúncios (/sites/MLB/search). Desde 2025 costuma responder 403 para apps comuns.
+// Caminho 2 (catálogo): /products/search acha a página única do produto e /products/{id}/items lista
+// cada vendedor com o próprio preço. O link publicado é o anúncio do vendedor, onde esse preço aparece.
 import { getJson, BlockedError } from '../http.js';
 import { searchTerms } from './common.js';
+import { accessToken } from '../mlauth.js';
+import { matchProduct } from '../match.js';
+import { dataPath, readJson, writeJson } from '../db.js';
 
-export async function search(store, catalog) {
-  const token = process.env.ML_ACCESS_TOKEN;
-  if (!token) throw new BlockedError('Mercado Livre exige token OAuth (ML_ACCESS_TOKEN); a busca pública retorna 403 desde 2025', 'auth');
-  const out = new Map();
+const API = 'https://api.mercadolibre.com';
+const itemUrl = (id) => `https://produto.mercadolivre.com.br/${String(id).replace(/^MLB/, 'MLB-')}-_JM`;
+const DAY = 864e5;
+
+export async function search(store, catalog, { log = () => {} } = {}) {
+  let auth;
+  try { auth = await accessToken(); } catch (e) { throw new BlockedError('Mercado Livre: não foi possível renovar o acesso (' + e.message + '). Rode o workflow "Mercado Livre: autorizar".', 'auth'); }
+  if (!auth.token) throw new BlockedError('Mercado Livre ainda não autorizado: crie o app e rode o workflow "Mercado Livre: autorizar".', 'auth');
+  const H = { headers: { authorization: `Bearer ${auth.token}` } };
+  const call = async (path) => {
+    try { return await getJson(API + path, H); } catch (e) { if (e.status === 401) throw new BlockedError('Mercado Livre recusou o acesso (401): autorize de novo.', 401); throw e; }
+  };
+
+  // Caminho 1: busca de anúncios. Se der 403/bloqueio, passa para o catálogo.
+  let open = true; const out = new Map();
   for (const term of searchTerms(catalog).map((t) => t + ' copag lacrado')) {
-    const j = await getJson(`https://api.mercadolibre.com/sites/MLB/search?q=${encodeURIComponent(term)}&limit=50`, { headers: { authorization: `Bearer ${token}` } });
+    let j;
+    try { j = await call(`/sites/MLB/search?q=${encodeURIComponent(term)}&limit=50`); } catch (e) { if (e.blocked || e.status === 403) { open = false; break; } throw e; }
     for (const r of j.results || []) {
       if (r.condition && r.condition !== 'new') continue;
       out.set(r.id, {
@@ -19,5 +37,48 @@ export async function search(store, catalog) {
       });
     }
   }
-  return [...out.values()];
+  if (open && out.size) return [...out.values()];
+
+  // Caminho 2: catálogo. Os produtos de catálogo de cada coleção ficam em cache por 1 dia.
+  const cacheFile = dataPath('ml-catalog.json');
+  const cache = readJson(cacheFile, { at: null, products: {}, sellers: {} });
+  if (!cache.at || Date.now() - Date.parse(cache.at) > DAY) {
+    const found = {};
+    for (const term of searchTerms(catalog)) {
+      let j;
+      try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20`); } catch (e) { if (e.blocked) throw e; log(`ML catálogo: busca "${term}" falhou (${e.message})`); continue; }
+      for (const p of j.results || []) {
+        const name = p.name || p.title; if (!name || !/pok[eé]mon/i.test(name)) continue;
+        const m = matchProduct({ title: name, url: '' }, catalog);
+        if (m.productId) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
+      }
+    }
+    cache.products = found; cache.at = new Date().toISOString();
+  }
+
+  const listings = [];
+  for (const [pid, p] of Object.entries(cache.products)) {
+    let j;
+    try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
+    for (const it of j.results || []) {
+      if (it.condition && it.condition !== 'new') continue;
+      const id = it.item_id || it.id; const price = Number(it.price);
+      if (!id || !(price > 0)) continue;
+      const sid = it.seller_id;
+      let seller = it.official_store_name || cache.sellers[sid];
+      if (!seller && sid) {
+        try { const u = await call(`/users/${sid}`); seller = u.nickname || null; } catch { seller = null; }
+        cache.sellers[sid] = seller || `Vendedor ${sid}`; seller = cache.sellers[sid];
+      }
+      listings.push({
+        title: p.name, url: itemUrl(id), price: { base: price }, listPrice: it.original_price > price ? it.original_price : null,
+        stock: 'IN_STOCK', quantity: null, // /items do catálogo só lista ofertas ativas
+        shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
+        seller: seller || 'Vendedor no Mercado Livre', sellerId: sid,
+        sellerKind: it.official_store_id ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
+      });
+    }
+  }
+  writeJson(cacheFile, cache);
+  return listings;
 }

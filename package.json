@@ -10,6 +10,6 @@
     "discover": "node src/discover.js",
     "copag-check": "node src/copag-check.js",
     "serve": "node src/server.js",
-    "test": "node test/run-tests.js"
+    "test": "node test/run-tests.js && node test/ml-tests.js"
   }
 }

@@ -76,6 +76,10 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/ml/callback",
+      "destination": "/api/ml-callback"
+    },
+    {
       "source": "/((?!data/|_vercel/|api/).*)",
       "destination": "/app.html"
     }
