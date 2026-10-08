@@ -1128,17 +1128,13 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 .allcta>.chev{margin-left:auto;transform:rotate(-90deg);color:var(--muted)}
 @media (hover:hover) and (pointer:fine){.allcta:hover{transform:translateY(-2px);border-color:var(--ink);box-shadow:var(--shadow-md,0 10px 30px rgb(0 0 0 / .12))}}
 .prods .seg{margin:6px 0 4px}
-/* Título da home: brilho metálico passando em "Procure oportunidade." e traço que se desenha embaixo */
+/* Título da home: brilho metálico passando em "Procure oportunidade." */
 .stage h1 .gold{position:relative;background:linear-gradient(100deg,var(--sticker) 0%,var(--sticker) 42%,#fff7d1 50%,var(--sticker) 58%,var(--sticker) 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--sticker)}
-.stage h1 .gold::after{content:"";position:absolute;left:.04em;right:.3em;bottom:.02em;height:.075em;border-radius:99px;background:linear-gradient(90deg,var(--sticker),#ffe48a);transform:scaleX(0);transform-origin:left center;-webkit-text-fill-color:initial}
 .stage h1 .ln:first-child>span{position:relative}
 @media (prefers-reduced-motion:no-preference){
   .stage h1 .ln>span.gold{animation:lineUp 900ms cubic-bezier(.16,1,.3,1) 200ms both,hShine 5.2s cubic-bezier(.45,0,.2,1) 1.5s infinite}
-  .stage h1 .gold::after{animation:hDraw 900ms cubic-bezier(.65,0,.35,1) 1.05s forwards}
   @keyframes hShine{0%{background-position:100% 0}45%,100%{background-position:0 0}}
-  @keyframes hDraw{to{transform:scaleX(1)}}
 }
-@media (prefers-reduced-motion:reduce){.stage h1 .gold::after{transform:scaleX(1)}}
 </style>
 </head>
 <body>
