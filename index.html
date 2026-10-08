@@ -1621,7 +1621,7 @@ const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo
 function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0})}
 /* Coleções como cartas: logo oficial da coleção (arquivo em logos/colecoes, enviado pelo responsável do site)
    ou o nome escrito em destaque. Borda holográfica e inclinação. Clique abre /produtos filtrado pela coleção. */
-const COL_LOGOS={"me01":"me01.webp","me02":"me02.webp","me02_5":"me02_5.webp","me03":"me03.webp","me04":"me04.webp","me05":"me05.webp","sv1":"sv1.webp","sv10":"sv10.webp","sv10_5r":"sv10_5r.webp","sv10_5w":"sv10_5w.webp","sv2":"sv2.webp","sv3":"sv3.webp","sv3_5":"sv3_5.webp","sv4":"sv4.webp","sv4_5":"sv4_5.webp","sv5":"sv5.webp","sv6":"sv6.webp","sv6_5":"sv6_5.webp","sv7":"sv7.webp","sv8":"sv8.webp","sv8_5":"sv8_5.webp","sv9":"sv9.webp"};
+const COL_LOGOS={"c30":"c30.webp","me01":"me01.webp","me02":"me02.webp","me02_5":"me02_5.webp","me03":"me03.webp","me04":"me04.webp","me05":"me05.webp","sv1":"sv1.webp","sv10":"sv10.webp","sv10_5":"sv10_5.webp","sv10_5r":"sv10_5r.webp","sv10_5w":"sv10_5w.webp","sv2":"sv2.webp","sv3":"sv3.webp","sv3_5":"sv3_5.webp","sv4":"sv4.webp","sv4_5":"sv4_5.webp","sv5":"sv5.webp","sv6":"sv6.webp","sv6_5":"sv6_5.webp","sv7":"sv7.webp","sv8":"sv8.webp","sv8_5":"sv8_5.webp","sv9":"sv9.webp"};
 const seriesKey=(c)=>/mega/i.test(c.series||"")?"mega":/escarlate/i.test(c.series||"")?"sv":"esp";
 function colMark(c){
   const f=COL_LOGOS[c.id];

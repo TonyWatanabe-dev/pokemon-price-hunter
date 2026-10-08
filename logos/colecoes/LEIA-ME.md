@@ -1,5 +1,7 @@
 # Logos das coleções (versão brasileira, Copag)
 
+Fonte: logos oficiais distribuídos pela base aberta TCGdex (assets.tcgdex.net, em português) e, quando não há versão em português, pela API pública pokemontcg.io (inglês): Fagulhas Impetuosas, Raio Preto, Fogo Branco e Celebração de 30 Anos. Marcas da The Pokémon Company / Copag. Baixados por `.github/workflows/logos.yml` e convertidos para .webp.
+
 Os logos atuais são os oficiais, baixados do TCGdex (tools/fetch-logos.mjs; origem de cada um em fontes.json). Em português quando existe; senão em inglês.
 Faltando: Celebração de 30 Anos (ainda sem logo no TCGdex).
 
