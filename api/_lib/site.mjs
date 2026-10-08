@@ -89,8 +89,10 @@ export function siteProducts(st, F0, { page = 1, limit = 48 } = {}) {
 /** Ofertas candidatas para coleção, tipo e busca: as que renderGroup / bestOfferFor podem escolher. */
 export function siteOffers(st, { ids = null, col = null, type = null }) {
   const P = productMap(st);
+  // produto entra se tem oferta de verdade na lista (o offerCount do robô às vezes conta ofertas que já não existem)
+  const has = new Set((st.offers || []).map((o) => o.productId));
   const want = new Set(ids ? ids.filter((id) => P.has(id))
-    : (st.products || []).filter((p) => p.offerCount > 0 && (col ? p.collection === col : p.type === type)).map((p) => p.id));
+    : (st.products || []).filter((p) => has.has(p.id) && (col ? p.collection === col : p.type === type)).map((p) => p.id));
   const by = new Map(); for (const o of st.offers || []) if (want.has(o.productId)) { if (!by.has(o.productId)) by.set(o.productId, []); by.get(o.productId).push(o); }
   const keep = new Map(); const add = (o) => o && keep.set(o.id, o);
   const firstBy = (list, cmp) => (list.length ? [...list].sort(cmp)[0] : null);
