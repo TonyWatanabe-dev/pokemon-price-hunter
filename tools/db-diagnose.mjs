@@ -24,6 +24,18 @@ if (u) {
   };
 }
 let ok = false;
+// Logo após trocar a senha, o pooler do Supabase pode recusar algumas conexões até atualizar o cache
+// de credenciais (doc do Supabase: "a few consecutive reconnects fail before one succeeds"). Tenta até 5 vezes.
+rep.attempts = [];
+for (let i = 0; i < 5 && !ok; i++) {
+  if (i) await new Promise((r) => setTimeout(r, 20000));
+  try {
+    const { default: pg } = await import('pg');
+    const c = new pg.Client({ connectionString: raw, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 10000 });
+    await c.connect(); await c.end(); ok = true; rep.attempts.push('ok');
+  } catch (e) { rep.attempts.push(`${e.code || ''} ${e.message}`); if (e.code !== '28P01') break; }
+}
+ok = false;
 try {
   const { pool, close } = await import('../src/db/pg.js');
   const p = await pool();
