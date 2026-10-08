@@ -2,7 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
-import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView } from './references.mjs';
+import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison } from './references.mjs';
 
 const num = (v) => (v == null ? null : Number(v));
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
@@ -274,14 +274,26 @@ export async function listReferences({ page, limit, status = null }) {
 // ---------------------------------------------------------------- Oportunidades (Opportunity Engine, resultado persistido)
 // Lê o que o pipeline já calculou (opportunity + view product_opportunity + product_stats + reference_price). Uma consulta,
 // sem N+1, sem recalcular nada no request. Padrão: a melhor oferta comprável de cada produto; ofertas=todas lista todas as avaliadas.
+// Ordens: todas sobre dados já gravados (motor ou Price Engine). abaixo/economia = distância até a referência ATUAL que o
+// motor usou (opportunity.reference_*); queda = variação de 7 dias do menor preço do produto (Price Engine); recentes =
+// quando a oferta foi vista pela primeira vez. Sem dado, o item vai para o fim (NULLS LAST), nunca é estimado.
 export const OPP_SORTS = { score: 'o.opportunity_score DESC, o.confidence DESC, o.price ASC, o.offer_id', preco: 'o.price ASC, o.opportunity_score DESC, o.offer_id',
-  confianca: 'o.confidence DESC, o.opportunity_score DESC, o.offer_id' };
-export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score' }) {
+  confianca: 'o.confidence DESC, o.opportunity_score DESC, o.offer_id',
+  abaixo: 'o.reference_gap DESC NULLS LAST, o.opportunity_score DESC, o.offer_id',
+  economia: '(o.reference_value - o.price) DESC NULLS LAST, o.opportunity_score DESC, o.offer_id',
+  queda: 's.variation_7d ASC NULLS LAST, o.opportunity_score DESC, o.offer_id',
+  recentes: 'f.first_seen_at DESC NULLS LAST, o.opportunity_score DESC, o.offer_id' };
+// Filtro de referência atual (a usada pelo motor; histórico e comunitária não são referência atual)
+export const OPP_REFERENCES = { copag: 'COPAG_OFFICIAL_CURRENT', mercado: 'MARKET_CURRENT', nenhuma: 'NONE' };
+// Categoria = a mesma do site: tipo do produto (etb, booster_box...) ou grupo (Blisters, Coleções...), de product.attrs
+export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score',
+  categoria = null, referencia = null, abaixo = null, confiancaMinima = null }) {
   const from = todas ? 'hunter.opportunity o' : 'hunter.product_opportunity o';
   const rows = await q(`
-    SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, c.code AS col_code, c.name AS col_name,
-           f.legacy_id AS offer_legacy, f.url, f.title_raw, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
+    SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
+           f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
            o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
+           o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
            (SELECT coalesce(jsonb_agg(jsonb_build_object('reference_kind', r.reference_kind, 'value', r.value, 'published_at', r.published_at, 'effective_date', r.effective_date,
                'confidence', r.confidence, 'source_url', r.source_url, 'source', r.source, 'verification_status', r.verification_status)
@@ -297,18 +309,27 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
       LEFT JOIN hunter.store st ON st.id = f.store_id
       LEFT JOIN hunter.product_stats s ON s.product_id = o.product_id
      WHERE ($1::text IS NULL OR o.opportunity_band = $1) AND ($2::text IS NULL OR c.code = $2) AND ($3::int IS NULL OR o.opportunity_score >= $3)
+       AND ($6::text IS NULL OR p.attrs->>'type' = $6 OR p.attrs->>'group' = $6)
+       AND ($7::text IS NULL OR o.reference_kind = $7)
+       AND ($8::numeric IS NULL OR o.reference_gap >= $8)
+       AND ($9::numeric IS NULL OR o.confidence >= $9)
      ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
-     LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit]);
+     LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
+    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null]);
   return { items: rows.map(opportunityOut), total: rows.length ? Number(rows[0].total_rows) : 0 };
 }
 const opportunityOut = (r) => ({
-  product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name, type: r.attrs?.type ?? null, collection: { code: r.col_code, name: r.col_name } },
-  offer: { id: r.offer_legacy, title: r.title_raw, url: r.url },
+  product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name, type: r.attrs?.type ?? null, type_label: r.attrs?.typeLabel ?? null, group: r.attrs?.group ?? null,
+    image: r.product_image ?? null, collection: { code: r.col_code, name: r.col_name } },
+  offer: { id: r.offer_legacy, title: r.title_raw, url: r.url, image: r.offer_image ?? null, first_seen_at: iso(r.first_seen_at) },
   price: num(r.price), total: r.shipping_status === 'unknown' ? null : num(r.total_price), shipping: r.shipping_status, stock: r.stock_status,
   store: { id: r.store_id, name: r.store_name }, marketplace: r.marketplace_id,
   opportunity_score: r.opportunity_score, opportunity_band: r.opportunity_band, confidence: num(r.confidence),
   current_reference: currentReferenceView({ kind: r.reference_kind, price: r.reference_price, confidence: r.reference_confidence, reason: r.reference_reason, market_sources: r.market_sources, market_composition: r.market_composition }),
   market_composition: r.market_composition ?? 'NONE',
+  // comparação com a referência ATUAL que o motor usou nesta oferta (percentual e valor calculados no backend)
+  reference_comparison: referenceComparison({ kind: r.opp_reference_kind, value: r.opp_reference_value, gap: r.opp_reference_gap, price: r.price, reasons: r.reasons }),
+  product_variation_7d: num(r.variation_7d),   // fração (−0,12 = 12% abaixo de 7 dias atrás); menor preço do produto, Price Engine
   historical_context: (r.historical || []).map(contextReferenceView),
   community_reference: r.community ? contextReferenceView(r.community) : null,
   warnings: r.warnings || [], reasons: r.reasons || [],

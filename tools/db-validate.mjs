@@ -333,6 +333,33 @@ try {
     && ['COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT', 'NONE'].includes(x.current_reference.kind) && x.historical_context.every((h) => h.kind.endsWith('_HISTORICAL'))
     && (x.community_reference == null || x.community_reference.kind === 'COMMUNITY_REFERENCE')), opps.items.length);
   check('API /oportunidades: total = produtos com melhor oferta', opps.total === (await n('SELECT count(*) FROM hunter.product_opportunity')));
+  // 6B.0: referência atual usada pelo motor, gravada por oferta (exposição; não muda score)
+  const refRows = await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s USING (product_id)
+     WHERE o.reference_kind IS DISTINCT FROM (CASE WHEN s.reference_kind = 'MARKET_CURRENT' OR (s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND s.reference_status = 'verified') THEN s.reference_kind ELSE 'NONE' END)
+        OR (o.reference_kind <> 'NONE' AND o.reference_value IS DISTINCT FROM s.reference_price)`);
+  check('opportunity: referência gravada = referência atual que o motor usa (product_stats), nunca histórico/comunitária', refRows === 0, refRows);
+  const gapBad = await n(`SELECT count(*) FROM hunter.opportunity WHERE reference_kind <> 'NONE' AND reference_gap IS DISTINCT FROM round((reference_value - price) / reference_value, 4)`);
+  check('opportunity: distância até a referência = (referência − preço) / referência', gapBad === 0, gapBad);
+  const posBad = await n(`SELECT count(*) FROM hunter.opportunity o WHERE o.reference_kind <> 'NONE' AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(o.reasons) x
+     WHERE x->>'code' IN ('BELOW_REFERENCE', 'AT_REFERENCE', 'ABOVE_REFERENCE') AND x->>'reference_kind' = o.reference_kind)`);
+  check('opportunity: toda oferta com referência atual tem a classificação do motor (abaixo/na/acima)', posBad === 0, posBad);
+  const cmpBad = opps.items.filter((x) => x.reference_comparison.available !== (x.current_reference.kind !== 'NONE')
+    || (x.reference_comparison.available && (x.reference_comparison.reference_value !== x.current_reference.price || x.reference_comparison.reference_kind !== x.current_reference.kind || x.reference_comparison.position == null))
+    || (!x.reference_comparison.available && x.reference_comparison.percentage_below != null)).map((x) => x.product.id);
+  check('API /oportunidades: reference_comparison coerente com current_reference (sem referência → sem percentual)', cmpBad.length === 0, cmpBad.slice(0, 10));
+  const cat = await API.listOpportunities({ page: 1, limit: 50, categoria: 'ETB' });
+  check('API /oportunidades: categoria = grupo/tipo do produto (mesma do site)', cat.total === (await n(`SELECT count(*) FROM hunter.product_opportunity o JOIN hunter.product p ON p.id = o.product_id
+     WHERE p.attrs->>'group' = 'ETB' OR p.attrs->>'type' = 'ETB'`)) && cat.items.every((x) => x.product.group === 'ETB'), cat.total);
+  const byGap = (await API.listOpportunities({ page: 1, limit: 50, ordem: 'abaixo' })).items.map((x) => x.reference_comparison.percentage_below);
+  const firstNull = byGap.indexOf(null);
+  check('API /oportunidades: ordem "abaixo" no servidor (desc, sem referência no fim)', byGap.slice(0, firstNull < 0 ? byGap.length : firstNull).every((v, i, a) => i === 0 || a[i - 1] >= v)
+    && (firstNull < 0 || byGap.slice(firstNull).every((v) => v == null)), byGap.slice(0, 5));
+  const fil = await API.listOpportunities({ page: 1, limit: 50, referencia: 'nenhuma' });
+  check('API /oportunidades: filtro de referência atual', fil.items.every((x) => x.current_reference.kind === 'NONE' && !x.reference_comparison.available)
+    && fil.total === (await n(`SELECT count(*) FROM hunter.product_opportunity WHERE reference_kind = 'NONE'`)), fil.total);
+  rep.referenceComparison = { byKind: await q(`SELECT reference_kind, count(*)::int n, round(avg(reference_gap) * 100, 2)::float8 avg_pct_below, round(min(reference_gap) * 100, 2)::float8 min_pct,
+      round(max(reference_gap) * 100, 2)::float8 max_pct FROM hunter.opportunity GROUP BY 1 ORDER BY 1`),
+    bestByKind: await q(`SELECT reference_kind, count(*)::int n FROM hunter.product_opportunity GROUP BY 1 ORDER BY 1`) };
   rep.api = { opportunities: opps.total, sample: opps.items.slice(0, 3) };
 
   // ---------- comparação com o que o site mostra hoje (state.json) ----------

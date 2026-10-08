@@ -7,7 +7,7 @@ const J = (v) => JSON.stringify(v);
 const COLS = { product_id: 'bigint', opportunity_score: 'smallint', opportunity_band: 'text', confidence: 'numeric', price: 'numeric',
   price_signal: 'numeric', historical_signal: 'numeric', reference_signal: 'numeric', stock_signal: 'numeric', freight_signal: 'numeric',
   market_signal: 'numeric', reliability_signal: 'numeric', raw_score: 'numeric', coverage: 'numeric', caps: 'jsonb', reasons: 'jsonb', warnings: 'jsonb',
-  is_anomaly: 'boolean', engine_version: 'text' };
+  is_anomaly: 'boolean', engine_version: 'text', reference_kind: 'text', reference_value: 'numeric', reference_gap: 'numeric' };
 
 export async function loadOpportunityInputs(c) {
   const q = async (sql) => (await c.query(sql)).rows;

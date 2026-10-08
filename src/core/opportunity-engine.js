@@ -203,6 +203,8 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
     reasons, warnings, caps,
     price_signal: round4(priceSig), historical_signal: round4(historical), reference_signal: round4(reference),
     stock_signal: round4(stockSig), freight_signal: round4(freight), market_signal: round4(market), reliability_signal: round4(reliability),
+    // referência ATUAL usada nesta avaliação e a distância já calculada acima (só exposição: não entra de novo no score)
+    reference_kind: refOk ? refKind : 'NONE', reference_value: refOk ? ref : null, reference_gap: refOk ? round4(discount) : null,
     is_anomaly: isAnomaly, price, raw_score: round2(raw), coverage: round4(coverage), market_signal_absorbed: marketAbsorbed, market_composition: refOk && refKind === 'MARKET_CURRENT' ? (mrq.composition ?? null) : null,
   };
 }

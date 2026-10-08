@@ -6,8 +6,10 @@
 //   GET /api/v1/produtos/:id/historico?dias          → série diária do Price Engine (sem histórico bruto)
 //   GET /api/v1/produtos/:id/estatisticas
 //   GET /api/v1/referencias?pagina&limite&status
-//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&minimo&ordem&ofertas=todas → resultado do Opportunity Engine
-//       (melhor oferta comprável por produto; referência atual, contexto histórico e comunitária separados)
+//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&ordem&ofertas=todas
+//       → resultado do Opportunity Engine (melhor oferta comprável por produto; referência atual, contexto histórico e
+//       comunitária separados; reference_comparison = distância até a referência atual que o motor usou)
+//       ordem: score | preco | confianca | abaixo | economia | queda | recentes
 // FASE 4 — formato do site (mesmas regras de lista do tools/page.template.html, aplicadas no servidor):
 //   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&ordem&pagina&limite → página de /produtos
 //   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
@@ -64,7 +66,14 @@ function route(segs, qs) {
     const colecao = str(qs.get('colecao'), 40) || null; if (colecao && !SLUG_RE.test(colecao)) throw new HttpError(400, 'coleção inválida');
     const minimo = qs.get('minimo') != null ? intIn(qs.get('minimo'), 0, 0, 100) : null;
     const ofertas = str(qs.get('ofertas'), 10) || ''; if (ofertas && ofertas !== 'todas') throw new HttpError(400, 'ofertas inválido (use: todas)');
-    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas' } };
+    // categoria do site: tipo do produto (etb, booster_box, blister_3...) ou grupo (Boosters, Blisters, Coleções...)
+    const categoria = str(qs.get('categoria'), 30) || null;
+    if (categoria && !SITE.GROUP_ORDER.includes(categoria) && !/^[a-z][a-z0-9_]{0,29}$/.test(categoria)) throw new HttpError(400, `categoria inválida (tipo do produto ou grupo: ${SITE.GROUP_ORDER.join(', ')})`);
+    const referencia = str(qs.get('referencia'), 10) || null;
+    if (referencia && !Object.keys(DB.OPP_REFERENCES).includes(referencia)) throw new HttpError(400, `referencia inválida (use: ${Object.keys(DB.OPP_REFERENCES).join(', ')})`);
+    const abaixo = qs.get('abaixo') != null ? intIn(qs.get('abaixo'), 0, 0, 100) : null;                          // % mínimo abaixo da referência atual
+    const confiancaMinima = qs.get('confianca_minima') != null ? intIn(qs.get('confianca_minima'), 0, 0, 100) : null;   // % (0–100)
+    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima } };
   }
   // ---- FASE 4: formato do site (listas e página de produto), regras iguais às do site
   if (a === 'site') {

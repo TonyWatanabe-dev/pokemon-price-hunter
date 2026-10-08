@@ -179,6 +179,24 @@ export function currentReferenceView(r) {
     // transparência do mercado: quantas fontes independentes (lojas + vendedores de marketplace) formam a mediana
     ...(r.kind === 'MARKET_CURRENT' ? { market_sources: r.market_sources != null ? Number(r.market_sources) : null, market_composition: r.market_composition ?? null } : {}) };
 }
+/**
+ * Comparação da oferta com a referência ATUAL que o Opportunity Engine usou (gravada em opportunity pelo próprio motor:
+ * reference_kind, reference_value, reference_gap). Nada é recalculado: o percentual é a distância do motor e a posição
+ * (abaixo/na/acima) é a classificação do motor (razão BELOW_/AT_/ABOVE_REFERENCE). Histórico e comunitária nunca entram.
+ * Sem referência atual (ou linha ainda não regravada pelo motor): available = false e nenhum número.
+ */
+const POSITION = { BELOW_REFERENCE: 'below', AT_REFERENCE: 'at', ABOVE_REFERENCE: 'above' };
+const r2 = (x) => Math.round(x * 100) / 100;
+export function referenceComparison({ kind, value, gap, price, reasons = [] }) {
+  const v = value != null ? Number(value) : null; const g = gap != null ? Number(gap) : null;
+  if (!CURRENT_KINDS.includes(kind) || !(v > 0) || g == null)
+    return { available: false, reference_kind: kind ? NONE : null, reference_value: null, percentage_below: null, amount_below: null, position: null,
+      reason: kind == null ? 'not_evaluated' : 'no_current_reference' };
+  const pos = (reasons || []).find((x) => POSITION[x?.code] && (x.reference_kind == null || x.reference_kind === kind));
+  return { available: true, reference_kind: kind, reference_label: LABEL[kind], reference_value: v,
+    percentage_below: r2(g * 100), amount_below: price != null ? r2(v - Number(price)) : null, position: pos ? POSITION[pos.code] : null };
+}
+
 /** linha de reference_price → contexto (histórico/comunitário) no contrato da API */
 export function contextReferenceView(row) {
   const k = row.reference_kind;
