@@ -1,6 +1,6 @@
 {
   "installCommand": "echo sem-install",
-  "buildCommand": "mkdir -p public/data && cp index.html account.js robots.txt favicon.png apple-touch-icon.png og.jpg public/ && cp data/state.json public/data/",
+  "buildCommand": "mkdir -p public/data && cp account.js robots.txt favicon.png apple-touch-icon.png og.jpg icon-512.png public/ && cp index.html public/app.html && cp data/state.json public/data/",
   "outputDirectory": "public",
   "headers": [
     {
@@ -27,12 +27,49 @@
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://raw.githubusercontent.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://www.googleapis.com https://apis.google.com; frame-src https://tcg-price-hunter.firebaseapp.com https://accounts.google.com https://apis.google.com; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
         }
       ]
+    },
+    {
+      "source": "/app.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/api/pagina?t=home"
+    },
+    {
+      "source": "/oportunidades",
+      "destination": "/api/pagina?t=oportunidades"
+    },
+    {
+      "source": "/precos",
+      "destination": "/api/pagina?t=precos"
+    },
+    {
+      "source": "/pre-vendas",
+      "destination": "/api/pagina?t=pre-vendas"
+    },
+    {
+      "source": "/como-funciona",
+      "destination": "/api/pagina?t=como-funciona"
+    },
+    {
       "source": "/produto/:slug",
-      "destination": "/api/produto?slug=:slug"
+      "destination": "/api/pagina?t=produto&slug=:slug"
+    },
+    {
+      "source": "/colecao/:slug",
+      "destination": "/api/pagina?t=colecao&slug=:slug"
+    },
+    {
+      "source": "/tipo/:slug",
+      "destination": "/api/pagina?t=tipo&slug=:slug"
     },
     {
       "source": "/sitemap.xml",
@@ -40,7 +77,7 @@
     },
     {
       "source": "/((?!data/|_vercel/|api/).*)",
-      "destination": "/index.html"
+      "destination": "/app.html"
     }
   ],
   "cleanUrls": false

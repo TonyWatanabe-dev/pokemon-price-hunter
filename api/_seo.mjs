@@ -20,3 +20,18 @@ export async function state() {
   cache = { t: Date.now(), s: await r.json() }; return cache.s;
 }
 export const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
+
+// ---- Páginas de coleção e de formato (mesmo algoritmo do site: tools/page.template.html) ----
+export const slugifyT = slugify;
+export const colSlug = (c) => slugify(c.name);
+export const typeSlug = (t) => slugify(t.label);
+export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+export const brl = (v) => v == null ? '' : 'R$ ' + Number(v).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+export const pct = (d) => (d * 100).toFixed(1).replace('.', ',').replace(/,0$/, '') + '%';
+/** Melhor oferta com estoque de cada produto (menor total), e quantas lojas têm estoque. */
+export function bestBy(s) {
+  const by = {}, n = {};
+  for (const o of s.offers || []) { if (!live(o)) continue; n[o.productId] = (n[o.productId] || 0) + 1; if (!by[o.productId] || o.total < by[o.productId].total) by[o.productId] = o; }
+  return { by, n };
+}
+export const pix = (o) => (o && o.priceKind === 'pix' ? ' no Pix' : '');

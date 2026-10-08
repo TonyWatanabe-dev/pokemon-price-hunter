@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>TCG Price Hunter | Ofertas de Pokémon TCG lacrado no Brasil</title>
-<meta name="description" content="Compare preços de Pokémon TCG lacrado em lojas do Brasil com o preço sugerido oficial da Copag. Estoque confirmado, nota de oportunidade e alertas.">
+<title>Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter</title>
+<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Estoque conferido a cada 15 minutos.">
 <meta property="og:title" content="TCG Price Hunter">
 <meta property="og:description" content="Ofertas de Pokémon TCG lacrado no Brasil, comparadas com o preço sugerido oficial da Copag.">
 <meta name="theme-color" content="#1B2C74" media="(prefers-color-scheme: light)">
@@ -15,6 +15,10 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:image" content="https://tcg-price-hunter.vercel.app/og.jpg">
 <meta property="og:url" content="https://tcg-price-hunter.vercel.app/">
+<link rel="canonical" href="https://tcg-price-hunter.vercel.app/">
+<meta property="og:site_name" content="TCG Price Hunter">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <style>
 @font-face{font-family:"Rubik";font-style:normal;font-weight:300 900;font-display:swap;src:url(data:font/woff2;base64,/*FONT_RUBIK*/) format("woff2")}
@@ -723,6 +727,18 @@ a.navbtn{text-decoration:none}
 .deal-foot .ra{margin-right:auto;margin-left:-4px}.deal-foot{flex-wrap:wrap}
 .pod-store .ra{margin-top:5px}
 .so-top .ra{margin-left:2px}
+
+/* Conteúdo vindo do servidor (aparece enquanto os preços carregam e para buscadores) */
+.ssr{max-width:860px;margin:24px auto 0;line-height:1.55}.ssr h1{font-size:clamp(26px,4vw,40px);line-height:1.1;margin:8px 0 12px}.ssr h2{font-size:20px;margin:24px 0 8px}
+.ssr ul,.ssr ol{padding-left:20px}.ssr li{margin:4px 0}.ssr a{color:inherit}.ssr-bc{font-size:13px;color:var(--muted)}.ssr-links{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0!important}
+.ssr-t{border-collapse:collapse;width:100%}.ssr-t td,.ssr-t th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+/* Navegue por coleção e formato */
+.gnav{margin-top:64px}.gnav-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.gchip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line-soft);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;transition:border-color 160ms ease,transform 140ms var(--ease-out)}
+.gchip[data-cat="etb"]{--c1:#7C5CFF}.gchip:is([data-cat="box"],[data-cat="combo"],[data-cat="pack"]){--c1:#E8562E}.gchip[data-cat="blister"]{--c1:#2F7BEA}.gchip[data-cat="colecao"]{--c1:#0E9F86}.gchip[data-cat="lata"]{--c1:#6B7890}.gchip[data-cat="deck"]{--c1:#2E9E5B}
+.gchip:active{transform:scale(.97)}.gchip .icon{width:15px;height:15px;color:var(--c1)}
+@media (hover:hover) and (pointer:fine){.gchip:hover{border-color:var(--line)}}
+.grp .deals{margin-top:18px}
 /* Revelações com propósito: números contam, barras crescem, preço antigo é riscado */
 @media (prefers-reduced-motion:no-preference){
   .radar:not(.seen) .spark i{transform:scaleY(0)}
@@ -1155,13 +1171,14 @@ const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"",gui
 function parseLoc(){
   const seg=location.pathname.replace(/^\/+|\/+$/g,"").split("/");
   if(seg[0]==="produto"&&seg[1])return{view:"produto",slug:decodeURIComponent(seg[1])};
+  if((seg[0]==="colecao"||seg[0]==="tipo")&&seg[1])return{view:seg[0],slug:decodeURIComponent(seg[1])};
   return{view:ROUTES[seg[0]]||"deals",pid:null};
 }
 (function(){const h=location.hash.slice(1);if(h&&OLDHASH[h])history.replaceState(null,"","/"+OLDHASH[h]);
   if(/^\/lojas\/?$/.test(location.pathname))history.replaceState(null,"","/"+location.search); /* página Lojas foi retirada */
   const q=new URLSearchParams(location.search).get("q");if(location.pathname.startsWith("/busca"))F.q=(q||"").slice(0,80)})();
 const pathOf=(v)=>"/"+(PATHS[v]??"");
-let view=parseLoc().view||"deals",xfOpen=false,fOpen=false,prodPushed=false;
+let curGroup=parseLoc().slug||null;let view=parseLoc().view||"deals",xfOpen=false,fOpen=false,prodPushed=false;
 function go(v){
   v=v||"deals";const path=pathOf(v);
   if(location.pathname!==path)history.pushState(null,"",path);
@@ -1171,6 +1188,7 @@ addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(OLDHASH[h])
 addEventListener("popstate",()=>{
   const r=parseLoc();const sh=$("#sheet");if(sh.open){sh.dataset.kind="";sh.close()}acClose();
   if(r.view==="produto"){const pid=S?pidFromSlug(r.slug):null;view="produto";curPid=pid;render();return}
+  if(r.view==="colecao"||r.view==="tipo"){view=r.view;curGroup=r.slug;render();scrollTo({top:0});return}
   if(r.view==="busca")F.q=(new URLSearchParams(location.search).get("q")||"").slice(0,80);
   view=r.view;render();scrollTo({top:0});
 });
@@ -1490,6 +1508,37 @@ function revealInit(){
   seenIO=new IntersectionObserver((es)=>es.forEach((e)=>{if(!e.isIntersecting)return;const t=e.target;seenIO.unobserve(t);t.classList.add("seen");t.querySelectorAll(".pulse-k b[data-n]").forEach(countUp)}),{threshold:0,rootMargin:"0px 0px -12% 0px"});
   els.forEach((x)=>seenIO.observe(x));
 }
+/* Páginas de coleção e de formato: /colecao/escuridao-absoluta, /tipo/treinador-avancado-etb (também lidas pelos buscadores) */
+const colSlugOf=(c)=>slugify(c.name);const typeSlugOf=(t)=>slugify(t.label);
+const colHref=(id)=>{const c=(S.collections||[]).find((x)=>x.id===id);return c?"/colecao/"+colSlugOf(c):null};
+const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo/"+typeSlugOf(t):null};
+function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0})}
+function groupNav(){
+  const withP=(S.products||[]).filter((p)=>p.offerCount>0);
+  const cols=(S.collections||[]).filter((c)=>withP.some((p)=>p.collection===c.id)).reverse();
+  const tys=(S.types||[]).filter((t)=>withP.some((p)=>p.type===t.id));
+  return`<section class="gnav">${sectionHead("","Navegue por coleção e formato","Preço de cada produto lacrado, comparado com a Copag.")}
+  <div class="gnav-row">${cols.map((c)=>`<a class="gchip" href="/colecao/${colSlugOf(c)}" data-group="colecao/${colSlugOf(c)}">${esc(c.name)}</a>`).join("")}</div>
+  <div class="gnav-row">${tys.map((t)=>`<a class="gchip t" href="/tipo/${typeSlugOf(t)}" data-group="tipo/${typeSlugOf(t)}" data-cat="${catOf({type:t.id})}">${ic(CATW[catOf({type:t.id})].i)}${esc(t.label)}</a>`).join("")}</div></section>`;
+}
+function renderGroup(kind,slug){
+  const isCol=kind==="colecao";
+  const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):(S.types||[]).find((t)=>typeSlugOf(t)===slug);
+  if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Página não encontrada</h3><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
+  const name=isCol?g0.name:g0.label;
+  const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:p.type===g0.id));
+  const best={},n={};for(const o of OFF){if(!live(o))continue;n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||o.total<best[o.productId].total)best[o.productId]=o}
+  const list=ps.map((p)=>({p,o:best[p.id]||OFF.filter((o)=>o.productId===p.id).sort((a,b)=>a.total-b.total)[0]||null,n:n[p.id]||0}))
+    .sort((a,b)=>((b.n?1:0)-(a.n?1:0))||((b.o?.dealScore??-1)-(a.o?.dealScore??-1))||((discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9)));
+  const inStock=list.filter((e)=>e.n).length;const low=list.filter((e)=>e.n).map((e)=>e.o.total).sort((a,b)=>a-b)[0];
+  document.title=isCol?`${name} Pokémon TCG: preços | TCG Price Hunter`:`Preço de ${name} Pokémon TCG no Brasil | TCG Price Hunter`;
+  $("#view").innerHTML=`<div class="opp grp">
+  <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}<span>${esc(name)}</span></nav>
+  <header class="opp-head"><h1>${isCol?`${esc(name)}: preços de Pokémon TCG lacrado`:`${esc(name)} Pokémon TCG: preços no Brasil`}</h1>
+  <p>${list.length} ${list.length===1?"produto":"produtos"}${isCol?` da coleção ${esc(name)}`:` neste formato, de todas as coleções`}, comparados com o preço sugerido da Copag. ${inStock?`${inStock} com estoque agora${low?`, a partir de ${money(low)}`:""}.`:"Nenhum com estoque agora."}</p></header>
+  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true})).join("")}</div>`:""}
+  ${groupNav()}</div>`;
+}
 function renderDeals(){
   const raw=entries();
   const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
@@ -1514,6 +1563,7 @@ function renderDeals(){
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
   ${highlightsHTML(pool)}
   ${preHTML()}
+  ${groupNav()}
   <section class="home-all">${sectionHead("","Explorar todos os preços",`${list.length} ${list.length===1?"produto":"produtos"} comparados com a Copag.`)}
   <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
   ${filtersHTML(all)}
@@ -1757,13 +1807,13 @@ function renderProduct(pid){
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
   const nLive=offers.filter(live).length;
-  document.title=`${p.collectionName} ${label(p)}${best?` por ${money(best.total)}`:""} | TCG Price Hunter`;
+  document.title=`${label(p)} ${p.collectionName} Pokémon TCG${best?`: a partir de ${money(best.total)}${pixTxt(best)}`:""} | TCG Price Hunter`;
   const save=best&&p.copagConfirmed&&best.total<p.msrp?p.msrp-best.total:null;
   const scale=p.copagConfirmed&&p.marketAverage&&best?(()=>{const pts=[["Copag",p.msrp,"cop"],["Mercado",p.marketAverage,"mkt"],["Melhor oferta",best.total,"best"]];const lo=Math.min(...pts.map((x)=>x[1])),hi=Math.max(...pts.map((x)=>x[1]));const span=hi-lo||1;
     return`<section class="card refscale"><h2>Referência, mercado e oportunidade</h2><div class="rs-track">${pts.map(([l,v,k])=>`<span class="rs-pt ${k}" style="left:${(8+(v-lo)/span*84).toFixed(1)}%"><i></i><b>${money(v)}</b><small>${l}</small></span>`).join("")}</div>
     <p class="rs-note">Mercado = média de ${nLive} ${nLive===1?"loja":"lojas"} com estoque. ${best.total<p.marketAverage?`A melhor oferta está ${pct(1-best.total/p.marketAverage)} abaixo do mercado.`:"A melhor oferta está na média do mercado."}</p></section>`})():"";
   $("#view").innerHTML=`<div class="pp">
-  <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}<a href="/busca?q=${encodeURIComponent(p.collectionName)}" data-q="${esc(p.collectionName)}">${esc(p.collectionName)}</a>${ic("caret-down","icon chev")}<span>${esc(label(p))}</span></nav>
+  <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}${colHref(p.collection)?`<a href="${colHref(p.collection)}" data-group="${colHref(p.collection).slice(1)}">${esc(p.collectionName)}</a>`:esc(p.collectionName)}${ic("caret-down","icon chev")}${typeHref(p.type)?`<a href="${typeHref(p.type)}" data-group="${typeHref(p.type).slice(1)}">${esc(p.typeLabel)}</a>`:""}${typeHref(p.type)?ic("caret-down","icon chev"):""}<span>${esc(label(p))}</span></nav>
   <header class="pp-head" style="--ec:${gg.c}">${photo(p,best||offers[0],"photo pp-photo")}
     <div class="pp-id"><small class="sh-cat">${ic(gg.icon)}${esc(p.group||"")} · ${esc(p.typeLabel)}</small><h1>${esc(p.collectionName)}</h1><p class="pp-type">${esc(label(p))}${p.boosters?` · ${p.boosters} ${p.boosters>1?"boosters":"booster"}`:""}</p>
     <dl class="pp-meta"><div><dt>Coleção</dt><dd>${esc(p.collectionName)}${col?.series&&col.series!==p.collectionName?` (${esc(col.series)})`:""}</dd></div><div><dt>Idioma</dt><dd>Português (Copag)</dd></div>${eans.length?`<div><dt>EAN</dt><dd>${eans.slice(0,2).map(esc).join(", ")}</dd></div>`:""}</dl>
@@ -2021,14 +2071,14 @@ function renderConfig(){
   </section></div>`;
 }
 
-const BASE_TITLE=document.title;
-const TITLES={busca:"Busca",oportunidades:"Oportunidades",copag:"Preços Copag",prevenda:"Pré-vendas",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
+const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
+const TITLES={busca:"Busca",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
   const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
-  if(view!=="produto")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
+  if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   if(view==="conta")return renderConta();
   if(view==="favoritos")return renderFavs();
   if(view==="alertas")return renderAlerts();
@@ -2044,6 +2094,7 @@ function render(){
   else if(view==="termos")renderLegal("termos");
   else if(view==="privacidade")renderLegal("privacidade");
   else if(view==="prevenda")renderPre();
+  else if(view==="colecao"||view==="tipo")renderGroup(view,curGroup);
 }
 /* Analytics: eventos prontos (o Vercel só os mostra no plano Pro; no gratuito não fazem nada) */
 function track(name,data){try{window.va&&window.va("event",{name,data:data||{}})}catch{}}
@@ -2180,6 +2231,7 @@ function init(st){
   fresh();render();accSync(false);
 }
 function loading(){
+  if($("#view .ssr"))return; /* conteúdo já veio pronto do servidor: mostra ele enquanto os preços carregam */
   $("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
@@ -2212,6 +2264,7 @@ document.addEventListener("click",(e)=>{
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
   const stb=t.closest("[data-store]");if(stb){const o=OFF.find((x)=>x.id===stb.dataset.store);if(o)track("click_store",{store:o.storeId,id:o.productId,price:o.total});return}
+  const grpb=t.closest("[data-group]");if(grpb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();const [k,sl]=grpb.dataset.group.split("/");openGroup(k,sl);return}
   const qb=t.closest("[data-q]");if(qb){if(qb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();doSearch(qb.dataset.q);return}
   const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();openProduct(pb.dataset.p);return}
   const hp=t.closest("[data-hp]");if(hp){HV.period=Number(hp.dataset.hp);drawHist(curPid);track("view_price_history",{id:curPid,period:HV.period});return}
