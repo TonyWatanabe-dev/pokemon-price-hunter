@@ -3,7 +3,7 @@
 // com a marcação source: 'state' na resposta. O que só existe no banco (histórico diário, estatísticas históricas)
 // volta vazio/nulo, nunca inventado.
 import { slugs, label } from '../_seo.mjs';
-import { robotReferenceKind, SCOPE, LABEL } from '../../src/core/references.js';
+import { robotReferenceKind, SCOPE, LABEL } from './references.mjs';
 
 const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 const STOCK_IN = { IN_STOCK: 'in_stock', OUT_OF_STOCK: 'out_of_stock', PRE_ORDER: 'preorder' };

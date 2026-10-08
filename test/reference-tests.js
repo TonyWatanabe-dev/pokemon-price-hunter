@@ -138,4 +138,11 @@ t('Price Engine: histórico e comunitária não são referência atual (defesa n
   assert.equal(cur.discount_vs_reference, 0.25); assert.equal(cur.reference_kind, 'COPAG_OFFICIAL_CURRENT');
 });
 
+t('função da Vercel não importa de src/ (src/ não é publicado: .vercelignore)', () => {
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(`${d}/${e.name}`) : /\.m?js$/.test(e.name) ? [`${d}/${e.name}`] : []));
+  const dir = new URL('../api', import.meta.url).pathname;
+  const bad = walk(dir).filter((f) => /from\s+['"](\.\.\/)+src\//.test(fs.readFileSync(f, 'utf8')));
+  assert.deepEqual(bad, []);
+});
+
 console.log(`✓ Referências (atual × histórico): ${n} grupos de testes passaram`);

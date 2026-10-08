@@ -2,7 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
-import { pickCurrentReference, historicalContext, LABEL, confidenceLabel } from '../../src/core/references.js';
+import { pickCurrentReference, historicalContext, LABEL, confidenceLabel } from './references.mjs';
 
 const num = (v) => (v == null ? null : Number(v));
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
