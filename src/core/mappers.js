@@ -2,6 +2,7 @@
 // PRODUCT → OFFER → STORE → MARKETPLACE, + PRICE_HISTORY, STOCK, SHIPPING, REFERENCE_PRICE.
 // Funções puras (sem banco), para testar isoladas.
 import { categoryOf } from './taxonomy.js';
+import { robotReferenceKind } from './references.js';
 import { slugs, label } from '../../api/_seo.mjs';
 
 export const TCG = 'pokemon';
@@ -35,11 +36,15 @@ export function referenceRows(products) {
   const out = [];
   for (const p of products) {
     if (p.copagConfirmed && p.msrp && p.copag?.source_url) {
+      const seen = ts(p.copag.source_timestamp || p.copag.msrp_updated_at);
       out.push({ legacy_id: p.id, value: money(p.msrp), source: /copagloja/.test(p.copag.source_url) ? 'copag_loja' : 'manual',
-        source_url: p.copag.source_url, verification_status: 'verified', verified_at: ts(p.copag.source_timestamp || p.copag.msrp_updated_at),
+        // só é Copag oficial se a fonte for domínio da Copag; tabela divulgada por lojas (Instagram) é referência comunitária
+        reference_kind: robotReferenceKind(p.copag), observed_at: seen,
+        source_url: p.copag.source_url, verification_status: 'verified', verified_at: seen,
         confidence: p.copag.confidence === 'OFICIAL' ? 95 : 70, notes: p.copag.note || null });
     } else if (p.copagReference && p.copagReferenceUrl) {
       out.push({ legacy_id: p.id, value: money(p.copagReference), source: 'internet', source_url: p.copagReferenceUrl,
+        reference_kind: robotReferenceKind({ source_url: p.copagReferenceUrl }), observed_at: null,
         verification_status: 'pending', verified_at: null, confidence: 40, notes: 'referência coletada na internet, não confirmada na Copag' });
     }
   }

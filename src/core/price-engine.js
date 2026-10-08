@@ -14,6 +14,7 @@
 //   Pontos de lojas em janela de desconfiança (source_distrust) e preços implausíveis não entram.
 //   Série = melhor preço em estoque de cada dia (UTC). Estatísticas históricas exigem MIN_HISTORY_DAYS dias.
 // • Variação N dias: (preço atual − melhor preço do dia D−N) / melhor preço do dia D−N; sem esse dia, nulo.
+import { CURRENT_PRIORITY } from './references.js';
 export const ENGINE_VERSION = 'pe-1';
 export const MIN_HISTORY_DAYS = 3;
 export const PLAUSIBLE_MIN = 0.55;
@@ -120,10 +121,13 @@ export function historyAnchorOf({ reference, currentInStock = [], historyPrices 
 
 /**
  * Estatísticas de um produto.
- * input: { product: { condition }, offers: [...com events], reference: { value, status, source, verified_at } | null, distrust: Map, asOf }
+ * input: { product: { condition }, offers: [...com events], reference: { value, status, source, verified_at, kind } | null, distrust: Map, asOf }
+ *   reference é SEMPRE uma referência atual (Copag atual ou mercado atual); histórico não é entrada do motor.
  * offers[i]: { id, store_id, marketplace_id, status, condition, confirmed, price, stock_status, shipping_status, total_price, last_seen_at, events }
  */
 export function computeProductStats({ product, offers, reference = null, distrust = null, asOf }) {
+  // defesa: preço de lançamento (histórico) ou referência comunitária nunca entram como referência atual, mesmo se alguém as passar
+  if (reference?.kind && !(reference.kind in CURRENT_PRIORITY)) reference = null;
   const q = { removed: 0, pending: 0, no_price: 0, other_condition: 0, unconfirmed: 0, implausible: 0, untrusted_points: 0, implausible_points: 0 };
   const sameCond = offers.filter((o) => { const ok = (o.condition || 'new') === (product.condition || 'new'); if (!ok) q.other_condition++; return ok; });
   const live = sameCond.filter((o) => {
@@ -196,6 +200,7 @@ export function computeProductStats({ product, offers, reference = null, distrus
       reference_price: reference && validPrice(reference.value) ? round2(Number(reference.value)) : null,
       reference_status: reference?.status ?? null,
       reference_source: reference?.source ?? null,
+      reference_kind: reference?.kind ?? null,   // tipo da referência ATUAL usada (nunca histórica)
       reference_verified_at: reference?.verified_at ?? null,
       discount_vs_reference: refOk && current != null ? round4((Number(reference.value) - current) / Number(reference.value)) : null,
       number_of_active_offers: elig.length,

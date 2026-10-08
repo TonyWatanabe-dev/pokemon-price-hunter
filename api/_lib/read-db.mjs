@@ -2,6 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
+import { pickCurrentReference, historicalContext, LABEL, confidenceLabel } from '../../src/core/references.js';
 
 const num = (v) => (v == null ? null : Number(v));
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
@@ -15,8 +16,11 @@ const PRODUCTS_SQL = `
          (SELECT i.value FROM hunter.product_identifier i WHERE i.product_id = p.id AND i.kind = 'ean' ORDER BY i.value LIMIT 1) AS ean
     FROM hunter.product p
     LEFT JOIN hunter.collection c ON c.id = p.collection_id
+    -- paridade com o site de hoje (robô/catalog.json): só as referências que o robô publica; preço de lançamento (histórico)
+    -- e importações da auditoria NÃO aparecem como "preço Copag" até a fase que decidir a apresentação (6A)
     LEFT JOIN LATERAL (SELECT value, verification_status, source_url, source, verified_at FROM hunter.reference_price r
                         WHERE r.product_id = p.id AND r.verification_status IN ('verified', 'pending')
+                          AND r.reference_scope <> 'historical' AND r.source IN ('copag_loja', 'manual', 'internet')
                         ORDER BY (r.verification_status = 'verified') DESC, r.verified_at DESC NULLS LAST, r.confidence DESC, r.id DESC LIMIT 1) r ON true
    WHERE p.legacy_id IS NOT NULL`;
 const OFFERS_SQL = `
@@ -150,7 +154,7 @@ async function productRow(key) {
 const STATS_PUBLIC = `as_of_day, data_status, current_price, current_total_price, lowest_current_price, highest_current_price, average_price, median_price,
   history_days, history_from, history_status, historical_min, historical_max, historical_average, historical_median,
   variation_24h, variation_7d, variation_30d, distance_from_historical_average, distance_from_historical_min,
-  reference_price, reference_status, reference_source, reference_verified_at, discount_vs_reference,
+  reference_price, reference_status, reference_source, reference_kind, reference_verified_at, discount_vs_reference,
   number_of_active_offers, number_of_in_stock_offers, number_of_stores, number_of_marketplaces, shipping_coverage, engine_version, computed_at`;
 const statsOut = (s) => (s ? {
   as_of_day: s.as_of_day ? iso(s.as_of_day).slice(0, 10) : null, status: s.data_status,
@@ -160,7 +164,7 @@ const statsOut = (s) => (s ? {
     min: num(s.historical_min), max: num(s.historical_max), average: num(s.historical_average), median: num(s.historical_median),
     variation_24h: num(s.variation_24h), variation_7d: num(s.variation_7d), variation_30d: num(s.variation_30d),
     distance_from_average: num(s.distance_from_historical_average), distance_from_min: num(s.distance_from_historical_min) },
-  reference: s.reference_price != null ? { value: num(s.reference_price), status: s.reference_status, source: s.reference_source, verified_at: iso(s.reference_verified_at) } : null,
+  reference: s.reference_price != null ? { value: num(s.reference_price), status: s.reference_status, source: s.reference_source, kind: s.reference_kind ?? null, verified_at: iso(s.reference_verified_at) } : null,
   discount_vs_reference: num(s.discount_vs_reference),
   coverage: { active_offers: s.number_of_active_offers, in_stock_offers: s.number_of_in_stock_offers, stores: s.number_of_stores,
     marketplaces: s.number_of_marketplaces, shipping_coverage: num(s.shipping_coverage) },
@@ -171,8 +175,7 @@ export async function getProduct(key) {
   const p = await productRow(key); if (!p) return null;
   const [stats, refs, ids] = [
     (await q(`SELECT ${STATS_PUBLIC} FROM hunter.product_stats WHERE product_id = $1`, [p.id]))[0],
-    await q(`SELECT value, verification_status, source, source_url, verified_at FROM hunter.reference_price WHERE product_id = $1
-              ORDER BY (verification_status = 'verified') DESC, verified_at DESC NULLS LAST, id DESC`, [p.id]),
+    await q(`SELECT ${REF_COLS} FROM hunter.reference_price WHERE product_id = $1 ORDER BY ${REF_ORDER}`, [p.id]),
     await q(`SELECT kind, value FROM hunter.product_identifier WHERE product_id = $1 AND kind IN ('ean', 'gtin') ORDER BY kind, value`, [p.id]),
   ];
   return {
@@ -180,10 +183,20 @@ export async function getProduct(key) {
     collection: { code: p.col_code, name: p.col_name, series: p.col_series }, boosters: p.units ?? null, variant: p.variant ?? null,
     language: p.language, condition: p.condition, image: p.image_url ?? null, status: p.status,
     identifiers: ids.map((i) => ({ kind: i.kind, value: i.value })),
+    // duas respostas separadas: referência ATUAL (nula = nenhuma) e CONTEXTO histórico (preço sugerido de lançamento etc.)
+    current_reference: (() => { const c = pickCurrentReference(refs); return c ? refOut(c) : null; })(),
+    historical_context: historicalContext(refs).map(refOut),
     references: refs.map(refOut), stats: statsOut(stats),
   };
 }
-const refOut = (r) => ({ value: num(r.value), status: r.verification_status, source: r.source, source_url: r.source_url, verified_at: iso(r.verified_at) });
+const REF_COLS = `id, value, verification_status, source, source_url, verified_at, reference_kind, reference_scope, confidence,
+  published_at, effective_date, observed_at, page_title, evidence_text`;
+const REF_ORDER = `CASE reference_scope WHEN 'current' THEN 0 WHEN 'historical' THEN 1 ELSE 2 END, (verification_status = 'verified') DESC,
+  CASE reference_kind WHEN 'COPAG_OFFICIAL_CURRENT' THEN 1 WHEN 'MARKET_CURRENT' THEN 2 ELSE 3 END, verified_at DESC NULLS LAST, id DESC`;
+const refOut = (r) => ({ value: num(r.value), status: r.verification_status, source: r.source, source_url: r.source_url, verified_at: iso(r.verified_at),
+  kind: r.reference_kind ?? null, scope: r.reference_scope ?? null, label: LABEL[r.reference_kind] ?? null,
+  confidence: r.confidence ?? null, confidence_label: confidenceLabel(r.confidence), published_at: r.published_at ?? null, effective_date: r.effective_date ?? null,
+  observed_at: iso(r.observed_at), page_title: r.page_title ?? null, evidence: r.evidence_text ?? null });
 
 // ---------------------------------------------------------------- Ofertas de um produto
 const offerOut = (r) => ({
@@ -236,10 +249,11 @@ export async function productStats(key) {
 // ---------------------------------------------------------------- Referências Copag
 export async function listReferences({ page, limit, status = null }) {
   const rows = await q(`
-    SELECT p.legacy_id, p.slug, p.canonical_name, r.value, r.verification_status, r.source, r.source_url, r.verified_at, count(*) OVER () AS total_rows
+    SELECT p.legacy_id, p.slug, p.canonical_name, r.id, r.value, r.verification_status, r.source, r.source_url, r.verified_at, r.reference_kind, r.reference_scope,
+           r.confidence, r.published_at, r.effective_date, r.observed_at, r.page_title, r.evidence_text, count(*) OVER () AS total_rows
       FROM hunter.reference_price r JOIN hunter.product p ON p.id = r.product_id
      WHERE ($1::text IS NULL OR r.verification_status = $1)
-     ORDER BY (r.verification_status = 'verified') DESC, p.canonical_name, r.id
+     ORDER BY CASE r.reference_scope WHEN 'current' THEN 0 WHEN 'historical' THEN 1 ELSE 2 END, (r.verification_status = 'verified') DESC, p.canonical_name, r.id
      LIMIT $2 OFFSET $3`, [status, limit, (page - 1) * limit]);
   return { items: rows.map((r) => ({ product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name }, ...refOut(r) })), total: rows.length ? Number(rows[0].total_rows) : 0 };
 }

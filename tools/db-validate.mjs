@@ -8,6 +8,7 @@ import { pool, tx, close } from '../src/db/pg.js';
 import { syncState } from '../src/core/sync.js';
 import { runPriceEngine } from '../src/core/price-stats.js';
 import { runOpportunityEngine, loadOpportunityInputs, computeOpportunities } from '../src/core/opportunity-run.js';
+import { importReferences } from '../src/core/reference-import.js';
 
 const [dir = 'data', out = 'db-validation.json', ...migLogs] = process.argv.slice(2);
 const rep = { at: new Date().toISOString(), checks: [], errors: [] };
@@ -136,6 +137,46 @@ try {
   check('trilha de auditoria: 7 eventos REVIEW_DECIDED', rep.reviewAudit.length === 7, rep.reviewAudit.length);
   check('nenhum item de revisão aberto após 2 sincronizações', (await n(`SELECT count(*) FROM hunter.review_item WHERE status = 'open'`)) === 0);
 
+  // ---------- Referências: atual × histórico (Fase 5.6) ----------
+  const refsBefore = await n('SELECT count(*) FROM hunter.reference_price');
+  const impFile = JSON.parse(fs.readFileSync(new URL('../db/reference-imports/2026-10-08-copag-audit.json', import.meta.url), 'utf8'));
+  rep.references = { import1: await tx((c) => importReferences(c, impFile)), import2: await tx((c) => importReferences(c, impFile)) };
+  const imp2 = rep.references.import2;
+  check('importação de referências idempotente (2ª não escreve)', imp2.inserted === 0 && imp2.updated === 0 && imp2.identifiers.written === 0, imp2);
+  check('importação: nenhuma entrada recusada', rep.references.import1.rejected.length === 0, rep.references.import1.rejected);
+  check('nenhuma referência apagada', (await n('SELECT count(*) FROM hunter.reference_price')) >= refsBefore);
+  check('6 matches ambíguos fora da importação', (await n(`SELECT count(*) FROM hunter.reference_price r JOIN hunter.product p ON p.id = r.product_id
+    WHERE r.source IN ('copag_blog', 'copag_loja_catalog') AND p.legacy_id = ANY($1)`, [impFile.excluded])) === 0 && impFile.excluded.length === 6);
+  check('toda referência tem tipo', (await n('SELECT count(*) FROM hunter.reference_price WHERE reference_kind IS NULL')) === 0);
+  check('Copag oficial só com fonte no domínio Copag', (await n(`SELECT count(*) FROM hunter.reference_price WHERE reference_kind LIKE 'COPAG_OFFICIAL%'
+    AND source_url !~* '^https?://([a-z0-9-]+\\.)*copag(loja)?\\.com\\.br(/|$)'`)) === 0);
+  check('referência atual nunca é histórica nem comunitária (view)', (await n(`SELECT count(*) FROM hunter.reference_price_current WHERE reference_scope <> 'current'`)) === 0);
+  check('referência de fora do domínio Copag não é Copag oficial (13 do Instagram)', (await n(`SELECT count(*) FROM hunter.reference_price
+    WHERE source = 'manual' AND source_url ~* 'instagram' AND reference_kind <> 'COMMUNITY_REFERENCE'`)) === 0);
+  check('confiança média importada continua média e pendente', (await n(`SELECT count(*) FROM hunter.reference_price WHERE source IN ('copag_blog', 'copag_loja_catalog')
+    AND confidence = 60 AND verification_status <> 'pending'`)) === 0);
+  check('nenhuma correção automática: preço histórico importado = preço da página', (await n(`SELECT count(*) FROM hunter.reference_price r
+    JOIN jsonb_to_recordset($1::jsonb) AS x(legacy_id text, value numeric, source text) ON x.source = r.source
+    JOIN hunter.product p ON p.id = r.product_id AND p.legacy_id = x.legacy_id WHERE r.value <> x.value`, [JSON.stringify(impFile.entries)])) === 0
+    && (await n(`SELECT count(*) FROM hunter.reference_price WHERE source IN ('copag_blog', 'copag_loja_catalog')`)) === impFile.entries.length);
+  rep.references.conflicts = await q(`SELECT p.legacy_id, array_agg(DISTINCT r.value ORDER BY r.value) AS values, array_agg(DISTINCT r.source) AS sources
+    FROM hunter.reference_price r JOIN hunter.product p ON p.id = r.product_id WHERE r.reference_scope = 'current' AND r.verification_status = 'verified'
+    GROUP BY 1 HAVING count(DISTINCT r.value) > 1`);
+  check('sem conflito de valor entre referências atuais verificadas', rep.references.conflicts.length === 0, rep.references.conflicts);
+  rep.references.byKind = await q(`SELECT reference_kind, reference_scope, verification_status, count(*)::int n FROM hunter.reference_price GROUP BY 1, 2, 3 ORDER BY 1, 3`);
+  rep.references.byConfidence = await q(`SELECT CASE WHEN confidence >= 85 THEN 'alta' WHEN confidence >= 50 THEN 'média' ELSE 'baixa' END AS label, count(*)::int n
+    FROM hunter.reference_price GROUP BY 1 ORDER BY 1`);
+  rep.references.products = await one(`SELECT count(*)::int total,
+    count(*) FILTER (WHERE EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = p.id))::int with_current,
+    count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = p.id)
+      AND EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = p.id AND r.reference_scope = 'historical'))::int only_historical,
+    count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = p.id)
+      AND EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = p.id AND r.reference_scope = 'community'))::int only_community,
+    count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = p.id))::int without_current,
+    count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = p.id))::int without_any
+    FROM hunter.product p`);
+  rep.references.total = await n('SELECT count(*) FROM hunter.reference_price');
+
   // ---------- Price Engine ----------
   const histRows = await n('SELECT count(*) FROM hunter.price_history');
   rep.priceEngine = { run1: await tx((c) => runPriceEngine(c)), run2: await tx((c) => runPriceEngine(c)) };
@@ -153,6 +194,13 @@ try {
   check('preço atual só de oferta ativa, em estoque e com o mesmo preço', (await n(`SELECT count(*) FROM hunter.product_stats s JOIN hunter.offer o ON o.id = s.current_offer_id
     WHERE o.status <> 'active' OR o.stock_status <> 'in_stock' OR o.price <> s.current_price OR o.product_id <> s.product_id`)) === 0);
   check('desconto Copag só com referência verificada', (await n(`SELECT count(*) FROM hunter.product_stats WHERE discount_vs_reference IS NOT NULL AND reference_status IS DISTINCT FROM 'verified'`)) === 0);
+  check('Price Engine só usa referência ATUAL (nunca histórica/comunitária)', (await n(`SELECT count(*) FROM hunter.product_stats
+    WHERE reference_price IS NOT NULL AND reference_kind IS DISTINCT FROM 'COPAG_OFFICIAL_CURRENT' AND reference_kind IS DISTINCT FROM 'MARKET_CURRENT'`)) === 0);
+  check('referência verificada do Price Engine = view reference_price_current', (await n(`SELECT count(*) FROM hunter.product_stats s
+    FULL JOIN hunter.reference_price_current c ON c.product_id = s.product_id
+    WHERE coalesce(s.reference_status = 'verified', false) <> (c.product_id IS NOT NULL) OR (c.product_id IS NOT NULL AND s.reference_price <> c.value)`)) === 0);
+  check('produto só com contexto histórico não tem desconto', (await n(`SELECT count(*) FROM hunter.product_stats s WHERE s.discount_vs_reference IS NOT NULL
+    AND NOT EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = s.product_id)`)) === 0);
   check('histórico só com dias suficientes', (await n(`SELECT count(*) FROM hunter.product_stats WHERE (historical_min IS NOT NULL) <> (history_status = 'ok')`)) === 0);
   // reprodução independente em SQL: preço atual (elegibilidade com a âncora gravada) e histórico (a partir de price_daily)
   const sqlCur = await q(`WITH s AS (SELECT product_id, (quality->>'anchor')::numeric AS anchor FROM hunter.product_stats),

@@ -85,6 +85,7 @@ jobs:
           node tools/db-migrate.mjs
           node tools/db-grants.mjs || true
           node tools/db-sync.mjs data
+          node tools/db-import-references.mjs
           node tools/db-stats.mjs
           node tools/db-opportunity.mjs
       - name: Salvar configuração (se mudou)

@@ -62,7 +62,9 @@ export async function compareEndpoints(st, DB, ST) {
     if (eq(ap, bp)) out.currentPrice.equal++; else out.currentPrice.diffs.push({ id: p.id, db: ap, state: bp });
     const ai = a.stats?.coverage?.in_stock_offers ?? 0; const bi = b.stats.coverage.in_stock_offers;
     if (ai === bi) out.inStock.equal++; else out.inStock.diffs.push({ id: p.id, db: ai, state: bi });
-    const ar = a.references.find((r) => r.status === 'verified') || a.references[0] || null; const br = b.references[0] || null;
+    // o site (state.json) só conhece as referências do robô; preço de lançamento e importações da auditoria ficam fora da paridade
+    const site = a.references.filter((r) => r.scope !== 'historical' && ['copag_loja', 'manual', 'internet'].includes(r.source));
+    const ar = site.find((r) => r.status === 'verified') || site[0] || null; const br = b.references[0] || null;
     if (eq(ar?.value ?? null, br?.value ?? null) && (ar?.status ?? null) === (br?.status ?? null)) out.reference.equal++; else out.reference.diffs.push({ id: p.id, db: ar && { value: ar.value, status: ar.status }, state: br && { value: br.value, status: br.status } });
     const ao = await DB.productOffers(p.id, { page: 1, limit: 500 }); const bo = ST.stateProductOffers(st, p.id, { page: 1, limit: 500 });
     const ka = new Map(ao.items.map((o) => [o.id, o])); let same = ao.total === bo.total;

@@ -55,10 +55,12 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
 
   // 3) Referência Copag (nova linha só quando muda o valor ou a fonte)
   const refs = referenceRows(state.products || []).map((r) => ({ ...r, product_id: pid.get(r.legacy_id) })).filter((r) => r.product_id);
-  const rr = await c.query(`INSERT INTO reference_price (product_id, value, source, source_url, verification_status, verified_at, confidence, notes)
-    SELECT product_id, value, source, source_url, verification_status, verified_at, confidence, notes FROM jsonb_to_recordset($1::jsonb)
-      AS x(product_id bigint, value numeric, source text, source_url text, verification_status text, verified_at timestamptz, confidence smallint, notes text)
-    ON CONFLICT (product_id, source, value) DO UPDATE SET verified_at = greatest(reference_price.verified_at, EXCLUDED.verified_at)`, [J(refs)]);
+  const rr = await c.query(`INSERT INTO reference_price (product_id, value, source, source_url, verification_status, verified_at, confidence, notes, reference_kind, observed_at)
+    SELECT product_id, value, source, source_url, verification_status, verified_at, confidence, notes, reference_kind, observed_at FROM jsonb_to_recordset($1::jsonb)
+      AS x(product_id bigint, value numeric, source text, source_url text, verification_status text, verified_at timestamptz, confidence smallint, notes text,
+           reference_kind text, observed_at timestamptz)
+    ON CONFLICT (product_id, source, value) DO UPDATE SET verified_at = greatest(reference_price.verified_at, EXCLUDED.verified_at),
+      observed_at = greatest(reference_price.observed_at, EXCLUDED.observed_at)`, [J(refs)]);
   stats.references = rr.rowCount;
 
   // 4) Lojas + saúde da fonte + canal (site próprio ou marketplace)
