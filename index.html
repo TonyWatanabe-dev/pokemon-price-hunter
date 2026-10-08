@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>document.documentElement.classList.add("js")</script>
 <title>Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter</title>
 <meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Estoque conferido a cada 15 minutos.">
 <meta property="og:title" content="TCG Price Hunter">
@@ -728,7 +729,14 @@ a.navbtn{text-decoration:none}
 .pod-store .ra{margin-top:5px}
 .so-top .ra{margin-left:2px}
 
-/* Conteúdo vindo do servidor (aparece enquanto os preços carregam e para buscadores) */
+/* Conteúdo vindo do servidor: para buscadores e para quem está sem JavaScript. Com JavaScript, quem aparece é a página interativa. */
+.js .ssr{display:none}
+.pod-skel{display:grid;grid-template-columns:1fr 1.18fr 1fr;align-items:end;gap:clamp(14px,2.2vw,30px);margin:56px auto 0;max-width:1180px}
+.pod-skel i{display:block;height:440px;border-radius:24px;background:linear-gradient(100deg,rgb(255 255 255 / .04) 30%,rgb(255 255 255 / .09) 50%,rgb(255 255 255 / .04) 70%) 0 0/300% 100%;border:1px solid rgb(255 255 255 / .08);animation:skelSweep 1.4s linear infinite}
+.pod-skel i:nth-child(2){height:500px}
+@keyframes skelSweep{from{background-position:100% 0}to{background-position:-100% 0}}
+@media (max-width:860px){.pod-skel{grid-template-columns:1fr}.pod-skel i:not(:nth-child(2)){display:none}.pod-skel i:nth-child(2){height:420px}}
+@media (prefers-reduced-motion:reduce){.pod-skel i{animation:none}}
 .ssr{max-width:860px;margin:24px auto 0;line-height:1.55}.ssr h1{font-size:clamp(26px,4vw,40px);line-height:1.1;margin:8px 0 12px}.ssr h2{font-size:20px;margin:24px 0 8px}
 .ssr ul,.ssr ol{padding-left:20px}.ssr li{margin:4px 0}.ssr a{color:inherit}.ssr-bc{font-size:13px;color:var(--muted)}.ssr-links{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0!important}
 .ssr-t{border-collapse:collapse;width:100%}.ssr-t td,.ssr-t th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
@@ -2231,7 +2239,14 @@ function init(st){
   fresh();render();accSync(false);
 }
 function loading(){
-  if($("#view .ssr"))return; /* conteúdo já veio pronto do servidor: mostra ele enquanto os preços carregam */
+  /* Início: o palco (busca e frase) não depende dos preços, então já aparece pronto; só o pódio espera os dados */
+  if(view==="deals"){
+    $("#view").innerHTML=`<section class="stage"><div class="stage-in"><div class="sbox-wrap" style="--d:0">${searchBox("hq","",true)}</div>
+    <div class="stage-copy"><h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
+    <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p></div>
+    <div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div></div></section>`;
+    document.body.classList.add("intro");renderDeals.done=true;return;
+  }
   $("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
