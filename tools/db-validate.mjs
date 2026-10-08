@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pool, tx, close } from '../src/db/pg.js';
 import { syncState } from '../src/core/sync.js';
+import { runPriceEngine } from '../src/core/price-stats.js';
 
 const [dir = 'data', out = 'db-validation.json', ...migLogs] = process.argv.slice(2);
 const rep = { at: new Date().toISOString(), checks: [], errors: [] };
@@ -126,6 +127,68 @@ try {
   rep.review = await q(`SELECT category, status, entity_type, entity_id, proposal, dedupe_key, created_at FROM hunter.review_item ORDER BY category, entity_id`);
   check('duplicatas na review_item', rep.review.filter((r) => r.category === 'duplicate_product').length === rep.sync1.stats.duplicatesToReview && rep.sync1.stats.duplicatesToReview > 0,
     { review: rep.review.length, dups: rep.sync1.stats.duplicatesToReview });
+
+  // ---------- revisão: duplicatas legadas rejeitadas, com auditoria ----------
+  rep.reviewDecisions = await q(`SELECT entity_id, status, decision_reason, decided_by_label, decided_at FROM hunter.review_item WHERE category = 'duplicate_product' ORDER BY entity_id`);
+  rep.reviewAudit = await q(`SELECT entity_id, payload FROM hunter.system_event WHERE type = 'REVIEW_DECIDED' ORDER BY id`);
+  check('7 duplicatas legadas rejeitadas com motivo (sem apagar)', rep.reviewDecisions.length === 7 && rep.reviewDecisions.every((r) => r.status === 'rejected' && /duplicate legacy/.test(r.decision_reason || '')), rep.reviewDecisions.map((r) => r.entity_id + ':' + r.status));
+  check('trilha de auditoria: 7 eventos REVIEW_DECIDED', rep.reviewAudit.length === 7, rep.reviewAudit.length);
+  check('nenhum item de revisão aberto após 2 sincronizações', (await n(`SELECT count(*) FROM hunter.review_item WHERE status = 'open'`)) === 0);
+
+  // ---------- Price Engine ----------
+  const histRows = await n('SELECT count(*) FROM hunter.price_history');
+  rep.priceEngine = { run1: await tx((c) => runPriceEngine(c)), run2: await tx((c) => runPriceEngine(c)) };
+  check('Price Engine idempotente (2ª execução não escreve nada)', rep.priceEngine.run2.statsWritten === 0 && rep.priceEngine.run2.dailyWritten === 0 && rep.priceEngine.run2.dailyDeleted === 0, rep.priceEngine.run2);
+  check('Price Engine não altera price_history', (await n('SELECT count(*) FROM hunter.price_history')) === histRows);
+  check('product_stats: 1 linha por produto', (await n('SELECT count(*) FROM hunter.product_stats')) === (await n('SELECT count(*) FROM hunter.product')));
+  rep.priceEngine.status = await q(`SELECT data_status, history_status, count(*)::int n FROM hunter.product_stats GROUP BY 1, 2 ORDER BY 1, 2`);
+  rep.priceEngine.daily = await one(`SELECT count(*)::int rows, count(DISTINCT product_id)::int products, min(day)::text first, max(day)::text last FROM hunter.price_daily`);
+  rep.priceEngine.coverage = await one(`SELECT count(current_price)::int with_current, count(current_total_price)::int with_total, count(discount_vs_reference)::int with_discount,
+    count(variation_24h)::int with_var24h, count(variation_7d)::int with_var7d, count(variation_30d)::int with_var30d, count(historical_min)::int with_history,
+    sum((quality->>'untrusted_points')::int)::int untrusted_points, sum((quality->>'implausible_points')::int)::int implausible_points,
+    sum((quality->>'implausible')::int)::int implausible_offers, sum((quality->>'unconfirmed')::int)::int unconfirmed_offers FROM hunter.product_stats`);
+  // regras invioláveis
+  check('total atual só de oferta com frete conhecido', (await n(`SELECT count(*) FROM hunter.product_stats s JOIN hunter.offer o ON o.id = s.current_total_offer_id WHERE o.shipping_status = 'unknown' OR o.total_price IS NULL`)) === 0);
+  check('preço atual só de oferta ativa, em estoque e com o mesmo preço', (await n(`SELECT count(*) FROM hunter.product_stats s JOIN hunter.offer o ON o.id = s.current_offer_id
+    WHERE o.status <> 'active' OR o.stock_status <> 'in_stock' OR o.price <> s.current_price OR o.product_id <> s.product_id`)) === 0);
+  check('desconto Copag só com referência verificada', (await n(`SELECT count(*) FROM hunter.product_stats WHERE discount_vs_reference IS NOT NULL AND reference_status IS DISTINCT FROM 'verified'`)) === 0);
+  check('histórico só com dias suficientes', (await n(`SELECT count(*) FROM hunter.product_stats WHERE (historical_min IS NOT NULL) <> (history_status = 'ok')`)) === 0);
+  // reprodução independente em SQL: preço atual (elegibilidade com a âncora gravada) e histórico (a partir de price_daily)
+  const sqlCur = await q(`WITH s AS (SELECT product_id, (quality->>'anchor')::numeric AS anchor FROM hunter.product_stats),
+    e AS (SELECT o.product_id, o.price, o.total_price, o.shipping_status, o.store_id FROM hunter.offer o JOIN hunter.product p ON p.id = o.product_id JOIN s ON s.product_id = o.product_id
+      WHERE o.status = 'active' AND o.price > 0 AND o.confirmed AND o.condition = p.condition AND o.stock_status = 'in_stock'
+        AND (s.anchor IS NULL OR (o.price >= round(s.anchor * 0.55, 2) AND o.price <= round(s.anchor * 3, 2))))
+    SELECT product_id, min(price) mn, max(price) mx, round(avg(price), 2) av, round(percentile_cont(0.5) WITHIN GROUP (ORDER BY price)::numeric, 2) md, count(*)::int n,
+      min(total_price) FILTER (WHERE shipping_status <> 'unknown') tot FROM e GROUP BY product_id`);
+  const st = new Map((await q('SELECT * FROM hunter.product_stats')).map((r) => [String(r.product_id), r]));
+  const eq = (a, b) => (a == null && b == null) || (a != null && b != null && Math.abs(Number(a) - Number(b)) < 0.005);
+  const curDiff = sqlCur.filter((r) => { const x = st.get(String(r.product_id)); return !x || !eq(x.current_price, r.mn) || !eq(x.highest_current_price, r.mx) || !eq(x.average_price, r.av) || !eq(x.median_price, r.md) || x.number_of_in_stock_offers !== r.n || !eq(x.current_total_price, r.tot); });
+  const okCount = [...st.values()].filter((x) => x.current_price != null).length;
+  check('preço atual reproduzido em SQL (mín, máx, média, mediana, total, contagem)', curDiff.length === 0 && sqlCur.length === okCount, { sql: sqlCur.length, engine: okCount, diffs: curDiff.slice(0, 5) });
+  const sqlHist = await q(`SELECT product_id, min(min_price) mn, max(min_price) mx, round(avg(min_price), 2) av, round(percentile_cont(0.5) WITHIN GROUP (ORDER BY min_price)::numeric, 2) md, count(*)::int d
+    FROM hunter.price_daily WHERE store_id = '' GROUP BY product_id`);
+  const histDiff = sqlHist.filter((r) => { const x = st.get(String(r.product_id)); if (!x || x.history_days !== r.d) return true; if (x.history_status !== 'ok') return x.historical_min != null;
+    return !eq(x.historical_min, r.mn) || !eq(x.historical_max, r.mx) || !eq(x.historical_average, r.av) || !eq(x.historical_median, r.md); });
+  check('histórico reproduzido em SQL a partir de price_daily', histDiff.length === 0, histDiff.slice(0, 5));
+  rep.priceEngine.samples = await q(`SELECT p.legacy_id, s.current_price, s.current_total_price, s.lowest_current_price, s.highest_current_price, s.average_price, s.median_price,
+    s.history_days, s.history_status, s.variation_24h, s.reference_price, s.discount_vs_reference, s.number_of_active_offers, s.number_of_in_stock_offers, s.number_of_stores,
+    s.number_of_marketplaces, s.shipping_coverage, s.quality FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id
+    WHERE s.data_status = 'ok' ORDER BY s.number_of_in_stock_offers DESC, p.legacy_id LIMIT 5`);
+
+  // ---------- comparação com o que o site mostra hoje (state.json) ----------
+  const byLegacy = new Map((await q(`SELECT p.legacy_id, s.* FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id`)).map((r) => [r.legacy_id, r]));
+  const cmp = { products: 0, bestPriceEqual: 0, bestPriceDiff: [], inStockEqual: 0, inStockDiff: [], referenceEqual: 0, referenceDiff: [], avgCompared: 0, avgWithin2pct: 0, avgDiff: [] };
+  for (const sp of state.products || []) {
+    const x = byLegacy.get(sp.id); if (!x) continue; cmp.products++;
+    const so = (state.offers || []).filter((o) => o.productId === sp.id && o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.confirmed !== false && o.price > 0);
+    const robotBest = so.length ? Math.min(...so.map((o) => o.price)) : null;
+    if (eq(robotBest, x.current_price)) cmp.bestPriceEqual++; else cmp.bestPriceDiff.push({ id: sp.id, robot: robotBest, engine: x.current_price == null ? null : Number(x.current_price) });
+    if ((sp.inStockCount ?? 0) === x.number_of_in_stock_offers) cmp.inStockEqual++; else cmp.inStockDiff.push({ id: sp.id, robot: sp.inStockCount ?? 0, engine: x.number_of_in_stock_offers });
+    if (eq(sp.msrp ?? null, x.discount_vs_reference != null || x.reference_status === 'verified' ? x.reference_price : null)) cmp.referenceEqual++; else cmp.referenceDiff.push({ id: sp.id, robot: sp.msrp ?? null, engine: x.reference_price, status: x.reference_status });
+    if (sp.marketAverage != null && x.average_price != null) { cmp.avgCompared++; const d = Math.abs(sp.marketAverage - Number(x.average_price)) / sp.marketAverage; if (d <= 0.02) cmp.avgWithin2pct++; else cmp.avgDiff.push({ id: sp.id, robot_total_avg: sp.marketAverage, engine_price_avg: Number(x.average_price) }); }
+  }
+  for (const k of ['bestPriceDiff', 'inStockDiff', 'referenceDiff', 'avgDiff']) { cmp[k + 'Count'] = cmp[k].length; cmp[k] = cmp[k].slice(0, 12); }
+  rep.comparison = cmp;
 
   rep.size = await one(`SELECT pg_size_pretty(pg_database_size(current_database())) AS database,
     pg_size_pretty(sum(pg_total_relation_size(c.oid))) AS schema_hunter

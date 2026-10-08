@@ -1,6 +1,6 @@
 // Grava o estado atual do robô no banco (Marketplace Core). Idempotente: rodar de novo não duplica.
 // Não altera nada do que o site lê hoje (arquivos do ramo data).
-import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows } from './mappers.js';
+import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows } from './mappers.js';
 import { ensureMonth } from '../db/partitions.js';
 
 const J = (v) => JSON.stringify(v);
@@ -140,6 +140,13 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
       AS x(offer_id bigint, product_id bigint, price numeric, shipping_price numeric, total_price numeric, stock_status text, observed_at timestamptz)
     ON CONFLICT (offer_id, observed_at) DO NOTHING`, [J(hist)]) : { rowCount: 0 };
   stats.history = hr.rowCount;
+  // 8) Janelas de leitura não confiável (usadas pelo Price Engine)
+  const dist = distrustRows(state.distrust);
+  if (dist.length) await c.query(`INSERT INTO source_distrust (store_id, until_day, reason) SELECT store_id, until_day, reason
+    FROM jsonb_to_recordset($1::jsonb) AS x(store_id text, until_day date, reason text)
+    ON CONFLICT (store_id) DO UPDATE SET until_day = EXCLUDED.until_day, reason = EXCLUDED.reason, updated_at = now()
+    WHERE (source_distrust.until_day, source_distrust.reason) IS DISTINCT FROM (EXCLUDED.until_day, EXCLUDED.reason)`, [J(dist)]);
+  stats.distrustStores = dist.length;
   stats.historySkipped = hrows.filter((h) => !oid.get(h.offer_legacy_id)).length;
   log(stats);
   return stats;

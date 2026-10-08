@@ -12,8 +12,9 @@
     "discover": "node src/discover.js",
     "copag-check": "node src/copag-check.js",
     "serve": "node src/server.js",
-    "test": "node test/run-tests.js && node test/ml-tests.js && node test/core-tests.js && node test/db-tests.js",
-    "db:migrate": "node tools/db-migrate.mjs"
+    "test": "node test/run-tests.js && node test/ml-tests.js && node test/core-tests.js && node test/price-engine-tests.js && node test/db-tests.js && node test/price-db-tests.js",
+    "db:migrate": "node tools/db-migrate.mjs",
+    "db:stats": "node tools/db-stats.mjs"
   },
   "dependencies": {
     "pg": "^8.23.1"

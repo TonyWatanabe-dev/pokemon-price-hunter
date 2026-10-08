@@ -90,3 +90,11 @@ export function historyRows(lines) {
     stock_status: stockOf(h.stock), observed_at: ts(h.t), event: h.event || null,
   }));
 }
+
+// Janela de desconfiança do robô (state.distrust: { stores: [...], until: 'YYYY-MM-DD' }) → source_distrust.
+// Pontos de histórico dessas lojas até o dia indicado ficam fora das estatísticas de preço (nada é apagado).
+export function distrustRows(distrust) {
+  if (!distrust?.stores?.length || !/^\d{4}-\d{2}-\d{2}$/.test(distrust.until || '')) return [];
+  return distrust.stores.map((id) => ({ store_id: id, until_day: distrust.until,
+    reason: 'leitura antiga pela página da loja (JSON-LD/Open Graph/vendedor secundário) podia trazer preço de vitrine ou parcela' }));
+}
