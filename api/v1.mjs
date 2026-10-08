@@ -98,14 +98,19 @@ export default async function handler(req, res, { now = Date.now() } = {}) {
   const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => k !== 'fonte').sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
   const ttl = TTL[rt.kind] || TTL.default; const cdn = CDN[rt.kind] || CDN.default;
   const hit = cache.get(key);
-  if (hit && now - hit.at < ttl) return send(res, hit.status, hit.json, { 'Cache-Control': cdn, 'X-Cache': 'HIT', 'X-Data-Source': hit.source, ...(hit.fallback ? { 'X-Fallback': hit.fallback } : {}) });
+  if (hit && now - hit.at < (hit.fallback ? 15_000 : ttl)) return send(res, hit.status, hit.json, { 'Cache-Control': hit.fallback ? 'no-store' : cdn, 'X-Cache': 'HIT', 'X-Data-Source': hit.source, ...(hit.fallback ? { 'X-Fallback': hit.fallback, 'X-Fallback-Reason': hit.reason } : {}) });
 
-  let out; let source = preferred; let fallback = null;
+  let out; let source = preferred; let fallback = null; let reason = null;
   try { out = await run(rt, preferred); }
   catch (e) {
     if (e.status) { out = { status: e.status, body: { error: e.message } }; }
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json
       fallback = 'db-indisponivel'; source = 'state';
+      // diagnóstico sem segredo: só o código do erro (28P01 senha, XX000 tenant, ENOTFOUND host...) e a mensagem sem a URL
+      reason = String(e.code || e.name || 'erro').slice(0, 20);
+      const url = process.env.API_DATABASE_URL || ''; let msg = String(e.message || '');
+      try { const u = new URL(url); for (const x of [u.password, decodeURIComponent(u.password), u.username, u.hostname]) if (x && x.length > 3) msg = msg.split(x).join('***'); } catch {}
+      console.error(`[api/v1] banco indisponível (${reason}): ${msg.slice(0, 200)}`);
       try { out = await run(rt, 'state'); } catch (e2) { out = e2.status ? { status: e2.status, body: { error: e2.message } } : null; }
     }
     if (!out) return send(res, 503, { error: 'dados indisponíveis no momento' }, { 'Cache-Control': 'no-store', 'X-Data-Source': 'none' });
@@ -113,6 +118,6 @@ export default async function handler(req, res, { now = Date.now() } = {}) {
   const status = out.status || 200;
   const json = JSON.stringify(out.body);
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value);
-  cache.set(key, { at: now, status, json, source, fallback });
-  return send(res, status, json, { 'Cache-Control': status >= 500 ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...(fallback ? { 'X-Fallback': fallback } : {}) });
+  cache.set(key, { at: now, status, json, source, fallback, reason });
+  return send(res, status, json, { 'Cache-Control': status >= 500 || fallback ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });
 }
