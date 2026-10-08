@@ -124,12 +124,14 @@ export async function search(store, catalog, { log = () => {} } = {}) {
 
   // Conferência anúncio a anúncio (/items): ativo, novo, mesmo preço e link oficial do anúncio.
   // Se a API de anúncios não abrir para o app, usa o link da página do produto com o vendedor selecionado.
-  const check = new Map(); let itemsApi = true;
+  const check = new Map(); let itemsApi = true; const dbg = { picked: 0, sample: null, drop: {} };
+  const drop = (k) => { dbg.drop[k] = (dbg.drop[k] || 0) + 1; };
   for (let i = 0; i < picked.length && itemsApi; i += 20) {
     const ids = picked.slice(i, i + 20).map((r) => r.id).join(',');
     try {
       const arr = await call(`/items?ids=${ids}&attributes=id,price,status,permalink,condition,available_quantity,catalog_product_id`);
-      for (const x of arr || []) if (x.code === 200 && x.body) check.set(x.body.id, x.body);
+      if (!dbg.sample) dbg.sample = JSON.stringify(arr).slice(0, 600);
+      for (const x of arr || []) { const b = x?.body || x; if ((x.code === 200 || !x.code) && b?.id) check.set(b.id, b); }
     } catch (e) { if (e.blocked && e.status === 401) throw e; itemsApi = false; log(`ML: conferência por anúncio indisponível (${e.message}); usando link da página do produto`); }
   }
 
@@ -139,9 +141,11 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     let url = pdpUrl(pid, id); let finalPrice = price; let qty = null;
     if (itemsApi) {
       const b = check.get(id);
-      if (!b || b.status !== 'active' || (b.condition && b.condition !== 'new')) continue; // fechado/pausado/usado: fora
-      if (Math.abs(Number(b.price) - price) > 0.009) continue; // preço mudou entre as duas leituras: espera a próxima rodada
-      if (b.catalog_product_id && b.catalog_product_id !== pid) continue;
+      if (!b) { drop('sem resposta'); continue; }
+      if (b.status !== 'active') { drop('status ' + b.status); continue; } // fechado/pausado: fora
+      if (b.condition && b.condition !== 'new') { drop('usado'); continue; }
+      if (Math.abs(Number(b.price) - price) > 0.009) { drop('preço diferente'); continue; } // mudou entre as leituras: espera a próxima rodada
+      if (b.catalog_product_id && b.catalog_product_id !== pid) { drop('outro produto'); continue; }
       if (b.permalink) url = b.permalink;
       finalPrice = Number(b.price); qty = b.available_quantity > 1 ? b.available_quantity : null;
     }
@@ -154,6 +158,8 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
     });
   }
+  dbg.picked = picked.length; dbg.itemsApi = itemsApi; dbg.published = listings.length; dbg.at = new Date().toISOString();
+  writeJson(dataPath('ml-debug.json'), dbg);
   writeJson(cacheFile, cache);
   return listings;
 }
