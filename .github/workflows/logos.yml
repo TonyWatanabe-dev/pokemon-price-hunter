@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       pt_slugs: { description: 'Slugs das páginas pt-br (opcional)', required: false, default: '' }
+      extra: { description: 'Arquivos extras: id=url separados por espaço', required: false, default: '' }
 permissions:
   contents: write
 jobs:
@@ -14,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: node tools/fetch-logos.mjs
-        env: { PT_SLUGS: '${{ inputs.pt_slugs }}' }
+        env: { PT_SLUGS: '${{ inputs.pt_slugs }}', EXTRA: '${{ inputs.extra }}' }
       - name: Publicar no ramo logos
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |

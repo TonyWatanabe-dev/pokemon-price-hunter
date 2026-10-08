@@ -43,5 +43,11 @@ for (const slug of PT) {
     let i = 0; for (const u of [...new Set(imgs)].slice(0, 3)) { const abs = new URL(u.split(' ')[0], `https://tcg.pokemon.com/pt-br/expansions/${slug}/`).href; try { const im = await get(abs, true); if (im.ok) fs.writeFileSync(`${OUT}/pt/${slug}-${i++}${abs.match(/\.(png|webp|svg)/i)?.[0] || '.png'}`, im.body); } catch {} }
   } catch (e) { report.push(`PT ${slug} erro ${e.message}`); }
 }
+// Arquivos indicados pelo responsável do site: EXTRA="id=url id2=url2"
+fs.mkdirSync(OUT + '/extra', { recursive: true });
+for (const pair of (process.env.EXTRA || '').split(/\s+/).filter(Boolean)) {
+  const [id, url] = [pair.slice(0, pair.indexOf('=')), pair.slice(pair.indexOf('=') + 1)];
+  try { const im = await get(url, true); if (im.ok) fs.writeFileSync(`${OUT}/extra/${id}${(url.match(/\.(png|webp|svg)(\?|$)/i) || ['.png'])[0].replace('?', '')}`, im.body); report.push(`EXTRA ${id} | ${im.status} | ${im.type} | ${url}`); } catch (e) { report.push(`EXTRA ${id} erro ${e.message}`); }
+}
 fs.writeFileSync(OUT + '/RELATORIO.txt', report.join('\n') + '\n');
 console.log(report.join('\n'));
