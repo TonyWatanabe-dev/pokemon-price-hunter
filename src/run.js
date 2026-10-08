@@ -152,7 +152,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         offers[id] = {
           id, productId: m.productId, matchConfidence: m.confidence, storeId: store.id, storeName: store.name, storeKind: store.kind,
-          seller: l.seller || null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
+          seller: l.seller || null, sellerId: l.sellerId != null ? String(l.sellerId) : null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
           shipping: ship, shippingKnown: ship != null, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,

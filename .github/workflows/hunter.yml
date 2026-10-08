@@ -72,6 +72,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: bash tools/push-data.sh
+      # Marketplace Core: grava também no PostgreSQL (Supabase). Sem o Secret DATABASE_URL, pula.
+      # Falha aqui nunca derruba o robô nem o site (os arquivos do ramo data continuam sendo a fonte do site).
+      - name: Sincronizar com o banco
+        if: steps.gap.outputs.skip != 'true'
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          [ -n "$DATABASE_URL" ] || { echo "Banco desligado (sem DATABASE_URL)."; exit 0; }
+          npm install --omit=dev --no-audit --no-fund --silent
+          node tools/db-migrate.mjs
+          node tools/db-sync.mjs data
       - name: Salvar configuração (se mudou)
         if: steps.gap.outputs.skip != 'true'
         run: |
