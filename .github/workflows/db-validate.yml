@@ -1,0 +1,96 @@
+# Validação do Marketplace Core: aplica as migrations no Supabase (DATABASE_URL), sincroniza os dados
+# atuais duas vezes, confere contagens e invariantes, e repete tudo num Postgres oficial da mesma versão.
+# O relatório (só contagens, sem dados de conexão) vai para o ramo "db-validation".
+name: 'Banco: validar Marketplace Core'
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  supabase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency: { group: hunter, cancel-in-progress: false }   # nunca sincroniza junto com o robô
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Secret DATABASE_URL existe
+        run: |
+          mkdir -p out
+          if [ -z "$DATABASE_URL" ]; then echo '{"ok":false,"errors":[{"message":"Secret DATABASE_URL não existe"}]}' > out/supabase.json; echo "::error::Secret DATABASE_URL não existe"; exit 1; fi
+      - name: Instalar driver
+        run: npm ci --omit=dev --no-audit --no-fund
+      - name: Carregar dados atuais (ramo data)
+        run: |
+          git fetch --depth 1 origin data && rm -rf data && git checkout FETCH_HEAD -- data && git reset -q
+          git rev-parse FETCH_HEAD > out/data-commit.txt
+      - name: Versão do Postgres
+        id: ver
+        run: |
+          v=$(node -e "import('./src/db/pg.js').then(async m=>{const p=await m.pool();const r=await p.query('show server_version');console.log(r.rows[0].server_version.split(' ')[0]);await m.close()})")
+          echo "version=$v" >> "$GITHUB_OUTPUT"; echo "Supabase: PostgreSQL $v"
+      - name: Migrations (1ª execução)
+        run: node tools/db-migrate.mjs 2>&1 | tee out/migrate-1.log
+      - name: Migrations (2ª execução, deve não fazer nada)
+        run: node tools/db-migrate.mjs 2>&1 | tee out/migrate-2.log
+      - name: Sincronizar e validar
+        run: node tools/db-validate.mjs data out/supabase.json out/migrate-1.log out/migrate-2.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: supabase, path: out }
+
+  compat:
+    needs: supabase
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PGV: ${{ needs.supabase.outputs.version || '17' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Postgres oficial da mesma versão do Supabase
+        run: |
+          mkdir -p out
+          docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=pw "postgres:$PGV" || docker run -d --name pg -p 5432:5432 -e POSTGRES_PASSWORD=pw "postgres:${PGV%%.*}"
+          for i in $(seq 1 30); do docker exec pg pg_isready -U postgres >/dev/null 2>&1 && break; sleep 1; done
+          docker exec pg psql -U postgres -Atc 'show server_version' | tee out/compat-version.txt
+      - run: npm ci --no-audit --no-fund
+      - name: Carregar dados atuais (ramo data)
+        run: git fetch --depth 1 origin data && rm -rf data && git checkout FETCH_HEAD -- data && git reset -q
+      - name: Testes (unitários + banco)
+        env: { TEST_DATABASE_URL: 'postgres://postgres:pw@localhost:5432/postgres' }
+        run: npm test 2>&1 | tee out/tests.log
+      - name: Migrations e validação com dados reais (banco limpo)
+        env: { DATABASE_URL: 'postgres://postgres:pw@localhost:5432/postgres' }
+        run: |
+          docker exec pg psql -U postgres -c 'DROP SCHEMA IF EXISTS hunter CASCADE'
+          node tools/db-migrate.mjs 2>&1 | tee out/compat-migrate-1.log
+          node tools/db-migrate.mjs 2>&1 | tee out/compat-migrate-2.log
+          node tools/db-validate.mjs data out/compat.json out/compat-migrate-1.log out/compat-migrate-2.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: compat, path: out }
+
+  report:
+    needs: [supabase, compat]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: r }
+      - name: Publicar relatório (ramo db-validation)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd r
+          printf 'supabase=%s\ncompat=%s\nrun=%s\n' "${{ needs.supabase.result }}" "${{ needs.compat.result }}" "${{ github.run_id }}" > result.txt
+          git init -q -b db-validation
+          git config user.name "price-hunter-bot"; git config user.email "bot@users.noreply.github.com"
+          git add -A; git commit -qm "validação do banco $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" db-validation
