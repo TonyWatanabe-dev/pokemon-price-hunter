@@ -1,0 +1,156 @@
+{
+  "sv1": {
+    "nome": "Escarlate e Violeta",
+    "idioma": "pt",
+    "set": "sv01",
+    "setNome": "Escarlate e Violeta",
+    "url": "https://assets.tcgdex.net/pt/sv/sv01/logo.png"
+  },
+  "sv2": {
+    "nome": "Evoluções em Paldea",
+    "idioma": "pt",
+    "set": "sv02",
+    "setNome": "Evoluções em Paldea",
+    "url": "https://assets.tcgdex.net/pt/sv/sv02/logo.png"
+  },
+  "sv3": {
+    "nome": "Obsidiana em Chamas",
+    "idioma": "pt",
+    "set": "sv03",
+    "setNome": "Obsidiana em Chamas",
+    "url": "https://assets.tcgdex.net/pt/sv/sv03/logo.png"
+  },
+  "sv3_5": {
+    "nome": "Coleção Especial 151",
+    "idioma": "pt",
+    "set": "sv03.5",
+    "setNome": "151",
+    "url": "https://assets.tcgdex.net/pt/sv/sv03.5/logo.png"
+  },
+  "sv4": {
+    "nome": "Fenda Paradoxal",
+    "idioma": "pt",
+    "set": "sv04",
+    "setNome": "Fenda Paradoxal",
+    "url": "https://assets.tcgdex.net/pt/sv/sv04/logo.png"
+  },
+  "sv4_5": {
+    "nome": "Destinos de Paldea",
+    "idioma": "pt",
+    "set": "sv04.5",
+    "setNome": "Destinos de Paldea",
+    "url": "https://assets.tcgdex.net/pt/sv/sv04.5/logo.png"
+  },
+  "sv5": {
+    "nome": "Forças Temporais",
+    "idioma": "pt",
+    "set": "sv05",
+    "setNome": "Forças Temporais",
+    "url": "https://assets.tcgdex.net/pt/sv/sv05/logo.png"
+  },
+  "sv6": {
+    "nome": "Máscaras do Crepúsculo",
+    "idioma": "pt",
+    "set": "sv06",
+    "setNome": "Máscaras do Crepúsculo",
+    "url": "https://assets.tcgdex.net/pt/sv/sv06/logo.png"
+  },
+  "sv6_5": {
+    "nome": "Fábulas Nebulosas",
+    "idioma": "pt",
+    "set": "sv06.5",
+    "setNome": "Fábulas Nebulosas",
+    "url": "https://assets.tcgdex.net/pt/sv/sv06.5/logo.png"
+  },
+  "sv7": {
+    "nome": "Coroa Estelar",
+    "idioma": "pt",
+    "set": "sv07",
+    "setNome": "Coroa Estelar",
+    "url": "https://assets.tcgdex.net/pt/sv/sv07/logo.png"
+  },
+  "sv8": {
+    "nome": "Fagulhas Impetuosas",
+    "idioma": "en",
+    "set": "sv08",
+    "setNome": "Surging Sparks",
+    "url": "https://assets.tcgdex.net/en/sv/sv08/logo.png"
+  },
+  "sv8_5": {
+    "nome": "Evoluções Prismáticas",
+    "idioma": "pt",
+    "set": "sv08.5",
+    "setNome": "Evoluções Prismáticas",
+    "url": "https://assets.tcgdex.net/pt/sv/sv08.5/logo.png"
+  },
+  "sv9": {
+    "nome": "Amigos de Jornada",
+    "idioma": "pt",
+    "set": "sv09",
+    "setNome": "Amigos de Jornada",
+    "url": "https://assets.tcgdex.net/pt/sv/sv09/logo.png"
+  },
+  "sv10": {
+    "nome": "Rivais Predestinados",
+    "idioma": "pt",
+    "set": "sv10",
+    "setNome": "Rivais Predestinados",
+    "url": "https://assets.tcgdex.net/pt/sv/sv10/logo.png"
+  },
+  "sv10_5r": {
+    "nome": "Raio Preto",
+    "idioma": "en",
+    "set": "sv10.5b",
+    "setNome": "Black Bolt",
+    "url": "https://assets.tcgdex.net/en/sv/sv10.5b/logo.png"
+  },
+  "sv10_5w": {
+    "nome": "Fogo Branco",
+    "idioma": "en",
+    "set": "sv10.5w",
+    "setNome": "White Flare",
+    "url": "https://assets.tcgdex.net/en/sv/sv10.5w/logo.png"
+  },
+  "me01": {
+    "nome": "Megaevolução",
+    "idioma": "pt",
+    "set": "me01",
+    "setNome": "Megaevolução",
+    "url": "https://assets.tcgdex.net/pt/me/me01/logo.png"
+  },
+  "me02": {
+    "nome": "Fogo Fantasmagórico",
+    "idioma": "pt",
+    "set": "me02",
+    "setNome": "Fogo Fantasmagórico",
+    "url": "https://assets.tcgdex.net/pt/me/me02/logo.png"
+  },
+  "me02_5": {
+    "nome": "Heróis Excelsos",
+    "idioma": "pt",
+    "set": "me02.5",
+    "setNome": "Heróis Excelsos",
+    "url": "https://assets.tcgdex.net/pt/me/me02.5/logo.png"
+  },
+  "me03": {
+    "nome": "Equilíbrio Perfeito",
+    "idioma": "pt",
+    "set": "me03",
+    "setNome": "Equilíbrio Perfeito",
+    "url": "https://assets.tcgdex.net/pt/me/me03/logo.png"
+  },
+  "me04": {
+    "nome": "Caos Ascendente",
+    "idioma": "pt",
+    "set": "me04",
+    "setNome": "Caos Ascendente",
+    "url": "https://assets.tcgdex.net/pt/me/me04/logo.png"
+  },
+  "me05": {
+    "nome": "Escuridão Absoluta",
+    "idioma": "pt",
+    "set": "me05",
+    "setNome": "Escuridão Absoluta",
+    "url": "https://assets.tcgdex.net/pt/me/me05/logo.png"
+  }
+}
