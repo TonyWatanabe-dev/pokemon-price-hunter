@@ -1135,6 +1135,41 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   .stage h1 .ln>span.gold{animation:lineUp 900ms cubic-bezier(.16,1,.3,1) 200ms both,hShine 5.2s cubic-bezier(.45,0,.2,1) 1.5s infinite}
   @keyframes hShine{0%{background-position:100% 0}45%,100%{background-position:0 0}}
 }
+
+/* Parede de coleções: cartas com borda holográfica, brilho que segue o cursor e inclinação */
+.colwall{margin-top:34px}
+.colgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-top:14px}
+.colc{--rx:0deg;--ry:0deg;position:relative;display:flex;flex-direction:column;border-radius:18px;text-decoration:none;color:#F4F6FF;overflow:hidden;isolation:isolate;
+  background:linear-gradient(180deg,#18204a,#0d1128) padding-box,conic-gradient(from var(--fa),#ff5f6d,#ffc371,#fff36b,#7cf29a,#53c7ff,#8a7bff,#ff6ad5,#ff5f6d) border-box;border:2px solid transparent;
+  box-shadow:0 14px 34px -14px rgb(9 13 35 / .55);transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform 450ms cubic-bezier(.16,1,.3,1),box-shadow 250ms ease;will-change:transform}
+.colc-art{position:relative;display:grid;place-items:center;aspect-ratio:1/1;margin:10px 10px 0;border-radius:12px;background:radial-gradient(circle at 50% 40%,#ffffff,#e9edf7);overflow:hidden}
+.colc-art img{width:100%;height:100%;object-fit:contain;padding:8px;transition:transform 450ms cubic-bezier(.16,1,.3,1)}
+.colc-art .colc-fb{display:none;width:44px;height:44px;color:#8a7bff}
+.colc-art.noimg .colc-fb{display:block}
+.colc::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:color-dodge;opacity:0;transition:opacity 250ms ease;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgb(255 255 255 / .55),transparent 45%),linear-gradient(115deg,transparent 20%,rgb(255 60 180 / .35) 32%,rgb(255 230 60 / .35) 42%,rgb(60 255 200 / .35) 52%,rgb(60 150 255 / .35) 62%,transparent 74%) var(--mx,50%) var(--my,50%)/250% 250%}
+.colc-txt{display:flex;flex-direction:column;gap:2px;padding:10px 12px 12px}
+.colc-txt small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#a9b3d9}
+.colc-txt b{font-size:15px;line-height:1.2}
+.colc-txt em{font-style:normal;font-size:12.5px;color:#c9d0ee}
+.colc:focus-visible{outline:3px solid var(--sticker);outline-offset:3px}
+@media (prefers-reduced-motion:no-preference){.colc{animation:foilSpin 7s linear infinite}}
+@media (hover:hover) and (pointer:fine){
+  .colc:hover{box-shadow:0 26px 50px -18px rgb(9 13 35 / .7)}
+  .colc:hover::before{opacity:1}
+  .colc:hover .colc-art img{transform:scale(1.06)}
+}
+.colc:active{transform:perspective(900px) scale(.98)}
+.colmore{margin-top:14px}
+.colmore summary{cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--muted)}
+.fmtrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
+.fmtrow>span{color:var(--muted);font-size:14px;margin-right:4px}
+@media (max-width:760px){
+  .colgrid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(150px,44%);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);padding:4px 2px 14px;margin-left:calc(var(--gutter) * -1);margin-right:calc(var(--gutter) * -1);padding-left:var(--gutter);padding-right:var(--gutter);scrollbar-width:none}
+  .colgrid::-webkit-scrollbar{display:none}
+  .colc{scroll-snap-align:start}
+  .colc-txt b{font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -1351,7 +1386,7 @@ function homeMotion(){
 }
 let tiltEl=null,tiltRaf=0;
 if(matchMedia("(hover:hover) and (pointer:fine)").matches){
-  document.addEventListener("pointermove",(e)=>{const el=e.target.closest?.("button,.pod-cta,.deal-cta")?null:e.target.closest?.(".deal,.fan-c,.pod"); /* sobre botão a carta para de inclinar: o alvo não foge do dedo/cursor */
+  document.addEventListener("pointermove",(e)=>{const el=e.target.closest?.("button,.pod-cta,.deal-cta")?null:e.target.closest?.(".deal,.fan-c,.pod,.colc"); /* sobre botão a carta para de inclinar: o alvo não foge do dedo/cursor */
     if(tiltEl&&tiltEl!==el){tiltEl.style.removeProperty("--rx");tiltEl.style.removeProperty("--ry");tiltEl=null}
     if(!el||reduceMotion())return;tiltEl=el;cancelAnimationFrame(tiltRaf);
     tiltRaf=requestAnimationFrame(()=>{const r=el.getBoundingClientRect();const x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
@@ -1575,6 +1610,32 @@ const colSlugOf=(c)=>slugify(c.name);const typeSlugOf=(t)=>slugify(t.label);
 const colHref=(id)=>{const c=(S.collections||[]).find((x)=>x.id===id);return c?"/colecao/"+colSlugOf(c):null};
 const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo/"+typeSlugOf(t):null};
 function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0})}
+/* Coleções como cartas: arte do produto principal da coleção (foto da loja), borda holográfica e inclinação.
+   Clique abre /produtos já filtrado pela coleção. */
+const artRank=(p)=>p.type==="etb"?0:p.type==="booster_box"?1:/^colecao/.test(p.type)?2:p.type==="combo"?3:5;
+function colArt(cid){
+  let best=null;
+  for(const o of OFF){const p=P[o.productId];if(!p||p.collection!==cid||!(o.image||p.image)||o.anomalous)continue;
+    const r=artRank(p)+(live(o)?0:10);if(!best||r<best.r)best={r,src:o.image||p.image}}
+  return best?.src||null;
+}
+function colWallHTML(){
+  const stats={};
+  for(const o of OFF){if(!live(o))continue;const p=P[o.productId];if(!p)continue;const st=(stats[p.collection]||={ids:new Set(),min:Infinity});st.ids.add(p.id);if(o.total<st.min)st.min=o.total}
+  const cols=(S.collections||[]).filter((c)=>stats[c.id]).reverse();
+  if(!cols.length)return"";
+  const card=(c,i)=>{const st=stats[c.id];const src=String(colArt(c.id)||"").replace(/^http:\/\//i,"https://");
+    return`<a class="colc" href="/produtos" data-col="${esc(c.id)}" style="--i:${Math.min(i,11)}" aria-label="${esc(c.name)}: ver os ${st.ids.size} produtos">
+      <span class="colc-art${src?"":" noimg"}">${ic("sparkle-f","icon colc-fb")}${src?`<img src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('noimg');this.remove()">`:""}</span>
+      <span class="colc-txt"><small>${esc(c.series||"")}</small><b>${esc(c.name)}</b><em>${st.ids.size} ${st.ids.size===1?"produto":"produtos"} · a partir de ${money(st.min)}</em></span>
+    </a>`};
+  const fmts=GROUP_ORDER.filter((gr)=>(S.products||[]).some((p)=>p.group===gr&&p.offerCount>0));
+  return`<section class="colwall">${sectionHead("sparkle-f","Coleções","Toque na coleção para ver todos os produtos dela, com o menor preço de cada um.")}
+  <div class="colgrid">${cols.slice(0,12).map(card).join("")}</div>
+  ${cols.length>12?`<details class="colmore"><summary>${ic("caret-down")}Coleções anteriores (${cols.length-12})</summary><div class="colgrid">${cols.slice(12).map(card).join("")}</div></details>`:""}
+  <div class="fmtrow"><span>Ou por formato:</span>${fmts.map((gr)=>`<a class="gchip t" href="/produtos" data-fmt="${esc(gr)}" style="--ec:${GROUP[gr].c}">${ic(GROUP[gr].icon)}${esc(gr)}</a>`).join("")}</div>
+  </section>`;
+}
 function groupNav(){
   const withP=(S.products||[]).filter((p)=>p.offerCount>0);
   const cols=(S.collections||[]).filter((c)=>withP.some((p)=>p.collection===c.id)).reverse();
@@ -1620,11 +1681,11 @@ function renderDeals(){
     ${podiumHTML(pool)}
   </div></section>
   ${railHTML(pool)}
+  ${colWallHTML()}
   ${radarHTML()}
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
   ${highlightsHTML(pool)}
   ${preHTML()}
-  ${groupNav()}
   <section class="home-all home-cta"><a class="allcta" href="/produtos" data-go="produtos"><span class="allcta-i">${ic("package")}</span><span><b>Ver todos os ${all.length} produtos</b><small>Filtre por coleção, formato, loja, preço e estoque.</small></span>${ic("caret-down","icon chev")}</a>
   </section>`;
   homeMotion();startTicker();stageInit();revealInit();
@@ -2359,6 +2420,8 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
   const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);rerenderList();track("filter_used",{f:"group",v:F.group});return}
   const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);if(view!=="produtos")go("produtos");else render();return}
+  const cc=t.closest("[data-col]");if(cc&&!t.closest("select")){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();Object.assign(F,{col:cc.dataset.col,group:"",type:"",store:"",max:"",below:false,stock:true,sort:""});store.set("f",F);track("collection_card",{col:cc.dataset.col});go("produtos");scrollTo({top:0});return}
+  const fm=t.closest("[data-fmt]");if(fm){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();Object.assign(F,{group:fm.dataset.fmt,col:"",type:"",store:"",max:"",below:false,stock:true,sort:""});store.set("f",F);go("produtos");scrollTo({top:0});return}
   const nb=t.closest("[data-go]");if(nb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();go(nb.dataset.go);return}
   if(t.closest("[data-home]")){e.preventDefault();go("");return}
   if(t.closest("[data-more]")){$("#more").showModal();return}
