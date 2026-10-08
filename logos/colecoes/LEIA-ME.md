@@ -1,5 +1,8 @@
 # Logos das coleções (versão brasileira, Copag)
 
+Os logos atuais são os oficiais, baixados do TCGdex (tools/fetch-logos.mjs; origem de cada um em fontes.json). Em português quando existe; senão em inglês.
+Faltando: Celebração de 30 Anos (ainda sem logo no TCGdex).
+
 Coloque aqui o logo oficial de cada coleção, com fundo transparente, nomeado pelo código abaixo (.png, .webp ou .svg).
 O site usa o arquivo automaticamente; coleção sem arquivo mostra o nome escrito.
 

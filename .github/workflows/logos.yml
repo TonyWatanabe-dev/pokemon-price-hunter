@@ -1,21 +1,22 @@
-name: "Logos das coleções (TCGdex)"
-on: { workflow_dispatch: {} }
+name: "Logos das coleções (baixar para conferência)"
+on:
+  workflow_dispatch:
+    inputs:
+      pt_slugs: { description: 'Slugs das páginas pt-br (opcional)', required: false, default: '' }
 permissions:
   contents: write
 jobs:
   logos:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: node tools/fetch-logos.mjs
-      # vai para um ramo separado: os logos são conferidos antes de entrar no site
-      - name: Publicar no ramo logos-candidatos
-        env: { GH_TOKEN: "${{ github.token }}" }
+        env: { PT_SLUGS: '${{ inputs.pt_slugs }}' }
+      - name: Publicar no ramo logos
+        env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          D=$(mktemp -d); cp -r logos "$D/"; cd "$D"
-          git init -q -b logos-candidatos; git config user.name "price-hunter-bot"; git config user.email "bot@users.noreply.github.com"
-          git add logos; git commit -qm "logos candidatos"
-          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" logos-candidatos
+          cd logos-out && git init -q -b logos && git config user.name bot && git config user.email bot@users.noreply.github.com
+          git add . && git commit -qm logos && git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" logos

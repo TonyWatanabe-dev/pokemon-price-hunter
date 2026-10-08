@@ -1146,7 +1146,9 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   background:radial-gradient(120% 90% at 50% 35%,rgb(255 255 255 / .10),transparent 60%),linear-gradient(160deg,#20295c,#0b0f26)}
 .colc[data-s="mega"] .colc-art{background:radial-gradient(120% 90% at 50% 30%,rgb(255 190 60 / .22),transparent 62%),linear-gradient(160deg,#2a2150,#0c0d24)}
 .colc[data-s="sv"] .colc-art{background:radial-gradient(120% 90% at 50% 30%,rgb(190 80 255 / .22),transparent 62%),linear-gradient(160deg,#341a3f,#0e0c22)}
-.colc-logo{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgb(0 0 0 / .45));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
+.colc[data-s] .colc-art:has(.colc-logo){padding:6px;background:radial-gradient(70% 70% at 50% 50%,rgb(255 255 255 / .30),rgb(255 255 255 / .06) 60%,transparent 75%),linear-gradient(160deg,#2a3270,#121638)}
+.colc-duo{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:100%;height:100%;align-items:center}
+.colc-logo{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 1px rgb(255 255 255 / .55)) drop-shadow(0 0 10px rgb(255 255 255 / .12)) drop-shadow(0 4px 10px rgb(0 0 0 / .45));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
 .colc-word{display:block;font-weight:900;font-size:min(30px,calc(var(--a) * 1cqi),calc(var(--b) * 1cqi));line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance;font-style:italic;
   background:linear-gradient(180deg,#FFF4C2 0%,#FFD23F 45%,#FF9F1C 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   -webkit-text-stroke:1.2px rgb(10 12 30 / .9);paint-order:stroke fill;filter:drop-shadow(0 3px 0 #0a0c1e) drop-shadow(0 8px 14px rgb(0 0 0 / .5));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
@@ -1172,7 +1174,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 .fmtrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
 .fmtrow>span{color:var(--muted);font-size:14px;margin-right:4px}
 @media (max-width:760px){
-  .colgrid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(150px,44%);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);padding:4px 2px 14px;margin-left:calc(var(--gutter) * -1);margin-right:calc(var(--gutter) * -1);padding-left:var(--gutter);padding-right:var(--gutter);scrollbar-width:none}
+  .colgrid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(170px,62%);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);padding:4px 2px 14px;margin-left:calc(var(--gutter) * -1);margin-right:calc(var(--gutter) * -1);padding-left:var(--gutter);padding-right:var(--gutter);scrollbar-width:none}
   .colgrid::-webkit-scrollbar{display:none}
   .colc{scroll-snap-align:start}
   .colc-txt b{font-size:14px}
@@ -1619,13 +1621,16 @@ const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo
 function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0})}
 /* Coleções como cartas: logo oficial da coleção (arquivo em logos/colecoes, enviado pelo responsável do site)
    ou o nome escrito em destaque. Borda holográfica e inclinação. Clique abre /produtos filtrado pela coleção. */
-const COL_LOGOS={};
+const COL_LOGOS={"me01":"me01.webp","me02":"me02.webp","me02_5":"me02_5.webp","me03":"me03.webp","me04":"me04.webp","me05":"me05.webp","sv1":"sv1.webp","sv10":"sv10.webp","sv10_5r":"sv10_5r.webp","sv10_5w":"sv10_5w.webp","sv2":"sv2.webp","sv3":"sv3.webp","sv3_5":"sv3_5.webp","sv4":"sv4.webp","sv4_5":"sv4_5.webp","sv5":"sv5.webp","sv6":"sv6.webp","sv6_5":"sv6_5.webp","sv7":"sv7.webp","sv8":"sv8.webp","sv8_5":"sv8_5.webp","sv9":"sv9.webp"};
 const seriesKey=(c)=>/mega/i.test(c.series||"")?"mega":/escarlate/i.test(c.series||"")?"sv":"esp";
 function colMark(c){
   const f=COL_LOGOS[c.id];
   const word=`<span class="colc-word" data-s="${seriesKey(c)}" style="--a:${(124/Math.max(...c.name.split(/\s+/).map((w)=>w.length))).toFixed(1)};--b:${(290/c.name.length).toFixed(1)}">${esc(c.name)}</span>`;
+  const img=(file,alt)=>`<img class="colc-logo" src="/logos/colecoes/${esc(file)}" alt="${esc(alt)}" loading="lazy" decoding="async" onerror="this.outerHTML=this.dataset.w" data-w="${esc(word)}">`;
+  // Fogo Branco e Raio Preto (produtos com as duas): mostra os dois logos lado a lado
+  if(!f&&c.id==="sv10_5"&&COL_LOGOS.sv10_5w&&COL_LOGOS.sv10_5r)return`<span class="colc-duo">${img(COL_LOGOS.sv10_5w,"Fogo Branco")}${img(COL_LOGOS.sv10_5r,"Raio Preto")}</span>`;
   if(!f)return word;
-  return`<img class="colc-logo" src="/logos/colecoes/${esc(f)}" alt="${esc(c.name)}" loading="lazy" decoding="async" onerror="this.outerHTML=this.dataset.w" data-w="${esc(word)}">`;
+  return img(f,c.name);
 }
 function colWallHTML(){
   const stats={};
