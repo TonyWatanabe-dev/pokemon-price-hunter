@@ -54,6 +54,7 @@ http.setFetch(async (url, opt) => {
     { item_id: 'MLB5552', price: 250, seller_id: 78, condition: 'used' },
     { item_id: 'MLB5553', price: 99, seller_id: 79, condition: 'new' },
   ] });
+  if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 200, body: { id, price: id === 'MLB5551' ? 299.9 : 99, status: 'active', condition: 'new', permalink: 'https://produto.mercadolivre.com.br/' + id.replace('MLB', 'MLB-') + '-pokemon-_JM', catalog_product_id: 'MLB111' } })));
   if (url.endsWith('/users/77')) return j({ nickname: 'LOJA_TCG', seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
   if (url.endsWith('/users/79')) return j({ nickname: 'CONTA_NOVA', seller_reputation: { level_id: null, transactions: { completed: 0 } } });
   return j({}, 404);
@@ -61,12 +62,28 @@ http.setFetch(async (url, opt) => {
 const L = await search({ id: 'mercadolivre' }, catalog);
 assert.ok(L.length >= 1, 'achou oferta pelo catálogo');
 const o = L.find((x) => x.sku === 'MLB5551');
-assert.equal(o.url, 'https://produto.mercadolivre.com.br/MLB-5551-_JM');
+assert.equal(o.url, 'https://produto.mercadolivre.com.br/MLB-5551-pokemon-_JM', 'usa o link oficial do anúncio');
 assert.equal(o.price.base, 299.9); assert.equal(o.shipping, 0); assert.equal(o.seller, 'LOJA_TCG');
 assert.ok(!L.some((x) => x.sku === 'MLB5552'), 'usado fica de fora');
 assert.ok(!L.some((x) => x.sku === 'MLB5553'), 'vendedor sem reputação fica de fora');
 assert.ok(!seen.some((u) => u.includes('MLB222')), 'produto fora do catálogo não é consultado');
 assert.ok(fs.existsSync(path.join(dir, 'ml-catalog.json')));
+
+// /items fechado para o app → link da página do produto com o vendedor selecionado
+fs.rmSync(path.join(dir, 'ml-catalog.json'));
+const prevFetch = http.setFetch;
+http.setFetch(async (url) => {
+  const j = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { 'content-type': 'application/json' } });
+  if (url.includes('/items?ids=')) return j({ message: 'forbidden' }, 403);
+  if (url.includes('/sites/MLB/search')) return j({}, 403);
+  if (url.includes('/products/search') && url.includes(encodeURIComponent('pokemon ' + coll))) return j({ results: [{ id: 'MLB111', name: `Pokémon TCG ${coll} Treinador Avançado Copag` }] });
+  if (url.includes('/products/search')) return j({ results: [] });
+  if (url.endsWith('/products/MLB111/items')) return j({ results: [{ item_id: 'MLB5551', price: 299.9, seller_id: 77, condition: 'new' }] });
+  if (url.endsWith('/users/77')) return j({ nickname: 'LOJA_TCG', seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
+  return j({}, 404);
+});
+const L2 = await search({ id: 'mercadolivre' }, catalog);
+assert.equal(L2[0].url, 'https://www.mercadolivre.com.br/p/MLB111?pdp_filters=item_id%3AMLB5551');
 
 // sem autorização = bloqueado com instrução
 fs.rmSync(path.join(dir, 'ml-auth.enc'));

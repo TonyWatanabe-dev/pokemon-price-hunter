@@ -9,7 +9,8 @@ import { matchProduct } from '../match.js';
 import { dataPath, readJson, writeJson } from '../db.js';
 
 const API = 'https://api.mercadolibre.com';
-const itemUrl = (id) => `https://produto.mercadolivre.com.br/${String(id).replace(/^MLB/, 'MLB-')}-_JM`;
+// Link do anúncio dentro da página do produto, com o vendedor já selecionado (o mesmo preço que publicamos).
+const pdpUrl = (productId, itemId) => `https://www.mercadolivre.com.br/p/${productId}?pdp_filters=item_id%3A${itemId}`;
 const DAY = 864e5;
 
 // Nome de catálogo do ML é escrito por vendedor: barra kits, caixas fechadas, acessórios de terceiros
@@ -104,28 +105,54 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (it.condition && it.condition !== 'new') continue;
       const id = it.item_id || it.id; const price = Number(it.price);
       if (!id || !(price > 0)) continue;
-      (byProduct[p.productId] ||= []).push({ it, p, id, price });
+      (byProduct[p.productId] ||= []).push({ it, p, pid, id, price });
     }
   }
-  const listings = [];
+  const picked = [];
   for (const list of Object.values(byProduct)) {
     list.sort((a, b) => a.price - b.price);
     let kept = 0; const seen = new Set();
-    for (const { it, p, id, price } of list) {
-      if (kept >= PER_PRODUCT) break;
-      const sid = it.seller_id; if (seen.has(sid)) continue; // um anúncio por vendedor
-      const official = !!it.official_store_id;
+    for (const row of list) {
+      if (kept >= PER_PRODUCT * 2) break; // folga para a conferência abaixo
+      const sid = row.it.seller_id; if (seen.has(sid)) continue; // um anúncio por vendedor
+      const official = !!row.it.official_store_id;
       const v = sid ? await sellerInfo(sid) : { name: null, level: null, sales: 0 };
       if (!official && !trusted(v)) continue;
-      seen.add(sid); kept++;
-      listings.push({
-        title: p.name, url: itemUrl(id), price: { base: price }, listPrice: it.original_price > price ? it.original_price : null,
-        stock: 'IN_STOCK', quantity: null, // /items do catálogo só lista ofertas ativas
-        shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
-        seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: sid,
-        sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
-      });
+      seen.add(sid); kept++; picked.push({ ...row, v, official });
     }
+  }
+
+  // Conferência anúncio a anúncio (/items): ativo, novo, mesmo preço e link oficial do anúncio.
+  // Se a API de anúncios não abrir para o app, usa o link da página do produto com o vendedor selecionado.
+  const check = new Map(); let itemsApi = true;
+  for (let i = 0; i < picked.length && itemsApi; i += 20) {
+    const ids = picked.slice(i, i + 20).map((r) => r.id).join(',');
+    try {
+      const arr = await call(`/items?ids=${ids}&attributes=id,price,status,permalink,condition,available_quantity,catalog_product_id`);
+      for (const x of arr || []) if (x.code === 200 && x.body) check.set(x.body.id, x.body);
+    } catch (e) { if (e.blocked && e.status === 401) throw e; itemsApi = false; log(`ML: conferência por anúncio indisponível (${e.message}); usando link da página do produto`); }
+  }
+
+  const listings = []; const perProduct = {};
+  for (const { it, p, pid, id, price, v, official } of picked) {
+    if ((perProduct[p.productId] || 0) >= PER_PRODUCT) continue;
+    let url = pdpUrl(pid, id); let finalPrice = price; let qty = null;
+    if (itemsApi) {
+      const b = check.get(id);
+      if (!b || b.status !== 'active' || (b.condition && b.condition !== 'new')) continue; // fechado/pausado/usado: fora
+      if (Math.abs(Number(b.price) - price) > 0.009) continue; // preço mudou entre as duas leituras: espera a próxima rodada
+      if (b.catalog_product_id && b.catalog_product_id !== pid) continue;
+      if (b.permalink) url = b.permalink;
+      finalPrice = Number(b.price); qty = b.available_quantity > 1 ? b.available_quantity : null;
+    }
+    perProduct[p.productId] = (perProduct[p.productId] || 0) + 1;
+    listings.push({
+      title: p.name, url, price: { base: finalPrice }, listPrice: it.original_price > finalPrice ? it.original_price : null,
+      stock: 'IN_STOCK', quantity: qty,
+      shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
+      seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: it.seller_id,
+      sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
+    });
   }
   writeJson(cacheFile, cache);
   return listings;
