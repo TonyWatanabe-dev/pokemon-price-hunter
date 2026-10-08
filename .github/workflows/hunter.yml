@@ -86,6 +86,7 @@ jobs:
           node tools/db-grants.mjs || true
           node tools/db-sync.mjs data
           node tools/db-stats.mjs
+          node tools/db-opportunity.mjs
       - name: Salvar configuração (se mudou)
         if: steps.gap.outputs.skip != 'true'
         run: |

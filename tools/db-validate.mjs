@@ -7,6 +7,7 @@ import path from 'node:path';
 import { pool, tx, close } from '../src/db/pg.js';
 import { syncState } from '../src/core/sync.js';
 import { runPriceEngine } from '../src/core/price-stats.js';
+import { runOpportunityEngine, loadOpportunityInputs, computeOpportunities } from '../src/core/opportunity-run.js';
 
 const [dir = 'data', out = 'db-validation.json', ...migLogs] = process.argv.slice(2);
 const rep = { at: new Date().toISOString(), checks: [], errors: [] };
@@ -174,6 +175,32 @@ try {
     s.history_days, s.history_status, s.variation_24h, s.reference_price, s.discount_vs_reference, s.number_of_active_offers, s.number_of_in_stock_offers, s.number_of_stores,
     s.number_of_marketplaces, s.shipping_coverage, s.quality FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id
     WHERE s.data_status = 'ok' ORDER BY s.number_of_in_stock_offers DESC, p.legacy_id LIMIT 5`);
+
+  // ---------- Opportunity Engine ----------
+  const evBefore = await n(`SELECT count(*) FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%'`);
+  rep.opportunity = { run1: await tx((c) => runOpportunityEngine(c)), run2: await tx((c) => runOpportunityEngine(c)) };
+  check('Opportunity Engine idempotente (2ª execução não escreve nem emite eventos)', rep.opportunity.run2.written === 0 && rep.opportunity.run2.removed === 0 && Object.keys(rep.opportunity.run2.events).length === 0, rep.opportunity.run2);
+  check('oportunidade: anomalia nunca ≥ 50', (await n(`SELECT count(*) FROM hunter.opportunity WHERE is_anomaly AND opportunity_score >= 50`)) === 0);
+  check('oportunidade: sem estoque nunca > 30', (await n(`SELECT count(*) FROM hunter.opportunity WHERE stock_signal = 0 AND opportunity_score > 30`)) === 0);
+  check('oportunidade: sinal Copag só com referência verificada', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
+    WHERE o.reference_signal IS NOT NULL AND s.reference_status IS DISTINCT FROM 'verified'`)) === 0);
+  check('oportunidade: frete desconhecido → sinal nulo (nunca R$ 0)', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id
+    WHERE f.shipping_status = 'unknown' AND o.freight_signal IS NOT NULL`)) === 0);
+  check('oportunidade: histórico só com série suficiente', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
+    WHERE o.historical_signal IS NOT NULL AND s.history_status <> 'ok'`)) === 0);
+  check('oportunidade: faixa coerente com o score', (await n(`SELECT count(*) FROM hunter.opportunity WHERE opportunity_band <> CASE WHEN opportunity_score >= 90 THEN 'excelente'
+    WHEN opportunity_score >= 75 THEN 'boa' WHEN opportunity_score >= 50 THEN 'normal' ELSE 'baixa' END`)) === 0);
+  const jsBest = computeOpportunities(await tx((c) => loadOpportunityInputs(c)));
+  const viewBest = new Map((await q(`SELECT product_id, offer_id FROM hunter.product_opportunity`)).map((r) => [String(r.product_id), String(r.offer_id)]));
+  const bestDiff = jsBest.filter((r) => (r.best ? String(r.best.offer_id) : undefined) !== viewBest.get(r.product_id)).map((r) => r.legacy_id);
+  check('melhor oportunidade: view SQL = código', bestDiff.length === 0, bestDiff.slice(0, 10));
+  rep.opportunity.bands = await q(`SELECT opportunity_band, count(*)::int n, round(avg(confidence), 2)::float8 conf FROM hunter.opportunity GROUP BY 1 ORDER BY 1`);
+  rep.opportunity.productBands = await q(`SELECT opportunity_band, count(*)::int n FROM hunter.product_opportunity GROUP BY 1 ORDER BY 1`);
+  rep.opportunity.events = await q(`SELECT type, count(*)::int n FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' GROUP BY 1 ORDER BY 1`);
+  rep.opportunity.newEvents = (await n(`SELECT count(*) FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%'`)) - evBefore;
+  rep.opportunity.top = await q(`SELECT p.legacy_id, f.legacy_id AS offer, f.store_id, o.price::float8, o.opportunity_score, o.opportunity_band, o.confidence::float8,
+    (SELECT jsonb_agg(x->>'text') FROM jsonb_array_elements(o.reasons) x) reasons, (SELECT jsonb_agg(x->>'code') FROM jsonb_array_elements(o.warnings) x) warnings
+    FROM hunter.product_opportunity o JOIN hunter.product p ON p.id = o.product_id JOIN hunter.offer f ON f.id = o.offer_id ORDER BY o.opportunity_score DESC, o.confidence DESC, p.legacy_id LIMIT 10`);
 
   // ---------- comparação com o que o site mostra hoje (state.json) ----------
   const byLegacy = new Map((await q(`SELECT p.legacy_id, s.* FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id`)).map((r) => [r.legacy_id, r]));
