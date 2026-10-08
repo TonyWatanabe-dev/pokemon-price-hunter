@@ -74,7 +74,7 @@ fs.rmSync(path.join(dir, 'ml-catalog.json'));
 const prevFetch = http.setFetch;
 http.setFetch(async (url) => {
   const j = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { 'content-type': 'application/json' } });
-  if (url.includes('/items?ids=')) return j({ message: 'forbidden' }, 403);
+  if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 403, body: { id, error: 'access_denied' } })));
   if (url.includes('/sites/MLB/search')) return j({}, 403);
   if (url.includes('/products/search') && url.includes(encodeURIComponent('pokemon ' + coll))) return j({ results: [{ id: 'MLB111', name: `Pokémon TCG ${coll} Treinador Avançado Copag` }] });
   if (url.includes('/products/search')) return j({ results: [] });

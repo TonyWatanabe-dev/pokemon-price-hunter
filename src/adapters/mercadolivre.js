@@ -132,6 +132,8 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       const arr = await call(`/items?ids=${ids}&attributes=id,price,status,permalink,condition,available_quantity,catalog_product_id`);
       if (!dbg.sample) dbg.sample = JSON.stringify(arr).slice(0, 600);
       for (const x of arr || []) { const b = x?.body || x; if ((x.code === 200 || !x.code) && b?.id) check.set(b.id, b); }
+      // App comum não pode ler anúncio de outro vendedor (403 por anúncio): usa a lista oficial do catálogo.
+      if (!check.size && (arr || []).length && arr.every((x) => x.code === 403)) { itemsApi = false; log('ML: /items fechado para anúncios de terceiros; usando a lista de vendedores do catálogo'); }
     } catch (e) { if (e.blocked && e.status === 401) throw e; itemsApi = false; log(`ML: conferência por anúncio indisponível (${e.message}); usando link da página do produto`); }
   }
 
