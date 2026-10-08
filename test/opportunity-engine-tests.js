@@ -5,7 +5,7 @@ import { calculateOpportunity as calc, productOpportunity, explain, eventsFor, E
 const now = new Date('2026-10-08T12:00:00Z');
 let n = 0; const t = (name, fn) => { fn(); n++; };
 // produto com Copag verificada (R$ 400), histórico ok e mercado de 5 ofertas
-const S = (x = {}) => ({ reference_price: 400, reference_status: 'verified', history_status: 'ok', history_days: 20, historical_min: 330, historical_average: 380,
+const S = (x = {}) => ({ reference_price: 400, reference_status: 'verified', reference_kind: 'COPAG_OFFICIAL_CURRENT', history_status: 'ok', history_days: 20, historical_min: 330, historical_average: 380,
   variation_7d: -0.05, variation_30d: null, number_of_in_stock_offers: 5, median_price: 390, lowest_current_price: 300, quality: { anchor: 380 }, ...x });
 const O = (x = {}) => ({ id: '1', price: 300, total_price: 300, shipping_status: 'free', shipping_price: 0, stock_status: 'in_stock', status: 'active', confirmed: true,
   anomalous: false, store: { ra_status: 'OTIMO' }, seller: { is_official: false }, ...x });
@@ -16,7 +16,7 @@ t('contrato da saída', () => {
   const r = C(S(), O());
   for (const k of ['opportunity_score', 'opportunity_band', 'confidence', 'reasons', 'warnings', 'price_signal', 'historical_signal', 'reference_signal',
     'stock_signal', 'freight_signal', 'market_signal', 'calculated_at', 'engine_version']) assert.ok(k in r, k);
-  assert.equal(r.engine_version, OPP_VERSION); assert.equal(r.engine_version, 'opportunity-v1');
+  assert.equal(r.engine_version, OPP_VERSION); assert.equal(r.engine_version, 'opportunity-v2');
   assert.equal(r.calculated_at, now.toISOString());
   assert.equal(Object.values(WEIGHTS).reduce((a, b) => a + b, 0).toFixed(2), '1.00');
   assert.equal(bandOf(90), 'excelente'); assert.equal(bandOf(89), 'boa'); assert.equal(bandOf(75), 'boa'); assert.equal(bandOf(74), 'normal'); assert.equal(bandOf(50), 'normal'); assert.equal(bandOf(49), 'baixa');
@@ -28,7 +28,7 @@ t('1. excelente oportunidade', () => {
   assert.equal(r.opportunity_band, 'excelente'); assert.ok(r.opportunity_score >= 90, String(r.opportunity_score));
   assert.ok(r.confidence >= 0.9); assert.deepEqual(r.warnings, []);
   assert.ok(codes(r.reasons).includes('BELOW_REFERENCE') && codes(r.reasons).includes('AT_HISTORICAL_MIN') && codes(r.reasons).includes('LOWEST_NOW'));
-  assert.match(r.reasons[0].text, /25,0% abaixo da referência Copag/);
+  assert.match(r.reasons[0].text, /25,0% abaixo do preço sugerido Copag/); assert.equal(r.reasons[0].reference_kind, 'COPAG_OFFICIAL_CURRENT');
 });
 
 t('2. boa oportunidade', () => {
@@ -50,20 +50,20 @@ t('4. preço ruim', () => {
   const m = C(S({ historical_min: 420, historical_average: 470, median_price: 500, lowest_current_price: 410 }), O({ price: 410 }));
   assert.ok(m.opportunity_score <= 74 && m.caps.includes('above_reference'));
   // caso real (c30-etb): 50% acima da Copag, mas 21% abaixo da mediana e menor preço → Baixa
-  const c30 = C(S({ reference_price: 399.9, history_status: 'insufficient', history_days: 2, historical_min: null, historical_average: null, median_price: 760, lowest_current_price: 599.99, number_of_in_stock_offers: 12 }),
+  const c30 = C(S({ reference_price: 399.9, reference_kind: 'COPAG_OFFICIAL_CURRENT', history_status: 'insufficient', history_days: 2, historical_min: null, historical_average: null, median_price: 760, lowest_current_price: 599.99, number_of_in_stock_offers: 12 }),
     O({ price: 599.99, shipping_status: 'unknown', store: { ra_status: 'BOM' } }));
   assert.equal(c30.opportunity_band, 'baixa');
 });
 
-t('5. sem Copag', () => {
-  for (const s of [S({ reference_price: null, reference_status: null }), S({ reference_status: 'unverified' })]) {
+t('5. sem referência atual', () => {
+  for (const s of [S({ reference_price: null, reference_status: null, reference_kind: 'NONE' }), S({ reference_status: 'unverified' }), S({ reference_kind: 'COPAG_OFFICIAL_HISTORICAL' }), S({ reference_kind: 'COMMUNITY_REFERENCE' }), S({ reference_kind: null })]) {
     const r = C(s, O());
-    assert.equal(r.reference_signal, null); assert.ok(codes(r.warnings).includes('NO_REFERENCE'));
+    assert.equal(r.reference_signal, null); assert.ok(codes(r.warnings).includes('NO_CURRENT_REFERENCE'));
     assert.ok(!codes(r.reasons).some((c) => /REFERENCE/.test(c)));
     assert.ok(r.opportunity_score < 90, 'sem Copag não chega a Excelente: ' + r.opportunity_score);
     assert.ok(r.coverage < 1 && r.confidence < C(S(), O()).confidence);
   }
-  assert.match(C(S({ reference_status: 'unverified' }), O()).warnings[0].text, /não verificada/);
+  assert.match(C(S({ reference_status: 'unverified' }), O()).warnings[0].text, /Não há referência atual suficiente/);
 });
 
 t('6. sem histórico', () => {
@@ -96,7 +96,7 @@ t('8. sem estoque', () => {
 
 t('9. frete desconhecido (nunca R$ 0)', () => {
   const r = C(S(), O({ shipping_status: 'unknown', shipping_price: null }));
-  assert.equal(r.freight_signal, null); assert.ok(codes(r.warnings).includes('UNKNOWN_SHIPPING'));
+  assert.equal(r.freight_signal, null); assert.ok(codes(r.warnings).includes('UNKNOWN_FREIGHT'));
   assert.ok(!codes(r.reasons).includes('FREE_SHIPPING'));
   assert.ok(r.confidence < C(S(), O()).confidence);
   // frete conhecido pesa; frete pesado vira motivo negativo
@@ -164,7 +164,7 @@ t('14. produto com múltiplas ofertas', () => {
 
 t('explicação transparente', () => {
   const e = explain(C(S(), O({ shipping_status: 'unknown' })));
-  assert.match(e, /^\d+ — (Excelente|Boa)/); assert.match(e, /\+ 25,0% abaixo da referência Copag/); assert.match(e, /− Frete ainda não confirmado/);
+  assert.match(e, /^\d+ — (Excelente|Boa)/); assert.match(e, /\+ 25,0% abaixo do preço sugerido Copag/); assert.match(e, /− Frete não confirmado/);
   assert.equal(explain(null), null);
 });
 

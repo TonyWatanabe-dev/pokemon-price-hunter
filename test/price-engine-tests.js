@@ -1,7 +1,7 @@
 // Price Engine (FASE 2): regras matemáticas e de elegibilidade, sem banco.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { mean, median, min, max, ratio, round2, plausible, trusted, dailySeries, computeProductStats, MIN_HISTORY_DAYS, anchorOf, historyAnchorOf, moneyMean, moneyMedian } from '../src/core/price-engine.js';
+import { mean, median, min, max, ratio, round2, round4, plausible, trusted, dailySeries, computeProductStats, MIN_HISTORY_DAYS, anchorOf, historyAnchorOf, moneyMean, moneyMedian } from '../src/core/price-engine.js';
 
 // --- estatística básica ---
 assert.equal(mean([10, 20, 30]), 20); assert.equal(mean([]), null);
@@ -65,7 +65,8 @@ assert.equal(s.shipping_coverage, 0.3333);
 assert.equal(s.number_of_active_offers, 4);
 assert.equal(s.number_of_stores, 4); assert.equal(s.number_of_marketplaces, 1);
 // referência Copag separada do preço de mercado
-assert.equal(s.reference_price, 100); assert.equal(s.reference_status, 'verified');
+assert.equal(s.reference_price, 100); assert.equal(s.reference_status, 'verified'); assert.equal(s.reference_kind, 'COPAG_OFFICIAL_CURRENT');
+assert.equal(s.reference_reason, 'verified_current_copag');
 assert.equal(s.discount_vs_reference, 0.1);
 // qualidade: cada exclusão contada
 assert.deepEqual([s.quality.removed, s.quality.unconfirmed, s.quality.implausible, s.quality.other_condition, s.quality.no_price], [1, 1, 1, 1, 1]);
@@ -91,9 +92,17 @@ assert.equal(s.distance_from_historical_min, 0.5); assert.equal(s.distance_from_
 const r3 = computeProductStats({ product: { condition: 'new' }, offers, reference, distrust, asOf: '2026-10-08T23:00:00Z' });
 assert.equal(r3.stats.variation_24h, ratio(90, 60), 'D−1 = 07/10 (60); preço atual é sempre o das ofertas de agora (90)');
 
-// referência pendente: exibida, mas sem desconto calculado
+// Copag pendente NÃO é referência atual: com mercado robusto (≥ 3 ofertas, ≥ 2 lojas), a referência atual é a mediana do mercado
 const rp = computeProductStats({ product: { condition: 'new' }, offers, reference: { ...reference, status: 'pending' }, distrust, asOf });
-assert.equal(rp.stats.reference_status, 'pending'); assert.equal(rp.stats.discount_vs_reference, null);
+assert.equal(rp.stats.reference_kind, 'MARKET_CURRENT'); assert.equal(rp.stats.reference_status, 'derived'); assert.equal(rp.stats.reference_source, 'market');
+assert.equal(rp.stats.reference_price, rp.stats.median_price); assert.notEqual(rp.stats.reference_price, 100, 'nunca a Copag pendente');
+assert.equal(rp.stats.discount_vs_reference, round4((rp.stats.reference_price - rp.stats.current_price) / rp.stats.reference_price));
+assert.equal(rp.stats.quality.market_reference.ok, true);
+// referência histórica ou comunitária passada por engano: ignorada (defesa no motor)
+for (const kind of ['COPAG_OFFICIAL_HISTORICAL', 'COMMUNITY_REFERENCE']) {
+  const x = computeProductStats({ product: { condition: 'new' }, offers, reference: { ...reference, kind }, distrust, asOf }).stats;
+  assert.notEqual(x.reference_kind, 'COPAG_OFFICIAL_CURRENT'); assert.notEqual(x.reference_price, 100);
+}
 
 // histórico insuficiente
 const short = computeProductStats({ product: { condition: 'new' }, offers: [{ ...base, id: '1', price: 100, events: [ev('2026-10-09T10:00:00Z', 100)] }], reference: null, distrust: null, asOf });

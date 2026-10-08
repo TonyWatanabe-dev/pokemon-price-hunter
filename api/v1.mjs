@@ -6,7 +6,8 @@
 //   GET /api/v1/produtos/:id/historico?dias          → série diária do Price Engine (sem histórico bruto)
 //   GET /api/v1/produtos/:id/estatisticas
 //   GET /api/v1/referencias?pagina&limite&status
-//   GET /api/v1/oportunidades                       → estrutura reservada (Opportunity Engine ainda não calcula)
+//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&minimo&ordem&ofertas=todas → resultado do Opportunity Engine
+//       (melhor oferta comprável por produto; referência atual, contexto histórico e comunitária separados)
 // FASE 4 — formato do site (mesmas regras de lista do tools/page.template.html, aplicadas no servidor):
 //   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&ordem&pagina&limite → página de /produtos
 //   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
@@ -57,7 +58,14 @@ function route(segs, qs) {
     const status = str(qs.get('status'), 20); if (status && !['verified', 'pending', 'conflicting', 'unknown'].includes(status)) throw new HttpError(400, 'status inválido');
     return { name: 'referencias', page, limit, args: { page, limit, status } };
   }
-  if (a === 'oportunidades' && segs.length === 1) return { name: 'oportunidades' };
+  if (a === 'oportunidades' && segs.length === 1) {
+    const faixa = str(qs.get('faixa'), 12) || null; if (faixa && !['excelente', 'boa', 'normal', 'baixa'].includes(faixa)) throw new HttpError(400, 'faixa inválida (excelente, boa, normal, baixa)');
+    const ordem = str(qs.get('ordem'), 12) || 'score'; if (!Object.keys(DB.OPP_SORTS).includes(ordem)) throw new HttpError(400, `ordem inválida (use: ${Object.keys(DB.OPP_SORTS).join(', ')})`);
+    const colecao = str(qs.get('colecao'), 40) || null; if (colecao && !SLUG_RE.test(colecao)) throw new HttpError(400, 'coleção inválida');
+    const minimo = qs.get('minimo') != null ? intIn(qs.get('minimo'), 0, 0, 100) : null;
+    const ofertas = str(qs.get('ofertas'), 10) || ''; if (ofertas && ofertas !== 'todas') throw new HttpError(400, 'ofertas inválido (use: todas)');
+    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas' } };
+  }
   // ---- FASE 4: formato do site (listas e página de produto), regras iguais às do site
   if (a === 'site') {
     if (id === 'produtos' && segs.length === 2) {
@@ -107,9 +115,13 @@ async function run(rt, source) {
     case 'historico': { const d = useDb ? await DB.productHistory(rt.id, rt.args) : ST.stateProductHistory((await legacyState()).st, rt.id, rt.args); if (!d) throw new HttpError(404, 'produto não encontrado'); return { body: { data: d } }; }
     case 'estatisticas': { const d = useDb ? await DB.productStats(rt.id) : ST.stateProductStats((await legacyState()).st, rt.id); if (!d) throw new HttpError(404, 'produto não encontrado'); return { body: { data: d } }; }
     case 'referencias': return { body: paged(useDb ? await DB.listReferences(rt.args) : ST.stateListReferences((await legacyState()).st, rt.args), rt.page, rt.limit) };
-    case 'oportunidades': return { body: { data: [], meta: { status: 'not_computed', engine: null,
-      message: 'Opportunity Engine ainda não implementado: aguardando histórico suficiente no Price Engine.',
-      fields: ['product_id', 'offer_id', 'score', 'band', 'parts', 'computed_at'], bands: ['excelente', 'boa', 'normal', 'pouco_atrativo'] } } };
+    case 'oportunidades': {
+      if (!useDb) return { body: { data: [], meta: { page: rt.page, limit: rt.limit, total: 0, pages: 1, status: 'requires_db',
+        message: 'Oportunidades vêm do Opportunity Engine no banco; sem banco não há resultado (nada é estimado).' } } };
+      const r = await DB.listOpportunities(rt.args); const body = paged(r, rt.page, rt.limit);
+      body.meta.engine = r.items[0]?.engine_version ?? null; body.meta.updated_at = r.items.reduce((m, x) => (x.updated_at && x.updated_at > (m ?? '') ? x.updated_at : m), null);
+      return { body };
+    }
   }
   throw new HttpError(404, 'rota não encontrada');
 }

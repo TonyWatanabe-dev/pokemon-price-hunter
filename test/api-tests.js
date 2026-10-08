@@ -90,7 +90,8 @@ r = await call('/api/v1/produtos/sv9-lata'); assert.equal(r.json.data.stats.stat
 assert.equal(r.json.data.references[0].status, 'pending');
 r = await call('/api/v1/produtos/me05-etb/ofertas?limite=10'); assert.equal(r.json.meta.total, 5);
 assert.equal(r.json.data.find((o) => o.id === 'oa').total_price, null, 'frete desconhecido: total nulo, nunca o preço');
-r = await call('/api/v1/oportunidades'); assert.equal(r.json.meta.status, 'not_computed'); assert.deepEqual(r.json.data, []);
+r = await call('/api/v1/oportunidades'); assert.equal(r.status, 200); assert.equal(r.json.meta.status, 'requires_db'); assert.deepEqual(r.json.data, []);
+assert.equal((await call('/api/v1/oportunidades?faixa=otima')).status, 400); assert.equal((await call('/api/v1/oportunidades?ofertas=x')).status, 400);
 r = await call('/api/v1/referencias?status=verified'); assert.equal(r.json.data.length, 1);
 
 
@@ -137,6 +138,19 @@ await tx((c) => syncState(c, { state: S0, catalog: { collections: S0.collections
 await tx((c) => runPriceEngine(c));
 process.env.API_DATABASE_URL = process.env.TEST_DATABASE_URL; _cache.clear();
 r = await call('/api/v1/home'); assert.equal(r.headers['X-Data-Source'], 'db');
+// oportunidades: lidas do resultado persistido do Opportunity Engine (nada é recalculado no request)
+{ const { runOpportunityEngine } = await import('../src/core/opportunity-run.js'); await tx((c) => runOpportunityEngine(c)); _cache.clear();
+  const ro = await call('/api/v1/oportunidades?limite=50'); assert.equal(ro.status, 200); assert.equal(ro.headers['X-Data-Source'], 'db');
+  assert.ok(ro.json.data.length > 0); assert.equal(ro.json.meta.engine, 'opportunity-v2');
+  for (const x of ro.json.data) {
+    for (const k of ['product', 'offer', 'price', 'total', 'stock', 'store', 'marketplace', 'opportunity_score', 'opportunity_band', 'confidence', 'current_reference', 'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at']) assert.ok(k in x, k);
+    assert.ok(['COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT', 'NONE'].includes(x.current_reference.kind));
+    assert.ok(!('offer_id' in x) && !('product_id' in x), 'sem ids internos');
+  }
+  const scores = ro.json.data.map((x) => x.opportunity_score); assert.deepEqual(scores, [...scores].sort((a, b) => b - a));
+  const all = await call('/api/v1/oportunidades?ofertas=todas&limite=50'); assert.ok(all.json.meta.total >= ro.json.meta.total);
+  _cache.clear();
+}
 const hDb = r.json; const hSt = slimHome(S0, { now });
 const cmp = compareHome(hDb, hSt);
 assert.equal(cmp.critical, 0, JSON.stringify(cmp.details));

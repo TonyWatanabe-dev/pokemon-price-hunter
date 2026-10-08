@@ -137,7 +137,8 @@ try {
   check('trilha de auditoria: 7 eventos REVIEW_DECIDED', rep.reviewAudit.length === 7, rep.reviewAudit.length);
   check('nenhum item de revisão aberto após 2 sincronizações', (await n(`SELECT count(*) FROM hunter.review_item WHERE status = 'open'`)) === 0);
 
-  // ---------- Referências: atual × histórico (Fase 5.6) ----------
+  // ---------- REFERENCE IMPORT + REFERENCE POLICY (Fases 5.6/6A): importação e regras da tabela ----------
+  // (as regras da referência ATUAL resolvida ficam logo após o Price Engine, que é quem a resolve)
   const refsBefore = await n('SELECT count(*) FROM hunter.reference_price');
   const impFile = JSON.parse(fs.readFileSync(new URL('../db/reference-imports/2026-10-08-copag-audit.json', import.meta.url), 'utf8'));
   rep.references = { import1: await tx((c) => importReferences(c, impFile)), import2: await tx((c) => importReferences(c, impFile)) };
@@ -193,14 +194,31 @@ try {
   check('total atual só de oferta com frete conhecido', (await n(`SELECT count(*) FROM hunter.product_stats s JOIN hunter.offer o ON o.id = s.current_total_offer_id WHERE o.shipping_status = 'unknown' OR o.total_price IS NULL`)) === 0);
   check('preço atual só de oferta ativa, em estoque e com o mesmo preço', (await n(`SELECT count(*) FROM hunter.product_stats s JOIN hunter.offer o ON o.id = s.current_offer_id
     WHERE o.status <> 'active' OR o.stock_status <> 'in_stock' OR o.price <> s.current_price OR o.product_id <> s.product_id`)) === 0);
-  check('desconto Copag só com referência verificada', (await n(`SELECT count(*) FROM hunter.product_stats WHERE discount_vs_reference IS NOT NULL AND reference_status IS DISTINCT FROM 'verified'`)) === 0);
-  check('Price Engine só usa referência ATUAL (nunca histórica/comunitária)', (await n(`SELECT count(*) FROM hunter.product_stats
-    WHERE reference_price IS NOT NULL AND reference_kind IS DISTINCT FROM 'COPAG_OFFICIAL_CURRENT' AND reference_kind IS DISTINCT FROM 'MARKET_CURRENT'`)) === 0);
-  check('referência verificada do Price Engine = view reference_price_current', (await n(`SELECT count(*) FROM hunter.product_stats s
-    FULL JOIN hunter.reference_price_current c ON c.product_id = s.product_id
-    WHERE coalesce(s.reference_status = 'verified', false) <> (c.product_id IS NOT NULL) OR (c.product_id IS NOT NULL AND s.reference_price <> c.value)`)) === 0);
-  check('produto só com contexto histórico não tem desconto', (await n(`SELECT count(*) FROM hunter.product_stats s WHERE s.discount_vs_reference IS NOT NULL
-    AND NOT EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = s.product_id)`)) === 0);
+  // ---------- REFERENCE POLICY (Fase 6A): referência ATUAL = Copag atual > mercado robusto > NONE ----------
+  check('referência atual: só COPAG_OFFICIAL_CURRENT, MARKET_CURRENT ou NONE', (await n(`SELECT count(*) FROM hunter.product_stats
+    WHERE reference_kind IS NULL OR reference_kind NOT IN ('COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT', 'NONE')`)) === 0);
+  check('desconto só com referência atual (NONE nunca tem desconto)', (await n(`SELECT count(*) FROM hunter.product_stats
+    WHERE discount_vs_reference IS NOT NULL AND reference_kind = 'NONE'`)) === 0);
+  check('Copag atual na referência ⇔ linha verificada em reference_price_current (mesmo valor)', (await n(`SELECT count(*) FROM hunter.product_stats s
+    FULL JOIN (SELECT * FROM hunter.reference_price_current WHERE reference_kind = 'COPAG_OFFICIAL_CURRENT') c ON c.product_id = s.product_id
+    WHERE (s.reference_kind = 'COPAG_OFFICIAL_CURRENT') <> (c.product_id IS NOT NULL) OR (c.product_id IS NOT NULL AND s.reference_price <> c.value)`)) === 0);
+  check('mercado só sem Copag atual e com critério robusto (≥ 3 ofertas, ≥ 2 lojas)', (await n(`SELECT count(*) FROM hunter.product_stats
+    WHERE reference_kind = 'MARKET_CURRENT' AND (reference_reason <> 'robust_current_market' OR (quality->'market_reference'->>'ok')::boolean IS NOT TRUE
+      OR (quality->'market_reference'->>'offers')::int < 3 OR (quality->'market_reference'->>'stores')::int < 2 OR number_of_in_stock_offers < 3)`)) === 0);
+  check('COPAG_OFFICIAL_HISTORICAL nunca é referência atual', (await n(`SELECT count(*) FROM hunter.product_stats s
+    WHERE s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND NOT EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = s.product_id
+      AND r.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND r.verification_status = 'verified' AND r.value = s.reference_price)`)) === 0);
+  check('COMMUNITY_REFERENCE nunca é referência atual', (await n(`SELECT count(*) FROM hunter.product_stats s
+    JOIN hunter.reference_price r ON r.product_id = s.product_id AND r.reference_scope = 'community'
+    WHERE s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND NOT EXISTS (SELECT 1 FROM hunter.reference_price_current c WHERE c.product_id = s.product_id AND c.reference_kind = 'COPAG_OFFICIAL_CURRENT')`)) === 0);
+  check('mercado é derivado (nenhuma linha MARKET_* gravada em reference_price)', (await n(`SELECT count(*) FROM hunter.reference_price WHERE reference_kind IN ('MARKET_CURRENT', 'MARKET_HISTORICAL')`)) === 0);
+  check('confiança da referência atual: Copag = linha/100; mercado ≤ 0,85; NONE nula', (await n(`SELECT count(*) FROM hunter.product_stats s
+    WHERE (s.reference_kind = 'NONE' AND s.reference_confidence IS NOT NULL) OR (s.reference_kind = 'MARKET_CURRENT' AND NOT (s.reference_confidence BETWEEN 0.6 AND 0.85))
+      OR (s.reference_kind = 'COPAG_OFFICIAL_CURRENT' AND s.reference_confidence IS DISTINCT FROM (SELECT c.confidence / 100.0 FROM hunter.reference_price_current c WHERE c.product_id = s.product_id))`)) === 0);
+  rep.referencePolicy = { byKind: await q(`SELECT reference_kind, count(*)::int n, count(*) FILTER (WHERE number_of_in_stock_offers > 0)::int with_stock FROM hunter.product_stats GROUP BY 1 ORDER BY 1`),
+    noneReasons: await q(`SELECT reference_reason, count(*)::int n FROM hunter.product_stats WHERE reference_kind = 'NONE' GROUP BY 1 ORDER BY 2 DESC`),
+    onlyHistorical: await n(`SELECT count(*) FROM hunter.product_stats s WHERE s.reference_kind = 'NONE' AND EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = s.product_id AND r.reference_scope = 'historical')`),
+    onlyCommunity: await n(`SELECT count(*) FROM hunter.product_stats s WHERE s.reference_kind = 'NONE' AND EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = s.product_id AND r.reference_scope = 'community')`) };
   check('histórico só com dias suficientes', (await n(`SELECT count(*) FROM hunter.product_stats WHERE (historical_min IS NOT NULL) <> (history_status = 'ok')`)) === 0);
   // reprodução independente em SQL: preço atual (elegibilidade com a âncora gravada) e histórico (a partir de price_daily)
   const sqlCur = await q(`WITH s AS (SELECT product_id, (quality->>'anchor')::numeric AS anchor FROM hunter.product_stats),
@@ -230,8 +248,15 @@ try {
   check('Opportunity Engine idempotente (2ª execução não escreve nem emite eventos)', rep.opportunity.run2.written === 0 && rep.opportunity.run2.removed === 0 && Object.keys(rep.opportunity.run2.events).length === 0, rep.opportunity.run2);
   check('oportunidade: anomalia nunca ≥ 50', (await n(`SELECT count(*) FROM hunter.opportunity WHERE is_anomaly AND opportunity_score >= 50`)) === 0);
   check('oportunidade: sem estoque nunca > 30', (await n(`SELECT count(*) FROM hunter.opportunity WHERE stock_signal = 0 AND opportunity_score > 30`)) === 0);
-  check('oportunidade: sinal Copag só com referência verificada', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
-    WHERE o.reference_signal IS NOT NULL AND s.reference_status IS DISTINCT FROM 'verified'`)) === 0);
+  check('oportunidade: sinal de referência ⇔ referência atual (nunca histórica/comunitária)', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
+    WHERE (o.reference_signal IS NOT NULL) <> (s.reference_kind <> 'NONE')`)) === 0);
+  check('oportunidade: NONE gera aviso NO_CURRENT_REFERENCE', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
+    WHERE s.reference_kind = 'NONE' AND NOT o.warnings @> '[{"code":"NO_CURRENT_REFERENCE"}]'`)) === 0);
+  check('oportunidade: referência comunitária só como aviso (todo produto com ela tem o aviso)', (await n(`SELECT count(*) FROM hunter.opportunity o
+    WHERE EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = o.product_id AND r.reference_scope = 'community')
+      AND NOT (o.warnings @> '[{"code":"COMMUNITY_REFERENCE"}]' OR o.warnings @> '[{"code":"COMMUNITY_REFERENCE_ONLY"}]')`)) === 0);
+  check('oportunidade: texto nunca chama mercado de Copag', (await n(`SELECT count(*) FROM hunter.opportunity o, jsonb_array_elements(o.reasons) x
+    WHERE x->>'reference_kind' = 'MARKET_CURRENT' AND x->>'text' ILIKE '%copag%'`)) === 0);
   check('oportunidade: frete desconhecido → sinal nulo (nunca R$ 0)', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id
     WHERE f.shipping_status = 'unknown' AND o.freight_signal IS NOT NULL`)) === 0);
   check('oportunidade: histórico só com série suficiente', (await n(`SELECT count(*) FROM hunter.opportunity o JOIN hunter.product_stats s ON s.product_id = o.product_id
@@ -250,6 +275,17 @@ try {
     (SELECT jsonb_agg(x->>'text') FROM jsonb_array_elements(o.reasons) x) reasons, (SELECT jsonb_agg(x->>'code') FROM jsonb_array_elements(o.warnings) x) warnings
     FROM hunter.product_opportunity o JOIN hunter.product p ON p.id = o.product_id JOIN hunter.offer f ON f.id = o.offer_id ORDER BY o.opportunity_score DESC, o.confidence DESC, p.legacy_id LIMIT 10`);
 
+  // API (leitura do resultado persistido): contrato de oportunidades e referências
+  process.env.API_DATABASE_URL = process.env.DATABASE_URL;
+  const API = await import('../api/_lib/read-db.mjs');
+  const opps = await API.listOpportunities({ page: 1, limit: 60 });
+  const need = ['product', 'offer', 'price', 'total', 'stock', 'store', 'marketplace', 'opportunity_score', 'opportunity_band', 'confidence', 'current_reference', 'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at'];
+  check('API /oportunidades: contrato completo e referência atual válida', opps.items.length > 0 && opps.items.every((x) => need.every((k) => k in x)
+    && ['COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT', 'NONE'].includes(x.current_reference.kind) && x.historical_context.every((h) => h.kind.endsWith('_HISTORICAL'))
+    && (x.community_reference == null || x.community_reference.kind === 'COMMUNITY_REFERENCE')), opps.items.length);
+  check('API /oportunidades: total = produtos com melhor oferta', opps.total === (await n('SELECT count(*) FROM hunter.product_opportunity')));
+  rep.api = { opportunities: opps.total, sample: opps.items.slice(0, 3) };
+
   // ---------- comparação com o que o site mostra hoje (state.json) ----------
   const byLegacy = new Map((await q(`SELECT p.legacy_id, s.* FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id`)).map((r) => [r.legacy_id, r]));
   const cmp = { products: 0, bestPriceEqual: 0, bestPriceDiff: [], inStockEqual: 0, inStockDiff: [], referenceEqual: 0, referenceDiff: [], avgCompared: 0, avgWithin2pct: 0, avgDiff: [] };
@@ -259,7 +295,7 @@ try {
     const robotBest = so.length ? Math.min(...so.map((o) => o.price)) : null;
     if (eq(robotBest, x.current_price)) cmp.bestPriceEqual++; else cmp.bestPriceDiff.push({ id: sp.id, robot: robotBest, engine: x.current_price == null ? null : Number(x.current_price) });
     if ((sp.inStockCount ?? 0) === x.number_of_in_stock_offers) cmp.inStockEqual++; else cmp.inStockDiff.push({ id: sp.id, robot: sp.inStockCount ?? 0, engine: x.number_of_in_stock_offers });
-    if (eq(sp.msrp ?? null, x.discount_vs_reference != null || x.reference_status === 'verified' ? x.reference_price : null)) cmp.referenceEqual++; else cmp.referenceDiff.push({ id: sp.id, robot: sp.msrp ?? null, engine: x.reference_price, status: x.reference_status });
+    if (eq(sp.msrp ?? null, x.reference_kind === 'COPAG_OFFICIAL_CURRENT' ? x.reference_price : null)) cmp.referenceEqual++; else cmp.referenceDiff.push({ id: sp.id, robot: sp.msrp ?? null, engine: x.reference_price, status: x.reference_status });
     if (sp.marketAverage != null && x.average_price != null) { cmp.avgCompared++; const d = Math.abs(sp.marketAverage - Number(x.average_price)) / sp.marketAverage; if (d <= 0.02) cmp.avgWithin2pct++; else cmp.avgDiff.push({ id: sp.id, robot_total_avg: sp.marketAverage, engine_price_avg: Number(x.average_price) }); }
   }
   for (const k of ['bestPriceDiff', 'inStockDiff', 'referenceDiff', 'avgDiff']) { cmp[k + 'Count'] = cmp[k].length; cmp[k] = cmp[k].slice(0, 12); }

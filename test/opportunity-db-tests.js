@@ -35,12 +35,12 @@ const r1 = await tx((c) => runOpportunityEngine(c, { now }));
 assert.equal(r1.products, 2); assert.equal(r1.offersEvaluated, 4); assert.equal(r1.withBest, 1);
 const rows = await q(`SELECT of.legacy_id AS id, o.* FROM hunter.opportunity o JOIN hunter.offer of ON of.id = o.offer_id ORDER BY of.legacy_id`);
 const by = Object.fromEntries(rows.map((r) => [r.id, r]));
-assert.ok(rows.every((r) => r.engine_version === 'opportunity-v1' && new Date(r.calculated_at).getTime() === now.getTime()));
+assert.ok(rows.every((r) => r.engine_version === 'opportunity-v2' && new Date(r.calculated_at).getTime() === now.getTime()));
 // sem estoque ≤ 30; anomalia ≤ 49 e fora da melhor
 assert.ok(by.oc.opportunity_score <= 30 && Number(by.oc.stock_signal) === 0);
 assert.ok(by.od.is_anomaly && by.od.opportunity_score <= 49 && by.od.warnings.some((w) => w.code === 'ANOMALY'));
 // frete: desconhecido = nulo (nunca R$ 0); conhecido = sinal
-assert.equal(by.oa.freight_signal, null); assert.ok(by.oa.warnings.some((w) => w.code === 'UNKNOWN_SHIPPING'));
+assert.equal(by.oa.freight_signal, null); assert.ok(by.oa.warnings.some((w) => w.code === 'UNKNOWN_FREIGHT'));
 assert.ok(Number(by.ob.freight_signal) > 0);
 // Copag verificada → sinal de referência
 assert.ok(rows.every((r) => r.reference_signal != null));
@@ -52,7 +52,7 @@ assert.equal(js.find((x) => x.legacy_id === 'me05-etb').best.offer_id, String(by
 assert.equal(js.find((x) => x.legacy_id === 'sv9-etb').reason, 'NO_OFFERS');
 // eventos da 1ª rodada: anomalia nova (+ FOUND se a melhor for ≥ 75)
 const ev1 = await q(`SELECT type, entity_id, payload FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' ORDER BY id`);
-assert.ok(ev1.some((e) => e.type === 'OPPORTUNITY_ANOMALY' && e.entity_id === 'me05-etb' && e.payload.engine_version === 'opportunity-v1'));
+assert.ok(ev1.some((e) => e.type === 'OPPORTUNITY_ANOMALY' && e.entity_id === 'me05-etb' && e.payload.engine_version === 'opportunity-v2'));
 assert.equal(ev1.some((e) => e.type === 'OPPORTUNITY_FOUND'), by.ob.opportunity_score >= 75);
 
 // idempotência: mesma entrada → nada escrito, nenhum evento novo

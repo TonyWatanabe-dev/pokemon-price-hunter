@@ -14,7 +14,7 @@
 //   Pontos de lojas em janela de desconfiança (source_distrust) e preços implausíveis não entram.
 //   Série = melhor preço em estoque de cada dia (UTC). Estatísticas históricas exigem MIN_HISTORY_DAYS dias.
 // • Variação N dias: (preço atual − melhor preço do dia D−N) / melhor preço do dia D−N; sem esse dia, nulo.
-import { CURRENT_PRIORITY } from './references.js';
+import { marketReferenceOf, resolveCurrentReference } from './references.js';
 export const ENGINE_VERSION = 'pe-1';
 export const MIN_HISTORY_DAYS = 3;
 export const PLAUSIBLE_MIN = 0.55;
@@ -121,13 +121,15 @@ export function historyAnchorOf({ reference, currentInStock = [], historyPrices 
 
 /**
  * Estatísticas de um produto.
- * input: { product: { condition }, offers: [...com events], reference: { value, status, source, verified_at, kind } | null, distrust: Map, asOf }
- *   reference é SEMPRE uma referência atual (Copag atual ou mercado atual); histórico não é entrada do motor.
+ * input: { product: { condition }, offers: [...com events], reference: { value, status, source, verified_at, kind, confidence } | null, distrust: Map, asOf }
+ *   reference = Copag oficial ATUAL verificada (ou null). Histórico e comunitária não são entrada do motor.
+ *   Fase 6A: a REFERÊNCIA ATUAL gravada é resolvida aqui — Copag atual > mercado atual robusto (mediana das ofertas elegíveis
+ *   em estoque, ver marketReferenceOf) > NONE. O desconto (discount_vs_reference) é contra essa referência.
  * offers[i]: { id, store_id, marketplace_id, status, condition, confirmed, price, stock_status, shipping_status, total_price, last_seen_at, events }
  */
 export function computeProductStats({ product, offers, reference = null, distrust = null, asOf }) {
   // defesa: preço de lançamento (histórico) ou referência comunitária nunca entram como referência atual, mesmo se alguém as passar
-  if (reference?.kind && !(reference.kind in CURRENT_PRIORITY)) reference = null;
+  if (reference && (reference.kind ?? 'COPAG_OFFICIAL_CURRENT') !== 'COPAG_OFFICIAL_CURRENT') reference = null;
   const q = { removed: 0, pending: 0, no_price: 0, other_condition: 0, unconfirmed: 0, implausible: 0, untrusted_points: 0, implausible_points: 0 };
   const sameCond = offers.filter((o) => { const ok = (o.condition || 'new') === (product.condition || 'new'); if (!ok) q.other_condition++; return ok; });
   const live = sameCond.filter((o) => {
@@ -175,6 +177,11 @@ export function computeProductStats({ product, offers, reference = null, distrus
   const current = best ? round2(Number(best.price)) : null;
   const hist = enough ? { min: round2(min(lows)), max: round2(max(lows)), avg: moneyMean(lows), med: moneyMedian(lows) } : { min: null, max: null, avg: null, med: null };
   const refOk = reference?.status === 'verified' && validPrice(reference.value);
+  // referência ATUAL (Copag atual > mercado robusto > NONE); mercado só com ofertas elegíveis em estoque de lojas confiáveis
+  const implausibleInStock = live.filter((o) => o.stock_status === 'in_stock').length - inStock.length;
+  const market = marketReferenceOf(inStock, { implausibleInStock, isTrusted: (o) => trusted(distrust, o.store_id, asOf) });
+  const cur = resolveCurrentReference({ copag: refOk ? { reference_kind: 'COPAG_OFFICIAL_CURRENT', verification_status: 'verified', value: reference.value,
+    source: reference.source, confidence: reference.confidence ?? null, verified_at: reference.verified_at } : null, market });
 
   return {
     stats: {
@@ -197,18 +204,23 @@ export function computeProductStats({ product, offers, reference = null, distrus
       variation_30d: ratio(current, at(30)),
       distance_from_historical_average: ratio(current, hist.avg),
       distance_from_historical_min: ratio(current, hist.min),
-      reference_price: reference && validPrice(reference.value) ? round2(Number(reference.value)) : null,
-      reference_status: reference?.status ?? null,
-      reference_source: reference?.source ?? null,
-      reference_kind: reference?.kind ?? null,   // tipo da referência ATUAL usada (nunca histórica)
-      reference_verified_at: reference?.verified_at ?? null,
-      discount_vs_reference: refOk && current != null ? round4((Number(reference.value) - current) / Number(reference.value)) : null,
+      // referência ATUAL resolvida (única fonte de verdade para o Opportunity Engine e a API)
+      reference_kind: cur.kind,                                   // COPAG_OFFICIAL_CURRENT | MARKET_CURRENT | NONE
+      reference_price: cur.price,
+      reference_status: cur.kind === 'COPAG_OFFICIAL_CURRENT' ? 'verified' : cur.kind === 'MARKET_CURRENT' ? 'derived' : null,
+      reference_source: cur.source,
+      reference_verified_at: cur.verified_at,
+      reference_confidence: cur.confidence != null ? round4(cur.confidence) : null,
+      reference_reason: cur.reason,
+      discount_vs_reference: cur.price != null && current != null ? round4((cur.price - current) / cur.price) : null,
       number_of_active_offers: elig.length,
       number_of_in_stock_offers: inStock.length,
       number_of_stores: new Set(elig.map((o) => o.store_id).filter(Boolean)).size,
       number_of_marketplaces: new Set(elig.map((o) => o.marketplace_id).filter(Boolean)).size,
       shipping_coverage: inStock.length ? round4(withTotal.length / inStock.length) : null,
       quality: { ...q, anchor: round2(anchor), anchor_source: refOk ? 'reference' : anchor == null ? null : 'current_median',
+        market_reference: { ok: market.ok, reason: market.reason, offers: market.offers, stores: market.stores, marketplaces: market.marketplaces,
+          untrusted: market.untrusted, implausible: market.implausible, price: market.ok ? market.price : null },
         history_anchor: round2(hAnchor), history_anchor_source: hAnchor == null ? null : hAnchor === anchor ? (refOk ? 'reference' : 'current_median') : curIn.length ? 'current_median_small' : 'history_median' },
       engine_version: ENGINE_VERSION,
     },

@@ -18,12 +18,20 @@ export async function loadOpportunityInputs(c) {
       FROM offer o JOIN product p ON p.id = o.product_id
       LEFT JOIN store st ON st.id = o.store_id LEFT JOIN seller se ON se.id = o.seller_id
      WHERE o.status IN ('active', 'pending') AND o.condition = p.condition`);
+  // contexto de referência (não entra no score): preço de lançamento/histórico e referência comunitária — uma consulta só
+  const context = await q(`SELECT product_id,
+      coalesce(jsonb_agg(jsonb_build_object('kind', reference_kind, 'price', value::float8, 'published_at', published_at)
+        ORDER BY published_at DESC NULLS LAST, id DESC) FILTER (WHERE reference_scope = 'historical'), '[]') AS historical,
+      coalesce(jsonb_agg(jsonb_build_object('kind', reference_kind, 'price', value::float8, 'source_url', source_url)
+        ORDER BY verified_at DESC NULLS LAST, id DESC) FILTER (WHERE reference_scope = 'community'), '[]') AS community
+    FROM reference_price WHERE reference_scope IN ('historical', 'community') GROUP BY product_id`);
   const prevBest = await q(`SELECT product_id, offer_id, opportunity_score, opportunity_band, price::float8 AS price FROM product_opportunity`);
   const prevAnom = await q(`SELECT offer_id FROM opportunity WHERE is_anomaly`);
-  return { stats, offers, prevBest, prevAnom };
+  return { stats, offers, context, prevBest, prevAnom };
 }
 
-export function computeOpportunities({ stats, offers }, { now = new Date() } = {}) {
+export function computeOpportunities({ stats, offers, context = [] }, { now = new Date() } = {}) {
+  const ctxBy = new Map(context.map((c) => [String(c.product_id), { historical: c.historical || [], community: c.community || [] }]));
   const byP = new Map();
   for (const o of offers) { const k = String(o.product_id); if (!byP.has(k)) byP.set(k, []); byP.get(k).push(o); }
   const out = [];
@@ -31,7 +39,7 @@ export function computeOpportunities({ stats, offers }, { now = new Date() } = {
     const list = (byP.get(String(s.product_id)) || []).map((o) => ({ id: String(o.id), price: o.price, total_price: o.total_price, shipping_status: o.shipping_status,
       shipping_price: o.shipping_price, stock_status: o.stock_status, status: o.status, confirmed: o.confirmed, anomalous: o.anomalous,
       store: { ra_status: o.ra_status }, seller: { is_official: !!o.is_official } }));
-    const r = productOpportunity(s, list, { now });
+    const r = productOpportunity({ ...s, reference_context: ctxBy.get(String(s.product_id)) || null }, list, { now });
     out.push({ product_id: String(s.product_id), legacy_id: s.legacy_id, ...r });
   }
   return out;

@@ -2,7 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
-import { pickCurrentReference, historicalContext, LABEL, confidenceLabel } from './references.mjs';
+import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView } from './references.mjs';
 
 const num = (v) => (v == null ? null : Number(v));
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
@@ -110,7 +110,7 @@ const productCard = (r) => ({
   id: r.legacy_id, slug: r.slug, name: r.canonical_name, collection: { code: r.col_code, name: r.col_name }, category: r.category_id,
   type: r.attrs?.type ?? null, boosters: r.units ?? null, image: r.image_url ?? null,
   price: { current: num(r.current_price), current_total: num(r.current_total_price), median: num(r.median_price) },
-  reference: r.reference_price != null ? { value: num(r.reference_price), status: r.reference_status } : null,
+  reference: r.reference_price != null ? { value: num(r.reference_price), status: r.reference_status, kind: r.reference_kind ?? null } : null,
   discount_vs_reference: num(r.discount_vs_reference),
   offers: { active: r.number_of_active_offers ?? 0, in_stock: r.number_of_in_stock_offers ?? 0, stores: r.number_of_stores ?? 0 },
   status: r.data_status ?? 'no_offers',
@@ -120,7 +120,7 @@ export async function listProducts({ page, limit, colecao = null, tipo = null, c
   const order = SORTS[ordem] || SORTS.relevancia;
   const rows = await q(`
     SELECT p.legacy_id, p.slug, p.canonical_name, p.category_id, p.attrs, p.units, p.image_url, c.code AS col_code, c.name AS col_name,
-           s.data_status, s.current_price, s.current_total_price, s.median_price, s.reference_price, s.reference_status, s.discount_vs_reference,
+           s.data_status, s.current_price, s.current_total_price, s.median_price, s.reference_price, s.reference_status, s.reference_kind, s.discount_vs_reference,
            s.number_of_active_offers, s.number_of_in_stock_offers, s.number_of_stores, count(*) OVER () AS total_rows
       FROM hunter.product p
       LEFT JOIN hunter.collection c ON c.id = p.collection_id
@@ -154,7 +154,7 @@ async function productRow(key) {
 const STATS_PUBLIC = `as_of_day, data_status, current_price, current_total_price, lowest_current_price, highest_current_price, average_price, median_price,
   history_days, history_from, history_status, historical_min, historical_max, historical_average, historical_median,
   variation_24h, variation_7d, variation_30d, distance_from_historical_average, distance_from_historical_min,
-  reference_price, reference_status, reference_source, reference_kind, reference_verified_at, discount_vs_reference,
+  reference_price, reference_status, reference_source, reference_kind, reference_verified_at, reference_confidence, reference_reason, discount_vs_reference,
   number_of_active_offers, number_of_in_stock_offers, number_of_stores, number_of_marketplaces, shipping_coverage, engine_version, computed_at`;
 const statsOut = (s) => (s ? {
   as_of_day: s.as_of_day ? iso(s.as_of_day).slice(0, 10) : null, status: s.data_status,
@@ -164,7 +164,9 @@ const statsOut = (s) => (s ? {
     min: num(s.historical_min), max: num(s.historical_max), average: num(s.historical_average), median: num(s.historical_median),
     variation_24h: num(s.variation_24h), variation_7d: num(s.variation_7d), variation_30d: num(s.variation_30d),
     distance_from_average: num(s.distance_from_historical_average), distance_from_min: num(s.distance_from_historical_min) },
-  reference: s.reference_price != null ? { value: num(s.reference_price), status: s.reference_status, source: s.reference_source, kind: s.reference_kind ?? null, verified_at: iso(s.reference_verified_at) } : null,
+  // referência ATUAL resolvida pelo Price Engine (Copag atual > mercado robusto); null = NONE
+  reference: s.reference_price != null ? { value: num(s.reference_price), status: s.reference_status, source: s.reference_source, kind: s.reference_kind ?? null,
+    confidence: num(s.reference_confidence), reason: s.reference_reason ?? null, verified_at: iso(s.reference_verified_at) } : null,
   discount_vs_reference: num(s.discount_vs_reference),
   coverage: { active_offers: s.number_of_active_offers, in_stock_offers: s.number_of_in_stock_offers, stores: s.number_of_stores,
     marketplaces: s.number_of_marketplaces, shipping_coverage: num(s.shipping_coverage) },
@@ -183,10 +185,18 @@ export async function getProduct(key) {
     collection: { code: p.col_code, name: p.col_name, series: p.col_series }, boosters: p.units ?? null, variant: p.variant ?? null,
     language: p.language, condition: p.condition, image: p.image_url ?? null, status: p.status,
     identifiers: ids.map((i) => ({ kind: i.kind, value: i.value })),
-    // duas respostas separadas: referência ATUAL (nula = nenhuma) e CONTEXTO histórico (preço sugerido de lançamento etc.)
-    current_reference: (() => { const c = pickCurrentReference(refs); return c ? refOut(c) : null; })(),
-    historical_context: historicalContext(refs).map(refOut),
+    // respostas separadas: referência ATUAL (resolvida no Price Engine; kind NONE = nenhuma), CONTEXTO histórico
+    // (preço sugerido de lançamento etc.) e referência COMUNITÁRIA (só alerta, não oficial)
+    ...referenceBlocks(stats, refs),
     references: refs.map(refOut), stats: statsOut(stats),
+  };
+}
+function referenceBlocks(stats, refs) {
+  const comm = refs.filter((r) => r.reference_scope === 'community');
+  return {
+    current_reference: currentReferenceView(stats ? { kind: stats.reference_kind, price: stats.reference_price, confidence: stats.reference_confidence, reason: stats.reference_reason } : null),
+    historical_context: historicalContext(refs).map(contextReferenceView),
+    community_reference: comm.length ? contextReferenceView(comm[0]) : null,
   };
 }
 const REF_COLS = `id, value, verification_status, source, source_url, verified_at, reference_kind, reference_scope, confidence,
@@ -257,3 +267,46 @@ export async function listReferences({ page, limit, status = null }) {
      LIMIT $2 OFFSET $3`, [status, limit, (page - 1) * limit]);
   return { items: rows.map((r) => ({ product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name }, ...refOut(r) })), total: rows.length ? Number(rows[0].total_rows) : 0 };
 }
+
+// ---------------------------------------------------------------- Oportunidades (Opportunity Engine, resultado persistido)
+// Lê o que o pipeline já calculou (opportunity + view product_opportunity + product_stats + reference_price). Uma consulta,
+// sem N+1, sem recalcular nada no request. Padrão: a melhor oferta comprável de cada produto; ofertas=todas lista todas as avaliadas.
+export const OPP_SORTS = { score: 'o.opportunity_score DESC, o.confidence DESC, o.price ASC, o.offer_id', preco: 'o.price ASC, o.opportunity_score DESC, o.offer_id',
+  confianca: 'o.confidence DESC, o.opportunity_score DESC, o.offer_id' };
+export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score' }) {
+  const from = todas ? 'hunter.opportunity o' : 'hunter.product_opportunity o';
+  const rows = await q(`
+    SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, c.code AS col_code, c.name AS col_name,
+           f.legacy_id AS offer_legacy, f.url, f.title_raw, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
+           o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
+           s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason,
+           (SELECT coalesce(jsonb_agg(jsonb_build_object('reference_kind', r.reference_kind, 'value', r.value, 'published_at', r.published_at, 'effective_date', r.effective_date,
+               'confidence', r.confidence, 'source_url', r.source_url, 'source', r.source, 'verification_status', r.verification_status)
+               ORDER BY r.published_at DESC NULLS LAST, r.id DESC), '[]') FROM hunter.reference_price r WHERE r.product_id = o.product_id AND r.reference_scope = 'historical') AS historical,
+           (SELECT jsonb_build_object('reference_kind', r.reference_kind, 'value', r.value, 'confidence', r.confidence, 'source_url', r.source_url, 'source', r.source,
+               'verification_status', r.verification_status)
+              FROM hunter.reference_price r WHERE r.product_id = o.product_id AND r.reference_scope = 'community' ORDER BY r.verified_at DESC NULLS LAST, r.id DESC LIMIT 1) AS community,
+           count(*) OVER () AS total_rows
+      FROM ${from}
+      JOIN hunter.product p ON p.id = o.product_id
+      LEFT JOIN hunter.collection c ON c.id = p.collection_id
+      JOIN hunter.offer f ON f.id = o.offer_id
+      LEFT JOIN hunter.store st ON st.id = f.store_id
+      LEFT JOIN hunter.product_stats s ON s.product_id = o.product_id
+     WHERE ($1::text IS NULL OR o.opportunity_band = $1) AND ($2::text IS NULL OR c.code = $2) AND ($3::int IS NULL OR o.opportunity_score >= $3)
+     ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
+     LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit]);
+  return { items: rows.map(opportunityOut), total: rows.length ? Number(rows[0].total_rows) : 0 };
+}
+const opportunityOut = (r) => ({
+  product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name, type: r.attrs?.type ?? null, collection: { code: r.col_code, name: r.col_name } },
+  offer: { id: r.offer_legacy, title: r.title_raw, url: r.url },
+  price: num(r.price), total: r.shipping_status === 'unknown' ? null : num(r.total_price), shipping: r.shipping_status, stock: r.stock_status,
+  store: { id: r.store_id, name: r.store_name }, marketplace: r.marketplace_id,
+  opportunity_score: r.opportunity_score, opportunity_band: r.opportunity_band, confidence: num(r.confidence),
+  current_reference: currentReferenceView({ kind: r.reference_kind, price: r.reference_price, confidence: r.reference_confidence, reason: r.reference_reason }),
+  historical_context: (r.historical || []).map(contextReferenceView),
+  community_reference: r.community ? contextReferenceView(r.community) : null,
+  warnings: r.warnings || [], reasons: r.reasons || [],
+  engine_version: r.engine_version, updated_at: iso(r.calculated_at),
+});

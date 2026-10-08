@@ -9,7 +9,7 @@ export const STATS_COLS = {
   lowest_current_price: 'numeric', highest_current_price: 'numeric', average_price: 'numeric', median_price: 'numeric',
   history_days: 'int', history_from: 'date', history_status: 'text', historical_min: 'numeric', historical_max: 'numeric', historical_average: 'numeric', historical_median: 'numeric',
   variation_24h: 'numeric', variation_7d: 'numeric', variation_30d: 'numeric', distance_from_historical_average: 'numeric', distance_from_historical_min: 'numeric',
-  reference_price: 'numeric', reference_status: 'text', reference_source: 'text', reference_kind: 'text', reference_verified_at: 'timestamptz', discount_vs_reference: 'numeric',
+  reference_price: 'numeric', reference_status: 'text', reference_source: 'text', reference_kind: 'text', reference_verified_at: 'timestamptz', reference_confidence: 'numeric', reference_reason: 'text', discount_vs_reference: 'numeric',
   number_of_active_offers: 'int', number_of_in_stock_offers: 'int', number_of_stores: 'int', number_of_marketplaces: 'int', shipping_coverage: 'numeric',
   quality: 'jsonb', engine_version: 'text',
 };
@@ -22,12 +22,10 @@ export async function loadInputs(c) {
          total_price::float8 AS total_price, last_seen_at FROM offer`,
     `SELECT offer_id, observed_at AS t, price::float8 AS price, stock_status FROM price_history`,
     `SELECT offer_id, observed_at AS t FROM stock_event WHERE to_status = 'removed'`,
-    // referência ATUAL (Fase 5.6): só tipos atuais (Copag atual > mercado atual). Histórico (preço de lançamento) e comunitária
-    // NUNCA entram aqui. Verificada primeiro (mesma ordem da view reference_price_current); sem verificada, a pendente é só exibida.
-    `SELECT DISTINCT ON (product_id) product_id, value::float8 AS value, verification_status AS status, source, verified_at, reference_kind AS kind
-         FROM reference_price WHERE reference_scope = 'current'
-        ORDER BY product_id, (verification_status = 'verified') DESC, CASE reference_kind WHEN 'COPAG_OFFICIAL_CURRENT' THEN 1 ELSE 2 END,
-                 confidence DESC, verified_at DESC NULLS LAST, id DESC`,
+    // Copag oficial ATUAL verificada (mesma regra da view reference_price_current). Histórico e comunitária NUNCA entram;
+    // o mercado atual é derivado no próprio motor (Fase 6A), não lido de tabela.
+    `SELECT product_id, value::float8 AS value, verification_status AS status, source, verified_at, reference_kind AS kind, confidence
+         FROM reference_price_current WHERE reference_kind = 'COPAG_OFFICIAL_CURRENT'`,
     `SELECT store_id, until_day::text AS until FROM source_distrust`,
   ];
   const out = []; for (const sql of sqls) out.push(await q(sql));   // um cliente = uma consulta por vez

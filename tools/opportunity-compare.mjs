@@ -41,8 +41,13 @@ export function compareLegacy(state, rows) {
     falseNegatives: scored.filter((x) => x.legacy.dealScore >= 70 && x.opportunity_score < 50).map(fmt),        // robô diz boa, engine diz baixa
     legacyMissing: pairs.filter((x) => x.legacy.dealScore == null && x.opportunity_score >= 60).slice(0, 10).map(fmt),  // engine avalia o que o robô não pontua
     shortHistory: pairs.filter((x) => x.is_best && x.warnings.some((w) => w.code === 'SHORT_HISTORY')).length,
-    bestWithoutCopag: [...bestBy.values()].filter((x) => x.warnings.some((w) => w.code === 'NO_REFERENCE')).length,
-    bestWithCopag: [...bestBy.values()].filter((x) => !x.warnings.some((w) => w.code === 'NO_REFERENCE')).length,
+    bestByReference: [...bestBy.values()].reduce((a, x) => { const k = x.reference_kind || 'NONE'; a[k] = (a[k] || 0) + 1; return a; }, {}),
+    over10: scored.filter((x) => Math.abs(d(x)) > 10).length, over25: scored.filter((x) => Math.abs(d(x)) > 25).length,
+    byReference: Object.fromEntries(['COPAG_OFFICIAL_CURRENT', 'MARKET_CURRENT', 'NONE'].map((k) => { const g = scored.filter((x) => (x.reference_kind || 'NONE') === k);
+      return [k, { offers: g.length, spearman: spearman(g.map((x) => x.legacy.dealScore), g.map((x) => x.opportunity_score)),
+        bandAgreement: g.length ? +(g.filter((x) => bandOf(x.legacy.dealScore) === x.opportunity_band).length / g.length).toFixed(3) : null,
+        meanDelta: g.length ? +(g.reduce((a, x) => a + d(x), 0) / g.length).toFixed(1) : null }]; })),
+    legacyUsesCommunity: scored.filter((x) => x.community).length,
     productBands: [...bestBy.values()].reduce((a, x) => ((a[x.opportunity_band] = (a[x.opportunity_band] || 0) + 1), a), {}),
     top15: { legacy: topLegacy, opportunity: topNew, overlap: topNew.filter((x) => topLegacy.includes(x)).length },
     distribution: rows.reduce((a, x) => { const b = Math.min(9, Math.floor(x.opportunity_score / 10)); a[`${b * 10}-${b * 10 + 9}`] = (a[`${b * 10}-${b * 10 + 9}`] || 0) + 1; return a; }, {}),
@@ -56,13 +61,16 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const p = await pool();
   const rows = (await p.query(`
     SELECT o.offer_id, of.legacy_id AS legacy_offer, pr.legacy_id AS product, o.opportunity_score, o.opportunity_band, o.confidence, o.price::float8 AS price,
-           o.reasons, o.warnings, o.is_anomaly, (po.offer_id IS NOT NULL) AS is_best
+           o.reasons, o.warnings, o.is_anomaly, (po.offer_id IS NOT NULL) AS is_best, s.reference_kind,
+      EXISTS (SELECT 1 FROM hunter.reference_price r WHERE r.product_id = o.product_id AND r.reference_scope = 'community') AS community
       FROM hunter.opportunity o JOIN hunter.offer of ON of.id = o.offer_id JOIN hunter.product pr ON pr.id = o.product_id
-      LEFT JOIN hunter.product_opportunity po ON po.offer_id = o.offer_id`)).rows;
+      LEFT JOIN hunter.product_opportunity po ON po.offer_id = o.offer_id
+      LEFT JOIN hunter.product_stats s ON s.product_id = o.product_id`)).rows;
   await close();
   const r = compareLegacy(state, rows);
   if (out) fs.writeFileSync(out, JSON.stringify(r, null, 2));
   console.log(JSON.stringify({ avaliadas: r.offersEvaluated, comDealScore: r.withLegacyScore, spearman: r.spearman, concordanciaFaixa: r.bandAgreement, deltaMedio: r.meanDelta,
     divergencias25: r.bigDivergenceCount, falsosPositivos: r.falsePositives.length, falsosNegativos: r.falseNegatives.length, top15: r.top15.overlap,
-    produtos: r.productBands, semCopag: r.bestWithoutCopag, comCopag: r.bestWithCopag, historicoCurto: r.shortHistory, matriz: r.matrix }));
+    produtos: r.productBands, referencia: r.bestByReference, mudancas10: r.over10, mudancas25: r.over25, porReferencia: r.byReference,
+    comunitaria: r.legacyUsesCommunity, historicoCurto: r.shortHistory, matriz: r.matrix }));
 }

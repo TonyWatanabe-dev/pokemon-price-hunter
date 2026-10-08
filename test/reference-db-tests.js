@@ -83,13 +83,14 @@ await p.query(`INSERT INTO hunter.reference_price (product_id, value, source, so
 const cur2 = Object.fromEntries((await q(`SELECT p.legacy_id, c.reference_kind, c.priority FROM hunter.reference_price_current c JOIN hunter.product p ON p.id = c.product_id`)).map((r) => [r.legacy_id, r]));
 assert.equal(cur2['me05-etb'].reference_kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(cur2['sv3-etb'].reference_kind, 'MARKET_CURRENT'); assert.equal(cur2['sv3-etb'].priority, 2);
 await tx((c) => runPriceEngine(c));
-assert.equal((await q(`SELECT s.reference_kind FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id WHERE p.legacy_id = 'sv3-etb'`))[0].reference_kind, 'MARKET_CURRENT');
+// Fase 6A: o mercado atual é DERIVADO pelo Price Engine (mediana robusta); linha MARKET_CURRENT gravada à mão não é usada
+assert.equal((await q(`SELECT s.reference_kind FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id WHERE p.legacy_id = 'sv3-etb'`))[0].reference_kind, 'NONE', '2 ofertas: sem mercado robusto');
 await p.query(`DELETE FROM hunter.reference_price WHERE source = 'market_test'`); await tx((c) => runPriceEngine(c));
 
 // --- Opportunity Engine (fórmula intacta): sem referência atual, sinal de referência nulo mesmo havendo preço de lançamento
 await tx((c) => runOpportunityEngine(c));
 const opp = (await q(`SELECT o.reference_signal, o.warnings FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id WHERE f.legacy_id = 'o4'`))[0];
-assert.equal(opp.reference_signal, null); assert.ok(opp.warnings.some((w) => w.code === 'NO_REFERENCE'));
+assert.equal(opp.reference_signal, null); assert.ok(opp.warnings.some((w) => w.code === 'NO_CURRENT_REFERENCE') && opp.warnings.some((w) => w.code === 'HISTORICAL_REFERENCE_ONLY'));
 assert.notEqual((await q(`SELECT o.reference_signal FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id WHERE f.legacy_id = 'o1'`))[0].reference_signal, null);
 
 // --- re-sincronizar não apaga nem rebaixa nada
@@ -102,13 +103,13 @@ assert.equal(await n1(`SELECT count(*) FROM hunter.reference_price WHERE referen
 process.env.API_DATABASE_URL = process.env.TEST_DATABASE_URL;
 const DB = await import('../api/_lib/read-db.mjs');
 const a = await DB.getProduct('sv3-etb');
-assert.equal(a.current_reference, null, 'sem referência atual: NONE');
+assert.equal(a.current_reference.kind, a.stats.reference ? a.stats.reference.kind : 'NONE', 'referência atual vem do Price Engine'); assert.notEqual(a.current_reference.kind, 'COPAG_OFFICIAL_HISTORICAL');
 assert.equal(a.historical_context.length, 1); assert.equal(a.historical_context[0].kind, 'COPAG_OFFICIAL_HISTORICAL');
-assert.equal(a.historical_context[0].label, 'Preço sugerido de lançamento'); assert.equal(a.historical_context[0].published_at, '2023-08');
+assert.equal(a.historical_context[0].label, 'Preço sugerido de lançamento'); assert.equal(a.historical_context[0].published_at, '2023-08'); assert.equal(a.historical_context[0].price, 369.99);
 assert.equal(a.stats.discount_vs_reference, null);
 const b = await DB.getProduct('me05-etb');
-assert.equal(b.current_reference.kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(b.current_reference.value, 400); assert.equal(b.stats.reference.kind, 'COPAG_OFFICIAL_CURRENT');
+assert.equal(b.current_reference.kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(b.current_reference.price, 400); assert.equal(b.current_reference.source, 'Copag'); assert.equal(b.stats.reference.kind, 'COPAG_OFFICIAL_CURRENT');
 const c3 = await DB.getProduct('c30-etb');
-assert.equal(c3.current_reference, null); assert.equal(c3.references[0].kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.references[0].label, 'Referência não oficial');
+assert.notEqual(c3.current_reference.kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.community_reference.kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.community_reference.label, 'Referência comunitária'); assert.equal(c3.community_reference.price, 399.99);
 await close();
 console.log('OK — Referências atual × histórico (PostgreSQL)');

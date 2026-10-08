@@ -1,10 +1,10 @@
-// Opportunity Engine — opportunity-v1. Funções puras e determinísticas (mesmos dados → mesmo resultado).
+// Opportunity Engine — opportunity-v2 (v1 + referência atual, Fase 6A). Funções puras e determinísticas (mesmos dados → mesmo resultado).
 // Não calcula fatos de preço: lê product_stats (Price Engine) e o contexto da oferta, e INTERPRETA.
 // Pergunta que o score responde: "quão interessante é comprar esta oferta AGORA?" — não "quão barato é".
 //
 // Modelo (documentado no relatório da fase 5):
 // 1) Sinais de 0 a 1, cada um NULO quando falta dado confiável (nunca inventado):
-//    reference  — desconto do preço do item contra a referência Copag VERIFICADA            peso 0,30
+//    reference  — desconto contra a REFERÊNCIA ATUAL (Copag atual verificada; sem ela, mercado robusto) peso 0,30
 //    historical — posição do preço entre a mínima e a média históricas (≥ 3 dias de série)    peso 0,20
 //    market     — distância da mediana das ofertas com estoque agora (≥ 2 ofertas; 2 = meio peso) 0,20
 //    price      — distância do menor preço com estoque agora (≥ 2 ofertas)                    peso 0,10
@@ -15,12 +15,15 @@
 // 3) Encolhimento pela evidência: score = 50 + (bruto − 50) × cobertura, cobertura = pesos disponíveis / pesos totais.
 //    Pouca evidência puxa para "Normal": sem Copag e sem histórico, a oferta não chega a "Excelente".
 // 4) Travas: sem estoque ≤ 30; pré-venda ≤ 60; estoque incerto ≤ 70; oferta parada (pendente) ≤ 40;
-//    preço implausível/anômalo ≤ 49; ≥ 15% acima da Copag verificada ≤ 49; acima da Copag ≤ 74;
+//    preço implausível/anômalo ≤ 49; ≥ 15% acima da referência atual ≤ 49; acima da referência atual ≤ 74;
 //    queda não confirmada ≤ 74; loja mal avaliada ≤ 74; desconto > 40% ≤ 89.
 // 5) Confiança separada do score (0–1): cobertura × fatores de incerteza (histórico curto, frete, poucas lojas...).
 import { plausible, round2, round4 } from './price-engine.js';
+import { CURRENT_KINDS } from './references.js';
 
-export const OPP_VERSION = 'opportunity-v1';
+// v2 (Fase 6A): mesma fórmula, pesos, travas, faixas e confiança da v1; o sinal de 30% passou de "Copag" para REFERÊNCIA ATUAL
+// (Copag oficial atual > mercado atual robusto > nenhuma). Histórico e comunitária só geram aviso/contexto.
+export const OPP_VERSION = 'opportunity-v2';
 export const WEIGHTS = { reference: 0.30, historical: 0.20, market: 0.20, price: 0.10, freight: 0.10, reliability: 0.10 };
 const W_TOTAL = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
 export const BANDS = [[90, 'excelente'], [75, 'boa'], [50, 'normal'], [0, 'baixa']];
@@ -58,21 +61,33 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
       price_signal: null, historical_signal: null, reference_signal: null, stock_signal: null, freight_signal: null, market_signal: null, reliability_signal: null, is_anomaly: false };
   }
   const st = stats || {};
-  const ref = num(st.reference_price); const refOk = st.reference_status === 'verified' && ref > 0;
+  // referência ATUAL (resolvida pelo Price Engine em product_stats): Copag oficial atual > mercado atual robusto > NONE
+  const ref = num(st.reference_price); const refKind = st.reference_kind ?? null;
+  const refOk = CURRENT_KINDS.includes(refKind) && ref > 0 && (refKind === 'MARKET_CURRENT' || st.reference_status === 'verified');
   const nStock = num(st.number_of_in_stock_offers) || 0;
   const median = num(st.median_price); const lowest = num(st.lowest_current_price);
   const hMin = num(st.historical_min); const hAvg = num(st.historical_average); const histOk = st.history_status === 'ok' && hMin > 0 && hAvg > 0;
   const anchor = num(st.quality?.anchor);
 
-  // --- referência Copag (só verificada)
+  // --- referência atual
   let reference = null; let discount = null;
   if (refOk) {
+    const copag = refKind === 'COPAG_OFFICIAL_CURRENT';
+    const of = copag ? 'do preço sugerido Copag' : 'da referência de mercado'; const at = copag ? 'no preço sugerido Copag' : 'na referência de mercado';
     discount = (ref - price) / ref;
     reference = pw(discount, [[-0.15, 0], [0, 0.35], [0.10, 0.6], [0.20, 0.85], [0.30, 1]]);
-    if (discount >= 0.005) r('BELOW_REFERENCE', `${pct(discount)} abaixo da referência Copag (${brl(ref)})`);
-    else if (discount <= -0.005) r('ABOVE_REFERENCE', `${pct(discount)} acima da referência Copag (${brl(ref)})`, '-');
-    else r('AT_REFERENCE', `no preço da referência Copag (${brl(ref)})`, '=');
-  } else w('NO_REFERENCE', st.reference_price != null ? 'Referência Copag ainda não verificada: desconto não considerado' : 'Sem referência Copag: desconto não considerado');
+    const rr = (code, text, impact) => reasons.push({ code, text, impact, reference_kind: refKind });
+    if (discount >= 0.005) rr('BELOW_REFERENCE', `${pct(discount)} abaixo ${of} (${brl(ref)})`, '+');
+    else if (discount <= -0.005) rr('ABOVE_REFERENCE', `${pct(discount)} acima ${of} (${brl(ref)})`, '-');
+    else rr('AT_REFERENCE', `${at} (${brl(ref)})`, '=');
+  } else w('NO_CURRENT_REFERENCE', 'Não há referência atual suficiente: desconto não considerado');
+  // contexto (nunca entra no score): preço de lançamento e referência comunitária
+  const ctx = st.reference_context || {}; const histCtx = ctx.historical || []; const commCtx = ctx.community || [];
+  if (!refOk && histCtx.length) { const h = histCtx[0];
+    w('HISTORICAL_REFERENCE_ONLY', `Existe apenas referência histórica: ${h.kind === 'MARKET_HISTORICAL' ? 'histórico de mercado' : 'preço sugerido de lançamento'} de ${brl(h.price)}${h.published_at ? ` (${h.published_at})` : ''}, que não é usado como referência atual`); }
+  if (commCtx.length) { const c = commCtx[0]; const d = (price - c.price) / c.price;
+    w(!refOk && !histCtx.length ? 'COMMUNITY_REFERENCE_ONLY' : 'COMMUNITY_REFERENCE',
+      `Existe uma referência comunitária de ${brl(c.price)} (não é preço oficial Copag nem referência atual e não entra no score)${Math.abs(d) >= 0.005 ? `; esta oferta está ${pct(d)} ${d > 0 ? 'acima' : 'abaixo'} dela` : ''}`); }
 
   // --- histórico (só com série suficiente; tendências só quando o Price Engine as calculou)
   let historical = null;
@@ -87,7 +102,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
     for (const [k, d] of [['variation_7d', '7 dias'], ['variation_30d', '30 dias']]) {
       const v = num(st[k]); if (v != null && Math.abs(v) >= 0.03) r(v < 0 ? 'PRICE_FALLING' : 'PRICE_RISING', `melhor preço ${v < 0 ? 'caiu' : 'subiu'} ${pct(v)} em ${d}`, v < 0 ? '+' : '-');
     }
-  } else w('SHORT_HISTORY', `Histórico curto (${num(st.history_days) || 0} ${num(st.history_days) === 1 ? 'dia' : 'dias'}): sem comparação com o passado`);
+  } else w('SHORT_HISTORY', `Histórico ainda insuficiente para uma comparação confiável (${num(st.history_days) || 0} ${num(st.history_days) === 1 ? 'dia' : 'dias'})`);
 
   // --- mercado agora (só com ≥ 2 ofertas em estoque; 2 = meio peso)
   let market = null; let marketWeight = WEIGHTS.market; let priceSig = null;
@@ -113,7 +128,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
       if (share > 0.15) r('HEAVY_SHIPPING', `frete de ${brl(ship)} (${pct(share)} do preço)`, '-'); else r('KNOWN_SHIPPING', `frete conhecido (${brl(ship)})`, '=');
     }
   }
-  if (freight == null) w('UNKNOWN_SHIPPING', 'Frete ainda não confirmado');
+  if (freight == null) w('UNKNOWN_FREIGHT', 'Frete não confirmado');
 
   // --- confiabilidade da loja / vendedor (sempre presente: loja desconhecida = neutro)
   const ra = offer.store?.ra_status || null;
@@ -140,16 +155,16 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   const implausible = anchor != null && !plausible(price, anchor);
   const isAnomaly = !!offer.anomalous || implausible;
   if (isAnomaly) { cap(CAPS.anomaly, 'anomaly'); w('ANOMALY', implausible ? `Preço fora do esperado para o produto (régua ${brl(anchor)}): conferir antes de comprar` : 'Preço marcado como anômalo pelo robô: conferir antes de comprar'); }
-  // pagar acima do preço sugerido Copag nunca é "Boa"; ≥ 15% acima é preço ruim, mesmo que o mercado esteja mais caro
+  // pagar acima da referência atual nunca é "Boa"; ≥ 15% acima é preço ruim
   if (refOk && discount <= -0.15) cap(CAPS.far_above_reference, 'far_above_reference');
   else if (refOk && discount <= -0.005) cap(CAPS.above_reference, 'above_reference');
-  if (refOk && discount > 0.40 && !isAnomaly) { cap(CAPS.too_good, 'too_good'); w('TOO_GOOD', `Desconto de ${pct(discount)} é fora do comum: conferir o anúncio`); }
+  if (refOk && discount > 0.40 && !isAnomaly) { cap(CAPS.too_good, 'too_good'); w('TOO_GOOD', `Desconto de ${pct(discount)} sobre a referência atual é fora do comum: conferir o anúncio`); }
   if (offer.confirmed === false) { cap(CAPS.unconfirmed, 'unconfirmed'); w('UNCONFIRMED', 'Queda de preço aguardando 2ª leitura'); }
   if (ra === 'RUIM' || ra === 'NAO_RECOMENDADA') cap(CAPS.bad_store, 'bad_store');
   if (offer.status === 'pending') { cap(CAPS.pending, 'pending'); w('STALE', 'Loja não lida recentemente: oferta pode ter mudado'); }
   if (offer.stock_status === 'out_of_stock') { cap(CAPS.out_of_stock, 'out_of_stock'); w('OUT_OF_STOCK', 'Sem estoque agora'); }
   else if (offer.stock_status === 'preorder') { cap(CAPS.preorder, 'preorder'); w('PREORDER', 'Pré-venda: entrega futura'); }
-  else if (offer.stock_status !== 'in_stock') { cap(CAPS.stock_unknown, 'stock_unknown'); w('STOCK_UNKNOWN', 'Estoque não confirmado pela loja'); }
+  else if (offer.stock_status !== 'in_stock') { cap(CAPS.stock_unknown, 'stock_unknown'); w('UNCERTAIN_STOCK', 'Estoque não confirmado'); }
   score = Math.round(clamp(score, 0, 100));
 
   // --- confiança (separada do score)
