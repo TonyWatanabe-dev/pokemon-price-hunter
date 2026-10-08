@@ -34,6 +34,21 @@ try {
   rep.connected = false;
   rep.error = { code: e.code || null, errno: e.errno || null, syscall: e.syscall || null, message: e.message };
 }
+// "tenant/user not found" no pooler: quase sempre o índice do cluster no host (aws-0, aws-1...). Testa os outros
+// só para diagnóstico; não muda nada e não grava a URL.
+if (!ok && u && /tenant\/user .* not found/i.test(rep.error?.message || '') && /^aws-\d+-/.test(u.hostname)) {
+  rep.url.hostCluster = u.hostname.split('-').slice(0, 2).join('-');
+  rep.clusterProbe = {};
+  const { default: pg } = await import('pg');
+  for (const k of [0, 1, 2]) {
+    const alt = new URL(raw); alt.hostname = u.hostname.replace(/^aws-\d+-/, `aws-${k}-`);
+    if (alt.hostname === u.hostname) continue;
+    const c = new pg.Client({ connectionString: alt.toString(), ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 8000 });
+    try { await c.connect(); const r = await c.query("SELECT current_setting('server_version') v"); rep.clusterProbe[`aws-${k}`] = 'conecta (PostgreSQL ' + r.rows[0].v + ')'; }
+    catch (e) { rep.clusterProbe[`aws-${k}`] = 'falha: ' + (e.code || '') + ' ' + e.message; }
+    finally { await c.end().catch(() => {}); }
+  }
+}
 let txt = JSON.stringify(rep, null, 2);
 if (u) for (const s of [u.password, decodeURIComponent(u.password || ''), u.username, u.hostname].filter((x) => x && x.length > 3)) txt = txt.split(s).join('***');
 fs.writeFileSync(out, txt);
