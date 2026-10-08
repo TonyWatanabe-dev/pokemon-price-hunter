@@ -68,4 +68,13 @@ assert.ok(fs.existsSync(path.join(dir, 'ml-catalog.json')));
 // sem autorização = bloqueado com instrução
 fs.rmSync(path.join(dir, 'ml-auth.enc'));
 await assert.rejects(search({ id: 'mercadolivre' }, catalog), /não autorizado/);
+// filtro de nomes do catálogo do ML
+const { mlReject } = await import('../src/adapters/mercadolivre.js');
+const bad = [['Kit 3 Blister Quadruplo Pokémon Evoluções Prismáticas Copag', 'sv8_5-blister4'], ['Cx Lacrada C/ 24 Blister Unitarios Me03 Equilibrio Perfeito', 'me03-blister1'],
+  ['Álbum Fichário Pokémon Cards Copag Rivais Predestinados 20 Folhas', 'sv10-colecao_fichario'], ['Booster Pokémon Escarlate E Violeta Com 36 Pacotinhos Copag', 'sv1-booster'],
+  ['Pokémon Caos Ascendentes - Blister Triplo - Mega Evolução', 'me01-blister3'], ['Caixa 36 Pacotes De Figurinha Copag Pokémon Coroa Estelar', 'sv7-box36']];
+for (const [n, id] of bad) assert.ok(mlReject(n, id, catalog), 'devia barrar: ' + n);
+const good = [['Box Treinador Avançado Caos Ascendente Pokémon Tcg Copag', 'me04-etb'], ['Blister Triplo Pokémon TCG Amigos de Jornada com Scraggy – Escarlate e Violeta', 'sv9-blister3'],
+  ['Pokémon Celebração de 30 anos – Box Coleção com Fichário', 'c30-colecao_fichario'], ['Treinador Avançado Pokémon Megaevolução Lucário ex', 'me01-etb']];
+for (const [n, id] of good) assert.equal(mlReject(n, id, catalog), null, 'não devia barrar: ' + n);
 console.log('OK — Mercado Livre');

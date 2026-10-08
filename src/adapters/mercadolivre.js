@@ -12,6 +12,31 @@ const API = 'https://api.mercadolibre.com';
 const itemUrl = (id) => `https://produto.mercadolivre.com.br/${String(id).replace(/^MLB/, 'MLB-')}-_JM`;
 const DAY = 864e5;
 
+// Nome de catálogo do ML é escrito por vendedor: barra kits, caixas fechadas, acessórios de terceiros
+// e nomes ambíguos antes de publicar (produto e preço precisam ser exatamente o do link).
+const norm = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+export function mlReject(name, productId, catalog) {
+  const t = norm(name); const type = productId.split('-').slice(1).join('-');
+  if (/\b(kit|lote|case|unidades|figurinhas?)\b|\d+\s*unid|\+/.test(t)) return 'kit, lote ou caixa fechada';
+  if (/^\s*\d+\s*(x\s*)?(blister|booster|4 ?pack|pack|box)/.test(t)) return 'quantidade no começo do nome';
+  if (/triplo e quadruplo|quadruplo e triplo/.test(t)) return 'dois produtos no mesmo anúncio';
+  if (/^booster$/.test(type) && /\b(36|24|18|12|10|8)\b|display|caixa|\bbox\b|pacotinhos|pacotes/.test(t)) return 'booster avulso com cara de caixa';
+  if (/^blister\d$/.test(type) && /\b(24|36)\b|\bcx\b|caixa|display/.test(t)) return 'caixa fechada de blisters';
+  if (/fichario/.test(type) && (!/\bbox\b|colecao com fichario/.test(t) || /folhas|argolas|pasta|capa dura|escolar/.test(t))) return 'fichário avulso de terceiros';
+  if (/^colecao_ex/.test(type) && (t.match(/\bex\b/g) || []).length > 1) return 'mais de um produto no nome';
+  // Outra coleção citada no nome (fora o nome da série, ex.: "Escarlate e Violeta", "Megaevolução").
+  const BASE = new Set(['sv1', 'me01']);
+  const colId = productId.split('-')[0];
+  const mine = norm((catalog.collections || []).find((c) => c.id === colId)?.name || '');
+  const others = (catalog.collections || []).filter((c) => c.id !== colId && !BASE.has(c.id) && !mine.includes(norm(c.name)) && t.includes(norm(c.name)));
+  if (others.length) return 'nome cita outra coleção';
+  // "Megaevolução" é também o nome da série inteira: blister/booster/caixa só valem com código ou mascote do ME01.
+  if (colId === 'me01' && /^(blister|booster|box)/.test(type) && !/\bme ?0?1\b|drifloon|drifblim|psyduck|golduck/.test(t)) return 'série Megaevolução sem coleção definida';
+  if (colId === 'me01' && /cottonee?|whimsicott|sneasel|weavile|charmeleon|toxel|makuhita/.test(t)) return 'mascote de outra coleção';
+  return null;
+}
+const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto de catálogo
+
 export async function search(store, catalog, { log = () => {} } = {}) {
   let auth;
   try { auth = await accessToken(); } catch (e) { throw new BlockedError('Mercado Livre: não foi possível renovar o acesso (' + e.message + '). Rode o workflow "Mercado Livre: autorizar".', 'auth'); }
@@ -50,7 +75,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       for (const p of j.results || []) {
         const name = p.name || p.title; if (!name || !/pok[eé]mon/i.test(name)) continue;
         const m = matchProduct({ title: name, url: '' }, catalog);
-        if (m.productId) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
+        if (m.productId && !mlReject(name, m.productId, catalog)) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
       }
     }
     cache.products = found; cache.at = new Date().toISOString();
@@ -58,10 +83,12 @@ export async function search(store, catalog, { log = () => {} } = {}) {
 
   const listings = [];
   for (const [pid, p] of Object.entries(cache.products)) {
+    if (mlReject(p.name, p.productId, catalog)) continue;
     let j;
     try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
-    for (const it of j.results || []) {
-      if (it.condition && it.condition !== 'new') continue;
+    const items = (j.results || []).filter((it) => (!it.condition || it.condition === 'new') && Number(it.price) > 0)
+      .sort((a, b) => a.price - b.price).filter((it, i) => i < PER_PRODUCT || it.official_store_id);
+    for (const it of items) {
       const id = it.item_id || it.id; const price = Number(it.price);
       if (!id || !(price > 0)) continue;
       const sid = it.seller_id;
