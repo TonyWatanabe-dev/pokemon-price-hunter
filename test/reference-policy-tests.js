@@ -1,7 +1,7 @@
 // Fase 6A — política de REFERÊNCIA ATUAL (Copag atual > mercado robusto > NONE) e seu uso no Opportunity Engine. Testes puros.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { resolveCurrentReference, marketReferenceOf, currentReferenceView, contextReferenceView, MARKET_RULE } from '../src/core/references.js';
+import { resolveCurrentReference, marketReferenceOf, currentReferenceView, contextReferenceView, MARKET_RULE, COPAG_MAX_AGE_DAYS, copagExpired } from '../src/core/references.js';
 import { computeProductStats } from '../src/core/price-engine.js';
 import { calculateOpportunity, WEIGHTS } from '../src/core/opportunity-engine.js';
 
@@ -140,6 +140,46 @@ t('contrato da API: referência atual, contexto e comunitária', () => {
   assert.equal(h.label, 'Preço sugerido de lançamento'); assert.equal(h.confidence, 0.9); assert.equal(h.published_at, '2023-08'); assert.equal(h.effective_date, null);
   const k = contextReferenceView({ reference_kind: 'COMMUNITY_REFERENCE', value: 399.99, confidence: 95, source_url: 'https://www.instagram.com/voltztcg/' });
   assert.equal(k.label, 'Referência comunitária'); assert.equal(k.source, 'instagram.com/voltztcg'); assert.ok(!/Copag/.test(k.label));
+});
+
+// Auditoria de referências: Copag verificada vale COPAG_MAX_AGE_DAYS; vencida fica gravada, mas não entra na nota.
+t('11. validade Copag: limites de 30 dias, sem data e sem asOf', () => {
+  const D = 864e5; const at = (ms) => new Date(now.getTime() - ms).toISOString();
+  assert.equal(COPAG_MAX_AGE_DAYS, 30);
+  assert.equal(copagExpired(at(30 * D), now), false, 'exatamente 30 dias ainda vale');
+  assert.equal(copagExpired(at(30 * D + 1000), now), true, 'passou de 30 dias: vencida');
+  assert.equal(copagExpired(null, now), false, 'sem data não há como medir');
+  assert.equal(copagExpired(at(90 * D), null), false, 'sem asOf não há como medir');
+  assert.equal(copagExpired('lixo', now), false);
+});
+
+t('12. Copag vencida não é referência atual: cai para mercado (ou NONE) e preserva a data', () => {
+  const old = { ...copagRow, verified_at: '2026-09-01T10:00:00Z' };   // 37 dias antes de now
+  const market = marketReferenceOf(market5.slice(0, 4));
+  const r = resolveCurrentReference({ copag: old, market, asOf });
+  assert.equal(r.kind, 'MARKET_CURRENT'); assert.equal(r.price, market.price); assert.equal(r.copag_expired_verified_at, '2026-09-01T10:00:00Z');
+  const none = resolveCurrentReference({ copag: old, market: { ok: false, reason: 'few_offers' }, asOf });
+  assert.equal(none.kind, 'NONE'); assert.equal(none.price, null); assert.equal(none.reason, 'copag_expired_few_offers');
+  assert.equal(none.copag_expired_verified_at, '2026-09-01T10:00:00Z');
+  assert.equal(resolveCurrentReference({ copag: old, asOf }).reason, 'copag_expired');
+  const fresh = resolveCurrentReference({ copag: { ...copagRow, verified_at: '2026-09-09T12:00:00Z' }, market, asOf });   // 29 dias
+  assert.equal(fresh.kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(fresh.copag_expired_verified_at, undefined);
+  assert.equal(resolveCurrentReference({ copag: old, market }).kind, 'COPAG_OFFICIAL_CURRENT', 'sem asOf: comportamento anterior');
+});
+
+t('13. nota: Price Engine e Opportunity Engine não usam Copag vencida', () => {
+  const ref = (verified_at) => ({ value: 349.99, status: 'verified', source: 'copag_loja', kind: 'COPAG_OFFICIAL_CURRENT', confidence: 95, verified_at });
+  const sOld = stats(market5.slice(0, 4), ref('2026-09-01T10:00:00Z'));
+  assert.equal(sOld.reference_kind, 'MARKET_CURRENT'); assert.notEqual(sOld.reference_price, 349.99); assert.equal(sOld.reference_verified_at, null);
+  const sNew = stats(market5.slice(0, 4), ref('2026-10-01T10:00:00Z'));
+  assert.equal(sNew.reference_kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(sNew.reference_price, 349.99);
+  const oOld = opp(sOld); const oNew = opp(sNew);
+  assert.equal(oOld.reference_kind, 'MARKET_CURRENT'); assert.notEqual(oOld.reference_value, 349.99);
+  assert.equal(oOld.reasons.find((x) => x.code === 'BELOW_REFERENCE').reference_kind, 'MARKET_CURRENT');
+  assert.ok(!JSON.stringify(oOld).includes('preço sugerido Copag'), 'texto da nota não cita a Copag vencida');
+  assert.equal(oNew.reference_kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(oNew.reference_value, 349.99);
+  const sNone = stats([off(1, 'a', 300)], ref('2026-09-01T10:00:00Z'));
+  assert.equal(sNone.reference_kind, 'NONE'); assert.match(sNone.reference_reason, /^copag_expired/);
 });
 
 console.log(`✓ Política de referência atual (6A): ${n} grupos de testes passaram`);
