@@ -109,9 +109,16 @@ await t('"Por que esta nota?" carrega a explicação oficial da própria oferta;
   pop.innerHTML = 'antes'; await c3.showScore({ dataset: { oscore: 'a' }, getBoundingClientRect: () => ({}) }); assert.equal(pop.innerHTML, 'antes', 'oferta sem nota oficial não abre explicação');
 });
 await t('/oportunidades continua com a mesma explicação de antes (oppWhy = <details> + oppWhyBody)', () => {
-  const prev = execFileSync('git', ['show', '2df9e86:index.html'], { cwd: new URL('..', import.meta.url), maxBuffer: 64 << 20 }).toString();
+  // Código de oppWhy antes da refatoração (2df9e86), guardado em fixture: funciona em clone raso e em export sem .git.
+  const MARK = '// ---- trecho original ----\n';
+  const oldSrc = fs.readFileSync(new URL('./fixtures/oppwhy-2df9e86.js', import.meta.url), 'utf8').split(MARK)[1];
+  assert.ok(oldSrc && oldSrc.includes('function oppWhy('), 'fixture com o oppWhy antigo');
+  // Procedência: com o histórico disponível, o fixture tem de ser idêntico aos mesmos recortes de 2df9e86:index.html.
+  let prev = null; try { prev = execFileSync('git', ['show', '2df9e86:index.html'], { cwd: new URL('..', import.meta.url), maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] }).toString(); } catch { /* clone raso ou export */ }
+  if (prev) assert.equal(oldSrc, cut('const BAND_UI=', '/* 6C.1 TCG Rarity System', prev) + cut('const pctPts=', 'function oppCard(', prev), 'fixture idêntico a 2df9e86:index.html');
+  else console.log('  (sem histórico do Git: procedência do fixture não conferida neste ambiente; a comparação com o código antigo roda igual)');
   const old = { esc: (s) => String(s ?? ''), ic: (k) => `<i:${k}>`, money: (v) => `R$ ${Number(v).toFixed(2)}`, ago: () => 'agora' }; vm.createContext(old);
-  vm.runInContext(cut('const BAND_UI=', '/* 6C.1 TCG Rarity System', prev) + cut('const pctPts=', 'function oppCard(', prev).replace('function oppWhy(', 'function oppWhyOld('), old);
+  vm.runInContext(oldSrc.replace('function oppWhy(', 'function oppWhyOld('), old);
   const now = page();
   const x = { price: 50, opportunity_score: 80, opportunity_band: 'boa', confidence: 0.51, confidence_level: 'média', current_reference: { kind: 'MARKET_CURRENT', price: 70, market_sources: 4 },
     reference_comparison: { available: true, reference_kind: 'MARKET_CURRENT', reference_value: 70, percentage_below: 28.57, amount_below: 20, position: 'below' },
