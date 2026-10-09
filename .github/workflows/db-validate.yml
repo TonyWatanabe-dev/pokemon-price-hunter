@@ -85,6 +85,7 @@ jobs:
         run: git fetch --depth 1 origin data && rm -rf data && git checkout FETCH_HEAD -- data && git reset -q
       - name: Testes (unitários + banco)
         env: { TEST_DATABASE_URL: 'postgres://postgres:pw@localhost:5432/postgres' }
+        shell: bash   # bash -eo pipefail: falha do npm test não some atrás do tee
         run: npm test 2>&1 | tee out/tests.log
       - name: Migrations e validação com dados reais (banco limpo)
         env: { DATABASE_URL: 'postgres://postgres:pw@localhost:5432/postgres' }
