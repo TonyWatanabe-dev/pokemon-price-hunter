@@ -36,7 +36,9 @@ export async function shipping(listing, cep) {
   const url = `${base}/api/checkout/pub/orderForms/simulation?sc=1`; await guard(url);
   const r = await request(url, { method: 'POST', accept: 'application/json', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ items: [{ id: itemId, quantity: 1, seller: sellerId }], postalCode: cep.replace(/\D/g, ''), country: 'BRA' }) });
+  // Sem opção de entrega (ou preço ilegível) é falha da simulação, com motivo: quem chama decide (nunca inventa frete).
   const slas = r.json()?.logisticsInfo?.[0]?.slas || [];
-  if (!slas.length) return null;
-  return Math.min(...slas.map((s) => s.price)) / 100;
+  const prices = slas.map((s) => s?.price).filter((v) => typeof v === 'number' && Number.isFinite(v) && v >= 0);
+  if (!prices.length) throw new Error(slas.length ? 'simulação de frete sem preço legível' : 'simulação de frete sem opção de entrega para o CEP');
+  return Math.min(...prices) / 100;
 }

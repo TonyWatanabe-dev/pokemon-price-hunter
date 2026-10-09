@@ -137,6 +137,9 @@ export function parseListing(title, catalog) {
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
   if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
+  // "Case" (caixa master com várias boxes/ETBs) e "6x Booster Box" nunca são a unidade do catálogo.
+  // "Case vazio/vazia" continua só como acessório (regra REJECT acima), sem esse segundo motivo.
+  else if (/\bcase\b(?! vazi[oa]\b)|\b(caixa|box) master\b|\bmaster (case|box)\b|\b([2-9]|1\d) ?x? (booster box(es)?|box(es)? display|displays?|treinadore?s? avancados?|etbs?)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
   if (/\b(dados?|moedas?|marcadores?|contadores? de dano)\b/.test(t) && !/\b(boosters?|pacotes?|blister|colecao|box|treinador avancado com|etb com)\b/.test(t.replace(/\btreinador avancado\b/, ''))) reasons.push('acessório avulso (dados, moeda, marcador)');
   const col = detectCollection(t, catalog.collections);
   if (!/\bpokemon\b/.test(t) && !/\bcopag\b/.test(t) && !col.id) reasons.push('não menciona Pokémon');
@@ -182,4 +185,35 @@ export function matchProduct(listing, catalog) {
   if (p.collectionFallback) confidence -= 0.1;
   if (/\b(lacrad[oa]|original|copag)\b/.test(p.normalized)) confidence += 0.05;
   return { productId: prod.id, product: prod, confidence: Math.min(0.99, +confidence.toFixed(2)), parsed: p, why: [] };
+}
+
+/** Página canônica: host sem www + caminho, sem query/hash. Chave de revisão e de override. */
+export function canonicalUrl(u) {
+  try { const x = new URL(u); return `${x.hostname.toLowerCase().replace(/^www\./, '')}${x.pathname.replace(/\/+$/, '')}`; }
+  catch { return String(u || '').trim().toLowerCase(); }
+}
+
+// Overrides de revisão humana (config/matching-overrides.json, gerado por tools/review.mjs export).
+// Só valem com "enabled": true. Só resolvem dúvidas específicas: não passam por cima de idioma,
+// acessório, kit, EAN divergente nem coleção diferente da que o título traz. A trava linkAgrees
+// da rodada continua valendo depois.
+const OVERRIDABLE = /^(tipo de produto não identificado|quantidade de boosters não informada|mais de uma coleção no título: .*)$/;
+export function overridesIndex(file) {
+  const idx = new Map();
+  if (file?.enabled !== true || !Array.isArray(file.overrides)) return idx;
+  for (const o of file.overrides) if (o?.store && o?.url && o?.productId) idx.set(`${o.store}|${o.url}`, o);
+  return idx;
+}
+export function applyOverride(listing, storeId, m, catalog, idx) {
+  if (!idx?.size) return m;
+  const ov = idx.get(`${storeId}|${canonicalUrl(listing.url)}`);
+  if (!ov || m.productId === ov.productId) return m;
+  if (!m.productId && !(m.why?.length === 1 && OVERRIDABLE.test(m.why[0]))) return m;
+  if (m.parsed?.collection && m.parsed.collection !== ov.collection) return m;
+  if (!catalog.collections.some((c) => c.id === ov.collection)) return m;
+  const prod = describeProduct(catalog, ov.collection, ov.type, ov.boosters ?? null, ov.variant ?? null);
+  if (prod.id !== ov.productId) return m;
+  const fixed = (catalog.products || []).find((x) => x.id === prod.id);
+  if (fixed?.ean && listing.ean && fixed.ean.replace(/\D/g, '').replace(/^0+/, '') !== String(listing.ean).replace(/\D/g, '').replace(/^0+/, '')) return m;
+  return { productId: prod.id, product: prod, confidence: 0.8, parsed: m.parsed, why: [], override: ov.reviewId };
 }

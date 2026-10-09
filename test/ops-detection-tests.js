@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildRunRecord, mergeOps, recordRun, readerSummary, storesSummary, validRecord, KEEP_RUNS } from '../src/opstate.js';
+import { buildRunRecord, mergeOps, recordRun, readerSummary, storesSummary, watchedSummary, validRecord, KEEP_RUNS } from '../src/opstate.js';
 import { readDbHealth, syncStatus } from '../src/db-health.js';
 import { evaluate, decide, commitLedger, RULES } from '../src/ops-watch.js';
 import { sendAll } from '../src/ops-notify.js';
@@ -19,7 +19,7 @@ const NOW = '2026-10-09T12:00:00.000Z';
 
 // rodada sintética, montada pelo mesmo construtor do robô
 let seq = 0;
-function rec({ at, reader = { status: 'ok', valid: 500, read: 520, reason: null }, sync = 'ok', stores } = {}) {
+function rec({ at, reader = { status: 'ok', valid: 500, read: 520, reason: null }, sync = 'ok', stores, watched } = {}) {
   seq++;
   const prev = iso(at, -15);
   const lastSeenAt = sync === 'atrasado' ? iso(at, -45) : prev;
@@ -27,7 +27,7 @@ function rec({ at, reader = { status: 'ok', valid: 500, read: 520, reason: null 
     : sync === 'indisponivel' ? syncStatus({ status: 'error', reason: 'ECONNREFUSED' }, prev) : syncStatus({ status: 'off' }, prev);
   return buildRunRecord({ env: { GITHUB_RUN_ID: String(1000 + seq), GITHUB_RUN_ATTEMPT: '1', GITHUB_SHA: 'abcdef1234567890', GITHUB_EVENT_NAME: 'workflow_dispatch' },
     startedAt: iso(at, 0), finishedAt: iso(at, 6), generatedAt: at, prevGeneratedAt: prev, reader, dbSync,
-    stores: stores || { found: 128, active: 54, withListings: 32, empty: 22, blocked: 54, error: 2, deferred: 0 }, offers: 916, alerts: 0 });
+    stores: stores || { found: 128, active: 54, withListings: 32, empty: 22, blocked: 54, error: 2, deferred: 0 }, watched, offers: 916, alerts: 0 });
 }
 const metaOf = (...recs) => recs.reduce((m, r) => mergeOps(m, r, r.finishedAt), { dataVersion: 3, distrust: { stores: ['x'] } });
 const okRuns = (at, k = 3, conclusion = 'success') => Array.from({ length: k }, (_, i) => ({ status: 'completed', conclusion, createdAt: iso(at, -15 * i - 7), updatedAt: iso(at, -15 * i), event: 'workflow_dispatch' }));
@@ -158,6 +158,22 @@ await t('9. leitor: indisponível 2× = degradado; zero válidas só com context
   const evf = evaluate({ now: NOW, stateGeneratedAt: T0, meta: metaOf(rec({ at: iso(T0, -15), reader: few }), rec({ at: T0, reader: few })), runs: okRuns(NOW) });
   assert.equal(evf.status, 'saudavel', 'pouca oferta lida: zero válidas não é falha');
   assert.deepEqual(metaOf(rec({ at: T0, reader: few })).ops.last.issues, ['leitor_sem_nota_valida'], 'mas fica registrado na rodada');
+});
+
+await t('9b. fonte vigiada (Mercado Livre): historicamente ativa e zerada/bloqueada 2× = degradado', () => {
+  const S = '2026-10-08T10:00:00.000Z';
+  const ml = (status, listings, lastNonEmpty = S) => watchedSummary({ mercadolivre: { name: 'Mercado Livre', status, listings, lastNonEmpty }, outra: { status: 'BLOCKED' } });
+  assert.deepEqual(Object.keys(ml('ACTIVE', 3)), ['mercadolivre'], 'só as fontes vigiadas entram no registro');
+  const ev = (a, b) => evaluate({ now: NOW, stateGeneratedAt: T0, meta: metaOf(rec({ at: iso(T0, -15), watched: a }), rec({ at: T0, watched: b })), runs: okRuns(NOW) });
+  assert.equal(ev(ml('ACTIVE', 12), ml('ACTIVE', 9)).status, 'saudavel', 'com anúncios: saudável');
+  assert.equal(ev(ml('ACTIVE', 12), ml('ACTIVE', 0)).status, 'saudavel', 'uma rodada zerada só não avisa');
+  const z = ev(ml('ACTIVE', 0), ml('ACTIVE', 0));
+  assert.equal(z.status, 'degradado'); assert.deepEqual(z.reasons.map((r) => r.code), ['fonte_degradada']); assert.match(z.reasons[0].text, /Mercado Livre sem nenhum anúncio nas últimas 2 rodadas/);
+  const b = ev(ml('BLOCKED', 0), ml('ERROR', 0));
+  assert.deepEqual(b.reasons.map((r) => r.code), ['fonte_degradada'], 'bloqueada/com erro 2× = degradado'); assert.match(b.reasons[0].text, /com erro/);
+  assert.equal(ev(ml('BLOCKED', null, null), ml('BLOCKED', null, null)).status, 'saudavel', 'fonte que nunca trouxe anúncio (ex.: ML não autorizado) não avisa');
+  assert.equal(ev(undefined, undefined).status, 'saudavel', 'registro antigo sem watched: nada muda');
+  assert.match(decide(z, {}, NOW).notify.text, /Mercado Livre/);
 });
 
 await t('10. rodadas do robô falhando com dados ainda frescos = degradado (cancelada não conta)', () => {
