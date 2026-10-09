@@ -711,9 +711,10 @@ a.navbtn{text-decoration:none}
 .pod .deal-fav{top:14px;right:14px;z-index:5}
 .pod .cat-chip{z-index:4}
 @media (prefers-reduced-motion:no-preference){
-  .podium.armed .pod{opacity:0;transform:perspective(1200px) translateY(80px) rotateY(-100deg) scale(.86)}
-  .podium.go .pod{animation:podIn 1100ms cubic-bezier(.16,1,.3,1) both}
-  .podium.go .pod[data-r="1"]{animation-delay:0ms}.podium.go .pod[data-r="2"]{animation-delay:260ms}.podium.go .pod[data-r="3"]{animation-delay:420ms}
+  /* cada card se revela quando entra na metade de cima da tela (stageInit), não ao abrir a página */
+  .pod.armed{opacity:0;transform:perspective(1200px) translateY(80px) rotateY(-100deg) scale(.86)}
+  .pod.go{animation:podIn 1100ms cubic-bezier(.16,1,.3,1) both}
+  .pod.go[data-r="2"]{animation-delay:260ms}.pod.go[data-r="3"]{animation-delay:420ms}
 }
 @keyframes podIn{0%{opacity:0;transform:perspective(1200px) translateY(80px) rotateY(-100deg) scale(.86)}55%{opacity:1}100%{opacity:1;transform:perspective(1200px) translateY(var(--lift,0)) rotateY(0) scale(1)}}
 @media (max-width:860px){
@@ -1732,12 +1733,14 @@ function paintHomeOpp(){
   if(view!=="deals")return;const pod=$("#home-pod"),rail=$("#home-rail"),hl=$("#home-hl");if(!pod)return;
   pod.innerHTML=podiumOppHTML();rail.innerHTML=railOppHTML();hl.innerHTML=highlightsOppHTML();stageInit();revealInit();
 }
-let stageIO=null;
+let stageIO=null;let podIO=null;
 function stageInit(){
-  if(stageIO)stageIO.disconnect();
+  if(stageIO)stageIO.disconnect();if(podIO)podIO.disconnect();
   const pod=$(".podium");const rail=$(".rail");const RM=reduceMotion();
-  let first=false;if(pod)try{first=!sessionStorage.getItem("ph:pod");sessionStorage.setItem("ph:pod","1")}catch{}
-  if(pod&&first&&!RM){pod.classList.add("armed");requestAnimationFrame(()=>requestAnimationFrame(()=>{pod.classList.add("go");pod.classList.remove("armed");setTimeout(()=>pod.classList.remove("go"),1700)}))}
+  /* pódio: revela ao rolar. A linha fica em 55% da altura da tela, então o card que já aparece pela metade ao abrir espera o scroll */
+  if(pod&&!RM&&"IntersectionObserver" in window){const cards=[...pod.querySelectorAll(".pod")];cards.forEach((c)=>c.classList.add("armed"));
+    podIO=new IntersectionObserver((es)=>es.forEach((e)=>{if(!e.isIntersecting)return;const c=e.target;podIO.unobserve(c);c.classList.remove("armed");c.classList.add("go");setTimeout(()=>c.classList.remove("go"),1700)}),{threshold:0,rootMargin:"0px 0px -45% 0px"});
+    cards.forEach((c)=>podIO.observe(c))}
   if(rail){
     [...rail.children].forEach((c,i)=>c.style.setProperty("--i",Math.min(i,8)));
     const sec=rail.closest(".seq");const by=(dir)=>rail.scrollBy({left:dir*rail.clientWidth*.85,behavior:RM?"auto":"smooth"});
