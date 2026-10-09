@@ -50,7 +50,7 @@ export async function stateLikeFromDb(legacy, { dataAt, now = new Date() } = {})
   const products = prows.map((r) => {
     const a = r.attrs || {}; const l = LP.get(r.legacy_id) || {};
     // preço Copag: mesma decisão do robô (fonte oficial da Copag, verificada há no máximo 30 dias em relação a agora)
-    const d = decideCopagFromRows(r.refs || [], { now: new Date(now), productId: r.legacy_id }); const cf = productCopagFields(d); const ref = d.row;
+    const d = decideCopagFromRows(r.refs || [], { now: new Date(now) }); const cf = productCopagFields(d); const ref = d.row;
     return {
       id: r.legacy_id, collection: r.col_code, collectionName: r.col_name, type: a.type, typeLabel: a.typeLabel, group: a.group,
       boosters: r.units ?? null, variant: r.variant ?? null, ean: r.ean ?? null, image: r.image_url ?? null,

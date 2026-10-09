@@ -2,13 +2,14 @@
 
 ## Regra
 
-Um produto só tem **Copag confirmado** (`copagConfirmed: true`, `msrp`) quando as três condições valem:
+Um produto só tem **Copag confirmado** (`copagConfirmed: true`, `msrp`) quando as quatro condições valem. A mesma regra vale no site/API, no robô e na view do motor (migration 010).
 
 1. **Valor > 0.**
 2. **Fonte oficial da Copag**: URL `http(s)` em `copagloja.com.br` ou `copag.com.br` (e subdomínios), marcada como oficial na origem.
    - Robô: `confidence: 'OFICIAL'`. Vale para a captura da loja oficial (`data/copag-msrp.json`) e para o cadastro manual no `config/catalog.json`.
    - Banco: linha `verified` com `source` `copag_loja` ou `manual`.
-3. **Última verificação há no máximo 30 dias** em relação ao momento da rodada (robô) ou da consulta (API). A data usada é a mais recente entre `verified_at`, `source_timestamp`, `msrp_updated_at` e `last_check.at`, esta só quando a conferência diária (`copag-check`) bateu. Exatamente 30 dias ainda vale; 30 dias + 1 ms já está vencido.
+3. **Última verificação há no máximo 30 dias** em relação ao momento da rodada (robô) ou da consulta (API). A data usada é a mais recente entre `verified_at`, `source_timestamp`, `msrp_updated_at` e `last_check.at`, esta só quando a conferência diária (`copag-check`) bateu. Exatamente 30 dias ainda vale; 30 dias + 1 ms já está vencido. A constante e a conta são as do motor (`COPAG_MAX_AGE_DAYS` e `copagExpired` em `api/_lib/references.mjs`, PR #10); a política importa as duas, não há um segundo 30.
+4. **A fonte é do mesmo produto.** Se a fonte traz EAN e o produto tem EAN no `catalog.json`, eles precisam bater (zeros à esquerda ignorados, como no matching). Fonte com EAN de outro produto nem entra na disputa: não vira preço nem referência. A captura da loja oficial passa a guardar o EAN que a loja mostrou (`ean` em `data/copag-msrp.json`); captura antiga sem EAN não é barrada.
 
 Se uma das condições falha, o valor aparece só como referência (`copagReference`, `copagReferenceUrl`), e o motivo vai em `copagReason`. Nesse caso o produto não tem desconto Copag, não entra na regra `copag-25` e não dispara pista.
 
@@ -16,23 +17,32 @@ Estados possíveis em `copagReferenceStatus`:
 
 | Estado | Quando |
 |---|---|
-| `confirmado` | As três condições valem. |
+| `confirmado` | As quatro condições valem. |
 | `expirado` | A fonte é oficial, mas a verificação tem mais de 30 dias. |
-| `pendente` | Sem fonte, fonte fora do domínio da Copag, sem marcação oficial, sem data ou com data no futuro (mais de 1 dia). Também cobre os produtos pendentes por decisão do responsável. |
-| `null` | Não existe valor nenhum, ou a fonte é um marketplace (marketplace nunca vira referência). |
+| `pendente` | Sem fonte, fonte fora do domínio da Copag, sem marcação oficial, sem data ou com data no futuro (mais de 1 dia). |
+| `null` | Não existe valor nenhum, a fonte é um marketplace ou a fonte tem EAN de outro produto. |
 
-**Pendentes por decisão do responsável** (`PENDENTES` em `api/_lib/copag-policy.mjs`): hoje só `me04-box36`. Nenhuma fonte automática confirma o preço desse produto, seja a captura da loja, o catálogo público ou o cadastro com URL da loja (no banco os três viram `copag_loja`). Há duas formas de liberar: um cadastro manual no `catalog.json` com URL da Copag fora da loja (`copag.com.br`), que o banco grava como `manual`, ou tirar o produto da lista.
+**Sem lista de produtos travados.** A versão anterior deste lote travava `me04-box36` por nome. Saiu: o produto fica sem Copag oficial porque hoje não há evidência suficiente, e a mesma regra vale para qualquer produto.
+
+- O anúncio dele na loja oficial mostra o EAN `0196214156081` (catálogo público). O cadastro e a página do produto têm `0196214156098`. O matching recusa o anúncio ("EAN diverge do catálogo"), então o robô não tem captura. Se tivesse, a regra 4 a descartaria.
+- O preço 449,99 só existe na auditoria (`copag_loja_catalog`, catálogo público da loja; a página esgotada não mostra preço). A auditoria sozinha não vira Copag oficial em lugar nenhum (ver a view do motor, abaixo).
+- Libera com evidência: cadastro manual no `catalog.json` com URL oficial da Copag e data de verificação (o banco grava como `manual`), ou a loja passar a mostrar o anúncio com o EAN do cadastro.
+
+O produto continua no catálogo, com ofertas e nota (referência de mercado).
+
+**Os 11 produtos do Instagram** (tabela "Preços de 30 anos", cadastrada como OFICIAL à mão) ficam pendentes sem exceção: fonte fora do domínio da Copag. Voltam a oficial só com evidência verificável da loja oficial ou de outra fonte que a política aceite. Teste: `test/data-quality-tests.js`, grupo 5b.
 
 ## Onde está
 
 - **Implementação:** `api/_lib/copag-policy.mjs`. Fica em `api/_lib` porque a Vercel não publica `src/`.
 - **Robô:** `src/copag-policy.js` só reexporta o módulo (mesmo padrão de `src/core/references.js`). Ele é usado por:
-  - `src/run.js`, em `resolveCopag`, que monta os candidatos na ordem cadastro OFICIAL › captura da loja › demais cadastros e fica com o primeiro confirmado. Sem confirmado, usa o primeiro expirado e, sem expirado, o primeiro pendente;
+  - `src/run.js`, em `resolveCopag`, que monta os candidatos na ordem cadastro OFICIAL › captura da loja › demais cadastros e fica com o primeiro confirmado. Sem confirmado, usa o primeiro expirado e, sem expirado, o primeiro pendente. Candidatos com EAN de outro produto ficam de fora;
   - `src/score.js` (`copagStatus`);
   - `src/copag-check.js`, que agora confere toda fonte oficial da Copag, mesmo vencida, porque a conferência que bate é o que renova a validade.
 - **API:** `api/_lib/read-db.mjs` (home e página de produto pelo banco). O SQL só traz as linhas candidatas, das fontes que o robô publica (`copag_loja`, `manual`, `internet`). Quem decide é `decideCopagFromRows`, com a ordem `manual` › `copag_loja` › `internet` e, dentro dela, a verificação mais recente.
 - **Sincronização:** `src/core/mappers.js` grava `verified_at` com a data de verificação decidida pela política (`copagVerifiedAt`), para que a API calcule a mesma validade.
-- **Paridade:** `test/data-quality-tests.js`, grupo 7, roda 8 cenários × 6 momentos. Primeiro a rodada grava as linhas com o mapeamento real da sincronização; depois a API lê essas linhas e o robô decide com as mesmas fontes. O resultado precisa ser igual em estado, valor, referência e motivo. O grupo 11 faz a mesma conferência no PostgreSQL.
+- **Motor:** a view `reference_price_current` (migration 010) aplica as mesmas fontes, domínio e validade. Ver a seção da view.
+- **Paridade:** `test/data-quality-tests.js`, grupo 7, roda 8 cenários × 6 momentos. Primeiro a rodada grava as linhas com o mapeamento real da sincronização; depois a API lê essas linhas e o robô decide com as mesmas fontes. O resultado precisa ser igual em estado, valor, referência e motivo. O grupo 11 faz a mesma conferência no PostgreSQL, incluindo a view do motor. `test/reference-evidence-db-tests.js` confere a paridade view × política cenário a cenário.
 
 **Limitação conhecida.** Se uma fonte oficial já está vencida na primeira sincronização, o banco só recebe a linha pendente (`internet`). Nesse caso a API mostra `pendente` e o robô mostra `expirado`. O valor e a ausência de confirmação são os mesmos nos dois.
 
@@ -53,48 +63,70 @@ Base: branch `data`, `state.json` de 2026-10-09T19:30:29Z (243 produtos), `copag
 
 **Sem mudança (11).** Capturas da loja oficial vistas na rodada (`me03-blister4`, `me04-blister1/3/4`, `me04-etb`, `me04-combo`, `me05-blister1/4`, `me05-etb`, `me05-combo`, `sv10-box36`). Vencem em 08/11/2026 se não forem vistas de novo.
 
-**Por motivo:** expirado = 0 hoje; fonte não oficial = 11; pendente por decisão = 0. `me04-box36` não tem valor no robô (fica sem referência) e continua não confirmado.
+**Por motivo:** expirado = 0 hoje; fonte não oficial = 11. `me04-box36` não tem valor no robô (sem captura, ver acima) e continua sem Copag oficial.
 
-## View do motor `reference_price_current`: análise e proposta (NÃO aplicada)
+## View do motor `reference_price_current`: migration 010
 
-Hoje a view (migration 006, linhas 42–47) aceita qualquer linha `reference_scope = 'current'` com `verification_status = 'verified'`, sem prazo e sem a lista de pendentes. Ela é a entrada Copag do Price Engine (`src/core/price-stats.js`) e, por consequência, do Opportunity Engine.
+> **Atenção: o merge deste ramo na `main` aplica a 010 no banco de produção.** O `hunter.yml` roda `node tools/db-migrate.mjs` a cada rodada do robô; a primeira rodada depois do merge aplica a migration e recalcula as notas. Não há passo manual nem como "segurar" a migration depois do merge. O número é 010 porque a `main` já tem a `009_review_resolution.sql` (PR #7).
 
-Pelos dados, a estimativa de linhas Copag na view de produção hoje é de **13 produtos**: as 11 capturas do robô mais 2 linhas verificadas da auditoria (`copag_loja_catalog`), que são **`me04-box36`** (449,99) e `me05-blister3` (42,99). Isso bate com os 13 da reconstrução local. Daí saem três divergências:
+**Antes (migration 006):** a view aceitava qualquer linha `current` verificada, sem prazo, sem olhar a fonte. Por isso o motor usava a auditoria (`copag_loja_catalog`) como Copag oficial: `me04-box36` (449,99) e `me05-blister3` (42,99), que o site não mostra.
 
-1. **`me04-box36` está confirmado no motor**, contra a decisão do responsável. O site e a API não mostram o preço porque não leem `copag_loja_catalog`.
-2. **`me05-blister3`** tem Copag no motor, mas não no site nem nos alertas do robô.
-3. **Sem prazo**, uma linha verificada continua valendo para sempre. A auditoria (verificada em 08/10) e qualquer captura que a loja deixe de mostrar nunca vencem no motor.
+**Depois (`db/migrations/010_reference_evidence.sql`):** uma linha `COPAG_OFFICIAL_CURRENT` só entra com:
 
-**Efeito indireto deste lote, já sem mudar a view.** Depois do deploy, o robô passa a gravar linhas `copag_loja` verificadas para `c30-blister2` e `c30-colecao_poster`, porque antes o cadastro do Instagram tinha prioridade. A view passa então a ter **15 produtos**, e esses 2 ganham referência Copag no motor, com o mesmo valor que o site já mostrava. **Isso muda notas do Opportunity Engine em produção.**
+- `verification_status = 'verified'` e valor > 0;
+- fonte `copag_loja` (captura da loja gravada pelo robô) ou `manual`. A auditoria (`copag_loja_catalog`) continua gravada e serve à auditoria e à validação, mas sozinha não entra;
+- URL no domínio da Copag;
+- verificação há no máximo 30 dias, e no máximo 1 dia no futuro, medidos contra o `asOf` da rodada. O Price Engine grava esse `asOf` em `hunter.as_of` (`set_config` local à transação), o mesmo que o `resolveCurrentReference` usa. Sem ele, a view usa `now()`.
 
-Proposta (arquivo sugerido `db/migrations/009_reference_validity.sql`, **não criado**). Ela muda os resultados do motor em produção e **exige autorização explícita**:
+Mercado atual não muda. Nada é apagado nem alterado: só a view é recriada (`CREATE OR REPLACE`, mesmas colunas). A migration pode ser reaplicada sem efeito. Não há produto citado por nome.
 
-```sql
--- 009 — validade de 30 dias e pendentes por decisão na referência ATUAL do motor (mesma regra de api/_lib/copag-policy.mjs)
-SET search_path = hunter;
-CREATE OR REPLACE VIEW reference_price_current AS
-SELECT DISTINCT ON (r.product_id) r.*,
-       CASE r.reference_kind WHEN 'COPAG_OFFICIAL_CURRENT' THEN 1 WHEN 'MARKET_CURRENT' THEN 2 END AS priority
-  FROM reference_price r
-  JOIN product p ON p.id = r.product_id
- WHERE r.reference_scope = 'current' AND r.verification_status = 'verified'
-   AND (r.reference_kind <> 'COPAG_OFFICIAL_CURRENT' OR (
-         r.verified_at IS NOT NULL
-     AND r.verified_at >= now() - interval '30 days'
-     AND r.verified_at <= now() + interval '1 day'
-     AND NOT (p.legacy_id IN ('me04-box36') AND r.source <> 'manual')))
- ORDER BY r.product_id, priority, r.confidence DESC, r.verified_at DESC NULLS LAST, r.id DESC;
-```
+Testes: `test/reference-evidence-db-tests.js` (PostgreSQL, 9 grupos). Aplica 001–009 num banco limpo e confere os cenários antes e depois da 010:
 
-O efeito estimado, sobre a view do jeito que ficaria depois do deploy deste lote:
+| Cenário | Antes | Depois |
+|---|---|---|
+| verificada há 2 dias e há 29,99 dias | entra | entra |
+| verificada há 31 dias | entra | não |
+| verificada com data 3 dias no futuro | entra | não |
+| fonte `internet` com URL da Copag | entra | não |
+| só auditoria (`copag_loja_catalog`) | entra | não |
+| `me04-box36` só na auditoria | entra | não |
+| `me04-box36` com cadastro manual, URL Copag, verificado | — | entra |
+| Instagram (comunitária) | não | não |
+| valor 0 ou Copag fora do domínio | o banco recusa a linha | idem |
 
-- Logo de cara, **15 → 14** produtos (sai `me04-box36`).
-- Em **07/11/2026** sai `me05-blister3`, porque a auditoria não é renovada. Saem também `c30-blister2` e `c30-colecao_poster`, se a loja não os mostrar até lá.
-- As demais capturas ficam enquanto a loja as mostrar.
+Também confere:
+- nenhuma linha de `product`/`reference_price` alterada;
+- 010 aplicada duas vezes;
+- paridade view × `decideCopagFromRows` em todos os cenários;
+- mesma lista de fontes (`DB_OFFICIAL_SOURCES`) e mesmo prazo nos dois lados;
+- Price Engine lendo a view.
 
-Também é preciso decidir se a auditoria (`copag_loja_catalog`) deve continuar alimentando o motor sem aparecer no site. A política única hoje diz que não, para manter a paridade com o robô. A view proposta mantém essa fonte, só com prazo; excluí-la é decisão do responsável.
+### Impacto medido (sem banco de produção)
 
-Conferências no mesmo dia da aplicação: `tools/db-validate.mjs` (as regras "Copag atual ⇔ linha em reference_price_current" continuam valendo) e `npm run opportunity:compare` antes e depois.
+Base: banco local reconstruído do ramo `data` público (commit `c153c90`, `state.json` de 2026-10-08T16:29Z, 236 produtos, 948 ofertas), pelo fluxo de `docs/backup.md` (Lote 4): `db-migrate` → `db-grants` → `db-sync` → `db-import-references` → `db-stats` → `db-opportunity`. Primeiro com 001–009, depois com a 010 aplicada pelo `db-migrate`. Notas comparadas com `tools/opportunity-snapshot.mjs` e `tools/opportunity-diff.mjs`. `tools/db-validate.mjs` passou (75 verificações OK) com a 010.
+
+**Só a 010 (mesmos dados):**
+
+- Copag na view: **13 → 11**. Saem `me04-box36` (449,99) e `me05-blister3` (42,99), ambos só da auditoria. Os dois passam a usar o mercado atual robusto: 427,40 e 39,99. Nenhum produto fica sem referência.
+- Ofertas avaliadas: 912. Mudaram de nota: **38** (todas desses 2 produtos; 13 subiram, 25 desceram; 24 mudaram mais de 5 pontos, 4 mais de 10, nenhuma mais de 25). A confiança mudou em 40 (Copag → mercado: 0,77–0,95 → 0,60–0,76).
+- Faixas: 2 `boa → normal` (`me04-box36` gorupa 379,05: 78 → 69; `me05-blister3` omniverse 32,46: 82 → 70) e 2 `normal → baixa` (`me04-box36` Mercado Livre 419: 51 → 47; `me05-blister3` lojabrmetaverso 37: 56 → 47). A melhor de `me05-blister3` (Mercado Livre 31,83) continua `boa` (88 → 76).
+- Eventos na rodada: 1 `OPPORTUNITY_EXPIRED`, 1 `OPPORTUNITY_CHANGED`.
+- Nenhuma linha de `reference_price` mudou (mesmo hash antes e depois; 84 linhas, 236 produtos).
+
+**Junto com o robô deste lote (o merge leva os dois):** o robô passa a gravar `copag_loja` para `c30-blister2` (69,99) e `c30-colecao_poster` (115,99), porque o cadastro do Instagram deixa de ter prioridade sobre a captura. Recalculando o `state.json` com a política nova e sincronizando:
+
+- Copag na view: **13** (11 + esses 2).
+- Esses 2 ganham Copag no motor: mais 28 notas mudam, todas para baixo (17 mais de 10 pontos) e 5 `normal → baixa`.
+- Total contra hoje: **66 notas mudam em 4 produtos**: 7 `normal → baixa`, 2 `boa → normal`, confiança em 71.
+
+**Datas:**
+- as capturas da loja vistas em 08/10 vencem em **07/11/2026** se a loja não as mostrar de novo (a rodada renova a data a cada leitura);
+- a auditoria não renova data, mas já não entra.
+
+**Riscos e conferências:**
+- O PR muda notas em produção na primeira rodada após o merge. Conferir no mesmo dia `tools/db-validate.mjs` (a regra "Copag atual ⇔ linha em `reference_price_current`" continua valendo) e comparar as notas com `tools/opportunity-snapshot.mjs` antes e depois.
+- Reverter = nova migration recriando a view da 006. Nenhum dado se perde em nenhum dos sentidos.
+- Empate entre `manual` e `copag_loja` válidos com valores diferentes no mesmo produto: a view desempata por confiança e data (como antes) e a API prefere `manual`. Hoje não existe esse caso nos dados.
 
 ## Outros itens do Lote 5 (mesma base de dados)
 

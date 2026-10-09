@@ -10,7 +10,7 @@ const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazin
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
 import { pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
-import { decideCopag, fromRobotEntry, productCopagFields } from './copag-policy.js';
+import { decideCopag, eanDiverges, fromRobotEntry, productCopagFields } from './copag-policy.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
@@ -51,8 +51,10 @@ export function resolveCopag(p, catalog, copagSeen, now = new Date()) {
   add(catalog.copag, 'catalog', (c) => c.confidence === 'OFICIAL');
   add(copagSeen, 'captura', () => true);
   add(catalog.copag, 'catalog', (c) => c.confidence !== 'OFICIAL');
-  const d = decideCopag(cand.map((c) => fromRobotEntry(c, c.origin)), { now, productId: p.id });
-  const copag = cand[d.index] || cand[0] || { msrp: null, source_url: null, confidence: null };
+  // EAN cadastrado do produto: fonte com EAN de outro produto não é evidência (política única, regra 4)
+  const productEan = p.ean ?? (catalog.products || []).find((x) => x.id === p.id)?.ean ?? null;
+  const d = decideCopag(cand.map((c) => fromRobotEntry(c, c.origin)), { now, productEan });
+  const copag = cand[d.index] || cand.find((c) => !eanDiverges(c.ean, productEan)) || { msrp: null, source_url: null, confidence: null };
   return { copag, decision: d };
 }
 
@@ -208,8 +210,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         if (store.copagSource && l.price?.base > 0) {
           const msrp = l.listPrice > l.price.base ? l.listPrice : l.price.base;
           const old = copagSeen[m.productId];
-          if (!old || old.msrp !== msrp) copagSeen[m.productId] = { msrp, source_url: l.url, source_timestamp: T, confidence: 'OFICIAL', previous_msrp: old?.msrp ?? null, msrp_updated_at: T };
-          else old.source_timestamp = T;
+          // ean: o EAN que a loja mostrou (evidência de que a captura é do mesmo produto; ver copag-policy, regra 4)
+          if (!old || old.msrp !== msrp) copagSeen[m.productId] = { msrp, source_url: l.url, source_timestamp: T, confidence: 'OFICIAL', previous_msrp: old?.msrp ?? null, msrp_updated_at: T, ...(l.ean ? { ean: l.ean } : {}) };
+          else { old.source_timestamp = T; if (l.ean) old.ean = l.ean; }
         }
         const total = pp.value != null ? round2(pp.value + (ship || 0)) : null;
         offers[id] = {

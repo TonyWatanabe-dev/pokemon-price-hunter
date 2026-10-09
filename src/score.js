@@ -7,7 +7,7 @@ import { evaluateReference, fromRobotEntry } from './copag-policy.js';
  * opts.origin: 'catalog' (cadastro do catalog.json) | 'captura' (loja oficial, data/copag-msrp.json).
  */
 export function copagStatus(product, { now = new Date(), origin = product?.copag?.origin || 'catalog' } = {}) {
-  const d = evaluateReference(fromRobotEntry(product?.copag || {}, origin), { now, productId: product?.id || null });
+  const d = evaluateReference(fromRobotEntry(product?.copag || {}, origin), { now, productEan: product?.ean ?? null });
   return d.confirmed ? { confirmed: true, msrp: d.msrp, source: 'OFICIAL', status: d.status, verifiedAt: d.verifiedAt }
     : { confirmed: false, reason: d.reason, status: d.status, ...(d.reference != null ? { reference: d.reference, referenceUrl: d.referenceUrl } : {}) };
 }

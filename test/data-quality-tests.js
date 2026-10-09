@@ -63,7 +63,7 @@ await t('2. espera entre tentativas: 6 h no máximo; 24 h para quem nunca funcio
 });
 
 // ------------------------------------------------------------------ 3. política Copag (casos de borda)
-const pol = (entry, origin = 'catalog', productId = 'x-etb', now = NOW) => P.evaluateReference(P.fromRobotEntry(entry, origin), { now, productId });
+const pol = (entry, origin = 'catalog', productEan = null, now = NOW) => P.evaluateReference(P.fromRobotEntry(entry, origin), { now, productEan });
 const LOJA = 'https://www.copagloja.com.br/treinador-avancado/p';
 await t('3. Copag: 30 dias exatos valem, 31 não; sem data fica pendente', () => {
   assert.equal(pol({ msrp: 399.99, source_url: LOJA, confidence: 'OFICIAL', source_timestamp: ago(30) }, 'captura').status, 'confirmado', 'exatamente 30 dias');
@@ -75,8 +75,8 @@ await t('3. Copag: 30 dias exatos valem, 31 não; sem data fica pendente', () =>
   assert.equal(pol({ msrp: 399.99, source_url: LOJA, confidence: 'OFICIAL', source_timestamp: 'ontem' }, 'captura').status, 'pendente', 'data ilegível = sem data');
   assert.equal(pol({ msrp: 399.99, source_url: LOJA, confidence: 'OFICIAL', source_timestamp: new Date(NOW.getTime() + 3 * DAY).toISOString() }, 'captura').status, 'pendente', 'data no futuro');
   // carimbo só com dia (catalog.json): meia-noite UTC
-  assert.equal(pol({ msrp: 10, source_url: 'https://www.copag.com.br/x', confidence: 'OFICIAL', source_timestamp: '2026-09-09' }, 'catalog', 'x', new Date('2026-10-09T00:00:00Z')).status, 'confirmado');
-  assert.equal(pol({ msrp: 10, source_url: 'https://www.copag.com.br/x', confidence: 'OFICIAL', source_timestamp: '2026-09-09' }, 'catalog', 'x', new Date('2026-10-09T00:00:01Z')).status, 'expirado');
+  assert.equal(pol({ msrp: 10, source_url: 'https://www.copag.com.br/x', confidence: 'OFICIAL', source_timestamp: '2026-09-09' }, 'catalog', null, new Date('2026-10-09T00:00:00Z')).status, 'confirmado');
+  assert.equal(pol({ msrp: 10, source_url: 'https://www.copag.com.br/x', confidence: 'OFICIAL', source_timestamp: '2026-09-09' }, 'catalog', null, new Date('2026-10-09T00:00:01Z')).status, 'expirado');
 });
 
 await t('4. Copag: domínio oficial, cadastro manual, marketplace, catálogo de terceiros', () => {
@@ -102,24 +102,57 @@ await t('4. Copag: domínio oficial, cadastro manual, marketplace, catálogo de 
   assert.ok(copagStatus({ copag: { msrp: 13.99, source_url: LOJA, confidence: 'OFICIAL', source_timestamp: ago(3) } }, { now: NOW }).confirmed);
 });
 
-await t('5. me04-box36 continua pendente (captura automática não confirma)', () => {
+await t('5. me04-box36: sem evidência suficiente, sem trava por nome (captura de outro EAN e auditoria não confirmam)', async () => {
+  assert.equal(P.PENDENTES, undefined, 'não há lista de produtos travados no código');
   assert.ok(!realCatalog.copag['me04-box36'], 'catálogo real sem cadastro para me04-box36');
-  const cap = { msrp: 449.99, source_url: 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p', confidence: 'OFICIAL', source_timestamp: ago(1), msrp_updated_at: ago(1) };
-  const d = pol(cap, 'captura', 'me04-box36');
-  assert.equal(d.status, 'pendente'); assert.equal(d.reason, P.PENDENTES['me04-box36']); assert.equal(d.reference, 449.99); assert.equal(d.msrp, null);
-  assert.equal(pol(cap, 'catalog', 'me04-box36').status, 'pendente', 'cadastro com URL da loja = mesma fonte automática');
-  assert.equal(pol(cap, 'captura', 'me05-box36').status, 'confirmado', 'a trava é só do produto pendente');
-  assert.equal(pol({ ...cap, source_url: 'https://www.copag.com.br/tabela-oficial' }, 'catalog', 'me04-box36').status, 'confirmado', 'liberação: cadastro manual do responsável com URL da Copag');
-  // pelo resolvedor do robô, com o catálogo real e a captura da loja
+  const prod = realCatalog.products.find((x) => x.id === 'me04-box36');
+  assert.equal(prod.ean, '0196214156098', 'EAN cadastrado (o da página da loja)');
+  const URL_BOX = 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p';
+  // 1) o anúncio da loja oficial traz o EAN do catálogo público (0196214156081): o matching recusa, então não há captura
+  const { matchProduct } = await import('../src/match.js');
+  const m = matchProduct({ title: 'Box Display Pokémon ME04 Caos Ascendente', url: URL_BOX, ean: '0196214156081' }, realCatalog);
+  assert.equal(m.productId, null); assert.deepEqual(m.why, ['EAN diverge do catálogo']);
+  // 2) mesmo que uma captura com esse EAN existisse, ela não é evidência do preço deste produto (nem referência)
+  const cap = { msrp: 449.99, source_url: URL_BOX, confidence: 'OFICIAL', source_timestamp: ago(1), msrp_updated_at: ago(1), ean: '0196214156081' };
+  const d = pol(cap, 'captura', prod.ean);
+  assert.equal(d.status, 'sem_referencia'); assert.equal(d.confirmed, false); assert.equal(d.msrp, null); assert.equal(d.reference, null); assert.match(d.reason, /EAN da fonte diverge/);
   const { resolveCopag } = runMod;
   const r = resolveCopag({ id: 'me04-box36', collection: 'me04', type: 'booster_box', boosters: 36 }, realCatalog, { 'me04-box36': cap }, NOW);
-  assert.equal(r.decision.status, 'pendente'); assert.equal(r.decision.confirmed, false);
-  // API: linha da auditoria (copag_loja_catalog, verificada) não vira preço Copag; captura (copag_loja) fica pendente
+  assert.equal(r.decision.confirmed, false); assert.equal(r.decision.status, 'sem_referencia', 'o resolvedor usa o EAN do catálogo: a captura nem é candidata');
+  assert.equal(r.copag.msrp, null, 'o estado não mostra o preço de outro produto'); assert.equal(r.decision.reference, null);
+  // 3) a regra é genérica: qualquer produto com captura de EAN divergente; com o EAN certo (ou sem EAN na fonte), vale como os demais
+  assert.equal(pol({ ...cap, ean: '7896214156000' }, 'captura', '7896214156999').status, 'sem_referencia');
+  assert.equal(pol({ ...cap, ean: '0196214156098' }, 'captura', prod.ean).status, 'confirmado', 'EAN igual (zeros à esquerda ignorados)');
+  assert.equal(pol({ ...cap, ean: '196214156098' }, 'captura', prod.ean).status, 'confirmado');
+  // 4) liberação por evidência: cadastro manual do responsável com URL oficial da Copag, verificado
+  assert.equal(pol({ msrp: 449.99, source_url: 'https://www.copag.com.br/tabela-oficial', confidence: 'OFICIAL', manual: true, source_timestamp: ago(1) }, 'catalog', prod.ean).status, 'confirmado');
+  // 5) API: a linha da auditoria (copag_loja_catalog, verificada) não vira preço Copag nem referência
   const api = PA.decideCopagFromRows([
-    { id: 1, value: 449.99, source: 'copag_loja_catalog', source_url: cap.source_url, verification_status: 'verified', verified_at: ago(1), reference_scope: 'current' },
-    { id: 2, value: 449.99, source: 'copag_loja', source_url: cap.source_url, verification_status: 'verified', verified_at: ago(1), reference_scope: 'current' },
-  ], { now: NOW, productId: 'me04-box36' });
-  assert.equal(api.status, 'pendente'); assert.equal(api.row.id, 2);
+    { id: 1, value: 449.99, source: 'copag_loja_catalog', source_url: URL_BOX, verification_status: 'verified', verified_at: ago(1), reference_scope: 'current' },
+  ], { now: NOW });
+  assert.equal(api.status, 'sem_referencia'); assert.equal(api.confirmed, false); assert.equal(api.row, null);
+});
+
+await t('5b. os 11 produtos confirmados só pelo Instagram ficam pendentes, sem exceção automática', async () => {
+  const ONZE = ['c30-colecao_fichario', 'c30-etb', 'c30-blister3', 'c30-combo', 'c30-combo6', 'c30-minilata', 'c30-colecao', 'c30-colecao_miniatura',
+    'c30-colecao_ex-greninja', 'c30-colecao_ex-estampas', 'c30-colecao_ex-sylveon'];
+  const { resolveCopag } = runMod;
+  const { msrpKeys } = await import('../src/match.js');
+  const isInsta = (c) => /instagram\.com/i.test(c?.source_url || '') && c?.confidence === 'OFICIAL';
+  for (const id of ONZE) {
+    const p = { id, collection: 'c30', type: id.slice(4).split('-')[0] };
+    const key = msrpKeys(p).find((k) => realCatalog.copag[k]);
+    const c = realCatalog.copag[key];
+    assert.ok(isInsta(c), `${id}: cadastro real (${key}) é do Instagram`);
+    // com qualquer data (inclusive verificação de hoje), sem captura da loja oficial: pendente, valor só como referência
+    for (const when of [NOW, new Date(Date.parse(c.source_timestamp || '2026-10-07') + DAY)]) {
+      const d = resolveCopag(p, { ...realCatalog, copag: { [key]: { ...c, source_timestamp: when.toISOString() } } }, {}, when).decision;
+      assert.equal(d.confirmed, false, id); assert.equal(d.status, 'pendente', id); assert.match(d.reason, /fora do domínio oficial/, id); assert.equal(d.reference, c.msrp, id);
+    }
+    // a linha gravada no banco também não confirma pela API
+    const api = PA.decideCopagFromRows([{ id: 1, value: c.msrp, source: 'manual', source_url: c.source_url, verification_status: 'verified', verified_at: NOW.toISOString(), reference_scope: 'community' }], { now: NOW });
+    assert.equal(api.confirmed, false, id);
+  }
 });
 
 await t('6. resolvedor do robô: ordem dos candidatos e referência vencida', () => {
@@ -142,7 +175,7 @@ await t('6. resolvedor do robô: ordem dos candidatos e referência vencida', ()
 });
 
 // ------------------------------------------------------------------ 7. paridade robô × API
-await t('7. paridade: robô (catálogo/captura) e API (linhas gravadas pelo robô) decidem igual', () => {
+await t('7. paridade: robô (catálogo/captura) e API (linhas gravadas pelo robô) decidem igual', async () => {
   const { resolveCopag } = runMod;
   const T0 = new Date('2026-10-01T12:00:00Z');
   const cases = [
@@ -154,7 +187,7 @@ await t('7. paridade: robô (catálogo/captura) e API (linhas gravadas pelo rob�
       cat: { 'c30-blister2': { msrp: 69.99, source_url: 'https://www.instagram.com/voltztcg/', confidence: 'OFICIAL', manual: true, source_timestamp: '2026-09-29' } },
       seen: { 'c30-blister2': { msrp: 69.99, source_url: 'https://www.copagloja.com.br/blister-duplo-com-moeda/p', confidence: 'OFICIAL', source_timestamp: ago(0.5, T0) } } },
     { name: 'catálogo de terceiros', id: 'sv9-etb', p: { id: 'sv9-etb', collection: 'sv9', type: 'etb' }, cat: { 'sv9-etb': { msrp: 349.99, source_url: 'https://blog.test/tabela', confidence: 'CATALOGO_COPAG' } } },
-    { name: 'me04-box36 capturada', id: 'me04-box36', p: { id: 'me04-box36', collection: 'me04', type: 'booster_box', boosters: 36 }, seen: { 'me04-box36': { msrp: 449.99, source_url: 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p', confidence: 'OFICIAL', source_timestamp: ago(1, T0) } } },
+    { name: 'me04-box36 capturada com EAN divergente', id: 'me04-box36', p: { id: 'me04-box36', collection: 'me04', type: 'booster_box', boosters: 36, ean: '0196214156098' }, seen: { 'me04-box36': { msrp: 449.99, source_url: 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p', confidence: 'OFICIAL', source_timestamp: ago(1, T0), ean: '0196214156081' } } },
     { name: 'sem referência', id: 'sv8-etb', p: { id: 'sv8-etb', collection: 'sv8', type: 'etb' } },
   ];
   const pick = (d) => ({ status: d.status, confirmed: d.confirmed, msrp: d.msrp, reference: d.reference, referenceUrl: d.referenceUrl, reason: d.reason });
@@ -168,17 +201,24 @@ await t('7. paridade: robô (catálogo/captura) e API (linhas gravadas pelo rob�
       const prod = { id: c.id, copag: r0.copag, ...P.productCopagFields(r0.decision) };
       const rows = referenceRows([prod]).map((x, i) => ({ id: i + 1, ...x, reference_scope: x.reference_kind === 'COPAG_OFFICIAL_CURRENT' ? 'current' : 'community' }));
       const robot = resolveCopag(c.p, catalog, c.seen || {}, T1).decision;
-      const api = PA.decideCopagFromRows(rows, { now: T1, productId: c.id });
+      const api = PA.decideCopagFromRows(rows, { now: T1 });
       // o robô pode ter mais candidatos que o banco (o banco só guarda o escolhido); a decisão sobre o preço é a mesma
       assert.deepEqual(pick(api), pick(robot), `${c.name} (+${later} dias)`);
       compared++;
     }
   }
   assert.equal(compared, 48);
-  // o mesmo código nos dois lados (src reexporta api/_lib), e a mesma lista de pendentes
-  assert.equal(P.evaluateReference, PA.evaluateReference); assert.equal(P.PENDENTES, PA.PENDENTES); assert.equal(PA.VALIDADE_DIAS, 30);
+  // o mesmo código nos dois lados (src reexporta api/_lib), e uma constante só de validade (a do motor, references.mjs)
+  const R = await import('../api/_lib/references.mjs');
+  assert.equal(P.evaluateReference, PA.evaluateReference); assert.equal(PA.VALIDADE_DIAS, 30); assert.equal(PA.VALIDADE_DIAS, R.COPAG_MAX_AGE_DAYS);
+  assert.equal(PA.copagExpired, R.copagExpired, 'a política usa a mesma conta de validade do motor');
+  for (const d of [29.99, 30, 30.0001, 31]) {
+    const v = new Date(NOW.getTime() - d * DAY).toISOString();
+    assert.equal(PA.evaluateReference({ value: 10, source_url: LOJA, official: true, verifiedAt: v }, { now: NOW }).status === 'expirado',
+      R.resolveCurrentReference({ copag: { reference_kind: 'COPAG_OFFICIAL_CURRENT', verification_status: 'verified', value: 10, verified_at: v }, asOf: NOW }).kind !== 'COPAG_OFFICIAL_CURRENT', `${d} dias: política = motor`);
+  }
   // linhas antigas já gravadas no banco (cadastro do Instagram como 'manual' verificado): a API não confirma, como o robô
-  const old = PA.decideCopagFromRows([{ id: 9, value: 230.99, source: 'manual', source_url: 'https://www.instagram.com/voltztcg/', verification_status: 'verified', verified_at: '2026-10-07T00:00:00Z', reference_scope: 'community' }], { now: NOW, productId: 'c30-colecao_fichario' });
+  const old = PA.decideCopagFromRows([{ id: 9, value: 230.99, source: 'manual', source_url: 'https://www.instagram.com/voltztcg/', verification_status: 'verified', verified_at: '2026-10-07T00:00:00Z', reference_scope: 'community' }], { now: NOW });
   const rob = runMod.resolveCopag({ id: 'c30-colecao_fichario', collection: 'c30', type: 'colecao_fichario' }, realCatalog, {}, NOW).decision;
   assert.deepEqual(pick(old), pick(rob));
   // histórico nunca entra; verificada vence pendente da mesma fonte só se valer
@@ -257,12 +297,12 @@ await t('10. rodada: rendimento, espera de 24 h, stockVerified até a oferta e o
     nunca: { checks: 190, ok: 0, fails: 190, status: 'BLOCKED', reason: 'bloqueio', lastCheck: sevenH },
     falhou: { checks: 50, ok: 30, fails: 10, status: 'BLOCKED', reason: 'bloqueio', lastCheck: sevenH },
   }));
-  // captura da loja oficial: me04-etb fresca, me05-etb vencida, me04-box36 fresca (pendente por decisão)
+  // captura da loja oficial: me04-etb fresca, me05-etb vencida, me04-box36 fresca mas com EAN de outro produto
   const now = new Date();
   fs.writeFileSync(path.join(data, 'copag-msrp.json'), JSON.stringify({
     'me04-etb': { msrp: 399.99, source_url: 'https://www.copagloja.com.br/etb-me04/p', confidence: 'OFICIAL', source_timestamp: ago(2, now) },
     'me05-etb': { msrp: 399.99, source_url: 'https://www.copagloja.com.br/etb-me05/p', confidence: 'OFICIAL', source_timestamp: ago(31, now), msrp_updated_at: ago(40, now) },
-    'me04-box36': { msrp: 449.99, source_url: 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p', confidence: 'OFICIAL', source_timestamp: ago(1, now) },
+    'me04-box36': { msrp: 449.99, source_url: 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p', confidence: 'OFICIAL', source_timestamp: ago(1, now), ean: '0196214156081' },
   }));
   const requested = [];
   http.setFetch(async (url) => {
@@ -305,7 +345,8 @@ await t('10. rodada: rendimento, espera de 24 h, stockVerified até a oferta e o
   const at = new Date(s.generatedAt);
   assert.equal(runMod.resolveCopag({ id: 'me04-etb', collection: 'me04', type: 'etb' }, cat, seen, at).decision.status, 'confirmado');
   assert.equal(runMod.resolveCopag({ id: 'me05-etb', collection: 'me05', type: 'etb' }, cat, seen, at).decision.status, 'expirado');
-  assert.equal(runMod.resolveCopag({ id: 'me04-box36', collection: 'me04', type: 'booster_box', boosters: 36 }, cat, seen, at).decision.status, 'pendente');
+  const box = runMod.resolveCopag({ id: 'me04-box36', collection: 'me04', type: 'booster_box', boosters: 36 }, cat, seen, at).decision;
+  assert.equal(box.confirmed, false); assert.equal(box.status, 'sem_referencia');
   assert.equal(s.totals.copagConfirmed, s.products.filter((p) => p.copagConfirmed).length);
 });
 
@@ -313,7 +354,7 @@ fs.rmSync(tmp, { recursive: true, force: true });
 
 // ------------------------------------------------------------------ 11. banco: a página de produto da API aplica a mesma política
 if (process.env.TEST_DATABASE_URL) {
-  await t('11. PostgreSQL: home/produto da API com a política única (e a view do motor intocada)', async () => {
+  await t('11. PostgreSQL: home/produto da API e view do motor (migration 010) com a mesma política', async () => {
     process.env.DATABASE_URL = process.env.TEST_DATABASE_URL; process.env.API_DATABASE_URL = process.env.TEST_DATABASE_URL;
     const { pool, tx, close } = await import('../src/db/pg.js');
     const { syncState } = await import('../src/core/sync.js');
@@ -354,9 +395,12 @@ if (process.env.TEST_DATABASE_URL) {
       const rob = runMod.resolveCopag(p, { copag: p.id === 'c30-etb' ? { 'c30-etb': e } : {} }, p.id === 'c30-etb' ? {} : { [p.id]: e }, now).decision;
       assert.equal(by[p.id].copagConfirmed, rob.confirmed, p.id); assert.equal(by[p.id].copagReferenceStatus, rob.status, p.id);
     }
-    // a view do motor (reference_price_current) NÃO foi mudada neste lote: vencida e auditoria continuam lá (ver docs/copag-referencia.md)
+    // view do motor (reference_price_current, migration 010): a mesma decisão — vencida (sv3) e auditoria (me04-box36) fora
     const cur = (await pg.query(`SELECT p.legacy_id FROM hunter.reference_price_current c JOIN hunter.product p ON p.id = c.product_id WHERE c.reference_kind = 'COPAG_OFFICIAL_CURRENT' ORDER BY 1`)).rows.map((r) => r.legacy_id);
-    assert.deepEqual(cur, ['me04-box36', 'me05-etb', 'sv3-etb']);
+    assert.deepEqual(cur, ['me05-etb']);
+    assert.deepEqual(cur, Object.keys(by).filter((k) => by[k].copagConfirmed).sort(), 'motor e site confirmam os mesmos produtos');
+    // as linhas continuam gravadas (auditoria e vencida servem à auditoria/validação)
+    assert.equal(Number((await pg.query(`SELECT count(*) FROM hunter.reference_price r JOIN hunter.product p ON p.id = r.product_id WHERE p.legacy_id IN ('me04-box36', 'sv3-etb') AND r.verification_status = 'verified'`)).rows[0].count), 2);
     await closeApiPool(); await close();
   });
 }
