@@ -2,6 +2,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 process.env.HUNTER_DOMAIN_DELAY_MS = '0';
+// as rodadas simuladas são locais mesmo dentro do Actions: sem as variáveis de execução que o src/opstate.js lê
+for (const k of ['GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_SHA', 'GITHUB_EVENT_NAME']) delete process.env[k];
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-'));
 process.env.HUNTER_CONFIG_DIR = path.join(tmp, 'config'); process.env.HUNTER_DATA_DIR = path.join(tmp, 'data');
 fs.mkdirSync(process.env.HUNTER_CONFIG_DIR, { recursive: true });
