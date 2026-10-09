@@ -66,7 +66,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const kinds = [...new Set(list.map((p) => p.typeLabel))].slice(0, 3).join(', ');
     const url = `/colecao/${colSlug(c)}`;
     const title = `${c.name} Pokémon TCG: preços e promoções | ${NAME}`;
-    const desc = `Preços de ${c.name} (Pokémon TCG lacrado, Copag) em lojas do Brasil: ${list.length} produtos comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}. Preços e estoque em tempo real.`;
+    const desc = `Preços de ${c.name} (Pokémon TCG lacrado, Copag) em lojas do Brasil: ${list.length} produtos comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}. Preços e estoque conferidos a cada 15 minutos.`;
     const trail = [['Início', '/'], [c.name, url]];
     const json = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${c.name}: preços de Pokémon TCG lacrado`, url: SITE + url, mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 30).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/produto/${of[p.id]}`, name: `${label(p)} ${c.name}` })) } }, crumbs(trail)];
     const body = `${bc(trail)}<h1>${esc(c.name)}: preços de Pokémon TCG lacrado</h1><p>${list.length} produtos da coleção ${esc(c.name)} (${esc(c.series || 'Pokémon TCG')}) em lojas brasileiras, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><ul>${list.map((p) => prodRow(p, best[p.id], of, best[p.id] && best[p.id].discount > 0 && p.copagConfirmed ? ` (${pct(best[p.id].discount)} abaixo)` : '')).join('')}</ul>${navLinks}`;
@@ -77,14 +77,14 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const list = prods.filter((p) => p.type === ty.id).sort(sortP);
     const url = `/tipo/${typeSlug(ty)}`;
     const title = `Preço de ${ty.label} Pokémon TCG no Brasil: todas as coleções | ${NAME}`;
-    const desc = `${ty.label} de Pokémon TCG lacrado: compare o preço de ${list.length} produtos em lojas do Brasil com o preço sugerido da Copag. Preços e estoque em tempo real.`;
+    const desc = `${ty.label} de Pokémon TCG lacrado: compare o preço de ${list.length} produtos em lojas do Brasil com o preço sugerido da Copag. Preços e estoque conferidos a cada 15 minutos.`;
     const trail = [['Início', '/'], [ty.label, url]];
     const json = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${ty.label} Pokémon TCG: preços`, url: SITE + url, mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 30).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/produto/${of[p.id]}`, name: `${label(p)} ${p.collectionName}` })) } }, crumbs(trail)];
     const body = `${bc(trail)}<h1>${esc(ty.label)} Pokémon TCG: preços no Brasil</h1><p>${list.length} produtos neste formato, de todas as coleções, comparados com o preço sugerido da Copag.</p><ul>${list.map((p) => prodRow(p, best[p.id], of)).join('')}</ul>${navLinks}`;
     return { title, desc, url, json, body };
   }
   const STATIC = {
-    home: ['/', `Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | ${NAME}`, 'Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque em tempo real.', 'Não procure preço. Procure oportunidade.'],
+    home: ['/', `Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | ${NAME}`, 'Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque conferidos a cada 15 minutos.', 'Não procure preço. Procure oportunidade.'],
     oportunidades: ['/oportunidades', `Promoções de Pokémon TCG lacrado hoje | ${NAME}`, 'As melhores oportunidades de Pokémon TCG lacrado agora: a melhor oferta com estoque de cada produto, com Opportunity Score, confiança dos dados e comparação com a referência atual (preço sugerido Copag ou mercado).', 'Promoções de Pokémon TCG lacrado hoje'],
     produtos: ['/produtos', `Todos os produtos de Pokémon TCG lacrado e seus preços | ${NAME}`, 'Todos os produtos de Pokémon TCG lacrado que o Hunter acompanha: ETB, booster box, blisters, latas e coleções, com o menor preço nas lojas do Brasil e filtros por coleção, formato e loja.', 'Todos os produtos de Pokémon TCG lacrado'],
     precos: ['/precos', `Preço sugerido Copag de Pokémon TCG: tabela oficial | ${NAME}`, 'Tabela com o preço sugerido da Copag para ETB, booster box, blisters, latas e coleções de Pokémon TCG, com fonte e data.', 'Preço sugerido Copag de Pokémon TCG'],

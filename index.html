@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>document.documentElement.classList.add("js")</script>
 <title>Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter</title>
-<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque em tempo real.">
+<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque conferidos a cada 15 minutos.">
 <meta property="og:title" content="TCG Price Hunter">
 <meta property="og:description" content="Ofertas de Pokémon TCG lacrado no Brasil, comparadas com o preço sugerido oficial da Copag.">
 <meta name="theme-color" content="#1B2C74" media="(prefers-color-scheme: light)">
@@ -621,6 +621,10 @@ a.navbtn{text-decoration:none}
 .stage .sbox-lg .btn{background:var(--sticker);color:var(--sticker-ink)}
 .stage .sbox-lg .sbox-in:focus-within{border-color:rgb(255 207 51 / .7);box-shadow:0 0 0 4px rgb(255 207 51 / .16),0 18px 50px rgb(0 0 0 / .35)}
 .stage .sbox-x{color:rgb(255 255 255 / .7)}.stage .sbox-x:hover{background:rgb(255 255 255 / .1);color:#fff}
+/* UX: pausa das notas e frescor no topo da Home */
+.pause h3{margin:0 0 6px}.stage-empty.pause h3{color:#fff}.pause p{margin:6px 0 0}
+.pause-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px!important}
+body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatualizado"] .live-dot,body[data-fresh="indisponivel"] .live-dot{background:#FF8478}
 .stage-empty{max-width:560px;margin:48px auto 0;text-align:center;color:rgb(228 233 255 / .75);padding:24px;border:1px dashed rgb(255 255 255 / .2);border-radius:20px}
 .stage-copy{text-align:center;margin:44px auto 0}
 @media (min-width:861px){.stage h1 .ln{white-space:nowrap}}
@@ -1681,15 +1685,15 @@ function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMo
 
 /* Home (6B.2): pódio, sequência e destaques vêm do Opportunity Engine (GET /api/v1/oportunidades), a mesma fonte da
    /oportunidades. Pódio + sequência = as 15 primeiras na ordem do motor (ordem=score). Nada é calculado aqui. */
-const HOMEOPP={status:"idle",top:[],below:null,save:null,at:0,p:null};
+const HOMEOPP={status:"idle",top:[],below:null,save:null,at:0,p:null,fr:null};const HOME_OPP_KEY="oportunidades?limite=15&pagina=1&ordem=score";
 function loadHomeOpp(){
   if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
-  return HOMEOPP.p||=Promise.all([apiGet("oportunidades?limite=15&pagina=1&ordem=score"),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
+  return HOMEOPP.p||=Promise.all([apiGet(HOME_OPP_KEY),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
     .then(([a,b,c])=>{
-      if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
+      if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a,HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
+      else if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
       else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
-      else if(a.meta?.status==="stale_db")Object.assign(HOMEOPP,{status:"stale",top:[]});   /* Lote 2: banco sem sincronizar */
-      else Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now()});
+      else{Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
       HOMEOPP.p=null});
 }
 /* Pódio: as 3 primeiras do motor como destaques FOIL, ULTRA RARA e RARA (6C.1; mesmo componente, sem medalhas) */
@@ -1718,7 +1722,7 @@ function podCardOpp(x,r){
 function podiumOppHTML(){
   if(HOMEOPP.status==="idle"||(HOMEOPP.p&&HOMEOPP.status!=="ok"))return`<div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div>`;
   if(HOMEOPP.status==="error")return`<p class="stage-empty">Não conseguimos carregar as oportunidades agora. <button class="btn ghost sm" type="button" data-homeretry>${ic("arrow-clockwise")}Tentar de novo</button></p>`;
-  if(HOMEOPP.status==="stale")return`<p class="stage-empty">Oportunidades pausadas: os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; elas voltam na próxima atualização.</p>`;
+  if(HOMEOPP.status==="stale")return`<div class="stage-empty pause">${pauseHTML(OPP_PAUSE,"data-homeretry")}</div>`;
   if(HOMEOPP.status==="nodb")return`<p class="stage-empty">Oportunidades indisponíveis no momento. Elas vêm do Opportunity Engine; nenhuma nota é estimada no lugar.</p>`;
   const top=HOMEOPP.top.slice(0,3);
   if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade avaliada agora. O Opportunity Engine avalia as ofertas com estoque a cada varredura.</p>`;
@@ -1839,7 +1843,7 @@ function renderDeals(){
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><b>Ao vivo</b> · preços em tempo real · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
+      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><span id="live-t">${freshTxt(freshState(S))[0]}</span> · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
       ${tickerHTML()}
     </div>
     <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
@@ -1955,7 +1959,7 @@ function tipHits(q){
 function renderTips(){
   const t=S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
-  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos em tempo real.</p></div>`}
+  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
   ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
 }
 
@@ -2631,29 +2635,31 @@ const oppSkel=()=>`<div class="deals">${'<div class="skel" style="height:440px;b
 function oppBar(){const n=oppActive();const t=OPP.total;
   return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span></div>`}
 function oppBody(){
-  if(OPP.status==="loading")return oppSkel();
+  if(OPP.status==="loading"&&!OPP.items.length)return oppSkel();
   if(OPP.status==="error")return`<div class="empty err-state">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
-  if(OPP.status==="stale")return`<div class="empty"><h3>Oportunidades pausadas</h3><p>Os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; as oportunidades voltam na próxima atualização dos preços.</p></div>`;
+  if(OPP.status==="stale")return`<div class="empty pause">${pauseHTML(OPP_PAUSE,"data-oppretry")}</div>`;
   if(OPP.status==="nodb")return`<div class="empty"><h3>Oportunidades indisponíveis no momento</h3><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
   if(!OPP.items.length)return`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
   const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
-  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i)).join("")}</div>${OPP.page<OPP.pages?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
+  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i)).join("")}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
 }
 function paintOpp(){
   $("#view").innerHTML=`<div class="opp">
   <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>A melhor oferta com estoque de cada produto, avaliada pelo Opportunity Engine e ordenada pelo Opportunity Score (atratividade da oportunidade). A confiança mostra quão completos são os dados usados na avaliação; ela não altera a nota.</p></header>
-  ${oppBar()}<div class="opp-list">${oppBody()}</div></div>`;
+  ${oppBar()}<div class="opp-list${OPP.status==="loading"&&OPP.items.length?" is-loading":""}" aria-busy="${OPP.status==="loading"}">${oppBody()}</div></div>`;
   watchOppMore();if(typeof revealInit==="function")revealInit();
 }
 async function renderOpp(){
   const key=oppQuery(1);
   if(OPP.key===key&&OPP.status==="ok"){paintOpp();return}
-  Object.assign(OPP,{key,status:"loading",items:[],total:null,page:1,pages:1});paintOpp();
+  /* troca de filtro: a lista atual continua na tela (esmaecida) até a nova chegar; sem lista, esqueleto */
+  const keep=OPP.status==="ok"&&OPP.items.length>0;
+  Object.assign(OPP,{key,status:"loading",page:1,pages:1},keep?{}:{items:[],total:null});paintOpp();
   const d=await apiGet(key);if(OPP.key!==key||view!=="oportunidades")return;
-  if(!d||d.notFound||!Array.isArray(d.data))OPP.status="error";
-  else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",total:0});
-  else if(d.meta?.status==="stale_db")Object.assign(OPP,{status:"stale",total:0});   /* Lote 2: banco sem sincronizar */
-  else Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1});
+  if(isPause(d,key)){Object.assign(OPP,{status:"stale",items:[],total:0});setPause(d,key)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
+  else if(!d||d.notFound||!Array.isArray(d.data))Object.assign(OPP,{status:"error",items:[]});
+  else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",items:[],total:0});
+  else{Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1,at:Date.now(),fr:d.meta?.freshness||null});setPause(null)}
   paintOpp();
 }
 async function moreOpp(page){
@@ -2661,6 +2667,30 @@ async function moreOpp(page){
   const box=$("#view .opp .deals");if(!box)return;const base=OPP.items.length;OPP.items=OPP.items.concat(d.data);OPP.page=page;
   box.insertAdjacentHTML("beforeend",d.data.map((x,i)=>oppCard(x,base+i)).join(""));
   $("#opp-more")?.remove();if(page<OPP.pages)box.insertAdjacentHTML("afterend",`<div id="opp-more" class="prod-more" data-page="${page+1}" style="height:1px"></div>`);watchOppMore();if(typeof revealInit==="function")revealInit();
+}
+/* UX — pausa das notas (stale_db ou 503 em /oportunidades). Motivo e horário vêm da API (meta.message, meta.freshness);
+   nada antigo é mostrado como atual. Nova tentativa pelo botão e sozinha a cada 5 min (oppTick). */
+let OPP_PAUSE=null;   /* {at,ageMin,why,checked}: /oportunidades respondeu stale_db ou 503 (Home ou página) */
+const isPause=(d,path)=>d?.meta?.status==="stale_db"||(!d&&typeof API_LAST!=="undefined"&&API_LAST.get(path)===503);
+function setPause(d,path){
+  const rf=()=>{if(typeof fresh==="function")fresh()};
+  if(d===null){if(OPP_PAUSE){OPP_PAUSE=null;rf()}return}
+  const f=d?.meta?.freshness||{};
+  OPP_PAUSE={at:f.dataAt||null,ageMin:f.ageMin??null,why:d?.meta?.message||"Os preços estão sem atualização confiável no momento.",checked:Date.now()};rf();
+}
+function pauseHTML(p,retry){
+  p=p||{};
+  return`<h3>Oportunidades pausadas</h3><p>${esc(p.why||"Os preços do banco estão atrasados.")}${p.at?` Últimos preços recebidos em ${freshAt(p.at)}.`:""}</p>
+  <p>Nenhuma nota antiga é mostrada como atual; elas voltam sozinhas na próxima atualização dos preços.</p>
+  <p class="pause-act"><button class="btn ghost sm" type="button" ${retry}>${ic("arrow-clockwise")}Tentar de novo</button><a class="btn ghost sm" href="/produtos" data-go="produtos">${ic("package")}Ver preços por produto</a></p>`;
+}
+/* boot: as oportunidades da página aberta são pedidas junto com o /home (apiGet compartilha o pedido) */
+function prefetchOpp(){if(view==="deals")loadHomeOpp();else if(view==="oportunidades")apiGet(oppQuery(1))}
+const retryHomeOpp=()=>{HOMEOPP.status="idle";[HOME_OPP_KEY,"oportunidades?limite=1&pagina=1&ordem=abaixo","oportunidades?limite=1&pagina=1&ordem=economia"].forEach((k)=>APIC.delete(k));paintHomeOpp();return loadHomeOpp().then(paintHomeOpp)};
+const retryOpp=()=>{APIC.delete(OPP.key);OPP.key="";return renderOpp()};
+/* a cada 30 s: com as notas pausadas, tenta de novo a cada 5 min */
+function oppTick(now=Date.now()){
+  if(OPP_PAUSE&&now-OPP_PAUSE.checked>=5*6e4){OPP_PAUSE.checked=now;if(view==="deals"&&HOMEOPP.status==="stale")retryHomeOpp();else if(view==="oportunidades"&&OPP.status==="stale")retryOpp()}
 }
 /* "Mais filtros" fecha ao clicar fora ou com Esc */
 document.addEventListener("click",(e)=>{document.querySelectorAll(".opp-more[open]").forEach((d)=>{if(!d.contains(e.target))d.open=false})});
@@ -2692,16 +2722,24 @@ function freshState(st,now=Date.now()){
   return{status:m<=FRESH_LIM.atual?"atual":m<=FRESH_LIM.atrasado?"atrasado":m<=FRESH_LIM.expira?"desatualizado":"indisponivel",ageMin:m,dataAt:new Date(t).toISOString()};
 }
 const freshAt=(iso)=>new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+/* UX-B: o texto sempre traz a idade real dos preços (nunca "tempo real"). Preços e notas têm fontes separadas:
+   /home pode estar em dia (state.json) enquanto /oportunidades está pausado (stale_db); a barra diz as duas coisas. */
+const ageTxt=(m)=>m<1?"agora":`há ${m} min`;
+function freshTxt(f){
+  const pz=typeof OPP_PAUSE!=="undefined"&&!!OPP_PAUSE&&(f.status==="atual"||f.status==="atrasado");const pzS=pz?" · notas pausadas":"",pzL=pz?" As notas de oportunidade estão pausadas.":"";
+  return{atual:[`<b>Ao vivo</b> · atualizado ${ageTxt(f.ageMin)}${pzS}`,`<b>Ao vivo</b> · preços atualizados ${ageTxt(f.ageMin)}.${pzL}`],
+    atrasado:[`<b>Atualizado há ${f.ageMin} min</b>${pzS}`,`<b>Atualizado há ${f.ageMin} min.</b> A próxima leitura dos preços está atrasada.${pzL}`],
+    desatualizado:[`<b>Preços desatualizados</b>`,`<b>Preços desatualizados.</b> Última atualização: ${f.dataAt?freshAt(f.dataAt):"?"}. Os preços e o estoque podem ter mudado.`],
+    indisponivel:[`<b>Sem confirmação de atualização</b>`,`<b>Não conseguimos confirmar quando estes preços foram atualizados.</b> Eles podem estar desatualizados.`]}[f.status];
+}
 function fresh(){
   const el=$("#fresh");if(!S||!el)return;
   const f=freshState(S);el.className="fresh"+(f.status==="atrasado"?" warn":f.status==="atual"?"":" bad");el.dataset.freshness=f.status;
-  const T={atual:[`<b>Ao vivo</b> · preços em tempo real`,`<b>Ao vivo</b> · preços em tempo real`],
-    atrasado:[`<b>Atualizado há ${f.ageMin} min</b>`,`<b>Atualizado há ${f.ageMin} min.</b> A próxima leitura dos preços está atrasada.`],
-    desatualizado:[`<b>Preços desatualizados</b>`,`<b>Preços desatualizados.</b> Última atualização: ${f.dataAt?freshAt(f.dataAt):"?"}. Os preços e o estoque podem ter mudado.`],
-    indisponivel:[`<b>Sem confirmação de atualização</b>`,`<b>Não conseguimos confirmar quando estes preços foram atualizados.</b> Eles podem estar desatualizados.`]}[f.status];
-  $("#mini-t").innerHTML=T[0];$("#fresh-t").innerHTML=T[1];
+  const T=freshTxt(f);$("#mini-t").innerHTML=T[0];$("#fresh-t").innerHTML=T[1];
+  const lv=$("#live-t");if(lv)lv.innerHTML=T[0];const b=$("body");if(b)b.dataset.fresh=f.status;
 }
 setInterval(fresh,30e3);
+setInterval(()=>oppTick(),30e3);
 (()=>{const h=$("#hsearch");if(h)h.innerHTML=searchBox("tq",view==="busca"?F.q:"",true)})();
 function init(st,opt={}){
   const prevBest=S?Object.fromEntries((S.products||[]).map((p)=>[p.id,bestLive(p.id)?.total])):null;
@@ -2745,10 +2783,16 @@ async function fetchHome(){
    Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
 const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades"]);   /* 6B.1: /oportunidades só pela API */
 const APIC=new Map();const APITTL=60e3;
-async function apiGet(path,ms=8000){
-  const hit=APIC.get(path);if(hit&&Date.now()-hit.at<APITTL)return hit.j;
-  try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),ms);const r=await fetch("/api/v1/"+path,{signal:ac.signal});clearTimeout(tm);
-    if(r.status===404)return{notFound:true};if(!r.ok)return null;const j=await r.json();APIC.set(path,{at:Date.now(),j});if(APIC.size>120)APIC.delete(APIC.keys().next().value);return j}catch{return null}
+/* API_LAST: status HTTP da última resposta de cada caminho (0 = sem resposta). 503 = dados sem atualização confiável, não é a conexão.
+   APIP: o mesmo pedido em andamento é compartilhado (a Home e /oportunidades começam junto com o /home). */
+const API_LAST=new Map();const APIP=new Map();
+function apiGet(path,ms=8000){
+  const hit=APIC.get(path);if(hit&&Date.now()-hit.at<APITTL)return Promise.resolve(hit.j);
+  if(APIP.has(path))return APIP.get(path);
+  const pr=(async()=>{let st=0;try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),ms);const r=await fetch("/api/v1/"+path,{signal:ac.signal});clearTimeout(tm);st=r.status;API_LAST.set(path,st);
+    if(r.status===404)return{notFound:true};if(!r.ok)return null;const j=await r.json();APIC.set(path,{at:Date.now(),j});if(APIC.size>120)APIC.delete(APIC.keys().next().value);return j}catch{API_LAST.set(path,st);return null}
+    finally{APIP.delete(path)}})();
+  APIP.set(path,pr);return pr;
 }
 const PAGE_DONE=new Set();const SEARCH_TIPS=new Map();let pageP=null,pageKey="";
 function apiReset(){APIC.clear();PAGE_DONE.clear();SEARCH_TIPS.clear();pageKey="";pageP=null;for(const k of Object.keys(HIST))delete HIST[k]}
@@ -2829,10 +2873,10 @@ async function refresh(){
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
   const st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
   if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
-  const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
+  const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. O robô confere as lojas a cada 15 minutos.");
 }
 async function load(){
-  loading();
+  loading();prefetchOpp();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)){render();return}
   $("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
@@ -2861,8 +2905,8 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
   if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:""});store.set("opp2",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
   const och=t.closest("[data-ofchip]");if(och){OF.faixa=och.dataset.ofchip;store.set("opp2",OF);syncSheet();renderOpp().then(syncSheet);track("filter_used",{f:"faixa",v:OF.faixa});return}
-  if(t.closest("[data-homeretry]")){HOMEOPP.status="idle";["oportunidades?limite=15&pagina=1&ordem=score","oportunidades?limite=1&pagina=1&ordem=abaixo","oportunidades?limite=1&pagina=1&ordem=economia"].forEach((k)=>APIC.delete(k));paintHomeOpp();loadHomeOpp().then(paintHomeOpp);return}
-  if(t.closest("[data-oppretry]")){APIC.delete(OPP.key);OPP.key="";renderOpp();return}
+  if(t.closest("[data-homeretry]")){retryHomeOpp();return}
+  if(t.closest("[data-oppretry]")){retryOpp();return}
   const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
   if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
   const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);rerenderList();track("filter_used",{f:"group",v:F.group});return}
