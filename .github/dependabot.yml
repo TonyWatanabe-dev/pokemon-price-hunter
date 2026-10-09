@@ -1,0 +1,18 @@
+# Atualizações das ações do GitHub (Lote 6 — Segurança). As ações ficam fixadas por SHA nos workflows
+# (`uses: dono/acao@<sha de 40 caracteres> # vN`); o Dependabot abre um PR semanal trocando o SHA e o comentário.
+# test/workflow-security-tests.js recusa qualquer `uses:` que não esteja fixado por SHA.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ações"
+    groups:
+      acoes-github:
+        patterns: ["*"]

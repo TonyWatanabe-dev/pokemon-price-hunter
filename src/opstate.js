@@ -3,6 +3,7 @@
 // Lido pelo vigia (tools/watchdog.mjs) para avisar quando o robô para, o banco não sincroniza ou o leitor falha.
 import fs from 'node:fs';
 import path from 'node:path';
+import { yieldCounts } from './source-health.js';
 
 export const OPS_VERSION = 1;
 export const KEEP_RUNS = 96;            // ~24 h de rodadas a cada 15 min
@@ -17,7 +18,7 @@ export function readerSummary(off, validCount) {
   return { status, valid: status === 'ok' ? validCount : 0, read: status === 'ok' ? (off.rows?.size ?? 0) : 0, reason: clean(off.reason) };
 }
 
-/** Lojas: ativas, ativas com anúncios, ativas sem resultado, bloqueadas, com erro e adiadas pelo prazo da rodada. */
+/** Lojas: ativas, ativas com anúncios, ativas sem resultado, bloqueadas, com erro, adiadas pelo prazo da rodada e rendimento. */
 export function storesSummary(sources, deferred = 0) {
   const all = Object.values(sources || {});
   const active = all.filter((s) => s.status === 'ACTIVE');
@@ -29,6 +30,7 @@ export function storesSummary(sources, deferred = 0) {
     blocked: all.filter((s) => s.status === 'BLOCKED').length,
     error: all.filter((s) => s.status === 'ERROR').length,
     deferred,
+    yield: yieldCounts(sources),   // rendimento por loja (src/source-health.js)
   };
 }
 
@@ -44,6 +46,25 @@ export function watchedSummary(sources, ids = WATCHED_SOURCES) {
   return out;
 }
 
+/**
+ * Motor de oportunidades, pela batida (system_event OPPORTUNITY_ENGINE_RUN) comparada ao generatedAt da rodada
+ * anterior — o motor roda logo depois da sincronização dela. lagMin = generatedAt anterior − batida.
+ *  ok: batida até ENGINE_OK_MIN antes (ou depois) · parado: banco sincronizou (sync ok) e a batida ficou mais de
+ *  ENGINE_STOP_MIN atrás · sem_heartbeat: banco lido, nenhuma batida ainda (estado da implantação: não alerta) ·
+ *  desconhecido: sem banco, sem rodada anterior, ou sync atrasado com batida antiga (o problema é a sincronização).
+ */
+export const ENGINE_STOP_MIN = 30; export const ENGINE_OK_MIN = 60;
+export function engineSummary(dbSync) {
+  const runAt = dbSync?.engineRunAt || null;
+  if (!dbSync || ['desligado', 'indisponivel'].includes(dbSync.status)) return { status: 'desconhecido', runAt, lagMin: null };
+  if (!runAt) return { status: 'sem_heartbeat', runAt: null, lagMin: null };
+  const prev = Date.parse(dbSync.prevGeneratedAt || ''); const at = Date.parse(runAt);
+  if (!Number.isFinite(prev) || !Number.isFinite(at)) return { status: 'desconhecido', runAt, lagMin: null };
+  const lagMin = Math.round((prev - at) / 6e4);
+  if (dbSync.status === 'ok' && lagMin > ENGINE_STOP_MIN) return { status: 'parado', runAt, lagMin };
+  return { status: lagMin <= ENGINE_OK_MIN ? 'ok' : 'desconhecido', runAt, lagMin };
+}
+
 /** Problemas da própria rodada (informativo; quem decide alerta é o vigia, com as regras dele). */
 export function runIssues(rec) {
   const out = [];
@@ -53,10 +74,11 @@ export function runIssues(rec) {
   if (rec.dbSync?.status === 'atrasado') out.push('sync_atrasado');
   if (rec.dbSync?.status === 'indisponivel') out.push('banco_indisponivel');
   if (rec.dbSync?.status === 'desligado') out.push('banco_desligado');
+  if (rec.engine?.status === 'parado') out.push('motor_parado');
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, offers, alerts }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, offers, alerts, alertsFailed = 0, tls = null }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -66,8 +88,10 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     generatedAt, prevGeneratedAt: prevGeneratedAt || null,
     startedAt, finishedAt, durationSec: Number.isFinite(f - s) ? Math.round((f - s) / 1000) : null,
     result: stores?.deferred > 0 ? 'parcial' : 'ok',
-    stores, watched: watched || {}, offers: offers ?? null, alerts: alerts ?? 0,
+    stores, watched: watched || {}, offers: offers ?? null, alerts: alerts ?? 0, alertsFailed,
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
+    engine: engineSummary(dbSync),
+    tls,                                   // TLS do PostgreSQL: 'verify' | 'no-verify' | 'local' | 'off' | 'invalid' (src/db/ssl.js)
   };
   rec.issues = runIssues(rec);
   rec.health = rec.issues.length ? 'degradado' : 'saudavel';

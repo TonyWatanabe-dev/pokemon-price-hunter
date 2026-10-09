@@ -1595,6 +1595,9 @@ function searchBox(id,q,big){
 }
 /* Início: painel editorial de oportunidades. Descoberta → Oportunidade → Inteligência → Novidades → Compra */
 const ACT_LABEL={new:["Nova oportunidade","flame-f","hot"],drop:["Queda de preço","trend-down","ok"],restock:["Voltou ao estoque","package","info"],lowest:["Novo menor preço","seal-check-f","ok"],tip:["Telegram","lightbulb","info"]};
+/* Lote 3: com as oportunidades pausadas (banco atrasado ou indisponível), oferta nova abaixo da Copag não é anunciada como "oportunidade" */
+const oppPaused=()=>HOMEOPP.status==="stale"||HOMEOPP.status==="nodb";
+const actLabel=(t)=>t==="new"&&oppPaused()?["Novo preço","tag","info"]:ACT_LABEL[t]||ACT_LABEL.new;
 const hhmm=(iso)=>new Date(iso).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
 const dayLabel=(iso)=>{const d=new Date(iso),n=new Date();const y=new Date(n);y.setDate(n.getDate()-1);return d.toDateString()===n.toDateString()?hhmm(iso):d.toDateString()===y.toDateString()?"ontem "+hhmm(iso):d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})};
 /* "Desde a última visita": a referência vale a sessão inteira; sem visita anterior, últimas 24 h */
@@ -1621,7 +1624,7 @@ function radarHTML(){
   </div></section>`;
 }
 function actItem(e){
-  const p=P[e.productId];const [lbl,icn,tone]=ACT_LABEL[e.type]||ACT_LABEL.new;
+  const p=P[e.productId];const [lbl,icn,tone]=actLabel(e.type);
   const d=e.msrp&&e.to?1-e.to/e.msrp:null;
   const detail=e.type==="drop"||e.type==="lowest"?`<span class="ai-move"><s>${money(e.from)}</s>${ic("caret-down","icon ai-arrow")}<b>${money(e.to)}</b>${pixOf(e.offerId)}</span>`:`<b>${money(e.to)}</b>${pixOf(e.offerId)}`;
   return`<li class="ai"><time datetime="${esc(e.t)}">${dayLabel(e.t)}</time><span class="ai-tag ${tone}">${ic(icn)}${lbl}</span>
@@ -1673,7 +1676,7 @@ function preHTML(){
 }
 function tickerHTML(){
   const ev=dedupeAct(activity()).slice(0,6);if(!ev.length)return"";
-  return`<div class="ticker" aria-live="off">${ev.map((e,i)=>{const p=P[e.productId];const [lbl,icn,tone]=ACT_LABEL[e.type];return`<span class="tk${i?"":" on"}"><time>${hhmm(e.t)}</time><span class="tk-t ${tone}">${ic(icn)}${lbl}</span>${esc(p.collectionName)} · ${esc(label(p))}${e.type==="drop"||e.type==="lowest"?` <s>${money(e.from)}</s> → <b>${money(e.to)}</b>${pixOf(e.offerId)}`:` <b>${money(e.to)}</b>${pixOf(e.offerId)}`}</span>`}).join("")}</div>`;
+  return`<div class="ticker" aria-live="off">${ev.map((e,i)=>{const p=P[e.productId];const [lbl,icn,tone]=actLabel(e.type);return`<span class="tk${i?"":" on"}"><time>${hhmm(e.t)}</time><span class="tk-t ${tone}">${ic(icn)}${lbl}</span>${esc(p.collectionName)} · ${esc(label(p))}${e.type==="drop"||e.type==="lowest"?` <s>${money(e.from)}</s> → <b>${money(e.to)}</b>${pixOf(e.offerId)}`:` <b>${money(e.to)}</b>${pixOf(e.offerId)}`}</span>`}).join("")}</div>`;
 }
 let tickT=0;
 function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMotion())return;const it=[...t.querySelectorAll(".tk")];if(it.length<2)return;let k=0;
@@ -1734,6 +1737,7 @@ function railOppHTML(){
 function paintHomeOpp(){
   if(view!=="deals")return;const pod=$("#home-pod"),rail=$("#home-rail"),hl=$("#home-hl");if(!pod)return;
   pod.innerHTML=podiumOppHTML();rail.innerHTML=railOppHTML();hl.innerHTML=highlightsOppHTML();stageInit();revealInit();
+  const tk=$(".stage .ticker");if(tk&&oppPaused()){tk.outerHTML=tickerHTML();startTicker()}   /* Lote 3: rótulo do radar segue o status */
 }
 let stageIO=null;let podIO=null,podT=0,podScroll=null;
 function stageInit(){

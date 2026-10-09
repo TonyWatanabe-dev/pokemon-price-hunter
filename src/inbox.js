@@ -8,7 +8,9 @@ import { matchProduct } from './match.js';
 import { firstPrice } from './tips.js';
 import { money, pct } from './format.js';
 
-const api = (m, body) => fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/${m}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then((r) => r.json());
+// Prazo de 10 s por chamada (getUpdates usa timeout: 0, sem long polling): Telegram travado não segura a rodada.
+export const API_TIMEOUT_MS = 10000;
+const api = (m, body) => fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/${m}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(API_TIMEOUT_MS) }).then((r) => r.json());
 const STOCK = { IN_STOCK: 'em estoque', OUT_OF_STOCK: 'esgotado', PRE_ORDER: 'pré-venda', UNKNOWN: 'estoque não informado' };
 
 async function readLink(url) {

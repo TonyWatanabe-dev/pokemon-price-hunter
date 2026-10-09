@@ -52,7 +52,9 @@ await t('1. registro da rodada: campos, sem segredo, ops preserva as outras chav
 
 await t('2. resumo de lojas e do leitor (N válidas de M lidas)', () => {
   const sources = { a: { status: 'ACTIVE', listings: 3 }, b: { status: 'ACTIVE', listings: 0 }, c: { status: 'ACTIVE' }, d: { status: 'BLOCKED' }, e: { status: 'ERROR' }, f: { status: 'PAUSED' } };
-  assert.deepEqual(storesSummary(sources, 2), { found: 6, active: 3, withListings: 1, empty: 2, blocked: 1, error: 1, deferred: 2 });
+  // Lote 5: o resumo ganhou a contagem por rendimento (chave nova; as antigas não mudam)
+  assert.deepEqual(storesSummary(sources, 2), { found: 6, active: 3, withListings: 1, empty: 2, blocked: 1, error: 1, deferred: 2,
+    yield: { ok: 2, sem_resultado: 0, sem_match: 1, nunca_funcionou: 0, falhando: 2 } });
   assert.deepEqual(readerSummary({ status: 'ok', rows: new Map([['x', {}], ['y', {}]]) }, 1), { status: 'ok', valid: 1, read: 2, reason: null });
   assert.equal(readerSummary({ status: 'off', rows: new Map(), reason: 'sem DATABASE_URL' }, 0).status, 'off');
   assert.equal(readerSummary(null, 0).status, 'unavailable');
@@ -298,7 +300,7 @@ await t('17. watchdog.yml: disparo externo + reserva, concorrência, permissões
   assert.match(y, /workflow_dispatch:/); assert.match(y, /schedule:/);
   assert.match(y, /concurrency:\s*\n\s*group: watchdog\s*\n\s*cancel-in-progress: false/);
   assert.match(y, /permissions:\s*\n\s*contents: read\s*\n\s*actions: read/); assert.doesNotMatch(y, /contents: write/);
-  assert.match(y, /actions\/cache\/restore@v4/); assert.match(y, /actions\/cache\/save@v4/); assert.match(y, /restore-keys: watchdog-ledger-/);
+  assert.match(y, /actions\/cache\/restore@[0-9a-f]{40} # v4/); assert.match(y, /actions\/cache\/save@[0-9a-f]{40} # v4/); assert.match(y, /restore-keys: watchdog-ledger-/);
   assert.match(y, /tools\/watchdog\.mjs --state wd\/state\.json --meta wd\/meta\.json --runs wd\/runs\.json --ledger wd\/ledger\.json/);
   assert.doesNotMatch(y, /(echo|printf)[^\n]*\$\{?\{?\s*(secrets\.|TELEGRAM_BOT_TOKEN|NTFY_TOPIC)/, 'nenhum segredo impresso');
   assert.doesNotMatch(y, /run:[^\n]*\$\{\{\s*inputs\./, 'input só por variável de ambiente');

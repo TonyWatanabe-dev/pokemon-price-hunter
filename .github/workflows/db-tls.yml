@@ -1,0 +1,30 @@
+# Teste da conexão TLS verificada com o PostgreSQL (Lote 6, docs/tls.md). Só leitura: conecta, lê a versão e sai.
+# Roda tools/db-diagnose.mjs com o Secret PG_CA_CERT e, por padrão, em modo estrito (sem CA = falha), para provar
+# que o certificado do Supabase confere com a CA ANTES de ligar PG_TLS_STRICT no robô. Nada vai para ramo nenhum:
+# o relatório (sem URL, usuário, senha nem host) fica só no log da execução.
+name: 'Banco: testar TLS'
+on:
+  workflow_dispatch:
+    inputs:
+      estrito: { description: 'Exigir CA (PG_TLS_STRICT=1)', type: boolean, default: true }
+permissions:
+  contents: read
+jobs:
+  tls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+      PG_TLS_STRICT: ${{ inputs.estrito && '1' || vars.PG_TLS_STRICT }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with: { node-version: 22 }
+      - name: Instalar driver
+        run: npm ci --omit=dev --no-audit --no-fund
+      - name: Conectar com TLS verificado
+        run: |
+          [ -n "$DATABASE_URL" ] || { echo "::error::Secret DATABASE_URL não existe"; exit 1; }
+          [ -n "$PG_CA_CERT" ] || echo "::warning::Secret PG_CA_CERT não existe: com estrito, a conexão será recusada (esperado)."
+          node tools/db-diagnose.mjs "$RUNNER_TEMP/connect.json"

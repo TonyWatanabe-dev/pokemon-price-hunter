@@ -275,7 +275,7 @@ try {
     WHERE s.data_status = 'ok' ORDER BY s.number_of_in_stock_offers DESC, p.legacy_id LIMIT 5`);
 
   // ---------- Opportunity Engine ----------
-  const evBefore = await n(`SELECT count(*) FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%'`);
+  const evBefore = await n(`SELECT count(*) FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type <> 'OPPORTUNITY_ENGINE_RUN'`);
   rep.opportunity = { run1: await tx((c) => runOpportunityEngine(c)), run2: await tx((c) => runOpportunityEngine(c)) };
   check('Opportunity Engine idempotente (2ª execução não escreve nem emite eventos)', rep.opportunity.run2.written === 0 && rep.opportunity.run2.removed === 0 && Object.keys(rep.opportunity.run2.events).length === 0, rep.opportunity.run2);
   check('oportunidade: anomalia nunca ≥ 50', (await n(`SELECT count(*) FROM hunter.opportunity WHERE is_anomaly AND opportunity_score >= 50`)) === 0);
@@ -318,8 +318,8 @@ try {
   check('melhor oportunidade: view SQL = código', bestDiff.length === 0, bestDiff.slice(0, 10));
   rep.opportunity.bands = await q(`SELECT opportunity_band, count(*)::int n, round(avg(confidence), 2)::float8 conf FROM hunter.opportunity GROUP BY 1 ORDER BY 1`);
   rep.opportunity.productBands = await q(`SELECT opportunity_band, count(*)::int n FROM hunter.product_opportunity GROUP BY 1 ORDER BY 1`);
-  rep.opportunity.events = await q(`SELECT type, count(*)::int n FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' GROUP BY 1 ORDER BY 1`);
-  rep.opportunity.newEvents = (await n(`SELECT count(*) FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%'`)) - evBefore;
+  rep.opportunity.events = await q(`SELECT type, count(*)::int n FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type <> 'OPPORTUNITY_ENGINE_RUN' GROUP BY 1 ORDER BY 1`);
+  rep.opportunity.newEvents = (await n(`SELECT count(*) FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type <> 'OPPORTUNITY_ENGINE_RUN'`)) - evBefore;
   rep.opportunity.top = await q(`SELECT p.legacy_id, f.legacy_id AS offer, f.store_id, o.price::float8, o.opportunity_score, o.opportunity_band, o.confidence::float8,
     (SELECT jsonb_agg(x->>'text') FROM jsonb_array_elements(o.reasons) x) reasons, (SELECT jsonb_agg(x->>'code') FROM jsonb_array_elements(o.warnings) x) warnings
     FROM hunter.product_opportunity o JOIN hunter.product p ON p.id = o.product_id JOIN hunter.offer f ON f.id = o.offer_id ORDER BY o.opportunity_score DESC, o.confidence DESC, p.legacy_id LIMIT 10`);
