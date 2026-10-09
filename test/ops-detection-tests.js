@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildRunRecord, mergeOps, recordRun, readerSummary, storesSummary, validRecord, KEEP_RUNS } from '../src/opstate.js';
 import { readDbHealth, syncStatus } from '../src/db-health.js';
 import { evaluate, decide, commitLedger, RULES } from '../src/ops-watch.js';
@@ -97,7 +97,7 @@ await t('4. meta.json: registro inválido não substitui o último; último saud
 await t('5. escrita concorrente: o arquivo nunca fica pela metade (4 escritores × 40 gravações, leitura contínua)', async () => {
   const file = path.join(tmp, 'meta-conc.json');
   fs.writeFileSync(file, JSON.stringify({ dataVersion: 3, distrust: { stores: ['keep'] } }));
-  const script = `import { recordRun, buildRunRecord } from ${JSON.stringify(path.join(root, 'src/opstate.js'))};
+  const script = `import { recordRun, buildRunRecord } from ${JSON.stringify(pathToFileURL(path.join(root, 'src/opstate.js')).href)};
     const w = process.argv[1];
     for (let i = 0; i < 40; i++) { const at = new Date(Date.UTC(2026, 9, 9, 0, i)).toISOString();
       recordRun(${JSON.stringify(file)}, buildRunRecord({ env: { GITHUB_RUN_ID: w + '-' + i }, startedAt: at, finishedAt: at, generatedAt: at, prevGeneratedAt: null,
