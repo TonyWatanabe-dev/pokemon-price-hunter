@@ -233,6 +233,9 @@ dialog.sheet.small{max-height:70dvh}
 .acc .terms a,.acc .fine a{color:var(--ink);font-weight:600}
 .acc .fine{font-size:12.5px;color:var(--muted);margin:10px 0 0;text-align:center}
 .acc .err{background:var(--bad-bg);color:var(--bad);border-radius:12px;padding:10px 12px;font-size:14px;margin:0}
+.acc .field-err{margin-top:6px;padding:7px 10px;font-size:13px;border-radius:10px}
+.acc input[aria-invalid="true"]{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+.acc .terms input[aria-invalid="true"]{outline:2px solid var(--bad);outline-offset:2px}
 .acc .ok{background:var(--ok-bg);color:var(--ok);border-radius:12px;padding:10px 12px;font-size:14px;margin:0 0 12px}
 .acc .warnbox{background:var(--warn-bg);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:14px;margin:0 0 12px}
 .acc .warnbox button{border:0;background:none;color:inherit;font-weight:700;text-decoration:underline;padding:0;font-size:14px}
@@ -1198,7 +1201,8 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 }
 @media (max-width:859px){
   .cover-in{display:grid;grid-template-columns:1fr;gap:10px}
-  .cover .brand{width:auto;display:flex;justify-content:flex-start}
+  .cover .brand{width:auto;display:flex;justify-content:flex-start;justify-self:start}   /* só a logo é clicável; antes o link ocupava a linha toda e cobria o botão da conta */
+  .accfab{z-index:4}
   .cover .brand img{width:auto;height:50px}
   .hsearch{grid-column:1/-1}
   .hsearch .sbox-lg .btn{padding:10px 16px}
@@ -1385,7 +1389,7 @@ addEventListener("popstate",()=>{
   view=r.view;render();scrollTo({top:0});
 });
 
-function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),2400)}
+function toast(msg,warn){const t=$("#toast"),now=Date.now();if(!warn&&toast.until>now){clearTimeout(toast.q);toast.q=setTimeout(()=>toast(msg),toast.until-now);return}const d=warn?5200:2400;t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.until=warn?now+d:0;toast.t=setTimeout(()=>t.classList.remove("show"),d)}
 
 function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${o.quantity} em estoque`:l}</span>`}
 function photo(p,o,cls="photo"){
@@ -2135,10 +2139,21 @@ function renderProduct(pid){
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
-const ACC={mod:null,user:null,data:null,ready:false,tab:"up",step:"choose",gate:null,err:null,ok:null,told:false};
+const ACC={mod:null,user:null,data:null,ready:false,tab:"up",step:"choose",gate:null,err:null,errField:null,form:{},ok:null,told:false};
 let accP=null;
-const AERR={"auth/invalid-email":"E-mail inválido.","auth/missing-email":"Digite o e-mail.","auth/missing-password":"Digite a senha.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/email-already-in-use":"Já existe uma conta com esse e-mail. Entre ou use \"Esqueci minha senha\".","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/wrong-password":"E-mail ou senha incorretos.","auth/user-not-found":"E-mail ou senha incorretos.","auth/too-many-requests":"Muitas tentativas seguidas. Espere alguns minutos e tente de novo.","auth/popup-closed-by-user":"","auth/cancelled-popup-request":"","auth/user-cancelled":"","auth/popup-blocked":"O navegador bloqueou a janela do Google. Libere pop-ups para este site e tente de novo.","auth/network-request-failed":"Sem conexão com a internet. Tente de novo.","auth/requires-recent-login":"Por segurança, entre de novo para excluir a conta.","auth/account-exists-with-different-credential":"Esse e-mail já tem conta com outro jeito de entrar.","auth/unauthorized-domain":"Login ainda não liberado para este endereço do site.","auth/operation-not-allowed":"Esse jeito de entrar ainda não está ativado."};
-const aerr=(e)=>e?.code in AERR?AERR[e.code]:"Algo deu errado. Tente de novo.";
+const AERR={"auth/invalid-email":"E-mail inválido.","auth/missing-email":"Digite o e-mail.","auth/missing-password":"Digite a senha.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/email-already-in-use":"Já existe uma conta com esse e-mail. Entre ou use \"Esqueci minha senha\".","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/wrong-password":"E-mail ou senha incorretos.","auth/user-not-found":"E-mail ou senha incorretos.","auth/too-many-requests":"Muitas tentativas seguidas. Espere alguns minutos e tente de novo.","auth/popup-closed-by-user":"","auth/cancelled-popup-request":"","auth/user-cancelled":"","auth/popup-blocked":"O navegador bloqueou a janela do Google. Libere pop-ups para este site e tente de novo.","auth/network-request-failed":"Sem conexão com a internet. Tente de novo.","auth/requires-recent-login":"Por segurança, entre de novo para excluir a conta.","auth/account-exists-with-different-credential":"Esse e-mail já tem conta com outro jeito de entrar.","auth/unauthorized-domain":"Login ainda não liberado para este endereço do site.","auth/operation-not-allowed":"Esse jeito de entrar ainda não está ativado.","auth/admin-restricted-operation":"Novos cadastros estão fechados no momento. Se você já tem conta, use Entrar.","auth/requests-from-referer":"Cadastro e login ainda não estão liberados neste endereço do site.","auth/invalid-api-key":"Login indisponível neste endereço do site no momento.","auth/app-not-authorized":"Login indisponível neste endereço do site no momento.","auth/configuration-not-found":"Login indisponível no momento: configuração pendente do site.","auth/internal-error":"O serviço de login falhou agora. Tente de novo em instantes.","auth/quota-exceeded":"Muitos cadastros agora. Tente de novo em alguns minutos.","auth/unauthorized-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/invalid-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/web-storage-unsupported":"O navegador está bloqueando os dados do site. Saia do modo anônimo ou libere cookies e tente de novo.","auth/operation-not-supported-in-this-environment":"Este navegador não permite o login com Google aqui. Tente em outro navegador.","auth/redirect-cancelled-by-user":""};
+/* campo ligado a cada erro (mensagem ao lado do campo e aria-invalid) */
+const AFIELD={"auth/invalid-email":"email","auth/missing-email":"email","auth/email-already-in-use":"email","auth/missing-password":"pw","auth/weak-password":"pw","auth/password-does-not-meet-requirements":"pw"};
+/* política de senha do Firebase: a mensagem traz a lista de requisitos em inglês; aqui só traduzimos o que ela pede */
+const PWREQ=[[/non-alphanumeric/i,"um símbolo (ex.: ! ? #)"],[/upper ?case/i,"uma letra maiúscula"],[/lower ?case/i,"uma letra minúscula"],[/numeric/i,"um número"],[/at least (\d+) characters/i,(m)=>`pelo menos ${m[1]} caracteres`]];
+function pwPolicy(msg){const inner=(String(msg||"").match(/\[(.*)\]/)||[])[1]||"";const out=[];
+  for(const part of inner.split(",")){for(const [re,t] of PWREQ){const m=part.match(re);if(m){out.push(typeof t==="function"?t(m):t);break}}}
+  return out.length?`A senha precisa ter ${out.join(", ")}.`:"A senha não atende às regras de segurança. Use letras, números e símbolos."}
+/* erro desconhecido: mensagem clara + o código (não é segredo) para a pessoa poder relatar; nada de "algo deu errado" mudo */
+const aerr=(e)=>{const c=String(e?.code||"");if(c==="auth/password-does-not-meet-requirements")return pwPolicy(e.message);
+  if(c.startsWith("auth/requests-from-referer"))return AERR["auth/requests-from-referer"];if(c in AERR)return AERR[c];
+  try{console.warn("[conta] erro sem tradução:",c||"sem código")}catch{}
+  return`Não foi possível concluir agora. Tente de novo em instantes.${c?` (código: ${c.replace(/[^\w/.-]/g,"").slice(0,60)})`:""}`};
 const favs=()=>ACC.data?.favorites||[];
 const alertsL=()=>ACC.data?.alerts||[];
 const isFav=(pid)=>favs().includes(pid);
@@ -2148,12 +2163,20 @@ const byTot=(a,b)=>a.total-b.total||(b.dealScore??-1)-(a.dealScore??-1)||String(
 const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort(byTot)[0];
 const hits=()=>alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v);
 const authPending=()=>!ACC.ready&&store.get("acc",false);
-function accMod(){return accP||=import("/account.js").then((m)=>{ACC.mod=m;m.watch(onUser);return m}).catch((e)=>{accP=null;throw e})}
+function accMod(){return accP||=import("/account.js").then((m)=>{ACC.mod=m;m.watch(onUser);afterRedirect(m);return m}).catch((e)=>{accP=null;throw e})}
+/* volta do Google no modo redirecionamento: sucesso segue por onUser/resumeGate; cancelamento ou erro reabrem a mesma tela */
+const redirFlag=(v)=>{try{if(v===undefined)return sessionStorage.getItem("ph:redir")==="1";if(v)sessionStorage.setItem("ph:redir","1");else sessionStorage.removeItem("ph:redir")}catch{}return false};
+async function afterRedirect(m){
+  if(m.authMode!=="redirect"||!redirFlag())return;redirFlag(false);
+  const r=await m.redirectResult();if(r?.user)return;
+  let a=null;try{a=JSON.parse(sessionStorage.getItem("ph:gate")||"null")}catch{}
+  authGate(a||{type:"page"});if(r?.error){ACC.err=aerr(r.error);ACC.errField=null;renderGate()}
+}
 async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
     if(was!==u.uid){ACC.data=null;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={}}}
-    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch{}}
+    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
   }else ACC.data=null;
   ACC.ready=true;accSync();
   if(u)await resumeGate();
@@ -2182,7 +2205,6 @@ async function resumeGate(){
   if(sh.open&&sh.dataset.kind==="gate"){sh.dataset.kind="";sh.close()}
   if(a.pid&&P[a.pid]){if(!(view==="produto"&&curPid===a.pid))openProduct(a.pid);await runAction(a)}
   else toast("Você entrou");
-  if(ACC.user?.provider==="password"&&!ACC.user.verified&&a.fresh)toast("Conta criada. Confirme seu e-mail pelo link que mandamos.");
 }
 function openAccount(){if(ACC.user)go("conta");else authGate({type:"page"})}
 
@@ -2206,7 +2228,10 @@ function refreshProdTools(pid){const fb=document.querySelector(".ptools [data-fa
 /* Tela do AuthGate (dentro da mesma folha do produto, sem trocar de página) */
 function renderGate(){
   const sh=$("#sheet");const a=ACC.gate||{type:"page"};const [title,sub]=GATE[a.type]||GATE.page;const p=a.pid?P[a.pid]:null;
-  const msgs=`${ACC.ok?`<p class="ok" role="status">${esc(ACC.ok)}</p>`:""}${ACC.err?`<p class="err" role="alert">${esc(ACC.err)}</p>`:""}`;
+  const fe=ACC.step==="form"&&ACC.err&&ACC.errField?ACC.errField:null;   /* erro de um campo: aparece colado nele */
+  const msgs=`${ACC.ok?`<p class="ok" role="status">${esc(ACC.ok)}</p>`:""}${ACC.err&&!fe?`<p class="err" role="alert">${esc(ACC.err)}</p>`:""}`;
+  const ferr=(k)=>fe===k?`<p class="err field-err" id="a-err" role="alert">${esc(ACC.err)}</p>`:"";
+  const inv=(k)=>fe===k?` aria-invalid="true" aria-describedby="a-err"`:"";const fv=(k)=>esc(ACC.form?.[k]||"");
   const ctx=p?`<div class="gate-ctx">${photo(p,bestLive(p.id),"photo gphoto")}<div><b>${esc(p.collectionName)}</b><span>${esc(label(p))}${a.type==="alert"&&a.v?` · alvo ${money(a.v)}`:""}</span></div></div>`:"";
   const terms=`<a href="/termos" target="_blank" rel="noopener">Termos</a> e a <a href="/privacidade" target="_blank" rel="noopener">Privacidade</a>`;
   const back=p?`<button class="linkish" type="button" data-a="gate-back" style="align-self:center">Voltar ao produto</button>`:"";
@@ -2224,10 +2249,10 @@ function renderGate(){
     const t=ACC.tab;
     body=`${t!=="reset"?`<div class="tabs" role="group" aria-label="Criar conta ou entrar"><button type="button" data-a="tab-up" aria-pressed="${t==="up"}">Criar conta</button><button type="button" data-a="tab-in" aria-pressed="${t==="in"}">Entrar</button></div>`:""}
     <form id="accf" novalidate>
-      ${t==="up"?`<div class="field"><label for="a-name">Nome ou apelido (opcional)</label><input id="a-name" name="name" autocomplete="nickname" maxlength="60"></div>`:""}
-      <div class="field"><label for="a-email">E-mail</label><input id="a-email" name="email" type="email" inputmode="email" autocomplete="email" required></div>
-      ${t!=="reset"?`<div class="field"><label for="a-pw">Senha${t==="up"?" (mínimo 6 caracteres)":""}</label><input id="a-pw" name="pw" type="password" autocomplete="${t==="up"?"new-password":"current-password"}" minlength="6" required></div>`:""}
-      ${t==="up"?`<label class="terms"><input type="checkbox" name="terms" required><span>Li e aceito os ${terms.replace("Termos","Termos de uso").replace("Privacidade","Política de privacidade")}.</span></label>`:""}
+      ${t==="up"?`<div class="field"><label for="a-name">Nome ou apelido (opcional)</label><input id="a-name" name="name" autocomplete="nickname" maxlength="60" value="${fv("name")}"></div>`:""}
+      <div class="field"><label for="a-email">E-mail</label><input id="a-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" required value="${fv("email")}"${inv("email")}>${ferr("email")}</div>
+      ${t!=="reset"?`<div class="field"><label for="a-pw">Senha${t==="up"?" (mínimo 6 caracteres)":""}</label><input id="a-pw" name="pw" type="password" autocomplete="${t==="up"?"new-password":"current-password"}" minlength="6" required${inv("pw")}>${ferr("pw")}</div>`:""}
+      ${t==="up"?`<label class="terms"><input id="a-terms" type="checkbox" name="terms" required${ACC.form?.terms?" checked":""}${inv("terms")}><span>Li e aceito os ${terms.replace("Termos","Termos de uso").replace("Privacidade","Política de privacidade")}.</span></label>${ferr("terms")}`:""}
       ${msgs}
       <button class="btn" type="submit">${t==="up"?"Criar conta grátis":t==="reset"?"Enviar link":"Entrar"}</button>
       ${t==="in"?`<button class="linkish" type="button" data-a="tab-reset" style="align-self:center">Esqueci minha senha</button>`:t==="reset"?`<button class="linkish" type="button" data-a="tab-in" style="align-self:center">Voltar para entrar</button>`:""}
@@ -2248,7 +2273,7 @@ async function accAction(a,btn){
   if(!m)return;
   btn.disabled=true;btn.setAttribute("aria-busy","true");
   try{
-    if(a==="google"){await m.google()}
+    if(a==="google"){if(m.authMode==="redirect")redirFlag(true);try{await m.google()}catch(e){redirFlag(false);throw e}if(m.authMode==="redirect")return}
     else if(a==="out"){await m.out();toast("Você saiu da conta");go("")}
     else if(a==="resend"){await m.resend();toast("Link reenviado. Confira a caixa de entrada e o spam.")}
     else if(a==="reload"){const u=await m.reload();ACC.user=u;toast(u?.verified?"E-mail confirmado":"Ainda não aparece confirmado. Abra o link do e-mail.");render()}
@@ -2256,20 +2281,26 @@ async function accAction(a,btn){
   btn.disabled=false;btn.removeAttribute("aria-busy");
   if($("#sheet").open&&$("#sheet").dataset.kind==="gate"&&!ACC.user)renderGate();
 }
+function focusErr(){const k=ACC.errField;const el=k&&$(k==="terms"?"#a-terms":`#a-${k}`);if(el)el.focus();else $("#sheet .err")?.focus?.()}
 async function submitAcc(f){
   const m=ACC.mod;if(!m)return;const d=Object.fromEntries(new FormData(f));const t=ACC.tab;const b=f.querySelector("[type=submit]");
-  ACC.err=null;ACC.ok=null;const email=String(d.email||"").trim();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))ACC.err="Digite um e-mail válido.";
-  else if(t!=="reset"&&String(d.pw||"").length<6)ACC.err="A senha precisa ter pelo menos 6 caracteres.";
-  else if(t==="up"&&!d.terms)ACC.err="Para criar a conta, aceite os Termos e a Privacidade.";
-  if(ACC.err){renderGate();return}
+  ACC.err=null;ACC.errField=null;ACC.ok=null;const email=String(d.email||"").trim();
+  ACC.form={name:String(d.name||""),email,terms:!!d.terms};   /* o que a pessoa digitou volta preenchido se der erro (a senha não) */
+  if(!email){ACC.err="Digite seu e-mail.";ACC.errField="email"}
+  else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ACC.err="Esse e-mail não parece válido. Confira se tem @ e o domínio (ex.: nome@gmail.com).";ACC.errField="email"}
+  else if(t!=="reset"&&!String(d.pw||"")){ACC.err="Digite a senha.";ACC.errField="pw"}
+  else if(t!=="reset"&&String(d.pw||"").length<6){ACC.err="A senha precisa ter pelo menos 6 caracteres.";ACC.errField="pw"}
+  else if(t==="up"&&!d.terms){ACC.err="Para criar a conta, aceite os Termos e a Privacidade.";ACC.errField="terms"}
+  if(ACC.err){renderGate();focusErr();return}
   b.disabled=true;b.setAttribute("aria-busy","true");
   try{
     if(t==="in")await m.emailIn(email,d.pw);
-    else if(t==="up"){if(ACC.gate)ACC.gate.fresh=true;await m.emailUp(email,d.pw,String(d.name||"").trim().slice(0,60));track("signup_completed",{method:"email"})}
+    else if(t==="up"){const r=await m.emailUp(email,d.pw,String(d.name||"").trim().slice(0,60));track("signup_completed",{method:"email"});
+      ACC.form={};if(r?.verifyError){try{console.warn("[conta] confirmação não enviada:",r.verifyError)}catch{};toast("Conta criada, mas o e-mail de confirmação não saiu agora. Reenvie em Minha conta.",true)}
+      else if(!r?.verified)toast("Conta criada. Confirme seu e-mail pelo link que mandamos.",true)}
     else{await m.reset(email);ACC.ok="Se houver conta com esse e-mail, o link chega em alguns minutos. Olhe também o spam.";ACC.tab="in"}
-  }catch(e){ACC.err=aerr(e)}
-  b.disabled=false;b.removeAttribute("aria-busy");if(!ACC.user)renderGate();
+  }catch(e){ACC.err=aerr(e);ACC.errField=ACC.err?AFIELD[e?.code]||null:null}
+  b.disabled=false;b.removeAttribute("aria-busy");if(!ACC.user){renderGate();focusErr()}
 }
 async function submitDel(f){
   const m=ACC.mod;if(!m)return;const pw=new FormData(f).get("pw");const b=f.querySelector("[type=submit]");b.disabled=true;b.setAttribute("aria-busy","true");
@@ -2830,7 +2861,7 @@ function themeSync(){document.querySelectorAll(".theme-btn use").forEach((u)=>u.
   document.querySelectorAll(".theme-btn").forEach((b)=>b.onclick=()=>{document.documentElement.dataset.theme=isDark()?"light":"dark";store.set("theme",document.documentElement.dataset.theme);themeSync();if(view==="configuracoes")render()})})();
 accSync(false);
 load();
-if(store.get("acc",false))accMod().catch(()=>{ACC.ready=true;accSync()});
+if(store.get("acc",false)||redirFlag())accMod().catch(()=>{ACC.ready=true;accSync()});
 </script>
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
 <script defer src="/_vercel/insights/script.js"></script>
