@@ -15,6 +15,7 @@ const rows = (await p.query(`
          o.opportunity_score AS score, o.opportunity_band AS band, o.confidence::float8 AS confidence,
          o.reference_signal::float8 AS s_reference, o.market_signal::float8 AS s_market, o.price_signal::float8 AS s_price,
          o.historical_signal::float8 AS s_historical, o.freight_signal::float8 AS s_freight, o.reliability_signal::float8 AS s_reliability,
+         o.reference_kind AS opp_ref_kind, o.reference_value::float8 AS opp_ref_value, o.reference_gap::float8 AS opp_ref_gap,
          o.raw_score::float8 AS raw, o.coverage::float8 AS coverage, o.caps, o.is_anomaly AS anomaly,
          (SELECT jsonb_agg(x->>'code') FROM jsonb_array_elements(o.warnings) x) AS warnings,
          (SELECT jsonb_agg(x->>'code') FROM jsonb_array_elements(o.reasons) x) AS reasons,
