@@ -52,7 +52,9 @@ await t('1. registro da rodada: campos, sem segredo, ops preserva as outras chav
 
 await t('2. resumo de lojas e do leitor (N válidas de M lidas)', () => {
   const sources = { a: { status: 'ACTIVE', listings: 3 }, b: { status: 'ACTIVE', listings: 0 }, c: { status: 'ACTIVE' }, d: { status: 'BLOCKED' }, e: { status: 'ERROR' }, f: { status: 'PAUSED' } };
-  assert.deepEqual(storesSummary(sources, 2), { found: 6, active: 3, withListings: 1, empty: 2, blocked: 1, error: 1, deferred: 2 });
+  // Lote 5: o resumo ganhou a contagem por rendimento (chave nova; as antigas não mudam)
+  assert.deepEqual(storesSummary(sources, 2), { found: 6, active: 3, withListings: 1, empty: 2, blocked: 1, error: 1, deferred: 2,
+    yield: { ok: 2, sem_resultado: 0, sem_match: 1, nunca_funcionou: 0, falhando: 2 } });
   assert.deepEqual(readerSummary({ status: 'ok', rows: new Map([['x', {}], ['y', {}]]) }, 1), { status: 'ok', valid: 1, read: 2, reason: null });
   assert.equal(readerSummary({ status: 'off', rows: new Map(), reason: 'sem DATABASE_URL' }, 0).status, 'off');
   assert.equal(readerSummary(null, 0).status, 'unavailable');

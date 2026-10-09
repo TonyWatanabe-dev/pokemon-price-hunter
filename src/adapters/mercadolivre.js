@@ -57,7 +57,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (r.condition && r.condition !== 'new') continue;
       out.set(r.id, {
         title: r.title, url: r.permalink, price: { base: r.price }, listPrice: r.original_price || null,
-        stock: r.available_quantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: r.available_quantity > 1 ? r.available_quantity : null,
+        stock: r.available_quantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: r.available_quantity > 1 ? r.available_quantity : null, stockVerified: true, // estoque lido no próprio anúncio
         shipping: r.shipping?.free_shipping ? 0 : null, sku: r.id, ean: null, image: r.thumbnail ? r.thumbnail.replace(/^http:/, 'https:') : null,
         seller: r.official_store_name || r.seller?.nickname || String(r.seller?.id || ''), sellerId: r.seller?.id,
         sellerKind: r.official_store_id ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
@@ -165,13 +165,13 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       title: p.name, url, price: { base: finalPrice }, listPrice: it.original_price > finalPrice ? it.original_price : null,
       // Em estoque só com prova: anúncio conferido em /items, ativo e com quantidade. Sem conferência (API fechada
       // para o app) ou sem quantidade, fica "não confirmado" — nunca afirma disponibilidade sem evidência.
-      stock: itemsApi && checkedQty > 0 ? 'IN_STOCK' : 'UNKNOWN', quantity: qty,
+      stock: itemsApi && checkedQty > 0 ? 'IN_STOCK' : 'UNKNOWN', quantity: qty, stockVerified: !!itemsApi,
       shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
       seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: it.seller_id,
       sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
     });
   }
-  dbg.picked = picked.length; dbg.itemsApi = itemsApi; dbg.published = listings.length; dbg.at = new Date().toISOString();
+  dbg.picked = picked.length; dbg.itemsApi = itemsApi; dbg.published = listings.length; dbg.stockUnverified = listings.filter((l) => l.stockVerified === false).length; dbg.at = new Date().toISOString();
   writeJson(dataPath('ml-debug.json'), dbg);
   writeJson(cacheFile, cache);
   return listings;

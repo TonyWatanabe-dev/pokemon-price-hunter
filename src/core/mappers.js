@@ -36,7 +36,8 @@ export function referenceRows(products) {
   const out = [];
   for (const p of products) {
     if (p.copagConfirmed && p.msrp && p.copag?.source_url) {
-      const seen = ts(p.copag.source_timestamp || p.copag.msrp_updated_at);
+      // última verificação decidida pela política Copag (inclui a conferência diária que bateu); sem ela, o carimbo da fonte
+      const seen = ts(p.copagVerifiedAt || p.copag.source_timestamp || p.copag.msrp_updated_at);
       out.push({ legacy_id: p.id, value: money(p.msrp), source: /copagloja/.test(p.copag.source_url) ? 'copag_loja' : 'manual',
         // só é Copag oficial se a fonte for domínio da Copag; tabela divulgada por lojas (Instagram) é referência comunitária
         reference_kind: robotReferenceKind(p.copag), observed_at: seen,
@@ -45,7 +46,8 @@ export function referenceRows(products) {
     } else if (p.copagReference && p.copagReferenceUrl) {
       out.push({ legacy_id: p.id, value: money(p.copagReference), source: 'internet', source_url: p.copagReferenceUrl,
         reference_kind: robotReferenceKind({ source_url: p.copagReferenceUrl }), observed_at: null,
-        verification_status: 'pending', verified_at: null, confidence: 40, notes: 'referência coletada na internet, não confirmada na Copag' });
+        verification_status: 'pending', verified_at: null, confidence: 40,
+        notes: p.copagReferenceStatus === 'expirado' ? 'referência Copag oficial sem verificação há mais de 30 dias' : 'referência coletada na internet, não confirmada na Copag' });
     }
   }
   return out;

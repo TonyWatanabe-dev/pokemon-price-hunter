@@ -1,16 +1,15 @@
 // Preço Copag, anomalia e STORE_SCORE. A nota de oportunidade é só a oficial (Opportunity Engine, src/core/).
-const MARKETPLACE_HOSTS = /(mercadolivre|mercadolibre|amazon|shopee|magazineluiza|magalu|americanas|casasbahia|pontofrio|extra\.com|carrefour|kabum|aliexpress|submarino|buscape|zoom\.com)/i;
+import { evaluateReference, fromRobotEntry } from './copag-policy.js';
 
-export function copagStatus(product) {
-  const c = product.copag || {};
-  if (!(c.msrp > 0)) return { confirmed: false, reason: 'sem valor' };
-  if (!c.source_url) return { confirmed: false, reason: 'sem fonte' };
-  if (MARKETPLACE_HOSTS.test(c.source_url)) return { confirmed: false, reason: 'fonte é marketplace (não aceita como MSRP)' };
-  // Só vale preço verificável na fonte oficial (loja oficial Copag ou página oficial cadastrada à mão).
-  // Catálogo divulgado por terceiros fica como referência, sem calcular desconto nem disparar alerta.
-  if (c.confidence === 'CATALOGO_COPAG') return { confirmed: false, reason: 'preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável', reference: c.msrp, referenceUrl: c.source_url };
-  if (c.confidence !== 'OFICIAL') return { confirmed: false, reason: 'fonte não marcada como oficial' };
-  return { confirmed: true, msrp: c.msrp, source: c.confidence };
+/**
+ * Preço Copag de UMA entrada (product.copag), pela política única (src/copag-policy.js): fonte oficial da Copag,
+ * valor > 0 e verificada há no máximo 30 dias em relação a opts.now (padrão: agora). Fora disso, só referência.
+ * opts.origin: 'catalog' (cadastro do catalog.json) | 'captura' (loja oficial, data/copag-msrp.json).
+ */
+export function copagStatus(product, { now = new Date(), origin = product?.copag?.origin || 'catalog' } = {}) {
+  const d = evaluateReference(fromRobotEntry(product?.copag || {}, origin), { now, productId: product?.id || null });
+  return d.confirmed ? { confirmed: true, msrp: d.msrp, source: 'OFICIAL', status: d.status, verifiedAt: d.verifiedAt }
+    : { confirmed: false, reason: d.reason, status: d.status, ...(d.reference != null ? { reference: d.reference, referenceUrl: d.referenceUrl } : {}) };
 }
 
 // Pix > à vista > cartão > preço base da plataforma.

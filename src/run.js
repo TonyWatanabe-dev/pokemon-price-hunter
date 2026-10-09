@@ -9,11 +9,13 @@ import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
-import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
+import { pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
+import { decideCopag, fromRobotEntry, productCopagFields } from './copag-policy.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
 import { tlsModeFor } from './db/ssl.js';
+import { classifySource, backoffMinutes, nextEmptyStreak, yieldCounts } from './source-health.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, prevBestOf, retryHits, pruneRetry, failedLine } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -39,13 +41,19 @@ export function loadCatalog() {
   return cat;
 }
 
-// Preço Copag de um produto: cadastro OFICIAL > loja oficial Copag > catálogo Copag divulgado por terceiros (só referência).
-function resolveCopag(p, catalog, copagSeen) {
+// Preço Copag de um produto pela política única (src/copag-policy.js): candidatos na ordem cadastro OFICIAL > captura da
+// loja oficial Copag > demais cadastros (catálogo divulgado por terceiros). Vence o primeiro confirmado (fonte oficial da
+// Copag, verificada há no máximo 30 dias em relação à rodada); sem confirmado, o valor fica só como referência.
+export function resolveCopag(p, catalog, copagSeen, now = new Date()) {
   const keys = msrpKeys(p);
-  const pick = (map, ok) => { for (const k of keys) if (map[k] && ok(map[k])) return { ...map[k], key: k }; return null; };
-  const valid = (c) => copagStatus({ copag: c }).confirmed;
-  return pick(catalog.copag, (c) => c.confidence === 'OFICIAL' && valid(c)) || pick(copagSeen, valid) || pick(catalog.copag, valid) || pick(catalog.copag, () => true)
-    || { msrp: null, source_url: null, confidence: null };
+  const cand = [];
+  const add = (map, origin, ok) => { for (const k of keys) if (map?.[k] && ok(map[k])) cand.push({ ...map[k], key: k, origin }); };
+  add(catalog.copag, 'catalog', (c) => c.confidence === 'OFICIAL');
+  add(copagSeen, 'captura', () => true);
+  add(catalog.copag, 'catalog', (c) => c.confidence !== 'OFICIAL');
+  const d = decideCopag(cand.map((c) => fromRobotEntry(c, c.origin)), { now, productId: p.id });
+  const copag = cand[d.index] || cand[0] || { msrp: null, source_url: null, confidence: null };
+  return { copag, decision: d };
 }
 
 // Oferta que pode ter nota oficial e entrar no bestDeals: em estoque, atual, plausível, confirmada e com preço.
@@ -128,9 +136,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (store.enabled === false) { Object.assign(src, { status: 'PAUSED', reason: 'pausada manualmente' }); return; }
     if (BIG_MARKETPLACES.test(new URL(store.url).host) && store.platform !== 'mercadolivre') { Object.assign(src, { status: 'UNAVAILABLE', reason: 'Marketplace grande: bloqueia robôs e não tem API pública de busca' }); return; }
     if (Date.now() > deadline) { skipped.add(store.id); return; }
-    // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (15 min, 30, 1 h… até 6 h).
+    // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (15 min, 30, 1 h… até 6 h; até 24 h se
+    // nunca funcionou — ver src/source-health.js). Nunca é removida.
     if (['BLOCKED', 'ERROR'].includes(src.status) && src.fails > 0 && src.lastCheck) {
-      const waitMin = Math.min(360, 15 * 2 ** (src.fails - 1));
+      const waitMin = backoffMinutes(src);
       if (Date.now() - Date.parse(src.lastCheck) < waitMin * 60e3) return;
     }
     src.checks++; src.lastCheck = T;
@@ -209,11 +218,11 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
           shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
-          stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
+          stock, quantity: l.quantity ?? null, ...(typeof l.stockVerified === 'boolean' ? { stockVerified: l.stockVerified } : {}), sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
-      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
+      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, emptyStreak: nextEmptyStreak(src, listings.length), lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
       touched.add(store.id);
     } catch (e) {
       Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
@@ -221,6 +230,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
+  // Rendimento de cada loja (derivado; o status não muda): ok, sem_resultado, sem_match, nunca_funcionou, falhando.
+  for (const src of Object.values(sources)) src.yield = classifySource(src);
   // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
@@ -263,11 +274,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
 
-  // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
+  // Agregados por produto. Preço Copag pela política única (resolveCopag): fonte oficial da Copag, verificada há até 30 dias.
   const products = {}; const newLowest = new Map();
   for (const base of Object.values(registry)) {
-    const p = { ...base, copag: resolveCopag(base, catalog, copagSeen) };
-    const cs = copagStatus(p);
+    const rc = resolveCopag(base, catalog, copagSeen, now);
+    const p = { ...base, copag: rc.copag };
+    const cs = rc.decision;
     const list = Object.values(offers).filter((o) => o.productId === p.id);
     const live = list.filter((o) => o.stock === 'IN_STOCK' && !o.stale && o.total > 0);
     // Mediana (não média): um anúncio errado de R$ 400 num blister não pode puxar a referência e marcar os preços certos como suspeitos.
@@ -279,7 +291,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     // Novo menor preço: só a oferta mais barata (confirmada) do produto, e só se for abaixo do recorde anterior.
     const champ = clean.filter((x) => x.confirmed !== false).reduce((a, o) => (!a || o.total < a.total ? o : a), null);
     if (champ && (!lowest[p.id] || champ.total < lowest[p.id].total)) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(champ.id, lowest[p.id].total); lowest[p.id] = { total: champ.total, at: T, storeId: champ.storeId, offerId: champ.id }; }
-    products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
+    products[p.id] = { ...p, ...productCopagFields(cs), marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
   }
 
   const storeScores = Object.fromEntries(stores.map((s) => [s.id, storeScore(s, sources[s.id])]));
@@ -293,7 +305,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
 
   // Pistas (Pelando e canais do Telegram): separadas das ofertas, sem estoque confirmado, fora do ranking.
-  const copagOf = (p) => { const cs = copagStatus({ ...p, copag: resolveCopag(p, catalog, copagSeen) }); return cs.confirmed ? { msrp: cs.msrp } : null; };
+  const copagOf = (p) => { const cs = resolveCopag(p, catalog, copagSeen, now).decision; return cs.confirmed ? { msrp: cs.msrp } : null; };
   const tipsCfg = readJson(configPath('pistas.json'), null);
   const tipStore = readJson(dataPath('tips.json'), {});
   let tipStatus = [];
@@ -364,7 +376,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try { activity = recordActivity({ T, offers, prev, products, newLowest, quiet, distrust, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])) }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
   const state = {
     generatedAt: T,
-    coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0 },
+    coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0, yield: yieldCounts(sources) },
     totals: { products: Object.keys(products).length, offers: all.filter((o) => !o.anomalous).length, review: all.filter((o) => o.anomalous).length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
     collections: catalog.collections.map(({ id, name, series, aliases }) => ({ id, name, series, aliases: aliases || [], products: Object.values(products).filter((p) => p.collection === id).length })).filter((c) => c.products),
     types: Object.entries(TYPE_LABEL).map(([id, label]) => ({ id, label, group: groupOf(id), products: Object.values(products).filter((p) => p.type === id).length })).filter((t) => t.products),

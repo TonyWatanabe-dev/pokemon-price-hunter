@@ -3,6 +3,7 @@
 // Lido pelo vigia (tools/watchdog.mjs) para avisar quando o robô para, o banco não sincroniza ou o leitor falha.
 import fs from 'node:fs';
 import path from 'node:path';
+import { yieldCounts } from './source-health.js';
 
 export const OPS_VERSION = 1;
 export const KEEP_RUNS = 96;            // ~24 h de rodadas a cada 15 min
@@ -17,7 +18,7 @@ export function readerSummary(off, validCount) {
   return { status, valid: status === 'ok' ? validCount : 0, read: status === 'ok' ? (off.rows?.size ?? 0) : 0, reason: clean(off.reason) };
 }
 
-/** Lojas: ativas, ativas com anúncios, ativas sem resultado, bloqueadas, com erro e adiadas pelo prazo da rodada. */
+/** Lojas: ativas, ativas com anúncios, ativas sem resultado, bloqueadas, com erro, adiadas pelo prazo da rodada e rendimento. */
 export function storesSummary(sources, deferred = 0) {
   const all = Object.values(sources || {});
   const active = all.filter((s) => s.status === 'ACTIVE');
@@ -29,6 +30,7 @@ export function storesSummary(sources, deferred = 0) {
     blocked: all.filter((s) => s.status === 'BLOCKED').length,
     error: all.filter((s) => s.status === 'ERROR').length,
     deferred,
+    yield: yieldCounts(sources),   // rendimento por loja (src/source-health.js)
   };
 }
 

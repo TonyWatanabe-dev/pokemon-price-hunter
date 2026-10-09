@@ -91,7 +91,9 @@ export function compose(h) {
   lines.push('', p.copagConfirmed ? `Copag: ${money(p.msrp)}` : 'Copag: sem preço oficial');
   if (o.discount != null) lines.push(`↓ ${pct(o.discount)}`);
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
-  lines.push('', `Estoque: ${o.quantity ? o.quantity + ' unidades' : 'confirmado'}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
+  // Mercado Livre sem conferência por anúncio (stockVerified === false): o estoque não foi conferido, não "confirmado"
+  const stockTxt = o.stockVerified === false ? 'não conferido (anúncio do Mercado Livre)' : o.quantity ? o.quantity + ' unidades' : 'confirmado';
+  lines.push('', `Estoque: ${stockTxt}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
   lines.push(`Frete: ${o.shipping === 0 ? 'grátis' : o.shipping > 0 ? money(o.shipping) : 'não informado'}`);
   const sl = officialLine(h.opp); if (sl) lines.push(sl);   // nota oficial; sem nota válida, a linha não aparece
   return { title: head, text: lines.join('\n'), url: o.url };
