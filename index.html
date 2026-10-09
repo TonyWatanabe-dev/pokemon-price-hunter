@@ -649,20 +649,22 @@ a.navbtn{text-decoration:none}
 .podium{position:relative;display:grid;grid-template-columns:1fr 1.18fr 1fr;grid-template-areas:"p2 p1 p3";align-items:end;gap:clamp(14px,2.2vw,30px);margin:40px auto 0;max-width:1180px;perspective:1600px}
 .podium::before{content:"";position:absolute;left:50%;top:-140px;width:min(560px,70%);height:calc(100% + 140px);transform:translateX(-50%);z-index:0;pointer-events:none;
   background:conic-gradient(from 180deg at 50% 0%,transparent 160deg,rgb(255 255 255 / .08) 172deg,rgb(255 255 255 / .13) 180deg,rgb(255 255 255 / .08) 188deg,transparent 200deg);filter:blur(6px);-webkit-mask:linear-gradient(180deg,#000 30%,transparent);mask:linear-gradient(180deg,#000 30%,transparent)}
-.pod{--int:1;position:relative;z-index:1;grid-area:p1;display:flex;flex-direction:column;min-width:0;border-radius:20px;color:var(--ink);background:var(--surface);
-  box-shadow:0 24px 48px -18px rgb(0 0 0 / .55),0 0 0 1px rgb(255 255 255 / .06);
+/* cartão escuro (visual anterior à 6C.1): tokens locais escuros em qualquer tema; o palco já é escuro */
+.pod{--int:1;--surface:#121736;--ink:#F4F6FF;--muted:rgb(228 233 255 / .66);--line-soft:rgb(255 255 255 / .09);--ok:#4CD49A;--ok-bg:#103A2C;--sunk:rgb(255 255 255 / .06);--btn:#FFCF33;--btn-ink:#231C00;--tcg-frame:#5A5242;
+  position:relative;z-index:1;grid-area:p1;display:flex;flex-direction:column;min-width:0;border-radius:22px;color:var(--ink);background:linear-gradient(180deg,#151B3A,#0D1128);
+  box-shadow:0 30px 80px -20px rgb(0 0 0 / .7),0 0 0 1px rgb(255 255 255 / .05) inset;
   transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0));transition:transform 500ms cubic-bezier(.16,1,.3,1);will-change:transform}
 .pod[data-r="1"]{--lift:-14px}
 .pod[data-r="2"]{grid-area:p2}
 .pod[data-r="3"]{grid-area:p3}
-.pod .deal-hit{z-index:3;border-radius:20px}.pod .deal-hit:focus-visible{outline:0}
+.pod .deal-hit{z-index:3;border-radius:22px}.pod .deal-hit:focus-visible{outline:0}
 .pod:has(.deal-hit:focus-visible){outline:3px solid var(--sticker);outline-offset:5px}
 .stage :focus-visible{outline-color:var(--sticker)}
 /* moldura fina de carta: um anel por cima do cartão, sem engrossar a borda */
-.pod::before{content:"";position:absolute;inset:-1px;border-radius:21px;padding:1.5px;pointer-events:none;z-index:6;background:var(--tcg-frame);
+.pod::before{content:"";position:absolute;inset:-1px;border-radius:23px;padding:1.5px;pointer-events:none;z-index:6;background:var(--tcg-frame);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-.pod[data-hl="foil"]::before{inset:-2.5px;border-radius:22.5px;padding:2.5px;background:var(--tcg-holo);filter:saturate(1.6);opacity:calc(.5 + .5 * var(--int))}
-.pod[data-hl="ultra"]::before{inset:-2px;border-radius:22px;padding:2px;background:var(--tcg-silver);opacity:calc(.55 + .45 * var(--int))}
+.pod[data-hl="foil"]::before{inset:-2.5px;border-radius:24.5px;padding:2.5px;background:var(--tcg-holo);filter:saturate(1.6);opacity:calc(.5 + .5 * var(--int))}
+.pod[data-hl="ultra"]::before{inset:-2px;border-radius:24px;padding:2px;background:var(--tcg-silver);opacity:calc(.55 + .45 * var(--int))}
 /* rótulo editorial: aba no topo, sem numeral nem medalha */
 .pod-rank{position:absolute;top:-13px;left:18px;z-index:7;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:8px;background:var(--surface);color:var(--ink);
   border:1px solid var(--line-soft);font-size:11px;font-weight:700;line-height:1;letter-spacing:.2em;white-space:nowrap;box-shadow:0 6px 16px rgb(0 0 0 / .25)}
@@ -670,9 +672,10 @@ a.navbtn{text-decoration:none}
 .pod[data-hl="foil"] .pod-rank{border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--tcg-holo) border-box}
 .pod[data-hl="foil"] .pod-rank i{background:var(--tcg-holo)}
 .pod[data-hl="ultra"] .pod-rank i{background:var(--tcg-silver);box-shadow:0 0 0 1px #9AA4B6}
-/* janela de arte: foto real em fundo neutro; o holo fica só sobre ela, em soft-light, sem esconder o produto */
-.pod .cat-media{margin:8px 8px 0;border-radius:13px;aspect-ratio:2/1;background:var(--img-bg);box-shadow:inset 0 0 0 1px var(--line-soft)}
-.pod[data-r="1"] .cat-media{aspect-ratio:16/9}
+/* janela de arte: produto inteiro sobre fundo escuro na cor da categoria; o holo fica só sobre ela, em soft-light */
+.pod .cat-media{margin:0;border-radius:22px 22px 0 0;aspect-ratio:5/4}
+.pod[data-r="1"] .cat-media{aspect-ratio:1/1}
+.pod .cat-media .photo img{mix-blend-mode:normal;border-radius:12px;filter:drop-shadow(0 14px 24px rgb(0 0 0 / .45))}
 .pod .cat-deco{display:none}
 .pod[data-hl="foil"] .cat-media::after,.pod[data-hl="ultra"] .cat-media::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;mix-blend-mode:soft-light}
 .pod[data-hl="foil"] .cat-media::after{background:var(--tcg-cosmos);opacity:calc(.7 * var(--int))}
@@ -710,7 +713,7 @@ a.navbtn{text-decoration:none}
 @keyframes podIn{0%{opacity:0;transform:perspective(1200px) translateY(80px) rotateY(-100deg) scale(.86)}55%{opacity:1}100%{opacity:1;transform:perspective(1200px) translateY(var(--lift,0)) rotateY(0) scale(1)}}
 @media (max-width:860px){
   .podium{grid-template-columns:1fr 1fr;grid-template-areas:"p1 p1" "p2 p3";align-items:stretch;gap:26px 12px;margin-top:44px}
-  .pod[data-r="1"]{--lift:0}.pod[data-r="1"] .cat-media{aspect-ratio:16/9}
+  .pod[data-r="1"]{--lift:0}.pod[data-r="1"] .cat-media{aspect-ratio:4/3}
   .pod:not([data-r="1"]) .cat-media{aspect-ratio:4/3}
   .pod:not([data-r="1"]) .pod-body{padding:14px 14px 16px}.pod:not([data-r="1"]) .pod-off b{font-size:18px}.pod:not([data-r="1"]) .pod-price strong{font-size:19px}
   .pod:not([data-r="1"]) .pod-foot{flex-wrap:wrap}.pod:not([data-r="1"]) .pod-cta{flex:1 1 100%;justify-content:center}
@@ -766,7 +769,7 @@ a.navbtn{text-decoration:none}
 .cat-media{position:relative;overflow:hidden;display:grid;place-items:center;padding:24px 26px;aspect-ratio:4/3;background:linear-gradient(160deg,var(--t1),var(--t2))}
 :root[data-theme="dark"] .cat-media{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 26%,#10142A),color-mix(in srgb,var(--c1) 10%,#0B0E1E))}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cat-media{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 26%,#10142A),color-mix(in srgb,var(--c1) 10%,#0B0E1E))}}
-.pod .cat-media{background:var(--img-bg)}
+.pod .cat-media{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 30%,#121735),color-mix(in srgb,var(--c1) 12%,#0B0E1E))}
 .cat-media .photo{position:relative;z-index:1;width:100%;height:100%;background:transparent;border-radius:0;aspect-ratio:auto}
 .cat-media .photo img{object-fit:contain;padding:0;mix-blend-mode:multiply;filter:drop-shadow(0 10px 14px rgb(0 0 0 / .14));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
 :root[data-theme="dark"] .cat-media .photo img{mix-blend-mode:normal;border-radius:12px;filter:drop-shadow(0 14px 24px rgb(0 0 0 / .45))}
