@@ -13,6 +13,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
+import { tlsModeFor } from './db/ssl.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, prevBestOf, retryHits, pruneRetry, failedLine } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -401,7 +402,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length, alertsFailed: io.failed.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length, alertsFailed: io.failed.length,
+      tls: tlsModeFor(process.env.DATABASE_URL) });
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · motor: ${rec.engine.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
   } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }

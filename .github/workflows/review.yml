@@ -26,16 +26,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       - run: npm ci --omit=dev --no-audit --no-fund --silent
       - name: Migrações
-        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}' }
+        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}', PG_CA_CERT: '${{ secrets.PG_CA_CERT }}', PG_TLS_STRICT: '${{ vars.PG_TLS_STRICT }}' }
         run: node tools/db-migrate.mjs
       - name: Executar
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
           REVIEW_ACTOR: ${{ github.actor }}
           REVIEW_OPERATORS: ${{ vars.REVIEW_OPERATORS || github.repository_owner }}
           IN_ACTION: ${{ inputs.action }}

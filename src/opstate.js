@@ -76,7 +76,7 @@ export function runIssues(rec) {
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, offers, alerts, alertsFailed = 0 }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, offers, alerts, alertsFailed = 0, tls = null }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -89,6 +89,7 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     stores, watched: watched || {}, offers: offers ?? null, alerts: alerts ?? 0, alertsFailed,
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
     engine: engineSummary(dbSync),
+    tls,                                   // TLS do PostgreSQL: 'verify' | 'no-verify' | 'local' | 'off' | 'invalid' (src/db/ssl.js)
   };
   rec.issues = runIssues(rec);
   rec.health = rec.issues.length ? 'degradado' : 'saudavel';

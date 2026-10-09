@@ -298,7 +298,7 @@ await t('17. watchdog.yml: disparo externo + reserva, concorrência, permissões
   assert.match(y, /workflow_dispatch:/); assert.match(y, /schedule:/);
   assert.match(y, /concurrency:\s*\n\s*group: watchdog\s*\n\s*cancel-in-progress: false/);
   assert.match(y, /permissions:\s*\n\s*contents: read\s*\n\s*actions: read/); assert.doesNotMatch(y, /contents: write/);
-  assert.match(y, /actions\/cache\/restore@v4/); assert.match(y, /actions\/cache\/save@v4/); assert.match(y, /restore-keys: watchdog-ledger-/);
+  assert.match(y, /actions\/cache\/restore@[0-9a-f]{40} # v4/); assert.match(y, /actions\/cache\/save@[0-9a-f]{40} # v4/); assert.match(y, /restore-keys: watchdog-ledger-/);
   assert.match(y, /tools\/watchdog\.mjs --state wd\/state\.json --meta wd\/meta\.json --runs wd\/runs\.json --ledger wd\/ledger\.json/);
   assert.doesNotMatch(y, /(echo|printf)[^\n]*\$\{?\{?\s*(secrets\.|TELEGRAM_BOT_TOKEN|NTFY_TOPIC)/, 'nenhum segredo impresso');
   assert.doesNotMatch(y, /run:[^\n]*\$\{\{\s*inputs\./, 'input só por variável de ambiente');

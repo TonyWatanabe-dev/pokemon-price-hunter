@@ -1,5 +1,7 @@
 // Conexão PostgreSQL (Supabase ou qualquer Postgres) só pelo driver padrão `pg`.
 // DATABASE_URL ausente = banco desligado: todo o resto do sistema continua funcionando.
+// TLS: src/db/ssl.js (CA verificada com PG_CA_CERT; ver docs/tls.md).
+import { pgConnectionConfig } from './ssl.js';
 let _pool = null;
 export const dbEnabled = () => !!process.env.DATABASE_URL;
 
@@ -8,8 +10,8 @@ export async function pool() {
   if (!dbEnabled()) throw new Error('DATABASE_URL não definido');
   const { default: pg } = await import('pg');
   const url = process.env.DATABASE_URL;
-  const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
-  _pool = new pg.Pool({ connectionString: url, max: 4, ssl: local ? false : { rejectUnauthorized: false }, options: '-c search_path=hunter,public' });
+  const { connectionString, ssl } = pgConnectionConfig(url);
+  _pool = new pg.Pool({ connectionString, max: 4, ssl, options: '-c search_path=hunter,public' });
   return _pool;
 }
 
