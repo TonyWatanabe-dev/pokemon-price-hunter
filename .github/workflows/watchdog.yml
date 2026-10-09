@@ -1,35 +1,63 @@
 name: Vigia do robô
-# Confere a cada 30 min se os dados estão frescos. Se o robô parar, avisa no Telegram
-# (logo depois de 1 hora parado e, enquanto continuar parado, a cada 6 horas).
+# Vigia por estado (tools/watchdog.mjs + src/ops-watch.js): avisa no Telegram/ntfy quando o robô para, o banco
+# deixa de sincronizar ou o leitor da nota oficial falha, e avisa de novo quando volta ao normal. Sem aviso repetido:
+# o que já foi avisado fica num "livro" guardado no cache do Actions.
+# Disparo principal: cron-job.org a cada 15 min (workflow_dispatch; ver docs/vigia.md). O agendamento abaixo é só
+# reserva: o agendador do GitHub atrasa e pula execuções neste repositório.
 on:
   schedule:
     - cron: '7,37 * * * *'
   workflow_dispatch:
+    inputs:
+      teste:
+        description: 'Só enviar uma mensagem de teste (não avalia nem muda o livro)'
+        type: boolean
+        default: false
 permissions:
   contents: read
+  actions: read
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
-      - name: Conferir idade dos dados
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      # Dados publicados e estado operacional do MESMO commit do ramo data (nunca um de cada rodada).
+      - name: Ler dados publicados
+        run: |
+          mkdir -p wd
+          if git fetch -q --depth 1 origin data; then
+            git show FETCH_HEAD:data/state.json | jq -c '{generatedAt}' > wd/state.json || rm -f wd/state.json
+            git show FETCH_HEAD:data/meta.json > wd/meta.json 2>/dev/null || rm -f wd/meta.json
+          fi
+      - name: Últimas rodadas do robô
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run list -R "${{ github.repository }}" --workflow hunter.yml --limit 10 \
+            --json databaseId,status,conclusion,createdAt,updatedAt,event > wd/runs.json || echo '[]' > wd/runs.json
+      - uses: actions/cache/restore@v4
+        with:
+          path: wd/ledger.json
+          key: watchdog-ledger-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: watchdog-ledger-
+      - name: Avaliar e avisar
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TESTE: ${{ inputs.teste }}
         run: |
-          T=$(curl -sf "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/data/data/state.json" | jq -r .generatedAt || true)
-          if [ -z "$T" ] || [ "$T" = "null" ]; then
-            T=$(curl -sf "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/data/state.json" | jq -r .generatedAt || true)
-          fi
-          [ -n "$T" ] && [ "$T" != "null" ] || { echo "sem dados"; exit 0; }
-          AGE=$(( ( $(date +%s) - $(date -d "$T" +%s) ) / 60 ))
-          echo "Dados de $T ($AGE min)"
-          H=$(date -u +%H); M=$(date -u +%M)
-          SEND=0
-          if [ $AGE -gt 60 ] && [ $AGE -le 95 ]; then SEND=1; fi
-          if [ $AGE -gt 95 ] && [ $((10#$H % 6)) -eq 0 ] && [ $((10#$M)) -lt 30 ]; then SEND=1; fi
-          if [ $SEND -eq 1 ] && [ -n "$TELEGRAM_BOT_TOKEN" ]; then
-            curl -s -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
-              --data-urlencode "text=⚠️ TCG Price Hunter: os preços não atualizam há ${AGE} minutos. Confira o cron-job.org e a aba Actions do GitHub."
-          fi
+          if [ "$TESTE" = "true" ]; then node tools/watchdog.mjs --test; exit 0; fi
+          node tools/watchdog.mjs --state wd/state.json --meta wd/meta.json --runs wd/runs.json --ledger wd/ledger.json
+      - uses: actions/cache/save@v4
+        if: always() && hashFiles('wd/ledger.json') != ''
+        continue-on-error: true
+        with:
+          path: wd/ledger.json
+          key: watchdog-ledger-${{ github.run_id }}-${{ github.run_attempt }}

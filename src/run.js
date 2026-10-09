@@ -11,6 +11,8 @@ async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ le
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
+import { readDbHealth, syncStatus } from './db-health.js';
+import { buildRunRecord, readerSummary, storesSummary, recordRun } from './opstate.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -48,6 +50,9 @@ export function rankBestDeals(all, opp = new Map()) {
 
 export async function runOnce({ log = console.log, send = transports, now = new Date() } = {}) {
   const T = now.toISOString();
+  const startedAt = new Date().toISOString();
+  // generatedAt da rodada anterior (antes de sobrescrever o state.json): base para conferir se ela chegou ao banco
+  const prevGeneratedAt = readJson(dataPath('state.json'), {}).generatedAt || null;
   const catalog = loadCatalog();
   const registry = readJson(dataPath('products.json'), {}); // catálogo automático: todo produto já visto
   const { stores } = readJson(configPath('stores.json'));
@@ -281,7 +286,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // mesmo preço lido agora e calculada há no máximo 60 min. Fica num mapa à parte, NÃO vai para state.json/offers.json
   // (o site sem banco continua "sem nota oficial", nunca com nota de rodada anterior).
   const live = liveForScore;
-  const off = await readOfficial(Object.values(offers).filter(live).map((o) => o.id));
+  // Em paralelo, só leitura: o banco recebeu a rodada anterior? (vai para data/meta.json, seção ops)
+  const [off, dbHealth] = await Promise.all([readOfficial(Object.values(offers).filter(live).map((o) => o.id)), readDbHealth()]);
   const opp = new Map();
   for (const o of Object.values(offers)) { const x = live(o) ? officialFor(o, off.rows.get(o.id), now) : null; if (x) opp.set(o.id, x); }
   log(off.status === 'ok' ? `Nota oficial: ${opp.size} ofertas com nota válida (de ${off.rows.size} lidas)` : `Nota oficial indisponível (${off.reason}): alertas seguem sem nota`);
@@ -341,6 +347,14 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   appendJsonl(dataPath('history.jsonl'), history);
   try { trimJsonl(dataPath('history.jsonl')); } catch { /* sem log */ }
   appendJsonl(dataPath('alerts.jsonl'), delivered);
+  // Estado operacional (data/meta.json → ops). Falha aqui nunca derruba a rodada.
+  try {
+    const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
+      reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
+      stores: storesSummary(sources, skipped.size), offers: all.length, alerts: delivered.length });
+    recordRun(dataPath('meta.json'), rec);
+    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
+  } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;
 }

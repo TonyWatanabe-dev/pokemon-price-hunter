@@ -306,4 +306,18 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   assert.equal(firstPrice('Blister R$ 59,90 no Pix'), 59.9);
 }
 assert.ok(sentMsgs.every((m) => !/Deal Score/i.test(m.text) && !/Opportunity Score/.test(m.text)), 'sem banco: nenhum alerta com Deal Score, nem nota oficial inventada');
+// Lote 1: cada rodada grava o estado operacional em data/meta.json → ops, sem apagar dataVersion/distrust
+{
+  const meta = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_DATA_DIR, 'meta.json'), 'utf8'));
+  assert.ok(meta.dataVersion && meta.distrust, 'chaves antigas do meta.json preservadas');
+  const runs = meta.ops.runs; const last = meta.ops.last;
+  assert.ok(runs.length >= 5, 'um registro por rodada'); assert.equal(last.runId, 'local');
+  assert.equal(last.reader.status, 'off'); assert.equal(last.dbSync.status, 'desligado'); assert.equal(last.health, 'degradado');
+  assert.deepEqual(last.issues, ['leitor_desligado', 'banco_desligado']);
+  assert.ok(last.stores.found > 0 && last.stores.active >= last.stores.withListings && last.stores.blocked >= 1, JSON.stringify(last.stores));
+  assert.equal(last.stores.active, last.stores.withListings + last.stores.empty);
+  assert.ok(Number.isFinite(last.durationSec) && last.offers > 0, 'duração e ofertas');
+  const gen = runs.map((r) => r.generatedAt);
+  assert.ok(runs.slice(1).some((r, i) => r.prevGeneratedAt === gen[i]), 'cada rodada aponta a anterior (base da checagem do banco)');
+}
 console.log(`OK — todos os testes passaram (${sentMsgs.length} alertas). Exemplo:\n\n${sentMsgs[0].text}`);
