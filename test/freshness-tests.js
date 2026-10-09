@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import vm from 'node:vm';
 import { spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { classify, usable, LIMITS, setFreshnessClock, clearFreshnessCache } from '../api/_lib/freshness.mjs';
 import { setLegacyLoader } from '../api/_lib/legacy.mjs';
 import { clearCatalogCache } from '../api/_lib/catalog.mjs';
@@ -205,10 +205,10 @@ if (DB) {
 
 // ------------------------------------------------------------------ 5) páginas renderizadas no servidor
 await t('11. páginas do servidor: preços no HTML só com dados em dia; antigo vai sem o conteúdo pré-renderizado', () => {
-  const script = `import { setFreshnessClock } from ${JSON.stringify(path.join(root, 'api/_lib/freshness.mjs'))};
+  const script = `import { setFreshnessClock } from ${JSON.stringify(pathToFileURL(path.join(root, 'api/_lib/freshness.mjs')).href)};
     setFreshnessClock(() => ${NOW}); const st = JSON.parse(process.argv[1]);
     globalThis.fetch = async () => new Response(JSON.stringify(st), { status: 200 });
-    const { default: h } = await import(${JSON.stringify(path.join(root, 'api/pagina.mjs'))});
+    const { default: h } = await import(${JSON.stringify(pathToFileURL(path.join(root, 'api/pagina.mjs')).href)});
     const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } };
     await h({ url: '/api/pagina?t=produto&slug=escuridao-absoluta-treinador-avancado-etb', headers: { host: 'x' } }, res);
     console.log(JSON.stringify({ status: res.statusCode, ssr: res.body.includes('class="ssr"'), price: res.body.includes('R$ 300,00') }));`;

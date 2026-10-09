@@ -94,7 +94,19 @@ export function writeJsonAtomic(file, obj) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const tmp = `${file}.${process.pid}.${Math.random().toString(36).slice(2)}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(obj, null, 2));
-  fs.renameSync(tmp, file);
+  try { renameRetry(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* já foi */ } throw e; }
+}
+
+// No Windows, trocar um arquivo que outro processo está lendo/trocando falha por um instante (EPERM/EACCES/EBUSY).
+// Repetir com espera curta e aleatória mantém a troca atômica; no Linux o rename não falha assim e o laço não roda.
+const RETRY_CODES = new Set(['EPERM', 'EACCES', 'EBUSY']);
+const pause = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+function renameRetry(from, to, budgetMs = 2000) {
+  const start = Date.now();
+  for (let i = 0; ; i++) {
+    try { return fs.renameSync(from, to); }
+    catch (e) { if (!RETRY_CODES.has(e.code) || Date.now() - start > budgetMs) throw e; pause(1 + Math.floor(Math.random() * Math.min(2 ** i, 50))); }
+  }
 }
 
 export function readMeta(file) {

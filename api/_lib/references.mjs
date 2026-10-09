@@ -155,17 +155,33 @@ export function marketReferenceOf(offers, { implausibleInStock = 0, isTrusted = 
   return { ok: true, price: med(sample.map((o) => Number(o.price))), confidence, reason: 'robust_current_market', composition, ...base };
 }
 
+/** Validade da Copag oficial verificada (decisão da auditoria de referências): depois disso a linha continua gravada,
+ *  com a data de verificação, mas não entra na nota. */
+export const COPAG_MAX_AGE_DAYS = 30;
+/** true se a verificação tem mais de COPAG_MAX_AGE_DAYS em relação a asOf. Sem data ou sem asOf não há como medir → false. */
+export function copagExpired(verifiedAt, asOf) {
+  if (!verifiedAt || asOf == null) return false;
+  const v = new Date(verifiedAt).getTime(); const a = new Date(asOf).getTime();
+  return Number.isFinite(v) && Number.isFinite(a) && a - v > COPAG_MAX_AGE_DAYS * 864e5;
+}
+
 /**
  * Referência ATUAL de um produto. copag: linha atual verificada (reference_price_current) ou null; market: saída de marketReferenceOf.
+ * asOf: momento do cálculo; Copag verificada há mais de COPAG_MAX_AGE_DAYS é tratada como ausente (cai para mercado ou NONE)
+ * e a data dela vai em copag_expired_verified_at.
  * Retorna { kind, price, source, confidence (0–1), reason, verified_at }. Nunca devolve preço histórico ou comunitário.
  */
-export function resolveCurrentReference({ copag = null, market = null } = {}) {
-  if (copag && copag.reference_kind === 'COPAG_OFFICIAL_CURRENT' && copag.verification_status === 'verified' && Number(copag.value) > 0)
+export function resolveCurrentReference({ copag = null, market = null, asOf = null } = {}) {
+  const copagOk = copag && copag.reference_kind === 'COPAG_OFFICIAL_CURRENT' && copag.verification_status === 'verified' && Number(copag.value) > 0;
+  const expired = copagOk && copagExpired(copag.verified_at, asOf);
+  if (copagOk && !expired)
     return { kind: 'COPAG_OFFICIAL_CURRENT', price: Math.round(Number(copag.value) * 100) / 100, source: copag.source || 'copag',
       confidence: copag.confidence != null ? Number(copag.confidence) / 100 : null, reason: 'verified_current_copag', verified_at: copag.verified_at ?? null };
+  const exp = expired ? { copag_expired_verified_at: copag.verified_at } : {};
   if (market?.ok && Number(market.price) > 0)
-    return { kind: 'MARKET_CURRENT', price: market.price, source: 'market', confidence: market.confidence, reason: 'robust_current_market', verified_at: null };
-  return { kind: NONE, price: null, source: null, confidence: null, reason: market?.reason ? `no_copag_${market.reason}` : 'no_current_reference', verified_at: null };
+    return { kind: 'MARKET_CURRENT', price: market.price, source: 'market', confidence: market.confidence, reason: 'robust_current_market', verified_at: null, ...exp };
+  const none = expired ? `copag_expired${market?.reason ? `_${market.reason}` : ''}` : market?.reason ? `no_copag_${market.reason}` : 'no_current_reference';
+  return { kind: NONE, price: null, source: null, confidence: null, reason: none, verified_at: null, ...exp };
 }
 
 // ---------------------------------------------------------------- formato público (API)
