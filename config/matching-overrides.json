@@ -1,0 +1,5 @@
+{
+  "_nota": "Gerado por tools/review.mjs export a partir de revisões aprovadas. Só vale com enabled: true, ligado à mão depois de validar os casos (docs/revisao-casos-iniciais.md).",
+  "enabled": false,
+  "overrides": []
+}

@@ -8,7 +8,7 @@ import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
-import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
+import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
@@ -54,6 +54,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // generatedAt da rodada anterior (antes de sobrescrever o state.json): base para conferir se ela chegou ao banco
   const prevGeneratedAt = readJson(dataPath('state.json'), {}).generatedAt || null;
   const catalog = loadCatalog();
+  const overrides = overridesIndex(readJson(configPath('matching-overrides.json'), {})); // revisão humana; vazio se enabled !== true
   const registry = readJson(dataPath('products.json'), {}); // catálogo automático: todo produto já visto
   const { stores } = readJson(configPath('stores.json'));
   // Lojas extras: um endereço por linha em config/lojas.txt (linhas com # são ignoradas)
@@ -142,7 +143,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (cache) cache.relevant = [...new Set(listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url))];
       let matched = 0;
       for (const l of listings) {
-        const m = matchProduct(l, catalog);
+        const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
         // Trava de publicação: o link precisa falar do mesmo produto que o título (coleção e formato).
         const gate = linkAgrees(l, m, catalog);

@@ -183,3 +183,34 @@ export function matchProduct(listing, catalog) {
   if (/\b(lacrad[oa]|original|copag)\b/.test(p.normalized)) confidence += 0.05;
   return { productId: prod.id, product: prod, confidence: Math.min(0.99, +confidence.toFixed(2)), parsed: p, why: [] };
 }
+
+/** Página canônica: host sem www + caminho, sem query/hash. Chave de revisão e de override. */
+export function canonicalUrl(u) {
+  try { const x = new URL(u); return `${x.hostname.toLowerCase().replace(/^www\./, '')}${x.pathname.replace(/\/+$/, '')}`; }
+  catch { return String(u || '').trim().toLowerCase(); }
+}
+
+// Overrides de revisão humana (config/matching-overrides.json, gerado por tools/review.mjs export).
+// Só valem com "enabled": true. Só resolvem dúvidas específicas: não passam por cima de idioma,
+// acessório, kit, EAN divergente nem coleção diferente da que o título traz. A trava linkAgrees
+// da rodada continua valendo depois.
+const OVERRIDABLE = /^(tipo de produto não identificado|quantidade de boosters não informada|mais de uma coleção no título: .*)$/;
+export function overridesIndex(file) {
+  const idx = new Map();
+  if (file?.enabled !== true || !Array.isArray(file.overrides)) return idx;
+  for (const o of file.overrides) if (o?.store && o?.url && o?.productId) idx.set(`${o.store}|${o.url}`, o);
+  return idx;
+}
+export function applyOverride(listing, storeId, m, catalog, idx) {
+  if (!idx?.size) return m;
+  const ov = idx.get(`${storeId}|${canonicalUrl(listing.url)}`);
+  if (!ov || m.productId === ov.productId) return m;
+  if (!m.productId && !(m.why?.length === 1 && OVERRIDABLE.test(m.why[0]))) return m;
+  if (m.parsed?.collection && m.parsed.collection !== ov.collection) return m;
+  if (!catalog.collections.some((c) => c.id === ov.collection)) return m;
+  const prod = describeProduct(catalog, ov.collection, ov.type, ov.boosters ?? null, ov.variant ?? null);
+  if (prod.id !== ov.productId) return m;
+  const fixed = (catalog.products || []).find((x) => x.id === prod.id);
+  if (fixed?.ean && listing.ean && fixed.ean.replace(/\D/g, '').replace(/^0+/, '') !== String(listing.ean).replace(/\D/g, '').replace(/^0+/, '')) return m;
+  return { productId: prod.id, product: prod, confidence: 0.8, parsed: m.parsed, why: [], override: ov.reviewId };
+}
