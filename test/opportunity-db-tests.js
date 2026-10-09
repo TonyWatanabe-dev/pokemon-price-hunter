@@ -51,14 +51,14 @@ const js = computeOpportunities(await tx((c) => loadOpportunityInputs(c)), { now
 assert.equal(js.find((x) => x.legacy_id === 'me05-etb').best.offer_id, String(by.ob.offer_id));
 assert.equal(js.find((x) => x.legacy_id === 'sv9-etb').reason, 'NO_OFFERS');
 // eventos da 1ª rodada: anomalia nova (+ FOUND se a melhor for ≥ 75)
-const ev1 = await q(`SELECT type, entity_id, payload FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' ORDER BY id`);
+const ev1 = await q(`SELECT type, entity_id, payload FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type <> 'OPPORTUNITY_ENGINE_RUN' ORDER BY id`);
 assert.ok(ev1.some((e) => e.type === 'OPPORTUNITY_ANOMALY' && e.entity_id === 'me05-etb' && e.payload.engine_version === 'opportunity-v2.2'));
 assert.equal(ev1.some((e) => e.type === 'OPPORTUNITY_FOUND'), by.ob.opportunity_score >= 75);
 
 // idempotência: mesma entrada → nada escrito, nenhum evento novo
 const r2 = await tx((c) => runOpportunityEngine(c, { now: new Date('2026-10-10T12:20:00Z') }));
 assert.equal(r2.written, 0); assert.equal(r2.removed, 0); assert.deepEqual(r2.events, {});
-assert.equal((await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%'`))[0].n, ev1.length);
+assert.equal((await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type <> 'OPPORTUNITY_ENGINE_RUN'`))[0].n, ev1.length);
 
 // afiliado não influencia
 await p.query(`UPDATE hunter.affiliate_program SET status = 'active'`);
@@ -76,10 +76,35 @@ const best2 = await q(`SELECT of.legacy_id AS offer FROM hunter.product_opportun
 assert.deepEqual(best2, [{ offer: 'oa' }]);
 assert.equal((await q(`SELECT count(*)::int n FROM hunter.opportunity o JOIN hunter.offer of ON of.id = o.offer_id WHERE of.legacy_id = 'oc'`))[0].n, 0, 'oferta que saiu perde a avaliação');
 const oaScore = (await q(`SELECT opportunity_score s FROM hunter.opportunity o JOIN hunter.offer of ON of.id = o.offer_id WHERE of.legacy_id = 'oa'`))[0].s;
-const ev4 = await q(`SELECT type FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' ORDER BY id OFFSET $1`, [ev1.length]);
+const ev4 = await q(`SELECT type FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type <> 'OPPORTUNITY_ENGINE_RUN' ORDER BY id OFFSET $1`, [ev1.length]);
 if (prevBest >= 75 && oaScore < 75) assert.deepEqual(ev4.map((e) => e.type), ['OPPORTUNITY_EXPIRED']);
 assert.ok(!ev4.some((e) => e.type === 'OPPORTUNITY_ANOMALY'), 'anomalia já conhecida não gera evento de novo');
 // checagens do banco: nenhuma anomalia ≥ 50, nenhuma sem estoque ≥ 31
 assert.equal((await q(`SELECT count(*)::int n FROM hunter.opportunity WHERE (is_anomaly AND opportunity_score >= 50) OR (stock_signal = 0 AND opportunity_score > 30)`))[0].n, 0);
+// Lote 3 — batida do motor: uma linha OPPORTUNITY_ENGINE_RUN por rodada (mesmo sem nada mudar), sem segredo; poda > 14 dias
+{
+  const beats = await q(`SELECT payload, created_at FROM hunter.system_event WHERE type = 'OPPORTUNITY_ENGINE_RUN' ORDER BY id`);
+  assert.equal(beats.length, 4, 'r1, r2, r3 e r4: uma batida por rodada, inclusive as que não escreveram nada');
+  assert.deepEqual(Object.keys(beats[1].payload).sort(), ['engine_version', 'offersEvaluated', 'removed', 'written']);
+  assert.deepEqual([beats[1].payload.written, beats[1].payload.removed, beats[1].payload.engine_version], [0, 0, 'opportunity-v2.2']);
+  assert.equal(beats[0].payload.offersEvaluated, 4);
+  await p.query(`INSERT INTO hunter.system_event (type, entity_type, entity_id, payload, created_at) VALUES
+    ('OPPORTUNITY_ENGINE_RUN', 'engine', 'opportunity', '{}', now() - interval '15 days'),
+    ('OPPORTUNITY_ENGINE_RUN', 'engine', 'opportunity', '{}', now() - interval '13 days'),
+    ('OPPORTUNITY_FOUND', 'product', 'velho', '{}', now() - interval '30 days')`);
+  // rodada que falha no meio não deixa batida (mesma transação)
+  const before = (await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type = 'OPPORTUNITY_ENGINE_RUN'`))[0].n;
+  await assert.rejects(tx(async (c) => { await runOpportunityEngine(c, { now }); throw new Error('falha depois do motor'); }));
+  assert.equal((await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type = 'OPPORTUNITY_ENGINE_RUN'`))[0].n, before, 'rollback leva a batida junto');
+  await tx((c) => runOpportunityEngine(c, { now }));
+  const left = await q(`SELECT type, (created_at < now() - interval '14 days') AS old FROM hunter.system_event WHERE type IN ('OPPORTUNITY_ENGINE_RUN', 'OPPORTUNITY_FOUND') AND entity_id IN ('opportunity', 'velho')`);
+  assert.equal(left.filter((r) => r.type === 'OPPORTUNITY_ENGINE_RUN' && r.old).length, 0, 'batida com mais de 14 dias é podada');
+  assert.equal(left.filter((r) => r.type === 'OPPORTUNITY_ENGINE_RUN').length, before - 1 + 1, '13 dias fica; nova batida entra');
+  assert.equal(left.filter((r) => r.type === 'OPPORTUNITY_FOUND').length, 1, 'poda só mexe na batida, nunca nos eventos de transição');
+  const { readDbHealth } = await import('../src/db-health.js');
+  const h = await readDbHealth({ env: { DATABASE_URL: process.env.TEST_DATABASE_URL } });
+  const last = (await q(`SELECT max(created_at) m FROM hunter.system_event WHERE type = 'OPPORTUNITY_ENGINE_RUN'`))[0].m;
+  assert.equal(h.status, 'ok', h.reason); assert.equal(h.engineRunAt, new Date(last).toISOString(), 'db-health lê a última batida');
+}
 await close();
 console.log(`OK — Opportunity Engine (PostgreSQL) · melhor inicial ${prevBest}, eventos ${JSON.stringify(r1.events)}`);

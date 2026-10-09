@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: hunter
   cancel-in-progress: false
@@ -123,14 +124,22 @@ jobs:
             sleep 5
           done
           exit 1
+      # Aviso imediato só na transição para falha: se a rodada concluída anterior também falhou, o aviso já saiu e
+      # o vigia (watchdog.yml) lembra enquanto continuar. Erro ao consultar as rodadas = avisa (nunca silencia).
       - name: Avisar falha no Telegram
         if: failure()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           [ -n "$TELEGRAM_BOT_TOKEN" ] || exit 0
-          curl -s -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+          R=$(mktemp)
+          timeout 30 gh run list -R "$GITHUB_REPOSITORY" --workflow hunter.yml --limit 10 \
+            --json databaseId,status,conclusion,createdAt,updatedAt > "$R" 2>/dev/null || echo 'erro' > "$R"
+          decision=$(node tools/failure-alert-gate.mjs --runs "$R" --current "$GITHUB_RUN_ID" || true)
+          [ "$decision" = "skip" ] && exit 0
+          curl -s --max-time 20 -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=❌ TCG Price Hunter: a rodada falhou. Detalhes: ${RUN_URL}"
