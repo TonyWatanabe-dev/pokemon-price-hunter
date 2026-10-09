@@ -1,6 +1,7 @@
 // Referências de preço (Fase 5.6): testes puros — tipos, escopo, prioridade, datas, fonte, importação, Price Engine.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { KINDS, SCOPE, CURRENT_PRIORITY, LABEL, confidenceLabel, isPartialDate, isCopagUrl, robotReferenceKind, pickCurrentReference, historicalContext, validateImportEntry } from '../src/core/references.js';
 import { planImport } from '../src/core/reference-import.js';
 import { referenceRows } from '../src/core/mappers.js';
@@ -140,7 +141,7 @@ t('Price Engine: histórico e comunitária não são referência atual (defesa n
 
 t('função da Vercel não importa de src/ (src/ não é publicado: .vercelignore)', () => {
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(`${d}/${e.name}`) : /\.m?js$/.test(e.name) ? [`${d}/${e.name}`] : []));
-  const dir = new URL('../api', import.meta.url).pathname;
+  const dir = fileURLToPath(new URL('../api', import.meta.url));
   const bad = walk(dir).filter((f) => /from\s+['"](\.\.\/)+src\//.test(fs.readFileSync(f, 'utf8')));
   assert.deepEqual(bad, []);
 });
