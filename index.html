@@ -443,6 +443,12 @@ a.navbtn{text-decoration:none}
 .so-mid>div{min-width:0}
 .so-price{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-right:8px}
 .so-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+/* UX A/C/E: frete, idade da nota, nota velha e atalho de comparação nos cartões do motor */
+.opp-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}.pod-ship{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.opp-age{display:flex;align-items:center;gap:5px;margin:6px 0 0;font-size:12px;color:var(--muted)}.opp-age .icon{width:13px;height:13px}.opp-age.old{color:var(--warn);font-weight:600}
+.pod-age{margin:2px 0 0;font-size:11.5px}
+[data-old] .photo,[data-old] .opp-price,[data-old] .pod-price,[data-old] .meter{opacity:.55;filter:grayscale(.6)}
+.opp-stores{position:relative;z-index:4;display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}.opp-stores .icon{width:14px;height:14px}
 .so .btn{padding:10px 16px;font-size:14px;flex:none}
 .so-more{margin-top:12px}.so-more summary{font-size:14.5px}
 .so-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}
@@ -1690,7 +1696,7 @@ function loadHomeOpp(){
   if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
   return HOMEOPP.p||=Promise.all([apiGet(HOME_OPP_KEY),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
     .then(([a,b,c])=>{
-      if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a,HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
+      if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a||{},HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
       else if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
       else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
       else{Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
@@ -1706,17 +1712,19 @@ function podCardOpp(x,r){
   const refTxt=rc.available?`${refShort(rc.reference_kind)}${mkOnly?" (marketplaces)":""} · ${money(rc.reference_value)}`:"Sem referência atual";
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";const lv=x.confidence_level;
   const [hk,hl]=HIGHLIGHT[r-1]||[];const rar=rarityOf(sc);
-  return`<article class="pod" data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
+  const ol=ageLine(x.updated_at)?.old;
+  return`<article class="pod"${ol?" data-old":""} data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
     ${hl?`<span class="pod-rank"><i aria-hidden="true"></i>${hl}</span>`:""}
-    <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(x.price)} em ${esc(st.name||"")}"></a>
+    <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(oppTotal(x))} em ${esc(st.name||"")}"></a>
     <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
     <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
-      <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(x.price)}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
+      <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(oppTotal(x))}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
       ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
-      <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}</span>
-        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
+      <p class="pod-ship">${oppShip(x)}</p>
+      <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}${ageHTML(x,"pod-age")}</span>
+        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> ${ic("arrow-square-out")}</a></div>${cmpLink(pr)}</div>
   </article>`;
 }
 function podiumOppHTML(){
@@ -2097,6 +2105,9 @@ function storeOffer(o,p){
     <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
   </article>`;
 }
+/* atalho "Comparar N ofertas": a página do produto pode chegar depois (API); rola até a seção quando ela existir */
+let PENDING_HASH="";
+function hashScroll(){if(!PENDING_HASH)return;const el=document.getElementById(PENDING_HASH);if(!el)return;PENDING_HASH="";requestAnimationFrame(()=>el.scrollIntoView({block:"start"}))}
 function renderProduct(pid){
   const p=P[pid];
   if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
@@ -2150,6 +2161,7 @@ function renderProduct(pid){
   </div>
 </div>`;
   if(pid in HIST)drawHist(pid);else loadHist(pid);
+  hashScroll();
 }
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
@@ -2440,6 +2452,9 @@ function render(){
   else if(view==="colecao"||view==="tipo")renderGroup(view,curGroup);
 }
 /* Analytics: eventos prontos (o Vercel só os mostra no plano Pro; no gratuito não fazem nada) */
+/* UX-E: clique em "Ver oferta": oferta do estado (OFF) ou do Opportunity Engine (dados no próprio botão: data-pid/sid/price) */
+function storeClick(el){const d=el.dataset||{};const o=OFF.find((x)=>x.id===d.store);if(o)return{store:o.storeId,id:o.productId,price:o.total};
+  return d.pid?{store:d.sid||"",id:d.pid,price:Number(d.price)||null,src:"opp"}:null}
 function track(name,data){try{window.va&&window.va("event",{name,data:data||{}})}catch{}}
 
 /* URLs amigáveis: /produto/escuridao-absoluta-blister-quadruplo (o id antigo continua valendo) */
@@ -2567,6 +2582,33 @@ const pctPts=(v)=>Math.abs(v).toLocaleString("pt-BR",{minimumFractionDigits:1,ma
 const refOfName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido Copag":"da referência de mercado";
 const refAtName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"No preço sugerido Copag":"Na referência de mercado";
 const refShort=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"Copag":"Mercado";
+/* UX-A: preço do motor com frete, no vocabulário da página do produto (shipNote). known/free com total → total; unknown → preço
+   antes do frete. O % de reference_comparison é sobre o preço do produto (backend); quando há frete pago, a linha diz isso. */
+const oppTotal=(x)=>(x.shipping==="known"||x.shipping==="free")&&x.total!=null?x.total:x.price;
+function oppShip(x){
+  if(x.shipping==="free"||(x.shipping==="known"&&x.total!=null&&x.total<=x.price))return"Frete grátis";
+  if(x.shipping==="known"&&x.total!=null)return`Produto ${money(x.price)} + frete ${money(x.total-x.price)}${x.reference_comparison?.available?" · % sobre o produto":""}`;
+  return"Preço antes do frete";
+}
+/* UX-E: ofertas com estoque do produto, do resumo da API (/home: products[].liveCount) e atalho para a comparação.
+   Sem o resumo (estado completo), o atalho não aparece: esta página só lê a API. */
+const liveN=(pid)=>P[pid]?.liveCount??0;
+function cmpLink(pr){const n=liveN(pr.id);if(n<2)return"";
+  return`<a class="opp-stores" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}#ondecomprar" data-p="${esc(pr.id)}" data-hash="ondecomprar">${ic("storefront")}Comparar ${n} ofertas com estoque</a>`}
+const ctaData=(x)=>`data-store="${esc(x.offer?.id||"")}" data-pid="${esc(x.product?.id||"")}" data-sid="${esc(x.store?.id||"")}" data-price="${oppTotal(x)??""}"`;
+/* UX-C: idade da nota (updated_at = quando o motor avaliou). Acima de 90 min na tela: "Nota de HH:MM" e "Conferir na loja". */
+const OPP_OLD_MIN=90;
+function ageLine(at,now=Date.now()){
+  const t=Date.parse(at);if(!Number.isFinite(t))return null;const m=Math.max(0,Math.round((now-t)/6e4));
+  const old=m>OPP_OLD_MIN;const hm=new Date(t).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  return{old,txt:old?`Nota de ${hm}: pode ter mudado`:`Avaliado ${m<1?"agora":m<60?`há ${m} min`:`há ${Math.round(m/60)} h`}`}}
+const ageHTML=(x,cls)=>{const a=ageLine(x.updated_at);return a?`<p class="opp-age ${cls||""}${a.old?" old":""}">${ic("clock")}<span>${a.txt}</span></p>`:""};
+const ctaTxt=(x)=>ageLine(x.updated_at)?.old?"Conferir na loja":"Ver oferta";
+/* a cada 30 s (e ao voltar para a aba): atualiza idade, esmaece notas velhas e troca o texto do botão, sem redesenhar */
+function markOld(root,now=Date.now()){
+  root?.querySelectorAll?.("[data-at]").forEach((c)=>{const a=ageLine(c.dataset.at,now);if(!a)return;c.toggleAttribute("data-old",a.old);
+    const s=c.querySelector(".opp-age span");if(s)s.textContent=a.txt;c.querySelector(".opp-age")?.classList.toggle("old",a.old);
+    const l=c.querySelector(".cta-l");if(l)l.textContent=a.old?"Conferir na loja":"Ver oferta"})}
 /* comparação com a referência atual: percentual, posição e valor vêm da API (reference_comparison) */
 function oppCmp(rc){
   if(!rc?.available)return`<p class="opp-ref none">Sem referência atual</p>`;
@@ -2614,20 +2656,23 @@ function oppCard(x,i,opt={}){
   const best=opt.best??(i===0&&OF.sort==="score");const rar=rarityOf(sc);
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";
   const fav=isFav(pr.id);const lv=x.confidence_level||"";
-  return`<article class="deal opp-card"${rar?` data-rar="${rar.id}"`:""} data-cat="${catOf(p)}" style="--ec:${g(p).c};--int:${confInt(lv)}">
+  const ol=ageLine(x.updated_at)?.old;
+  return`<article class="deal opp-card"${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""}${ol?" data-old":""} data-cat="${catOf(p)}" style="--ec:${g(p).c};--int:${confInt(lv)}">
   <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${esc(pr.name||"")}"></a>
   <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rail?`<span class="deal-rank">#${i+1}</span>`:""}${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}" title="${bu[0]}"><i></i>${opt.rail?bu[2]:bu[0]}</span>`:""}${catChip(p)}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
     <h3 class="deal-name">${esc(pr.type_label||pr.name||"")}</h3>
-    <p class="deal-price opp-price"><b>${money(x.price)}</b>${pixTag({priceKind:of.price_kind})}</p>
+    <p class="deal-price opp-price"><b>${money(oppTotal(x))}</b>${pixTag({priceKind:of.price_kind})}</p><p class="opp-ship">${oppShip(x)}</p>
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     <div class="rc-row">${rar?`<p class="rar-line" title="Escala visual pela nota (${sc}/100). Não é a raridade oficial do produto."><span class="sym" aria-hidden="true">${rar.sym}</span>${rar.name}</p>`:""}<p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
+    ${ageHTML(x)}
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
-    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div>
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> ${ic("arrow-square-out")}</a></div>
+    ${cmpLink(pr)}
   </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
 }
@@ -2656,7 +2701,7 @@ async function renderOpp(){
   const keep=OPP.status==="ok"&&OPP.items.length>0;
   Object.assign(OPP,{key,status:"loading",page:1,pages:1},keep?{}:{items:[],total:null});paintOpp();
   const d=await apiGet(key);if(OPP.key!==key||view!=="oportunidades")return;
-  if(isPause(d,key)){Object.assign(OPP,{status:"stale",items:[],total:0});setPause(d,key)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
+  if(isPause(d,key)){Object.assign(OPP,{status:"stale",items:[],total:0});setPause(d||{},key)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
   else if(!d||d.notFound||!Array.isArray(d.data))Object.assign(OPP,{status:"error",items:[]});
   else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",items:[],total:0});
   else{Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1,at:Date.now(),fr:d.meta?.freshness||null});setPause(null)}
@@ -2690,8 +2735,19 @@ const retryHomeOpp=()=>{HOMEOPP.status="idle";[HOME_OPP_KEY,"oportunidades?limit
 const retryOpp=()=>{APIC.delete(OPP.key);OPP.key="";return renderOpp()};
 /* a cada 30 s: com as notas pausadas, tenta de novo a cada 5 min */
 function oppTick(now=Date.now()){
+  markOld(document,now);
   if(OPP_PAUSE&&now-OPP_PAUSE.checked>=5*6e4){OPP_PAUSE.checked=now;if(view==="deals"&&HOMEOPP.status==="stale")retryHomeOpp();else if(view==="oportunidades"&&OPP.status==="stale")retryOpp()}
 }
+/* UX-C: ao voltar para a aba, notas com mais de 30 min são buscadas de novo (a lista fica na tela enquanto isso) e os preços
+   são recarregados em silêncio quando já não estão "atuais" */
+function revive(now=Date.now()){
+  const stale=(at)=>!at||now-at>=30*6e4;
+  if(view==="deals"&&HOMEOPP.status==="ok"&&stale(HOMEOPP.at))retryHomeOpp();
+  else if(view==="oportunidades"&&OPP.status==="ok"&&stale(OPP.at))retryOpp();
+  markOld(document,now);
+  if(S&&typeof freshState==="function"&&freshState(S,now).status!=="atual"&&typeof refresh==="function")refresh({silent:true});
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")revive()});
 /* "Mais filtros" fecha ao clicar fora ou com Esc */
 document.addEventListener("click",(e)=>{document.querySelectorAll(".opp-more[open]").forEach((d)=>{if(!d.contains(e.target))d.open=false})});
 document.addEventListener("keydown",(e)=>{if(e.key==="Escape")document.querySelectorAll(".opp-more[open]").forEach((d)=>{d.open=false;d.querySelector("summary")?.focus()})});
@@ -2722,7 +2778,7 @@ function freshState(st,now=Date.now()){
   return{status:m<=FRESH_LIM.atual?"atual":m<=FRESH_LIM.atrasado?"atrasado":m<=FRESH_LIM.expira?"desatualizado":"indisponivel",ageMin:m,dataAt:new Date(t).toISOString()};
 }
 const freshAt=(iso)=>new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-/* UX-B: o texto sempre traz a idade real dos preços (nunca "tempo real"). Preços e notas têm fontes separadas:
+/* UX-B: o texto sempre traz a idade real dos preços (nunca "ao vivo" sem idade). Preços e notas têm fontes separadas:
    /home pode estar em dia (state.json) enquanto /oportunidades está pausado (stale_db); a barra diz as duas coisas. */
 const ageTxt=(m)=>m<1?"agora":`há ${m} min`;
 function freshTxt(f){
@@ -2869,11 +2925,11 @@ function ensureFull(){
     else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
-async function refresh(){
+async function refresh(opt={}){
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
   const st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
-  if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
-  const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. O robô confere as lojas a cada 15 minutos.");
+  if(!st){if(opt.silent)return;toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
+  const novo=!S||st.generatedAt!==S.generatedAt;if(opt.silent&&!novo)return;init(st);if(!opt.silent)toast(novo?"Dados novos carregados":"Já está atualizado. O robô confere as lojas a cada 15 minutos.");
 }
 async function load(){
   loading();prefetchOpp();
@@ -2895,10 +2951,10 @@ document.addEventListener("click",(e)=>{
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
-  const stb=t.closest("[data-store]");if(stb){const o=OFF.find((x)=>x.id===stb.dataset.store);if(o)track("click_store",{store:o.storeId,id:o.productId,price:o.total});return}
+  const stb=t.closest("[data-store]");if(stb){const d=storeClick(stb);if(d)track("click_store",d);return}
   const grpb=t.closest("[data-group]");if(grpb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();const [k,sl]=grpb.dataset.group.split("/");openGroup(k,sl);return}
   const qb=t.closest("[data-q]");if(qb){if(qb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();doSearch(qb.dataset.q);return}
-  const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();openProduct(pb.dataset.p);return}
+  const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();PENDING_HASH=pb.dataset.hash||"";openProduct(pb.dataset.p);return}
   const hp=t.closest("[data-hp]");if(hp){HV.period=Number(hp.dataset.hp);drawHist(curPid);track("view_price_history",{id:curPid,period:HV.period});return}
   const hm=t.closest("[data-hm]");if(hm){HV.mode=hm.dataset.hm;drawHist(curPid);track("view_price_history",{id:curPid,mode:HV.mode});return}
   if(t.closest("[data-fsheet]")){openFilterSheet();return}
