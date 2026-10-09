@@ -15,8 +15,17 @@ Fila de jobs de agentes sobre `automation_job` (migration 001; nenhuma migration
 - `src/agents/orchestrator.js` — `createOrchestrator({ store, handlers })` → `enqueue`, `runOnce`.
 - `src/agents/stores.js` — `pgStore(pool)` (FOR UPDATE SKIP LOCKED) e `memoryStore()`.
 - `src/agents/handlers/review-propose.js` — handler `review.propose`, sem IA.
-- Testes: `test/agents-orchestrator-tests.js` (puro), `test/agents-db-tests.js` (`TEST_DATABASE_URL`).
+- `src/agents/matching-review.js`, `src/agents/notify.js`, `src/agents/cycle.js`, `tools/agents-run.mjs` — integração com a rodada.
+- Testes: `test/agents-orchestrator-tests.js` (puro), `test/agents-db-tests.js` e `test/agents-integration-tests.js` (banco com `TEST_DATABASE_URL`).
+
+## Na rodada do robô (lote 2)
+
+Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com o banco": preços, ramo `data`, estatísticas e oportunidades já estão gravados. Rodadas são serializadas (`concurrency: hunter`); o passo tem `continue-on-error`, `timeout-minutes: 2`, prazo interno de 45 s e `tools/agents-run.mjs` sempre sai com 0.
+
+- **O que vira revisão** (`src/agents/matching-review.js`): anúncio Pokémon recusado por um único motivo específico (tipo não identificado, quantidade de boosters, duas coleções no título, EAN divergente) e oferta aceita com confiança ≤ 0,6. "Coleção não identificada" fica de fora (ruído). Até 25 novos por rodada.
+- **Sem repetição:** chave por tipo + loja + página (URL sem query, sem `www`). A mesma página gera um único `review_item` (`matching:…`), mesmo depois de rejeitado ou com a fila limpa. Não colide com as revisões de duplicidade da sincronização (`dup:…`).
+- **Avisos** (`src/agents/notify.js`): `AGENT_JOB_FAILED` e `AGENT_JOB_BLOCKED` novos viram uma mensagem agregada pelo canal do vigia (`sendAll`). Cursor `AGENT_ALERT_CURSOR` em `system_event` só avança se a mensagem foi entregue. `ai_disabled` não avisa.
 
 ## Ainda não integrado
 
-Nenhum ponto do robô (`src/run.js`, workflows) enfileira nem executa jobs. Ver "O que falta" no PR/branch `agentes-orquestrador`.
+Tela para decidir os itens `open` da fila de revisão; demais agentes (Catalog Agent com IA etc.).

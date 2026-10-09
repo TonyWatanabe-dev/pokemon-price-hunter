@@ -95,6 +95,18 @@ jobs:
           node tools/db-import-references.mjs
           node tools/db-stats.mjs
           node tools/db-opportunity.mjs
+      # Agentes (docs/agentes.md): só propõem revisões; preço, score e oportunidades já foram gravados acima.
+      # Rodadas são serializadas (concurrency: hunter). Prazo curto e falha tolerada: nunca atrasa nem derruba a rodada.
+      - name: Agentes (fila de revisão)
+        if: steps.gap.outputs.skip != 'true'
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: node tools/agents-run.mjs data
       - name: Salvar configuração (se mudou)
         if: steps.gap.outputs.skip != 'true'
         run: |
