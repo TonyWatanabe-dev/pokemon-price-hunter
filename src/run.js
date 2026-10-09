@@ -24,6 +24,14 @@ import { processInbox } from './inbox.js';
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
 
+// Leitura que falhou: mantém a oferta como estoque desconhecido (stale) e guarda a última leitura VÁLIDA em lastValid.
+// Uma oferta já stale continua com o lastValid de antes (nunca vira "válido" o estado inventado da falha).
+export const staleCopy = (o) => ({ ...o, stale: true, stock: 'UNKNOWN',
+  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, seller: o.seller, at: o.source_timestamp } });
+// Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
+// lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
+export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
+
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
   cat.products ||= []; cat.copag ||= {};
@@ -188,7 +196,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
     const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
-    offers[id] = recent ? { ...o } : { ...o, stale: true, stock: 'UNKNOWN' };
+    offers[id] = recent ? { ...o } : staleCopy(o);
   }
 
   // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
@@ -213,7 +221,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const events = []; const history = [];
   for (const o of Object.values(offers)) {
     if (o.stale) continue;
-    const p = prev[o.id];
+    // Compara com a última leitura válida: "em estoque → falha → em estoque" não é reposição, nem linha nova no histórico.
+    // Sem base válida (oferta nova ou stale antiga): registra a leitura, sem evento.
+    const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
     if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
     if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'drop', from: p.total });
