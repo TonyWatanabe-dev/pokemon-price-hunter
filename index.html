@@ -335,6 +335,9 @@ a.navbtn{text-decoration:none}
 .prow-price b{font-size:17px;font-weight:800}.prow-price small{font-size:12px;color:var(--muted)}
 .prow-price .oos{font-weight:600}
 .empty-in{padding:4px 16px 18px}.empty-in p{margin:0 0 12px;color:var(--muted)}
+.fav-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;border-top:1px solid var(--line)}.fav-row .prow{border-top:0;padding-right:4px;grid-template-columns:56px minmax(0,1fr) auto}.fav-row .prow-price{max-width:42vw}.fav-row .prow-price small{overflow-wrap:anywhere}
+.fav-x{width:44px;height:44px;margin:0 8px 0 2px;border-radius:50%;border:0;background:none;display:grid;place-items:center;color:#E5484D;transition:transform 160ms var(--ease-out),opacity 160ms ease}.fav-x .icon{width:20px;height:20px}.fav-x:active{transform:scale(.88)}.fav-x:disabled{opacity:.45}
+@media (hover:hover) and (pointer:fine){.fav-x:not(:disabled):hover{background:var(--sunk)}}
 .cfg{padding-bottom:18px}.cfg h3{margin:16px 16px 8px;font-size:15px}.cfg p{margin:0 16px 10px;color:var(--muted);font-size:14px}.cfg a{color:var(--ink);font-weight:600}
 .cfg .tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--sunk);border-radius:var(--r-pill);padding:4px;margin:0 16px;max-width:420px}
 .cfg .tabs button{border:0;background:none;border-radius:var(--r-pill);padding:9px;font-weight:600;font-size:14px;color:var(--muted)}
@@ -2176,7 +2179,8 @@ async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
     if(was!==u.uid){ACC.data=null;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={}}}
-    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
   }else ACC.data=null;
   ACC.ready=true;accSync();
   if(u)await resumeGate();
@@ -2295,7 +2299,7 @@ async function submitAcc(f){
   b.disabled=true;b.setAttribute("aria-busy","true");
   try{
     if(t==="in")await m.emailIn(email,d.pw);
-    else if(t==="up"){const r=await m.emailUp(email,d.pw,String(d.name||"").trim().slice(0,60));track("signup_completed",{method:"email"});
+    else if(t==="up"){const nm=String(d.name||"").trim().slice(0,60);ACC.signupName=nm;let r;try{r=await m.emailUp(email,d.pw,nm)}finally{ACC.signupName=""}track("signup_completed",{method:"email"});
       ACC.form={};if(r?.verifyError){try{console.warn("[conta] confirmação não enviada:",r.verifyError)}catch{};toast("Conta criada, mas o e-mail de confirmação não saiu agora. Reenvie em Minha conta.",true)}
       else if(!r?.verified)toast("Conta criada. Confirme seu e-mail pelo link que mandamos.",true)}
     else{await m.reset(email);ACC.ok="Se houver conta com esse e-mail, o link chega em alguns minutos. Olhe também o spam.";ACC.tab="in"}
@@ -2316,6 +2320,15 @@ async function setFav(pid,on){
   if(PRIVATE.includes(view))render();else syncFavButtons();
 }
 const toggleFav=(pid)=>ACC.user?setFav(pid,!isFav(pid)):authGate({type:"fav",pid});
+/* Favoritos (perfil): tira um produto da lista. Um de cada vez, para não haver duas gravações da lista ao mesmo tempo. */
+async function unfav(pid){
+  if(ACC.favBusy||!ACC.user||!isFav(pid))return;
+  const i=[...document.querySelectorAll("[data-unfav]")].findIndex((b)=>b.dataset.unfav===pid);
+  ACC.favBusy=true;document.querySelectorAll("[data-unfav]").forEach((b)=>{b.disabled=true;if(b.dataset.unfav===pid)b.setAttribute("aria-busy","true")});
+  try{await setFav(pid,false)}finally{ACC.favBusy=false}
+  if(view!=="favoritos")return;render();
+  const bs=[...document.querySelectorAll("[data-unfav]")];(bs[i]||bs[i-1]||document.querySelector("#view .empty-in .btn")||document.querySelector("#view h2"))?.focus?.();
+}
 const saveAlerts=(list)=>saveField("alerts",list,alertsL());
 async function setAlert(pid,v){
   const old=alertsL();if(!old.some((a)=>a.p===pid)&&old.length>=50){toast("Limite de 50 alertas");return}
@@ -2364,7 +2377,7 @@ function renderFavs(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Favoritos","Salve os produtos que você quer acompanhar e veja o menor preço de cada um num lugar só.");return}
   const ids=favs().filter((id)=>P[id]);
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>${ids.length?`${ids.length} ${ids.length>1?"produtos":"produto"}. Toque para ver as lojas ou criar um alerta.`:"Nada salvo ainda."}</p>
-  ${ids.length?`<div class="plist">${ids.map((id)=>prodRow(id)).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b>.</p><button class="btn ghost" type="button" data-go="">Ver ofertas</button></div>`}</section></div>`;
+  ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="produtos">Ver produtos</button></div>`}</section></div>`;
 }
 function renderAlerts(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Alertas de preço","Diga quanto quer pagar e o site marca quando alguma loja chegar nesse preço.");return}
@@ -2802,6 +2815,7 @@ document.addEventListener("click",(e)=>{
   const gtb=t.closest("[data-gate]");if(gtb){authGate({type:"page",tab:gtb.dataset.gate});return}
   const thb=t.closest("[data-theme-set]");if(thb){const v=thb.dataset.themeSet;if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme;store.set("theme",v||null);themeSync();render();return}
   if(t.closest("#retry")){loading();load();return}
+  const ufb=t.closest("[data-unfav]");if(ufb){e.preventDefault();unfav(ufb.dataset.unfav);return}
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
