@@ -17,6 +17,12 @@ export function bestByProduct(offers) {
   return best;
 }
 
+/** Melhor preço ANTERIOR por produto. Oferta que falhou na rodada passada (stale, ver src/run.js staleCopy) conta pela
+ *  última leitura válida (lastValid): a volta dela ao mesmo preço não é queda. Stale sem lastValid fica de fora. */
+export function prevBestOf(prevOffers) {
+  return bestByProduct((prevOffers || []).map((o) => (o?.stale && o.lastValid ? { ...o, ...o.lastValid, stale: false } : o)));
+}
+
 /**
  * opts.opp: Map(id da oferta -> nota oficial válida, de officialFor). opts.log: avisos (regra antiga).
  * opts.prevBest: Map(productId -> menor total elegível da rodada anterior), de bestByProduct(ofertas anteriores).

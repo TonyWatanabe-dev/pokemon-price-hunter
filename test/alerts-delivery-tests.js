@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 process.env.HUNTER_CONFIG_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'al3-cfg-')); process.env.HUNTER_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'al3-data-'));
 const A = await import('../src/alerts.js');
-const { evaluate, dedupe, dispatch, dispatchTips, tipHits, transports, bestByProduct, retryHits, pruneRetry, failedLine, compose } = A;
+const { evaluate, dedupe, dispatch, dispatchTips, tipHits, transports, bestByProduct, prevBestOf, retryHits, pruneRetry, failedLine, compose } = A;
 let n = 0; const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
 
 const NOW = new Date('2026-10-09T15:30:00Z');
@@ -162,6 +162,18 @@ await t('3h. queda que não chegou a nenhum canal: fica na fila e volta enquanto
   const rs = { 'rep|p1': { at: NOW.toISOString(), kind: 'restock', ruleId: 'rep', ruleLabel: 'Voltou', offerId: 'x', productId: 'p1', total: 529.9 } };
   assert.deepEqual(retryHits(rs, O, prod, [{ id: 'rep', label: 'Voltou', restock: true, filter: {} }]).map((x) => [x.kind, x.rule.label]), [['restock', 'Voltou']]);
   assert.equal(retryHits(rs, [offer({ id: 'x', stock: 'OUT_OF_STOCK' })], prod).length, 0);
+});
+
+await t('3x. oferta que falhou na rodada anterior (stale) conta pela última leitura válida: voltar ao mesmo preço não é queda', () => {
+  const prev = [offer({ id: 'x', total: 600, stale: true, stock: 'UNKNOWN', lastValid: { stock: 'IN_STOCK', total: 500, price: 500 } }), offer({ id: 'y', total: 650 })];
+  const pb = prevBestOf(prev);
+  assert.equal(pb.get('p1'), 500, 'usa o lastValid da oferta que falhou');
+  assert.equal(bestByProduct(prev).get('p1'), 650, 'sem o ajuste a base seria a outra oferta (650)');
+  assert.equal(prevBestOf([offer({ id: 'x', stale: true, stock: 'UNKNOWN' })]).get('p1'), undefined, 'stale sem lastValid: sem base');
+  const O = [offer({ id: 'x', total: 500 }), offer({ id: 'y', total: 650 })];
+  assert.equal(evaluate(W, O, [drop('x', 600)], prod, { prevBest: pb }).length, 0, 'mesmo preço da última leitura válida: sem queda');
+  assert.equal(evaluate(W, O, [drop('x', 600)], prod, { prevBest: bestByProduct(prev) }).length, 1, 'controle: com a base antiga sairia alerta falso');
+  assert.equal(evaluate(W, [offer({ id: 'x', total: 480 }), offer({ id: 'y', total: 650 })], [drop('x', 600)], prod, { prevBest: pb }).length, 1, 'abaixo da última leitura válida: queda real');
 });
 
 console.log(`✓ Alertas (Lote 3: entrega, prazo e queda): ${n} grupos passaram`);

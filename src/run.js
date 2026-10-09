@@ -13,7 +13,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, bestByProduct, retryHits, pruneRetry, failedLine } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, prevBestOf, retryHits, pruneRetry, failedLine } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -337,7 +337,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Alertas
   const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
   // Queda só vale como novo melhor preço do produto: compara com o melhor elegível da rodada anterior (mesma regra).
-  const prevBest = bestByProduct(Object.values(prev));
+  const prevBest = prevBestOf(Object.values(prev));
   const fresh = evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log, prevBest });
   const freshKeys = new Set(fresh.map((h) => h.key));
   const pending = retryHits(retry, okOffers, products, watch.rules || [], { opp }).filter((h) => !freshKeys.has(h.key));
