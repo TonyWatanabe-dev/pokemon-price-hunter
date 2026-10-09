@@ -16,6 +16,9 @@
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 // Fonte: banco (API_DATABASE_URL, só leitura) com fallback seguro para o state.json. ?fonte=state força o fallback.
+// Frescor (Lote 2, api/_lib/freshness.mjs): toda resposta traz freshness {status, source, dataAt, ageMin[, fallback]}
+// (em meta nas listas) e os cabeçalhos X-Data-Freshness/X-Data-At. Banco sem sincronizar há mais de 90 min: serve o
+// state.json se ele for mais novo; /oportunidades fica vazio (status stale_db). Mais de 24 h ou sem horário: 503.
 // Cache: memória da função (por URL) + CDN da Vercel (s-maxage), com stale-while-revalidate.
 import { apiDbEnabled } from './_lib/db.mjs';
 import { legacyState } from './_lib/legacy.mjs';
@@ -24,6 +27,7 @@ import { catalogState } from './_lib/catalog.mjs';
 import * as SITE from './_lib/site.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
+import * as FR from './_lib/freshness.mjs';
 
 export const config = { maxDuration: 15 };
 const TTL = { home: 60_000, site: 60_000, default: 120_000 };
@@ -101,6 +105,9 @@ function route(segs, qs) {
   throw new HttpError(404, 'rota não encontrada');
 }
 
+// /oportunidades com o banco sem sincronizar: nenhuma nota antiga é mostrada como atual (mesmo formato de requires_db).
+const staleOpportunities = (rt, fr) => ({ data: [], meta: { page: rt.page, limit: rt.limit, total: 0, pages: 1, status: 'stale_db',
+  message: `O banco não recebe preços novos há ${fr.ageMin != null ? fr.ageMin + ' min' : 'tempo indeterminado'}: as oportunidades ficam pausadas até a próxima sincronização.` } });
 const paged = (r, page, limit) => ({ data: r.items, meta: { page, limit, total: r.total, pages: Math.max(1, Math.ceil(r.total / limit)) } });
 
 async function run(rt, source) {
@@ -146,7 +153,7 @@ function send(res, status, body, headers) {
   res.end(json);
 }
 
-export default async function handler(req, res, { now = Date.now() } = {}) {
+export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   const u = new URL(req.url, 'http://local');
   if (req.method && req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'método não permitido' }, { 'Cache-Control': 'no-store', Allow: 'GET, HEAD' });
   const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
@@ -158,10 +165,22 @@ export default async function handler(req, res, { now = Date.now() } = {}) {
   const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => k !== 'fonte').sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
   const ttl = TTL[rt.kind] || TTL.default; const cdn = CDN[rt.kind] || CDN.default;
   const hit = cache.get(key);
-  if (hit && now - hit.at < (hit.fallback ? 15_000 : ttl)) return send(res, hit.status, hit.json, { 'Cache-Control': hit.fallback ? 'no-store' : cdn, 'X-Cache': 'HIT', 'X-Data-Source': hit.source, ...(hit.fallback ? { 'X-Fallback': hit.fallback, 'X-Fallback-Reason': hit.reason } : {}) });
+  const stale = (f) => !!f && !FR.usable(f);   // sem frescor (400/404): cache normal
+  if (hit && now - hit.at < (hit.fallback || stale(hit.fr) ? 15_000 : ttl)) return send(res, hit.status, hit.json, { 'Cache-Control': hit.fallback || stale(hit.fr) ? 'no-store' : cdn, 'X-Cache': 'HIT', 'X-Data-Source': hit.source, ...FR.headers(hit.fr), ...(hit.fallback ? { 'X-Fallback': hit.fallback, 'X-Fallback-Reason': hit.reason } : {}) });
 
-  let out; let source = preferred; let fallback = null; let reason = null;
-  try { out = await run(rt, preferred); }
+  let out; let source = preferred; let fallback = null; let reason = null; let dbFr = null; let dbErr = null;
+  // Frescor do banco ANTES de servir: banco que parou de sincronizar não é apresentado como atual.
+  if (preferred === 'db') {
+    try { dbFr = FR.classify(await FR.dbDataAt({ now }), now, 'db'); } catch (e) { dbErr = e; }
+    if (dbFr && !FR.usable(dbFr)) {
+      if (rt.name === 'oportunidades') out = { body: staleOpportunities(rt, dbFr) };
+      else {
+        const L = await legacyState({ now }).catch(() => null); const stFr = L ? FR.classify(L.st?.generatedAt, now, 'state') : null;
+        if (FR.usable(stFr) && Date.parse(stFr.dataAt) > Date.parse(dbFr.dataAt || 0)) { source = 'state'; fallback = 'banco-desatualizado'; reason = dbFr.ageMin != null ? `banco-${dbFr.ageMin}min` : 'banco-sem-horario'; }
+      }
+    }
+  }
+  try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); } }
   catch (e) {
     if (e.status) { out = { status: e.status, body: { error: e.message } }; }
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json
@@ -175,9 +194,17 @@ export default async function handler(req, res, { now = Date.now() } = {}) {
     }
     if (!out) return send(res, 503, { error: 'dados indisponíveis no momento' }, { 'Cache-Control': 'no-store', 'X-Data-Source': 'none' });
   }
+  // Frescor da fonte realmente servida. Indisponível (mais de 24 h ou sem horário) não vai como dado: 503.
+  let fr = null;
+  if (!out.status || out.status < 400) {
+    if (source === 'db') fr = dbFr || FR.classify(null, now, 'db');
+    else { const L = await legacyState({ now }).catch(() => null); fr = FR.classify(L?.st?.generatedAt, now, 'state'); }
+    if (fr.status === 'indisponivel' && !out.body?.meta?.status) out = { status: 503, body: { error: 'dados desatualizados ou sem horário confiável no momento' } };
+    FR.attach(out.body, fr, fallback ? { from: 'db', reason: fallback, ...(dbFr?.dataAt ? { dbDataAt: dbFr.dataAt, dbAgeMin: dbFr.ageMin } : {}) } : null);
+  }
   const status = out.status || 200;
   const json = JSON.stringify(out.body);
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value);
-  cache.set(key, { at: now, status, json, source, fallback, reason });
-  return send(res, status, json, { 'Cache-Control': status >= 500 || fallback ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });
+  cache.set(key, { at: now, status, json, source, fallback, reason, fr });
+  return send(res, status, json, { 'Cache-Control': status >= 500 || fallback || stale(fr) ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...FR.headers(fr), ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });
 }

@@ -73,7 +73,7 @@ let r = await call('/api/v1/home');
 assert.equal(r.status, 200); assert.equal(r.headers['X-Data-Source'], 'state'); assert.equal(r.headers['X-Cache'], 'MISS'); assert.match(r.headers['Cache-Control'], /s-maxage=60/);
 r = await call('/api/v1/home'); assert.equal(r.headers['X-Cache'], 'HIT', 'segundo pedido sai do cache');
 // paginação
-r = await call('/api/v1/produtos?limite=2&pagina=1'); assert.equal(r.json.data.length, 2); assert.deepEqual(r.json.meta, { page: 1, limit: 2, total: 3, pages: 2 });
+r = await call('/api/v1/produtos?limite=2&pagina=1'); assert.equal(r.json.data.length, 2); { const { freshness, ...m } = r.json.meta; assert.deepEqual(m, { page: 1, limit: 2, total: 3, pages: 2 }); assert.equal(freshness.status, 'atual'); assert.equal(freshness.source, 'state'); }
 r = await call('/api/v1/produtos?limite=2&pagina=2'); assert.equal(r.json.data.length, 1);
 r = await call('/api/v1/produtos?limite=999'); assert.equal(r.json.meta.limit, 50, 'limite máximo 50');
 r = await call('/api/v1/produtos?pagina=9'); assert.equal(r.json.data.length, 0); assert.equal(r.json.meta.total, 3);
@@ -176,7 +176,7 @@ assert.ok(hDb.offers.every((o) => !('dealScore' in o) && !('scoreParts' in o)), 
 r = await call('/api/v1/produtos/me05-etb/ofertas?limite=50'); assert.equal(r.json.data.find((o) => o.id === 'oc').seller, 'Gourmande');
 assert.equal(r.json.data.find((o) => o.id === 'oa').total_price, null);
 // paginação e filtros no banco
-r = await call('/api/v1/produtos?limite=1&pagina=2&ordem=nome'); assert.equal(r.json.data.length, 1); assert.deepEqual(r.json.meta, { page: 2, limit: 1, total: 3, pages: 3 });
+r = await call('/api/v1/produtos?limite=1&pagina=2&ordem=nome'); assert.equal(r.json.data.length, 1); { const { freshness, ...m } = r.json.meta; assert.deepEqual(m, { page: 2, limit: 1, total: 3, pages: 3 }); assert.equal(freshness.source, 'db'); assert.equal(freshness.ageMin, 60, 'horário do banco = última leitura sincronizada (T(1))'); assert.equal(freshness.status, 'atrasado'); }
 r = await call('/api/v1/produtos?estoque=1'); assert.deepEqual(r.json.data.map((x) => x.id).sort(), ['me05-booster', 'me05-etb']);
 r = await call('/api/v1/produtos?colecao=sv9'); assert.deepEqual(r.json.data.map((x) => x.id), ['sv9-lata']);
 r = await call('/api/v1/produtos?busca=lata'); assert.deepEqual(r.json.data.map((x) => x.id), ['sv9-lata']);

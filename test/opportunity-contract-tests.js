@@ -53,6 +53,8 @@ t('confidence_level da API = faixas do motor (0 a 1, passo 0,001)', () => {
 
 // validação de parâmetros (sem banco: o erro sai antes da leitura)
 const { default: api, _cache } = await import('../api/v1.mjs');
+// Lote 2: os dados destes testes são de 08/10 12:00 (now); o frescor é avaliado nesse mesmo relógio.
+const { setFreshnessClock } = await import('../api/_lib/freshness.mjs'); setFreshnessClock(() => now.getTime());
 const call = async (url) => { const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } }; await api({ url, method: 'GET' }, res); return { status: res.statusCode, headers: res.headers, json: JSON.parse(res.body) }; };
 const savedDb = process.env.API_DATABASE_URL; delete process.env.API_DATABASE_URL;
 for (const bad of ['categoria=x-1', 'categoria=Outros', 'referencia=historica', 'referencia=comunitaria', 'ordem=desconto', 'ordem=drop', 'produto=..%2Fx', 'produto=a%20b', 'produto=a%27b'])

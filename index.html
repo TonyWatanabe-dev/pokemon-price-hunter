@@ -1688,6 +1688,7 @@ function loadHomeOpp(){
     .then(([a,b,c])=>{
       if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
       else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
+      else if(a.meta?.status==="stale_db")Object.assign(HOMEOPP,{status:"stale",top:[]});   /* Lote 2: banco sem sincronizar */
       else Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now()});
       HOMEOPP.p=null});
 }
@@ -1717,6 +1718,7 @@ function podCardOpp(x,r){
 function podiumOppHTML(){
   if(HOMEOPP.status==="idle"||(HOMEOPP.p&&HOMEOPP.status!=="ok"))return`<div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div>`;
   if(HOMEOPP.status==="error")return`<p class="stage-empty">Não conseguimos carregar as oportunidades agora. <button class="btn ghost sm" type="button" data-homeretry>${ic("arrow-clockwise")}Tentar de novo</button></p>`;
+  if(HOMEOPP.status==="stale")return`<p class="stage-empty">Oportunidades pausadas: os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; elas voltam na próxima atualização.</p>`;
   if(HOMEOPP.status==="nodb")return`<p class="stage-empty">Oportunidades indisponíveis no momento. Elas vêm do Opportunity Engine; nenhuma nota é estimada no lugar.</p>`;
   const top=HOMEOPP.top.slice(0,3);
   if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade avaliada agora. O Opportunity Engine avalia as ofertas com estoque a cada varredura.</p>`;
@@ -2631,6 +2633,7 @@ function oppBar(){const n=oppActive();const t=OPP.total;
 function oppBody(){
   if(OPP.status==="loading")return oppSkel();
   if(OPP.status==="error")return`<div class="empty err-state">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  if(OPP.status==="stale")return`<div class="empty"><h3>Oportunidades pausadas</h3><p>Os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; as oportunidades voltam na próxima atualização dos preços.</p></div>`;
   if(OPP.status==="nodb")return`<div class="empty"><h3>Oportunidades indisponíveis no momento</h3><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
   if(!OPP.items.length)return`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
   const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
@@ -2649,6 +2652,7 @@ async function renderOpp(){
   const d=await apiGet(key);if(OPP.key!==key||view!=="oportunidades")return;
   if(!d||d.notFound||!Array.isArray(d.data))OPP.status="error";
   else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",total:0});
+  else if(d.meta?.status==="stale_db")Object.assign(OPP,{status:"stale",total:0});   /* Lote 2: banco sem sincronizar */
   else Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1});
   paintOpp();
 }
@@ -2677,11 +2681,25 @@ function renderPre(){
   ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true})).join("")}</div>`:`<div class="empty"><h3>Nenhuma pré-venda agora</h3><p>Quando uma loja abrir pré-venda de produto lacrado em português, ele aparece aqui.</p></div>`}</div>`;
 }
 
+/* Lote 2: frescor dos preços mostrados. Horário = o da fonte realmente servida (banco: última rodada sincronizada;
+   state.json: generatedAt). Mesmos limites da API (api/_lib/freshness.mjs): até 30 min atual, até 90 min atrasado,
+   acima disso desatualizado; sem horário válido ou acima de 24 h, sem confirmação. Recalculado a cada 30 s. */
+const FRESH_LIM={atual:30,atrasado:90,expira:1440};
+function freshState(st,now=Date.now()){
+  const at=st?.freshness?.dataAt??st?.generatedAt;const t=Date.parse(at);
+  if(!Number.isFinite(t)||t-now>3e5)return{status:"indisponivel",ageMin:null,dataAt:null};
+  const m=Math.max(0,Math.round((now-t)/6e4));
+  return{status:m<=FRESH_LIM.atual?"atual":m<=FRESH_LIM.atrasado?"atrasado":m<=FRESH_LIM.expira?"desatualizado":"indisponivel",ageMin:m,dataAt:new Date(t).toISOString()};
+}
+const freshAt=(iso)=>new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
 function fresh(){
   const el=$("#fresh");if(!S||!el)return;
-  const m=(Date.now()-Date.parse(S.generatedAt))/6e4;el.className="fresh"+(m>90?" bad":"");
-  $("#mini-t").innerHTML=m>90?`<b>Robô pausado</b>`:`<b>Ao vivo</b> · preços em tempo real`;
-  $("#fresh-t").innerHTML=m>90?`<b>Robô pausado.</b> Os preços podem estar desatualizados.`:`<b>Ao vivo</b> · preços em tempo real`;
+  const f=freshState(S);el.className="fresh"+(f.status==="atrasado"?" warn":f.status==="atual"?"":" bad");el.dataset.freshness=f.status;
+  const T={atual:[`<b>Ao vivo</b> · preços em tempo real`,`<b>Ao vivo</b> · preços em tempo real`],
+    atrasado:[`<b>Atualizado há ${f.ageMin} min</b>`,`<b>Atualizado há ${f.ageMin} min.</b> A próxima leitura dos preços está atrasada.`],
+    desatualizado:[`<b>Preços desatualizados</b>`,`<b>Preços desatualizados.</b> Última atualização: ${f.dataAt?freshAt(f.dataAt):"?"}. Os preços e o estoque podem ter mudado.`],
+    indisponivel:[`<b>Sem confirmação de atualização</b>`,`<b>Não conseguimos confirmar quando estes preços foram atualizados.</b> Eles podem estar desatualizados.`]}[f.status];
+  $("#mini-t").innerHTML=T[0];$("#fresh-t").innerHTML=T[1];
 }
 setInterval(fresh,30e3);
 (()=>{const h=$("#hsearch");if(h)h.innerHTML=searchBox("tq",view==="busca"?F.q:"",true)})();

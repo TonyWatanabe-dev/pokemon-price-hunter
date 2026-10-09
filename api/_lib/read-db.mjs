@@ -41,7 +41,7 @@ const COLLECTIONS_SQL = `SELECT code AS id, name, series, aliases FROM hunter.co
  * vêm do banco, e a nota de oportunidade vem do Opportunity Engine; o que ainda só existe no robô (atividade, pistas, reputação, menor preço já visto,
  * data de lançamento de pré-venda, validação da loja) é sobreposto a partir do state.json, por id de oferta/produto.
  */
-export async function stateLikeFromDb(legacy) {
+export async function stateLikeFromDb(legacy, { dataAt } = {}) {
   const [prows, orows, crows] = [await q(PRODUCTS_SQL), await q(OFFERS_SQL), await q(COLLECTIONS_SQL)];
   const LP = new Map((legacy.products || []).map((p) => [p.id, p]));
   const LO = new Map((legacy.offers || []).map((o) => [o.id, o]));
@@ -94,7 +94,8 @@ export async function stateLikeFromDb(legacy) {
   const collections = crows.map((c) => ({ id: c.id, name: c.name, series: c.series, aliases: c.aliases || [], products: nByCol[c.id] || 0 }))
     .sort((a, b) => (pos.get(a.id) ?? 1e6) - (pos.get(b.id) ?? 1e6) || a.id.localeCompare(b.id));
   return {
-    generatedAt: legacy.generatedAt, coverage: legacy.coverage, totals: legacy.totals, types: legacy.types,
+    // horário dos PREÇOS servidos = rodada mais recente que chegou ao banco (Lote 2); sem ele, o do state.json
+    generatedAt: dataAt !== undefined ? dataAt : legacy.generatedAt, coverage: legacy.coverage, totals: legacy.totals, types: legacy.types,
     collections, products, offers,
     activity: legacy.activity, tips: legacy.tips, sources: legacy.sources, reputation: legacy.reputation, distrust: legacy.distrust ?? null,
   };

@@ -6,6 +6,7 @@ import path from 'node:path';
 import { state, slugs, label, live, SITE, colSlug, typeSlug, esc, brl, pct, bestBy, pix } from './_seo.mjs';
 import { apiDbEnabled } from './_lib/db.mjs';
 import { listOpportunities } from './_lib/read-db.mjs';
+import { classify, usable, dbDataAt } from './_lib/freshness.mjs';
 
 let page = { t: 0, html: null };
 const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
@@ -117,8 +118,12 @@ export default async function handler(req, res) {
   let html = page.html; let status = 200;
   try {
     let opp = null;
-    if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20 })).items; } catch { opp = null; } }
-    const s = await state(); const m = build(t, slug, s, opp);
+    // Lote 2: oportunidades só com o banco em dia; preços no HTML só com o state.json em dia (até 90 min).
+    // Fora disso, vai a página sem o conteúdo pré-renderizado: o site carrega e mostra o aviso de dados desatualizados.
+    if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { if (usable(classify(await dbDataAt()))) opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20 })).items; } catch { opp = null; } }
+    const s = await state();
+    if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
+    const m = build(t, slug, s, opp);
     if (!m) { status = 404; html = html.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', '<meta name="robots" content="noindex">\n</head>'); }
     else {
       const url = SITE + m.url;
