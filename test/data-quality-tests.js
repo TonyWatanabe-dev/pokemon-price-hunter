@@ -248,7 +248,7 @@ const mlFetch = (url) => {
 await t('8. adaptador do ML marca stockVerified (conferido × não conferido)', async () => {
   http.setFetch(async (url) => mlFetch(url) || j({}, 404));
   itemsOpen = false; let L = await mlSearch({ id: 'mercadolivre' }, realCatalog);
-  assert.ok(L.length >= 1 && L.every((l) => l.stock === 'IN_STOCK' && l.stockVerified === false), '/items fechado: IN_STOCK como antes, mas não conferido');
+  assert.ok(L.length >= 1 && L.every((l) => l.stock === 'UNKNOWN' && l.stockVerified === false), '/items fechado: estoque não confirmado (regra da main, PR #13) e não conferido');
   assert.equal(JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_DATA_DIR, 'ml-debug.json'), 'utf8')).stockUnverified, L.length);
   fs.rmSync(path.join(process.env.HUNTER_DATA_DIR, 'ml-catalog.json'));
   itemsOpen = true; L = await mlSearch({ id: 'mercadolivre' }, realCatalog);
@@ -330,11 +330,12 @@ await t('10. rodada: rendimento, espera de 24 h, stockVerified até a oferta e o
   assert.deepEqual(meta.ops.last.stores.yield, s.coverage.yield, 'registro operacional traz o rendimento');
   // ML: stockVerified chega à oferta (state.json e offers.json) e ao alerta
   const mlOffers = s.offers.filter((o) => o.storeId === 'mercadolivre');
-  assert.ok(mlOffers.length >= 1 && mlOffers.every((o) => o.stockVerified === false && o.stock === 'IN_STOCK'));
+  // Regra da main (PR #13): sem conferência anúncio a anúncio, estoque fica UNKNOWN (não confirmado) e marcado.
+  assert.ok(mlOffers.length >= 1 && mlOffers.every((o) => o.stockVerified === false && o.stock === 'UNKNOWN'));
   assert.ok(Object.values(JSON.parse(fs.readFileSync(path.join(data, 'offers.json'), 'utf8'))).filter((o) => o.storeId === 'mercadolivre').every((o) => o.stockVerified === false));
   assert.ok(s.offers.filter((o) => o.storeId !== 'mercadolivre').every((o) => !('stockVerified' in o)), 'outras lojas: sem o campo');
-  const alert = sent.find((m) => /PREÇO-ALVO/.test(m.title));
-  assert.ok(alert, 'alerta continua saindo (elegibilidade igual)'); assert.match(alert.text, /Estoque: não conferido \(anúncio do Mercado Livre\)/);
+  // Estoque não confirmado não é elegível a alerta: nenhum alerta sai de oferta do ML não conferida.
+  assert.ok(!sent.some((m) => /Mercado Livre/.test(m.text || '')), 'oferta do ML não conferida não gera alerta');
   // Copag com validade, na rodada
   const P2 = Object.fromEntries(s.products.map((p) => [p.id, p]));
   if (P2['me04-etb']) { assert.equal(P2['me04-etb'].copagConfirmed, true); assert.equal(P2['me04-etb'].copagReferenceStatus, 'confirmado'); }
