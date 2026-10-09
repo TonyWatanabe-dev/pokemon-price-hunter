@@ -12,8 +12,10 @@ export const discOf = (p, o) => { if (!o || o.anomalous) return null; if (p.copa
 export const GROUP_ORDER = ['Boosters', 'ETB', 'Blisters', 'Coleções', 'Latas', 'Baralhos'];
 export const DEFAULT_F = { mode: 'guardar', group: '', col: '', store: '', sort: '', stock: true, type: '', max: '', below: false };
 const idCmp = (a, b) => String(a).localeCompare(String(b));
-/** desempate do site: preço, Deal Score, id (byTot em tools/page.template.html) */
-export const byTot = (a, b) => a.total - b.total || (b.dealScore ?? -1) - (a.dealScore ?? -1) || idCmp(a.id, b.id);
+/** desempate do site: preço, id (byTot no index.html). Nota de oportunidade não desempata preço. */
+export const byTot = (a, b) => a.total - b.total || idCmp(a.id, b.id);
+/** nota oficial da oferta (Opportunity Engine); sem avaliação, null — nunca estimada */
+export const oppScore = (o) => (o?.opp && Number.isFinite(o.opp.score) ? o.opp.score : null);
 
 /** entries() do site: por produto, a oferta de menor preço (ou por booster) que passa nos filtros. */
 export function entries(st, F) {
@@ -32,12 +34,13 @@ export function entries(st, F) {
     if (!by.has(p.id)) by.set(p.id, []); by.get(p.id).push(o);
   }
   const key = F.mode === 'abrir' ? (o) => o.perBooster : (o) => o.total;
-  return [...by.entries()].map(([id, list]) => { list.sort((a, b) => key(a) - key(b) || (b.dealScore ?? -1) - (a.dealScore ?? -1) || idCmp(a.id, b.id)); return { p: P.get(id), o: list[0], n: list.length }; });
+  return [...by.entries()].map(([id, list]) => { list.sort((a, b) => key(a) - key(b) || idCmp(a.id, b.id)); return { p: P.get(id), o: list[0], n: list.length }; });
 }
 /** sortEntries() do site (com desempate final pelo id do produto, igual ao site). */
 export function sortEntries(list, F) {
   const s = F.sort || (F.mode === 'abrir' ? 'ppb' : 'score');
-  const cmp = { score: (a, b) => (b.o.dealScore ?? -1) - (a.o.dealScore ?? -1) || (b.o.discount ?? -9) - (a.o.discount ?? -9),
+  // "Melhor oportunidade": nota oficial da oferta exibida; sem nota vai para o fim e segue pelo desconto
+  const cmp = { score: (a, b) => (oppScore(b.o) ?? -1) - (oppScore(a.o) ?? -1) || (b.o.discount ?? -9) - (a.o.discount ?? -9),
     disc: (a, b) => (discOf(b.p, b.o) ?? -9) - (discOf(a.p, a.o) ?? -9), price: (a, b) => a.o.total - b.o.total,
     ppb: (a, b) => (a.o.perBooster ?? 1e9) - (b.o.perBooster ?? 1e9),
     new: (a, b) => String(b.p.firstSeen || '').localeCompare(String(a.p.firstSeen || '')) || a.o.total - b.o.total }[s] || (() => 0);

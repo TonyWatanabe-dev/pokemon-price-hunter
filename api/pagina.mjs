@@ -88,7 +88,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     produtos: ['/produtos', `Todos os produtos de Pokémon TCG lacrado e seus preços | ${NAME}`, 'Todos os produtos de Pokémon TCG lacrado que o Hunter acompanha: ETB, booster box, blisters, latas e coleções, com o menor preço nas lojas do Brasil e filtros por coleção, formato e loja.', 'Todos os produtos de Pokémon TCG lacrado'],
     precos: ['/precos', `Preço sugerido Copag de Pokémon TCG: tabela oficial | ${NAME}`, 'Tabela com o preço sugerido da Copag para ETB, booster box, blisters, latas e coleções de Pokémon TCG, com fonte e data.', 'Preço sugerido Copag de Pokémon TCG'],
     'pre-vendas': ['/pre-vendas', `Pré-venda de Pokémon TCG no Brasil: lançamentos e preços | ${NAME}`, 'Lançamentos de Pokémon TCG em pré-venda nas lojas brasileiras, com preço e comparação com o preço sugerido da Copag.', 'Pré-vendas de Pokémon TCG'],
-    'como-funciona': ['/como-funciona', `Como funciona o comparador e o Deal Score | ${NAME}`, 'Como o TCG Price Hunter confere preços, estoque e o preço sugerido da Copag, e como a nota de oportunidade (Deal Score) é calculada.', 'Como funciona o TCG Price Hunter'],
+    'como-funciona': ['/como-funciona', `Como funciona o comparador e o Opportunity Score | ${NAME}`, 'Como o TCG Price Hunter confere preços, estoque e o preço sugerido da Copag, e como o Opportunity Score, a faixa e a confiança de cada oferta são calculados.', 'Como funciona o TCG Price Hunter'],
   };
   const st = STATIC[t]; if (!st) return null;
   const [url, title, desc, h1] = st;

@@ -14,15 +14,13 @@ const eq = (a, b) => (a == null && b == null) || (a != null && b != null && (typ
 export function homeView(h) {
   const cols = new Map((h.collections || []).map((c) => [c.id, c])); const types = new Map((h.types || []).map((t) => [t.id, t]));
   const P = new Map(h.products.map((p) => [p.id, { ...p, collectionName: p.collectionName ?? cols.get(p.collection)?.name, typeLabel: p.typeLabel ?? types.get(p.type)?.label, group: p.group ?? types.get(p.type)?.group }]));
-  const best = {}; const pool = {}; const wall = {};
+  const best = {}; const wall = {};
   for (const o of h.offers) {
     if (!live(o)) continue; const p = P.get(o.productId); if (!p) continue;
-    if (!best[p.id] || o.total < best[p.id].total || (o.total === best[p.id].total && (o.dealScore ?? -1) > (best[p.id].dealScore ?? -1))) best[p.id] = o;
-    if (p.copagConfirmed && o.dealScore != null && o.confirmed !== false && o.discount > 0) { const c = pool[p.id]; if (!c || o.dealScore > c.dealScore || (o.dealScore === c.dealScore && o.total < c.total)) pool[p.id] = o; }
+    if (!best[p.id] || o.total < best[p.id].total || (o.total === best[p.id].total && String(o.id) < String(best[p.id].id))) best[p.id] = o;
     const w = (wall[p.collection] ||= { n: new Set(), min: Infinity }); w.n.add(p.id); if (o.total < w.min) w.min = o.total;
   }
-  const poolList = Object.values(pool).sort((a, b) => b.dealScore - a.dealScore || b.discount - a.discount).slice(0, 15).map((o) => `${o.productId}:${o.id}:${o.dealScore}`);
-  return { P, best, poolList, wall: Object.fromEntries(Object.entries(wall).map(([k, v]) => [k, { products: v.n.size, min: v.min }])), counts: h.counts };
+  return { P, best, wall: Object.fromEntries(Object.entries(wall).map(([k, v]) => [k, { products: v.n.size, min: v.min }])), counts: h.counts };
 }
 
 export function compareHome(hDb, hSt) {
@@ -37,14 +35,13 @@ export function compareHome(hDb, hSt) {
     const x = a.best[id]; const y = b.best[id];
     if (!x || !y || !eq(x.total, y.total)) d.bestPriceDiffs.push({ id, db: x ? { offer: x.id, total: x.total } : null, state: y ? { offer: y.id, total: y.total } : null });
   }
-  if (a.poolList.join() !== b.poolList.join()) d.poolDiffs.push({ db: a.poolList, state: b.poolList });
   for (const k of new Set([...Object.keys(a.wall), ...Object.keys(b.wall)])) if (!a.wall[k] || !b.wall[k] || a.wall[k].products !== b.wall[k].products || !eq(a.wall[k].min, b.wall[k].min)) d.wallDiffs.push({ collection: k, db: a.wall[k] || null, state: b.wall[k] || null });
   for (const k of ['liveOffers', 'stores', 'pre', 'tips']) if (a.counts[k] !== b.counts[k]) d.countDiffs.push({ count: k, db: a.counts[k], state: b.counts[k] });
   const OA = new Map(hDb.offers.map((o) => [o.id, o])); const OB = new Map(hSt.offers.map((o) => [o.id, o]));
   for (const id of OA.keys()) if (!OB.has(id)) d.offersOnlyInDb.push(id);
   for (const id of OB.keys()) if (!OA.has(id)) d.offersOnlyInState.push(id);
   for (const [id, x] of OA) { const y = OB.get(id); if (!y) continue;
-    for (const k of ['productId', 'storeId', 'storeName', 'seller', 'url', 'image', 'price', 'priceKind', 'shipping', 'shippingKnown', 'total', 'perBooster', 'stock', 'quantity', 'stale', 'confirmed', 'anomalous', 'discount', 'savings', 'dealScore'])
+    for (const k of ['productId', 'storeId', 'storeName', 'seller', 'url', 'image', 'price', 'priceKind', 'shipping', 'shippingKnown', 'total', 'perBooster', 'stock', 'quantity', 'stale', 'confirmed', 'anomalous', 'discount', 'savings'])
       if (!eq(x[k] ?? (['stale', 'anomalous', 'shippingKnown'].includes(k) ? false : k === 'confirmed' ? true : null), y[k] ?? (['stale', 'anomalous', 'shippingKnown'].includes(k) ? false : k === 'confirmed' ? true : null))) d.offerFieldDiffs.push({ id, field: k, db: x[k] ?? null, state: y[k] ?? null }); }
   const critical = d.productsOnlyInDb.length + d.productsOnlyInState.length + d.bestPriceDiffs.length + d.poolDiffs.length + d.wallDiffs.length
     + d.productFieldDiffs.filter((x) => ['msrp', 'copagConfirmed', 'copagReference'].includes(x.field)).length;
@@ -84,14 +81,15 @@ export function comparePages(dbSt, st, SITE) {
   const groups = ['', ...SITE.GROUP_ORDER];
   for (const mode of ['guardar', 'abrir']) for (const group of groups) for (const stock of [true, false]) for (const sort of ['', 'price', 'disc', 'new']) for (const semref of [false, true]) {
     if (semref && mode === 'abrir') continue;
+    if (mode === 'guardar' && sort === '') continue;   // padrão = nota oficial, que só existe no banco (sem nota no state.json, por definição)
     const F = { mode, group, stock, sort, semref }; out.lists.combos++;
     const a = SITE.siteProducts(dbSt, F, { page: 1, limit: 1000 }); const b = SITE.siteProducts(st, F, { page: 1, limit: 1000 });
-    const k = (r) => r.items.map((e) => `${e.p.id}:${e.o.id}:${e.o.total}:${e.o.dealScore ?? ''}`);
+    const k = (r) => r.items.map((e) => `${e.p.id}:${e.o.id}:${e.o.total}`);
     const ka = k(a), kb = k(b);
     if (ka.join() === kb.join() && JSON.stringify(a.facets) === JSON.stringify(b.facets)) out.lists.equal++;
     else out.lists.diffs.push({ F, db: a.total, state: b.total, first: ka.map((x, i) => (x !== kb[i] ? { i, db: x, state: kb[i] } : null)).filter(Boolean).slice(0, 3) });
   }
-  const pk = (o) => `${o.id}:${o.price}:${o.total}:${o.stock}:${o.shipping ?? ''}:${o.seller ?? ''}:${o.dealScore ?? ''}`;
+  const pk = (o) => `${o.id}:${o.price}:${o.total}:${o.stock}:${o.shipping ?? ''}:${o.seller ?? ''}`;
   for (const p of st.products || []) {
     const a = SITE.siteProduct(dbSt, p.id); const b = SITE.siteProduct(st, p.id); if (!a && !b) continue; out.products.total++;
     const ka = (a?.offers || []).map(pk).sort(), kb = (b?.offers || []).map(pk).sort();

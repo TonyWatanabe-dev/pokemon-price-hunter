@@ -55,9 +55,9 @@ t('confidence_level da API = faixas do motor (0 a 1, passo 0,001)', () => {
 const { default: api, _cache } = await import('../api/v1.mjs');
 const call = async (url) => { const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } }; await api({ url, method: 'GET' }, res); return { status: res.statusCode, headers: res.headers, json: JSON.parse(res.body) }; };
 const savedDb = process.env.API_DATABASE_URL; delete process.env.API_DATABASE_URL;
-for (const bad of ['categoria=x-1', 'categoria=Outros', 'referencia=historica', 'referencia=comunitaria', 'ordem=desconto', 'ordem=drop'])
+for (const bad of ['categoria=x-1', 'categoria=Outros', 'referencia=historica', 'referencia=comunitaria', 'ordem=desconto', 'ordem=drop', 'produto=..%2Fx', 'produto=a%20b', 'produto=a%27b'])
   assert.equal((await call(`/api/v1/oportunidades?${bad}`)).status, 400, bad);
-for (const ok of ['categoria=etb', 'categoria=Blisters', 'categoria=Cole%C3%A7%C3%B5es', 'referencia=copag', 'abaixo=10', 'confianca_minima=50',
+for (const ok of ['categoria=etb', 'categoria=Blisters', 'categoria=Cole%C3%A7%C3%B5es', 'referencia=copag', 'abaixo=10', 'confianca_minima=50', 'produto=me05-etb', 'produto=me05-etb&ofertas=todas',
   ...['score', 'preco', 'confianca', 'abaixo', 'economia', 'queda', 'recentes'].map((o) => `ordem=${o}`)])
   assert.equal((await call(`/api/v1/oportunidades?${ok}`)).status, 200, ok);
 n++;
@@ -162,6 +162,25 @@ assert.deepEqual(ids(await get('ordem=preco')), ['me05-blister3', 'me05-etb', 's
 assert.deepEqual(ids(await get('ordem=recentes')), ['sv4-box', 'me05-blister3', 'me05-etb'], 'm1 (07/10), b1 (05/10), e1 (01/10)');
 assert.deepEqual(ids(await get('ordem=queda')), ids(all), 'sem variação de 7 dias: mesma ordem do score');
 const cf = (await get('ordem=confianca')).data.map((x) => x.confidence); assert.deepEqual(cf, [...cf].sort((a, b) => b - a));
+n += 1;
+
+// filtro por produto (6C.2): mesma fonte, mesma nota; com ofertas=todas, a nota oficial de cada oferta avaliada do produto
+{
+  const one = await get('produto=me05-etb');
+  assert.deepEqual(ids(one), ['me05-etb']); assert.equal(one.meta.total, 1);
+  assert.deepEqual(one.data[0], by['me05-etb'], 'idêntico ao item da lista geral');
+  const slug = by['me05-etb'].product.slug; assert.ok(slug && slug !== 'me05-etb');
+  assert.deepEqual(await get(`produto=${slug}`), one, 'aceita o slug');
+  const allOffers = await get('ofertas=todas');
+  const each = await get('produto=me05-etb&ofertas=todas');
+  assert.deepEqual(each.data.map((x) => x.offer.id).sort(), ['e1', 'e2', 'e3']);
+  assert.ok(each.data.every((x) => x.product.id === 'me05-etb'));
+  const sc = each.data.map((x) => x.opportunity_score); assert.deepEqual(sc, [...sc].sort((a, b) => b - a), 'ordem padrão: score');
+  for (const x of each.data) assert.deepEqual(x, allOffers.data.find((y) => y.offer.id === x.offer.id), `oferta ${x.offer.id} igual à lista geral`);
+  assert.equal(each.data[0].offer.id, one.data[0].offer.id, 'a melhor oferta do produto é a mesma da lista por produto');
+  assert.deepEqual((await get('produto=nao-existe')).data, []); assert.deepEqual((await get('produto=nao-existe&ofertas=todas')).data, []);
+  assert.deepEqual(ids(await get('produto=me05-etb&categoria=Boosters')), [], 'combina com os outros filtros');
+}
 n += 1;
 
 // nada interno vazou

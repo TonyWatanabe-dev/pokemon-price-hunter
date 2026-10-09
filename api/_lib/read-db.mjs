@@ -26,8 +26,10 @@ const PRODUCTS_SQL = `
 const OFFERS_SQL = `
   SELECT o.legacy_id, p.legacy_id AS product_legacy, o.store_id, st.name AS store_name, se.name AS seller_name, o.url, o.image_url,
          o.price, o.price_kind, o.shipping_price, o.shipping_status, o.total_price, o.stock_status, o.quantity, o.confirmed, o.anomalous,
-         o.status, o.first_seen_at, o.last_seen_at
+         o.status, o.first_seen_at, o.last_seen_at,
+         op.opportunity_score AS opp_score, op.opportunity_band AS opp_band, op.confidence AS opp_conf
     FROM hunter.offer o
+    LEFT JOIN hunter.opportunity op ON op.offer_id = o.id
     JOIN hunter.product p ON p.id = o.product_id
     LEFT JOIN hunter.store st ON st.id = o.store_id
     LEFT JOIN hunter.seller se ON se.id = o.seller_id
@@ -36,7 +38,7 @@ const COLLECTIONS_SQL = `SELECT code AS id, name, series, aliases FROM hunter.co
 
 /**
  * Monta um estado no formato do state.json a partir do banco. Preços, estoque, frete, lojas, vendedores e referências
- * vêm do banco; o que ainda só existe no robô (Deal Score, atividade, pistas, reputação, menor preço já visto,
+ * vêm do banco, e a nota de oportunidade vem do Opportunity Engine; o que ainda só existe no robô (atividade, pistas, reputação, menor preço já visto,
  * data de lançamento de pré-venda, validação da loja) é sobreposto a partir do state.json, por id de oferta/produto.
  */
 export async function stateLikeFromDb(legacy) {
@@ -72,8 +74,10 @@ export async function stateLikeFromDb(legacy) {
       stock: STOCK_OUT[r.stock_status] || 'UNKNOWN', quantity: r.quantity ?? null, firstSeen: iso(r.first_seen_at),
       stale: r.status === 'pending', confirmed: r.confirmed, anomalous: r.anomalous,
       discount: p.msrp && total ? +(1 - total / p.msrp).toFixed(4) : null, savings: p.msrp && total ? round2(p.msrp - total) : null,
+      // nota oficial do Opportunity Engine (a mesma de /oportunidades); sem avaliação, null. O Deal Score do robô não vem mais.
+      opp: r.opp_score != null ? { score: r.opp_score, band: r.opp_band, confidence: num(r.opp_conf), level: opportunityConfidenceLevel(num(r.opp_conf)) } : null,
       // ainda do robô:
-      dealScore: l.dealScore ?? null, scoreParts: l.scoreParts ?? null, storeValidated: l.storeValidated ?? false, releaseDate: l.releaseDate ?? null,
+      storeValidated: l.storeValidated ?? false, releaseDate: l.releaseDate ?? null,
       sku: l.sku ?? null, ean: l.ean ?? null, source_timestamp: iso(r.last_seen_at),
       priceKindLabel: l.priceKindLabel ?? null, storeKind: l.storeKind ?? null, sellerKind: l.sellerKind ?? null,
     };
@@ -287,7 +291,7 @@ export const OPP_SORTS = { score: 'o.opportunity_score DESC, o.confidence DESC, 
 export const OPP_REFERENCES = { copag: 'COPAG_OFFICIAL_CURRENT', mercado: 'MARKET_CURRENT', nenhuma: 'NONE' };
 // Categoria = a mesma do site: tipo do produto (etb, booster_box...) ou grupo (Blisters, Coleções...), de product.attrs
 export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score',
-  categoria = null, referencia = null, abaixo = null, confiancaMinima = null }) {
+  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null }) {
   const from = todas ? 'hunter.opportunity o' : 'hunter.product_opportunity o';
   const rows = await q(`
     SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
@@ -313,9 +317,10 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
        AND ($7::text IS NULL OR o.reference_kind = $7)
        AND ($8::numeric IS NULL OR o.reference_gap >= $8)
        AND ($9::numeric IS NULL OR o.confidence >= $9)
+       AND ($10::text IS NULL OR p.legacy_id = $10 OR p.slug = $10)
      ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
      LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
-    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null]);
+    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto]);
   return { items: rows.map(opportunityOut), total: rows.length ? Number(rows[0].total_rows) : 0 };
 }
 const opportunityOut = (r) => ({

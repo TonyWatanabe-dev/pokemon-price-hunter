@@ -5,21 +5,21 @@
 // O que a Home usa (tools/page.template.html → renderDeals e auxiliares):
 // • todos os produtos (slugs, busca, contagens), com campos enxutos;
 // • por produto: a melhor oferta com estoque (bestLive), a melhor oferta "sem estoque negado" (entries com o filtro
-//   de estoque desligado), a melhor oportunidade (oppPool) e a melhor pré-venda;
+//   de estoque desligado) e a melhor pré-venda. Cada oferta leva a nota oficial do Opportunity Engine (opp), quando existe;
 // • a oferta com menor preço por booster (destaques), as ofertas citadas na atividade recente;
 // • atividade, pistas (sem o texto bruto), reputação e evidências só das lojas presentes.
 export const HOME_VERSION = 1;
 
 const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 const notOut = (o) => !(o.stale || o.anomalous || o.stock === 'OUT_OF_STOCK') && o.total > 0;
-const byTotal = (a, b) => a.total - b.total || (b.dealScore ?? -1) - (a.dealScore ?? -1) || String(a.id).localeCompare(String(b.id));
+const byTotal = (a, b) => a.total - b.total || String(a.id).localeCompare(String(b.id));
 const first = (list, cmp) => (list.length ? [...list].sort(cmp)[0] : null);
 
 // Só os campos que o código da Home lê (levantamento em tools/page.template.html; ver relatório da fase 3).
 export const PRODUCT_FIELDS = ['id', 'collection', 'collectionName', 'type', 'typeLabel', 'group', 'boosters', 'variant', 'ean', 'image',
   'copagConfirmed', 'msrp', 'copagReference', 'copagReferenceUrl', 'offerCount'];
 export const OFFER_FIELDS = ['id', 'productId', 'storeId', 'storeName', 'seller', 'url', 'image', 'price', 'priceKind', 'shipping', 'shippingKnown', 'total',
-  'perBooster', 'stock', 'quantity', 'releaseDate', 'firstSeen', 'stale', 'confirmed', 'anomalous', 'storeValidated', 'discount', 'savings', 'dealScore', 'scoreParts'];
+  'perBooster', 'stock', 'quantity', 'releaseDate', 'firstSeen', 'stale', 'confirmed', 'anomalous', 'storeValidated', 'discount', 'savings', 'opp'];   // opp = nota oficial do Opportunity Engine (sem Deal Score)
 const TIP_DROP = new Set(['text', 'raw', 'html', 'media', 'entities']);
 const pick = (o, keys) => { const r = {}; for (const k of keys) if (o[k] !== undefined && o[k] !== null) r[k] = o[k]; return r; };
 
@@ -32,11 +32,9 @@ export function slimHome(st, { source = 'state', now = Date.now(), activityDays 
   const keep = new Map(); const add = (o) => { if (o) keep.set(o.id, o); };
   const liveCount = {}; const codes = {};
   for (const [pid, list] of byP) {
-    const p = P.get(pid); const L = list.filter(live); liveCount[pid] = L.length;
+    const L = list.filter(live); liveCount[pid] = L.length;
     add(first(L, byTotal));                                   // bestLive / entries (estoque confirmado)
     add(first(list.filter(notOut), byTotal));                 // entries com o filtro de estoque desligado
-    if (p.copagConfirmed) add(first(L.filter((o) => o.dealScore != null && o.confirmed !== false && o.discount > 0),
-      (a, b) => b.dealScore - a.dealScore || a.total - b.total || String(a.id).localeCompare(String(b.id))));   // oppPool
     add(first(list.filter((o) => o.stock === 'PRE_ORDER'), byTotal));                                           // pré-vendas
     const cs = new Set(); for (const o of list) for (const v of [o.sku, o.ean]) if (v && String(v).length >= 4) cs.add(String(v)); codes[pid] = [...cs];
   }

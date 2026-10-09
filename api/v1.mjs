@@ -6,7 +6,7 @@
 //   GET /api/v1/produtos/:id/historico?dias          → série diária do Price Engine (sem histórico bruto)
 //   GET /api/v1/produtos/:id/estatisticas
 //   GET /api/v1/referencias?pagina&limite&status
-//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&ordem&ofertas=todas
+//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&produto&ordem&ofertas=todas
 //       → resultado do Opportunity Engine (melhor oferta comprável por produto; referência atual, contexto histórico e
 //       comunitária separados; reference_comparison = distância até a referência atual que o motor usou)
 //       ordem: score | preco | confianca | abaixo | economia | queda | recentes
@@ -73,7 +73,9 @@ function route(segs, qs) {
     if (referencia && !Object.keys(DB.OPP_REFERENCES).includes(referencia)) throw new HttpError(400, `referencia inválida (use: ${Object.keys(DB.OPP_REFERENCES).join(', ')})`);
     const abaixo = qs.get('abaixo') != null ? intIn(qs.get('abaixo'), 0, 0, 100) : null;                          // % mínimo abaixo da referência atual
     const confiancaMinima = qs.get('confianca_minima') != null ? intIn(qs.get('confianca_minima'), 0, 0, 100) : null;   // % (0–100)
-    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima } };
+    // produto: id ou slug (página do produto). Com ofertas=todas traz a nota oficial de cada oferta avaliada do produto.
+    const produto = str(qs.get('produto'), 80) || null; if (produto && !SLUG_RE.test(produto)) throw new HttpError(400, 'produto inválido');
+    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto } };
   }
   // ---- FASE 4: formato do site (listas e página de produto), regras iguais às do site
   if (a === 'site') {

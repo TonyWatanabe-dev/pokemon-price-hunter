@@ -136,7 +136,7 @@ a{color:inherit}
 .off.eq{background:var(--sunk);color:var(--ink);font-weight:600}
 .sticker{display:inline-flex;align-items:center;gap:5px;background:var(--ok-bg);color:var(--ok);font-weight:700;font-size:14px;padding:4px 10px;border-radius:8px;white-space:nowrap}
 .sticker.muted{background:var(--sunk);color:var(--muted);font-weight:600}
-/* Deal Score: medidor + número + faixa */
+/* Opportunity Score: medidor + número + faixa */
 .dial{--sz:56px;position:relative;width:var(--sz);height:var(--sz);flex:none;display:grid;place-items:center}
 .dial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
 .dial circle{fill:none;stroke-width:3.6}
@@ -1002,7 +1002,7 @@ a.navbtn{text-decoration:none}
 .hleg .copk{width:14px;border-top:2px dashed var(--muted)}
 .hnote{font-size:13.5px;color:var(--muted);margin:6px 0 0}
 
-/* Explicação do Deal Score */
+/* Por que esta nota? (Opportunity Engine) */
 .scorebtn{display:inline-flex;align-items:center;gap:5px;border:0;font:inherit;cursor:pointer}
 button.score{background:none;padding:0;color:var(--ink);font-weight:700}
 .scorebtn .icon{width:1em;height:1em;opacity:.65}
@@ -1320,7 +1320,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas de preço<small>Aviso quando chegar no seu preço</small></span><span class="count c-hit" hidden></span></button>
     <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-vendas<small>Lançamentos que ainda não chegaram</small></span><span class="count c-pre" hidden></span></button>
     <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades<small>Todas as ofertas abaixo da Copag, com filtros</small></span></button>
-    <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Deal Score, preço Copag e dicas de compra</small></span></button>
+    <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Opportunity Score, preço Copag e dicas de compra</small></span></button>
     <button type="button" data-go="termos"><svg class="icon"><use href="#i-info"/></svg><span>Termos e privacidade<small>Regras de uso e o que o site guarda</small></span></button>
     <button type="button" class="theme-btn"><svg class="icon"><use href="#i-moon"/></svg><span class="theme-lbl">Tema escuro<small>Muda as cores do site</small></span></button>
   </div>
@@ -1439,18 +1439,18 @@ function entries(){
     (by[p.id]||=[]).push(o);
   }
   const key=F.mode==="abrir"?(o)=>o.perBooster:(o)=>o.total;
-  return Object.entries(by).map(([id,list])=>{list.sort((a,b)=>key(a)-key(b)||(b.dealScore??-1)-(a.dealScore??-1)||String(a.id).localeCompare(String(b.id)));return{p:P[id],o:list[0],n:list.length}});
+  return Object.entries(by).map(([id,list])=>{list.sort((a,b)=>key(a)-key(b)||String(a.id).localeCompare(String(b.id)));return{p:P[id],o:list[0],n:list.length}});
 }
 function sortEntries(list){
   const s=F.sort||(F.mode==="abrir"?"ppb":"score");
-  const cmp={score:(a,b)=>(b.o.dealScore??-1)-(a.o.dealScore??-1)||(b.o.discount??-9)-(a.o.discount??-9),disc:(a,b)=>(discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9),price:(a,b)=>a.o.total-b.o.total,ppb:(a,b)=>(a.o.perBooster??1e9)-(b.o.perBooster??1e9),new:(a,b)=>String(b.p.firstSeen||"").localeCompare(String(a.p.firstSeen||""))||(a.o.total-b.o.total)}[s]||(()=>0);
+  const cmp={score:(a,b)=>(oppScore(b.o)??-1)-(oppScore(a.o)??-1)||(b.o.discount??-9)-(a.o.discount??-9),disc:(a,b)=>(discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9),price:(a,b)=>a.o.total-b.o.total,ppb:(a,b)=>(a.o.perBooster??1e9)-(b.o.perBooster??1e9),new:(a,b)=>String(b.p.firstSeen||"").localeCompare(String(a.p.firstSeen||""))||(a.o.total-b.o.total)}[s]||(()=>0);
   return list.sort((a,b)=>cmp(a,b)||String(a.p.id).localeCompare(String(b.p.id)));   /* desempate fixo (igual à API) */
 }
 
 /* Referência de preço: oficial (loja Copag) ou coletada na internet (não oficial, só para comparação) */
 const refOf=(p)=>p.copagConfirmed?{v:p.msrp,net:false}:p.copagReference?{v:p.copagReference,net:true,url:p.copagReferenceUrl}:null;
 const discOf=(p,o)=>{if(!o||o.anomalous)return null;if(p.copagConfirmed)return o.discount;const r=refOf(p);return r?+(1-o.total/r.v).toFixed(4):null};
-const REFNOTE="Preço sugerido coletado na internet (imagens de lojas e perfis especializados), não confirmado na loja oficial da Copag. Serve só para comparação: não entra no Deal Score nem nos alertas.";
+const REFNOTE="Preço sugerido coletado na internet (imagens de lojas e perfis especializados), não confirmado na loja oficial da Copag. Serve só para comparação: não entra no Opportunity Score nem nos alertas.";
 
 /* Promoções do Telegram como cards: canal + loja onde está à venda (ícone do próprio site da loja) */
 const MK={"Shopee":"shopee.com.br","Amazon":"amazon.com.br","Mercado Livre":"mercadolivre.com.br","Magalu":"magazineluiza.com.br","AliExpress":"aliexpress.com","Americanas":"americanas.com.br","Casas Bahia":"casasbahia.com.br"};
@@ -1497,13 +1497,12 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 
 /* DealScore: faixas de leitura (só apresentação; o cálculo continua no robô) */
-const BANDS=[[90,"Excelente oportunidade","Excelente","var(--ok)"],[80,"Ótima oportunidade","Ótima","var(--ok)"],[70,"Bom negócio","Bom negócio","var(--ok)"],[50,"Preço justo","Preço justo","var(--warn)"],[30,"Acima do ideal","Acima do ideal","var(--e-fire)"],[0,"Caro","Caro","var(--bad)"]];
-const band=(n)=>BANDS.find((b)=>n>=b[0])||BANDS[BANDS.length-1];
-const scoreColor=(n)=>band(n)[3];
-function dial(n,cls=""){return`<span class="dial ${cls}" style="--sc:${scoreColor(n)}" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="17"/><circle class="val" cx="20" cy="20" r="17" pathLength="100" style="stroke-dasharray:${Math.max(0,Math.min(100,n))} 100"/></svg><b>${n}</b></span>`}
+function dial(n,cls="",col="var(--muted)"){return`<span class="dial ${cls}" style="--sc:${col}" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="17"/><circle class="val" cx="20" cy="20" r="17" pathLength="100" style="stroke-dasharray:${Math.max(0,Math.min(100,n))} 100"/></svg><b>${n}</b></span>`}
 function scoreBlock(o){
-  if(o?.dealScore==null)return`<div class="sblock none"><span class="dial empty" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="17"/></svg><b>-</b></span><span class="stext"><small>Deal Score</small><b>Sem nota</b><em>Precisa de estoque confirmado e preço Copag oficial</em></span></div>`;
-  return`<button class="sblock scorebtn" type="button" data-score="${esc(o.id)}" style="--sc:${scoreColor(o.dealScore)}" aria-label="Deal Score ${o.dealScore}, ${band(o.dealScore)[1]}. Ver como calculamos.">${dial(o.dealScore)}<span class="stext"><small>Deal Score</small><b>${band(o.dealScore)[1]}</b><em>Como calculamos? ${ic("info")}</em></span></button>`;
+  const x=oppOf(o);
+  if(!x)return`<div class="sblock none"><span class="dial empty" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="17"/></svg><b>-</b></span><span class="stext"><small>Opportunity Score</small><b>Sem nota oficial</b><em>${NO_SCORE()} Nada é estimado no lugar.</em></span></div>`;
+  const bu=bandUI(x.band);const cf=(CONF_UI[x.level]||"Confiança não informada")+confPct(x.confidence);
+  return`<button class="sblock scorebtn" type="button" data-oscore="${esc(o.id)}" style="--sc:${bu[1]}" aria-label="Opportunity Score ${x.score} de 100, ${esc(bu[0])}, ${esc(cf)}. Ver por que esta nota.">${dial(x.score,"",bu[1])}<span class="stext"><small>Opportunity Score · nota desta oferta</small><b>${esc(bu[0])}</b><em>${esc(cf)} · Por que esta nota? ${ic("info")}</em></span></button>`;
 }
 /* PriceDisplay: preço atual em destaque, Copag logo abaixo, desconto e economia já calculados */
 function priceBlock(p,o,abrir){
@@ -1513,16 +1512,16 @@ function priceBlock(p,o,abrir){
   <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
-/* DealCard: oportunidade → economia → Deal Score → Copag → preço → loja */
-function scoreMeter(n){const b=band(n);return`<div class="meter" style="--sc:${b[3]}"><span>Deal Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,n))}%"></b></i><strong>${n}<small>/100</small></strong></div>`}
+/* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
+function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
 function dealCard(e,opt={}){
   const{p,o,n}=e;const gg=g(p);const abrir=!opt.plain&&F.mode==="abrir"&&view==="deals";
   const r=refOf(p);const d=discOf(p,o);const hasD=!!(o&&r&&d!=null);
   const state=!o?"none":o.stock==="PRE_ORDER"?"pre":!live(o)?"oos":"";
   const fav=isFav(p.id);const href="/produto/"+(SLUG[p.id]||encodeURIComponent(p.id));
-  const sc=o&&o.dealScore!=null&&live(o)?o.dealScore:null;
+  const sx=o&&live(o)?oppOf(o):null;
   const foil=!!opt.foil&&!state;
-  const badge=state==="pre"?`<span class="deal-badge pre">Pré-venda${o.releaseDate?` · ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</span>`:state?`<span class="deal-badge muted">${state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:sc!=null?`<span class="deal-badge" style="--sc:${scoreColor(sc)}"><i></i>${band(sc)[1]}</span>`:"";
+  const badge=state==="pre"?`<span class="deal-badge pre">Pré-venda${o.releaseDate?` · ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</span>`:state?`<span class="deal-badge muted">${state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:sx?`<span class="deal-badge" style="--sc:${bandUI(sx.band)[1]}"><i></i>${esc(bandUI(sx.band)[0])}</span>`:"";
   const save=hasD&&d>=.0005&&!abrir;
   return`<article class="deal${state?" "+state:""}${foil?" foil":""}${CHANGED.has(p.id)?" upd":""}" data-cat="${catOf(p)}" style="--ec:${gg.c}${opt.i!=null?`;--i:${opt.i}`:""}">${opt.i!=null?`<span class="deal-back" aria-hidden="true"></span>`:""}
   <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" aria-label="${esc(p.collectionName+" "+label(p))}"></a>
@@ -1533,7 +1532,7 @@ function dealCard(e,opt={}){
     <h3 class="deal-name">${esc(label(p))}</h3>
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
-    ${sc!=null?scoreMeter(sc):""}
+    ${o&&live(o)?scoreMeter(sx):""}
     <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
@@ -1555,7 +1554,7 @@ function filtersHTML(all){
   const cols=fc.cols;
   const series=[...new Set(cols.map((c)=>c.series||"Outras"))];
   const stores=fc.stores;
-  const sorts=F.mode==="abrir"?[["ppb","Preço por booster"],["price","Menor preço"],["score","Deal Score"],["new","Novidades"]]:[["score","Melhor oportunidade"],["disc","Maior desconto"],["price","Menor preço"],["new","Novidades"]];
+  const sorts=F.mode==="abrir"?[["ppb","Preço por booster"],["price","Menor preço"],["score","Melhor oportunidade"],["new","Novidades"]]:[["score","Melhor oportunidade"],["disc","Maior desconto"],["price","Menor preço"],["new","Novidades"]];
   const chip=(v,l,icon,c,count)=>`<button class="fchip" type="button" data-g="${v}" aria-pressed="${F.group===v}" ${c?`style="--ec:${c}"`:""}>${icon?ic(icon):""}${l}${count!=null?` <small>${count}</small>`:""}</button>`;
   const types=fc.types;
   const extra=[F.type,F.store,F.max,F.below,!F.stock].filter(Boolean).length;
@@ -1798,7 +1797,7 @@ function renderGroup(kind,slug){
   const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:p.type===g0.id));
   const best={},n={};if(S.slim)for(const p of ps)n[p.id]=p.liveCount||0;for(const o of OFF){if(!live(o))continue;if(!S.slim)n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||byTot(o,best[o.productId])<0)best[o.productId]=o}
   const list=ps.map((p)=>({p,o:best[p.id]||OFF.filter((o)=>o.productId===p.id).sort(byTot)[0]||null,n:n[p.id]||0}))
-    .sort((a,b)=>((b.n?1:0)-(a.n?1:0))||((b.o?.dealScore??-1)-(a.o?.dealScore??-1))||((discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9)));
+    .sort((a,b)=>((b.n?1:0)-(a.n?1:0))||((oppScore(b.o)??-1)-(oppScore(a.o)??-1))||((discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9)));
   const inStock=list.filter((e)=>e.n).length;const low=list.filter((e)=>e.n).map((e)=>e.o.total).sort((a,b)=>a-b)[0];
   document.title=isCol?`${name} Pokémon TCG: preços | TCG Price Hunter`:`Preço de ${name} Pokémon TCG no Brasil | TCG Price Hunter`;
   $("#view").innerHTML=`<div class="opp grp">
@@ -1888,9 +1887,14 @@ function renderCopag(){
 function renderGuide(){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h2>Como o site avalia as ofertas</h2>
   <p>O objetivo é um só: te ajudar a fazer bons negócios com produto lacrado em português, sem cair em preço inflado ou golpe.</p>
-  <h3>Deal Score (0 a 100)</h3><p>Soma oito critérios. Só ganha nota a oferta com estoque confirmado, produto identificado e preço sugerido oficial da Copag.</p>
-  <table>${CRIT.map(([,max,name,help])=>`<tr><td><b style="color:var(--ink)">${name}</b><br>${help}</td><td>até ${max}</td></tr>`).join("")}</table>
-  <h3>O que cada faixa quer dizer</h3><table>${BANDS.map(([min,l],i)=>`<tr><td><b style="color:${BANDS[i][3]}">●</b> ${l}</td><td>${i===0?"90 a 100":`${min} a ${BANDS[i-1][0]-1}`}</td></tr>`).join("")}</table><p>O Deal Score é uma avaliação automática feita por algoritmo, com dados públicos das lojas. Não é recomendação financeira nem de compra.</p>
+  <h3>Opportunity Score (0 a 100)</h3><p>A nota responde a uma pergunta: quão interessante é comprar esta oferta agora. Quem calcula é o Opportunity Engine, com os preços já coletados das lojas. Cada oferta tem uma nota só, e ela é a mesma no início, em Oportunidades, nas listas e na página do produto.</p>
+  <table>${[["Referência atual","Desconto em relação ao preço sugerido Copag atual e verificado. Sem ele, em relação a uma referência de mercado formada por várias lojas.","30%"],["Histórico","Onde o preço está entre o menor e a média já vistos. Só conta com 3 dias ou mais de dados.","20%"],["Mercado","Distância da mediana das lojas com estoque agora. Precisa de 2 lojas ou mais.","20%"],["Menor preço agora","Distância do menor preço com estoque neste momento.","10%"],["Frete","Frete informado e quanto ele pesa no total. Frete desconhecido não conta.","10%"],["Confiabilidade","Reputação pública da loja no Reclame Aqui e vendedor oficial.","10%"]].map(([n,h,w])=>`<tr><td><b style="color:var(--ink)">${n}</b><br>${h}</td><td>peso ${w}</td></tr>`).join("")}</table>
+  <p>Um critério sem dado confiável fica de fora: nunca é inventado. Com pouca evidência, a nota fica perto de 50. Alguns limites seguram a nota, mesmo com bom desconto: estoque não confirmado, pré-venda, preço acima da referência atual, loja mal avaliada ou preço fora do esperado para o produto.</p>
+  <h3>O que cada faixa quer dizer</h3><table>${[["excelente","90 a 100"],["boa","75 a 89"],["normal","50 a 74"],["baixa","0 a 49"]].map(([k,r])=>`<tr><td><b style="color:${BAND_UI[k][1]}">●</b> ${BAND_UI[k][0]}</td><td>${r}</td></tr>`).join("")}</table>
+  <h3>Confiança</h3><p>Vem separada da nota e diz o quanto os dados por trás dela estão completos. Cai com histórico curto, frete desconhecido, poucas lojas com estoque, queda de preço ainda não confirmada ou referência de mercado formada só por marketplaces. Alta: 75% ou mais. Média: de 50% a 74%. Baixa: abaixo de 50%.</p>
+  <h3>Motivos e avisos</h3><p>Cada nota traz os motivos que pesaram a favor ou contra (por exemplo, "28,7% abaixo do preço sugerido Copag") e os avisos para conferir antes de comprar (por exemplo, "Frete não confirmado"). Toque em <b>Por que esta nota?</b> para ver.</p>
+  <h3>Sem nota oficial</h3><p>Quando o motor ainda não avaliou a oferta, ou quando as notas estão indisponíveis, o site mostra "Sem nota oficial". Nenhuma nota é estimada no lugar.</p>
+  <p>O Opportunity Score é uma avaliação automática feita por algoritmo, com dados públicos das lojas. Não é recomendação financeira nem de compra.</p>
   <h3>Preço sugerido Copag</h3><p>Só vale o preço publicado na loja oficial da Copag, com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto.</p>
   <h3>O que nunca entra no ranking</h3><ul><li>Preço mais de 45% abaixo da Copag ou da média das lojas (pode ser erro, usado ou golpe).</li><li>Estoque não confirmado pela loja.</li><li>Produto usado, aberto, importado ou em outro idioma.</li><li>Pistas do Telegram, que ninguém verificou.</li></ul>
   <h3>Antes de comprar</h3><ul><li>Simule o frete: ele muda a conta.</li><li>Confira CNPJ, avaliações e política de troca de lojas que você não conhece.</li><li>Prefira Pix ou cartão com proteção. Desconfie de pagamento por fora.</li><li>Veja o menor preço já visto na ficha do produto antes de decidir.</li></ul>
@@ -1901,7 +1905,7 @@ function renderLegal(kind){
   const T={termos:`<h2>Termos de uso</h2><p>Última atualização: 8 de outubro de 2026.</p>
   <h3>1. O que é o TCG Price Hunter</h3><p>Um site gratuito que reúne preços de produtos lacrados de Pokémon TCG anunciados em lojas brasileiras e compara com o preço sugerido publicado pela Copag. O site não vende nada, não intermedeia compras e não recebe pagamentos.</p>
   <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente pelo robô. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
-  <h3>3. Deal Score e alertas são opinião automatizada</h3><p>A nota, as classificações, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
+  <h3>3. Notas e alertas são opinião automatizada</h3><p>A nota (Opportunity Score), as faixas, a confiança, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
   <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p>
   <h3>5. Marcas</h3><p>O TCG Price Hunter não é afiliado, patrocinado nem endossado pela Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon, os nomes das coleções e as imagens dos produtos pertencem a seus donos e aparecem apenas para identificar os produtos anunciados.</p>
   <h3>6. Lojas</h3><p>O robô respeita o robots.txt de cada site e não tenta contornar bloqueios. <b>Se a sua loja não quiser fazer parte da busca, basta enviar um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a></b> com o endereço do site: a loja é retirada da lista e o robô deixa de visitá-la. O mesmo e-mail serve para corrigir qualquer dado.</p><p>A reputação mostrada ao lado de cada loja vem das páginas públicas do Reclame Aqui, com a data da consulta e o link para a fonte. O TCG Price Hunter não tem ligação com o Reclame Aqui e não altera essas notas.</p>
@@ -1935,45 +1939,26 @@ function renderTips(){
   ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
 }
 
-/* Como calculamos: o Deal Score critério por critério (dados reais da oferta) */
-const CRIT=[
-  ["copag",35,"Desconto sobre a Copag","Nota cheia a partir de 30% abaixo do preço sugerido oficial."],
-  ["historico",15,"Perto do menor preço já visto","Compara com o menor preço que o robô já encontrou para esse produto."],
-  ["porBooster",15,"Preço por booster","Compara com o booster mais barato da mesma coleção."],
-  ["estoque",10,"Estoque confirmado","A loja confirma que tem o produto agora."],
-  ["loja",10,"Confiança na loja","CNPJ, avaliações, tempo de mercado, política de troca e histórico."],
-  ["frete",5,"Frete","Grátis vale nota cheia. Frete não informado vale zero."],
-  ["lacrado",5,"Certeza do produto","O título deixa claro que é lacrado e qual é o produto."],
-  ["disponibilidade",5,"Quantidade","Mais de uma unidade disponível."]];
-function scoreWhy(o){
-  const p=P[o.productId]||{};const st=(S.sources||[]).find((x)=>x.id===o.storeId);const ev=st?.score?.evidence||[];
-  const pr=o.scoreParts||{};const b=band(o.dealScore);
-  const detail={copag:o.discount>0?`${pct(o.discount)} abaixo da Copag (${money(p.msrp)}).`:`Não está abaixo da Copag (${money(p.msrp)}).`,
-    historico:p.lowestHistorical?`Menor preço já visto: ${money(p.lowestHistorical.total)}, ${ago(p.lowestHistorical.at)}.`:"Ainda sem histórico: nota média.",
-    porBooster:o.perBooster?`${money(o.perBooster)} por booster.`:"Produto sem boosters contados: nota média.",
-    loja:ev.length?`Encontrado: ${ev.join(", ")}.`:"Loja ainda sem informações de confiança cadastradas.",
-    frete:o.shippingKnown&&o.shipping===0?"Frete grátis.":o.shippingKnown&&o.shipping>0?`Frete de ${money(o.shipping)}.`:"A loja não informa o frete: confira no carrinho.",
-    lacrado:(pr.lacrado??0)>=5?"Título deixa claro que é lacrado e qual é o produto.":"O título não diz com todas as letras que é lacrado ou Copag. Confira na página da loja.",
-    disponibilidade:o.quantity>1?`${o.quantity} unidades.`:"Quantidade não informada ou só uma."};
-  const tips=[];
-  if(!o.shippingKnown)tips.push("O frete não entrou na conta. Simule no carrinho antes de decidir.");
-  if(!o.storeValidated)tips.push("Loja com pouca informação de confiança. Confira CNPJ, avaliações e política de troca.");
-  if(p.lowestHistorical&&o.total>p.lowestHistorical.total*1.1)tips.push(`Já foi visto por ${money(p.lowestHistorical.total)}. Talvez valha esperar.`);
-  return`<div class="sp-head"><div><small class="sp-k">Como calculamos?</small><div class="sp-tot">${dial(o.dealScore)}<span><b>${b[1]}</b><small>${esc(storeTxt(o))} · ${money(o.total)}${pixTxt(o)}</small></span></div></div><button class="iconbtn" type="button" popovertarget="scorepop" popovertargetaction="hide" aria-label="Fechar">${ic("x")}</button></div>
-  ${CRIT.map(([k,max,name,help])=>{const v=pr[k]??0;const r=Math.max(0,Math.min(1,v/max));return`<div class="sp-row"><b>${name}</b><span>${Math.round(v)}/${max}</span><span class="sp-bar"><i class="${r<.5?"low":""}" style="width:${Math.round(r*100)}%"></i></span><small>${esc(detail[k]||help)}</small></div>`}).join("")}
-  <div class="sp-total"><span>Total</span><b>${o.dealScore}<small>/100</small></b></div>
-  ${tips.length?`<p class="sp-tip">${tips.map(esc).join(" ")}</p>`:""}
+/* Por que esta nota? Explicação oficial do Opportunity Engine (motivos, avisos, referência, confiança) da própria oferta,
+   lida de /api/v1/oportunidades?produto=…&ofertas=todas. Mesma apresentação de /oportunidades (oppWhyBody). */
+const OPPX={};
+async function oppDetail(pid){const k="oportunidades?produto="+encodeURIComponent(pid)+"&ofertas=todas&limite=50";const d=await apiGet(k);
+  if(!d||!Array.isArray(d.data))return null;return OPPX[pid]=new Map(d.data.map((x)=>[x.offer?.id,x]))}
+function oppPop(o,x,st){
+  const sc=x?x.opportunity_score:o.opp.score;const bu=bandUI(x?x.opportunity_band:o.opp.band);
+  return`<div class="sp-head"><div><small class="sp-k">Por que esta nota?</small><div class="sp-tot">${dial(sc,"",bu[1])}<span><b>${esc(bu[0])}</b><small>${esc(storeTxt(o))} · ${money(o.total)}${pixTxt(o)}</small></span></div></div><button class="iconbtn" type="button" popovertarget="scorepop" popovertargetaction="hide" aria-label="Fechar">${ic("x")}</button></div>
+  <div class="why-in sp-why">${x?oppWhyBody(x,{sum:false}):st==="loading"?`<p class="hnote" role="status">Carregando a explicação do Opportunity Engine…</p>`:`<p class="hnote" role="status">Não consegui carregar a explicação agora. A nota acima é a oficial; tente de novo em instantes.</p>`}</div>
   <p class="sp-legal">Avaliação automática, calculada por algoritmo com dados públicos das lojas. Não é recomendação financeira nem de compra.</p>
-  <button class="sp-more" type="button" data-go="guia">Faixas e critérios do Deal Score</button>`;
+  <button class="sp-more" type="button" data-go="guia">Como funciona o Opportunity Score</button>`;
 }
-function showScore(btn){
-  const o=OFF.find((x)=>x.id===btn.dataset.score);if(!o)return;const pop=$("#scorepop");
-  pop.innerHTML=scoreWhy(o);
-  try{pop.showPopover()}catch{}
-  if(innerWidth>=760){const r=btn.getBoundingClientRect();const w=pop.offsetWidth,h=pop.offsetHeight;
-    let left=Math.min(Math.max(12,r.left+r.width/2-w/2),innerWidth-w-12);let top=r.bottom+8;if(top+h>innerHeight-12)top=Math.max(12,r.top-h-8);
-    pop.style.left=left+"px";pop.style.top=top+"px"}
-  track("view_deal",{id:o.productId,score:o.dealScore});
+function placePop(btn){const pop=$("#scorepop");if(innerWidth<760)return;const r=btn.getBoundingClientRect();const w=pop.offsetWidth,h=pop.offsetHeight;
+  let left=Math.min(Math.max(12,r.left+r.width/2-w/2),innerWidth-w-12);let top=r.bottom+8;if(top+h>innerHeight-12)top=Math.max(12,r.top-h-8);pop.style.left=left+"px";pop.style.top=top+"px"}
+async function showScore(btn){
+  const o=OFF.find((x)=>x.id===btn.dataset.oscore);if(!o||!oppOf(o))return;const pop=$("#scorepop");const pid=o.productId;
+  const cached=OPPX[pid]?.get(o.id);pop.innerHTML=oppPop(o,cached,"loading");pop.dataset.offer=o.id;
+  try{pop.showPopover()}catch{}placePop(btn);track("view_deal",{id:pid,score:o.opp.score});
+  if(cached)return;const m=await oppDetail(pid);if(pop.dataset.offer!==o.id)return;
+  pop.innerHTML=oppPop(o,m?.get(o.id),m?"ok":"error");placePop(btn);
 }
 
 /* PriceHistory: menor preço do dia (entre as lojas, só com estoque confirmado), por período */
@@ -2066,7 +2051,7 @@ function chart(s,msrp,avg,min,max){
 
 /* Página de produto: entender, comparar e decidir */
 let curPid=null;
-const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||(b.dealScore??-1)-(a.dealScore??-1)||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
 let offerSort="price";
 function openProduct(pid,{push=true}={}){
   if(!P[pid])return;const path="/produto/"+(SLUG[pid]||encodeURIComponent(pid));
@@ -2075,6 +2060,9 @@ function openProduct(pid,{push=true}={}){
   const same=view==="produto"&&curPid===pid;view="produto";curPid=pid;render();if(!same)scrollTo({top:0});
   if(!same)track("view_product",{id:pid});
 }
+/* selo da oferta na lista de lojas: nota oficial daquela oferta, ou "Sem nota" explícito */
+function scoreChip(o){const x=oppOf(o);if(!x)return`<span class="chip sc-none" title="${esc(NO_SCORE())}">Sem nota</span>`;const bu=bandUI(x.band);
+  return`<button class="chip scorebtn sc-chip" type="button" data-oscore="${esc(o.id)}" aria-label="Opportunity Score ${x.score} de 100, ${esc(bu[0])}. Ver por que esta nota.">${dial(x.score,"xs",bu[1])}${esc(bu[2])}</button>`}
 function storeOffer(o,p){
   const d=o.discount;const hasD=p.copagConfirmed&&d!=null&&!o.anomalous;
   return`<article class="so${live(o)?"":" dim"}">
@@ -2082,7 +2070,7 @@ function storeOffer(o,p){
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
       <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>
-    <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${o.dealScore!=null&&live(o)?`<button class="chip scorebtn sc-chip" type="button" data-score="${esc(o.id)}" aria-label="Deal Score ${o.dealScore}">${dial(o.dealScore,"xs")}${esc(band(o.dealScore)[2])}</button>`:""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
+    <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
   </article>`;
 }
 function renderProduct(pid){
@@ -2129,7 +2117,7 @@ function renderProduct(pid){
     </dl></section>
     ${scale}
     <section class="card wbuy" id="ondecomprar"><div class="hhead"><h2>${ic("storefront")}Onde comprar <small>${nLive} com estoque</small></h2>
-      <label class="osort"><span class="sr">Ordenar ofertas</span><select id="osort">${[["price","Menor preço"],["score","Deal Score"],["fresh","Atualização"]].map(([v,l])=>`<option value="${v}"${offerSort===v?" selected":""}>${l}</option>`).join("")}</select></label></div>
+      <label class="osort"><span class="sr">Ordenar ofertas</span><select id="osort">${[["price","Menor preço"],["score","Melhor oportunidade"],["fresh","Atualização"]].map(([v,l])=>`<option value="${v}"${offerSort===v?" selected":""}>${l}</option>`).join("")}</select></label></div>
       ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));return`${on.length?`<div class="solist">${on.map((o)=>storeOffer(o,p)).join("")}</div>`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
       <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete.</p></section>
@@ -2161,8 +2149,8 @@ const favs=()=>ACC.data?.favorites||[];
 const alertsL=()=>ACC.data?.alerts||[];
 const isFav=(pid)=>favs().includes(pid);
 const alertOf=(pid)=>alertsL().find((a)=>a.p===pid);
-/* desempate fixo (preço, Deal Score, id): o mesmo no site e na API, não depende da ordem das ofertas na lista */
-const byTot=(a,b)=>a.total-b.total||(b.dealScore??-1)-(a.dealScore??-1)||String(a.id).localeCompare(String(b.id));
+/* desempate fixo (preço, id): o mesmo no site e na API, não depende da ordem das ofertas na lista */
+const byTot=(a,b)=>a.total-b.total||String(a.id).localeCompare(String(b.id));
 const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort(byTot)[0];
 const hits=()=>alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v);
 const authPending=()=>!ACC.ready&&store.get("acc",false);
@@ -2463,7 +2451,7 @@ function searchProducts(q){
   const out=[];
   for(const x of IDX){let sum=0,ok=true;for(const w of qs){const s=Math.max(tokScore(w,x.colT)*1.6,tokScore(w,x.typT));if(!s){ok=false;break}sum+=s}if(ok)out.push({p:x.p,score:sum})}
   const bl={};for(const o of OFF)if(live(o)&&(!bl[o.productId]||o.total<bl[o.productId].total))bl[o.productId]=o;
-  return out.sort((a,b)=>b.score-a.score||(!!bl[b.p.id]-!!bl[a.p.id])||((bl[b.p.id]?.dealScore??-1)-(bl[a.p.id]?.dealScore??-1)));
+  return out.sort((a,b)=>b.score-a.score||(!!bl[b.p.id]-!!bl[a.p.id])||((oppScore(bl[b.p.id])??-1)-(oppScore(bl[a.p.id])??-1)));
 }
 function searchCollections(q){const qs=toks(q);if(!qs.length)return[];return CIDX.map((x)=>({c:x.c,s:qs.reduce((a,w)=>{const s=tokScore(w,x.t);return a<0||!s?-1:a+s},0)})).filter((x)=>x.s>0).sort((a,b)=>b.s-a.s).map((x)=>x.c)}
 function bestOfferFor(pid){return bestLive(pid)||OFF.filter((o)=>o.productId===pid&&!o.anomalous).sort((a,b)=>(a.stock==="PRE_ORDER"?0:1)-(b.stock==="PRE_ORDER"?0:1)||byTot(a,b))[0]||null}
@@ -2517,6 +2505,13 @@ const OPP_LIMIT=24;
 const BAND_UI={excelente:["Excelente oportunidade","var(--ok)","Excelente"],boa:["Boa oportunidade","var(--ok)","Boa"],normal:["Oportunidade normal","var(--warn)","Normal"],baixa:["Oportunidade baixa","var(--bad)","Baixa"]};
 /* nível de confiança: a palavra vem pronta da API (confidence_level); aqui só o texto da etiqueta */
 const CONF_UI={alta:"Alta confiança","média":"Média confiança",baixa:"Baixa confiança"};
+/* 6C.2: nota oficial de cada oferta (Opportunity Engine), anexada pela API em o.opp = {score, band, confidence, level}.
+   Sem avaliação do motor: null, e a tela diz "Sem nota oficial". Nada é estimado e o Deal Score antigo não existe mais aqui. */
+const oppOf=(o)=>o&&o.opp&&Number.isFinite(o.opp.score)?o.opp:null;
+const oppScore=(o)=>oppOf(o)?.score??null;
+const bandUI=(b)=>BAND_UI[b]||["Sem faixa","var(--muted)","Sem faixa"];
+const confPct=(c)=>c!=null&&Number.isFinite(c)?` (${Math.round(c*100)}%)`:"";
+const NO_SCORE=()=>S?.source==="state"?"As notas oficiais estão indisponíveis agora.":"O Opportunity Engine ainda não avaliou esta oferta.";
 /* 6C.1 TCG Rarity System (só apresentação). Escala global pela nota que a API já entrega; limites configuráveis e sem
    nada de franquia. A confiança só regula a intensidade dos efeitos (sem confiança: tratamento padrão). */
 const RARITY=[{min:90,id:"sr",name:"Secret Rare",sym:"✦"},{min:80,id:"ur",name:"Ultra Rare",sym:"★★"},{min:65,id:"r",name:"Rare",sym:"★"},{min:50,id:"u",name:"Uncommon",sym:"◆"},{min:-Infinity,id:"c",name:"Common",sym:"●"}];
@@ -2570,21 +2565,22 @@ function oppFlags(x,opt={}){
   return out.length?`<div class="opp-flags">${out.join("")}</div>`:"";
 }
 const confTxt=(x)=>x.confidence!=null?(CONF_UI[x.confidence_level]||"Confiança")+` (${Math.round(x.confidence*100)}%)`:"Não informada";
-function oppWhy(x){
+function oppWhyBody(x,{sum=true}={}){
   const cr=x.current_reference||{};const rc=x.reference_comparison||{};const sign={"+":"opp-pos","-":"opp-neg","=":"opp-eq"};const bu=BAND_UI[x.opportunity_band];
   const refTxt=cr.kind&&cr.kind!=="NONE"?`${refShort(cr.kind)} · ${money(cr.price)}${cr.kind==="MARKET_CURRENT"&&cr.market_sources?` · ${cr.market_sources} fontes independentes`:""}`:"Sem referência atual";
   const cmpTxt=!rc.available?"Sem comparação":rc.position==="below"?`${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)} (${money(rc.amount_below)} a menos)`:rc.position==="above"?`${pctPts(rc.percentage_below)} acima ${refOfName(rc.reference_kind)}`:refAtName(rc.reference_kind);
   const sec=(t,items)=>items?`<h4>${t}</h4><ul>${items}</ul>`:"";
   const hist=(x.historical_context||[]).map((h)=>`<li>${esc(h.label||"Histórico")} ${money(h.price)}${h.published_at?` (${esc(h.published_at)})`:""}</li>`).join("")
     +(x.community_reference?`<li>Referência comunitária ${money(x.community_reference.price)} (não é preço Copag)</li>`:"");
-  return`<details class="opp-why"><summary>Por que esta nota?</summary><div class="why-in">
-    ${x.opportunity_score!=null?`<div class="why-sum" style="--sc:${bu?.[1]||"var(--muted)"}"><b>${x.opportunity_score}</b><span>${esc(bu?.[0]||"Sem faixa")}<small>Opportunity Score</small></span></div>`:""}
+  return`
+    ${sum&&x.opportunity_score!=null?`<div class="why-sum" style="--sc:${bu?.[1]||"var(--muted)"}"><b>${x.opportunity_score}</b><span>${esc(bu?.[0]||"Sem faixa")}<small>Opportunity Score</small></span></div>`:""}
     <dl class="why-kv"><dt>Preço</dt><dd>${money(x.price)}</dd><dt>Referência atual</dt><dd>${refTxt}</dd><dt>Comparação</dt><dd>${cmpTxt}</dd><dt>Confiança dos dados</dt><dd>${confTxt(x)}</dd></dl>
     ${sec("Contexto",(x.warnings||[]).map((r)=>`<li>${esc(r.text)}</li>`).join(""))}
     ${sec("Razões",(x.reasons||[]).map((r)=>`<li class="${sign[r.impact]||""}">${esc(r.text)}</li>`).join(""))}
     ${hist?`<h4>Histórico</h4><ul class="why-hist">${hist}</ul><p class="why-note">Contexto, não é preço atual.</p>`:""}
-    ${x.updated_at?`<p class="opp-upd">Avaliado ${ago(x.updated_at)} · ${esc(x.engine_version||"")}</p>`:""}</div></details>`;
+    ${x.updated_at?`<p class="opp-upd">Avaliado ${ago(x.updated_at)} · ${esc(x.engine_version||"")}</p>`:""}`;
 }
+function oppWhy(x){return`<details class="opp-why"><summary>Por que esta nota?</summary><div class="why-in">${oppWhyBody(x)}</div></details>`}
 /* opt: best (selo "Melhor oferta"), rail (Home: cartão compacto na sequência, com #posição e sem o detalhe) */
 function oppCard(x,i,opt={}){
   const pr=x.product||{},of=x.offer||{},st=x.store||{};
