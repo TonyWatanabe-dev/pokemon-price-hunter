@@ -111,7 +111,7 @@ await t('"Por que esta nota?" carrega a explicação oficial da própria oferta;
 await t('/oportunidades continua com a mesma explicação de antes (oppWhy = <details> + oppWhyBody)', () => {
   // Código de oppWhy antes da refatoração (2df9e86), guardado em fixture: funciona em clone raso e em export sem .git.
   const MARK = '// ---- trecho original ----\n';
-  const oldSrc = fs.readFileSync(new URL('./fixtures/oppwhy-2df9e86.js', import.meta.url), 'utf8').split(MARK)[1];
+  const oldSrc = fs.readFileSync(new URL('./fixtures/oppwhy-2df9e86.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n').split(MARK)[1];
   assert.ok(oldSrc && oldSrc.includes('function oppWhy('), 'fixture com o oppWhy antigo');
   // Procedência: com o histórico disponível, o fixture tem de ser idêntico aos mesmos recortes de 2df9e86:index.html.
   let prev = null; try { prev = execFileSync('git', ['show', '2df9e86:index.html'], { cwd: new URL('..', import.meta.url), maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] }).toString(); } catch { /* clone raso ou export */ }
