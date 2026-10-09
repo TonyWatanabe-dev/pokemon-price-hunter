@@ -27,7 +27,7 @@ const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
 // Leitura que falhou: mantém a oferta como estoque desconhecido (stale) e guarda a última leitura VÁLIDA em lastValid.
 // Uma oferta já stale continua com o lastValid de antes (nunca vira "válido" o estado inventado da falha).
 export const staleCopy = (o) => ({ ...o, stale: true, stock: 'UNKNOWN',
-  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, seller: o.seller, at: o.source_timestamp } });
+  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, shippingAt: o.shippingAt ?? null, seller: o.seller, at: o.source_timestamp } });
 // Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
 // lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
 export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
@@ -179,8 +179,18 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         registry[product.id] = { ...registry[product.id], ...product, image: (store.copagSource && l.image) || prevImg || l.image || null, firstSeen: registry[product.id]?.firstSeen || T, lastSeen: T };
         let stock = l.stock || 'UNKNOWN';
         if (m.parsed.preorder && stock !== 'OUT_OF_STOCK') stock = 'PRE_ORDER';
-        let ship = l.shipping ?? null;
-        if (ship == null && cep && l._vtex && stock === 'IN_STOCK') { try { ship = await vtexShipping(l, cep); } catch { ship = null; } }
+        const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
+        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null;
+        if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
+          try { ship = await vtexShipping(l, cep); shipAt = T; }
+          catch (e) {
+            // Simulação falhou: guarda o motivo e usa o último frete conhecido desta oferta, com a data em que foi lido.
+            // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
+            shipError = String(e?.message || e).slice(0, 160);
+            const old = lastValidOf(prev[id]);
+            if (old?.shippingKnown && old.shipping != null) { ship = old.shipping; shipAt = old.shippingAt || old.at || old.source_timestamp || null; }
+          }
+        }
         const pp = pickPrice(l.price);
         // Loja oficial Copag = fonte nº 1 do preço sugerido (regra 4). Preço "de" vence o promocional.
         if (store.copagSource && l.price?.base > 0) {
@@ -190,13 +200,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           else old.source_timestamp = T;
         }
         const total = pp.value != null ? round2(pp.value + (ship || 0)) : null;
-        const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         offers[id] = {
           id, productId: m.productId, matchConfidence: m.confidence, storeId: store.id, storeName: store.name, storeKind: store.kind,
           seller: l.seller || null, sellerId: l.sellerId != null ? String(l.sellerId) : null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
-          shipping: ship, shippingKnown: ship != null, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
+          shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
           stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
@@ -227,10 +236,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     delete o.justConfirmed; delete o.dropFrom;
     if (!same) { o.confirmed = false; o.pendingFrom = null; continue; }
     const wasPending = old.confirmed === false;
-    if (o.total < old.total * 0.97) { o.confirmed = false; o.pendingFrom = wasPending ? old.pendingFrom ?? null : old.total; continue; }
-    if (wasPending && Math.abs(o.total - old.total) > o.total * 0.03) { o.confirmed = false; o.pendingFrom = old.pendingFrom ?? null; continue; }
+    // Frete que passou a ser (des)conhecido muda o total, não o preço: não abre nem confirma queda.
+    const sameShip = !!old.shippingKnown === !!o.shippingKnown;
+    if (sameShip && o.total < old.total * 0.97) { o.confirmed = false; o.pendingFrom = wasPending ? old.pendingFrom ?? null : old.total; continue; }
+    if (wasPending && sameShip && Math.abs(o.total - old.total) > o.total * 0.03) { o.confirmed = false; o.pendingFrom = old.pendingFrom ?? null; continue; }
     o.confirmed = true;
-    if (wasPending) { if (old.pendingFrom > o.total) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new'; }
+    if (wasPending) { if (old.pendingFrom > o.total && sameShip) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new'; }
     o.pendingFrom = null;
   }
 
@@ -243,7 +254,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
     if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
-    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'drop', from: p.total });
+    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda.
+    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK' && !!p.shippingKnown === !!o.shippingKnown) events.push({ offerId: o.id, event: 'drop', from: p.total });
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });

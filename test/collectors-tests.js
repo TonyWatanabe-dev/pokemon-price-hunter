@@ -24,7 +24,7 @@ const html = (s, status = 200) => new Response(s, { status, headers: { 'content-
 const http = await import('../src/http.js');
 
 // ---- loja VTEX simulada
-const vt = { down: false, a: { price: 449.9, qty: 5 }, b: { price: 289.9, qty: 0 } };
+const vt = { down: false, sim: 'ok', a: { price: 449.9, qty: 5 }, b: { price: 289.9, qty: 0 }, c: null };
 const vtItem = (name, link, id, x) => ({ productName: name, link, items: [{ itemId: id, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: x.price, ListPrice: x.price, AvailableQuantity: x.qty } }] }] });
 // ---- loja JSON-LD simulada: P1 (box), P2 (página sem produto, depois vira produto), P3 (blister que depois some: 404)
 const brl = (v) => Number(v).toFixed(2).replace('.', ',');
@@ -47,9 +47,11 @@ http.setFetch(async (url) => {
   }
   if (u.host === 'vt.test') {
     if (vt.down) return html('erro', 503);
+    if (u.pathname.includes('simulation')) return vt.sim === '500' ? html('erro', 500) : json({ logisticsInfo: [{ slas: vt.sim === 'vazio' ? [] : [{ price: 1990 }, { price: 2590 }] }] });
     if (u.pathname.startsWith('/api/catalog_system')) return json(u.searchParams.get('ft') === 'pokemon' ? [
       vtItem('Box Display Pokémon ME05 Escuridão Absoluta 36 Boosters Copag', 'https://vt.test/me05-display/p', '1', vt.a),
       vtItem('Box Treinador Avançado Caos Ascendente Copag', 'https://vt.test/me04-etb/p', '2', vt.b),
+      ...(vt.c ? [vtItem('Pokémon Blister Triplo Caos Ascendente Copag', 'https://vt.test/me04-blister3/p', '3', vt.c)] : []),
     ] : []);
   }
   return html('', 404);
@@ -145,5 +147,41 @@ s = await runOnce({ log: quiet, send, now: at(25 * 60 + 15) });
 assert.ok(ldOf(s, 'me04-box36')?.stale && ldOf(s, 'me04-blister4')?.stale, 'site fora do ar: ofertas preservadas como não confirmadas');
 assert.ok(!histRows().some((r) => r.t === at(25 * 60 + 15).toISOString() && r.event === 'removed'), 'site fora do ar: nenhuma remoção');
 ld.down = false;
+
+// ===== Item 3: frete VTEX — simulação que falha não vira queda; último frete conhecido fica, com a data
+const H = 27 * 60; const sent3 = sent.length; const h3 = histRows().length;
+process.env.HUNTER_CEP = '01310-100';
+s = await runOnce({ log: quiet, send, now: at(H) });
+{ const a = offerOf(s, 'me05-box36');
+  assert.deepEqual([a.shipping, a.shippingKnown, a.total, a.shippingAt, a.shippingError], [19.9, true, 469.8, at(H).toISOString(), null], 'frete simulado com a data da leitura'); }
+vt.sim = '500'; vt.c = { price: 59.9, qty: 2 }; // simulação fora do ar; C aparece sem nenhum frete conhecido antes
+s = await runOnce({ log: quiet, send, now: at(H + 15) });
+{ const a = offerOf(s, 'me05-box36'); const c = offerOf(s, 'me04-blister3');
+  assert.deepEqual([a.shipping, a.shippingKnown, a.total, a.shippingAt], [19.9, true, 469.8, at(H).toISOString()], 'simulação falhou: mantém o último frete conhecido com a data dele');
+  assert.match(a.shippingError, /HTTP 500/, 'motivo da falha registrado');
+  assert.ok(a.confirmed !== false, 'total igual: segue confirmado (sem queda pendente)');
+  assert.deepEqual([c.shipping, c.shippingKnown, c.total, c.shippingAt], [null, false, 59.9, null], 'sem frete conhecido: fica desconhecido (nunca inventa)');
+  assert.match(c.shippingError, /HTTP 500/); }
+vt.sim = 'vazio';
+s = await runOnce({ log: quiet, send, now: at(H + 30) });
+{ const a = offerOf(s, 'me05-box36');
+  assert.deepEqual([a.shipping, a.total, a.shippingAt], [19.9, 469.8, at(H).toISOString()]);
+  assert.match(a.shippingError, /sem opção de entrega/, 'simulação sem opção de entrega: motivo registrado'); }
+vt.sim = 'ok';
+s = await runOnce({ log: quiet, send, now: at(H + 45) });
+{ const a = offerOf(s, 'me05-box36'); const c = offerOf(s, 'me04-blister3');
+  assert.deepEqual([a.shipping, a.shippingAt, a.shippingError], [19.9, at(H + 45).toISOString(), null], 'simulação de volta: data nova, sem erro');
+  assert.deepEqual([c.shipping, c.shippingKnown, c.total], [19.9, true, 79.8], 'frete passou a ser conhecido: total sobe'); }
+assert.ok(!sent.slice(sent3).some((m) => /QUEDA/.test(m.title)), 'frete: nenhum alerta de queda');
+assert.ok(!s.activity.some((e) => e.type === 'drop' && Date.parse(e.t) >= at(H).getTime()), 'frete: nenhuma queda na atividade');
+assert.ok(!histRows().slice(h3).some((r) => r.offerId === offerOf(s, 'me05-box36').id && r.total !== 469.8), 'histórico de A sem total sem frete');
+// sem CEP configurado o frete deixa de ser simulado (desconhecido): o total cai, o preço não — não é queda
+delete process.env.HUNTER_CEP; const sent4 = sent.length;
+for (const m of [60, 75, 90]) s = await runOnce({ log: quiet, send, now: at(H + m) });
+{ const a = offerOf(s, 'me05-box36');
+  assert.deepEqual([a.shipping, a.shippingKnown, a.total], [null, false, 449.9], 'sem CEP: frete desconhecido, total sem frete');
+  assert.ok(a.confirmed !== false, 'sem CEP: não fica pendente de queda');
+  assert.ok(!sent.slice(sent4).some((m) => /QUEDA/.test(m.title)), 'frete que sumiu: nenhum alerta de queda');
+  assert.ok(!s.activity.some((e) => e.type === 'drop' && e.offerId === a.id), 'frete que sumiu: nenhuma queda na atividade'); }
 
 console.log('OK — coletores (lote 7)');

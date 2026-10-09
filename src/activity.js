@@ -45,7 +45,8 @@ export function recordActivity({ T, offers, prev, products, newLowest, quiet = n
     else if (!raw) { if (!firstEver && p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
     else if (!old) { /* stale antiga sem leitura válida guardada: sem base, sem evento */ }
     else if (old.stock === 'OUT_OF_STOCK') fresh.push({ ...base, type: 'restock' });
-    else if (old.total > 0 && o.total < old.total && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
+    // Total que caiu só porque o frete deixou de ser conhecido não é queda (o preço não mudou).
+    else if (old.total > 0 && o.total < old.total && !!old.shippingKnown === !!o.shippingKnown && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
     // Recorde que se repete a cada rodada (mesmo produto, mesmo valor ou maior) não é novidade.
     if (newLowest.has(o.id) && !log.some((e) => e.type === 'lowest' && e.productId === o.productId && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'lowest', from: newLowest.get(o.id) });
   }
