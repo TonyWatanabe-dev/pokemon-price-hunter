@@ -11,6 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 fs.copyFileSync(path.join(root, 'config/catalog.json'), path.join(tmp, 'config/catalog.json'));
 fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: [
   { id: 'vt', name: 'Loja VTEX', url: 'https://vt.test', platform: 'vtex', kind: 'specialist', evidence: {} },
+  { id: 'ld', name: 'Loja JSON-LD', url: 'https://ld.test', platform: 'jsonld', kind: 'specialist', evidence: {} },
 ] }));
 // Qualquer produto que volta ao estoque alerta; produto vigiado alerta queda.
 fs.writeFileSync(path.join(tmp, 'config/watchlist.json'), JSON.stringify({ settings: { cep: null }, rules: [
@@ -25,9 +26,25 @@ const http = await import('../src/http.js');
 // ---- loja VTEX simulada
 const vt = { down: false, a: { price: 449.9, qty: 5 }, b: { price: 289.9, qty: 0 } };
 const vtItem = (name, link, id, x) => ({ productName: name, link, items: [{ itemId: id, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: x.price, ListPrice: x.price, AvailableQuantity: x.qty } }] }] });
+// ---- loja JSON-LD simulada: P1 (box), P2 (página sem produto, depois vira produto), P3 (blister que depois some: 404)
+const brl = (v) => Number(v).toFixed(2).replace('.', ',');
+const page = (name, price) => html(`<html><head><script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name, offers: { '@type': 'Offer', price, priceCurrency: 'BRL', availability: 'https://schema.org/InStock' } })}</script></head><body><h1>${name}</h1><p>R$ ${brl(price)}</p>${'x'.repeat(40000)}</body></html>`);
+const P1 = '/pokemon-booster-box-caos-ascendente-36'; const P2 = '/pokemon-box-colecao-novidade'; const P3 = '/pokemon-blister-triplo-escuridao';
+const ld = { down: false, p1: 'ok', p2: 'irrelevante', p3: 'ok', hits: {} };
 http.setFetch(async (url) => {
   const u = new URL(url);
   if (u.pathname === '/robots.txt') return html('', 404);
+  if (u.host === 'ld.test') {
+    ld.hits[u.pathname] = (ld.hits[u.pathname] || 0) + 1;
+    if (ld.down) return html('erro', 503);
+    if (u.pathname === '/sitemap.xml') return html('<urlset>' + [P1, P2, P3].map((p) => `<url><loc>https://ld.test${p}</loc></url>`).join('') + '</urlset>');
+    if (u.pathname === P1) {
+      if (ld.p1 === 'timeout') throw Object.assign(new Error('aborted'), { name: 'AbortError' });
+      return ld.p1 === '503' ? html('erro', 503) : page('Pokémon Booster Box Caos Ascendente 36 boosters Copag', '359.90');
+    }
+    if (u.pathname === P2) return ld.p2 === 'irrelevante' ? html('<title>Em breve</title><p>Página em construção</p>') : page('Pokémon Blister Quádruplo Caos Ascendente Copag', '54.90');
+    if (u.pathname === P3) return ld.p3 === '404' ? html('não encontrado', 404) : page('Pokémon Blister Triplo Escuridão Absoluta Copag', '39.90');
+  }
   if (u.host === 'vt.test') {
     if (vt.down) return html('erro', 503);
     if (u.pathname.startsWith('/api/catalog_system')) return json(u.searchParams.get('ft') === 'pokemon' ? [
@@ -87,5 +104,46 @@ vt.down = false; s = await runOnce({ log: quiet, send, now: at(75) });
 assert.equal(sent.length, sent1, 'sucesso → falha → sucesso: nenhum alerta');
 assert.equal(histRows().length, h1, 'sucesso → falha → sucesso: histórico sem linhas novas');
 assert.ok(offerOf(s, 'me05-box36').confirmed !== false, 'preço igual segue confirmado');
+
+// ===== Item 1: JSON-LD — falha de leitura da página não remove a oferta; 404 remove; irrelevante é relida depois de 24 h
+const ldOf = (s, pid) => s.offers.find((o) => o.storeId === 'ld' && o.productId === pid);
+const L1 = ldOf(s, 'me04-box36'); const L3 = ldOf(s, 'me05-blister3');
+assert.ok(L1 && L1.stock === 'IN_STOCK' && L3, 'JSON-LD: produtos lidos');
+assert.ok(!s.offers.some((o) => o.storeId === 'ld' && /novidade/.test(o.url)), 'página sem produto não vira oferta');
+assert.equal(ld.hits[P2], 1, 'página irrelevante lida uma vez');
+const sentLd = sent.length;
+ld.p1 = 'timeout'; ld.p3 = '404';
+s = await runOnce({ log: quiet, send, now: at(90) });
+{ assert.equal(s.sources.find((x) => x.id === 'ld').status, 'ACTIVE', 'uma página falhar não derruba a loja');
+  const o = ldOf(s, 'me04-box36');
+  assert.ok(o && o.stale && o.stock === 'UNKNOWN', 'timeout: oferta preservada como estoque não confirmado (não removida, não esgotada)');
+  assert.equal(o.lastValid.stock, 'IN_STOCK');
+  assert.ok(!ldOf(s, 'me05-blister3'), '404: produto não existe mais, oferta sai');
+  const rows = histRows().filter((r) => r.t === at(90).toISOString());
+  assert.ok(rows.some((r) => r.offerId === L3.id && r.event === 'removed'), '404 registra remoção');
+  assert.ok(!rows.some((r) => r.offerId === L1.id), 'falha passageira não registra remoção nem esgotado');
+  assert.ok(readData('url-cache.json').ld.relevant.includes('https://ld.test' + P1), 'página que falhou continua relevante (relida na próxima rodada)'); }
+ld.p1 = '503';
+s = await runOnce({ log: quiet, send, now: at(105) });
+assert.ok(ldOf(s, 'me04-box36')?.stale, '5xx: oferta continua preservada');
+ld.p1 = 'ok';
+s = await runOnce({ log: quiet, send, now: at(120) });
+{ const o = ldOf(s, 'me04-box36');
+  assert.ok(o && !o.stale && o.stock === 'IN_STOCK' && o.total === 359.9, 'recuperação: oferta volta ao vivo');
+  assert.equal(sent.length, sentLd, 'falha → recuperação: nenhum alerta (sem reposição nem queda falsa)');
+  assert.ok(!histRows().some((r) => r.offerId === L1.id && r.t !== at(0).toISOString()), 'histórico da oferta sem linhas da falha nem da volta');
+  assert.ok(!s.activity.some((e) => e.offerId === L1.id), 'atividade sem evento falso'); }
+assert.equal(ld.hits[P2], 1, 'página irrelevante não é relida antes de 24 h');
+// 25 h depois: a página irrelevante volta a ser lida (e agora é produto)
+ld.p2 = 'produto';
+s = await runOnce({ log: quiet, send, now: at(25 * 60) });
+assert.equal(ld.hits[P2], 2, 'página irrelevante relida depois de 24 h');
+assert.ok(ldOf(s, 'me04-blister4'), 'página que virou produto entra');
+// todas as páginas fora do ar (5xx): nenhuma oferta removida, todas como estoque não confirmado
+ld.down = true;
+s = await runOnce({ log: quiet, send, now: at(25 * 60 + 15) });
+assert.ok(ldOf(s, 'me04-box36')?.stale && ldOf(s, 'me04-blister4')?.stale, 'site fora do ar: ofertas preservadas como não confirmadas');
+assert.ok(!histRows().some((r) => r.t === at(25 * 60 + 15).toISOString() && r.event === 'removed'), 'site fora do ar: nenhuma remoção');
+ld.down = false;
 
 console.log('OK — coletores (lote 7)');

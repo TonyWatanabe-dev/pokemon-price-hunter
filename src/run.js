@@ -137,18 +137,35 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });
       src.platform = platform;
       // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas.
-      let cache = null;
+      let cache = null; let planned = [];
       if (platform === 'jsonld') {
         cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
+        const at = (cache.visitedAt ||= {}); // url -> quando foi lida com sucesso pela última vez
         if (!cache.at || Date.now() - Date.parse(cache.at) > 864e5) {
           cache.candidates = await jsonldUrls(base, 3000); cache.at = T; cache.visited = cache.visited.filter((u) => cache.candidates.includes(u));
+          for (const u of Object.keys(at)) if (!cache.candidates.includes(u)) delete at[u];
         }
         const fresh = cache.candidates.filter((u) => !cache.visited.includes(u)).slice(0, 25);
+        // Página já lida e julgada irrelevante volta à fila depois de HUNTER_JSONLD_RETRY_H horas (padrão 24): pode ter
+        // virado produto. Divide as 25 vagas da rodada com as novas (as mais antigas primeiro).
+        const RETRY = Number(process.env.HUNTER_JSONLD_RETRY_H || 24) * 3600e3;
+        const rel = new Set(cache.relevant);
+        const retry = cache.candidates.filter((u) => cache.visited.includes(u) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY))
+          .sort((a, b) => (at[a] || '').localeCompare(at[b] || '')).slice(0, Math.max(0, 25 - fresh.length));
         cache.visited.push(...fresh);
-        store = { ...store, plannedUrls: [...new Set([...cache.relevant, ...fresh, ...(store.productUrls || [])])] };
+        planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
+        store = { ...store, plannedUrls: planned };
       }
       const listings = await adapters[platform].search(store, catalog);
-      if (cache) cache.relevant = [...new Set(listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url))];
+      const failedUrls = new Set(listings.failed || []);
+      if (cache) {
+        // Página relevante que não abriu continua relevante; página nova que não abriu volta para a fila de novas.
+        cache.relevant = [...new Set([...listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url), ...cache.relevant.filter((u) => failedUrls.has(u))])];
+        cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || cache.relevant.includes(u));
+        for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
+      }
+      // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
+      if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o);
       let matched = 0;
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
