@@ -447,6 +447,7 @@ a.navbtn{text-decoration:none}
 .opp-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}.pod-ship{margin:4px 0 0;font-size:12px;color:var(--muted)}
 .opp-age{display:flex;align-items:center;gap:5px;margin:6px 0 0;font-size:12px;color:var(--muted)}.opp-age .icon{width:13px;height:13px}.opp-age.old{color:var(--warn);font-weight:600}
 .pod-age{margin:2px 0 0;font-size:11.5px}
+.pp-opp:empty{display:none}.ppopp{margin-bottom:16px}.ppopp .eyebrow{display:flex;align-items:center;gap:6px}.ppopp .meter{margin-top:10px}.ppopp .btn{margin-top:12px}
 [data-old] .photo,[data-old] .opp-price,[data-old] .pod-price,[data-old] .meter{opacity:.55;filter:grayscale(.6)}
 .opp-stores{position:relative;z-index:4;display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}.opp-stores .icon{width:14px;height:14px}
 .so .btn{padding:10px 16px;font-size:14px;flex:none}
@@ -2130,6 +2131,7 @@ function renderProduct(pid){
     <div class="ptools">${favBtn(pid)}</div></div>
   </header>
   <aside class="pp-side">
+    <div id="pp-opp" class="pp-opp"></div>
     ${best?`<section class="card buy">
       <p class="eyebrow">Melhor preço com estoque</p>
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
@@ -2161,7 +2163,7 @@ function renderProduct(pid){
   </div>
 </div>`;
   if(pid in HIST)drawHist(pid);else loadHist(pid);
-  hashScroll();
+  hashScroll();loadPpOpp(pid,best?.id||null);
 }
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
@@ -2453,8 +2455,8 @@ function render(){
 }
 /* Analytics: eventos prontos (o Vercel só os mostra no plano Pro; no gratuito não fazem nada) */
 /* UX-E: clique em "Ver oferta": oferta do estado (OFF) ou do Opportunity Engine (dados no próprio botão: data-pid/sid/price) */
-function storeClick(el){const d=el.dataset||{};const o=OFF.find((x)=>x.id===d.store);if(o)return{store:o.storeId,id:o.productId,price:o.total};
-  return d.pid?{store:d.sid||"",id:d.pid,price:Number(d.price)||null,src:"opp"}:null}
+function storeClick(el){const d=el.dataset||{};if(d.pid)return{store:d.sid||"",id:d.pid,price:Number(d.price)||null,src:"opp"};   /* o valor que a pessoa viu no botão */
+  const o=OFF.find((x)=>x.id===d.store);return o?{store:o.storeId,id:o.productId,price:o.total}:null}
 function track(name,data){try{window.va&&window.va("event",{name,data:data||{}})}catch{}}
 
 /* URLs amigáveis: /produto/escuridao-absoluta-blister-quadruplo (o id antigo continua valendo) */
@@ -2737,6 +2739,29 @@ const retryOpp=()=>{APIC.delete(OPP.key);OPP.key="";return renderOpp()};
 function oppTick(now=Date.now()){
   markOld(document,now);
   if(OPP_PAUSE&&now-OPP_PAUSE.checked>=5*6e4){OPP_PAUSE.checked=now;if(view==="deals"&&HOMEOPP.status==="stale")retryHomeOpp();else if(view==="oportunidades"&&OPP.status==="stale")retryOpp()}
+}
+/* UX-D: página do produto destaca a mesma oferta, valor, % e referência do cartão (GET /api/v1/oportunidades?produto=…,
+   a melhor oferta do produto no Opportunity Engine), com os mesmos componentes. Pausado, sem nota ou com erro: nada aparece
+   (nenhuma nota antiga). O "Melhor preço com estoque" continua logo abaixo; quando é outra oferta, o bloco diz isso. */
+function ppOppHTML(x,bestId){
+  const of=x.offer||{},st=x.store||{};const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)","—"];
+  const same=!bestId||bestId===of.id;
+  return`<section class="card buy ppopp"${x.updated_at?` data-at="${esc(x.updated_at)}"`:""}${ageLine(x.updated_at)?.old?" data-old":""}>
+    <p class="eyebrow">${ic("flame-f")}Oportunidade do Hunter</p>
+    <div class="pblock"><span class="big" data-price="${esc(of.id||"")}">${money(oppTotal(x))}</span>${pixTag({priceKind:of.price_kind})}</div>
+    <p class="so-ship">${oppShip(x)} · ${esc(st.name||"")}</p>
+    ${oppCmp(x.reference_comparison)}
+    ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
+    ${ageHTML(x)}
+    <a class="btn wide" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")} ${ic("arrow-square-out")}</a>
+    ${same?"":`<p class="hnote">O menor preço com estoque é outra oferta, logo abaixo. A oportunidade considera preço, referência e confiança, não só o menor valor.</p>`}
+  </section>`;
+}
+const ppOppKey=(pid)=>"oportunidades?produto="+encodeURIComponent(pid)+"&limite=1";
+async function loadPpOpp(pid,bestId){
+  const d=await apiGet(ppOppKey(pid));const slot=$("#pp-opp");if(!slot||view!=="produto"||curPid!==pid)return;
+  const x=Array.isArray(d?.data)&&!d.meta?.status?d.data.find((y)=>y.product?.id===pid):null;
+  slot.innerHTML=x?ppOppHTML(x,bestId):"";
 }
 /* UX-C: ao voltar para a aba, notas com mais de 30 min são buscadas de novo (a lista fica na tela enquanto isso) e os preços
    são recarregados em silêncio quando já não estão "atuais" */

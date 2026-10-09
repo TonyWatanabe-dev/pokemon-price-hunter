@@ -33,7 +33,7 @@ const STALE = { data: [], meta: { page: 1, limit: 24, total: 0, pages: 1, status
   freshness: { status: 'desatualizado', source: 'db', dataAt: '2026-10-09T14:05:00.000Z', ageMin: 130 } } };
 
 function sandbox(api, extra = {}) {
-  const calls = []; const slots = { '#view': { innerHTML: '' }, '#home-pod': { innerHTML: '' }, '#home-rail': { innerHTML: '' }, '#home-hl': { innerHTML: '' } };
+  const calls = []; const slots = { '#pp-opp': { innerHTML: '' }, '#view': { innerHTML: '' }, '#home-pod': { innerHTML: '' }, '#home-rail': { innerHTML: '' }, '#home-hl': { innerHTML: '' } };
   const ctx = {
     console, URLSearchParams, Math, String, Number, Array, JSON, Object, Promise, Date, setTimeout,
     store: { get: (k, d) => d, set() {} }, S: { collections: [], reputation: { lojas: {} } }, SLUG: { 'me04-etb': 'caos-ascendente-etb' }, P: {}, OFF: [], APIC: new Map(), APITTL: 60e3, API_LAST: new Map(),
@@ -46,7 +46,7 @@ function sandbox(api, extra = {}) {
     apiGet: (path) => { calls.push(path); return Promise.resolve(typeof api === 'function' ? api(path) : api); }, ...extra,
   };
   vm.createContext(ctx);
-  vm.runInContext(oppCode + hlCode + homeCode + `\n;globalThis.__t={oppCard,podCardOpp,renderOpp,loadHomeOpp,podiumOppHTML,paintHomeOpp,oppQuery,prefetchOpp,oppTick,revive,markOld,ageLine,oppTotal,oppShip,cmpLink,
+  vm.runInContext(oppCode + hlCode + homeCode + `\n;globalThis.__t={ppOppHTML,loadPpOpp,ppOppKey,oppCard,podCardOpp,renderOpp,loadHomeOpp,podiumOppHTML,paintHomeOpp,oppQuery,prefetchOpp,oppTick,revive,markOld,ageLine,oppTotal,oppShip,cmpLink,
     get OPP(){return OPP},get OF(){return OF},get HOMEOPP(){return HOMEOPP},get OPP_PAUSE(){return OPP_PAUSE}};`, ctx);
   return { t: ctx.__t, calls, slots, ctx };
 }
@@ -180,4 +180,28 @@ await t('F. troca de filtro: a lista atual fica na tela (esmaecida) até a nova 
   const s2 = sandbox(() => pending); s2.t.renderOpp(); assert.match(s2.slots['#view'].innerHTML, /class="skel"/, 'sem lista anterior: esqueleto');
 });
 
-console.log(`✓ UX de confiança (A, B, C, E, pausa, filtros): ${n} grupos de testes passaram`);
+// ================================================================== D — coerência entre cartão e página do produto
+await t('D1. página do produto destaca a mesma loja, valor, % e referência do cartão', () => {
+  const s = sandbox(page([]));
+  for (const x of [item({ price: 1250, total: 1300, shipping: 'known' }), item(), item({ shipping: 'free', total: 322.9 })]) {
+    const card = s.t.oppCard(x, 0); const pp = s.t.ppOppHTML(x, 'of-1');
+    const price = (h) => h.match(/R\$ [\d.,]+(?= no Pix)/)[0]; const cmp = (h) => text(h.match(/<p class="opp-cmp"[\s\S]*?<p class="opp-ref">[^<]*<\/p>/)[0]);
+    assert.equal(price(text(pp)), price(text(card)), `valor (${x.shipping})`); assert.equal(cmp(pp), cmp(card), 'mesmo % e mesmo texto de referência');
+    assert.match(cmp(pp), /−19,3% abaixo do preço sugerido Copag · R\$ 399,99/);
+    assert.match(text(pp), new RegExp(s.t.oppShip(x).replace(/[$.+%]/g, '\\$&') + ' · Loja X')); assert.match(pp, /href="https:\/\/loja\.example\/etb"/); assert.match(pp, /data-pid="me04-etb"/);
+  }
+  assert.doesNotMatch(s.t.ppOppHTML(item(), 'of-1'), /outra oferta/); assert.match(text(s.t.ppOppHTML(item(), 'of-9')), /O menor preço com estoque é outra oferta/);
+  assert.match(s.t.ppOppHTML(item({ updated_at: minAgo(120) }), 'of-1'), /data-old[\s\S]*Conferir na loja<\/span> na Loja X/);
+  assert.match(html, /<aside class="pp-side">\n    <div id="pp-opp" class="pp-opp"><\/div>/); assert.match(html, /hashScroll\(\);loadPpOpp\(pid,best\?\.id\|\|null\);/);
+});
+await t('D2. a página do produto lê a mesma API do cartão; pausada ou sem nota, não mostra nada', async () => {
+  const s = sandbox(page([item()])); s.ctx.view = 'produto'; s.ctx.curPid = 'me04-etb';
+  await s.t.loadPpOpp('me04-etb', 'of-1'); assert.deepEqual(s.calls, ['oportunidades?produto=me04-etb&limite=1']); assert.match(s.slots['#pp-opp'].innerHTML, /Oportunidade do Hunter/);
+  for (const r of [STALE, page([]), null, page([item({ product: { ...item().product, id: 'outro' } })])]) {
+    const s2 = sandbox(r); s2.ctx.view = 'produto'; s2.ctx.curPid = 'me04-etb'; s2.slots['#pp-opp'].innerHTML = 'antigo';
+    await s2.t.loadPpOpp('me04-etb', 'of-1'); assert.equal(s2.slots['#pp-opp'].innerHTML, '', 'nada de nota antiga ou de outro produto');
+  }
+  const s3 = sandbox(page([item()])); s3.ctx.view = 'produto'; s3.ctx.curPid = 'outro'; await s3.t.loadPpOpp('me04-etb', 'of-1'); assert.equal(s3.slots['#pp-opp'].innerHTML, '', 'usuário já mudou de produto');
+});
+
+console.log(`✓ UX de confiança (A, B, C, D, E, pausa, filtros): ${n} grupos de testes passaram`);
