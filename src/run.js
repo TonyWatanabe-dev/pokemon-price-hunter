@@ -167,6 +167,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
       if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o);
       let matched = 0;
+      let shipHalt = null; // depois de um 429 na simulação de frete, não insiste na mesma loja nesta rodada
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
@@ -182,8 +183,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
-          try { ship = await vtexShipping(l, cep); shipAt = T; }
+          try { if (shipHalt) throw new Error(shipHalt); ship = await vtexShipping(l, cep); shipAt = T; }
           catch (e) {
+            if (!shipHalt && e?.blocked && e.status === 429) shipHalt = `simulação suspensa nesta rodada após ${String(e.message).slice(0, 100)}`;
             // Simulação falhou: guarda o motivo e usa o último frete conhecido desta oferta, com a data em que foi lido.
             // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
             shipError = String(e?.message || e).slice(0, 160);
