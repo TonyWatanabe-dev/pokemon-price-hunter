@@ -633,63 +633,105 @@ a.navbtn{text-decoration:none}
 @keyframes lineUp{from{transform:translateY(108%)}}
 @keyframes softIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}}
 
-/* Pódio */
-.podium{position:relative;display:grid;grid-template-columns:1fr 1.18fr 1fr;grid-template-areas:"p2 p1 p3";align-items:end;gap:clamp(14px,2.2vw,30px);margin:56px auto 0;max-width:1180px;perspective:1600px}
+/* Pódio (6C.1): três destaques editoriais FOIL → ULTRA RARA → RARA em cartões claros de carta. Sem medalhas e sem
+   animação contínua. O rótulo é só apresentação da posição; não muda nota, faixa nem a escala global. */
+:root{--tcg-frame:#D6CCB6;--tcg-silver:linear-gradient(135deg,#EEF1F6,#AAB3C3 30%,#FFFFFF 52%,#9AA4B6 74%,#E3E7EE);
+  --tcg-holo:linear-gradient(120deg,#d9c8ff,#bfeaff 24%,#cdf7df 44%,#fff1c4 64%,#ffd0e6 84%,#d9c8ff);
+  --tcg-cosmos:radial-gradient(circle at 18% 22%,rgb(255 255 255 / .95) 0 1.4px,transparent 2.2px) 0 0/34px 34px,radial-gradient(circle at 66% 62%,rgb(255 255 255 / .6) 0 3.5px,transparent 4.5px) 0 0/58px 58px,radial-gradient(circle at 42% 78%,transparent 0 8px,rgb(255 255 255 / .5) 8.5px 9.5px,transparent 10px) 0 0/86px 86px,linear-gradient(125deg,#ffb3dd,#ffe08f 22%,#aef5cf 44%,#93ddff 64%,#c6b3ff 84%,#ffb3dd)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--tcg-frame:#5A5242}}
+:root[data-theme="dark"]{--tcg-frame:#5A5242}
+.podium{position:relative;display:grid;grid-template-columns:1fr 1.18fr 1fr;grid-template-areas:"p2 p1 p3";align-items:end;gap:clamp(14px,2.2vw,30px);margin:40px auto 0;max-width:1180px;perspective:1600px}
 .podium::before{content:"";position:absolute;left:50%;top:-140px;width:min(560px,70%);height:calc(100% + 140px);transform:translateX(-50%);z-index:0;pointer-events:none;
-  background:conic-gradient(from 180deg at 50% 0%,transparent 160deg,rgb(255 225 130 / .22) 172deg,rgb(255 240 190 / .34) 180deg,rgb(255 225 130 / .22) 188deg,transparent 200deg);filter:blur(6px);-webkit-mask:linear-gradient(180deg,#000 30%,transparent);mask:linear-gradient(180deg,#000 30%,transparent)}
-.podium::after{content:"";position:absolute;left:6%;right:6%;bottom:-26px;height:60px;z-index:0;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgb(255 207 51 / .28),transparent 70%);filter:blur(8px);pointer-events:none}
-.pod{position:relative;z-index:1;grid-area:p1;display:flex;flex-direction:column;min-width:0;border-radius:24px;color:#F4F6FF;
-  background:linear-gradient(180deg,#151B3A,#0D1128) padding-box,var(--rim) border-box;border:2px solid transparent;
-  box-shadow:0 30px 80px -20px rgb(0 0 0 / .7),0 0 0 1px rgb(255 255 255 / .04) inset;
+  background:conic-gradient(from 180deg at 50% 0%,transparent 160deg,rgb(255 255 255 / .08) 172deg,rgb(255 255 255 / .13) 180deg,rgb(255 255 255 / .08) 188deg,transparent 200deg);filter:blur(6px);-webkit-mask:linear-gradient(180deg,#000 30%,transparent);mask:linear-gradient(180deg,#000 30%,transparent)}
+.pod{--int:1;position:relative;z-index:1;grid-area:p1;display:flex;flex-direction:column;min-width:0;border-radius:20px;color:var(--ink);background:var(--surface);
+  box-shadow:0 24px 48px -18px rgb(0 0 0 / .55),0 0 0 1px rgb(255 255 255 / .06);
   transform:perspective(1200px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0));transition:transform 500ms cubic-bezier(.16,1,.3,1);will-change:transform}
-.pod[data-r="1"]{--rim:conic-gradient(from var(--fa),#FFE27A,#FFB800,#FFF4C2,#FF9F1C,#FFE27A);--medal:#FFCF33;--lift:-22px;animation:foilSpin 5s linear infinite}
-.pod[data-r="2"]{grid-area:p2;--rim:conic-gradient(from var(--fa),#E8EEF8,#9AA8BF,#FFFFFF,#7E8CA6,#E8EEF8);--medal:#D5DDEA;animation:foilSpin 7s linear infinite}
-.pod[data-r="3"]{grid-area:p3;--rim:conic-gradient(from var(--fa),#F6B98A,#B8622F,#FFD9BC,#9A4A1E,#F6B98A);--medal:#E89A62;animation:foilSpin 7s linear infinite reverse}
-.stage.paused .pod{animation-play-state:paused}
-.pod .deal-hit{z-index:3;border-radius:22px}.pod .deal-hit:focus-visible{outline:0}
+.pod[data-r="1"]{--lift:-14px}
+.pod[data-r="2"]{grid-area:p2}
+.pod[data-r="3"]{grid-area:p3}
+.pod .deal-hit{z-index:3;border-radius:20px}.pod .deal-hit:focus-visible{outline:0}
 .pod:has(.deal-hit:focus-visible){outline:3px solid var(--sticker);outline-offset:5px}
 .stage :focus-visible{outline-color:var(--sticker)}
-.pod-rank{position:absolute;top:-16px;left:50%;transform:translateX(-50%);z-index:4;display:inline-flex;align-items:center;gap:7px;padding:6px 14px 6px 8px;border-radius:999px;background:#0B0F24;border:1.5px solid var(--medal);color:var(--medal);font-size:12px;font-weight:800;letter-spacing:.08em;white-space:nowrap;box-shadow:0 6px 20px rgb(0 0 0 / .4)}
-.pod-rank b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--medal);color:#0B0F24;font-size:12px;letter-spacing:0}
-.pod .cat-media{border-radius:20px 20px 0 0;aspect-ratio:5/4}
-.pod[data-r="1"] .cat-media{aspect-ratio:1/1}
-.pod-sheen{position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;mix-blend-mode:color-dodge;opacity:.55;
-  background:linear-gradient(115deg,transparent 30%,rgb(255 255 255 / .0) 38%,rgb(255 240 200 / .55) 46%,rgb(160 220 255 / .4) 52%,transparent 60%) 0 0/250% 100% no-repeat;background-position:var(--sx,120%) 0}
-@media (prefers-reduced-motion:no-preference){.pod .pod-sheen{animation:sheen 4.8s cubic-bezier(.65,0,.35,1) infinite}.pod[data-r="2"] .pod-sheen{animation-delay:1.2s}.pod[data-r="3"] .pod-sheen{animation-delay:2.4s}}
-@keyframes sheen{0%,55%{background-position:120% 0}100%{background-position:-60% 0}}
-.pod-body{position:relative;z-index:2;padding:18px 20px 20px;display:flex;flex-direction:column;gap:2px;flex:1}
-.pod-col{margin:0;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgb(228 233 255 / .62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pod-name{margin:2px 0 10px;font-size:clamp(17px,1.6vw,21px);font-weight:700;letter-spacing:-.015em;line-height:1.2;color:#fff}
-.pod-off{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.pod-off b{font-size:clamp(34px,3.6vw,52px);font-weight:800;letter-spacing:-.04em;line-height:.95;color:var(--medal);font-variant-numeric:tabular-nums}
-.pod-off span{font-size:13px;color:rgb(228 233 255 / .7)}
-.pod-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin-top:8px}
-.pod-price strong{font-size:clamp(22px,2vw,28px);font-weight:800;letter-spacing:-.02em;color:#fff;font-variant-numeric:tabular-nums}
-.pod-price s{color:rgb(228 233 255 / .55);font-size:14px}
-.pod-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:14px;border-top:1px solid rgb(255 255 255 / .08)}
-.pod-store{min-width:0;font-size:13px;color:rgb(228 233 255 / .75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pod-cta{position:relative;z-index:4;flex:none;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;background:var(--medal);color:#0B0F24;font-weight:800;font-size:13.5px;text-decoration:none;transition:transform 140ms var(--ease-out),filter 160ms ease}
+/* moldura fina de carta: um anel por cima do cartão, sem engrossar a borda */
+.pod::before{content:"";position:absolute;inset:-1px;border-radius:21px;padding:1.5px;pointer-events:none;z-index:6;background:var(--tcg-frame);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.pod[data-hl="foil"]::before{inset:-2.5px;border-radius:22.5px;padding:2.5px;background:var(--tcg-holo);filter:saturate(1.6);opacity:calc(.5 + .5 * var(--int))}
+.pod[data-hl="ultra"]::before{inset:-2px;border-radius:22px;padding:2px;background:var(--tcg-silver);opacity:calc(.55 + .45 * var(--int))}
+/* rótulo editorial: aba no topo, sem numeral nem medalha */
+.pod-rank{position:absolute;top:-13px;left:18px;z-index:7;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:8px;background:var(--surface);color:var(--ink);
+  border:1px solid var(--line-soft);font-size:11px;font-weight:700;line-height:1;letter-spacing:.2em;white-space:nowrap;box-shadow:0 6px 16px rgb(0 0 0 / .25)}
+.pod-rank i{width:10px;height:10px;border-radius:2px;transform:rotate(45deg);flex:none;background:var(--tcg-frame)}
+.pod[data-hl="foil"] .pod-rank{border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--tcg-holo) border-box}
+.pod[data-hl="foil"] .pod-rank i{background:var(--tcg-holo)}
+.pod[data-hl="ultra"] .pod-rank i{background:var(--tcg-silver);box-shadow:0 0 0 1px #9AA4B6}
+/* janela de arte: foto real em fundo neutro; o holo fica só sobre ela, em soft-light, sem esconder o produto */
+.pod .cat-media{margin:8px 8px 0;border-radius:13px;aspect-ratio:2/1;background:var(--img-bg);box-shadow:inset 0 0 0 1px var(--line-soft)}
+.pod[data-r="1"] .cat-media{aspect-ratio:16/9}
+.pod .cat-deco{display:none}
+.pod[data-hl="foil"] .cat-media::after,.pod[data-hl="ultra"] .cat-media::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;mix-blend-mode:soft-light}
+.pod[data-hl="foil"] .cat-media::after{background:var(--tcg-cosmos);opacity:calc(.7 * var(--int))}
+.pod[data-hl="ultra"] .cat-media::after{background:linear-gradient(118deg,transparent 34%,rgb(255 255 255 / .55) 46%,rgb(220 230 245 / .35) 52%,transparent 62%);opacity:calc(.8 * var(--int))}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  .pod[data-hl="foil"] .cat-media::after,.pod[data-hl="ultra"] .cat-media::after{background-size:160% 160%;transition:background-position 700ms cubic-bezier(.16,1,.3,1)}
+  .pod[data-hl="foil"]:hover .cat-media::after,.pod[data-hl="ultra"]:hover .cat-media::after{background-position:100% 100%}
+}
+.pod-body{position:relative;z-index:2;padding:14px 18px 18px;display:flex;flex-direction:column;gap:2px;flex:1}
+.pod-col{margin:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-name{margin:2px 0 8px;font-size:clamp(17px,1.6vw,21px);font-weight:700;letter-spacing:-.015em;line-height:1.2;color:var(--ink)}
+.pod-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px}
+.pod-price strong{font-size:clamp(24px,2.2vw,30px);font-weight:800;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.pod-price s{color:var(--muted);font-size:14px}
+.pod-ref{font-size:13px;color:var(--muted)}
+.pod-off{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:4px}
+.pod-off b{font-size:clamp(18px,1.6vw,22px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--ok);font-variant-numeric:tabular-nums}
+.pod-off span{font-size:13px;color:var(--muted)}
+.pod-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)}
+.pod-off+.pod-foot,.pod-price+.pod-foot{margin-top:12px}
+.pod-store{min-width:0;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-conf{color:var(--muted)}
+.pod-cta{position:relative;z-index:4;flex:none;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;background:var(--btn);color:var(--btn-ink);font-weight:800;font-size:13.5px;text-decoration:none;transition:transform 140ms var(--ease-out),filter 160ms ease}
 .pod-cta:active{transform:scale(.96)}.pod-cta .icon{width:15px;height:15px}
 @media (hover:hover) and (pointer:fine){.pod-cta:hover{filter:brightness(1.08)}}
-.ring{--v:0;position:relative;flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--sc) calc(var(--v) * 1%),rgb(255 255 255 / .1) 0);font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
-.ring::before{content:"";position:absolute;inset:4px;border-radius:50%;background:#0F1430}.ring span{position:relative}
+.ring{--v:0;position:relative;flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--sc) calc(var(--v) * 1%),var(--line-soft) 0);font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.ring::before{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--surface)}.ring span{position:relative;color:var(--ink)}
 .pod .deal-fav{top:14px;right:14px;z-index:5}
 .pod .cat-chip{z-index:4}
-.pod .cat-deco{opacity:.5}
 @media (prefers-reduced-motion:no-preference){
   .podium.armed .pod{opacity:0;transform:perspective(1200px) translateY(80px) rotateY(-100deg) scale(.86)}
-  .podium.go .pod{animation:podIn 1100ms cubic-bezier(.16,1,.3,1) both,foilSpin 6s linear infinite}
-  .podium.go .pod[data-r="1"]{animation-delay:0ms,0ms}.podium.go .pod[data-r="2"]{animation-delay:260ms,0ms}.podium.go .pod[data-r="3"]{animation-delay:420ms,0ms}
+  .podium.go .pod{animation:podIn 1100ms cubic-bezier(.16,1,.3,1) both}
+  .podium.go .pod[data-r="1"]{animation-delay:0ms}.podium.go .pod[data-r="2"]{animation-delay:260ms}.podium.go .pod[data-r="3"]{animation-delay:420ms}
 }
 @keyframes podIn{0%{opacity:0;transform:perspective(1200px) translateY(80px) rotateY(-100deg) scale(.86)}55%{opacity:1}100%{opacity:1;transform:perspective(1200px) translateY(var(--lift,0)) rotateY(0) scale(1)}}
 @media (max-width:860px){
-  .podium{grid-template-columns:1fr 1fr;grid-template-areas:"p1 p1" "p2 p3";gap:26px 12px;margin-top:44px}
-  .pod[data-r="1"]{--lift:0}.pod[data-r="1"] .cat-media{aspect-ratio:4/3}
-  .pod:not([data-r="1"]) .pod-body{padding:14px 14px 16px}.pod:not([data-r="1"]) .pod-off b{font-size:28px}.pod:not([data-r="1"]) .pod-price strong{font-size:19px}
-  .pod:not([data-r="1"]) .pod-foot{flex-direction:column;align-items:stretch}.pod:not([data-r="1"]) .pod-cta{justify-content:center}
-  .pod:not([data-r="1"]) .pod-name{font-size:15px}.pod:not([data-r="1"]) .pod-off span{display:none}.pod:not([data-r="1"]) .pod-price s{display:block;width:100%}.pod:not([data-r="1"]) .pod-ref{display:block;width:100%;font-size:12.5px}.pod:not([data-r="1"]) .ring{display:none}
+  .podium{grid-template-columns:1fr 1fr;grid-template-areas:"p1 p1" "p2 p3";align-items:stretch;gap:26px 12px;margin-top:44px}
+  .pod[data-r="1"]{--lift:0}.pod[data-r="1"] .cat-media{aspect-ratio:16/9}
+  .pod:not([data-r="1"]) .cat-media{aspect-ratio:4/3}
+  .pod:not([data-r="1"]) .pod-body{padding:14px 14px 16px}.pod:not([data-r="1"]) .pod-off b{font-size:18px}.pod:not([data-r="1"]) .pod-price strong{font-size:19px}
+  .pod:not([data-r="1"]) .pod-foot{flex-wrap:wrap}.pod:not([data-r="1"]) .pod-cta{flex:1 1 100%;justify-content:center}
+  .pod:not([data-r="1"]) .ring{width:38px;height:38px;font-size:12.5px}
+  .pod:not([data-r="1"]) .pod-name{font-size:15px}.pod:not([data-r="1"]) .pod-off span{display:none}.pod:not([data-r="1"]) .pod-price s{display:block;width:100%}.pod:not([data-r="1"]) .pod-ref{display:block;width:100%;font-size:12.5px}
+  .pod-rank{left:12px;font-size:10px;letter-spacing:.16em}
   .stage{padding-bottom:48px}.stage-copy{margin-top:30px}
 }
+
+/* Escala global de raridade (6C.1) nos cards fora do pódio: pela nota da API, intensidade pela confiança. */
+.rc-row{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;margin-top:8px}
+.rc-row .opp-conf{margin:0}
+.rar-line{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:10.5px;font-weight:700;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rar-line .sym{font-size:11px;letter-spacing:0;color:var(--rar-c,var(--muted))}
+.deal[data-rar="u"]{--rar-c:#4F78B8}.deal[data-rar="r"]{--rar-c:#A8873F}.deal[data-rar="ur"]{--rar-c:#7E8AA0}.deal[data-rar="sr"]{--rar-c:#9A6BD8}
+.opp-card .tcg-frame{position:absolute;inset:-1px;border-radius:inherit;padding:var(--fw,1.5px);pointer-events:none;z-index:6;opacity:0;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.opp-card[data-rar="u"]>.tcg-frame{opacity:calc(.8 * var(--int,1));background:#4F78B8;--fw:1px}
+.opp-card[data-rar="r"]>.tcg-frame{opacity:var(--int,1);background:var(--tcg-frame);--fw:2px}
+.opp-card[data-rar="ur"]>.tcg-frame{opacity:var(--int,1);background:var(--tcg-silver);--fw:2px}
+.opp-card[data-rar="sr"]>.tcg-frame{opacity:var(--int,1);background:var(--tcg-holo);--fw:2.5px}
+.opp-card[data-rar="ur"] .deal-media::after,.opp-card[data-rar="sr"] .deal-media::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;mix-blend-mode:soft-light}
+.opp-card[data-rar="ur"] .deal-media::after{background:linear-gradient(118deg,transparent 36%,rgb(255 255 255 / .5) 47%,transparent 60%);opacity:calc(.7 * var(--int,1))}
+.opp-card[data-rar="sr"] .deal-media::after{background:var(--tcg-cosmos);opacity:calc(.6 * var(--int,1))}
+.opp-card .deal-media{margin:7px 7px 0;border-radius:12px;background:var(--img-bg);box-shadow:inset 0 0 0 1px var(--line-soft)}
+.opp-card .cat-deco{display:none}
+.opp-card .foil-tag{background:var(--btn);color:var(--btn-ink)}
 
 /* Em sequência: as próximas, distribuídas uma a uma */
 .seq{margin-top:64px}
@@ -718,10 +760,10 @@ a.navbtn{text-decoration:none}
 .cat-media{position:relative;overflow:hidden;display:grid;place-items:center;padding:24px 26px;aspect-ratio:4/3;background:linear-gradient(160deg,var(--t1),var(--t2))}
 :root[data-theme="dark"] .cat-media{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 26%,#10142A),color-mix(in srgb,var(--c1) 10%,#0B0E1E))}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cat-media{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 26%,#10142A),color-mix(in srgb,var(--c1) 10%,#0B0E1E))}}
-.pod .cat-media{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 30%,#121735),color-mix(in srgb,var(--c1) 12%,#0B0E1E))}
+.pod .cat-media{background:var(--img-bg)}
 .cat-media .photo{position:relative;z-index:1;width:100%;height:100%;background:transparent;border-radius:0;aspect-ratio:auto}
 .cat-media .photo img{object-fit:contain;padding:0;mix-blend-mode:multiply;filter:drop-shadow(0 10px 14px rgb(0 0 0 / .14));transition:transform 450ms cubic-bezier(.16,1,.3,1)}
-:root[data-theme="dark"] .cat-media .photo img,.pod .cat-media .photo img{mix-blend-mode:normal;border-radius:12px;filter:drop-shadow(0 14px 24px rgb(0 0 0 / .45))}
+:root[data-theme="dark"] .cat-media .photo img{mix-blend-mode:normal;border-radius:12px;filter:drop-shadow(0 14px 24px rgb(0 0 0 / .45))}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cat-media .photo img{mix-blend-mode:normal;border-radius:12px}}
 .cat-media .photo.fallback .icon{width:44%;height:44%;color:var(--c1);opacity:.85}
 .cat-deco{position:absolute;inset:0;z-index:0;pointer-events:none}
@@ -759,11 +801,10 @@ a.navbtn{text-decoration:none}
 .ra b{font-weight:700}.ra span{font-weight:600;opacity:.8}.ra em{font-style:normal;font-weight:800}
 .ra-top,.ra-ok{background:#DCF5E6;color:#0B6B3A}.ra-good{background:#E8F6DA;color:#3D6B12}.ra-mid{background:#FFF3CC;color:#7A5300}.ra-bad{background:#FFE3D6;color:#9A3412}.ra-worst{background:#FDE0DE;color:#A11B12}
 .ra-none{background:var(--sunk);color:var(--muted);border-color:var(--line-soft)}.ra-none img{filter:grayscale(1);opacity:.7}
-:root[data-theme="dark"] .ra-top,:root[data-theme="dark"] .ra-ok,.stage .ra-ok,.stage .ra-top{background:rgb(76 212 154 / .14);color:#6FE0AE}
-:root[data-theme="dark"] .ra-good,.stage .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}
-:root[data-theme="dark"] .ra-mid,.stage .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}
-:root[data-theme="dark"] .ra-bad,:root[data-theme="dark"] .ra-worst,.stage .ra-bad,.stage .ra-worst{background:rgb(255 132 120 / .15);color:#FF9A8F}
-.stage .ra-none{background:rgb(255 255 255 / .06);color:rgb(228 233 255 / .65);border-color:rgb(255 255 255 / .1)}
+:root[data-theme="dark"] .ra-top,:root[data-theme="dark"] .ra-ok{background:rgb(76 212 154 / .14);color:#6FE0AE}
+:root[data-theme="dark"] .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}
+:root[data-theme="dark"] .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}
+:root[data-theme="dark"] .ra-bad,:root[data-theme="dark"] .ra-worst{background:rgb(255 132 120 / .15);color:#FF9A8F}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(.ra-top,.ra-ok){background:rgb(76 212 154 / .14);color:#6FE0AE}:root:not([data-theme="light"]) .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}:root:not([data-theme="light"]) .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}:root:not([data-theme="light"]) :is(.ra-bad,.ra-worst){background:rgb(255 132 120 / .15);color:#FF9A8F}}
 @media (hover:hover) and (pointer:fine){.ra:hover{filter:brightness(.95)}}
 .deal-foot .ra{margin-right:auto;margin-left:-4px}.deal-foot{flex-wrap:wrap}
@@ -773,8 +814,8 @@ a.navbtn{text-decoration:none}
 /* Conteúdo vindo do servidor: para buscadores e para quem está sem JavaScript. Com JavaScript, quem aparece é a página interativa. */
 .js .ssr{display:none}
 .home-slot{display:contents}
-.pod-ref{color:rgb(228 233 255 / .62);font-size:13.5px}
-.pod-conf{display:block;margin-top:2px;font-size:11.5px;color:rgb(228 233 255 / .6)}
+.pod-ref{color:var(--muted);font-size:13px}
+.pod-conf{display:block;margin-top:2px;font-size:11.5px;color:var(--muted)}
 .stage-empty .btn{margin-left:8px;vertical-align:middle}
 .pod-skel{display:grid;grid-template-columns:1fr 1.18fr 1fr;align-items:end;gap:clamp(14px,2.2vw,30px);margin:56px auto 0;max-width:1180px}
 .pod-skel i{display:block;height:440px;border-radius:24px;background:linear-gradient(100deg,rgb(255 255 255 / .04) 30%,rgb(255 255 255 / .09) 50%,rgb(255 255 255 / .04) 70%) 0 0/300% 100%;border:1px solid rgb(255 255 255 / .08);animation:skelSweep 1.4s linear infinite}
@@ -1635,7 +1676,7 @@ function loadHomeOpp(){
       else Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now()});
       HOMEOPP.p=null});
 }
-/* Pódio: as 3 primeiras do motor, com medalha e luz de palco (mesmo componente de antes; muda só a fonte) */
+/* Pódio: as 3 primeiras do motor como destaques FOIL, ULTRA RARA e RARA (6C.1; mesmo componente, sem medalhas) */
 function podCardOpp(x,r){
   const pr=x.product||{},of=x.offer||{},st=x.store||{},rc=x.reference_comparison||{},cr=x.current_reference||{};
   const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
@@ -1644,15 +1685,15 @@ function podCardOpp(x,r){
   const mkOnly=cr.kind==="MARKET_CURRENT"&&cr.market_composition==="MARKETPLACE_ONLY";   /* pela referência ATUAL, nunca pelo campo do topo */
   const refTxt=rc.available?`${refShort(rc.reference_kind)}${mkOnly?" (marketplaces)":""} · ${money(rc.reference_value)}`:"Sem referência atual";
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";const lv=x.confidence_level;
-  return`<article class="pod" data-r="${r}" data-cat="${catOf(p)}" style="--sc:${bu[1]}">
-    <span class="pod-rank"><b>${r}</b>${["OURO","PRATA","BRONZE"][r-1]}</span>
+  const [hk,hl]=HIGHLIGHT[r-1]||[];const rar=rarityOf(sc);
+  return`<article class="pod" data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
+    ${hl?`<span class="pod-rank"><i aria-hidden="true"></i>${hl}</span>`:""}
     <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(x.price)} em ${esc(st.name||"")}"></a>
     <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
-    <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
-      ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
       <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(x.price)}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
+      ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
       <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}</span>
         <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
   </article>`;
@@ -2432,6 +2473,13 @@ const OPP_LIMIT=24;
 const BAND_UI={excelente:["Excelente oportunidade","var(--ok)","Excelente"],boa:["Boa oportunidade","var(--ok)","Boa"],normal:["Oportunidade normal","var(--warn)","Normal"],baixa:["Oportunidade baixa","var(--bad)","Baixa"]};
 /* nível de confiança: a palavra vem pronta da API (confidence_level); aqui só o texto da etiqueta */
 const CONF_UI={alta:"Alta confiança","média":"Média confiança",baixa:"Baixa confiança"};
+/* 6C.1 TCG Rarity System (só apresentação). Escala global pela nota que a API já entrega; limites configuráveis e sem
+   nada de franquia. A confiança só regula a intensidade dos efeitos (sem confiança: tratamento padrão). */
+const RARITY=[{min:90,id:"sr",name:"Secret Rare",sym:"✦"},{min:80,id:"ur",name:"Ultra Rare",sym:"★★"},{min:65,id:"r",name:"Rare",sym:"★"},{min:50,id:"u",name:"Uncommon",sym:"◆"},{min:-Infinity,id:"c",name:"Common",sym:"●"}];
+const rarityOf=(s)=>typeof s==="number"&&Number.isFinite(s)?RARITY.find((t)=>s>=t.min):null;
+const CONF_INT={alta:1,"média":.65,baixa:.35};const confInt=(lv)=>CONF_INT[lv]??1;
+/* destaques da Home: rótulo editorial por posição (não é raridade oficial do produto nem muda a escala global) */
+const HIGHLIGHT=[["foil","FOIL"],["ultra","ULTRA RARA"],["rara","RARA"]];
 const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf].filter(Boolean).length;
 function oppQuery(page){const q=new URLSearchParams({limite:String(OPP_LIMIT),pagina:String(page),ordem:OF.sort||"score"});
   if(OF.cat)q.set("categoria",OF.cat);if(OF.col)q.set("colecao",OF.col);if(OF.faixa)q.set("faixa",OF.faixa);
@@ -2499,10 +2547,10 @@ function oppCard(x,i,opt={}){
   const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
   const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));
   const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)","—"];
-  const best=opt.best??(i===0&&OF.sort==="score");const foil=best||x.opportunity_band==="excelente"||x.opportunity_band==="boa";
+  const best=opt.best??(i===0&&OF.sort==="score");const rar=rarityOf(sc);
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";
   const fav=isFav(pr.id);const lv=x.confidence_level||"";
-  return`<article class="deal opp-card${foil?" foil":""}" data-cat="${catOf(p)}" style="--ec:${g(p).c}">
+  return`<article class="deal opp-card"${rar?` data-rar="${rar.id}"`:""} data-cat="${catOf(p)}" style="--ec:${g(p).c};--int:${confInt(lv)}">
   <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${esc(pr.name||"")}"></a>
   <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rail?`<span class="deal-rank">#${i+1}</span>`:""}${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}" title="${bu[0]}"><i></i>${opt.rail?bu[2]:bu[0]}</span>`:""}${catChip(p)}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
@@ -2512,11 +2560,11 @@ function oppCard(x,i,opt={}){
     <p class="deal-price opp-price"><b>${money(x.price)}</b>${pixTag({priceKind:of.price_kind})}</p>
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
-    <p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p>
+    <div class="rc-row">${rar?`<p class="rar-line" title="Escala visual pela nota (${sc}/100). Não é a raridade oficial do produto."><span class="sym" aria-hidden="true">${rar.sym}</span>${rar.name}</p>`:""}<p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
     <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div>
-  </div>
+  </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
 }
 const oppSkel=()=>`<div class="deals">${'<div class="skel" style="height:440px;border-radius:20px"></div>'.repeat(4)}</div>`;

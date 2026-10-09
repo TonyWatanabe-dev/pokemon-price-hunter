@@ -67,7 +67,7 @@ t('2. pódio usa a ordem e o Opportunity Score da API', () => {
 // 6–10. referência, comparação, score, faixa e confiança exatamente como a API mandou
 t('6–10. referência, comparação, score, faixa e confiança da API', () => {
   const pod = text(s.slots['#home-pod'].innerHTML);
-  assert.match(pod, /−28,7% abaixo do preço sugerido R\$ 39,90 Copag · R\$ 55,99/);
+  assert.match(pod, /R\$ 39,90 Copag · R\$ 55,99 −28,7% abaixo do preço sugerido/, '6C.1: preço antes do desconto');
   assert.match(pod, /Alta confiança/); assert.match(pod, /Média confiança/);
   assert.match(pod, /Sem referência atual/, 'sem referência: nada de percentual'); assert.ok(!/0,0%/.test(pod));
   const third = s.slots['#home-pod'].innerHTML.split('<article class="pod"')[3]; assert.ok(!/pod-off/.test(third), 'sem referência não mostra "abaixo"');
@@ -102,6 +102,22 @@ t('3–5. Home sem Deal Score, sem oppPool e sem state.json para oportunidades',
   assert.match(renderDealsCode, /podiumOppHTML\(\)/); assert.match(renderDealsCode, /loadHomeOpp\(\)/);
 });
 // a página inteira continua com JavaScript válido (o pódio é montado por template literals)
+// 6C.1 — destaques FOIL → ULTRA RARA → RARA; escala global oculta no pódio e independente da posição
+t('6C.1. pódio: FOIL, ULTRA RARA e RARA sem medalhas; nota e escala intactas', () => {
+  const html = s.slots['#home-pod'].innerHTML; const cards = html.split('<article class="pod"').slice(1);
+  assert.ok(!/OURO|PRATA|BRONZE|--medal|pod-sheen/.test(html + homeCode), 'sem ouro, prata, bronze nem brilho de medalha');
+  assert.deepEqual(cards.map((c) => c.match(/data-hl="(\w+)"/)[1]), ['foil', 'ultra', 'rara']);
+  assert.deepEqual(cards.map((c) => text(c.match(/class="pod-rank">([\s\S]*?)<\/span>/)[1])), ['FOIL', 'ULTRA RARA', 'RARA']);
+  // escala global pela nota (90 → sr, 79 → r, 61 → u), não pela posição; não aparece como texto no pódio
+  assert.deepEqual(cards.map((c) => c.match(/data-rar="(\w+)"/)[1]), ['sr', 'r', 'u']);
+  assert.ok(!/rar-line|Secret Rare|Uncommon/.test(html), 'escala global oculta nos três cards do pódio');
+  const low = s.podCardOpp(mk('q', 72, 'normal'), 1); assert.match(low, /data-hl="foil"/); assert.match(low, /data-rar="r"/, '1º lugar com nota 72 continua Rare');
+  // confiança só muda a intensidade
+  assert.match(cards[0], /--int:0\.65/); assert.match(cards[1], /--int:1/); assert.match(cards[2], /--int:1/, 'sem confiança: tratamento padrão');
+  assert.ok(!/foilSpin/.test(html), 'sem animação contínua');
+  // sequência: escala global visível e sem foil por faixa
+  const rail = s.slots['#home-rail'].innerHTML; assert.ok(!/class="deal opp-card foil/.test(rail)); assert.match(text(rail), /Ultra Rare|Rare|Uncommon|Common/);
+});
 t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   for (const sc of scripts) { if (sc.trim().startsWith('{')) continue; assert.doesNotThrow(() => new vm.Script(sc), 'erro de sintaxe no index.html'); }

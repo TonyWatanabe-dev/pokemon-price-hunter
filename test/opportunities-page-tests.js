@@ -128,6 +128,18 @@ t('11. sem regra de negócio no frontend', () => {
   assert.ok(!/\.sort\(/.test(oppCode), 'ordenação só no servidor'); assert.ok(!/\.filter\(\(x\)=>x\.(opportunity|confidence|reference)/.test(oppCode), 'filtro só no servidor');
 });
 // 12. state.json não é fonte da página
+// 6C.1 — escala global de raridade pela nota da API; confiança só na intensidade; sem foil por faixa
+t('6C.1. escala Common → Secret Rare pela nota, confiança só na intensidade', () => {
+  const s = sandbox(page([]));
+  const rar = (sc, x = {}) => { const h = s.oppCard(base({ opportunity_score: sc, ...x }), 2); return [(h.match(/data-rar="(\w+)"/) || [])[1] || null, (h.match(/--int:([\d.]+)/) || [])[1]]; };
+  assert.deepEqual([0, 49, 50, 64, 65, 79, 80, 89, 90, 100].map((v) => rar(v)[0]), ['c', 'c', 'u', 'u', 'r', 'r', 'ur', 'ur', 'sr', 'sr']);
+  assert.equal(rar(null)[0], null, 'sem nota: sem categoria');
+  assert.deepEqual(['alta', 'média', 'baixa'].map((lv) => rar(70, { confidence_level: lv })), [['r', '1'], ['r', '0.65'], ['r', '0.35']]);
+  assert.deepEqual(rar(70, { confidence: null, confidence_level: null }), ['r', '1'], 'sem confiança: tratamento padrão');
+  const h = s.oppCard(base(), 0); assert.ok(!/class="deal opp-card foil/.test(h), 'foil por faixa removido');
+  assert.match(text(h), /Opportunity Score 75 · Boa .*Rare .*Baixa confiança/, 'nota da API intacta; escala ao lado da confiança');
+  assert.match(h, /Não é a raridade oficial do produto/);
+});
 t('12. state.json não é usado na página de oportunidades', () => {
   assert.ok(!/state\.json|fetchState|ensureFull|OFF\b/.test(oppCode), 'sem state.json no trecho');
   assert.match(html, /const API_VIEWS=new Set\(\[[^\]]*"oportunidades"/, '/oportunidades abre pelo resumo da API, sem baixar o state.json');
