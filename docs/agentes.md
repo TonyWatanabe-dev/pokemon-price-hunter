@@ -15,6 +15,7 @@ Fila de jobs de agentes sobre `automation_job` (migration 001; nenhuma migration
 - `src/agents/orchestrator.js` — `createOrchestrator({ store, handlers })` → `enqueue`, `runOnce`.
 - `src/agents/stores.js` — `pgStore(pool)` (FOR UPDATE SKIP LOCKED) e `memoryStore()`.
 - `src/agents/handlers/review-propose.js` — handler `review.propose`, sem IA.
+- `src/core/review.js`, `tools/review.mjs`, `.github/workflows/review.yml` — revisão humana.
 - `src/agents/matching-review.js`, `src/agents/notify.js`, `src/agents/cycle.js`, `tools/agents-run.mjs` — integração com a rodada.
 - Testes: `test/agents-orchestrator-tests.js` (puro), `test/agents-db-tests.js` e `test/agents-integration-tests.js` (banco com `TEST_DATABASE_URL`).
 
@@ -26,6 +27,15 @@ Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com
 - **Sem repetição:** chave por tipo + loja + página (URL sem query, sem `www`). A mesma página gera um único `review_item` (`matching:…`), mesmo depois de rejeitado ou com a fila limpa. Não colide com as revisões de duplicidade da sincronização (`dup:…`).
 - **Avisos** (`src/agents/notify.js`): `AGENT_JOB_FAILED` e `AGENT_JOB_BLOCKED` novos viram uma mensagem agregada pelo canal do vigia (`sendAll`). Cursor `AGENT_ALERT_CURSOR` em `system_event` só avança se a mensagem foi entregue. `ai_disabled` não avisa.
 
+## Revisão humana (lote 3)
+
+- **Operar:** Actions → **Revisão** (`review.yml`) ou `node tools/review.mjs list | triage | approve | reject | dismiss | export`. Casos iniciais e sugestões: `docs/revisao-casos-iniciais.md`.
+- **Quem decide:** login do GitHub em `REVIEW_OPERATORS` (variável do repositório; padrão: dono do repositório), ou `app_user` com a permissão `review.decide` (papéis OPERATOR, ADMIN, SUPER_ADMIN). VIEWER só lê.
+- **Registro:** `status`, `decided_at`, `decision_reason`, `decided_by`/`decided_by_label`, `resolution` (migration 009) e um `REVIEW_DECIDED` em `system_event`, na mesma transação. Se o evento não grava, a decisão também não.
+- **Sem duplicar:** `SELECT … FOR UPDATE` + `status = 'open'`. Repetir a mesma decisão não gera evento; uma decisão diferente, ou outra simultânea, é recusada (`already_decided`).
+- **Aprovar:** só para `matching`, com coleção, tipo e boosters validados contra o catálogo e contra a coleção que o anúncio traz. O id do produto é calculado, nunca digitado.
+- **Caminho até o matching:** `export` → `config/matching-overrides.json` (diff revisável), que o robô só usa com `enabled: true`. O override só resolve tipo ou boosters não identificados, ou duas coleções no título, e só na loja e página revisadas. Não passa por cima de idioma, acessório, kit, EAN ou coleção divergente, e a trava de link continua valendo. Preço, score, ranking e oportunidade nunca são escritos pela revisão.
+
 ## Ainda não integrado
 
-Tela para decidir os itens `open` da fila de revisão; demais agentes (Catalog Agent com IA etc.).
+Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confiança não remove a oferta já aceita; Catalog Agent com IA.

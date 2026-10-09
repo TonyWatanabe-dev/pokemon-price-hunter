@@ -3,7 +3,8 @@
 // com uma dúvida específica. "Coleção não identificada" fica de fora (ruído: a maioria não é produto lacrado).
 // Nada aqui altera oferta, preço ou score: o resultado vira job review.propose.
 import { createHash } from 'node:crypto';
-import { parseListing } from '../match.js';
+import { parseListing, canonicalUrl } from '../match.js';
+export { canonicalUrl };
 
 // Motivo de recusa → tipo de revisão. Só esses motivos, e só quando forem o ÚNICO motivo.
 const REASONS = [
@@ -15,10 +16,6 @@ const REASONS = [
 export const LOW_CONFIDENCE_MAX = 0.6; // oferta aceita com as duas deduções do matching (coleção por apelido e boosters inferidos)
 
 const hash = (s) => createHash('sha1').update(s).digest('hex').slice(0, 16);
-export function canonicalUrl(u) {
-  try { const x = new URL(u); return `${x.hostname.toLowerCase().replace(/^www\./, '')}${x.pathname.replace(/\/+$/, '')}`; }
-  catch { return String(u || '').trim().toLowerCase(); }
-}
 const keyOf = (kind, store, url) => `matching:${kind}:${store}:${hash(canonicalUrl(url))}`;
 const parsedOf = (title, catalog) => {
   if (!catalog?.collections) return undefined;
