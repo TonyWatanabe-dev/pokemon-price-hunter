@@ -37,6 +37,7 @@ async function tokenCall(params) {
     method: 'POST',
     headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: id, client_secret: secret, ...params }),
+    signal: AbortSignal.timeout(15000),   // prazo: OAuth travado não segura o passo de renovação
   });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.access_token) throw new Error(`OAuth do Mercado Livre recusou (${r.status}): ${j.error || ''} ${j.message || ''}`.trim());

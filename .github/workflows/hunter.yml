@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: hunter
   cancel-in-progress: false
@@ -14,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       # Os dados ficam no ramo "data", reescrito a cada rodada (sem acumular histórico no Git).
       # Na primeira vez, se o ramo ainda não existir, usa os dados que estão no main.
@@ -67,6 +68,9 @@ jobs:
         run: npm run hunt
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # TLS verificado do PostgreSQL (docs/tls.md). Sem o Secret, conecta como antes (sem verificar) e avisa no log.
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
@@ -86,6 +90,8 @@ jobs:
         continue-on-error: true
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
         run: |
           [ -n "$DATABASE_URL" ] || { echo "Banco desligado (sem DATABASE_URL)."; exit 0; }
           npm install --omit=dev --no-audit --no-fund --silent
@@ -103,10 +109,15 @@ jobs:
         timeout-minutes: 2
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: node tools/agents-run.mjs data
+      # O main só recebe mudanças em config/ (descoberta de lojas e verificação Copag, no gatilho diário).
+      # tools/push-config.sh: rebase SEM resolução automática. Se uma edição humana em config/ conflitar com a do
+      # robô, a do robô é descartada (aviso no log) e a humana fica intacta; a do robô é refeita na próxima rodada diária.
       - name: Salvar configuração (se mudou)
         if: steps.gap.outputs.skip != 'true'
         run: |
@@ -115,22 +126,23 @@ jobs:
           git clean -fdq data
           git config user.name "price-hunter-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add config
-          git diff --cached --quiet && exit 0
-          git commit -m "config $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && exit 0
-            sleep 5
-          done
-          exit 1
+          bash tools/push-config.sh origin main
+      # Aviso imediato só na transição para falha: se a rodada concluída anterior também falhou, o aviso já saiu e
+      # o vigia (watchdog.yml) lembra enquanto continuar. Erro ao consultar as rodadas = avisa (nunca silencia).
       - name: Avisar falha no Telegram
         if: failure()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           [ -n "$TELEGRAM_BOT_TOKEN" ] || exit 0
-          curl -s -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+          R=$(mktemp)
+          timeout 30 gh run list -R "$GITHUB_REPOSITORY" --workflow hunter.yml --limit 10 \
+            --json databaseId,status,conclusion,createdAt,updatedAt > "$R" 2>/dev/null || echo 'erro' > "$R"
+          decision=$(node tools/failure-alert-gate.mjs --runs "$R" --current "$GITHUB_RUN_ID" || true)
+          [ "$decision" = "skip" ] && exit 0
+          curl -s --max-time 20 -o /dev/null -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=❌ TCG Price Hunter: a rodada falhou. Detalhes: ${RUN_URL}"

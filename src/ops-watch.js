@@ -13,6 +13,8 @@
 //      (pouca oferta ao vivo), fica só registrado: não há contexto para chamar de falha.
 //    - fonte vigiada (rodada → watched; começa pelo Mercado Livre) que já trouxe anúncios e, nas últimas CONSEC
 //      rodadas, ficou bloqueada, com erro ou ativa com zero anúncios.
+//    - motor de oportunidades parado: nas últimas CONSEC rodadas o banco sincronizou, mas a batida do motor ficou
+//      para trás (engine.status 'parado', ver src/opstate.js). Sem batida ainda ('sem_heartbeat') nunca avisa.
 // Avisos: um na transição para falha (ou quando surge problema novo), um lembrete a cada REMIND_MIN min enquanto
 // continuar, e um de recuperação depois de 2 checagens saudáveis seguidas (evita aviso em vaivém).
 // O "livro" (ledger) guarda o que já foi avisado; só muda quando a mensagem chega a pelo menos um canal.
@@ -78,6 +80,7 @@ export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, met
       const how = x.status === 'BLOCKED' ? 'bloqueada' : x.status === 'ERROR' ? 'com erro' : 'sem nenhum anúncio';
       add('fonte_degradada', `${x.name || id} ${how} nas últimas ${RULES.CONSEC} rodadas (último com anúncios: ${hhmm(seen)}). Os preços dessa fonte podem estar faltando.`);
     }
+    if (all((r) => r.engine?.status === 'parado')) add('motor_parado', `Motor de oportunidades parado (última execução: ${hhmm(last.engine.runAt)}): as notas podem estar antigas.`);
   }
   if (reasons.length) return { status: 'degradado', reasons, facts };
   if (!ops?.last) { add(metaError === 'ausente' || !meta ? 'meta_ausente' : 'ops_ausente', 'Ainda sem estado operacional registrado: banco e leitor não verificados.'); return { status: 'desconhecido', reasons, facts }; }
@@ -97,7 +100,7 @@ const CODE_LABEL = {
   dados_parados: 'preços sem atualizar', sem_rodadas: 'robô sem disparo', rodada_falhou: 'rodada com falha', rodada_sem_publicar: 'dados sem publicar',
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
-  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada',
+  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada', motor_parado: 'motor de oportunidades parado',
 };
 
 /** Decide se avisa. Não altera o livro: use commitLedger depois de tentar enviar. */

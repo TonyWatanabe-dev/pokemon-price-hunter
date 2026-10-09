@@ -14,9 +14,11 @@ jobs:
       version: ${{ steps.ver.outputs.version }}
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PG_CA_CERT: ${{ secrets.PG_CA_CERT }}            # TLS verificado (docs/tls.md); vazio = sem verificar, como antes
+      PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       - name: Secret DATABASE_URL existe
         run: |
@@ -59,7 +61,7 @@ jobs:
       - name: Comparar Deal Score legado × Opportunity Engine
         if: always()
         run: node tools/opportunity-compare.mjs data out/opportunity-compare.json | tee out/opportunity-compare.log
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with: { name: supabase, path: out }
 
@@ -71,8 +73,8 @@ jobs:
     env:
       PGV: ${{ needs.supabase.outputs.version || '17' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with: { node-version: 22 }
       - name: Postgres oficial da mesma versão do Supabase
         run: |
@@ -96,7 +98,7 @@ jobs:
           node tools/db-validate.mjs data out/compat.json out/compat-migrate-1.log out/compat-migrate-2.log
           node tools/api-compare.mjs data out/compat-api-compare.json | tee out/compat-api-compare.log
           node tools/opportunity-compare.mjs data out/compat-opportunity-compare.json | tee out/compat-opportunity-compare.log
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with: { name: compat, path: out }
 
@@ -105,7 +107,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with: { path: r }
       - name: Publicar relatório (ramo db-validation)
         env:

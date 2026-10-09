@@ -13,7 +13,8 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
+import { tlsModeFor } from './db/ssl.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, prevBestOf, retryHits, pruneRetry, failedLine } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -108,6 +109,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     lowest.__fromHist = true;
   }
   const sent = readJson(dataPath('alerts-sent.json'), {});
+  // Fila de reenvio: alerta de evento que não chegou a nenhum canal (ver src/alerts.js)
+  const retry = pruneRetry(readJson(dataPath('alerts-retry.json'), {}), now.getTime());
   const copagSeen = readJson(dataPath('copag-msrp.json'), {}); // preço capturado na loja oficial Copag
   const cep = process.env.HUNTER_CEP || watch.settings?.cep;
 
@@ -334,9 +337,16 @@ export async function runOnce({ log = console.log, send = transports, now = new 
 
   // Alertas
   const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
-  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log }), sent, watch.settings, now.getTime(), offers);
-  const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
+  // Queda só vale como novo melhor preço do produto: compara com o melhor elegível da rodada anterior (mesma regra).
+  const prevBest = prevBestOf(Object.values(prev));
+  const fresh = evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log, prevBest });
+  const freshKeys = new Set(fresh.map((h) => h.key));
+  const pending = retryHits(retry, okOffers, products, watch.rules || [], { opp }).filter((h) => !freshKeys.has(h.key));
+  const hits = dedupe([...fresh, ...pending], sent, watch.settings, now.getTime(), offers);
+  const io = { send, now, failed: [], retry, down: {} };
+  const delivered = [...await dispatch(hits, sent, io), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15, retry }), sent, io)];
   for (const d of delivered) log(`ALERTA ${d.kind} -> ${d.channels.join(', ') || 'só painel'}: ${d.productId} ${d.total}`);
+  if (io.failed.length) log(failedLine(io.failed));
 
   // Estado para painel e API
   const all = Object.values(offers);
@@ -381,6 +391,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('url-cache.json'), urlCache);
   writeJson(dataPath('products.json'), registry);
   writeJson(dataPath('alerts-sent.json'), sent);
+  writeJson(dataPath('alerts-retry.json'), retry);
   writeJson(dataPath('tips.json'), tipStore);
   writeJson(dataPath('inbox.json'), inbox);
   writeJson(dataPath('state.json'), state);
@@ -391,9 +402,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length, alertsFailed: io.failed.length,
+      tls: tlsModeFor(process.env.DATABASE_URL) });
     recordRun(dataPath('meta.json'), rec);
-    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
+    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · motor: ${rec.engine.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
   } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;

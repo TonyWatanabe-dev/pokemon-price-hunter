@@ -3,6 +3,7 @@
 // Nunca lança e nunca trava a rodada: sem DATABASE_URL, banco fora do ar ou lento, devolve "sem nota" e os alertas
 // que não dependem de nota seguem normalmente.
 import { confidenceLevel, BAND_LABEL } from './core/opportunity-engine.js';
+import { pgConnectionConfig } from './db/ssl.js';
 
 export const MAX_AGE_MIN = 60;            // nota calculada há mais de 60 min não vale como oficial
 const FUTURE_SKEW_MS = 5 * 60e3;          // tolerância de relógio entre o banco e o robô
@@ -28,8 +29,8 @@ export async function readOfficial(ids, { env = process.env, timeoutMs = 5000, l
   let client = null; let timer = null;
   try {
     const { default: pg } = await loadPg();
-    const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
-    client = new pg.Client({ connectionString: url, ssl: local ? false : { rejectUnauthorized: false }, options: '-c search_path=hunter,public',
+    const { connectionString, ssl } = pgConnectionConfig(url, { env });
+    client = new pg.Client({ connectionString, ssl, options: '-c search_path=hunter,public',
       connectionTimeoutMillis: timeoutMs, query_timeout: timeoutMs, statement_timeout: timeoutMs });
     client.on('error', () => {});   // erro tardio de socket não derruba o robô
     const work = (async () => {
