@@ -1,11 +1,13 @@
 // Testes offline: fetch simulado com lojas Shopify, VTEX, JSON-LD e uma bloqueada.
 import assert from 'node:assert/strict';
-import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
+import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 process.env.HUNTER_DOMAIN_DELAY_MS = '0';
+// as rodadas simuladas são locais mesmo dentro do Actions: sem as variáveis de execução que o src/opstate.js lê
+for (const k of ['GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_SHA', 'GITHUB_EVENT_NAME']) delete process.env[k];
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-'));
 process.env.HUNTER_CONFIG_DIR = path.join(tmp, 'config'); process.env.HUNTER_DATA_DIR = path.join(tmp, 'data');
 fs.mkdirSync(process.env.HUNTER_CONFIG_DIR, { recursive: true });
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const cat = JSON.parse(fs.readFileSync(path.join(root, 'config/catalog.json')));
 cat.copag['me04-box36'] = { msrp: 449.99, source_url: 'https://www.copag.com.br/exemplo-teste', confidence: 'OFICIAL', source_timestamp: '2026-10-01' };
 cat.copag['me05-box36'] = { msrp: 449.99, source_url: 'https://www.mercadolivre.com.br/loja/copag', confidence: 'OFICIAL' };
