@@ -174,10 +174,17 @@ export async function detect(base) {
 export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
-  const out = [];
+  const out = []; const failed = [];
   for (const u of urls) {
     try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
-    catch (e) { if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e; }
+    catch (e) {
+      if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e;
+      // 404/410 (produto não existe mais), outro 4xx definitivo ou robots.txt: a página não serve, não é falha.
+      // Rede, timeout, 5xx e site fora do ar: falha de leitura passageira — a oferta da página não some.
+      const gone = e.status === 'robots' || (e.status >= 400 && e.status < 500 && e.status !== 408);
+      if (!gone) failed.push(u);
+    }
   }
+  out.failed = failed; // páginas que não abriram nesta rodada (src/run.js preserva as ofertas delas)
   return out;
 }

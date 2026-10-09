@@ -260,6 +260,21 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   assert.ok(!msrpKeys({ id: 'me05-combo7', collection: 'me05', type: 'combo', boosters: 7 }).includes('me05-combo'), 'combo7 não herda preço do combo');
   assert.ok(msrpKeys({ id: 'me05-combo', collection: 'me05', type: 'combo', boosters: null }).includes('me05-combo'));
 }
+// --- Lote 7: "Case" (caixa com várias unidades) nunca casa com o produto unitário; "case vazio" segue acessório ---
+{
+  const { matchProduct } = await import('../src/match.js');
+  const catT = JSON.parse(fs.readFileSync(new URL('../config/catalog.json', import.meta.url)));
+  const MULTI = 'kit montado pela loja ou caixa com várias unidades';
+  for (const t of ['Case Box Display Pokémon Caos Ascendente 36 Boosters', 'Case Treinador Avançado Caos Ascendente Copag', 'Case com 6 Booster Box Caos Ascendente 36 boosters',
+    'Case 6 Box Display Caos Ascendente', 'Caixa Master Pokémon Caos Ascendente 6 Box Display', '6x Booster Box Caos Ascendente 36 boosters', 'Case Blister Triple De Raio Preto - Pokemon Tcg']) {
+    const m = matchProduct({ title: t }, catT);
+    assert.equal(m.productId, null, 'case/várias unidades não casa: ' + t); assert.ok(m.why.includes(MULTI), t + ' -> ' + m.why);
+  }
+  const vazio = matchProduct({ title: 'Case Vazio Booster Box Caos Ascendente' }, catT);
+  assert.equal(vazio.productId, null); assert.deepEqual(vazio.why, ['acessório ou item não-TCG'], 'case vazio continua acessório (sem motivo de várias unidades)');
+  assert.equal(matchProduct({ title: 'Pokémon Booster Box Caos Ascendente 36 boosters' }, catT).productId, 'me04-box36', 'box unitária continua casando');
+  assert.equal(matchProduct({ title: 'Box Treinador Avançado Caos Ascendente Copag' }, catT).productId, 'me04-etb', 'ETB unitário continua casando');
+}
 
 // --- pistas (Pelando/Telegram) e bot ---
 {
