@@ -183,7 +183,7 @@ export function computeProductStats({ product, offers, reference = null, distrus
   const isTrusted = (src, o) => trusted(distrust, o.store_id, asOf) && (src.type !== 'MARKETPLACE_SELLER' || trusted(distrust, src.key, asOf));
   const market = marketReferenceOf(inStock, { implausibleInStock, isTrusted });
   const cur = resolveCurrentReference({ copag: refOk ? { reference_kind: 'COPAG_OFFICIAL_CURRENT', verification_status: 'verified', value: reference.value,
-    source: reference.source, confidence: reference.confidence ?? null, verified_at: reference.verified_at } : null, market });
+    source: reference.source, confidence: reference.confidence ?? null, verified_at: reference.verified_at } : null, market, asOf });
 
   return {
     stats: {
