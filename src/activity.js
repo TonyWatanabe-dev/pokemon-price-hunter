@@ -37,13 +37,16 @@ export function recordActivity({ T, offers, prev, products, newLowest, quiet = n
     if (o.stale || o.anomalous || o.stock !== 'IN_STOCK' || !(o.total > 0) || quiet.has(o.storeId)) continue;
     const p = products[o.productId]; if (!p) continue;
     if (o.confirmed === false) continue; // leitura ainda não confirmada pela rodada seguinte
-    const old = prev[o.id];
+    // Base: a última leitura válida (lastValid de uma oferta stale), nunca o "estoque desconhecido" da falha.
+    const raw = prev[o.id]; const old = raw?.stale ? raw.lastValid || null : raw;
     const base = { t: T, productId: o.productId, offerId: o.id, storeName: o.storeName, to: o.total, msrp: p.msrp ?? null };
     if (o.justConfirmed === 'new') { if (p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
     else if (o.justConfirmed === 'drop') { if (plausible(o.total, o.dropFrom, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: o.dropFrom }); }
-    else if (!old) { if (!firstEver && p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
-    else if (old.stock === 'OUT_OF_STOCK' && !old.stale) fresh.push({ ...base, type: 'restock' });
-    else if (old.total > 0 && o.total < old.total && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
+    else if (!raw) { if (!firstEver && p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
+    else if (!old) { /* stale antiga sem leitura válida guardada: sem base, sem evento */ }
+    else if (old.stock === 'OUT_OF_STOCK') fresh.push({ ...base, type: 'restock' });
+    // Total que caiu só porque o frete deixou de ser conhecido não é queda (o preço não mudou).
+    else if (old.total > 0 && o.total < old.total && !!old.shippingKnown === !!o.shippingKnown && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
     // Recorde que se repete a cada rodada (mesmo produto, mesmo valor ou maior) não é novidade.
     if (newLowest.has(o.id) && !log.some((e) => e.type === 'lowest' && e.productId === o.productId && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'lowest', from: newLowest.get(o.id) });
   }

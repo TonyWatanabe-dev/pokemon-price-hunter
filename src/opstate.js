@@ -32,6 +32,18 @@ export function storesSummary(sources, deferred = 0) {
   };
 }
 
+// Fontes vigiadas uma a uma pelo vigia (src/ops-watch.js), começando pelo Mercado Livre: status, anúncios da rodada
+// e quando trouxe anúncios pela última vez (fonte que nunca trouxe anúncio não é "historicamente ativa").
+export const WATCHED_SOURCES = ['mercadolivre'];
+export function watchedSummary(sources, ids = WATCHED_SOURCES) {
+  const out = {};
+  for (const id of ids) {
+    const s = sources?.[id]; if (!s) continue;
+    out[id] = { name: clean(s.name || id, 60), status: s.status || null, listings: Number.isFinite(s.listings) ? s.listings : null, lastNonEmpty: isIso(s.lastNonEmpty) ? s.lastNonEmpty : null };
+  }
+  return out;
+}
+
 /** Problemas da própria rodada (informativo; quem decide alerta é o vigia, com as regras dele). */
 export function runIssues(rec) {
   const out = [];
@@ -44,7 +56,7 @@ export function runIssues(rec) {
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, offers, alerts }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, offers, alerts }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -54,7 +66,7 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     generatedAt, prevGeneratedAt: prevGeneratedAt || null,
     startedAt, finishedAt, durationSec: Number.isFinite(f - s) ? Math.round((f - s) / 1000) : null,
     result: stores?.deferred > 0 ? 'parcial' : 'ok',
-    stores, offers: offers ?? null, alerts: alerts ?? 0,
+    stores, watched: watched || {}, offers: offers ?? null, alerts: alerts ?? 0,
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
   };
   rec.issues = runIssues(rec);

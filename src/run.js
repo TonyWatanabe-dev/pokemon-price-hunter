@@ -12,7 +12,7 @@ import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIn
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
-import { buildRunRecord, readerSummary, storesSummary, recordRun } from './opstate.js';
+import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -23,6 +23,14 @@ import { processInbox } from './inbox.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
+
+// Leitura que falhou: mantém a oferta como estoque desconhecido (stale) e guarda a última leitura VÁLIDA em lastValid.
+// Uma oferta já stale continua com o lastValid de antes (nunca vira "válido" o estado inventado da falha).
+export const staleCopy = (o) => ({ ...o, stale: true, stock: 'UNKNOWN',
+  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, shippingAt: o.shippingAt ?? null, seller: o.seller, at: o.source_timestamp } });
+// Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
+// lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
+export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
 
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
@@ -129,18 +137,35 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });
       src.platform = platform;
       // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas.
-      let cache = null;
+      let cache = null; let planned = [];
       if (platform === 'jsonld') {
         cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
+        const at = (cache.visitedAt ||= {}); // url -> quando foi lida com sucesso pela última vez
         if (!cache.at || Date.now() - Date.parse(cache.at) > 864e5) {
           cache.candidates = await jsonldUrls(base, 3000); cache.at = T; cache.visited = cache.visited.filter((u) => cache.candidates.includes(u));
+          for (const u of Object.keys(at)) if (!cache.candidates.includes(u)) delete at[u];
         }
         const fresh = cache.candidates.filter((u) => !cache.visited.includes(u)).slice(0, 25);
+        // Página já lida e julgada irrelevante volta à fila depois de HUNTER_JSONLD_RETRY_H horas (padrão 24): pode ter
+        // virado produto. Divide as 25 vagas da rodada com as novas (as mais antigas primeiro).
+        const RETRY = Number(process.env.HUNTER_JSONLD_RETRY_H || 24) * 3600e3;
+        const rel = new Set(cache.relevant);
+        const retry = cache.candidates.filter((u) => cache.visited.includes(u) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY))
+          .sort((a, b) => (at[a] || '').localeCompare(at[b] || '')).slice(0, Math.max(0, 25 - fresh.length));
         cache.visited.push(...fresh);
-        store = { ...store, plannedUrls: [...new Set([...cache.relevant, ...fresh, ...(store.productUrls || [])])] };
+        planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
+        store = { ...store, plannedUrls: planned };
       }
       const listings = await adapters[platform].search(store, catalog);
-      if (cache) cache.relevant = [...new Set(listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url))];
+      const failedUrls = new Set(listings.failed || []);
+      if (cache) {
+        // Página relevante que não abriu continua relevante; página nova que não abriu volta para a fila de novas.
+        cache.relevant = [...new Set([...listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url), ...cache.relevant.filter((u) => failedUrls.has(u))])];
+        cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || cache.relevant.includes(u));
+        for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
+      }
+      // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
+      if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o);
       let matched = 0;
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
@@ -154,8 +179,18 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         registry[product.id] = { ...registry[product.id], ...product, image: (store.copagSource && l.image) || prevImg || l.image || null, firstSeen: registry[product.id]?.firstSeen || T, lastSeen: T };
         let stock = l.stock || 'UNKNOWN';
         if (m.parsed.preorder && stock !== 'OUT_OF_STOCK') stock = 'PRE_ORDER';
-        let ship = l.shipping ?? null;
-        if (ship == null && cep && l._vtex && stock === 'IN_STOCK') { try { ship = await vtexShipping(l, cep); } catch { ship = null; } }
+        const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
+        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null;
+        if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
+          try { ship = await vtexShipping(l, cep); shipAt = T; }
+          catch (e) {
+            // Simulação falhou: guarda o motivo e usa o último frete conhecido desta oferta, com a data em que foi lido.
+            // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
+            shipError = String(e?.message || e).slice(0, 160);
+            const old = lastValidOf(prev[id]);
+            if (old?.shippingKnown && old.shipping != null) { ship = old.shipping; shipAt = old.shippingAt || old.at || old.source_timestamp || null; }
+          }
+        }
         const pp = pickPrice(l.price);
         // Loja oficial Copag = fonte nº 1 do preço sugerido (regra 4). Preço "de" vence o promocional.
         if (store.copagSource && l.price?.base > 0) {
@@ -165,18 +200,17 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           else old.source_timestamp = T;
         }
         const total = pp.value != null ? round2(pp.value + (ship || 0)) : null;
-        const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         offers[id] = {
           id, productId: m.productId, matchConfidence: m.confidence, storeId: store.id, storeName: store.name, storeKind: store.kind,
           seller: l.seller || null, sellerId: l.sellerId != null ? String(l.sellerId) : null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
-          shipping: ship, shippingKnown: ship != null, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
+          shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
           stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
-      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T });
+      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
       touched.add(store.id);
     } catch (e) {
       Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
@@ -188,7 +222,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
     const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
-    offers[id] = recent ? { ...o } : { ...o, stale: true, stock: 'UNKNOWN' };
+    offers[id] = recent ? { ...o } : staleCopy(o);
   }
 
   // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
@@ -202,10 +236,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     delete o.justConfirmed; delete o.dropFrom;
     if (!same) { o.confirmed = false; o.pendingFrom = null; continue; }
     const wasPending = old.confirmed === false;
-    if (o.total < old.total * 0.97) { o.confirmed = false; o.pendingFrom = wasPending ? old.pendingFrom ?? null : old.total; continue; }
-    if (wasPending && Math.abs(o.total - old.total) > o.total * 0.03) { o.confirmed = false; o.pendingFrom = old.pendingFrom ?? null; continue; }
+    // Frete que passou a ser (des)conhecido muda o total, não o preço: não abre nem confirma queda.
+    const sameShip = !!old.shippingKnown === !!o.shippingKnown;
+    if (sameShip && o.total < old.total * 0.97) { o.confirmed = false; o.pendingFrom = wasPending ? old.pendingFrom ?? null : old.total; continue; }
+    if (wasPending && sameShip && Math.abs(o.total - old.total) > o.total * 0.03) { o.confirmed = false; o.pendingFrom = old.pendingFrom ?? null; continue; }
     o.confirmed = true;
-    if (wasPending) { if (old.pendingFrom > o.total) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new'; }
+    if (wasPending) { if (old.pendingFrom > o.total && sameShip) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new'; }
     o.pendingFrom = null;
   }
 
@@ -213,10 +249,13 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const events = []; const history = [];
   for (const o of Object.values(offers)) {
     if (o.stale) continue;
-    const p = prev[o.id];
+    // Compara com a última leitura válida: "em estoque → falha → em estoque" não é reposição, nem linha nova no histórico.
+    // Sem base válida (oferta nova ou stale antiga): registra a leitura, sem evento.
+    const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
     if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
-    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'drop', from: p.total });
+    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda.
+    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK' && !!p.shippingKnown === !!o.shippingKnown) events.push({ offerId: o.id, event: 'drop', from: p.total });
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
@@ -352,7 +391,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), offers: all.length, alerts: delivered.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
   } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
