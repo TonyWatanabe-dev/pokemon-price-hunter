@@ -1,8 +1,8 @@
 // Fase 6B.0 — contrato de /api/v1/oportunidades: categoria, referência, comparação com a referência ATUAL usada pelo motor,
 // filtros e ordens. Parte A pura (sempre). Parte B no PostgreSQL com TEST_DATABASE_URL (banco descartável).
 import assert from 'node:assert/strict';
-import { referenceComparison } from '../src/core/references.js';
-import { calculateOpportunity } from '../src/core/opportunity-engine.js';
+import { referenceComparison, opportunityConfidenceLevel } from '../src/core/references.js';
+import { calculateOpportunity, confidenceLevel } from '../src/core/opportunity-engine.js';
 
 let n = 0; const t = (name, fn) => { fn(); n++; };
 const now = new Date('2026-10-08T12:00:00Z');
@@ -44,6 +44,11 @@ t('referenceComparison: Copag, mercado, acima, ausente', () => {
 t('referenceComparison: tipos históricos/comunitários nunca são comparação atual', () => {
   for (const kind of ['COPAG_OFFICIAL_HISTORICAL', 'MARKET_HISTORICAL', 'COMMUNITY_REFERENCE'])
     assert.equal(referenceComparison({ kind, value: 319.99, gap: 0.5, price: 160 }).available, false, kind);
+});
+
+t('confidence_level da API = faixas do motor (0 a 1, passo 0,001)', () => {
+  for (let i = 0; i <= 1000; i++) { const c = i / 1000; assert.equal(opportunityConfidenceLevel(c), confidenceLevel(c), String(c)); }
+  assert.equal(opportunityConfidenceLevel(null), null);
 });
 
 // validação de parâmetros (sem banco: o erro sai antes da leitura)
@@ -106,7 +111,8 @@ const all = await get();
 assert.equal(all.meta.total, 3); assert.equal(all.meta.engine, 'opportunity-v2.2');
 for (const x of all.data) {
   for (const k of ['product', 'offer', 'price', 'total', 'stock', 'store', 'marketplace', 'opportunity_score', 'opportunity_band', 'confidence', 'current_reference', 'market_composition',
-    'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at', 'reference_comparison', 'product_variation_7d']) assert.ok(k in x, k);
+    'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at', 'reference_comparison', 'product_variation_7d', 'confidence_level']) assert.ok(k in x, k);
+  assert.equal(x.confidence_level, opportunityConfidenceLevel(x.confidence));
   for (const k of ['type', 'type_label', 'group', 'image', 'collection']) assert.ok(k in x.product, 'product.' + k);
   for (const k of ['id', 'title', 'url', 'image', 'first_seen_at']) assert.ok(k in x.offer, 'offer.' + k);
 }

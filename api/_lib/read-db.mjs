@@ -2,7 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
-import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison } from './references.mjs';
+import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
 
 const num = (v) => (v == null ? null : Number(v));
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
@@ -325,6 +325,7 @@ const opportunityOut = (r) => ({
   price: num(r.price), total: r.shipping_status === 'unknown' ? null : num(r.total_price), shipping: r.shipping_status, stock: r.stock_status,
   store: { id: r.store_id, name: r.store_name }, marketplace: r.marketplace_id,
   opportunity_score: r.opportunity_score, opportunity_band: r.opportunity_band, confidence: num(r.confidence),
+  confidence_level: opportunityConfidenceLevel(num(r.confidence)),   // alta | média | baixa (faixas do motor)
   current_reference: currentReferenceView({ kind: r.reference_kind, price: r.reference_price, confidence: r.reference_confidence, reason: r.reference_reason, market_sources: r.market_sources, market_composition: r.market_composition }),
   market_composition: r.market_composition ?? 'NONE',
   // comparação com a referência ATUAL que o motor usou nesta oferta (percentual e valor calculados no backend)

@@ -197,6 +197,10 @@ export function referenceComparison({ kind, value, gap, price, reasons = [] }) {
     percentage_below: r2(g * 100), amount_below: price != null ? r2(v - Number(price)) : null, position: pos ? POSITION[pos.code] : null };
 }
 
+/** Nível de confiança da OPORTUNIDADE (0–1) em palavras, para a interface não classificar nada.
+ *  Mesmas faixas do Opportunity Engine (confidenceLevel em src/core/opportunity-engine.js; um teste garante a igualdade). */
+export const opportunityConfidenceLevel = (c) => (c == null ? null : c >= 0.75 ? 'alta' : c >= 0.5 ? 'média' : 'baixa');
+
 /** linha de reference_price → contexto (histórico/comunitário) no contrato da API */
 export function contextReferenceView(row) {
   const k = row.reference_kind;
