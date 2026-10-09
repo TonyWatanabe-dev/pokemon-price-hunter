@@ -8,7 +8,7 @@ export const MAX_AGE_MIN = 60;            // nota calculada há mais de 60 min n
 const FUTURE_SKEW_MS = 5 * 60e3;          // tolerância de relógio entre o banco e o robô
 
 const SQL = `SELECT o.legacy_id, op.opportunity_score::int AS score, op.opportunity_band AS band, op.confidence::float8 AS confidence,
-    op.price::float8 AS price, op.calculated_at
+    op.price::float8 AS price, op.calculated_at, (SELECT max(calculated_at) FROM opportunity) AS engine_at
   FROM offer o JOIN opportunity op ON op.offer_id = o.id
  WHERE o.legacy_id = ANY($1::text[])`;
 
@@ -58,8 +58,12 @@ export async function readOfficial(ids, { env = process.env, timeoutMs = 5000, l
 export function officialFor(offer, row, now = Date.now(), maxAgeMin = MAX_AGE_MIN) {
   if (!offer || !row || row.score == null || !Number.isFinite(Number(row.score)) || !row.band) return null;
   if (!(offer.price > 0) || !(row.price > 0) || Math.round(row.price * 100) !== Math.round(offer.price * 100)) return null;
-  const at = row.calculated_at instanceof Date ? row.calculated_at.getTime() : Date.parse(row.calculated_at);
-  const age = new Date(now).getTime() - at;
+  const ms = (v) => (v instanceof Date ? v.getTime() : Date.parse(v));
+  const at = ms(row.calculated_at);
+  // O motor só regrava a linha quando algo muda: linha igual continua sendo a avaliação da última rodada do motor.
+  // Por isso o prazo conta da rodada mais recente do motor (engine_at), não da última mudança desta linha.
+  const engineAt = row.engine_at == null ? NaN : ms(row.engine_at);
+  const age = new Date(now).getTime() - (Number.isFinite(engineAt) && engineAt > at ? engineAt : at);
   if (!Number.isFinite(age) || age > maxAgeMin * 60e3 || age < -FUTURE_SKEW_MS) return null;
   const confidence = row.confidence == null ? null : Number(row.confidence);
   return { score: Number(row.score), band: row.band, confidence, level: confidenceLevel(confidence), calculatedAt: new Date(at).toISOString() };

@@ -48,6 +48,10 @@ await t('4. nota com mais de 60 min, do futuro ou de preço diferente: tratada c
   assert.equal(officialFor(o, row({ calculated_at: new Date(NOW - 61 * 60e3) }), NOW), null, '61 min não vale');
   assert.equal(officialFor(o, row({ calculated_at: new Date(NOW + 30 * 60e3) }), NOW), null, 'cálculo no futuro não vale');
   assert.equal(officialFor(o, row({ calculated_at: 'lixo' }), NOW), null);
+  // linha sem mudança há horas continua valendo se o motor rodou há pouco (o motor só regrava o que muda)
+  assert.equal(officialFor(o, row({ calculated_at: new Date(NOW - 180 * 60e3), engine_at: new Date(NOW - 5 * 60e3) }), NOW)?.score, 80, 'linha antiga + motor recente vale');
+  assert.equal(officialFor(o, row({ calculated_at: new Date(NOW - 180 * 60e3), engine_at: new Date(NOW - 61 * 60e3) }), NOW), null, 'motor parado há 61 min não vale');
+  assert.equal(officialFor(o, row({ calculated_at: new Date(NOW - 10 * 60e3), engine_at: new Date(NOW + 30 * 60e3) }), NOW), null, 'motor no futuro não vale');
   assert.equal(officialFor(o, row({ price: 41.9 }), NOW), null, 'preço avaliado diferente do lido agora');
   assert.equal(officialFor(offer({ price: 39.9001 }), row(), NOW)?.score, 80, 'mesmo valor em centavos vale');
   assert.equal(officialFor(offer({ price: null }), row(), NOW), null);
