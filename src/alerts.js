@@ -37,7 +37,7 @@ export function evaluate(rules, offers, events, products, { opp = new Map(), log
       if (!cur || o.total < cur.offer.total) hits.set(key, { rule: r, offer: o, product: p, kind, opp: opp.get(o.id) || null });
     }
     if (watched.has(o.productId) && evBy.has(o.id + '|drop')) {
-      const key = 'drop|' + o.id; hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: products[o.productId], kind: 'drop', from: evBy.get(o.id + '|drop').from, opp: opp.get(o.id) || null });
+      const key = 'drop|' + o.id; const ev = evBy.get(o.id + '|drop'); hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: products[o.productId], kind: 'drop', from: ev.from, to: ev.to ?? null, basis: ev.basis ?? 'total', opp: opp.get(o.id) || null });
     }
   }
   return [...hits.entries()].map(([key, h]) => ({ key, ...h }));
@@ -62,12 +62,16 @@ export function compose(h) {
   const { offer: o, product: p, kind } = h;
   const head = { target: '🎯 PREÇO-ALVO ATINGIDO', deal: '🔥 POKÉMON DEAL', restock: '🟢 RESTOCK', drop: '📉 QUEDA DE PREÇO' }[kind];
   const lines = [head, '', p.collectionName.toUpperCase(), p.typeLabel + (p.boosters ? ` com ${p.boosters} boosters` : '')];
-  if (kind === 'drop') lines.push('', `${money(h.from)} → ${money(o.total)}`); else lines.push('', money(o.total) + ` (${o.priceKindLabel})`);
+  // Queda medida no preço do produto (o frete passou a ser, ou deixou de ser, conhecido): mostra os dois preços do produto.
+  if (kind === 'drop') lines.push('', h.basis === 'price' ? `${money(h.from)} → ${money(h.to)} (preço do produto)` : `${money(h.from)} → ${money(h.to ?? o.total)}`); else lines.push('', money(o.total) + ` (${o.priceKindLabel})`);
   lines.push('', p.copagConfirmed ? `Copag: ${money(p.msrp)}` : 'Copag: sem preço oficial');
   if (o.discount != null) lines.push(`↓ ${pct(o.discount)}`);
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
-  lines.push('', `Estoque: ${o.quantity ? o.quantity + ' unidades' : 'confirmado'}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
-  lines.push(`Frete: ${o.shipping === 0 ? 'grátis' : o.shipping > 0 ? money(o.shipping) : 'não informado'}`);
+  // Estoque não comprovado pela fonte (ML pela lista do catálogo): nunca diz "confirmado".
+  const stockTxt = o.stockVerified === false ? 'anunciado, quantidade não verificada' : o.quantity ? o.quantity + ' unidades' : 'confirmado';
+  lines.push('', `Estoque: ${stockTxt}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
+  const shipWhen = o.shippingSource === 'anterior' && o.shippingAt ? ` (cotação de ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(o.shippingAt))})` : '';
+  lines.push(`Frete: ${o.shipping === 0 ? 'grátis' : o.shipping > 0 ? money(o.shipping) + shipWhen : 'não informado'}`);
   const sl = officialLine(h.opp); if (sl) lines.push(sl);   // nota oficial; sem nota válida, a linha não aparece
   return { title: head, text: lines.join('\n'), url: o.url };
 }

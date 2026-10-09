@@ -79,6 +79,7 @@ export function offersRows(offers) {
       price: money(o.price), price_kind: o.priceKind || null, list_price: money(o.listPrice), pix_price: money(o.prices?.pix),
       shipping_status: known ? (Number(o.shipping) === 0 ? 'free' : 'known') : 'unknown',
       shipping_price: known ? money(o.shipping) : null,
+      shipping_reused: known && o.shippingSource === 'anterior', // frete da simulação anterior (VTEX falhou nesta rodada): não renova a cotação
       total_price: known ? money(o.total) : null,               // frete desconhecido: total não é inventado
       stock_status: stockOf(o.stock), quantity: o.quantity ?? null,
       match_confidence: o.matchConfidence != null ? Math.round(o.matchConfidence * 100) : null,

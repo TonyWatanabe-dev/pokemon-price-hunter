@@ -17,6 +17,19 @@ export function readerSummary(off, validCount) {
   return { status, valid: status === 'ok' ? validCount : 0, read: status === 'ok' ? (off.rows?.size ?? 0) : 0, reason: clean(off.reason) };
 }
 
+// Fontes acompanhadas uma a uma pelo vigia (começa pelo Mercado Livre, que sozinho traz boa parte das ofertas).
+export const WATCHED_SOURCES = ['mercadolivre'];
+
+/** Situação de cada fonte acompanhada: status, anúncios na última leitura e quando teve anúncios pela última vez. */
+export function watchedSummary(sources, watchedIds = WATCHED_SOURCES) {
+  const out = {};
+  for (const id of watchedIds) {
+    const s = sources?.[id]; if (!s) continue;
+    out[id] = { status: s.status || null, listings: Number.isFinite(s.listings) ? s.listings : 0, lastListingsAt: isIso(s.lastListingsAt) ? s.lastListingsAt : null, reason: clean(s.reason) };
+  }
+  return out;
+}
+
 /** Lojas: ativas, ativas com anúncios, ativas sem resultado, bloqueadas, com erro e adiadas pelo prazo da rodada. */
 export function storesSummary(sources, deferred = 0) {
   const all = Object.values(sources || {});
@@ -44,7 +57,7 @@ export function runIssues(rec) {
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, offers, alerts }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, offers, alerts, watched }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -55,6 +68,7 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     startedAt, finishedAt, durationSec: Number.isFinite(f - s) ? Math.round((f - s) / 1000) : null,
     result: stores?.deferred > 0 ? 'parcial' : 'ok',
     stores, offers: offers ?? null, alerts: alerts ?? 0,
+    ...(watched && Object.keys(watched).length ? { watched } : {}),
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
   };
   rec.issues = runIssues(rec);

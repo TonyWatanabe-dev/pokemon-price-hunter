@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import { readJson, readJsonl, writeJson, dataPath } from './db.js';
 import { trustedPoint } from './distrust.js';
+import { comparable } from './offer-compare.js';
 
 const KEEP_MS = 7 * 864e5;
 const FILE = () => dataPath('activity.json');
@@ -43,7 +44,8 @@ export function recordActivity({ T, offers, prev, products, newLowest, quiet = n
     else if (o.justConfirmed === 'drop') { if (plausible(o.total, o.dropFrom, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: o.dropFrom }); }
     else if (!old) { if (!firstEver && p.msrp && o.total < p.msrp && plausible(o.total, null, p.msrp)) fresh.push({ ...base, type: 'new' }); }
     else if (old.stock === 'OUT_OF_STOCK' && !old.stale) fresh.push({ ...base, type: 'restock' });
-    else if (old.total > 0 && o.total < old.total && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
+    // Queda só com valores comparáveis (mesma situação de frete; senão, preço do produto): frete que some não é queda.
+    else if (old.total > 0 && (comparable(old, o)?.to < comparable(old, o)?.from) && plausible(o.total, old.total, p.msrp) && !log.some((e) => e.offerId === o.id && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'drop', from: old.total });
     // Recorde que se repete a cada rodada (mesmo produto, mesmo valor ou maior) não é novidade.
     if (newLowest.has(o.id) && !log.some((e) => e.type === 'lowest' && e.productId === o.productId && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'lowest', from: newLowest.get(o.id) });
   }

@@ -136,7 +136,9 @@ export function parseListing(title, catalog) {
   for (const [re, why] of REJECT) if (re.test(t)) reasons.push(why);
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
-  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
+  // "Case" de loja = caixa de transporte com várias unidades ("Case Blister Quádruplo", "Case Combo de Booster"),
+  // nunca o produto unitário. "Case vazio" (acessório) já é recusado em REJECT e fica de fora daqui.
+  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase\b(?! vazi[oa]\b)|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
   if (/\b(dados?|moedas?|marcadores?|contadores? de dano)\b/.test(t) && !/\b(boosters?|pacotes?|blister|colecao|box|treinador avancado com|etb com)\b/.test(t.replace(/\btreinador avancado\b/, ''))) reasons.push('acessório avulso (dados, moeda, marcador)');
   const col = detectCollection(t, catalog.collections);
   if (!/\bpokemon\b/.test(t) && !/\bcopag\b/.test(t) && !col.id) reasons.push('não menciona Pokémon');

@@ -11,12 +11,15 @@
 //    - "zero notas válidas": só conta como falha quando o leitor respondeu (ok), leu pelo menos
 //      MIN_READ_FOR_ZERO linhas e nenhuma valeu, nas últimas CONSEC rodadas. Com menos linhas lidas
 //      (pouca oferta ao vivo), fica só registrado: não há contexto para chamar de falha.
+//    - fonte acompanhada (watched no registro, hoje o Mercado Livre) que já teve anúncios e, nas últimas CONSEC rodadas,
+//      ficou com zero anúncios ou fora do ar.
 // Avisos: um na transição para falha (ou quando surge problema novo), um lembrete a cada REMIND_MIN min enquanto
 // continuar, e um de recuperação depois de 2 checagens saudáveis seguidas (evita aviso em vaivém).
 // O "livro" (ledger) guarda o que já foi avisado; só muda quando a mensagem chega a pelo menos um canal.
 
 export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2 };
 const BAD = new Set(['degradado', 'parado']);
+const SOURCE_NAME = { mercadolivre: 'Mercado Livre' };
 
 const min = (a, b) => (Number.isFinite(a) && Number.isFinite(b) ? Math.round((a - b) / 6e4) : null);
 export const hhmm = (iso) => { const t = Date.parse(iso); return Number.isFinite(t) ? new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }).format(new Date(t)) : '?'; };
@@ -65,6 +68,16 @@ export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, met
     if (all((r) => r.dbSync?.status === 'atrasado')) add('sync_falhando', `O banco não recebeu as últimas rodadas (último dado no banco: ${hhmm(last.dbSync.lastSeenAt)}). O site e a API podem mostrar preços antigos.`);
     else if (all((r) => r.dbSync?.status === 'indisponivel')) add('banco_inacessivel', `O robô não conseguiu ler o banco (${last.dbSync.reason || 'sem detalhe'}).`);
     else if (all((r) => r.dbSync?.status === 'desligado')) add('banco_desligado', 'O robô está rodando sem DATABASE_URL: sem sincronização nem nota oficial.');
+    // Fonte acompanhada (watched, começa pelo ML) que já teve anúncios e, nas últimas CONSEC rodadas,
+    // ficou sem anúncios ou fora do ar (bloqueada, erro, pausada).
+    for (const id of Object.keys(last.watched || {})) {
+      const ws = recs.map((r) => r.watched?.[id]);
+      const down = (w) => !!w && (w.status !== 'ACTIVE' || !(w.listings > 0));
+      if (!ws.every(down)) continue;
+      const w = ws[ws.length - 1];
+      const historic = ws.some((x) => x.lastListingsAt) || (w.status !== 'ACTIVE' && w.listings > 0);
+      if (historic) add('fonte_zerada', `${SOURCE_NAME[id] || id} ${w.status === 'ACTIVE' ? 'sem anúncios' : `fora do ar (${w.status}${w.reason ? ': ' + w.reason : ''})`} nas ${RULES.CONSEC} últimas rodadas${w.lastListingsAt ? ` (último com anúncios: ${hhmm(w.lastListingsAt)})` : ''}. As ofertas dessa fonte saem do site.`);
+    }
     if (all((r) => r.reader?.status === 'unavailable')) add('leitor_indisponivel', `Leitor da nota oficial indisponível (${last.reader.reason || 'sem detalhe'}): alertas saem sem a nota.`);
     else if (all((r) => r.reader?.status === 'ok' && r.reader.read >= RULES.MIN_READ_FOR_ZERO && r.reader.valid === 0)) add('leitor_sem_nota', `Leitor oficial sem nenhuma nota válida (${last.reader.valid}/${last.reader.read}).`);
   }
@@ -86,7 +99,7 @@ const CODE_LABEL = {
   dados_parados: 'preços sem atualizar', sem_rodadas: 'robô sem disparo', rodada_falhou: 'rodada com falha', rodada_sem_publicar: 'dados sem publicar',
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
-  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida',
+  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_zerada: 'fonte sem anúncios',
 };
 
 /** Decide se avisa. Não altera o livro: use commitLedger depois de tentar enviar. */

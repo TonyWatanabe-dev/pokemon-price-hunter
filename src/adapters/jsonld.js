@@ -171,13 +171,28 @@ export async function detect(base) {
   try { await guard(base + '/'); const html = (await get(base + '/')).text; return /pok[eé]mon/i.test(html); } catch (e) { if (e.blocked) throw e; return false; }
 }
 
+// Falha de leitura (tentar de novo depois) × resposta definitiva (página sumiu ou não é produto).
+// Timeout, erro de rede, 5xx, 408 e "fora do ar" são transitórios; 404/410 e outros 4xx são definitivos.
+export function pageFailure(e) {
+  if (e?.status === 'unreachable' || e?.status === 0 || e?.status == null) return true;
+  return e.status === 408 || (typeof e.status === 'number' && e.status >= 500);
+}
+
+/**
+ * Lê as páginas planejadas. Página com falha transitória vai para store.pageErrors (quando o chamador passa a lista),
+ * para a rodada preservar a oferta como stale em vez de dar o anúncio como removido e ler a página de novo depois.
+ */
 export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
-  const out = [];
+  const out = []; const failed = [];
   for (const u of urls) {
     try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
-    catch (e) { if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e; }
+    catch (e) {
+      if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e;
+      if (pageFailure(e)) failed.push({ url: u, reason: String(e.message || 'falha de leitura').slice(0, 120) });
+    }
   }
+  if (Array.isArray(store.pageErrors)) store.pageErrors.push(...failed);
   return out;
 }

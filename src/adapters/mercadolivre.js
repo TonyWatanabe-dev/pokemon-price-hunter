@@ -57,7 +57,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (r.condition && r.condition !== 'new') continue;
       out.set(r.id, {
         title: r.title, url: r.permalink, price: { base: r.price }, listPrice: r.original_price || null,
-        stock: r.available_quantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: r.available_quantity > 1 ? r.available_quantity : null,
+        stock: r.available_quantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', stockVerified: typeof r.available_quantity === 'number', quantity: r.available_quantity > 1 ? r.available_quantity : null,
         shipping: r.shipping?.free_shipping ? 0 : null, sku: r.id, ean: null, image: r.thumbnail ? r.thumbnail.replace(/^http:/, 'https:') : null,
         seller: r.official_store_name || r.seller?.nickname || String(r.seller?.id || ''), sellerId: r.seller?.id,
         sellerKind: r.official_store_id ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
@@ -69,18 +69,34 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   // Caminho 2: catálogo. Os produtos de catálogo de cada coleção ficam em cache por 1 dia.
   const cacheFile = dataPath('ml-catalog.json');
   const cache = readJson(cacheFile, { at: null, products: {}, sellers: {} });
-  if (!cache.at || Date.now() - Date.parse(cache.at) > DAY) {
-    const found = {};
-    for (const term of searchTerms(catalog)) {
+  const nowMs = Date.now();
+  if (!cache.at || nowMs - Date.parse(cache.at) > DAY || (cache.retryAt && nowMs >= Date.parse(cache.retryAt))) {
+    const found = {}; const terms = searchTerms(catalog); let failed = 0; let lastErr = null;
+    for (const term of terms) {
       let j;
-      try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20`); } catch (e) { if (e.blocked) throw e; log(`ML catálogo: busca "${term}" falhou (${e.message})`); continue; }
+      try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20`); } catch (e) { if (e.blocked) throw e; failed++; lastErr = e.message; log(`ML catálogo: busca "${term}" falhou (${e.message})`); continue; }
       for (const p of j.results || []) {
         const name = p.name || p.title; if (!name || !/pok[eé]mon/i.test(name)) continue;
         const m = matchProduct({ title: name, url: '' }, catalog);
         if (m.productId && !mlReject(name, m.productId, catalog)) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
       }
     }
-    cache.products = found; cache.at = new Date().toISOString();
+    const before = Object.keys(cache.products || {}).length;
+    // Todas as buscas falharam: a leitura falhou (a rodada marca o ML como erro e as ofertas ficam desatualizadas).
+    // Nunca troca o catálogo por um vazio por causa de falha.
+    if (terms.length && failed === terms.length) {
+      cache.retryAt = new Date(nowMs + 3600e3).toISOString(); writeJson(cacheFile, cache);
+      throw new Error(`Mercado Livre: todas as ${terms.length} buscas de catálogo falharam (${String(lastErr).slice(0, 80)})`);
+    }
+    if (failed) {
+      // Parcial: soma o que veio ao catálogo anterior (sem perder produto por falha de uma busca) e tenta de novo em 1 h.
+      cache.products = { ...(cache.products || {}), ...found }; cache.retryAt = new Date(nowMs + 3600e3).toISOString();
+      log(`ML catálogo: ${failed}/${terms.length} buscas falharam; mantido o catálogo anterior (${before}) + ${Object.keys(found).length} encontrados`);
+    } else if (!Object.keys(found).length && before) {
+      // Tudo respondeu, mas nada veio: resposta suspeita. Mantém o anterior e tenta de novo em 1 h.
+      cache.retryAt = new Date(nowMs + 3600e3).toISOString();
+      log(`ML catálogo: buscas sem nenhum produto; mantido o catálogo anterior (${before})`);
+    } else { cache.products = found; cache.at = new Date(nowMs).toISOString(); delete cache.retryAt; }
   }
 
   // Vendedor: só publica quem tem reputação no ML (termômetro verde/amarelo e vendas concluídas).
@@ -96,11 +112,11 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   };
   const trusted = (v) => /^(3_yellow|4_light_green|5_green)$/.test(v.level || '') && v.sales >= MIN_SALES;
 
-  const byProduct = {};
+  const byProduct = {}; let asked = 0; let itemsFailed = 0; let itemsErr = null;
   for (const [pid, p] of Object.entries(cache.products)) {
     if (mlReject(p.name, p.productId, catalog)) continue;
-    let j;
-    try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
+    let j; asked++;
+    try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; itemsFailed++; itemsErr = e.message; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
     for (const it of j.results || []) {
       if (it.condition && it.condition !== 'new') continue;
       const id = it.item_id || it.id; const price = Number(it.price);
@@ -108,6 +124,8 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       (byProduct[p.productId] ||= []).push({ it, p, pid, id, price });
     }
   }
+  // Todas as consultas de ofertas falharam: é falha de leitura, não "zero anúncios".
+  if (asked && itemsFailed === asked) { writeJson(cacheFile, cache); throw new Error(`Mercado Livre: todas as ${asked} consultas de ofertas falharam (${String(itemsErr).slice(0, 80)})`); }
   const picked = [];
   for (const list of Object.values(byProduct)) {
     list.sort((a, b) => a.price - b.price);
@@ -141,6 +159,9 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   for (const { it, p, pid, id, price, v, official } of picked) {
     if ((perProduct[p.productId] || 0) >= PER_PRODUCT) continue;
     let url = pdpUrl(pid, id); let finalPrice = price; let qty = null;
+    // Estoque: só /items (anúncio ativo + quantidade) comprova. Pela lista do catálogo, o anúncio aparece como
+    // disponível, mas a quantidade não é verificada: fica stockVerified = false (nunca "confirmado").
+    let stock = 'IN_STOCK'; let stockVerified = false;
     if (itemsApi) {
       const b = check.get(id);
       if (!b) { drop('sem resposta'); continue; }
@@ -150,11 +171,12 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (b.catalog_product_id && b.catalog_product_id !== pid) { drop('outro produto'); continue; }
       if (b.permalink) url = b.permalink;
       finalPrice = Number(b.price); qty = b.available_quantity > 1 ? b.available_quantity : null;
+      if (typeof b.available_quantity === 'number') { stockVerified = true; if (b.available_quantity < 1) stock = 'OUT_OF_STOCK'; }
     }
     perProduct[p.productId] = (perProduct[p.productId] || 0) + 1;
     listings.push({
       title: p.name, url, price: { base: finalPrice }, listPrice: it.original_price > finalPrice ? it.original_price : null,
-      stock: 'IN_STOCK', quantity: qty,
+      stock, stockVerified, quantity: qty,
       shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
       seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: it.seller_id,
       sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',

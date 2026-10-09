@@ -28,6 +28,7 @@
 | | seção `ops` mais de 45 min atrás dos dados |
 | | nas 2 últimas rodadas registradas: banco sem a rodada anterior, banco ilegível, robô sem `DATABASE_URL` ou leitor indisponível |
 | | **zero notas válidas**: leitor ok, pelo menos 10 linhas lidas e nenhuma válida, nas 2 últimas rodadas. Com menos de 10 lidas, só fica registrado |
+| | **fonte acompanhada zerada** (Lote 7): fonte de `WATCHED_SOURCES` (`src/opstate.js`, hoje só o Mercado Livre) que já teve anúncios e, nas 2 últimas rodadas, ficou com 0 anúncios ou fora do ar (bloqueada, erro). Registro por rodada em `ops.runs[].watched` |
 | `desconhecido` | sem dados publicados legíveis, ou ainda sem `ops` registrado. Nunca avisa e não muda o livro |
 | `saudavel` | nenhum dos casos acima |
 

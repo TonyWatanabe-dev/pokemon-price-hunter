@@ -12,7 +12,7 @@ import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIn
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
-import { buildRunRecord, readerSummary, storesSummary, recordRun } from './opstate.js';
+import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -20,9 +20,47 @@ import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
+import { comparable, pendingRef } from './offer-compare.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
+const envNum = (k, d) => { const v = Number(process.env[k]); return Number.isFinite(v) && v >= 0 ? v : d; };
+// Frete simulado (VTEX) que falhou: reaproveita o último simulado desta oferta por até N horas, com a data dele.
+const SHIPPING_TTL_MS = envNum('HUNTER_SHIPPING_TTL_H', 24) * 3600e3;
+
+// JSON-LD: quantas páginas novas por rodada, quantas tentativas de uma página nova que falha antes de dar como lida,
+// e depois de quantas horas uma página lida e não relevante (não é produto, não casou) é lida de novo.
+const JSONLD_FRESH = 25;
+export function jsonldPlan(cache, nowMs) {
+  const recheckMs = envNum('HUNTER_JSONLD_RECHECK_H', 24) * 3600e3; const recheckMax = envNum('HUNTER_JSONLD_RECHECK_MAX', 10);
+  const visited = new Set(cache.visited); const relevant = new Set(cache.relevant);
+  const fresh = cache.candidates.filter((u) => !visited.has(u)).slice(0, JSONLD_FRESH);
+  const age = (u) => Date.parse(cache.checked?.[u] || '') || 0; // sem data (cache antigo): mais velha de todas
+  const recheck = cache.visited.filter((u) => !relevant.has(u) && nowMs - age(u) >= recheckMs).sort((a, b) => age(a) - age(b)).slice(0, recheckMax);
+  return { fresh, recheck, prevRelevant: [...cache.relevant] };
+}
+/** Depois da leitura da loja: página só vira "visitada" se foi lida; relevante que falhou continua relevante. Devolve as URLs com falha. */
+export function jsonldSettle(cache, plan, pageErrors = [], T) {
+  const retryMax = envNum('HUNTER_JSONLD_RETRY_MAX', 3);
+  const errs = new Set(pageErrors.map((e) => e.url));
+  cache.relevant = [...new Set([...cache.relevant, ...plan.prevRelevant.filter((u) => errs.has(u))])];
+  const relevant = new Set(cache.relevant); const visited = new Set(cache.visited);
+  for (const u of plan.fresh) {
+    if (errs.has(u)) {
+      const n = (cache.retry[u] || 0) + 1;
+      if (n < retryMax) { cache.retry[u] = n; continue; } // continua nova: tenta de novo na próxima rodada
+      delete cache.retry[u]; cache.checked[u] = T;       // falhou retryMax vezes: só volta depois do intervalo de releitura
+    } else delete cache.retry[u];
+    if (!visited.has(u)) { cache.visited.push(u); visited.add(u); }
+  }
+  for (const u of new Set([...plan.fresh, ...plan.recheck, ...plan.prevRelevant])) {
+    if (relevant.has(u)) delete cache.checked[u];
+    else if (visited.has(u)) cache.checked[u] = T;
+  }
+  return errs;
+}
+/** Último estado lido de verdade: a própria oferta, ou (se desatualizada) o último estoque conhecido antes da falha. */
+export const lastValid = (o) => (!o ? null : !o.stale ? o : o.lastKnownStock ? { ...o, stock: o.lastKnownStock } : null);
 
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
@@ -104,6 +142,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const cep = process.env.HUNTER_CEP || watch.settings?.cep;
 
   const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set();
+  const pageFailures = new Map(); // loja -> URLs de página com falha transitória nesta rodada (oferta fica stale, não "removed")
+  const shipFails = new Map();    // loja -> { n, reason } das simulações de frete sem resultado nesta rodada
   // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio: mais lojas ao mesmo tempo, nunca mais pressa numa loja), prazo por rodada
   // e rodízio — quem ficou para trás numa rodada vai primeiro na seguinte.
   const deadline = Date.now() + Number(process.env.HUNTER_BUDGET_MIN || 7) * 60e3;
@@ -128,16 +168,19 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       const platform = store.platform !== 'auto' ? store.platform : (src.platform || await detectPlatform(base));
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });
       src.platform = platform;
-      // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas.
-      let cache = null;
+      // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas + algumas
+      // já visitadas e não relevantes, de novo depois de JSONLD_RECHECK_H. Página só conta como visitada depois de lida.
+      let cache = null; let plan = null;
       if (platform === 'jsonld') {
         cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
+        cache.checked ||= {}; cache.retry ||= {};
         if (!cache.at || Date.now() - Date.parse(cache.at) > 864e5) {
           cache.candidates = await jsonldUrls(base, 3000); cache.at = T; cache.visited = cache.visited.filter((u) => cache.candidates.includes(u));
+          const keep = new Set(cache.candidates);
+          for (const m of [cache.checked, cache.retry]) for (const u of Object.keys(m)) if (!keep.has(u)) delete m[u];
         }
-        const fresh = cache.candidates.filter((u) => !cache.visited.includes(u)).slice(0, 25);
-        cache.visited.push(...fresh);
-        store = { ...store, plannedUrls: [...new Set([...cache.relevant, ...fresh, ...(store.productUrls || [])])] };
+        plan = jsonldPlan(cache, now.getTime());
+        store = { ...store, plannedUrls: [...new Set([...cache.relevant, ...plan.fresh, ...plan.recheck, ...(store.productUrls || [])])], pageErrors: [] };
       }
       const listings = await adapters[platform].search(store, catalog);
       if (cache) cache.relevant = [...new Set(listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url))];
@@ -154,8 +197,21 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         registry[product.id] = { ...registry[product.id], ...product, image: (store.copagSource && l.image) || prevImg || l.image || null, firstSeen: registry[product.id]?.firstSeen || T, lastSeen: T };
         let stock = l.stock || 'UNKNOWN';
         if (m.parsed.preorder && stock !== 'OUT_OF_STOCK') stock = 'PRE_ORDER';
-        let ship = l.shipping ?? null;
-        if (ship == null && cep && l._vtex && stock === 'IN_STOCK') { try { ship = await vtexShipping(l, cep); } catch { ship = null; } }
+        const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
+        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipSource = ship != null ? 'loja' : null; let shipError = null;
+        if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
+          try { ship = await vtexShipping(l, cep); if (ship == null) shipError = 'simulação sem opção de entrega para o CEP'; else { shipAt = T; shipSource = 'simulacao'; } }
+          catch (e) { ship = null; shipError = 'simulação de frete falhou: ' + String(e.message || e).slice(0, 100); }
+          // Simulação falhou: vale o último frete simulado desta mesma oferta, com a data dele, dentro de SHIPPING_TTL_H.
+          // Sem frete anterior válido, fica desconhecido (nunca inventa frete).
+          if (ship == null) {
+            const old = prev[id]; const at = old?.shippingAt || old?.source_timestamp;
+            if (old && old.productId === m.productId && old.shippingKnown && old.shipping != null && at && now.getTime() - Date.parse(at) <= SHIPPING_TTL_MS) {
+              ship = old.shipping; shipAt = at; shipSource = 'anterior';
+            }
+            shipFails.set(store.id, { n: (shipFails.get(store.id)?.n || 0) + 1, reason: shipError });
+          }
+        }
         const pp = pickPrice(l.price);
         // Loja oficial Copag = fonte nº 1 do preço sugerido (regra 4). Preço "de" vence o promocional.
         if (store.copagSource && l.price?.base > 0) {
@@ -165,18 +221,28 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           else old.source_timestamp = T;
         }
         const total = pp.value != null ? round2(pp.value + (ship || 0)) : null;
-        const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         offers[id] = {
           id, productId: m.productId, matchConfidence: m.confidence, storeId: store.id, storeName: store.name, storeKind: store.kind,
           seller: l.seller || null, sellerId: l.sellerId != null ? String(l.sellerId) : null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
-          shipping: ship, shippingKnown: ship != null, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
-          stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
+          shipping: ship, shippingKnown: ship != null, shippingAt: shipAt, shippingSource: shipSource, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
+          stock, stockVerified: l.stockVerified ?? null, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
+      if (cache) {
+        const errs = jsonldSettle(cache, plan, store.pageErrors, T);
+        if (errs.size) { pageFailures.set(store.id, errs); log(`[${store.id}] ${errs.size} página(s) com falha de leitura: oferta mantida como desatualizada`); }
+        // Visível em sources.json/state: quantas páginas falharam na rodada (0 anúncios com falha ≠ loja sem produto).
+        src.pageFailures = errs.size; src.pageFailReason = errs.size ? store.pageErrors[0].reason : null;
+      }
       Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T });
+      if (listings.length) src.lastListingsAt = T;
+      // Frete por CEP: quantas simulações falharam nesta rodada e o último motivo (sem dado pessoal; CEP não vai junto).
+      const sf = shipFails.get(store.id);
+      if (sf) { src.shippingFailures = sf.n; src.shippingFailReason = sf.reason; log(`[${store.id}] frete: ${sf.n} simulação(ões) sem resultado (${sf.reason})`); }
+      else if (src.shippingFailures) { src.shippingFailures = 0; src.shippingFailReason = null; }
       touched.add(store.id);
     } catch (e) {
       Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
@@ -184,11 +250,13 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
-  // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
+  // Fontes que falharam (loja inteira ou só a página do anúncio): mantém a última leitura, mas como estoque desconhecido
+  // (nunca inventa disponibilidade). lastKnownStock guarda o último estoque lido de verdade, base dos eventos de estoque.
   for (const [id, o] of Object.entries(prev)) {
-    if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
+    if (offers[id] || !stores.some((s) => s.id === o.storeId)) continue;
+    if (touched.has(o.storeId) && !pageFailures.get(o.storeId)?.has(o.url)) continue;
     const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
-    offers[id] = recent ? { ...o } : { ...o, stale: true, stock: 'UNKNOWN' };
+    offers[id] = recent ? { ...o } : { ...o, stale: true, stock: 'UNKNOWN', lastKnownStock: lastValid(o)?.stock ?? null };
   }
 
   // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
@@ -202,11 +270,17 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     delete o.justConfirmed; delete o.dropFrom;
     if (!same) { o.confirmed = false; o.pendingFrom = null; continue; }
     const wasPending = old.confirmed === false;
-    if (o.total < old.total * 0.97) { o.confirmed = false; o.pendingFrom = wasPending ? old.pendingFrom ?? null : old.total; continue; }
-    if (wasPending && Math.abs(o.total - old.total) > o.total * 0.03) { o.confirmed = false; o.pendingFrom = old.pendingFrom ?? null; continue; }
+    // Total × total só com a mesma situação de frete; senão, preço × preço (frete que some ou volta não é queda).
+    const c = comparable(old, o) || { from: old.total, to: o.total };
+    const keepPending = (ref) => { o.confirmed = false; o.pendingFrom = ref?.total ?? null; o.pendingPrice = ref?.price ?? null; o.pendingShipKnown = ref?.shippingKnown ?? null; };
+    if (c.to < c.from * 0.97) { keepPending(wasPending ? pendingRef(old) : { total: old.total, price: old.price ?? null, shippingKnown: !!old.shippingKnown }); continue; }
+    if (wasPending && Math.abs(c.to - c.from) > c.to * 0.03) { keepPending(pendingRef(old)); continue; }
     o.confirmed = true;
-    if (wasPending) { if (old.pendingFrom > o.total) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new'; }
-    o.pendingFrom = null;
+    if (wasPending) {
+      const ref = pendingRef(old); const pc = ref && (comparable(ref, o) || { from: ref.total, to: o.total });
+      if (pc && pc.from > pc.to) { o.justConfirmed = 'drop'; o.dropFrom = old.pendingFrom; } else if (old.pendingFrom == null) o.justConfirmed = 'new';
+    }
+    o.pendingFrom = null; delete o.pendingPrice; delete o.pendingShipKnown;
   }
 
   // Histórico e eventos
@@ -215,8 +289,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (o.stale) continue;
     const p = prev[o.id];
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
-    if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
-    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'drop', from: p.total });
+    // Eventos comparam com o último estado lido de verdade: oferta desatualizada (loja ou página falhou) e estoque
+    // desconhecido nunca viram "voltou ao estoque"; frete que passou a ser (ou deixou de ser) conhecido nunca vira queda.
+    const base = lastValid(p);
+    if (base && base.stock !== 'IN_STOCK' && base.stock !== 'UNKNOWN' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
+    const c = base && o.stock === 'IN_STOCK' ? comparable(base, o) : null;
+    if (c && c.to < c.from) events.push({ offerId: o.id, event: 'drop', from: c.from, to: c.to, basis: c.basis });
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
@@ -352,7 +430,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), offers: all.length, alerts: delivered.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
   } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
