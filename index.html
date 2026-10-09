@@ -684,6 +684,11 @@ a.navbtn{text-decoration:none}
   .pod[data-hl="foil"] .cat-media::after,.pod[data-hl="ultra"] .cat-media::after{background-size:160% 160%;transition:background-position 700ms cubic-bezier(.16,1,.3,1)}
   .pod[data-hl="foil"]:hover .cat-media::after,.pod[data-hl="ultra"]:hover .cat-media::after{background-position:100% 100%}
 }
+/* brilho que passa pelo cartão (volta do visual anterior); desligado com movimento reduzido */
+.pod-sheen{position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;mix-blend-mode:color-dodge;opacity:.55;
+  background:linear-gradient(115deg,transparent 30%,rgb(255 255 255 / 0) 38%,rgb(255 240 200 / .55) 46%,rgb(160 220 255 / .4) 52%,transparent 60%) 0 0/250% 100% no-repeat;background-position:120% 0}
+@media (prefers-reduced-motion:no-preference){.pod .pod-sheen{animation:sheen 4.8s cubic-bezier(.65,0,.35,1) infinite}.pod[data-r="2"] .pod-sheen{animation-delay:1.2s}.pod[data-r="3"] .pod-sheen{animation-delay:2.4s}}
+@keyframes sheen{0%,55%{background-position:120% 0}100%{background-position:-60% 0}}
 .pod-body{position:relative;z-index:2;padding:14px 18px 18px;display:flex;flex-direction:column;gap:2px;flex:1}
 .pod-col{margin:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pod-name{margin:2px 0 8px;font-size:clamp(17px,1.6vw,21px);font-weight:700;letter-spacing:-.015em;line-height:1.2;color:var(--ink)}
@@ -1700,6 +1705,7 @@ function podCardOpp(x,r){
     <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(x.price)} em ${esc(st.name||"")}"></a>
     <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
+    <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
       <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(x.price)}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
       ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
