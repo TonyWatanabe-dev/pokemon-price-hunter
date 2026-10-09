@@ -1,6 +1,6 @@
 # CI de PR: roda a suíte completa (npm test) em todo PR para a main.
 # Sem secrets e só leitura: não publica, não faz deploy e não grava no repositório.
-# Os testes de banco ficam pulados (sem TEST_DATABASE_URL), como no uso local.
+# Os testes de banco rodam num PostgreSQL descartável do próprio job (sem secrets, nunca o banco de produção).
 name: CI
 
 on:
@@ -18,6 +18,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17   # mesma versão padrão do db-validate.yml
+        env: { POSTGRES_PASSWORD: pw }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,3 +33,4 @@ jobs:
         with: { node-version: 22 }
       - run: npm ci --no-audit --no-fund
       - run: npm test
+        env: { TEST_DATABASE_URL: 'postgres://postgres:pw@localhost:5432/postgres' }
