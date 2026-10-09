@@ -18,7 +18,7 @@ const ovFile = (enabled) => ({ enabled, overrides: approvals.map((c) => ({ store
 
 await test('24 casos iniciais: sugestões válidas, nenhuma passa por cima do catálogo', async () => {
   assert.equal(cases.length, 24);
-  assert.deepEqual(Object.fromEntries(['approve', 'reject', 'conferir'].map((d) => [d, cases.filter((c) => c.suggestion.decision === d).length])), { approve: 17, reject: 2, conferir: 5 });
+  assert.deepEqual(Object.fromEntries(['approve', 'reject', 'conferir'].map((d) => [d, cases.filter((c) => c.suggestion.decision === d).length])), { approve: 17, reject: 4, conferir: 3 });
   for (const c of approvals) assert.equal(validateResolution(item(c), c.suggestion.resolution, catalog), null, `#${c.n} ${c.title}`);
   for (const c of cases.filter((x) => x.kind === 'baixa_confianca'))
     assert.equal(resolutionProduct(c.suggestion.resolution), c.productId, `#${c.n} confirma o produto atual`);
@@ -83,6 +83,9 @@ await test('robô lê o override só pelo arquivo, e o arquivo nasce desligado',
   assert.doesNotMatch(runs, /\$\{\{\s*inputs\./, 'entradas só via env, nunca interpoladas no script');
   assert.match(wf, /REVIEW_ACTOR: \$\{\{ github\.actor \}\}/);
   assert.doesNotMatch(wf, /enabled.*true/, 'workflow não liga os overrides');
+  const save = wf.slice(wf.indexOf('- name: Salvar overrides'));
+  assert.match(save, /b="review\/overrides-\$\{RUN_ID\}"/); assert.match(save, /git push origin "\$b"/);
+  assert.doesNotMatch(save, /origin main|git push\s*(&&|\n|$)|--force/, 'export nunca grava direto na main');
 });
 
 await test('ferramenta sem banco não faz nada', async () => {

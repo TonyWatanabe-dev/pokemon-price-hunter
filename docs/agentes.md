@@ -34,7 +34,7 @@ Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com
 - **Registro:** `status`, `decided_at`, `decision_reason`, `decided_by`/`decided_by_label`, `resolution` (migration 009) e um `REVIEW_DECIDED` em `system_event`, na mesma transação. Se o evento não grava, a decisão também não.
 - **Sem duplicar:** `SELECT … FOR UPDATE` + `status = 'open'`. Repetir a mesma decisão não gera evento; uma decisão diferente, ou outra simultânea, é recusada (`already_decided`).
 - **Aprovar:** só para `matching`, com coleção, tipo e boosters validados contra o catálogo e contra a coleção que o anúncio traz. O id do produto é calculado, nunca digitado.
-- **Caminho até o matching:** `export` → `config/matching-overrides.json` (diff revisável), que o robô só usa com `enabled: true`. O override só resolve tipo ou boosters não identificados, ou duas coleções no título, e só na loja e página revisadas. Não passa por cima de idioma, acessório, kit, EAN ou coleção divergente, e a trava de link continua valendo. Preço, score, ranking e oportunidade nunca são escritos pela revisão.
+- **Caminho até o matching:** `export` → `config/matching-overrides.json` num branch `review/overrides-*` para PR (nunca direto na `main`), que o robô só usa com `enabled: true`. O override só resolve tipo ou boosters não identificados, ou duas coleções no título, e só na loja e página revisadas. Não passa por cima de idioma, acessório, kit, EAN ou coleção divergente, e a trava de link continua valendo. Preço, score, ranking e oportunidade nunca são escritos pela revisão.
 
 ## Ainda não integrado
 
