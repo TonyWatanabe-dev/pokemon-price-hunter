@@ -54,7 +54,7 @@ http.setFetch(async (url, opt) => {
     { item_id: 'MLB5552', price: 250, seller_id: 78, condition: 'used' },
     { item_id: 'MLB5553', price: 99, seller_id: 79, condition: 'new' },
   ] });
-  if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 200, body: { id, price: id === 'MLB5551' ? 299.9 : 99, status: 'active', condition: 'new', permalink: 'https://produto.mercadolivre.com.br/' + id.replace('MLB', 'MLB-') + '-pokemon-_JM', catalog_product_id: 'MLB111' } })));
+  if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 200, body: { id, price: id === 'MLB5551' ? 299.9 : 99, status: 'active', condition: 'new', available_quantity: 3, permalink: 'https://produto.mercadolivre.com.br/' + id.replace('MLB', 'MLB-') + '-pokemon-_JM', catalog_product_id: 'MLB111' } })));
   if (url.endsWith('/users/77')) return j({ nickname: 'LOJA_TCG', seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
   if (url.endsWith('/users/79')) return j({ nickname: 'CONTA_NOVA', seller_reputation: { level_id: null, transactions: { completed: 0 } } });
   return j({}, 404);
@@ -64,6 +64,7 @@ assert.ok(L.length >= 1, 'achou oferta pelo catálogo');
 const o = L.find((x) => x.sku === 'MLB5551');
 assert.equal(o.url, 'https://produto.mercadolivre.com.br/MLB-5551-pokemon-_JM', 'usa o link oficial do anúncio');
 assert.equal(o.price.base, 299.9); assert.equal(o.shipping, 0); assert.equal(o.seller, 'LOJA_TCG');
+assert.equal(o.stock, 'IN_STOCK', 'anúncio conferido em /items, ativo e com quantidade: em estoque');
 assert.ok(!L.some((x) => x.sku === 'MLB5552'), 'usado fica de fora');
 assert.ok(!L.some((x) => x.sku === 'MLB5553'), 'vendedor sem reputação fica de fora');
 assert.ok(!seen.some((u) => u.includes('MLB222')), 'produto fora do catálogo não é consultado');
@@ -84,6 +85,50 @@ http.setFetch(async (url) => {
 });
 const L2 = await search({ id: 'mercadolivre' }, catalog);
 assert.equal(L2[0].url, 'https://www.mercadolivre.com.br/p/MLB111?pdp_filters=item_id%3AMLB5551');
+assert.equal(L2[0].stock, 'UNKNOWN', 'sem conferência do anúncio: estoque não confirmado (nunca afirma disponibilidade)');
+
+// Lote 7 — cache do catálogo e cobertura (catálogo reduzido a 2 coleções para o teste ser rápido)
+const small = { ...catalog, collections: catalog.collections.slice(0, 2) };
+const cacheFile = path.join(dir, 'ml-catalog.json');
+const OLD = new Date(Date.now() - 3 * 864e5).toISOString();
+const ageCache = () => { const c = JSON.parse(fs.readFileSync(cacheFile, 'utf8')); c.at = OLD; fs.writeFileSync(cacheFile, JSON.stringify(c)); return c; };
+const mlFetch = ({ search = 'ok', items = 'ok' } = {}) => async (url) => {
+  const j = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { 'content-type': 'application/json' } });
+  if (url.includes('/sites/MLB/search')) return j({}, 403);
+  if (url.includes('/products/search')) {
+    if (search === 'falha' || (search === 'parcial' && !url.includes(encodeURIComponent('pokemon ' + coll)))) return j({ message: 'erro' }, 500);
+    if (url.includes(encodeURIComponent('pokemon ' + coll))) return j({ results: [{ id: 'MLB111', name: `Pokémon TCG ${coll} Treinador Avançado Copag` }] });
+    return j({ results: [] });
+  }
+  if (url.endsWith('/items')) return items === 'falha' ? j({ message: 'erro' }, 500) : j({ results: [{ item_id: 'MLB5551', price: 299.9, seller_id: 77, condition: 'new' }] });
+  if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 403, body: { id } })));
+  if (url.endsWith('/users/77')) return j({ nickname: 'LOJA_TCG', seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
+  return j({}, 404);
+};
+// busca do catálogo toda falhando: cache anterior preservado (não vira vazio) e a varredura é refeita na próxima rodada
+{ const before = ageCache();
+  http.setFetch(mlFetch({ search: 'falha' }));
+  const R = await search({ id: 'mercadolivre' }, small);
+  const after = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+  assert.deepEqual(Object.keys(after.products), Object.keys(before.products), 'cache do catálogo preservado');
+  assert.equal(after.at, OLD, 'varredura com falha não renova a data do cache (tenta de novo)');
+  assert.ok(R.length >= 1, 'ofertas continuam lidas a partir do cache preservado'); }
+// busca parcial: soma ao cache anterior, sem trocar por cache pela metade
+{ const c = ageCache(); c.products.MLB999 = { name: 'Pokémon TCG Produto Antigo Treinador Avançado', productId: c.products.MLB111.productId, image: null }; fs.writeFileSync(cacheFile, JSON.stringify(c));
+  http.setFetch(mlFetch({ search: 'parcial' }));
+  await search({ id: 'mercadolivre' }, small);
+  const after = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+  assert.ok(after.products.MLB111 && after.products.MLB999, 'busca parcial não descarta o que já estava no cache');
+  assert.equal(after.at, OLD, 'cache parcial não é dado como varredura completa'); }
+// todas as buscas falham e não há cache: falha da fonte, não "zero produtos"
+fs.rmSync(cacheFile);
+http.setFetch(mlFetch({ search: 'falha' }));
+await assert.rejects(search({ id: 'mercadolivre' }, small), /todas as 2 buscas do catálogo falharam/);
+assert.ok(!fs.existsSync(cacheFile) || !Object.keys(JSON.parse(fs.readFileSync(cacheFile, 'utf8')).products).length);
+// todas as consultas de ofertas falham: falha da fonte
+http.setFetch(mlFetch({ items: 'falha' }));
+await assert.rejects(search({ id: 'mercadolivre' }, small), /todas as 1 consultas de ofertas do catálogo falharam/);
+assert.ok(JSON.parse(fs.readFileSync(cacheFile, 'utf8')).products.MLB111, 'busca boa fica guardada mesmo quando as ofertas falham');
 
 // sem autorização = bloqueado com instrução
 fs.rmSync(path.join(dir, 'ml-auth.enc'));

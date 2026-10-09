@@ -184,4 +184,14 @@ for (const m of [60, 75, 90]) s = await runOnce({ log: quiet, send, now: at(H + 
   assert.ok(!sent.slice(sent4).some((m) => /QUEDA/.test(m.title)), 'frete que sumiu: nenhum alerta de queda');
   assert.ok(!s.activity.some((e) => e.type === 'drop' && e.offerId === a.id), 'frete que sumiu: nenhuma queda na atividade'); }
 
+// ===== Item 4 (parte da rodada): a fonte guarda quando trouxe anúncios pela última vez e o registro da rodada leva
+// as fontes vigiadas (o vigia avisa quando a fonte historicamente ativa zera ou fica bloqueada 2×)
+{ const last = s.generatedAt; vt.down = true; await runOnce({ log: quiet, send, now: at(H + 105) }); vt.down = false;
+  const src = readData('sources.json').vt;
+  assert.equal(src.status, 'ERROR'); assert.equal(src.lastNonEmpty, last, 'falha não apaga a última rodada com anúncios');
+  const meta = readData('meta.json');
+  assert.ok(meta.ops.last.watched && typeof meta.ops.last.watched === 'object', 'registro da rodada traz as fontes vigiadas');
+  const { watchedSummary } = await import('../src/opstate.js');
+  assert.deepEqual(watchedSummary({ mercadolivre: { ...src, name: 'Mercado Livre' } }).mercadolivre, { name: 'Mercado Livre', status: 'ERROR', listings: src.listings, lastNonEmpty: last }); }
+
 console.log('OK — coletores (lote 7)');

@@ -11,6 +11,8 @@
 //    - "zero notas válidas": só conta como falha quando o leitor respondeu (ok), leu pelo menos
 //      MIN_READ_FOR_ZERO linhas e nenhuma valeu, nas últimas CONSEC rodadas. Com menos linhas lidas
 //      (pouca oferta ao vivo), fica só registrado: não há contexto para chamar de falha.
+//    - fonte vigiada (rodada → watched; começa pelo Mercado Livre) que já trouxe anúncios e, nas últimas CONSEC
+//      rodadas, ficou bloqueada, com erro ou ativa com zero anúncios.
 // Avisos: um na transição para falha (ou quando surge problema novo), um lembrete a cada REMIND_MIN min enquanto
 // continuar, e um de recuperação depois de 2 checagens saudáveis seguidas (evita aviso em vaivém).
 // O "livro" (ledger) guarda o que já foi avisado; só muda quando a mensagem chega a pelo menos um canal.
@@ -67,6 +69,15 @@ export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, met
     else if (all((r) => r.dbSync?.status === 'desligado')) add('banco_desligado', 'O robô está rodando sem DATABASE_URL: sem sincronização nem nota oficial.');
     if (all((r) => r.reader?.status === 'unavailable')) add('leitor_indisponivel', `Leitor da nota oficial indisponível (${last.reader.reason || 'sem detalhe'}): alertas saem sem a nota.`);
     else if (all((r) => r.reader?.status === 'ok' && r.reader.read >= RULES.MIN_READ_FOR_ZERO && r.reader.valid === 0)) add('leitor_sem_nota', `Leitor oficial sem nenhuma nota válida (${last.reader.valid}/${last.reader.read}).`);
+    const down = (x) => !!x && (['BLOCKED', 'ERROR'].includes(x.status) || (x.status === 'ACTIVE' && x.listings === 0));
+    for (const id of Object.keys(last.watched || {})) {
+      const xs = recs.map((r) => r.watched?.[id]); const x = xs[xs.length - 1];
+      if (!xs.every(down)) continue;
+      const seen = xs.map((y) => y.lastNonEmpty).filter(Boolean).pop();
+      if (!seen) continue;   // fonte que nunca trouxe anúncio: sem histórico de atividade, não avisa
+      const how = x.status === 'BLOCKED' ? 'bloqueada' : x.status === 'ERROR' ? 'com erro' : 'sem nenhum anúncio';
+      add('fonte_degradada', `${x.name || id} ${how} nas últimas ${RULES.CONSEC} rodadas (último com anúncios: ${hhmm(seen)}). Os preços dessa fonte podem estar faltando.`);
+    }
   }
   if (reasons.length) return { status: 'degradado', reasons, facts };
   if (!ops?.last) { add(metaError === 'ausente' || !meta ? 'meta_ausente' : 'ops_ausente', 'Ainda sem estado operacional registrado: banco e leitor não verificados.'); return { status: 'desconhecido', reasons, facts }; }
@@ -86,7 +97,7 @@ const CODE_LABEL = {
   dados_parados: 'preços sem atualizar', sem_rodadas: 'robô sem disparo', rodada_falhou: 'rodada com falha', rodada_sem_publicar: 'dados sem publicar',
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
-  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida',
+  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada',
 };
 
 /** Decide se avisa. Não altera o livro: use commitLedger depois de tentar enviar. */

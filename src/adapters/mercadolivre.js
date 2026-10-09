@@ -70,17 +70,24 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   const cacheFile = dataPath('ml-catalog.json');
   const cache = readJson(cacheFile, { at: null, products: {}, sellers: {} });
   if (!cache.at || Date.now() - Date.parse(cache.at) > DAY) {
-    const found = {};
-    for (const term of searchTerms(catalog)) {
+    const found = {}; const terms = searchTerms(catalog); let failed = 0;
+    for (const term of terms) {
       let j;
-      try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20`); } catch (e) { if (e.blocked) throw e; log(`ML catálogo: busca "${term}" falhou (${e.message})`); continue; }
+      try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20`); } catch (e) { if (e.blocked) throw e; failed++; log(`ML catálogo: busca "${term}" falhou (${e.message})`); continue; }
       for (const p of j.results || []) {
         const name = p.name || p.title; if (!name || !/pok[eé]mon/i.test(name)) continue;
         const m = matchProduct({ title: name, url: '' }, catalog);
         if (m.productId && !mlReject(name, m.productId, catalog)) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
       }
     }
-    cache.products = found; cache.at = new Date().toISOString();
+    // O cache só é trocado por uma varredura completa. Com busca falhando, o anterior fica (somado ao que veio agora) e
+    // a varredura é refeita na próxima rodada; nunca vira cache vazio ou pela metade.
+    if (!failed) { cache.products = found; cache.at = new Date().toISOString(); }
+    else {
+      cache.products = { ...cache.products, ...found };
+      log(`ML catálogo: ${failed} de ${terms.length} buscas falharam; cache anterior mantido`);
+      if (failed === terms.length && !Object.keys(cache.products).length) throw new Error(`Mercado Livre: todas as ${terms.length} buscas do catálogo falharam (sem produtos em cache)`);
+    }
   }
 
   // Vendedor: só publica quem tem reputação no ML (termômetro verde/amarelo e vendas concluídas).
@@ -96,11 +103,11 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   };
   const trusted = (v) => /^(3_yellow|4_light_green|5_green)$/.test(v.level || '') && v.sales >= MIN_SALES;
 
-  const byProduct = {};
+  const byProduct = {}; let asked = 0; let itemFails = 0;
   for (const [pid, p] of Object.entries(cache.products)) {
     if (mlReject(p.name, p.productId, catalog)) continue;
-    let j;
-    try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
+    let j; asked++;
+    try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; itemFails++; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
     for (const it of j.results || []) {
       if (it.condition && it.condition !== 'new') continue;
       const id = it.item_id || it.id; const price = Number(it.price);
@@ -108,6 +115,8 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       (byProduct[p.productId] ||= []).push({ it, p, pid, id, price });
     }
   }
+  // Nenhuma consulta de ofertas respondeu: é falha da fonte (vira ERROR e as ofertas ficam como não confirmadas), não "zero produtos".
+  if (asked && itemFails === asked) { writeJson(cacheFile, cache); throw new Error(`Mercado Livre: todas as ${asked} consultas de ofertas do catálogo falharam`); }
   const picked = [];
   for (const list of Object.values(byProduct)) {
     list.sort((a, b) => a.price - b.price);
@@ -140,7 +149,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   const listings = []; const perProduct = {};
   for (const { it, p, pid, id, price, v, official } of picked) {
     if ((perProduct[p.productId] || 0) >= PER_PRODUCT) continue;
-    let url = pdpUrl(pid, id); let finalPrice = price; let qty = null;
+    let url = pdpUrl(pid, id); let finalPrice = price; let qty = null; let checkedQty = 0;
     if (itemsApi) {
       const b = check.get(id);
       if (!b) { drop('sem resposta'); continue; }
@@ -149,12 +158,14 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (Math.abs(Number(b.price) - price) > 0.009) { drop('preço diferente'); continue; } // mudou entre as leituras: espera a próxima rodada
       if (b.catalog_product_id && b.catalog_product_id !== pid) { drop('outro produto'); continue; }
       if (b.permalink) url = b.permalink;
-      finalPrice = Number(b.price); qty = b.available_quantity > 1 ? b.available_quantity : null;
+      finalPrice = Number(b.price); qty = b.available_quantity > 1 ? b.available_quantity : null; checkedQty = Number(b.available_quantity) || 0;
     }
     perProduct[p.productId] = (perProduct[p.productId] || 0) + 1;
     listings.push({
       title: p.name, url, price: { base: finalPrice }, listPrice: it.original_price > finalPrice ? it.original_price : null,
-      stock: 'IN_STOCK', quantity: qty,
+      // Em estoque só com prova: anúncio conferido em /items, ativo e com quantidade. Sem conferência (API fechada
+      // para o app) ou sem quantidade, fica "não confirmado" — nunca afirma disponibilidade sem evidência.
+      stock: itemsApi && checkedQty > 0 ? 'IN_STOCK' : 'UNKNOWN', quantity: qty,
       shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
       seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: it.seller_id,
       sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
