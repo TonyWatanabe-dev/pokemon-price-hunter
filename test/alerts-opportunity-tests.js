@@ -83,6 +83,14 @@ await t('regra antiga com minDealScore: não dispara (nunca vira filtro mais fra
   const logs = []; const o = offer(); const x = officialFor(o, row({ score: 95, band: 'excelente' }), NOW);
   const hits = evaluate([{ id: 'velha', filter: {}, minDealScore: 50 }, { id: 'velha-alvo', filter: {}, minDealScore: 10, maxPrice: 999 }], [o], [], prod, { opp: new Map([[o.id, x]]), log: (m) => logs.push(m) });
   assert.equal(hits.length, 0); assert.equal(logs.length, 2); assert.match(logs[0], /minDealScore.*não dispara.*minOpportunityScore/);
+  // produto vigiado só pela regra antiga continua recebendo a queda de preço (independe de nota), com ou sem nota oficial
+  const drop = [{ offerId: 'o1', event: 'drop', from: 45 }]; const velha = [{ id: 'velha', filter: { productId: 'p1' }, minDealScore: 70 }];
+  for (const op of [new Map(), new Map([[o.id, x]])]) {
+    const hs = evaluate(velha, [o], drop, prod, { opp: op });
+    assert.deepEqual(hs.map((h) => [h.kind, h.rule.id]), [['drop', 'drop']], 'queda preservada; a regra antiga em si não dispara');
+  }
+  // sem queda, nada: minDealScore nunca é lido como minOpportunityScore (nota 95 ≥ 70 não faz a regra disparar)
+  assert.equal(evaluate(velha, [o], [], prod, { opp: new Map([[o.id, x]]) }).length, 0);
 });
 await t('7. deduplicação: mesma oferta não reenvia; mudar só a nota não reenvia; queda real de preço reenvia', () => {
   const o = offer(); const now = NOW; const x = officialFor(o, row(), NOW);

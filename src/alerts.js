@@ -10,12 +10,13 @@ const passFilter = (f = {}, o, p) => (!f.productId || f.productId === o.productI
 /** opts.opp: Map(id da oferta -> nota oficial válida, de officialFor). opts.log: avisos (regra antiga). */
 export function evaluate(rules, offers, events, products, { opp = new Map(), log = () => {} } = {}) {
   const evBy = new Map(events.map((e) => [e.offerId + '|' + e.event, e]));
+  // Produto vigiado (queda de preço, independe de nota): conta TODAS as regras, inclusive a antiga (legada).
+  const watched = new Set(rules.flatMap((r) => (r.filter?.productId ? [r.filter.productId] : [])));
   // Regra antiga com minDealScore (Deal Score legado, outra escala): não dispara mais. Nunca vira filtro mais fraco.
   const legacy = rules.filter((r) => r.minDealScore != null && r.minOpportunityScore == null);
   for (const r of legacy) log(`[alertas] regra "${r.id}" usa minDealScore (Deal Score legado, desativado): ela não dispara. Troque por minOpportunityScore.`);
   rules = rules.filter((r) => !legacy.includes(r));
   const hits = new Map(); // rule|product -> melhor oferta
-  const watched = new Set(rules.flatMap((r) => (r.filter?.productId ? [r.filter.productId] : [])));
   for (const o of offers) {
     if (!eligible(o)) continue;
     const p = products[o.productId];
