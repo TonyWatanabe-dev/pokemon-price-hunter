@@ -4,6 +4,8 @@ import path from 'node:path';
 // prévia de compartilhamento, dados estruturados e o conteúdo principal em HTML (para buscadores e prévias que não rodam JavaScript).
 // O site carrega por cima e substitui esse conteúdo pela versão interativa.
 import { state, slugs, label, live, SITE, colSlug, typeSlug, esc, brl, pct, bestBy, pix } from './_seo.mjs';
+import { apiDbEnabled } from './_lib/db.mjs';
+import { listOpportunities } from './_lib/read-db.mjs';
 
 let page = { t: 0, html: null };
 const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
@@ -23,7 +25,7 @@ function prodRow(p, o, of, extra = '') {
   return `<li><a href="/produto/${of[p.id]}">${esc(p.collectionName)} · ${esc(label(p))}</a>${o ? ` — <b>${brl(o.total)}${pix(o)}</b> em ${esc(o.storeName)}` : ' — sem estoque agora'}${p.copagConfirmed && p.msrp ? ` · Copag ${brl(p.msrp)}` : ''}${extra}</li>`;
 }
 
-function build(t, slug, s) {
+function build(t, slug, s, opp = null) {
   const { by: SL, of } = slugs(s.products || []);
   const { by: best, n } = bestBy(s);
   const prods = (s.products || []).filter((p) => p.offerCount > 0);
@@ -84,7 +86,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   }
   const STATIC = {
     home: ['/', `Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | ${NAME}`, 'Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque em tempo real.', 'Não procure preço. Procure oportunidade.'],
-    oportunidades: ['/oportunidades', `Promoções de Pokémon TCG lacrado hoje | ${NAME}`, 'As melhores promoções de Pokémon TCG lacrado agora: ofertas abaixo do preço sugerido da Copag, com estoque confirmado e nota de oportunidade.', 'Promoções de Pokémon TCG lacrado hoje'],
+    oportunidades: ['/oportunidades', `Promoções de Pokémon TCG lacrado hoje | ${NAME}`, 'As melhores oportunidades de Pokémon TCG lacrado agora: a melhor oferta com estoque de cada produto, com Opportunity Score, confiança dos dados e comparação com a referência atual (preço sugerido Copag ou mercado).', 'Promoções de Pokémon TCG lacrado hoje'],
     produtos: ['/produtos', `Todos os produtos de Pokémon TCG lacrado e seus preços | ${NAME}`, 'Todos os produtos de Pokémon TCG lacrado que o Hunter acompanha: ETB, booster box, blisters, latas e coleções, com o menor preço nas lojas do Brasil e filtros por coleção, formato e loja.', 'Todos os produtos de Pokémon TCG lacrado'],
     precos: ['/precos', `Preço sugerido Copag de Pokémon TCG: tabela oficial | ${NAME}`, 'Tabela com o preço sugerido da Copag para ETB, booster box, blisters, latas e coleções de Pokémon TCG, com fonte e data.', 'Preço sugerido Copag de Pokémon TCG'],
     'pre-vendas': ['/pre-vendas', `Pré-venda de Pokémon TCG no Brasil: lançamentos e preços | ${NAME}`, 'Lançamentos de Pokémon TCG em pré-venda nas lojas brasileiras, com preço e comparação com o preço sugerido da Copag.', 'Pré-vendas de Pokémon TCG'],
@@ -93,7 +95,13 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   const st = STATIC[t]; if (!st) return null;
   const [url, title, desc, h1] = st;
   let main = '';
-  if (t === 'home' || t === 'oportunidades') main = topOpp.length ? `<h2>Melhores oportunidades agora</h2><ol>${topOpp.map((o) => prodRow(P[o.productId], o, of, ` (${pct(o.discount)} abaixo da Copag, Deal Score ${o.dealScore})`)).join('')}</ol>` : '';
+  // 6B.1: /oportunidades vem do Opportunity Engine (banco). Sem banco, a lista não aparece (nada é estimado nem trocado pelo Deal Score).
+  if (t === 'oportunidades') main = opp?.length ? `<h2>Melhores oportunidades agora</h2><ol>${opp.map((x) => {
+    const rc = x.reference_comparison || {}; const pref = of[x.product.id] || x.product.id; const parts = [];
+    if (rc.available && rc.position === 'below') parts.push(`${rc.percentage_below.toFixed(1).replace('.', ',')}% abaixo ${rc.reference_kind === 'COPAG_OFFICIAL_CURRENT' ? 'do preço sugerido Copag' : 'da referência de mercado'}`);
+    parts.push(`Opportunity Score ${x.opportunity_score}`);
+    return `<li><a href="/produto/${esc(pref)}">${esc(x.product.name)}</a> — <b>${brl(x.price)}</b> em ${esc(x.store?.name || '')} (${parts.join(', ')})</li>`; }).join('')}</ol>` : '';
+  else if (t === 'home') main = topOpp.length ? `<h2>Melhores oportunidades agora</h2><ol>${topOpp.map((o) => prodRow(P[o.productId], o, of, ` (${pct(o.discount)} abaixo da Copag, Deal Score ${o.dealScore})`)).join('')}</ol>` : '';
   if (t === 'precos') main = `<table class="ssr-t"><thead><tr><th>Produto</th><th>Preço sugerido</th></tr></thead><tbody>${(s.products || []).filter((p) => p.copagConfirmed && p.msrp).map((p) => `<tr><td><a href="/produto/${of[p.id]}">${esc(p.collectionName)} · ${esc(label(p))}</a></td><td>${brl(p.msrp)}</td></tr>`).join('')}</tbody></table>`;
   if (t === 'produtos') { const best = {}; for (const o of s.offers || []) { if (o.stock !== 'IN_STOCK' || o.anomalous || !P[o.productId]) continue; if (!best[o.productId] || o.total < best[o.productId].total) best[o.productId] = o; } main = `<ul>${Object.values(best).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>`; }
   if (t === 'pre-vendas') { const pre = (s.offers || []).filter((o) => o.stock === 'PRE_ORDER' && P[o.productId]); main = pre.length ? `<ul>${pre.slice(0, 30).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>` : '<p>Nenhuma pré-venda aberta agora.</p>'; }
@@ -111,7 +119,9 @@ export default async function handler(req, res) {
   if (!page.html) { res.setHeader('Cache-Control', 'no-store'); res.statusCode = 302; res.setHeader('Location', '/app.html'); return res.end(); }
   let html = page.html; let status = 200;
   try {
-    const s = await state(); const m = build(t, slug, s);
+    let opp = null;
+    if (t === 'oportunidades' && apiDbEnabled()) { try { opp = (await listOpportunities({ page: 1, limit: 20 })).items; } catch { opp = null; } }
+    const s = await state(); const m = build(t, slug, s, opp);
     if (!m) { status = 404; html = html.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', '<meta name="robots" content="noindex">\n</head>'); }
     else {
       const url = SITE + m.url;

@@ -463,6 +463,16 @@ a.navbtn{text-decoration:none}
 .opp-head p{margin:6px 0 0;color:var(--muted);max-width:70ch;font-size:var(--fs-sm)}
 .fbar2{display:flex;align-items:end;gap:10px;margin:16px 0 14px;flex-wrap:wrap}
 .fbar2-row{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:8px;flex:1}
+.opp .fbar2-row{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.opp-flags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}.opp-flags .chip{font-size:12px;padding:4px 9px;white-space:normal;line-height:1.25}.opp-flags .chip .icon{width:13px;height:13px;flex:none}
+.opp-conf{margin:8px 0 0;font-size:12.5px;color:var(--muted)}.opp-conf b{color:var(--ink);font-variant-numeric:tabular-nums}
+.deal-save.none span{font-size:13px}
+.opp-why{position:relative;z-index:2;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.opp-why summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;display:inline-flex;align-items:center;gap:4px;padding:4px 0;min-height:32px}.opp-why summary::-webkit-details-marker{display:none}
+.opp-why summary::after{content:"+";font-weight:700;color:var(--muted)}.opp-why[open] summary::after{content:"−"}
+.opp-why ul{margin:6px 0 0;padding:0 0 0 16px;display:grid;gap:4px;line-height:1.35}
+.opp-why .opp-pos::marker{color:var(--ok)}.opp-why .opp-neg::marker{color:var(--bad)}.opp-why .opp-warn{color:var(--warn)}.opp-why .opp-ref,.opp-why .opp-ctx{list-style:none;margin-left:-16px}
+.opp-why .opp-ctx{color:var(--muted);font-style:italic}.opp-upd{margin:6px 0 0;font-size:11.5px}
 .fbar2-btn{display:none}
 .fbar2-n{font-size:13.5px;color:var(--muted);padding-bottom:12px;white-space:nowrap}
 @media (max-width:760px){.fbar2{align-items:center}.fbar2-row{display:none}.fbar2-btn{display:inline-flex}.fbar2-n{padding:0;margin-left:auto}}
@@ -2338,11 +2348,9 @@ function renderSearch(){
   ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}No Telegram <small>${tips.length}</small></h2></div><div class="tipgrid">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p></section>`:""}`;
 }
 
-/* Oportunidades: ofertas verificadas (estoque confirmado + Copag oficial) abaixo da Copag, ranqueadas pelo Deal Score */
+/* Categorias do site (tipo ou grupo do produto). A Home ainda usa o Deal Score legado (oppPool) até a 6B.2. */
 const CATS=[["","Todos"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
 const catMatch=(p,c)=>!c||p.type===c||p.group===c;
-const OF=Object.assign({cat:"",disc:0,score:0,sort:"score"},store.get("opp",{}));
-const OSORTS=[["score","Melhor oportunidade"],["disc","Maior desconto"],["save","Maior economia"],["drop","Maior queda"],["new","Mais recentes"]];
 function oppPool(){
   const by={},n={};
   for(const o of OFF){if(!live(o))continue;n[o.productId]=(n[o.productId]||0)+1;
@@ -2350,25 +2358,117 @@ function oppPool(){
     const cur=by[p.id];if(!cur||o.dealScore>cur.o.dealScore||(o.dealScore===cur.o.dealScore&&o.total<cur.o.total))by[p.id]={p,o}}
   return Object.values(by).map((e)=>({...e,n:(S.slim?e.p.liveCount:n[e.p.id])||1})).sort((a,b)=>b.o.dealScore-a.o.dealScore||(b.o.discount-a.o.discount));
 }
-function oppList(){
-  const cmp={score:(a,b)=>b.o.dealScore-a.o.dealScore||b.o.discount-a.o.discount,disc:(a,b)=>b.o.discount-a.o.discount,save:(a,b)=>(b.o.savings??0)-(a.o.savings??0),drop:(a,b)=>(b.p.hist?.drop7d??0)-(a.p.hist?.drop7d??0)||b.o.dealScore-a.o.dealScore,new:(a,b)=>String(b.o.firstSeen||"").localeCompare(String(a.o.firstSeen||""))}[OF.sort]||(()=>0);
-  return oppPool().filter((e)=>catMatch(e.p,OF.cat)&&e.o.discount>=OF.disc&&e.o.dealScore>=OF.score).sort(cmp);
-}
+/* Oportunidades (6B.1): 100% pela API do Opportunity Engine (GET /api/v1/oportunidades).
+   Nada de regra de negócio aqui: score, faixa, confiança, referência atual, % abaixo da referência, filtros e ordem
+   chegam prontos do servidor. O navegador só monta a URL e desenha. */
+const OF=Object.assign({cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",sort:"score"},store.get("opp2",{}));
+const OSORTS=[["score","Melhor oportunidade"],["abaixo","Mais abaixo da referência"],["economia","Maior economia"],["queda","Maior queda"],["recentes","Mais recentes"],["preco","Menor preço"],["confianca","Maior confiança"]];
+const OFAIXAS=[["","Todas"],["excelente","Excelente"],["boa","Boa"],["normal","Normal"],["baixa","Baixa"]];
+const OABAIXO=[["","Qualquer"],["10","10% ou mais"],["20","20% ou mais"],["30","30% ou mais"],["40","40% ou mais"]];
+const OREFS=[["","Qualquer"],["copag","Preço sugerido Copag"],["mercado","Referência de mercado"],["nenhuma","Sem referência atual"]];
+const OCONF=[["","Qualquer"],["40","40% ou mais"],["60","60% ou mais"],["75","75% ou mais"]];
+const OPP_LIMIT=24;
+/* faixa do Opportunity Engine → rótulo e cor (só apresentação) */
+const BAND_UI={excelente:["Excelente oportunidade","var(--ok)"],boa:["Boa oportunidade","var(--ok)"],normal:["Oportunidade normal","var(--warn)"],baixa:["Oportunidade baixa","var(--bad)"]};
+const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf].filter(Boolean).length;
+function oppQuery(page){const q=new URLSearchParams({limite:String(OPP_LIMIT),pagina:String(page),ordem:OF.sort||"score"});
+  if(OF.cat)q.set("categoria",OF.cat);if(OF.col)q.set("colecao",OF.col);if(OF.faixa)q.set("faixa",OF.faixa);
+  if(OF.abaixo)q.set("abaixo",OF.abaixo);if(OF.ref)q.set("referencia",OF.ref);if(OF.conf)q.set("confianca_minima",OF.conf);return"oportunidades?"+q}
+const OPP={key:"",total:null,status:"idle",items:[],pages:1};
 function filterControls(){
-  const sel=(k,label,opts,val)=>`<div class="field"><label for="of-${k}">${label}</label><select id="of-${k}" data-of="${k}">${opts.map(([v,l])=>`<option value="${v}"${String(val)===String(v)?" selected":""}>${l}</option>`).join("")}</select></div>`;
-  return sel("cat","Categoria",CATS,OF.cat)+sel("disc","Desconto",[[0,"Qualquer"],[.1,"10% ou mais"],[.2,"20% ou mais"],[.3,"30% ou mais"],[.4,"40% ou mais"]],OF.disc)+sel("score","Deal Score",[[0,"Qualquer"],[70,"70 ou mais"],[80,"80 ou mais"],[90,"90 ou mais"]],OF.score)+sel("sort","Ordenar",OSORTS,OF.sort);
+  const sel=(k,label,opts,val)=>`<div class="field"><label for="of-${k}">${label}</label><select id="of-${k}" data-of="${k}">${opts.map(([v,l])=>`<option value="${esc(v)}"${String(val)===String(v)?" selected":""}>${esc(l)}</option>`).join("")}</select></div>`;
+  const cols=[["","Todas"],...(S?.collections||[]).map((c)=>[c.id,c.name])];
+  return sel("cat","Categoria",CATS,OF.cat)+sel("col","Coleção",cols,OF.col)+sel("faixa","Faixa",OFAIXAS,OF.faixa)+sel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo)
+    +sel("ref","Referência atual",OREFS,OF.ref)+sel("conf","Confiança",OCONF,OF.conf)+sel("sort","Ordenar",OSORTS,OF.sort);
 }
-function renderOpp(){
-  const list=oppList();const nAct=[OF.cat,OF.disc,OF.score].filter(Boolean).length;
-  const drop=OF.sort==="drop"&&!list.some((e)=>e.p.hist?.drop7d>0);
+const pctPts=(v)=>Math.abs(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";   /* formata o % que a API mandou */
+const refOfName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido Copag":"da referência de mercado";
+const refAtName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"No preço sugerido Copag":"Na referência de mercado";
+function oppFlags(x){
+  const cr=x.current_reference||{};const w=(c)=>(x.warnings||[]).find((y)=>y.code===c);const out=[];
+  /* aviso de marketplace: decidido pela referência ATUAL (o market_composition do topo pode descrever o mercado mesmo com Copag) */
+  if(cr.kind==="MARKET_CURRENT"&&cr.market_composition==="MARKETPLACE_ONLY"){const t=w("MARKETPLACE_ONLY")?.text||"Referência de mercado formada só por vendedores de marketplace";
+    out.push(`<span class="chip warn" title="${esc(t)}">${ic("warning")}Mercado observado apenas em marketplaces</span>`)}
+  const dev=w("MARKET_HIGHLY_DEVIATED_FROM_HISTORY");
+  if(dev){const lb=/muito abaixo/.test(dev.text)?"Mercado muito abaixo do histórico":"Mercado muito acima do histórico";out.push(`<span class="chip warn" title="${esc(dev.text)}">${ic("warning")}${lb}</span>`)}
+  return out.length?`<div class="opp-flags">${out.join("")}</div>`:"";
+}
+function oppWhy(x){
+  const cr=x.current_reference||{};const sign={"+":"opp-pos","-":"opp-neg","=":"opp-eq"};
+  const ref=cr.kind&&cr.kind!=="NONE"?`<li class="opp-ref"><b>Referência atual:</b> ${esc(cr.label)} ${money(cr.price)}${cr.kind==="MARKET_CURRENT"&&cr.market_sources?` · ${cr.market_sources} fontes independentes`:""}</li>`:`<li class="opp-ref"><b>Referência atual:</b> nenhuma</li>`;
+  const hist=(x.historical_context||[]).map((h)=>`<li class="opp-ctx">${esc(h.label||"Histórico")} ${money(h.price)}${h.published_at?` (${esc(h.published_at)})`:""}: contexto, não é preço atual</li>`).join("");
+  const com=x.community_reference?`<li class="opp-ctx">Referência comunitária ${money(x.community_reference.price)}: não é preço Copag</li>`:"";
+  const rs=(x.reasons||[]).map((r)=>`<li class="${sign[r.impact]||""}">${esc(r.text)}</li>`).join("");
+  const ws=(x.warnings||[]).map((r)=>`<li class="opp-warn">${esc(r.text)}</li>`).join("");
+  return`<details class="opp-why"><summary>Por que esta nota?</summary><ul>${ref}${rs}${ws}${hist}${com}</ul>${x.updated_at?`<p class="opp-upd">Avaliado ${ago(x.updated_at)} · ${esc(x.engine_version||"")}</p>`:""}</details>`;
+}
+function oppCard(x,i){
+  const pr=x.product||{},of=x.offer||{},rc=x.reference_comparison||{},st=x.store||{};
+  const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
+  const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));
+  const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)"];
+  const foil=(i===0&&OF.sort==="score")||x.opportunity_band==="excelente"||x.opportunity_band==="boa";
+  const save=!rc.available?`<p class="deal-save none"><span>Sem referência atual para comparar</span></p>`
+    :rc.position==="below"?`<p class="deal-save"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${refOfName(rc.reference_kind)}<br><em>${money(rc.amount_below)} a menos</em></span></p>`
+    :rc.position==="above"?`<p class="deal-save up"><span>${pctPts(rc.percentage_below)} acima ${refOfName(rc.reference_kind)}</span></p>`
+    :`<p class="deal-save up"><span>${refAtName(rc.reference_kind)}</span></p>`;
+  const refLine=!rc.available?"sem referência atual":rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?`Copag <s>${money(rc.reference_value)}</s>`:`Ref. mercado ${money(rc.reference_value)}`;
+  const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";
+  const fav=isFav(pr.id);
+  return`<article class="deal opp-card${foil?" foil":""}" data-cat="${catOf(p)}" style="--ec:${g(p).c}">
+  <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${esc(pr.name||"")}"></a>
+  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}"><i></i>${bu[0]}</span>`:""}${catChip(p)}${foil?`<span class="foil-tag">${ic("sparkle-f")}${i===0&&OF.sort==="score"?"Melhor oferta":"Oferta foil"}</span>`:""}
+    <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
+  <div class="deal-body">
+    <p class="deal-col">${esc(pr.collection?.name||"")}</p>
+    <h3 class="deal-name">${esc(pr.type_label||pr.name||"")}</h3>
+    ${save}
+    <p class="deal-price"><b>${money(x.price)}</b><span>${refLine}</span></p>
+    ${oppFlags(x)}
+    ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small>/100</small></strong></div>`:""}
+    <p class="opp-conf">${x.confidence!=null?`Confiança dos dados <b>${Math.round(x.confidence*100)}%</b>`:"Confiança não informada"}</p>
+    ${oppWhy(x)}
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div>
+  </div>
+</article>`;
+}
+const oppSkel=()=>`<div class="deals">${'<div class="skel" style="height:440px;border-radius:20px"></div>'.repeat(4)}</div>`;
+function oppBar(){const n=oppActive();const t=OPP.total;
+  return`<div class="fbar2"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span></div>`}
+function oppBody(){
+  if(OPP.status==="loading")return oppSkel();
+  if(OPP.status==="error")return`<div class="empty err-state">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  if(OPP.status==="nodb")return`<div class="empty"><h3>Oportunidades indisponíveis no momento</h3><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
+  if(!OPP.items.length)return`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
+  const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
+  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i)).join("")}</div>${OPP.page<OPP.pages?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
+}
+function paintOpp(){
   $("#view").innerHTML=`<div class="opp">
-  <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>Os melhores preços encontrados pelo Hunter. Só entram ofertas com estoque confirmado pela loja e abaixo do preço sugerido oficial da Copag, ordenadas pela qualidade da oportunidade (Deal Score).</p></header>
-  <div class="fbar2"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${nAct?`<span class="count">${nAct}</span>`:""}</button><span class="fbar2-n">${list.length} ${list.length===1?"oferta":"ofertas"}</span></div>
-  ${drop?`<p class="hnote">"Maior queda" compara com os últimos 7 dias. Ainda há poucos dias de histórico, então nenhuma queda aparece por enquanto.</p>`:""}
-  ${list.length?`<div class="deals">${list.map((e,i)=>dealCard(e,{plain:true,rank:i,foil:(i===0&&OF.sort==="score")||e.o.dealScore>=70})).join("")}</div>`:`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppPool().length?"Ainda não encontramos produtos com esse nível de desconto ou de nota.":"Nenhuma loja está abaixo do preço Copag com estoque confirmado agora. O robô segue conferindo as lojas em tempo real."}</p>${nAct?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
-  </div>`;
+  <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>A melhor oferta com estoque de cada produto, avaliada pelo Opportunity Engine e ordenada pelo Opportunity Score (atratividade da oportunidade). A confiança mostra quão completos são os dados usados na avaliação; ela não altera a nota.</p></header>
+  ${oppBar()}<div class="opp-list">${oppBody()}</div></div>`;
+  watchOppMore();if(typeof revealInit==="function")revealInit();
 }
-function openFilterSheet(){const d=$("#fsheet");d.innerHTML=`<div class="sh-grip" aria-hidden="true"></div><div class="acc"><div class="acc-head"><h2>Filtros</h2><button class="iconbtn" type="button" data-fclose aria-label="Fechar">${ic("x")}</button></div><div class="fsheet-f">${filterControls()}</div><div class="gate-actions"><button class="btn" type="button" data-fclose>Ver ${oppList().length} ofertas</button><button class="btn ghost" type="button" data-ofclear>Limpar filtros</button></div></div>`;if(!d.open)d.showModal()}
+async function renderOpp(){
+  const key=oppQuery(1);
+  if(OPP.key===key&&OPP.status==="ok"){paintOpp();return}
+  Object.assign(OPP,{key,status:"loading",items:[],total:null,page:1,pages:1});paintOpp();
+  const d=await apiGet(key);if(OPP.key!==key||view!=="oportunidades")return;
+  if(!d||d.notFound||!Array.isArray(d.data))OPP.status="error";
+  else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",total:0});
+  else Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1});
+  paintOpp();
+}
+async function moreOpp(page){
+  const key=OPP.key;const d=await apiGet(oppQuery(page));if(OPP.key!==key||view!=="oportunidades"||!d||!Array.isArray(d.data))return;
+  const box=$("#view .opp .deals");if(!box)return;const base=OPP.items.length;OPP.items=OPP.items.concat(d.data);OPP.page=page;
+  box.insertAdjacentHTML("beforeend",d.data.map((x,i)=>oppCard(x,base+i)).join(""));
+  $("#opp-more")?.remove();if(page<OPP.pages)box.insertAdjacentHTML("afterend",`<div id="opp-more" class="prod-more" data-page="${page+1}" style="height:1px"></div>`);watchOppMore();if(typeof revealInit==="function")revealInit();
+}
+let oppIO=null;
+function watchOppMore(){const el=$("#opp-more");if(!el)return;if(!("IntersectionObserver" in window)){moreOpp(+el.dataset.page);return}
+  oppIO?.disconnect();oppIO=new IntersectionObserver((xs)=>{if(xs.some((x)=>x.isIntersecting)){oppIO.disconnect();moreOpp(+el.dataset.page)}},{rootMargin:"900px 0px"});oppIO.observe(el)}
+function openFilterSheet(){const d=$("#fsheet");const t=OPP.total;d.innerHTML=`<div class="sh-grip" aria-hidden="true"></div><div class="acc"><div class="acc-head"><h2>Filtros</h2><button class="iconbtn" type="button" data-fclose aria-label="Fechar">${ic("x")}</button></div><div class="fsheet-f">${filterControls()}</div><div class="gate-actions"><button class="btn" type="button" data-fclose>${t==null?"Ver ofertas":`Ver ${t} ${t===1?"oferta":"ofertas"}`}</button><button class="btn ghost" type="button" data-ofclear>Limpar filtros</button></div></div>`;if(!d.open)d.showModal()}
 
 /* Pré-vendas: status sempre visível */
 function renderPre(){
@@ -2426,7 +2526,7 @@ async function fetchHome(){
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
    Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
-const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca"]);
+const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades"]);   /* 6B.1: /oportunidades só pela API */
 const APIC=new Map();const APITTL=60e3;
 async function apiGet(path,ms=8000){
   const hit=APIC.get(path);if(hit&&Date.now()-hit.at<APITTL)return hit.j;
@@ -2541,7 +2641,8 @@ document.addEventListener("click",(e)=>{
   const hm=t.closest("[data-hm]");if(hm){HV.mode=hm.dataset.hm;drawHist(curPid);track("view_price_history",{id:curPid,mode:HV.mode});return}
   if(t.closest("[data-fsheet]")){openFilterSheet();return}
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
-  if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",disc:0,score:0});store.set("opp",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
+  if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:""});store.set("opp2",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
+  if(t.closest("[data-oppretry]")){APIC.delete(OPP.key);OPP.key="";renderOpp();return}
   const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
   if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
   const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);rerenderList();track("filter_used",{f:"group",v:F.group});return}
@@ -2576,7 +2677,7 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 document.addEventListener("toggle",(e)=>{if(e.target.id==="xf")xfOpen=e.target.open},true);
 document.addEventListener("change",(e)=>{const t=e.target;
   if(t.id==="osort"){offerSort=t.value;renderProduct(curPid);return}
-  const ok=t.dataset?.of;if(ok){OF[ok]=["disc","score"].includes(ok)?Number(t.value):t.value;store.set("opp",OF);renderOpp();if($("#fsheet").open)openFilterSheet();track("filter_used",{f:ok,v:String(OF[ok])});return}
+  const ok=t.dataset?.of;if(ok){OF[ok]=t.value;store.set("opp2",OF);renderOpp().then(()=>{if($("#fsheet").open)openFilterSheet()});track("filter_used",{f:ok,v:String(OF[ok])});return}
   const k=t.dataset?.f;if(!k)return;F[k]=t.type==="checkbox"?t.checked:t.value;store.set("f",F);rerenderList();track("filter_used",{f:k})});
 $("#mini-img").style.backgroundImage=`url("${$(".brand img").src}")`;document.documentElement.style.setProperty("--logo",`url("${$(".brand img").src}")`);
 new IntersectionObserver(([en])=>{const m=$("#mini");m.classList.toggle("show",!en.isIntersecting);m.setAttribute("aria-hidden",String(en.isIntersecting))},{threshold:0}).observe($(".cover"));
