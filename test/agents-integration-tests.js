@@ -2,6 +2,8 @@
 // nunca derruba a rodada e passo do workflow. Parte com banco só roda com TEST_DATABASE_URL.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { reviewCandidates, canonicalUrl } from '../src/agents/matching-review.js';
 import { composeAgentAlert } from '../src/agents/notify.js';
@@ -63,7 +65,7 @@ await test('ferramenta sempre sai com 0 (sem banco e com banco inacessível)', a
   const env = { ...process.env }; delete env.DATABASE_URL;
   const off = spawnSync('node', ['tools/agents-run.mjs', 'data'], { env, encoding: 'utf8' });
   assert.equal(off.status, 0); assert.match(off.stdout, /Banco desligado/);
-  const tmp = fs.mkdtempSync('/tmp/agents-'); fs.writeFileSync(`${tmp}/state.json`, JSON.stringify({ unmatched }));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'agents-')); fs.writeFileSync(`${tmp}/state.json`, JSON.stringify({ unmatched }));
   const down = spawnSync('node', ['tools/agents-run.mjs', tmp], { env: { ...env, DATABASE_URL: 'postgres://x@127.0.0.1:1/x' }, encoding: 'utf8', timeout: 30_000 });
   assert.equal(down.status, 0); assert.match(down.stdout, /::warning::Agentes/);
   const bad = spawnSync('node', ['tools/agents-run.mjs', '/nao/existe'], { env: { ...env, DATABASE_URL: 'postgres://x@127.0.0.1:1/x' }, encoding: 'utf8' });
