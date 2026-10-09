@@ -1733,14 +1733,20 @@ function paintHomeOpp(){
   if(view!=="deals")return;const pod=$("#home-pod"),rail=$("#home-rail"),hl=$("#home-hl");if(!pod)return;
   pod.innerHTML=podiumOppHTML();rail.innerHTML=railOppHTML();hl.innerHTML=highlightsOppHTML();stageInit();revealInit();
 }
-let stageIO=null;let podIO=null;
+let stageIO=null;let podIO=null,podT=0,podScroll=null;
 function stageInit(){
-  if(stageIO)stageIO.disconnect();if(podIO)podIO.disconnect();
+  if(stageIO)stageIO.disconnect();if(podIO)podIO.disconnect();clearTimeout(podT);if(podScroll)removeEventListener("scroll",podScroll);
   const pod=$(".podium");const rail=$(".rail");const RM=reduceMotion();
-  /* pódio: revela ao rolar. A linha fica em 55% da altura da tela, então o card que já aparece pela metade ao abrir espera o scroll */
-  if(pod&&!RM&&"IntersectionObserver" in window){const cards=[...pod.querySelectorAll(".pod")];cards.forEach((c)=>c.classList.add("armed"));
-    podIO=new IntersectionObserver((es)=>es.forEach((e)=>{if(!e.isIntersecting)return;const c=e.target;podIO.unobserve(c);c.classList.remove("armed");c.classList.add("go");setTimeout(()=>c.classList.remove("go"),1700)}),{threshold:0,rootMargin:"0px 0px -45% 0px"});
-    cards.forEach((c)=>podIO.observe(c))}
+  /* pódio: revela ao rolar. A linha fica em 55% da altura da tela, então o card que já aparece pela metade ao abrir espera o scroll.
+     Sem rolagem em ~1 s, revela sozinho (a Home não fica vazia); quem rola antes segue só pela rolagem. Cada card revela uma vez só. */
+  if(pod&&!RM&&"IntersectionObserver" in window){const cards=[...pod.querySelectorAll(".pod")];
+    const show=(c)=>{if(!c.classList.contains("armed"))return;c.classList.remove("armed");c.classList.add("go");setTimeout(()=>c.classList.remove("go"),1700)};
+    try{cards.forEach((c)=>c.classList.add("armed"));
+      podIO=new IntersectionObserver((es)=>es.forEach((e)=>{if(!e.isIntersecting)return;podIO.unobserve(e.target);show(e.target)}),{threshold:0,rootMargin:"99999px 0px -45% 0px"});   /* zona estendida para cima: card que já passou (salto de rolagem) também revela */
+      cards.forEach((c)=>podIO.observe(c));
+      podScroll=()=>{clearTimeout(podT);removeEventListener("scroll",podScroll);podScroll=null};addEventListener("scroll",podScroll,{passive:true});
+      podT=setTimeout(()=>{if(podScroll){removeEventListener("scroll",podScroll);podScroll=null}podIO.disconnect();cards.forEach(show)},1000)}
+    catch{if(podIO)podIO.disconnect();cards.forEach((c)=>c.classList.remove("armed","go"))}}
   if(rail){
     [...rail.children].forEach((c,i)=>c.style.setProperty("--i",Math.min(i,8)));
     const sec=rail.closest(".seq");const by=(dir)=>rail.scrollBy({left:dir*rail.clientWidth*.85,behavior:RM?"auto":"smooth"});
