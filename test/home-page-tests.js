@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const fullHtml = html; // a página inteira (dentro de alguns testes, html é o trecho renderizado)
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
 const hlCode = cut('/* Destaques (6B.2)', 'function preHTML(){');
 const homeCode = cut('/* Home (6B.2): pódio, sequência e destaques', 'let stageIO=null;');
@@ -105,7 +106,10 @@ t('3–5. Home sem Deal Score, sem oppPool e sem state.json para oportunidades',
 // 6C.1 — destaques FOIL → ULTRA RARA → RARA; escala global oculta no pódio e independente da posição
 t('6C.1. pódio: FOIL, ULTRA RARA e RARA sem medalhas; nota e escala intactas', () => {
   const html = s.slots['#home-pod'].innerHTML; const cards = html.split('<article class="pod"').slice(1);
-  assert.ok(!/OURO|PRATA|BRONZE|--medal|pod-sheen/.test(html + homeCode), 'sem ouro, prata, bronze nem brilho de medalha');
+  assert.ok(!/OURO|PRATA|BRONZE|--medal/.test(html + homeCode), 'sem ouro, prata nem bronze');
+  // brilho que passa pelo cartão: voltou a pedido (visual anterior), um por card, só sem movimento reduzido
+  assert.equal((html.match(/class="pod-sheen" aria-hidden="true"/g) || []).length, 3, 'brilho decorativo nos três cards');
+  assert.match(fullHtml, /@media \(prefers-reduced-motion:no-preference\)\{\.pod \.pod-sheen\{animation:sheen/, 'brilho só anima sem movimento reduzido');
   assert.deepEqual(cards.map((c) => c.match(/data-hl="(\w+)"/)[1]), ['foil', 'ultra', 'rara']);
   assert.deepEqual(cards.map((c) => text(c.match(/class="pod-rank">([\s\S]*?)<\/span>/)[1])), ['FOIL', 'ULTRA RARA', 'RARA']);
   // escala global pela nota (90 → sr, 79 → r, 61 → u), não pela posição; não aparece como texto no pódio
