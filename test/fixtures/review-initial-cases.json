@@ -1,0 +1,548 @@
+{
+ "_nota": "24 casos da rodada de 2026-10-09T19:15Z (ramo data). Sugestões de decisão para conferência humana; nenhuma é aplicada sozinha.",
+ "generatedAt": "2026-10-09T19:15:18.850Z",
+ "cases": [
+  {
+   "n": 1,
+   "kind": "boosters_desconhecidos",
+   "store": "gatogingado",
+   "title": "Booster Box ME02 Fogo Fantasmagórico Pokémon TCG",
+   "url": "https://www.gatogingado.com.br/booster-box-me02-fogo-fantasmagorico-pokemon-tcg",
+   "why": "quantidade de boosters não informada",
+   "parsed": {
+    "collection": "me02",
+    "type": "booster_box",
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:boosters_desconhecidos:gatogingado:ae7c759dcb2ce80a",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me02",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "Booster Box de Fogo Fantasmagórico; display Copag tem 36"
+   }
+  },
+  {
+   "n": 2,
+   "kind": "boosters_desconhecidos",
+   "store": "gatogingado",
+   "title": "Booster Box Megaevolução Pokémon TCG",
+   "url": "https://www.gatogingado.com.br/booster-box-pokemon-tcg-megaevolucao",
+   "why": "quantidade de boosters não informada",
+   "parsed": {
+    "collection": "me01",
+    "type": "booster_box",
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:boosters_desconhecidos:gatogingado:fe7d1c1736c8c204",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me01",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "Booster Box Megaevolução; display Copag tem 36"
+   }
+  },
+  {
+   "n": 3,
+   "kind": "boosters_desconhecidos",
+   "store": "shogunlivrariacombr",
+   "title": "Booster Box Pokemon Coroa Estelar",
+   "url": "https://www.shogunlivraria.com.br/booster-box-pokemon-coroa-estelar",
+   "why": "quantidade de boosters não informada",
+   "parsed": {
+    "collection": "sv7",
+    "type": "booster_box",
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:boosters_desconhecidos:shogunlivrariacombr:660e847b9c0d23da",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "sv7",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "Booster Box Coroa Estelar; display Copag tem 36"
+   }
+  },
+  {
+   "n": 4,
+   "kind": "tipo_desconhecido",
+   "store": "shogunlivrariacombr",
+   "title": "Case Blister Triple De Raio Preto - Pokemon Tcg",
+   "url": "https://www.shogunlivraria.com.br/case-blister-triple-de-raio-preto-pokemon-tcg",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "sv10_5r",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:shogunlivrariacombr:a6f7fa2d7370fd92",
+   "suggestion": {
+    "decision": "reject",
+    "why": "case de blisters: várias unidades, não é produto Copag avulso"
+   }
+  },
+  {
+   "n": 5,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Booster Escuridão Absoluta (108 Cartas) (18 Boosters) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-booster-escuridao-absoluta-108-cartas-18-boosters-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me05",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:df041a404206e337",
+   "suggestion": {
+    "decision": "conferir",
+    "why": "18 boosters (meio display) não é formato do catálogo",
+    "candidate": null
+   }
+  },
+  {
+   "n": 6,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Booster Fogo Fantasmagórico (6 Cartas) (01 Booster) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-booster-fogo-fantasmagorico-6-cartas-01-booster-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me02",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:d0adb09d0d593f1a",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me02",
+     "type": "booster_pack",
+     "boosters": null
+    },
+    "why": "(6 cartas)(01 booster): booster unitário"
+   }
+  },
+  {
+   "n": 7,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Booster Amigos De Jornada (6 Cartas) (01 Booster) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-booster-amigos-de-jornada-6-cartas-01-booster-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "sv9",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:b2f1a77db680c498",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "sv9",
+     "type": "booster_pack",
+     "boosters": null
+    },
+    "why": "(6 cartas)(01 booster): booster unitário"
+   }
+  },
+  {
+   "n": 8,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Mini Display Booster Megaevolução (108 Cartas) (18 Boosters) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-mini-display-booster-megaevolucao-108-cartas-18-boosters-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me01",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:d8ec152525469bf6",
+   "suggestion": {
+    "decision": "conferir",
+    "why": "mini display de 18 boosters não é formato do catálogo",
+    "candidate": null
+   }
+  },
+  {
+   "n": 9,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Booster Equilibrio Perfeito (6 Cartas) (01 Booster) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-booster-equilibrio-perfeito-6-cartas-01-booster-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me03",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:a9ca1eadc941defe",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me03",
+     "type": "booster_pack",
+     "boosters": null
+    },
+    "why": "(6 cartas)(01 booster): booster unitário"
+   }
+  },
+  {
+   "n": 10,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Booster Rivais Predestinados (6 Cartas) (01 Booster) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-booster-rivais-predestinados-6-cartas-01-booster-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "sv10",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:f5203100de17c1af",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "sv10",
+     "type": "booster_pack",
+     "boosters": null
+    },
+    "why": "(6 cartas)(01 booster): booster unitário"
+   }
+  },
+  {
+   "n": 11,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Blister Fogo Fantasmagórico (6 Cartas) (01 Blister Sortido) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-blister-fogo-fantasmagorico-6-cartas-01-blister-sortido-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me02",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:ae36485bcba21a1f",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me02",
+     "type": "blister_1",
+     "boosters": null
+    },
+    "why": "(01 blister sortido): blister unitário"
+   }
+  },
+  {
+   "n": 12,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Pokémon Booster Rivais Predestinados (216 Cartas) (36 Boosters) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-pokemon-booster-rivais-predestinados-216-cartas-36-boosters-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "sv10",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:677cabf13784bc65",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "sv10",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "(216 cartas)(36 boosters)"
+   }
+  },
+  {
+   "n": 13,
+   "kind": "tipo_desconhecido",
+   "store": "lojaarenagamescombr",
+   "title": "Trading Card Game Pokemon - Blister Mega Evolução (6 Cartas) (01 Blister Sortido) (Novo) - Arena Games - Loja Geek",
+   "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-blister-mega-evolucao-6-cartas-01-blister-sortido-novo/",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me01",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:f7b56c0506cdd9a1",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me01",
+     "type": "blister_1",
+     "boosters": null
+    },
+    "why": "(01 blister sortido): blister unitário"
+   }
+  },
+  {
+   "n": 14,
+   "kind": "tipo_desconhecido",
+   "store": "rihappycombr",
+   "title": "Box de 30 Anos de Pokémon - Coleção Dia de Pokémon 2026",
+   "url": "https://www.rihappy.com.br/box-de-30-anos-de-pokemon---colecao-dia-de-pokemon-2026-1003258159/p",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "c30",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:rihappycombr:51cad07c691611bd",
+   "suggestion": {
+    "decision": "conferir",
+    "why": "pode ser o c30-colecao do catálogo; conferir conteúdo na página",
+    "candidate": {
+     "collection": "c30",
+     "type": "colecao",
+     "boosters": null
+    }
+   }
+  },
+  {
+   "n": 15,
+   "kind": "tipo_desconhecido",
+   "store": "rihappycombr",
+   "title": "POKEMON TCG PACK 36 BOOSTER POKEMON ESCURIDAO ABSOLUTA - COPAG",
+   "url": "https://www.rihappy.com.br/pokemon-tcg-pack-36-booster-pokemon-escuridao-absoluta---copag-1003296618/p",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me05",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:rihappycombr:fdb5c4452ee6a521",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me05",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "36 boosters Escuridão Absoluta, Copag"
+   }
+  },
+  {
+   "n": 16,
+   "kind": "tipo_desconhecido",
+   "store": "pbkidscombr",
+   "title": "POKEMON TCG PACK 36 BOOSTER POKEMON ESCURIDAO ABSOLUTA - COPAG",
+   "url": "https://www.pbkids.com.br/pokemon-tcg-pack-36-booster-pokemon-escuridao-absoluta---copag-1003296618/p",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "me05",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:pbkidscombr:c21aaea16888da02",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me05",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "mesmo anúncio do #15 em outra loja"
+   }
+  },
+  {
+   "n": 17,
+   "kind": "tipo_desconhecido",
+   "store": "pbkidscombr",
+   "title": "Box de 30 Anos de Pokémon - Coleção Dia de Pokémon 2026",
+   "url": "https://www.pbkids.com.br/box-de-30-anos-de-pokemon---colecao-dia-de-pokemon-2026-1003258159/p",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "c30",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:pbkidscombr:d0898b57fbfd5115",
+   "suggestion": {
+    "decision": "conferir",
+    "why": "mesmo produto do #14 em outra loja",
+    "candidate": {
+     "collection": "c30",
+     "type": "colecao",
+     "boosters": null
+    }
+   }
+  },
+  {
+   "n": 18,
+   "kind": "tipo_desconhecido",
+   "store": "pbkidscombr",
+   "title": "Jogo de Cartas - Fenda Paradoxal - Pokémon - Escarlate e Violeta - Copag",
+   "url": "https://www.pbkids.com.br/jogo-de-cartas-ev04-pokemon-blister-unitario-copag/p",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "sv4",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:pbkidscombr:0d624e53c8ff904d",
+   "suggestion": {
+    "decision": "reject",
+    "why": "título só diz \"Jogo de Cartas\": tipo indeterminável"
+   }
+  },
+  {
+   "n": 19,
+   "kind": "boosters_desconhecidos",
+   "store": "pbkidscombr",
+   "title": "Jogo De Cartas Pokemon Evolucoes Em Paldea Escarlate x Violeta Booster Box com 36 und Copag",
+   "url": "https://www.pbkids.com.br/jogo-de-cartas-pokemon-evolucoes-em-paldea-escarlate-x-violeta-copag/p",
+   "why": "quantidade de boosters não informada",
+   "parsed": {
+    "collection": "sv2",
+    "type": "booster_box",
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:boosters_desconhecidos:pbkidscombr:d0709c76f73e24d4",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "sv2",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "Booster Box com 36 unidades"
+   }
+  },
+  {
+   "n": 20,
+   "kind": "tipo_desconhecido",
+   "store": "pbkidscombr",
+   "title": "Box Coleçao Evoluçoes Prismaticas Evee Pokemon - Copag",
+   "url": "https://www.pbkids.com.br/box-colecao-evolucoes-prismaticas-evee-pokemon---copag-1003222630/p",
+   "why": "tipo de produto não identificado",
+   "parsed": {
+    "collection": "sv8_5",
+    "type": null,
+    "boosters": null
+   },
+   "productId": null,
+   "dedupeKey": "matching:tipo_desconhecido:pbkidscombr:c8b0cbbd757133fc",
+   "suggestion": {
+    "decision": "conferir",
+    "why": "há mais de um Box Coleção Eevee; conferir qual",
+    "candidate": {
+     "collection": "sv8_5",
+     "type": "colecao",
+     "boosters": null
+    }
+   }
+  },
+  {
+   "n": 21,
+   "kind": "baixa_confianca",
+   "store": "ludostation",
+   "title": "Box Display - Mega Evolução",
+   "url": "https://ludostation.com.br/produtos/booster-box-pokemon-36-booster-mega-evolucao-copag/",
+   "why": null,
+   "parsed": null,
+   "productId": "me01-box36",
+   "dedupeKey": "matching:baixa_confianca:ludostation:3002c1043e7acd31",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me01",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "confirma o matching atual (me01-box36)"
+   }
+  },
+  {
+   "n": 22,
+   "kind": "baixa_confianca",
+   "store": "bravojogoscombr",
+   "title": "Pokémon : Caixa de Boosters - Megaevolução - Inclui 1 carta Promocional Adicional com ilustração rara (Português)",
+   "url": "https://bravojogos.com.br/jogos-de-tabuleiro-e-cardgames/colecoes/pokemon-caixa-de-boosters-megaevolucao-p",
+   "why": null,
+   "parsed": null,
+   "productId": "me01-box36",
+   "dedupeKey": "matching:baixa_confianca:bravojogoscombr:4aa2aeed57267a92",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me01",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "confirma o matching atual (me01-box36)"
+   }
+  },
+  {
+   "n": 23,
+   "kind": "baixa_confianca",
+   "store": "omniversecombr",
+   "title": "Megaevolução - Caixa de Booster - Pokémon",
+   "url": "https://www.omniverse.com.br/megaevolucao-caixa-de-booster-pokemon",
+   "why": null,
+   "parsed": null,
+   "productId": "me01-box36",
+   "dedupeKey": "matching:baixa_confianca:omniversecombr:f2d5899a4fb8e739",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "me01",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "confirma o matching atual (me01-box36)"
+   }
+  },
+  {
+   "n": 24,
+   "kind": "baixa_confianca",
+   "store": "omniversecombr",
+   "title": "Escarlate e Violeta - Caixa de Booster (36U) - Pokémon",
+   "url": "https://www.omniverse.com.br/produto/escarlate-e-violeta-caixa-de-booster-36u-pokemon",
+   "why": null,
+   "parsed": null,
+   "productId": "sv1-box36",
+   "dedupeKey": "matching:baixa_confianca:omniversecombr:1a57bd2dbcb33346",
+   "suggestion": {
+    "decision": "approve",
+    "resolution": {
+     "collection": "sv1",
+     "type": "booster_box",
+     "boosters": 36
+    },
+    "why": "Caixa de Booster (36U): confirma sv1-box36"
+   }
+  }
+ ]
+}

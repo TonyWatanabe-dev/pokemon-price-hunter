@@ -1,0 +1,67 @@
+# Fila de revisão humana (docs/agentes.md). Só quem tem escrita no repositório dispara, e o autor
+# (github.actor) precisa estar em REVIEW_OPERATORS. Não altera preço, score nem oportunidade:
+# aprovar grava a decisão; "export" só regrava config/matching-overrides.json, que o robô ignora
+# enquanto "enabled" não for ligado à mão.
+name: Revisão
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Ação'
+        type: choice
+        options: [triage, list, approve, reject, dismiss, export]
+        default: triage
+      ids: { description: 'Ids (ex.: 12,15)', required: false }
+      collection: { description: 'Aprovar: coleção (ex.: me05)', required: false }
+      type: { description: 'Aprovar: tipo (ex.: booster_box, booster_pack, blister_1)', required: false }
+      boosters: { description: 'Aprovar: quantidade de boosters', required: false }
+      reason: { description: 'Motivo da decisão', required: false }
+permissions:
+  contents: write
+concurrency:
+  group: review
+  cancel-in-progress: false
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci --omit=dev --no-audit --no-fund --silent
+      - name: Migrações
+        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}' }
+        run: node tools/db-migrate.mjs
+      - name: Executar
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REVIEW_ACTOR: ${{ github.actor }}
+          REVIEW_OPERATORS: ${{ vars.REVIEW_OPERATORS || github.repository_owner }}
+          IN_ACTION: ${{ inputs.action }}
+          IN_IDS: ${{ inputs.ids }}
+          IN_COLLECTION: ${{ inputs.collection }}
+          IN_TYPE: ${{ inputs.type }}
+          IN_BOOSTERS: ${{ inputs.boosters }}
+          IN_REASON: ${{ inputs.reason }}
+        run: |
+          set -- "$IN_ACTION"
+          case "$IN_ACTION" in
+            approve) set -- approve "$IN_IDS" --collection "$IN_COLLECTION" --type "$IN_TYPE" --reason "$IN_REASON"
+                     [ -n "$IN_BOOSTERS" ] && set -- "$@" --boosters "$IN_BOOSTERS" ;;
+            reject|dismiss) set -- "$IN_ACTION" "$IN_IDS" --reason "$IN_REASON" ;;
+          esac
+          node tools/review.mjs "$@"
+      - name: Salvar overrides
+        if: inputs.action == 'export'
+        run: |
+          git config user.name "price-hunter-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add config/matching-overrides.json
+          git diff --cached --quiet && { echo "Sem mudança."; exit 0; }
+          git commit -m "revisão: overrides de matching $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
