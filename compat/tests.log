@@ -1,0 +1,41 @@
+
+> pokemon-price-hunter-br@1.0.0 test
+> node test/deploy-safety-tests.js && node test/run-tests.js && node test/ml-tests.js && node test/core-tests.js && node test/price-engine-tests.js && node test/db-tests.js && node test/price-db-tests.js && node test/reference-tests.js && node test/reference-db-tests.js && node test/reference-policy-tests.js && node test/market-dedup-tests.js && node test/market-composition-tests.js && node test/opportunity-engine-tests.js && node test/opportunity-db-tests.js && node test/opportunity-contract-tests.js && node test/api-tests.js
+
+OK — segurança de deploy: 13 módulos da API, todos dentro do bundle
+OK — todos os testes passaram (9 alertas). Exemplo:
+
+🎯 PREÇO-ALVO ATINGIDO
+
+CAOS ASCENDENTE
+Booster Box com 36 boosters
+
+R$ 339,00 (preço da loja)
+
+Copag: R$ 449,99
+↓ 24,7%
+R$ 9,42 / booster
+
+Estoque: confirmado
+Loja: Loja Shopify
+Frete: não informado
+Deal Score: 85/100
+OK — Mercado Livre
+OK — Marketplace Core (conversões)
+OK — Price Engine (regras)
+OK — Marketplace Core (PostgreSQL)
+OK — Price Engine (PostgreSQL)
+✓ Referências (atual × histórico): 14 grupos de testes passaram
+OK — Referências atual × histórico (PostgreSQL)
+✓ Política de referência atual (6A): 13 grupos de testes passaram
+✓ Mercado deduplicado + fontes independentes (6A.1): 15 grupos de testes passaram
+✓ Composição do mercado + confiança (6A.2): 12 grupos de testes passaram
+✓ Opportunity Engine: 18 grupos de testes passaram
+OK — Opportunity Engine (PostgreSQL) · melhor inicial 76, eventos {"OPPORTUNITY_FOUND":1,"OPPORTUNITY_ANOMALY":1}
+✓ Contrato de oportunidades (6B.0): 16 grupos passaram (puro + banco)
+  resumo da Home com dados reais: 136.5 KB
+[api/v1] banco indisponível (ECONNREFUSED): connect ECONNREFUSED ***:1
+[api/v1] banco indisponível (ECONNREFUSED): connect ECONNREFUSED ***:1
+[api/v1] banco indisponível (ECONNREFUSED): connect ECONNREFUSED ***:1
+[api/v1] banco indisponível (ECONNREFUSED): connect ECONNREFUSED ***:1
+OK — API v1 (state.json e PostgreSQL)

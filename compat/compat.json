@@ -1,0 +1,2296 @@
+{
+  "at": "2026-10-09T00:27:14.496Z",
+  "checks": [
+    {
+      "name": "search_path aplicado na conexão (startup options)",
+      "ok": true,
+      "detail": "hunter,public"
+    },
+    {
+      "name": "gen_random_uuid disponível",
+      "ok": true
+    },
+    {
+      "name": "migrations 001 e 002 registradas",
+      "ok": true
+    },
+    {
+      "name": "2ª sincronização não insere histórico",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "name": "2ª sincronização não muda contagens",
+      "ok": true,
+      "detail": {
+        "mid": {
+          "product": 236,
+          "collection": 24,
+          "store": 128,
+          "seller": 185,
+          "offer": 3120,
+          "price_history": 6924,
+          "stock_event": 3204,
+          "shipping_quote": 234,
+          "reference_price": 24,
+          "review_item": 7
+        },
+        "after": {
+          "product": 236,
+          "collection": 24,
+          "store": 128,
+          "seller": 185,
+          "offer": 3120,
+          "price_history": 6924,
+          "stock_event": 3204,
+          "shipping_quote": 234,
+          "reference_price": 24,
+          "review_item": 7
+        }
+      }
+    },
+    {
+      "name": "9 TCGs, só Pokémon com coleta",
+      "ok": true
+    },
+    {
+      "name": "8 grupos e 47 tipos de categoria",
+      "ok": true,
+      "detail": {
+        "groups": "8",
+        "types": "47"
+      }
+    },
+    {
+      "name": "ofertas vivas (ativas + pendentes) = ofertas do state.json",
+      "ok": true,
+      "detail": {
+        "active": 944,
+        "pending": 0,
+        "state": 944,
+        "stale": 0
+      }
+    },
+    {
+      "name": "pendentes = ofertas \"stale\" do state.json",
+      "ok": true,
+      "detail": {
+        "pending": 0,
+        "stale": 0
+      }
+    },
+    {
+      "name": "produtos = state.json − duplicatas",
+      "ok": true,
+      "detail": {
+        "db": 236,
+        "state": 243,
+        "dups": 7
+      }
+    },
+    {
+      "name": "ofertas removidas continuam no histórico",
+      "ok": true,
+      "detail": {
+        "offers": 2169,
+        "rows": 3158
+      }
+    },
+    {
+      "name": "histórico sem oferta órfã",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "name": "histórico do banco cobre as linhas de preço (− puladas)",
+      "ok": true,
+      "detail": {
+        "db": 6924,
+        "priceLines": 6227,
+        "skipped": 8
+      }
+    },
+    {
+      "name": "nenhum total com frete desconhecido",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "name": "banco recusa total inventado (CHECK)",
+      "ok": true
+    },
+    {
+      "name": "duplicatas na review_item",
+      "ok": true,
+      "detail": {
+        "review": 7,
+        "dups": 7
+      }
+    },
+    {
+      "name": "7 duplicatas legadas rejeitadas com motivo (sem apagar)",
+      "ok": true,
+      "detail": [
+        "ev09-blister1:rejected",
+        "ev09-blister3:rejected",
+        "ev09-blister4:rejected",
+        "ev09-booster:rejected",
+        "ev09-colecao_ex-bellibolt:rejected",
+        "ev09-combo:rejected",
+        "ev09-etb:rejected"
+      ]
+    },
+    {
+      "name": "trilha de auditoria: 7 eventos REVIEW_DECIDED",
+      "ok": true,
+      "detail": 7
+    },
+    {
+      "name": "nenhum item de revisão aberto após 2 sincronizações",
+      "ok": true
+    },
+    {
+      "name": "importação de referências idempotente (2ª não escreve)",
+      "ok": true,
+      "detail": {
+        "import_id": "copag-audit-2026-10-08",
+        "entries": 60,
+        "valid": 60,
+        "inserted": 0,
+        "updated": 0,
+        "unchanged": 60,
+        "rejected": [],
+        "excluded": [
+          "sv3_5-combo",
+          "sv4_5-colecao_ex-rreo",
+          "sv4_5-combo",
+          "sv6_5-colecao_premium",
+          "sv6_5-combo",
+          "sv7-combo"
+        ],
+        "identifiers": {
+          "written": 0,
+          "conflicts": []
+        }
+      }
+    },
+    {
+      "name": "importação: nenhuma entrada recusada",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "nenhuma referência apagada",
+      "ok": true
+    },
+    {
+      "name": "6 matches ambíguos fora da importação",
+      "ok": true
+    },
+    {
+      "name": "toda referência tem tipo",
+      "ok": true
+    },
+    {
+      "name": "Copag oficial só com fonte no domínio Copag",
+      "ok": true
+    },
+    {
+      "name": "referência atual nunca é histórica nem comunitária (view)",
+      "ok": true
+    },
+    {
+      "name": "referência de fora do domínio Copag não é Copag oficial (13 do Instagram)",
+      "ok": true
+    },
+    {
+      "name": "confiança média importada continua média e pendente",
+      "ok": true
+    },
+    {
+      "name": "nenhuma correção automática: preço histórico importado = preço da página",
+      "ok": true
+    },
+    {
+      "name": "sem conflito de valor entre referências atuais verificadas",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "Price Engine idempotente (2ª execução não escreve nada)",
+      "ok": true,
+      "detail": {
+        "products": 236,
+        "statsWritten": 0,
+        "dailyRows": 872,
+        "dailyWritten": 0,
+        "dailyDeleted": 0,
+        "seconds": 0.087
+      }
+    },
+    {
+      "name": "Price Engine não altera price_history",
+      "ok": true
+    },
+    {
+      "name": "product_stats: 1 linha por produto",
+      "ok": true
+    },
+    {
+      "name": "total atual só de oferta com frete conhecido",
+      "ok": true
+    },
+    {
+      "name": "preço atual só de oferta ativa, em estoque e com o mesmo preço",
+      "ok": true
+    },
+    {
+      "name": "referência atual: só COPAG_OFFICIAL_CURRENT, MARKET_CURRENT ou NONE",
+      "ok": true
+    },
+    {
+      "name": "desconto só com referência atual (NONE nunca tem desconto)",
+      "ok": true
+    },
+    {
+      "name": "Copag atual na referência ⇔ linha verificada em reference_price_current (mesmo valor)",
+      "ok": true
+    },
+    {
+      "name": "mercado só sem Copag atual e com critério robusto (≥ 3 ofertas, ≥ 2 fontes independentes)",
+      "ok": true
+    },
+    {
+      "name": "fontes independentes: vendedor repetido e loja em desconfiança não contam (recontagem em SQL)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "referência de mercado = mediana das ofertas elegíveis de fontes confiáveis (SQL)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "composição do mercado correta (lojas tradicionais × marketplace, recontagem em SQL)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "confiança da referência de mercado coerente com a composição (só marketplace × 0,85)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "COPAG_OFFICIAL_HISTORICAL nunca é referência atual",
+      "ok": true
+    },
+    {
+      "name": "COMMUNITY_REFERENCE nunca é referência atual",
+      "ok": true
+    },
+    {
+      "name": "mercado é derivado (nenhuma linha MARKET_* gravada em reference_price)",
+      "ok": true
+    },
+    {
+      "name": "confiança da referência atual: Copag = linha/100; mercado 0,51–0,85; NONE nula",
+      "ok": true
+    },
+    {
+      "name": "histórico só com dias suficientes",
+      "ok": true
+    },
+    {
+      "name": "preço atual reproduzido em SQL (mín, máx, média, mediana, total, contagem)",
+      "ok": true,
+      "detail": {
+        "sql": 103,
+        "engine": 103,
+        "diffs": []
+      }
+    },
+    {
+      "name": "histórico reproduzido em SQL a partir de price_daily",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "Opportunity Engine idempotente (2ª execução não escreve nem emite eventos)",
+      "ok": true,
+      "detail": {
+        "products": 236,
+        "offersEvaluated": 908,
+        "written": 0,
+        "removed": 0,
+        "withBest": 103,
+        "bands": {
+          "baixa": 666,
+          "normal": 220,
+          "boa": 21,
+          "excelente": 1
+        },
+        "events": {},
+        "seconds": 0.04
+      }
+    },
+    {
+      "name": "oportunidade: anomalia nunca ≥ 50",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: sem estoque nunca > 30",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: sinal de referência ⇔ referência atual (nunca histórica/comunitária)",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: NONE gera aviso NO_CURRENT_REFERENCE",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: referência comunitária só como aviso (todo produto com ela tem o aviso)",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: com mercado como referência, o sinal de mercado não conta de novo",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: com Copag atual, referência e mercado seguem independentes",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: aviso MARKETPLACE_ONLY ⇔ referência de mercado só de marketplace",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: aviso de desvio histórico só com mercado como referência e histórico disponível",
+      "ok": true
+    },
+    {
+      "name": "composição/avisos de mercado não alteram o score (recálculo como misto, sem contexto)",
+      "ok": true,
+      "detail": {
+        "products": 19,
+        "diffs": []
+      }
+    },
+    {
+      "name": "oportunidade: texto nunca chama mercado de Copag",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: frete desconhecido → sinal nulo (nunca R$ 0)",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: histórico só com série suficiente",
+      "ok": true
+    },
+    {
+      "name": "oportunidade: faixa coerente com o score",
+      "ok": true
+    },
+    {
+      "name": "melhor oportunidade: view SQL = código",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "API /oportunidades: contrato completo e referência atual válida",
+      "ok": true,
+      "detail": 60
+    },
+    {
+      "name": "API /oportunidades: total = produtos com melhor oferta",
+      "ok": true
+    },
+    {
+      "name": "opportunity: referência gravada = referência atual que o motor usa (product_stats), nunca histórico/comunitária",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "name": "opportunity: distância até a referência = (referência − preço) / referência",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "name": "opportunity: toda oferta com referência atual tem a classificação do motor (abaixo/na/acima)",
+      "ok": true,
+      "detail": 0
+    },
+    {
+      "name": "API /oportunidades: reference_comparison coerente com current_reference (sem referência → sem percentual)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "API /oportunidades: categoria = grupo/tipo do produto (mesma do site)",
+      "ok": true,
+      "detail": 11
+    },
+    {
+      "name": "API /oportunidades: ordem \"abaixo\" no servidor (desc, sem referência no fim)",
+      "ok": true,
+      "detail": [
+        32.25,
+        31.27,
+        28.74,
+        28.44,
+        27.33
+      ]
+    },
+    {
+      "name": "API /oportunidades: filtro de referência atual",
+      "ok": true,
+      "detail": 46
+    }
+  ],
+  "errors": [],
+  "env": {
+    "server_version": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "version_num": "170011",
+    "version": "PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "db_user": "***",
+    "search_path": "hunter,public",
+    "timezone": "Etc/UTC",
+    "max_connections": "100",
+    "ssl": false,
+    "extensions": [
+      "plpgsql 1.0"
+    ],
+    "supabase": false,
+    "exposed_schemas_note": "schema hunter não está em public; a API REST do Supabase só expõe os schemas configurados (padrão: public, graphql_public)."
+  },
+  "migrations": [
+    {
+      "version": "001_core.sql",
+      "applied_at": "2026-10-09T00:27:14.307Z"
+    },
+    {
+      "version": "002_seed.sql",
+      "applied_at": "2026-10-09T00:27:14.369Z"
+    },
+    {
+      "version": "003_review_legacy_duplicates.sql",
+      "applied_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "version": "004_price_engine.sql",
+      "applied_at": "2026-10-09T00:27:14.376Z"
+    },
+    {
+      "version": "005_opportunity_engine.sql",
+      "applied_at": "2026-10-09T00:27:14.385Z"
+    },
+    {
+      "version": "006_reference_kinds.sql",
+      "applied_at": "2026-10-09T00:27:14.390Z"
+    },
+    {
+      "version": "007_current_reference_policy.sql",
+      "applied_at": "2026-10-09T00:27:14.395Z"
+    },
+    {
+      "version": "008_opportunity_reference_comparison.sql",
+      "applied_at": "2026-10-09T00:27:14.397Z"
+    }
+  ],
+  "migrationLogs": {
+    "compat-migrate-1.log": "aplicada 001_core.sql\naplicada 002_seed.sql\naplicada 003_review_legacy_duplicates.sql\naplicada 004_price_engine.sql\naplicada 005_opportunity_engine.sql\naplicada 006_reference_kinds.sql\naplicada 007_current_reference_policy.sql\naplicada 008_opportunity_reference_comparison.sql",
+    "compat-migrate-2.log": ""
+  },
+  "objects": {
+    "tables": "37",
+    "partitions": "17",
+    "views": "3",
+    "indexes": "119",
+    "constraints": 165
+  },
+  "source": {
+    "generatedAt": "2026-10-09T00:15:20.830Z",
+    "products": 243,
+    "offers": 944,
+    "stale": 0,
+    "stores": 128,
+    "historyLines": 10204,
+    "priceLines": 6227
+  },
+  "sync1": {
+    "stats": {
+      "duplicatesToReview": 7,
+      "collections": 24,
+      "products": 236,
+      "references": 24,
+      "stores": 128,
+      "offers": 944,
+      "offersRemoved": 0,
+      "stockEvents": 0,
+      "shippingQuotes": 234,
+      "historicOffers": 2176,
+      "history": 6924,
+      "distrustStores": 32,
+      "historySkipped": 8
+    },
+    "seconds": 0.268
+  },
+  "sync2": {
+    "stats": {
+      "duplicatesToReview": 7,
+      "collections": 24,
+      "products": 236,
+      "references": 24,
+      "stores": 128,
+      "offers": 944,
+      "offersRemoved": 0,
+      "stockEvents": 0,
+      "shippingQuotes": 234,
+      "historicOffers": 0,
+      "history": 0,
+      "distrustStores": 32,
+      "historySkipped": 8
+    },
+    "seconds": 0.1
+  },
+  "snapshots": {
+    "before": {
+      "product": 0,
+      "collection": 0,
+      "store": 0,
+      "seller": 0,
+      "offer": 0,
+      "price_history": 0,
+      "stock_event": 0,
+      "shipping_quote": 0,
+      "reference_price": 0,
+      "review_item": 7
+    },
+    "afterSync1": {
+      "product": 236,
+      "collection": 24,
+      "store": 128,
+      "seller": 185,
+      "offer": 3120,
+      "price_history": 6924,
+      "stock_event": 3204,
+      "shipping_quote": 234,
+      "reference_price": 24,
+      "review_item": 7
+    },
+    "afterSync2": {
+      "product": 236,
+      "collection": 24,
+      "store": 128,
+      "seller": 185,
+      "offer": 3120,
+      "price_history": 6924,
+      "stock_event": 3204,
+      "shipping_quote": 234,
+      "reference_price": 24,
+      "review_item": 7
+    }
+  },
+  "counts": {
+    "tcg": [
+      {
+        "id": "pokemon",
+        "collect_enabled": true
+      },
+      {
+        "id": "magic",
+        "collect_enabled": false
+      },
+      {
+        "id": "yugioh",
+        "collect_enabled": false
+      },
+      {
+        "id": "onepiece",
+        "collect_enabled": false
+      },
+      {
+        "id": "digimon",
+        "collect_enabled": false
+      },
+      {
+        "id": "lorcana",
+        "collect_enabled": false
+      },
+      {
+        "id": "dragonball",
+        "collect_enabled": false
+      },
+      {
+        "id": "riftbound",
+        "collect_enabled": false
+      },
+      {
+        "id": "other",
+        "collect_enabled": false
+      }
+    ],
+    "categories": {
+      "groups": "8",
+      "types": "47"
+    },
+    "collections": 24,
+    "products": 236,
+    "productsByCategory": [
+      {
+        "category_id": "sealed.collection_box",
+        "n": 56
+      },
+      {
+        "category_id": "sealed.blister",
+        "n": 55
+      },
+      {
+        "category_id": "sealed.booster_bundle",
+        "n": 43
+      },
+      {
+        "category_id": "sealed.etb",
+        "n": 22
+      },
+      {
+        "category_id": "sealed.booster_box",
+        "n": 21
+      },
+      {
+        "category_id": "sealed.booster",
+        "n": 19
+      },
+      {
+        "category_id": "sealed.deck",
+        "n": 16
+      },
+      {
+        "category_id": "sealed.premium_collection",
+        "n": 2
+      },
+      {
+        "category_id": "sealed.tin",
+        "n": 1
+      },
+      {
+        "category_id": "sealed.mini_tin",
+        "n": 1
+      }
+    ],
+    "identifiers": 1,
+    "marketplaces": 5,
+    "stores": [
+      {
+        "status": "active",
+        "n": 56
+      },
+      {
+        "status": "blocked",
+        "n": 54
+      },
+      {
+        "status": "paused",
+        "n": 2
+      },
+      {
+        "status": "pending",
+        "n": 6
+      },
+      {
+        "status": "unavailable",
+        "n": 10
+      }
+    ],
+    "storeChannels": 128,
+    "sellers": [
+      {
+        "marketplace_id": "mercadolivre",
+        "n": 149,
+        "numeric_ids": 149
+      },
+      {
+        "marketplace_id": "direct",
+        "n": 36,
+        "numeric_ids": 0
+      }
+    ],
+    "offers": [
+      {
+        "status": "active",
+        "n": 944
+      },
+      {
+        "status": "removed",
+        "n": 2176
+      }
+    ],
+    "offersActive": {
+      "total": 944,
+      "in_stock": 574,
+      "shipping_known": 234,
+      "with_total": 234,
+      "mercadolivre": 290,
+      "ml_without_seller": 0
+    },
+    "priceHistory": 6924,
+    "historyByPartition": [
+      {
+        "partition": "price_history_2026_10",
+        "n": 6924,
+        "first": "2026-10-06T12:26:46.710Z",
+        "last": "2026-10-09T00:15:20.830Z"
+      }
+    ],
+    "stockEvents": [
+      {
+        "to_status": "removed",
+        "n": 3204
+      }
+    ],
+    "shippingQuotes": 234,
+    "references": [
+      {
+        "status": "verified",
+        "n": 24
+      }
+    ],
+    "referenceCurrent": 11,
+    "affiliatePrograms": [
+      {
+        "id": "amazon",
+        "status": "pending"
+      },
+      {
+        "id": "mercadolivre",
+        "status": "pending"
+      }
+    ],
+    "roles": [
+      {
+        "id": "ADMIN",
+        "permissions": 9
+      },
+      {
+        "id": "OPERATOR",
+        "permissions": 5
+      },
+      {
+        "id": "SUPER_ADMIN",
+        "permissions": 10
+      },
+      {
+        "id": "VIEWER",
+        "permissions": 3
+      }
+    ],
+    "emptyTables": [
+      "affiliate_click",
+      "affiliate_link",
+      "alert_delivery",
+      "app_user",
+      "automation_job",
+      "bundle",
+      "bundle_item",
+      "crawl_run",
+      "favorite",
+      "opportunity",
+      "price_alert",
+      "price_daily",
+      "product_stats",
+      "user_role"
+    ]
+  },
+  "removedOffers": {
+    "offers": 2169,
+    "rows": 3158
+  },
+  "review": [
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-blister1",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-blister1",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-blister3",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-blister3",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-blister4",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-blister4",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-booster",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-booster",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-colecao_ex-bellibolt",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-colecao_ex-bellibolt",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-combo",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-combo",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "category": "duplicate_product",
+      "status": "rejected",
+      "entity_type": "legacy_product",
+      "entity_id": "ev09-etb",
+      "proposal": {
+        "reason": "código de coleção antigo; já existe o produto na coleção atual",
+        "collection_code": "ev09",
+        "current_collection": "sv9"
+      },
+      "dedupe_key": "dup:ev09-etb",
+      "created_at": "2026-10-09T00:27:14.373Z"
+    }
+  ],
+  "reviewDecisions": [
+    {
+      "entity_id": "ev09-blister1",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "entity_id": "ev09-blister3",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "entity_id": "ev09-blister4",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "entity_id": "ev09-booster",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "entity_id": "ev09-colecao_ex-bellibolt",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "entity_id": "ev09-combo",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    },
+    {
+      "entity_id": "ev09-etb",
+      "status": "rejected",
+      "decision_reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+      "decided_by_label": "owner (aprovação de 08/10/2026)",
+      "decided_at": "2026-10-09T00:27:14.373Z"
+    }
+  ],
+  "reviewAudit": [
+    {
+      "entity_id": "1",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-blister1"
+      }
+    },
+    {
+      "entity_id": "2",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-blister3"
+      }
+    },
+    {
+      "entity_id": "3",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-blister4"
+      }
+    },
+    {
+      "entity_id": "4",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-booster"
+      }
+    },
+    {
+      "entity_id": "5",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-combo"
+      }
+    },
+    {
+      "entity_id": "6",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-etb"
+      }
+    },
+    {
+      "entity_id": "7",
+      "payload": {
+        "reason": "duplicate legacy: coleção antiga (ev09); o produto já existe na coleção atual (sv9). Registro mantido, não importado.",
+        "source": "migration 003",
+        "category": "duplicate_product",
+        "to_status": "rejected",
+        "decided_by": "owner (aprovação de 08/10/2026)",
+        "from_status": "(novo)",
+        "legacy_product": "ev09-colecao_ex-bellibolt"
+      }
+    }
+  ],
+  "references": {
+    "import1": {
+      "import_id": "copag-audit-2026-10-08",
+      "entries": 60,
+      "valid": 60,
+      "inserted": 60,
+      "updated": 0,
+      "unchanged": 0,
+      "rejected": [],
+      "excluded": [
+        "sv3_5-combo",
+        "sv4_5-colecao_ex-rreo",
+        "sv4_5-combo",
+        "sv6_5-colecao_premium",
+        "sv6_5-combo",
+        "sv7-combo"
+      ],
+      "identifiers": {
+        "written": 5,
+        "conflicts": []
+      }
+    },
+    "import2": {
+      "import_id": "copag-audit-2026-10-08",
+      "entries": 60,
+      "valid": 60,
+      "inserted": 0,
+      "updated": 0,
+      "unchanged": 60,
+      "rejected": [],
+      "excluded": [
+        "sv3_5-combo",
+        "sv4_5-colecao_ex-rreo",
+        "sv4_5-combo",
+        "sv6_5-colecao_premium",
+        "sv6_5-combo",
+        "sv7-combo"
+      ],
+      "identifiers": {
+        "written": 0,
+        "conflicts": []
+      }
+    },
+    "conflicts": [],
+    "byKind": [
+      {
+        "reference_kind": "COMMUNITY_REFERENCE",
+        "reference_scope": "community",
+        "verification_status": "verified",
+        "n": 13
+      },
+      {
+        "reference_kind": "COPAG_OFFICIAL_CURRENT",
+        "reference_scope": "current",
+        "verification_status": "pending",
+        "n": 3
+      },
+      {
+        "reference_kind": "COPAG_OFFICIAL_CURRENT",
+        "reference_scope": "current",
+        "verification_status": "verified",
+        "n": 13
+      },
+      {
+        "reference_kind": "COPAG_OFFICIAL_HISTORICAL",
+        "reference_scope": "historical",
+        "verification_status": "pending",
+        "n": 6
+      },
+      {
+        "reference_kind": "COPAG_OFFICIAL_HISTORICAL",
+        "reference_scope": "historical",
+        "verification_status": "verified",
+        "n": 49
+      }
+    ],
+    "byConfidence": [
+      {
+        "label": "alta",
+        "n": 75
+      },
+      {
+        "label": "média",
+        "n": 9
+      }
+    ],
+    "products": {
+      "total": 236,
+      "with_current": 13,
+      "only_historical": 55,
+      "only_community": 13,
+      "without_current": 223,
+      "without_any": 152
+    },
+    "total": 84
+  },
+  "priceEngine": {
+    "run1": {
+      "products": 236,
+      "statsWritten": 236,
+      "dailyRows": 872,
+      "dailyWritten": 872,
+      "dailyDeleted": 0,
+      "seconds": 0.118
+    },
+    "run2": {
+      "products": 236,
+      "statsWritten": 0,
+      "dailyRows": 872,
+      "dailyWritten": 0,
+      "dailyDeleted": 0,
+      "seconds": 0.087
+    },
+    "status": [
+      {
+        "data_status": "no_offers",
+        "history_status": "insufficient",
+        "n": 47
+      },
+      {
+        "data_status": "no_stock",
+        "history_status": "insufficient",
+        "n": 86
+      },
+      {
+        "data_status": "ok",
+        "history_status": "insufficient",
+        "n": 70
+      },
+      {
+        "data_status": "ok",
+        "history_status": "ok",
+        "n": 33
+      }
+    ],
+    "daily": {
+      "rows": 872,
+      "products": 124,
+      "first": "2026-10-07",
+      "last": "2026-10-09"
+    },
+    "coverage": {
+      "with_current": 103,
+      "with_total": 67,
+      "with_discount": 57,
+      "with_var24h": 98,
+      "with_var7d": 0,
+      "with_var30d": 0,
+      "with_history": 33,
+      "untrusted_points": 1411,
+      "implausible_points": 141,
+      "implausible_offers": 0,
+      "unconfirmed_offers": 12
+    },
+    "samples": [
+      {
+        "legacy_id": "me04-blister4",
+        "current_price": "39.90",
+        "current_total_price": null,
+        "lowest_current_price": "39.90",
+        "highest_current_price": "69.99",
+        "average_price": "53.13",
+        "median_price": "53.56",
+        "history_days": 3,
+        "history_status": "ok",
+        "variation_24h": "0.0000",
+        "reference_price": "55.99",
+        "discount_vs_reference": "0.2874",
+        "number_of_active_offers": 22,
+        "number_of_in_stock_offers": 20,
+        "number_of_stores": 13,
+        "number_of_marketplaces": 2,
+        "shipping_coverage": "0.0000",
+        "quality": {
+          "anchor": 55.99,
+          "pending": 0,
+          "removed": 150,
+          "no_price": 0,
+          "implausible": 0,
+          "unconfirmed": 2,
+          "anchor_source": "reference",
+          "history_anchor": 55.99,
+          "other_condition": 0,
+          "market_reference": {
+            "ok": true,
+            "price": 53.56,
+            "offers": 20,
+            "reason": "robust_current_market",
+            "stores": 10,
+            "sources": 16,
+            "untrusted": 0,
+            "composition": "MARKET_MIXED",
+            "implausible": 0,
+            "marketplaces": 2,
+            "direct_sources": 10,
+            "untrusted_sources": 0,
+            "marketplace_sellers": 6,
+            "marketplace_sources": 6
+          },
+          "untrusted_points": 116,
+          "implausible_points": 22,
+          "history_anchor_source": "reference"
+        }
+      },
+      {
+        "legacy_id": "me04-box36",
+        "current_price": "379.05",
+        "current_total_price": "389.90",
+        "lowest_current_price": "379.05",
+        "highest_current_price": "599.99",
+        "average_price": "464.96",
+        "median_price": "427.40",
+        "history_days": 3,
+        "history_status": "ok",
+        "variation_24h": "-0.0278",
+        "reference_price": "449.99",
+        "discount_vs_reference": "0.1576",
+        "number_of_active_offers": 21,
+        "number_of_in_stock_offers": 19,
+        "number_of_stores": 12,
+        "number_of_marketplaces": 2,
+        "shipping_coverage": "0.3158",
+        "quality": {
+          "anchor": 449.99,
+          "pending": 0,
+          "removed": 119,
+          "no_price": 0,
+          "implausible": 0,
+          "unconfirmed": 0,
+          "anchor_source": "reference",
+          "history_anchor": 449.99,
+          "other_condition": 0,
+          "market_reference": {
+            "ok": true,
+            "price": 427.4,
+            "offers": 19,
+            "reason": "robust_current_market",
+            "stores": 9,
+            "sources": 15,
+            "untrusted": 0,
+            "composition": "MARKET_MIXED",
+            "implausible": 0,
+            "marketplaces": 2,
+            "direct_sources": 9,
+            "untrusted_sources": 0,
+            "marketplace_sellers": 6,
+            "marketplace_sources": 6
+          },
+          "untrusted_points": 57,
+          "implausible_points": 0,
+          "history_anchor_source": "reference"
+        }
+      },
+      {
+        "legacy_id": "me05-blister3",
+        "current_price": "31.83",
+        "current_total_price": "50.07",
+        "lowest_current_price": "31.83",
+        "highest_current_price": "54.99",
+        "average_price": "40.96",
+        "median_price": "39.99",
+        "history_days": 3,
+        "history_status": "ok",
+        "variation_24h": "0.0000",
+        "reference_price": "42.99",
+        "discount_vs_reference": "0.2596",
+        "number_of_active_offers": 18,
+        "number_of_in_stock_offers": 18,
+        "number_of_stores": 10,
+        "number_of_marketplaces": 2,
+        "shipping_coverage": "0.0556",
+        "quality": {
+          "anchor": 42.99,
+          "pending": 0,
+          "removed": 110,
+          "no_price": 0,
+          "implausible": 0,
+          "unconfirmed": 1,
+          "anchor_source": "reference",
+          "history_anchor": 42.99,
+          "other_condition": 0,
+          "market_reference": {
+            "ok": true,
+            "price": 39.99,
+            "offers": 18,
+            "reason": "robust_current_market",
+            "stores": 9,
+            "sources": 15,
+            "untrusted": 0,
+            "composition": "MARKET_MIXED",
+            "implausible": 0,
+            "marketplaces": 2,
+            "direct_sources": 9,
+            "untrusted_sources": 0,
+            "marketplace_sellers": 6,
+            "marketplace_sources": 6
+          },
+          "untrusted_points": 48,
+          "implausible_points": 0,
+          "history_anchor_source": "reference"
+        }
+      },
+      {
+        "legacy_id": "me05-blister4",
+        "current_price": "41.80",
+        "current_total_price": "72.04",
+        "lowest_current_price": "41.80",
+        "highest_current_price": "68.99",
+        "average_price": "54.96",
+        "median_price": "54.90",
+        "history_days": 3,
+        "history_status": "ok",
+        "variation_24h": "-0.0417",
+        "reference_price": "55.99",
+        "discount_vs_reference": "0.2534",
+        "number_of_active_offers": 18,
+        "number_of_in_stock_offers": 17,
+        "number_of_stores": 14,
+        "number_of_marketplaces": 2,
+        "shipping_coverage": "0.1176",
+        "quality": {
+          "anchor": 55.99,
+          "pending": 0,
+          "removed": 17,
+          "no_price": 2,
+          "implausible": 0,
+          "unconfirmed": 0,
+          "anchor_source": "reference",
+          "history_anchor": 55.99,
+          "other_condition": 0,
+          "market_reference": {
+            "ok": true,
+            "price": 54.9,
+            "offers": 17,
+            "reason": "robust_current_market",
+            "stores": 12,
+            "sources": 13,
+            "untrusted": 0,
+            "composition": "MARKET_MIXED",
+            "implausible": 0,
+            "marketplaces": 2,
+            "direct_sources": 12,
+            "untrusted_sources": 0,
+            "marketplace_sellers": 1,
+            "marketplace_sources": 1
+          },
+          "untrusted_points": 52,
+          "implausible_points": 0,
+          "history_anchor_source": "reference"
+        }
+      },
+      {
+        "legacy_id": "me03-blister4",
+        "current_price": "41.80",
+        "current_total_price": null,
+        "lowest_current_price": "41.80",
+        "highest_current_price": "71.90",
+        "average_price": "54.23",
+        "median_price": "54.05",
+        "history_days": 3,
+        "history_status": "ok",
+        "variation_24h": "0.0000",
+        "reference_price": "55.99",
+        "discount_vs_reference": "0.2534",
+        "number_of_active_offers": 16,
+        "number_of_in_stock_offers": 16,
+        "number_of_stores": 8,
+        "number_of_marketplaces": 1,
+        "shipping_coverage": "0.0000",
+        "quality": {
+          "anchor": 55.99,
+          "pending": 0,
+          "removed": 15,
+          "no_price": 2,
+          "implausible": 0,
+          "unconfirmed": 0,
+          "anchor_source": "reference",
+          "history_anchor": 55.99,
+          "other_condition": 0,
+          "market_reference": {
+            "ok": true,
+            "price": 54.05,
+            "offers": 16,
+            "reason": "robust_current_market",
+            "stores": 8,
+            "sources": 8,
+            "untrusted": 0,
+            "composition": "MARKET_STORES",
+            "implausible": 0,
+            "marketplaces": 1,
+            "direct_sources": 8,
+            "untrusted_sources": 0,
+            "marketplace_sellers": 0,
+            "marketplace_sources": 0
+          },
+          "untrusted_points": 59,
+          "implausible_points": 0,
+          "history_anchor_source": "reference"
+        }
+      }
+    ]
+  },
+  "referencePolicy": {
+    "composition": [
+      {
+        "composition": "MARKET_MIXED",
+        "n": 22,
+        "ref_conf_avg": 0.839,
+        "ref_conf_min": 0.65,
+        "ref_conf_max": 0.85
+      },
+      {
+        "composition": "MARKETPLACE_ONLY",
+        "n": 19,
+        "ref_conf_avg": 0.631,
+        "ref_conf_min": 0.553,
+        "ref_conf_max": 0.722
+      },
+      {
+        "composition": "MARKET_STORES",
+        "n": 5,
+        "ref_conf_avg": 0.73,
+        "ref_conf_min": 0.65,
+        "ref_conf_max": 0.85
+      }
+    ],
+    "marketSources": [
+      {
+        "sources": 2,
+        "n": 1
+      },
+      {
+        "sources": 3,
+        "n": 10
+      },
+      {
+        "sources": 4,
+        "n": 6
+      },
+      {
+        "sources": 5,
+        "n": 2
+      },
+      {
+        "sources": 6,
+        "n": 6
+      },
+      {
+        "sources": 7,
+        "n": 2
+      },
+      {
+        "sources": 8,
+        "n": 2
+      },
+      {
+        "sources": 9,
+        "n": 6
+      },
+      {
+        "sources": 10,
+        "n": 3
+      },
+      {
+        "sources": 11,
+        "n": 3
+      },
+      {
+        "sources": 12,
+        "n": 1
+      },
+      {
+        "sources": 13,
+        "n": 2
+      },
+      {
+        "sources": 14,
+        "n": 1
+      },
+      {
+        "sources": 15,
+        "n": 1
+      }
+    ],
+    "byKind": [
+      {
+        "reference_kind": "COPAG_OFFICIAL_CURRENT",
+        "n": 13,
+        "with_stock": 11
+      },
+      {
+        "reference_kind": "MARKET_CURRENT",
+        "n": 46,
+        "with_stock": 46
+      },
+      {
+        "reference_kind": "NONE",
+        "n": 177,
+        "with_stock": 46
+      }
+    ],
+    "noneReasons": [
+      {
+        "reference_reason": "no_copag_insufficient_offers",
+        "n": 177
+      }
+    ],
+    "onlyHistorical": 50,
+    "onlyCommunity": 6
+  },
+  "opportunity": {
+    "run1": {
+      "products": 236,
+      "offersEvaluated": 908,
+      "written": 908,
+      "removed": 0,
+      "withBest": 103,
+      "bands": {
+        "baixa": 666,
+        "normal": 220,
+        "boa": 21,
+        "excelente": 1
+      },
+      "events": {
+        "OPPORTUNITY_FOUND": 15
+      },
+      "seconds": 0.051
+    },
+    "run2": {
+      "products": 236,
+      "offersEvaluated": 908,
+      "written": 0,
+      "removed": 0,
+      "withBest": 103,
+      "bands": {
+        "baixa": 666,
+        "normal": 220,
+        "boa": 21,
+        "excelente": 1
+      },
+      "events": {},
+      "seconds": 0.04
+    },
+    "bands": [
+      {
+        "opportunity_band": "baixa",
+        "n": 666,
+        "conf": 0.41
+      },
+      {
+        "opportunity_band": "boa",
+        "n": 21,
+        "conf": 0.69
+      },
+      {
+        "opportunity_band": "excelente",
+        "n": 1,
+        "conf": 0.77
+      },
+      {
+        "opportunity_band": "normal",
+        "n": 220,
+        "conf": 0.47
+      }
+    ],
+    "productBands": [
+      {
+        "opportunity_band": "boa",
+        "n": 14
+      },
+      {
+        "opportunity_band": "excelente",
+        "n": 1
+      },
+      {
+        "opportunity_band": "normal",
+        "n": 88
+      }
+    ],
+    "events": [
+      {
+        "type": "OPPORTUNITY_FOUND",
+        "n": 15
+      }
+    ],
+    "newEvents": 15,
+    "top": [
+      {
+        "legacy_id": "me04-blister4",
+        "offer": "5e6808f818e4",
+        "store_id": "mercadolivre",
+        "price": 39.9,
+        "opportunity_score": 90,
+        "opportunity_band": "excelente",
+        "confidence": 0.77,
+        "reasons": [
+          "28,7% abaixo do preço sugerido Copag (R$ 55,99)",
+          "no menor preço já registrado (R$ 39,90)",
+          "25,5% abaixo da mediana de 20 ofertas com estoque",
+          "menor preço entre 20 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me05-blister3",
+        "offer": "7a3d004b7bd3",
+        "store_id": "mercadolivre",
+        "price": 31.9,
+        "opportunity_score": 89,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "reasons": [
+          "25,8% abaixo do preço sugerido Copag (R$ 42,99)",
+          "próximo da mínima histórica (R$ 31,83)",
+          "20,2% abaixo da mediana de 18 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me03-blister4",
+        "offer": "4527cc424170",
+        "store_id": "gorupacombr",
+        "price": 41.8,
+        "opportunity_score": 88,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "reasons": [
+          "25,3% abaixo do preço sugerido Copag (R$ 55,99)",
+          "no menor preço já registrado (R$ 41,80)",
+          "22,7% abaixo da mediana de 16 ofertas com estoque",
+          "menor preço entre 16 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me04-blister3",
+        "offer": "3b2cd7d15ba6",
+        "store_id": "omniversecombr",
+        "price": 32.46,
+        "opportunity_score": 88,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "reasons": [
+          "24,5% abaixo do preço sugerido Copag (R$ 42,99)",
+          "no menor preço já registrado (R$ 32,46)",
+          "22,5% abaixo da mediana de 14 ofertas com estoque",
+          "menor preço entre 14 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me05-blister4",
+        "offer": "fc49aa3f80fb",
+        "store_id": "gorupacombr",
+        "price": 41.8,
+        "opportunity_score": 88,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "reasons": [
+          "25,3% abaixo do preço sugerido Copag (R$ 55,99)",
+          "no menor preço já registrado (R$ 41,80)",
+          "23,9% abaixo da mediana de 17 ofertas com estoque",
+          "menor preço entre 17 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me04-etb",
+        "offer": "68856e9bb35e",
+        "store_id": "dalarancombr",
+        "price": 322.9,
+        "opportunity_score": 86,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "reasons": [
+          "19,3% abaixo do preço sugerido Copag (R$ 399,99)",
+          "no menor preço já registrado (R$ 322,90)",
+          "24,7% abaixo da mediana de 15 ofertas com estoque",
+          "menor preço entre 15 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me04-blister1",
+        "offer": "1293af158021",
+        "store_id": "mercadolivre",
+        "price": 11.9,
+        "opportunity_score": 83,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "reasons": [
+          "14,9% abaixo do preço sugerido Copag (R$ 13,99)",
+          "no menor preço já registrado (R$ 11,90)",
+          "25,2% abaixo da mediana de 16 ofertas com estoque",
+          "menor preço entre 16 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "me03-blister1",
+        "offer": "6a2ffc0c3fc9",
+        "store_id": "lojabrmetaversocombr",
+        "price": 12.97,
+        "opportunity_score": 79,
+        "opportunity_band": "boa",
+        "confidence": 0.63,
+        "reasons": [
+          "18,4% abaixo da referência de mercado (mediana de 10 ofertas de 10 fontes independentes, R$ 15,89)",
+          "no menor preço já registrado (R$ 12,97)",
+          "menor preço entre 10 ofertas com estoque",
+          "loja com reputação ótima no Reclame Aqui",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "c30-colecao_ex-greninja",
+        "offer": "38e1902ae248",
+        "store_id": "lumosstorecombr",
+        "price": 199.99,
+        "opportunity_score": 79,
+        "opportunity_band": "boa",
+        "confidence": 0.6,
+        "reasons": [
+          "27,3% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 275,19)",
+          "no menor preço já registrado (R$ 199,99)",
+          "menor preço entre 9 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "COMMUNITY_REFERENCE",
+          "UNKNOWN_FREIGHT"
+        ]
+      },
+      {
+        "legacy_id": "c30-colecao_ex-sylveon",
+        "offer": "8ad5af6fe2ae",
+        "store_id": "lumosstorecombr",
+        "price": 199.99,
+        "opportunity_score": 79,
+        "opportunity_band": "boa",
+        "confidence": 0.6,
+        "reasons": [
+          "28,4% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 279,49)",
+          "no menor preço já registrado (R$ 199,99)",
+          "menor preço entre 9 ofertas com estoque",
+          "estoque confirmado"
+        ],
+        "warnings": [
+          "COMMUNITY_REFERENCE",
+          "UNKNOWN_FREIGHT"
+        ]
+      }
+    ]
+  },
+  "referenceComparison": {
+    "byKind": [
+      {
+        "reference_kind": "COPAG_OFFICIAL_CURRENT",
+        "n": 192,
+        "avg_pct_below": -0.23,
+        "min_pct": -50,
+        "max_pct": 32.52
+      },
+      {
+        "reference_kind": "MARKET_CURRENT",
+        "n": 367,
+        "avg_pct_below": 0.1,
+        "min_pct": -100.19,
+        "max_pct": 33.28
+      },
+      {
+        "reference_kind": "NONE",
+        "n": 349,
+        "avg_pct_below": null,
+        "min_pct": null,
+        "max_pct": null
+      }
+    ],
+    "bestByKind": [
+      {
+        "reference_kind": "COPAG_OFFICIAL_CURRENT",
+        "n": 11
+      },
+      {
+        "reference_kind": "MARKET_CURRENT",
+        "n": 46
+      },
+      {
+        "reference_kind": "NONE",
+        "n": 46
+      }
+    ]
+  },
+  "api": {
+    "opportunities": 103,
+    "sample": [
+      {
+        "product": {
+          "id": "me04-blister4",
+          "slug": "caos-ascendente-blister-quadruplo",
+          "name": "Caos Ascendente - Blister Quádruplo",
+          "type": "blister_4",
+          "type_label": "Blister Quádruplo",
+          "group": "Blisters",
+          "image": "https://copagloja.vteximg.com.br/arquivos/ids/166978/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Four-Booster-Blister---Front_PTBR.png?v=639149874808400000",
+          "collection": {
+            "code": "me04",
+            "name": "Caos Ascendente"
+          }
+        },
+        "offer": {
+          "id": "5e6808f818e4",
+          "title": "Pokémon ME04 Caos Ascendente Blister Quádruplo Toxel 4 Boosters copag",
+          "url": "https://www.mercadolivre.com.br/p/MLB69735015?pdp_filters=item_id%3AMLB6823331442",
+          "image": "https://http2.mlstatic.com/D_NQ_NP_861056-MLA116069207296_092026-F.jpg",
+          "first_seen_at": "2026-10-08T13:30:10.097Z"
+        },
+        "price": 39.9,
+        "total": null,
+        "shipping": "unknown",
+        "stock": "in_stock",
+        "store": {
+          "id": "mercadolivre",
+          "name": "Mercado Livre"
+        },
+        "marketplace": "mercadolivre",
+        "opportunity_score": 90,
+        "opportunity_band": "excelente",
+        "confidence": 0.77,
+        "current_reference": {
+          "kind": "COPAG_OFFICIAL_CURRENT",
+          "label": "Preço sugerido Copag",
+          "price": 55.99,
+          "source": "Copag",
+          "confidence": 0.95,
+          "reason": "verified_current_copag"
+        },
+        "market_composition": "MARKET_MIXED",
+        "reference_comparison": {
+          "available": true,
+          "reference_kind": "COPAG_OFFICIAL_CURRENT",
+          "reference_label": "Preço sugerido Copag",
+          "reference_value": 55.99,
+          "percentage_below": 28.74,
+          "amount_below": 16.09,
+          "position": "below"
+        },
+        "product_variation_7d": null,
+        "historical_context": [],
+        "community_reference": null,
+        "warnings": [
+          {
+            "code": "UNKNOWN_FREIGHT",
+            "text": "Frete não confirmado"
+          }
+        ],
+        "reasons": [
+          {
+            "code": "BELOW_REFERENCE",
+            "text": "28,7% abaixo do preço sugerido Copag (R$ 55,99)",
+            "impact": "+",
+            "reference_kind": "COPAG_OFFICIAL_CURRENT"
+          },
+          {
+            "code": "AT_HISTORICAL_MIN",
+            "text": "no menor preço já registrado (R$ 39,90)",
+            "impact": "+"
+          },
+          {
+            "code": "BELOW_MARKET",
+            "text": "25,5% abaixo da mediana de 20 ofertas com estoque",
+            "impact": "+"
+          },
+          {
+            "code": "LOWEST_NOW",
+            "text": "menor preço entre 20 ofertas com estoque",
+            "impact": "+"
+          },
+          {
+            "code": "IN_STOCK",
+            "text": "estoque confirmado",
+            "impact": "+"
+          }
+        ],
+        "engine_version": "opportunity-v2.2",
+        "updated_at": "2026-10-09T00:27:15.239Z"
+      },
+      {
+        "product": {
+          "id": "me05-blister3",
+          "slug": "escuridao-absoluta-blister-triplo",
+          "name": "Escuridão Absoluta - Blister Triplo",
+          "type": "blister_3",
+          "type_label": "Blister Triplo",
+          "group": "Blisters",
+          "image": "https://rihappy.vteximg.com.br/arquivos/ids/10132200/17854318658374.jpg?v=639213758477600000",
+          "collection": {
+            "code": "me05",
+            "name": "Escuridão Absoluta"
+          }
+        },
+        "offer": {
+          "id": "7a3d004b7bd3",
+          "title": "Blister Triplo Pokémon ME05 Escuridão Absoluta",
+          "url": "https://www.mercadolivre.com.br/p/MLB74743819?pdp_filters=item_id%3AMLB7077055152",
+          "image": "https://http2.mlstatic.com/D_NQ_NP_650344-MLA116714869329_082026-F.jpg",
+          "first_seen_at": "2026-10-08T13:30:10.097Z"
+        },
+        "price": 31.9,
+        "total": null,
+        "shipping": "unknown",
+        "stock": "in_stock",
+        "store": {
+          "id": "mercadolivre",
+          "name": "Mercado Livre"
+        },
+        "marketplace": "mercadolivre",
+        "opportunity_score": 89,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "current_reference": {
+          "kind": "COPAG_OFFICIAL_CURRENT",
+          "label": "Preço sugerido Copag",
+          "price": 42.99,
+          "source": "Copag",
+          "confidence": 0.9,
+          "reason": "verified_current_copag"
+        },
+        "market_composition": "MARKET_MIXED",
+        "reference_comparison": {
+          "available": true,
+          "reference_kind": "COPAG_OFFICIAL_CURRENT",
+          "reference_label": "Preço sugerido Copag",
+          "reference_value": 42.99,
+          "percentage_below": 25.8,
+          "amount_below": 11.09,
+          "position": "below"
+        },
+        "product_variation_7d": null,
+        "historical_context": [],
+        "community_reference": null,
+        "warnings": [
+          {
+            "code": "UNKNOWN_FREIGHT",
+            "text": "Frete não confirmado"
+          }
+        ],
+        "reasons": [
+          {
+            "code": "BELOW_REFERENCE",
+            "text": "25,8% abaixo do preço sugerido Copag (R$ 42,99)",
+            "impact": "+",
+            "reference_kind": "COPAG_OFFICIAL_CURRENT"
+          },
+          {
+            "code": "NEAR_HISTORICAL_MIN",
+            "text": "próximo da mínima histórica (R$ 31,83)",
+            "impact": "+"
+          },
+          {
+            "code": "BELOW_MARKET",
+            "text": "20,2% abaixo da mediana de 18 ofertas com estoque",
+            "impact": "+"
+          },
+          {
+            "code": "IN_STOCK",
+            "text": "estoque confirmado",
+            "impact": "+"
+          }
+        ],
+        "engine_version": "opportunity-v2.2",
+        "updated_at": "2026-10-09T00:27:15.239Z"
+      },
+      {
+        "product": {
+          "id": "me04-blister3",
+          "slug": "caos-ascendente-blister-triplo",
+          "name": "Caos Ascendente - Blister Triplo",
+          "type": "blister_3",
+          "type_label": "Blister Triplo",
+          "group": "Blisters",
+          "image": "https://copagloja.vteximg.com.br/arquivos/ids/166976/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Three-Booster-Blister---Front_PTBR.png?v=639149875329900000",
+          "collection": {
+            "code": "me04",
+            "name": "Caos Ascendente"
+          }
+        },
+        "offer": {
+          "id": "3b2cd7d15ba6",
+          "title": "Caos Ascendente - Blister Triplo - Charmeleon - ME04 - Pokémon",
+          "url": "https://www.omniverse.com.br/caos-ascendente-blister-triplo-charmeleon-me04-pokemon-pre-venda",
+          "image": "https://cdn.awsli.com.br/800x800/1379/1379338/produto/401038314/2a0c166e776e4f21a6caf56b59f922d1-8ko2su8vcz.png",
+          "first_seen_at": "2026-10-07T23:35:56.478Z"
+        },
+        "price": 32.46,
+        "total": null,
+        "shipping": "unknown",
+        "stock": "in_stock",
+        "store": {
+          "id": "omniversecombr",
+          "name": "omniverse.com.br"
+        },
+        "marketplace": "direct",
+        "opportunity_score": 88,
+        "opportunity_band": "boa",
+        "confidence": 0.77,
+        "current_reference": {
+          "kind": "COPAG_OFFICIAL_CURRENT",
+          "label": "Preço sugerido Copag",
+          "price": 42.99,
+          "source": "Copag",
+          "confidence": 0.95,
+          "reason": "verified_current_copag"
+        },
+        "market_composition": "MARKET_MIXED",
+        "reference_comparison": {
+          "available": true,
+          "reference_kind": "COPAG_OFFICIAL_CURRENT",
+          "reference_label": "Preço sugerido Copag",
+          "reference_value": 42.99,
+          "percentage_below": 24.49,
+          "amount_below": 10.53,
+          "position": "below"
+        },
+        "product_variation_7d": null,
+        "historical_context": [],
+        "community_reference": null,
+        "warnings": [
+          {
+            "code": "UNKNOWN_FREIGHT",
+            "text": "Frete não confirmado"
+          }
+        ],
+        "reasons": [
+          {
+            "code": "BELOW_REFERENCE",
+            "text": "24,5% abaixo do preço sugerido Copag (R$ 42,99)",
+            "impact": "+",
+            "reference_kind": "COPAG_OFFICIAL_CURRENT"
+          },
+          {
+            "code": "AT_HISTORICAL_MIN",
+            "text": "no menor preço já registrado (R$ 32,46)",
+            "impact": "+"
+          },
+          {
+            "code": "BELOW_MARKET",
+            "text": "22,5% abaixo da mediana de 14 ofertas com estoque",
+            "impact": "+"
+          },
+          {
+            "code": "LOWEST_NOW",
+            "text": "menor preço entre 14 ofertas com estoque",
+            "impact": "+"
+          },
+          {
+            "code": "IN_STOCK",
+            "text": "estoque confirmado",
+            "impact": "+"
+          }
+        ],
+        "engine_version": "opportunity-v2.2",
+        "updated_at": "2026-10-09T00:27:15.239Z"
+      }
+    ]
+  },
+  "comparison": {
+    "products": 236,
+    "bestPriceEqual": 236,
+    "bestPriceDiff": [],
+    "inStockEqual": 227,
+    "inStockDiff": [
+      {
+        "id": "me04-blister1",
+        "robot": 18,
+        "engine": 16
+      },
+      {
+        "id": "me02-blister3",
+        "robot": 13,
+        "engine": 12
+      },
+      {
+        "id": "me04-blister4",
+        "robot": 22,
+        "engine": 20
+      },
+      {
+        "id": "me04-etb",
+        "robot": 16,
+        "engine": 15
+      },
+      {
+        "id": "me01-blister3",
+        "robot": 16,
+        "engine": 15
+      },
+      {
+        "id": "me01-blister4",
+        "robot": 14,
+        "engine": 13
+      },
+      {
+        "id": "me03-blister3",
+        "robot": 9,
+        "engine": 7
+      },
+      {
+        "id": "me05-blister3",
+        "robot": 19,
+        "engine": 18
+      },
+      {
+        "id": "c30-colecao_poster",
+        "robot": 14,
+        "engine": 13
+      }
+    ],
+    "referenceEqual": 221,
+    "referenceDiff": [
+      {
+        "id": "me04-box36",
+        "robot": null,
+        "engine": "449.99",
+        "status": "verified"
+      },
+      {
+        "id": "me05-blister3",
+        "robot": null,
+        "engine": "42.99",
+        "status": "verified"
+      },
+      {
+        "id": "c30-colecao_fichario",
+        "robot": 230.99,
+        "engine": "378.29",
+        "status": "derived"
+      },
+      {
+        "id": "c30-colecao_poster",
+        "robot": 115.99,
+        "engine": "176.39",
+        "status": "derived"
+      },
+      {
+        "id": "c30-etb",
+        "robot": 399.99,
+        "engine": "789.00",
+        "status": "derived"
+      },
+      {
+        "id": "c30-blister2",
+        "robot": 69.99,
+        "engine": "113.95",
+        "status": "derived"
+      },
+      {
+        "id": "c30-blister3",
+        "robot": 99.99,
+        "engine": "165.52",
+        "status": "derived"
+      },
+      {
+        "id": "c30-combo",
+        "robot": 199.99,
+        "engine": null,
+        "status": null
+      },
+      {
+        "id": "c30-minilata",
+        "robot": 77.99,
+        "engine": null,
+        "status": null
+      },
+      {
+        "id": "c30-colecao_ex-greninja",
+        "robot": 160.99,
+        "engine": "275.19",
+        "status": "derived"
+      },
+      {
+        "id": "c30-colecao_ex-estampas",
+        "robot": 160.99,
+        "engine": null,
+        "status": null
+      },
+      {
+        "id": "c30-colecao",
+        "robot": 599.99,
+        "engine": null,
+        "status": null
+      }
+    ],
+    "avgCompared": 76,
+    "avgWithin2pct": 71,
+    "avgDiff": [
+      {
+        "id": "me04-blister1",
+        "robot_total_avg": 16.8,
+        "engine_price_avg": 15.77
+      },
+      {
+        "id": "me05-blister4",
+        "robot_total_avg": 56.24,
+        "engine_price_avg": 54.96
+      },
+      {
+        "id": "me01-blister4",
+        "robot_total_avg": 58.98,
+        "engine_price_avg": 57.25
+      },
+      {
+        "id": "me03-blister3",
+        "robot_total_avg": 44.31,
+        "engine_price_avg": 42.02
+      },
+      {
+        "id": "me05-blister3",
+        "robot_total_avg": 41.97,
+        "engine_price_avg": 40.96
+      }
+    ],
+    "bestPriceDiffCount": 0,
+    "inStockDiffCount": 9,
+    "referenceDiffCount": 15,
+    "avgDiffCount": 5
+  },
+  "size": {
+    "database": "21 MB",
+    "schema_hunter": "10056 kB"
+  },
+  "ok": true
+}

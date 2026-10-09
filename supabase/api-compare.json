@@ -1,0 +1,285 @@
+{
+  "at": "2026-10-09T00:26:06.915Z",
+  "stateGeneratedAt": "2026-10-09T00:15:20.830Z",
+  "buildHomeFromDbMs": 1713,
+  "perf": {
+    "home": {
+      "first": 475,
+      "avg": 362
+    },
+    "produtos": {
+      "first": 118,
+      "avg": 117
+    },
+    "produtos_filtro": {
+      "first": 117,
+      "avg": 117
+    },
+    "produto": {
+      "first": 463,
+      "avg": 463
+    },
+    "ofertas": {
+      "first": 234,
+      "avg": 234
+    },
+    "historico": {
+      "first": 232,
+      "avg": 232
+    },
+    "estatisticas": {
+      "first": 232,
+      "avg": 232
+    },
+    "referencias": {
+      "first": 117,
+      "avg": 117
+    },
+    "site_produtos": {
+      "first": 2,
+      "avg": 1
+    },
+    "site_produto": {
+      "first": 0,
+      "avg": 0
+    },
+    "site_colecao": {
+      "first": 0,
+      "avg": 0
+    }
+  },
+  "sizes": {
+    "home": 139736,
+    "produtos24": 14583,
+    "produto": 2061,
+    "ofertas24": 13443,
+    "historico30": 385,
+    "referencias24": 15589,
+    "stateJson": 1693540
+  },
+  "home": {
+    "critical": 0,
+    "summary": {
+      "productsOnlyInDb": 0,
+      "productsOnlyInState": 0,
+      "productFieldDiffs": 19,
+      "bestPriceDiffs": 0,
+      "poolDiffs": 0,
+      "wallDiffs": 0,
+      "countDiffs": 0,
+      "offerFieldDiffs": 0,
+      "offersOnlyInDb": 0,
+      "offersOnlyInState": 0
+    },
+    "details": {
+      "productsOnlyInDb": [],
+      "productsOnlyInState": [],
+      "productFieldDiffs": [
+        {
+          "id": "me04-blister4",
+          "field": "offerCount",
+          "db": 24,
+          "state": 26
+        },
+        {
+          "id": "me05-blister1",
+          "field": "offerCount",
+          "db": 6,
+          "state": 8
+        },
+        {
+          "id": "me02-combo",
+          "field": "offerCount",
+          "db": 3,
+          "state": 6
+        },
+        {
+          "id": "me02-colecao_ex-mega-venusaur",
+          "field": "offerCount",
+          "db": 8,
+          "state": 9
+        },
+        {
+          "id": "me04-booster",
+          "field": "offerCount",
+          "db": 4,
+          "state": 5
+        },
+        {
+          "id": "me05-booster",
+          "field": "offerCount",
+          "db": 9,
+          "state": 12
+        },
+        {
+          "id": "sv8_5-blister3",
+          "field": "offerCount",
+          "db": 11,
+          "state": 14
+        },
+        {
+          "id": "sv3-etb",
+          "field": "offerCount",
+          "db": 6,
+          "state": 9
+        },
+        {
+          "id": "c30-colecao_poster",
+          "field": "offerCount",
+          "db": 16,
+          "state": 17
+        },
+        {
+          "id": "c30-etb",
+          "field": "offerCount",
+          "db": 14,
+          "state": 16
+        },
+        {
+          "id": "c30-combo",
+          "field": "offerCount",
+          "db": 3,
+          "state": 4
+        },
+        {
+          "id": "sv10-blister4",
+          "field": "offerCount",
+          "db": 4,
+          "state": 13
+        },
+        {
+          "id": "sv6_5-etb",
+          "field": "offerCount",
+          "db": 6,
+          "state": 9
+        },
+        {
+          "id": "sv10_5r-etb",
+          "field": "offerCount",
+          "db": 3,
+          "state": 4
+        },
+        {
+          "id": "sv8-etb",
+          "field": "offerCount",
+          "db": 4,
+          "state": 5
+        },
+        {
+          "id": "me02_5-blister3",
+          "field": "offerCount",
+          "db": 5,
+          "state": 9
+        },
+        {
+          "id": "me02_5-etb",
+          "field": "offerCount",
+          "db": 6,
+          "state": 11
+        },
+        {
+          "id": "me02-desafio",
+          "field": "offerCount",
+          "db": 3,
+          "state": 4
+        },
+        {
+          "id": "sv8-box36",
+          "field": "offerCount",
+          "db": 3,
+          "state": 5
+        }
+      ],
+      "bestPriceDiffs": [],
+      "poolDiffs": [],
+      "wallDiffs": [],
+      "countDiffs": [],
+      "offerFieldDiffs": [],
+      "offersOnlyInDb": [],
+      "offersOnlyInState": []
+    },
+    "sizes": {
+      "db": 139736,
+      "state": 139742
+    }
+  },
+  "endpoints": {
+    "products": 236,
+    "currentPrice": {
+      "equal": 236,
+      "diffs": [],
+      "diffCount": 0
+    },
+    "inStock": {
+      "equal": 236,
+      "diffs": [],
+      "diffCount": 0
+    },
+    "reference": {
+      "equal": 236,
+      "diffs": [],
+      "diffCount": 0
+    },
+    "offers": {
+      "equal": 236,
+      "diffs": [],
+      "diffCount": 0
+    }
+  },
+  "pages": {
+    "lists": {
+      "combos": 168,
+      "equal": 168,
+      "diffs": [],
+      "diffCount": 0
+    },
+    "products": {
+      "total": 243,
+      "equal": 236,
+      "diffs": [
+        {
+          "id": "ev09-blister4",
+          "db": [],
+          "state": []
+        },
+        {
+          "id": "ev09-blister1",
+          "db": [],
+          "state": []
+        },
+        {
+          "id": "ev09-blister3",
+          "db": [],
+          "state": []
+        },
+        {
+          "id": "ev09-booster",
+          "db": [],
+          "state": []
+        },
+        {
+          "id": "ev09-etb",
+          "db": [],
+          "state": []
+        },
+        {
+          "id": "ev09-combo",
+          "db": [],
+          "state": []
+        },
+        {
+          "id": "ev09-colecao_ex-bellibolt",
+          "db": [],
+          "state": []
+        }
+      ],
+      "diffCount": 7
+    },
+    "groups": {
+      "total": 43,
+      "equal": 43,
+      "diffs": [],
+      "diffCount": 0
+    }
+  }
+}

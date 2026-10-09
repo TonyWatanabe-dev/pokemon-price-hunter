@@ -1,0 +1,8 @@
+aplicada 001_core.sql
+aplicada 002_seed.sql
+aplicada 003_review_legacy_duplicates.sql
+aplicada 004_price_engine.sql
+aplicada 005_opportunity_engine.sql
+aplicada 006_reference_kinds.sql
+aplicada 007_current_reference_policy.sql
+aplicada 008_opportunity_reference_comparison.sql

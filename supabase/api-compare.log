@@ -1,0 +1,5 @@
+Desempenho (ms): {"home":{"first":475,"avg":362},"produtos":{"first":118,"avg":117},"produtos_filtro":{"first":117,"avg":117},"produto":{"first":463,"avg":463},"ofertas":{"first":234,"avg":234},"historico":{"first":232,"avg":232},"estatisticas":{"first":232,"avg":232},"referencias":{"first":117,"avg":117},"site_produtos":{"first":2,"avg":1},"site_produto":{"first":0,"avg":0},"site_colecao":{"first":0,"avg":0}}
+Tamanhos (bytes): {"home":139736,"produtos24":14583,"produto":2061,"ofertas24":13443,"historico30":385,"referencias24":15589,"stateJson":1693540}
+Home: {"productsOnlyInDb":0,"productsOnlyInState":0,"productFieldDiffs":19,"bestPriceDiffs":0,"poolDiffs":0,"wallDiffs":0,"countDiffs":0,"offerFieldDiffs":0,"offersOnlyInDb":0,"offersOnlyInState":0} tamanho {"db":139736,"state":139742} críticas 0
+Endpoints: {"produtos":236,"precoAtual":[236,0],"estoque":[236,0],"referencia":[236,0],"ofertas":[236,0]}
+Páginas: {"listas":[168,168],"produtos":[236,243],"colecoesTipos":[43,43]}

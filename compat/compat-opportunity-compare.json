@@ -1,0 +1,637 @@
+{
+  "offersEvaluated": 908,
+  "matchedWithLegacy": 908,
+  "withLegacyScore": 205,
+  "spearman": 0.568,
+  "bandAgreement": 0.756,
+  "matrix": {
+    "baixa→normal": 41,
+    "baixa→boa": 5,
+    "baixa→baixa": 141,
+    "boa→boa": 5,
+    "normal→normal": 9,
+    "boa→excelente": 1,
+    "normal→boa": 3
+  },
+  "meanDelta": 6.1,
+  "bigDivergences": [
+    {
+      "product": "c30-etb",
+      "offer": "34d8920c53f0",
+      "store": "rihappy.com.br",
+      "price": 599.99,
+      "legacy": 28,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.63,
+      "reasons": [
+        "24,0% abaixo da referência de mercado (mediana de 13 ofertas de 13 fontes independentes, R$ 789,00)",
+        "14,5% abaixo da média histórica",
+        "menor preço entre 13 ofertas com estoque",
+        "loja com reputação ótima no Reclame Aqui",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-etb",
+      "offer": "41980fc2215c",
+      "store": "pbkids.com.br",
+      "price": 599.99,
+      "legacy": 28,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.63,
+      "reasons": [
+        "24,0% abaixo da referência de mercado (mediana de 13 ofertas de 13 fontes independentes, R$ 789,00)",
+        "14,5% abaixo da média histórica",
+        "menor preço entre 13 ofertas com estoque",
+        "loja com reputação ótima no Reclame Aqui",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_fichario",
+      "offer": "c1f6f3243518",
+      "store": "lumosstore.com.br",
+      "price": 259.99,
+      "legacy": 29,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.6,
+      "reasons": [
+        "31,3% abaixo da referência de mercado (mediana de 11 ofertas de 11 fontes independentes, R$ 378,29)",
+        "28,3% abaixo da média histórica",
+        "menor preço entre 11 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_ex-greninja",
+      "offer": "38e1902ae248",
+      "store": "lumosstore.com.br",
+      "price": 199.99,
+      "legacy": 42,
+      "opportunity": 79,
+      "band": "boa",
+      "confidence": 0.6,
+      "reasons": [
+        "27,3% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 275,19)",
+        "no menor preço já registrado (R$ 199,99)",
+        "menor preço entre 9 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_ex-sylveon",
+      "offer": "8ad5af6fe2ae",
+      "store": "lumosstore.com.br",
+      "price": 199.99,
+      "legacy": 42,
+      "opportunity": 79,
+      "band": "boa",
+      "confidence": 0.6,
+      "reasons": [
+        "28,4% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 279,49)",
+        "no menor preço já registrado (R$ 199,99)",
+        "menor preço entre 9 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-etb",
+      "offer": "a9e4e6bb2e9c",
+      "store": "facilshopping.com.br",
+      "price": 623.01,
+      "legacy": 27,
+      "opportunity": 63,
+      "band": "normal",
+      "confidence": 0.63,
+      "reasons": [
+        "21,0% abaixo da referência de mercado (mediana de 13 ofertas de 13 fontes independentes, R$ 789,00)",
+        "11,2% abaixo da média histórica",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT",
+        "BAD_STORE"
+      ]
+    },
+    {
+      "product": "c30-colecao_fichario",
+      "offer": "4346346d1df0",
+      "store": "dalaran.com.br",
+      "price": 313.4,
+      "legacy": 25,
+      "opportunity": 60,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "17,2% abaixo da referência de mercado (mediana de 11 ofertas de 11 fontes independentes, R$ 378,29)",
+        "13,6% abaixo da média histórica",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_ex-sylveon",
+      "offer": "4ef901166ee7",
+      "store": "dalaran.com.br",
+      "price": 246.9,
+      "legacy": 25,
+      "opportunity": 56,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "11,7% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 279,49)",
+        "19,7% abaixo da média histórica",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_poster",
+      "offer": "27a65afb18cd",
+      "store": "geekstorebrasil.com.br",
+      "price": 139.9,
+      "legacy": 34,
+      "opportunity": 63,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "20,7% abaixo da referência de mercado (mediana de 13 ofertas de 12 fontes independentes, R$ 176,39)",
+        "6,0% acima da média histórica",
+        "menor preço entre 13 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_fichario",
+      "offer": "280b2d04387e",
+      "store": "Mercado Livre",
+      "price": 340.29,
+      "legacy": 28,
+      "opportunity": 55,
+      "band": "normal",
+      "confidence": 0.76,
+      "reasons": [
+        "10,0% abaixo da referência de mercado (mediana de 11 ofertas de 11 fontes independentes, R$ 378,29)",
+        "6,2% abaixo da média histórica",
+        "frete grátis",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE"
+      ]
+    },
+    {
+      "product": "c30-blister2",
+      "offer": "6dedebd419f3",
+      "store": "geekstorebrasil.com.br",
+      "price": 89.9,
+      "legacy": 34,
+      "opportunity": 61,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "21,1% abaixo da referência de mercado (mediana de 14 ofertas de 14 fontes independentes, R$ 113,95)",
+        "8,3% acima da média histórica",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-blister2",
+      "offer": "0c05ffb3fad6",
+      "store": "lumosstore.com.br",
+      "price": 89.99,
+      "legacy": 34,
+      "opportunity": 60,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "21,0% abaixo da referência de mercado (mediana de 14 ofertas de 14 fontes independentes, R$ 113,95)",
+        "8,4% acima da média histórica",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    }
+  ],
+  "bigDivergenceCount": 13,
+  "falsePositives": [
+    {
+      "product": "c30-colecao_fichario",
+      "offer": "c1f6f3243518",
+      "store": "lumosstore.com.br",
+      "price": 259.99,
+      "legacy": 29,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.6,
+      "reasons": [
+        "31,3% abaixo da referência de mercado (mediana de 11 ofertas de 11 fontes independentes, R$ 378,29)",
+        "28,3% abaixo da média histórica",
+        "menor preço entre 11 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_ex-greninja",
+      "offer": "38e1902ae248",
+      "store": "lumosstore.com.br",
+      "price": 199.99,
+      "legacy": 42,
+      "opportunity": 79,
+      "band": "boa",
+      "confidence": 0.6,
+      "reasons": [
+        "27,3% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 275,19)",
+        "no menor preço já registrado (R$ 199,99)",
+        "menor preço entre 9 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-colecao_ex-sylveon",
+      "offer": "8ad5af6fe2ae",
+      "store": "lumosstore.com.br",
+      "price": 199.99,
+      "legacy": 42,
+      "opportunity": 79,
+      "band": "boa",
+      "confidence": 0.6,
+      "reasons": [
+        "28,4% abaixo da referência de mercado (mediana de 9 ofertas de 9 fontes independentes, R$ 279,49)",
+        "no menor preço já registrado (R$ 199,99)",
+        "menor preço entre 9 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-etb",
+      "offer": "34d8920c53f0",
+      "store": "rihappy.com.br",
+      "price": 599.99,
+      "legacy": 28,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.63,
+      "reasons": [
+        "24,0% abaixo da referência de mercado (mediana de 13 ofertas de 13 fontes independentes, R$ 789,00)",
+        "14,5% abaixo da média histórica",
+        "menor preço entre 13 ofertas com estoque",
+        "loja com reputação ótima no Reclame Aqui",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "c30-etb",
+      "offer": "41980fc2215c",
+      "store": "pbkids.com.br",
+      "price": 599.99,
+      "legacy": 28,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.63,
+      "reasons": [
+        "24,0% abaixo da referência de mercado (mediana de 13 ofertas de 13 fontes independentes, R$ 789,00)",
+        "14,5% abaixo da média histórica",
+        "menor preço entre 13 ofertas com estoque",
+        "loja com reputação ótima no Reclame Aqui",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "COMMUNITY_REFERENCE",
+        "UNKNOWN_FREIGHT"
+      ]
+    }
+  ],
+  "falseNegatives": [],
+  "legacyMissing": [
+    {
+      "product": "me05-box36",
+      "offer": "a9338687a96e",
+      "store": "grbcards.com.br",
+      "price": 357.99,
+      "legacy": null,
+      "opportunity": 68,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "10,3% abaixo da referência de mercado (mediana de 15 ofertas de 15 fontes independentes, R$ 399,00)",
+        "no menor preço já registrado (R$ 357,99)",
+        "menor preço entre 15 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "me03-combo",
+      "offer": "b85993ad0a8d",
+      "store": "Toca do Tabuleiro",
+      "price": 238.44,
+      "legacy": null,
+      "opportunity": 60,
+      "band": "normal",
+      "confidence": 0.36,
+      "reasons": [
+        "13,2% abaixo da referência de mercado (mediana de 5 ofertas de 5 fontes independentes, R$ 274,78)",
+        "menor preço entre 5 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "SHORT_HISTORY",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "me01-blister4",
+      "offer": "4b2eb3fe07d4",
+      "store": "lojaarenagames.com.br",
+      "price": 44.91,
+      "legacy": null,
+      "opportunity": 74,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "18,3% abaixo da referência de mercado (mediana de 13 ofertas de 11 fontes independentes, R$ 55,00)",
+        "no menor preço já registrado (R$ 44,91)",
+        "menor preço entre 13 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "me01-blister4",
+      "offer": "fac48f4fad01",
+      "store": "lojaarenagames.com.br",
+      "price": 44.91,
+      "legacy": null,
+      "opportunity": 74,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "18,3% abaixo da referência de mercado (mediana de 13 ofertas de 11 fontes independentes, R$ 55,00)",
+        "no menor preço já registrado (R$ 44,91)",
+        "menor preço entre 13 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "me04-box36",
+      "offer": "ac428a404ebf",
+      "store": "gorupa.com.br",
+      "price": 379.05,
+      "legacy": null,
+      "opportunity": 78,
+      "band": "boa",
+      "confidence": 0.77,
+      "reasons": [
+        "15,8% abaixo do preço sugerido Copag (R$ 449,99)",
+        "no menor preço já registrado (R$ 379,05)",
+        "11,3% abaixo da mediana de 19 ofertas com estoque",
+        "menor preço entre 19 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "me04-booster",
+      "offer": "6a66b75105ba",
+      "store": "gorupa.com.br",
+      "price": 11.39,
+      "legacy": null,
+      "opportunity": 74,
+      "band": "normal",
+      "confidence": 0.6,
+      "reasons": [
+        "18,6% abaixo da referência de mercado (mediana de 3 ofertas de 3 fontes independentes, R$ 14,00)",
+        "no menor preço já registrado (R$ 11,39)",
+        "menor preço entre 3 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "sv1-booster",
+      "offer": "44cc646ee6db",
+      "store": "Mercado Livre",
+      "price": 40,
+      "legacy": null,
+      "opportunity": 60,
+      "band": "normal",
+      "confidence": 0.19,
+      "reasons": [
+        "49,6% abaixo da mediana de 2 ofertas com estoque",
+        "menor preço entre 2 ofertas com estoque",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "NO_CURRENT_REFERENCE",
+        "HISTORICAL_REFERENCE_ONLY",
+        "SHORT_HISTORY",
+        "UNKNOWN_FREIGHT"
+      ]
+    },
+    {
+      "product": "sv3-etb",
+      "offer": "6b238061e615",
+      "store": "Mercado Livre",
+      "price": 1954,
+      "legacy": null,
+      "opportunity": 67,
+      "band": "normal",
+      "confidence": 0.41,
+      "reasons": [
+        "14,8% abaixo da referência de mercado (mediana de 6 ofertas de 6 fontes independentes, R$ 2.292,94)",
+        "menor preço entre 6 ofertas com estoque",
+        "frete grátis",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "MARKETPLACE_ONLY",
+        "MARKET_HIGHLY_DEVIATED_FROM_HISTORY",
+        "SHORT_HISTORY"
+      ]
+    },
+    {
+      "product": "sv10_5r-blister3",
+      "offer": "f20eebd5341c",
+      "store": "Mercado Livre",
+      "price": 129.9,
+      "legacy": null,
+      "opportunity": 64,
+      "band": "normal",
+      "confidence": 0.27,
+      "reasons": [
+        "16,1% abaixo da mediana de 2 ofertas com estoque",
+        "menor preço entre 2 ofertas com estoque",
+        "frete grátis",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "NO_CURRENT_REFERENCE",
+        "SHORT_HISTORY"
+      ]
+    },
+    {
+      "product": "sv8_5-blister4",
+      "offer": "c00b4d7cd54f",
+      "store": "Mercado Livre",
+      "price": 115.41,
+      "legacy": null,
+      "opportunity": 62,
+      "band": "normal",
+      "confidence": 0.27,
+      "reasons": [
+        "10,0% abaixo da mediana de 2 ofertas com estoque",
+        "menor preço entre 2 ofertas com estoque",
+        "frete grátis",
+        "estoque confirmado"
+      ],
+      "warnings": [
+        "NO_CURRENT_REFERENCE",
+        "SHORT_HISTORY"
+      ]
+    }
+  ],
+  "shortHistory": 70,
+  "bestByReference": {
+    "MARKET_CURRENT": 46,
+    "COPAG_OFFICIAL_CURRENT": 11,
+    "NONE": 46
+  },
+  "over10": 85,
+  "over25": 12,
+  "byReference": {
+    "COPAG_OFFICIAL_CURRENT": {
+      "offers": 123,
+      "spearman": 0.845,
+      "bandAgreement": 0.797,
+      "meanDelta": 1.8
+    },
+    "MARKET_CURRENT": {
+      "offers": 81,
+      "spearman": 0.291,
+      "bandAgreement": 0.704,
+      "meanDelta": 12.5
+    },
+    "NONE": {
+      "offers": 1,
+      "spearman": null,
+      "bandAgreement": 0,
+      "meanDelta": 19
+    }
+  },
+  "legacyUsesCommunity": 82,
+  "productBands": {
+    "boa": 14,
+    "normal": 88,
+    "excelente": 1
+  },
+  "top15": {
+    "legacy": [
+      "me04-blister4",
+      "me03-blister4",
+      "me05-blister4",
+      "me04-blister3",
+      "me04-etb",
+      "me04-blister1",
+      "me05-blister1",
+      "me05-etb",
+      "me04-combo"
+    ],
+    "opportunity": [
+      "me04-blister4",
+      "me05-blister3",
+      "me05-blister4",
+      "me03-blister4",
+      "me04-blister3",
+      "me04-etb",
+      "me04-blister1",
+      "me03-blister1",
+      "c30-colecao_ex-greninja",
+      "c30-colecao_ex-sylveon",
+      "me04-box36",
+      "c30-etb",
+      "c30-colecao_fichario",
+      "me02-blister3",
+      "sv4-box36"
+    ],
+    "overlap": 6
+  },
+  "distribution": {
+    "30-39": 447,
+    "60-69": 72,
+    "70-79": 29,
+    "40-49": 112,
+    "50-59": 131,
+    "80-89": 9,
+    "20-29": 74,
+    "90-99": 1,
+    "10-19": 33
+  }
+}

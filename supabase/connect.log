@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-09T00:22:07.066Z",
+  "url": {
+    "scheme": "postgresql:",
+    "port": "5432",
+    "database": "postgres",
+    "hostKind": "pooler Supabase (Supavisor)",
+    "hostRegion": "sa-east-1",
+    "userShape": "outro",
+    "passwordPresent": true,
+    "passwordHasPlaceholder": false,
+    "passwordNeedsEncoding": false,
+    "queryParams": [],
+    "whitespace": false
+  },
+  "attempts": [
+    "ok"
+  ],
+  "connected": true,
+  "serverVersion": "17.11",
+  "searchPath": "hunter,public"
+}
+17.11
