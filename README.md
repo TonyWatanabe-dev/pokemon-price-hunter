@@ -11,7 +11,7 @@ A cada rodada o agente:
 1. Lê `config/stores.json`, detecta a plataforma de cada loja (Shopify, VTEX ou JSON-LD genérico) e respeita o `robots.txt`.
 2. Normaliza cada anúncio e casa com o catálogo pela combinação coleção + tipo + quantidade de boosters. Na dúvida, não casa.
 3. Registra mudanças de preço, frete e estoque em `data/history.jsonl`.
-4. Calcula desconto vs Copag, R$/booster, Deal Score, preço anormal e reputação da loja.
+4. Calcula desconto vs Copag, R$/booster, preço anormal e reputação da loja. A nota de oportunidade é só a oficial do Opportunity Engine (calculada no banco); os alertas leem essa nota antes do envio e, sem nota válida, saem sem ela.
 5. Avalia as regras de `config/watchlist.json` e envia alertas por Telegram e push (ntfy), com anti-spam.
 6. Gera `data/state.json`, que alimenta o painel e a API.
 
@@ -58,5 +58,5 @@ Rodar em casa usa IP residencial brasileiro, que muitas lojas bloqueiam menos qu
 - **Marketplaces:** Mercado Livre só com token OAuth (a busca pública retorna 403 desde 2025). Amazon, Shopee e Magalu não têm API pública de busca e protegem as páginas contra robôs, então ficam como "Sem integração". O agente não contorna bloqueio.
 - **Lojas com plataforma própria:** se não forem Shopify, VTEX nem tiverem JSON-LD, aparecem como erro. Para elas, liste URLs de produto em `productUrls` da loja.
 - **Frete:** calculado por CEP só em VTEX. Nas demais aparece "não informado" e o total é só o produto.
-- **Reputação:** sem evidência em `evidence` (CNPJ, nota, anos, política de troca), a loja fica sem validação e nenhuma oferta dela ganha o selo 🔥.
+- **Reputação:** sem evidência em `evidence` (CNPJ, nota, anos, política de troca), a loja fica sem validação.
 - **Não implementado ainda:** WhatsApp e e-mail, modos Investimento, Abertura e Colecionador, e cupom/cashback.

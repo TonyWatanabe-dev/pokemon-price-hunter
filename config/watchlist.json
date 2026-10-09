@@ -1,5 +1,5 @@
 {
-  "_nota": "filter: productId | productType | collection. Condições: maxPrice, maxPerBooster, minDiscount (0.25 = 25%), minDealScore, restock. Toda regra exige estoque confirmado e produto identificado; preço-alvo, desconto e score exigem Copag confirmado.",
+  "_nota": "filter: productId | productType | collection. Condições: maxPrice, maxPerBooster, minDiscount (0.25 = 25%), minOpportunityScore (nota oficial do Opportunity Engine, 0-100; sem nota oficial válida a regra não dispara), restock. minDealScore (legado) não é mais aceito: a regra não dispara. Toda regra exige estoque confirmado e produto identificado; desconto exige Copag confirmado; preço-alvo em R$ e nota oficial não.",
   "settings": { "cep": null, "cooldownHours": 6, "minDropPct": 0.01 },
   "rules": [
     { "id": "caca-caos-box", "label": "Caos Ascendente Box abaixo de R$350", "mode": "target", "filter": { "productId": "me04-box36" }, "maxPrice": 350 },

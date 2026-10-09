@@ -96,13 +96,21 @@ assert.equal(s.products.find((p) => p.id === 'me04-box36').image, 'https://cdn.s
   assert.ok(Array.isArray(s.collections[0].aliases), 'coleções trazem apelidos para a busca'); }
 assert.ok(Array.isArray(s.activity), 'estado traz a atividade do mercado');
 assert.equal(shopBox.discount, 0.2466); assert.equal(shopBox.perBooster, 9.42); assert.equal(shopBox.priceKind, 'base');
-assert.ok(shopBox.dealScore >= 80 && shopBox.storeValidated && shopBox.opportunity, 'oportunidade com loja validada');
+assert.ok(shopBox.storeValidated, 'loja com evidências fica validada');
+// 6C.3: o robô não calcula mais nota própria; nada de Deal Score, classificação, selo 🔥 ou nota oficial gravados nas ofertas
+assert.ok(s.offers.every((o) => !('dealScore' in o) && !('scoreParts' in o) && !('classification' in o) && !('opportunity' in o) && !('opp' in o)), 'sem nota legada nem nota oficial no state.json');
+{ const stOff = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_DATA_DIR, 'offers.json'), 'utf8'));
+  assert.ok(Object.values(stOff).every((o) => !('dealScore' in o) && !('opportunity' in o) && !('opp' in o)), 'offers.json também sem nota'); }
+// sem banco (este teste roda sem DATABASE_URL): bestDeals só com desconto Copag, ordenado por desconto, depois total e id
+{ const O = new Map(s.offers.map((o) => [o.id, o])); const bd = s.bestDeals.map((id) => O.get(id));
+  assert.ok(bd.length && bd.every((o) => o && o.discount != null && o.stock === 'IN_STOCK' && !o.stale && o.confirmed !== false), 'bestDeals: ao vivo, confirmadas, com desconto');
+  assert.ok(bd.every((o, i) => i === 0 || bd[i - 1].discount > o.discount || (bd[i - 1].discount === o.discount && (bd[i - 1].total < o.total || (bd[i - 1].total === o.total && String(bd[i - 1].id) < String(o.id))))), 'bestDeals sem nota: desconto, total, id'); }
 assert.ok(!s.offers.some((o) => /EN$/.test(o.title)), 'inglês rejeitado');
 assert.ok(s.unmatched.some((u) => /EN$/.test(u.title)), 'inglês listado para revisão');
 assert.ok(!by((o) => o.price === 99), 'preço anormal não é publicado');
 { const rv = JSON.parse(fs.readFileSync(path.join(process.env.HUNTER_DATA_DIR, 'review.json'), 'utf8')); const susp = rv.find((o) => o.total === 99);
   assert.ok(susp && !s.bestDeals.includes(susp.id) && s.totals.review >= 1, 'preço anormal vai para conferência'); }
-const etb = by((o) => o.productId === 'me04-etb'); assert.equal(etb.discount, null); assert.equal(etb.dealScore, null, 'sem Copag: sem desconto nem score');
+const etb = by((o) => o.productId === 'me04-etb'); assert.equal(etb.discount, null); assert.ok(!s.bestDeals.includes(etb.id), 'sem Copag e sem nota oficial: fora do bestDeals');
 const vtexOff = by((o) => o.storeId === 'vtex'); assert.equal(vtexOff.stock, 'OUT_OF_STOCK'); assert.ok(!s.bestDeals.includes(vtexOff.id));
 const ldBox = by((o) => o.productId === 'me05-box36'); assert.equal(ldBox.price, 369.9); assert.equal(ldBox.priceKind, 'pix', 'Pix tem prioridade');
 const me05 = s.products.find((p) => p.id === 'me05-box36');
@@ -297,4 +305,5 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
   assert.equal(firstPrice('De R$ 299,90 por R$ 249,90'), 249.9);
   assert.equal(firstPrice('Blister R$ 59,90 no Pix'), 59.9);
 }
+assert.ok(sentMsgs.every((m) => !/Deal Score/i.test(m.text) && !/Opportunity Score/.test(m.text)), 'sem banco: nenhum alerta com Deal Score, nem nota oficial inventada');
 console.log(`OK — todos os testes passaram (${sentMsgs.length} alertas). Exemplo:\n\n${sentMsgs[0].text}`);

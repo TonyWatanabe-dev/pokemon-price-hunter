@@ -27,7 +27,7 @@ The price reference is the Copag suggested price (MSRP), not the market average.
 - Agent runs every 15 minutes (cron-job.org triggers GitHub Actions); panel is a static page refreshed after each run.
 - Alerts also go to Telegram and ntfy push; the panel is where he compares and decides.
 - Stores are added from the panel ("Adicionar loja") which opens GitHub with the file prefilled.
-- Data per offer: product (collection + type + booster count + variant), store, price (Pix preferred), shipping, total, R$/booster, stock state, discount vs Copag, Deal Score 0-100, classification, anomaly flag, source URL and timestamp.
+- Data per offer: product (collection + type + booster count + variant), store, price (Pix preferred), shipping, total, R$/booster, stock state, discount vs Copag, official Opportunity Score 0-100 (Opportunity Engine, read-only in the robot), anomaly flag, source URL and timestamp.
 
 ## Capabilities and Constraints
 

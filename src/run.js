@@ -9,7 +9,8 @@ import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf } from './match.js';
-import { copagStatus, pickPrice, PRICE_LABEL, storeScore, dealScore, classify, isAnomalous, opportunityBadge } from './score.js';
+import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
+import { readOfficial, officialFor } from './opportunity-read.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -34,6 +35,15 @@ function resolveCopag(p, catalog, copagSeen) {
   const valid = (c) => copagStatus({ copag: c }).confirmed;
   return pick(catalog.copag, (c) => c.confidence === 'OFICIAL' && valid(c)) || pick(copagSeen, valid) || pick(catalog.copag, valid) || pick(catalog.copag, () => true)
     || { msrp: null, source_url: null, confidence: null };
+}
+
+// Oferta que pode ter nota oficial e entrar no bestDeals: em estoque, atual, plausível, confirmada e com preço.
+export const liveForScore = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.confirmed !== false && o.total > 0;
+// bestDeals: oferta ao vivo com nota oficial válida ou com desconto Copag. Ordem: nota oficial (sem nota por último),
+// depois desconto, total e id — o mesmo critério do site quando falta a nota (6C.2).
+export function rankBestDeals(all, opp = new Map()) {
+  return all.filter((o) => liveForScore(o) && (opp.has(o.id) || o.discount != null))
+    .sort((a, b) => (opp.get(b.id)?.score ?? -1) - (opp.get(a.id)?.score ?? -1) || (b.discount ?? -9) - (a.discount ?? -9) || a.total - b.total || String(a.id).localeCompare(String(b.id)));
 }
 
 export async function runOnce({ log = console.log, send = transports, now = new Date() } = {}) {
@@ -223,8 +233,6 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (champ && (!lowest[p.id] || champ.total < lowest[p.id].total)) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(champ.id, lowest[p.id].total); lowest[p.id] = { total: champ.total, at: T, storeId: champ.storeId, offerId: champ.id }; }
     products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
   }
-  const bestPPB = {};
-  for (const o of Object.values(offers)) if (o.perBooster && o.stock === 'IN_STOCK' && !o.anomalous && !o.stale) { const c = products[o.productId].collection; if (!bestPPB[c] || o.perBooster < bestPPB[c]) bestPPB[c] = o.perBooster; }
 
   const storeScores = Object.fromEntries(stores.map((s) => [s.id, storeScore(s, sources[s.id])]));
   for (const o of Object.values(offers)) {
@@ -232,9 +240,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     o.storeScore = st.score; o.storeValidated = st.validated;
     if (p.msrp && o.total) { o.discount = +(1 - o.total / p.msrp).toFixed(4); o.savings = round2(p.msrp - o.total); } else { o.discount = null; o.savings = null; }
     o.vsMarket = p.marketAverage && o.total ? +(1 - o.total / p.marketAverage).toFixed(4) : null;
-    const ds = o.anomalous || o.stale || o.confirmed === false ? { score: null, parts: null } : dealScore(o, { msrp: p.msrp, lowestHistorical: p.lowestHistorical?.total, bestPerBoosterInCollection: bestPPB[p.collection], store: st });
-    o.dealScore = ds.score; o.scoreParts = ds.parts; o.classification = classify(ds.score);
-    o.opportunity = o.confirmed === false ? false : opportunityBadge(o, { msrp: p.msrp, store: st });
+    // Nota: só a oficial do Opportunity Engine, lida antes dos alertas (a nota própria do robô e o selo 🔥 saíram na 6C.3).
     o.confidence_score = Math.round(100 * o.matchConfidence * (o.stale ? 0.5 : 1) * (o.stock === 'IN_STOCK' ? 1 : 0.8));
   }
 
@@ -271,15 +277,24 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const inbox = readJson(dataPath('inbox.json'), {});
   try { const r = await processInbox(inbox, catalog, copagOf, log); if (r.handled) log(`[bot] ${r.handled} mensagens respondidas`); } catch (e) { log(`[bot] ${e.message}`); }
 
+  // Nota oficial (Opportunity Engine, hunter.opportunity): só leitura, com prazo curto. Vale só para a oferta com o
+  // mesmo preço lido agora e calculada há no máximo 60 min. Fica num mapa à parte, NÃO vai para state.json/offers.json
+  // (o site sem banco continua "sem nota oficial", nunca com nota de rodada anterior).
+  const live = liveForScore;
+  const off = await readOfficial(Object.values(offers).filter(live).map((o) => o.id));
+  const opp = new Map();
+  for (const o of Object.values(offers)) { const x = live(o) ? officialFor(o, off.rows.get(o.id), now) : null; if (x) opp.set(o.id, x); }
+  log(off.status === 'ok' ? `Nota oficial: ${opp.size} ofertas com nota válida (de ${off.rows.size} lidas)` : `Nota oficial indisponível (${off.reason}): alertas seguem sem nota`);
+
   // Alertas
   const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
-  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products), sent, watch.settings, now.getTime(), offers);
+  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log }), sent, watch.settings, now.getTime(), offers);
   const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
   for (const d of delivered) log(`ALERTA ${d.kind} -> ${d.channels.join(', ') || 'só painel'}: ${d.productId} ${d.total}`);
 
   // Estado para painel e API
   const all = Object.values(offers);
-  const ranked = all.filter((o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.dealScore != null).sort((a, b) => b.dealScore - a.dealScore);
+  const ranked = rankBestDeals(all, opp);
   const cov = Object.values(sources).reduce((a, s) => { a.found++; a[s.status] = (a[s.status] || 0) + 1; return a; }, { found: 0 });
   // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
   try {

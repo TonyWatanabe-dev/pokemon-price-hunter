@@ -1,4 +1,5 @@
 // Comparação Deal Score legado (robô, state.json) × opportunity_score (Opportunity Engine, banco), em dados reais.
+// Diagnóstico histórico da migração: desde a 6C.3 o robô não calcula mais o Deal Score, então os dados novos saem com comDealScore 0.
 // Uso: DATABASE_URL=... node tools/opportunity-compare.mjs <pasta-data> [saida.json]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -69,6 +70,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   await close();
   const r = compareLegacy(state, rows);
   if (out) fs.writeFileSync(out, JSON.stringify(r, null, 2));
+  if (!r.withLegacyScore) console.log('Deal Score legado desativado (6C.3): sem ofertas para comparar; o resultado abaixo só lista a avaliação oficial.');
   console.log(JSON.stringify({ avaliadas: r.offersEvaluated, comDealScore: r.withLegacyScore, spearman: r.spearman, concordanciaFaixa: r.bandAgreement, deltaMedio: r.meanDelta,
     divergencias25: r.bigDivergenceCount, falsosPositivos: r.falsePositives.length, falsosNegativos: r.falseNegatives.length, top15: r.top15.overlap,
     produtos: r.productBands, referencia: r.bestByReference, mudancas10: r.over10, mudancas25: r.over25, porReferencia: r.byReference,

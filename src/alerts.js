@@ -1,11 +1,19 @@
 // Regras, anti-spam e envio (Telegram + push via ntfy). Nenhum alerta sem estoque confirmado e produto identificado.
+// Nota: só a oficial do Opportunity Engine (src/opportunity-read.js), nunca estimada. Sem nota oficial válida,
+// regra que exige nota não dispara; preço-alvo, desconto, reposição e queda não dependem de nota.
 import { money, pct } from './format.js';
+import { officialLine } from './opportunity-read.js';
 
 const eligible = (o) => o.stock === 'IN_STOCK' && o.productId && o.matchConfidence >= 0.75 && !o.anomalous && !o.stale && o.total > 0;
 const passFilter = (f = {}, o, p) => (!f.productId || f.productId === o.productId) && (!f.productType || f.productType === p.type) && (!f.collection || f.collection === p.collection);
 
-export function evaluate(rules, offers, events, products) {
+/** opts.opp: Map(id da oferta -> nota oficial válida, de officialFor). opts.log: avisos (regra antiga). */
+export function evaluate(rules, offers, events, products, { opp = new Map(), log = () => {} } = {}) {
   const evBy = new Map(events.map((e) => [e.offerId + '|' + e.event, e]));
+  // Regra antiga com minDealScore (Deal Score legado, outra escala): não dispara mais. Nunca vira filtro mais fraco.
+  const legacy = rules.filter((r) => r.minDealScore != null && r.minOpportunityScore == null);
+  for (const r of legacy) log(`[alertas] regra "${r.id}" usa minDealScore (Deal Score legado, desativado): ela não dispara. Troque por minOpportunityScore.`);
+  rules = rules.filter((r) => !legacy.includes(r));
   const hits = new Map(); // rule|product -> melhor oferta
   const watched = new Set(rules.flatMap((r) => (r.filter?.productId ? [r.filter.productId] : [])));
   for (const o of offers) {
@@ -16,17 +24,19 @@ export function evaluate(rules, offers, events, products) {
       let kind = null;
       if (r.restock) { if (evBy.has(o.id + '|restock')) kind = 'restock'; }
       else {
-        if ((r.minDiscount != null || r.minDealScore != null) && !p.copagConfirmed) continue; // desconto e score exigem Copag oficial; preço-alvo em R$ não
+        if (r.minDiscount != null && !p.copagConfirmed) continue; // desconto exige Copag oficial; preço-alvo em R$ não
+        const x = opp.get(o.id);
+        if (r.minOpportunityScore != null && !x) continue;          // exige nota oficial válida (nunca estimada)
         const ok = (r.maxPrice == null || o.total <= r.maxPrice) && (r.maxPerBooster == null || (o.perBooster != null && o.perBooster <= r.maxPerBooster))
-          && (r.minDiscount == null || o.discount >= r.minDiscount) && (r.minDealScore == null || o.dealScore >= r.minDealScore);
+          && (r.minDiscount == null || o.discount >= r.minDiscount) && (r.minOpportunityScore == null || x.score >= r.minOpportunityScore);
         if (ok) kind = r.mode === 'target' ? 'target' : 'deal';
       }
       if (!kind) continue;
       const key = r.id + '|' + o.productId; const cur = hits.get(key);
-      if (!cur || o.total < cur.offer.total) hits.set(key, { rule: r, offer: o, product: p, kind });
+      if (!cur || o.total < cur.offer.total) hits.set(key, { rule: r, offer: o, product: p, kind, opp: opp.get(o.id) || null });
     }
     if (watched.has(o.productId) && evBy.has(o.id + '|drop')) {
-      const key = 'drop|' + o.id; hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: products[o.productId], kind: 'drop', from: evBy.get(o.id + '|drop').from });
+      const key = 'drop|' + o.id; hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: products[o.productId], kind: 'drop', from: evBy.get(o.id + '|drop').from, opp: opp.get(o.id) || null });
     }
   }
   return [...hits.entries()].map(([key, h]) => ({ key, ...h }));
@@ -57,7 +67,7 @@ export function compose(h) {
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
   lines.push('', `Estoque: ${o.quantity ? o.quantity + ' unidades' : 'confirmado'}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
   lines.push(`Frete: ${o.shipping === 0 ? 'grátis' : o.shipping > 0 ? money(o.shipping) : 'não informado'}`);
-  if (o.dealScore != null) lines.push(`Deal Score: ${o.dealScore}/100`);
+  const sl = officialLine(h.opp); if (sl) lines.push(sl);   // nota oficial; sem nota válida, a linha não aparece
   return { title: head, text: lines.join('\n'), url: o.url };
 }
 

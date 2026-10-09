@@ -351,10 +351,10 @@
   ],
   "bestDeals": [
     "ddc1fabe36e4",
-    "0284958481fb",
     "8d8f8ee7b35b",
-    "cc15648751e3",
+    "0284958481fb",
     "af9a476be6e6",
+    "cc15648751e3",
     "3faf55a38213"
   ],
   "offers": [
@@ -400,13 +400,6 @@
       "discount": null,
       "savings": null,
       "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
       "confidence_score": 85
     },
     {
@@ -451,22 +444,6 @@
       "discount": 0.178,
       "savings": 80.09,
       "vsMarket": 0.0977,
-      "dealScore": 69,
-      "scoreParts": {
-        "copag": 20.8,
-        "historico": 15,
-        "porBooster": 15,
-        "estoque": 10,
-        "loja": 0,
-        "frete": 0,
-        "lacrado": 5,
-        "disponibilidade": 3
-      },
-      "classification": {
-        "label": "🟡 BOM",
-        "tier": "good"
-      },
-      "opportunity": false,
       "confidence_score": 85
     },
     {
@@ -511,13 +488,6 @@
       "discount": 0.2002,
       "savings": 90.09,
       "vsMarket": 0.0123,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
       "confidence_score": 64
     },
     {
@@ -561,22 +531,6 @@
       "discount": 0.2689,
       "savings": 120.99,
       "vsMarket": 0.0971,
-      "dealScore": 87,
-      "scoreParts": {
-        "copag": 31.4,
-        "historico": 15,
-        "porBooster": 15,
-        "estoque": 10,
-        "loja": 7.9,
-        "frete": 0,
-        "lacrado": 5,
-        "disponibilidade": 3
-      },
-      "classification": {
-        "label": "🟢 EXCELENTE",
-        "tier": "excellent"
-      },
-      "opportunity": true,
       "confidence_score": 85
     },
     {
@@ -620,13 +574,6 @@
       "discount": null,
       "savings": null,
       "vsMarket": null,
-      "dealScore": null,
-      "scoreParts": null,
-      "classification": {
-        "label": "DADO NÃO CONFIRMADO",
-        "tier": "none"
-      },
-      "opportunity": false,
       "confidence_score": 85
     },
     {
@@ -670,22 +617,6 @@
       "discount": 0.1442,
       "savings": 10.09,
       "vsMarket": null,
-      "dealScore": 73,
-      "scoreParts": {
-        "copag": 16.8,
-        "historico": 15,
-        "porBooster": 15,
-        "estoque": 10,
-        "loja": 7.9,
-        "frete": 0,
-        "lacrado": 5,
-        "disponibilidade": 3
-      },
-      "classification": {
-        "label": "🟢 MUITO BOM",
-        "tier": "verygood"
-      },
-      "opportunity": false,
       "confidence_score": 85
     },
     {
@@ -729,22 +660,6 @@
       "discount": 0.0689,
       "savings": 11.09,
       "vsMarket": null,
-      "dealScore": 54,
-      "scoreParts": {
-        "copag": 8,
-        "historico": 15,
-        "porBooster": 7.5,
-        "estoque": 10,
-        "loja": 7.9,
-        "frete": 0,
-        "lacrado": 2.5,
-        "disponibilidade": 3
-      },
-      "classification": {
-        "label": "🟡 NORMAL",
-        "tier": "normal"
-      },
-      "opportunity": false,
       "confidence_score": 80
     },
     {
@@ -788,22 +703,6 @@
       "discount": 0.1115,
       "savings": 50.19,
       "vsMarket": -0.0971,
-      "dealScore": 48,
-      "scoreParts": {
-        "copag": 13,
-        "historico": 0,
-        "porBooster": 12.3,
-        "estoque": 10,
-        "loja": 0,
-        "frete": 3,
-        "lacrado": 5,
-        "disponibilidade": 5
-      },
-      "classification": {
-        "label": "⚪ IGNORAR",
-        "tier": "ignore"
-      },
-      "opportunity": false,
       "confidence_score": 99
     },
     {
@@ -847,22 +746,6 @@
       "discount": 0,
       "savings": 0,
       "vsMarket": -0.0977,
-      "dealScore": 34,
-      "scoreParts": {
-        "copag": 0,
-        "historico": 0,
-        "porBooster": 12.3,
-        "estoque": 10,
-        "loja": 4.5,
-        "frete": 0,
-        "lacrado": 2.5,
-        "disponibilidade": 5
-      },
-      "classification": {
-        "label": "⚪ IGNORAR",
-        "tier": "ignore"
-      },
-      "opportunity": false,
       "confidence_score": 70
     }
   ],
@@ -1153,7 +1036,7 @@
       "url": "https://www.amazon.com.br/dp/B0TEST",
       "postUrl": "https://t.me/promopoke/77",
       "expired": false,
-      "postedAt": "2026-10-08T20:49:45.115Z",
+      "postedAt": "2026-10-09T13:51:23.349Z",
       "id": "fe220ca5587c",
       "productId": "me05-etb",
       "matchConfidence": 0.8,
@@ -1285,7 +1168,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1299,7 +1182,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1313,7 +1196,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1327,7 +1210,7 @@
       "channels": [
         "capture"
       ],
-      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 87/100",
+      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1341,7 +1224,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 85/100",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1355,7 +1238,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 85/100",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1383,7 +1266,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado\nDeal Score: 73/100",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/c30-duplo"
     },
     {
