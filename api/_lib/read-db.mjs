@@ -291,7 +291,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
   const from = todas ? 'hunter.opportunity o' : 'hunter.product_opportunity o';
   const rows = await q(`
     SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
-           f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
+           f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
            o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
@@ -321,7 +321,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
 const opportunityOut = (r) => ({
   product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name, type: r.attrs?.type ?? null, type_label: r.attrs?.typeLabel ?? null, group: r.attrs?.group ?? null,
     image: r.product_image ?? null, collection: { code: r.col_code, name: r.col_name } },
-  offer: { id: r.offer_legacy, title: r.title_raw, url: r.url, image: r.offer_image ?? null, first_seen_at: iso(r.first_seen_at) },
+  offer: { id: r.offer_legacy, title: r.title_raw, url: r.url, image: r.offer_image ?? null, first_seen_at: iso(r.first_seen_at), price_kind: r.price_kind ?? null },   // pix = preço no Pix
   price: num(r.price), total: r.shipping_status === 'unknown' ? null : num(r.total_price), shipping: r.shipping_status, stock: r.stock_status,
   store: { id: r.store_id, name: r.store_name }, marketplace: r.marketplace_id,
   opportunity_score: r.opportunity_score, opportunity_band: r.opportunity_band, confidence: num(r.confidence),

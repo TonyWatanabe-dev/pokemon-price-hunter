@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const A = html.indexOf('/* Categorias do site'); const B = html.indexOf('/* Pré-vendas: status sempre visível */');
+const A = html.indexOf("/* Categorias do site"); const B = html.indexOf('/* Pré-vendas: status sempre visível */');
 assert.ok(A > 0 && B > A, 'trecho da página de oportunidades encontrado');
 const code = html.slice(A, B);
 const oppCode = code.slice(code.indexOf('/* Oportunidades (6B.1)'));
@@ -49,7 +49,7 @@ function sandbox(apiResponse) {
     esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     money: (v) => (v == null ? '-' : 'R$ ' + Number(v).toFixed(2).replace('.', ',')), ic: (id) => `<i data-ic="${id}"></i>`,
     photo: () => '<div class="photo"></div>', catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '',
-    safeUrl: (u) => u, ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: {}, live: () => true,
+    safeUrl: (u) => u, pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: {}, live: () => true,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: (sel) => (sel === '#view' ? view : null), IntersectionObserver: undefined,
     apiGet: async (path) => { calls.push(path); return typeof apiResponse === 'function' ? apiResponse(path) : apiResponse; },
   };

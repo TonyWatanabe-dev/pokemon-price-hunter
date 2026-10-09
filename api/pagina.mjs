@@ -33,8 +33,6 @@ function build(t, slug, s, opp = null) {
   const types = (s.types || []).filter((ty) => prods.some((p) => p.type === ty.id));
   const sortP = (a, b) => ((best[b.id] ? 1 : 0) - (best[a.id] ? 1 : 0)) || ((best[b.id]?.discount ?? -9) - (best[a.id]?.discount ?? -9));
   const navLinks = `<h2>Coleções</h2><ul class="ssr-links">${cols.map((c) => `<li><a href="/colecao/${colSlug(c)}">${esc(c.name)}</a></li>`).join('')}</ul><h2>Formatos</h2><ul class="ssr-links">${types.map((ty) => `<li><a href="/tipo/${typeSlug(ty)}">${esc(ty.label)}</a></li>`).join('')}</ul>`;
-  const opps = (s.offers || []).filter((o) => live(o) && o.dealScore != null && o.discount > 0 && o.confirmed !== false).sort((a, b) => b.dealScore - a.dealScore);
-  const seen = new Set(); const topOpp = opps.filter((o) => !seen.has(o.productId) && seen.add(o.productId)).slice(0, 12);
   const P = Object.fromEntries((s.products || []).map((p) => [p.id, p]));
 
   if (t === 'produto') {
@@ -95,13 +93,12 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   const st = STATIC[t]; if (!st) return null;
   const [url, title, desc, h1] = st;
   let main = '';
-  // 6B.1: /oportunidades vem do Opportunity Engine (banco). Sem banco, a lista não aparece (nada é estimado nem trocado pelo Deal Score).
-  if (t === 'oportunidades') main = opp?.length ? `<h2>Melhores oportunidades agora</h2><ol>${opp.map((x) => {
+  // 6B.1/6B.2: Home e /oportunidades vêm do Opportunity Engine (banco). Sem banco, a lista não aparece (nada é estimado nem trocado pelo Deal Score).
+  if (t === 'oportunidades' || t === 'home') main = opp?.length ? `<h2>Melhores oportunidades agora</h2><ol>${opp.map((x) => {
     const rc = x.reference_comparison || {}; const pref = of[x.product.id] || x.product.id; const parts = [];
     if (rc.available && rc.position === 'below') parts.push(`${rc.percentage_below.toFixed(1).replace('.', ',')}% abaixo ${rc.reference_kind === 'COPAG_OFFICIAL_CURRENT' ? 'do preço sugerido Copag' : 'da referência de mercado'}`);
     parts.push(`Opportunity Score ${x.opportunity_score}`);
     return `<li><a href="/produto/${esc(pref)}">${esc(x.product.name)}</a> — <b>${brl(x.price)}</b> em ${esc(x.store?.name || '')} (${parts.join(', ')})</li>`; }).join('')}</ol>` : '';
-  else if (t === 'home') main = topOpp.length ? `<h2>Melhores oportunidades agora</h2><ol>${topOpp.map((o) => prodRow(P[o.productId], o, of, ` (${pct(o.discount)} abaixo da Copag, Deal Score ${o.dealScore})`)).join('')}</ol>` : '';
   if (t === 'precos') main = `<table class="ssr-t"><thead><tr><th>Produto</th><th>Preço sugerido</th></tr></thead><tbody>${(s.products || []).filter((p) => p.copagConfirmed && p.msrp).map((p) => `<tr><td><a href="/produto/${of[p.id]}">${esc(p.collectionName)} · ${esc(label(p))}</a></td><td>${brl(p.msrp)}</td></tr>`).join('')}</tbody></table>`;
   if (t === 'produtos') { const best = {}; for (const o of s.offers || []) { if (o.stock !== 'IN_STOCK' || o.anomalous || !P[o.productId]) continue; if (!best[o.productId] || o.total < best[o.productId].total) best[o.productId] = o; } main = `<ul>${Object.values(best).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>`; }
   if (t === 'pre-vendas') { const pre = (s.offers || []).filter((o) => o.stock === 'PRE_ORDER' && P[o.productId]); main = pre.length ? `<ul>${pre.slice(0, 30).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>` : '<p>Nenhuma pré-venda aberta agora.</p>'; }
@@ -120,7 +117,7 @@ export default async function handler(req, res) {
   let html = page.html; let status = 200;
   try {
     let opp = null;
-    if (t === 'oportunidades' && apiDbEnabled()) { try { opp = (await listOpportunities({ page: 1, limit: 20 })).items; } catch { opp = null; } }
+    if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20 })).items; } catch { opp = null; } }
     const s = await state(); const m = build(t, slug, s, opp);
     if (!m) { status = 404; html = html.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', '<meta name="robots" content="noindex">\n</head>'); }
     else {

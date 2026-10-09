@@ -114,7 +114,7 @@ for (const x of all.data) {
     'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at', 'reference_comparison', 'product_variation_7d', 'confidence_level']) assert.ok(k in x, k);
   assert.equal(x.confidence_level, opportunityConfidenceLevel(x.confidence));
   for (const k of ['type', 'type_label', 'group', 'image', 'collection']) assert.ok(k in x.product, 'product.' + k);
-  for (const k of ['id', 'title', 'url', 'image', 'first_seen_at']) assert.ok(k in x.offer, 'offer.' + k);
+  for (const k of ['id', 'title', 'url', 'image', 'first_seen_at', 'price_kind']) assert.ok(k in x.offer, 'offer.' + k);
 }
 const scores = all.data.map((x) => x.opportunity_score); assert.deepEqual(scores, [...scores].sort((a, b) => b - a), 'ordem padrão continua score');
 const by = Object.fromEntries(all.data.map((x) => [x.product.id, x]));

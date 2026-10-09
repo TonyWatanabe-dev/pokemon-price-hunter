@@ -687,7 +687,7 @@ a.navbtn{text-decoration:none}
   .pod[data-r="1"]{--lift:0}.pod[data-r="1"] .cat-media{aspect-ratio:4/3}
   .pod:not([data-r="1"]) .pod-body{padding:14px 14px 16px}.pod:not([data-r="1"]) .pod-off b{font-size:28px}.pod:not([data-r="1"]) .pod-price strong{font-size:19px}
   .pod:not([data-r="1"]) .pod-foot{flex-direction:column;align-items:stretch}.pod:not([data-r="1"]) .pod-cta{justify-content:center}
-  .pod:not([data-r="1"]) .pod-name{font-size:15px}.pod:not([data-r="1"]) .pod-off span{display:none}.pod:not([data-r="1"]) .pod-price s{display:block;width:100%}.pod:not([data-r="1"]) .ring{display:none}
+  .pod:not([data-r="1"]) .pod-name{font-size:15px}.pod:not([data-r="1"]) .pod-off span{display:none}.pod:not([data-r="1"]) .pod-price s{display:block;width:100%}.pod:not([data-r="1"]) .pod-ref{display:block;width:100%;font-size:12.5px}.pod:not([data-r="1"]) .ring{display:none}
   .stage{padding-bottom:48px}.stage-copy{margin-top:30px}
 }
 
@@ -772,6 +772,10 @@ a.navbtn{text-decoration:none}
 
 /* Conteúdo vindo do servidor: para buscadores e para quem está sem JavaScript. Com JavaScript, quem aparece é a página interativa. */
 .js .ssr{display:none}
+.home-slot{display:contents}
+.pod-ref{color:rgb(228 233 255 / .62);font-size:13.5px}
+.pod-conf{display:block;margin-top:2px;font-size:11.5px;color:rgb(228 233 255 / .6)}
+.stage-empty .btn{margin-left:8px;vertical-align:middle}
 .pod-skel{display:grid;grid-template-columns:1fr 1.18fr 1fr;align-items:end;gap:clamp(14px,2.2vw,30px);margin:56px auto 0;max-width:1180px}
 .pod-skel i{display:block;height:440px;border-radius:24px;background:linear-gradient(100deg,rgb(255 255 255 / .04) 30%,rgb(255 255 255 / .09) 50%,rgb(255 255 255 / .04) 70%) 0 0/300% 100%;border:1px solid rgb(255 255 255 / .08);animation:skelSweep 1.4s linear infinite}
 .pod-skel i:nth-child(2){height:500px}
@@ -1586,18 +1590,23 @@ function dropsHTML(){
   const list=Object.values(by).sort((a,b)=>b.pc-a.pc).slice(0,5);
   return`<section class="drops">${sectionHead("","Maiores quedas","Reduções de preço confirmadas nos últimos dias.")}
   ${list.length?`<ol class="drop-list">${list.map(({e,pc},j)=>{const p=P[e.productId];const o=bestLive(p.id);return`<li style="--j:${j}"><a href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${photo(p,o,"photo dl-ph")}<span class="dl-b"><b>${esc(label(p))}</b><small>${esc(p.collectionName)} · ${esc(e.storeName||"")} · ${dayLabel(e.t)}</small></span>
-    <span class="dl-v"><s>${money(e.from)}</s><b>${money(e.to)}</b>${pixOf(e.offerId)}<span class="dl-pct">${ic("trend-down")}${pct(pc)}</span></span>${o?.dealScore!=null?`<span class="dl-sc" style="--sc:${scoreColor(o.dealScore)}">${o.dealScore}</span>`:""}</a></li>`}).join("")}</ol>`
+    <span class="dl-v"><s>${money(e.from)}</s><b>${money(e.to)}</b>${pixOf(e.offerId)}<span class="dl-pct">${ic("trend-down")}${pct(pc)}</span></span></a></li>`}).join("")}</ol>`
   :`<p class="soft-empty">Ainda não encontramos quedas de preço confirmadas. Preço que vai e volta entre vendedores não conta como queda.</p>`}</section>`;
 }
-function highlightsHTML(pool){
-  if(pool.length<2)return"";
-  const pick=(f)=>pool.reduce((a,b)=>f(b)>f(a)?b:a);
-  const best=pick((e)=>e.o.dealScore),disc=pick((e)=>e.o.discount),save=pick((e)=>e.o.savings??0);
+/* Destaques (6B.2): os três recordes de oportunidade vêm prontos da API (1ª por Opportunity Score, por "abaixo da referência"
+   e por economia); o "booster mais barato" é preço por booster das lojas (não é oportunidade) e continua do resumo da Home. */
+function hlTile(k,x,v,u,j){const pr=x.product||{};const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
+  return`<a class="hl-t" style="--j:${j}" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}" data-p="${esc(pr.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(p,{image:x.offer?.image},"photo hl-ph")}<span class="hl-n">${esc(pr.collection?.name||"")} · ${esc(pr.type_label||pr.name||"")}</span><span class="hl-s">${esc(x.store?.name||"")} · ${money(x.price)}</span></a>`}
+function highlightsOppHTML(){
+  if(HOMEOPP.status!=="ok")return"";
+  const tiles=[];const best=HOMEOPP.top[0];const bl=HOMEOPP.below?.reference_comparison;const sv=HOMEOPP.save?.reference_comparison;
+  if(best?.opportunity_score!=null)tiles.push(hlTile("Melhor oportunidade",best,`${best.opportunity_score}<small>/100</small>`,"Opportunity Score",tiles.length));
+  if(bl?.available&&bl.position==="below")tiles.push(hlTile("Mais abaixo da referência",HOMEOPP.below,pctPts(bl.percentage_below),`abaixo ${refOfName(bl.reference_kind)}`,tiles.length));
+  if(sv?.available&&sv.position==="below"&&sv.amount_below>0)tiles.push(hlTile("Maior economia",HOMEOPP.save,money(sv.amount_below),`abaixo ${refOfName(sv.reference_kind)}`,tiles.length));
   const ppbPool=OFF.filter((o)=>live(o)&&o.perBooster&&P[o.productId]?.copagConfirmed);const ppb=ppbPool.length?ppbPool.reduce((a,b)=>b.perBooster<a.perBooster?b:a):null;
-  const tiles=[["Melhor oportunidade",best,`${best.o.dealScore}<small>/100</small>`,"Deal Score"],["Maior desconto",disc,pct(disc.o.discount),"abaixo da Copag"],["Maior economia",save,money(save.o.savings),"em relação à Copag"]];
-  if(ppb)tiles.push(["Booster mais barato",{p:P[ppb.productId],o:ppb},money(ppb.perBooster),"por booster"]);
-  return`<section class="hl">${sectionHead("","Destaques do Hunter","Os recordes do mercado agora.")}
-  <div class="hl-grid">${tiles.map(([k,e,v,u],j)=>`<a class="hl-t" style="--j:${j}" href="/produto/${SLUG[e.p.id]}" data-p="${esc(e.p.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(e.p,e.o,"photo hl-ph")}<span class="hl-n">${esc(e.p.collectionName)} · ${esc(label(e.p))}</span><span class="hl-s">${esc(storeTxt(e.o))} · ${money(e.o.total)}${e.o.priceKind==="pix"?" no Pix":""}</span></a>`).join("")}</div></section>`;
+  if(ppb){const p=P[ppb.productId];tiles.push(`<a class="hl-t" style="--j:${tiles.length}" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}"><span class="hl-k">Booster mais barato</span><span class="hl-v">${money(ppb.perBooster)}</span><span class="hl-u">por booster</span>${photo(p,ppb,"photo hl-ph")}<span class="hl-n">${esc(p.collectionName)} · ${esc(label(p))}</span><span class="hl-s">${esc(storeTxt(ppb))} · ${money(ppb.total)}${ppb.priceKind==="pix"?" no Pix":""}</span></a>`)}
+  if(tiles.length<2)return"";
+  return`<section class="hl">${sectionHead("","Destaques do Hunter","Os recordes do mercado agora.")}<div class="hl-grid">${tiles.join("")}</div></section>`;
 }
 function preHTML(){
   const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].total))by[o.productId]=o;
@@ -1614,37 +1623,64 @@ let tickT=0;
 function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMotion())return;const it=[...t.querySelectorAll(".tk")];if(it.length<2)return;let k=0;
   tickT=setInterval(()=>{if(!document.contains(t)){clearInterval(tickT);return}if(document.hidden||$(".stage")?.classList.contains("paused"))return;it[k].classList.remove("on");k=(k+1)%it.length;it[k].classList.add("on")},4200)}
 
-/* Pódio: as 3 melhores oportunidades verificadas, com medalha, foil e luz de palco */
-function podCard(e,r){
-  const{p,o}=e;const ref=refOf(p);const d=discOf(p,o);const sc=o.dealScore;const href="/produto/"+(SLUG[p.id]||encodeURIComponent(p.id));const fav=isFav(p.id);
-  return`<article class="pod" data-r="${r}" data-cat="${catOf(p)}" style="--sc:${scoreColor(sc)}">
+/* Home (6B.2): pódio, sequência e destaques vêm do Opportunity Engine (GET /api/v1/oportunidades), a mesma fonte da
+   /oportunidades. Pódio + sequência = as 15 primeiras na ordem do motor (ordem=score). Nada é calculado aqui. */
+const HOMEOPP={status:"idle",top:[],below:null,save:null,at:0,p:null};
+function loadHomeOpp(){
+  if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
+  return HOMEOPP.p||=Promise.all([apiGet("oportunidades?limite=15&pagina=1&ordem=score"),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
+    .then(([a,b,c])=>{
+      if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
+      else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
+      else Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now()});
+      HOMEOPP.p=null});
+}
+/* Pódio: as 3 primeiras do motor, com medalha e luz de palco (mesmo componente de antes; muda só a fonte) */
+function podCardOpp(x,r){
+  const pr=x.product||{},of=x.offer||{},st=x.store||{},rc=x.reference_comparison||{},cr=x.current_reference||{};
+  const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
+  const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)","—"];
+  const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));const fav=isFav(pr.id);const name=pr.type_label||pr.name||"";
+  const mkOnly=cr.kind==="MARKET_CURRENT"&&cr.market_composition==="MARKETPLACE_ONLY";   /* pela referência ATUAL, nunca pelo campo do topo */
+  const refTxt=rc.available?`${refShort(rc.reference_kind)}${mkOnly?" (marketplaces)":""} · ${money(rc.reference_value)}`:"Sem referência atual";
+  const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";const lv=x.confidence_level;
+  return`<article class="pod" data-r="${r}" data-cat="${catOf(p)}" style="--sc:${bu[1]}">
     <span class="pod-rank"><b>${r}</b>${["OURO","PRATA","BRONZE"][r-1]}</span>
-    <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" aria-label="${r}º lugar: ${esc(p.collectionName+" "+label(p))}, ${money(o.total)}${o.priceKind==="pix"?" no Pix":""} em ${esc(storeTxt(o))}"></a>
-    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,o,"photo")}${catChip(p)}
-      <button class="deal-fav" type="button" data-fav="${esc(p.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
+    <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(x.price)} em ${esc(st.name||"")}"></a>
+    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
+      <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
     <span class="pod-sheen" aria-hidden="true"></span>
-    <div class="pod-body"><p class="pod-col">${esc(p.collectionName)}</p><h3 class="pod-name">${esc(label(p))}</h3>
-      ${d!=null&&d>=.0005?`<div class="pod-off"><b>−${pct(d)}</b><span>abaixo da ${ref.net?"ref. internet":"Copag"}<br>economize ${money(ref.v-o.total)}</span></div>`:""}
-      <div class="pod-price"><strong data-price="${esc(o.id)}">${money(o.total)}</strong>${pixTag(o)}${ref?`<s>${ref.net?"Ref.":"Copag"} ${money(ref.v)}</s>`:""}</div>
-      <div class="pod-foot"><span class="ring" style="--v:${sc}" title="Deal Score ${sc}/100: ${band(sc)[1]}"><span>${sc}</span></span><span class="pod-store">${esc(storeTxt(o))}<br>${raBadge(o)}</span>
-        <a class="pod-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
+    <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
+      ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
+      <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(x.price)}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
+      <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}</span>
+        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
   </article>`;
 }
-function podiumHTML(pool){
-  const top=pool.slice(0,3);
-  if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade verificada agora. O Hunter só destaca ofertas com estoque e preço Copag confirmados; preços em tempo real.</p>`;
-  return`<div class="podium" aria-label="As 3 melhores oportunidades agora">${top.map((e,i)=>podCard(e,i+1)).join("")}</div>`;
+function podiumOppHTML(){
+  if(HOMEOPP.status==="idle"||(HOMEOPP.p&&HOMEOPP.status!=="ok"))return`<div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div>`;
+  if(HOMEOPP.status==="error")return`<p class="stage-empty">Não conseguimos carregar as oportunidades agora. <button class="btn ghost sm" type="button" data-homeretry>${ic("arrow-clockwise")}Tentar de novo</button></p>`;
+  if(HOMEOPP.status==="nodb")return`<p class="stage-empty">Oportunidades indisponíveis no momento. Elas vêm do Opportunity Engine; nenhuma nota é estimada no lugar.</p>`;
+  const top=HOMEOPP.top.slice(0,3);
+  if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade avaliada agora. O Opportunity Engine avalia as ofertas com estoque a cada varredura.</p>`;
+  return`<div class="podium" aria-label="As 3 melhores oportunidades agora">${top.map((x,i)=>podCardOpp(x,i+1)).join("")}</div>`;
 }
-function railHTML(pool){
-  const list=pool.slice(3,15);if(!list.length)return pool.length?`<p class="opp-all">${seeAll("oportunidades","Ver todas as oportunidades com filtros")}</p>`:"";
-  return`<section class="seq">${sectionHead("flame-f","Em sequência","As próximas oportunidades, da melhor para a menor. Todas com estoque e preço conferidos.",`<span class="rail-ctl"><button class="prev" type="button" aria-label="Voltar">${ic("caret-down")}</button><button class="next" type="button" aria-label="Avançar">${ic("caret-down")}</button></span>${seeAll("oportunidades")}`)}
-    <div class="rail" tabindex="0" aria-label="Próximas oportunidades">${list.map((e,i)=>dealCard(e,{plain:true,rank:i+3,rail:true,foil:e.o.dealScore>=70})).join("")}</div></section>`;
+function railOppHTML(){
+  if(HOMEOPP.status!=="ok")return"";
+  const list=HOMEOPP.top.slice(3,15);if(!list.length)return HOMEOPP.top.length?`<p class="opp-all">${seeAll("oportunidades","Ver todas as oportunidades com filtros")}</p>`:"";
+  return`<section class="seq">${sectionHead("flame-f","Em sequência","As próximas oportunidades, na ordem do Opportunity Score.",`<span class="rail-ctl"><button class="prev" type="button" aria-label="Voltar">${ic("caret-down")}</button><button class="next" type="button" aria-label="Avançar">${ic("caret-down")}</button></span>${seeAll("oportunidades")}`)}
+    <div class="rail" tabindex="0" aria-label="Próximas oportunidades">${list.map((x,i)=>oppCard(x,i+3,{rail:true,best:false})).join("")}</div></section>`;
+}
+/* quando as oportunidades chegam, só os três blocos são trocados (o resto da Home não pisca) */
+function paintHomeOpp(){
+  if(view!=="deals")return;const pod=$("#home-pod"),rail=$("#home-rail"),hl=$("#home-hl");if(!pod)return;
+  pod.innerHTML=podiumOppHTML();rail.innerHTML=railOppHTML();hl.innerHTML=highlightsOppHTML();stageInit();revealInit();
 }
 let stageIO=null;
 function stageInit(){
   if(stageIO)stageIO.disconnect();
   const pod=$(".podium");const rail=$(".rail");const RM=reduceMotion();
-  let first=false;try{first=!sessionStorage.getItem("ph:pod");sessionStorage.setItem("ph:pod","1")}catch{}
+  let first=false;if(pod)try{first=!sessionStorage.getItem("ph:pod");sessionStorage.setItem("ph:pod","1")}catch{}
   if(pod&&first&&!RM){pod.classList.add("armed");requestAnimationFrame(()=>requestAnimationFrame(()=>{pod.classList.add("go");pod.classList.remove("armed");setTimeout(()=>pod.classList.remove("go"),1700)}))}
   if(rail){
     [...rail.children].forEach((c,i)=>c.style.setProperty("--i",Math.min(i,8)));
@@ -1730,7 +1766,6 @@ function renderDeals(){
   const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
-  const pool=oppPool();
   const nLive=S.slim?S.counts.liveOffers:OFF.filter(live).length,nStores=S.slim?S.counts.stores:new Set(OFF.filter(live).map((o)=>o.storeId)).size;
   const intro=!renderDeals.done;renderDeals.done=true;document.body.classList.toggle("intro",intro);
   $("#view").innerHTML=`<section class="stage"><div class="stage-in">
@@ -1740,17 +1775,18 @@ function renderDeals(){
       <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><b>Ao vivo</b> · preços em tempo real · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
       ${tickerHTML()}
     </div>
-    ${podiumHTML(pool)}
+    <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
   </div></section>
-  ${railHTML(pool)}
+  <div class="home-slot" id="home-rail">${railOppHTML()}</div>
   ${colWallHTML()}
   ${radarHTML()}
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
-  ${highlightsHTML(pool)}
+  <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>
   ${preHTML()}
   <section class="home-all home-cta"><a class="allcta" href="/produtos" data-go="produtos"><span class="allcta-i">${ic("package")}</span><span><b>Ver todos os ${all.length} produtos</b><small>Filtre por coleção, formato, loja, preço e estoque.</small></span>${ic("caret-down","icon chev")}</a>
   </section>`;
   homeMotion();startTicker();stageInit();revealInit();
+  if(HOMEOPP.status!=="ok"||Date.now()-HOMEOPP.at>=APITTL){const pr=loadHomeOpp();if(HOMEOPP.status!=="ok")paintHomeOpp();pr.then(paintHomeOpp)}
 }
 
 /* Produtos: todos os produtos com oferta, com filtros (coleção, formato, loja, preço, estoque, abaixo da Copag) */
@@ -2379,16 +2415,9 @@ function renderSearch(){
   ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}No Telegram <small>${tips.length}</small></h2></div><div class="tipgrid">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p></section>`:""}`;
 }
 
-/* Categorias do site (tipo ou grupo do produto). A Home ainda usa o Deal Score legado (oppPool) até a 6B.2. */
+/* Categorias do site (tipo ou grupo do produto). Home e /oportunidades leem as oportunidades da API (6B.2: sem oppPool). */
 const CATS=[["","Todos"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
 const catMatch=(p,c)=>!c||p.type===c||p.group===c;
-function oppPool(){
-  const by={},n={};
-  for(const o of OFF){if(!live(o))continue;n[o.productId]=(n[o.productId]||0)+1;
-    const p=P[o.productId];if(!p?.copagConfirmed||o.dealScore==null||o.confirmed===false||!(o.discount>0))continue;
-    const cur=by[p.id];if(!cur||o.dealScore>cur.o.dealScore||(o.dealScore===cur.o.dealScore&&o.total<cur.o.total))by[p.id]={p,o}}
-  return Object.values(by).map((e)=>({...e,n:(S.slim?e.p.liveCount:n[e.p.id])||1})).sort((a,b)=>b.o.dealScore-a.o.dealScore||(b.o.discount-a.o.discount));
-}
 /* Oportunidades (6B.1): 100% pela API do Opportunity Engine (GET /api/v1/oportunidades).
    Nada de regra de negócio aqui: score, faixa, confiança, referência atual, % abaixo da referência, filtros e ordem
    chegam prontos do servidor. O navegador só monta a URL e desenha. */
@@ -2439,12 +2468,12 @@ function oppCmp(rc){
   return head+`<p class="opp-ref">${refShort(rc.reference_kind)} · ${money(rc.reference_value)}</p>`;
 }
 /* contexto (não é alerta): etiquetas discretas; o texto completo da API fica no title e em "Por que esta nota?" */
-function oppFlags(x){
+function oppFlags(x,opt={}){
   const cr=x.current_reference||{};const w=(c)=>(x.warnings||[]).find((y)=>y.code===c);const out=[];
   /* aviso de marketplace: decidido pela referência ATUAL (o market_composition do topo pode descrever o mercado mesmo com Copag) */
   if(cr.kind==="MARKET_CURRENT"&&cr.market_composition==="MARKETPLACE_ONLY"){const t=w("MARKETPLACE_ONLY")?.text||"Referência de mercado formada só por vendedores de marketplace";
     out.push(`<span class="opp-tag" title="${esc(t)}">${ic("info")}Referência formada por marketplaces</span>`)}
-  const dev=w("MARKET_HIGHLY_DEVIATED_FROM_HISTORY");
+  const dev=opt.mkOnly?null:w("MARKET_HIGHLY_DEVIATED_FROM_HISTORY");
   if(dev){const lb=/muito abaixo/.test(dev.text)?"Mercado abaixo do histórico":"Mercado acima do histórico";out.push(`<span class="opp-tag" title="${esc(dev.text)}">${ic("info")}${lb}</span>`)}
   return out.length?`<div class="opp-flags">${out.join("")}</div>`:"";
 }
@@ -2464,27 +2493,28 @@ function oppWhy(x){
     ${hist?`<h4>Histórico</h4><ul class="why-hist">${hist}</ul><p class="why-note">Contexto, não é preço atual.</p>`:""}
     ${x.updated_at?`<p class="opp-upd">Avaliado ${ago(x.updated_at)} · ${esc(x.engine_version||"")}</p>`:""}</div></details>`;
 }
-function oppCard(x,i){
+/* opt: best (selo "Melhor oferta"), rail (Home: cartão compacto na sequência, com #posição e sem o detalhe) */
+function oppCard(x,i,opt={}){
   const pr=x.product||{},of=x.offer||{},st=x.store||{};
   const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
   const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));
   const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)","—"];
-  const best=i===0&&OF.sort==="score";const foil=best||x.opportunity_band==="excelente"||x.opportunity_band==="boa";
+  const best=opt.best??(i===0&&OF.sort==="score");const foil=best||x.opportunity_band==="excelente"||x.opportunity_band==="boa";
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";
   const fav=isFav(pr.id);const lv=x.confidence_level||"";
   return`<article class="deal opp-card${foil?" foil":""}" data-cat="${catOf(p)}" style="--ec:${g(p).c}">
   <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${esc(pr.name||"")}"></a>
-  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}"><i></i>${bu[0]}</span>`:""}${catChip(p)}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
+  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rail?`<span class="deal-rank">#${i+1}</span>`:""}${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}" title="${bu[0]}"><i></i>${opt.rail?bu[2]:bu[0]}</span>`:""}${catChip(p)}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
     <h3 class="deal-name">${esc(pr.type_label||pr.name||"")}</h3>
-    <p class="deal-price opp-price"><b>${money(x.price)}</b></p>
+    <p class="deal-price opp-price"><b>${money(x.price)}</b>${pixTag({priceKind:of.price_kind})}</p>
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     <p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p>
-    ${oppFlags(x)}
-    ${oppWhy(x)}
+    ${oppFlags(x,{mkOnly:!!opt.rail})}
+    ${opt.rail?"":oppWhy(x)}
     <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div>
   </div>
 </article>`;
@@ -2706,6 +2736,7 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
   if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:""});store.set("opp2",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
   const och=t.closest("[data-ofchip]");if(och){OF.faixa=och.dataset.ofchip;store.set("opp2",OF);syncSheet();renderOpp().then(syncSheet);track("filter_used",{f:"faixa",v:OF.faixa});return}
+  if(t.closest("[data-homeretry]")){HOMEOPP.status="idle";["oportunidades?limite=15&pagina=1&ordem=score","oportunidades?limite=1&pagina=1&ordem=abaixo","oportunidades?limite=1&pagina=1&ordem=economia"].forEach((k)=>APIC.delete(k));paintHomeOpp();loadHomeOpp().then(paintHomeOpp);return}
   if(t.closest("[data-oppretry]")){APIC.delete(OPP.key);OPP.key="";renderOpp();return}
   const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
   if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
