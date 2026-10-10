@@ -1,7 +1,7 @@
 # Fila de revisão humana (docs/agentes.md). Só quem tem escrita no repositório dispara, e o autor
 # (github.actor) precisa estar em REVIEW_OPERATORS. Não altera preço, score nem oportunidade:
-# aprovar grava a decisão; "export" só regrava config/matching-overrides.json, que o robô ignora
-# enquanto "enabled" não for ligado à mão.
+# aprovar grava a decisão; "export" grava config/matching-overrides.json num branch review/overrides-*
+# para PR (nunca direto na main), e o robô ignora o arquivo enquanto "enabled" não for ligado à mão.
 name: Revisão
 on:
   workflow_dispatch:
@@ -52,16 +52,19 @@ jobs:
             reject|dismiss) set -- "$IN_ACTION" "$IN_IDS" --reason "$IN_REASON" ;;
           esac
           node tools/review.mjs "$@"
-      - name: Salvar overrides
+      # Nunca direto na main: merge na main publica em produção e exige PR, CI e aprovação (CLAUDE.md).
+      - name: Salvar overrides (branch para PR)
         if: inputs.action == 'export'
+        env:
+          RUN_ID: ${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
           git config user.name "price-hunter-bot"
           git config user.email "bot@users.noreply.github.com"
           git add config/matching-overrides.json
           git diff --cached --quiet && { echo "Sem mudança."; exit 0; }
+          b="review/overrides-${RUN_ID}"
+          git switch -c "$b"
           git commit -m "revisão: overrides de matching $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do
-            git pull --rebase origin main && git push && exit 0
-            sleep 5
-          done
-          exit 1
+          git push origin "$b"
+          echo "Abra o PR para a main: https://github.com/${REPO}/compare/main...${b}?expand=1" | tee -a "$GITHUB_STEP_SUMMARY"

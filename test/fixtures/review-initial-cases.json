@@ -1,5 +1,5 @@
 {
- "_nota": "24 casos da rodada de 2026-10-09T19:15Z (ramo data). Sugestões de decisão para conferência humana; nenhuma é aplicada sozinha.",
+ "_nota": "24 casos da rodada de 2026-10-09T19:15Z (ramo data). Sugestões de decisão para conferência humana; nenhuma é aplicada sozinha. Páginas dos casos #5, #8, #14, #17 e #20 abertas em 2026-10-09 para a conferência.",
  "generatedAt": "2026-10-09T19:15:18.850Z",
  "cases": [
   {
@@ -109,7 +109,8 @@
    "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:df041a404206e337",
    "suggestion": {
     "decision": "conferir",
-    "why": "18 boosters (meio display) não é formato do catálogo",
+    "visual": true,
+    "why": "página: 18 boosters (108 cartas), Copag, lacrado, EAN 0196214156180; não diz se é caixa ou blister. Conferir a foto. Formato de 18 não existe no catálogo: mesmo conferido, aprovar exige decidir o catálogo antes",
     "candidate": null
    }
   },
@@ -177,7 +178,8 @@
    "dedupeKey": "matching:tipo_desconhecido:lojaarenagamescombr:d8ec152525469bf6",
    "suggestion": {
     "decision": "conferir",
-    "why": "mini display de 18 boosters não é formato do catálogo",
+    "visual": true,
+    "why": "página: Mini Display de 18 boosters, Copag, EAN 7896192356642; identidade clara, lacre não informado (conferir foto). Formato de 18 não existe no catálogo: decisão de catálogo antes de aprovar",
     "candidate": null
    }
   },
@@ -316,13 +318,9 @@
    "productId": null,
    "dedupeKey": "matching:tipo_desconhecido:rihappycombr:51cad07c691611bd",
    "suggestion": {
-    "decision": "conferir",
-    "why": "pode ser o c30-colecao do catálogo; conferir conteúdo na página",
-    "candidate": {
-     "collection": "c30",
-     "type": "colecao",
-     "boosters": null
-    }
+    "decision": "reject",
+    "visual": false,
+    "why": "página: 8 boosters de expansões variadas + carta promo Pikachu, sem marca, indisponível. Não é c30-colecao (20 boosters no catálogo); produto fora do catálogo"
    }
   },
   {
@@ -388,13 +386,9 @@
    "productId": null,
    "dedupeKey": "matching:tipo_desconhecido:pbkidscombr:d0898b57fbfd5115",
    "suggestion": {
-    "decision": "conferir",
-    "why": "mesmo produto do #14 em outra loja",
-    "candidate": {
-     "collection": "c30",
-     "type": "colecao",
-     "boosters": null
-    }
+    "decision": "reject",
+    "visual": false,
+    "why": "mesmo produto do #14 (mesmo código 1003258159): 8 boosters + promo Pikachu, indisponível. Não é c30-colecao"
    }
   },
   {
@@ -456,12 +450,9 @@
    "dedupeKey": "matching:tipo_desconhecido:pbkidscombr:c8b0cbbd757133fc",
    "suggestion": {
     "decision": "conferir",
-    "why": "há mais de um Box Coleção Eevee; conferir qual",
-    "candidate": {
-     "collection": "sv8_5",
-     "type": "colecao",
-     "boosters": null
-    }
+    "visual": true,
+    "why": "página: Espeon e Umbreon ex, 62 cartas, miniatura, broche e sleeves, EAN 7896192352590, indisponível; não diz quantos boosters. Conferir a embalagem para escolher o tipo (Box Coleção ou Coleção com Miniatura)",
+    "candidate": null
    }
   },
   {
