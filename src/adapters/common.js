@@ -7,7 +7,27 @@ export async function guard(url) {
   if (r.why === 'unreachable') throw new BlockedError(`${u.host} fora do ar ou lento para responder`, 'unreachable');
   throw new BlockedError(`robots.txt não permite ${u.pathname}`, 'robots');
 }
-export const brl = (s) => { if (s == null) return null; if (typeof s === 'number') return s; const v = Number(String(s).replace(/[^\d,.-]/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')); return Number.isFinite(v) && v > 0 ? v : null; };
+// Preço em reais (número com no máximo 2 casas) ou null. Nunca chuta: negativo, zero, NaN/infinito, faixa ("10 - 20"),
+// mais de um valor no texto ("12x de 28,25") e separadores incoerentes viram null.
+// Aceita BR ("1.234,56", "339,00"), internacional ("1,234.56", "339.00") e milhar BR sem decimais ("1.500").
+const MONEY_BR = /^\d{1,3}(\.\d{3})*,\d{1,2}$|^\d+,\d{1,2}$/;
+const MONEY_INTL = /^\d{1,3}(,\d{3})+\.\d{1,2}$|^\d+\.\d{1,2}0*$/;
+const MONEY_THOUSANDS = /^\d{1,3}(\.\d{3})+$/;
+export const brl = (s) => {
+  if (s == null) return null;
+  if (typeof s === 'number') return Number.isFinite(s) && s > 0 ? Math.round(s * 100) / 100 : null;
+  const t = String(s);
+  const tokens = t.match(/\d[\d.,]*/g);
+  if (!tokens || tokens.length !== 1 || /-\s*\d/.test(t)) return null;
+  const n = tokens[0].replace(/[.,]+$/, '');
+  let v;
+  if (MONEY_BR.test(n)) v = Number(n.replace(/\./g, '').replace(',', '.'));
+  else if (MONEY_THOUSANDS.test(n)) v = Number(n.replace(/\./g, ''));
+  else if (MONEY_INTL.test(n)) v = Number(n.replace(/,/g, ''));
+  else if (/^\d+$/.test(n)) v = Number(n);
+  else return null;
+  return Number.isFinite(v) && v > 0 ? Math.round(v * 100) / 100 : null;
+};
 // "R$ 339,00 no Pix" / "à vista no PIX R$ 339,00"
 export function findPix(html) {
   const txt = html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
