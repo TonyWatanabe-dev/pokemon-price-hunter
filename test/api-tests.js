@@ -83,6 +83,22 @@ assert.equal((await call('/api/v1/produtos/nao-existe')).status, 404);
 assert.equal((await call('/api/v1/produtos/..%2F..%2Fetc')).status, 400);
 assert.equal((await call('/api/v1/xyz')).status, 404);
 assert.equal((await call('/api/v1/home', 'POST')).status, 405);
+// inputs extremos: limites fixados, valores absurdos não quebram nem estouram
+r = await call('/api/v1/produtos?limite=-5&pagina=0'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 1); assert.equal(r.json.meta.page, 1);
+r = await call('/api/v1/produtos?limite=abc&pagina=99999999999999999999'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 24); assert.equal(r.json.meta.page, 10_000);
+r = await call('/api/v1/produtos?busca=' + 'x'.repeat(100_000)); assert.equal(r.status, 200, 'busca gigante é truncada, não rejeitada');
+r = await call('/api/v1/site/ofertas?produtos=' + Array.from({ length: 200 }, (_, i) => `p${i}`).join(',')); assert.equal(r.status, 400, 'mais de 60 ids');
+r = await call('/api/v1/site/produtos?limite=100000&pagina=100000'); assert.equal(r.json.limit, 60); assert.equal(r.json.page, 1000);
+assert.equal((await call('/api/v1/produtos/' + 'a'.repeat(500))).status, 400, 'slug longo demais');
+{ const n = _cache.size; for (let i = 0; i < 20; i++) await call(`/api/v1/produtos?limite=2&lixo=${i}`); assert.ok(_cache.size <= n + 1, 'parâmetros desconhecidos não multiplicam entradas do cache'); }
+// prazo total: fonte que não responde vira 503 curto com Retry-After (não deixa o pedido pendurado até a plataforma matar a função)
+{
+  setLegacyLoader(() => new Promise(() => {}));
+  const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } };
+  const t0 = Date.now(); await api({ url: '/api/v1/produtos?pagina=77', method: 'GET' }, res, { deadlineMs: 50 });
+  assert.equal(res.statusCode, 503); assert.equal(res.headers['Retry-After'], '5'); assert.equal(res.headers['Cache-Control'], 'no-store'); assert.ok(Date.now() - t0 < 2000);
+  setLegacyLoader(async () => fx());
+}
 // preço atual, estoque, referência (state)
 r = await call('/api/v1/produtos/me05-etb'); const ps = r.json.data.stats;
 assert.equal(ps.market.current_price, 360, 'menor preço com estoque e confirmado (od não confirmada fica de fora)'); assert.equal(ps.market.current_total_price, 380);
