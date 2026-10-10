@@ -1,0 +1,39 @@
+// Issue #41 — situação da referência Copag por produto: ausente, desatualizada, confirmada e conflitante. Testes puros.
+import assert from 'node:assert/strict';
+import { copagReferenceStatus, resolveCurrentReference } from '../src/core/references.js';
+
+let n = 0; const t = (name, fn) => { fn(); n++; };
+const asOf = new Date('2026-10-08T12:00:00Z');
+const row = (value, verified_at, x = {}) => ({ reference_kind: 'COPAG_OFFICIAL_CURRENT', verification_status: 'verified', value, source: 'copag_loja', confidence: 90, verified_at, ...x });
+
+t('produto sem referência: missing, sem preço inventado', () => {
+  for (const rows of [undefined, [], [row(349.99, '2026-10-01T00:00:00Z', { verification_status: 'pending' })],
+    [row(349.99, '2026-10-01T00:00:00Z', { reference_kind: 'COPAG_OFFICIAL_HISTORICAL' })], [row(0, '2026-10-01T00:00:00Z')]]) {
+    const s = copagReferenceStatus(rows, asOf);
+    assert.equal(s.status, 'missing'); assert.deepEqual(s.prices, []);
+  }
+  assert.equal(resolveCurrentReference({ copag: null, asOf }).price, null);
+});
+
+t('produto com referência recente: confirmed, com preço e data', () => {
+  const s = copagReferenceStatus([row(349.99, '2026-10-08T10:00:00Z'), row(349.99, '2026-10-05T10:00:00Z')], asOf);
+  assert.deepEqual(s, { status: 'confirmed', prices: [349.99], verified_at: '2026-10-08T10:00:00Z' });
+});
+
+t('referência vencida (mais de 30 dias): stale, mantém a data e não oferece preço', () => {
+  const s = copagReferenceStatus([row(349.99, '2026-08-01T00:00:00Z')], asOf);
+  assert.equal(s.status, 'stale'); assert.deepEqual(s.prices, []); assert.equal(s.verified_at, '2026-08-01T00:00:00Z');
+  assert.equal(copagReferenceStatus([row(349.99, null)], asOf).status, 'stale');
+});
+
+t('referência conflitante: conflicting, lista todos os preços e não escolhe um', () => {
+  const s = copagReferenceStatus([row(349.99, '2026-10-08T10:00:00Z'), row(329.99, '2026-10-07T10:00:00Z')], asOf);
+  assert.equal(s.status, 'conflicting'); assert.deepEqual(s.prices, [329.99, 349.99]);
+});
+
+t('linha vencida não gera conflito com a recente', () => {
+  const s = copagReferenceStatus([row(349.99, '2026-10-08T10:00:00Z'), row(299.99, '2026-07-01T00:00:00Z')], asOf);
+  assert.equal(s.status, 'confirmed'); assert.deepEqual(s.prices, [349.99]);
+});
+
+console.log(`copag-status-tests: ${n} ok`);

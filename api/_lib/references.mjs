@@ -166,6 +166,27 @@ export function copagExpired(verifiedAt, asOf) {
 }
 
 /**
+ * Situação da referência Copag de UM produto, a partir das linhas COPAG_OFFICIAL_CURRENT dele (nunca estima, nunca preenche lacuna):
+ *   missing     — nenhuma linha Copag atual verificada com preço válido
+ *   stale       — há Copag verificada, mas a mais recente passou de COPAG_MAX_AGE_DAYS (ou não tem data de verificação)
+ *   conflicting — linhas válidas e não vencidas com preços diferentes (centavos); NÃO escolhe vencedora, devolve todos os preços
+ *   confirmed   — linhas válidas e não vencidas, todas com o mesmo preço
+ * Só para auditoria/diagnóstico: a nota continua usando resolveCurrentReference.
+ */
+export function copagReferenceStatus(rows, asOf = null) {
+  const valid = (rows || []).filter((r) => r.reference_kind === 'COPAG_OFFICIAL_CURRENT' && r.verification_status === 'verified' && Number(r.value) > 0);
+  if (!valid.length) return { status: 'missing', prices: [], verified_at: null };
+  const fresh = valid.filter((r) => r.verified_at && !copagExpired(r.verified_at, asOf));
+  if (!fresh.length) {
+    const last = valid.map((r) => r.verified_at).filter(Boolean).sort().pop() ?? null;
+    return { status: 'stale', prices: [], verified_at: last };
+  }
+  const prices = [...new Set(fresh.map((r) => Math.round(Number(r.value) * 100) / 100))].sort((a, b) => a - b);
+  const verified_at = fresh.map((r) => r.verified_at).sort().pop();
+  return { status: prices.length > 1 ? 'conflicting' : 'confirmed', prices, verified_at };
+}
+
+/**
  * Referência ATUAL de um produto. copag: linha atual verificada (reference_price_current) ou null; market: saída de marketReferenceOf.
  * asOf: momento do cálculo; Copag verificada há mais de COPAG_MAX_AGE_DAYS é tratada como ausente (cai para mercado ou NONE)
  * e a data dela vai em copag_expired_verified_at.
