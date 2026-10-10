@@ -10,7 +10,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Coletor | `src/run.js` | Leitura bem-sucedida: `source_timestamp` = horário da rodada, `stale: false`. |
 | Falha da fonte | `src/run.js` (`staleCopy`) | Reaproveita a oferta anterior com `stale: true` e `stock: UNKNOWN`. **`source_timestamp` não muda** e a última leitura válida fica em `lastValid`. |
 | Rodada pulada por prazo | `src/run.js` | Oferta lida há menos de 3 h e não stale é mantida como está, com o horário antigo. |
-| Frete | `src/run.js` | Se a simulação falha, o último frete conhecido fica com `shippingAt` (data da leitura original) e `shippingError`. |
+| Frete | `src/run.js` (`carryShipping`) | Se a simulação falha (ou a oferta é copiada sem nova leitura), o frete anterior só é reaproveitado dentro da validade de 24 h da cotação (`HUNTER_SHIPPING_TTL_H`), com `shippingAt` = data da cotação original (não renova); a falha da simulação fica em `shippingError`. Vencido ou sem data, o frete vira desconhecido e o total volta ao preço. |
 | Banco | `src/core/mappers.js` | `last_seen_at` = `source_timestamp`; stale vira `status = 'pending'` e `stock_status = 'unknown'`. Oferta que sumiu da rodada vira `removed`. |
 | API | `api/_lib/read-db.mjs`, `read-state.mjs` | `pending` volta como `stale: true`; `source_timestamp` = `last_seen_at`. O frescor da resposta é `freshness` (e os cabeçalhos `X-Data-*`). |
 | UI | `tools/page.template.html` | "Atualizado há …" vem de `source_timestamp`; `stale` mostra o selo "Leitura antiga". |
