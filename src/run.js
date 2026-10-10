@@ -213,12 +213,26 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       const listings = []; const rejected = [];
       for (const l of raw) { const r = validateListing(l, store, { now }); if (r.ok) listings.push(l); else rejected.push({ l, reasons: r.reasons }); }
       if (cache) {
-        // Página relevante que não abriu continua relevante; página nova que não abriu volta para a fila de novas.
+        // Página relevante que não abriu continua relevante (a oferta fica stale, nunca "removida").
         // Página relevante cujo anúncio foi recusado pelo contrato também continua relevante (é lida de novo na próxima).
+        // Página nova que não abriu volta para a fila de novas até HUNTER_JSONLD_RETRY_MAX tentativas seguidas (padrão 3);
+        // esgotadas, conta como lida e só volta junto com as irrelevantes, depois de HUNTER_JSONLD_RETRY_H horas.
+        const MAXTRY = Math.max(1, Number(process.env.HUNTER_JSONLD_RETRY_MAX) || 3);
+        const tries = (cache.failCount ||= {});
         const keep = new Set(rejected.map((x) => x.l?.url));
         cache.relevant = [...new Set([...listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url), ...cache.relevant.filter((u) => failedUrls.has(u) || keep.has(u))])];
-        cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || cache.relevant.includes(u));
-        for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
+        const rel = new Set(cache.relevant); const givenUp = [];
+        for (const u of planned) {
+          if (!failedUrls.has(u)) { delete tries[u]; cache.visitedAt[u] = T; continue; }
+          tries[u] = (tries[u] || 0) + 1;
+          if (!rel.has(u) && tries[u] >= MAXTRY) { givenUp.push(u); cache.visitedAt[u] = T; }
+        }
+        const gaveUp = new Set(givenUp);
+        cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || rel.has(u) || gaveUp.has(u));
+        for (const u of givenUp) if (!cache.visited.includes(u)) cache.visited.push(u);
+        for (const u of Object.keys(tries)) if (!cache.candidates.includes(u) && !rel.has(u)) delete tries[u];
+        src.pageFailures = failedUrls.size; src.pageGiveUps = givenUp.length;
+        src.pageFailReason = failedUrls.size ? Object.values(raw.failReasons || {})[0] || 'falha de leitura' : null;
       }
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
       if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o, now);
