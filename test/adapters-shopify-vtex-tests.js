@@ -207,5 +207,12 @@ await t('VTEX: link que não é http(s) não vira link', async () => {
   assert.deepEqual(await vtSearch('vt-sem-link.test', [vtProduct({ link: 'javascript:alert(1)', linkText: undefined })]), [], 'sem link válido nem linkText: descartado');
 });
 
+await t('sem título/nome do produto: não vira oferta "undefined"', async () => {
+  for (const [i, title] of [undefined, null, '', '   ', 42].entries()) {
+    assert.deepEqual(await shSearch(`sh-sem-titulo-${i}.test`, suggest(shProduct({ title }))), [], `Shopify title=${JSON.stringify(title)}: descartado`);
+    assert.deepEqual(await vtSearch(`vt-sem-nome-${i}.test`, [vtProduct({ productName: title })]), [], `VTEX productName=${JSON.stringify(title)}: descartado`);
+  }
+});
+
 http.setFetch(globalThis.fetch);
 console.log(`✓ Adaptadores Shopify e VTEX (fixtures locais): ${n} grupos de testes passaram`);

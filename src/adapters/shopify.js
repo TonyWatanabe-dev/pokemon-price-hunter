@@ -11,7 +11,8 @@ const absImg = (base, u) => { if (!u || typeof u !== 'string') return null; try 
 const httpHref = (u, base) => { try { const x = new URL(u, base); return /^https?:$/.test(x.protocol) ? x.href.split('?')[0] : null; } catch { return null; } };
 function toListing(base, p, v, multi) {
   const link = (p.url && httpHref(p.url, base)) || (p.handle ? `${base}/products/${p.handle}` : null);
-  if (!link) return null;
+  // Sem título não há como identificar o produto (nem casar com o catálogo): não vira oferta "undefined".
+  if (!link || typeof p.title !== 'string' || !p.title.trim()) return null;
   return {
     title: p.title + (multi && v.title && v.title !== 'Default Title' ? ' ' + v.title : ''),
     url: link + (multi && v.id ? `?variant=${v.id}` : ''),

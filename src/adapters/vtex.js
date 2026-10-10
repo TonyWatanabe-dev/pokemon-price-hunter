@@ -17,7 +17,8 @@ export async function search(store, catalog) {
     for (const p of Array.isArray(arr) ? arr : []) for (const it of p.items || []) for (const s of (it.sellers || []).filter((x, _, all) => !all.some((y) => y.sellerDefault) || x.sellerDefault)) {
       // Link só http(s) (senão o linkText na própria loja); preço só número positivo (texto, zero ou negativo = sem preço).
       const link = typeof p.link === 'string' && /^https?:\/\//i.test(p.link) ? p.link : p.linkText ? `${base}/${p.linkText}/p` : null;
-      if (!link) continue;
+      // Sem nome de produto não há como identificar a oferta: não vira título "undefined".
+      if (!link || typeof p.productName !== 'string' || !p.productName.trim()) continue;
       const o = s.commertialOffer || {};
       const qty = Number(o.AvailableQuantity ?? 0);
       const price = typeof o.Price === 'number' && Number.isFinite(o.Price) && o.Price > 0 ? o.Price : null;
