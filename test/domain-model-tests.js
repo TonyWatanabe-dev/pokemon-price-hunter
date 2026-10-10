@@ -45,7 +45,7 @@ assert.equal(p.collection_id, col.id, 'produto aponta para a coleção');
 assert.equal(p.tcg_id, 'pokemon');
 
 const [o] = offersRows([{ id: 'h1', productId: 'me05-etb', storeId: 'loja', title: 't', url: 'https://x', price: 100, total: 100, shipping: 0, shippingKnown: true, stock: 'IN_STOCK' }]);
-only(o, offer, ['product_legacy_id', 'seller'], 'offer');   // resolvidos para product_id / seller_id no sync
+only(o, offer, ['product_legacy_id', 'seller', 'shipping_reused'], 'offer');   // resolvidos para product_id / seller_id no sync; shipping_reused (#88) é consumido pelo sync e não é coluna
 for (const k of STABLE) assert.ok(!(k in o), `linha de oferta sem ${k}`);
 assert.equal(o.product_legacy_id, p.legacy_id, 'oferta liga ao produto pelo id antigo');
 
