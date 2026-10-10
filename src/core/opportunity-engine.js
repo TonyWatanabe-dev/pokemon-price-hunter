@@ -17,6 +17,9 @@
 // 4) Travas: sem estoque ≤ 30; pré-venda ≤ 60; estoque incerto ≤ 70; oferta parada (pendente) ≤ 40;
 //    preço implausível/anômalo ≤ 49; ≥ 15% acima da referência atual ≤ 49; acima da referência atual ≤ 74;
 //    queda não confirmada ≤ 74; loja mal avaliada ≤ 74; desconto > 40% ≤ 89.
+// 4b) Custo total e evidência (só exposição, sem efeito no score): total_cost = produto + frete conhecido (cost_basis 'total');
+//    frete desconhecido mantém só o preço do produto (cost_basis 'price_only'). evidence: complete | partial | insufficient | stale.
+//    Desempate da ordenação: score, confiança, menor custo total, menor preço, id.
 // 5) Confiança separada do score (0–1): cobertura × fatores de incerteza (histórico curto, frete, poucas lojas...).
 import { plausible, round2, round4 } from './price-engine.js';
 import { CURRENT_KINDS, MARKETPLACE_ONLY_FACTOR, historyDeviation } from './references.js';
@@ -139,11 +142,12 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   }
 
   // --- frete (desconhecido = nulo; nunca R$ 0)
-  let freight = null;
-  if (offer.shipping_status === 'free') { freight = 1; r('FREE_SHIPPING', 'frete grátis'); }
+  let freight = null; let shipCost = null;
+  if (offer.shipping_status === 'free') { freight = 1; shipCost = 0; r('FREE_SHIPPING', 'frete grátis'); }
   else if (offer.shipping_status === 'known') {
     const ship = num(offer.shipping_price) ?? (num(offer.total_price) != null ? num(offer.total_price) - price : null);
     if (ship != null && ship >= 0) {
+      shipCost = ship;
       const share = ship / price; freight = pw(share, [[0, 1], [0.05, 0.8], [0.15, 0.4], [0.30, 0]]);
       if (share > 0.15) r('HEAVY_SHIPPING', `frete de ${brl(ship)} (${pct(share)} do preço)`, '-'); else r('KNOWN_SHIPPING', `frete conhecido (${brl(ship)})`, '=');
     }
@@ -198,6 +202,12 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   if (marketplaceOnly) conf *= MARKETPLACE_ONLY_FACTOR;   // referência só de marketplace: dado menos representativo
   const confidence = round2(clamp(conf));
 
+  // custo total comparável (produto + frete) só com frete conhecido; frete desconhecido NUNCA vira R$ 0: o custo fica só no preço do produto
+  // e é marcado como piso (cost_basis 'price_only'). Evidência: 'stale' (oferta parada) > 'insufficient' (sem referência atual e sem
+  // frete, ou cobertura < 0,5) > 'partial' (falta referência atual ou frete) > 'complete'. Só informa; não altera score nem faixa.
+  const totalCost = round2(price + (shipCost ?? 0)); const costBasis = shipCost != null ? 'total' : 'price_only';
+  const evidence = offer.status === 'pending' ? 'stale' : ((!refOk && shipCost == null) || coverage < 0.5) ? 'insufficient' : (!refOk || shipCost == null) ? 'partial' : 'complete';
+
   return {
     ...base, opportunity_score: score, opportunity_band: bandOf(score), confidence,
     reasons, warnings, caps,
@@ -205,6 +215,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
     stock_signal: round4(stockSig), freight_signal: round4(freight), market_signal: round4(market), reliability_signal: round4(reliability),
     // referência ATUAL usada nesta avaliação e a distância já calculada acima (só exposição: não entra de novo no score)
     reference_kind: refOk ? refKind : 'NONE', reference_value: refOk ? ref : null, reference_gap: refOk ? round4(discount) : null,
+    total_cost: totalCost, cost_basis: costBasis, evidence,
     is_anomaly: isAnomaly, price, raw_score: round2(raw), coverage: round4(coverage), market_signal_absorbed: marketAbsorbed, market_composition: refOk && refKind === 'MARKET_CURRENT' ? (mrq.composition ?? null) : null,
   };
 }
@@ -213,7 +224,7 @@ export const confidenceLevel = (c) => (c == null ? null : c >= 0.75 ? 'alta' : c
 
 /** Melhor oportunidade COMPRÁVEL do produto (com estoque, sem anomalia). Empate: score, confiança, menor preço, id. */
 const cmpId = (a, b) => { const x = Number(a), y = Number(b); return Number.isFinite(x) && Number.isFinite(y) ? x - y : String(a).localeCompare(String(b)); };
-export const oppOrder = (a, b) => (b.opportunity_score ?? -1) - (a.opportunity_score ?? -1) || (b.confidence ?? 0) - (a.confidence ?? 0) || (a.price ?? 1e12) - (b.price ?? 1e12) || cmpId(a.offer_id, b.offer_id);
+export const oppOrder = (a, b) => (b.opportunity_score ?? -1) - (a.opportunity_score ?? -1) || (b.confidence ?? 0) - (a.confidence ?? 0) || (a.total_cost ?? a.price ?? 1e12) - (b.total_cost ?? b.price ?? 1e12) || (a.price ?? 1e12) - (b.price ?? 1e12) || cmpId(a.offer_id, b.offer_id);
 export function productOpportunity(stats, offers, opts) {
   const all = (offers || []).map((o) => calculateOpportunity(stats, o, opts));
   const buyable = all.filter((x) => x.opportunity_score != null && x.stock_signal === 1 && !x.is_anomaly).sort(oppOrder);
