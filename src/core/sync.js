@@ -88,9 +88,9 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   const sid = new Map((await c.query('SELECT marketplace_id, external_id, id FROM seller')).rows.map((r) => [r.marketplace_id + '|' + r.external_id, Number(r.id)]));
 
   // 6) Ofertas (+ mudança de estoque registrada, + frete conhecido)
-  const prev = new Map((await c.query('SELECT legacy_id, id, stock_status FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, r]));
+  const prev = new Map((await c.query('SELECT legacy_id, id, stock_status, status FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, r]));
   const rows = offers.map((o) => ({ ...o, product_id: pid.get(o.product_legacy_id), seller_id: o.seller ? sid.get(o.marketplace_id + '|' + o.seller.external_id) : null }));
-  await c.query(`INSERT INTO offer (legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
+  const up = await c.query(`INSERT INTO offer (legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
       shipping_status, shipping_price, total_price, stock_status, quantity, match_confidence, confirmed, anomalous, status, source_type, first_seen_at, last_seen_at)
     SELECT legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
       shipping_status, shipping_price, total_price, stock_status, quantity, match_confidence, confirmed, anomalous, status, source_type, coalesce(first_seen_at, now()), coalesce(last_seen_at, now())
@@ -101,16 +101,33 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
       image_url = coalesce(EXCLUDED.image_url, offer.image_url), price = EXCLUDED.price, price_kind = EXCLUDED.price_kind, list_price = EXCLUDED.list_price, pix_price = EXCLUDED.pix_price,
       shipping_status = EXCLUDED.shipping_status, shipping_price = EXCLUDED.shipping_price, total_price = EXCLUDED.total_price, stock_status = EXCLUDED.stock_status,
       quantity = EXCLUDED.quantity, match_confidence = EXCLUDED.match_confidence, confirmed = EXCLUDED.confirmed, anomalous = EXCLUDED.anomalous, status = EXCLUDED.status,
-      last_seen_at = EXCLUDED.last_seen_at, updated_at = now()`, [J(rows)]);
+      last_seen_at = EXCLUDED.last_seen_at, updated_at = now()
+    WHERE offer.last_seen_at IS NULL OR offer.last_seen_at <= EXCLUDED.last_seen_at
+    RETURNING legacy_id`, [J(rows)]);
+  // Corrida entre syncs/retries: leitura com carimbo mais antigo que o já gravado é descartada (igual passa, então repetir é idempotente).
+  // Sem carimbo da fonte (source_timestamp ausente) a leitura vale como feita agora, como sempre; não congela oferta cuja fonte não informa data.
+  const applied = new Set(up.rows.map((r) => r.legacy_id));
+  stats.offersStale = rows.length - applied.size;
   const oid = new Map((await c.query('SELECT legacy_id, id FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, Number(r.id)]));
   const live = new Set(rows.map((r) => r.legacy_id));
   const gone = await c.query(`UPDATE offer SET status = 'removed', stock_status = 'unknown', updated_at = now() WHERE status <> 'removed' AND legacy_id IS NOT NULL AND NOT (legacy_id = ANY($1::text[]))`, [[...live]]);
-  const stockEv = rows.filter((r) => prev.has(r.legacy_id) && prev.get(r.legacy_id).stock_status !== r.stock_status)
-    .map((r) => ({ offer_id: oid.get(r.legacy_id), from_status: prev.get(r.legacy_id).stock_status, to_status: r.stock_status, quantity: r.quantity, observed_at: r.last_seen_at }));
+  // Evento de estoque só entre estados lidos de verdade: oferta desatualizada nesta rodada (status 'pending': loja ou
+  // página falhou) não gera evento, e 'unknown' anterior (rodada que falhou ou oferta removida) é trocado pelo último
+  // estoque conhecido no histórico de preços, gravado antes desta rodada. Sem estoque conhecido, não há evento.
+  // Leitura descartada pela guarda de last_seen_at (fora de `applied`: mais antiga que a já gravada) também não gera evento.
+  const cand = rows.filter((r) => applied.has(r.legacy_id) && r.status === 'active' && r.stock_status !== 'unknown' && prev.has(r.legacy_id) && prev.get(r.legacy_id).stock_status !== r.stock_status);
+  const needKnown = cand.filter((r) => prev.get(r.legacy_id).stock_status === 'unknown').map((r) => Number(prev.get(r.legacy_id).id));
+  const lastKnown = new Map(needKnown.length ? (await c.query(`SELECT DISTINCT ON (offer_id) offer_id, stock_status FROM price_history
+      WHERE offer_id = ANY($1::bigint[]) AND stock_status <> 'unknown' ORDER BY offer_id, observed_at DESC`, [needKnown])).rows.map((r) => [Number(r.offer_id), r.stock_status]) : []);
+  const stockEv = cand.map((r) => {
+    const p = prev.get(r.legacy_id);
+    const from = p.stock_status === 'unknown' ? lastKnown.get(Number(p.id)) ?? null : p.stock_status;
+    return from && from !== r.stock_status ? { offer_id: oid.get(r.legacy_id), from_status: from, to_status: r.stock_status, quantity: r.quantity, observed_at: r.last_seen_at } : null;
+  }).filter(Boolean);
   if (stockEv.length) await c.query(`INSERT INTO stock_event (offer_id, from_status, to_status, quantity, observed_at)
     SELECT offer_id, from_status, to_status, quantity, coalesce(observed_at, now()) FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, from_status text, to_status text, quantity int, observed_at timestamptz)
     ON CONFLICT DO NOTHING`, [J(stockEv)]);
-  const ship = rows.filter((r) => r.shipping_status !== 'unknown' && !r.shipping_reused).map((r) => ({ offer_id: oid.get(r.legacy_id), price: r.shipping_price }));
+  const ship = rows.filter((r) => applied.has(r.legacy_id) && r.shipping_status !== 'unknown' && !r.shipping_reused).map((r) => ({ offer_id: oid.get(r.legacy_id), price: r.shipping_price }));
   if (ship.length) await c.query(`INSERT INTO shipping_quote (offer_id, cep_prefix, method, price) SELECT offer_id, '00000', 'padrao', price FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, price numeric)
     ON CONFLICT (offer_id, cep_prefix, method) DO UPDATE SET price = EXCLUDED.price, checked_at = now()`, [J(ship)]);
   Object.assign(stats, { offers: rows.length, offersRemoved: gone.rowCount, stockEvents: stockEv.length, shippingQuotes: ship.length });
