@@ -18,7 +18,9 @@ export function parseRobots(txt) {
       if (!current || !lastWasAgent) { current = { agents: [], rules: [] }; groups.push(current); }
       current.agents.push(val.toLowerCase()); lastWasAgent = true;
     } else if ((key === 'allow' || key === 'disallow') && current) {
-      lastWasAgent = false; if (val) current.rules.push({ allow: key === 'allow', path: val, re: toRegex(val) });
+      // A URL comparada já vem percent-encoded (new URL); a regra com acento ("/coleção") também precisa vir (RFC 9309 §2.2.2).
+      const p = val.replace(/[^\x00-\x7F]+/g, encodeURIComponent);
+      lastWasAgent = false; if (p) current.rules.push({ allow: key === 'allow', path: p, re: toRegex(p) });
     } else lastWasAgent = false;
   }
   const mine = groups.filter((g) => g.agents.some((a) => a !== '*' && token.includes(a)));
