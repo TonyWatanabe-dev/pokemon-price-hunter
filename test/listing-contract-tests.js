@@ -200,3 +200,6 @@ export async function load(url, context, next) {
 });
 
 console.log(`✓ Contrato comum do anúncio (#47): ${n} grupos de testes passaram`);
+
+// C2 (#177): contrato ligado no coletor (src/run.js), rodada simulada com adaptador falso.
+await import('./listing-contract-run-tests.js');
