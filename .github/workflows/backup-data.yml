@@ -1,0 +1,32 @@
+name: Backup dos dados
+# Marca o commit atual do ramo data com a etiqueta data-backup/AAAA-MM-DD (UTC) e apaga as etiquetas mais velhas que a
+# retenção (variável BACKUP_RETENTION_DAYS, padrão 14; as 3 mais recentes nunca são apagadas). Ver docs/backup.md.
+# O ramo data é reescrito a cada rodada (push -f, sem histórico): a etiqueta é o que mantém um retrato recuperável.
+#
+# DESLIGADO POR PADRÃO: só roda à mão (Actions → Run workflow) ou por workflow_dispatch externo (cron-job.org).
+# Não há agendamento ativo. Para ativar o agendamento do GitHub (reserva), descomentar o bloco schedule abaixo;
+# ver "Como ativar o agendamento" em docs/backup.md.
+on:
+  # schedule:
+  #   - cron: '41 4 * * *'
+  workflow_dispatch:
+# contents: write é necessário só para criar e apagar as etiquetas data-backup/*. Nenhum secret é usado.
+permissions:
+  contents: write
+# Grupo próprio (não espera o robô). Não há corrida com o push -f do robô: o script busca o ramo uma vez e marca o sha
+# buscado, nunca o nome do ramo.
+concurrency:
+  group: data-backup
+  cancel-in-progress: false
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Marcar retrato do ramo data
+        env:
+          BACKUP_RETENTION_DAYS: ${{ vars.BACKUP_RETENTION_DAYS }}
+        run: node tools/data-backup.mjs

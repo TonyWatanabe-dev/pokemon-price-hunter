@@ -14,7 +14,7 @@ import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIn
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
-import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
+import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun } from './opstate.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -22,6 +22,7 @@ import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
+import { redact } from './redact.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -178,6 +179,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (Date.now() - Date.parse(src.lastCheck) < backoffMs(src)) return;
     }
     src.checks++; src.lastCheck = T;
+    const t0 = Date.now();
     try {
       const base = store.url.replace(/\/$/, '');
       const platform = store.platform !== 'auto' ? store.platform : (src.platform || await detectPlatform(base));
@@ -211,12 +213,26 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       const listings = []; const rejected = [];
       for (const l of raw) { const r = validateListing(l, store, { now }); if (r.ok) listings.push(l); else rejected.push({ l, reasons: r.reasons }); }
       if (cache) {
-        // Página relevante que não abriu continua relevante; página nova que não abriu volta para a fila de novas.
+        // Página relevante que não abriu continua relevante (a oferta fica stale, nunca "removida").
         // Página relevante cujo anúncio foi recusado pelo contrato também continua relevante (é lida de novo na próxima).
+        // Página nova que não abriu volta para a fila de novas até HUNTER_JSONLD_RETRY_MAX tentativas seguidas (padrão 3);
+        // esgotadas, conta como lida e só volta junto com as irrelevantes, depois de HUNTER_JSONLD_RETRY_H horas.
+        const MAXTRY = Math.max(1, Number(process.env.HUNTER_JSONLD_RETRY_MAX) || 3);
+        const tries = (cache.failCount ||= {});
         const keep = new Set(rejected.map((x) => x.l?.url));
         cache.relevant = [...new Set([...listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url), ...cache.relevant.filter((u) => failedUrls.has(u) || keep.has(u))])];
-        cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || cache.relevant.includes(u));
-        for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
+        const rel = new Set(cache.relevant); const givenUp = [];
+        for (const u of planned) {
+          if (!failedUrls.has(u)) { delete tries[u]; cache.visitedAt[u] = T; continue; }
+          tries[u] = (tries[u] || 0) + 1;
+          if (!rel.has(u) && tries[u] >= MAXTRY) { givenUp.push(u); cache.visitedAt[u] = T; }
+        }
+        const gaveUp = new Set(givenUp);
+        cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || rel.has(u) || gaveUp.has(u));
+        for (const u of givenUp) if (!cache.visited.includes(u)) cache.visited.push(u);
+        for (const u of Object.keys(tries)) if (!cache.candidates.includes(u) && !rel.has(u)) delete tries[u];
+        src.pageFailures = failedUrls.size; src.pageGiveUps = givenUp.length;
+        src.pageFailReason = failedUrls.size ? Object.values(raw.failReasons || {})[0] || 'falha de leitura' : null;
       }
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
       if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o, now);
@@ -231,6 +247,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         log(`[${store.id}] ${rejected.length} anúncio(s) fora do contrato: ${Object.entries(why).map(([k, c]) => `${k} ×${c}`).join('; ')}`);
       } else delete src.rejected;
       let matched = 0;
+      let shipHalt = null; // depois de um 429 na simulação de frete, não insiste na mesma loja nesta rodada
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
@@ -246,11 +263,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null; let shipSource = null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
-          try { ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
+          try { if (shipHalt) throw new Error(shipHalt); ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
           catch (e) {
+            if (!shipHalt && e?.blocked && e.status === 429) shipHalt = `simulação suspensa nesta rodada após ${String(e.message).slice(0, 100)}`;
             // Simulação falhou: guarda o motivo e reaproveita a última cotação desta oferta só dentro da validade
             // (shippingQuoteReuse). A data continua a da cotação original; vencida ou ausente, o frete fica desconhecido.
-            shipError = String(e?.message || e).slice(0, 160);
+            shipError = redact(e?.message || e, { max: 160 });
             const reuse = shippingQuoteReuse(lastValidOf(prev[id]), now);
             if (reuse) { ship = reuse.shipping; shipAt = reuse.shippingAt; shipSource = 'anterior'; }
           }
@@ -289,7 +307,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         }
       }
       // Voltou a funcionar: limpa o status HTTP, o código de rede e o Retry-After da última falha.
-      Object.assign(src, { status: 'ACTIVE', reason, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null });
+      Object.assign(src, { status: 'ACTIVE', reason, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null, lastDurationMs: Date.now() - t0, errorClass: null });
       delete src.httpStatus; delete src.netCode; delete src.retryAfterSec;
       // Leitura parcial (ex.: Shopify com catálogo maior que o teto de páginas): fica registrada; some quando volta a ser completa.
       if (typeof raw.partial === 'string' && raw.partial) { src.partial = raw.partial; log(`[${store.id}] ${raw.partial}`); } else delete src.partial;
@@ -297,9 +315,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.
       const st = e.httpStatus ?? e.status;
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: safeReason(e), fails: (src.fails || 0) + 1,
-        httpStatus: Number.isInteger(st) && st > 0 ? st : null, netCode: netCode(e), retryAfterSec: Number.isFinite(e.retryAfter) ? e.retryAfter : null });
-      log(`[${store.id}] ${src.status}: ${src.reason}`);
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: redact(safeReason(e), { max: 300 }), fails: (src.fails || 0) + 1,
+        httpStatus: Number.isInteger(st) && st > 0 ? st : null, netCode: netCode(e), retryAfterSec: Number.isFinite(e.retryAfter) ? e.retryAfter : null,
+        errorClass: classifyError(e), lastDurationMs: Date.now() - t0 });
+      log(`[${store.id}] ${src.status} (${src.errorClass}): ${src.reason}`);
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
@@ -480,11 +499,11 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length });
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
     recordRun(dataPath('meta.json'), rec);
-    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
-  } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
+    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read} · coletores: ${rec.collectors.ok} ok, ${rec.collectors.empty} vazios, ${rec.collectors.failed} com falha de ${rec.collectors.tried} em ${Math.round(rec.durationSec ?? 0)}s`);
+  } catch (e) { log(`[estado operacional] ${redact(e.message, { max: 120 })}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;
 }
@@ -494,7 +513,7 @@ if (isMain) {
   const loop = process.argv.includes('--loop');
   const minutes = Number(process.env.HUNTER_INTERVAL_MIN || 10);
   do {
-    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', e); if (!loop) process.exitCode = 1; }
+    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', redact(e?.stack || e, { max: 1500 })); if (!loop) process.exitCode = 1; }
     if (loop) await new Promise((r) => setTimeout(r, minutes * 60e3));
   } while (loop);
 }

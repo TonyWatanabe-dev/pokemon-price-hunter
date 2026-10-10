@@ -16,6 +16,7 @@
 //   GET /api/v1/site/lojas                          → diretório de lojas: domínio, ofertas observadas, atualização (sem nota de reputação)
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
+//   GET /api/v1/afiliados                           → links de afiliado validados (config/affiliates.json; não lê banco nem state.json)
 // Fonte: banco (API_DATABASE_URL, só leitura) com fallback seguro para o state.json. ?fonte=state força o fallback.
 // Frescor (Lote 2, api/_lib/freshness.mjs): toda resposta traz freshness {status, source, dataAt, ageMin[, fallback]}
 // (em meta nas listas) e os cabeçalhos X-Data-Freshness/X-Data-At. Banco sem sincronizar há mais de 90 min: serve o
@@ -30,6 +31,7 @@ import * as STORES from './_lib/stores.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
+import { publicAffiliates } from './_lib/affiliates.mjs';
 
 export const config = { maxDuration: 15 };
 const TTL = { home: 60_000, site: 60_000, default: 120_000 };
@@ -179,6 +181,8 @@ async function handle(req, res, { now }) {
   if (req.method && req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'método não permitido' }, { 'Cache-Control': 'no-store', Allow: 'GET, HEAD' });
   const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
   u.searchParams.delete('path');
+  // Afiliados (docs/afiliados.md): só destino de clique, à parte dos dados; sem banco, sem frescor, sem cache por consulta.
+  if (path.length === 1 && path[0] === 'afiliados') return send(res, 200, publicAffiliates(), { 'Cache-Control': CDN.default });
   let rt;
   try { rt = route(path, u.searchParams); } catch (e) { return send(res, e instanceof HttpError ? e.status : 400, { error: e instanceof HttpError ? e.message : 'pedido inválido' }, { 'Cache-Control': 'public, max-age=60' }); }
   const forced = u.searchParams.get('fonte') === 'state';
@@ -225,6 +229,7 @@ async function handle(req, res, { now }) {
   }
   const status = out.status || 200;
   const json = JSON.stringify(out.body);
+  cache.delete(key);                                      // regravar move a chave para o fim: entrada renovada não é a próxima a sair
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value);
   cache.set(key, { at: now, status, json, source, fallback, reason, fr });
   return send(res, status, json, { 'Cache-Control': status >= 500 || fallback || stale(fr) ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...FR.headers(fr), ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });

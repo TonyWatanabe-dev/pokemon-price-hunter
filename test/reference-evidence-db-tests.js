@@ -112,9 +112,12 @@ async function run() {
     assert.match(migSql, /r\.value > 0/);
   });
 
-  await t('3. aplica a 010 pelo migrador real: só a 010 roda', async () => {
+  await t('3. aplica a 010 pelo migrador real: nenhuma anterior roda de novo; roda a 010 e, em ordem, só as posteriores pendentes', async () => {
     const out = migrate();
-    assert.match(out, new RegExp(`aplicada ${MIG}`)); assert.equal(out.match(/aplicada/g).length, 1, out);
+    // migrations posteriores à 010 (ex.: 011, índice) também estão pendentes neste banco e rodam depois dela
+    const pending = fs.readdirSync(migDir).filter((f) => f.endsWith('.sql') && f >= MIG).sort();
+    assert.equal(pending[0], MIG);
+    assert.deepEqual([...out.matchAll(/aplicada (\S+)/g)].map((m) => m[1]), pending, out);
     assert.equal((await q(`SELECT count(*)::int n FROM hunter.schema_migrations WHERE version = $1`, [MIG]))[0].n, 1);
   });
 
