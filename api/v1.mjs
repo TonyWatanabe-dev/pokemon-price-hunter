@@ -42,6 +42,9 @@ export const _cache = cache;                            // testes
 const intIn = (v, d, lo, hi) => { const n = Number.parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 const str = (v, max = 80) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
 const bool = (v) => v === '1' || v === 'true' || v === 'sim';
+// Só parâmetros que a rota lê entram na chave do cache: "?x=1", "?x=2"... não enchem o cache nem forçam consultas repetidas.
+const KEY_PARAMS = new Set(['pagina', 'limite', 'colecao', 'tipo', 'categoria', 'estoque', 'busca', 'ordem', 'todas', 'dias', 'lojas', 'status', 'faixa',
+  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos']);
 const SLUG_RE = /^[a-z0-9][a-z0-9_.-]{0,120}$/i;
 
 class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -148,7 +151,10 @@ async function run(rt, source) {
   throw new HttpError(404, 'rota não encontrada');
 }
 
+const answered = new WeakSet();                         // uma resposta por pedido (o prazo pode responder antes do trabalho terminar)
 function send(res, status, body, headers) {
+  if (answered.has(res)) return;
+  answered.add(res);
   const json = typeof body === 'string' ? body : JSON.stringify(body);
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -157,7 +163,18 @@ function send(res, status, body, headers) {
   res.end(json);
 }
 
-export default async function handler(req, res, { now = FR.nowMs() } = {}) {
+// Prazo total do pedido, abaixo do maxDuration (15 s) da função: banco (5–6 s por consulta) + fallback do state.json (5 s por URL)
+// podem somar mais que isso. Estourou: 503 curto com Retry-After, em vez de a plataforma matar a função sem resposta.
+export const DEADLINE_MS = 12_000;
+
+export default async function handler(req, res, { now = FR.nowMs(), deadlineMs = DEADLINE_MS } = {}) {
+  let timer;
+  const late = new Promise((ok) => { timer = setTimeout(() => { send(res, 503, { error: 'tempo esgotado; tente novamente' }, { 'Cache-Control': 'no-store', 'Retry-After': '5', 'X-Data-Source': 'none' }); ok(); }, deadlineMs); });
+  try { await Promise.race([handle(req, res, { now }), late]); }
+  finally { clearTimeout(timer); }
+}
+
+async function handle(req, res, { now }) {
   const u = new URL(req.url, 'http://local');
   if (req.method && req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'método não permitido' }, { 'Cache-Control': 'no-store', Allow: 'GET, HEAD' });
   const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
@@ -166,7 +183,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   try { rt = route(path, u.searchParams); } catch (e) { return send(res, e instanceof HttpError ? e.status : 400, { error: e instanceof HttpError ? e.message : 'pedido inválido' }, { 'Cache-Control': 'public, max-age=60' }); }
   const forced = u.searchParams.get('fonte') === 'state';
   const preferred = !forced && apiDbEnabled() ? 'db' : 'state';
-  const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => k !== 'fonte').sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
+  const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => KEY_PARAMS.has(k)).sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
   const ttl = TTL[rt.kind] || TTL.default; const cdn = CDN[rt.kind] || CDN.default;
   const hit = cache.get(key);
   const stale = (f) => !!f && !FR.usable(f);   // sem frescor (400/404): cache normal
