@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { readJson, writeJson, appendJsonl, dataPath, configPath } from './db.js';
 import { adapters, detectPlatform } from './adapters/index.js';
+import { isRestock, availableFromOf } from './availability.js';
 import { shipping as vtexShipping } from './adapters/vtex.js';
 import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 
@@ -206,7 +207,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
           shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
-          stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
+          stock, availableFrom: availableFromOf(stock, l.availableFrom), quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
@@ -253,7 +254,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     // Sem base válida (oferta nova ou stale antiga): registra a leitura, sem evento.
     const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
-    if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
+    // Pré-venda que virou estoque é lançamento (fica no histórico), não reposição: não dispara alerta de restock.
+    if (p && isRestock(p.stock, o.stock)) events.push({ offerId: o.id, event: 'restock' });
     // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda.
     if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK' && !!p.shippingKnown === !!o.shippingKnown) events.push({ offerId: o.id, event: 'drop', from: p.total });
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
