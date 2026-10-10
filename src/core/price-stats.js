@@ -49,6 +49,9 @@ export function computeAll({ products, offers, hist, removed, refs, dist }, asOf
 /** Calcula e grava. Retorna contagens do que mudou. */
 export async function runPriceEngine(c, { asOf = new Date() } = {}) {
   const t0 = Date.now();
+  // a view reference_price_current mede a validade da Copag (30 dias, migration 010) contra o MESMO asOf da rodada;
+  // local à transação (fora de transação não vale e a view usa now())
+  await c.query(`SELECT set_config('hunter.as_of', $1, true)`, [new Date(asOf).toISOString()]);
   const inputs = await loadInputs(c);
   const all = computeAll(inputs, asOf);
   const cols = Object.keys(STATS_COLS);

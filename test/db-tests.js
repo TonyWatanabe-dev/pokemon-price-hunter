@@ -11,8 +11,10 @@ execFileSync('node', ['tools/db-migrate.mjs'], { env: process.env, stdio: 'pipe'
 execFileSync('node', ['tools/db-migrate.mjs'], { env: process.env, stdio: 'pipe' }); // 2ª vez não faz nada
 
 const catalog = { collections: [{ id: 'me05', name: 'Escuridão Absoluta', series: 'Megaevolução' }] };
+// Copag verificada ontem (relativo ao relógio): a view do motor só aceita verificação de até 30 dias (migration 010)
+const COPAG_SEEN = new Date(Date.now() - 864e5).toISOString();
 const prod = { id: 'me05-etb', collection: 'me05', collectionName: 'Escuridão Absoluta', type: 'etb', typeLabel: 'Treinador Avançado (ETB)', group: 'ETB', boosters: 9, offerCount: 1,
-  copagConfirmed: true, msrp: 399.99, copag: { source_url: 'https://www.copagloja.com.br/etb/p', confidence: 'OFICIAL', source_timestamp: '2026-10-08T10:00:00Z' } };
+  copagConfirmed: true, msrp: 399.99, copag: { source_url: 'https://www.copagloja.com.br/etb/p', confidence: 'OFICIAL', source_timestamp: COPAG_SEEN } };
 const dup = { ...prod, id: 'ev05-etb', collection: 'ev05', copagConfirmed: false, offerCount: 0 };
 const offer = (price, stock, t) => ({ id: 'o1', productId: 'me05-etb', storeId: 'loja', title: 'ETB', url: 'https://loja/etb', price, total: price, shipping: null, shippingKnown: false, stock, matchConfidence: 0.9, firstSeen: '2026-10-08T10:00:00Z', source_timestamp: t });
 const state = (o) => ({ collections: [], products: [prod, dup], sources: [{ id: 'loja', name: 'Loja', url: 'https://loja.com.br', status: 'ACTIVE' }], reputation: {}, offers: [o] });
