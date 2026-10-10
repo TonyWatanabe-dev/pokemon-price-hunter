@@ -21,9 +21,10 @@ Documento de inventário (issue #87). Nada aqui executa migration em produção;
 | 007 | `007_current_reference_policy.sql` | Colunas de referência atual em `product_stats`; constraints `NOT NULL`/`CHECK` | `UPDATE` zera referência de linhas sem tipo (dado derivado) |
 | 008 | `008_opportunity_reference_comparison.sql` | Colunas e constraints em `opportunity` | Não |
 | 009 | `009_review_resolution.sql` | Coluna `resolution jsonb` em `review_item` | Não |
+| 010 | `010_reference_evidence.sql` | `CREATE OR REPLACE VIEW reference_price_current`: Copag oficial só entra como referência atual com evidência (fonte, domínio Copag, verificação em até 30 dias) (#185) | Não: só a view muda, mesmas colunas e ordem; nenhuma linha é apagada ou alterada; pode ser reaplicada |
 
 ## Dependências de ordem e compatibilidade
-- 004 e 005 dependem de `product` e `offer` (001). 007 depende de `product_stats` (004) e de `reference_kind` (006). 008 depende de `opportunity` (005) e do vocabulário de 006/007. Por isso a ordem numérica é obrigatória e o runner não pula arquivos.
+- 004 e 005 dependem de `product` e `offer` (001). 007 depende de `product_stats` (004) e de `reference_kind` (006). 008 depende de `opportunity` (005) e do vocabulário de 006/007. 010 recria a view `reference_price_current` de 006 sobre as colunas de `reference_price`. Por isso a ordem numérica é obrigatória e o runner não pula arquivos.
 - 006 e 007 adicionam `CHECK`/`NOT NULL` em tabelas existentes: falham (e revertem aquele arquivo) se houver linhas fora da regra. Em 007 o `UPDATE` anterior cuida das linhas sem tipo; linhas com tipo inválido não são corrigidas e abortam a migration.
 - Código novo que lê `reference_kind`, `reference_confidence`, `resolution` etc. exige o schema já migrado. Fluxo seguro: migrar o banco antes de publicar o código que depende dele. As mudanças aditivas (colunas novas) são compatíveis com o código anterior; 004/005/006/007 mudam constraints e podem recusar escritas do código antigo.
 
