@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { categoryOf, KNOWN_TYPES } from '../src/core/taxonomy.js';
+import { detectLanguage, normalize, parseListing } from '../src/match.js';
 import { productsRows, offersRows, historyRows, referenceRows, storesRows, marketplaceOf } from '../src/core/mappers.js';
 
 // todo tipo que o matcher produz tem categoria no banco
@@ -45,4 +46,25 @@ assert.equal(s.status, 'blocked'); assert.equal(s.domain, 'x.com.br'); assert.eq
 
 // regra de negócio: o núcleo de preço nunca lê afiliados
 for (const f of ['src/core/mappers.js', 'src/core/sync.js', 'src/score.js']) assert.ok(!/affiliate/i.test(fs.readFileSync(f, 'utf8')), `${f} não pode depender de afiliados`);
+// idioma: só por evidência explícita no título; ausente = não informado (null), nunca presumido; conflito nunca casa
+const lang = (s) => detectLanguage(normalize(s));
+assert.equal(lang('Booster Box Escarlate e Violeta 36 boosters').code, null);
+assert.equal(lang('Booster Box 36 boosters em Português (PT-BR)').code, 'pt');
+assert.equal(lang('Pokémon Booster Box 36 packs [EN]').code, 'en');
+assert.equal(lang('Pokemon Booster Box (JP) 30 packs').code, 'ja');
+assert.equal(lang('Pokemon Display JPN').evidence, 'jpn');
+assert.equal(lang('Pokémon Box coreano').code, 'ko');
+assert.equal(lang('Booster inglês e japonês').conflict, true);
+assert.equal(lang('Booster em português edição japonesa').conflict, true);
+assert.equal(lang('Booster Box Mega Evolução').code, null); // "en" dentro de palavra não conta
+assert.equal(lang('Deck Entei Pokemon').code, null);
+const emptyCat = { collections: [], products: [] };
+const rej = (s) => parseListing(s, emptyCat).rejects.includes('idioma diferente de PT');
+assert.ok(rej('Pokémon Booster Box 36 boosters Inglês'));
+assert.ok(rej('Pokémon Booster Box 36 boosters JP'));
+assert.ok(rej('Pokémon Booster Box 36 boosters PT-BR japonês'));
+assert.ok(!rej('Pokémon Booster Box 36 boosters PT-BR'));
+assert.ok(!rej('Pokémon Booster Box 36 boosters'));
+assert.equal(parseListing('Pokémon Booster Box 36 boosters', emptyCat).language.code, null);
+assert.equal(parseListing('Pokémon Booster Box 36 boosters (EN)', emptyCat).language.evidence, 'en');
 console.log('OK — Marketplace Core (conversões)');
