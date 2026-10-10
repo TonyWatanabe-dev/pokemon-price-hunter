@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
 const code = cut('const esc=(s)=>', 'const store={get(k,d)') + cut('const STOCK=', 'const SRC=') + cut('function stockChip(o)', 'function photo(p,o,cls');
 const raCode = cut('const RA_ST=', 'function raBadge(o,full)') + cut('function raBadge(o,full)', '\n}\n') + '\n}\n';
