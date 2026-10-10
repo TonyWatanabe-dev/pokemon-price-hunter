@@ -80,6 +80,20 @@ export function rankBestDeals(all, opp = new Map()) {
     .sort((a, b) => (opp.get(b.id)?.score ?? -1) - (opp.get(a.id)?.score ?? -1) || (b.discount ?? -9) - (a.discount ?? -9) || a.total - b.total || String(a.id).localeCompare(String(b.id)));
 }
 
+// Espera antes de tentar de novo uma loja BLOCKED/ERROR (fails = falhas seguidas).
+// 429 (limite de requisições): 30 min, 1 h, 2 h e fica em 2 h; um Retry-After maior que a curva é respeitado (até 6 h).
+// Demais (403/WAF, desafio, DNS, timeout, TLS, 5xx): a curva de sempre, 15 min, 30, 1 h… até 6 h.
+import { safeReason, netCode } from './http.js';
+export function backoffMs(src) {
+  const fails = Math.max(1, src?.fails || 1);
+  if (src?.httpStatus === 429) {
+    const curve = Math.min(120, 30 * 2 ** (fails - 1));
+    const asked = Number.isFinite(src.retryAfterSec) && src.retryAfterSec > 0 ? Math.ceil(src.retryAfterSec / 60) : 0;
+    return Math.min(360, Math.max(curve, asked)) * 60e3;
+  }
+  return Math.min(360, 15 * 2 ** (fails - 1)) * 60e3;
+}
+
 export async function runOnce({ log = console.log, send = transports, now = new Date() } = {}) {
   const T = now.toISOString();
   const startedAt = new Date().toISOString();
@@ -149,10 +163,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (store.enabled === false) { Object.assign(src, { status: 'PAUSED', reason: 'pausada manualmente' }); return; }
     if (BIG_MARKETPLACES.test(new URL(store.url).host) && store.platform !== 'mercadolivre') { Object.assign(src, { status: 'UNAVAILABLE', reason: 'Marketplace grande: bloqueia robôs e não tem API pública de busca' }); return; }
     if (Date.now() > deadline) { skipped.add(store.id); return; }
-    // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (15 min, 30, 1 h… até 6 h).
+    // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (backoffMs: 429 tem curva própria).
     if (['BLOCKED', 'ERROR'].includes(src.status) && src.fails > 0 && src.lastCheck) {
-      const waitMin = Math.min(360, 15 * 2 ** (src.fails - 1));
-      if (Date.now() - Date.parse(src.lastCheck) < waitMin * 60e3) return;
+      if (Date.now() - Date.parse(src.lastCheck) < backoffMs(src)) return;
     }
     src.checks++; src.lastCheck = T;
     try {
@@ -238,8 +251,11 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
       touched.add(store.id);
     } catch (e) {
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
-      log(`[${store.id}] ${src.status}: ${e.message}`);
+      // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.
+      const st = e.httpStatus ?? e.status;
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: safeReason(e), fails: (src.fails || 0) + 1,
+        httpStatus: Number.isInteger(st) && st > 0 ? st : null, netCode: netCode(e), retryAfterSec: Number.isFinite(e.retryAfter) ? e.retryAfter : null });
+      log(`[${store.id}] ${src.status}: ${src.reason}`);
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);

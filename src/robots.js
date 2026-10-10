@@ -1,5 +1,5 @@
 // robots.txt: grupo do nosso agente ou "*", regra mais longa vence (padrão Google).
-import { request, userAgent } from './http.js';
+import { request, userAgent, netCode } from './http.js';
 const cache = new Map();
 const token = userAgent.split('/')[0].toLowerCase();
 // O hexadecimal de um escape "%xx" não diferencia maiúsculas (RFC 3986 §2.1): "%c3%a7" e "%C3%A7" são o mesmo caminho.
@@ -33,9 +33,11 @@ export function parseRobots(txt) {
 async function load(origin) {
   try { return { rules: parseRobots((await request(origin + '/robots.txt', { accept: 'text/plain' })).text) }; }
   catch (e) {
-    if (e.blocked) return { rules: [], blocked: true };
+    // Guarda o motivo real (status HTTP, Retry-After, código de rede) para o diagnóstico; a decisão continua a mesma.
+    const fail = { httpStatus: Number.isInteger(e.httpStatus ?? e.status) && (e.httpStatus ?? e.status) > 0 ? (e.httpStatus ?? e.status) : null, code: netCode(e), retryAfter: e.retryAfter ?? null };
+    if (e.blocked) return { rules: [], blocked: true, fail };
     if (e.status >= 400 && e.status < 500) return { rules: [] }; // sem robots = liberado
-    return { rules: [], unreachable: true };                      // 5xx/timeout = não rastrear
+    return { rules: [], unreachable: true, fail };                // 5xx/timeout/rede = não rastrear
   }
 }
 
@@ -51,4 +53,10 @@ export async function check(url) {
   return !best || best.allow ? { ok: true } : { ok: false, why: 'robots' };
 }
 export async function allowed(url) { return (await check(url)).ok; }
+// Por que o robots.txt desta origem não abriu: { httpStatus, code, retryAfter } (null se abriu).
+export async function failureOf(url) {
+  const u = new URL(url);
+  if (!cache.has(u.origin)) cache.set(u.origin, load(u.origin));
+  return (await cache.get(u.origin)).fail || null;
+}
 export const _resetRobots = () => cache.clear();
