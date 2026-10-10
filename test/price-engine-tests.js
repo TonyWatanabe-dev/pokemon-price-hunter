@@ -135,3 +135,6 @@ for (const f of ['../src/core/price-engine.js', '../src/core/price-stats.js']) {
 // série vazia quando não há evento
 assert.deepEqual(dailySeries([], { asOf }), []);
 console.log('OK — Price Engine (regras)');
+
+// issue #84: frete desconhecido não disputa o menor total na página do produto (registrado aqui para não mexer no package.json)
+await import('./shipping-compare-tests.js');
