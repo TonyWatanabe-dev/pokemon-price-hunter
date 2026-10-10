@@ -13,6 +13,7 @@
 // FASE 4 — formato do site (mesmas regras de lista do tools/page.template.html, aplicadas no servidor):
 //   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&ordem&pagina&limite → página de /produtos
 //   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
+//   GET /api/v1/site/lojas                          → diretório de lojas: domínio, ofertas observadas, atualização (sem nota de reputação)
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 // Fonte: banco (API_DATABASE_URL, só leitura) com fallback seguro para o state.json. ?fonte=state força o fallback.
@@ -25,6 +26,7 @@ import { legacyState } from './_lib/legacy.mjs';
 import { slimHome } from './_lib/home.mjs';
 import { catalogState } from './_lib/catalog.mjs';
 import * as SITE from './_lib/site.mjs';
+import * as STORES from './_lib/stores.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
@@ -40,6 +42,9 @@ export const _cache = cache;                            // testes
 const intIn = (v, d, lo, hi) => { const n = Number.parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 const str = (v, max = 80) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
 const bool = (v) => v === '1' || v === 'true' || v === 'sim';
+// Só parâmetros que a rota lê entram na chave do cache: "?x=1", "?x=2"... não enchem o cache nem forçam consultas repetidas.
+const KEY_PARAMS = new Set(['pagina', 'limite', 'colecao', 'tipo', 'categoria', 'estoque', 'busca', 'ordem', 'todas', 'dias', 'lojas', 'status', 'faixa',
+  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos']);
 const SLUG_RE = /^[a-z0-9][a-z0-9_.-]{0,120}$/i;
 
 class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -87,7 +92,7 @@ function route(segs, qs) {
       const modo = str(qs.get('modo'), 10) || 'guardar'; if (!['guardar', 'abrir'].includes(modo)) throw new HttpError(400, 'modo inválido');
       const ordem = str(qs.get('ordem'), 10) || ''; if (ordem && !['score', 'disc', 'price', 'ppb', 'new'].includes(ordem)) throw new HttpError(400, 'ordem inválida');
       const grupo = str(qs.get('grupo'), 20) || ''; if (grupo && !SITE.GROUP_ORDER.includes(grupo)) throw new HttpError(400, 'grupo inválido');
-      const max = str(qs.get('max'), 12) || ''; if (max && !(Number(max) >= 0)) throw new HttpError(400, 'preço máximo inválido');
+      const max = str(qs.get('max'), 12) || ''; if (max && !(Number.isFinite(Number(max)) && Number(max) >= 0)) throw new HttpError(400, 'preço máximo inválido');
       const sp = intIn(qs.get('pagina'), 1, 1, 1000); const sl = intIn(qs.get('limite'), 48, 1, 60);
       return { name: 'site-produtos', kind: 'site', page: sp, limit: sl, F: { mode: modo, sort: ordem, group: grupo, col: str(qs.get('colecao'), 40) || '', store: str(qs.get('loja'), 60) || '',
         type: str(qs.get('tipo'), 40) || '', max, below: bool(qs.get('abaixo')), stock: qs.get('estoque') !== '0', semref: bool(qs.get('semref')) } };
@@ -100,6 +105,7 @@ function route(segs, qs) {
       if (!ids.length && !col && !type && busca == null) throw new HttpError(400, 'informe produtos, colecao, tipo ou busca');
       return { name: 'site-ofertas', kind: 'site', args: { ids: ids.length || (!col && !type) ? ids : null, col, type }, busca };
     }
+    if (id === 'lojas' && segs.length === 2) return { name: 'site-lojas', kind: 'site' };
     if (id === 'produto' && sub && segs.length === 3) { if (!SLUG_RE.test(sub)) throw new HttpError(400, 'identificador de produto inválido'); return { name: 'site-produto', kind: 'site', id: sub }; }
   }
   throw new HttpError(404, 'rota não encontrada');
@@ -117,6 +123,7 @@ async function run(rt, source) {
     case 'site-produtos': return { body: { v: 1, source, ...SITE.siteProducts(await catalogState(source), rt.F, { page: rt.page, limit: rt.limit }) } };
     case 'site-ofertas': { const st = await catalogState(source);
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
+    case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {
       const st = await catalogState(source);
       const key = st.products?.some((p) => p.id === rt.id) ? rt.id : useDb ? (await DB.getProduct(rt.id))?.id : ST.stateGetProduct(st, rt.id)?.id;   // aceita slug
@@ -144,7 +151,10 @@ async function run(rt, source) {
   throw new HttpError(404, 'rota não encontrada');
 }
 
+const answered = new WeakSet();                         // uma resposta por pedido (o prazo pode responder antes do trabalho terminar)
 function send(res, status, body, headers) {
+  if (answered.has(res)) return;
+  answered.add(res);
   const json = typeof body === 'string' ? body : JSON.stringify(body);
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -153,16 +163,27 @@ function send(res, status, body, headers) {
   res.end(json);
 }
 
-export default async function handler(req, res, { now = FR.nowMs() } = {}) {
+// Prazo total do pedido, abaixo do maxDuration (15 s) da função: banco (5–6 s por consulta) + fallback do state.json (5 s por URL)
+// podem somar mais que isso. Estourou: 503 curto com Retry-After, em vez de a plataforma matar a função sem resposta.
+export const DEADLINE_MS = 12_000;
+
+export default async function handler(req, res, { now = FR.nowMs(), deadlineMs = DEADLINE_MS } = {}) {
+  let timer;
+  const late = new Promise((ok) => { timer = setTimeout(() => { send(res, 503, { error: 'tempo esgotado; tente novamente' }, { 'Cache-Control': 'no-store', 'Retry-After': '5', 'X-Data-Source': 'none' }); ok(); }, deadlineMs); });
+  try { await Promise.race([handle(req, res, { now }), late]); }
+  finally { clearTimeout(timer); }
+}
+
+async function handle(req, res, { now }) {
   const u = new URL(req.url, 'http://local');
   if (req.method && req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'método não permitido' }, { 'Cache-Control': 'no-store', Allow: 'GET, HEAD' });
   const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
   u.searchParams.delete('path');
   let rt;
-  try { rt = route(path, u.searchParams); } catch (e) { return send(res, e.status || 400, { error: e.message }, { 'Cache-Control': 'public, max-age=60' }); }
+  try { rt = route(path, u.searchParams); } catch (e) { return send(res, e instanceof HttpError ? e.status : 400, { error: e instanceof HttpError ? e.message : 'pedido inválido' }, { 'Cache-Control': 'public, max-age=60' }); }
   const forced = u.searchParams.get('fonte') === 'state';
   const preferred = !forced && apiDbEnabled() ? 'db' : 'state';
-  const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => k !== 'fonte').sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
+  const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => KEY_PARAMS.has(k)).sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
   const ttl = TTL[rt.kind] || TTL.default; const cdn = CDN[rt.kind] || CDN.default;
   const hit = cache.get(key);
   const stale = (f) => !!f && !FR.usable(f);   // sem frescor (400/404): cache normal
@@ -182,7 +203,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   }
   try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); } }
   catch (e) {
-    if (e.status) { out = { status: e.status, body: { error: e.message } }; }
+    if (e instanceof HttpError) { out = { status: e.status, body: { error: e.message } }; }   // só mensagens nossas; erro de biblioteca/banco nunca vai ao usuário
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json
       fallback = 'db-indisponivel'; source = 'state';
       // diagnóstico sem segredo: só o código do erro (28P01 senha, XX000 tenant, ENOTFOUND host...) e a mensagem sem a URL
@@ -190,7 +211,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
       const url = process.env.API_DATABASE_URL || ''; let msg = String(e.message || '');
       try { const u = new URL(url); for (const x of [u.password, decodeURIComponent(u.password), u.username, u.hostname]) if (x && x.length > 3) msg = msg.split(x).join('***'); } catch {}
       console.error(`[api/v1] banco indisponível (${reason}): ${msg.slice(0, 200)}`);
-      try { out = await run(rt, 'state'); } catch (e2) { out = e2.status ? { status: e2.status, body: { error: e2.message } } : null; }
+      try { out = await run(rt, 'state'); } catch (e2) { out = e2 instanceof HttpError ? { status: e2.status, body: { error: e2.message } } : null; }
     }
     if (!out) return send(res, 503, { error: 'dados indisponíveis no momento' }, { 'Cache-Control': 'no-store', 'X-Data-Source': 'none' });
   }
@@ -204,6 +225,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   }
   const status = out.status || 200;
   const json = JSON.stringify(out.body);
+  cache.delete(key);                                      // regravar move a chave para o fim: entrada renovada não é a próxima a sair
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value);
   cache.set(key, { at: now, status, json, source, fallback, reason, fr });
   return send(res, status, json, { 'Cache-Control': status >= 500 || fallback || stale(fr) ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...FR.headers(fr), ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });
