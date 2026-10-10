@@ -33,6 +33,15 @@ t('frete grátis conhecido é 0,00; frete desconhecido é vazio', () => {
   const unknown = opportunitiesToCsv([{ productId: 'p', price: 10, shipping: 0, shippingKnown: false }], []).split('\r\n')[1].split(',');
   assert.equal(unknown[3], '');
 });
+t('frete desconhecido: total vazio (o total é só o preço e não se compara com total com frete)', () => {
+  // na main, com frete desconhecido o o.total é só o preço: exportá-lo como "total" inventaria frete zero
+  const unknown = opportunitiesToCsv([{ productId: 'p', price: 300, total: 300, shipping: null, shippingKnown: false }], []).split('\r\n')[1].split(',');
+  assert.equal(unknown[2], '300.00'); assert.equal(unknown[3], ''); assert.equal(unknown[4], '');
+  const absent = opportunitiesToCsv([{ productId: 'p', price: 300, total: 300 }], []).split('\r\n')[1].split(',');
+  assert.equal(absent[3], ''); assert.equal(absent[4], '');
+  const known = opportunitiesToCsv([{ productId: 'p', price: 295, total: 305, shipping: 10, shippingKnown: true }], []).split('\r\n')[1].split(',');
+  assert.equal(known[3], '10.00'); assert.equal(known[4], '305.00');
+});
 t('datas em ISO, referência Copag e status', () => {
   const csv = opportunitiesToCsv([{ productId: 'p', storeName: 'L', price: 300, total: 300, source_timestamp: '2026-10-07T13:45:26.327Z', firstSeen: '2026-10-07T07:01:45Z',
     classification: { label: 'OPORTUNIDADE' }, stock: 'IN_STOCK', url: 'https://l.com.br/p' }], [{ id: 'p', name: 'ETB', msrp: 400 }]);
