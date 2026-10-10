@@ -135,3 +135,6 @@ for (const f of ['../src/core/price-engine.js', '../src/core/price-stats.js']) {
 // série vazia quando não há evento
 assert.deepEqual(dailySeries([], { asOf }), []);
 console.log('OK — Price Engine (regras)');
+
+// Mudança da oferta (queda × novo anúncio × restock, #53): usa a régua de plausibilidade deste motor
+await import('./offer-change-tests.js');
