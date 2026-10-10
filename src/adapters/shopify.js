@@ -1,4 +1,4 @@
-// Shopify: /products.json paginado (no máximo 3 páginas) com fallback para a busca preditiva.
+// Shopify: /products.json paginado (no máximo 8 páginas) com fallback para a busca preditiva.
 import { getJson, netCode } from '../http.js';
 import { guard, brl, searchTerms } from './common.js';
 import { normalize, detectCollection } from '../match.js';
@@ -40,23 +40,37 @@ const add = (out, base, p) => {
   for (const v of vs) { const l = toListing(base, p, v, vs.length > 1); if (l) out.set(l.url, l); }
 };
 
-// Volume: o catálogo público inteiro em 1 a 3 páginas de 250 (antes, uma busca preditiva por coleção do catálogo: 24
+// Volume: o catálogo público inteiro em páginas de 250 (antes da #188, uma busca preditiva por coleção do catálogo: 24
 // por loja a cada rodada, o que levava a borda da Shopify a devolver 429 para várias lojas de uma vez).
-export const MAX_PAGES = 3; const PAGE = 250;
+// Teto de segurança de 8 páginas (2000 produtos), não 3: loja que vende outros jogos (mox.land, Magic etc.) tinha os
+// produtos Pokémon além das 3 primeiras páginas, e a coleta lia 148 anúncios e casava 0 (coleta de 10/10 19:15Z, depois
+// da #191). A paginação para na 1ª página vazia ou curta (< 250), então loja comum continua com 1 ou 2 requisições.
+// Catálogo maior que o teto NÃO volta às 24 buscas por coleção: a leitura fica parcial e isso é registrado no resultado
+// (PARTIAL_REASON em `partial`), sem inventar ofertas para o que não foi lido.
+export const MAX_PAGES = 8; export const PAGE = 250;
+export const PARTIAL_REASON = `catálogo maior que ${MAX_PAGES} páginas de ${PAGE} produtos; leitura parcial`;
 export async function search(store, catalog) {
-  const base = store.url.replace(/\/$/, ''); const out = new Map();
-  let catalogWorks = true;
+  const base = store.url.replace(/\/$/, ''); const out = new Map(); const seen = new Set();
+  let catalogWorks = true; let capped = false;
   for (let page = 1; page <= MAX_PAGES; page++) {
     const url = `${base}/products.json?limit=${PAGE}&page=${page}`; await guard(url);
     let products;
     try { products = (await getJson(url))?.products; }
-    // bloqueio, rede/timeout ou falha no meio da paginação: para aqui (nunca vira nova tentativa por outra rota)
+    // bloqueio (429 com Retry-After, 403), rede/timeout ou 5xx no meio da paginação: para aqui e a loja registra o
+    // motivo real (nunca vira nova tentativa por outra rota, nem oferta inventada com o que foi lido pela metade)
     catch (e) { if (e.blocked || page > 1 || netCode(e)) throw e; catalogWorks = false; break; }
     if (!Array.isArray(products) || (page === 1 && !products.length)) { if (page === 1) catalogWorks = false; break; }
-    for (const p of products) if (pokemonish(p, catalog)) add(out, base, p);
-    if (products.length < PAGE) break; // última página: não pede a vazia
+    if (!products.length) break; // página vazia: acabou
+    for (const p of products) {
+      // o mesmo produto repetido entre páginas (catálogo mudando durante a leitura) entra uma vez só
+      const key = p?.id != null ? `id:${p.id}` : p?.handle ? `h:${p.handle}` : null;
+      if (key) { if (seen.has(key)) continue; seen.add(key); }
+      if (pokemonish(p, catalog)) add(out, base, p);
+    }
+    if (products.length < PAGE) break; // página curta é a última: não pede a vazia
+    if (page === MAX_PAGES) capped = true; // teto atingido com a página cheia: pode haver mais produtos
   }
-  if (catalogWorks) return [...out.values()];
+  if (catalogWorks) { const r = [...out.values()]; if (capped) r.partial = PARTIAL_REASON; return r; }
   // Só quando o catálogo público não existe (404, HTML, vazio): busca preditiva, uma por coleção, parando no 1º erro.
   for (const term of searchTerms(catalog)) {
     const url = `${base}/search/suggest.json?q=${encodeURIComponent(term)}&resources[type]=product&resources[limit]=10`;

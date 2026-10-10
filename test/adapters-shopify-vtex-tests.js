@@ -82,7 +82,7 @@ await t('Shopify: produto indisponível', async () => {
 });
 
 await t('Shopify: JSON inválido ou HTML inesperado', async () => {
-  // /products.json é a rota principal (1 a 3 páginas); a busca preditiva nem é chamada quando ele responde
+  // /products.json é a rota principal (1 a MAX_PAGES = 8 páginas); a busca preditiva nem é chamada quando ele responde
   const fallback = { products: [{ title: 'Pokémon Box Caos Ascendente Copag', handle: 'box-caos', variants: [shVariant()] }, { title: 'Camiseta', handle: 'camiseta', variants: [shVariant({ price: '50' })] }] };
   const s1 = store('sh-html.test', (u) => (u.pathname === '/search/suggest.json' ? html('<html><body>Loja</body></html>') : u.searchParams.get('page') === '1' ? json(fallback) : json({ products: [] })));
   const L = await shopify.search(s1, catalog);
