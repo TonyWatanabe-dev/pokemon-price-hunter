@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { readJson, writeJson, appendJsonl, dataPath, configPath } from './db.js';
 import { adapters, detectPlatform } from './adapters/index.js';
+import { isRestock, availableFromOf } from './availability.js';
 import { shipping as vtexShipping } from './adapters/vtex.js';
 import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 import { validateListing } from './adapters/contract.js';
@@ -21,6 +22,7 @@ import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
+import { redact } from './redact.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -244,6 +246,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         log(`[${store.id}] ${rejected.length} anúncio(s) fora do contrato: ${Object.entries(why).map(([k, c]) => `${k} ×${c}`).join('; ')}`);
       } else delete src.rejected;
       let matched = 0;
+      let shipHalt = null; // depois de um 429 na simulação de frete, não insiste na mesma loja nesta rodada
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
@@ -259,11 +262,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null; let shipSource = null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
-          try { ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
+          try { if (shipHalt) throw new Error(shipHalt); ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
           catch (e) {
+            if (!shipHalt && e?.blocked && e.status === 429) shipHalt = `simulação suspensa nesta rodada após ${String(e.message).slice(0, 100)}`;
             // Simulação falhou: guarda o motivo e reaproveita a última cotação desta oferta só dentro da validade
             // (shippingQuoteReuse). A data continua a da cotação original; vencida ou ausente, o frete fica desconhecido.
-            shipError = String(e?.message || e).slice(0, 160);
+            shipError = redact(e?.message || e, { max: 160 });
             const reuse = shippingQuoteReuse(lastValidOf(prev[id]), now);
             if (reuse) { ship = reuse.shipping; shipAt = reuse.shippingAt; shipSource = 'anterior'; }
           }
@@ -284,7 +288,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
           shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError,
           ...(shipSource && ship != null ? { shippingSource: shipSource } : {}), total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
-          stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
+          stock, availableFrom: availableFromOf(stock, l.availableFrom), quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
@@ -310,7 +314,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.
       const st = e.httpStatus ?? e.status;
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: safeReason(e), fails: (src.fails || 0) + 1,
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: redact(safeReason(e), { max: 300 }), fails: (src.fails || 0) + 1,
         httpStatus: Number.isInteger(st) && st > 0 ? st : null, netCode: netCode(e), retryAfterSec: Number.isFinite(e.retryAfter) ? e.retryAfter : null });
       log(`[${store.id}] ${src.status}: ${src.reason}`);
     }
@@ -351,7 +355,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     // Sem base válida (oferta nova ou stale antiga): registra a leitura, sem evento.
     const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
-    if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
+    // Pré-venda que virou estoque é lançamento (fica no histórico), não reposição: não dispara alerta de restock.
+    if (p && isRestock(p.stock, o.stock)) events.push({ offerId: o.id, event: 'restock' });
     // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda (comparableDrop).
     const drop = comparableDrop(p, o);
     if (drop) events.push({ offerId: o.id, event: 'drop', from: drop.from, fromShippingKnown: drop.shippingKnown });
@@ -496,7 +501,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
-  } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
+  } catch (e) { log(`[estado operacional] ${redact(e.message, { max: 120 })}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;
 }
@@ -506,7 +511,7 @@ if (isMain) {
   const loop = process.argv.includes('--loop');
   const minutes = Number(process.env.HUNTER_INTERVAL_MIN || 10);
   do {
-    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', e); if (!loop) process.exitCode = 1; }
+    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', redact(e?.stack || e, { max: 1500 })); if (!loop) process.exitCode = 1; }
     if (loop) await new Promise((r) => setTimeout(r, minutes * 60e3));
   } while (loop);
 }
