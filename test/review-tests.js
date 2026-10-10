@@ -213,3 +213,6 @@ if (process.env.TEST_DATABASE_URL) {
   await close();
 }
 console.log(`✓ Revisão humana: ${n} grupos de testes passaram${DB ? ' (puro + banco)' : ' (puro)'}`);
+
+// Regressão do matching de selados (issue #42), sem nova linha no package.json.
+await import('./sealed-matching-tests.js');
