@@ -66,3 +66,6 @@ t('lista vazia: missing sem data', () => {
 });
 
 console.log(`copag-status-tests: ${n} ok`);
+
+// Política única do preço Copag no site (robô e home da API): registrada aqui para não mexer no package.json.
+await import('./copag-policy-tests.js');

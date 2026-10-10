@@ -19,7 +19,7 @@ fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: 
   { id: 'waf', name: 'Loja com firewall nas APIs', url: 'https://waf.test', platform: 'auto', kind: 'specialist', evidence: {} },
   { id: 'blk', name: 'Bloqueada', url: 'https://blk.test', platform: 'auto', kind: 'specialist', evidence: {} },
   { id: 'nope', name: 'Sem domínio', url: null, platform: 'auto', kind: 'specialist', evidence: {} },
-  { id: 'cop', name: 'Loja Copag (oficial)', url: 'https://cop.test', platform: 'vtex', kind: 'official', copagSource: true, evidence: { officialStore: true, cnpj: 'x' } },
+  { id: 'cop', name: 'Loja Copag (oficial)', url: 'https://www.copagloja.com.br', platform: 'vtex', kind: 'official', copagSource: true, evidence: { officialStore: true, cnpj: 'x' } },
 ] }));
 fs.copyFileSync(path.join(root, 'config/watchlist.json'), path.join(tmp, 'config/watchlist.json'));
 fs.writeFileSync(path.join(tmp, 'config/lojas.txt'), '# comentário\nnova.test\nhttps://www.shop.test/qualquer\nhttps://www.amazon.com.br/\n');
@@ -61,8 +61,8 @@ const mainFetch = async (url, opt) => {
     if (u.pathname.startsWith('/api/catalog_system')) return json(/pokemon$|caos/i.test(u.searchParams.get('ft')) ? [{ productName: 'Caixa Pokémon Caos Ascendente 36 Boosters Copag', link: 'https://vtex.test/caos-36/p', items: [{ itemId: '77', ean: '196214156098', name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: 379.9, ListPrice: 449.99, AvailableQuantity: vtexQty } }] }] }] : []);
     if (u.pathname.includes('simulation')) return json({ logisticsInfo: [{ slas: [{ price: 1990 }, { price: 2590 }] }] });
   }
-  if (u.host === 'cop.test') {
-    if (u.pathname.startsWith('/api/catalog_system')) return json(/escuridao|Escuridão/i.test(u.searchParams.get('ft')) ? [{ productName: 'Box Display Pokémon ME05 Escuridão Absoluta', link: 'https://cop.test/box-display-me05/p', items: [{ itemId: '9', ean: null, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Copag', commertialOffer: { Price: 449.99, ListPrice: 449.99, AvailableQuantity: 3 } }] }] }] : []);
+  if (u.host === 'www.copagloja.com.br') {
+    if (u.pathname.startsWith('/api/catalog_system')) return json(/escuridao|Escuridão/i.test(u.searchParams.get('ft')) ? [{ productName: 'Box Display Pokémon ME05 Escuridão Absoluta', link: 'https://www.copagloja.com.br/box-display-me05/p', items: [{ itemId: '9', ean: null, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Copag', commertialOffer: { Price: 449.99, ListPrice: 449.99, AvailableQuantity: 3 } }] }] }] : []);
   }
   if (u.host === 'ld.test') {
     if (u.pathname === '/products.json' || u.pathname.startsWith('/api/')) return html('', 404);
@@ -117,7 +117,7 @@ const vtexOff = by((o) => o.storeId === 'vtex'); assert.equal(vtexOff.stock, 'OU
 const ldBox = by((o) => o.productId === 'me05-box36'); assert.equal(ldBox.price, 369.9); assert.equal(ldBox.priceKind, 'pix', 'Pix tem prioridade');
 const me05 = s.products.find((p) => p.id === 'me05-box36');
 assert.equal(me05.copagConfirmed, true, 'MSRP capturado na loja oficial substitui o de marketplace');
-assert.equal(me05.msrp, 449.99); assert.match(me05.copag.source_url, /cop\.test/);
+assert.equal(me05.msrp, 449.99); assert.match(me05.copag.source_url, /copagloja\.com\.br/);
 assert.equal(ldBox.discount, +(1 - 369.9 / 449.99).toFixed(4), 'desconto calculado com o MSRP oficial');
 assert.equal(by((o) => /pre-venda|Pré-venda/i.test(o.title)).stock, 'PRE_ORDER');
 assert.equal(s.sources.find((x) => x.id === 'blk').status, 'BLOCKED');
@@ -129,12 +129,13 @@ assert.ok(s.sources.find((x) => x.id === 'botaotest'), 'loja criada pelo botão 
 assert.ok(s.sources.find((x) => x.id === 'novatest'), 'loja do lojas.txt monitorada');
 const duplo = by((o) => o.productId === 'c30-blister2');
 const pd = s.products.find((p) => p.id === 'c30-blister2');
-assert.ok(duplo && duplo.discount != null && pd.copagConfirmed && pd.msrp === 69.99, 'tabela 30 anos confirmada à mão vale como oficial');
+// Lote 5: tabela divulgada no Instagram (fora do domínio da Copag) não confirma mais; o valor fica só como referência pendente
+assert.ok(duplo && duplo.discount == null && !pd.copagConfirmed && pd.msrp == null && pd.copagReference === 69.99 && pd.copagReferenceStatus === 'pendente', 'tabela 30 anos (Instagram) fica só como referência');
 { const { copagStatus } = await import('../src/score.js');
   const st = copagStatus({ copag: { msrp: 115.99, source_url: 'https://blog.test/x', confidence: 'CATALOGO_COPAG' } });
   assert.ok(!st.confirmed && st.reference === 115.99, 'catálogo divulgado por terceiros continua só referência'); }
 const gren = by((o) => o.productId === 'c30-colecao_ex-greninja');
-assert.ok(gren && s.products.find((p) => p.id === 'c30-colecao_ex-greninja').msrp === 160.99, 'variante herda o preço do Box ex');
+assert.ok(gren && s.products.find((p) => p.id === 'c30-colecao_ex-greninja').copagReference === 160.99, 'variante herda o preço do Box ex (como referência, Lote 5)');
 assert.ok(s.types.some((t) => t.id === 'blister_2') && s.collections.some((c) => c.id === 'c30'), 'filtros gerados a partir dos dados');
 const r1 = sentMsgs.length; assert.ok(sentMsgs.some((m) => m.title.includes('PREÇO-ALVO')), 'alvo R$350 atingido');
 assert.ok(sentMsgs.every((m) => !/99,00/.test(m.text)), 'anomalia não alerta');

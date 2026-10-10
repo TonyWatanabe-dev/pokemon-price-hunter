@@ -11,7 +11,8 @@ import { validateListing } from './adapters/contract.js';
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
-import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
+import { pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
+import { decideCopag, eanDiverges, fromRobotEntry, productCopagFields } from './copag-policy.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun } from './opstate.js';
@@ -73,13 +74,21 @@ export function loadCatalog() {
   return cat;
 }
 
-// Preço Copag de um produto: cadastro OFICIAL > loja oficial Copag > catálogo Copag divulgado por terceiros (só referência).
-function resolveCopag(p, catalog, copagSeen) {
+// Preço Copag de um produto pela política única (src/copag-policy.js): candidatos na ordem cadastro OFICIAL > captura da
+// loja oficial Copag > demais cadastros (catálogo divulgado por terceiros). Vence o primeiro confirmado (fonte oficial da
+// Copag, verificada há no máximo 30 dias em relação à rodada); sem confirmado, o valor fica só como referência.
+export function resolveCopag(p, catalog, copagSeen, now = new Date()) {
   const keys = msrpKeys(p);
-  const pick = (map, ok) => { for (const k of keys) if (map[k] && ok(map[k])) return { ...map[k], key: k }; return null; };
-  const valid = (c) => copagStatus({ copag: c }).confirmed;
-  return pick(catalog.copag, (c) => c.confidence === 'OFICIAL' && valid(c)) || pick(copagSeen, valid) || pick(catalog.copag, valid) || pick(catalog.copag, () => true)
-    || { msrp: null, source_url: null, confidence: null };
+  const cand = [];
+  const add = (map, origin, ok) => { for (const k of keys) if (map?.[k] && ok(map[k])) cand.push({ ...map[k], key: k, origin }); };
+  add(catalog.copag, 'catalog', (c) => c.confidence === 'OFICIAL');
+  add(copagSeen, 'captura', () => true);
+  add(catalog.copag, 'catalog', (c) => c.confidence !== 'OFICIAL');
+  // EAN cadastrado do produto: fonte com EAN de outro produto não é evidência (política única, regra 4)
+  const productEan = p.ean ?? (catalog.products || []).find((x) => x.id === p.id)?.ean ?? null;
+  const d = decideCopag(cand.map((c) => fromRobotEntry(c, c.origin)), { now, productEan });
+  const copag = cand[d.index] || cand.find((c) => !eanDiverges(c.ean, productEan)) || { msrp: null, source_url: null, confidence: null };
+  return { copag, decision: d };
 }
 
 // Oferta que pode ter nota oficial e entrar no bestDeals: em estoque, atual, plausível, confirmada e com preço.
@@ -278,8 +287,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         if (store.copagSource && l.price?.base > 0) {
           const msrp = l.listPrice > l.price.base ? l.listPrice : l.price.base;
           const old = copagSeen[m.productId];
-          if (!old || old.msrp !== msrp) copagSeen[m.productId] = { msrp, source_url: l.url, source_timestamp: T, confidence: 'OFICIAL', previous_msrp: old?.msrp ?? null, msrp_updated_at: T };
-          else old.source_timestamp = T;
+          // ean: o EAN que a loja mostrou (evidência de que a captura é do mesmo produto; ver copag-policy, regra 4)
+          if (!old || old.msrp !== msrp) copagSeen[m.productId] = { msrp, source_url: l.url, source_timestamp: T, confidence: 'OFICIAL', previous_msrp: old?.msrp ?? null, msrp_updated_at: T, ...(l.ean ? { ean: l.ean } : {}) };
+          else { old.source_timestamp = T; if (l.ean) old.ean = l.ean; }
         }
         const total = pp.value != null ? round2(pp.value + (ship || 0)) : null;
         offers[id] = {
@@ -366,11 +376,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
 
-  // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
+  // Agregados por produto. Preço Copag pela política única (resolveCopag): fonte oficial da Copag, verificada há até 30 dias.
   const products = {}; const newLowest = new Map();
   for (const base of Object.values(registry)) {
-    const p = { ...base, copag: resolveCopag(base, catalog, copagSeen) };
-    const cs = copagStatus(p);
+    const rc = resolveCopag(base, catalog, copagSeen, now);
+    const p = { ...base, copag: rc.copag };
+    const cs = rc.decision;
     const list = Object.values(offers).filter((o) => o.productId === p.id);
     const live = list.filter((o) => o.stock === 'IN_STOCK' && !o.stale && o.total > 0);
     // Mediana (não média): um anúncio errado de R$ 400 num blister não pode puxar a referência e marcar os preços certos como suspeitos.
@@ -382,7 +393,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     // Novo menor preço: só a oferta mais barata (confirmada) do produto, e só se for abaixo do recorde anterior.
     const champ = clean.filter((x) => x.confirmed !== false).reduce((a, o) => (!a || o.total < a.total ? o : a), null);
     if (champ && (!lowest[p.id] || champ.total < lowest[p.id].total)) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(champ.id, lowest[p.id].total); lowest[p.id] = { total: champ.total, at: T, storeId: champ.storeId, offerId: champ.id }; }
-    products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
+    products[p.id] = { ...p, ...productCopagFields(cs), marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
   }
 
   const storeScores = Object.fromEntries(stores.map((s) => [s.id, storeScore(s, sources[s.id])]));
@@ -396,7 +407,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
 
   // Pistas (Pelando e canais do Telegram): separadas das ofertas, sem estoque confirmado, fora do ranking.
-  const copagOf = (p) => { const cs = copagStatus({ ...p, copag: resolveCopag(p, catalog, copagSeen) }); return cs.confirmed ? { msrp: cs.msrp } : null; };
+  const copagOf = (p) => { const cs = resolveCopag(p, catalog, copagSeen, now).decision; return cs.confirmed ? { msrp: cs.msrp } : null; };
   const tipsCfg = readJson(configPath('pistas.json'), null);
   const tipStore = readJson(dataPath('tips.json'), {});
   let tipStatus = [];
