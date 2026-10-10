@@ -124,3 +124,5 @@ await t('canal parcialmente ok: entrega e não reenvia a ninguém na rodada segu
 });
 
 console.log(`✓ Confiabilidade dos alertas (#45): ${n} grupos passaram`);
+// #82: acessibilidade do fluxo de compra (registrado aqui para não mexer no script test do package.json)
+await import('./a11y-purchase-tests.js');

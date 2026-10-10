@@ -1322,7 +1322,7 @@ function raBadge(o,full){
   const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(o.storeName.replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
-  const tip=r.status==="NAO_ENCONTRADA"?`Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
+  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
   return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
@@ -1441,7 +1441,7 @@ function dealCard(e,opt={}){
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${sc!=null?scoreMeter(sc):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1586,7 +1586,7 @@ function podCard(e,r){
       ${d!=null&&d>=.0005?`<div class="pod-off"><b>−${pct(d)}</b><span>abaixo da ${ref.net?"ref. internet":"Copag"}<br>economize ${money(ref.v-o.total)}</span></div>`:""}
       <div class="pod-price"><strong data-price="${esc(o.id)}">${money(o.total)}</strong>${pixTag(o)}${ref?`<s>${ref.net?"Ref.":"Copag"} ${money(ref.v)}</s>`:""}</div>
       <div class="pod-foot"><span class="ring" style="--v:${sc}" title="Deal Score ${sc}/100: ${band(sc)[1]}"><span>${sc}</span></span><span class="pod-store">${esc(storeTxt(o))}<br>${raBadge(o)}</span>
-        <a class="pod-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
+        <a class="pod-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div></div>
   </article>`;
 }
 function podiumHTML(pool){
@@ -1956,7 +1956,7 @@ function storeOffer(o,p){
     <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
-      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>
+      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
     <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${o.dealScore!=null&&live(o)?`<button class="chip scorebtn sc-chip" type="button" data-score="${esc(o.id)}" aria-label="Deal Score ${o.dealScore}">${dial(o.dealScore,"xs")}${esc(band(o.dealScore)[2])}</button>`:""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
   </article>`;
 }
@@ -1989,7 +1989,7 @@ function renderProduct(pid){
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
-      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)} ${ic("arrow-square-out")}</a>
+      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
     ${alertBox(pid)}
   </aside>
@@ -2311,10 +2311,10 @@ const nLiveOf=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).length;
 let acSel=-1;
 function acRender(input){
   const box=document.getElementById(input.id+"-ac");if(!box)return;const q=input.value.trim();
-  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;return}
+  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   if(q.length<2){box.hidden=true;input.setAttribute("aria-expanded","false");return}
   const cols=searchCollections(q).slice(0,3);const prods=searchProducts(q).slice(0,6);
-  if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;return}
+  if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   acSel=-1;
   box.innerHTML=`${cols.length?`<p class="ac-h">Coleções</p>${cols.map((c)=>`<button type="button" class="ac-i" role="option" data-q="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${esc(c.series||"")} · ${c.products} ${c.products===1?"produto":"produtos"}</small></span></button>`).join("")}`:""}
   ${prods.length?`<p class="ac-h">Produtos</p>${prods.map(({p})=>{const o=bestLive(p.id);return`<a class="ac-i" role="option" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}"><span><b>${esc(label(p))}</b><small>${esc(p.collectionName)}</small></span><span class="ac-pr">${o?money(o.total)+pixTxt(o):"<small>sem estoque</small>"}</span></a>`}).join("")}`:""}
