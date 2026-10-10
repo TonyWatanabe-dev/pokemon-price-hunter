@@ -15,13 +15,17 @@ export async function search(store, catalog) {
     // Só o vendedor padrão: é o preço que a página do link mostra. Vendedor secundário do marketplace
     // tem outro preço na mesma página, e publicar o dele levaria o visitante a um valor diferente.
     for (const p of Array.isArray(arr) ? arr : []) for (const it of p.items || []) for (const s of (it.sellers || []).filter((x, _, all) => !all.some((y) => y.sellerDefault) || x.sellerDefault)) {
+      // Link só http(s) (senão o linkText na própria loja); preço só número positivo (texto, zero ou negativo = sem preço).
+      const link = typeof p.link === 'string' && /^https?:\/\//i.test(p.link) ? p.link : p.linkText ? `${base}/${p.linkText}/p` : null;
+      if (!link) continue;
       const o = s.commertialOffer || {};
       const qty = Number(o.AvailableQuantity ?? 0);
+      const price = typeof o.Price === 'number' && Number.isFinite(o.Price) && o.Price > 0 ? o.Price : null;
       const l = {
         title: p.productName + (p.items.length > 1 ? ' ' + it.name : ''),
-        url: (p.link || `${base}/${p.linkText}/p`) + (p.items.length > 1 ? `?skuId=${it.itemId}` : ''),
-        price: { base: o.Price > 0 ? o.Price : null }, listPrice: o.ListPrice > o.Price ? o.ListPrice : null,
-        stock: qty > 0 && o.IsAvailable !== false && o.Price > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: qty > 0 && qty < 99999 ? qty : null,
+        url: link + (p.items.length > 1 ? `?skuId=${it.itemId}` : ''),
+        price: { base: price }, listPrice: price && typeof o.ListPrice === 'number' && Number.isFinite(o.ListPrice) && o.ListPrice > price ? o.ListPrice : null,
+        stock: qty > 0 && o.IsAvailable !== false && price ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: qty > 0 && qty < 99999 ? qty : null,
         sku: it.itemId, ean: it.ean || null, image: it.images?.[0]?.imageUrl || null, seller: s.sellerName || null, sellerId: s.sellerId, sourceType: 'store_api',
         _vtex: { base, itemId: it.itemId, sellerId: s.sellerId },
       };

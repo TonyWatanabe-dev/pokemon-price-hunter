@@ -7,10 +7,14 @@ export async function detect(base) {
 }
 
 const absImg = (base, u) => { if (!u || typeof u !== 'string') return null; try { return new URL(u.startsWith('//') ? 'https:' + u : u, base).href; } catch { return null; } };
+// Link só http(s): "javascript:", "data:" etc. vindos da loja caem para o handle; sem nenhum dos dois, não há oferta.
+const httpHref = (u, base) => { try { const x = new URL(u, base); return /^https?:$/.test(x.protocol) ? x.href.split('?')[0] : null; } catch { return null; } };
 function toListing(base, p, v, multi) {
+  const link = (p.url && httpHref(p.url, base)) || (p.handle ? `${base}/products/${p.handle}` : null);
+  if (!link) return null;
   return {
     title: p.title + (multi && v.title && v.title !== 'Default Title' ? ' ' + v.title : ''),
-    url: (p.url ? new URL(p.url, base).href.split('?')[0] : `${base}/products/${p.handle}`) + (multi && v.id ? `?variant=${v.id}` : ''),
+    url: link + (multi && v.id ? `?variant=${v.id}` : ''),
     price: { base: brl(v.price ?? p.price) }, listPrice: brl(v.compare_at_price ?? p.compare_at_price_max) || null,
     stock: v.available === true ? 'IN_STOCK' : v.available === false ? 'OUT_OF_STOCK' : 'UNKNOWN', quantity: null,
     sku: v.sku || null, ean: v.barcode || null, seller: null, sourceType: 'store_json',
@@ -28,7 +32,7 @@ export async function search(store, catalog) {
       const j = await getJson(url);
       for (const p of j?.resources?.results?.products || []) {
         const vs = p.variants?.length ? p.variants : [{ price: p.price, available: p.available }];
-        for (const v of vs) { const l = toListing(base, p, v, vs.length > 1); out.set(l.url, l); }
+        for (const v of vs) { const l = toListing(base, p, v, vs.length > 1); if (l) out.set(l.url, l); }
       }
     } catch (e) { if (e.blocked) throw e; suggestWorks = false; break; }
   }
@@ -38,7 +42,7 @@ export async function search(store, catalog) {
     const { products = [] } = await getJson(url); if (!products.length) break;
     for (const p of products) {
       if (!/pok[eé]mon/i.test(`${p.title} ${p.product_type} ${p.tags} ${p.vendor}`)) continue;
-      for (const v of p.variants || []) { const l = toListing(base, p, v, p.variants.length > 1); out.set(l.url, l); }
+      for (const v of p.variants || []) { const l = toListing(base, p, v, p.variants.length > 1); if (l) out.set(l.url, l); }
     }
   }
   return [...out.values()];
