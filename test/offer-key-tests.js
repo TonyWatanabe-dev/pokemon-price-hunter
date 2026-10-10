@@ -42,8 +42,41 @@ t('chave: variantes, lojas e vendedores distintos não colapsam', () => {
   assert.notEqual(k({ storeId: 'ml', sellerId: '1', url: 'https://ml.com/p' }), k({ storeId: 'ml', sellerId: '2', url: 'https://ml.com/p' }));
 });
 
-t('chave: SKU iguais colapsam mesmo com URLs diferentes; URL inválida sem SKU não agrupa', () => {
-  assert.equal(offerDedupeKey({ storeId: 'a', sku: ' ABC ', url: 'https://a.com/x' }).key, offerDedupeKey({ storeId: 'a', sku: 'abc', url: 'https://a.com/y' }).key);
+t('chave: mesmo SKU não junta URLs canônicas nem produtos diferentes', () => {
+  const k = (o) => offerDedupeKey(o).key;
+  // mesmo SKU, URLs canônicas diferentes: não agrupa (SKU só separa variantes na mesma URL)
+  assert.notEqual(k({ storeId: 'a', sku: ' ABC ', url: 'https://a.com/x' }), k({ storeId: 'a', sku: 'abc', url: 'https://a.com/y' }));
+  // mesmo SKU e mesma URL, produtos diferentes: não agrupa
+  assert.notEqual(k({ storeId: 'a', productId: 'p1', sku: 'ABC', url: 'https://a.com/x' }), k({ storeId: 'a', productId: 'p2', sku: 'ABC', url: 'https://a.com/x' }));
+  // mesmo SKU sem URL válida, produtos diferentes: não agrupa
+  assert.notEqual(k({ storeId: 'a', productId: 'p1', sku: 'ABC', url: 'lixo' }), k({ storeId: 'a', productId: 'p2', sku: 'ABC', url: 'lixo' }));
+});
+
+t('chave: mesmo produto, mesmo SKU e mesma URL canônica agrupa (inclusive só com tracking diferente)', () => {
+  const a = offerDedupeKey({ storeId: 'a', productId: 'p1', sku: ' ABC ', url: 'https://www.a.com/x/?utm_source=1#topo' });
+  const b = offerDedupeKey({ storeId: 'a', productId: 'P1', sku: 'abc', url: 'https://a.com/x?gclid=2' });
+  assert.equal(a.key, b.key); assert.ok(a.reason);
+  const c = offerDedupeKey({ storeId: 'a', productId: 'p1', url: 'https://a.com/p?utm_source=1&fbclid=3' });
+  const d = offerDedupeKey({ storeId: 'a', productId: 'p1', url: 'https://www.a.com/p/?gclid=2' });
+  assert.equal(c.key, d.key); assert.equal(c.basis, 'url');
+});
+
+t('chave: casos reais da ludostation (origin/data, data/offers.json) não juntam produtos diferentes', () => {
+  // mesmo SKU reaproveitado pela loja em anúncios de produtos diferentes
+  const real = [
+    { id: '1873d050ef24', productId: 'me03-blister3', storeId: 'ludostation', sellerId: null, sku: 'PKM146', url: 'https://ludostation.com.br/produtos/blister-triplo-equilibrio-perfeito-mega-evolucao-pokemon-tcg-pre-venda-qnk9t/' },
+    { id: '64991dbbe6f0', productId: 'me03-blister4', storeId: 'ludostation', sellerId: null, sku: 'PKM146', url: 'https://ludostation.com.br/produtos/blister-quadruplo-equilibrio-perfeito-mega-evolucao-pokemon-tcg-pre-venda-1wfb9/' },
+    { id: '85b4e6d1b118', productId: 'me01-combo', storeId: 'ludostation', sellerId: null, sku: '028D102700000BX', url: 'https://ludostation.com.br/produtos/combo-de-booster-pokemon-tcg-mega-evolucao-1/' },
+    { id: 'a584f35df9ce', productId: 'me04-combo', storeId: 'ludostation', sellerId: null, sku: '028D102700000BX', url: 'https://ludostation.com.br/produtos/combo-de-booster-caos-ascendente-mega-evolucao-pokemon-tcg-gd8ea/' },
+  ];
+  assert.notEqual(offerDedupeKey(real[0]).key, offerDedupeKey(real[1]).key);
+  assert.notEqual(offerDedupeKey(real[2]).key, offerDedupeKey(real[3]).key);
+  const g = groupDuplicateOffers(real);
+  assert.equal(g.duplicates.length, 0); assert.equal(g.groups.length, 4);
+  for (const grp of g.groups) assert.equal(new Set(grp.offers.map((o) => o.productId)).size, 1);
+});
+
+t('chave: URL inválida sem SKU não agrupa', () => {
   const bad = offerDedupeKey({ storeId: 'a', url: 'lixo' }); assert.equal(bad.key, null); assert.equal(bad.basis, 'none');
   assert.equal(offerDedupeKey({ url: 'https://a.com/p' }).key, null);
   assert.equal(offerDedupeKey(null).key, null);

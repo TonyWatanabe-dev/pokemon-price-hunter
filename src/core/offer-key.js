@@ -29,20 +29,26 @@ export function canonicalizeUrl(input) {
 const norm = (s) => (s == null ? '' : String(s).trim().toLowerCase());
 
 /**
- * Chave de deduplicação com a razão. Prioridade: loja+SKU > loja+URL canônica > sem chave segura.
- * A chave sempre inclui loja e vendedor (o mesmo SKU em lojas/vendedores diferentes são ofertas diferentes)
- * e o SKU/variante, para não colapsar produtos diferentes. URL inválida sem SKU não gera chave (nunca agrupa).
- * offer: { storeId, sellerId?, sku?, url }
+ * Chave de deduplicação com a razão. Escopo sempre: loja + vendedor + produto (productId).
+ * Prioridade: URL canônica (+ SKU, se houver) > SKU só quando a URL é inválida > sem chave segura.
+ * O SKU nunca junta URLs canônicas diferentes: lojas reaproveitam SKU em anúncios de produtos diferentes
+ * (ex.: ludostation PKM146 em blister triplo e quádruplo). Ele só separa variantes dentro da mesma URL.
+ * URL inválida sem SKU não gera chave (nunca agrupa).
+ * offer: { storeId, sellerId?, productId?, sku?, url }
  */
 export function offerDedupeKey(offer) {
   const store = norm(offer?.storeId);
   const seller = norm(offer?.sellerId);
   if (!store) return { key: null, basis: 'none', reason: 'sem loja' };
+  const product = norm(offer?.productId);
   const sku = norm(offer?.sku);
   const c = canonicalizeUrl(offer?.url);
-  const scope = `${store}|${seller}`;
-  if (sku) return { key: `${scope}|sku:${sku}`, basis: 'sku', reason: 'mesma loja, vendedor e SKU', canonicalUrl: c.canonical };
-  if (c.valid) return { key: `${scope}|url:${c.canonical}`, basis: 'url', reason: 'mesma loja, vendedor e URL canônica (query relevante mantida)', canonicalUrl: c.canonical };
+  const scope = `${store}|${seller}|${product}`;
+  if (c.valid) {
+    if (sku) return { key: `${scope}|url:${c.canonical}|sku:${sku}`, basis: 'url+sku', reason: 'mesma loja, vendedor, produto, URL canônica e SKU', canonicalUrl: c.canonical };
+    return { key: `${scope}|url:${c.canonical}`, basis: 'url', reason: 'mesma loja, vendedor, produto e URL canônica (query relevante mantida)', canonicalUrl: c.canonical };
+  }
+  if (sku) return { key: `${scope}|sku:${sku}`, basis: 'sku', reason: 'URL inválida: mesma loja, vendedor, produto e SKU', canonicalUrl: null };
   return { key: null, basis: 'none', reason: 'URL inválida e sem SKU: não agrupa', canonicalUrl: null };
 }
 
