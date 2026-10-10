@@ -1,6 +1,7 @@
 // Coleta nas lojas sem insistir: volume do Shopify, motivo real da falha e espera própria para 429.
 // Offline: fetch simulado (setFetch), nenhuma requisição às lojas. Cobre:
 //   1) Shopify: 1 a 8 páginas de /products.json por loja e rodada (antes: 1 suggest.json por coleção do catálogo, 24);
+//      acima do teto, até 2 páginas de /collections.json + 6 páginas das coleções Pokémon;
 //   2) reason com o status HTTP real (429, 403, desafio com 200, 5xx) e o código de rede (ENOTFOUND, ECONNREFUSED,
 //      TIMEOUT, CERT_*), sem query nem token na URL;
 //   3) espera depois da falha: 429 tem curva própria (Retry-After, 30 min a 2 h); 403/WAF e DNS seguem até 6 h.
@@ -51,10 +52,11 @@ await t('Shopify: no máximo MAX_PAGES (8) páginas de /products.json por loja, 
   assert.equal(shopify.MAX_PAGES, 8);
   for (const [host, total] of [['vol-pequena.test', 40], ['vol-media.test', 300], ['vol-grande.test', 2000]]) {
     const L = await shopify.search(shopifyStore(host, catalogOf(total)), catalog);
-    const req = pages(host);
-    measured[host] = { total, requests: req.length, robots: (calls[host] || []).length - req.length };
+    const all = pages(host); const req = all.filter(isPage);
+    measured[host] = { total, requests: req.length, robots: (calls[host] || []).length - all.length };
     assert.ok(req.length <= shopify.MAX_PAGES, `${host}: ${req.length} requisições (${req.join(', ')})`);
-    assert.ok(req.every(isPage), `${host}: só /products.json paginado (${req.join(', ')})`);
+    // 2000 produtos = 8 páginas cheias: pode haver mais, então lista as coleções (aqui não há: 404) e não lê mais nada
+    assert.deepEqual(all.filter((p) => !isPage(p)), total === 2000 ? ['/collections.json?limit=250&page=1'] : [], `${host}: só /products.json paginado (${all.join(', ')})`);
     assert.equal(measured[host].robots, 1, `${host}: robots.txt lido uma vez`);
     assert.ok(L.length > 0 && L.every((l) => /pok[eé]mon/i.test(l.title)), `${host}: só os produtos Pokémon do catálogo`);
   }
@@ -223,14 +225,15 @@ await t('Shopify: requisições por tamanho de catálogo; teto atingido registra
   for (const total of [300, 1200, 3000]) {
     const host = `cnt-${total}.test`;
     const L = await shopify.search(shopifyStore(host, bigCatalog(total, { 5: moxProd(0), 2600: moxProd(1) })), catalog);
-    counts[total] = pages(host).length;
-    assert.ok(pages(host).every(isPage), `${host}: só /products.json (${pages(host).join(', ')})`);
+    counts[total] = pages(host).filter(isPage).length;
+    const other = pages(host).filter((p) => !isPage(p));
+    assert.deepEqual(other, total === 3000 ? ['/collections.json?limit=250&page=1'] : [], `${host}: só /products.json (+ a lista de coleções acima do teto) (${pages(host).join(', ')})`);
     assert.equal(pages(host).filter(isSuggest).length, 0, `${host}: nenhuma busca suggest.json com catálogo público`);
     assert.ok(counts[total] <= shopify.MAX_PAGES, `${host}: nunca passa do teto`);
-    assert.equal((calls[host] || []).length, counts[total] + 1, `${host}: páginas + 1 robots.txt`);
+    assert.equal((calls[host] || []).length, counts[total] + other.length + 1, `${host}: páginas + 1 robots.txt`);
     if (total === 3000) {
-      assert.equal(L.partial, shopify.PARTIAL_REASON, '3000: catálogo maior que o teto fica registrado');
-      assert.match(L.partial, /maior que 8 páginas.*leitura parcial/);
+      assert.equal(L.partial, shopify.PARTIAL_NO_COLLECTION, '3000 sem coleção Pokémon (/collections.json 404): leitura parcial registrada com o motivo');
+      assert.match(L.partial, /maior que 8 páginas.*leitura parcial.*nenhuma coleção Pokémon/);
       assert.deepEqual(L.map((l) => l.title), [MOX[0][0]], '3000: só o que foi lido; nada inventado para o produto depois do teto');
     } else {
       assert.equal(L.partial, undefined, `${total}: leitura completa`);
@@ -278,6 +281,153 @@ await t('Shopify: 429 (Retry-After), 5xx ou timeout no meio da paginação → p
   assert.equal(eTo.code, 'TIMEOUT'); assert.equal(pages('mid-to.test').length, 2, 'timeout na página 2: para');
 });
 
+// ---------- 6) mox.land acima do teto (coleta de 10/10 19:45Z, ramo data 9752b56): ACTIVE, 192 anúncios, 0 casados,
+// "catálogo maior que 8 páginas". Os 37 produtos que ela casava antes da #188 (títulos e links reais de data/offers.json)
+// ficam depois do teto no /products.json e aparecem na coleção Pokémon da loja (/collections/pokemon-tcg/products.json).
+const MOX37 = [
+  ['Combo de Boosters - Escarlate e Violeta - Evoluções Prismáticas', 'combo-de-boosters-escarlate-e-violeta-evolucoes-prismaticas', '499.00'],
+  ['Blister Quádruplo - Escarlate e Violeta 6 Máscaras do Crepúsculo Snorlax', 'blister-quadruplo-escarlate-e-violeta-6-mascaras-do-crepusculo-snorlax', '45.00'],
+  ['Booster - Escarlate e Violeta - Máscaras do Crepúsculo', 'booster-escarlate-e-violeta-mascaras-do-crepusculo', '10.00'],
+  ['Blister Quádruplo - Escarlate e Violeta 6 Máscaras do Crepúsculo Revavroom', 'blister-quadruplo-escarlate-e-violeta-6-mascaras-do-crepusculo-revavroom', '45.00'],
+  ['Blister Triplo - Escarlate e Violeta 6 Máscaras do Crepúsculo Toxel', 'blister-triplo-escarlate-e-violeta-6-mascaras-do-crepusculo-toxel', '35.00'],
+  ['Blister Quádruplo - Megaevolução 2 Fogo Fantasmagórico Sneasel', 'blister-quadruplo-megaevolucao-2-fogo-fantasmagorico-sneasel', '49.00'],
+  ['Box - Treinador Avançado Fábulas Nebulosas', 'box-treinador-avancado-fabulas-nebulosas', '370.00'],
+  ['Blister Quádruplo - Escarlate e Violeta 8 Fagulhas Impetuosas Zapdos', 'blister-quadruplo-escarlate-e-violeta-8-fagulhas-impetuosas-zapdos', '50.00'],
+  ['Booster - Escarlate e Violeta - Fagulhas Impetuosas', 'booster-escarlate-e-violeta-fagulhas-impetuosas', '11.00'],
+  ['Blister Triplo - Escarlate e Violeta 8 Fagulhas Impetuosas Wooper', 'blister-triplo-escarlate-e-violeta-8-fagulhas-impetuosas-wooper', '40.00'],
+  ['Blister Quádruplo - Escarlate e Violeta 8 Fagulhas Impetuosas Quagsire', 'blister-quadruplo-escarlate-e-violeta-8-fagulhas-impetuosas-quagsire', '50.00'],
+  ['Blister Triplo - Escarlate e Violeta 8 Fagulhas Impetuosas Pachirisu', 'blister-triplo-escarlate-e-violeta-8-fagulhas-impetuosas-pachirisu', '30.00'],
+  ['Booster - Escarlate e Violeta 9 Amigos de Jornada', 'booster-escarlate-e-violeta-9-amigos-de-jornada', '11.00'],
+  ['Box - Treinador Avançado Amigos de Jornada', 'box-treinador-avancado-amigos-de-jornada', '400.00'],
+  ['Blister Quádruplo - Escarlate e Violeta 9 Amigos de Jornada Scrafty', 'blister-quadruplo-escarlate-e-violeta-9-amigos-de-jornada-scrafty', '49.00'],
+  ['Blister Triplo - Escarlate e Violeta 9 Amigos de Jornada Yanma', 'blister-triplo-escarlate-e-violeta-9-amigos-de-jornada-yanma', '39.00'],
+  ['Combo de Boosters - Escarlate e Violeta - Amigos de Jornada', 'combo-de-boosters-escarlate-e-violeta-amigos-de-jornada', '200.00'],
+  ['Booster - Megaevolução 2 Fogo Fantasmagórico', 'booster-mega-evolucao-2-fogos-fantasmagoricos', '14.00'],
+  ['Blister Quádruplo - Megaevolução 2 Fogo Fantasmagórico Weavile', 'blister-quadruplo-megaevolucao-2-fogo-fantasmagorico-weavile', '49.00'],
+  ['Combo de Boosters - Megaevolução Caos Ascendente', 'combo-de-boosters-megaevolucao-caos-ascendente', '239.00'],
+  ['Blister Quádruplo - Megaevolução 5 Escuridão Absoluta Binacle', 'blister-quadruplo-megaevolucao-5-escuridao-absoluta-binacle', '49.00'],
+  ['Booster - Megaevolução 4 Caos Ascendente', 'booster-megaevolucao-4-caos-ascendente', '14.00'],
+  ['Booster - Megaevolução 3 Equilíbrio Perfeito', 'booster-megaevolucao-3-equilibrio-perfeito', '14.00'],
+  ['Blister Triplo - Megaevolução 4 Caos Ascendente Charmeleon', 'blister-triplo-megaevolucao-4-caos-ascendente-charmeleon', '39.00'],
+  ['Blister Triplo - Megaevolução 2 Fogo Fantasmagórico Whimsicott', 'blister-triplo-megaevolucao-2-fogo-fantasmagorico-whimsicott', '39.00'],
+  ['Blister Triplo - Megaevolução 2 Fogo Fantasmagórico Cottonee', 'blister-triplo-megaevolucao-2-fogo-fantasmagorico-cottonee', '39.00'],
+  ['Combo de Boosters - Megaevolução Heróis Excelsos', 'combo-de-boosters-megaevolucao-herois-excelsos', '399.00'],
+  ['Blister Quádruplo - Megaevolução 2.5 Heróis Excelsos Komala', 'blister-quadruplo-megaevolucao-2-5-herois-excelsos-komala', '49.00'],
+  ['Blister Triplo - Megaevolução 2.5 Heróis Excelsos Gastly', 'blister-triplo-megaevolucao-2-5-herois-excelsos-gastly', '39.00'],
+  ['Box - Treinador Avançado Heróis Excelsos', 'box-treinador-avancado-herois-excelsos', '399.00'],
+  ['Blister Triplo - Megaevolução 2.5 Heróis Excelsos Charmander', 'blister-triplo-megaevolucao-2-5-herois-excelsos', '39.00'],
+  ['Blister Quádruplo - Megaevolução 2.5 Heróis Excelsos Tangela', 'blister-quadruplo-megaevolucao-2-5-herois-excelsos-tangela', '49.00'],
+  ['Blister Quádruplo - Megaevolução 3 Equilíbrio Perfeito Chikorita', 'blister-quadruplo-megaevolucao-3-equilibrio-perfeito-chikorita', '49.00'],
+  ['Blister Triplo - Megaevolução 3 Equilíbrio Perfeito Makuhita', 'blister-triplo-megaevolucao-3-equilibrio-perfeito-makuhita', '39.00'],
+  ['Box - Treinador Avançado Equilíbrio Perfeito', 'box-treinador-avancado-equilibrio-perfeito', '399.00'],
+  ['Combo de Boosters - Megaevolução Equilíbrio Perfeito', 'combo-de-boosters-megaevolucao-equilibrio-perfeito', '239.00'],
+  ['Booster - Megaevolução 5 Escuridão Absoluta', 'booster-megaevolucao-5-escuridao-absoluta', '14.00'],
+];
+const mox37 = (i, x = {}) => ({ id: 7000 + i, title: MOX37[i][0], handle: MOX37[i][1], product_type: 'TCG', tags: ['Lacrado'], vendor: 'Copag',
+  variants: [{ id: 70000 + i, title: 'Default Title', price: MOX37[i][2], available: true }], ...x });
+const MOX37_ALL = MOX37.map((_, i) => mox37(i));
+const MOX37_URLS = MOX37.map((x) => `https://mox.land/products/${x[1]}`);
+// as coleções que a Shopify cria em toda loja (all, frontpage) + as da loja; "frontpage" cita Pokémon mas é genérica
+const COLS = [
+  { id: 1, handle: 'all', title: 'Todos os produtos', products_count: 3000 },
+  { id: 2, handle: 'frontpage', title: 'Destaques Pokémon', products_count: 12 },
+  { id: 3, handle: 'magic-the-gathering', title: 'Magic: The Gathering', products_count: 2900 },
+  { id: 4, handle: 'pokemon-tcg', title: 'Pokémon TCG', products_count: 37 },
+];
+const slice = (list, u) => { const p = Number(u.searchParams.get('page') || 1); const lim = Number(u.searchParams.get('limit') || 30); return list.slice((p - 1) * lim, p * lim); };
+// loja Shopify com /products.json, /collections.json e /collections/<handle>/products.json; `over` troca uma rota
+const colStore = (host, products, collections, byHandle, over = {}) => {
+  routes[host] = { handle: (u) => {
+    for (const [re, fn] of Object.entries(over)) if (new RegExp(re).test(u.pathname)) return fn(u);
+    if (u.pathname === '/products.json') return json({ products: slice(products, u) });
+    if (u.pathname === '/collections.json') return json({ collections: slice(collections, u) });
+    const m = u.pathname.match(/^\/collections\/([^/]+)\/products\.json$/);
+    if (m && byHandle[decodeURIComponent(m[1])]) return json({ products: slice(byHandle[decodeURIComponent(m[1])], u) });
+    if (u.pathname === '/search/suggest.json') return json({ resources: { results: { products: MOX37_ALL.slice(0, 10) } } });
+    return html('', 404);
+  } };
+  return { id: host, url: `https://${host}` };
+};
+const moxBig = (at = {}) => bigCatalog(3000, { ...Object.fromEntries(MOX37.map((_, i) => [2100 + i, mox37(i)])), ...at });
+const isColList = (p) => p.startsWith('/collections.json?');
+const isColPage = (p) => /^\/collections\/[^/]+\/products\.json\?/.test(p);
+const census = (host) => { const all = pages(host);
+  return { products: all.filter(isPage).length, list: all.filter(isColList).length, collection: all.filter(isColPage).length, suggest: all.filter(isSuggest).length,
+    robots: (calls[host] || []).length - all.length, total: all.length }; };
+const LIMIT = shopify.MAX_PAGES + shopify.COLLECTION_LIST_PAGES + shopify.MAX_EXTRA_REQUESTS; // 8 + 2 + 6
+measured.col = {};
+
+await t('Shopify acima do teto: os 37 produtos reais da mox.land vêm da coleção Pokémon e casam', async () => {
+  const host = 'mox.land';
+  const L = await shopify.search(colStore(host, moxBig(), COLS, { 'pokemon-tcg': MOX37_ALL, frontpage: [filler(1)] }), catalog);
+  const c = measured.col.mox = census(host);
+  assert.deepEqual(L.map((l) => l.url).sort(), [...MOX37_URLS].sort(), 'os 37 anúncios (links reais), nenhum a mais');
+  assert.deepEqual(L.map((l) => l.title).sort(), MOX37.map((x) => x[0]).sort());
+  assert.equal(L.filter(casa).length, 37, 'os 37 casam com o catálogo, como na busca preditiva de antes da #188');
+  assert.deepEqual([c.products, c.list, c.collection, c.suggest, c.robots], [8, 1, 1, 0, 1], `requisições: ${pages(host).join(', ')}`);
+  assert.ok(c.total <= LIMIT, `${c.total} requisições ≤ ${LIMIT} (+ robots.txt)`);
+  assert.ok(pages(host).includes('/collections/pokemon-tcg/products.json?limit=250&page=1'));
+  assert.ok(!pages(host).some((p) => /\/collections\/(all|frontpage|magic)/.test(p)), 'coleções genéricas e de outros jogos não são lidas');
+  assert.equal(L.partial, undefined, 'coleção Pokémon lida inteira: sem "partial"');
+  assert.equal(L.find((l) => l.title === MOX37[22][0]).price.base, 14);
+});
+
+await t('Shopify acima do teto sem coleção Pokémon: "partial" com o motivo, nada inventado', async () => {
+  const host = 'sem-colecao.test';
+  const L = await shopify.search(colStore(host, moxBig(), COLS.filter((x) => x.handle !== 'pokemon-tcg'), { frontpage: MOX37_ALL }), catalog);
+  const c = measured.col.none = census(host);
+  assert.equal(L.partial, shopify.PARTIAL_NO_COLLECTION); assert.match(L.partial, /nenhuma coleção Pokémon encontrada/);
+  assert.equal(L.length, 0, 'nada lido dos produtos Pokémon além do teto: nenhuma oferta');
+  assert.deepEqual([c.products, c.list, c.collection, c.suggest], [8, 1, 0, 0], `"frontpage" (genérica) não é lida; nem suggest.json: ${pages(host).join(', ')}`);
+});
+
+await t('Shopify acima do teto: 429 em /collections.json interrompe a loja (Retry-After), sem outra rota', async () => {
+  const host = 'col-429.test';
+  const e = await failure(shopify.search(colStore(host, moxBig(), COLS, { 'pokemon-tcg': MOX37_ALL },
+    { '^/collections\\.json$': () => html('Too Many Requests', 429, { 'retry-after': '600' }) }), catalog));
+  const c = measured.col.r429 = census(host);
+  assert.ok(e.blocked); assert.equal(e.httpStatus, 429); assert.equal(e.retryAfter, 600);
+  assert.deepEqual([c.products, c.list, c.collection, c.suggest], [8, 1, 0, 0], `para no 429: ${pages(host).join(', ')}`);
+  // 403 e 5xx numa página da coleção também param ali e sobem com o status real
+  const e403 = await failure(shopify.search(colStore('col-403.test', moxBig(), COLS, {}, { '^/collections/pokemon-tcg/': () => html('<title>Just a moment...</title>', 403) }), catalog));
+  assert.ok(e403.blocked); assert.equal(e403.httpStatus, 403); assert.equal(census('col-403.test').collection, 1);
+  const e503 = await failure(shopify.search(colStore('col-503.test', moxBig(), COLS, {}, { '^/collections/pokemon-tcg/': () => html('erro', 503) }), catalog));
+  assert.equal(e503.httpStatus, 503); assert.deepEqual([census('col-503.test').collection, census('col-503.test').suggest], [1, 0]);
+});
+
+await t('Shopify acima do teto: produto em /products.json e na coleção vira um anúncio só', async () => {
+  const host = 'col-dup.test';
+  // 0 por id; 1 sem id (por handle); 2 com id diferente e o mesmo handle (a mesma URL)
+  const L = await shopify.search(colStore(host, moxBig({ 5: mox37(0), 6: mox37(1, { id: undefined }), 7: mox37(2, { id: 99999 }) }), COLS,
+    { 'pokemon-tcg': [...MOX37_ALL.slice(0, 1), mox37(1, { id: undefined }), ...MOX37_ALL.slice(2), mox37(3)] }), catalog);
+  assert.equal(L.length, 37, 'duplicados por id, handle e URL entram uma vez');
+  assert.equal(new Set(L.map((l) => l.url)).size, 37);
+  measured.col.dup = census(host);
+});
+
+await t('Shopify acima do teto: teto de páginas extras (por coleção e total) registra leitura parcial', async () => {
+  const host = 'col-teto.test';
+  const singles = Array.from({ length: 2000 }, (_, i) => ({ id: 300000 + i, title: `Carta Avulsa Pokémon ${i}/165 Near Mint`, handle: `avulsa-${i}`, product_type: 'Carta', tags: [], vendor: 'Loja',
+    variants: [{ id: 3000000 + i, title: 'Default Title', price: '2.00', available: true }] }));
+  const cols = [...COLS, { id: 5, handle: 'pokemon-cartas-avulsas', title: 'Pokémon - Cartas Avulsas', products_count: 2000 }, { id: 6, handle: 'acessorios-pokemon', title: 'Acessórios Pokémon' }];
+  const L = await shopify.search(colStore(host, moxBig(), cols, { 'pokemon-tcg': MOX37_ALL, 'pokemon-cartas-avulsas': singles, 'acessorios-pokemon': singles.slice(0, 300) }), catalog);
+  const c = measured.col.teto = census(host);
+  assert.deepEqual([c.products, c.list, c.collection], [8, 1, shopify.MAX_EXTRA_REQUESTS], `teto total de páginas extras: ${pages(host).join(', ')}`);
+  assert.equal(pages(host).filter((p) => p.startsWith('/collections/pokemon-cartas-avulsas/')).length, shopify.MAX_PAGES_PER_COLLECTION, 'teto por coleção');
+  assert.ok(pages(host)[8 + 1].startsWith('/collections/pokemon-tcg/'), 'a coleção menor (lacrados) é lida primeiro');
+  assert.equal(L.partial, shopify.PARTIAL_AFTER_COLLECTIONS); assert.match(L.partial, /leitura parcial após coleções/);
+  assert.equal(L.filter(casa).length, 37, 'os 37 lacrados continuam casando');
+  assert.ok(c.total <= LIMIT);
+});
+
+await t('Shopify: catálogo pequeno (300) não chama /collections.json', async () => {
+  const host = 'col-pequena.test';
+  const L = await shopify.search(colStore(host, bigCatalog(300, { 5: mox37(0) }), COLS, { 'pokemon-tcg': MOX37_ALL }), catalog);
+  const c = measured.col.small = census(host);
+  assert.deepEqual([c.products, c.list, c.collection, c.suggest], [2, 0, 0, 0], `só /products.json: ${pages(host).join(', ')}`);
+  assert.deepEqual(L.map((l) => l.title), [MOX37[0][0]]); assert.equal(L.partial, undefined);
+});
+
 await t('rodada: 5xx no meio da paginação fica no sources.json e não vira oferta', async () => {
   const keep = Object.fromEntries(['HUNTER_CONFIG_DIR', 'HUNTER_DATA_DIR', 'HUNTER_TIPS', 'HUNTER_CEP', 'HUNTER_BUDGET_MIN'].map((k) => [k, process.env[k]]));
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-mid-'));
@@ -321,7 +471,7 @@ await t('rodada: catálogo maior que o teto grava "partial" no sources.json (ACT
     const t0 = Date.now();
     await runOnce({ log: () => {}, send: { capture: async () => true }, now: new Date(t0) });
     let src = read();
-    assert.deepEqual([src.pbig.status, src.pbig.matched, src.pbig.partial], ['ACTIVE', 1, shopify.PARTIAL_REASON], '3000 produtos: leitura parcial registrada');
+    assert.deepEqual([src.pbig.status, src.pbig.matched, src.pbig.partial], ['ACTIVE', 1, shopify.PARTIAL_NO_COLLECTION], '3000 produtos sem coleção Pokémon: leitura parcial registrada');
     assert.equal(src.psmall.status, 'ACTIVE'); assert.ok(!('partial' in src.psmall), '300 produtos: sem o campo');
     // a loja grande encolhe para 300: a leitura volta a ser completa e o aviso some
     shopifyStore('part-3000.test', bigCatalog(300, { 5: moxProd(0) }));
@@ -391,4 +541,5 @@ http.setFetch(globalThis.fetch);
 const v = (h) => measured[h]?.requests;
 console.log(`✓ Coleta sem insistir (Shopify, motivo real, espera do 429): ${n} grupos de testes passaram`
   + ` | Shopify por loja/rodada: ${v('vol-pequena.test')}/${v('vol-media.test')}/${v('vol-grande.test')} req (40/300/2000 produtos), ${measured.counts[300]}/${measured.counts[1200]}/${measured.counts[3000]} req (300/1200/3000; teto ${shopify.MAX_PAGES}) + 1 robots.txt; antes ${catalog.collections.length} suggest.json + 1 robots.txt`
+  + ` | acima do teto (products/collections.json/coleção, + 1 robots.txt; teto ${LIMIT}): mox 37 casados ${Object.entries(measured.col).map(([k, c]) => `${k} ${c.products}/${c.list}/${c.collection}=${c.total}`).join(', ')}`
   + ` | espera (min) após 1..8 falhas: 429 ${measured.backoff['429'].join(',')}; 403 ${measured.backoff['403'].join(',')}`);
