@@ -147,3 +147,6 @@ t('função da Vercel não importa de src/ (src/ não é publicado: .vercelignor
 });
 
 console.log(`✓ Referências (atual × histórico): ${n} grupos de testes passaram`);
+
+// Metadados de coleção e lançamento (issue #110).
+await import('./catalog-metadata-tests.js');
