@@ -77,6 +77,21 @@ r = await call('/api/v1/produtos?limite=2&pagina=1'); assert.equal(r.json.data.l
 r = await call('/api/v1/produtos?limite=2&pagina=2'); assert.equal(r.json.data.length, 1);
 r = await call('/api/v1/produtos?limite=999'); assert.equal(r.json.meta.limit, 50, 'limite máximo 50');
 r = await call('/api/v1/produtos?pagina=9'); assert.equal(r.json.data.length, 0); assert.equal(r.json.meta.total, 3);
+// limites server-side e páginas sem duplicata/lacuna, em qualquer ordenação
+r = await call('/api/v1/produtos?limite=0&pagina=0'); assert.equal(r.json.meta.page, 1); assert.ok(r.json.meta.limit >= 1, 'limite inválido vira o mínimo');
+r = await call('/api/v1/produtos?limite=abc&pagina=-3'); assert.equal(r.status, 200); assert.equal(r.json.meta.page, 1);
+for (const ordem of ['relevancia', 'nome', 'ofertas']) {
+  const full = (await call(`/api/v1/produtos?limite=50&ordem=${ordem}`)).json.data.map((p) => p.id);
+  const paged = [];
+  for (let pg = 1; pg <= full.length; pg++) paged.push(...(await call(`/api/v1/produtos?limite=1&pagina=${pg}&ordem=${ordem}`)).json.data.map((p) => p.id));
+  assert.deepEqual(paged, full, `páginas concatenadas = lista completa (${ordem})`);
+  assert.equal(new Set(paged).size, paged.length, `sem duplicatas (${ordem})`);
+}
+{
+  const a = (await call('/api/v1/referencias?limite=50')).json.data.map((x) => x.product.id);
+  const b = (await call('/api/v1/referencias?limite=50')).json.data.map((x) => x.product.id);
+  assert.deepEqual(a, b, 'referências em ordem determinística'); assert.equal(new Set(a).size, a.length);
+}
 r = await call('/api/v1/produtos?ordem=xpto'); assert.equal(r.status, 400);
 // produto inexistente / identificador inválido / rota / método
 assert.equal((await call('/api/v1/produtos/nao-existe')).status, 404);
