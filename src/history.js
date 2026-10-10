@@ -84,14 +84,26 @@ export function trimJsonl(file, days = 45) {
 
 // Resumo do histórico de um produto (menor preço do dia entre todas as lojas), usado no ranking "maior queda".
 // Só calcula o que os dados sustentam: com menos de 2 dias, não há queda.
+// Pontos inválidos (dia malformado, valor ausente, zero ou negativo) são descartados, nunca viram preço; duplicatas do mesmo dia ficam com o menor.
+export const MIN_HIST_DAYS = 3;
+export function cleanPoints(pts) {
+  const byDay = new Map(); let invalid = 0; let duplicates = 0;
+  for (const p of Array.isArray(pts) ? pts : []) {
+    const d = Array.isArray(p) ? p[0] : null; const v = Array.isArray(p) ? p[1] : null;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d)) || typeof v !== 'number' || !Number.isFinite(v) || !(v > 0)) { invalid++; continue; }
+    if (byDay.has(d)) { duplicates++; if (v < byDay.get(d)) byDay.set(d, v); } else byDay.set(d, v);
+  }
+  return { pts: [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0])), invalid, duplicates };
+}
+
 export function histSummary(pid, distrust = null) {
   const h = readJson(histPath(pid), null); if (!h) return null;
   const byDay = {};
-  for (const [sid, s] of Object.entries(h.stores || {})) for (const [d, v] of s.pts) if (trustedPoint(distrust, sid, d) && (!byDay[d] || v < byDay[d])) byDay[d] = v;
+  for (const [sid, s] of Object.entries(h.stores || {})) for (const [d, v] of cleanPoints(s.pts).pts) if (trustedPoint(distrust, sid, d) && (!byDay[d] || v < byDay[d])) byDay[d] = v;
   const days = Object.keys(byDay).sort(); if (!days.length) return null;
   const today = days[days.length - 1]; const cur = byDay[today];
   const cut = day(new Date(Date.parse(today) - 7 * 864e5).toISOString());
   const prev = days.filter((d) => d < today && d >= cut).map((d) => byDay[d]);
   const ref = prev.length ? Math.max(...prev) : null;
-  return { days: days.length, from: days[0], drop7d: ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
+  return { days: days.length, from: days[0], enough: days.length >= MIN_HIST_DAYS, drop7d: ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
 }
