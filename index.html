@@ -2599,7 +2599,7 @@ const refShort=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"Copag":"Mercado";
    antes do frete. O % de reference_comparison é sobre o preço do produto (backend); quando há frete pago, a linha diz isso. */
 const oppTotal=(x)=>(x.shipping==="known"||x.shipping==="free")&&x.total!=null?x.total:x.price;
 function oppShip(x){
-  if(x.shipping==="free"||(x.shipping==="known"&&x.total!=null&&x.total<=x.price))return"Frete grátis";
+  if(x.shipping==="free"||(x.shipping==="known"&&x.total!=null&&x.total===x.price))return"Frete grátis";
   if(x.shipping==="known"&&x.total!=null)return`Produto ${money(x.price)} + frete ${money(x.total-x.price)}${x.reference_comparison?.available?" · % sobre o produto":""}`;
   return"Preço antes do frete";
 }
@@ -2765,7 +2765,7 @@ function ppOppHTML(x,bestId){
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     ${ageHTML(x)}
-    <a class="btn wide" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")} ${ic("arrow-square-out")}</a>
+    <a class="btn wide" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     ${same?"":`<p class="hnote">O menor preço com estoque é outra oferta, logo abaixo. A oportunidade considera preço, referência e confiança, não só o menor valor.</p>`}
   </section>`;
 }
