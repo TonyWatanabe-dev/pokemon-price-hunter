@@ -21,7 +21,7 @@ assert.equal(moneyMean([1190, 1249.9, 1290, 1299, 1299.99, 1350]), 1279.82);
 assert.equal(moneyMean([0.1, 0.2]), 0.15); assert.equal(moneyMedian([1299, 1290]), 1294.5); assert.equal(moneyMedian([0.01, 0.02]), 0.02);
 // parsing de preço dos coletores (brl): BR, internacional, limites e formatos ambíguos
 const { brl: parseBrl } = await import('../src/adapters/common.js');
-for (const [src, want] of [['R$ 339,00', 339], ['R$ 1.234,56', 1234.56], ['1,234.56', 1234.56], ['339.00', 339], ['449.9', 449.9], ['1.500', 1500], ['12', 12], ['R$ 339,00 no Pix', 339], [339, 339], [1.239, 1.24],[0.1 + 0.2, 0.3]]) assert.equal(parseBrl(src), want, String(src));
+for (const [src, want] of [['R$ 339,00', 339], ['R$ 1.234,56', 1234.56], ['1,234.56', 1234.56], ['339.00', 339], ['449.9', 449.9], ['1.500', 1500], ['12', 12], ['R$ 339,00 no Pix', 339], [339, 339], [1.239, 1.24],[0.1 + 0.2, 0.3], ['R$ 1 299,90', 1299.9], ['R$ 1 299,90', 1299.9], ['1 299,90', 1299.9], ['R$ 12 345', 12345]]) assert.equal(parseBrl(src), want, String(src));
 for (const bad of [0, -5, NaN, Infinity, -Infinity, '0', '0,00', '-5,00', 'R$ -10', '10 - 20', '12x de 28,25', '1,5,5', '1.234.56', '1,500', '12,345', 'abc', '', null, undefined]) assert.equal(parseBrl(bad), null, String(bad));
 // âncora do histórico: sem referência e com poucas ofertas, a régua vem das ofertas atuais, não do histórico (que pode ter leituras erradas)
 assert.equal(historyAnchorOf({ currentInStock: [49.9, 118.66], historyPrices: [118.66, 1399, 1795.5, 59.99] }), 84.28);

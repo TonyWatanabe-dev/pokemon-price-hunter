@@ -16,7 +16,8 @@ const MONEY_THOUSANDS = /^\d{1,3}(\.\d{3})+$/;
 export const brl = (s) => {
   if (s == null) return null;
   if (typeof s === 'number') return Number.isFinite(s) && s > 0 ? Math.round(s * 100) / 100 : null;
-  const t = String(s);
+  // milhar separado por espaço, nbsp ou espaço fino ("R$ 1 299,90"): junta antes de contar os valores
+  const t = String(s).replace(/(\d)[   ](?=\d{3}(?:[.,]\d|\D|$))/g, '$1');
   const tokens = t.match(/\d[\d.,]*/g);
   if (!tokens || tokens.length !== 1 || /-\s*\d/.test(t)) return null;
   const n = tokens[0].replace(/[.,]+$/, '');
