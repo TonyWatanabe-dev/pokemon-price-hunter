@@ -445,6 +445,7 @@ a.navbtn{text-decoration:none}
 .so-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
 .so .btn{padding:10px 16px;font-size:14px;flex:none}
 .so-more{margin-top:12px}.so-more summary{font-size:14.5px}
+.so-group{margin:16px 0 8px;font-size:15px}.so-group small{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--muted)}
 .so-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}
 .so-foot>span{display:inline-flex;align-items:center;gap:4px}.so-foot .icon{width:14px;height:14px}
 .card.hist{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4}
@@ -2071,7 +2072,12 @@ function chart(s,msrp,avg,min,max){
 
 /* Página de produto: entender, comparar e decidir */
 let curPid=null;
-const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+/* frete desconhecido não compete pelo menor total (issue #84): sem frete informado, "total" é só o preço e não se compara
+   com um total que já inclui o frete. Ofertas com frete conhecido (ou grátis) vêm antes; as outras, depois, por preço. */
+const shipOk=(o)=>o.shippingKnown===true;
+const shipCmp=(a,b)=>shipOk(b)-shipOk(a);
+const bestOffer=(offers)=>offers.filter(live).sort(OFFER_SORTS.price)[0];
 let offerSort="price";
 function openProduct(pid,{push=true}={}){
   if(!P[pid])return;const path="/produto/"+(SLUG[pid]||encodeURIComponent(pid));
@@ -2088,7 +2094,7 @@ function storeOffer(o,p){
   return`<article class="so${live(o)?"":" dim"}">
     <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
-      <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
+      <p class="so-ship">${shipNote(o)}${shipOk(o)?"":" · frete a calcular"}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
       <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
     <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
   </article>`;
@@ -2097,7 +2103,7 @@ function renderProduct(pid){
   const p=P[pid];
   if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
   const gg=g(p);const offers=OFF.filter((o)=>o.productId===pid).sort(OFFER_SORTS[offerSort]);
-  const best=offers.find(live);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
+  const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
   const c=p.copag||{};const col=(S.collections||[]).find((x)=>x.id===p.collection);
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
@@ -2116,10 +2122,11 @@ function renderProduct(pid){
   </header>
   <aside class="pp-side">
     ${best?`<section class="card buy">
-      <p class="eyebrow">Melhor preço com estoque</p>
+      <p class="eyebrow">${shipOk(best)?"Melhor preço com estoque":"Menor preço com estoque, frete a calcular"}</p>
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
       ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
+      ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
       <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
@@ -2138,9 +2145,13 @@ function renderProduct(pid){
     ${scale}
     <section class="card wbuy" id="ondecomprar"><div class="hhead"><h2>${ic("storefront")}Onde comprar <small>${nLive} com estoque</small></h2>
       <label class="osort"><span class="sr">Ordenar ofertas</span><select id="osort">${[["price","Menor preço"],["score","Melhor oportunidade"],["fresh","Atualização"]].map(([v,l])=>`<option value="${v}"${offerSort===v?" selected":""}>${l}</option>`).join("")}</select></label></div>
-      ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));return`${on.length?`<div class="solist">${on.map((o)=>storeOffer(o,p)).join("")}</div>`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
+      ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));
+        /* "Menor preço": quem tem total com frete conhecido primeiro; frete a calcular num grupo à parte, depois */
+        const sk=offerSort==="price"?on.filter(shipOk):on,su=offerSort==="price"?on.filter((o)=>!shipOk(o)):[];
+        const ls=(xs)=>`<div class="solist">${xs.map((o)=>storeOffer(o,p)).join("")}</div>`;
+        return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
-      <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete.</p></section>
+      <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
