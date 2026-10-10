@@ -1382,6 +1382,14 @@ const SRC={ACTIVE:["ok","Ativa"],BLOCKED:["bad","Bloqueia robôs"],ERROR:["bad",
 let S=null,P={},OFF=[];
 const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:true,q:"",type:"",max:"",below:false},store.get("f",{}));
 const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"#";
+/* Afiliados (docs/afiliados.md): muda só o destino do clique em "Ver oferta". O dado da oferta (o.url), a ordem, a melhor oferta, o preço e a nota não mudam.
+   Só anúncio do Mercado Livre com link próprio (gerado no painel para ESSE anúncio) troca; o resto abre na URL original. AFIL vem de /api/v1/afiliados. */
+let AFIL={anuncios:{},geral:null};
+const AFIL_OK=/^https:\/\/(?:meli\.la|(?:www\.|produto\.)?mercadolivre\.com\.br)\/[^\s"'<>\\]*$/i;
+const mlItem=(u)=>{try{const x=new URL(String(u??"").trim());if(!/^https?:$/.test(x.protocol)||!/^(?:[a-z0-9-]+\.)*mercadoli(?:vre\.com\.br|bre\.com)$/.test(x.hostname))return null;const f=(x.searchParams.get("pdp_filters")||"").match(/item_id:(MLB\d{6,15})\b/i);if(f)return f[1].toUpperCase();const p=x.pathname.match(/^\/MLB-?(\d{6,15})(?:[-_/]|$)/i);return p?"MLB"+p[1]:null}catch{return null}};
+const outUrl=(u)=>{const id=mlItem(u),a=id&&Object.hasOwn(AFIL.anuncios,id)?AFIL.anuncios[id]:null;return typeof a==="string"&&AFIL_OK.test(a)?a:u};
+/* Igual aos links da Amazon: destino de afiliado sai marcado como patrocinado (rel sponsored + nofollow); URL original da loja segue só com noopener. */
+const outRel=(u)=>outUrl(u)!==u?" nofollow sponsored":"";
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
@@ -1559,7 +1567,7 @@ function dealCard(e,opt={}){
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1731,7 +1739,7 @@ function podCardOpp(x,r){
       ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
       <p class="pod-ship">${oppShip(x)}</p>
       <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}${ageHTML(x,"pod-age")}</span>
-        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>${cmpLink(pr)}</div>
+        <a class="pod-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>${cmpLink(pr)}</div>
   </article>`;
 }
 function podiumOppHTML(){
@@ -1945,7 +1953,7 @@ function renderLegal(kind){
   <h3>1. O que é o TCG Price Hunter</h3><p>Um site gratuito que reúne preços de produtos lacrados de Pokémon TCG anunciados em lojas brasileiras e compara com o preço sugerido publicado pela Copag. O site não vende nada, não intermedeia compras e não recebe pagamentos.</p>
   <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente pelo robô. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
   <h3>3. Notas e alertas são opinião automatizada</h3><p>A nota (Opportunity Score), as faixas, a confiança, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
-  <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p><p>Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas. Eles ficam numa área separada, com o preço que a Amazon mostrava na data e hora indicadas, e não entram na comparação de preços, no ranking nem nas notas de oportunidade.</p>
+  <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.${AFIL.geral||Object.keys(AFIL.anuncios).length?" Alguns links do Mercado Livre são links de afiliado: o site pode receber uma comissão do Mercado Livre se você comprar, sem custo a mais para você. Isso não muda a ordem, a melhor oferta, o preço nem a nota.":""}</p><p>Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas. Eles ficam numa área separada, com o preço que a Amazon mostrava na data e hora indicadas, e não entram na comparação de preços, no ranking nem nas notas de oportunidade.</p>
   <h3>5. Marcas</h3><p>O TCG Price Hunter não é afiliado, patrocinado nem endossado pela Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon, os nomes das coleções e as imagens dos produtos pertencem a seus donos e aparecem apenas para identificar os produtos anunciados.</p>
   <h3>6. Lojas</h3><p>O robô respeita o robots.txt de cada site e não tenta contornar bloqueios. <b>Se a sua loja não quiser fazer parte da busca, basta enviar um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a></b> com o endereço do site: a loja é retirada da lista e o robô deixa de visitá-la. O mesmo e-mail serve para corrigir qualquer dado.</p><p>A reputação mostrada ao lado de cada loja vem das páginas públicas do Reclame Aqui, com a data da consulta e o link para a fonte. O TCG Price Hunter não tem ligação com o Reclame Aqui e não altera essas notas.</p>
   <h3>7. Uso do site</h3><p>Você pode usar o site livremente para uso pessoal. Não é permitido usá-lo para atividades ilegais ou para sobrecarregar o serviço.</p>
@@ -2113,7 +2121,7 @@ function storeOffer(o,p){
     <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${shipOk(o)?"":" · frete a calcular"}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
-      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
+      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
     <div class="so-foot"><span>${ic("clock")}${readNote(o)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga: preço pode ter mudado</span>`:""}</div>
   </article>`;
 }
@@ -2152,7 +2160,7 @@ function renderProduct(pid){
       <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
-      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
+      <a class="btn wide" href="${esc(safeUrl(outUrl(best.url)))}" target="_blank" rel="noopener${outRel(best.url)}" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
     ${alertBox(pid)}
   </aside>
@@ -2717,7 +2725,7 @@ function oppCard(x,i,opt={}){
     ${ageHTML(x)}
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
-    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
     ${cmpLink(pr)}
   </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
@@ -2798,7 +2806,7 @@ function ppOppHTML(x,bestId){
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     ${ageHTML(x)}
-    <a class="btn wide" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
+    <a class="btn wide" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     ${same?"":`<p class="hnote">O menor preço com estoque é outra oferta, logo abaixo. A oportunidade considera preço, referência e confiança, não só o menor valor.</p>`}
   </section>`;
 }
@@ -3004,6 +3012,15 @@ async function refresh(opt={}){
   if(!st){if(opt.silent)return;toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
   const novo=!S||st.generatedAt!==S.generatedAt;if(opt.silent&&!novo)return;init(st);if(!opt.silent)toast(novo?"Dados novos carregados":"Já está atualizado. O robô confere as lojas a cada 15 minutos.");
 }
+/* Afiliados: config pública e validada no servidor. Falhou ou veio vazia: tudo abre na URL original, como sem afiliado. */
+async function loadAfil(){try{const r=await fetch("/api/v1/afiliados");if(!r.ok)return;const j=await r.json();
+  const a={};for(const [k,v] of Object.entries(j&&typeof j.anuncios==="object"&&j.anuncios?j.anuncios:{}))if(/^MLB\d{6,15}$/.test(k)&&typeof v==="string"&&AFIL_OK.test(v))a[k]=v;
+  const g=j?.geral&&typeof j.geral.url==="string"&&AFIL_OK.test(j.geral.url)?{url:j.geral.url,rotulo:String(j.geral.rotulo||"Ver mais no Mercado Livre").slice(0,60)}:null;
+  AFIL={anuncios:a,geral:g};if(g)footAfil();if(S&&Object.keys(a).length)render()}catch{}}
+/* Link geral do Mercado Livre: só no rodapé, rotulado, e só com destino confirmado pelo dono (config). Nunca no lugar de um anúncio. */
+function footAfil(){const f=document.querySelector(".foot-links");if(!f||!AFIL.geral||f.querySelector("[data-afil]"))return;
+  f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (link de afiliado, abre em nova aba)</span></a>`)}
+loadAfil();   /* sem await: a página não espera a config */
 async function load(){
   loading();prefetchOpp();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);

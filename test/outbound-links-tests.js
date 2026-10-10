@@ -95,14 +95,19 @@ for (const file of PAGES) {
       assert.match(tag, /^<a\b/i, `${file}: target="_blank" fora de <a>: ${tag}`);
       const rel = tag.match(/\brel\s*=\s*"([^"]*)"|\brel\s*=\s*'([^']*)'/i);
       assert.ok(rel, `${file}: sem rel: ${tag}`);
-      assert.ok((rel[1] ?? rel[2]).toLowerCase().split(/\s+/).includes('noopener'), `${file}: rel sem noopener: ${tag}`);
+      // noopener tem de estar escrito no próprio atributo; uma interpolação (ex.: ${outRel(o.url)}, que só acrescenta
+      // " nofollow sponsored" em link de afiliado) não conta como noopener e é separada dele antes de conferir.
+      assert.ok((rel[1] ?? rel[2]).replace(/\$\{[^}]*\}/g, ' ').toLowerCase().split(/\s+/).includes('noopener'), `${file}: rel sem noopener: ${tag}`);
     }
   });
+  // Afiliado explícito ≠ tracking: o único desvio aceito é outUrl(<url da oferta>) DENTRO de safeUrl — ele troca a URL inteira
+  // pelo link que o dono gerou no painel do ML para aquele anúncio (config/affiliates.json, docs/afiliados.md) ou devolve a
+  // URL original intacta; nunca anexa parâmetro. O comportamento de outUrl é provado em test/affiliate-links-tests.js.
   t(`${file}: link externo em nova aba passa por safeUrl sem nada anexado; interno é caminho fixo do site`, () => {
     for (const m of src.matchAll(BLANK)) {
       const tag = tagAround(src, m.index); const href = tag.match(/\bhref="([^"]*)"/)?.[1];
       assert.ok(href != null, `${file}: sem href: ${tag}`);
-      assert.ok(/^\$\{esc\(safeUrl\([\w.?]+\)\)\}$/.test(href) || /^\/[a-z0-9/-]*$/.test(href), `${file}: href fora do padrão: ${href}`);
+      assert.ok(/^\$\{esc\(safeUrl\([\w.?]+\)\)\}$/.test(href) || /^\$\{esc\(safeUrl\(outUrl\([\w.?]+\)\)\)\}$/.test(href) || /^\/[a-z0-9/-]*$/.test(href), `${file}: href fora do padrão: ${href}`);
     }
   });
   t(`${file}: nenhuma nova aba aberta por script sem noopener`, () => {
@@ -124,7 +129,8 @@ const RULES = [
 ];
 // Exceções justificadas (arquivo + trecho exato + motivo). Hoje vazia: os únicos "afiliado" no código são o aviso legal
 // ("não é afiliado à Nintendo…"), comentários ("sem afiliado") e a categoria de revisão 'affiliate_missing' — nenhum
-// deles casa com as regras acima, que só pegam montagem de URL/parâmetro.
+// deles casa com as regras acima, que só pegam montagem de URL/parâmetro. O suporte a afiliado do Mercado Livre
+// (api/_lib/affiliates.mjs, outUrl em index.html) também não entra aqui: usa o link do painel inteiro, sem montar parâmetro.
 const ALLOW = [];
 const scan = (text) => {
   const hits = [];
@@ -161,3 +167,5 @@ t('src/, api/ e as páginas não anexam parâmetros de tracking a URLs', () => {
 });
 
 console.log(`✓ Links de saída (#116): ${n} grupos passaram (safeUrl real de ${PAGES.length} páginas, rel noopener, sem tracking)`);
+
+await import('./affiliate-links-tests.js');
