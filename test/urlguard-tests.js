@@ -49,3 +49,5 @@ http.setFetch(async () => resp(302, { location: '/loop' }));
 await assert.rejects(http.get('https://c.example/loop'), /Redirecionamentos demais/);
 
 console.log('urlguard-tests: ok');
+// #83: estados de erro e recuperação da UI (registrado aqui para não mexer no script test do package.json)
+await import('./ui-states-tests.js');
