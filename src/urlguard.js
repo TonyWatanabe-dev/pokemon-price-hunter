@@ -21,6 +21,8 @@ export function isPrivateHost(hostname) {
       if (ipv4(mapped[1])) return isPrivateHost(mapped[1]);
       return true; // forma hex do IPv4-mapeado: bloqueia por segurança
     }
+    // NAT64 (64:ff9b::/96) e IPv4 embutido na forma "compatível" (::a9fe:a9fe) apontam para IPv4: bloqueia por segurança
+    if (/^64:ff9b:/.test(h) || /^::[0-9a-f]{1,4}:[0-9a-f]{1,4}$/.test(h)) return true;
     return h === '::' || h === '::1' || /^f[cd]/.test(h) || /^fe[89ab]/.test(h);
   }
   return false;
