@@ -2198,7 +2198,7 @@ function amzRow(l){const when=amzWhen(l.capturedAt);const has=typeof l.price==="
     <a class="btn ghost" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`}
 function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);if(!ls.length)return"";
   return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
-  <p class="hnote">Preço e disponibilidade corretos na data e hora indicadas e podem ter mudado. Confira na Amazon antes de comprar. Link de afiliado: se você comprar, o TCG Price Hunter pode ganhar uma comissão, sem custo a mais para você. Estes anúncios não entram na comparação de preços nem no ranking.</p></section>`}
+  <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
