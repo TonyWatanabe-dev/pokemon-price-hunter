@@ -171,3 +171,6 @@ await t('atividade a partir do histórico: total que cai só porque o frete fico
 });
 
 console.log(`✓ Validade da cotação de frete: ${n} grupos passaram`);
+
+// issue #84 (servidor): a melhor oferta da Home/API/SEO segue o "menor total" comparável (registrado aqui para não mexer no package.json)
+await import('./best-offer-server-tests.js');
