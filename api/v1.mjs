@@ -159,7 +159,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
   u.searchParams.delete('path');
   let rt;
-  try { rt = route(path, u.searchParams); } catch (e) { return send(res, e.status || 400, { error: e.message }, { 'Cache-Control': 'public, max-age=60' }); }
+  try { rt = route(path, u.searchParams); } catch (e) { return send(res, e instanceof HttpError ? e.status : 400, { error: e instanceof HttpError ? e.message : 'pedido inválido' }, { 'Cache-Control': 'public, max-age=60' }); }
   const forced = u.searchParams.get('fonte') === 'state';
   const preferred = !forced && apiDbEnabled() ? 'db' : 'state';
   const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => k !== 'fonte').sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
@@ -182,7 +182,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   }
   try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); } }
   catch (e) {
-    if (e.status) { out = { status: e.status, body: { error: e.message } }; }
+    if (e instanceof HttpError) { out = { status: e.status, body: { error: e.message } }; }   // só mensagens nossas; erro de biblioteca/banco nunca vai ao usuário
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json
       fallback = 'db-indisponivel'; source = 'state';
       // diagnóstico sem segredo: só o código do erro (28P01 senha, XX000 tenant, ENOTFOUND host...) e a mensagem sem a URL
@@ -190,7 +190,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
       const url = process.env.API_DATABASE_URL || ''; let msg = String(e.message || '');
       try { const u = new URL(url); for (const x of [u.password, decodeURIComponent(u.password), u.username, u.hostname]) if (x && x.length > 3) msg = msg.split(x).join('***'); } catch {}
       console.error(`[api/v1] banco indisponível (${reason}): ${msg.slice(0, 200)}`);
-      try { out = await run(rt, 'state'); } catch (e2) { out = e2.status ? { status: e2.status, body: { error: e2.message } } : null; }
+      try { out = await run(rt, 'state'); } catch (e2) { out = e2 instanceof HttpError ? { status: e2.status, body: { error: e2.message } } : null; }
     }
     if (!out) return send(res, 503, { error: 'dados indisponíveis no momento' }, { 'Cache-Control': 'no-store', 'X-Data-Source': 'none' });
   }
