@@ -23,7 +23,8 @@ function backfill(products, storeNames, now) {
     const base = { t: r.t, productId: r.productId, offerId: r.offerId, storeName: storeNames[r.storeId] || r.storeId, to: r.total, msrp: p.msrp ?? null };
     if (!prev) { if (r.t !== firstRun && p.msrp && r.total < p.msrp && plausible(r.total, null, p.msrp)) out.push({ ...base, type: 'new' }); continue; }
     if (prev.stock === 'OUT_OF_STOCK') out.push({ ...base, type: 'restock' });
-    else if (prev.total > 0 && r.total < prev.total && (minPrev == null || r.total < minPrev) && plausible(r.total, prev.total, p.msrp)) out.push({ ...base, type: 'drop', from: prev.total });
+    // Frete que passou a ser desconhecido (cotação vencida ou ausente) baixa o total sem baixar o preço: não é queda.
+    else if (prev.total > 0 && r.total < prev.total && (prev.shipping == null) === (r.shipping == null) && (minPrev == null || r.total < minPrev) && plausible(r.total, prev.total, p.msrp)) out.push({ ...base, type: 'drop', from: prev.total });
   }
   return out;
 }

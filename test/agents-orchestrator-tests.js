@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import { createOrchestrator, PermanentError, backoffMs, PROTECTED_NAMESPACES } from '../src/agents/orchestrator.js';
 import { memoryStore } from '../src/agents/stores.js';
 import { reviewProposeHandler, memoryReviewSink, validateReviewProposal } from '../src/agents/handlers/review-propose.js';
+import { buildEvidence } from '../src/agents/evidence.js';
 
 let n = 0;
 const T0 = Date.parse('2026-10-10T12:00:00Z');
 const clock = () => { let t = T0; return { now: () => new Date(t), advance: (ms) => { t += ms; } }; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const proposal = (k = 'm:1') => ({ category: 'matching', entityType: 'offer', entityId: 'o1', confidence: 62, dedupeKey: k, proposal: { productId: 'me05-etb', reason: 'título ambíguo' } });
+const evidence = buildEvidence({ source: 'state.offers', url: 'https://omni.com.br/o1', reason: 'título ambíguo', basis: 'observado', observedAt: '2026-10-10T11:45:00Z' }, { now: T0 }).evidence;
+const proposal = (k = 'm:1') => ({ category: 'matching', entityType: 'offer', entityId: 'o1', confidence: 62, dedupeKey: k, proposal: { productId: 'me05-etb', evidence } });
 function setup({ handlers, ...o } = {}) {
   const store = memoryStore(); const sink = memoryReviewSink(); const c = clock();
   const orch = createOrchestrator({ store, now: c.now, workerId: 'w1', handlers: handlers ?? [reviewProposeHandler({ sink })], aiEnabled: false, ...o });
@@ -190,15 +192,32 @@ await test('validação do handler de revisão', async () => {
 });
 
 await test('matching sem evidência: falha direto, sem retry e sem item de revisão', async () => {
-  assert.match(validateReviewProposal({ ...proposal(), proposal: { productId: 'me05-etb' } }), /sem evidência/);
-  assert.match(validateReviewProposal({ ...proposal(), proposal: { reason: '  ' } }), /sem evidência/);
+  const v = (inner) => validateReviewProposal({ ...proposal(), proposal: inner }, { now: T0 });
+  // com evidência no contrato (buildEvidence) passa
+  assert.equal(v({ productId: 'me05-etb', evidence }), null);
+  const incompleta = buildEvidence({ ...evidence, observedAt: null }, { now: T0 }).evidence;
+  assert.equal(incompleta.status, 'incompleta'); assert.equal(v({ evidence: incompleta }), null, 'sem horário: passa rotulada incompleta');
+  // sem bloco evidence: recusada, mesmo com campos soltos (url/title/why/reason) que antes bastavam
+  assert.match(v({ productId: 'me05-etb' }), /sem evidência válida: evidência ausente/);
+  assert.match(v({ url: 'https://omni.com.br/o1', title: 'Caixa de Booster', why: 'tipo de produto não identificado', reason: 'título ambíguo' }), /evidência ausente/);
+  assert.match(v({ reason: '  ' }), /sem evidência/);
+  // bloco evidence fora do contrato: recusado
+  assert.match(v({ evidence: { ...evidence, url: 'javascript:alert(1)' } }), /falta url/);
+  assert.match(v({ evidence: { ...evidence, source: '' } }), /falta source/);
+  assert.match(v({ evidence: { ...evidence, basis: 'achismo' } }), /falta basis/);
+  assert.match(v({ evidence: { ...evidence, status: 'incompleta' } }), /status de evidência incoerente/);
+  assert.match(v({ evidence: { ...evidence, observedAt: '2027-01-01T00:00:00Z' } }), /observedAt inválido ou no futuro/);
+  assert.match(v({ evidence: [] }), /evidência ausente/);
+  // outras categorias não exigem o bloco
   assert.equal(validateReviewProposal({ ...proposal(), category: 'store_blocked', proposal: { x: 1 } }), null);
   const { orch, store, sink } = setup();
   await orch.enqueue({ type: 'review.propose', idempotencyKey: 'sem-ev', payload: { ...proposal('m:sem'), proposal: { productId: 'me05-etb' } } });
+  await orch.enqueue({ type: 'review.propose', idempotencyKey: 'com-ev', payload: proposal('m:com') });
   const r = await orch.runOnce();
   assert.equal(r.failed, 1); assert.equal(r.retried, 0);
   assert.equal(store.jobs[0].status, 'failed'); assert.equal(store.jobs[0].attempts, 1);
-  assert.equal(sink.items.length, 0);
+  assert.equal(sink.items.length, 1, 'só a proposta com evidência vira item de revisão');
+  assert.equal(sink.items[0].dedupeKey, 'm:com'); assert.deepEqual(sink.items[0].proposal.evidence, evidence);
 });
 
 console.log(`✓ Hunter Orchestrator: ${n} grupos de testes passaram (puro)`);

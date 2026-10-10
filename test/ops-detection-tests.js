@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import http from 'node:http';
 import { spawn, execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildRunRecord, mergeOps, recordRun, readerSummary, storesSummary, watchedSummary, validRecord, KEEP_RUNS } from '../src/opstate.js';
+import { buildRunRecord, mergeOps, recordRun, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, safeReason, validRecord, KEEP_RUNS } from '../src/opstate.js';
 import { readDbHealth, syncStatus } from '../src/db-health.js';
 import { evaluate, decide, commitLedger, RULES } from '../src/ops-watch.js';
 import { sendAll } from '../src/ops-notify.js';
@@ -341,6 +341,61 @@ if (DBURL) {
     } finally { await c.end(); await admin.query(`DROP DATABASE IF EXISTS ${name}`); await admin.end(); }
   });
 } else console.log('(sem TEST_DATABASE_URL: teste 19, de PostgreSQL, pulado)');
+
+// ------------------------------------------------------------------ coletores: duração, classe de erro, vazio x falha
+await t('20. classe de erro e motivo seguro (sem token, cookie, e-mail nem query string)', () => {
+  assert.equal(classifyError(Object.assign(new Error('x'), { blocked: true, status: 403 })), 'bloqueio');
+  assert.equal(classifyError(Object.assign(new Error('Timeout em loja.com'), { status: 0 })), 'timeout');
+  assert.equal(classifyError(Object.assign(new Error('HTTP 503'), { status: 503 })), 'http_5xx');
+  assert.equal(classifyError(Object.assign(new Error('HTTP 404'), { status: 404 })), 'http_4xx');
+  assert.equal(classifyError(Object.assign(new Error('plataforma não reconhecida'), { status: 'platform' })), 'plataforma');
+  assert.equal(classifyError(Object.assign(new Error('fetch failed'), { code: 'ENOTFOUND' })), 'rede');
+  assert.equal(classifyError(new SyntaxError('Unexpected token < in JSON')), 'parse');
+  assert.equal(classifyError(new Error('???')), 'outro');
+  const s = safeReason('HTTP 500 em https://loja.com/api?token=SEGREDO123&x=1 Bearer ABCSECRET cookie: sessao=ZZZ fulano@mail.com postgres://u:SENHA@h/db');
+  assert.ok(!/SEGREDO123|ABCSECRET|ZZZ|fulano@|SENHA|postgres:\/\//.test(s), s);
+  assert.ok(s.includes('https://loja.com/api'), 'mantém o endereço sem a query');
+  assert.equal(safeReason(null), null);
+});
+
+const src = (o) => ({ lastCheck: NOW, lastDurationMs: 100, ...o });
+await t('21. vazio legítimo não é falha; falha parcial é contada por classe; duração agregada', () => {
+  const c = collectorsSummary({
+    a: src({ status: 'ACTIVE', listings: 5, lastNonEmpty: NOW, lastDurationMs: 400 }),
+    b: src({ status: 'ACTIVE', listings: 0, lastNonEmpty: null }),                    // nunca teve anúncio: vazio legítimo
+    c: src({ status: 'ACTIVE', listings: 0, lastNonEmpty: iso(NOW, -60) }),           // já teve e zerou: suspeito, mas não é falha
+    d: src({ status: 'ERROR', errorClass: 'timeout', lastDurationMs: 10000 }),
+    e: src({ status: 'BLOCKED', errorClass: 'bloqueio' }),
+    f: { status: 'ACTIVE', listings: 9, lastCheck: iso(NOW, -15), lastDurationMs: 50 },  // não tentada nesta rodada
+    g: { status: 'PAUSED' },
+  }, NOW);
+  assert.deepEqual({ tried: c.tried, ok: c.ok, failed: c.failed, empty: c.empty, suspectEmpty: c.suspectEmpty, listings: c.listings, totalMs: c.totalMs },
+    { tried: 5, ok: 3, failed: 2, empty: 2, suspectEmpty: 1, listings: 5, totalMs: 10700 });
+  assert.deepEqual(c.errors, { timeout: 1, bloqueio: 1 });
+  assert.equal(c.slowest[0].id, 'd');
+  const r = rec({ at: NOW }); const withC = buildRunRecord({ env: {}, startedAt: NOW, finishedAt: NOW, generatedAt: NOW, reader: r.reader, dbSync: r.dbSync, stores: r.stores, collectors: c, offers: 1 });
+  assert.equal(withC.health, 'saudavel', 'falha parcial e vazio não derrubam a saúde da rodada');
+});
+
+await t('22. execução vazia (nenhum coletor tentado) não é falha; todos falharam é degradado; recuperação volta a saudável', () => {
+  const mk = (collectors, at) => buildRunRecord({ env: { GITHUB_RUN_ID: at }, startedAt: at, finishedAt: at, generatedAt: at, reader: { status: 'ok', valid: 5, read: 5, reason: null },
+    dbSync: syncStatus({ status: 'ok', lastSeenAt: iso(at, -15), engineAt: iso(at, -15) }, iso(at, -15)), stores: storesSummary({}), collectors, offers: 0 });
+  assert.equal(mk(collectorsSummary({}, NOW), NOW).health, 'saudavel', 'sem nada tentado (backoff/prazo): não é falha');
+  const allBad = collectorsSummary({ a: src({ status: 'ERROR', errorClass: 'rede' }), b: src({ status: 'BLOCKED', errorClass: 'bloqueio' }) }, NOW);
+  const bad = mk(allBad, NOW);
+  assert.equal(bad.health, 'degradado'); assert.deepEqual(bad.issues, ['coletores_todos_falharam']);
+  const at2 = iso(NOW, 15);
+  const good = mk(collectorsSummary({ a: { ...src({ status: 'ACTIVE', listings: 3 }), lastCheck: at2 } }, at2), at2);
+  const meta = metaOf(bad, good);
+  assert.equal(meta.ops.last.health, 'saudavel'); assert.equal(meta.ops.lastHealthy.runId, at2);
+  assert.ok(!/SEGREDO|token=/.test(JSON.stringify(meta)));
+});
+
+await t('23. motor parado: dados velhos viram "parado" mesmo com o último registro saudável', () => {
+  const r = rec({ at: iso(NOW, -90) });
+  const ev = evaluate({ now: NOW, stateGeneratedAt: iso(NOW, -90), meta: metaOf(r), runs: okRuns(iso(NOW, -90), 1) });
+  assert.equal(ev.status, 'parado');
+});
 
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log(`✓ Detecção operacional (Lote 1): ${n} grupos de testes passaram${DBURL ? ' (puro + banco)' : ' (puro)'}`);

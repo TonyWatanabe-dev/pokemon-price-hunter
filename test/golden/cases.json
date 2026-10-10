@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "synthetic": true,
+    "note": "Casos sintéticos escritos à mão para regressão offline. Não são dados de produção nem medem desempenho real. Sem dados pessoais, credenciais ou lojas reais (hosts .invalid)."
+  },
+  "catalog": {
+    "collections": [
+      { "id": "alfa", "name": "Alfa", "aliases": ["alfa"] },
+      { "id": "beta", "name": "Beta", "aliases": ["beta"] },
+      { "id": "gama", "name": "Gama", "aliases": ["gama"], "fallbackAliases": ["sombras"] }
+    ],
+    "products": [
+      { "id": "alfa-box36", "collection": "alfa", "type": "booster_box", "boosters": 36, "ean": "7890000000001" }
+    ]
+  },
+  "matching": [
+    { "id": "M01-box36-correto", "listing": { "title": "Pokémon TCG Alfa Booster Box 36 Boosters Lacrado", "url": "https://loja-exemplo.invalid/p/1", "store": "loja-a" }, "expect": { "productId": "alfa-box36", "review": null } },
+    { "id": "M02-etb-correto", "listing": { "title": "Pokémon TCG Beta Treinador Avançado Original", "url": "https://loja-exemplo.invalid/p/2", "store": "loja-a" }, "expect": { "productId": "beta-etb", "review": null } },
+    { "id": "M03-box18-nao-vira-36", "listing": { "title": "Pokémon Alfa Booster Box 18 Boosters", "url": "https://loja-exemplo.invalid/p/3", "store": "loja-a" }, "expect": { "productId": "alfa-box18", "review": null } },
+    { "id": "M04-acessorio-recusado", "listing": { "title": "Sleeves Pokémon Alfa 65 unidades", "url": "https://loja-exemplo.invalid/p/4", "store": "loja-a" }, "expect": { "productId": null, "review": null } },
+    { "id": "M05-idioma-recusado", "listing": { "title": "Pokemon TCG Alfa Booster Box 36 Boosters English", "url": "https://loja-exemplo.invalid/p/5", "store": "loja-a" }, "expect": { "productId": null, "review": null } },
+    { "id": "M06-usado-recusado", "listing": { "title": "Pokémon Alfa Treinador Avançado aberto", "url": "https://loja-exemplo.invalid/p/6", "store": "loja-a" }, "expect": { "productId": null, "review": null } },
+    { "id": "M07-kit-da-loja-recusado", "listing": { "title": "Kit 4 Booster Box Alfa Pokémon", "url": "https://loja-exemplo.invalid/p/7", "store": "loja-a" }, "expect": { "productId": null, "review": null } },
+    { "id": "M08-fora-do-tema", "listing": { "title": "Boneco Super Herói Colecionável", "url": "https://loja-exemplo.invalid/p/8", "store": "loja-a" }, "expect": { "productId": null, "review": null } },
+    { "id": "M09-duas-colecoes-pede-revisao", "listing": { "title": "Pokémon Alfa e Beta Booster Box 36 Boosters", "url": "https://loja-exemplo.invalid/p/9", "store": "loja-a" }, "expect": { "productId": null, "review": "colecao_ambigua" } },
+    { "id": "M10-tipo-desconhecido-pede-revisao", "listing": { "title": "Pokémon TCG Alfa Surpresa Lacrado", "url": "https://loja-exemplo.invalid/p/10", "store": "loja-a" }, "expect": { "productId": null, "review": "tipo_desconhecido" } },
+    { "id": "M11-sem-boosters-pede-revisao", "listing": { "title": "Pokémon TCG Alfa Booster Box Lacrado", "url": "https://loja-exemplo.invalid/p/11", "store": "loja-a" }, "expect": { "productId": null, "review": "boosters_desconhecidos" } },
+    { "id": "M12-ean-diverge-pede-revisao", "listing": { "title": "Pokémon TCG Alfa Booster Box 36 Boosters Lacrado", "url": "https://loja-exemplo.invalid/p/12", "store": "loja-b", "ean": "7890000000999" }, "expect": { "productId": null, "review": "ean_divergente" } },
+    { "id": "M13-ean-vence-titulo-vago", "listing": { "title": "Pokémon Alfa Surpresa", "url": "https://loja-exemplo.invalid/p/13", "store": "loja-b", "ean": "7890000000001" }, "expect": { "productId": "alfa-box36", "review": null } },
+    { "id": "M14-baixa-confianca-pede-revisao", "listing": { "title": "Pokémon Sombras Box Display", "url": "https://loja-exemplo.invalid/p/14", "store": "loja-b" }, "expect": { "productId": "gama-box36", "review": "baixa_confianca" } },
+    { "id": "M15-colecao-nao-identificada-sem-revisao", "listing": { "title": "Pokémon TCG Treinador Avançado Lacrado", "url": "https://loja-exemplo.invalid/p/15", "store": "loja-b" }, "expect": { "productId": null, "review": null } }
+  ],
+  "opportunity": [
+    { "id": "P01-preco-otimo", "area": "preco", "offer": { "price": 300, "total_price": 300 }, "expect": { "minScore": 85, "review": false, "notWarnings": ["ANOMALY", "TOO_GOOD"] } },
+    { "id": "P02-muito-acima-da-referencia", "area": "preco", "offer": { "price": 620, "total_price": 620 }, "expect": { "maxScore": 49, "caps": ["far_above_reference"], "review": false } },
+    { "id": "P03-pouco-acima-da-referencia", "area": "preco", "offer": { "price": 420, "total_price": 420 }, "expect": { "maxScore": 74, "caps": ["above_reference"], "review": false } },
+    { "id": "P04-bom-demais-pede-revisao", "area": "preco", "offer": { "price": 230, "total_price": 230 }, "expect": { "maxScore": 89, "caps": ["too_good"], "warnings": ["TOO_GOOD"], "review": true } },
+    { "id": "P05-anomalia-pede-revisao", "area": "preco", "offer": { "price": 120, "total_price": 120 }, "expect": { "maxScore": 49, "caps": ["anomaly"], "warnings": ["ANOMALY"], "review": true } },
+    { "id": "P06-sem-referencia-atual", "area": "preco", "stats": { "reference_price": null, "reference_kind": null, "reference_status": null }, "expect": { "warnings": ["NO_CURRENT_REFERENCE"], "review": false } },
+    { "id": "P07-queda-nao-confirmada-pede-revisao", "area": "preco", "offer": { "confirmed": false }, "expect": { "maxScore": 74, "caps": ["unconfirmed"], "warnings": ["UNCONFIRMED"], "review": true } },
+    { "id": "F01-frete-gratis", "area": "frete", "offer": { "shipping_status": "free" }, "expect": { "freightSignal": [1, 1], "reasons": ["FREE_SHIPPING"], "review": false } },
+    { "id": "F02-frete-desconhecido-nunca-zero", "area": "frete", "offer": { "shipping_status": "unknown", "shipping_price": null, "total_price": null }, "expect": { "freightSignal": null, "warnings": ["UNKNOWN_FREIGHT"], "review": false } },
+    { "id": "F03-frete-pesado", "area": "frete", "offer": { "shipping_status": "known", "shipping_price": 60, "total_price": 360 }, "expect": { "freightSignal": [0.01, 0.39], "reasons": ["HEAVY_SHIPPING"], "review": false } },
+    { "id": "F04-frete-conhecido-sem-valor", "area": "frete", "offer": { "shipping_status": "known", "shipping_price": null, "total_price": null }, "expect": { "freightSignal": null, "warnings": ["UNKNOWN_FREIGHT"], "review": false } },
+    { "id": "E01-em-estoque", "area": "estoque", "offer": { "stock_status": "in_stock" }, "expect": { "reasons": ["IN_STOCK"], "notCaps": ["out_of_stock", "preorder", "stock_unknown"], "review": false } },
+    { "id": "E02-sem-estoque", "area": "estoque", "offer": { "stock_status": "out_of_stock" }, "expect": { "maxScore": 30, "caps": ["out_of_stock"], "warnings": ["OUT_OF_STOCK"], "review": false } },
+    { "id": "E03-pre-venda", "area": "estoque", "offer": { "stock_status": "preorder" }, "expect": { "maxScore": 60, "caps": ["preorder"], "warnings": ["PREORDER"], "review": false } },
+    { "id": "E04-estoque-desconhecido", "area": "estoque", "offer": { "stock_status": "unknown" }, "expect": { "maxScore": 70, "caps": ["stock_unknown"], "warnings": ["UNCERTAIN_STOCK"], "review": false } },
+    { "id": "E05-loja-nao-lida-recentemente", "area": "estoque", "offer": { "status": "pending" }, "expect": { "maxScore": 40, "caps": ["pending"], "warnings": ["STALE"], "review": false } }
+  ]
+}
