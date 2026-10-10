@@ -17,7 +17,12 @@ const REJECT = [
 // "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
 const LOOSE_BINDER = (t) => /\b(pasta|fichario|binder)\b/.test(t) && !/\b(colecao|box|caixa|boosters?|pacotes?)\b/.test(t);
 // Várias unidades no mesmo anúncio: "10 unidades", "2 Box ...", "Kit 3 Blister ...", "Kit 2". "Kit 6 Boosters" segue sendo combo.
-const MULTI_UNIT = /^([2-9]|1\d) ?x? (box|boxes|caixas?|blisters?|latas?|minilatas?|baralhos?|colecoes|treinadore?s?|etbs?)\b|\bkit (de )?([2-9]|1\d)\b(?! ?(boosters?|pacotes?|envelopes?|cartas|cards))|\bbundle\b/;
+const MULTI_UNIT = /^([2-9]|1\d) ?x? (box|boxes|caixas?|blisters?|latas?|minilatas?|baralhos?|colecoes|treinadore?s?|etbs?)\b|\bkit (de )?([2-9]|1\d)\b(?! ?(boosters?|pacotes?|envelopes?|cartas|cards))/;
+// "Bundle" é lote, exceto no combo com a contagem de boosters escrita no título: "Combo de Booster / Bundle (18 Boosters)".
+const BUNDLE = /\bbundle\b/;
+const bundleIsCombo = (d) => d.type === 'combo' && d.boosters > 0 && !d.inferred;
+// "Box + Fichário", "Box ... + Poster": o acessório depois do "+" é parte da própria coleção com fichário/pôster.
+const OWN_ACCESSORY = { colecao_fichario: /^(com )?(fichario|binder)\b/, colecao_poster: /^(com )?poster\b/ };
 const UNITS = /\b(\d{1,3}) ?(unidades|unidade|unids?|unds?|un)\b/;
 
 // Idioma só por evidência explícita no título (palavra ou abreviação). Nunca pelo nome/domínio da loja
@@ -186,10 +191,10 @@ export function parseListing(title, catalog) {
   // "N unidades" só é a contagem de boosters quando é o próprio conteúdo ("Booster Box 36 unidades"); senão é lote.
   const units = Number(t.match(UNITS)?.[1] || 0);
   const isContent = (d.type === 'booster_box' || d.type === 'combo') && (d.boosters === units || (d.boosters == null && units >= 6));
-  if (!reasons.some((r) => /várias unidades/.test(r)) && (MULTI_UNIT.test(t) || (units >= 2 && !isContent) || (d.type === 'booster_pack' && (detectBoosters(tt).count || 1) > 1)))
+  if (!reasons.some((r) => /várias unidades/.test(r)) && (MULTI_UNIT.test(t) || (BUNDLE.test(t) && !bundleIsCombo(d)) || (units >= 2 && !isContent) || (d.type === 'booster_pack' && (detectBoosters(tt).count || 1) > 1)))
     reasons.push('kit montado pela loja ou caixa com várias unidades');
   // "Booster Box ... + Box Treinador Avançado": dois produtos no mesmo anúncio ("+" some na normalização, por isso o título original).
-  if (String(title).split('+').slice(1).some((s) => detectType(normalize(s)).type)) reasons.push('mais de um produto no mesmo anúncio');
+  if (String(title).split('+').slice(1).some((s) => { const n = normalize(s); return detectType(n).type && !OWN_ACCESSORY[d.type]?.test(n); })) reasons.push('mais de um produto no mesmo anúncio');
   return { normalized: t, collection: col.id, collectionFallback: !!col.fallback, type: d.type, boosters: d.boosters, boostersInferred: d.inferred, variant: d.variant, language, preorder: detectStock(t) === 'PRE_ORDER', rejects: reasons };
 }
 
