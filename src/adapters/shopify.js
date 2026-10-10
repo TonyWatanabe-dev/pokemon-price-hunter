@@ -1,5 +1,5 @@
-// Shopify: busca preditiva (leve) com fallback para /products.json paginado.
-import { getJson } from '../http.js';
+// Shopify: /products.json paginado (no máximo 3 páginas) com fallback para a busca preditiva.
+import { getJson, netCode } from '../http.js';
 import { guard, brl, searchTerms } from './common.js';
 
 export async function detect(base) {
@@ -23,28 +23,34 @@ function toListing(base, p, v, multi) {
   };
 }
 
+const add = (out, base, p) => {
+  const vs = p?.variants?.length ? p.variants : [{ price: p?.price, available: p?.available }];
+  for (const v of vs) { const l = toListing(base, p, v, vs.length > 1); if (l) out.set(l.url, l); }
+};
+
+// Volume: o catálogo público inteiro em 1 a 3 páginas de 250 (antes, uma busca preditiva por coleção do catálogo: 24
+// por loja a cada rodada, o que levava a borda da Shopify a devolver 429 para várias lojas de uma vez).
+export const MAX_PAGES = 3; const PAGE = 250;
 export async function search(store, catalog) {
   const base = store.url.replace(/\/$/, ''); const out = new Map();
-  let suggestWorks = true;
+  let catalogWorks = true;
+  for (let page = 1; page <= MAX_PAGES; page++) {
+    const url = `${base}/products.json?limit=${PAGE}&page=${page}`; await guard(url);
+    let products;
+    try { products = (await getJson(url))?.products; }
+    // bloqueio, rede/timeout ou falha no meio da paginação: para aqui (nunca vira nova tentativa por outra rota)
+    catch (e) { if (e.blocked || page > 1 || netCode(e)) throw e; catalogWorks = false; break; }
+    if (!Array.isArray(products) || (page === 1 && !products.length)) { if (page === 1) catalogWorks = false; break; }
+    for (const p of products) if (/pok[eé]mon/i.test(`${p?.title} ${p?.product_type} ${p?.tags} ${p?.vendor}`)) add(out, base, p);
+    if (products.length < PAGE) break; // última página: não pede a vazia
+  }
+  if (catalogWorks) return [...out.values()];
+  // Só quando o catálogo público não existe (404, HTML, vazio): busca preditiva, uma por coleção, parando no 1º erro.
   for (const term of searchTerms(catalog)) {
     const url = `${base}/search/suggest.json?q=${encodeURIComponent(term)}&resources[type]=product&resources[limit]=10`;
     await guard(url);
-    try {
-      const j = await getJson(url);
-      for (const p of j?.resources?.results?.products || []) {
-        const vs = p.variants?.length ? p.variants : [{ price: p.price, available: p.available }];
-        for (const v of vs) { const l = toListing(base, p, v, vs.length > 1); if (l) out.set(l.url, l); }
-      }
-    } catch (e) { if (e.blocked) throw e; suggestWorks = false; break; }
-  }
-  if (suggestWorks) return [...out.values()];
-  for (let page = 1; page <= 8; page++) {
-    const url = `${base}/products.json?limit=250&page=${page}`; await guard(url);
-    const { products = [] } = await getJson(url); if (!products.length) break;
-    for (const p of products) {
-      if (!/pok[eé]mon/i.test(`${p.title} ${p.product_type} ${p.tags} ${p.vendor}`)) continue;
-      for (const v of p.variants || []) { const l = toListing(base, p, v, p.variants.length > 1); if (l) out.set(l.url, l); }
-    }
+    const j = await getJson(url);
+    for (const p of j?.resources?.results?.products || []) add(out, base, p);
   }
   return [...out.values()];
 }

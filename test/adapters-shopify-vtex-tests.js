@@ -26,7 +26,8 @@ const store = (host, handle, robots) => { routes[host] = { handle, robots }; cal
 const failure = async (p) => { try { await p; } catch (e) { return e; } return assert.fail('devia falhar'); };
 const isHttp = (u) => /^https?:\/\/[^\s]+$/.test(u);
 
-// ---------- fixtures Shopify (/search/suggest.json e /products.json)
+// ---------- fixtures Shopify (/products.json e /search/suggest.json). shSearch serve o corpo no formato da busca
+// preditiva em todas as rotas: /products.json sem "products" cai para a busca, e o anúncio extraído é o mesmo.
 const shVariant = (x = {}) => ({ id: 11, title: 'Default Title', price: '359.90', compare_at_price: '449.90', available: true, sku: 'SH-1', barcode: '7891234567890', ...x });
 const shProduct = (x = {}) => ({ title: 'Pokémon Booster Box Caos Ascendente 36 Boosters Copag', handle: 'box-caos', url: '/products/box-caos?_pos=1&_sid=abc', variants: [shVariant()], ...x });
 const suggest = (...products) => ({ resources: { results: { products } } });
@@ -81,12 +82,16 @@ await t('Shopify: produto indisponível', async () => {
 });
 
 await t('Shopify: JSON inválido ou HTML inesperado', async () => {
-  // busca preditiva devolve HTML: cai para /products.json (uma página), que traz o produto
+  // /products.json é a rota principal (1 a 3 páginas); a busca preditiva nem é chamada quando ele responde
   const fallback = { products: [{ title: 'Pokémon Box Caos Ascendente Copag', handle: 'box-caos', variants: [shVariant()] }, { title: 'Camiseta', handle: 'camiseta', variants: [shVariant({ price: '50' })] }] };
   const s1 = store('sh-html.test', (u) => (u.pathname === '/search/suggest.json' ? html('<html><body>Loja</body></html>') : u.searchParams.get('page') === '1' ? json(fallback) : json({ products: [] })));
   const L = await shopify.search(s1, catalog);
   assert.deepEqual(L.map((l) => [l.url, l.price.base]), [['https://sh-html.test/products/box-caos', 359.9]], 'só o produto Pokémon do catálogo completo');
-  assert.deepEqual(calls, ['sh-html.test/search/suggest.json', 'sh-html.test/products.json', 'sh-html.test/products.json'], 'catálogo lido até a página vazia');
+  assert.deepEqual(calls, ['sh-html.test/products.json'], 'página menor que 250: uma requisição, sem pedir a página vazia');
+  // /products.json devolve HTML: cai para a busca preditiva, que traz o produto
+  const s3 = store('sh-html2.test', (u) => (u.pathname === '/products.json' ? html('<html><body>Loja</body></html>') : json(suggest(shProduct()))));
+  assert.deepEqual((await shopify.search(s3, catalog)).map((l) => l.url), ['https://sh-html2.test/products/box-caos']);
+  assert.deepEqual(calls, ['sh-html2.test/products.json', 'sh-html2.test/search/suggest.json']);
   // as duas rotas devolvem HTML/JSON quebrado: falha explícita (não é bloqueio), sem oferta parcial e sem repetir
   const s2 = store('sh-lixo.test', (u) => (u.pathname === '/search/suggest.json' ? html('{"resources": [quebrado') : html('<html>manutenção</html>')));
   const e = await failure(shopify.search(s2, catalog));
@@ -101,10 +106,10 @@ await t('Shopify: bloqueio vira erro explícito, sem nova tentativa', async () =
     const host = `sh-${status}.test`;
     const e = await failure(shopify.search(store(host, () => html('Too Many Requests', status)), catalog));
     assert.ok(e instanceof http.BlockedError && e.blocked && e.status === status, `${status}: BlockedError`);
-    assert.deepEqual(calls, [host + '/search/suggest.json'], `${status}: uma requisição, sem cair para /products.json`);
+    assert.deepEqual(calls, [host + '/products.json'], `${status}: uma requisição, sem cair para a busca preditiva`);
   }
-  // bloqueio no catálogo completo (após a busca preditiva falhar) também para na hora
-  const e = await failure(shopify.search(store('sh-429-fallback.test', (u) => (u.pathname === '/search/suggest.json' ? html('erro', 500) : html('', 429))), catalog));
+  // bloqueio na busca preditiva (após o catálogo completo falhar) também para na hora
+  const e = await failure(shopify.search(store('sh-429-fallback.test', (u) => (u.pathname === '/products.json' ? html('erro', 500) : html('', 429))), catalog));
   assert.ok(e.blocked && e.status === 429); assert.equal(calls.length, 2);
   // robots.txt barrado (403): nenhuma busca é feita
   const r = await failure(shopify.search(store('sh-robots.test', () => json(suggest(shProduct())), () => html('Forbidden', 403)), catalog));
@@ -216,3 +221,4 @@ await t('sem título/nome do produto: não vira oferta "undefined"', async () =>
 
 http.setFetch(globalThis.fetch);
 console.log(`✓ Adaptadores Shopify e VTEX (fixtures locais): ${n} grupos de testes passaram`);
+await import('./store-blocking-tests.js');
