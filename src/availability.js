@@ -1,8 +1,9 @@
 // Disponibilidade: pré-venda não é estoque para envio imediato. Funções puras, para testar isoladas.
 // Estados do robô: IN_STOCK, OUT_OF_STOCK, PRE_ORDER, UNAVAILABLE (descontinuado/só na loja física), UNKNOWN.
 
-/** Reposição = voltou de esgotado/indisponível/desconhecido para em estoque. Pré-venda que vira estoque é lançamento, não restock. */
-export const isRestock = (prevStock, nextStock) => nextStock === 'IN_STOCK' && !!prevStock && prevStock !== 'IN_STOCK' && prevStock !== 'PRE_ORDER';
+/** Reposição = voltou de esgotado/indisponível para em estoque. Pré-venda que vira estoque é lançamento, não restock.
+ *  Desconhecido que vira estoque também não é restock: unknown não vira in/out (não há prova de que estava esgotado). */
+export const isRestock = (prevStock, nextStock) => nextStock === 'IN_STOCK' && !!prevStock && prevStock !== 'IN_STOCK' && prevStock !== 'PRE_ORDER' && prevStock !== 'UNKNOWN';
 
 /** Pré-venda que passou a estoque: mudança de estado registrada no histórico, sem alerta de reposição. */
 export const isLaunch = (prevStock, nextStock) => prevStock === 'PRE_ORDER' && nextStock === 'IN_STOCK';

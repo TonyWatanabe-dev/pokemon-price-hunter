@@ -15,7 +15,7 @@ Pré-venda nunca entra em `liveForScore`, em alertas (`eligible` exige `IN_STOCK
 ## Entregue nesta mudança (sem alterar esquema)
 
 - `src/availability.js`: `isRestock` (pré-venda → estoque é lançamento, não restock), `releaseDateOf`/`availableFromOf` (só data completa AAAA-MM-DD informada pela loja; descartada fora de pré-venda).
-- `run.js`: evento `restock` deixa de disparar quando a leitura anterior era pré-venda.
+- `run.js`: evento `restock` deixa de disparar quando a leitura anterior era pré-venda ou desconhecida (`UNKNOWN`: unknown não vira in/out).
 - JSON-LD: `offers.availabilityStarts` vira `availableFrom` no estado (`state.json`), apenas em pré-venda. Nada é inferido de texto livre.
 
 ## Proposta compatível para o banco (não aplicada)

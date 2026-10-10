@@ -12,6 +12,7 @@ t('pré-venda -> estoque não é restock, é lançamento', () => { assert.equal(
 t('estoque -> pré-venda e estoque -> estoque não são restock', () => { assert.equal(isRestock('IN_STOCK', 'PRE_ORDER'), false); assert.equal(isRestock('IN_STOCK', 'IN_STOCK'), false); });
 t('oferta nova (sem leitura anterior) não é restock', () => { assert.equal(isRestock(undefined, 'IN_STOCK'), false); });
 t('pré-venda -> esgotado não é restock', () => { assert.equal(isRestock('PRE_ORDER', 'OUT_OF_STOCK'), false); });
+t('desconhecido -> estoque não é restock (unknown não vira in/out)', () => { assert.equal(isRestock('UNKNOWN', 'IN_STOCK'), false); });
 
 t('data prevista: só data completa e válida', () => {
   assert.equal(releaseDateOf('2026-11-20'), '2026-11-20');
