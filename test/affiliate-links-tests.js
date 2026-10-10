@@ -113,7 +113,7 @@ const html = read('index.html');
 const line = (name) => { const m = html.match(new RegExp(`^(?:const|let) ${name}\\s*=.*$`, 'm')); assert.ok(m, `index.html: ${name} não encontrado`); return m[0]; };
 const page = (anuncios = {}) => {
   const ctx = { String, RegExp, URL, Object }; vm.createContext(ctx);
-  vm.runInContext(`${line('esc')}\n${line('safeUrl')}\n${line('AFIL')}\n${line('AFIL_OK')}\n${line('mlItem')}\n${line('outUrl')}\n;AFIL.anuncios=${JSON.stringify(anuncios)};globalThis.__t={esc,safeUrl,outUrl,mlItem,AFIL};`, ctx);
+  vm.runInContext(`${line('esc')}\n${line('safeUrl')}\n${line('AFIL')}\n${line('AFIL_OK')}\n${line('mlItem')}\n${line('outUrl')}\n${line('outRel')}\n;AFIL.anuncios=${JSON.stringify(anuncios)};globalThis.__t={esc,safeUrl,outUrl,outRel,mlItem,AFIL};`, ctx);
   return ctx.__t;
 };
 
@@ -142,16 +142,27 @@ await t('página: mapa adulterado no navegador não leva a destino fora do ML', 
   assert.equal(o2(ML_ITEM), ML_ITEM); assert.equal(safeUrl(o2('x')), '#');
 });
 
+await t('página: link de afiliado sai com rel sponsored (como os da Amazon); URL original da loja só com noopener', () => {
+  const { outRel } = page(publicAffiliates(CFG).anuncios);
+  for (const u of [ML_ITEM, ML_PDP]) assert.equal(` rel="noopener${outRel(u)}"`, ' rel="noopener nofollow sponsored"', u);
+  for (const u of [ML_SEM_MAPA, ML_CATALOGO, OUTRA, OUTRA_COM_MLB, 'javascript:alert(1)', '', null, undefined]) assert.equal(outRel(u), '', String(u));
+  const { outRel: semConfig } = page();
+  for (const u of [ML_PDP, ML_ITEM, OUTRA]) assert.equal(semConfig(u), '', 'sem config: nada muda no rel');
+  // mesmo marcador do bloco "Também na Amazon" (#194)
+  assert.match(html, /rel="noopener nofollow sponsored">Ver na Amazon/);
+});
+
 await t('página: só os botões de oferta passam por outUrl, sempre dentro de safeUrl, com nova aba, noopener e texto .sr', () => {
   const uses = [...html.matchAll(/outUrl\(/g)].length;
-  const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best)\.url\)\)\)\}" target="_blank" rel="noopener"/g)].length;
-  assert.equal(inHref, 6, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade)');
-  assert.equal(uses, inHref, 'outUrl só é chamado dentro de safeUrl nos hrefs');
-  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 1, 'mais a definição; nenhum outro uso');
+  const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best)\.url\)\)\)\}" target="_blank" rel="noopener\$\{outRel\(\1\.url\)\}"/g)].length;
+  assert.equal(inHref, 6, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade), cada um com rel do mesmo destino');
+  assert.equal([...html.matchAll(/\boutRel\(/g)].length, inHref, 'outRel só nos botões de oferta');
+  assert.equal(uses, inHref + 1, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel)');
+  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 2, 'mais a definição e o uso em outRel; nenhum outro uso');
   for (const m of html.matchAll(/<a [^>]*href="\$\{esc\(safeUrl\(outUrl\([^"]*"[\s\S]{0,400}?<\/a>/g)) assert.match(m[0], /<span class="sr">[^<]*abre em nova aba\)<\/span>/, m[0].slice(0, 120));
   // link geral: só no rodapé, rotulado como afiliado e só com destino confirmado (geral != null)
   assert.match(html, /function footAfil\(\)\{[^\n]*if\(!f\|\|!AFIL\.geral/);
-  assert.match(html, /href="\$\{esc\(safeUrl\(AFIL\.geral\.url\)\)\}" target="_blank" rel="noopener" data-afil>\$\{esc\(AFIL\.geral\.rotulo\)\}<span class="sr"> \(link de afiliado, abre em nova aba\)<\/span>/);
+  assert.match(html, /href="\$\{esc\(safeUrl\(AFIL\.geral\.url\)\)\}" target="_blank" rel="noopener nofollow sponsored" data-afil>\$\{esc\(AFIL\.geral\.rotulo\)\}<span class="sr"> \(link de afiliado, abre em nova aba\)<\/span>/);
   assert.match(html, /Alguns links do Mercado Livre são links de afiliado/, 'aviso nos Termos quando houver link ativo');
 });
 

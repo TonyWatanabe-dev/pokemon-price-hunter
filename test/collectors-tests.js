@@ -24,7 +24,7 @@ const html = (s, status = 200) => new Response(s, { status, headers: { 'content-
 const http = await import('../src/http.js');
 
 // ---- loja VTEX simulada
-const vt = { down: false, sim: 'ok', a: { price: 449.9, qty: 5 }, b: { price: 289.9, qty: 0 }, c: null };
+const vt = { down: false, sim: 'ok', simHits: 0, a: { price: 449.9, qty: 5 }, b: { price: 289.9, qty: 0 }, c: null };
 const vtItem = (name, link, id, x) => ({ productName: name, link, items: [{ itemId: id, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: x.price, ListPrice: x.price, AvailableQuantity: x.qty } }] }] });
 // ---- loja JSON-LD simulada: P1 (box), P2 (página sem produto, depois vira produto), P3 (blister que depois some: 404)
 const brl = (v) => Number(v).toFixed(2).replace('.', ',');
@@ -47,6 +47,7 @@ http.setFetch(async (url) => {
   }
   if (u.host === 'vt.test') {
     if (vt.down) return html('erro', 503);
+    if (u.pathname.includes('simulation')) { vt.simHits++; if (vt.sim === '429') return html('', 429); }
     if (u.pathname.includes('simulation')) return vt.sim === '500' ? html('erro', 500) : json({ logisticsInfo: [{ slas: vt.sim === 'vazio' ? [] : [{ price: 1990 }, { price: 2590 }] }] });
     if (u.pathname.startsWith('/api/catalog_system')) return json(u.searchParams.get('ft') === 'pokemon' ? [
       vtItem('Box Display Pokémon ME05 Escuridão Absoluta 36 Boosters Copag', 'https://vt.test/me05-display/p', '1', vt.a),
@@ -167,6 +168,15 @@ s = await runOnce({ log: quiet, send, now: at(H + 30) });
 { const a = offerOf(s, 'me05-box36');
   assert.deepEqual([a.shipping, a.total, a.shippingAt], [19.9, 469.8, at(H).toISOString()]);
   assert.match(a.shippingError, /sem opção de entrega/, 'simulação sem opção de entrega: motivo registrado'); }
+// 429 na simulação: a loja pediu para parar — nenhuma outra simulação nela nesta rodada; último frete fica
+vt.sim = '429'; vt.simHits = 0;
+s = await runOnce({ log: quiet, send, now: at(H + 37) });
+{ const a = offerOf(s, 'me05-box36'); const c = offerOf(s, 'me04-blister3');
+  assert.equal(vt.simHits, 1, 'depois do primeiro 429 a loja não é simulada de novo na mesma rodada');
+  assert.deepEqual([a.shipping, a.total, a.shippingAt], [19.9, 469.8, at(H).toISOString()], '429: mantém o último frete conhecido com a data dele');
+  assert.match(a.shippingError, /429/, 'motivo do 429 registrado');
+  assert.deepEqual([c.shipping, c.shippingKnown, c.total], [null, false, 59.9], 'sem frete conhecido: continua desconhecido');
+  assert.match(c.shippingError, /suspensa nesta rodada.*429/, 'oferta seguinte: simulação suspensa, com o motivo'); }
 vt.sim = 'ok';
 s = await runOnce({ log: quiet, send, now: at(H + 45) });
 { const a = offerOf(s, 'me05-box36'); const c = offerOf(s, 'me04-blister3');

@@ -55,4 +55,27 @@ test('controles positivos continuam casando', () => {
   casa('Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico com 9 Boosters', 'me02-etb');
 });
 
+// Regressão da PR #168 (C5 da Fase 3, issue #177): títulos reais que casavam na linha de base e são o produto do catálogo.
+test('"Bundle (18 Boosters)" é o próprio combo, não lote', () => {
+  casa('Combo de Booster / Bundle (18 Boosters) Pokémon Megaevolução — Escuridão Absoluta (ME05)', 'me05-combo18'); // geekstorebrasil
+  casa('Combo de Booster / Bundle (18 Boosters) Pokémon Megaevolução — Caos Ascendente (ME04)', 'me04-combo18'); // geekstorebrasil
+  casa('Combo de Booster / Bundle (18 Boosters) Pokémon Megaevolução – Heróis Excelsos (ME02.5)', 'me02_5-combo18'); // geekstorebrasil
+  // Sem contagem explícita de boosters no combo, "bundle" segue como lote.
+  recusa('Pokémon TCG Combo Bundle Fogo Fantasmagórico', /várias unidades/);
+});
+
+test('"Box + Fichário" e "Box + Poster" são a coleção com o acessório, não dois produtos', () => {
+  casa('Pokémon TCG Box + Fichário Celebração 30 Anos Copag 37139', 'c30-colecao_fichario'); // pbkids / rihappy
+  casa('Pokémon TCG Box Celebração 30 Anos + Poster Copag 21 Cartas', 'c30-colecao_poster'); // pbkids / rihappy
+  // O acessório depois do "+" só é parte do produto quando o título inteiro é essa coleção.
+  recusa('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters + Fichário', /mais de um produto/);
+  recusa('Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico + Poster', /mais de um produto/);
+  recusa('Pokémon TCG Coleção com Fichário Fogo Fantasmagórico + Box Treinador Avançado', /mais de um produto/);
+});
+
+// "BOOSTER 36 PACOTES" é display de 36, não o booster unitário que casava na linha de base: recusa correta da #168.
+test('booster com 36 pacotes continua recusado como booster unitário', () => {
+  recusa('POKEMON TCG ME05 ESCURIDAO ABSOLUTA BOOSTER 36 PACOTES - COPAG', /várias unidades/);
+});
+
 console.log(`✓ Falsos positivos de selados: ${n} grupos de testes passaram`);

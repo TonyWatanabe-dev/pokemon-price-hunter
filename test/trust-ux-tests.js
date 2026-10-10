@@ -12,7 +12,7 @@ const ctx = {
   Date, Number, Math, String,
   esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
   money: (v) => (v == null ? '-' : 'R$ ' + Number(v).toFixed(2).replace('.', ',')), ic: (id) => `<i data-ic="${id}"></i>`,
-  safeUrl: (u) => u, outUrl: (u) => u, raBadge: () => '', thirdParty: () => false, stockChip: () => '', pixTag: () => '', pct: (v) => v, scoreChip: () => '',
+  safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', raBadge: () => '', thirdParty: () => false, stockChip: () => '', pixTag: () => '', pct: (v) => v, scoreChip: () => '',
 };
 vm.createContext(ctx);
 vm.runInContext(line('const ago=') + '\n' + cut('/* Última leitura da oferta', 'const shipNote=') + '\n' + line('const shipNote=') + '\n' + line('const shipOk=') + '\n' + line('const live=') +

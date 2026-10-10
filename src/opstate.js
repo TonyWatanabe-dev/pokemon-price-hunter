@@ -32,6 +32,49 @@ export function storesSummary(sources, deferred = 0) {
   };
 }
 
+/** Classe do erro de coleta (sem texto livre): serve para contar e comparar falhas sem guardar mensagem com URL ou segredo. */
+export function classifyError(e) {
+  if (!e) return null;
+  const st = Number(e.status);
+  const msg = String(e.message || e);
+  if (e.blocked || st === 403 || st === 429) return 'bloqueio';
+  if (/timeout|aborted/i.test(msg) || e.name === 'AbortError') return 'timeout';
+  if (st >= 500) return 'http_5xx';
+  if (st >= 400) return 'http_4xx';
+  if (e.status === 'platform' || /plataforma/i.test(msg)) return 'plataforma';
+  if (/ENOTFOUND|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|fetch failed|certificate/i.test(`${e.code || ''} ${msg}`)) return 'rede';
+  if (e instanceof SyntaxError || /JSON|parse|Unexpected token/i.test(msg)) return 'parse';
+  return 'outro';
+}
+
+/** Motivo de erro seguro para guardar e logar: sem URL de conexão, token, cookie, e-mail ou query string. */
+export function safeReason(s, n = 160) {
+  if (s == null) return null;
+  return String(s)
+    .replace(/postgres(ql)?:\/\/\S+/gi, '[url]').replace(/bot\d+:[\w-]+/g, '[token]')
+    .replace(/(bearer|token|cookie|authorization|api[_-]?key|senha|password)(["']?\s*[:=]?\s*)\S+/gi, '$1$2[oculto]')
+    .replace(/(https?:\/\/[^\s?#]+)\?\S*/gi, '$1')
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[email]')
+    .slice(0, n);
+}
+
+/**
+ * Coletores da rodada: duração, contagens e erros por classe. Distingue vazio (coletou, 0 anúncios) de falha (erro/bloqueio):
+ *  - vazio: ACTIVE com 0 anúncios; "vazioSuspeito" quando a loja já trouxe anúncios antes (lastNonEmpty);
+ *  - falha: ERROR/BLOCKED, contada por classe. Só as lojas tentadas nesta rodada (lastCheck = generatedAt) entram.
+ */
+export function collectorsSummary(sources, generatedAt, topSlow = 3) {
+  const tried = Object.entries(sources || {}).filter(([, s]) => s && s.lastCheck === generatedAt && s.lastDurationMs != null);
+  const errors = {}; let failed = 0; let empty = 0; let suspectEmpty = 0; let ok = 0; let listings = 0; let totalMs = 0;
+  for (const [, s] of tried) {
+    totalMs += s.lastDurationMs;
+    if (s.status === 'ERROR' || s.status === 'BLOCKED') { failed++; const c = s.errorClass || 'outro'; errors[c] = (errors[c] || 0) + 1; }
+    else if (s.status === 'ACTIVE') { ok++; listings += s.listings > 0 ? s.listings : 0; if (!(s.listings > 0)) { empty++; if (s.lastNonEmpty) suspectEmpty++; } }
+  }
+  const slowest = tried.sort((a, b) => b[1].lastDurationMs - a[1].lastDurationMs).slice(0, topSlow).map(([id, s]) => ({ id, ms: s.lastDurationMs, status: s.status }));
+  return { tried: tried.length, ok, failed, empty, suspectEmpty, listings, totalMs, errors, slowest };
+}
+
 // Fontes vigiadas uma a uma pelo vigia (src/ops-watch.js), começando pelo Mercado Livre: status, anúncios da rodada
 // e quando trouxe anúncios pela última vez (fonte que nunca trouxe anúncio não é "historicamente ativa").
 export const WATCHED_SOURCES = ['mercadolivre'];
@@ -50,13 +93,14 @@ export function runIssues(rec) {
   if (rec.reader?.status === 'unavailable') out.push('leitor_indisponivel');
   if (rec.reader?.status === 'off') out.push('leitor_desligado');
   if (rec.reader?.status === 'ok' && rec.reader.read > 0 && rec.reader.valid === 0) out.push('leitor_sem_nota_valida');
+  if (rec.collectors?.tried > 0 && rec.collectors.failed === rec.collectors.tried) out.push('coletores_todos_falharam');
   if (rec.dbSync?.status === 'atrasado') out.push('sync_atrasado');
   if (rec.dbSync?.status === 'indisponivel') out.push('banco_indisponivel');
   if (rec.dbSync?.status === 'desligado') out.push('banco_desligado');
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, offers, alerts }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, collectors, offers, alerts }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -66,7 +110,7 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     generatedAt, prevGeneratedAt: prevGeneratedAt || null,
     startedAt, finishedAt, durationSec: Number.isFinite(f - s) ? Math.round((f - s) / 1000) : null,
     result: stores?.deferred > 0 ? 'parcial' : 'ok',
-    stores, watched: watched || {}, offers: offers ?? null, alerts: alerts ?? 0,
+    stores, watched: watched || {}, collectors: collectors || null, offers: offers ?? null, alerts: alerts ?? 0,
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
   };
   rec.issues = runIssues(rec);

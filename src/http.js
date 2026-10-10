@@ -42,8 +42,21 @@ export function safeReason(e) {
 
 const CHALLENGE = /cf-chl|challenge-platform|captcha-delivery|just a moment\.\.\.|account-verification|are you a robot|access denied/i;
 
+const MAX_BYTES = Number(process.env.HUNTER_MAX_BODY_BYTES ?? 8 * 1024 * 1024);
+
+// URL para mensagens de erro e logs: sem credenciais, query e fragmento (podem carregar tokens).
+export const safeUrl = (url) => { try { const u = new URL(url); return u.origin + u.pathname; } catch { return '(URL inválida)'; } };
+
+// Mascara segredos que sobraram em texto livre (token do Telegram, Bearer, parâmetros de token).
+export const redact = (s) => String(s ?? '')
+  .replace(/\bbot\d{5,}:[\w-]{10,}/gi, 'bot***')
+  .replace(/\b(bearer|basic)\s+[\w.~+/=-]{8,}/gi, '$1 ***')
+  .replace(/([?&;\s"'](?:access_token|token|api[_-]?key|key|secret|client_secret|password|authorization)=)[^&\s"']+/gi, '$1***');
+
 export async function request(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 10000 } = {}) {
-  const host = assertSafeUrl(url).host;
+  // Só http(s), sem credenciais e sem destino privado (assertSafeUrl): falha antes de qualquer conexão.
+  let host;
+  try { host = assertSafeUrl(url).host; } catch (e) { e.status ??= 0; e.invalidUrl = true; throw e; }
   const wait = (lastHit.get(host) || 0) + (HOST_DELAY[host] ?? DELAY) - Date.now();
   if (wait > 0) await sleep(wait);
   lastHit.set(host, Date.now());
@@ -65,7 +78,9 @@ export async function request(url, { method = 'GET', accept = 'text/html', body,
       if (![307, 308].includes(res.status)) { m = 'GET'; b = undefined; }
     }
     if (cur !== url && !res.url) Object.defineProperty(res, 'url', { value: cur });
+    if (Number(res.headers?.get?.('content-length')) > MAX_BYTES) { const e = new Error(`Resposta grande demais em ${host}`); e.status = 0; throw e; }
     const text = await decodeBody(res);
+    if (text.length > MAX_BYTES) { const e = new Error(`Resposta grande demais em ${host}`); e.status = 0; throw e; }
     const finalUrl = res.url || url;
     const looksChallenge = text.length < 30000 && CHALLENGE.test(text.slice(0, 8000));
     if (res.status === 429) {
@@ -77,8 +92,10 @@ export async function request(url, { method = 'GET', accept = 'text/html', body,
       const what = res.status < 300 ? `desafio anti-robô com HTTP ${res.status}` : String(res.status);
       throw new BlockedError(`Acesso bloqueado (${what}) em ${host}`, res.status, { httpStatus: res.status });
     }
-    if (!res.ok) { const e = new Error(`HTTP ${res.status} em ${url}`); e.status = res.status; e.httpStatus = res.status; throw e; }
-    return { status: res.status, url: finalUrl, text, json: () => JSON.parse(text) };
+    if (!res.ok) { const e = new Error(`HTTP ${res.status} em ${safeUrl(url)}`); e.status = res.status; e.httpStatus = res.status; throw e; }
+    // JSON malformado: SyntaxError (falha de leitura, não bloqueio; classifyError → 'parse'), sem repetir o conteúdo recebido.
+    const json = () => { try { return JSON.parse(text); } catch { const e = new SyntaxError(`Resposta não é JSON válido em ${host}`); e.status = res.status; e.malformed = true; throw e; } };
+    return { status: res.status, url: finalUrl, text, json };
   } catch (e) {
     if (e.name === 'AbortError') { const t = new Error(`Timeout em ${host}`); t.status = 0; t.code = 'TIMEOUT'; throw t; }
     // Erro de rede do fetch ("fetch failed"): o motivo real (DNS, conexão recusada, TLS) fica no código.

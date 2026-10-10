@@ -46,6 +46,16 @@ Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com
 - **Quando pedir revisão (oportunidade):** aviso `ANOMALY`, `TOO_GOOD` ou `UNCONFIRMED`.
 - **Regressões:** `failures` lista caso, área, tipo, esperado e obtido; o comando sai com 1 se houver alguma. Mudança intencional de regra atualiza o caso no mesmo PR.
 
+## Governança e permissões (issue #89)
+
+`src/agents/governance.js` descreve e verifica; não concede acesso nem executa. Teste: `test/agents-governance-tests.js`.
+
+- **Classes:** leitura (sempre ok); alteração em branch/PR (bloqueada em read-only); exige aprovação humana (`pr.merge`, `deploy`, `db.migrate.production`, `secrets.access`, `notify.real`); proibida (`main.push`, `git.force`, `db.write.production`).
+- **Padrão fechado:** ação desconhecida ou sem permissão (`grants`) é negada. Read-only nega tudo que não é leitura, mesmo com aprovação.
+- **Aprovação:** vale só para a ação nomeada e precisa de quem aprovou (`by`); não se estende a outras ações.
+- **Auditoria:** `createAuditLog`/`guarded` registram ferramenta, objetivo, resultado (`ok`, `denied`, `failed`) e erro, com segredos redigidos (chaves sensíveis, tokens, URLs de banco). Quem grava é o `sink` (ex.: `system_event`); ligar isso a `AGENT_*` fica para a #36, sem duplicar aqui.
+- **Fora de escopo:** o executor local segue `CLAUDE.md` e `docs/executor.md`; nenhum agente novo nem acesso novo foi criado.
+
 ## Ainda não integrado
 
 Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confiança não remove a oferta já aceita; Catalog Agent com IA.

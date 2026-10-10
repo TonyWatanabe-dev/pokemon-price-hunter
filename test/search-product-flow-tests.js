@@ -15,7 +15,7 @@ const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 const code = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
     'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=',
-    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl='].map(line),   // destino do clique (afiliado; sem config = URL original)
+    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel='].map(line),   // destino do clique (afiliado; sem config = URL original)
   cut('const readKnown=', 'const shipNote='),
   cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
@@ -24,7 +24,7 @@ const code = [
   cutFn('function renderSearch'),
   cut('function scoreMeter', 'function dealCard'), cutFn('function dealCard'),
   cut('let curPid=null;', 'function openProduct'),
-  cutFn('function storeOffer'), cutFn('function renderProduct'),
+  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* "Também na Amazon"', '/* Conta: login'),
   line('let PENDING_HASH='), line('function hashScroll'),
 ].join('\n');
 

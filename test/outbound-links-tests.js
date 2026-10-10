@@ -95,7 +95,9 @@ for (const file of PAGES) {
       assert.match(tag, /^<a\b/i, `${file}: target="_blank" fora de <a>: ${tag}`);
       const rel = tag.match(/\brel\s*=\s*"([^"]*)"|\brel\s*=\s*'([^']*)'/i);
       assert.ok(rel, `${file}: sem rel: ${tag}`);
-      assert.ok((rel[1] ?? rel[2]).toLowerCase().split(/\s+/).includes('noopener'), `${file}: rel sem noopener: ${tag}`);
+      // noopener tem de estar escrito no próprio atributo; uma interpolação (ex.: ${outRel(o.url)}, que só acrescenta
+      // " nofollow sponsored" em link de afiliado) não conta como noopener e é separada dele antes de conferir.
+      assert.ok((rel[1] ?? rel[2]).replace(/\$\{[^}]*\}/g, ' ').toLowerCase().split(/\s+/).includes('noopener'), `${file}: rel sem noopener: ${tag}`);
     }
   });
   // Afiliado explícito ≠ tracking: o único desvio aceito é outUrl(<url da oferta>) DENTRO de safeUrl — ele troca a URL inteira

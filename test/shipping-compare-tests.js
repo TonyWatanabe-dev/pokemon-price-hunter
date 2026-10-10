@@ -23,7 +23,7 @@ function page(OFF) {
     g: () => ({ c: '#000', icon: 'x' }), label: (p) => p.typeLabel, colHref: () => '', typeHref: () => '', photo: () => '<div class="photo"></div>', favBtn: () => '',
     pixTag: () => '', pixTxt: () => '', scoreBlock: () => '', alertBox: () => '', liveTips: () => [], tipCard: () => '', raBadge: () => '', thirdParty: () => false,
     stockChip: () => '', oppOf: () => null, oppScore: () => null, bandUI: () => ['', '', ''], dial: () => '', NO_SCORE: () => 'Sem nota', ago: () => 'agora',
-    safeUrl: (u) => u, outUrl: (u) => u, searchBox: () => '', REFNOTE: '', track() {}, render() {}, scrollTo() {},
+    safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', searchBox: () => '', REFNOTE: '', track() {}, render() {}, scrollTo() {},
   };
   vm.createContext(ctx);
   vm.runInContext(liveCode + ';' + readCode + ';' + shipNoteCode + ';' + productCode + '\n;globalThis.__t={OFFER_SORTS,bestOffer:typeof bestOffer==="function"?bestOffer:null,renderProduct};', ctx);

@@ -229,6 +229,7 @@ async function handle(req, res, { now }) {
   }
   const status = out.status || 200;
   const json = JSON.stringify(out.body);
+  cache.delete(key);                                      // regravar move a chave para o fim: entrada renovada não é a próxima a sair
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value);
   cache.set(key, { at: now, status, json, source, fallback, reason, fr });
   return send(res, status, json, { 'Cache-Control': status >= 500 || fallback || stale(fr) ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...FR.headers(fr), ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });

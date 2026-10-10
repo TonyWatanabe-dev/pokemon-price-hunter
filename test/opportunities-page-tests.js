@@ -49,7 +49,7 @@ function sandbox(apiResponse) {
     esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     money: (v) => (v == null ? '-' : 'R$ ' + Number(v).toFixed(2).replace('.', ',')), ic: (id) => `<i data-ic="${id}"></i>`,
     photo: () => '<div class="photo"></div>', catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '',
-    safeUrl: (u) => u, outUrl: (u) => u, pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: {}, live: () => true,
+    safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: {}, live: () => true,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: (sel) => (sel === '#view' ? view : null), IntersectionObserver: undefined,
     apiGet: async (path) => { calls.push(path); return typeof apiResponse === 'function' ? apiResponse(path) : apiResponse; },
   };

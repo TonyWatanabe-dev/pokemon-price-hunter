@@ -121,6 +121,54 @@ await t('o clique no coração é tratado antes do favorito comum e o botão nã
   assert.match(click, /unfav\(ufb\.dataset\.unfav\)/);
   assert.match(renderFavsCode, /<div class="fav-row">\$\{prodRow\(id\)\}<button class="fav-x"/);
 });
+// ------------------------------------------------------------------ Issue #49: gravação só com sessão válida
+await t('sessão expirada ao gravar: avisa com mensagem clara e desfaz a mudança', async () => {
+  const { c, mod } = await logged();
+  mod.save = async () => { throw Object.assign(new Error('x'), { code: 'unauthenticated' }); };
+  await c.unfav('p1');
+  assert.deepEqual(c.ACC.data.favorites, ['p1', 'p2', 'p3']);
+  assert.ok(c.toasts.includes('Sua sessão expirou. Entre de novo para salvar.'));
+});
+await t('erro de rede ao gravar: mensagem de conexão', async () => {
+  const { c, mod } = await logged();
+  mod.save = async () => { throw Object.assign(new Error('x'), { code: 'unavailable' }); };
+  await c.setFav('p9', true);
+  assert.deepEqual(c.ACC.data.favorites, ['p1', 'p2', 'p3']);
+  assert.ok(c.toasts.includes('Sem conexão. Confira a internet e tente de novo.'));
+});
+await t('sem sessão: setFav não grava nada', async () => {
+  const { c, mod } = await logged();
+  c.ACC.user = null; await c.setFav('p9', true);
+  assert.equal(mod.saves.length, 0); assert.deepEqual(c.ACC.data.favorites, ['p1', 'p2', 'p3']);
+  assert.ok(c.toasts.includes('Entre na sua conta para salvar.'));
+});
+await t('falha ao carregar os dados: não cria perfil nem sobrescreve favoritos existentes', async () => {
+  const mod = makeMod({ doc: favDoc() }); mod.load = async () => { throw Object.assign(new Error('x'), { code: 'unavailable' }); };
+  const c = sandbox(mod); await c.onUser(pwUser('T'));
+  assert.equal(c.ACC.loadFailed, true); assert.equal(mod.saves.length, 0);
+  await c.setFav('p9', true);
+  assert.equal(mod.saves.length, 0); assert.deepEqual(mod.stored.favorites, ['p1', 'p2', 'p3']);
+  assert.ok(c.toasts.includes('Seus dados não carregaram. Recarregue a página antes de salvar.'));
+});
+await t('trocar de conta não carrega dados da conta anterior', async () => {
+  const mod = makeMod({ doc: favDoc() }); const c = sandbox(mod);
+  await c.onUser(pwUser('T')); assert.deepEqual(c.ACC.data.favorites, ['p1', 'p2', 'p3']);
+  mod.load = async () => ({ name: 'Outra', favorites: ['z'], alerts: [], termsAt: 't', createdAt: 't' });
+  await c.onUser({ ...pwUser('Outra'), uid: 'u2' });
+  assert.deepEqual(c.ACC.data.favorites, ['z']);
+  await c.onUser(null); assert.equal(c.ACC.data, null);
+});
+await t('páginas privadas mostram aviso (não "nada salvo") quando os dados não carregaram', () => {
+  assert.match(renderFavsCode, /ACC\.loadFailed\)\{[^}]*Não consegui carregar seus favoritos/);
+  const alertsCode = cut('function renderAlerts(){', 'function renderConfig(){');
+  assert.match(alertsCode, /ACC\.loadFailed\)\{[^}]*Não consegui carregar seus alertas/);
+});
+await t('busca e páginas públicas não passam pelo AuthGate; só salvar favorito e alerta passam', () => {
+  const gated = [...html.matchAll(/authGate\(\{type:"(\w+)"/g)].map((m) => m[1]);
+  assert.ok(gated.every((g) => ['fav', 'alert', 'page'].includes(g)), `tipos de gate: ${gated}`);
+  assert.match(html, /const toggleFav=\(pid\)=>ACC\.user\?setFav\(pid,!isFav\(pid\)\):authGate\(\{type:"fav",pid\}\)/);
+  assert.match(html, /authGate\(\{type:"alert",pid,v\}\)/);
+});
 await t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   for (const sc of scripts) { if (sc.trim().startsWith('{')) continue; assert.doesNotThrow(() => new vm.Script(sc), 'erro de sintaxe no index.html'); }

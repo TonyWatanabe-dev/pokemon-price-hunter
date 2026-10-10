@@ -12,7 +12,7 @@ O site tem suporte a links de afiliado do Mercado Livre, mas **hoje nenhum anún
 4. **O link geral nunca vai para um anúncio.** Ele só pode aparecer no rodapé, com o rótulo "Ver mais no Mercado Livre" e o aviso "link de afiliado" para leitor de tela. Isso exige duas marcações na config: `ativo: true` e `destinoConfirmado: true`.
 5. **Nada é anexado à URL.** O link é usado inteiro, exatamente como o painel do ML gerou. Não montamos parâmetro de tracking e não inventamos parâmetro de afiliado. Isso mantém válido o teste `test/outbound-links-tests.js` (#116: "links de saída sem tracking"). A única forma de `href` nova que ele aceita é `${esc(safeUrl(outUrl(<url>)))}`, sempre dentro de `safeUrl`.
 6. **Destino validado duas vezes**, no servidor e no navegador. Só é aceito link `https://` em `meli.la`, `mercadolivre.com.br`, `www.mercadolivre.com.br` ou `produto.mercadolivre.com.br`, sem credenciais, sem porta, sem espaço e sem aspas. Se o link for inválido, vale a URL original. Não existe redirecionador interno, então não há risco de open redirect.
-7. **Layout igual.** Os botões mantêm `target="_blank"`, `rel="noopener"` e o texto `.sr` "(abre em nova aba)" da #181.
+7. **Layout igual.** Os botões mantêm `target="_blank"`, `rel="noopener"` e o texto `.sr` "(abre em nova aba)" da #181. Quando o destino é de afiliado, o `rel` ganha `nofollow sponsored` (`outRel` em `index.html`), igual aos links "Ver na Amazon" da #194. O link geral do rodapé sai sempre com `rel="noopener nofollow sponsored"`.
 8. **Cliques.** O evento agregado `click_store` que já existe (Vercel Analytics: loja, produto e preço, sem dados pessoais) não mudou. Não foi criado nenhum analytics novo.
 
 ## Onde configurar
