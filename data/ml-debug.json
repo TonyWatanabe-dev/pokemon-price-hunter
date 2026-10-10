@@ -1,0 +1,8 @@
+{
+  "picked": 439,
+  "sample": "[{\"code\":403,\"body\":{\"id\":\"MLB7513705746\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":null}},{\"code\":403,\"body\":{\"id\":\"MLB4556000950\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":null}},{\"code\":403,\"body\":{\"id\":\"MLB5114656589\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":null}},{\"code\":403,\"body\":{\"id\":\"MLB7309783120\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":nu",
+  "drop": {},
+  "itemsApi": false,
+  "published": 284,
+  "at": "2026-10-10T23:31:16.131Z"
+}

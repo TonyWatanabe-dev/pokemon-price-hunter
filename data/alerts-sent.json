@@ -1,0 +1,168 @@
+{
+  "copag-25|me04-etb": {
+    "at": "2026-10-06T18:45:28.412Z",
+    "total": 239.99,
+    "discount": 0.4,
+    "offerId": "1a848aa3d9e3"
+  },
+  "etb-300|me04-etb": {
+    "at": "2026-10-06T18:45:28.412Z",
+    "total": 239.99,
+    "discount": 0.4,
+    "offerId": "1a848aa3d9e3"
+  },
+  "copag-25|c30-colecao_ex-greninja": {
+    "at": "2026-10-07T07:23:11.746Z",
+    "total": 119.9,
+    "discount": 0.2947,
+    "offerId": "17ec84b26b2c"
+  },
+  "restock-escuridao|me05-box36": {
+    "at": "2026-10-09T08:00:29.139Z",
+    "total": 479.9,
+    "discount": null,
+    "offerId": "2dfb01ec446d"
+  },
+  "copag-25|me04-blister3": {
+    "at": "2026-10-07T12:00:35.997Z",
+    "total": 31.9,
+    "discount": 0.258,
+    "offerId": "b47b4e94e581"
+  },
+  "tip|56d56dcc4d6f": {
+    "at": "2026-10-07T12:15:21.210Z",
+    "total": 149.99
+  },
+  "etb-300|sv8_5-etb": {
+    "at": "2026-10-07T12:45:21.589Z",
+    "total": 49.99,
+    "discount": null,
+    "offerId": "b7f220d0a6c6"
+  },
+  "etb-300|sv10_5w-etb": {
+    "at": "2026-10-07T12:45:21.589Z",
+    "total": 49.99,
+    "discount": null,
+    "offerId": "df655f0a5178"
+  },
+  "etb-300|me03-etb": {
+    "at": "2026-10-07T12:45:21.589Z",
+    "total": 222.09,
+    "discount": null,
+    "offerId": "6c15ec412fe4"
+  },
+  "drop|c80058394ead": {
+    "at": "2026-10-07T13:30:29.225Z",
+    "total": 549.9,
+    "discount": null,
+    "offerId": "c80058394ead"
+  },
+  "drop|43848a283954": {
+    "at": "2026-10-07T13:45:26.327Z",
+    "total": 599.99,
+    "discount": null,
+    "offerId": "43848a283954"
+  },
+  "drop|0b3402bf5e3e": {
+    "at": "2026-10-07T14:30:29.994Z",
+    "total": 549.99,
+    "discount": null,
+    "offerId": "0b3402bf5e3e"
+  },
+  "drop|0b2a90b1360d": {
+    "at": "2026-10-07T16:00:35.175Z",
+    "total": 549.9,
+    "discount": null,
+    "offerId": "0b2a90b1360d"
+  },
+  "copag-25|me05-etb": {
+    "at": "2026-10-07T19:29:51.951Z",
+    "total": 222.09,
+    "discount": 0.4448,
+    "offerId": "6c15ec412fe4"
+  },
+  "etb-300|me05-etb": {
+    "at": "2026-10-07T19:29:51.951Z",
+    "total": 222.09,
+    "discount": 0.4448,
+    "offerId": "6c15ec412fe4"
+  },
+  "drop|de525b1f4dd6": {
+    "at": "2026-10-07T20:08:27.670Z",
+    "total": 417.91,
+    "discount": null,
+    "offerId": "de525b1f4dd6"
+  },
+  "copag-25|me05-blister4": {
+    "at": "2026-10-07T20:08:27.670Z",
+    "total": 41.8,
+    "discount": 0.2534,
+    "offerId": "fc49aa3f80fb"
+  },
+  "box-10-booster|me05-box36": {
+    "at": "2026-10-07T20:08:27.670Z",
+    "total": 357.99,
+    "discount": null,
+    "offerId": "a9338687a96e"
+  },
+  "copag-25|me04-blister4": {
+    "at": "2026-10-09T23:00:26.894Z",
+    "total": 41.8,
+    "discount": 0.2534,
+    "offerId": "1888092dbad5"
+  },
+  "drop|855bf4c7f1f3": {
+    "at": "2026-10-07T20:08:27.670Z",
+    "total": 427.41,
+    "discount": null,
+    "offerId": "855bf4c7f1f3"
+  },
+  "drop|f2cc6b83c369": {
+    "at": "2026-10-07T20:08:27.670Z",
+    "total": 427.41,
+    "discount": null,
+    "offerId": "f2cc6b83c369"
+  },
+  "drop|5827c8d19aab": {
+    "at": "2026-10-07T20:30:27.362Z",
+    "total": 599.99,
+    "discount": null,
+    "offerId": "5827c8d19aab"
+  },
+  "drop|8ab33c50afb4": {
+    "at": "2026-10-07T23:45:24.216Z",
+    "total": 549.99,
+    "discount": null,
+    "offerId": "8ab33c50afb4"
+  },
+  "drop|2dfb01ec446d": {
+    "at": "2026-10-08T04:00:32.423Z",
+    "total": 479.9,
+    "discount": null,
+    "offerId": "2dfb01ec446d"
+  },
+  "drop|f3ffd09fbe83": {
+    "at": "2026-10-08T07:15:21.317Z",
+    "total": 479.9,
+    "discount": null,
+    "offerId": "f3ffd09fbe83"
+  },
+  "copag-25|me03-blister4": {
+    "at": "2026-10-08T12:19:25.776Z",
+    "total": 41.8,
+    "discount": 0.2534,
+    "offerId": "4527cc424170"
+  },
+  "drop|2834758c5537": {
+    "at": "2026-10-09T18:15:19.094Z",
+    "total": 492.99,
+    "discount": null,
+    "offerId": "2834758c5537"
+  },
+  "drop|7e4f1b706b6c": {
+    "at": "2026-10-09T21:00:29.289Z",
+    "total": 492.99,
+    "discount": null,
+    "offerId": "7e4f1b706b6c"
+  }
+}

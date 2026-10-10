@@ -1,0 +1,4991 @@
+{
+  "dataVersion": 3,
+  "distrust": {
+    "stores": [
+      "bynxgg",
+      "canal40",
+      "cardoracombr",
+      "copagloja",
+      "dalarancombr",
+      "fatimacriancacombr",
+      "gatogingado",
+      "gorupacombr",
+      "grbcardscombr",
+      "happynerd",
+      "ilusoeslindoiacombr",
+      "lifegeek",
+      "livrariacolecionadorcombr",
+      "lojaarenagamescombr",
+      "lojadrop1combr",
+      "lojapokemonsupercom",
+      "ludostation",
+      "lumosstorecombr",
+      "matostcgcombr",
+      "metacardscombr",
+      "miragemhobbywordpresscom",
+      "newstationcombr",
+      "paladinsgamescombr",
+      "pbkidscombr",
+      "resetnerdstorecombr",
+      "rihappycombr",
+      "shogunlivrariacombr",
+      "supertcgcombr",
+      "tcgprocombr",
+      "thedragonshopcombr",
+      "tocadotabuleiro",
+      "viptcgcom"
+    ],
+    "until": "2026-10-07"
+  },
+  "ops": {
+    "version": 1,
+    "runs": [
+      {
+        "runId": "37998186280",
+        "attempt": 1,
+        "sha": "253a0b9cfcf8",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T22:15:18.357Z",
+        "prevGeneratedAt": "2026-10-09T22:00:29.749Z",
+        "startedAt": "2026-10-09T22:15:18.357Z",
+        "finishedAt": "2026-10-09T22:20:34.891Z",
+        "durationSec": 317,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 32,
+          "empty": 22,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "offers": 1009,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 525,
+          "read": 528,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T22:00:29.749Z",
+          "lastSeenAt": "2026-10-09T22:00:29.749Z",
+          "engineAt": "2026-10-09T22:06:10.153Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "37999564806",
+        "attempt": 1,
+        "sha": "22aadd091f33",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T22:30:23.954Z",
+        "prevGeneratedAt": "2026-10-09T22:15:18.357Z",
+        "startedAt": "2026-10-09T22:30:23.955Z",
+        "finishedAt": "2026-10-09T22:35:40.407Z",
+        "durationSec": 316,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 32,
+          "empty": 22,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "offers": 1010,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 544,
+          "read": 545,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T22:15:18.357Z",
+          "lastSeenAt": "2026-10-09T22:15:18.357Z",
+          "engineAt": "2026-10-09T22:20:56.888Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38000893698",
+        "attempt": 1,
+        "sha": "22aadd091f33",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T22:45:21.289Z",
+        "prevGeneratedAt": "2026-10-09T22:30:23.954Z",
+        "startedAt": "2026-10-09T22:45:21.289Z",
+        "finishedAt": "2026-10-09T22:50:38.041Z",
+        "durationSec": 317,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 32,
+          "empty": 22,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "offers": 1009,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 538,
+          "read": 541,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T22:30:23.954Z",
+          "lastSeenAt": "2026-10-09T22:30:23.954Z",
+          "engineAt": "2026-10-09T22:36:02.581Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38002204123",
+        "attempt": 1,
+        "sha": "d074087d9ed6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T23:00:26.894Z",
+        "prevGeneratedAt": "2026-10-09T22:45:21.289Z",
+        "startedAt": "2026-10-09T23:00:26.895Z",
+        "finishedAt": "2026-10-09T23:06:21.213Z",
+        "durationSec": 354,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-09T23:00:26.894Z"
+          }
+        },
+        "offers": 1043,
+        "alerts": 1,
+        "reader": {
+          "status": "ok",
+          "valid": 270,
+          "read": 270,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T22:45:21.289Z",
+          "lastSeenAt": "2026-10-09T22:45:21.289Z",
+          "engineAt": "2026-10-09T22:51:01.891Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38003474693",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T23:15:21.576Z",
+        "prevGeneratedAt": "2026-10-09T23:00:26.894Z",
+        "startedAt": "2026-10-09T23:15:21.576Z",
+        "finishedAt": "2026-10-09T23:21:46.525Z",
+        "durationSec": 385,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-09T23:15:21.576Z"
+          }
+        },
+        "offers": 1051,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 301,
+          "read": 307,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T23:00:26.894Z",
+          "lastSeenAt": "2026-10-09T23:00:26.894Z",
+          "engineAt": "2026-10-09T23:06:38.442Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38004737890",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T23:30:23.308Z",
+        "prevGeneratedAt": "2026-10-09T23:15:21.576Z",
+        "startedAt": "2026-10-09T23:30:23.308Z",
+        "finishedAt": "2026-10-09T23:37:17.297Z",
+        "durationSec": 414,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-09T23:30:23.308Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 311,
+          "read": 311,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T23:15:21.576Z",
+          "lastSeenAt": "2026-10-09T23:15:21.576Z",
+          "engineAt": "2026-10-09T23:22:04.221Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38005949765",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-09T23:45:20.225Z",
+        "prevGeneratedAt": "2026-10-09T23:30:23.308Z",
+        "startedAt": "2026-10-09T23:45:20.225Z",
+        "finishedAt": "2026-10-09T23:52:22.282Z",
+        "durationSec": 422,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-09T23:45:20.225Z"
+          }
+        },
+        "offers": 1058,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T23:30:23.308Z",
+          "lastSeenAt": "2026-10-09T23:30:23.308Z",
+          "engineAt": "2026-10-09T23:37:34.907Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38007107700",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T00:00:31.879Z",
+        "prevGeneratedAt": "2026-10-09T23:45:20.225Z",
+        "startedAt": "2026-10-10T00:00:31.879Z",
+        "finishedAt": "2026-10-10T00:07:41.595Z",
+        "durationSec": 430,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T00:00:31.879Z"
+          }
+        },
+        "offers": 1068,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 320,
+          "read": 320,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-09T23:45:20.225Z",
+          "lastSeenAt": "2026-10-09T23:45:20.225Z",
+          "engineAt": "2026-10-09T23:52:40.992Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38009327032",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T00:30:28.719Z",
+        "prevGeneratedAt": "2026-10-10T00:00:31.879Z",
+        "startedAt": "2026-10-10T00:30:28.719Z",
+        "finishedAt": "2026-10-10T00:37:48.712Z",
+        "durationSec": 440,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T00:30:28.719Z"
+          }
+        },
+        "offers": 1064,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 319,
+          "read": 319,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T00:00:31.879Z",
+          "lastSeenAt": "2026-10-10T00:00:31.879Z",
+          "engineAt": "2026-10-10T00:08:07.518Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38011424777",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T01:00:29.891Z",
+        "prevGeneratedAt": "2026-10-10T00:30:28.719Z",
+        "startedAt": "2026-10-10T01:00:29.892Z",
+        "finishedAt": "2026-10-10T01:07:43.037Z",
+        "durationSec": 433,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T01:00:29.891Z"
+          }
+        },
+        "offers": 1059,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 316,
+          "read": 316,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T00:30:28.719Z",
+          "lastSeenAt": "2026-10-10T00:30:28.719Z",
+          "engineAt": "2026-10-10T00:38:12.119Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38013421079",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T01:30:23.236Z",
+        "prevGeneratedAt": "2026-10-10T01:00:29.891Z",
+        "startedAt": "2026-10-10T01:30:23.236Z",
+        "finishedAt": "2026-10-10T01:37:04.787Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T01:30:23.236Z"
+          }
+        },
+        "offers": 1062,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 318,
+          "read": 318,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T01:00:29.891Z",
+          "lastSeenAt": "2026-10-10T01:00:29.891Z",
+          "engineAt": "2026-10-10T01:08:00.092Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38014380069",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T01:45:18.563Z",
+        "prevGeneratedAt": "2026-10-10T01:30:23.236Z",
+        "startedAt": "2026-10-10T01:45:18.563Z",
+        "finishedAt": "2026-10-10T01:52:00.505Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T01:45:18.563Z"
+          }
+        },
+        "offers": 1061,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 321,
+          "read": 321,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T01:30:23.236Z",
+          "lastSeenAt": "2026-10-10T01:30:23.236Z",
+          "engineAt": "2026-10-10T01:37:21.241Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38015332725",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T02:00:28.792Z",
+        "prevGeneratedAt": "2026-10-10T01:45:18.563Z",
+        "startedAt": "2026-10-10T02:00:28.793Z",
+        "finishedAt": "2026-10-10T02:07:11.749Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T02:00:28.792Z"
+          }
+        },
+        "offers": 1060,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 322,
+          "read": 322,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T01:45:18.563Z",
+          "lastSeenAt": "2026-10-10T01:45:18.563Z",
+          "engineAt": "2026-10-10T01:52:23.578Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38016274916",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T02:15:25.278Z",
+        "prevGeneratedAt": "2026-10-10T02:00:28.792Z",
+        "startedAt": "2026-10-10T02:15:25.278Z",
+        "finishedAt": "2026-10-10T02:22:08.007Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T02:15:25.278Z"
+          }
+        },
+        "offers": 1060,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 321,
+          "read": 321,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T02:00:28.792Z",
+          "lastSeenAt": "2026-10-10T02:00:28.792Z",
+          "engineAt": "2026-10-10T02:07:34.123Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38017198237",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T02:30:30.685Z",
+        "prevGeneratedAt": "2026-10-10T02:15:25.278Z",
+        "startedAt": "2026-10-10T02:30:30.686Z",
+        "finishedAt": "2026-10-10T02:37:13.357Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T02:30:30.685Z"
+          }
+        },
+        "offers": 1058,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 319,
+          "read": 319,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T02:15:25.278Z",
+          "lastSeenAt": "2026-10-10T02:15:25.278Z",
+          "engineAt": "2026-10-10T02:22:32.904Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38018104804",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T02:45:21.949Z",
+        "prevGeneratedAt": "2026-10-10T02:30:30.685Z",
+        "startedAt": "2026-10-10T02:45:21.949Z",
+        "finishedAt": "2026-10-10T02:52:03.976Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T02:45:21.949Z"
+          }
+        },
+        "offers": 1059,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 321,
+          "read": 321,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T02:30:30.685Z",
+          "lastSeenAt": "2026-10-10T02:30:30.685Z",
+          "engineAt": "2026-10-10T02:37:38.604Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38019011892",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T03:00:27.131Z",
+        "prevGeneratedAt": "2026-10-10T02:45:21.949Z",
+        "startedAt": "2026-10-10T03:00:27.131Z",
+        "finishedAt": "2026-10-10T03:07:50.141Z",
+        "durationSec": 443,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T03:00:27.131Z"
+          }
+        },
+        "offers": 1058,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 322,
+          "read": 322,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T02:45:21.949Z",
+          "lastSeenAt": "2026-10-10T02:45:21.949Z",
+          "engineAt": "2026-10-10T02:52:23.403Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38020783455",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T03:30:30.867Z",
+        "prevGeneratedAt": "2026-10-10T03:00:27.131Z",
+        "startedAt": "2026-10-10T03:30:30.868Z",
+        "finishedAt": "2026-10-10T03:37:13.004Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T03:30:30.867Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 319,
+          "read": 319,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T03:00:27.131Z",
+          "lastSeenAt": "2026-10-10T03:00:27.131Z",
+          "engineAt": "2026-10-10T03:08:11.265Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38021662751",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T03:45:19.565Z",
+        "prevGeneratedAt": "2026-10-10T03:30:30.867Z",
+        "startedAt": "2026-10-10T03:45:19.565Z",
+        "finishedAt": "2026-10-10T03:52:01.932Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T03:45:19.565Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 320,
+          "read": 320,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T03:30:30.867Z",
+          "lastSeenAt": "2026-10-10T03:30:30.867Z",
+          "engineAt": "2026-10-10T03:37:33.263Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38022529762",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T04:00:29.061Z",
+        "prevGeneratedAt": "2026-10-10T03:45:19.565Z",
+        "startedAt": "2026-10-10T04:00:29.061Z",
+        "finishedAt": "2026-10-10T04:07:11.289Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T04:00:29.061Z"
+          }
+        },
+        "offers": 1054,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 320,
+          "read": 320,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T03:45:19.565Z",
+          "lastSeenAt": "2026-10-10T03:45:19.565Z",
+          "engineAt": "2026-10-10T03:52:25.177Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38023407523",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T04:15:20.244Z",
+        "prevGeneratedAt": "2026-10-10T04:00:29.061Z",
+        "startedAt": "2026-10-10T04:15:20.244Z",
+        "finishedAt": "2026-10-10T04:22:02.413Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T04:15:20.244Z"
+          }
+        },
+        "offers": 1053,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 320,
+          "read": 320,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T04:00:29.061Z",
+          "lastSeenAt": "2026-10-10T04:00:29.061Z",
+          "engineAt": "2026-10-10T04:07:34.965Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38024291211",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T04:30:24.226Z",
+        "prevGeneratedAt": "2026-10-10T04:15:20.244Z",
+        "startedAt": "2026-10-10T04:30:24.226Z",
+        "finishedAt": "2026-10-10T04:37:06.566Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T04:30:24.226Z"
+          }
+        },
+        "offers": 1053,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 319,
+          "read": 319,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T04:15:20.244Z",
+          "lastSeenAt": "2026-10-10T04:15:20.244Z",
+          "engineAt": "2026-10-10T04:22:24.544Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38025153327",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T04:45:21.127Z",
+        "prevGeneratedAt": "2026-10-10T04:30:24.226Z",
+        "startedAt": "2026-10-10T04:45:21.127Z",
+        "finishedAt": "2026-10-10T04:52:02.622Z",
+        "durationSec": 401,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T04:45:21.127Z"
+          }
+        },
+        "offers": 1057,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 313,
+          "read": 313,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T04:30:24.226Z",
+          "lastSeenAt": "2026-10-10T04:30:24.226Z",
+          "engineAt": "2026-10-10T04:37:29.926Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38026013422",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T05:00:27.321Z",
+        "prevGeneratedAt": "2026-10-10T04:45:21.127Z",
+        "startedAt": "2026-10-10T05:00:27.322Z",
+        "finishedAt": "2026-10-10T05:07:09.985Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 58,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T05:00:27.321Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 274,
+          "read": 274,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T04:45:21.127Z",
+          "lastSeenAt": "2026-10-10T04:45:21.127Z",
+          "engineAt": "2026-10-10T04:52:19.627Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38026871163",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T05:15:20.724Z",
+        "prevGeneratedAt": "2026-10-10T05:00:27.321Z",
+        "startedAt": "2026-10-10T05:15:20.724Z",
+        "finishedAt": "2026-10-10T05:22:03.062Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T05:15:20.724Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 311,
+          "read": 311,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T05:00:27.321Z",
+          "lastSeenAt": "2026-10-10T05:00:27.321Z",
+          "engineAt": "2026-10-10T05:07:36.944Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38027719075",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T05:30:29.054Z",
+        "prevGeneratedAt": "2026-10-10T05:15:20.724Z",
+        "startedAt": "2026-10-10T05:30:29.054Z",
+        "finishedAt": "2026-10-10T05:37:11.516Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T05:30:29.054Z"
+          }
+        },
+        "offers": 1058,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 313,
+          "read": 313,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T05:15:20.724Z",
+          "lastSeenAt": "2026-10-10T05:15:20.724Z",
+          "engineAt": "2026-10-10T05:22:26.921Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38028569747",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T05:45:20.008Z",
+        "prevGeneratedAt": "2026-10-10T05:30:29.054Z",
+        "startedAt": "2026-10-10T05:45:20.008Z",
+        "finishedAt": "2026-10-10T05:52:02.511Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T05:45:20.008Z"
+          }
+        },
+        "offers": 1059,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 311,
+          "read": 311,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T05:30:29.054Z",
+          "lastSeenAt": "2026-10-10T05:30:29.054Z",
+          "engineAt": "2026-10-10T05:37:35.368Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38029421616",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T06:00:26.319Z",
+        "prevGeneratedAt": "2026-10-10T05:45:20.008Z",
+        "startedAt": "2026-10-10T06:00:26.320Z",
+        "finishedAt": "2026-10-10T06:07:08.421Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T06:00:26.319Z"
+          }
+        },
+        "offers": 1058,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 313,
+          "read": 313,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T05:45:20.008Z",
+          "lastSeenAt": "2026-10-10T05:45:20.008Z",
+          "engineAt": "2026-10-10T05:52:25.920Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38030284976",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T06:15:19.320Z",
+        "prevGeneratedAt": "2026-10-10T06:00:26.319Z",
+        "startedAt": "2026-10-10T06:15:19.320Z",
+        "finishedAt": "2026-10-10T06:22:03.914Z",
+        "durationSec": 405,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T06:15:19.320Z"
+          }
+        },
+        "offers": 1058,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T06:00:26.319Z",
+          "lastSeenAt": "2026-10-10T06:00:26.319Z",
+          "engineAt": "2026-10-10T06:07:29.964Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38031158089",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T06:30:22.764Z",
+        "prevGeneratedAt": "2026-10-10T06:15:19.320Z",
+        "startedAt": "2026-10-10T06:30:22.765Z",
+        "finishedAt": "2026-10-10T06:37:04.353Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T06:30:22.764Z"
+          }
+        },
+        "offers": 1063,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 312,
+          "read": 312,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T06:15:19.320Z",
+          "lastSeenAt": "2026-10-10T06:15:19.320Z",
+          "engineAt": "2026-10-10T06:22:25.991Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38032021122",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T06:45:18.499Z",
+        "prevGeneratedAt": "2026-10-10T06:30:22.764Z",
+        "startedAt": "2026-10-10T06:45:18.499Z",
+        "finishedAt": "2026-10-10T06:51:59.998Z",
+        "durationSec": 401,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T06:45:18.499Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 310,
+          "read": 310,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T06:30:22.764Z",
+          "lastSeenAt": "2026-10-10T06:30:22.764Z",
+          "engineAt": "2026-10-10T06:37:22.231Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38032896899",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T07:00:27.722Z",
+        "prevGeneratedAt": "2026-10-10T06:45:18.499Z",
+        "startedAt": "2026-10-10T07:00:27.722Z",
+        "finishedAt": "2026-10-10T07:07:10.362Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T07:00:27.722Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T06:45:18.499Z",
+          "lastSeenAt": "2026-10-10T06:45:18.499Z",
+          "engineAt": "2026-10-10T06:52:17.455Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38033783383",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T07:15:18.871Z",
+        "prevGeneratedAt": "2026-10-10T07:00:27.722Z",
+        "startedAt": "2026-10-10T07:15:18.872Z",
+        "finishedAt": "2026-10-10T07:22:00.797Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T07:15:18.871Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T07:00:27.722Z",
+          "lastSeenAt": "2026-10-10T07:00:27.722Z",
+          "engineAt": "2026-10-10T07:07:35.355Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38034641242",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T07:30:25.041Z",
+        "prevGeneratedAt": "2026-10-10T07:15:18.871Z",
+        "startedAt": "2026-10-10T07:30:25.041Z",
+        "finishedAt": "2026-10-10T07:37:07.500Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T07:30:25.041Z"
+          }
+        },
+        "offers": 1054,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 314,
+          "read": 314,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T07:15:18.871Z",
+          "lastSeenAt": "2026-10-10T07:15:18.871Z",
+          "engineAt": "2026-10-10T07:22:22.347Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38035499140",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T07:45:20.158Z",
+        "prevGeneratedAt": "2026-10-10T07:30:25.041Z",
+        "startedAt": "2026-10-10T07:45:20.158Z",
+        "finishedAt": "2026-10-10T07:52:02.320Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 53,
+          "withListings": 35,
+          "empty": 18,
+          "blocked": 56,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T07:45:20.158Z"
+          }
+        },
+        "offers": 1053,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 312,
+          "read": 312,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T07:30:25.041Z",
+          "lastSeenAt": "2026-10-10T07:30:25.041Z",
+          "engineAt": "2026-10-10T07:37:32.260Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38036365668",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T08:00:28.782Z",
+        "prevGeneratedAt": "2026-10-10T07:45:20.158Z",
+        "startedAt": "2026-10-10T08:00:28.782Z",
+        "finishedAt": "2026-10-10T08:07:11.512Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T08:00:28.782Z"
+          }
+        },
+        "offers": 1053,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 314,
+          "read": 314,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T07:45:20.158Z",
+          "lastSeenAt": "2026-10-10T07:45:20.158Z",
+          "engineAt": "2026-10-10T07:52:23.582Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38037231369",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T08:15:21.160Z",
+        "prevGeneratedAt": "2026-10-10T08:00:28.782Z",
+        "startedAt": "2026-10-10T08:15:21.160Z",
+        "finishedAt": "2026-10-10T08:22:02.740Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T08:15:21.160Z"
+          }
+        },
+        "offers": 1054,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T08:00:28.782Z",
+          "lastSeenAt": "2026-10-10T08:00:28.782Z",
+          "engineAt": "2026-10-10T08:07:34.963Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38038095690",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T08:30:26.513Z",
+        "prevGeneratedAt": "2026-10-10T08:15:21.160Z",
+        "startedAt": "2026-10-10T08:30:26.513Z",
+        "finishedAt": "2026-10-10T08:37:08.612Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T08:30:26.513Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T08:15:21.160Z",
+          "lastSeenAt": "2026-10-10T08:15:21.160Z",
+          "engineAt": "2026-10-10T08:22:19.961Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38038971263",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T08:45:24.160Z",
+        "prevGeneratedAt": "2026-10-10T08:30:26.513Z",
+        "startedAt": "2026-10-10T08:45:24.160Z",
+        "finishedAt": "2026-10-10T08:52:06.117Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 55,
+          "error": 1,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T08:45:24.160Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 317,
+          "read": 317,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T08:30:26.513Z",
+          "lastSeenAt": "2026-10-10T08:30:26.513Z",
+          "engineAt": "2026-10-10T08:37:31.491Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38039845834",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T09:00:31.272Z",
+        "prevGeneratedAt": "2026-10-10T08:45:24.160Z",
+        "startedAt": "2026-10-10T09:00:31.272Z",
+        "finishedAt": "2026-10-10T09:07:54.097Z",
+        "durationSec": 443,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T09:00:31.272Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 317,
+          "read": 317,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T08:45:24.160Z",
+          "lastSeenAt": "2026-10-10T08:45:24.160Z",
+          "engineAt": "2026-10-10T08:52:26.343Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38041611955",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T09:30:23.071Z",
+        "prevGeneratedAt": "2026-10-10T09:00:31.272Z",
+        "startedAt": "2026-10-10T09:30:23.071Z",
+        "finishedAt": "2026-10-10T09:37:05.691Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T09:30:23.071Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 278,
+          "read": 278,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T09:00:31.272Z",
+          "lastSeenAt": "2026-10-10T09:00:31.272Z",
+          "engineAt": "2026-10-10T09:08:17.435Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38042492821",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T09:45:25.733Z",
+        "prevGeneratedAt": "2026-10-10T09:30:23.071Z",
+        "startedAt": "2026-10-10T09:45:25.733Z",
+        "finishedAt": "2026-10-10T09:52:07.319Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T09:45:25.733Z"
+          }
+        },
+        "offers": 1051,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 311,
+          "read": 311,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T09:30:23.071Z",
+          "lastSeenAt": "2026-10-10T09:30:23.071Z",
+          "engineAt": "2026-10-10T09:37:32.133Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38043378418",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T10:00:26.512Z",
+        "prevGeneratedAt": "2026-10-10T09:45:25.733Z",
+        "startedAt": "2026-10-10T10:00:26.512Z",
+        "finishedAt": "2026-10-10T10:07:08.446Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T10:00:26.512Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T09:45:25.733Z",
+          "lastSeenAt": "2026-10-10T09:45:25.733Z",
+          "engineAt": "2026-10-10T09:52:24.164Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38044251253",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T10:15:19.452Z",
+        "prevGeneratedAt": "2026-10-10T10:00:26.512Z",
+        "startedAt": "2026-10-10T10:15:19.452Z",
+        "finishedAt": "2026-10-10T10:22:02.446Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T10:15:19.452Z"
+          }
+        },
+        "offers": 1053,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 316,
+          "read": 316,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T10:00:26.512Z",
+          "lastSeenAt": "2026-10-10T10:00:26.512Z",
+          "engineAt": "2026-10-10T10:07:25.547Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38045120462",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T10:30:29.090Z",
+        "prevGeneratedAt": "2026-10-10T10:15:19.452Z",
+        "startedAt": "2026-10-10T10:30:29.090Z",
+        "finishedAt": "2026-10-10T10:37:11.285Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 53,
+          "withListings": 35,
+          "empty": 18,
+          "blocked": 54,
+          "error": 3,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T10:30:29.090Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 293,
+          "read": 293,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T10:15:19.452Z",
+          "lastSeenAt": "2026-10-10T10:15:19.452Z",
+          "engineAt": "2026-10-10T10:22:28.462Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38045994294",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T10:45:19.792Z",
+        "prevGeneratedAt": "2026-10-10T10:30:29.090Z",
+        "startedAt": "2026-10-10T10:45:19.792Z",
+        "finishedAt": "2026-10-10T10:52:02.347Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T10:45:19.792Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 276,
+          "read": 276,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T10:30:29.090Z",
+          "lastSeenAt": "2026-10-10T10:30:29.090Z",
+          "engineAt": "2026-10-10T10:37:33.873Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38046862660",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T11:00:29.305Z",
+        "prevGeneratedAt": "2026-10-10T10:45:19.792Z",
+        "startedAt": "2026-10-10T11:00:29.305Z",
+        "finishedAt": "2026-10-10T11:07:11.505Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 52,
+          "withListings": 34,
+          "empty": 18,
+          "blocked": 56,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "BLOCKED",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T10:45:19.792Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 295,
+          "read": 295,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T10:45:19.792Z",
+          "lastSeenAt": "2026-10-10T10:45:19.792Z",
+          "engineAt": "2026-10-10T10:52:30.358Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38047748952",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T11:15:23.126Z",
+        "prevGeneratedAt": "2026-10-10T11:00:29.305Z",
+        "startedAt": "2026-10-10T11:15:23.126Z",
+        "finishedAt": "2026-10-10T11:22:05.611Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 53,
+          "withListings": 35,
+          "empty": 18,
+          "blocked": 55,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "BLOCKED",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T10:45:19.792Z"
+          }
+        },
+        "offers": 1050,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 314,
+          "read": 314,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T11:00:29.305Z",
+          "lastSeenAt": "2026-10-10T11:00:29.305Z",
+          "engineAt": "2026-10-10T11:07:34.077Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38048632506",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T11:30:25.118Z",
+        "prevGeneratedAt": "2026-10-10T11:15:23.126Z",
+        "startedAt": "2026-10-10T11:30:25.118Z",
+        "finishedAt": "2026-10-10T11:37:07.354Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T11:30:25.118Z"
+          }
+        },
+        "offers": 1051,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 314,
+          "read": 314,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T11:15:23.126Z",
+          "lastSeenAt": "2026-10-10T11:15:23.126Z",
+          "engineAt": "2026-10-10T11:22:30.320Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38049517044",
+        "attempt": 1,
+        "sha": "22c89c8e1cea",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T11:45:19.834Z",
+        "prevGeneratedAt": "2026-10-10T11:30:25.118Z",
+        "startedAt": "2026-10-10T11:45:19.834Z",
+        "finishedAt": "2026-10-10T11:52:01.767Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T11:45:19.834Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 312,
+          "read": 312,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T11:30:25.118Z",
+          "lastSeenAt": "2026-10-10T11:30:25.118Z",
+          "engineAt": "2026-10-10T11:37:30.198Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38050387647",
+        "attempt": 1,
+        "sha": "29c1b4686ae2",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T12:00:28.268Z",
+        "prevGeneratedAt": "2026-10-10T11:45:19.834Z",
+        "startedAt": "2026-10-10T12:00:28.268Z",
+        "finishedAt": "2026-10-10T12:07:10.369Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T12:00:28.268Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 316,
+          "read": 316,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T11:45:19.834Z",
+          "lastSeenAt": "2026-10-10T11:45:19.834Z",
+          "engineAt": "2026-10-10T11:52:22.860Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38051277876",
+        "attempt": 1,
+        "sha": "0f2cd362531b",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T12:15:19.344Z",
+        "prevGeneratedAt": "2026-10-10T12:00:28.268Z",
+        "startedAt": "2026-10-10T12:15:19.344Z",
+        "finishedAt": "2026-10-10T12:22:02.083Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T12:15:19.344Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T12:00:28.268Z",
+          "lastSeenAt": "2026-10-10T12:00:28.268Z",
+          "engineAt": "2026-10-10T12:07:31.428Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38052189903",
+        "attempt": 1,
+        "sha": "0f2cd362531b",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T12:30:23.030Z",
+        "prevGeneratedAt": "2026-10-10T12:15:19.344Z",
+        "startedAt": "2026-10-10T12:30:23.031Z",
+        "finishedAt": "2026-10-10T12:37:04.581Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 53,
+          "withListings": 36,
+          "empty": 17,
+          "blocked": 54,
+          "error": 3,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T12:30:23.030Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 313,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T12:15:19.344Z",
+          "lastSeenAt": "2026-10-10T12:15:19.344Z",
+          "engineAt": "2026-10-10T12:22:25.732Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38053114746",
+        "attempt": 1,
+        "sha": "410ec9ed1bee",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T12:45:25.187Z",
+        "prevGeneratedAt": "2026-10-10T12:30:23.030Z",
+        "startedAt": "2026-10-10T12:45:25.188Z",
+        "finishedAt": "2026-10-10T12:52:07.544Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T12:45:25.187Z"
+          }
+        },
+        "offers": 1054,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T12:30:23.030Z",
+          "lastSeenAt": "2026-10-10T12:30:23.030Z",
+          "engineAt": "2026-10-10T12:37:21.619Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38054052405",
+        "attempt": 1,
+        "sha": "ac967685df65",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T13:00:33.927Z",
+        "prevGeneratedAt": "2026-10-10T12:45:25.187Z",
+        "startedAt": "2026-10-10T13:00:33.927Z",
+        "finishedAt": "2026-10-10T13:07:15.399Z",
+        "durationSec": 401,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T13:00:33.927Z"
+          }
+        },
+        "offers": 1054,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 312,
+          "read": 312,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T12:45:25.187Z",
+          "lastSeenAt": "2026-10-10T12:45:25.187Z",
+          "engineAt": "2026-10-10T12:52:29.556Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38055005863",
+        "attempt": 1,
+        "sha": "ac967685df65",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T13:15:20.558Z",
+        "prevGeneratedAt": "2026-10-10T13:00:33.927Z",
+        "startedAt": "2026-10-10T13:15:20.558Z",
+        "finishedAt": "2026-10-10T13:22:02.865Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 288,
+            "lastNonEmpty": "2026-10-10T13:15:20.558Z"
+          }
+        },
+        "offers": 1056,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 312,
+          "read": 312,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T13:00:33.927Z",
+          "lastSeenAt": "2026-10-10T13:00:33.927Z",
+          "engineAt": "2026-10-10T13:07:32.618Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38055958345",
+        "attempt": 1,
+        "sha": "ac967685df65",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T13:30:23.548Z",
+        "prevGeneratedAt": "2026-10-10T13:15:20.558Z",
+        "startedAt": "2026-10-10T13:30:23.549Z",
+        "finishedAt": "2026-10-10T13:37:06.119Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 35,
+          "empty": 19,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T13:30:23.548Z"
+          }
+        },
+        "offers": 1051,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 315,
+          "read": 315,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T13:15:20.558Z",
+          "lastSeenAt": "2026-10-10T13:15:20.558Z",
+          "engineAt": "2026-10-10T13:22:26.690Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38056929153",
+        "attempt": 1,
+        "sha": "ac967685df65",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T13:45:20.958Z",
+        "prevGeneratedAt": "2026-10-10T13:30:23.548Z",
+        "startedAt": "2026-10-10T13:45:20.959Z",
+        "finishedAt": "2026-10-10T13:52:03.411Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T13:45:20.958Z"
+          }
+        },
+        "offers": 1052,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 275,
+          "read": 275,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T13:30:23.548Z",
+          "lastSeenAt": "2026-10-10T13:30:23.548Z",
+          "engineAt": "2026-10-10T13:37:30.155Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38057893121",
+        "attempt": 1,
+        "sha": "e12b7c125ec6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T14:00:27.189Z",
+        "prevGeneratedAt": "2026-10-10T13:45:20.958Z",
+        "startedAt": "2026-10-10T14:00:27.189Z",
+        "finishedAt": "2026-10-10T14:07:09.834Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T14:00:27.189Z"
+          }
+        },
+        "offers": 1055,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 271,
+          "read": 271,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T13:45:20.958Z",
+          "lastSeenAt": "2026-10-10T13:45:20.958Z",
+          "engineAt": "2026-10-10T13:52:28.061Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38058868281",
+        "attempt": 1,
+        "sha": "7831c562aecc",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T14:15:19.785Z",
+        "prevGeneratedAt": "2026-10-10T14:00:27.189Z",
+        "startedAt": "2026-10-10T14:15:19.785Z",
+        "finishedAt": "2026-10-10T14:22:01.834Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T14:15:19.785Z"
+          }
+        },
+        "offers": 1042,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 265,
+          "read": 265,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T14:00:27.189Z",
+          "lastSeenAt": "2026-10-10T14:00:27.189Z",
+          "engineAt": "2026-10-10T14:07:35.217Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38059853773",
+        "attempt": 1,
+        "sha": "6f25d30477d0",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T14:30:23.489Z",
+        "prevGeneratedAt": "2026-10-10T14:15:19.785Z",
+        "startedAt": "2026-10-10T14:30:23.489Z",
+        "finishedAt": "2026-10-10T14:37:05.589Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T14:30:23.489Z"
+          }
+        },
+        "offers": 1041,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 273,
+          "read": 273,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T14:15:19.785Z",
+          "lastSeenAt": "2026-10-10T14:15:19.785Z",
+          "engineAt": "2026-10-10T14:22:23.619Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38060859148",
+        "attempt": 1,
+        "sha": "6f25d30477d0",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T14:45:21.827Z",
+        "prevGeneratedAt": "2026-10-10T14:30:23.489Z",
+        "startedAt": "2026-10-10T14:45:21.828Z",
+        "finishedAt": "2026-10-10T14:52:04.020Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T14:45:21.827Z"
+          }
+        },
+        "offers": 1041,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 307,
+          "read": 307,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T14:30:23.489Z",
+          "lastSeenAt": "2026-10-10T14:30:23.489Z",
+          "engineAt": "2026-10-10T14:37:28.012Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38061851044",
+        "attempt": 1,
+        "sha": "6f25d30477d0",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T15:00:26.630Z",
+        "prevGeneratedAt": "2026-10-10T14:45:21.827Z",
+        "startedAt": "2026-10-10T15:00:26.630Z",
+        "finishedAt": "2026-10-10T15:07:08.173Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 54,
+          "error": 5,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T15:00:26.630Z"
+          }
+        },
+        "offers": 1042,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 275,
+          "read": 275,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T14:45:21.827Z",
+          "lastSeenAt": "2026-10-10T14:45:21.827Z",
+          "engineAt": "2026-10-10T14:52:26.207Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38062850418",
+        "attempt": 1,
+        "sha": "96faedce9a7c",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T15:15:19.906Z",
+        "prevGeneratedAt": "2026-10-10T15:00:26.630Z",
+        "startedAt": "2026-10-10T15:15:19.906Z",
+        "finishedAt": "2026-10-10T15:22:42.009Z",
+        "durationSec": 442,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 52,
+          "withListings": 34,
+          "empty": 18,
+          "blocked": 56,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T15:15:19.906Z"
+          }
+        },
+        "offers": 1038,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 285,
+          "read": 285,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T15:00:26.630Z",
+          "lastSeenAt": "2026-10-10T15:00:26.630Z",
+          "engineAt": "2026-10-10T15:07:26.054Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38063399780",
+        "attempt": 1,
+        "sha": "3695f4895465",
+        "trigger": "schedule",
+        "generatedAt": "2026-10-10T15:23:31.847Z",
+        "prevGeneratedAt": "2026-10-10T15:15:19.906Z",
+        "startedAt": "2026-10-10T15:23:31.848Z",
+        "finishedAt": "2026-10-10T15:30:14.151Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T15:23:31.847Z"
+          }
+        },
+        "offers": 1040,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 270,
+          "read": 270,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T15:15:19.906Z",
+          "lastSeenAt": "2026-10-10T15:15:19.906Z",
+          "engineAt": "2026-10-10T15:23:04.817Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38064875760",
+        "attempt": 1,
+        "sha": "215368bbd211",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T15:45:20.035Z",
+        "prevGeneratedAt": "2026-10-10T15:23:31.847Z",
+        "startedAt": "2026-10-10T15:45:20.035Z",
+        "finishedAt": "2026-10-10T15:52:02.299Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T15:45:20.035Z"
+          }
+        },
+        "offers": 1028,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 300,
+          "read": 300,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T15:23:31.847Z",
+          "lastSeenAt": "2026-10-10T15:23:31.847Z",
+          "engineAt": "2026-10-10T15:30:37.695Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38065881543",
+        "attempt": 1,
+        "sha": "c3a71e1cf375",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T16:00:27.275Z",
+        "prevGeneratedAt": "2026-10-10T15:45:20.035Z",
+        "startedAt": "2026-10-10T16:00:27.275Z",
+        "finishedAt": "2026-10-10T16:07:09.334Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 53,
+          "withListings": 35,
+          "empty": 18,
+          "blocked": 54,
+          "error": 3,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T16:00:27.275Z"
+          }
+        },
+        "offers": 1039,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 304,
+          "read": 304,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T15:45:20.035Z",
+          "lastSeenAt": "2026-10-10T15:45:20.035Z",
+          "engineAt": "2026-10-10T15:52:23.820Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38066899568",
+        "attempt": 1,
+        "sha": "6f9599b414ff",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T16:15:18.484Z",
+        "prevGeneratedAt": "2026-10-10T16:00:27.275Z",
+        "startedAt": "2026-10-10T16:15:18.484Z",
+        "finishedAt": "2026-10-10T16:22:02.135Z",
+        "durationSec": 404,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 287,
+            "lastNonEmpty": "2026-10-10T16:15:18.484Z"
+          }
+        },
+        "offers": 1039,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 310,
+          "read": 310,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T16:00:27.275Z",
+          "lastSeenAt": "2026-10-10T16:00:27.275Z",
+          "engineAt": "2026-10-10T16:07:31.607Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38067922155",
+        "attempt": 1,
+        "sha": "6f9599b414ff",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T16:30:21.312Z",
+        "prevGeneratedAt": "2026-10-10T16:15:18.484Z",
+        "startedAt": "2026-10-10T16:30:21.312Z",
+        "finishedAt": "2026-10-10T16:37:02.783Z",
+        "durationSec": 401,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T16:30:21.312Z"
+          }
+        },
+        "offers": 1040,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 308,
+          "read": 308,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T16:15:18.484Z",
+          "lastSeenAt": "2026-10-10T16:15:18.484Z",
+          "engineAt": "2026-10-10T16:22:23.804Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38068928482",
+        "attempt": 1,
+        "sha": "9f4906c18230",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T16:45:21.999Z",
+        "prevGeneratedAt": "2026-10-10T16:30:21.312Z",
+        "startedAt": "2026-10-10T16:45:21.999Z",
+        "finishedAt": "2026-10-10T16:52:04.311Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T16:45:21.999Z"
+          }
+        },
+        "offers": 1041,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 270,
+          "read": 270,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T16:30:21.312Z",
+          "lastSeenAt": "2026-10-10T16:30:21.312Z",
+          "engineAt": "2026-10-10T16:37:20.645Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38069948854",
+        "attempt": 1,
+        "sha": "a422fbed8432",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T17:00:28.313Z",
+        "prevGeneratedAt": "2026-10-10T16:45:21.999Z",
+        "startedAt": "2026-10-10T17:00:28.313Z",
+        "finishedAt": "2026-10-10T17:07:10.712Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T17:00:28.313Z"
+          }
+        },
+        "offers": 1040,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 268,
+          "read": 268,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T16:45:21.999Z",
+          "lastSeenAt": "2026-10-10T16:45:21.999Z",
+          "engineAt": "2026-10-10T16:52:28.373Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38070969353",
+        "attempt": 1,
+        "sha": "289841011132",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T17:15:20.084Z",
+        "prevGeneratedAt": "2026-10-10T17:00:28.313Z",
+        "startedAt": "2026-10-10T17:15:20.084Z",
+        "finishedAt": "2026-10-10T17:22:02.098Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T17:15:20.084Z"
+          }
+        },
+        "offers": 1039,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 267,
+          "read": 269,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T17:00:28.313Z",
+          "lastSeenAt": "2026-10-10T17:00:28.313Z",
+          "engineAt": "2026-10-10T17:07:34.096Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38072000809",
+        "attempt": 1,
+        "sha": "289841011132",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T17:30:24.100Z",
+        "prevGeneratedAt": "2026-10-10T17:15:20.084Z",
+        "startedAt": "2026-10-10T17:30:24.100Z",
+        "finishedAt": "2026-10-10T17:37:06.618Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 286,
+            "lastNonEmpty": "2026-10-10T17:30:24.100Z"
+          }
+        },
+        "offers": 1040,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 270,
+          "read": 270,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T17:15:20.084Z",
+          "lastSeenAt": "2026-10-10T17:15:20.084Z",
+          "engineAt": "2026-10-10T17:22:23.160Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38073013817",
+        "attempt": 1,
+        "sha": "4eb387e5658c",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T17:45:23.717Z",
+        "prevGeneratedAt": "2026-10-10T17:30:24.100Z",
+        "startedAt": "2026-10-10T17:45:23.717Z",
+        "finishedAt": "2026-10-10T17:52:09.164Z",
+        "durationSec": 405,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T17:45:23.717Z"
+          }
+        },
+        "offers": 1039,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 301,
+          "read": 301,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T17:30:24.100Z",
+          "lastSeenAt": "2026-10-10T17:30:24.100Z",
+          "engineAt": "2026-10-10T17:37:33.178Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38074020436",
+        "attempt": 1,
+        "sha": "3c8a3bce74c1",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T18:00:27.747Z",
+        "prevGeneratedAt": "2026-10-10T17:45:23.717Z",
+        "startedAt": "2026-10-10T18:00:27.747Z",
+        "finishedAt": "2026-10-10T18:07:10.465Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T18:00:27.747Z"
+          }
+        },
+        "offers": 1036,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 264,
+          "read": 264,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T17:45:23.717Z",
+          "lastSeenAt": "2026-10-10T17:45:23.717Z",
+          "engineAt": "2026-10-10T17:52:30.782Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38075024872",
+        "attempt": 1,
+        "sha": "3302a4995631",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T18:15:19.157Z",
+        "prevGeneratedAt": "2026-10-10T18:00:27.747Z",
+        "startedAt": "2026-10-10T18:15:19.157Z",
+        "finishedAt": "2026-10-10T18:22:01.100Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T18:15:19.157Z"
+          }
+        },
+        "offers": 1038,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 301,
+          "read": 301,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T18:00:27.747Z",
+          "lastSeenAt": "2026-10-10T18:00:27.747Z",
+          "engineAt": "2026-10-10T18:07:36.268Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel"
+      },
+      {
+        "runId": "38076035230",
+        "attempt": 1,
+        "sha": "d2aae51aa1e3",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T18:30:25.318Z",
+        "prevGeneratedAt": "2026-10-10T18:15:19.157Z",
+        "startedAt": "2026-10-10T18:30:25.318Z",
+        "finishedAt": "2026-10-10T18:37:07.865Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 51,
+          "withListings": 33,
+          "empty": 18,
+          "blocked": 57,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T18:30:25.318Z"
+          }
+        },
+        "offers": 1037,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 267,
+          "read": 267,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T18:15:19.157Z",
+          "lastSeenAt": "2026-10-10T18:15:19.157Z",
+          "engineAt": "2026-10-10T18:22:23.115Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 1,
+          "byStore": {
+            "tcgculturecom": {
+              "sem preço válido para estoque IN_STOCK": 1
+            }
+          }
+        }
+      },
+      {
+        "runId": "38077043674",
+        "attempt": 1,
+        "sha": "8c84edec7d03",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T18:45:20.808Z",
+        "prevGeneratedAt": "2026-10-10T18:30:25.318Z",
+        "startedAt": "2026-10-10T18:45:20.809Z",
+        "finishedAt": "2026-10-10T18:52:02.604Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T18:45:20.808Z"
+          }
+        },
+        "offers": 992,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 285,
+          "read": 285,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T18:30:25.318Z",
+          "lastSeenAt": "2026-10-10T18:30:25.318Z",
+          "engineAt": "2026-10-10T18:37:33.100Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38078052048",
+        "attempt": 1,
+        "sha": "8c84edec7d03",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T19:00:31.490Z",
+        "prevGeneratedAt": "2026-10-10T18:45:20.808Z",
+        "startedAt": "2026-10-10T19:00:31.490Z",
+        "finishedAt": "2026-10-10T19:07:13.756Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T19:00:31.490Z"
+          }
+        },
+        "offers": 992,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 284,
+          "read": 284,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T18:45:20.808Z",
+          "lastSeenAt": "2026-10-10T18:45:20.808Z",
+          "engineAt": "2026-10-10T18:52:22.083Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38079054052",
+        "attempt": 1,
+        "sha": "23ae8e786f87",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T19:15:20.097Z",
+        "prevGeneratedAt": "2026-10-10T19:00:31.490Z",
+        "startedAt": "2026-10-10T19:15:20.097Z",
+        "finishedAt": "2026-10-10T19:22:02.311Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T19:15:20.097Z"
+          }
+        },
+        "offers": 998,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 284,
+          "read": 284,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T19:00:31.490Z",
+          "lastSeenAt": "2026-10-10T19:00:31.490Z",
+          "engineAt": "2026-10-10T19:07:36.988Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38080056600",
+        "attempt": 1,
+        "sha": "23ae8e786f87",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T19:30:25.763Z",
+        "prevGeneratedAt": "2026-10-10T19:15:20.097Z",
+        "startedAt": "2026-10-10T19:30:25.764Z",
+        "finishedAt": "2026-10-10T19:37:08.275Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T19:30:25.763Z"
+          }
+        },
+        "offers": 1000,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 292,
+          "read": 292,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T19:15:20.097Z",
+          "lastSeenAt": "2026-10-10T19:15:20.097Z",
+          "engineAt": "2026-10-10T19:22:24.881Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38081042660",
+        "attempt": 1,
+        "sha": "7fcab2669e64",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T19:45:21.424Z",
+        "prevGeneratedAt": "2026-10-10T19:30:25.763Z",
+        "startedAt": "2026-10-10T19:45:21.424Z",
+        "finishedAt": "2026-10-10T19:52:03.810Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 285,
+            "lastNonEmpty": "2026-10-10T19:45:21.424Z"
+          }
+        },
+        "offers": 999,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 291,
+          "read": 291,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T19:30:25.763Z",
+          "lastSeenAt": "2026-10-10T19:30:25.763Z",
+          "engineAt": "2026-10-10T19:37:33.503Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38082010828",
+        "attempt": 1,
+        "sha": "9db84fce1549",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T20:00:26.635Z",
+        "prevGeneratedAt": "2026-10-10T19:45:21.424Z",
+        "startedAt": "2026-10-10T20:00:26.635Z",
+        "finishedAt": "2026-10-10T20:07:08.976Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T20:00:26.635Z"
+          }
+        },
+        "offers": 1000,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 290,
+          "read": 290,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T19:45:21.424Z",
+          "lastSeenAt": "2026-10-10T19:45:21.424Z",
+          "engineAt": "2026-10-10T19:52:27.493Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38083010278",
+        "attempt": 1,
+        "sha": "52bb0a45d01d",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T20:15:23.427Z",
+        "prevGeneratedAt": "2026-10-10T20:00:26.635Z",
+        "startedAt": "2026-10-10T20:15:23.427Z",
+        "finishedAt": "2026-10-10T20:22:06.006Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T20:15:23.427Z"
+          }
+        },
+        "offers": 1000,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 291,
+          "read": 291,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T20:00:26.635Z",
+          "lastSeenAt": "2026-10-10T20:00:26.635Z",
+          "engineAt": "2026-10-10T20:07:30.060Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38083998430",
+        "attempt": 1,
+        "sha": "d186545b6fd3",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T20:30:24.051Z",
+        "prevGeneratedAt": "2026-10-10T20:15:23.427Z",
+        "startedAt": "2026-10-10T20:30:24.051Z",
+        "finishedAt": "2026-10-10T20:37:07.045Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 53,
+          "withListings": 34,
+          "empty": 19,
+          "blocked": 54,
+          "error": 3,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T20:30:24.051Z"
+          }
+        },
+        "offers": 998,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 289,
+          "read": 289,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T20:15:23.427Z",
+          "lastSeenAt": "2026-10-10T20:15:23.427Z",
+          "engineAt": "2026-10-10T20:22:31.665Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38084968707",
+        "attempt": 1,
+        "sha": "0b9e26326829",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T20:45:18.675Z",
+        "prevGeneratedAt": "2026-10-10T20:30:24.051Z",
+        "startedAt": "2026-10-10T20:45:18.675Z",
+        "finishedAt": "2026-10-10T20:52:01.648Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T20:45:18.675Z"
+          }
+        },
+        "offers": 1148,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 291,
+          "read": 291,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T20:30:24.051Z",
+          "lastSeenAt": "2026-10-10T20:30:24.051Z",
+          "engineAt": "2026-10-10T20:37:33.885Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38085941461",
+        "attempt": 1,
+        "sha": "379d7c270f08",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T21:00:28.588Z",
+        "prevGeneratedAt": "2026-10-10T20:45:18.675Z",
+        "startedAt": "2026-10-10T21:00:28.588Z",
+        "finishedAt": "2026-10-10T21:07:11.879Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T21:00:28.588Z"
+          }
+        },
+        "offers": 1149,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 307,
+          "read": 307,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T20:45:18.675Z",
+          "lastSeenAt": "2026-10-10T20:45:18.675Z",
+          "engineAt": "2026-10-10T20:52:19.833Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38086899173",
+        "attempt": 1,
+        "sha": "8f91c2761436",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T21:15:21.665Z",
+        "prevGeneratedAt": "2026-10-10T21:00:28.588Z",
+        "startedAt": "2026-10-10T21:15:21.666Z",
+        "finishedAt": "2026-10-10T21:22:43.161Z",
+        "durationSec": 441,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T21:15:21.665Z"
+          }
+        },
+        "offers": 1147,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 305,
+          "read": 305,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T21:00:28.588Z",
+          "lastSeenAt": "2026-10-10T21:00:28.588Z",
+          "engineAt": "2026-10-10T21:07:33.097Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38088819264",
+        "attempt": 1,
+        "sha": "823134a3dab6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T21:45:19.764Z",
+        "prevGeneratedAt": "2026-10-10T21:15:21.665Z",
+        "startedAt": "2026-10-10T21:45:19.764Z",
+        "finishedAt": "2026-10-10T21:52:02.399Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T21:45:19.764Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11870,
+          "totalMs": 1977750,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 394836,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 266031,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207389,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1152,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 304,
+          "read": 304,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T21:15:21.665Z",
+          "lastSeenAt": "2026-10-10T21:15:21.665Z",
+          "engineAt": "2026-10-10T21:23:00.329Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38089765928",
+        "attempt": 1,
+        "sha": "823134a3dab6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T22:00:29.317Z",
+        "prevGeneratedAt": "2026-10-10T21:45:19.764Z",
+        "startedAt": "2026-10-10T22:00:29.317Z",
+        "finishedAt": "2026-10-10T22:07:12.348Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T22:00:29.317Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11871,
+          "totalMs": 1972609,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 396216,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 265799,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207392,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1153,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 307,
+          "read": 307,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T21:45:19.764Z",
+          "lastSeenAt": "2026-10-10T21:45:19.764Z",
+          "engineAt": "2026-10-10T21:52:29.065Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38090715966",
+        "attempt": 1,
+        "sha": "823134a3dab6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T22:15:17.586Z",
+        "prevGeneratedAt": "2026-10-10T22:00:29.317Z",
+        "startedAt": "2026-10-10T22:15:17.586Z",
+        "finishedAt": "2026-10-10T22:21:59.196Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T22:15:17.586Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11868,
+          "totalMs": 1964337,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 394791,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 265446,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207490,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1151,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 307,
+          "read": 307,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T22:00:29.317Z",
+          "lastSeenAt": "2026-10-10T22:00:29.317Z",
+          "engineAt": "2026-10-10T22:07:29.528Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38091661097",
+        "attempt": 1,
+        "sha": "823134a3dab6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T22:30:24.973Z",
+        "prevGeneratedAt": "2026-10-10T22:15:17.586Z",
+        "startedAt": "2026-10-10T22:30:24.973Z",
+        "finishedAt": "2026-10-10T22:37:07.774Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T22:30:24.973Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11869,
+          "totalMs": 1974699,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 395339,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 266469,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207301,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1152,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 309,
+          "read": 309,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T22:15:17.586Z",
+          "lastSeenAt": "2026-10-10T22:15:17.586Z",
+          "engineAt": "2026-10-10T22:22:16.939Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38092587541",
+        "attempt": 1,
+        "sha": "823134a3dab6",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T22:45:19.607Z",
+        "prevGeneratedAt": "2026-10-10T22:30:24.973Z",
+        "startedAt": "2026-10-10T22:45:19.608Z",
+        "finishedAt": "2026-10-10T22:52:02.863Z",
+        "durationSec": 403,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T22:45:19.607Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11869,
+          "totalMs": 1958878,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 395854,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 265529,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207308,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1152,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 308,
+          "read": 308,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T22:30:24.973Z",
+          "lastSeenAt": "2026-10-10T22:30:24.973Z",
+          "engineAt": "2026-10-10T22:37:32.040Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38093483553",
+        "attempt": 1,
+        "sha": "a282f60cf1cb",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T23:00:26.085Z",
+        "prevGeneratedAt": "2026-10-10T22:45:19.607Z",
+        "startedAt": "2026-10-10T23:00:26.085Z",
+        "finishedAt": "2026-10-10T23:07:08.569Z",
+        "durationSec": 402,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T23:00:26.085Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11867,
+          "totalMs": 1968782,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 395669,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 265418,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207320,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1150,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 308,
+          "read": 308,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T22:45:19.607Z",
+          "lastSeenAt": "2026-10-10T22:45:19.607Z",
+          "engineAt": "2026-10-10T22:52:20.590Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38094370488",
+        "attempt": 1,
+        "sha": "8e0fcd9f6f28",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T23:15:20.214Z",
+        "prevGeneratedAt": "2026-10-10T23:00:26.085Z",
+        "startedAt": "2026-10-10T23:15:20.214Z",
+        "finishedAt": "2026-10-10T23:22:09.803Z",
+        "durationSec": 410,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T23:15:20.214Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11916,
+          "totalMs": 2468573,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 401960,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 265808,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 225345,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1158,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 305,
+          "read": 305,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T23:00:26.085Z",
+          "lastSeenAt": "2026-10-10T23:00:26.085Z",
+          "engineAt": "2026-10-10T23:07:25.904Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      },
+      {
+        "runId": "38095250155",
+        "attempt": 1,
+        "sha": "8e0fcd9f6f28",
+        "trigger": "workflow_dispatch",
+        "generatedAt": "2026-10-10T23:30:24.919Z",
+        "prevGeneratedAt": "2026-10-10T23:15:20.214Z",
+        "startedAt": "2026-10-10T23:30:24.919Z",
+        "finishedAt": "2026-10-10T23:37:46.703Z",
+        "durationSec": 442,
+        "result": "ok",
+        "stores": {
+          "found": 128,
+          "active": 54,
+          "withListings": 36,
+          "empty": 18,
+          "blocked": 54,
+          "error": 2,
+          "deferred": 0
+        },
+        "watched": {
+          "mercadolivre": {
+            "name": "Mercado Livre",
+            "status": "ACTIVE",
+            "listings": 284,
+            "lastNonEmpty": "2026-10-10T23:30:24.919Z"
+          }
+        },
+        "collectors": {
+          "tried": 54,
+          "ok": 54,
+          "failed": 0,
+          "empty": 18,
+          "suspectEmpty": 0,
+          "listings": 11906,
+          "totalMs": 2284424,
+          "errors": {},
+          "slowest": [
+            {
+              "id": "canal40",
+              "ms": 434383,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "dalarancombr",
+              "ms": 264903,
+              "status": "ACTIVE"
+            },
+            {
+              "id": "omniversecombr",
+              "ms": 207497,
+              "status": "ACTIVE"
+            }
+          ]
+        },
+        "offers": 1157,
+        "alerts": 0,
+        "reader": {
+          "status": "ok",
+          "valid": 308,
+          "read": 308,
+          "reason": null
+        },
+        "dbSync": {
+          "prevGeneratedAt": "2026-10-10T23:15:20.214Z",
+          "lastSeenAt": "2026-10-10T23:15:20.214Z",
+          "engineAt": "2026-10-10T23:22:35.938Z",
+          "lagMin": 0,
+          "reason": null,
+          "status": "ok"
+        },
+        "issues": [],
+        "health": "saudavel",
+        "listingsRejected": {
+          "total": 0,
+          "byStore": {}
+        }
+      }
+    ],
+    "last": {
+      "runId": "38095250155",
+      "attempt": 1,
+      "sha": "8e0fcd9f6f28",
+      "trigger": "workflow_dispatch",
+      "generatedAt": "2026-10-10T23:30:24.919Z",
+      "prevGeneratedAt": "2026-10-10T23:15:20.214Z",
+      "startedAt": "2026-10-10T23:30:24.919Z",
+      "finishedAt": "2026-10-10T23:37:46.703Z",
+      "durationSec": 442,
+      "result": "ok",
+      "stores": {
+        "found": 128,
+        "active": 54,
+        "withListings": 36,
+        "empty": 18,
+        "blocked": 54,
+        "error": 2,
+        "deferred": 0
+      },
+      "watched": {
+        "mercadolivre": {
+          "name": "Mercado Livre",
+          "status": "ACTIVE",
+          "listings": 284,
+          "lastNonEmpty": "2026-10-10T23:30:24.919Z"
+        }
+      },
+      "collectors": {
+        "tried": 54,
+        "ok": 54,
+        "failed": 0,
+        "empty": 18,
+        "suspectEmpty": 0,
+        "listings": 11906,
+        "totalMs": 2284424,
+        "errors": {},
+        "slowest": [
+          {
+            "id": "canal40",
+            "ms": 434383,
+            "status": "ACTIVE"
+          },
+          {
+            "id": "dalarancombr",
+            "ms": 264903,
+            "status": "ACTIVE"
+          },
+          {
+            "id": "omniversecombr",
+            "ms": 207497,
+            "status": "ACTIVE"
+          }
+        ]
+      },
+      "offers": 1157,
+      "alerts": 0,
+      "reader": {
+        "status": "ok",
+        "valid": 308,
+        "read": 308,
+        "reason": null
+      },
+      "dbSync": {
+        "prevGeneratedAt": "2026-10-10T23:15:20.214Z",
+        "lastSeenAt": "2026-10-10T23:15:20.214Z",
+        "engineAt": "2026-10-10T23:22:35.938Z",
+        "lagMin": 0,
+        "reason": null,
+        "status": "ok"
+      },
+      "issues": [],
+      "health": "saudavel",
+      "listingsRejected": {
+        "total": 0,
+        "byStore": {}
+      }
+    },
+    "lastHealthy": {
+      "runId": "38095250155",
+      "attempt": 1,
+      "sha": "8e0fcd9f6f28",
+      "trigger": "workflow_dispatch",
+      "generatedAt": "2026-10-10T23:30:24.919Z",
+      "prevGeneratedAt": "2026-10-10T23:15:20.214Z",
+      "startedAt": "2026-10-10T23:30:24.919Z",
+      "finishedAt": "2026-10-10T23:37:46.703Z",
+      "durationSec": 442,
+      "result": "ok",
+      "stores": {
+        "found": 128,
+        "active": 54,
+        "withListings": 36,
+        "empty": 18,
+        "blocked": 54,
+        "error": 2,
+        "deferred": 0
+      },
+      "watched": {
+        "mercadolivre": {
+          "name": "Mercado Livre",
+          "status": "ACTIVE",
+          "listings": 284,
+          "lastNonEmpty": "2026-10-10T23:30:24.919Z"
+        }
+      },
+      "collectors": {
+        "tried": 54,
+        "ok": 54,
+        "failed": 0,
+        "empty": 18,
+        "suspectEmpty": 0,
+        "listings": 11906,
+        "totalMs": 2284424,
+        "errors": {},
+        "slowest": [
+          {
+            "id": "canal40",
+            "ms": 434383,
+            "status": "ACTIVE"
+          },
+          {
+            "id": "dalarancombr",
+            "ms": 264903,
+            "status": "ACTIVE"
+          },
+          {
+            "id": "omniversecombr",
+            "ms": 207497,
+            "status": "ACTIVE"
+          }
+        ]
+      },
+      "offers": 1157,
+      "alerts": 0,
+      "reader": {
+        "status": "ok",
+        "valid": 308,
+        "read": 308,
+        "reason": null
+      },
+      "dbSync": {
+        "prevGeneratedAt": "2026-10-10T23:15:20.214Z",
+        "lastSeenAt": "2026-10-10T23:15:20.214Z",
+        "engineAt": "2026-10-10T23:22:35.938Z",
+        "lagMin": 0,
+        "reason": null,
+        "status": "ok"
+      },
+      "issues": [],
+      "health": "saudavel",
+      "listingsRejected": {
+        "total": 0,
+        "byStore": {}
+      }
+    },
+    "resetAt": "2026-10-09T17:35:43.178Z",
+    "updatedAt": "2026-10-10T23:37:46.707Z"
+  }
+}

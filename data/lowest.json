@@ -1,0 +1,699 @@
+{
+  "c30-combo": {
+    "total": 278.91,
+    "at": "2026-10-07T23:45:24.216Z",
+    "storeId": "pittasboardgamescombr",
+    "offerId": "6715e6b84d7a"
+  },
+  "me03-blister1": {
+    "total": 12.97,
+    "at": "2026-10-07T12:00:00.000Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": null
+  },
+  "me03-blister3": {
+    "total": 37,
+    "at": "2026-10-07T12:00:00.000Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": null
+  },
+  "me04-blister1": {
+    "total": 11.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "f447002c4b10"
+  },
+  "me05-blister3": {
+    "total": 29.84,
+    "at": "2026-10-09T15:45:24.351Z",
+    "storeId": "mercadolivre",
+    "offerId": "9d1d7dea29f3"
+  },
+  "__fromHist": true,
+  "me04-blister3": {
+    "total": 32.46,
+    "at": "2026-10-07T23:45:24.216Z",
+    "storeId": "omniversecombr",
+    "offerId": "3b2cd7d15ba6"
+  },
+  "me05-blister1": {
+    "total": 12.97,
+    "at": "2026-10-07T20:08:27.670Z",
+    "storeId": "lojabrmetaversocombr",
+    "offerId": "006f14b90e15"
+  },
+  "me02-blister3": {
+    "total": 39,
+    "at": "2026-10-07T23:45:24.216Z",
+    "storeId": "moxland",
+    "offerId": "2e35350527b6"
+  },
+  "me02-blister4": {
+    "total": 49,
+    "at": "2026-10-07T23:45:24.216Z",
+    "storeId": "moxland",
+    "offerId": "c524b0028162"
+  },
+  "me02-booster": {
+    "total": 13.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "7429e4f34dd9"
+  },
+  "me03-booster": {
+    "total": 13.9,
+    "at": "2026-10-09T23:45:20.225Z",
+    "storeId": "paladinsgamescombr",
+    "offerId": "64297cd7c29e"
+  },
+  "me01-combo": {
+    "total": 250.99,
+    "at": "2026-10-07T23:45:24.216Z",
+    "storeId": "arenacwgcom",
+    "offerId": "136b1976c0e5"
+  },
+  "me02_5-combo18": {
+    "total": 449,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "4c38015c8c0a"
+  },
+  "me02_5-booster": {
+    "total": 24.9,
+    "at": "2026-10-07T23:45:24.216Z",
+    "storeId": "geekstorebrasilcombr",
+    "offerId": "e0a3c1eaa085"
+  },
+  "me03-blister4": {
+    "total": 41.8,
+    "at": "2026-10-08T12:19:25.776Z",
+    "storeId": "gorupacombr",
+    "offerId": "4527cc424170"
+  },
+  "me01-booster": {
+    "total": 16.9,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "geekstorebrasilcombr",
+    "offerId": "9cf8a0d5c984"
+  },
+  "me04-blister4": {
+    "total": 37.98,
+    "at": "2026-10-09T15:45:24.351Z",
+    "storeId": "mercadolivre",
+    "offerId": "a06653380e0b"
+  },
+  "me02-blister1": {
+    "total": 15.9,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "pbkidscombr",
+    "offerId": "335b7a7e183e"
+  },
+  "me01-box36": {
+    "total": 474.99,
+    "at": "2026-10-09T14:45:21.952Z",
+    "storeId": "pensanddollscombr",
+    "offerId": "e2641aacdd2e"
+  },
+  "me04-etb": {
+    "total": 322.9,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "dalarancombr",
+    "offerId": "68856e9bb35e"
+  },
+  "me04-combo": {
+    "total": 219,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "04b304752311"
+  },
+  "me05-blister4": {
+    "total": 41.8,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "gorupacombr",
+    "offerId": "fc49aa3f80fb"
+  },
+  "me05-etb": {
+    "total": 359.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "2fef2600a0b3"
+  },
+  "me01-blister3": {
+    "total": 35.5,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "4e844372a2b1"
+  },
+  "me05-box36": {
+    "total": 349.9,
+    "at": "2026-10-09T09:45:18.836Z",
+    "storeId": "mercadolivre",
+    "offerId": "5766d5e4da6b"
+  },
+  "me01-blister4": {
+    "total": 44.91,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "lojaarenagamescombr",
+    "offerId": "4b2eb3fe07d4"
+  },
+  "me05-combo18": {
+    "total": 237.41,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "ilusoeslindoiacombr",
+    "offerId": "8e254fcd8017"
+  },
+  "me04-box36": {
+    "total": 379.05,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "gorupacombr",
+    "offerId": "ac428a404ebf"
+  },
+  "me02-colecao_ex-mega-venusaur": {
+    "total": 129.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "789f200aeb19"
+  },
+  "me02-box36": {
+    "total": 549.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "3c7b3504b3dc"
+  },
+  "me03-desafio": {
+    "total": 99.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "pbkidscombr",
+    "offerId": "ec24ae3bd801"
+  },
+  "me03-etb": {
+    "total": 350,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "207e04c3ec7c"
+  },
+  "me03-combo": {
+    "total": 238.44,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "tocadotabuleiro",
+    "offerId": "b85993ad0a8d"
+  },
+  "me03-combo18": {
+    "total": 229.9,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "f6c80dfe704a"
+  },
+  "me03-colecao_ex-mega-zygarde": {
+    "total": 174.59,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "canal40",
+    "offerId": "755f61d1870c"
+  },
+  "me04-combo18": {
+    "total": 236.55,
+    "at": "2026-10-09T13:30:25.573Z",
+    "storeId": "gorupacombr",
+    "offerId": "f76f9d51eda1"
+  },
+  "me04-booster": {
+    "total": 11.39,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "gorupacombr",
+    "offerId": "6a66b75105ba"
+  },
+  "me05-combo36": {
+    "total": 419.9,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "pbkidscombr",
+    "offerId": "6eb8d2865c83"
+  },
+  "me01-combo18": {
+    "total": 236.55,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "gorupacombr",
+    "offerId": "8bac2385dcc3"
+  },
+  "sv8_5-blister3": {
+    "total": 60,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "545a99344b04"
+  },
+  "sv8_5-colecao_premium": {
+    "total": 184.79,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "pbkidscombr",
+    "offerId": "6c5c431252c9"
+  },
+  "c30-colecao_fichario": {
+    "total": 230.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "65c775e5f3f4"
+  },
+  "c30-colecao_poster": {
+    "total": 115.99,
+    "at": "2026-10-08T15:15:24.742Z",
+    "storeId": "copagloja",
+    "offerId": "8e3b8b62f285"
+  },
+  "c30-etb": {
+    "total": 399.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "a26b556251f3"
+  },
+  "c30-blister2": {
+    "total": 69.99,
+    "at": "2026-10-08T14:45:32.571Z",
+    "storeId": "copagloja",
+    "offerId": "b1267a4d6bcb"
+  },
+  "c30-blister3": {
+    "total": 139.9,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "geekstorebrasilcombr",
+    "offerId": "d55771b54a87"
+  },
+  "c30-colecao_ex-greninja": {
+    "total": 199.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "lumosstorecombr",
+    "offerId": "38e1902ae248"
+  },
+  "c30-colecao_ex-sylveon": {
+    "total": 199.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "lumosstorecombr",
+    "offerId": "8ad5af6fe2ae"
+  },
+  "c30-colecao_ilustracao": {
+    "total": 132.91,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "ilusoeslindoiacombr",
+    "offerId": "e448aa0bf535"
+  },
+  "sv10_5-blister4": {
+    "total": 54.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "1efff9d4f771"
+  },
+  "sv10_5-colecao_ilustracao": {
+    "total": 149.99,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "330edf8ea37d"
+  },
+  "me02_5-combo": {
+    "total": 299.89,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "rihappycombr",
+    "offerId": "e47dd5bfdc19"
+  },
+  "me02_5-blister4": {
+    "total": 94.91,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "ilusoeslindoiacombr",
+    "offerId": "209fc1996284"
+  },
+  "sv8_5-combo18": {
+    "total": 427.5,
+    "at": "2026-10-08T00:01:13.313Z",
+    "storeId": "gorupacombr",
+    "offerId": "2700039341b1"
+  },
+  "me03-box36": {
+    "total": 398.33,
+    "at": "2026-10-08T15:15:24.742Z",
+    "storeId": "mercadolivre",
+    "offerId": "d2c14f39f3aa"
+  },
+  "me05-booster": {
+    "total": 12,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "4c7020d6ed21"
+  },
+  "me02_5-colecao_ex-mega-feraligatr": {
+    "total": 229.99,
+    "at": "2026-10-08T00:07:50.163Z",
+    "storeId": "rihappycombr",
+    "offerId": "1c56eabb145c"
+  },
+  "me03-box24": {
+    "total": 299.99,
+    "at": "2026-10-08T00:14:27.658Z",
+    "storeId": "rihappycombr",
+    "offerId": "fd7c96286c95"
+  },
+  "me02_5-colecao_ex-mega-emboar": {
+    "total": 229.99,
+    "at": "2026-10-08T00:21:05.864Z",
+    "storeId": "rihappycombr",
+    "offerId": "7937c760c07f"
+  },
+  "me02-combo": {
+    "total": 387.03,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "6da84352a6e0"
+  },
+  "me01-etb": {
+    "total": 1249,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "9957cb2acc8f"
+  },
+  "sv10-box36": {
+    "total": 1035.4,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "8d5f69fcd69c"
+  },
+  "sv4_5-blister3": {
+    "total": 200,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "fdb58274ea10"
+  },
+  "sv8_5-blister4": {
+    "total": 115.41,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "3d8ed20c7706"
+  },
+  "sv3-etb": {
+    "total": 1890,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "091f74d88be6"
+  },
+  "sv9-blister4": {
+    "total": 80,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "c31bd4810f56"
+  },
+  "sv10-etb": {
+    "total": 1400,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "c095e4a6fe1a"
+  },
+  "sv10-blister4": {
+    "total": 104.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "8a2307ef3d2e"
+  },
+  "sv10_5r-blister3": {
+    "total": 129.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "847ef84ec4c8"
+  },
+  "sv9-blister3": {
+    "total": 116.15,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "79e4cbb4604f"
+  },
+  "sv7-blister4": {
+    "total": 135,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "f3daf6372959"
+  },
+  "sv10-blister3": {
+    "total": 49.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "ac43cc9c7e55"
+  },
+  "sv5-blister3": {
+    "total": 199.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "2337b0760923"
+  },
+  "sv2-blister4": {
+    "total": 224.1,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "dff3140cae1e"
+  },
+  "sv6_5-etb": {
+    "total": 989,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "0f15169244c4"
+  },
+  "sv6_5-blister3": {
+    "total": 37,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "247c7d1ae928"
+  },
+  "sv9-booster": {
+    "total": 18,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "33a498fc2a7c"
+  },
+  "sv10_5w-combo": {
+    "total": 729,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "8befd1aaeb36"
+  },
+  "sv10_5r-etb": {
+    "total": 1250,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "892d886e45d2"
+  },
+  "sv10_5r-combo": {
+    "total": 490,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "7d7da3fc64ae"
+  },
+  "sv4_5-colecao_ex-grande": {
+    "total": 1299.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "cb3c5f0a1136"
+  },
+  "sv5-booster": {
+    "total": 39.95,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "1af85715bbd3"
+  },
+  "sv4-etb": {
+    "total": 899,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "e29840336d20"
+  },
+  "sv4_5-colecao_ex-charizard": {
+    "total": 1199,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "390c440672dd"
+  },
+  "sv8-etb": {
+    "total": 1100,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "05e570ee7a95"
+  },
+  "sv3-box36": {
+    "total": 1320.5,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "e0bf51584727"
+  },
+  "me02_5-blister3": {
+    "total": 119,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "6b2e77c4c50f"
+  },
+  "me02_5-etb": {
+    "total": 799,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "e28f4f030066"
+  },
+  "me02_5-colecao_ex-mega-lucario": {
+    "total": 549.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "09094a3a2dab"
+  },
+  "sv4-box36": {
+    "total": 1100,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "31de787bdecd"
+  },
+  "sv8_5-booster": {
+    "total": 30,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "2608a1780003"
+  },
+  "sv3_5-booster": {
+    "total": 148.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "efa89311c921"
+  },
+  "sv3-blister1": {
+    "total": 70.94,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "1485beb82c4e"
+  },
+  "sv5-desafio": {
+    "total": 619.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "d49395dfda45"
+  },
+  "sv7-blister1": {
+    "total": 54.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "509970ff0f60"
+  },
+  "sv8-desafio": {
+    "total": 444.99,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "7b7031180428"
+  },
+  "sv10-combo18": {
+    "total": 600,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "a65e586c8e6c"
+  },
+  "sv8_5-colecao_ex-eevee": {
+    "total": 429,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "41e6aa4d0fcc"
+  },
+  "sv10_5-combo18": {
+    "total": 699,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "ab1b9ac522c5"
+  },
+  "me02-desafio": {
+    "total": 270.66,
+    "at": "2026-10-08T22:04:05.443Z",
+    "storeId": "mercadolivre",
+    "offerId": "7a49bf5913f5"
+  },
+  "me04-desafio": {
+    "total": 124,
+    "at": "2026-10-09T21:15:22.410Z",
+    "storeId": "mercadolivre",
+    "offerId": "971f98e4315b"
+  },
+  "me05-desafio": {
+    "total": 137,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "cb53538f2e94"
+  },
+  "sv8-box36": {
+    "total": 1090,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "a71e871e85d2"
+  },
+  "sv1-booster": {
+    "total": 40,
+    "at": "2026-10-08T20:45:19.509Z",
+    "storeId": "mercadolivre",
+    "offerId": "44cc646ee6db"
+  },
+  "sv6-box36": {
+    "total": 800,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "88e26a01b9e5"
+  },
+  "sv6_5-deck-batalha": {
+    "total": 95,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "5d9360bf1848"
+  },
+  "sv6_5-colecao_premium": {
+    "total": 999.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "3ba32a078c66"
+  },
+  "sv6_5-deck": {
+    "total": 129.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "b2d14502b628"
+  },
+  "sv7-colecao_ex-lupo": {
+    "total": 299.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "524081c00cc6"
+  },
+  "sv10-desafio": {
+    "total": 449.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "6dd6941ae13d"
+  },
+  "sv10_5r-box18": {
+    "total": 650,
+    "at": "2026-10-08T23:30:25.480Z",
+    "storeId": "mercadolivre",
+    "offerId": "aca36f11c818"
+  },
+  "me02-box24": {
+    "total": 360,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "a58b3e1ec805"
+  },
+  "sv10_5w-combo18": {
+    "total": 699,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "265ec854c6c0"
+  },
+  "me01-colecao_ex-mega-gengar": {
+    "total": 179.99,
+    "at": "2026-10-08T18:15:59.817Z",
+    "storeId": "mercadolivre",
+    "offerId": "00f4885c5d1d"
+  },
+  "me01-desafio": {
+    "total": 159.9,
+    "at": "2026-10-08T12:33:33.080Z",
+    "storeId": "mercadolivre",
+    "offerId": "d97ea9bb8f8e"
+  },
+  "sv8_5-combo": {
+    "total": 499,
+    "at": "2026-10-08T18:30:25.983Z",
+    "storeId": "moxland",
+    "offerId": "b43fe2724dda"
+  }
+}

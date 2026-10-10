@@ -1,0 +1,106 @@
+{
+  "me04-etb": {
+    "msrp": 399.99,
+    "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-06T12:26:46.710Z"
+  },
+  "me05-etb": {
+    "msrp": 399.99,
+    "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-06T12:26:46.710Z"
+  },
+  "me03-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-chikorita-me03-equilibrio-perfeito/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-blister1": {
+    "msrp": 13.99,
+    "source_url": "https://www.copagloja.com.br/blister-unitario-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-blister3": {
+    "msrp": 42.99,
+    "source_url": "https://www.copagloja.com.br/blister-triplo-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-combo": {
+    "msrp": 250.99,
+    "source_url": "https://www.copagloja.com.br/combo-de-booster-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me05-blister1": {
+    "msrp": 13.99,
+    "source_url": "https://www.copagloja.com.br/blister-unitario-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me05-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me05-combo": {
+    "msrp": 250.99,
+    "source_url": "https://www.copagloja.com.br/combo-de-booster-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "sv10-box36": {
+    "msrp": 349.99,
+    "source_url": "https://www.copagloja.com.br/box-display-pokemon-escarlate-e-violeta-10-rivais-predestinados-028d100000000bx/p",
+    "source_timestamp": "2026-10-10T23:30:24.919Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:23:11.746Z"
+  },
+  "c30-blister2": {
+    "msrp": 69.99,
+    "source_url": "https://www.copagloja.com.br/blister-duplo-com-moeda/p",
+    "source_timestamp": "2026-10-08T18:45:19.474Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-08T13:30:10.097Z"
+  },
+  "c30-colecao_poster": {
+    "msrp": 115.99,
+    "source_url": "https://www.copagloja.com.br/box-colecao-com-poster-/p",
+    "source_timestamp": "2026-10-08T17:00:29.800Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-08T14:45:32.571Z"
+  }
+}
