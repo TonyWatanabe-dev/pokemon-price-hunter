@@ -20,6 +20,7 @@ import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
+import { redact } from './redact.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -186,7 +187,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           catch (e) {
             // Simulação falhou: guarda o motivo e usa o último frete conhecido desta oferta, com a data em que foi lido.
             // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
-            shipError = String(e?.message || e).slice(0, 160);
+            shipError = redact(e?.message || e, { max: 160 });
             const old = lastValidOf(prev[id]);
             if (old?.shippingKnown && old.shipping != null) { ship = old.shipping; shipAt = old.shippingAt || old.at || old.source_timestamp || null; }
           }
@@ -213,8 +214,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
       touched.add(store.id);
     } catch (e) {
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
-      log(`[${store.id}] ${src.status}: ${e.message}`);
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: redact(e.message), fails: (src.fails || 0) + 1 });
+      log(`[${store.id}] ${src.status}: ${src.reason}`);
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
@@ -394,7 +395,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
-  } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
+  } catch (e) { log(`[estado operacional] ${redact(e.message, { max: 120 })}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;
 }
@@ -404,7 +405,7 @@ if (isMain) {
   const loop = process.argv.includes('--loop');
   const minutes = Number(process.env.HUNTER_INTERVAL_MIN || 10);
   do {
-    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', e); if (!loop) process.exitCode = 1; }
+    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', redact(e?.stack || e, { max: 1500 })); if (!loop) process.exitCode = 1; }
     if (loop) await new Promise((r) => setTimeout(r, minutes * 60e3));
   } while (loop);
 }
