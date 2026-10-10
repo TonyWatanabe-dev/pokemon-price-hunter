@@ -68,6 +68,7 @@ export function compose(h) {
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
   lines.push('', `Estoque: ${o.quantity ? o.quantity + ' unidades' : 'confirmado'}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
   lines.push(`Frete: ${o.shipping === 0 ? 'grátis' : o.shipping > 0 ? money(o.shipping) : 'não informado'}`);
+  if (o.source_timestamp && Number.isFinite(Date.parse(o.source_timestamp))) lines.push(`Lido em: ${new Date(o.source_timestamp).toISOString().replace('T', ' ').slice(0, 16)} UTC`);
   const sl = officialLine(h.opp); if (sl) lines.push(sl);   // nota oficial; sem nota válida, a linha não aparece
   return { title: head, text: lines.join('\n'), url: o.url };
 }
@@ -75,13 +76,13 @@ export function compose(h) {
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 export const transports = {
   async telegram(msg) {
-    const token = process.env.TELEGRAM_BOT_TOKEN; const chat = process.env.TELEGRAM_CHAT_ID; if (!token || !chat) return false;
+    const token = process.env.TELEGRAM_BOT_TOKEN; const chat = process.env.TELEGRAM_CHAT_ID; if (!token || !chat) return null;
     const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ chat_id: chat, text: esc(msg.text), parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: [[{ text: msg.button || 'COMPRAR', url: msg.url }]] } }) });
     return r.ok;
   },
   async ntfy(msg) {
-    const topic = process.env.NTFY_TOPIC; if (!topic) return false;
+    const topic = process.env.NTFY_TOPIC; if (!topic) return null;
     const r = await fetch(process.env.NTFY_SERVER || 'https://ntfy.sh/', { method: 'POST', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ topic, title: msg.title, message: msg.text.split('\n').slice(2).filter(Boolean).join('\n'), click: msg.url, priority: 4, actions: [{ action: 'view', label: msg.button ? 'Ver pista' : 'Comprar', url: msg.url }] }) });
     return r.ok;
@@ -91,8 +92,11 @@ export const transports = {
 export async function dispatch(hits, sent, { send = transports, now = new Date() } = {}) {
   const delivered = [];
   for (const h of hits) {
-    const msg = compose(h); const channels = [];
-    for (const [name, fn] of Object.entries(send)) { try { if (await fn(msg)) channels.push(name); } catch { /* canal indisponível */ } }
+    const msg = compose(h); const channels = []; let failed = 0;
+    // false/exceção = tentativa que falhou; null/undefined = canal não configurado (não conta como falha)
+    for (const [name, fn] of Object.entries(send)) { try { const r = await fn(msg); if (r) channels.push(name); else if (r === false) failed++; } catch { failed++; /* canal indisponível */ } }
+    // Todos os canais configurados falharam: não grava como enviado, a próxima rodada tenta de novo (sem repetir no painel).
+    if (!channels.length && failed) continue;
     sent[h.key] = { at: now.toISOString(), total: h.offer.total, discount: h.offer.discount ?? null, offerId: h.offer.id };
     delivered.push({ at: now.toISOString(), kind: h.kind, rule: h.rule.id, ruleLabel: h.rule.label, offerId: h.offer.id, productId: h.offer.productId, total: h.offer.total, channels, text: msg.text, url: msg.url });
   }
@@ -113,8 +117,9 @@ export function composeTip(t) {
 export async function dispatchTips(hits, sent, { send = transports, now = new Date() } = {}) {
   const delivered = [];
   for (const t of hits) {
-    const msg = composeTip(t); const channels = [];
-    for (const [name, fn] of Object.entries(send)) { try { if (await fn(msg)) channels.push(name); } catch { /* canal indisponível */ } }
+    const msg = composeTip(t); const channels = []; let failed = 0;
+    for (const [name, fn] of Object.entries(send)) { try { const r = await fn(msg); if (r) channels.push(name); else if (r === false) failed++; } catch { failed++; /* canal indisponível */ } }
+    if (!channels.length && failed) continue;
     sent['tip|' + t.id] = { at: now.toISOString(), total: t.price };
     delivered.push({ at: now.toISOString(), kind: 'tip', rule: 'pista', ruleLabel: 'Pista', productId: t.productId, total: t.price, channels, text: msg.text, url: msg.url });
   }
