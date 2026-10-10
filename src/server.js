@@ -38,5 +38,5 @@ http.createServer(async (req, res) => {
     if (u.pathname === '/data/state.json') return send(res, 200, fs.readFileSync(dataPath('state.json')));
     if (u.pathname === '/' || u.pathname === '/index.html') return send(res, 200, fs.readFileSync(path.join(ROOT, 'dashboard/index.html')), 'text/html; charset=utf-8');
     send(res, 404, { error: 'rota inexistente' });
-  } catch (e) { send(res, 400, { error: e.message }); }
+  } catch (e) { console.error(`[server] ${u.pathname}: ${e.message}`); send(res, 400, { error: e instanceof SyntaxError ? 'JSON inválido' : e.message === 'regra precisa de id e filter' ? e.message : 'pedido não pôde ser processado' }); }
 }).listen(PORT, () => console.log(`Painel e API em http://localhost:${PORT}`));

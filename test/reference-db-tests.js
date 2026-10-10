@@ -16,8 +16,10 @@ execFileSync('node', ['tools/db-migrate.mjs'], { env: process.env, stdio: 'pipe'
 
 const catalog = { collections: [{ id: 'me05', name: 'Escuridão Absoluta', series: 'Megaevolução' }, { id: 'c30', name: 'Celebração de 30 Anos', series: 'Especial' }, { id: 'sv3', name: 'Obsidiana em Chamas', series: 'Escarlate e Violeta' }] };
 const P = (id, col, extra = {}) => ({ id, collection: col, collectionName: col, type: 'etb', typeLabel: 'Treinador Avançado (ETB)', group: 'ETB', boosters: 9, ...extra });
+// Copag verificada ontem (relativo ao relógio): a view do motor só aceita verificação de até 30 dias (migration 010)
+const COPAG_SEEN = new Date(Date.now() - 864e5).toISOString();
 const products = [
-  P('me05-etb', 'me05', { copagConfirmed: true, msrp: 400, copag: { source_url: 'https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p', confidence: 'OFICIAL', source_timestamp: '2026-10-08T10:00:00Z' } }),
+  P('me05-etb', 'me05', { copagConfirmed: true, msrp: 400, copag: { source_url: 'https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p', confidence: 'OFICIAL', source_timestamp: COPAG_SEEN } }),
   P('c30-etb', 'c30', { copagConfirmed: true, msrp: 399.99, copag: { source_url: 'https://www.instagram.com/voltztcg/', confidence: 'OFICIAL', source_timestamp: '2026-10-07', manual: true, note: 'tabela de lojas' } }),
   P('sv3-etb', 'sv3'),
 ];
