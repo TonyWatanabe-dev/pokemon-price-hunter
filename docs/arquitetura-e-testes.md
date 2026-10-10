@@ -57,7 +57,18 @@ Falha passageira de coleta não vira remoção, reposição nem queda falsa (tes
 ## 5. Preço e frete
 
 - Preço: Pix preferido (`src/score.js`, `pickPrice`); anomalia (`isAnomalous`); estatísticas em `src/core/price-stats.js`; motor de preço no banco em `src/core/price-engine.js`.
-- Cálculo de frete por CEP no site (#84): `src/shipping-calc.js` é o núcleo (validação de CEP, opções com modalidade/preço/prazo como a loja devolveu, cache curto por loja+item+vendedor+quantidade+CEP, rate limit, origem e horário, auditoria só com prefixo do CEP). Frete sem cotação confirmada é desconhecido, nunca R$ 0,00. Lacuna aberta: o endpoint e o botão "Calcular frete" na oferta ainda não estão ligados (a API pública da oferta não expõe `sellerId`/item VTEX); só VTEX tem fonte autorizada, as demais lojas mostram "Frete não disponível para cálculo no site" e o link da loja.
+- Cálculo de frete por CEP no site (#84): `src/shipping-calc.js` é o núcleo, testado em `test/shipping-calc-tests.js` (sem rede).
+  - CEP: 8 dígitos, normalizado para `12345678`; recusa formato errado, faixa `00…` (inexistente) e sequências de um dígito só (`11111-111`).
+  - Destino só do servidor: o cliente manda `offerId`, `cep` e `quantity`. Loja, item e vendedor vêm de `resolveOffer` no servidor; `base`/`itemId`/`sellerId` vindos do pedido são ignorados (evita SSRF).
+  - Cotação VTEX (`orderForms/simulation`) por `request()` de `src/http.js`, depois de `assertSafeUrl` e do robots.txt.
+  - Cache: só cotação OK, por loja+item+vendedor+quantidade+CEP, TTL de 5 min (`QUOTE_TTL_MS`). Falha não é cacheada.
+  - Rate limit: 10 consultas novas/min por cliente (IP) e 3/min por chave. Cache hit não conta.
+  - 429 ou bloqueio: cooldown **por loja** de no mínimo 30 min. Um `Retry-After` maior é respeitado até 6 h. Até vencer, a loja não é chamada (desenho da #188: não insistir).
+  - Frete desconhecido (falha, timeout, 5xx, sem opção, cooldown): `shippingKnown:false`, sem preço de frete e sem total. Nunca R$ 0,00.
+  - Ordenação por "menor total": sempre `byComparableTotal` de `api/_lib/offer-rank.mjs` (`rankByComparableTotal`). Não há regra própria.
+  - Auditoria: origem, horário e só o prefixo de 3 dígitos do CEP.
+  - **Endpoint desligado**: `createShippingCalcHandler` responde 404 sem `SHIPPING_CALC_ENABLED=1` e não está registrado em nenhuma rota. Ligar depende de decisão: quais lojas (só VTEX?), limites, de onde `resolveOffer` lê item e vendedor VTEX (a API pública da oferta não expõe `sellerId`/item) e a UI (campo CEP + "Calcular frete" + escolha da modalidade).
+  - Lojas sem fonte autorizada mostram "Frete não disponível para cálculo no site" e o link da loja.
 - Frete: calculado só em VTEX, via CEP (`HUNTER_CEP`). Nas outras lojas "não informado" e o total é só o produto. Falha da simulação não vira queda de frete: o último frete fica, com data e motivo.
 - Mercado composto e deduplicado: `src/core/price-engine.js` e testes `market-*`.
 
