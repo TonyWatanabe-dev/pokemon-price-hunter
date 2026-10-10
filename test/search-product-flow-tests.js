@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
 const cutFn = (a) => { const i = html.indexOf(a); assert.ok(i > 0, `função ${a}`); const j = html.indexOf('\n}\n', i); assert.ok(j > i, `fim de ${a}`); return html.slice(i, j + 3); };
 const line = (prefix) => { const l = html.split('\n').find((x) => x.startsWith(prefix)); assert.ok(l, `linha ${prefix}`); return l; };
@@ -14,10 +14,11 @@ const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 const code = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
-    'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=', 'function scoreChip'].map(line),
+    'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive='].map(line),
+  cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
   cut('/* Busca: nome', '/* SearchInput'),
-  cut('/* SearchInput', 'function acClose'),
+  cut('/* SearchInput com autocomplete', 'function acClose'),
   cutFn('function renderSearch'),
   cut('function scoreMeter', 'function dealCard'), cutFn('function dealCard'),
   cut('let curPid=null;', 'function openProduct'),
@@ -41,7 +42,7 @@ const OC = off('oc', 'p-c', { total: 100, stock: 'OUT_OF_STOCK' });
 function sandbox({ loaded = true } = {}) {
   const slots = { '#view': { innerHTML: '' } }; const boxes = { 'q-ac': { innerHTML: '', hidden: true } };
   const ctx = {
-    console, S: loaded ? { collections: [col], reputation: { lojas: {} } } : null, OFF: [O1, O2, O3, OB, OC], P: { 'p-a': PA, 'p-b': PB, 'p-c': PC },
+    console, S: loaded ? { collections: [col], products: [PA, PB, PC], reputation: { lojas: {} } } : null, OFF: [O1, O2, O3, OB, OC], P: { 'p-a': PA, 'p-b': PB, 'p-c': PC },
     SLUG: { 'p-a': 'caos-ascendente-blister-quadruplo-charizard', 'p-b': 'caos-ascendente-blister-quadruplo-pikachu', 'p-c': 'caos-ascendente-elite-trainer-box' },
     F: { q: '' }, view: 'busca', CHANGED: new Set(), HIST: {}, REFNOTE: 'ref', SEARCH_TIPS: new Map(), STOCK: { IN_STOCK: ['ok', 'Em estoque'], OUT_OF_STOCK: ['bad', 'Sem estoque'], PRE_ORDER: ['warn', 'Pré-venda'] },
     $: (sel) => slots[sel] || null, ic: (id) => `<i data-ic="${id}"></i>`, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'blister', catChip: () => '',
@@ -51,9 +52,10 @@ function sandbox({ loaded = true } = {}) {
     document: { title: '', getElementById: (id) => boxes[id] || null, querySelectorAll: () => [] },
   };
   vm.createContext(ctx);
-  vm.runInContext(code + '\n;globalThis.__t={buildIndex,searchProducts,renderSearch,renderProduct,dealCard,storeOffer,bestOfferFor,nLiveOf,acRender};', ctx);
+  vm.runInContext(code + '\n;globalThis.__t={buildIndex,searchProducts,renderSearch,renderProduct,dealCard,storeOffer,bestOfferFor,nLiveOf,acRender,shipNote};', ctx);
   if (loaded) ctx.__t.buildIndex();
-  return { ...ctx.__t, ctx, slots, boxes };
+  // resultado do vm vem com o Array de outro realm: deepStrictEqual compararia protótipos diferentes
+  return { ...ctx.__t, searchProducts: (q) => Array.from(ctx.__t.searchProducts(q)), ctx, slots, boxes };
 }
 const input = (value) => { const attrs = {}; return { id: 'q', value, attrs, setAttribute: (k, v) => { attrs[k] = v; } }; };
 const search = (s, q) => { s.ctx.F.q = q; s.renderSearch(); return s.slots['#view'].innerHTML; };
@@ -142,7 +144,7 @@ t('frete e preço desconhecidos ficam explícitos', () => {
   assert.match(d, /Sem frete informado, o valor é o preço antes do frete/);
   assert.match(text(cardOf(s, 'p-b')), /Preço antes do frete/, 'card da busca também avisa frete desconhecido');
   assert.ok(!/Preço antes do frete/.test(text(cardOf(s, 'p-a'))), 'frete conhecido não leva o aviso');
-  assert.equal(s.ctx.shipNote({ shippingKnown: true, shipping: 0, price: 10 }), 'Frete grátis');
+  assert.equal(s.shipNote({ shippingKnown: true, shipping: 0, price: 10 }), 'Frete grátis');
   const semPreco = s.storeOffer({ ...O1, id: 'on', total: null, price: null }, PA);
   assert.match(semPreco, /class="so-price">-</, 'preço desconhecido aparece como "-" e não como R$ 0,00'); assert.match(semPreco, /class="so dim"/, 'e não conta como oferta com estoque');
 });
