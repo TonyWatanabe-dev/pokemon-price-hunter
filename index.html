@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>document.documentElement.classList.add("js")</script>
 <title>Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter</title>
-<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque em tempo real.">
+<meta name="description" content="Comparador de preços de Pokémon TCG lacrado: ETB, booster box, blisters e coleções em lojas do Brasil, comparados com o preço sugerido oficial da Copag. Preços e estoque conferidos a cada 15 minutos.">
 <meta property="og:title" content="TCG Price Hunter">
 <meta property="og:description" content="Ofertas de Pokémon TCG lacrado no Brasil, comparadas com o preço sugerido oficial da Copag.">
 <meta name="theme-color" content="#1B2C74" media="(prefers-color-scheme: light)">
@@ -443,8 +443,16 @@ a.navbtn{text-decoration:none}
 .so-mid>div{min-width:0}
 .so-price{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-right:8px}
 .so-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+/* UX A/C/E: frete, idade da nota, nota velha e atalho de comparação nos cartões do motor */
+.opp-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}.pod-ship{margin:4px 0 0;font-size:12px;color:var(--muted)}
+.opp-age{display:flex;align-items:center;gap:5px;margin:6px 0 0;font-size:12px;color:var(--muted)}.opp-age .icon{width:13px;height:13px}.opp-age.old{color:var(--warn);font-weight:600}
+.pod-age{margin:2px 0 0;font-size:11.5px}
+.pp-opp:empty{display:none}.ppopp{margin-bottom:16px}.ppopp .eyebrow{display:flex;align-items:center;gap:6px}.ppopp .meter{margin-top:10px}.ppopp .btn{margin-top:12px}
+[data-old] .photo,[data-old] .opp-price,[data-old] .pod-price,[data-old] .meter{opacity:.55;filter:grayscale(.6)}
+.opp-stores{position:relative;z-index:4;display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}.opp-stores .icon{width:14px;height:14px}
 .so .btn{padding:10px 16px;font-size:14px;flex:none}
 .so-more{margin-top:12px}.so-more summary{font-size:14.5px}
+.so-group{margin:16px 0 8px;font-size:15px}.so-group small{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--muted)}
 .so-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}
 .so-foot>span{display:inline-flex;align-items:center;gap:4px}.so-foot .icon{width:14px;height:14px}
 .card.hist{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4}
@@ -621,6 +629,10 @@ a.navbtn{text-decoration:none}
 .stage .sbox-lg .btn{background:var(--sticker);color:var(--sticker-ink)}
 .stage .sbox-lg .sbox-in:focus-within{border-color:rgb(255 207 51 / .7);box-shadow:0 0 0 4px rgb(255 207 51 / .16),0 18px 50px rgb(0 0 0 / .35)}
 .stage .sbox-x{color:rgb(255 255 255 / .7)}.stage .sbox-x:hover{background:rgb(255 255 255 / .1);color:#fff}
+/* UX: pausa das notas e frescor no topo da Home */
+.pause h3{margin:0 0 6px}.stage-empty.pause h3{color:#fff}.pause p{margin:6px 0 0}
+.pause-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px!important}
+body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatualizado"] .live-dot,body[data-fresh="indisponivel"] .live-dot{background:#FF8478}
 .stage-empty{max-width:560px;margin:48px auto 0;text-align:center;color:rgb(228 233 255 / .75);padding:24px;border:1px dashed rgb(255 255 255 / .2);border-radius:20px}
 .stage-copy{text-align:center;margin:44px auto 0}
 @media (min-width:861px){.stage h1 .ln{white-space:nowrap}}
@@ -1348,9 +1360,9 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 "use strict";
 const $=(s,r=document)=>r.querySelector(s);
 const esc=(s)=>String(s??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money=(v)=>v==null?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const money=(v)=>typeof v!=="number"||!Number.isFinite(v)?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const pct=(v)=>v==null?"-":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
-const ago=(iso)=>{if(!iso)return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
+const ago=(iso)=>{if(!iso||!Number.isFinite(Date.parse(iso)))return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
 const ic=(id,cls="icon")=>`<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 const store={get(k,d){try{const v=localStorage.getItem("ph:"+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem("ph:"+k,JSON.stringify(v))}catch{}}};
 
@@ -1403,7 +1415,7 @@ addEventListener("popstate",()=>{
 
 function toast(msg,warn){const t=$("#toast"),now=Date.now();if(!warn&&toast.until>now){clearTimeout(toast.q);toast.q=setTimeout(()=>toast(msg),toast.until-now);return}const d=warn?5200:2400;t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.until=warn?now+d:0;toast.t=setTimeout(()=>t.classList.remove("show"),d)}
 
-function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${o.quantity} em estoque`:l}</span>`}
+function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${esc(o.quantity)} em estoque`:esc(l)}</span>`}
 function photo(p,o,cls="photo"){
   const src=String(o?.image||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
   const fb=`<div class="${cls} fallback" style="--ec:${gg.c}" aria-hidden="true">${ic(gg.icon)}</div>`;
@@ -1421,11 +1433,11 @@ const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-
 const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
 function raBadge(o,full){
   const r=raOf(o.storeId);if(!r)return"";const [lb,cls]=RA_ST[r.status]||RA_ST.NAO_ENCONTRADA;
-  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(o.storeName.replace(/\.com(\.br)?$/,""))}`;
+  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(String(o.storeName||"").replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
-  const tip=r.status==="NAO_ENCONTRADA"?`Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
-  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
+  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
+  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(nota&&!full?nota:lb)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
@@ -1520,6 +1532,9 @@ function priceBlock(p,o,abrir){
   return`<div class="pblock"><span class="big" data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</span>${off}</div>
   <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
+/* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -" */
+const readKnown=(o)=>Number.isFinite(Date.parse(o?.source_timestamp??""));
+const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data da leitura desconhecida";
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
@@ -1541,8 +1556,9 @@ function dealCard(e,opt={}){
     <h3 class="deal-name">${esc(label(p))}</h3>
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
+    ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1681,15 +1697,15 @@ function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMo
 
 /* Home (6B.2): pódio, sequência e destaques vêm do Opportunity Engine (GET /api/v1/oportunidades), a mesma fonte da
    /oportunidades. Pódio + sequência = as 15 primeiras na ordem do motor (ordem=score). Nada é calculado aqui. */
-const HOMEOPP={status:"idle",top:[],below:null,save:null,at:0,p:null};
+const HOMEOPP={status:"idle",top:[],below:null,save:null,at:0,p:null,fr:null};const HOME_OPP_KEY="oportunidades?limite=15&pagina=1&ordem=score";
 function loadHomeOpp(){
   if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
-  return HOMEOPP.p||=Promise.all([apiGet("oportunidades?limite=15&pagina=1&ordem=score"),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
+  return HOMEOPP.p||=Promise.all([apiGet(HOME_OPP_KEY),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
     .then(([a,b,c])=>{
-      if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
+      if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a||{},HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
+      else if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
       else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
-      else if(a.meta?.status==="stale_db")Object.assign(HOMEOPP,{status:"stale",top:[]});   /* Lote 2: banco sem sincronizar */
-      else Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now()});
+      else{Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
       HOMEOPP.p=null});
 }
 /* Pódio: as 3 primeiras do motor como destaques FOIL, ULTRA RARA e RARA (6C.1; mesmo componente, sem medalhas) */
@@ -1702,23 +1718,25 @@ function podCardOpp(x,r){
   const refTxt=rc.available?`${refShort(rc.reference_kind)}${mkOnly?" (marketplaces)":""} · ${money(rc.reference_value)}`:"Sem referência atual";
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";const lv=x.confidence_level;
   const [hk,hl]=HIGHLIGHT[r-1]||[];const rar=rarityOf(sc);
-  return`<article class="pod" data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
+  const ol=ageLine(x.updated_at)?.old;
+  return`<article class="pod"${ol?" data-old":""} data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
     ${hl?`<span class="pod-rank"><i aria-hidden="true"></i>${hl}</span>`:""}
-    <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(x.price)} em ${esc(st.name||"")}"></a>
+    <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(oppTotal(x))} em ${esc(st.name||"")}"></a>
     <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
     <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
-      <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(x.price)}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
+      <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(oppTotal(x))}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
       ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
-      <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}</span>
-        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
+      <p class="pod-ship">${oppShip(x)}</p>
+      <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}${ageHTML(x,"pod-age")}</span>
+        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>${cmpLink(pr)}</div>
   </article>`;
 }
 function podiumOppHTML(){
   if(HOMEOPP.status==="idle"||(HOMEOPP.p&&HOMEOPP.status!=="ok"))return`<div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div>`;
   if(HOMEOPP.status==="error")return`<p class="stage-empty">Não conseguimos carregar as oportunidades agora. <button class="btn ghost sm" type="button" data-homeretry>${ic("arrow-clockwise")}Tentar de novo</button></p>`;
-  if(HOMEOPP.status==="stale")return`<p class="stage-empty">Oportunidades pausadas: os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; elas voltam na próxima atualização.</p>`;
+  if(HOMEOPP.status==="stale")return`<div class="stage-empty pause">${pauseHTML(OPP_PAUSE,"data-homeretry")}</div>`;
   if(HOMEOPP.status==="nodb")return`<p class="stage-empty">Oportunidades indisponíveis no momento. Elas vêm do Opportunity Engine; nenhuma nota é estimada no lugar.</p>`;
   const top=HOMEOPP.top.slice(0,3);
   if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade avaliada agora. O Opportunity Engine avalia as ofertas com estoque a cada varredura.</p>`;
@@ -1839,7 +1857,7 @@ function renderDeals(){
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><b>Ao vivo</b> · preços em tempo real · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
+      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><span id="live-t">${freshTxt(freshState(S))[0]}</span> · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
       ${tickerHTML()}
     </div>
     <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
@@ -1944,7 +1962,7 @@ function renderLegal(kind){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide legal">${T[kind]}</section></div>`;
 }
 const tipVs=(x)=>x.anomalous?`<span class="chip bad">Barato demais</span>`:x.discount==null?`<span class="chip">Sem Copag</span>`:x.discount>=.0005?`<span class="chip ok">-${pct(x.discount)}</span>`:x.discount<=-.0005?`<span class="chip warn">+${pct(-x.discount)}</span>`:`<span class="chip">Preço Copag</span>`;
-const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(x.source.replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
+const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(String(x.source||"").replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
 const tipTable=(l)=>`<div class="tablewrap"><table><thead><tr><th>Promoção</th><th class="r">Preço e Copag</th></tr></thead><tbody>${l.map(tipRow).join("")}</tbody></table></div>`;
 /* Na busca: promoções dos canais do Telegram que batem com o termo (sem verificação, fora do ranking) */
 function tipHits(q){
@@ -1955,7 +1973,7 @@ function tipHits(q){
 function renderTips(){
   const t=S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
-  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos em tempo real.</p></div>`}
+  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
   ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
 }
 
@@ -2071,7 +2089,12 @@ function chart(s,msrp,avg,min,max){
 
 /* Página de produto: entender, comparar e decidir */
 let curPid=null;
-const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+/* frete desconhecido não compete pelo menor total (issue #84): sem frete informado, "total" é só o preço e não se compara
+   com um total que já inclui o frete. Ofertas com frete conhecido (ou grátis) vêm antes; as outras, depois, por preço. */
+const shipOk=(o)=>o.shippingKnown===true;
+const shipCmp=(a,b)=>shipOk(b)-shipOk(a);
+const bestOffer=(offers)=>offers.filter(live).sort(OFFER_SORTS.price)[0];
 let offerSort="price";
 function openProduct(pid,{push=true}={}){
   if(!P[pid])return;const path="/produto/"+(SLUG[pid]||encodeURIComponent(pid));
@@ -2088,16 +2111,19 @@ function storeOffer(o,p){
   return`<article class="so${live(o)?"":" dim"}">
     <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
-      <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
-      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>
-    <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
+      <p class="so-ship">${shipNote(o)}${shipOk(o)?"":" · frete a calcular"}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
+      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
+    <div class="so-foot"><span>${ic("clock")}${readNote(o)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga: preço pode ter mudado</span>`:""}</div>
   </article>`;
 }
+/* atalho "Comparar N ofertas": a página do produto pode chegar depois (API); rola até a seção quando ela existir */
+let PENDING_HASH="";
+function hashScroll(){if(!PENDING_HASH)return;const el=document.getElementById(PENDING_HASH);if(!el)return;PENDING_HASH="";requestAnimationFrame(()=>el.scrollIntoView({block:"start"}))}
 function renderProduct(pid){
   const p=P[pid];
   if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
   const gg=g(p);const offers=OFF.filter((o)=>o.productId===pid).sort(OFFER_SORTS[offerSort]);
-  const best=offers.find(live);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
+  const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
   const c=p.copag||{};const col=(S.collections||[]).find((x)=>x.id===p.collection);
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
@@ -2115,14 +2141,17 @@ function renderProduct(pid){
     <div class="ptools">${favBtn(pid)}</div></div>
   </header>
   <aside class="pp-side">
+    <div id="pp-opp" class="pp-opp"></div>
     ${best?`<section class="card buy">
-      <p class="eyebrow">Melhor preço com estoque</p>
+      <p class="eyebrow">${shipOk(best)?"Melhor preço com estoque":"Menor preço com estoque, frete a calcular"}</p>
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
       ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
+      ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
+      <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
-      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)} ${ic("arrow-square-out")}</a>
+      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
     ${alertBox(pid)}
   </aside>
@@ -2138,14 +2167,19 @@ function renderProduct(pid){
     ${scale}
     <section class="card wbuy" id="ondecomprar"><div class="hhead"><h2>${ic("storefront")}Onde comprar <small>${nLive} com estoque</small></h2>
       <label class="osort"><span class="sr">Ordenar ofertas</span><select id="osort">${[["price","Menor preço"],["score","Melhor oportunidade"],["fresh","Atualização"]].map(([v,l])=>`<option value="${v}"${offerSort===v?" selected":""}>${l}</option>`).join("")}</select></label></div>
-      ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));return`${on.length?`<div class="solist">${on.map((o)=>storeOffer(o,p)).join("")}</div>`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
+      ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));
+        /* "Menor preço": quem tem total com frete conhecido primeiro; frete a calcular num grupo à parte, depois */
+        const sk=offerSort==="price"?on.filter(shipOk):on,su=offerSort==="price"?on.filter((o)=>!shipOk(o)):[];
+        const ls=(xs)=>`<div class="solist">${xs.map((o)=>storeOffer(o,p)).join("")}</div>`;
+        return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
-      <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete.</p></section>
+      <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
 </div>`;
   if(pid in HIST)drawHist(pid);else loadHist(pid);
+  hashScroll();loadPpOpp(pid,best?.id||null);
 }
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
@@ -2186,8 +2220,9 @@ async function afterRedirect(m){
 async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
-    if(was!==u.uid){ACC.data=null;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={}}}
-    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    if(was!==u.uid){ACC.data=null;ACC.loadFailed=false;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}}
+    if(ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
+    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
     else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
   }else ACC.data=null;
   ACC.ready=true;accSync();
@@ -2319,7 +2354,14 @@ async function submitDel(f){
   try{await m.wipe(pw||undefined);ACC.data=null;toast("Conta e dados excluídos");go("")}
   catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");b.disabled=false;b.removeAttribute("aria-busy")}
 }
-async function saveField(k,v,old){ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast("Não consegui salvar. Tente de novo.");throw e}}
+async function saveField(k,v,old){
+  if(!ACC.user||!ACC.data){toast("Entre na sua conta para salvar.");throw Object.assign(new Error("sem login"),{code:"auth/no-user"})}
+  if(ACC.loadFailed){toast("Seus dados não carregaram. Recarregue a página antes de salvar.");throw Object.assign(new Error("dados não carregados"),{code:"data/not-loaded"})}
+  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast(saveErr(e));throw e}
+}
+const SAVE_AUTH=new Set(["auth/no-user","unauthenticated","auth/user-token-expired","auth/user-not-found"]);
+const SAVE_NET=new Set(["unavailable","auth/network-request-failed","deadline-exceeded"]);
+function saveErr(e){const c=e?.code;return SAVE_AUTH.has(c)?"Sua sessão expirou. Entre de novo para salvar.":SAVE_NET.has(c)?"Sem conexão. Confira a internet e tente de novo.":"Não consegui salvar. Tente de novo."}
 function pulse(sel,cls){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)}
 async function setFav(pid,on){
   const old=favs();if(on===old.includes(pid))return;
@@ -2383,12 +2425,14 @@ function prodRow(id,extra){
 }
 function renderFavs(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Favoritos","Salve os produtos que você quer acompanhar e veja o menor preço de cada um num lugar só.");return}
+  if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>Não consegui carregar seus favoritos. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const ids=favs().filter((id)=>P[id]);
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>${ids.length?`${ids.length} ${ids.length>1?"produtos":"produto"}. Toque para ver as lojas ou criar um alerta.`:"Nada salvo ainda."}</p>
   ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="produtos">Ver produtos</button></div>`}</section></div>`;
 }
 function renderAlerts(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Alertas de preço","Diga quanto quer pagar e o site marca quando alguma loja chegar nesse preço.");return}
+  if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>Não consegui carregar seus alertas. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const rows=alertsL().filter((a)=>P[a.p]).map((a)=>({a,o:bestLive(a.p)})).map((r)=>({...r,hit:r.o&&r.o.total<=r.a.v})).sort((x,y)=>(y.hit-x.hit)||((x.o?x.o.total-x.a.v:1e9)-(y.o?y.o.total-y.a.v:1e9)));
   const st=(r)=>r.hit?`<span class="chip ok">${ic("bell-ringing")}No seu preço</span>`:r.o?`<span class="chip">Faltam ${money(r.o.total-r.a.v)}</span>`:`<span class="chip">Sem estoque</span>`;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>${rows.length?`${rows.filter((r)=>r.hit).length} de ${rows.length} já ${rows.filter((r)=>r.hit).length===1?"chegou":"chegaram"} no seu preço. O aviso aparece aqui e no menu.`:"Nenhum alerta ainda."}</p>
@@ -2436,6 +2480,9 @@ function render(){
   else if(view==="colecao"||view==="tipo")renderGroup(view,curGroup);
 }
 /* Analytics: eventos prontos (o Vercel só os mostra no plano Pro; no gratuito não fazem nada) */
+/* UX-E: clique em "Ver oferta": oferta do estado (OFF) ou do Opportunity Engine (dados no próprio botão: data-pid/sid/price) */
+function storeClick(el){const d=el.dataset||{};if(d.pid)return{store:d.sid||"",id:d.pid,price:Number(d.price)||null,src:"opp"};   /* o valor que a pessoa viu no botão */
+  const o=OFF.find((x)=>x.id===d.store);return o?{store:o.storeId,id:o.productId,price:o.total}:null}
 function track(name,data){try{window.va&&window.va("event",{name,data:data||{}})}catch{}}
 
 /* URLs amigáveis: /produto/escuridao-absoluta-blister-quadruplo (o id antigo continua valendo) */
@@ -2481,10 +2528,10 @@ const nLiveOf=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).length;
 let acSel=-1;
 function acRender(input){
   const box=document.getElementById(input.id+"-ac");if(!box)return;const q=input.value.trim();
-  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;return}
+  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   if(q.length<2){box.hidden=true;input.setAttribute("aria-expanded","false");return}
   const cols=searchCollections(q).slice(0,3);const prods=searchProducts(q).slice(0,6);
-  if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;return}
+  if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   acSel=-1;
   box.innerHTML=`${cols.length?`<p class="ac-h">Coleções</p>${cols.map((c)=>`<button type="button" class="ac-i" role="option" data-q="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${esc(c.series||"")} · ${c.products} ${c.products===1?"produto":"produtos"}</small></span></button>`).join("")}`:""}
   ${prods.length?`<p class="ac-h">Produtos</p>${prods.map(({p})=>{const o=bestLive(p.id);return`<a class="ac-i" role="option" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}"><span><b>${esc(label(p))}</b><small>${esc(p.collectionName)}</small></span><span class="ac-pr">${o?money(o.total)+pixTxt(o):"<small>sem estoque</small>"}</span></a>`}).join("")}`:""}
@@ -2563,6 +2610,33 @@ const pctPts=(v)=>Math.abs(v).toLocaleString("pt-BR",{minimumFractionDigits:1,ma
 const refOfName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido Copag":"da referência de mercado";
 const refAtName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"No preço sugerido Copag":"Na referência de mercado";
 const refShort=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"Copag":"Mercado";
+/* UX-A: preço do motor com frete, no vocabulário da página do produto (shipNote). known/free com total → total; unknown → preço
+   antes do frete. O % de reference_comparison é sobre o preço do produto (backend); quando há frete pago, a linha diz isso. */
+const oppTotal=(x)=>(x.shipping==="known"||x.shipping==="free")&&x.total!=null?x.total:x.price;
+function oppShip(x){
+  if(x.shipping==="free"||(x.shipping==="known"&&x.total!=null&&x.total===x.price))return"Frete grátis";
+  if(x.shipping==="known"&&x.total!=null)return`Produto ${money(x.price)} + frete ${money(x.total-x.price)}${x.reference_comparison?.available?" · % sobre o produto":""}`;
+  return"Preço antes do frete";
+}
+/* UX-E: ofertas com estoque do produto, do resumo da API (/home: products[].liveCount) e atalho para a comparação.
+   Sem o resumo (estado completo), o atalho não aparece: esta página só lê a API. */
+const liveN=(pid)=>P[pid]?.liveCount??0;
+function cmpLink(pr){const n=liveN(pr.id);if(n<2)return"";
+  return`<a class="opp-stores" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}#ondecomprar" data-p="${esc(pr.id)}" data-hash="ondecomprar">${ic("storefront")}Comparar ${n} ofertas com estoque</a>`}
+const ctaData=(x)=>`data-store="${esc(x.offer?.id||"")}" data-pid="${esc(x.product?.id||"")}" data-sid="${esc(x.store?.id||"")}" data-price="${oppTotal(x)??""}"`;
+/* UX-C: idade da nota (updated_at = quando o motor avaliou). Acima de 90 min na tela: "Nota de HH:MM" e "Conferir na loja". */
+const OPP_OLD_MIN=90;
+function ageLine(at,now=Date.now()){
+  const t=Date.parse(at);if(!Number.isFinite(t))return null;const m=Math.max(0,Math.round((now-t)/6e4));
+  const old=m>OPP_OLD_MIN;const hm=new Date(t).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  return{old,txt:old?`Nota de ${hm}: pode ter mudado`:`Avaliado ${m<1?"agora":m<60?`há ${m} min`:`há ${Math.round(m/60)} h`}`}}
+const ageHTML=(x,cls)=>{const a=ageLine(x.updated_at);return a?`<p class="opp-age ${cls||""}${a.old?" old":""}">${ic("clock")}<span>${a.txt}</span></p>`:""};
+const ctaTxt=(x)=>ageLine(x.updated_at)?.old?"Conferir na loja":"Ver oferta";
+/* a cada 30 s (e ao voltar para a aba): atualiza idade, esmaece notas velhas e troca o texto do botão, sem redesenhar */
+function markOld(root,now=Date.now()){
+  root?.querySelectorAll?.("[data-at]").forEach((c)=>{const a=ageLine(c.dataset.at,now);if(!a)return;c.toggleAttribute("data-old",a.old);
+    const s=c.querySelector(".opp-age span");if(s)s.textContent=a.txt;c.querySelector(".opp-age")?.classList.toggle("old",a.old);
+    const l=c.querySelector(".cta-l");if(l)l.textContent=a.old?"Conferir na loja":"Ver oferta"})}
 /* comparação com a referência atual: percentual, posição e valor vêm da API (reference_comparison) */
 function oppCmp(rc){
   if(!rc?.available)return`<p class="opp-ref none">Sem referência atual</p>`;
@@ -2610,20 +2684,23 @@ function oppCard(x,i,opt={}){
   const best=opt.best??(i===0&&OF.sort==="score");const rar=rarityOf(sc);
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";
   const fav=isFav(pr.id);const lv=x.confidence_level||"";
-  return`<article class="deal opp-card"${rar?` data-rar="${rar.id}"`:""} data-cat="${catOf(p)}" style="--ec:${g(p).c};--int:${confInt(lv)}">
+  const ol=ageLine(x.updated_at)?.old;
+  return`<article class="deal opp-card"${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""}${ol?" data-old":""} data-cat="${catOf(p)}" style="--ec:${g(p).c};--int:${confInt(lv)}">
   <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${esc(pr.name||"")}"></a>
   <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rail?`<span class="deal-rank">#${i+1}</span>`:""}${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}" title="${bu[0]}"><i></i>${opt.rail?bu[2]:bu[0]}</span>`:""}${catChip(p)}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
     <h3 class="deal-name">${esc(pr.type_label||pr.name||"")}</h3>
-    <p class="deal-price opp-price"><b>${money(x.price)}</b>${pixTag({priceKind:of.price_kind})}</p>
+    <p class="deal-price opp-price"><b>${money(oppTotal(x))}</b>${pixTag({priceKind:of.price_kind})}</p><p class="opp-ship">${oppShip(x)}</p>
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     <div class="rc-row">${rar?`<p class="rar-line" title="Escala visual pela nota (${sc}/100). Não é a raridade oficial do produto."><span class="sym" aria-hidden="true">${rar.sym}</span>${rar.name}</p>`:""}<p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
+    ${ageHTML(x)}
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
-    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div>
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
+    ${cmpLink(pr)}
   </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
 }
@@ -2631,37 +2708,98 @@ const oppSkel=()=>`<div class="deals">${'<div class="skel" style="height:440px;b
 function oppBar(){const n=oppActive();const t=OPP.total;
   return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span></div>`}
 function oppBody(){
-  if(OPP.status==="loading")return oppSkel();
-  if(OPP.status==="error")return`<div class="empty err-state">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
-  if(OPP.status==="stale")return`<div class="empty"><h3>Oportunidades pausadas</h3><p>Os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; as oportunidades voltam na próxima atualização dos preços.</p></div>`;
+  if(OPP.status==="loading"&&!OPP.items.length)return oppSkel();
+  if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  if(OPP.status==="stale")return`<div class="empty pause">${pauseHTML(OPP_PAUSE,"data-oppretry")}</div>`;
   if(OPP.status==="nodb")return`<div class="empty"><h3>Oportunidades indisponíveis no momento</h3><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
   if(!OPP.items.length)return`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
   const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
-  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i)).join("")}</div>${OPP.page<OPP.pages?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
+  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i)).join("")}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
 }
 function paintOpp(){
   $("#view").innerHTML=`<div class="opp">
   <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>A melhor oferta com estoque de cada produto, avaliada pelo Opportunity Engine e ordenada pelo Opportunity Score (atratividade da oportunidade). A confiança mostra quão completos são os dados usados na avaliação; ela não altera a nota.</p></header>
-  ${oppBar()}<div class="opp-list">${oppBody()}</div></div>`;
+  ${oppBar()}<div class="opp-list${OPP.status==="loading"&&OPP.items.length?" is-loading":""}" aria-busy="${OPP.status==="loading"}">${oppBody()}</div></div>`;
   watchOppMore();if(typeof revealInit==="function")revealInit();
 }
 async function renderOpp(){
   const key=oppQuery(1);
   if(OPP.key===key&&OPP.status==="ok"){paintOpp();return}
-  Object.assign(OPP,{key,status:"loading",items:[],total:null,page:1,pages:1});paintOpp();
+  /* troca de filtro: a lista atual continua na tela (esmaecida) até a nova chegar; sem lista, esqueleto */
+  const keep=OPP.status==="ok"&&OPP.items.length>0;
+  Object.assign(OPP,{key,status:"loading",page:1,pages:1},keep?{}:{items:[],total:null});paintOpp();
   const d=await apiGet(key);if(OPP.key!==key||view!=="oportunidades")return;
-  if(!d||d.notFound||!Array.isArray(d.data))OPP.status="error";
-  else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",total:0});
-  else if(d.meta?.status==="stale_db")Object.assign(OPP,{status:"stale",total:0});   /* Lote 2: banco sem sincronizar */
-  else Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1});
+  if(isPause(d,key)){Object.assign(OPP,{status:"stale",items:[],total:0});setPause(d||{},key)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
+  else if(!d||d.notFound||!Array.isArray(d.data))Object.assign(OPP,{status:"error",items:[]});
+  else if(d.meta?.status==="requires_db")Object.assign(OPP,{status:"nodb",items:[],total:0});
+  else{Object.assign(OPP,{status:"ok",items:d.data,total:d.meta.total,page:1,pages:d.meta.pages||1,at:Date.now(),fr:d.meta?.freshness||null});setPause(null)}
   paintOpp();
 }
 async function moreOpp(page){
-  const key=OPP.key;const d=await apiGet(oppQuery(page));if(OPP.key!==key||view!=="oportunidades"||!d||!Array.isArray(d.data))return;
+  const key=OPP.key;const d=await apiGet(oppQuery(page));if(OPP.key!==key||view!=="oportunidades")return;
+  if(!d||!Array.isArray(d.data)){const s=$("#opp-more");if(s){s.removeAttribute("style");s.innerHTML=`<p class="soft-empty" role="alert">Não conseguimos carregar mais oportunidades agora. A lista acima continua válida. <button class="linkbtn" type="button" data-oppmoreretry="${page}">Tentar de novo</button></p>`}return}
   const box=$("#view .opp .deals");if(!box)return;const base=OPP.items.length;OPP.items=OPP.items.concat(d.data);OPP.page=page;
   box.insertAdjacentHTML("beforeend",d.data.map((x,i)=>oppCard(x,base+i)).join(""));
   $("#opp-more")?.remove();if(page<OPP.pages)box.insertAdjacentHTML("afterend",`<div id="opp-more" class="prod-more" data-page="${page+1}" style="height:1px"></div>`);watchOppMore();if(typeof revealInit==="function")revealInit();
 }
+/* UX — pausa das notas (stale_db ou 503 em /oportunidades). Motivo e horário vêm da API (meta.message, meta.freshness);
+   nada antigo é mostrado como atual. Nova tentativa pelo botão e sozinha a cada 5 min (oppTick). */
+let OPP_PAUSE=null;   /* {at,ageMin,why,checked}: /oportunidades respondeu stale_db ou 503 (Home ou página) */
+const isPause=(d,path)=>d?.meta?.status==="stale_db"||(!d&&typeof API_LAST!=="undefined"&&API_LAST.get(path)===503);
+function setPause(d,path){
+  const rf=()=>{if(typeof fresh==="function")fresh()};
+  if(d===null){if(OPP_PAUSE){OPP_PAUSE=null;rf()}return}
+  const f=d?.meta?.freshness||{};
+  OPP_PAUSE={at:f.dataAt||null,ageMin:f.ageMin??null,why:d?.meta?.message||"Os preços estão sem atualização confiável no momento.",checked:Date.now()};rf();
+}
+function pauseHTML(p,retry){
+  p=p||{};
+  return`<h3>Oportunidades pausadas</h3><p>${esc(p.why||"Os preços do banco estão atrasados.")}${p.at?` Últimos preços recebidos em ${freshAt(p.at)}.`:""}</p>
+  <p>Nenhuma nota antiga é mostrada como atual; elas voltam sozinhas na próxima atualização dos preços.</p>
+  <p class="pause-act"><button class="btn ghost sm" type="button" ${retry}>${ic("arrow-clockwise")}Tentar de novo</button><a class="btn ghost sm" href="/produtos" data-go="produtos">${ic("package")}Ver preços por produto</a></p>`;
+}
+/* boot: as oportunidades da página aberta são pedidas junto com o /home (apiGet compartilha o pedido) */
+function prefetchOpp(){if(view==="deals")loadHomeOpp();else if(view==="oportunidades")apiGet(oppQuery(1))}
+const retryHomeOpp=()=>{HOMEOPP.status="idle";[HOME_OPP_KEY,"oportunidades?limite=1&pagina=1&ordem=abaixo","oportunidades?limite=1&pagina=1&ordem=economia"].forEach((k)=>APIC.delete(k));paintHomeOpp();return loadHomeOpp().then(paintHomeOpp)};
+const retryOpp=()=>{APIC.delete(OPP.key);OPP.key="";return renderOpp()};
+/* a cada 30 s: com as notas pausadas, tenta de novo a cada 5 min */
+function oppTick(now=Date.now()){
+  markOld(document,now);
+  if(OPP_PAUSE&&now-OPP_PAUSE.checked>=5*6e4){OPP_PAUSE.checked=now;if(view==="deals"&&HOMEOPP.status==="stale")retryHomeOpp();else if(view==="oportunidades"&&OPP.status==="stale")retryOpp()}
+}
+/* UX-D: página do produto destaca a mesma oferta, valor, % e referência do cartão (GET /api/v1/oportunidades?produto=…,
+   a melhor oferta do produto no Opportunity Engine), com os mesmos componentes. Pausado, sem nota ou com erro: nada aparece
+   (nenhuma nota antiga). O "Melhor preço com estoque" continua logo abaixo; quando é outra oferta, o bloco diz isso. */
+function ppOppHTML(x,bestId){
+  const of=x.offer||{},st=x.store||{};const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)","—"];
+  const same=!bestId||bestId===of.id;
+  return`<section class="card buy ppopp"${x.updated_at?` data-at="${esc(x.updated_at)}"`:""}${ageLine(x.updated_at)?.old?" data-old":""}>
+    <p class="eyebrow">${ic("flame-f")}Oportunidade do Hunter</p>
+    <div class="pblock"><span class="big" data-price="${esc(of.id||"")}">${money(oppTotal(x))}</span>${pixTag({priceKind:of.price_kind})}</div>
+    <p class="so-ship">${oppShip(x)} · ${esc(st.name||"")}</p>
+    ${oppCmp(x.reference_comparison)}
+    ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
+    ${ageHTML(x)}
+    <a class="btn wide" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
+    ${same?"":`<p class="hnote">O menor preço com estoque é outra oferta, logo abaixo. A oportunidade considera preço, referência e confiança, não só o menor valor.</p>`}
+  </section>`;
+}
+const ppOppKey=(pid)=>"oportunidades?produto="+encodeURIComponent(pid)+"&limite=1";
+async function loadPpOpp(pid,bestId){
+  const d=await apiGet(ppOppKey(pid));const slot=$("#pp-opp");if(!slot||view!=="produto"||curPid!==pid)return;
+  const x=Array.isArray(d?.data)&&!d.meta?.status?d.data.find((y)=>y.product?.id===pid):null;
+  slot.innerHTML=x?ppOppHTML(x,bestId):"";
+}
+/* UX-C: ao voltar para a aba, notas com mais de 30 min são buscadas de novo (a lista fica na tela enquanto isso) e os preços
+   são recarregados em silêncio quando já não estão "atuais" */
+function revive(now=Date.now()){
+  const stale=(at)=>!at||now-at>=30*6e4;
+  if(view==="deals"&&HOMEOPP.status==="ok"&&stale(HOMEOPP.at))retryHomeOpp();
+  else if(view==="oportunidades"&&OPP.status==="ok"&&stale(OPP.at))retryOpp();
+  markOld(document,now);
+  if(S&&typeof freshState==="function"&&freshState(S,now).status!=="atual"&&typeof refresh==="function")refresh({silent:true});
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")revive()});
 /* "Mais filtros" fecha ao clicar fora ou com Esc */
 document.addEventListener("click",(e)=>{document.querySelectorAll(".opp-more[open]").forEach((d)=>{if(!d.contains(e.target))d.open=false})});
 document.addEventListener("keydown",(e)=>{if(e.key==="Escape")document.querySelectorAll(".opp-more[open]").forEach((d)=>{d.open=false;d.querySelector("summary")?.focus()})});
@@ -2692,16 +2830,24 @@ function freshState(st,now=Date.now()){
   return{status:m<=FRESH_LIM.atual?"atual":m<=FRESH_LIM.atrasado?"atrasado":m<=FRESH_LIM.expira?"desatualizado":"indisponivel",ageMin:m,dataAt:new Date(t).toISOString()};
 }
 const freshAt=(iso)=>new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+/* UX-B: o texto sempre traz a idade real dos preços (nunca "ao vivo" sem idade). Preços e notas têm fontes separadas:
+   /home pode estar em dia (state.json) enquanto /oportunidades está pausado (stale_db); a barra diz as duas coisas. */
+const ageTxt=(m)=>m<1?"agora":`há ${m} min`;
+function freshTxt(f){
+  const pz=typeof OPP_PAUSE!=="undefined"&&!!OPP_PAUSE&&(f.status==="atual"||f.status==="atrasado");const pzS=pz?" · notas pausadas":"",pzL=pz?" As notas de oportunidade estão pausadas.":"";
+  return{atual:[`<b>Ao vivo</b> · atualizado ${ageTxt(f.ageMin)}${pzS}`,`<b>Ao vivo</b> · preços atualizados ${ageTxt(f.ageMin)}.${pzL}`],
+    atrasado:[`<b>Atualizado há ${f.ageMin} min</b>${pzS}`,`<b>Atualizado há ${f.ageMin} min.</b> A próxima leitura dos preços está atrasada.${pzL}`],
+    desatualizado:[`<b>Preços desatualizados</b>`,`<b>Preços desatualizados.</b> Última atualização: ${f.dataAt?freshAt(f.dataAt):"?"}. Os preços e o estoque podem ter mudado.`],
+    indisponivel:[`<b>Sem confirmação de atualização</b>`,`<b>Não conseguimos confirmar quando estes preços foram atualizados.</b> Eles podem estar desatualizados.`]}[f.status];
+}
 function fresh(){
   const el=$("#fresh");if(!S||!el)return;
   const f=freshState(S);el.className="fresh"+(f.status==="atrasado"?" warn":f.status==="atual"?"":" bad");el.dataset.freshness=f.status;
-  const T={atual:[`<b>Ao vivo</b> · preços em tempo real`,`<b>Ao vivo</b> · preços em tempo real`],
-    atrasado:[`<b>Atualizado há ${f.ageMin} min</b>`,`<b>Atualizado há ${f.ageMin} min.</b> A próxima leitura dos preços está atrasada.`],
-    desatualizado:[`<b>Preços desatualizados</b>`,`<b>Preços desatualizados.</b> Última atualização: ${f.dataAt?freshAt(f.dataAt):"?"}. Os preços e o estoque podem ter mudado.`],
-    indisponivel:[`<b>Sem confirmação de atualização</b>`,`<b>Não conseguimos confirmar quando estes preços foram atualizados.</b> Eles podem estar desatualizados.`]}[f.status];
-  $("#mini-t").innerHTML=T[0];$("#fresh-t").innerHTML=T[1];
+  const T=freshTxt(f);$("#mini-t").innerHTML=T[0];$("#fresh-t").innerHTML=T[1];
+  const lv=$("#live-t");if(lv)lv.innerHTML=T[0];const b=$("body");if(b)b.dataset.fresh=f.status;
 }
 setInterval(fresh,30e3);
+setInterval(()=>oppTick(),30e3);
 (()=>{const h=$("#hsearch");if(h)h.innerHTML=searchBox("tq",view==="busca"?F.q:"",true)})();
 function init(st,opt={}){
   const prevBest=S?Object.fromEntries((S.products||[]).map((p)=>[p.id,bestLive(p.id)?.total])):null;
@@ -2724,7 +2870,7 @@ function loading(){
     <div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div></div></section>`;
     document.body.classList.add("intro");renderDeals.done=true;return;
   }
-  $("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
+  $("#view").innerHTML=`<div class="layout" aria-busy="true"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
@@ -2745,10 +2891,16 @@ async function fetchHome(){
    Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
 const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades"]);   /* 6B.1: /oportunidades só pela API */
 const APIC=new Map();const APITTL=60e3;
-async function apiGet(path,ms=8000){
-  const hit=APIC.get(path);if(hit&&Date.now()-hit.at<APITTL)return hit.j;
-  try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),ms);const r=await fetch("/api/v1/"+path,{signal:ac.signal});clearTimeout(tm);
-    if(r.status===404)return{notFound:true};if(!r.ok)return null;const j=await r.json();APIC.set(path,{at:Date.now(),j});if(APIC.size>120)APIC.delete(APIC.keys().next().value);return j}catch{return null}
+/* API_LAST: status HTTP da última resposta de cada caminho (0 = sem resposta). 503 = dados sem atualização confiável, não é a conexão.
+   APIP: o mesmo pedido em andamento é compartilhado (a Home e /oportunidades começam junto com o /home). */
+const API_LAST=new Map();const APIP=new Map();
+function apiGet(path,ms=8000){
+  const hit=APIC.get(path);if(hit&&Date.now()-hit.at<APITTL)return Promise.resolve(hit.j);
+  if(APIP.has(path))return APIP.get(path);
+  const pr=(async()=>{let st=0;try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),ms);const r=await fetch("/api/v1/"+path,{signal:ac.signal});clearTimeout(tm);st=r.status;API_LAST.set(path,st);
+    if(r.status===404)return{notFound:true};if(!r.ok)return null;const j=await r.json();APIC.set(path,{at:Date.now(),j});if(APIC.size>120)APIC.delete(APIC.keys().next().value);return j}catch{API_LAST.set(path,st);return null}
+    finally{APIP.delete(path)}})();
+  APIP.set(path,pr);return pr;
 }
 const PAGE_DONE=new Set();const SEARCH_TIPS=new Map();let pageP=null,pageKey="";
 function apiReset(){APIC.clear();PAGE_DONE.clear();SEARCH_TIPS.clear();pageKey="";pageP=null;for(const k of Object.keys(HIST))delete HIST[k]}
@@ -2799,13 +2951,14 @@ const cardE=(e)=>({p:hydP({...(P[e.p.id]||{}),...e.p}),o:e.o,n:e.n});
 let prodReq="";
 async function renderProdutosApi(){
   const key=prodQuery(1);prodReq=key;
-  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
+  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout" aria-busy="true"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
   const d=await apiGet(key);if(prodReq!==key||view!=="produtos")return;
   if(!d||d.notFound){ensureFull();return}
   mergeSide(d);paintProdutos({list:d.items.map(cardE),total:d.total,facets:d.facets,noCopag:null,noCopagCount:d.noCopagCount,refNet:d.refNet,next:d.pages>1?2:null});
 }
 async function moreProdutos(page){
-  const key=prodQuery(page);const d=await apiGet(key);if(!d||view!=="produtos"||prodQuery(page)!==key)return;
+  const key=prodQuery(page);const d=await apiGet(key);if(view!=="produtos"||prodQuery(page)!==key)return;
+  if(!d||d.notFound){const s=$("#prod-more");if(s){s.removeAttribute("style");s.innerHTML=`<p class="soft-empty" role="alert">Não conseguimos carregar mais produtos agora. A lista acima continua válida. <button class="linkbtn" type="button" data-prodretry="${page}">Tentar de novo</button></p>`}return}
   const box=$("#view .prods .deals");if(!box)return;mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((e)=>dealCard(cardE(e))).join(""));
   $("#prod-more")?.remove();if(page<d.pages)box.insertAdjacentHTML("afterend",moreSentinel(page+1));watchMore();if(typeof revealInit==="function")revealInit();
 }
@@ -2822,20 +2975,22 @@ function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
   return fullP||=fetchState().then((st)=>{fullP=null;
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
-async function refresh(){
+let refreshing=false;
+async function refresh(opt={}){
+  if(refreshing)return;refreshing=true;   /* toque repetido não dispara outra busca em paralelo */
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
-  const st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
-  if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
-  const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
+  let st=null;try{st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState()}finally{refreshing=false;bs.forEach((b)=>b.classList.remove("spin"))}
+  if(!st){if(opt.silent)return;toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
+  const novo=!S||st.generatedAt!==S.generatedAt;if(opt.silent&&!novo)return;init(st);if(!opt.silent)toast(novo?"Dados novos carregados":"Já está atualizado. O robô confere as lojas a cada 15 minutos.");
 }
 async function load(){
-  loading();
+  loading();prefetchOpp();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)){render();return}
-  $("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  $("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
 }
 
 /* Eventos */
@@ -2846,23 +3001,25 @@ document.addEventListener("click",(e)=>{
   const acb=t.closest("[data-acc]");if(acb){e.preventDefault();if($("#more").open)$("#more").close();openAccount();return}
   const gtb=t.closest("[data-gate]");if(gtb){authGate({type:"page",tab:gtb.dataset.gate});return}
   const thb=t.closest("[data-theme-set]");if(thb){const v=thb.dataset.themeSet;if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme;store.set("theme",v||null);themeSync();render();return}
-  if(t.closest("#retry")){loading();load();return}
+  const rtb=t.closest("#retry");if(rtb){if(rtb.disabled)return;rtb.disabled=true;loading();load();return}
+  const prb=t.closest("[data-prodretry]");if(prb){if(prb.disabled)return;prb.disabled=true;const box=prb.closest("#prod-more");if(box)box.style.height="1px";box?.replaceChildren();moreProdutos(+prb.dataset.prodretry);return}
+  const omb=t.closest("[data-oppmoreretry]");if(omb){if(omb.disabled)return;omb.disabled=true;const box=omb.closest("#opp-more");if(box)box.style.height="1px";box?.replaceChildren();moreOpp(+omb.dataset.oppmoreretry);return}
   const ufb=t.closest("[data-unfav]");if(ufb){e.preventDefault();unfav(ufb.dataset.unfav);return}
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
-  const stb=t.closest("[data-store]");if(stb){const o=OFF.find((x)=>x.id===stb.dataset.store);if(o)track("click_store",{store:o.storeId,id:o.productId,price:o.total});return}
+  const stb=t.closest("[data-store]");if(stb){const d=storeClick(stb);if(d)track("click_store",d);return}
   const grpb=t.closest("[data-group]");if(grpb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();const [k,sl]=grpb.dataset.group.split("/");openGroup(k,sl);return}
   const qb=t.closest("[data-q]");if(qb){if(qb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();doSearch(qb.dataset.q);return}
-  const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();openProduct(pb.dataset.p);return}
+  const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();PENDING_HASH=pb.dataset.hash||"";openProduct(pb.dataset.p);return}
   const hp=t.closest("[data-hp]");if(hp){HV.period=Number(hp.dataset.hp);drawHist(curPid);track("view_price_history",{id:curPid,period:HV.period});return}
   const hm=t.closest("[data-hm]");if(hm){HV.mode=hm.dataset.hm;drawHist(curPid);track("view_price_history",{id:curPid,mode:HV.mode});return}
   if(t.closest("[data-fsheet]")){openFilterSheet();return}
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
   if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:""});store.set("opp2",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
   const och=t.closest("[data-ofchip]");if(och){OF.faixa=och.dataset.ofchip;store.set("opp2",OF);syncSheet();renderOpp().then(syncSheet);track("filter_used",{f:"faixa",v:OF.faixa});return}
-  if(t.closest("[data-homeretry]")){HOMEOPP.status="idle";["oportunidades?limite=15&pagina=1&ordem=score","oportunidades?limite=1&pagina=1&ordem=abaixo","oportunidades?limite=1&pagina=1&ordem=economia"].forEach((k)=>APIC.delete(k));paintHomeOpp();loadHomeOpp().then(paintHomeOpp);return}
-  if(t.closest("[data-oppretry]")){APIC.delete(OPP.key);OPP.key="";renderOpp();return}
+  if(t.closest("[data-homeretry]")){retryHomeOpp();return}
+  if(t.closest("[data-oppretry]")){retryOpp();return}
   const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
   if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
   const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);rerenderList();track("filter_used",{f:"group",v:F.group});return}
