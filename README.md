@@ -25,6 +25,8 @@ A fonte principal é a loja oficial da Copag (copagloja.com.br). Quando um produ
 
 O cadastro manual vence o capturado. Marketplace nunca vale como fonte. Sem preço confirmado, o produto não recebe desconto, score, selo nem alerta de preço.
 
+Estado atual, arquitetura e matriz de testes: `docs/arquitetura-e-testes.md`.
+
 ## Instalação (GitHub, custo zero)
 
 1. Crie um repositório **público** com esta pasta (Actions ilimitado e Pages grátis; em repositório privado, 15 em 15 minutos estoura a cota mensal).

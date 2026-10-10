@@ -1,56 +1,77 @@
 // Qualidade de links e identidade de loja: normalização de domínio, URL canônica, sinais de risco
 // e consistência loja x ofertas. Tudo offline: nenhuma URL é aberta.
 import assert from 'node:assert/strict';
-import { normalizeDomain, canonicalizeOfferUrl, analyzeOfferLink, storeLinkConsistency } from '../src/url-quality.js';
+// Funções únicas do projeto: canonicalizeUrl (#78/#130) e normalizeDomain (diretório de lojas).
+import { canonicalizeUrl } from '../src/core/offer-key.js';
+import { normalizeDomain } from '../api/_lib/stores.mjs';
+import { analyzeOfferLink, storeLinkConsistency } from '../src/url-quality.js';
+import * as urlQuality from '../src/url-quality.js';
 
 let n = 0;
 const test = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 
+await test('url-quality não tem canonicalização nem normalizeDomain próprios', () => {
+  assert.deepEqual(Object.keys(urlQuality).sort(), ['analyzeOfferLink', 'storeLinkConsistency']);
+});
+
 await test('normalizeDomain: www, caixa, porta, ponto final e host solto', () => {
   assert.equal(normalizeDomain('https://WWW.Loja.com.br/p/1?x=1'), 'loja.com.br');
-  assert.equal(normalizeDomain('loja.com.br:8080'), 'loja.com.br');
+  assert.equal(normalizeDomain('https://loja.com.br:8080/p'), 'loja.com.br');
+  // regra da main: "algo:" no início é lido como esquema, então host:porta sem esquema não é domínio
+  assert.equal(normalizeDomain('loja.com.br:8080'), null);
   assert.equal(normalizeDomain('www.loja.com.br.'), 'loja.com.br');
   assert.equal(normalizeDomain('shop.loja.com.br'), 'shop.loja.com.br');
 });
 
 await test('normalizeDomain: entrada inválida vira null', () => {
-  for (const bad of [null, undefined, '', '   ', 'localhost', 'http://', 'https://exa mple.com']) assert.equal(normalizeDomain(bad), null, String(bad));
+  for (const bad of [null, undefined, '', '   ', 'localhost', 'http://', 'https://exa mple.com', 'ftp://loja.com.br', 'javascript:alert(1)']) assert.equal(normalizeDomain(bad), null, String(bad));
 });
 
-await test('canonicalizeOfferUrl: tira tracking e hash, preserva origem e variante', () => {
+await test('canonicalizeUrl: tira tracking e hash, preserva original e variante', () => {
   const src = 'https://www.loja.com.br/produto/box/?utm_source=x&variant=123&fbclid=abc&gclid=1#reviews';
-  const c = canonicalizeOfferUrl(src);
-  assert.equal(c.source, src);
-  assert.equal(c.canonical, 'https://www.loja.com.br/produto/box?variant=123');
-  assert.equal(c.differs, true);
+  const c = canonicalizeUrl(src);
+  assert.equal(c.original, src);
+  // regra da main: www sai da canônica (mesma página)
+  assert.equal(c.canonical, 'https://loja.com.br/produto/box?variant=123');
+  assert.notEqual(c.canonical, c.original);
   assert.deepEqual(c.removed.sort(), ['fbclid', 'gclid', 'utm_source']);
 });
 
-await test('canonicalizeOfferUrl: ordem da query não muda a canônica; URL limpa não difere', () => {
-  const a = canonicalizeOfferUrl('https://loja.com.br/p?b=2&a=1').canonical;
-  const b = canonicalizeOfferUrl('https://loja.com.br/p?a=1&b=2').canonical;
+await test('canonicalizeUrl: ordem da query não muda a canônica; URL limpa não difere', () => {
+  const a = canonicalizeUrl('https://loja.com.br/p?b=2&a=1').canonical;
+  const b = canonicalizeUrl('https://loja.com.br/p?a=1&b=2').canonical;
   assert.equal(a, b);
-  const clean = canonicalizeOfferUrl('https://loja.com.br/p?a=1');
-  assert.equal(clean.differs, false);
+  const clean = canonicalizeUrl('https://loja.com.br/p?a=1');
+  assert.equal(clean.canonical, clean.original);
   assert.deepEqual(clean.removed, []);
 });
 
-await test('canonicalizeOfferUrl: porta padrão, barra final e host em maiúsculas', () => {
-  assert.equal(canonicalizeOfferUrl('HTTPS://Loja.com.br:443/p/').canonical, 'https://loja.com.br/p');
-  assert.equal(canonicalizeOfferUrl('https://loja.com.br/').canonical, 'https://loja.com.br');
+await test('canonicalizeUrl: porta padrão, barra final e host em maiúsculas', () => {
+  assert.equal(canonicalizeUrl('HTTPS://Loja.com.br:443/p/').canonical, 'https://loja.com.br/p');
+  assert.equal(canonicalizeUrl('https://loja.com.br/').canonical, 'https://loja.com.br');
 });
 
-await test('canonicalizeOfferUrl: não troca http por https', () => {
-  assert.equal(canonicalizeOfferUrl('http://loja.com.br/p').canonical, 'http://loja.com.br/p');
+await test('http: canônica em https (chave de deduplicação), original preservada e sinal insecure_http', () => {
+  // regra da main: http e https da mesma página são a mesma oferta; o link original não é alterado
+  const c = canonicalizeUrl('http://loja.com.br/p');
+  assert.equal(c.canonical, 'https://loja.com.br/p');
+  assert.equal(c.original, 'http://loja.com.br/p');
+  const r = analyzeOfferLink('http://loja.com.br/p', 'loja.com.br');
+  assert.equal(r.original, 'http://loja.com.br/p');
+  assert.deepEqual(r.issues, ['insecure_http']);
 });
 
 await test('URL malformada ou de esquema não web não tem canônica', () => {
   for (const bad of ['', 'não é url', '//loja.com.br/p', 'loja.com.br/p', 'https://']) {
-    const r = canonicalizeOfferUrl(bad);
-    assert.equal(r.canonical, null, bad); assert.deepEqual(r.issues, ['malformed'], bad);
+    const c = canonicalizeUrl(bad);
+    assert.equal(c.canonical, null, bad); assert.equal(c.valid, false, bad);
+    const r = analyzeOfferLink(bad);
+    assert.equal(r.canonical, null, bad); assert.deepEqual(r.issues, ['malformed'], bad); assert.equal(r.host, null, bad);
   }
-  for (const bad of ['javascript:alert(1)', 'data:text/html,x', 'ftp://loja.com.br/p', 'file:///etc/passwd'])
-    assert.deepEqual(canonicalizeOfferUrl(bad).issues, ['unsupported_scheme'], bad);
+  for (const bad of ['javascript:alert(1)', 'data:text/html,x', 'ftp://loja.com.br/p', 'file:///etc/passwd']) {
+    assert.equal(canonicalizeUrl(bad).canonical, null, bad);
+    assert.deepEqual(analyzeOfferLink(bad).issues, ['unsupported_scheme'], bad);
+  }
   assert.deepEqual(analyzeOfferLink(null, 'loja.com.br').issues, ['malformed']);
 });
 
