@@ -1,6 +1,7 @@
 // "Também na Amazon" (Amazon Associados): a lista curada em config/afiliados/amazon.json é a ÚNICA fonte de link
-// com tag de afiliado. Este teste trava as regras: link no formato oficial, casado pelo matcher do site, sem preço,
-// fora do ranking (nenhum módulo de preço/ranking/API lê o arquivo) e mostrado só no bloco próprio, com aviso.
+// com tag de afiliado. Este teste trava as regras: link no formato oficial, casado pelo matcher do site, preço sempre
+// com a data e hora da leitura, fora do ranking (nenhum módulo de preço/ranking/API lê o arquivo) e mostrado só no
+// bloco próprio, com aviso.
 // Sem rede e sem banco.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -22,13 +23,18 @@ t('programa e tag', () => {
   assert.ok(Array.isArray(doc.links) && doc.links.length > 0);
 });
 
-t('cada link: ASIN válido, URL oficial exata com a tag do arquivo, sem preço', () => {
+t('cada link: ASIN válido, URL oficial exata com a tag do arquivo, preço só com data e hora da leitura', () => {
   const seen = new Set();
   for (const l of doc.links) {
     assert.match(l.asin, /^[A-Z0-9]{10}$/, l.asin);
     assert.ok(!seen.has(l.asin), `ASIN repetido: ${l.asin}`); seen.add(l.asin);
     assert.equal(l.url, `https://www.amazon.com.br/dp/${l.asin}?tag=${doc.tag}`, l.asin);
-    assert.deepEqual(Object.keys(l).sort(), ['asin', 'productId', 'title', 'url'], `${l.asin}: campo a mais (preço não pode entrar)`);
+    assert.deepEqual(Object.keys(l).sort(), ['asin', 'capturedAt', 'fulfilledBy', 'price', 'productId', 'seller', 'stockNote', 'title', 'url'], `${l.asin}: campos`);
+    assert.ok(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$/.test(l.capturedAt) && Date.parse(l.capturedAt) <= Date.now(), `${l.asin}: capturedAt inválido`);
+    if (l.price === null) { assert.equal(l.seller, null, `${l.asin}: vendedor sem preço`); continue; }
+    assert.ok(typeof l.price === 'number' && l.price > 0, `${l.asin}: preço`);
+    assert.ok(typeof l.seller === 'string' && l.seller, `${l.asin}: preço sem vendedor`);
+    assert.ok(['amazon', 'seller'].includes(l.fulfilledBy), `${l.asin}: fulfilledBy`);
   }
 });
 
@@ -53,10 +59,12 @@ t('front: a lista só é usada no bloco "Também na Amazon", com rel sponsored e
   const src = read('index.html');
   assert.equal(src.match(/fetch\("\/data\/afiliados-amazon\.json"\)/g)?.length, 1, 'a lista deve ser carregada num único lugar');
   const block = src.match(/function amzBlock\(pid\)\{[\s\S]*?<\/section>`\}/)?.[0];
-  assert.ok(block, 'amzBlock não encontrado');
-  assert.match(block, /rel="noopener nofollow sponsored"/);
+  const row = src.match(/function amzRow\(l\)\{[\s\S]*?<\/div>`\}/)?.[0];
+  assert.ok(block && row, 'amzBlock/amzRow não encontrados');
+  assert.match(row, /rel="noopener nofollow sponsored"/);
   assert.match(block, /Link de afiliado/);
-  assert.doesNotMatch(block, /money\(|\.price|\.total/, 'o bloco da Amazon não pode mostrar preço');
+  assert.match(block, /Preço e disponibilidade corretos na data e hora indicadas/, 'aviso exigido pela Amazon junto do preço');
+  assert.match(row, /money\(l\.price\)\}<\/b> <small>em \$\{esc\(when\)\}/, 'preço da Amazon sempre com a data e hora da leitura');
   assert.equal(src.match(/AMZ\?\.links|AMZ\.links/g)?.length, 1, 'os links da Amazon só podem ser lidos pelo amzBlock');
   assert.match(src, /como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
 });
