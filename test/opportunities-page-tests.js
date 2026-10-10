@@ -99,7 +99,7 @@ t('8. MARKET_HIGHLY_DEVIATED_FROM_HISTORY gera aviso com o texto da API', () => 
 // 9–10. sem referência e sem confiança não quebram; histórico/comunitária ficam como contexto
 t('9–10. sem referência / sem confiança', () => {
   const s = sandbox(page([])); const h = text(s.oppCard(noRef(), 0));
-  assert.match(h, /R\$ 1250,00 Sem referência atual/); assert.match(h, /Confiança não informada/); assert.match(h, /Comparação Sem comparação/);
+  assert.match(h, /R\$ 1250,00 Frete grátis Sem referência atual/); assert.match(h, /Confiança não informada/); assert.match(h, /Comparação Sem comparação/);
   assert.ok(!/−\d|0,0%|abaixo do preço sugerido|abaixo da referência/.test(h), 'nenhum percentual inventado');
   assert.match(h, /Histórico Preço sugerido de lançamento R\$ 29,90 \(2024-01\) Referência comunitária R\$ 25,00 \(não é preço Copag\) Contexto, não é preço atual\./);
   const nulls = base({ opportunity_score: null, opportunity_band: null, confidence: null, current_reference: null, reference_comparison: null, warnings: null, reasons: null, historical_context: null });
