@@ -11,7 +11,42 @@ export const userAgent = UA;
 // APIs oficiais aguentam mais ritmo que sites de loja.
 const HOST_DELAY = { 'api.mercadolibre.com': 300 };
 const lastHit = new Map();
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const gates = new Map(); // host -> fila: requisições ao mesmo host saem uma por vez, respeitando o intervalo, mesmo com lojas em paralelo
+let sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let random = Math.random;
+// Só para testes: espera e sorteio do jitter injetáveis (sem espera real).
+export const setSleep = (f) => { sleep = f; };
+export const setRandom = (f) => { random = f; };
+
+// Um host por vez: quem chega depois entra na fila e só sai quando o intervalo do host vencer.
+// (Sem a fila, duas requisições simultâneas calculavam a mesma espera e saíam juntas.)
+function takeSlot(host) {
+  const turn = (gates.get(host) || Promise.resolve()).then(async () => {
+    const wait = (lastHit.get(host) || 0) + (HOST_DELAY[host] ?? DELAY) - Date.now();
+    if (wait > 0) await sleep(wait);
+    lastHit.set(host, Date.now());
+  });
+  gates.set(host, turn.catch(() => {}));
+  return turn;
+}
+
+// Retry opcional e limitado (opção `retries`, 0 por padrão, no máximo 2): só GET e só falha passageira
+// (timeout, erro de rede, 5xx). Nunca 429 (o 429 interrompe a loja e a espera é por loja em run.js),
+// nunca 401/403/desafio, outros 4xx, URL insegura, resposta grande demais ou JSON ilegível, nem POST.
+// Padrão 0: os adaptadores mantêm "5xx para na hora" (ex.: paginação Shopify para no 5xx); quem quiser repetir pede.
+const MAX_RETRIES = 2;
+const retryBase = () => Number(process.env.HUNTER_RETRY_BASE_MS ?? 1000);
+const retryCap = () => Number(process.env.HUNTER_RETRY_MAX_MS ?? 30000);
+// Espera exponencial com teto e jitter (0,5x a 1x), para não repetir em sincronia.
+export const backoffDelay = (attempt, base, cap, rnd = random) => Math.min(cap, base * 2 ** attempt) * (0.5 + rnd() / 2);
+export function isTransient(e) {
+  if (!e || e.blocked || e.unsafe || e.invalidUrl || e instanceof SyntaxError) return false;
+  if (e.code === 'TIMEOUT') return true;
+  const s = e.httpStatus ?? e.status;
+  if (s >= 500 && s <= 599) return true;
+  const c = e.status == null ? netCode(e) : null; // erro de rede do fetch (DNS, conexão, TLS)
+  return !!c && c !== 'TOO_MANY_REDIRECTS';
+}
 
 export class BlockedError extends Error {
   // extra: detalhes do motivo real (httpStatus, code, retryAfter) para o diagnóstico e a espera da próxima tentativa.
@@ -53,13 +88,22 @@ export const redact = (s) => String(s ?? '')
   .replace(/\b(bearer|basic)\s+[\w.~+/=-]{8,}/gi, '$1 ***')
   .replace(/([?&;\s"'](?:access_token|token|api[_-]?key|key|secret|client_secret|password|authorization)=)[^&\s"']+/gi, '$1***');
 
-export async function request(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 10000 } = {}) {
+export async function request(url, opts = {}) {
+  const isGet = String(opts.method || 'GET').toUpperCase() === 'GET';
+  const max = isGet ? Math.max(0, Math.min(MAX_RETRIES, Math.floor(Number(opts.retries) || 0))) : 0;
+  for (let attempt = 0; ; attempt++) {
+    try { return await requestOnce(url, opts); } catch (e) {
+      if (attempt >= max || !isTransient(e)) throw e;
+      await sleep(backoffDelay(attempt, retryBase(), retryCap()));
+    }
+  }
+}
+
+async function requestOnce(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 10000 } = {}) {
   // Só http(s), sem credenciais e sem destino privado (assertSafeUrl): falha antes de qualquer conexão.
   let host;
   try { host = assertSafeUrl(url).host; } catch (e) { e.status ??= 0; e.invalidUrl = true; throw e; }
-  const wait = (lastHit.get(host) || 0) + (HOST_DELAY[host] ?? DELAY) - Date.now();
-  if (wait > 0) await sleep(wait);
-  lastHit.set(host, Date.now());
+  await takeSlot(host);
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeout);
