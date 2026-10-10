@@ -138,6 +138,13 @@ try {
     assert.equal(await allowed('https://acento.test/coleção/pública/y'), true, 'precedência continua pela regra mais longa');
     assert.equal(await allowed('https://acento.test/colecao'), true);
   });
+  await t('escape %xx não diferencia maiúsculas (RFC 3986 §2.1): regra e URL em qualquer caixa', async () => {
+    robots('escape.test', 'User-agent: *\nDisallow: /cole%c3%a7ao\nDisallow: /p%C3%A1gina\n');
+    for (const u of ['/cole%C3%A7ao', '/cole%c3%a7ao', '/coleçao/x', '/p%c3%a1gina', '/página', '/p%C3%A1gina'])
+      assert.equal(await allowed('https://escape.test' + u), false, `${u} é o mesmo caminho proibido`);
+    assert.equal(await allowed('https://escape.test/colecao'), true, 'sem o caractere codificado é outro caminho');
+    assert.equal(await allowed('https://escape.test/Cole%C3%A7ao'), true, 'letras fora do escape continuam diferenciando maiúsculas');
+  });
   await t('robots.txt ausente (404/410) → liberado', async () => {
     robots('r404.test', 'Not found', 404); robots('r410.test', '', 410);
     assert.deepEqual(await check('https://r404.test/qualquer'), { ok: true });
