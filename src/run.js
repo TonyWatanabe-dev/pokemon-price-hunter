@@ -32,6 +32,18 @@ export const staleCopy = (o) => ({ ...o, stale: true, stock: 'UNKNOWN',
 // lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
 export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
 
+// Validade da cotação de frete reaproveitada quando a simulação falha (HUNTER_SHIPPING_TTL_H, padrão 24 h).
+export const shippingTtlMs = () => { const h = Number(process.env.HUNTER_SHIPPING_TTL_H); return (Number.isFinite(h) && h > 0 ? h : 24) * 3600e3; };
+// Cotação anterior utilizável: frete conhecido, com data de cotação, dentro da validade. A data devolvida é sempre a da
+// cotação original (reaproveitar não renova a validade). Sem data confiável, vencida ou ausente → null (frete desconhecido).
+export function shippingQuoteReuse(old, now = new Date(), ttlMs = shippingTtlMs()) {
+  if (!old?.shippingKnown || old.shipping == null) return null;
+  const at = old.shippingAt || null; const t = Date.parse(at ?? '');
+  const age = now.getTime() - t;
+  if (!Number.isFinite(t) || age < -5 * 60e3 || age > ttlMs) return null;
+  return { shipping: old.shipping, shippingAt: new Date(t).toISOString() };
+}
+
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
   cat.products ||= []; cat.copag ||= {};
@@ -180,15 +192,15 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         let stock = l.stock || 'UNKNOWN';
         if (m.parsed.preorder && stock !== 'OUT_OF_STOCK') stock = 'PRE_ORDER';
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
-        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null;
+        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null; let shipSource = null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
-          try { ship = await vtexShipping(l, cep); shipAt = T; }
+          try { ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
           catch (e) {
-            // Simulação falhou: guarda o motivo e usa o último frete conhecido desta oferta, com a data em que foi lido.
-            // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
+            // Simulação falhou: guarda o motivo e reaproveita a última cotação desta oferta só dentro da validade
+            // (shippingQuoteReuse). A data continua a da cotação original; vencida ou ausente, o frete fica desconhecido.
             shipError = String(e?.message || e).slice(0, 160);
-            const old = lastValidOf(prev[id]);
-            if (old?.shippingKnown && old.shipping != null) { ship = old.shipping; shipAt = old.shippingAt || old.at || old.source_timestamp || null; }
+            const reuse = shippingQuoteReuse(lastValidOf(prev[id]), now);
+            if (reuse) { ship = reuse.shipping; shipAt = reuse.shippingAt; shipSource = 'anterior'; }
           }
         }
         const pp = pickPrice(l.price);
@@ -205,7 +217,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           seller: l.seller || null, sellerId: l.sellerId != null ? String(l.sellerId) : null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
-          shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
+          shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError,
+          ...(shipSource && ship != null ? { shippingSource: shipSource } : {}), total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
           stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };

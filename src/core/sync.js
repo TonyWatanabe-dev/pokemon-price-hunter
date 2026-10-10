@@ -110,7 +110,7 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   if (stockEv.length) await c.query(`INSERT INTO stock_event (offer_id, from_status, to_status, quantity, observed_at)
     SELECT offer_id, from_status, to_status, quantity, coalesce(observed_at, now()) FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, from_status text, to_status text, quantity int, observed_at timestamptz)
     ON CONFLICT DO NOTHING`, [J(stockEv)]);
-  const ship = rows.filter((r) => r.shipping_status !== 'unknown').map((r) => ({ offer_id: oid.get(r.legacy_id), price: r.shipping_price }));
+  const ship = rows.filter((r) => r.shipping_status !== 'unknown' && !r.shipping_reused).map((r) => ({ offer_id: oid.get(r.legacy_id), price: r.shipping_price }));
   if (ship.length) await c.query(`INSERT INTO shipping_quote (offer_id, cep_prefix, method, price) SELECT offer_id, '00000', 'padrao', price FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, price numeric)
     ON CONFLICT (offer_id, cep_prefix, method) DO UPDATE SET price = EXCLUDED.price, checked_at = now()`, [J(ship)]);
   Object.assign(stats, { offers: rows.length, offersRemoved: gone.rowCount, stockEvents: stockEv.length, shippingQuotes: ship.length });
