@@ -22,6 +22,8 @@ const guardedCounts = async () => JSON.stringify(await Promise.all(['product', '
 
 const A = await mkUser('iso-a'); const B = await mkUser('iso-b');
 const p1 = await mkProduct('iso-p1'); const p2 = await mkProduct('iso-p2'); const p3 = await mkProduct('iso-p3');
+// a unicidade de entrega é por (alerta, oferta, canal, dia): com offer_id NULL o Postgres não considera duplicado, então o teste usa uma oferta real
+const offer1 = (await q(`INSERT INTO offer (product_id, marketplace_id, title_raw, url) VALUES ($1, 'direct', 'iso-offer', 'https://teste.local/iso') RETURNING id`, [p1]))[0].id;
 const before = await guardedCounts();
 
 await t('favoritos: cada usuário lê só os seus; o mesmo produto pode ser favorito dos dois', async () => {
@@ -63,10 +65,10 @@ await t('alertas: A não lê, edita nem apaga alerta de B', async () => {
 });
 
 await t('entregas: o histórico de avisos de A só traz entregas de alertas de A; sem repetir no mesmo dia', async () => {
-  await q(`INSERT INTO alert_delivery (alert_id, channel) VALUES ($1, 'email'), ($2, 'email')`, [alertA, alertB]);
+  await q(`INSERT INTO alert_delivery (alert_id, offer_id, channel) VALUES ($1, $3, 'email'), ($2, $3, 'email')`, [alertA, alertB, offer1]);
   const own = await q(`SELECT d.alert_id::text AS a FROM alert_delivery d JOIN price_alert a ON a.id = d.alert_id WHERE a.user_id = $1`, [A]);
   assert.deepEqual(own.map((r) => r.a), [String(alertA)]);
-  await assert.rejects(q(`INSERT INTO alert_delivery (alert_id, channel) VALUES ($1, 'email')`, [alertA]), (e) => e.code === '23505');
+  await assert.rejects(q(`INSERT INTO alert_delivery (alert_id, offer_id, channel) VALUES ($1, $2, 'email')`, [alertA, offer1]), (e) => e.code === '23505');
 });
 
 await t('rollback: falha no meio de uma gravação em lote não deixa nada para trás', async () => {
