@@ -5,6 +5,7 @@ import { readJson, writeJson, appendJsonl, dataPath, configPath } from './db.js'
 import { adapters, detectPlatform } from './adapters/index.js';
 import { shipping as vtexShipping } from './adapters/vtex.js';
 import { productUrls as jsonldUrls } from './adapters/jsonld.js';
+import { validateListing } from './adapters/contract.js';
 
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
@@ -23,6 +24,14 @@ import { processInbox } from './inbox.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
+// Motivo de recusa do contrato sem o valor entre parênteses (link, host, texto do preço): vira chave de contagem.
+export const reasonKey = (r) => String(r).replace(/\s*\(.*\)\s*$/, '');
+// Resumo da rodada para data/meta.json (ops): só contagens por loja e motivo, sem link nem valor lido.
+export function rejectedSummary(sources, ids) {
+  const byStore = {}; let total = 0;
+  for (const id of ids) { const r = sources[id]?.rejected; if (r?.total > 0) { byStore[id] = { ...r.reasons }; total += r.total; } }
+  return { total, byStore };
+}
 
 // Leitura que falhou: mantém a oferta como estoque desconhecido (stale) e guarda a última leitura VÁLIDA em lastValid.
 // Uma oferta já stale continua com o lastValid de antes (nunca vira "válido" o estado inventado da falha).
@@ -193,16 +202,33 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
         store = { ...store, plannedUrls: planned };
       }
-      const listings = await adapters[platform].search(store, catalog);
-      const failedUrls = new Set(listings.failed || []);
+      const raw = await adapters[platform].search(store, catalog);
+      const failedUrls = new Set(raw.failed || []);
+      // Contrato comum do anúncio (#47): anúncio fora do contrato não vira oferta. Conta o motivo por loja e segue com os
+      // outros (um anúncio ruim não derruba a loja). Se a oferta já existia, fica como leitura que falhou (staleCopy:
+      // estoque desconhecido, lastValid e frete pela validade), nunca como "removida".
+      const listings = []; const rejected = [];
+      for (const l of raw) { const r = validateListing(l, store, { now }); if (r.ok) listings.push(l); else rejected.push({ l, reasons: r.reasons }); }
       if (cache) {
         // Página relevante que não abriu continua relevante; página nova que não abriu volta para a fila de novas.
-        cache.relevant = [...new Set([...listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url), ...cache.relevant.filter((u) => failedUrls.has(u))])];
+        // Página relevante cujo anúncio foi recusado pelo contrato também continua relevante (é lida de novo na próxima).
+        const keep = new Set(rejected.map((x) => x.l?.url));
+        cache.relevant = [...new Set([...listings.filter((l) => /pok[eé]mon/i.test(l.title) || matchProduct(l, catalog).productId).map((l) => l.url), ...cache.relevant.filter((u) => failedUrls.has(u) || keep.has(u))])];
         cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || cache.relevant.includes(u));
         for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
       }
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
       if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o, now);
+      const why = {};
+      for (const { l, reasons } of rejected) {
+        for (const k of new Set(reasons.map(reasonKey))) why[k] = (why[k] || 0) + 1;
+        const id = hash(store.id + '|' + l?.url + '|' + (l?.sellerId || ''));
+        if (prev[id] && !offers[id]) offers[id] = staleCopy(prev[id], now);
+      }
+      if (rejected.length) {
+        src.rejected = { total: rejected.length, reasons: why };
+        log(`[${store.id}] ${rejected.length} anúncio(s) fora do contrato: ${Object.entries(why).map(([k, c]) => `${k} ×${c}`).join('; ')}`);
+      } else delete src.rejected;
       let matched = 0;
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
@@ -248,7 +274,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
-      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
+      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null });
       touched.add(store.id);
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.
@@ -434,6 +460,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
       stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
+    rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
   } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
