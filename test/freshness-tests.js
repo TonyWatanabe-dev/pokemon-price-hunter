@@ -234,6 +234,17 @@ await t('12. SEO: sem dados em dia, rota que não é a Home sai sem canonical e 
   assert.deepEqual(old, { 't=produto': { canonical: false, noindex: true }, 't=home': { canonical: true, noindex: false } });
 });
 
+await t('13. erros internos não vazam: falha da fonte (mesmo com .status) vira 503 genérico, sem URL, segredo ou stack', async () => {
+  const segredo = 'postgres://usuario:senha-secreta@host-interno.exemplo:5432/db';
+  setLegacyLoader(async () => { const e = new Error(`falha em ${segredo}`); e.status = 502; throw e; }); reset();
+  const r = await call('/api/v1/home');
+  assert.equal(r.status, 503); assert.deepEqual(r.json, { error: 'dados indisponíveis no momento' });
+  assert.equal(r.h['Cache-Control'], 'no-store');
+  assert.doesNotMatch(JSON.stringify(r), /senha-secreta|host-interno|postgres:|\bat .*\.mjs|stack/i);
+  const bad = await call('/api/v1/produtos?ordem=' + encodeURIComponent('<x>'));   // erro nosso (400) continua com mensagem útil
+  assert.equal(bad.status, 400); assert.match(bad.json.error, /ordem inválida/);
+});
+
 setLegacyLoader(null);
 console.log(`✓ Frescor dos dados (Lote 2): ${n} grupos de testes passaram${DB ? ' (puro + banco)' : ' (puro)'}`);
 await import('./seo-product-shipping-tests.js');
