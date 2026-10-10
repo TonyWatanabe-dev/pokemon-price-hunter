@@ -22,6 +22,7 @@ Documento de inventário (issue #87). Nada aqui executa migration em produção;
 | 008 | `008_opportunity_reference_comparison.sql` | Colunas e constraints em `opportunity` | Não |
 | 009 | `009_review_resolution.sql` | Coluna `resolution jsonb` em `review_item` | Não |
 | 010 | `010_reference_evidence.sql` | `CREATE OR REPLACE VIEW reference_price_current`: Copag oficial só entra como referência atual com evidência (fonte, domínio Copag, verificação em até 30 dias) (#185) | Não: só a view muda, mesmas colunas e ordem; nenhuma linha é apagada ou alterada; pode ser reaplicada |
+| 011 | `011_offer_product_status_index.sql` | Índice `offer_product_status_idx` em `offer (product_id, status)`, com `CREATE INDEX IF NOT EXISTS` (#132) | Não: não muda dados nem colunas; pode ser reaplicada. Bloqueia escritas em `offer` enquanto o índice é criado (sem `CONCURRENTLY`, porque o runner usa transação) |
 
 ## Dependências de ordem e compatibilidade
 - 004 e 005 dependem de `product` e `offer` (001). 007 depende de `product_stats` (004) e de `reference_kind` (006). 008 depende de `opportunity` (005) e do vocabulário de 006/007. 010 recria a view `reference_price_current` de 006 sobre as colunas de `reference_price`. Por isso a ordem numérica é obrigatória e o runner não pula arquivos.
