@@ -232,6 +232,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         log(`[${store.id}] ${rejected.length} anúncio(s) fora do contrato: ${Object.entries(why).map(([k, c]) => `${k} ×${c}`).join('; ')}`);
       } else delete src.rejected;
       let matched = 0;
+      let shipHalt = null; // depois de um 429 na simulação de frete, não insiste na mesma loja nesta rodada
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
         if (!m.productId) { if (/pok[eé]mon/i.test(l.title)) unmatched.push({ store: store.id, title: l.title, url: l.url, why: m.why }); continue; }
@@ -247,8 +248,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
         let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null; let shipSource = null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
-          try { ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
+          try { if (shipHalt) throw new Error(shipHalt); ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
           catch (e) {
+            if (!shipHalt && e?.blocked && e.status === 429) shipHalt = `simulação suspensa nesta rodada após ${String(e.message).slice(0, 100)}`;
             // Simulação falhou: guarda o motivo e reaproveita a última cotação desta oferta só dentro da validade
             // (shippingQuoteReuse). A data continua a da cotação original; vencida ou ausente, o frete fica desconhecido.
             shipError = redact(e?.message || e, { max: 160 });
