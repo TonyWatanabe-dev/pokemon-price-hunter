@@ -1246,7 +1246,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 "use strict";
 const $=(s,r=document)=>r.querySelector(s);
 const esc=(s)=>String(s??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money=(v)=>v==null?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const money=(v)=>typeof v!=="number"||!Number.isFinite(v)?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const pct=(v)=>v==null?"-":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
 const ago=(iso)=>{if(!iso)return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
 const ic=(id,cls="icon")=>`<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
@@ -1301,7 +1301,7 @@ addEventListener("popstate",()=>{
 
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),2400)}
 
-function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${o.quantity} em estoque`:l}</span>`}
+function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${esc(o.quantity)} em estoque`:esc(l)}</span>`}
 function photo(p,o,cls="photo"){
   const src=String(o?.image||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
   const fb=`<div class="${cls} fallback" style="--ec:${gg.c}" aria-hidden="true">${ic(gg.icon)}</div>`;
@@ -1319,11 +1319,11 @@ const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-
 const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
 function raBadge(o,full){
   const r=raOf(o.storeId);if(!r)return"";const [lb,cls]=RA_ST[r.status]||RA_ST.NAO_ENCONTRADA;
-  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(o.storeName.replace(/\.com(\.br)?$/,""))}`;
+  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(String(o.storeName||"").replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
   const tip=r.status==="NAO_ENCONTRADA"?`Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
-  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
+  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(nota&&!full?nota:lb)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
@@ -1795,7 +1795,7 @@ function renderLegal(kind){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide legal">${T[kind]}</section></div>`;
 }
 const tipVs=(x)=>x.anomalous?`<span class="chip bad">Barato demais</span>`:x.discount==null?`<span class="chip">Sem Copag</span>`:x.discount>=.0005?`<span class="chip ok">-${pct(x.discount)}</span>`:x.discount<=-.0005?`<span class="chip warn">+${pct(-x.discount)}</span>`:`<span class="chip">Preço Copag</span>`;
-const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(x.source.replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
+const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(String(x.source||"").replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
 const tipTable=(l)=>`<div class="tablewrap"><table><thead><tr><th>Promoção</th><th class="r">Preço e Copag</th></tr></thead><tbody>${l.map(tipRow).join("")}</tbody></table></div>`;
 /* Na busca: promoções dos canais do Telegram que batem com o termo (sem verificação, fora do ranking) */
 function tipHits(q){
