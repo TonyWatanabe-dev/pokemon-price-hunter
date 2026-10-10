@@ -20,12 +20,13 @@ fs.writeFileSync(path.join(tmp, 'config/watchlist.json'), JSON.stringify({ setti
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json' } });
 const html = (s, status = 200) => new Response(s, { status, headers: { 'content-type': 'text/html' } });
 const http = await import('../src/http.js');
-const vt = { sim: 'ok', c: false };
+const vt = { sim: 'ok', c: false, down: false };
 const vtItem = (name, link, id, price, qty) => ({ productName: name, link, items: [{ itemId: id, name: 'u', sellers: [{ sellerId: '1', sellerName: 'Loja VTEX', commertialOffer: { Price: price, ListPrice: price, AvailableQuantity: qty } }] }] });
 http.setFetch(async (url) => {
   const u = new URL(url);
   if (u.pathname === '/robots.txt') return html('', 404);
   if (u.host === 'vt.test') {
+    if (vt.down) return html('erro', 503);
     if (u.pathname.includes('simulation')) return vt.sim === '500' ? html('erro', 500) : json({ logisticsInfo: [{ slas: [{ price: 1990 }] }] });
     if (u.pathname.startsWith('/api/catalog_system')) return json(u.searchParams.get('ft') === 'pokemon' ? [
       vtItem('Box Display Pokémon ME05 Escuridão Absoluta 36 Boosters Copag', 'https://vt.test/me05-display/p', '1', 449.9, 5),
@@ -112,6 +113,46 @@ await t('TTL menor também vale na rodada', async () => {
   s = await runOnce({ log: quiet, send, now: at(15 + 25 * 60 + 75) });
   assert.equal(offerOf(s, 'me05-box36').shippingKnown, false, '75 min: vencida com TTL de 1 h');
   delete process.env.HUNTER_SHIPPING_TTL_H; vt.sim = 'ok';
+});
+
+// ---------------------------------------------------------------- oferta não relida (loja pulada ou fora do ar)
+// A cópia da última leitura segue a mesma validade: dentro dela, frete com a data original e origem 'anterior'
+// (não renova shipping_quote); vencida, frete desconhecido. Nunca uma cópia finge cotação nova.
+const { offersRows } = await import('../src/core/mappers.js');
+const T1 = 15 + 25 * 60 + 90;
+await t('loja pulada (prazo da rodada): cópia recente mantém o frete como reaproveitado, sem renovar a data', async () => {
+  s = await runOnce({ log: quiet, send, now: at(T1) });
+  assert.deepEqual(view(offerOf(s, 'me05-box36')), [19.9, true, 469.8, at(T1).toISOString(), 'simulacao']);
+  process.env.HUNTER_BUDGET_MIN = '-1'; // prazo já estourado: toda loja fica para a próxima rodada
+  s = await runOnce({ log: quiet, send, now: at(T1 + 60) });
+  delete process.env.HUNTER_BUDGET_MIN;
+  const a = offerOf(s, 'me05-box36');
+  assert.deepEqual(view(a), [19.9, true, 469.8, at(T1).toISOString(), 'anterior']);
+  assert.equal(offersRows([a])[0].shipping_reused, true, 'cópia não renova shipping_quote.checked_at');
+});
+await t('loja fora do ar dentro da validade: frete reaproveitado com a data original', async () => {
+  vt.down = true;
+  s = await runOnce({ log: quiet, send, now: at(T1 + 120) });
+  let a = offerOf(s, 'me05-box36');
+  assert.equal(a.stale, true);
+  assert.deepEqual(view(a), [19.9, true, 469.8, at(T1).toISOString(), 'anterior']);
+  assert.equal(offersRows([a])[0].shipping_reused, true, 'oferta stale não renova shipping_quote.checked_at');
+  s = await runOnce({ log: quiet, send, now: at(T1 + 23 * 60) });
+  a = offerOf(s, 'me05-box36');
+  assert.deepEqual(view(a), [19.9, true, 469.8, at(T1).toISOString(), 'anterior']);
+});
+await t('loja fora do ar além da validade: frete desconhecido, total sem frete, nada para shipping_quote', async () => {
+  s = await runOnce({ log: quiet, send, now: at(T1 + 24 * 60 + 15) });
+  let a = offerOf(s, 'me05-box36');
+  assert.equal(a.stale, true);
+  assert.deepEqual(view(a), [null, false, 449.9, null, null]);
+  s = await runOnce({ log: quiet, send, now: at(T1 + 48 * 60) });
+  a = offerOf(s, 'me05-box36');
+  assert.deepEqual(view(a), [null, false, 449.9, null, null], '48 h depois continua desconhecido');
+  const [row] = offersRows([a]);
+  assert.deepEqual([row.shipping_status, row.shipping_price, row.total_price, row.shipping_reused], ['unknown', null, null, false]);
+  assert.equal(a.lastValid?.shipping, 19.9, 'a última leitura válida continua guardada como base de comparação');
+  vt.down = false;
 });
 
 // ---------------------------------------------------------------- atividade montada do histórico (primeira vez)

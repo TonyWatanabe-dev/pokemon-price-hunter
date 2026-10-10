@@ -26,8 +26,9 @@ const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
 
 // Leitura que falhou: mantém a oferta como estoque desconhecido (stale) e guarda a última leitura VÁLIDA em lastValid.
 // Uma oferta já stale continua com o lastValid de antes (nunca vira "válido" o estado inventado da falha).
-export const staleCopy = (o) => ({ ...o, stale: true, stock: 'UNKNOWN',
-  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, shippingAt: o.shippingAt ?? null, seller: o.seller, at: o.source_timestamp } });
+// O frete da cópia segue a validade da cotação (carryShipping): uma cópia nunca finge cotação nova.
+export const staleCopy = (o, now = new Date()) => carryShipping({ ...o, stale: true, stock: 'UNKNOWN',
+  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, shippingAt: o.shippingAt ?? null, seller: o.seller, at: o.source_timestamp } }, now);
 // Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
 // lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
 export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
@@ -42,6 +43,17 @@ export function shippingQuoteReuse(old, now = new Date(), ttlMs = shippingTtlMs(
   const age = now.getTime() - t;
   if (!Number.isFinite(t) || age < -5 * 60e3 || age > ttlMs) return null;
   return { shipping: old.shipping, shippingAt: new Date(t).toISOString() };
+}
+// Oferta copiada sem nova leitura (loja ou página falhou, loja pulada): o frete obedece à mesma validade. Dentro dela,
+// fica com a data original e origem 'anterior' (não renova shipping_quote); vencida ou sem data, fica desconhecido e o
+// total volta ao preço (nunca inventa frete).
+export function carryShipping(o, now = new Date()) {
+  if (!o.shippingKnown || o.shipping == null) return o;
+  const reuse = shippingQuoteReuse(o, now);
+  if (reuse) return { ...o, shippingAt: reuse.shippingAt, shippingSource: 'anterior' };
+  const { shippingSource, ...rest } = o;
+  const total = o.price != null ? round2(o.price) : null;
+  return { ...rest, shipping: null, shippingKnown: false, shippingAt: null, total, perBooster: o.perBooster && o.total && total ? round2(o.perBooster * total / o.total) : null };
 }
 
 export function loadCatalog() {
@@ -177,7 +189,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
       }
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
-      if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o);
+      if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o, now);
       let matched = 0;
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
@@ -235,7 +247,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
     const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
-    offers[id] = recent ? { ...o } : staleCopy(o);
+    offers[id] = recent ? carryShipping({ ...o }, now) : staleCopy(o, now);
   }
 
   // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
