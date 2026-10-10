@@ -1350,7 +1350,7 @@ const $=(s,r=document)=>r.querySelector(s);
 const esc=(s)=>String(s??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=(v)=>v==null?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const pct=(v)=>v==null?"-":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
-const ago=(iso)=>{if(!iso)return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
+const ago=(iso)=>{if(!iso||!Number.isFinite(Date.parse(iso)))return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
 const ic=(id,cls="icon")=>`<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 const store={get(k,d){try{const v=localStorage.getItem("ph:"+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem("ph:"+k,JSON.stringify(v))}catch{}}};
 
@@ -1520,6 +1520,9 @@ function priceBlock(p,o,abrir){
   return`<div class="pblock"><span class="big" data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</span>${off}</div>
   <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
+/* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -" */
+const readKnown=(o)=>Number.isFinite(Date.parse(o?.source_timestamp??""));
+const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data da leitura desconhecida";
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
@@ -2090,7 +2093,7 @@ function storeOffer(o,p){
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
       <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>
-    <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
+    <div class="so-foot"><span>${ic("clock")}${readNote(o)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga: preço pode ter mudado</span>`:""}</div>
   </article>`;
 }
 function renderProduct(pid){
@@ -2120,6 +2123,7 @@ function renderProduct(pid){
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
       ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
+      <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
       <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)} ${ic("arrow-square-out")}</a>
