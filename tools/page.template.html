@@ -2488,7 +2488,8 @@ async function renderProdutosApi(){
   mergeSide(d);paintProdutos({list:d.items.map(cardE),total:d.total,facets:d.facets,noCopag:null,noCopagCount:d.noCopagCount,refNet:d.refNet,next:d.pages>1?2:null});
 }
 async function moreProdutos(page){
-  const key=prodQuery(page);const d=await apiGet(key);if(!d||view!=="produtos"||prodQuery(page)!==key)return;
+  const key=prodQuery(page);const d=await apiGet(key);if(view!=="produtos"||prodQuery(page)!==key)return;
+  if(!d||d.notFound){const s=$("#prod-more");if(s){s.removeAttribute("style");s.innerHTML=`<p class="soft-empty" role="alert">Não conseguimos carregar mais produtos agora. A lista acima continua válida. <button class="linkbtn" type="button" data-prodretry="${page}">Tentar de novo</button></p>`}return}
   const box=$("#view .prods .deals");if(!box)return;mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((e)=>dealCard(cardE(e))).join(""));
   $("#prod-more")?.remove();if(page<d.pages)box.insertAdjacentHTML("afterend",moreSentinel(page+1));watchMore();if(typeof revealInit==="function")revealInit();
 }
@@ -2508,9 +2509,11 @@ function ensureFull(){
     else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
+let refreshing=false;
 async function refresh(){
+  if(refreshing)return;refreshing=true;   /* toque repetido não dispara outra busca em paralelo */
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
-  const st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
+  let st=null;try{st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState()}finally{refreshing=false;bs.forEach((b)=>b.classList.remove("spin"))}
   if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
   const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
 }
@@ -2529,7 +2532,8 @@ document.addEventListener("click",(e)=>{
   const acb=t.closest("[data-acc]");if(acb){e.preventDefault();if($("#more").open)$("#more").close();openAccount();return}
   const gtb=t.closest("[data-gate]");if(gtb){authGate({type:"page",tab:gtb.dataset.gate});return}
   const thb=t.closest("[data-theme-set]");if(thb){const v=thb.dataset.themeSet;if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme;store.set("theme",v||null);themeSync();render();return}
-  if(t.closest("#retry")){loading();load();return}
+  const rtb=t.closest("#retry");if(rtb){if(rtb.disabled)return;rtb.disabled=true;loading();load();return}
+  const prb=t.closest("[data-prodretry]");if(prb){if(prb.disabled)return;prb.disabled=true;const box=prb.closest("#prod-more");if(box)box.style.height="1px";box?.replaceChildren();moreProdutos(+prb.dataset.prodretry);return}
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
