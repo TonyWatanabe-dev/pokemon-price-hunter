@@ -2220,8 +2220,9 @@ async function afterRedirect(m){
 async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
-    if(was!==u.uid){ACC.data=null;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={}}}
-    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    if(was!==u.uid){ACC.data=null;ACC.loadFailed=false;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}}
+    if(ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
+    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
     else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
   }else ACC.data=null;
   ACC.ready=true;accSync();
@@ -2353,7 +2354,14 @@ async function submitDel(f){
   try{await m.wipe(pw||undefined);ACC.data=null;toast("Conta e dados excluídos");go("")}
   catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");b.disabled=false;b.removeAttribute("aria-busy")}
 }
-async function saveField(k,v,old){ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast("Não consegui salvar. Tente de novo.");throw e}}
+async function saveField(k,v,old){
+  if(!ACC.user||!ACC.data){toast("Entre na sua conta para salvar.");throw Object.assign(new Error("sem login"),{code:"auth/no-user"})}
+  if(ACC.loadFailed){toast("Seus dados não carregaram. Recarregue a página antes de salvar.");throw Object.assign(new Error("dados não carregados"),{code:"data/not-loaded"})}
+  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast(saveErr(e));throw e}
+}
+const SAVE_AUTH=new Set(["auth/no-user","unauthenticated","auth/user-token-expired","auth/user-not-found"]);
+const SAVE_NET=new Set(["unavailable","auth/network-request-failed","deadline-exceeded"]);
+function saveErr(e){const c=e?.code;return SAVE_AUTH.has(c)?"Sua sessão expirou. Entre de novo para salvar.":SAVE_NET.has(c)?"Sem conexão. Confira a internet e tente de novo.":"Não consegui salvar. Tente de novo."}
 function pulse(sel,cls){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)}
 async function setFav(pid,on){
   const old=favs();if(on===old.includes(pid))return;
@@ -2417,12 +2425,14 @@ function prodRow(id,extra){
 }
 function renderFavs(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Favoritos","Salve os produtos que você quer acompanhar e veja o menor preço de cada um num lugar só.");return}
+  if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>Não consegui carregar seus favoritos. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const ids=favs().filter((id)=>P[id]);
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>${ids.length?`${ids.length} ${ids.length>1?"produtos":"produto"}. Toque para ver as lojas ou criar um alerta.`:"Nada salvo ainda."}</p>
   ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="produtos">Ver produtos</button></div>`}</section></div>`;
 }
 function renderAlerts(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Alertas de preço","Diga quanto quer pagar e o site marca quando alguma loja chegar nesse preço.");return}
+  if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>Não consegui carregar seus alertas. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const rows=alertsL().filter((a)=>P[a.p]).map((a)=>({a,o:bestLive(a.p)})).map((r)=>({...r,hit:r.o&&r.o.total<=r.a.v})).sort((x,y)=>(y.hit-x.hit)||((x.o?x.o.total-x.a.v:1e9)-(y.o?y.o.total-y.a.v:1e9)));
   const st=(r)=>r.hit?`<span class="chip ok">${ic("bell-ringing")}No seu preço</span>`:r.o?`<span class="chip">Faltam ${money(r.o.total-r.a.v)}</span>`:`<span class="chip">Sem estoque</span>`;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>${rows.length?`${rows.filter((r)=>r.hit).length} de ${rows.length} já ${rows.filter((r)=>r.hit).length===1?"chegou":"chegaram"} no seu preço. O aviso aparece aqui e no menu.`:"Nenhum alerta ainda."}</p>
