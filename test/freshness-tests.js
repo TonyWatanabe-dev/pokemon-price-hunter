@@ -108,10 +108,13 @@ await t('4. site: indicador usa os mesmos limites e textos claros (nunca "Ao viv
 });
 
 await t('5. site: oportunidades pausadas (stale_db) na Home e em /oportunidades, sem nota antiga', () => {
-  assert.match(html, /a\.meta\?\.status==="stale_db"\)Object\.assign\(HOMEOPP,\{status:"stale",top:\[\]\}\)/);
-  assert.match(html, /d\.meta\?\.status==="stale_db"\)Object\.assign\(OPP,\{status:"stale",total:0\}\)/);
-  assert.match(html, /HOMEOPP\.status==="stale"\)return`<p class="stage-empty">Oportunidades pausadas/);
-  assert.match(html, /OPP\.status==="stale"\)return`<div class="empty"><h3>Oportunidades pausadas<\/h3>/);
+  // UX: a pausa (stale_db ou 503) leva motivo e horário da API; o texto fica em pauseHTML (testes em ux-confianca-tests.js)
+  assert.match(html, /const isPause=\(d,path\)=>d\?\.meta\?\.status==="stale_db"/);
+  assert.match(html, /if\(isPause\(a,HOME_OPP_KEY\)\)\{Object\.assign\(HOMEOPP,\{status:"stale",top:\[\]\}\)/);
+  assert.match(html, /if\(isPause\(d,key\)\)\{Object\.assign\(OPP,\{status:"stale",items:\[\],total:0\}\)/);
+  assert.match(html, /HOMEOPP\.status==="stale"\)return`<div class="stage-empty pause">\$\{pauseHTML\(/);
+  assert.match(html, /OPP\.status==="stale"\)return`<div class="empty pause">\$\{pauseHTML\(/);
+  assert.match(html, /return`<h3>Oportunidades pausadas<\/h3>/);
 });
 
 // ------------------------------------------------------------------ 4) banco (PostgreSQL descartável)

@@ -79,7 +79,7 @@ for (const file of ['../index.html', '../tools/page.template.html']) {
     const oppCode = cut('async function moreOpp(page){', '/* "Mais filtros" fecha');
     const oppCtx = (api) => { const s = el(), box = el(); s.attrs.style = 'height:1px';
       const ctx = run(oppCode, { view: 'oportunidades', OPP: { key: 'k', items: [{}], page: 1, pages: 4 }, oppQuery: (p) => 'o' + p, apiGet: api,
-        oppCard: () => '<a>', watchOppMore: () => {}, revealInit: () => {}, $: (q) => (q === '#opp-more' ? s : q === '#view .opp .deals' ? box : null) });
+        oppCard: () => '<a>', watchOppMore: () => {}, revealInit: () => {}, document: { addEventListener() {} }, $: (q) => (q === '#opp-more' ? s : q === '#view .opp .deals' ? box : null) });
       return { ctx, s, box }; };
     await t(`${file}: falha ao carregar mais oportunidades mostra aviso com nova tentativa`, async () => {
       const { ctx, s, box } = oppCtx(async () => null);

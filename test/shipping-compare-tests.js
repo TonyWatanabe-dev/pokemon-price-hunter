@@ -16,7 +16,7 @@ function page(OFF) {
   const ctx = {
     console, Math, String, Number, Array, JSON, Object, Date, Set, document: { title: '' }, history: { pushState() {}, replaceState() {} }, location: { pathname: '/' },
     P: { p1: { id: 'p1', collectionName: 'Caos Ascendente', typeLabel: 'Booster Box', type: 'bb', group: 'Boxes', copagConfirmed: false, copag: null } }, OFF, S: { collections: [] }, SLUG: {},
-    HIST: { p1: [] }, drawHist() {}, loadHist() {}, $: (s) => (s === '#view' ? view : null),
+    HIST: { p1: [] }, drawHist() {}, loadHist() {}, loadPpOpp() {}, $: (s) => (s === '#view' ? view : null),
     esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     money: (v) => (v == null ? '-' : 'R$ ' + Number(v).toFixed(2).replace('.', ',')), pct: (v) => `${(v * 100).toFixed(1)}%`, ic: (k) => `<i data-ic="${k}"></i>`,
     g: () => ({ c: '#000', icon: 'x' }), label: (p) => p.typeLabel, colHref: () => '', typeHref: () => '', photo: () => '<div class="photo"></div>', favBtn: () => '',
