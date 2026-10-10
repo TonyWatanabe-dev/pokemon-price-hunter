@@ -168,7 +168,7 @@ export function copagExpired(verifiedAt, asOf) {
 /**
  * Situação da referência Copag de UM produto, a partir das linhas COPAG_OFFICIAL_CURRENT dele (nunca estima, nunca preenche lacuna):
  *   missing     — nenhuma linha Copag atual verificada com preço válido
- *   stale       — há Copag verificada, mas a mais recente passou de COPAG_MAX_AGE_DAYS (ou não tem data de verificação)
+ *   stale       — há Copag verificada, mas a mais recente passou de COPAG_MAX_AGE_DAYS (ou não tem data de verificação válida)
  *   conflicting — linhas válidas e não vencidas com preços diferentes (centavos); NÃO escolhe vencedora, devolve todos os preços
  *   confirmed   — linhas válidas e não vencidas, todas com o mesmo preço
  * Só para auditoria/diagnóstico: a nota continua usando resolveCurrentReference.
@@ -176,13 +176,14 @@ export function copagExpired(verifiedAt, asOf) {
 export function copagReferenceStatus(rows, asOf = null) {
   const valid = (rows || []).filter((r) => r.reference_kind === 'COPAG_OFFICIAL_CURRENT' && r.verification_status === 'verified' && Number(r.value) > 0);
   if (!valid.length) return { status: 'missing', prices: [], verified_at: null };
-  const fresh = valid.filter((r) => r.verified_at && !copagExpired(r.verified_at, asOf));
-  if (!fresh.length) {
-    const last = valid.map((r) => r.verified_at).filter(Boolean).sort().pop() ?? null;
-    return { status: 'stale', prices: [], verified_at: last };
-  }
+  // instante da verificação (Date do pg ou string ISO em qualquer fuso); nula/inválida → NaN = sem data
+  const ms = (d) => (d == null || d === '' ? NaN : new Date(d).getTime());
+  // mais recente pelo INSTANTE (nunca pela ordem de texto), em ISO UTC; ignora nulas/inválidas
+  const latest = (xs) => { const t = Math.max(...xs.map(ms).filter(Number.isFinite)); return Number.isFinite(t) ? new Date(t).toISOString() : null; };
+  const fresh = valid.filter((r) => Number.isFinite(ms(r.verified_at)) && !copagExpired(r.verified_at, asOf));
+  if (!fresh.length) return { status: 'stale', prices: [], verified_at: latest(valid.map((r) => r.verified_at)) };
   const prices = [...new Set(fresh.map((r) => Math.round(Number(r.value) * 100) / 100))].sort((a, b) => a - b);
-  const verified_at = fresh.map((r) => r.verified_at).sort().pop();
+  const verified_at = latest(fresh.map((r) => r.verified_at));
   return { status: prices.length > 1 ? 'conflicting' : 'confirmed', prices, verified_at };
 }
 
