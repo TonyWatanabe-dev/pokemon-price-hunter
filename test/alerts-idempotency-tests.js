@@ -18,7 +18,7 @@ await t('mesma regra e produto com várias ofertas: um único aviso (a mais bara
   const hits = evaluate(rules, [a, b], [], prod);
   assert.equal(hits.length, 1); assert.equal(hits[0].offer.id, 'b');
   const hs = evaluate([...rules, { id: 'r2', filter: {}, maxPrice: 100 }], [a], [], prod);
-  assert.deepEqual(hs.map((h) => h.key).sort(), ['r|p1', 'r2|p1'], 'chave por regra e produto');
+  assert.deepEqual(hs.map((h) => h.key).sort(), ['r|p1', 'r2|p1'].sort(),'chave por regra e produto');
 });
 
 await t('retry da mesma rodada não gera spam: segunda passada com o registro gravado não reenvia', async () => {
