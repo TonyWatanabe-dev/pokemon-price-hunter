@@ -174,6 +174,82 @@ await t('rodada completa: sources.json guarda status/código real e a espera cer
   }
 });
 
+// ---------- 4) regressão da #188 (coleta 38077043674): a mox.land voltou ACTIVE com 148 anúncios e 0 casados; as 37
+// ofertas viraram "removed". Os títulos dela não têm a palavra "Pokémon" e o filtro do /products.json os descartava.
+const { matchProduct } = await import('../src/match.js'); const { linkAgrees } = await import('../src/gate.js');
+// Títulos e links reais da mox.land (data/offers.json antes da #188); metadados sem a palavra Pokémon.
+const MOX = [
+  ['Booster - Megaevolução 4 Caos Ascendente', 'booster-megaevolucao-4-caos-ascendente', '34.90'],
+  ['Box - Treinador Avançado Heróis Excelsos', 'box-treinador-avancado-herois-excelsos', '499.90'],
+  ['Blister Triplo - Megaevolução 2 Fogo Fantasmagórico Cottonee', 'blister-triplo-megaevolucao-2-fogo-fantasmagorico-cottonee', '89.90'],
+  ['Combo de Boosters - Escarlate e Violeta - Evoluções Prismáticas', 'combo-de-boosters-escarlate-e-violeta-evolucoes-prismaticas', '149.90'],
+];
+const moxProd = (i, x = {}) => ({ id: 500 + i, title: MOX[i][0], handle: MOX[i][1], product_type: 'Booster', tags: ['TCG', 'Lacrado'], vendor: 'Copag',
+  variants: [{ id: 5000 + i, title: 'Default Title', price: MOX[i][2], available: true }], ...x });
+const MAGIC = ['Booster de Coleção - Magic: The Gathering - Duskmourn', 'Commander Deck - Bloomburrow', 'Sleeve Dragon Shield Matte Preto']
+  .map((title, i) => ({ id: 900 + i, title, handle: `mtg-${i}`, product_type: 'Magic', tags: ['MTG'], vendor: 'Wizards', variants: [{ id: 9000 + i, title: 'Default Title', price: '39.90', available: true }] }));
+const casa = (l) => { const m = matchProduct(l, catalog); return !!(m.productId && linkAgrees(l, m, catalog).ok); };
+
+await t('Shopify /products.json: título sem "Pokémon" que cita coleção do catálogo (mox.land) vira anúncio e casa', async () => {
+  const L = await shopify.search(shopifyStore('mox-titulos.test', [...MOX.map((_, i) => moxProd(i)), ...MAGIC]), catalog);
+  assert.deepEqual(L.map((l) => l.title).sort(), MOX.map((x) => x[0]).sort(), 'os 4 produtos lacrados entram; Magic e acessório ficam de fora');
+  assert.equal(L.filter(casa).length, MOX.length, 'todos casam com o catálogo (como na busca preditiva de antes)');
+  assert.equal(pages('mox-titulos.test').length, 1, 'continua 1 página para um catálogo pequeno');
+});
+
+await t('rodada: loja que cai para 0 casados mantém as ofertas stale (sem "removed"); queda parcial remove; sucesso limpa o erro', async () => {
+  const keep = Object.fromEntries(['HUNTER_CONFIG_DIR', 'HUNTER_DATA_DIR', 'HUNTER_TIPS', 'HUNTER_CEP', 'HUNTER_BUDGET_MIN'].map((k) => [k, process.env[k]]));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-zero-'));
+  try {
+    process.env.HUNTER_CONFIG_DIR = path.join(tmp, 'config'); process.env.HUNTER_DATA_DIR = path.join(tmp, 'data'); process.env.HUNTER_TIPS = '0';
+    delete process.env.HUNTER_CEP; delete process.env.HUNTER_BUDGET_MIN;
+    fs.mkdirSync(process.env.HUNTER_CONFIG_DIR, { recursive: true }); fs.mkdirSync(process.env.HUNTER_DATA_DIR, { recursive: true });
+    fs.copyFileSync(path.join(root, 'config/catalog.json'), path.join(tmp, 'config/catalog.json'));
+    const S = (id, host) => ({ id, name: id, url: `https://${host}`, platform: 'shopify', kind: 'specialist', evidence: {} });
+    fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: [S('zmox', 'zero-mox.test'), S('zpart', 'zero-part.test'), S('zback', 'zero-back.test')] }));
+    fs.writeFileSync(path.join(tmp, 'config/watchlist.json'), JSON.stringify({ settings: { cep: null }, rules: [] }));
+    // zback falhou com 429 na rodada anterior (há 1 dia: a espera já passou)
+    fs.writeFileSync(path.join(tmp, 'data/sources.json'), JSON.stringify({ zback: { checks: 1, ok: 0, status: 'BLOCKED', reason: 'Limite de requisições (429)', fails: 1,
+      lastCheck: new Date(Date.now() - 864e5).toISOString(), httpStatus: 429, netCode: 'ECONNRESET', retryAfterSec: 3600 } }));
+    const tagged = (i) => moxProd(i, { tags: ['Pokémon'] }); // 1ª rodada casa por tag, independente do filtro do título
+    let round = 1;
+    const serve = (host, byRound) => { routes[host] = { handle: (u) => (u.pathname === '/products.json' ? json({ products: Number(u.searchParams.get('page')) === 1 ? byRound[round] : [] }) : html('', 404)) }; };
+    // rodada 2: a loja responde (anúncios Pokémon que não são lacrados do catálogo + Magic), mas nada casa
+    const NOISE = ['Pelúcia Pokémon Pikachu 20 cm', 'Sleeve Pokémon Pikachu 65 unidades'].map((title, i) => ({ id: 800 + i, title, handle: `pk-${i}`, product_type: 'Acessório', tags: [], vendor: 'Loja',
+      variants: [{ id: 8000 + i, title: 'Default Title', price: '59.90', available: true }] }));
+    serve('zero-mox.test', { 1: [tagged(0), tagged(1), tagged(2)], 2: [...NOISE, ...MAGIC] });
+    serve('zero-part.test', { 1: [tagged(0), tagged(3)], 2: [tagged(0)] });
+    serve('zero-back.test', { 1: [tagged(1)], 2: [tagged(1)] });
+    const { runOnce } = await import('../src/run.js');
+    const send = { capture: async () => true };
+    const read = (f) => JSON.parse(fs.readFileSync(path.join(tmp, 'data', f), 'utf8'));
+    const t0 = Date.now();
+    await runOnce({ log: () => {}, send, now: new Date(t0) });
+    let src = read('sources.json');
+    assert.deepEqual([src.zmox.matched, src.zpart.matched, src.zback.matched], [3, 2, 1], 'rodada 1 casa tudo');
+    assert.equal(src.zback.status, 'ACTIVE');
+    assert.deepEqual([src.zback.httpStatus, src.zback.netCode, src.zback.retryAfterSec], [undefined, undefined, undefined], 'loja que voltou: sem httpStatus/netCode/retryAfterSec da falha antiga');
+    assert.equal(src.zback.reason, null);
+    round = 2;
+    await runOnce({ log: () => {}, send, now: new Date(t0 + 3600e3) });
+    src = read('sources.json'); const offers = Object.values(read('offers.json'));
+    const hist = fs.readFileSync(path.join(tmp, 'data/history.jsonl'), 'utf8').split('\n').filter(Boolean).map((x) => JSON.parse(x));
+    const mox = offers.filter((o) => o.storeId === 'zmox');
+    assert.equal(mox.length, 3, 'as 3 ofertas da loja que caiu para 0 casados continuam');
+    assert.ok(mox.every((o) => o.stale === true && o.stock === 'UNKNOWN' && o.lastValid?.stock === 'IN_STOCK' && o.lastValid?.total > 0), 'stale, estoque desconhecido, lastValid da leitura boa');
+    assert.equal(hist.filter((h) => h.storeId === 'zmox' && h.event === 'removed').length, 0, 'nenhum "removed" para a loja que caiu para 0');
+    assert.deepEqual([src.zmox.status, src.zmox.matched, src.zmox.listings], ['ACTIVE', 0, NOISE.length]);
+    assert.match(src.zmox.reason || '', /zero casados após 3/, 'motivo registrado no sources.json');
+    const part = offers.filter((o) => o.storeId === 'zpart');
+    assert.deepEqual(part.map((o) => [o.title, o.stale]), [[MOX[0][0], false]], 'queda parcial: o que sumiu sai das ofertas');
+    assert.equal(hist.filter((h) => h.storeId === 'zpart' && h.event === 'removed').length, 1, 'queda parcial: remoção normal');
+    assert.equal(src.zpart.reason, null);
+  } finally {
+    for (const [k, v] of Object.entries(keep)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
 http.setFetch(globalThis.fetch);
 const v = (h) => measured[h]?.requests;
 console.log(`✓ Coleta sem insistir (Shopify, motivo real, espera do 429): ${n} grupos de testes passaram`

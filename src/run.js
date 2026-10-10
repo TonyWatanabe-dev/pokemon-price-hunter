@@ -274,7 +274,22 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
-      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null });
+      // Queda brusca para zero: a loja respondeu, mas nenhum anúncio casou e ela tinha ofertas na rodada anterior. Isso é
+      // quase sempre mudança na coleta (rota, filtro, paginação), não a loja tirando tudo do ar: as ofertas ficam como
+      // leitura que falhou (staleCopy), nunca "removed". Com 1+ casado, o que sumiu continua sendo removido normalmente.
+      // Só quando a loja respondeu normalmente (nenhuma página falhou): com falha parcial, cada página já tem seu destino.
+      let reason = null;
+      if (matched === 0 && !failedUrls.size) {
+        const kept = Object.entries(prev).filter(([id, o]) => o.storeId === store.id && !offers[id]);
+        if (kept.length) {
+          for (const [id, o] of kept) offers[id] = staleCopy(o, now);
+          reason = `zero casados após ${Number.isInteger(src.matched) && src.matched > 0 ? src.matched : kept.length} (${raw.length} anúncios lidos): ${kept.length} oferta(s) mantida(s) como não confirmadas, sem remoção`;
+          log(`[${store.id}] ${reason}`);
+        }
+      }
+      // Voltou a funcionar: limpa o status HTTP, o código de rede e o Retry-After da última falha.
+      Object.assign(src, { status: 'ACTIVE', reason, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null });
+      delete src.httpStatus; delete src.netCode; delete src.retryAfterSec;
       touched.add(store.id);
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.
