@@ -184,3 +184,6 @@ if (process.env.TEST_DATABASE_URL) {
 }
 
 console.log(`✓ Integração dos agentes: ${n} grupos de testes passaram${DB ? ' (puro + banco)' : ' (puro)'}`);
+
+// Contrato de evidência das decisões dos agentes (issue #91)
+await import('./agent-evidence-tests.js');

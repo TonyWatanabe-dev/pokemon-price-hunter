@@ -12,9 +12,44 @@ const wordRe = (alias) => new RegExp('(^|[^a-z0-9.])' + esc(alias).replace(/ /g,
 const REJECT = [
   [/\b(usad[oa]s?|aberto|aberta|sem lacre|violad[oa]|avariad[oa]|caixa amassada|embalagem danificada)\b/, 'condição: não lacrado/usado'],
   [/\b(avulsas?|lote de cartas|cartas? aleatorias|sem repetidas|brilhantes? garantid|proxy|replica|nao original|similar|cartas? unitarias?)\b/, 'não é produto lacrado oficial'],
-  [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
-  [/\b(ingles|inglesa|english|en|ing|japones|japonesa|japanese|jp|coreano|chines|espanhol|frances|alemao|italiano)\b/, 'idioma diferente de PT'],
+  [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
 ];
+// "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
+const LOOSE_BINDER = (t) => /\b(pasta|fichario|binder)\b/.test(t) && !/\b(colecao|box|caixa|boosters?|pacotes?)\b/.test(t);
+// Várias unidades no mesmo anúncio: "10 unidades", "2 Box ...", "Kit 3 Blister ...", "Kit 2". "Kit 6 Boosters" segue sendo combo.
+const MULTI_UNIT = /^([2-9]|1\d) ?x? (box|boxes|caixas?|blisters?|latas?|minilatas?|baralhos?|colecoes|treinadore?s?|etbs?)\b|\bkit (de )?([2-9]|1\d)\b(?! ?(boosters?|pacotes?|envelopes?|cartas|cards))/;
+// "Bundle" é lote, exceto no combo com a contagem de boosters escrita no título: "Combo de Booster / Bundle (18 Boosters)".
+const BUNDLE = /\bbundle\b/;
+const bundleIsCombo = (d) => d.type === 'combo' && d.boosters > 0 && !d.inferred;
+// "Box + Fichário", "Box ... + Poster": o acessório depois do "+" é parte da própria coleção com fichário/pôster.
+const OWN_ACCESSORY = { colecao_fichario: /^(com )?(fichario|binder)\b/, colecao_poster: /^(com )?poster\b/ };
+const UNITS = /\b(\d{1,3}) ?(unidades|unidade|unids?|unds?|un)\b/;
+
+// Idioma só por evidência explícita no título (palavra ou abreviação). Nunca pelo nome/domínio da loja
+// nem por nome de coleção em inglês. Sem evidência: code null ("não informado"), sem presumir PT.
+const LANG_TOKENS = {
+  pt: ['portugues', 'portuguesa', 'pt', 'ptbr', 'pt-br'],
+  en: ['ingles', 'inglesa', 'english', 'eng', 'en', 'ing'],
+  ja: ['japones', 'japonesa', 'japanese', 'japao', 'japan', 'jpn', 'jap', 'jp'],
+  ko: ['coreano', 'coreana', 'korean', 'kor', 'kr'],
+  zh: ['chines', 'chinesa', 'chinese', 'cn'],
+  es: ['espanhol', 'espanhola', 'spanish'],
+  fr: ['frances', 'francesa', 'french'],
+  de: ['alemao', 'alema', 'german'],
+  it: ['italiano', 'italiana', 'italian'],
+};
+// Hífen é fronteira (como o \b da regra antiga): "EN-US" -> en, "JP-JA" -> ja, "Inglês-EN" -> en.
+// Token mais longo primeiro, para "pt-br" sair como evidência inteira em vez de só "pt".
+const LANG_RE = new Map(Object.entries(LANG_TOKENS).map(([k, v]) => [k, new RegExp('(?:^|[^a-z0-9])(' + [...v].sort((a, b) => b.length - a.length).map(esc).join('|') + ')(?![a-z0-9])')]));
+/** t normalizado -> { code, evidence, conflict, found }. code só quando UM idioma aparece; conflict quando aparecem dois ou mais. */
+export function detectLanguage(t) {
+  const found = [];
+  for (const [code, re] of LANG_RE) { const m = re.exec(t); if (m) found.push({ code, evidence: m[1] }); }
+  if (!found.length) return { code: null, evidence: null, conflict: false, found: [] };
+  if (found.length > 1) return { code: null, evidence: null, conflict: true, found };
+  return { code: found[0].code, evidence: found[0].evidence, conflict: false, found };
+}
+
 
 export const TYPE_LABEL = {
   booster_box: 'Booster Box', combo: 'Combo de Booster', etb: 'Treinador Avançado (ETB)', booster_pack: 'Booster unitário',
@@ -134,6 +169,9 @@ export function parseListing(title, catalog) {
   const t = normalize(title);
   const reasons = [];
   for (const [re, why] of REJECT) if (re.test(t)) reasons.push(why);
+  // Qualquer idioma que não seja PT (ou idiomas em conflito) nunca casa com o produto em português.
+  const language = detectLanguage(t);
+  if (language.conflict || (language.code && language.code !== 'pt')) reasons.push('idioma diferente de PT');
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
   if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
@@ -147,8 +185,17 @@ export function parseListing(title, catalog) {
   const colDef = catalog.collections.find((c) => c.id === col.id);
   let tt = t;
   for (const a of [...(colDef?.aliases || []), ...(colDef?.fallbackAliases || [])].sort((x, y) => y.length - x.length)) tt = tt.replace(new RegExp(wordRe(a).source, 'g'), ' ');
-  const d = detectType(tt.replace(/\s+/g, ' ').trim());
-  return { normalized: t, collection: col.id, collectionFallback: !!col.fallback, type: d.type, boosters: d.boosters, boostersInferred: d.inferred, variant: d.variant, preorder: detectStock(t) === 'PRE_ORDER', rejects: reasons };
+  tt = tt.replace(/\s+/g, ' ').trim();
+  const d = detectType(tt);
+  if (LOOSE_BINDER(t)) reasons.push('acessório ou item não-TCG');
+  // "N unidades" só é a contagem de boosters quando é o próprio conteúdo ("Booster Box 36 unidades"); senão é lote.
+  const units = Number(t.match(UNITS)?.[1] || 0);
+  const isContent = (d.type === 'booster_box' || d.type === 'combo') && (d.boosters === units || (d.boosters == null && units >= 6));
+  if (!reasons.some((r) => /várias unidades/.test(r)) && (MULTI_UNIT.test(t) || (BUNDLE.test(t) && !bundleIsCombo(d)) || (units >= 2 && !isContent) || (d.type === 'booster_pack' && (detectBoosters(tt).count || 1) > 1)))
+    reasons.push('kit montado pela loja ou caixa com várias unidades');
+  // "Booster Box ... + Box Treinador Avançado": dois produtos no mesmo anúncio ("+" some na normalização, por isso o título original).
+  if (String(title).split('+').slice(1).some((s) => { const n = normalize(s); return detectType(n).type && !OWN_ACCESSORY[d.type]?.test(n); })) reasons.push('mais de um produto no mesmo anúncio');
+  return { normalized: t, collection: col.id, collectionFallback: !!col.fallback, type: d.type, boosters: d.boosters, boostersInferred: d.inferred, variant: d.variant, language, preorder: detectStock(t) === 'PRE_ORDER', rejects: reasons };
 }
 
 export function describeProduct(catalog, collection, type, boosters, variant) {
