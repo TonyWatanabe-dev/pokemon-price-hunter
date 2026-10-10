@@ -131,7 +131,6 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
-        "enough": false,
         "drop7d": 0
       }
     },
@@ -176,7 +175,6 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
-        "enough": false,
         "drop7d": 0
       }
     },
@@ -219,7 +217,6 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
-        "enough": false,
         "drop7d": 0
       }
     },
@@ -260,7 +257,6 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
-        "enough": false,
         "drop7d": 0
       }
     },
@@ -305,7 +301,6 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
-        "enough": false,
         "drop7d": 0
       }
     },
@@ -350,7 +345,6 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
-        "enough": false,
         "drop7d": 0
       }
     }
@@ -389,12 +383,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 39.9,
       "perBooster": 13.3,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://waf.test/pokemon-blister-triplo-caos-ascendente",
@@ -436,12 +427,9 @@
       "priceKindLabel": "Pix",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 369.9,
       "perBooster": 10.27,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://ld.test/pokemon-booster-box-escuridao-absoluta-36",
@@ -483,12 +471,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 359.9,
       "perBooster": 10,
       "stock": "PRE_ORDER",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://ld.test/pokemon-box-caos-ascendente-pre-venda",
@@ -529,12 +514,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 329,
       "perBooster": 9.14,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/box-caos",
@@ -575,12 +557,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 289.9,
       "perBooster": null,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/etb",
@@ -621,12 +600,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 59.9,
       "perBooster": 29.95,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/c30-duplo",
@@ -667,12 +643,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": null,
       "total": 149.9,
       "perBooster": null,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/c30-greninja",
@@ -688,52 +661,6 @@
       "savings": 11.09,
       "vsMarket": null,
       "confidence_score": 80
-    },
-    {
-      "id": "3faf55a38213",
-      "productId": "me05-box36",
-      "matchConfidence": 0.7,
-      "storeId": "cop",
-      "storeName": "Loja Copag (oficial)",
-      "storeKind": "official",
-      "seller": "Copag",
-      "sellerId": "1",
-      "sellerKind": "store",
-      "title": "Box Display Pokémon ME05 Escuridão Absoluta",
-      "url": "https://cop.test/box-display-me05/p",
-      "image": null,
-      "sku": "9",
-      "ean": null,
-      "prices": {
-        "base": 449.99
-      },
-      "listPrice": null,
-      "price": 449.99,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": null,
-      "shippingKnown": false,
-      "shippingAt": null,
-      "shippingError": "HTTP 404 em https://cop.test/api/checkout/pub/orderForms/simulation",
-      "total": 449.99,
-      "perBooster": 12.5,
-      "stock": "IN_STOCK",
-      "availableFrom": null,
-      "quantity": 3,
-      "sourceType": "store_api",
-      "source_url": "https://cop.test/box-display-me05/p",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
-      "firstSeen": "2026-10-06T10:00:00.000Z",
-      "stale": false,
-      "confirmed": true,
-      "pendingFrom": null,
-      "anomalous": false,
-      "storeScore": 45,
-      "storeValidated": false,
-      "discount": 0,
-      "savings": 0,
-      "vsMarket": -0.0977,
-      "confidence_score": 70
     },
     {
       "id": "af9a476be6e6",
@@ -759,13 +686,9 @@
       "priceKindLabel": "preço da loja",
       "shipping": 19.9,
       "shippingKnown": true,
-      "shippingAt": "2026-10-06T10:25:00.000Z",
-      "shippingError": null,
-      "shippingSource": "simulacao",
       "total": 399.8,
       "perBooster": 11.11,
       "stock": "IN_STOCK",
-      "availableFrom": null,
       "quantity": 4,
       "sourceType": "store_api",
       "source_url": "https://vtex.test/caos-36/p",
@@ -781,6 +704,49 @@
       "savings": 50.19,
       "vsMarket": -0.0971,
       "confidence_score": 99
+    },
+    {
+      "id": "3faf55a38213",
+      "productId": "me05-box36",
+      "matchConfidence": 0.7,
+      "storeId": "cop",
+      "storeName": "Loja Copag (oficial)",
+      "storeKind": "official",
+      "seller": "Copag",
+      "sellerId": "1",
+      "sellerKind": "store",
+      "title": "Box Display Pokémon ME05 Escuridão Absoluta",
+      "url": "https://cop.test/box-display-me05/p",
+      "image": null,
+      "sku": "9",
+      "ean": null,
+      "prices": {
+        "base": 449.99
+      },
+      "listPrice": null,
+      "price": 449.99,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": null,
+      "shippingKnown": false,
+      "total": 449.99,
+      "perBooster": 12.5,
+      "stock": "IN_STOCK",
+      "quantity": 3,
+      "sourceType": "store_api",
+      "source_url": "https://cop.test/box-display-me05/p",
+      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
+      "anomalous": false,
+      "storeScore": 45,
+      "storeValidated": false,
+      "discount": 0,
+      "savings": 0,
+      "vsMarket": -0.0977,
+      "confidence_score": 70
     }
   ],
   "sources": [
@@ -799,9 +765,6 @@
       "listings": 6,
       "matched": 5,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
-      "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 18,
-      "errorClass": null,
       "score": {
         "score": 79,
         "validated": true,
@@ -829,9 +792,6 @@
       "listings": 1,
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
-      "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 21,
-      "errorClass": null,
       "score": {
         "score": null,
         "validated": false,
@@ -847,18 +807,12 @@
       "url": "https://ld.test",
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "platform": "jsonld",
-      "pageFailures": 0,
-      "pageGiveUps": 0,
-      "pageFailReason": null,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 2,
       "matched": 2,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
-      "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 9,
-      "errorClass": null,
       "score": {
         "score": null,
         "validated": false,
@@ -874,18 +828,12 @@
       "url": "https://waf.test",
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "platform": "jsonld",
-      "pageFailures": 0,
-      "pageGiveUps": 0,
-      "pageFailReason": null,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 1,
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
-      "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 4,
-      "errorClass": null,
       "score": {
         "score": null,
         "validated": false,
@@ -901,13 +849,8 @@
       "url": "https://blk.test",
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "status": "BLOCKED",
-      "reason": "Acesso bloqueado em blk.test (o site barra robôs, nem o robots.txt abre: HTTP 403)",
+      "reason": "Acesso bloqueado em blk.test (o site barra robôs, nem o robots.txt abre)",
       "fails": 4,
-      "httpStatus": 403,
-      "netCode": null,
-      "retryAfterSec": null,
-      "errorClass": "bloqueio",
-      "lastDurationMs": 6,
       "score": {
         "score": null,
         "validated": false,
@@ -944,9 +887,6 @@
       "listings": 1,
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
-      "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 21,
-      "errorClass": null,
       "score": {
         "score": 45,
         "validated": false,
@@ -967,11 +907,6 @@
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
       "fails": 4,
-      "httpStatus": null,
-      "netCode": null,
-      "retryAfterSec": null,
-      "errorClass": "plataforma",
-      "lastDurationMs": 7,
       "score": {
         "score": null,
         "validated": false,
@@ -995,20 +930,15 @@
     },
     {
       "id": "botaotest",
-      "checks": 3,
+      "checks": 4,
       "ok": 0,
       "name": "botao.test",
       "kind": "specialist",
       "url": "https://botao.test",
-      "lastCheck": "2026-10-06T10:20:00.000Z",
+      "lastCheck": "2026-10-06T10:25:00.000Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
-      "fails": 3,
-      "httpStatus": null,
-      "netCode": null,
-      "retryAfterSec": null,
-      "errorClass": "plataforma",
-      "lastDurationMs": 8,
+      "fails": 4,
       "score": {
         "score": null,
         "validated": false,
@@ -1106,7 +1036,7 @@
       "url": "https://www.amazon.com.br/dp/B0TEST",
       "postUrl": "https://t.me/promopoke/77",
       "expired": false,
-      "postedAt": "2026-10-10T22:31:54.442Z",
+      "postedAt": "2026-10-09T13:51:23.349Z",
       "id": "fe220ca5587c",
       "productId": "me05-etb",
       "matchConfidence": 0.8,
@@ -1238,7 +1168,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1252,7 +1182,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1266,7 +1196,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1280,7 +1210,7 @@
       "channels": [
         "capture"
       ],
-      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00 + frete\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1294,7 +1224,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1308,7 +1238,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1322,7 +1252,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 + frete (preço da loja)\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 (preço da loja)\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/etb"
     },
     {
@@ -1336,7 +1266,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 + frete (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
       "url": "https://shop.test/products/c30-duplo"
     },
     {
