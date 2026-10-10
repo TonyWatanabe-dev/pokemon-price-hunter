@@ -1,6 +1,6 @@
 // Opportunity Engine (opportunity-v1): testes puros dos 14 cenários obrigatórios + explicação, eventos e determinismo.
 import assert from 'node:assert/strict';
-import { calculateOpportunity as calc, productOpportunity, explain, eventsFor, EVENTS, bandOf, OPP_VERSION, WEIGHTS, pw } from '../src/core/opportunity-engine.js';
+import { calculateOpportunity as calc, productOpportunity, explain, eventsFor, EVENTS, bandOf, OPP_VERSION, WEIGHTS, pw, oppOrder } from '../src/core/opportunity-engine.js';
 
 const now = new Date('2026-10-08T12:00:00Z');
 let n = 0; const t = (name, fn) => { fn(); n++; };
@@ -187,6 +187,51 @@ t('eventos só em transição', () => {
 
 t('afiliado não influencia', () => {
   assert.deepEqual(C(S(), O({ affiliate_url: 'https://x', commission: 0.1 })), C(S(), O()));
+});
+
+t('custo total: preço menor com frete maior não vence no desempate', () => {
+  const s = S();
+  const barato = O({ id: '1', price: 300, shipping_status: 'known', shipping_price: 20, total_price: 320 });
+  const caro = O({ id: '2', price: 310, shipping_status: 'free', shipping_price: 0, total_price: 310 });
+  const a = C(s, barato); const b = C(s, caro);
+  assert.equal(a.total_cost, 320); assert.equal(a.cost_basis, 'total'); assert.equal(b.total_cost, 310);
+  // mesmo score e confiança: o desempate usa o custo total, não o preço do produto
+  const forced = [{ ...a, opportunity_score: 80, confidence: 0.9 }, { ...b, opportunity_score: 80, confidence: 0.9 }].sort(oppOrder);
+  assert.equal(forced[0].offer_id, '2');
+});
+
+t('custo total: frete desconhecido não vira R$ 0 e fica sinalizado', () => {
+  const r = C(S(), O({ shipping_status: 'unknown', shipping_price: null, total_price: null }));
+  assert.equal(r.cost_basis, 'price_only'); assert.equal(r.total_cost, 300); assert.equal(r.freight_signal, null);
+  assert.ok(codes(r.warnings).includes('UNKNOWN_FREIGHT')); assert.equal(r.evidence, 'partial');
+});
+
+t('desempate: frete desconhecido nunca vence frete conhecido (regra de api/_lib/offer-rank.mjs)', () => {
+  const s = S();
+  const semFrete = C(s, O({ id: '1', price: 300, shipping_status: 'unknown', shipping_price: null, total_price: null }));
+  const comFrete = C(s, O({ id: '2', price: 295, shipping_status: 'known', shipping_price: 10, total_price: 305 }));
+  assert.equal(semFrete.cost_basis, 'price_only'); assert.equal(semFrete.total_cost, 300);
+  assert.equal(comFrete.cost_basis, 'total'); assert.equal(comFrete.total_cost, 305);
+  // mesmo score e confiança: R$ 300 sem frete não vence R$ 305 com frete conhecido, em qualquer ordem de entrada
+  const tie = (x) => ({ ...x, opportunity_score: 80, confidence: 0.9 });
+  assert.equal([tie(semFrete), tie(comFrete)].sort(oppOrder)[0].offer_id, '2');
+  assert.equal([tie(comFrete), tie(semFrete)].sort(oppOrder)[0].offer_id, '2');
+  // entre dois sem frete, segue valendo o menor preço; o score não muda
+  const outroSem = C(s, O({ id: '3', price: 310, shipping_status: 'unknown', shipping_price: null, total_price: null }));
+  assert.equal([tie(outroSem), tie(semFrete)].sort(oppOrder)[0].offer_id, '1');
+});
+
+t('evidência: referência Copag ausente', () => {
+  const sem = S({ reference_price: null, reference_status: null, reference_kind: 'NONE' });
+  const r = C(sem, O()); assert.equal(r.evidence, 'partial'); assert.ok(codes(r.warnings).includes('NO_CURRENT_REFERENCE'));
+  const pior = C(sem, O({ shipping_status: 'unknown', shipping_price: null, total_price: null }));
+  assert.equal(pior.evidence, 'insufficient');
+  assert.equal(C(S(), O()).evidence, 'complete');
+});
+
+t('evidência: oferta desatualizada (stale)', () => {
+  const r = C(S(), O({ status: 'pending' }));
+  assert.equal(r.evidence, 'stale'); assert.ok(codes(r.warnings).includes('STALE')); assert.ok(r.opportunity_score <= 40);
 });
 
 console.log(`✓ Opportunity Engine: ${n} grupos de testes passaram`);

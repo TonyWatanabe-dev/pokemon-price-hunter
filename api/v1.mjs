@@ -13,6 +13,7 @@
 // FASE 4 — formato do site (mesmas regras de lista do tools/page.template.html, aplicadas no servidor):
 //   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&ordem&pagina&limite → página de /produtos
 //   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
+//   GET /api/v1/site/lojas                          → diretório de lojas: domínio, ofertas observadas, atualização (sem nota de reputação)
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 // Fonte: banco (API_DATABASE_URL, só leitura) com fallback seguro para o state.json. ?fonte=state força o fallback.
@@ -25,6 +26,7 @@ import { legacyState } from './_lib/legacy.mjs';
 import { slimHome } from './_lib/home.mjs';
 import { catalogState } from './_lib/catalog.mjs';
 import * as SITE from './_lib/site.mjs';
+import * as STORES from './_lib/stores.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
@@ -100,6 +102,7 @@ function route(segs, qs) {
       if (!ids.length && !col && !type && busca == null) throw new HttpError(400, 'informe produtos, colecao, tipo ou busca');
       return { name: 'site-ofertas', kind: 'site', args: { ids: ids.length || (!col && !type) ? ids : null, col, type }, busca };
     }
+    if (id === 'lojas' && segs.length === 2) return { name: 'site-lojas', kind: 'site' };
     if (id === 'produto' && sub && segs.length === 3) { if (!SLUG_RE.test(sub)) throw new HttpError(400, 'identificador de produto inválido'); return { name: 'site-produto', kind: 'site', id: sub }; }
   }
   throw new HttpError(404, 'rota não encontrada');
@@ -117,6 +120,7 @@ async function run(rt, source) {
     case 'site-produtos': return { body: { v: 1, source, ...SITE.siteProducts(await catalogState(source), rt.F, { page: rt.page, limit: rt.limit }) } };
     case 'site-ofertas': { const st = await catalogState(source);
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
+    case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {
       const st = await catalogState(source);
       const key = st.products?.some((p) => p.id === rt.id) ? rt.id : useDb ? (await DB.getProduct(rt.id))?.id : ST.stateGetProduct(st, rt.id)?.id;   // aceita slug
@@ -159,7 +163,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
   u.searchParams.delete('path');
   let rt;
-  try { rt = route(path, u.searchParams); } catch (e) { return send(res, e.status || 400, { error: e.message }, { 'Cache-Control': 'public, max-age=60' }); }
+  try { rt = route(path, u.searchParams); } catch (e) { return send(res, e instanceof HttpError ? e.status : 400, { error: e instanceof HttpError ? e.message : 'pedido inválido' }, { 'Cache-Control': 'public, max-age=60' }); }
   const forced = u.searchParams.get('fonte') === 'state';
   const preferred = !forced && apiDbEnabled() ? 'db' : 'state';
   const key = `${preferred}|${path.join('/')}?${[...u.searchParams].filter(([k]) => k !== 'fonte').sort().map(([k, v]) => `${k}=${v}`).join('&')}`;
@@ -182,7 +186,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
   }
   try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); } }
   catch (e) {
-    if (e.status) { out = { status: e.status, body: { error: e.message } }; }
+    if (e instanceof HttpError) { out = { status: e.status, body: { error: e.message } }; }   // só mensagens nossas; erro de biblioteca/banco nunca vai ao usuário
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json
       fallback = 'db-indisponivel'; source = 'state';
       // diagnóstico sem segredo: só o código do erro (28P01 senha, XX000 tenant, ENOTFOUND host...) e a mensagem sem a URL
@@ -190,7 +194,7 @@ export default async function handler(req, res, { now = FR.nowMs() } = {}) {
       const url = process.env.API_DATABASE_URL || ''; let msg = String(e.message || '');
       try { const u = new URL(url); for (const x of [u.password, decodeURIComponent(u.password), u.username, u.hostname]) if (x && x.length > 3) msg = msg.split(x).join('***'); } catch {}
       console.error(`[api/v1] banco indisponível (${reason}): ${msg.slice(0, 200)}`);
-      try { out = await run(rt, 'state'); } catch (e2) { out = e2.status ? { status: e2.status, body: { error: e2.message } } : null; }
+      try { out = await run(rt, 'state'); } catch (e2) { out = e2 instanceof HttpError ? { status: e2.status, body: { error: e2.message } } : null; }
     }
     if (!out) return send(res, 503, { error: 'dados indisponíveis no momento' }, { 'Cache-Control': 'no-store', 'X-Data-Source': 'none' });
   }
