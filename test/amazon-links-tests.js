@@ -76,9 +76,12 @@ t('front: a lista só é usada no bloco "Também na Amazon", com rel sponsored; 
   assert.match(src, /como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
 });
 
-t('build publica a lista em /data/', () => {
+t('build publica a lista em /data/ (e o buildCommand da Vercel cabe no limite de 256 caracteres)', () => {
   const v = JSON.parse(read('vercel.json'));
-  assert.match(v.buildCommand, /cp config\/afiliados\/amazon\.json public\/data\/afiliados-amazon\.json/);
+  const pkg = JSON.parse(read('package.json'));
+  assert.ok(v.buildCommand.length <= 256, `buildCommand com ${v.buildCommand.length} caracteres: a Vercel recusa acima de 256`);
+  assert.equal(v.buildCommand, 'npm run build');
+  assert.match(pkg.scripts.build, /cp config\/afiliados\/amazon\.json public\/data\/afiliados-amazon\.json/);
 });
 
 console.log(`✓ Amazon Associados: ${n} grupos passaram (${doc.links.length} links, fora do ranking)`);
