@@ -20,6 +20,7 @@ import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
+import { shippingFresh } from './core/mappers.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -188,7 +189,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
             // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
             shipError = String(e?.message || e).slice(0, 160);
             const old = lastValidOf(prev[id]);
-            if (old?.shippingKnown && old.shipping != null) { ship = old.shipping; shipAt = old.shippingAt || old.at || old.source_timestamp || null; }
+            // Só dentro do TTL (SHIPPING_TTL_MS) e com a data original: frete vencido ou sem data fica desconhecido.
+            const oldAt = old?.shippingAt || old?.at || old?.source_timestamp || null;
+            if (old?.shippingKnown && old.shipping != null && shippingFresh(oldAt, now.getTime())) { ship = old.shipping; shipAt = oldAt; }
           }
         }
         const pp = pickPrice(l.price);

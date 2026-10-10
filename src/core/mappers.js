@@ -10,6 +10,28 @@ export const collectionId = (code) => `${TCG}:${code}`;
 
 const STOCK = { IN_STOCK: 'in_stock', OUT_OF_STOCK: 'out_of_stock', PRE_ORDER: 'preorder', UNKNOWN: 'unknown' };
 export const stockOf = (s) => STOCK[s] || 'unknown';
+
+// TTL canônico do frete: um frete reaproveitado de leitura anterior só vale por 24 h, contadas da data ORIGINAL da leitura.
+// Passou disso (ou sem data), o frete é desconhecido: nunca é apresentado como confirmado.
+export const SHIPPING_TTL_MS = 24 * 3600e3;
+export const shippingFresh = (shippingAt, nowMs = Date.now()) => {
+  const t = Date.parse(shippingAt);
+  return Number.isFinite(t) && nowMs - t <= SHIPPING_TTL_MS;
+};
+
+// Eventos de estoque do sync. `prev`: oferta como estava no banco ({ stock_status, status }); `lastKnown`: último estado
+// conhecido em price_history (offer legacy_id → stock_status), usado quando `prev` não é confiável.
+// Nunca infere evento de leitura pending/unknown/stale: sem base confiável ou sem leitura confiável nova, não há evento.
+const reliableStock = (s) => !!s && s !== 'unknown';
+export function stockEvents(rows, prev, lastKnown = new Map()) {
+  return rows.flatMap((r) => {
+    const p = prev.get(r.legacy_id);
+    if (!p || r.status !== 'active' || !reliableStock(r.stock_status)) return [];
+    const from = p.status === 'active' && reliableStock(p.stock_status) ? p.stock_status : lastKnown.get(r.legacy_id);
+    if (!reliableStock(from) || from === r.stock_status) return [];
+    return [{ legacy_id: r.legacy_id, from_status: from, to_status: r.stock_status, quantity: r.quantity, observed_at: r.last_seen_at }];
+  });
+}
 const money = (v) => (v == null || !Number.isFinite(Number(v)) ? null : Math.round(Number(v) * 100) / 100);
 const ts = (v) => (v ? new Date(v).toISOString() : null);
 
@@ -65,10 +87,11 @@ export function storesRows(sources, reputation = {}) {
 
 export const marketplaceOf = (o) => (o.storeId === 'mercadolivre' ? 'mercadolivre' : 'direct');
 
-export function offersRows(offers) {
+export function offersRows(offers, nowMs = Date.now()) {
   return offers.map((o) => {
     const mk = marketplaceOf(o);
-    const known = !!o.shippingKnown && o.shipping != null;
+    // frete com data original vencida (TTL) vira desconhecido; sem data (dado antigo) segue como estava
+    const known = !!o.shippingKnown && o.shipping != null && (!o.shippingAt || shippingFresh(o.shippingAt, nowMs));
     return {
       legacy_id: o.id, product_legacy_id: o.productId, store_id: o.storeId, marketplace_id: mk,
       // vendedor: no ML, o id numérico; em loja com vendedores parceiros (Ri Happy, PBKids...), o nome do vendedor
@@ -79,6 +102,7 @@ export function offersRows(offers) {
       price: money(o.price), price_kind: o.priceKind || null, list_price: money(o.listPrice), pix_price: money(o.prices?.pix),
       shipping_status: known ? (Number(o.shipping) === 0 ? 'free' : 'known') : 'unknown',
       shipping_price: known ? money(o.shipping) : null,
+      shipping_checked_at: known ? ts(o.shippingAt) : null,
       total_price: known ? money(o.total) : null,               // frete desconhecido: total não é inventado
       stock_status: stockOf(o.stock), quantity: o.quantity ?? null,
       match_confidence: o.matchConfidence != null ? Math.round(o.matchConfidence * 100) : null,

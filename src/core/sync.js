@@ -1,6 +1,6 @@
 // Grava o estado atual do robô no banco (Marketplace Core). Idempotente: rodar de novo não duplica.
 // Não altera nada do que o site lê hoje (arquivos do ramo data).
-import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows } from './mappers.js';
+import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows, stockEvents } from './mappers.js';
 import { ensureMonth } from '../db/partitions.js';
 
 const J = (v) => JSON.stringify(v);
@@ -88,7 +88,7 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   const sid = new Map((await c.query('SELECT marketplace_id, external_id, id FROM seller')).rows.map((r) => [r.marketplace_id + '|' + r.external_id, Number(r.id)]));
 
   // 6) Ofertas (+ mudança de estoque registrada, + frete conhecido)
-  const prev = new Map((await c.query('SELECT legacy_id, id, stock_status FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, r]));
+  const prev = new Map((await c.query('SELECT legacy_id, id, stock_status, status FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, r]));
   const rows = offers.map((o) => ({ ...o, product_id: pid.get(o.product_legacy_id), seller_id: o.seller ? sid.get(o.marketplace_id + '|' + o.seller.external_id) : null }));
   await c.query(`INSERT INTO offer (legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
       shipping_status, shipping_price, total_price, stock_status, quantity, match_confidence, confirmed, anomalous, status, source_type, first_seen_at, last_seen_at)
@@ -105,14 +105,23 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   const oid = new Map((await c.query('SELECT legacy_id, id FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, Number(r.id)]));
   const live = new Set(rows.map((r) => r.legacy_id));
   const gone = await c.query(`UPDATE offer SET status = 'removed', stock_status = 'unknown', updated_at = now() WHERE status <> 'removed' AND legacy_id IS NOT NULL AND NOT (legacy_id = ANY($1::text[]))`, [[...live]]);
-  const stockEv = rows.filter((r) => prev.has(r.legacy_id) && prev.get(r.legacy_id).stock_status !== r.stock_status)
-    .map((r) => ({ offer_id: oid.get(r.legacy_id), from_status: prev.get(r.legacy_id).stock_status, to_status: r.stock_status, quantity: r.quantity, observed_at: r.last_seen_at }));
+  // Evento de estoque só com base confiável: oferta anterior sem estado confiável (pending/unknown) consulta o último estado
+  // conhecido em price_history; sem evidência, nenhum evento.
+  const needLast = rows.filter((r) => { const p = prev.get(r.legacy_id); return p && (p.status !== 'active' || p.stock_status === 'unknown'); }).map((r) => prev.get(r.legacy_id).id);
+  const lastKnown = new Map();
+  if (needLast.length) for (const r of (await c.query(`SELECT DISTINCT ON (offer_id) offer_id, stock_status FROM price_history
+    WHERE offer_id = ANY($1::bigint[]) AND stock_status <> 'unknown' ORDER BY offer_id, observed_at DESC`, [needLast])).rows) lastKnown.set(String(r.offer_id), r.stock_status);
+  const lastByLegacy = new Map(rows.filter((r) => prev.has(r.legacy_id) && lastKnown.has(String(prev.get(r.legacy_id).id))).map((r) => [r.legacy_id, lastKnown.get(String(prev.get(r.legacy_id).id))]));
+  const stockEv = stockEvents(rows, prev, lastByLegacy).map(({ legacy_id, ...e }) => ({ offer_id: oid.get(legacy_id), ...e }));
   if (stockEv.length) await c.query(`INSERT INTO stock_event (offer_id, from_status, to_status, quantity, observed_at)
     SELECT offer_id, from_status, to_status, quantity, coalesce(observed_at, now()) FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, from_status text, to_status text, quantity int, observed_at timestamptz)
     ON CONFLICT DO NOTHING`, [J(stockEv)]);
-  const ship = rows.filter((r) => r.shipping_status !== 'unknown').map((r) => ({ offer_id: oid.get(r.legacy_id), price: r.shipping_price }));
-  if (ship.length) await c.query(`INSERT INTO shipping_quote (offer_id, cep_prefix, method, price) SELECT offer_id, '00000', 'padrao', price FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, price numeric)
-    ON CONFLICT (offer_id, cep_prefix, method) DO UPDATE SET price = EXCLUDED.price, checked_at = now()`, [J(ship)]);
+  // checked_at é a data original da leitura do frete (nunca renovada ao reaproveitar); só dado antigo sem data usa now()
+  const ship = rows.filter((r) => r.shipping_status !== 'unknown').map((r) => ({ offer_id: oid.get(r.legacy_id), price: r.shipping_price, checked_at: r.shipping_checked_at }));
+  if (ship.length) await c.query(`INSERT INTO shipping_quote (offer_id, cep_prefix, method, price, checked_at) SELECT offer_id, '00000', 'padrao', price, coalesce(checked_at, now())
+    FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, price numeric, checked_at timestamptz)
+    ON CONFLICT (offer_id, cep_prefix, method) DO UPDATE SET price = EXCLUDED.price,
+      checked_at = EXCLUDED.checked_at`, [J(ship)]);
   Object.assign(stats, { offers: rows.length, offersRemoved: gone.rowCount, stockEvents: stockEv.length, shippingQuotes: ship.length });
 
   // 7a) Ofertas que só existem no histórico (já sumiram das lojas): entram como 'removed' para o histórico não se perder
