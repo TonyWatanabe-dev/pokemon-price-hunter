@@ -53,6 +53,8 @@ Criar um job **igual ao do robô**, só que apontando para o vigia:
 
 Não é preciso criar endpoint público: o disparo usa a API do GitHub com o token que já existe.
 
+Falhas e recuperação em geral: `docs/runbook.md`.
+
 ## Como validar
 
 1. Depois da publicação, rodar **Vigia do robô** manualmente com `teste = true`. Deve chegar "🧪 Teste do vigia" no Telegram e no ntfy, e o livro não muda.
