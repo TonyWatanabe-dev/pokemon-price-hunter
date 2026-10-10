@@ -37,3 +37,6 @@ assert.equal(big.length, 201);
 assert.equal(redact('y'.repeat(50), { env: {}, max: 10 }).length, 11);
 
 console.log('redact-tests: ok');
+
+// Backup do ramo data (tools/data-backup.mjs e tools/data-restore.mjs): roda aqui para entrar no npm test.
+await import('./backup-tests.js');
