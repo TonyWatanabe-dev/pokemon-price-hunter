@@ -37,6 +37,21 @@ assert.equal((await q('SELECT total_price FROM hunter.offer WHERE legacy_id = $1
 assert.equal((await q("SELECT count(*)::int n FROM hunter.reference_price_current"))[0].n, 1);
 assert.equal((await q("SELECT status FROM hunter.offer WHERE legacy_id = 'velha'"))[0].status, 'removed');
 
+// corrida/retry: resposta antiga não sobrescreve observação mais nova; mesma leitura repetida é idempotente
+const cur = async () => (await q('SELECT price::float, stock_status, last_seen_at FROM hunter.offer WHERE legacy_id = $1', ['o1']))[0];
+const stale = await tx((c) => syncState(c, { state: state(offer(999, 'IN_STOCK', '2026-10-08T12:00:00Z')), catalog, historyLines: [] }));
+assert.equal(stale.offersStale, 1); assert.equal(stale.stockEvents, 0);
+assert.deepEqual([(await cur()).price, (await cur()).stock_status], [320, 'out_of_stock'], 'leitura antiga descartada');
+const retry = await tx((c) => syncState(c, { state: state(offer(320, 'OUT_OF_STOCK', '2026-10-09T10:00:00Z')), catalog, historyLines: [] }));
+assert.equal(retry.offersStale, 0, 'mesmo carimbo é aceito (retry idempotente)');
+await Promise.all([ // dois syncs concorrentes, o mais novo vence qualquer que seja a ordem
+  tx((c) => syncState(c, { state: state(offer(310, 'IN_STOCK', '2026-10-09T11:00:00Z')), catalog, historyLines: [] })),
+  tx((c) => syncState(c, { state: state(offer(305, 'IN_STOCK', '2026-10-09T12:00:00Z')), catalog, historyLines: [] }))]);
+assert.equal((await cur()).price, 305, 'observação mais recente prevalece na concorrência');
+// sem carimbo da fonte: vale como leitura de agora (não congela a oferta)
+await tx((c) => syncState(c, { state: state({ ...offer(300, 'IN_STOCK', null), source_timestamp: undefined }), catalog, historyLines: [] }));
+assert.equal((await cur()).price, 300);
+
 // oferta some da loja → removida, histórico intacto
 await tx((c) => syncState(c, { state: { ...state(offer(320, 'OUT_OF_STOCK', '2026-10-09T10:00:00Z')), offers: [] }, catalog, historyLines: [] }));
 assert.equal((await q("SELECT status FROM hunter.offer WHERE legacy_id = 'o1'"))[0].status, 'removed');

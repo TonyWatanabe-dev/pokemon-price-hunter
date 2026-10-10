@@ -445,6 +445,7 @@ a.navbtn{text-decoration:none}
 .so-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
 .so .btn{padding:10px 16px;font-size:14px;flex:none}
 .so-more{margin-top:12px}.so-more summary{font-size:14.5px}
+.so-group{margin:16px 0 8px;font-size:15px}.so-group small{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--muted)}
 .so-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12.5px;color:var(--muted)}
 .so-foot>span{display:inline-flex;align-items:center;gap:4px}.so-foot .icon{width:14px;height:14px}
 .card.hist{--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4}
@@ -1424,7 +1425,7 @@ function raBadge(o,full){
   const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(o.storeName.replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
-  const tip=r.status==="NAO_ENCONTRADA"?`Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
+  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
   return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
@@ -1542,7 +1543,7 @@ function dealCard(e,opt={}){
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${o&&live(o)?scoreMeter(sx):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1712,7 +1713,7 @@ function podCardOpp(x,r){
       <div class="pod-price"><strong data-price="${esc(of.id||"")}">${money(x.price)}</strong>${pixTag({priceKind:of.price_kind})}<span class="pod-ref">${refTxt}</span></div>
       ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
       <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}</span>
-        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div></div>
+        <a class="pod-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta<span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div></div>
   </article>`;
 }
 function podiumOppHTML(){
@@ -2071,7 +2072,12 @@ function chart(s,msrp,avg,min,max){
 
 /* Página de produto: entender, comparar e decidir */
 let curPid=null;
-const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+/* frete desconhecido não compete pelo menor total (issue #84): sem frete informado, "total" é só o preço e não se compara
+   com um total que já inclui o frete. Ofertas com frete conhecido (ou grátis) vêm antes; as outras, depois, por preço. */
+const shipOk=(o)=>o.shippingKnown===true;
+const shipCmp=(a,b)=>shipOk(b)-shipOk(a);
+const bestOffer=(offers)=>offers.filter(live).sort(OFFER_SORTS.price)[0];
 let offerSort="price";
 function openProduct(pid,{push=true}={}){
   if(!P[pid])return;const path="/produto/"+(SLUG[pid]||encodeURIComponent(pid));
@@ -2088,8 +2094,8 @@ function storeOffer(o,p){
   return`<article class="so${live(o)?"":" dim"}">
     <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
-      <p class="so-ship">${shipNote(o)}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
-      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta ${ic("arrow-square-out")}</a></div>
+      <p class="so-ship">${shipNote(o)}${shipOk(o)?"":" · frete a calcular"}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
+      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
     <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
   </article>`;
 }
@@ -2097,7 +2103,7 @@ function renderProduct(pid){
   const p=P[pid];
   if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
   const gg=g(p);const offers=OFF.filter((o)=>o.productId===pid).sort(OFFER_SORTS[offerSort]);
-  const best=offers.find(live);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
+  const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
   const c=p.copag||{};const col=(S.collections||[]).find((x)=>x.id===p.collection);
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
@@ -2116,13 +2122,14 @@ function renderProduct(pid){
   </header>
   <aside class="pp-side">
     ${best?`<section class="card buy">
-      <p class="eyebrow">Melhor preço com estoque</p>
+      <p class="eyebrow">${shipOk(best)?"Melhor preço com estoque":"Menor preço com estoque, frete a calcular"}</p>
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
       ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
+      ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
-      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)} ${ic("arrow-square-out")}</a>
+      <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
     ${alertBox(pid)}
   </aside>
@@ -2138,9 +2145,13 @@ function renderProduct(pid){
     ${scale}
     <section class="card wbuy" id="ondecomprar"><div class="hhead"><h2>${ic("storefront")}Onde comprar <small>${nLive} com estoque</small></h2>
       <label class="osort"><span class="sr">Ordenar ofertas</span><select id="osort">${[["price","Menor preço"],["score","Melhor oportunidade"],["fresh","Atualização"]].map(([v,l])=>`<option value="${v}"${offerSort===v?" selected":""}>${l}</option>`).join("")}</select></label></div>
-      ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));return`${on.length?`<div class="solist">${on.map((o)=>storeOffer(o,p)).join("")}</div>`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
+      ${(()=>{const on=offers.filter(live),off=offers.filter((o)=>!live(o));
+        /* "Menor preço": quem tem total com frete conhecido primeiro; frete a calcular num grupo à parte, depois */
+        const sk=offerSort==="price"?on.filter(shipOk):on,su=offerSort==="price"?on.filter((o)=>!shipOk(o)):[];
+        const ls=(xs)=>`<div class="solist">${xs.map((o)=>storeOffer(o,p)).join("")}</div>`;
+        return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
-      <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete.</p></section>
+      <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
@@ -2481,10 +2492,10 @@ const nLiveOf=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).length;
 let acSel=-1;
 function acRender(input){
   const box=document.getElementById(input.id+"-ac");if(!box)return;const q=input.value.trim();
-  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;return}
+  if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   if(q.length<2){box.hidden=true;input.setAttribute("aria-expanded","false");return}
   const cols=searchCollections(q).slice(0,3);const prods=searchProducts(q).slice(0,6);
-  if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;return}
+  if(!cols.length&&!prods.length){box.innerHTML=`<p class="ac-empty">Nada encontrado para "${esc(q)}". Aperte Buscar para ver sugestões.</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   acSel=-1;
   box.innerHTML=`${cols.length?`<p class="ac-h">Coleções</p>${cols.map((c)=>`<button type="button" class="ac-i" role="option" data-q="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${esc(c.series||"")} · ${c.products} ${c.products===1?"produto":"produtos"}</small></span></button>`).join("")}`:""}
   ${prods.length?`<p class="ac-h">Produtos</p>${prods.map(({p})=>{const o=bestLive(p.id);return`<a class="ac-i" role="option" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}"><span><b>${esc(label(p))}</b><small>${esc(p.collectionName)}</small></span><span class="ac-pr">${o?money(o.total)+pixTxt(o):"<small>sem estoque</small>"}</span></a>`}).join("")}`:""}
@@ -2623,7 +2634,7 @@ function oppCard(x,i,opt={}){
     <div class="rc-row">${rar?`<p class="rar-line" title="Escala visual pela nota (${sc}/100). Não é a raridade oficial do produto."><span class="sym" aria-hidden="true">${rar.sym}</span>${rar.name}</p>`:""}<p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
-    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta ${ic("arrow-square-out")}</a></div>
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(of.url))}" target="_blank" rel="noopener" data-store="${esc(of.id||"")}">Ver oferta<span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
   </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
 }
@@ -2632,7 +2643,7 @@ function oppBar(){const n=oppActive();const t=OPP.total;
   return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span></div>`}
 function oppBody(){
   if(OPP.status==="loading")return oppSkel();
-  if(OPP.status==="error")return`<div class="empty err-state">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   if(OPP.status==="stale")return`<div class="empty"><h3>Oportunidades pausadas</h3><p>Os preços do banco estão atrasados. Nenhuma nota antiga é mostrada como atual; as oportunidades voltam na próxima atualização dos preços.</p></div>`;
   if(OPP.status==="nodb")return`<div class="empty"><h3>Oportunidades indisponíveis no momento</h3><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
   if(!OPP.items.length)return`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
@@ -2657,7 +2668,8 @@ async function renderOpp(){
   paintOpp();
 }
 async function moreOpp(page){
-  const key=OPP.key;const d=await apiGet(oppQuery(page));if(OPP.key!==key||view!=="oportunidades"||!d||!Array.isArray(d.data))return;
+  const key=OPP.key;const d=await apiGet(oppQuery(page));if(OPP.key!==key||view!=="oportunidades")return;
+  if(!d||!Array.isArray(d.data)){const s=$("#opp-more");if(s){s.removeAttribute("style");s.innerHTML=`<p class="soft-empty" role="alert">Não conseguimos carregar mais oportunidades agora. A lista acima continua válida. <button class="linkbtn" type="button" data-oppmoreretry="${page}">Tentar de novo</button></p>`}return}
   const box=$("#view .opp .deals");if(!box)return;const base=OPP.items.length;OPP.items=OPP.items.concat(d.data);OPP.page=page;
   box.insertAdjacentHTML("beforeend",d.data.map((x,i)=>oppCard(x,base+i)).join(""));
   $("#opp-more")?.remove();if(page<OPP.pages)box.insertAdjacentHTML("afterend",`<div id="opp-more" class="prod-more" data-page="${page+1}" style="height:1px"></div>`);watchOppMore();if(typeof revealInit==="function")revealInit();
@@ -2724,7 +2736,7 @@ function loading(){
     <div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div></div></section>`;
     document.body.classList.add("intro");renderDeals.done=true;return;
   }
-  $("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
+  $("#view").innerHTML=`<div class="layout" aria-busy="true"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
@@ -2799,13 +2811,14 @@ const cardE=(e)=>({p:hydP({...(P[e.p.id]||{}),...e.p}),o:e.o,n:e.n});
 let prodReq="";
 async function renderProdutosApi(){
   const key=prodQuery(1);prodReq=key;
-  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
+  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout" aria-busy="true"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
   const d=await apiGet(key);if(prodReq!==key||view!=="produtos")return;
   if(!d||d.notFound){ensureFull();return}
   mergeSide(d);paintProdutos({list:d.items.map(cardE),total:d.total,facets:d.facets,noCopag:null,noCopagCount:d.noCopagCount,refNet:d.refNet,next:d.pages>1?2:null});
 }
 async function moreProdutos(page){
-  const key=prodQuery(page);const d=await apiGet(key);if(!d||view!=="produtos"||prodQuery(page)!==key)return;
+  const key=prodQuery(page);const d=await apiGet(key);if(view!=="produtos"||prodQuery(page)!==key)return;
+  if(!d||d.notFound){const s=$("#prod-more");if(s){s.removeAttribute("style");s.innerHTML=`<p class="soft-empty" role="alert">Não conseguimos carregar mais produtos agora. A lista acima continua válida. <button class="linkbtn" type="button" data-prodretry="${page}">Tentar de novo</button></p>`}return}
   const box=$("#view .prods .deals");if(!box)return;mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((e)=>dealCard(cardE(e))).join(""));
   $("#prod-more")?.remove();if(page<d.pages)box.insertAdjacentHTML("afterend",moreSentinel(page+1));watchMore();if(typeof revealInit==="function")revealInit();
 }
@@ -2822,12 +2835,14 @@ function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
   return fullP||=fetchState().then((st)=>{fullP=null;
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
+let refreshing=false;
 async function refresh(){
+  if(refreshing)return;refreshing=true;   /* toque repetido não dispara outra busca em paralelo */
   const bs=document.querySelectorAll("[data-refresh]");bs.forEach((b)=>b.classList.add("spin"));
-  const st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();bs.forEach((b)=>b.classList.remove("spin"));
+  let st=null;try{st=S?.slim&&API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState()}finally{refreshing=false;bs.forEach((b)=>b.classList.remove("spin"))}
   if(!st){toast(S?"Não conseguimos atualizar os preços agora. Mostrando a última atualização.":"Não conseguimos atualizar os preços agora.");return}
   const novo=!S||st.generatedAt!==S.generatedAt;init(st);toast(novo?"Dados novos carregados":"Já está atualizado. Os preços são conferidos em tempo real.");
 }
@@ -2835,7 +2850,7 @@ async function load(){
   loading();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)){render();return}
-  $("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  $("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
 }
 
 /* Eventos */
@@ -2846,7 +2861,9 @@ document.addEventListener("click",(e)=>{
   const acb=t.closest("[data-acc]");if(acb){e.preventDefault();if($("#more").open)$("#more").close();openAccount();return}
   const gtb=t.closest("[data-gate]");if(gtb){authGate({type:"page",tab:gtb.dataset.gate});return}
   const thb=t.closest("[data-theme-set]");if(thb){const v=thb.dataset.themeSet;if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme;store.set("theme",v||null);themeSync();render();return}
-  if(t.closest("#retry")){loading();load();return}
+  const rtb=t.closest("#retry");if(rtb){if(rtb.disabled)return;rtb.disabled=true;loading();load();return}
+  const prb=t.closest("[data-prodretry]");if(prb){if(prb.disabled)return;prb.disabled=true;const box=prb.closest("#prod-more");if(box)box.style.height="1px";box?.replaceChildren();moreProdutos(+prb.dataset.prodretry);return}
+  const omb=t.closest("[data-oppmoreretry]");if(omb){if(omb.disabled)return;omb.disabled=true;const box=omb.closest("#opp-more");if(box)box.style.height="1px";box?.replaceChildren();moreOpp(+omb.dataset.oppmoreretry);return}
   const ufb=t.closest("[data-unfav]");if(ufb){e.preventDefault();unfav(ufb.dataset.unfav);return}
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}

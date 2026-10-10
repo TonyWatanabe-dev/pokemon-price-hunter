@@ -1,4 +1,5 @@
 // Compartilhado pelas funções de SEO. Mesmo algoritmo de URL do site (tools/page.template.html: buildSlugs).
+import { byComparableTotal } from './_lib/offer-rank.mjs';
 export const RAW = 'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/data/data/state.json';
 export const SITE = 'https://tcg-price-hunter.vercel.app';
 const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -28,10 +29,11 @@ export const typeSlug = (t) => slugify(t.label);
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const brl = (v) => v == null ? '' : 'R$ ' + Number(v).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 export const pct = (d) => (d * 100).toFixed(1).replace('.', ',').replace(/,0$/, '') + '%';
-/** Melhor oferta com estoque de cada produto (menor total), e quantas lojas têm estoque. */
+/** Melhor oferta com estoque de cada produto (menor total comparável: frete desconhecido não vence frete conhecido,
+ *  issue #84 — ver _lib/offer-rank.mjs), e quantas lojas têm estoque. */
 export function bestBy(s) {
   const by = {}, n = {};
-  for (const o of s.offers || []) { if (!live(o)) continue; n[o.productId] = (n[o.productId] || 0) + 1; if (!by[o.productId] || o.total < by[o.productId].total) by[o.productId] = o; }
+  for (const o of s.offers || []) { if (!live(o)) continue; n[o.productId] = (n[o.productId] || 0) + 1; if (!by[o.productId] || byComparableTotal(o, by[o.productId]) < 0) by[o.productId] = o; }
   return { by, n };
 }
 export const pix = (o) => (o && o.priceKind === 'pix' ? ' no Pix' : '');

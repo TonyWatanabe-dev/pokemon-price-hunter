@@ -17,6 +17,7 @@ function readLocal() {
   }
   return null;
 }
+const noindex = (h) => h.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', '<meta name="robots" content="noindex">\n</head>');
 const NAME = 'TCG Price Hunter';
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const crumbs = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + u })) });
@@ -57,7 +58,7 @@ function build(t, slug, s, opp = null) {
 <p>${b0 ? `Menor preço com estoque agora: <b>${brl(b0.total)}${pix(b0)}</b> em ${esc(b0.storeName)}.` : 'Nenhuma loja acompanhada tem este produto em estoque agora.'}${p.copagConfirmed && p.msrp ? ` Preço sugerido Copag: ${brl(p.msrp)}${b0 && b0.discount > 0 ? ` (${pct(b0.discount)} abaixo)` : ''}.` : ''}${p.boosters ? ` ${p.boosters} boosters${b0 ? `, ${brl(b0.total / p.boosters)} por booster` : ''}.` : ''}</p>
 ${offers.length ? `<h2>Onde comprar</h2><table class="ssr-t"><thead><tr><th>Loja</th><th>Preço</th></tr></thead><tbody>${offers.slice(0, 15).map((o) => `<tr><td>${esc(o.storeName)}${o.seller && !String(o.storeName).toLowerCase().includes(String(o.seller).toLowerCase()) ? ` (vendido por ${esc(o.seller)})` : ''}</td><td>${brl(o.total)}${pix(o)}</td></tr>`).join('')}</tbody></table>` : ''}
 ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => prodRow(x, best[x.id], of)).join('')}</ul>` : ''}`;
-    return { title, desc, url, img, json, body };
+    return { title, desc, url, img, json, body, noindex: !offers.length };
   }
   if (t === 'colecao') {
     const c = cols.find((x) => colSlug(x) === slug); if (!c) return null;
@@ -107,9 +108,21 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   return { title, desc, url, json, body: `<h1>${esc(h1)}</h1><p>${esc(desc)}</p>${main}${t === 'home' || t === 'precos' ? navLinks : ''}` };
 }
 
+// Host de onde buscar app.html: só o do SITE ou o do próprio deploy (a Vercel informa VERCEL_URL/VERCEL_BRANCH_URL/
+// VERCEL_PROJECT_PRODUCTION_URL). Qualquer outro Host/X-Forwarded-Host (inclusive outro *.vercel.app, que qualquer um
+// registra) cai no host do SITE: evita SSRF e envenenar o cache do módulo com página de terceiros.
+export function pickFetchHost(headers = {}, env = process.env) {
+  const raw = String(headers['x-forwarded-host'] || headers.host || '').split(',')[0].trim().toLowerCase();
+  const own = new URL(SITE).host;
+  const allowed = new Set([own, ...['VERCEL_URL', 'VERCEL_BRANCH_URL', 'VERCEL_PROJECT_PRODUCTION_URL']
+    .map((k) => String(env[k] || '').trim().toLowerCase()).filter(Boolean)]);
+  return allowed.has(raw) ? raw : own;
+}
+
 export default async function handler(req, res) {
   const q = new URL(req.url, SITE).searchParams; const t = q.get('t') || 'home'; const slug = decodeURIComponent(q.get('slug') || '');
-  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  // Host vem do cabeçalho da requisição: só busca app.html em host conhecido (evita SSRF por Host forjado).
+  const host = pickFetchHost(req.headers);
   if (!page.html) page = { t: Date.now(), html: shell(readLocal()) };
   if (!page.html) {
     try { const r = await fetch(`https://${host}/app.html`); const h = r.ok ? shell(await r.text()) : null; if (h) page = { t: Date.now(), html: h }; } catch {}
@@ -124,7 +137,7 @@ export default async function handler(req, res) {
     const s = await state();
     if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
     const m = build(t, slug, s, opp);
-    if (!m) { status = 404; html = html.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', '<meta name="robots" content="noindex">\n</head>'); }
+    if (!m) { status = 404; html = noindex(html); }
     else {
       const url = SITE + m.url;
       html = html
@@ -137,8 +150,14 @@ export default async function handler(req, res) {
         .replace('</head>', `${m.json.map(ld).join('\n')}\n</head>`)
         .replace('<div id="view"></div>', `<div id="view"><div class="ssr">${m.body}</div></div>`);
       if (m.img) html = html.replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${esc(m.img)}">`);
+      // Produto sem nenhuma oferta com estoque é página vazia: fica fora do índice (o endereço continua abrindo).
+      if (m.noindex) html = html.replace('</head>', '<meta name="robots" content="noindex">\n</head>');
     }
-  } catch { /* sem dados: devolve a página normal, o site carrega sozinho */ }
+  } catch {
+    // Sem dados em dia: devolve a página normal, o site carrega sozinho. Como o HTML base traz título e canonical da Home,
+    // qualquer outra rota sairia como duplicata da Home: nela, tira o canonical e pede noindex. A Home mantém o dela.
+    if (t !== 'home') html = noindex(html);
+  }
   res.statusCode = status;
   res.setHeader('content-type', 'text/html; charset=utf-8');
   res.setHeader('cache-control', 'public, max-age=0, s-maxage=600, stale-while-revalidate=3600');
