@@ -105,5 +105,7 @@ export function histSummary(pid, distrust = null) {
   const cut = day(new Date(Date.parse(today) - 7 * 864e5).toISOString());
   const prev = days.filter((d) => d < today && d >= cut).map((d) => byDay[d]);
   const ref = prev.length ? Math.max(...prev) : null;
-  return { days: days.length, from: days[0], enough: days.length >= MIN_HIST_DAYS, drop7d: ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
+  // Série curta (< MIN_HIST_DAYS dias válidos) não tem queda: dois pontos não sustentam o ranking "maior queda".
+  const enough = days.length >= MIN_HIST_DAYS;
+  return { days: days.length, from: days[0], enough, drop7d: enough && ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
 }

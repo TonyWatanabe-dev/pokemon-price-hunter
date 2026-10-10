@@ -20,6 +20,7 @@ const write = (pid, stores) => fs.writeFileSync(histPath(pid), JSON.stringify({ 
   write('curta', { a: { name: 'A', pts: [['2026-10-01', 100], ['2026-10-02', 80]] } });
   const h = histSummary('curta');
   assert.equal(h.days, 2); assert.equal(h.enough, false); assert.ok(MIN_HIST_DAYS >= 3);
+  assert.equal(h.drop7d, 0, 'série curta (100 → 80 em 2 dias) não entra no ranking "maior queda"');
   write('um-dia', { a: { name: 'A', pts: [['2026-10-02', 80]] } });
   assert.deepEqual({ ...histSummary('um-dia') }, { days: 1, from: '2026-10-02', enough: false, drop7d: 0 }, 'um dia só: sem queda');
 }
