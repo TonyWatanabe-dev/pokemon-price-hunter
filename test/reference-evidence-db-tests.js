@@ -1,8 +1,9 @@
 // Migration 010 (evidência e validade da Copag oficial na view do motor) no PostgreSQL real.
 // Só roda com TEST_DATABASE_URL (banco descartável; o CI usa o PostgreSQL de serviço). Nunca o banco de produção.
 // Sem TEST_DATABASE_URL, pula SEM encerrar o processo (é importado no fim de test/price-db-tests.js).
-// Cobre: banco limpo com 001..009, cenários antes/depois da 010 (fonte copag_loja/manual, domínio Copag, janela de
-// 30 dias medida contra hunter.as_of, value > 0), nada apagado, 010 reaplicada (idempotência), Price Engine com o asOf
+// Cobre: banco limpo com 001..009, cenários antes/depois da 010 (fonte da loja Copag — copag_loja/copag_loja_catalog — ou
+// manual, sempre com domínio Copag e janela de 30 dias medida contra hunter.as_of, value > 0; internet, Instagram, fonte
+// desconhecida e não verificada ficam fora), nada apagado, 010 reaplicada (idempotência), Price Engine com o asOf
 // da rodada e o rollback pronto (db/rollback/010_reference_evidence.down.sql) devolvendo a view da 006.
 // A política Copag em JS (site/API/robô) fica fora daqui: é a PR-B, separada.
 import assert from 'node:assert/strict';
@@ -51,7 +52,8 @@ async function run() {
   const LOJA = (slug) => `https://www.copagloja.com.br/${slug}/p`;
   const catalog = { collections: ['me04', 'me05', 'sv3', 'sv8', 'sv9', 'sv10', 'c30'].map((id) => ({ id, name: id, series: 'x' })) };
   const Pr = (id, col, type = 'etb', extra = {}) => ({ id, collection: col, collectionName: col, type, typeLabel: type, group: 'ETB', boosters: 9, ...extra });
-  const ids = ['me05-etb', 'me04-etb', 'sv3-etb', 'c30-etb', 'sv8-etb', 'me05-blister3', 'sv9-etb', 'me04-box36', 'sv10-etb', 'me04-combo', 'c30-blister2'];
+  const ids = ['me05-etb', 'me04-etb', 'sv3-etb', 'c30-etb', 'sv8-etb', 'me05-blister3', 'sv9-etb', 'me04-box36', 'sv10-etb', 'me04-combo', 'c30-blister2',
+    'sv8-blister3', 'sv9-blister3', 'sv10-blister3', 'me05-combo', 'c30-combo'];
   const TYPE = { etb: 'etb', blister3: 'blister_3', box36: 'booster_box', combo: 'combo', blister2: 'blister_2' };
   const products = ids.map((id) => Pr(id, id.split('-')[0], TYPE[id.split('-')[1]]));
   await tx((c) => syncState(c, { state: { collections: [], products, sources: [{ id: 'a', name: 'a', url: 'https://a.com.br', status: 'ACTIVE' }], reputation: {}, offers: [] }, catalog, historyLines: [] }));
@@ -65,10 +67,14 @@ async function run() {
   await ins('sv3-etb', { value: 349.99, source: 'copag_loja', url: LOJA('etb-sv3'), verified_at: ago(COPAG_MAX_AGE_DAYS - 0.01) }); // dentro do limite → entra
   await ins('c30-etb', { value: 399.99, source: 'manual', url: 'https://www.instagram.com/voltztcg/', verified_at: ago(1), kind: 'COMMUNITY_REFERENCE' }); // Instagram → não entra
   await ins('sv8-etb', { value: 299.99, source: 'internet', url: LOJA('etb-sv8'), verified_at: ago(1) });                           // fonte não oficial (internet) com URL Copag → não entra
-  await ins('me05-blister3', { value: 42.99, source: 'copag_loja_catalog', url: LOJA('blister-triplo-me05'), verified_at: ago(1), confidence: 90 }); // só auditoria → não entra
+  await ins('me05-blister3', { value: 42.99, source: 'copag_loja_catalog', url: LOJA('blister-triplo-pokemon-me05-escuridao-absoluta'), verified_at: ago(1), confidence: 90 }); // catálogo da loja Copag, recente → entra
   await ins('sv9-etb', { value: 349.99, source: 'copag_loja', url: LOJA('etb-sv9'), verified_at: new Date(NOW.getTime() + 3 * DAY).toISOString() }); // data no futuro → não entra
-  // me04-box36: a auditoria (captura automática do catálogo público) não entra
+  // me04-box36: catálogo público da loja Copag (import auditado), URL Copag, verificado recente → entra
   await ins('me04-box36', { value: 449.99, source: 'copag_loja_catalog', url: LOJA('box-display-pokemon-me04-caos-ascendente'), verified_at: ago(1), confidence: 90 });
+  await ins('sv8-blister3', { value: 42.99, source: 'copag_loja_catalog', url: LOJA('blister-triplo-sv8'), verified_at: ago(31), confidence: 90 }); // catálogo > 30 dias → não entra
+  await ins('sv9-blister3', { value: 42.99, source: 'copag_loja_catalog', url: LOJA('blister-triplo-sv9'), status: 'pending', verified_at: null, confidence: 60 }); // catálogo não verificado → não entra
+  await ins('sv10-blister3', { value: 42.99, source: 'desconhecida', url: LOJA('blister-triplo-sv10'), verified_at: ago(1) }); // fonte desconhecida com URL Copag → não entra
+  await ins('me05-combo', { value: 250.99, source: 'manual', url: 'https://www.copag.com.br/pokemon/tabela-oficial', verified_at: ago(2) }); // manual com URL Copag recente → entra
   // vencida + recente no mesmo produto: a recente vence
   await ins('sv10-etb', { value: 379.99, source: 'copag_loja', url: LOJA('etb-sv10'), verified_at: ago(45) });
   await ins('sv10-etb', { value: 389.99, source: 'copag_loja', url: LOJA('etb-sv10'), verified_at: ago(3) });
@@ -87,10 +93,13 @@ async function run() {
   const viewComment = async () => (await q(`SELECT obj_description('hunter.reference_price_current'::regclass, 'pg_class') c`))[0].c;
 
   let viewBefore; let dataBefore; let defBefore; let colsBefore; let commentBefore;
-  await t('1. antes da 010 (view da 006): vencida, futura, internet e auditoria entram como Copag', async () => {
+  const BEFORE = ['me04-box36', 'me04-etb', 'me05-blister3', 'me05-combo', 'me05-etb', 'sv10-blister3', 'sv10-etb', 'sv3-etb', 'sv8-blister3', 'sv8-etb', 'sv9-etb'];
+  const AFTER = ['me04-box36', 'me05-blister3', 'me05-combo', 'me05-etb', 'sv10-etb', 'sv3-etb'];
+  await t('1. antes da 010 (view da 006): vencida, futura, internet e fonte desconhecida entram como Copag', async () => {
     viewBefore = await view(); dataBefore = await snap();
     defBefore = await viewDef(); colsBefore = await viewCols(); commentBefore = await viewComment();
-    assert.deepEqual(copagIn(viewBefore), ['me04-box36', 'me04-etb', 'me05-blister3', 'me05-etb', 'sv10-etb', 'sv3-etb', 'sv8-etb', 'sv9-etb']);
+    assert.deepEqual(copagIn(viewBefore), BEFORE);
+    assert.equal(viewBefore['sv9-blister3'], undefined, 'não verificada nunca entrou');
     assert.equal(viewBefore['me04-box36'].v, 449.99); assert.equal(viewBefore['me04-box36'].source, 'copag_loja_catalog');
     assert.equal(viewBefore['me04-combo'].reference_kind, 'MARKET_CURRENT');
     assert.equal(viewBefore['c30-etb'], undefined, 'Instagram (comunitária) nunca entrou');
@@ -110,11 +119,17 @@ async function run() {
   });
 
   let viewAfter;
-  await t('4. depois da 010: só Copag com evidência (fonte copag_loja/manual, URL Copag, ≤ 30 dias)', async () => {
+  await t('4. depois da 010: só Copag com evidência (fonte da loja Copag ou manual, URL Copag, ≤ 30 dias)', async () => {
     viewAfter = await view();
-    assert.deepEqual(copagIn(viewAfter), ['me05-etb', 'sv10-etb', 'sv3-etb']);
+    assert.deepEqual(copagIn(viewAfter), AFTER);
     assert.equal(viewAfter['sv10-etb'].v, 389.99, 'a verificação recente vence a vencida');
-    for (const k of ['me04-etb', 'sv8-etb', 'me05-blister3', 'sv9-etb', 'me04-box36', 'c30-etb']) assert.equal(viewAfter[k], undefined, `${k} sem Copag atual`);
+    // catálogo da loja Copag (copag_loja_catalog) com URL Copag e verificação recente é aceito
+    assert.equal(viewAfter['me04-box36'].source, 'copag_loja_catalog'); assert.equal(viewAfter['me04-box36'].v, 449.99);
+    assert.equal(viewAfter['me05-blister3'].source, 'copag_loja_catalog'); assert.equal(viewAfter['me05-blister3'].v, 42.99);
+    // manual com URL Copag recente é aceito
+    assert.equal(viewAfter['me05-combo'].source, 'manual'); assert.equal(viewAfter['me05-combo'].reference_kind, 'COPAG_OFFICIAL_CURRENT');
+    // recusados: > 30 dias (copag_loja e catálogo), internet, futura, Instagram, catálogo não verificado, fonte desconhecida
+    for (const k of ['me04-etb', 'sv8-blister3', 'sv8-etb', 'sv9-etb', 'c30-etb', 'sv9-blister3', 'sv10-blister3']) assert.equal(viewAfter[k], undefined, `${k} sem Copag atual`);
     assert.deepEqual(viewAfter['me04-combo'], viewBefore['me04-combo'], 'mercado atual intacto');
     // as colunas da view não mudaram (CREATE OR REPLACE), e nada foi apagado ou alterado
     assert.deepEqual(await viewCols(), colsBefore, 'mesmas colunas, mesma ordem e tipos');
@@ -128,25 +143,47 @@ async function run() {
     assert.doesNotMatch(migrate(), /aplicada/, 'migrador não reaplica');
   });
 
-  await t('6. fonte manual com URL oficial da Copag, verificada, entra; o produto nunca sai do catálogo', async () => {
-    assert.equal((await view())['me04-box36'], undefined);
+  await t('6. URL fora da Copag (catálogo, Instagram, internet) não entra nem sem o CHECK da tabela (defesa da view)', async () => {
+    // o CHECK reference_price_copag_domain_check (006) já recusa a linha; a view da 010 recusa de novo por conta própria
+    await assert.rejects(ins('c30-combo', { value: 199.99, source: 'copag_loja_catalog', url: 'https://www.instagram.com/voltztcg/', verified_at: ago(1) }), /copag_domain/);
+    const c = await p.connect();
+    try {
+      await c.query('BEGIN');
+      await c.query('ALTER TABLE hunter.reference_price DROP CONSTRAINT reference_price_copag_domain_check');
+      const add = (legacy, source, url, value) => c.query(`INSERT INTO hunter.reference_price (product_id, value, source, source_url, verification_status, verified_at, confidence, reference_kind, observed_at)
+        VALUES ($1, $2, $3, $4, 'verified', $5, 95, 'COPAG_OFFICIAL_CURRENT', $5)`, [pid[legacy], value, source, url, ago(1)]);
+      await add('c30-combo', 'copag_loja_catalog', 'https://www.exemplo-loja.com.br/combo-c30', 199.99); // catálogo com URL fora da Copag
+      await add('c30-etb', 'instagram', 'https://www.instagram.com/voltztcg/', 399.99);                  // fonte Instagram
+      await add('c30-blister2', 'internet', 'https://www.instagram.com/p/tabela-copag/', 69.99);       // internet com URL do Instagram
+      await add('sv9-blister3', 'copag_loja_catalog', 'https://copagloja.com.br.exemplo.com/blister/p', 43.99); // domínio parecido, não é Copag
+      const rows = (await c.query(`SELECT p.legacy_id FROM hunter.reference_price_current v JOIN hunter.product p ON p.id = v.product_id
+        WHERE v.reference_kind = 'COPAG_OFFICIAL_CURRENT' ORDER BY 1`)).rows.map((r) => r.legacy_id);
+      assert.deepEqual(rows, AFTER, 'nenhuma Copag fora do domínio entra');
+    } finally { await c.query('ROLLBACK'); c.release(); }
+    assert.deepEqual(await snap(), dataBefore, 'transação desfeita: CHECK e dados intactos');
+    assert.equal((await q(`SELECT count(*)::int n FROM pg_constraint WHERE conname = 'reference_price_copag_domain_check'`))[0].n, 1);
+  });
+
+  await t('7. catálogo e manual da Copag convivem; o produto nunca sai do catálogo', async () => {
+    assert.equal((await view())['me04-box36'].source, 'copag_loja_catalog');
     await ins('me04-box36', { value: 449.99, source: 'manual', url: 'https://www.copag.com.br/pokemon/tabela-oficial', verified_at: ago(1) });
     const v = await view();
+    // confiança 95 (manual) vence 90 (catálogo), como na view da 006
     assert.equal(v['me04-box36'].reference_kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(v['me04-box36'].source, 'manual'); assert.equal(v['me04-box36'].v, 449.99);
     assert.equal((await q(`SELECT status FROM hunter.product WHERE legacy_id = 'me04-box36'`))[0].status, 'active');
-    // a lista de fontes oficiais e a janela batem com a regra documentada (copag_loja/manual, COPAG_MAX_AGE_DAYS)
+    // a lista de fontes e a janela batem com a regra documentada (loja Copag ou manual, COPAG_MAX_AGE_DAYS)
     const srcs = migSql.match(/r\.source IN \(([^)]+)\)/)[1].split(',').map((s) => s.trim().replace(/'/g, ''));
-    assert.deepEqual(srcs, ['copag_loja', 'manual']);
+    assert.deepEqual(srcs, ['copag_loja', 'copag_loja_catalog', 'manual']);
     assert.match(migSql, new RegExp(`interval '${COPAG_MAX_AGE_DAYS} days'`));
   });
 
-  await t('7. Price Engine lê a view: só os produtos com evidência têm Copag atual', async () => {
+  await t('8. Price Engine lê a view: só os produtos com evidência têm Copag atual', async () => {
     await tx((c) => runPriceEngine(c));
     const st = (await q(`SELECT p.legacy_id FROM hunter.product_stats s JOIN hunter.product p ON p.id = s.product_id WHERE s.reference_kind = 'COPAG_OFFICIAL_CURRENT' ORDER BY 1`)).map((r) => r.legacy_id);
-    assert.deepEqual(st, ['me04-box36', 'me05-etb', 'sv10-etb', 'sv3-etb']);
+    assert.deepEqual(st, AFTER);
   });
 
-  await t('8. a validade é medida contra o asOf da rodada (hunter.as_of), o mesmo do Price Engine', async () => {
+  await t('9. a validade é medida contra o asOf da rodada (hunter.as_of), o mesmo do Price Engine', async () => {
     // 20 dias atrás: me04-etb (verificada há 31 dias) tinha 11 dias e valia; me05-etb (há 2 dias) estaria 18 dias no futuro
     const at20 = await tx(async (c) => {
       await c.query(`SELECT set_config('hunter.as_of', $1, true)`, [ago(20)]);
@@ -154,20 +191,20 @@ async function run() {
     });
     assert.ok(at20.includes('me04-etb') && !at20.includes('me05-etb'), at20.join(','));
     // fora da transação a configuração some e a view volta a usar now()
-    assert.deepEqual(copagIn(await view()), ['me04-box36', 'me05-etb', 'sv10-etb', 'sv3-etb']);
+    assert.deepEqual(copagIn(await view()), AFTER);
     // o Price Engine grava o asOf da rodada na transação
     const asOf = new Date(ago(5));
     const seen = await tx(async (c) => { await runPriceEngine(c, { asOf }); return (await c.query(`SELECT current_setting('hunter.as_of', true) v`)).rows[0].v; });
     assert.equal(new Date(seen).getTime(), asOf.getTime());
   });
 
-  await t('9. rollback pronto (db/rollback, fora de db/migrations): volta a view da 006 sem tocar nos dados', async () => {
+  await t('10. rollback pronto (db/rollback, fora de db/migrations): volta a view da 006 sem tocar nos dados', async () => {
     assert.ok(!fs.readdirSync(migDir).some((f) => /down|rollback/i.test(f)), 'o migrador nunca vê o rollback');
     const dataNow = await snap();
     await p.query(downSql);
     assert.equal(await viewDef(), defBefore, 'mesma definição da view de antes da 010 (pg_get_viewdef)');
     assert.deepEqual(await viewCols(), colsBefore); assert.equal(await viewComment(), commentBefore);
-    assert.deepEqual(copagIn(await view()), ['me04-box36', 'me04-etb', 'me05-blister3', 'me05-etb', 'sv10-etb', 'sv3-etb', 'sv8-etb', 'sv9-etb']);
+    assert.deepEqual(copagIn(await view()), BEFORE);
     assert.deepEqual(await snap(), dataNow, 'rollback não apaga nem altera linhas');
     // o rollback não mexe em schema_migrations: sem o DELETE documentado, o migrador NÃO reaplica a 010
     assert.doesNotMatch(migrate(), /aplicada/);
@@ -176,7 +213,7 @@ async function run() {
     assert.match(downSql, /DELETE FROM hunter\.schema_migrations WHERE version\s*=\s*'010_reference_evidence\.sql'/);
     await p.query(`DELETE FROM hunter.schema_migrations WHERE version = $1`, [MIG]);
     assert.match(migrate(), new RegExp(`aplicada ${MIG}`));
-    assert.deepEqual(copagIn(await view()), ['me04-box36', 'me05-etb', 'sv10-etb', 'sv3-etb']);
+    assert.deepEqual(copagIn(await view()), AFTER);
   });
 
   await close();
