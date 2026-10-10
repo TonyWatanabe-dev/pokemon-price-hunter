@@ -57,6 +57,7 @@ Falha passageira de coleta não vira remoção, reposição nem queda falsa (tes
 ## 5. Preço e frete
 
 - Preço: Pix preferido (`src/score.js`, `pickPrice`); anomalia (`isAnomalous`); estatísticas em `src/core/price-stats.js`; motor de preço no banco em `src/core/price-engine.js`.
+- Cálculo de frete por CEP no site (#84): `src/shipping-calc.js` é o núcleo (validação de CEP, opções com modalidade/preço/prazo como a loja devolveu, cache curto por loja+item+vendedor+quantidade+CEP, rate limit, origem e horário, auditoria só com prefixo do CEP). Frete sem cotação confirmada é desconhecido, nunca R$ 0,00. Lacuna aberta: o endpoint e o botão "Calcular frete" na oferta ainda não estão ligados (a API pública da oferta não expõe `sellerId`/item VTEX); só VTEX tem fonte autorizada, as demais lojas mostram "Frete não disponível para cálculo no site" e o link da loja.
 - Frete: calculado só em VTEX, via CEP (`HUNTER_CEP`). Nas outras lojas "não informado" e o total é só o produto. Falha da simulação não vira queda de frete: o último frete fica, com data e motivo.
 - Mercado composto e deduplicado: `src/core/price-engine.js` e testes `market-*`.
 
