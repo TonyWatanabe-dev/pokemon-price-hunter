@@ -19,7 +19,7 @@
 //    queda não confirmada ≤ 74; loja mal avaliada ≤ 74; desconto > 40% ≤ 89.
 // 4b) Custo total e evidência (só exposição, sem efeito no score): total_cost = produto + frete conhecido (cost_basis 'total');
 //    frete desconhecido mantém só o preço do produto (cost_basis 'price_only'). evidence: complete | partial | insufficient | stale.
-//    Desempate da ordenação: score, confiança, menor custo total, menor preço, id.
+//    Desempate da ordenação: score, confiança, frete conhecido antes de desconhecido, menor custo total, menor preço, id.
 // 5) Confiança separada do score (0–1): cobertura × fatores de incerteza (histórico curto, frete, poucas lojas...).
 import { plausible, round2, round4 } from './price-engine.js';
 import { CURRENT_KINDS, MARKETPLACE_ONLY_FACTOR, historyDeviation } from './references.js';
@@ -222,9 +222,12 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
 
 export const confidenceLevel = (c) => (c == null ? null : c >= 0.75 ? 'alta' : c >= 0.5 ? 'média' : 'baixa');
 
-/** Melhor oportunidade COMPRÁVEL do produto (com estoque, sem anomalia). Empate: score, confiança, menor preço, id. */
+/** Melhor oportunidade COMPRÁVEL do produto (com estoque, sem anomalia). Empate: score, confiança, frete conhecido antes de desconhecido, menor custo total, menor preço, id. */
 const cmpId = (a, b) => { const x = Number(a), y = Number(b); return Number.isFinite(x) && Number.isFinite(y) ? x - y : String(a).localeCompare(String(b)); };
-export const oppOrder = (a, b) => (b.opportunity_score ?? -1) - (a.opportunity_score ?? -1) || (b.confidence ?? 0) - (a.confidence ?? 0) || (a.total_cost ?? a.price ?? 1e12) - (b.total_cost ?? b.price ?? 1e12) || (a.price ?? 1e12) - (b.price ?? 1e12) || cmpId(a.offer_id, b.offer_id);
+// Frete conhecido (cost_basis 'total') antes de desconhecido ('price_only') ANTES de comparar total_cost: sem frete, o total_cost é só
+// o preço e não se compara com um total que já inclui o frete — mesma regra de api/_lib/offer-rank.mjs (shipCmp/byComparableTotal).
+const costBasisCmp = (a, b) => (a.cost_basis === 'total' ? 0 : 1) - (b.cost_basis === 'total' ? 0 : 1);
+export const oppOrder = (a, b) => (b.opportunity_score ?? -1) - (a.opportunity_score ?? -1) || (b.confidence ?? 0) - (a.confidence ?? 0) || costBasisCmp(a, b) || (a.total_cost ?? a.price ?? 1e12) - (b.total_cost ?? b.price ?? 1e12) || (a.price ?? 1e12) - (b.price ?? 1e12) || cmpId(a.offer_id, b.offer_id);
 export function productOpportunity(stats, offers, opts) {
   const all = (offers || []).map((o) => calculateOpportunity(stats, o, opts));
   const buyable = all.filter((x) => x.opportunity_score != null && x.stock_signal === 1 && !x.is_anomaly).sort(oppOrder);

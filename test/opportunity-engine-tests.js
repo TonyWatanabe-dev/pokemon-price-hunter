@@ -206,6 +206,21 @@ t('custo total: frete desconhecido não vira R$ 0 e fica sinalizado', () => {
   assert.ok(codes(r.warnings).includes('UNKNOWN_FREIGHT')); assert.equal(r.evidence, 'partial');
 });
 
+t('desempate: frete desconhecido nunca vence frete conhecido (regra de api/_lib/offer-rank.mjs)', () => {
+  const s = S();
+  const semFrete = C(s, O({ id: '1', price: 300, shipping_status: 'unknown', shipping_price: null, total_price: null }));
+  const comFrete = C(s, O({ id: '2', price: 295, shipping_status: 'known', shipping_price: 10, total_price: 305 }));
+  assert.equal(semFrete.cost_basis, 'price_only'); assert.equal(semFrete.total_cost, 300);
+  assert.equal(comFrete.cost_basis, 'total'); assert.equal(comFrete.total_cost, 305);
+  // mesmo score e confiança: R$ 300 sem frete não vence R$ 305 com frete conhecido, em qualquer ordem de entrada
+  const tie = (x) => ({ ...x, opportunity_score: 80, confidence: 0.9 });
+  assert.equal([tie(semFrete), tie(comFrete)].sort(oppOrder)[0].offer_id, '2');
+  assert.equal([tie(comFrete), tie(semFrete)].sort(oppOrder)[0].offer_id, '2');
+  // entre dois sem frete, segue valendo o menor preço; o score não muda
+  const outroSem = C(s, O({ id: '3', price: 310, shipping_status: 'unknown', shipping_price: null, total_price: null }));
+  assert.equal([tie(outroSem), tie(semFrete)].sort(oppOrder)[0].offer_id, '1');
+});
+
 t('evidência: referência Copag ausente', () => {
   const sem = S({ reference_price: null, reference_status: null, reference_kind: 'NONE' });
   const r = C(sem, O()); assert.equal(r.evidence, 'partial'); assert.ok(codes(r.warnings).includes('NO_CURRENT_REFERENCE'));
