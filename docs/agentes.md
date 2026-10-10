@@ -36,6 +36,16 @@ Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com
 - **Aprovar:** só para `matching`, com coleção, tipo e boosters validados contra o catálogo e contra a coleção que o anúncio traz. O id do produto é calculado, nunca digitado.
 - **Caminho até o matching:** `export` → `config/matching-overrides.json` num branch `review/overrides-*` para PR (nunca direto na `main`), que o robô só usa com `enabled: true`. O override só resolve tipo ou boosters não identificados, ou duas coleções no título, e só na loja e página revisadas. Não passa por cima de idioma, acessório, kit, EAN ou coleção divergente, e a trava de link continua valendo. Preço, score, ranking e oportunidade nunca são escritos pela revisão.
 
+## Avaliação offline com casos dourados
+
+`npm run golden:eval` (ou `node tools/golden-eval.mjs --out relatorio.json`) e `test/golden-eval-tests.js` (dentro do `npm test`). Sem rede, banco, IA ou escrita; roda os módulos de produção (`matchProduct`, `reviewCandidates`, `calculateOpportunity`) sobre `test/golden/cases.json`.
+
+- **Sintético, não é produção.** Os casos são escritos à mão (catálogo e lojas fictícios, hosts `.invalid`, sem dados pessoais ou segredos). Os resultados medem regressão contra esses casos, nunca desempenho real do robô.
+- **Matching:** falso positivo = casou o que devia ser recusado; produto errado = casou outro produto (conta como falso positivo); falso negativo = recusou o que devia casar. Cada caso também diz se deve virar revisão humana (`tipo_desconhecido`, `boosters_desconhecidos`, `colecao_ambigua`, `ean_divergente`, `baixa_confianca`) ou nenhuma.
+- **Preço, frete, estoque:** limites de score, travas (`caps`), avisos e motivos esperados, e o sinal de frete (desconhecido é nulo, nunca zero).
+- **Quando pedir revisão (oportunidade):** aviso `ANOMALY`, `TOO_GOOD` ou `UNCONFIRMED`.
+- **Regressões:** `failures` lista caso, área, tipo, esperado e obtido; o comando sai com 1 se houver alguma. Mudança intencional de regra atualiza o caso no mesmo PR.
+
 ## Governança e permissões (issue #89)
 
 `src/agents/governance.js` descreve e verifica; não concede acesso nem executa. Teste: `test/agents-governance-tests.js`.
