@@ -12,8 +12,13 @@ const wordRe = (alias) => new RegExp('(^|[^a-z0-9.])' + esc(alias).replace(/ /g,
 const REJECT = [
   [/\b(usad[oa]s?|aberto|aberta|sem lacre|violad[oa]|avariad[oa]|caixa amassada|embalagem danificada)\b/, 'condição: não lacrado/usado'],
   [/\b(avulsas?|lote de cartas|cartas? aleatorias|sem repetidas|brilhantes? garantid|proxy|replica|nao original|similar|cartas? unitarias?)\b/, 'não é produto lacrado oficial'],
-  [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
+  [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
 ];
+// "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
+const LOOSE_BINDER = (t) => /\b(pasta|fichario|binder)\b/.test(t) && !/\b(colecao|box|caixa|boosters?|pacotes?)\b/.test(t);
+// Várias unidades no mesmo anúncio: "10 unidades", "2 Box ...", "Kit 3 Blister ...", "Kit 2". "Kit 6 Boosters" segue sendo combo.
+const MULTI_UNIT = /^([2-9]|1\d) ?x? (box|boxes|caixas?|blisters?|latas?|minilatas?|baralhos?|colecoes|treinadore?s?|etbs?)\b|\bkit (de )?([2-9]|1\d)\b(?! ?(boosters?|pacotes?|envelopes?|cartas|cards))|\bbundle\b/;
+const UNITS = /\b(\d{1,3}) ?(unidades|unidade|unids?|unds?|un)\b/;
 
 // Idioma só por evidência explícita no título (palavra ou abreviação). Nunca pelo nome/domínio da loja
 // nem por nome de coleção em inglês. Sem evidência: code null ("não informado"), sem presumir PT.
@@ -175,7 +180,16 @@ export function parseListing(title, catalog) {
   const colDef = catalog.collections.find((c) => c.id === col.id);
   let tt = t;
   for (const a of [...(colDef?.aliases || []), ...(colDef?.fallbackAliases || [])].sort((x, y) => y.length - x.length)) tt = tt.replace(new RegExp(wordRe(a).source, 'g'), ' ');
-  const d = detectType(tt.replace(/\s+/g, ' ').trim());
+  tt = tt.replace(/\s+/g, ' ').trim();
+  const d = detectType(tt);
+  if (LOOSE_BINDER(t)) reasons.push('acessório ou item não-TCG');
+  // "N unidades" só é a contagem de boosters quando é o próprio conteúdo ("Booster Box 36 unidades"); senão é lote.
+  const units = Number(t.match(UNITS)?.[1] || 0);
+  const isContent = (d.type === 'booster_box' || d.type === 'combo') && (d.boosters === units || (d.boosters == null && units >= 6));
+  if (!reasons.some((r) => /várias unidades/.test(r)) && (MULTI_UNIT.test(t) || (units >= 2 && !isContent) || (d.type === 'booster_pack' && (detectBoosters(tt).count || 1) > 1)))
+    reasons.push('kit montado pela loja ou caixa com várias unidades');
+  // "Booster Box ... + Box Treinador Avançado": dois produtos no mesmo anúncio ("+" some na normalização, por isso o título original).
+  if (String(title).split('+').slice(1).some((s) => detectType(normalize(s)).type)) reasons.push('mais de um produto no mesmo anúncio');
   return { normalized: t, collection: col.id, collectionFallback: !!col.fallback, type: d.type, boosters: d.boosters, boostersInferred: d.inferred, variant: d.variant, language, preorder: detectStock(t) === 'PRE_ORDER', rejects: reasons };
 }
 
