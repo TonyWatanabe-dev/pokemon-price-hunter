@@ -94,3 +94,6 @@ await t('pistas: aviso único por id e filtro de desconto mínimo', async () => 
 });
 
 console.log(`✓ Notificações idempotentes: ${n} grupos passaram (somente mocks)`);
+
+// Frete comparável nos alertas (issue #84): melhor oferta, preço-alvo, queda e reaviso na mesma base.
+await import('./alerts-shipping-tests.js');

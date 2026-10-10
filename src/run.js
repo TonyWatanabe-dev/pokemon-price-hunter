@@ -13,7 +13,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -279,8 +279,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
     if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
-    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda.
-    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK' && !!p.shippingKnown === !!o.shippingKnown) events.push({ offerId: o.id, event: 'drop', from: p.total });
+    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda (comparableDrop).
+    const drop = comparableDrop(p, o);
+    if (drop) events.push({ offerId: o.id, event: 'drop', from: drop.from, fromShippingKnown: drop.shippingKnown });
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
