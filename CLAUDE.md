@@ -6,6 +6,12 @@ Regras permanentes para qualquer executor (Claude ou outro agente) que trabalhe 
 - Preserve a arquitetura existente. Siga os padrões, a estrutura de pastas e as convenções já usadas no código.
 - Não reestruture módulos, não troque bibliotecas e não reescreva componentes sem pedido explícito do usuário.
 
+## Contexto local do executor (fora do repositório)
+- Tarefa sobre o executor (fluxo, fila, status, logs) envolve arquivos que não estão neste repositório. Não conclua que algo não existe só porque não está aqui.
+- O executor local fica em `~/pph-executor`, e o script é `~/pph-executor/executor.sh`.
+- Comandos existentes do `executor.sh`: `start`, `once`, `stop`, `resume`, `status`, `logs [slug]`, `add <slug> "texto"` e `approve <slug>`. `status` lista as filas `inbox`, `doing`, `ready`, `done` e `failed`.
+- Antes de afirmar detalhes além disso, confira o arquivo local. Não invente comandos e não leia secrets (veja a seção Secrets).
+
 ## Auditorias
 - Não repita auditorias já concluídas. Antes de auditar, confira o histórico do git e o que já foi entregue.
 - Só reabra uma auditoria se o usuário pedir.
