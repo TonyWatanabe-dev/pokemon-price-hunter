@@ -434,6 +434,7 @@ a.navbtn{text-decoration:none}
 .hhead h2{margin:0}
 .osort select{appearance:none;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:7px 14px;font-size:14px;font-weight:500}
 .solist{display:flex;flex-direction:column;gap:10px}
+.amz-list{display:flex;flex-direction:column;gap:10px}.amz-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.amz-t{flex:1 1 220px;min-width:0;font-size:14px}.amz-p{margin:4px 0 0}.amz-p b{font-size:16px}.amz-p small,.amz-s{color:var(--muted);font-size:12.5px}.amz-s{margin:2px 0 0}
 .so{border:1px solid var(--line);border-radius:14px;padding:12px;transition:border-color var(--t-fast) ease}
 .so:first-child{border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
 .so.dim{background:var(--ground);opacity:.85}
@@ -1328,7 +1329,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -1360,9 +1361,9 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 "use strict";
 const $=(s,r=document)=>r.querySelector(s);
 const esc=(s)=>String(s??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money=(v)=>v==null?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const money=(v)=>typeof v!=="number"||!Number.isFinite(v)?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const pct=(v)=>v==null?"-":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
-const ago=(iso)=>{if(!iso)return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
+const ago=(iso)=>{if(!iso||!Number.isFinite(Date.parse(iso)))return"-";const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<1?"agora":m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`};
 const ic=(id,cls="icon")=>`<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 const store={get(k,d){try{const v=localStorage.getItem("ph:"+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem("ph:"+k,JSON.stringify(v))}catch{}}};
 
@@ -1415,7 +1416,7 @@ addEventListener("popstate",()=>{
 
 function toast(msg,warn){const t=$("#toast"),now=Date.now();if(!warn&&toast.until>now){clearTimeout(toast.q);toast.q=setTimeout(()=>toast(msg),toast.until-now);return}const d=warn?5200:2400;t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.until=warn?now+d:0;toast.t=setTimeout(()=>t.classList.remove("show"),d)}
 
-function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${o.quantity} em estoque`:l}</span>`}
+function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${esc(o.quantity)} em estoque`:esc(l)}</span>`}
 function photo(p,o,cls="photo"){
   const src=String(o?.image||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
   const fb=`<div class="${cls} fallback" style="--ec:${gg.c}" aria-hidden="true">${ic(gg.icon)}</div>`;
@@ -1433,11 +1434,11 @@ const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-
 const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
 function raBadge(o,full){
   const r=raOf(o.storeId);if(!r)return"";const [lb,cls]=RA_ST[r.status]||RA_ST.NAO_ENCONTRADA;
-  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(o.storeName.replace(/\.com(\.br)?$/,""))}`;
+  const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(String(o.storeName||"").replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
   const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
-  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${nota&&!full?nota:lb}</b>${full&&nota?`<em>${nota}/10</em>`:""}</a>`;
+  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(nota&&!full?nota:lb)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
@@ -1532,6 +1533,9 @@ function priceBlock(p,o,abrir){
   return`<div class="pblock"><span class="big" data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</span>${off}</div>
   <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
+/* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -" */
+const readKnown=(o)=>Number.isFinite(Date.parse(o?.source_timestamp??""));
+const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data da leitura desconhecida";
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
@@ -1553,6 +1557,7 @@ function dealCard(e,opt={}){
     <h3 class="deal-name">${esc(label(p))}</h3>
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
+    ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
     <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
     :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
@@ -1940,7 +1945,7 @@ function renderLegal(kind){
   <h3>1. O que é o TCG Price Hunter</h3><p>Um site gratuito que reúne preços de produtos lacrados de Pokémon TCG anunciados em lojas brasileiras e compara com o preço sugerido publicado pela Copag. O site não vende nada, não intermedeia compras e não recebe pagamentos.</p>
   <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente pelo robô. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
   <h3>3. Notas e alertas são opinião automatizada</h3><p>A nota (Opportunity Score), as faixas, a confiança, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
-  <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p>
+  <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p><p>Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas. Eles ficam numa área separada, com o preço que a Amazon mostrava na data e hora indicadas, e não entram na comparação de preços, no ranking nem nas notas de oportunidade.</p>
   <h3>5. Marcas</h3><p>O TCG Price Hunter não é afiliado, patrocinado nem endossado pela Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon, os nomes das coleções e as imagens dos produtos pertencem a seus donos e aparecem apenas para identificar os produtos anunciados.</p>
   <h3>6. Lojas</h3><p>O robô respeita o robots.txt de cada site e não tenta contornar bloqueios. <b>Se a sua loja não quiser fazer parte da busca, basta enviar um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a></b> com o endereço do site: a loja é retirada da lista e o robô deixa de visitá-la. O mesmo e-mail serve para corrigir qualquer dado.</p><p>A reputação mostrada ao lado de cada loja vem das páginas públicas do Reclame Aqui, com a data da consulta e o link para a fonte. O TCG Price Hunter não tem ligação com o Reclame Aqui e não altera essas notas.</p>
   <h3>7. Uso do site</h3><p>Você pode usar o site livremente para uso pessoal. Não é permitido usá-lo para atividades ilegais ou para sobrecarregar o serviço.</p>
@@ -1958,7 +1963,7 @@ function renderLegal(kind){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide legal">${T[kind]}</section></div>`;
 }
 const tipVs=(x)=>x.anomalous?`<span class="chip bad">Barato demais</span>`:x.discount==null?`<span class="chip">Sem Copag</span>`:x.discount>=.0005?`<span class="chip ok">-${pct(x.discount)}</span>`:x.discount<=-.0005?`<span class="chip warn">+${pct(-x.discount)}</span>`:`<span class="chip">Preço Copag</span>`;
-const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(x.source.replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
+const tipRow=(x)=>`<tr><td><a class="tiplink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${x.collectionName?`<b>${esc(x.collectionName)}</b><br>`:""}<span>${esc(x.label||x.title)}</span></a><small class="tipmeta">${esc(String(x.source||"").replace(/^Telegram /,"Telegram @"))}${x.store?" · "+esc(x.store):""} · ${ago(x.postedAt||x.firstSeen)}</small></td><td class="r"><b class="tipprice">${money(x.price)}</b><br>${x.expired?`<span class="chip">Encerrada</span>`:tipVs(x)}</td></tr>`;
 const tipTable=(l)=>`<div class="tablewrap"><table><thead><tr><th>Promoção</th><th class="r">Preço e Copag</th></tr></thead><tbody>${l.map(tipRow).join("")}</tbody></table></div>`;
 /* Na busca: promoções dos canais do Telegram que batem com o termo (sem verificação, fora do ranking) */
 function tipHits(q){
@@ -2109,7 +2114,7 @@ function storeOffer(o,p){
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${shipOk(o)?"":" · frete a calcular"}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
       <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(o.url))}" target="_blank" rel="noopener" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
-    <div class="so-foot"><span>${ic("clock")}Atualizado ${ago(o.source_timestamp)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga</span>`:""}</div>
+    <div class="so-foot"><span>${ic("clock")}${readNote(o)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga: preço pode ter mudado</span>`:""}</div>
   </article>`;
 }
 /* atalho "Comparar N ofertas": a página do produto pode chegar depois (API); rola até a seção quando ela existir */
@@ -2144,6 +2149,7 @@ function renderProduct(pid){
       ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
       ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
+      <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
       <a class="btn wide" href="${esc(safeUrl(best.url))}" target="_blank" rel="noopener" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
@@ -2169,13 +2175,30 @@ function renderProduct(pid){
         return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
       <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
+    <div id="pp-amz">${amzBlock(pid)}</div>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
 </div>`;
   if(pid in HIST)drawHist(pid);else loadHist(pid);
   hashScroll();loadPpOpp(pid,best?.id||null);
+  if(!AMZ)loadAmz().then(()=>{const el=$("#pp-amz");if(el&&view==="produto"&&curPid===pid)el.innerHTML=amzBlock(pid)});
 }
+/* "Também na Amazon" (Amazon Associados): lista curada em config/afiliados/amazon.json, publicada em /data/afiliados-amazon.json.
+   Camada à parte: não vira oferta e não entra em preço, ranking, Opportunity Score nem alerta. O preço é o que a página da
+   Amazon mostrava em capturedAt e aparece sempre com a data e a hora da leitura. A URL chega pronta do arquivo; aqui nada é anexado a ela. */
+let AMZ=null,amzP=null;
+function loadAmz(){if(AMZ)return Promise.resolve(AMZ);
+  return amzP||=Promise.resolve().then(()=>fetch("/data/afiliados-amazon.json")).then((r)=>r.ok?r.json():null).catch(()=>null).then((j)=>AMZ={links:Array.isArray(j?.links)?j.links:[]})}
+const amzWhen=(iso)=>{const d=new Date(iso);return Number.isFinite(d.getTime())?d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"}).replace(","," às"):""};
+function amzRow(l){const when=amzWhen(l.capturedAt);const has=typeof l.price==="number"&&l.price>0;
+  const who=has&&l.seller?`vendido por ${esc(l.seller)}${l.fulfilledBy==="amazon"?" · enviado pela Amazon":""}`:"";
+  return`<div class="amz-row"><div class="amz-t"><span>${esc(l.title)}</span>
+    ${has?`<p class="amz-p"><b>${money(l.price)}</b> <small>em ${esc(when)}</small></p><p class="amz-s">${who}${l.stockNote?`${who?" · ":""}${esc(l.stockNote)}`:""}</p>`:`<p class="amz-s">Sem oferta em destaque na Amazon em ${esc(when)}</p>`}</div>
+    <a class="btn ghost" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`}
+function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);if(!ls.length)return"";
+  return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
+  <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
@@ -2215,8 +2238,9 @@ async function afterRedirect(m){
 async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
-    if(was!==u.uid){ACC.data=null;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={}}}
-    if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    if(was!==u.uid){ACC.data=null;ACC.loadFailed=false;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}}
+    if(ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
+    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
     else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
   }else ACC.data=null;
   ACC.ready=true;accSync();
@@ -2348,7 +2372,14 @@ async function submitDel(f){
   try{await m.wipe(pw||undefined);ACC.data=null;toast("Conta e dados excluídos");go("")}
   catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");b.disabled=false;b.removeAttribute("aria-busy")}
 }
-async function saveField(k,v,old){ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast("Não consegui salvar. Tente de novo.");throw e}}
+async function saveField(k,v,old){
+  if(!ACC.user||!ACC.data){toast("Entre na sua conta para salvar.");throw Object.assign(new Error("sem login"),{code:"auth/no-user"})}
+  if(ACC.loadFailed){toast("Seus dados não carregaram. Recarregue a página antes de salvar.");throw Object.assign(new Error("dados não carregados"),{code:"data/not-loaded"})}
+  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast(saveErr(e));throw e}
+}
+const SAVE_AUTH=new Set(["auth/no-user","unauthenticated","auth/user-token-expired","auth/user-not-found"]);
+const SAVE_NET=new Set(["unavailable","auth/network-request-failed","deadline-exceeded"]);
+function saveErr(e){const c=e?.code;return SAVE_AUTH.has(c)?"Sua sessão expirou. Entre de novo para salvar.":SAVE_NET.has(c)?"Sem conexão. Confira a internet e tente de novo.":"Não consegui salvar. Tente de novo."}
 function pulse(sel,cls){const el=document.querySelector(sel);if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)}
 async function setFav(pid,on){
   const old=favs();if(on===old.includes(pid))return;
@@ -2412,12 +2443,14 @@ function prodRow(id,extra){
 }
 function renderFavs(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Favoritos","Salve os produtos que você quer acompanhar e veja o menor preço de cada um num lugar só.");return}
+  if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>Não consegui carregar seus favoritos. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const ids=favs().filter((id)=>P[id]);
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>${ids.length?`${ids.length} ${ids.length>1?"produtos":"produto"}. Toque para ver as lojas ou criar um alerta.`:"Nada salvo ainda."}</p>
   ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="produtos">Ver produtos</button></div>`}</section></div>`;
 }
 function renderAlerts(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Alertas de preço","Diga quanto quer pagar e o site marca quando alguma loja chegar nesse preço.");return}
+  if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>Não consegui carregar seus alertas. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const rows=alertsL().filter((a)=>P[a.p]).map((a)=>({a,o:bestLive(a.p)})).map((r)=>({...r,hit:r.o&&r.o.total<=r.a.v})).sort((x,y)=>(y.hit-x.hit)||((x.o?x.o.total-x.a.v:1e9)-(y.o?y.o.total-y.a.v:1e9)));
   const st=(r)=>r.hit?`<span class="chip ok">${ic("bell-ringing")}No seu preço</span>`:r.o?`<span class="chip">Faltam ${money(r.o.total-r.a.v)}</span>`:`<span class="chip">Sem estoque</span>`;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>${rows.length?`${rows.filter((r)=>r.hit).length} de ${rows.length} já ${rows.filter((r)=>r.hit).length===1?"chegou":"chegaram"} no seu preço. O aviso aparece aqui e no menu.`:"Nenhum alerta ainda."}</p>

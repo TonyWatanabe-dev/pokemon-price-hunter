@@ -1,11 +1,20 @@
-import { check } from '../robots.js';
+import { check, failureOf } from '../robots.js';
 import { BlockedError } from '../http.js';
+// O motivo leva o status HTTP real e o código de rede: 429 (limite) não vira "barra robôs", e DNS, timeout, TLS e 5xx
+// não viram o mesmo "fora do ar". A decisão não muda: robots.txt que não abre = não rastrear.
 export async function guard(url) {
   const r = await check(url); if (r.ok) return;
   const u = new URL(url);
-  if (r.why === 'blocked') throw new BlockedError(`Acesso bloqueado em ${u.host} (o site barra robôs, nem o robots.txt abre)`, 403);
-  if (r.why === 'unreachable') throw new BlockedError(`${u.host} fora do ar ou lento para responder`, 'unreachable');
-  throw new BlockedError(`robots.txt não permite ${u.pathname}`, 'robots');
+  if (r.why === 'robots') throw new BlockedError(`robots.txt não permite ${u.pathname}`, 'robots');
+  const f = (await failureOf(url)) || {};
+  const httpStatus = f.httpStatus ?? null; const code = f.code ?? null; const retryAfter = f.retryAfter ?? null;
+  if (r.why === 'blocked') {
+    if (httpStatus === 429) throw new BlockedError(`Limite de requisições (429) em ${u.host}: o robots.txt pediu para esperar${retryAfter != null ? ` (Retry-After ${retryAfter} s)` : ''}`, 429, { httpStatus, retryAfter });
+    const what = httpStatus == null ? 'bloqueio' : httpStatus < 300 ? `desafio anti-robô com HTTP ${httpStatus}` : `HTTP ${httpStatus}`;
+    throw new BlockedError(`Acesso bloqueado em ${u.host} (o site barra robôs, nem o robots.txt abre: ${what})`, 403, { httpStatus });
+  }
+  const what = code === 'TIMEOUT' ? 'tempo esgotado, TIMEOUT' : code ? `erro de rede ${code}` : httpStatus ? `HTTP ${httpStatus}` : 'erro de rede';
+  throw new BlockedError(`${u.host} fora do ar ou lento para responder (robots.txt: ${what})`, 'unreachable', { httpStatus, code });
 }
 // Preço em reais (número com no máximo 2 casas) ou null. Nunca chuta: negativo, zero, NaN/infinito, faixa ("10 - 20"),
 // mais de um valor no texto ("12x de 28,25") e separadores incoerentes viram null.

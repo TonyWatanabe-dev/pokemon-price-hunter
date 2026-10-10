@@ -9,6 +9,7 @@
   - situação da sincronização com o banco;
   - leitor oficial (`ok`/`unavailable`/`off`, com N válidas e M lidas);
   - lojas: ativas, com anúncios, sem resultado, bloqueadas, com erro e adiadas.
+  - coletores (`collectors`): lojas tentadas na rodada, com sucesso, vazias (0 anúncios, sem ser falha), vazias suspeitas (já trouxeram anúncios antes), com falha, soma da duração, as mais lentas e os erros por classe (`bloqueio`, `timeout`, `rede`, `http_4xx`, `http_5xx`, `plataforma`, `parse`, `outro`). Se todos os coletores tentados falham, a rodada fica `degradado` (`coletores_todos_falharam`). O motivo do erro guardado e logado passa por `safeReason`, que remove URL de conexão, token, cookie, e-mail e query string.
   As outras chaves do arquivo (`dataVersion`, `distrust`) são preservadas. São guardados os últimos 96 registros, além de `last` e `lastHealthy`. Um registro inválido nunca substitui o último válido: fica em `lastInvalid`.
 - **Sincronização**: o passo "Sincronizar com o banco" roda depois da publicação, então o resultado dele só pode ser visto na rodada seguinte.
   - A rodada seguinte lê, só para leitura, `max(offer.last_seen_at)` (ver `src/db-health.js`).
@@ -52,6 +53,8 @@ Criar um job **igual ao do robô**, só que apontando para o vigia:
 - **Horário**: a cada 15 min, nos minutos 7, 22, 37 e 52, defasado do robô.
 
 Não é preciso criar endpoint público: o disparo usa a API do GitHub com o token que já existe.
+
+Falhas e recuperação em geral: `docs/runbook.md`.
 
 ## Como validar
 

@@ -8,6 +8,7 @@ const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
 const liveCode = cut('const live=(o)=>', '\n');
 const shipNoteCode = cut('const shipNote=', '\n');
+const readCode = cut('const readKnown=', 'const shipNote=');
 const productCode = cut('/* Página de produto: entender', '/* Conta: login');
 let n = 0; const t = (name, fn) => { fn(); n++; };
 
@@ -25,7 +26,7 @@ function page(OFF) {
     safeUrl: (u) => u, searchBox: () => '', REFNOTE: '', track() {}, render() {}, scrollTo() {},
   };
   vm.createContext(ctx);
-  vm.runInContext(liveCode + ';' + shipNoteCode + ';' + productCode + '\n;globalThis.__t={OFFER_SORTS,bestOffer:typeof bestOffer==="function"?bestOffer:null,renderProduct};', ctx);
+  vm.runInContext(liveCode + ';' + readCode + ';' + shipNoteCode + ';' + productCode + '\n;globalThis.__t={OFFER_SORTS,bestOffer:typeof bestOffer==="function"?bestOffer:null,renderProduct};', ctx);
   return { ...ctx.__t, view, ctx };
 }
 const offer = (id, x = {}) => ({ id, productId: 'p1', storeId: id, storeName: 'Loja ' + id, url: 'https://loja.example/' + id, stock: 'IN_STOCK', stale: false, anomalous: false, ...x });
