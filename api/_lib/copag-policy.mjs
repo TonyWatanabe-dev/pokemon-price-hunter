@@ -5,16 +5,18 @@
 // "Copag confirmado" (copagConfirmed / msrp) só quando TODAS valem:
 //   1. valor > 0;
 //   2. fonte oficial da Copag: URL em copagloja.com.br ou copag.com.br (e subdomínios), marcada como oficial
-//      (robô: confidence 'OFICIAL' — captura da loja oficial ou cadastro manual; banco: linha 'verified' de copag_loja/manual);
+//      (robô: confidence 'OFICIAL' — captura da loja oficial ou cadastro manual; banco: linha 'verified' de
+//      copag_loja/copag_loja_catalog/manual — DB_OFFICIAL_SOURCES, a mesma lista da migration 010);
 //   3. última verificação há no máximo COPAG_MAX_AGE_DAYS (30) dias em relação ao momento da rodada/consulta — a MESMA
 //      constante e a mesma conta (copagExpired) que o motor usa em api/_lib/references.mjs (resolveCurrentReference);
 //   4. a fonte é do MESMO produto: se a fonte traz EAN e o produto tem EAN cadastrado, eles batem. Fonte com EAN de
 //      outro produto não é evidência do preço deste (nem vira referência).
 // Fora disso o valor fica só como referência (copagReference), com estado 'pendente' ou 'expirado' — nunca confirmado
-// por palpite. Não há lista de produtos travados: um produto fica pendente por falta de evidência (ex.: me04-box36,
-// cujo anúncio na loja oficial tem EAN divergente do cadastro e cujo preço só aparece no catálogo público da auditoria).
+// por palpite. Não há lista de produtos travados: um produto fica pendente por falta de evidência (ex.: no robô,
+// me04-box36, cujo anúncio na loja oficial tem EAN divergente do cadastro; na home da API ele confirma pelo catálogo
+// público da loja Copag — copag_loja_catalog — enquanto essa verificação tiver no máximo 30 dias).
 // Escopo: site (robô e home da API). A view do motor (reference_price_current) NÃO muda aqui: alinhá-la a estas regras
-// é a migration 010, entregue à parte (PR #20 / PR-A) e dependente de decisão do dono.
+// é a migration 010, entregue à parte (PR #185).
 import { COPAG_MAX_AGE_DAYS, copagExpired } from './references.mjs';
 
 /** Validade da verificação, em dias. É a constante do motor (references.mjs); este nome fica por compatibilidade. */
@@ -82,19 +84,22 @@ export function fromRobotEntry(e, origin = 'catalog') {
 }
 
 // ------------------------------------------------------------------ banco (hunter.reference_price)
-// Fontes que o robô publica (as mesmas do site de hoje). A auditoria (copag_loja_catalog, copag_blog) alimenta a auditoria
-// e a validação, mas aqui (home da API) não vira preço Copag — como já era antes desta política (o SQL da home filtrava
-// estas mesmas três fontes). DECISÃO PENDENTE: 'copag_loja_catalog' é o catálogo público da própria loja Copag
-// (copagloja.com.br); se o dono decidir aceitá-la como oficial, é aqui (e na view do motor, migration 010) que entra.
-export const DB_SOURCES = ['copag_loja', 'manual', 'internet'];
-/** Fontes do banco que podem sustentar Copag oficial (a migration 010, fora deste PR, levaria a mesma lista à view do motor). */
-export const DB_OFFICIAL_SOURCES = Object.freeze(['copag_loja', 'manual']);
+// Fontes candidatas na home da API: as que o robô publica (copag_loja, manual, internet) e o catálogo público da própria loja
+// Copag (copag_loja_catalog, copagloja.com.br), gravado por tools/db-import-references.mjs a partir da auditoria. O blog
+// (copag_blog, preço de lançamento) e qualquer outra fonte ficam de fora.
+export const DB_SOURCES = Object.freeze(['copag_loja', 'copag_loja_catalog', 'manual', 'internet']);
+/**
+ * Fontes do banco que podem sustentar Copag oficial — a mesma lista da migration 010 (PR #185) na view do motor.
+ * O nome da fonte só habilita: a linha ainda precisa ser 'verified', ter URL do domínio Copag, verificação há no máximo
+ * 30 dias e EAN coerente quando houver (evaluateReference). 'internet' nunca é oficial.
+ */
+export const DB_OFFICIAL_SOURCES = Object.freeze(['copag_loja', 'copag_loja_catalog', 'manual']);
 const DB_OFFICIAL = new Set(DB_OFFICIAL_SOURCES);
-/** Normaliza uma linha de reference_price (value, source, source_url, verification_status, verified_at). */
+/** Normaliza uma linha de reference_price (value, source, source_url, verification_status, verified_at[, ean]). */
 export function fromDbRow(r) {
   return { value: r?.value, source_url: r?.source_url || null,
     official: r?.verification_status === 'verified' && DB_OFFICIAL.has(r?.source),
-    verifiedAt: lastVerifiedAt({ verified_at: r?.verified_at }) };
+    verifiedAt: lastVerifiedAt({ verified_at: r?.verified_at }), ean: r?.ean ?? null };
 }
 
 /**
@@ -115,8 +120,8 @@ export function decideCopag(candidates, { now = new Date(), productEan = null } 
   return i >= 0 ? { ...ev[i], index: -1 } : { ...evaluateReference(null), index: -1 };
 }
 
-const DB_ORDER = { manual: 0, copag_loja: 1, internet: 2 };
-/** API: linhas do banco de um produto → mesma decisão do robô. Ordem: manual > copag_loja > internet, verificação mais recente, id. */
+const DB_ORDER = { manual: 0, copag_loja: 1, copag_loja_catalog: 2, internet: 3 };
+/** API: linhas do banco de um produto → mesma decisão do robô. Ordem: manual > copag_loja > copag_loja_catalog > internet, verificação mais recente, id. */
 export function decideCopagFromRows(rows, opts = {}) {
   const list = (rows || []).filter((r) => DB_SOURCES.includes(r?.source) && ['verified', 'pending'].includes(r?.verification_status) && r?.reference_scope !== 'historical')
     .sort((a, b) => (DB_ORDER[a.source] - DB_ORDER[b.source]) || ((ms(b.verified_at) ?? -Infinity) - (ms(a.verified_at) ?? -Infinity)) || Number(b.id ?? 0) - Number(a.id ?? 0));

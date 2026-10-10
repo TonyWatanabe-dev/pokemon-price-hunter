@@ -67,7 +67,7 @@ await t('4. Copag: domínio oficial, cadastro manual, marketplace, catálogo de 
   assert.ok(copagStatus({ copag: { msrp: 13.99, source_url: LOJA, confidence: 'OFICIAL', source_timestamp: ago(3) } }, { now: NOW }).confirmed);
 });
 
-await t('5. me04-box36: sem evidência suficiente, sem trava por nome (captura de outro EAN e auditoria não confirmam)', async () => {
+await t('5. me04-box36: sem trava por nome (captura de outro EAN não confirma; catálogo oficial da loja confirma na API)', async () => {
   assert.equal(P.PENDENTES, undefined, 'não há lista de produtos travados no código');
   assert.ok(!realCatalog.copag['me04-box36'], 'catálogo real sem cadastro para me04-box36');
   const prod = realCatalog.products.find((x) => x.id === 'me04-box36');
@@ -91,11 +91,12 @@ await t('5. me04-box36: sem evidência suficiente, sem trava por nome (captura d
   assert.equal(pol({ ...cap, ean: '196214156098' }, 'captura', prod.ean).status, 'confirmado');
   // 4) liberação por evidência: cadastro manual do responsável com URL oficial da Copag, verificado
   assert.equal(pol({ msrp: 449.99, source_url: 'https://www.copag.com.br/tabela-oficial', confidence: 'OFICIAL', manual: true, source_timestamp: ago(1) }, 'catalog', prod.ean).status, 'confirmado');
-  // 5) API: a linha da auditoria (copag_loja_catalog, verificada) não vira preço Copag nem referência
+  // 5) API: a linha da auditoria (copag_loja_catalog = catálogo público da loja Copag, verificada há 1 dia, URL da loja,
+  //    sem EAN importado) é evidência oficial com as MESMAS exigências: confirma. O robô não lê essa fonte (só o banco).
   const api = PA.decideCopagFromRows([
     { id: 1, value: 449.99, source: 'copag_loja_catalog', source_url: URL_BOX, verification_status: 'verified', verified_at: ago(1), reference_scope: 'current' },
-  ], { now: NOW });
-  assert.equal(api.status, 'sem_referencia'); assert.equal(api.confirmed, false); assert.equal(api.row, null);
+  ], { now: NOW, productEan: prod.ean });
+  assert.equal(api.status, 'confirmado'); assert.equal(api.confirmed, true); assert.equal(api.msrp, 449.99); assert.equal(api.row.id, 1);
 });
 
 await t('5b. os 11 produtos confirmados só pelo Instagram ficam pendentes, sem exceção automática', async () => {
@@ -190,17 +191,65 @@ await t('7. paridade: robô (catálogo/captura) e API (linhas gravadas pelo rob�
   assert.equal(PA.decideCopagFromRows([{ id: 1, value: 319.99, source: 'copag_loja', source_url: LOJA, verification_status: 'verified', verified_at: ago(1), reference_scope: 'historical' }], { now: NOW }).status, 'sem_referencia');
 });
 
-// ------------------------------------------------------------------ 8. fonte da auditoria (copag_loja_catalog): comportamento atual
-// DECISÃO PENDENTE (ver docs/copag-referencia.md): 'copag_loja_catalog' é o catálogo público da própria loja Copag. A política
-// não a aceita no site (como já era: o SQL da home filtrava copag_loja/manual/internet). Este teste só fixa o comportamento
-// atual para que uma mudança seja consciente; não é uma afirmação de que a regra está certa.
-await t('8. auditoria copag_loja_catalog: fora do site hoje; com o nome aceito, a mesma linha confirmaria', () => {
-  assert.deepEqual([...PA.DB_OFFICIAL_SOURCES], ['copag_loja', 'manual']);
-  const row = { id: 1, value: 42.99, source: 'copag_loja_catalog', source_url: 'https://www.copagloja.com.br/blister-triplo-pokemon-me05-escuridao-absoluta/p',
-    verification_status: 'verified', verified_at: ago(1), reference_scope: 'current' };
-  assert.equal(PA.decideCopagFromRows([row], { now: NOW }).status, 'sem_referencia');
-  // mesma evidência normalizada como oficial (URL da Copag, verificada há 1 dia): confirmaria — só o nome da fonte barra
-  assert.equal(PA.evaluateReference({ value: row.value, source_url: row.source_url, official: true, verifiedAt: row.verified_at }, { now: NOW }).status, 'confirmado');
+// ------------------------------------------------------------------ 8. fontes do banco: catálogo oficial da loja Copag
+// 'copag_loja_catalog' é o catálogo público da própria loja Copag (copagloja.com.br), gravado por tools/db-import-references.mjs
+// a partir da auditoria. É fonte oficial com as MESMAS exigências das outras (URL do domínio Copag, linha verificada, verificação
+// há no máximo 30 dias, EAN coerente quando houver) — não é barrada pelo nome. Mesma lista da migration 010 (PR #185).
+await t('8. banco: catálogo oficial da loja Copag vale com as mesmas exigências; nada mais é relaxado', () => {
+  assert.deepEqual([...PA.DB_OFFICIAL_SOURCES].sort(), ['copag_loja', 'copag_loja_catalog', 'manual']);
+  assert.equal(P.DB_OFFICIAL_SOURCES, PA.DB_OFFICIAL_SOURCES, 'src reexporta a mesma lista (sem lista própria)');
+  // o SQL da home traz exatamente as fontes candidatas da política (sem lista divergente)
+  const sql = fs.readFileSync(path.join(root, 'api/_lib/read-db.mjs'), 'utf8').match(/r\.source IN \(([^)]*)\)/);
+  assert.deepEqual(sql[1].split(',').map((s) => s.trim().replace(/'/g, '')).sort(), [...PA.DB_SOURCES].sort());
+  const api = (rows, opts = {}) => PA.decideCopagFromRows(rows, { now: NOW, ...opts });
+  const URL_BL3 = 'https://www.copagloja.com.br/blister-triplo-pokemon-me05-escuridao-absoluta/p';
+  const URL_BOX = 'https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p';
+  const row = (extra = {}) => ({ id: 1, value: 42.99, source: 'copag_loja_catalog', source_url: URL_BL3, verification_status: 'verified', verified_at: ago(1), reference_scope: 'current', ...extra });
+  // catálogo oficial (me05-blister3 e me04-box36 da auditoria): URL da loja, verificado há 1 dia → confirmado
+  let d = api([row()]);
+  assert.equal(d.status, 'confirmado'); assert.equal(d.confirmed, true); assert.equal(d.msrp, 42.99); assert.equal(d.row.source, 'copag_loja_catalog');
+  assert.equal(api([row({ value: 449.99, source_url: URL_BOX })], { productEan: '0196214156098' }).status, 'confirmado', 'me04-box36 (linha sem EAN importado)');
+  assert.equal(api([row({ verified_at: ago(30) })]).status, 'confirmado', 'exatamente 30 dias');
+  // catálogo com URL fora da Copag → recusa (só referência)
+  for (const u of ['https://www.instagram.com/voltztcg/', 'https://blog.test/catalogo', 'https://copagloja.com.br.golpe.test/x']) {
+    d = api([row({ source_url: u })]);
+    assert.equal(d.confirmed, false, u); assert.equal(d.status, 'pendente', u); assert.match(d.reason, /fora do domínio oficial/, u); assert.equal(d.msrp, null, u);
+  }
+  assert.equal(api([row({ source_url: 'https://www.mercadolivre.com.br/loja/copag' })]).status, 'sem_referencia', 'marketplace no catálogo: nem referência');
+  assert.equal(api([row({ source_url: null })]).status, 'pendente', 'catálogo sem URL');
+  // catálogo vencido (> 30 dias) → recusa (expirado, valor só como referência)
+  d = api([row({ verified_at: ago(31) })]);
+  assert.equal(d.status, 'expirado'); assert.equal(d.confirmed, false); assert.equal(d.reference, 42.99); assert.equal(d.msrp, null);
+  assert.equal(api([row({ verified_at: new Date(NOW.getTime() - 30 * DAY - 1).toISOString() })]).status, 'expirado', '1 ms depois dos 30 dias');
+  assert.equal(api([row({ verified_at: null })]).status, 'pendente', 'catálogo sem data de verificação');
+  // catálogo não verificado (pendente na auditoria, confiança média) → não confirma
+  d = api([row({ verification_status: 'pending', verified_at: null })]);
+  assert.equal(d.confirmed, false); assert.equal(d.status, 'pendente'); assert.match(d.reason, /não marcada como oficial/);
+  assert.equal(api([row({ verification_status: 'pending' })]).confirmed, false, 'pendente com data recente continua pendente');
+  assert.equal(api([row({ verification_status: 'rejected' })]).status, 'sem_referencia', 'rejeitada nem entra');
+  // fonte desconhecida (ou de contexto, como o blog) com URL da Copag, verificada → recusa: só as fontes da lista valem
+  for (const source of ['copag_blog', 'desconhecida', 'internet', '', null]) {
+    assert.equal(api([row({ source })]).confirmed, false, String(source));
+  }
+  assert.equal(api([row({ source: 'copag_blog' })]).status, 'sem_referencia', 'blog (preço de lançamento) não entra na home');
+  assert.equal(api([row({ source: 'internet' })]).status, 'pendente', 'internet: só referência, nunca oficial');
+  // manual com URL da Copag recente → aceita; manual do Instagram → recusa
+  assert.equal(api([row({ source: 'manual', source_url: 'https://www.copag.com.br/tabela', reference_scope: 'community' })]).status, 'confirmado');
+  d = api([row({ source: 'manual', source_url: 'https://www.instagram.com/voltztcg/', value: 399.99, reference_scope: 'community' })]);
+  assert.equal(d.confirmed, false); assert.equal(d.status, 'pendente'); assert.match(d.reason, /fora do domínio oficial/); assert.equal(d.reference, 399.99);
+  // EAN divergente (quando a linha traz EAN e o produto tem cadastro) → recusa, nem como referência; EAN igual ou ausente vale
+  d = api([row({ value: 449.99, source_url: URL_BOX, ean: '0196214156081' })], { productEan: '0196214156098' });
+  assert.equal(d.confirmed, false); assert.equal(d.status, 'sem_referencia'); assert.equal(d.reference, null);
+  assert.equal(api([row({ ean: '0196214156098' })], { productEan: '196214156098' }).status, 'confirmado', 'EAN igual (zeros à esquerda ignorados)');
+  assert.equal(api([row({ ean: '0196214156081' })]).status, 'confirmado', 'produto sem EAN cadastrado: nada a comparar');
+  // ordem: a loja (captura) e o manual vêm antes do catálogo; o catálogo vem antes de 'internet'
+  const loja = row({ id: 2, source: 'copag_loja', value: 44.99, verified_at: ago(2) });
+  const net = row({ id: 3, source: 'internet', value: 39.99, verification_status: 'pending', verified_at: null, reference_scope: 'community' });
+  assert.equal(api([row(), loja]).row.id, 2, 'copag_loja antes do catálogo');
+  assert.equal(api([net, row()]).row.id, 1, 'catálogo antes de internet');
+  assert.equal(api([row({ verified_at: ago(40) }), net]).status, 'expirado', 'catálogo vencido ainda é a referência preferida (oficial vencida)');
+  // a decisão da API é a mesma da política pura (evaluateReference) sobre a mesma evidência
+  assert.equal(PA.evaluateReference({ value: 42.99, source_url: URL_BL3, official: true, verifiedAt: ago(1) }, { now: NOW }).status, api([row()]).status);
 });
 
 // ------------------------------------------------------------------ 9. resolvedor com o arquivo de capturas (validade na rodada)
@@ -223,7 +272,7 @@ await t('9. resolvedor: captura fresca confirma, vencida vira referência, EAN d
 fs.rmSync(tmp, { recursive: true, force: true });
 
 // ------------------------------------------------------------------ 10. banco: a home da API aplica a mesma política
-// Sem a migration 010: só a home (stateLikeFromDb) muda; a view do motor (reference_price_current) fica como na main.
+// Sem a migration 010 (PR #185): só a home (stateLikeFromDb) muda; a view do motor (reference_price_current) fica como na main.
 if (savedEnv.TEST_DATABASE_URL) {
   await t('10. PostgreSQL: home da API com a mesma política do robô', async () => {
     process.env.DATABASE_URL = savedEnv.TEST_DATABASE_URL; process.env.API_DATABASE_URL = savedEnv.TEST_DATABASE_URL;
@@ -259,7 +308,9 @@ if (savedEnv.TEST_DATABASE_URL) {
     assert.equal(by['me05-etb'].copagConfirmed, true); assert.equal(by['me05-etb'].msrp, 399.99); assert.equal(by['me05-etb'].copagReferenceStatus, 'confirmado');
     assert.equal(by['c30-etb'].copagConfirmed, false, 'linha antiga do Instagram não confirma'); assert.equal(by['c30-etb'].copagReference, 399.99); assert.equal(by['c30-etb'].copagReferenceStatus, 'pendente');
     assert.equal(by['sv3-etb'].copagConfirmed, false, 'verificada há 40 dias: vencida'); assert.equal(by['sv3-etb'].copagReferenceStatus, 'expirado'); assert.equal(by['sv3-etb'].copagReference, 349.99);
-    assert.equal(by['me04-box36'].copagConfirmed, false); assert.equal(by['me04-box36'].copagReference, null, 'auditoria não vira preço Copag no site (como antes)');
+    // catálogo oficial da loja Copag (auditoria), verificado há 1 dia com URL da loja: confirma na home, como a 010 no motor
+    assert.equal(by['me04-box36'].copagConfirmed, true, 'copag_loja_catalog verificado e recente confirma'); assert.equal(by['me04-box36'].msrp, 449.99);
+    assert.equal(by['me04-box36'].copagReferenceStatus, 'confirmado');
     // mesma decisão que o robô tomaria hoje com as mesmas fontes
     for (const p of products.slice(0, 3)) {
       const e = { ...p.copag, msrp: p.msrp };
