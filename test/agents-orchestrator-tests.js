@@ -189,4 +189,16 @@ await test('validação do handler de revisão', async () => {
   assert.match(validateReviewProposal(null), /objeto/);
 });
 
+await test('matching sem evidência: falha direto, sem retry e sem item de revisão', async () => {
+  assert.match(validateReviewProposal({ ...proposal(), proposal: { productId: 'me05-etb' } }), /sem evidência/);
+  assert.match(validateReviewProposal({ ...proposal(), proposal: { reason: '  ' } }), /sem evidência/);
+  assert.equal(validateReviewProposal({ ...proposal(), category: 'store_blocked', proposal: { x: 1 } }), null);
+  const { orch, store, sink } = setup();
+  await orch.enqueue({ type: 'review.propose', idempotencyKey: 'sem-ev', payload: { ...proposal('m:sem'), proposal: { productId: 'me05-etb' } } });
+  const r = await orch.runOnce();
+  assert.equal(r.failed, 1); assert.equal(r.retried, 0);
+  assert.equal(store.jobs[0].status, 'failed'); assert.equal(store.jobs[0].attempts, 1);
+  assert.equal(sink.items.length, 0);
+});
+
 console.log(`✓ Hunter Orchestrator: ${n} grupos de testes passaram (puro)`);

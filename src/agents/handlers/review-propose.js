@@ -5,6 +5,7 @@
 
 export const REVIEW_CATEGORIES = ['matching', 'reference_conflict', 'price_anomaly', 'store_blocked', 'duplicate_product', 'affiliate_missing', 'crawler_broken'];
 const MAX_PROPOSAL_BYTES = 8 * 1024;
+const EVIDENCE_FIELDS = ['url', 'title', 'why', 'reason'];
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const shortStr = (v, max) => typeof v === 'string' && v.length > 0 && v.length <= max;
 
@@ -17,6 +18,9 @@ export function validateReviewProposal(p) {
   if (p.confidence != null && !(Number.isInteger(p.confidence) && p.confidence >= 0 && p.confidence <= 100)) return 'confidence deve ser inteiro 0–100';
   if (!isPlainObject(p.proposal)) return 'proposal deve ser objeto';
   if (Buffer.byteLength(JSON.stringify(p.proposal)) > MAX_PROPOSAL_BYTES) return `proposal acima de ${MAX_PROPOSAL_BYTES} bytes`;
+  // Decisão de matching sem evidência (anúncio, motivo ou título) não vira item de revisão.
+  if (p.category === 'matching' && !EVIDENCE_FIELDS.some((f) => typeof p.proposal[f] === 'string' && p.proposal[f].trim()))
+    return 'proposta de matching sem evidência (url, title, why ou reason)';
   return null;
 }
 

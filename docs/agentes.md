@@ -36,6 +36,12 @@ Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com
 - **Aprovar:** só para `matching`, com coleção, tipo e boosters validados contra o catálogo e contra a coleção que o anúncio traz. O id do produto é calculado, nunca digitado.
 - **Caminho até o matching:** `export` → `config/matching-overrides.json` num branch `review/overrides-*` para PR (nunca direto na `main`), que o robô só usa com `enabled: true`. O override só resolve tipo ou boosters não identificados, ou duas coleções no título, e só na loja e página revisadas. Não passa por cima de idioma, acessório, kit, EAN ou coleção divergente, e a trava de link continua valendo. Preço, score, ranking e oportunidade nunca são escritos pela revisão.
 
+## Evidência obrigatória (issue #36)
+
+Proposta de `matching` sem evidência (`url`, `title`, `why` ou `reason` em `proposal`) é payload inválido: o job vai direto para `failed`, sem retry e sem `review_item`. Auditoria da issue #36: fila, estados, idempotência, lease/retry/timeout, revisão humana e trilha (`REVIEW_DECIDED`) já existiam; não foi criado módulo novo.
+
+Limitações: a execução é sequencial (sem concorrência paralela, por escolha); o estado `review` é representado por `review_item` aberto, não por status do job; não há tela própria para a fila.
+
 ## Ainda não integrado
 
 Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confiança não remove a oferta já aceita; Catalog Agent com IA.
