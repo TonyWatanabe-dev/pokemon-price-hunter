@@ -135,3 +135,6 @@ t('API: referência de mercado informa as fontes independentes', () => {
 });
 
 console.log(`✓ Mercado deduplicado + fontes independentes (6A.1): ${n} grupos de testes passaram`);
+
+// Falsos positivos de selados (issue #42): lote/kit, bundle, dois produtos, caixa vazia, fichário avulso.
+await import('./sealed-false-positive-tests.js');

@@ -13,7 +13,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -26,11 +26,35 @@ const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
 
 // Leitura que falhou: mantém a oferta como estoque desconhecido (stale) e guarda a última leitura VÁLIDA em lastValid.
 // Uma oferta já stale continua com o lastValid de antes (nunca vira "válido" o estado inventado da falha).
-export const staleCopy = (o) => ({ ...o, stale: true, stock: 'UNKNOWN',
-  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, shippingAt: o.shippingAt ?? null, seller: o.seller, at: o.source_timestamp } });
+// O frete da cópia segue a validade da cotação (carryShipping): uma cópia nunca finge cotação nova.
+export const staleCopy = (o, now = new Date()) => carryShipping({ ...o, stale: true, stock: 'UNKNOWN',
+  lastValid: o.stale ? o.lastValid ?? null : { stock: o.stock, total: o.total, price: o.price, shipping: o.shipping, shippingKnown: !!o.shippingKnown, shippingAt: o.shippingAt ?? null, seller: o.seller, at: o.source_timestamp } }, now);
 // Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
 // lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
 export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
+
+// Validade da cotação de frete reaproveitada quando a simulação falha (HUNTER_SHIPPING_TTL_H, padrão 24 h).
+export const shippingTtlMs = () => { const h = Number(process.env.HUNTER_SHIPPING_TTL_H); return (Number.isFinite(h) && h > 0 ? h : 24) * 3600e3; };
+// Cotação anterior utilizável: frete conhecido, com data de cotação, dentro da validade. A data devolvida é sempre a da
+// cotação original (reaproveitar não renova a validade). Sem data confiável, vencida ou ausente → null (frete desconhecido).
+export function shippingQuoteReuse(old, now = new Date(), ttlMs = shippingTtlMs()) {
+  if (!old?.shippingKnown || old.shipping == null) return null;
+  const at = old.shippingAt || null; const t = Date.parse(at ?? '');
+  const age = now.getTime() - t;
+  if (!Number.isFinite(t) || age < -5 * 60e3 || age > ttlMs) return null;
+  return { shipping: old.shipping, shippingAt: new Date(t).toISOString() };
+}
+// Oferta copiada sem nova leitura (loja ou página falhou, loja pulada): o frete obedece à mesma validade. Dentro dela,
+// fica com a data original e origem 'anterior' (não renova shipping_quote); vencida ou sem data, fica desconhecido e o
+// total volta ao preço (nunca inventa frete).
+export function carryShipping(o, now = new Date()) {
+  if (!o.shippingKnown || o.shipping == null) return o;
+  const reuse = shippingQuoteReuse(o, now);
+  if (reuse) return { ...o, shippingAt: reuse.shippingAt, shippingSource: 'anterior' };
+  const { shippingSource, ...rest } = o;
+  const total = o.price != null ? round2(o.price) : null;
+  return { ...rest, shipping: null, shippingKnown: false, shippingAt: null, total, perBooster: o.perBooster && o.total && total ? round2(o.perBooster * total / o.total) : null };
+}
 
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
@@ -165,7 +189,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         for (const u of planned) if (!failedUrls.has(u)) cache.visitedAt[u] = T;
       }
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
-      if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o);
+      if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o, now);
       let matched = 0;
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
@@ -180,15 +204,15 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         let stock = l.stock || 'UNKNOWN';
         if (m.parsed.preorder && stock !== 'OUT_OF_STOCK') stock = 'PRE_ORDER';
         const id = hash(store.id + '|' + l.url + '|' + (l.sellerId || ''));
-        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null;
+        let ship = l.shipping ?? null; let shipAt = ship != null ? T : null; let shipError = null; let shipSource = null;
         if (ship == null && cep && l._vtex && stock === 'IN_STOCK') {
-          try { ship = await vtexShipping(l, cep); shipAt = T; }
+          try { ship = await vtexShipping(l, cep); shipAt = T; shipSource = 'simulacao'; }
           catch (e) {
-            // Simulação falhou: guarda o motivo e usa o último frete conhecido desta oferta, com a data em que foi lido.
-            // Sem frete conhecido antes, fica desconhecido (nunca inventa frete).
+            // Simulação falhou: guarda o motivo e reaproveita a última cotação desta oferta só dentro da validade
+            // (shippingQuoteReuse). A data continua a da cotação original; vencida ou ausente, o frete fica desconhecido.
             shipError = String(e?.message || e).slice(0, 160);
-            const old = lastValidOf(prev[id]);
-            if (old?.shippingKnown && old.shipping != null) { ship = old.shipping; shipAt = old.shippingAt || old.at || old.source_timestamp || null; }
+            const reuse = shippingQuoteReuse(lastValidOf(prev[id]), now);
+            if (reuse) { ship = reuse.shipping; shipAt = reuse.shippingAt; shipSource = 'anterior'; }
           }
         }
         const pp = pickPrice(l.price);
@@ -205,7 +229,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           seller: l.seller || null, sellerId: l.sellerId != null ? String(l.sellerId) : null, sellerKind: l.sellerKind || (store.kind === 'marketplace' ? 'marketplace_seller' : 'store'),
           title: l.title, url: l.url, image: l.image || null, sku: l.sku || null, ean: l.ean || null,
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
-          shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError, total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
+          shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError,
+          ...(shipSource && ship != null ? { shippingSource: shipSource } : {}), total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
           stock, quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
@@ -222,7 +247,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
     const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
-    offers[id] = recent ? { ...o } : staleCopy(o);
+    offers[id] = recent ? carryShipping({ ...o }, now) : staleCopy(o, now);
   }
 
   // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
@@ -254,8 +279,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
     if (p && p.stock !== 'IN_STOCK' && o.stock === 'IN_STOCK') events.push({ offerId: o.id, event: 'restock' });
-    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda.
-    if (p && p.total && o.total && o.total < p.total && o.stock === 'IN_STOCK' && !!p.shippingKnown === !!o.shippingKnown) events.push({ offerId: o.id, event: 'drop', from: p.total });
+    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda (comparableDrop).
+    const drop = comparableDrop(p, o);
+    if (drop) events.push({ offerId: o.id, event: 'drop', from: drop.from, fromShippingKnown: drop.shippingKnown });
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
