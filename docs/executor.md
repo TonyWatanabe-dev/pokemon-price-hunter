@@ -20,3 +20,5 @@ Merge na `main` publica em produção. Por isso o merge exige aprovação explí
 - Nunca sobrescrever trabalho alheio nem resolver conflitos descartando alterações.
 - Não ler nem alterar secrets (`.env`, tokens, chaves).
 - Não fazer deploy nem mexer no banco de produção sem autorização.
+
+Canário 2 recebido via ChatGPT em 2026-10-09
