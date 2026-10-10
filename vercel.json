@@ -1,6 +1,6 @@
 {
   "installCommand": "npm ci --omit=dev --no-audit --no-fund",
-  "buildCommand": "mkdir -p public/data && cp account.js robots.txt favicon.png apple-touch-icon.png og.jpg icon-512.png public/ && cp index.html public/app.html && mkdir -p public/logos && cp -r logos/colecoes public/logos/ && cp data/state.json public/data/",
+  "buildCommand": "mkdir -p public/data && cp account.js robots.txt favicon.png apple-touch-icon.png og.jpg icon-512.png public/ && cp index.html public/app.html && mkdir -p public/logos && cp -r logos/colecoes public/logos/ && cp data/state.json public/data/ && cp config/afiliados/amazon.json public/data/afiliados-amazon.json",
   "outputDirectory": "public",
   "headers": [
     {
