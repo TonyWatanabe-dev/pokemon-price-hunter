@@ -126,7 +126,7 @@ r = await call('/api/v1/site/produtos?loja=b'); assert.equal(r.json.items[0].o.i
 r = await call('/api/v1/site/produtos?max=300'); assert.equal(r.json.total, 0, 'preço até R$ 300: nenhuma ETB com estoque');
 r = await call('/api/v1/site/produtos?estoque=0&loja=rihappycombr'); assert.equal(r.json.total, 0, 'sem estoque negado: oferta sem estoque (oc) não entra');
 r = await call('/api/v1/site/produtos?grupo=Latas'); assert.equal(r.json.total, 0, 'produto sem oferta não aparece na lista');
-for (const bad of ['modo=x', 'ordem=x', 'grupo=x', 'max=-1']) assert.equal((await call('/api/v1/site/produtos?' + bad)).status, 400, bad);
+for (const bad of ['modo=x', 'ordem=x', 'grupo=x', 'max=-1', 'max=Infinity', 'max=abc']) assert.equal((await call('/api/v1/site/produtos?' + bad)).status, 400, bad);
 // produto: ofertas, frete, referência, pistas; inexistente; sem ofertas
 r = await call('/api/v1/site/produto/me05-etb'); const sp = r.json;
 assert.equal(sp.offers.length, 5); assert.equal(sp.liveCount, 3); assert.equal(sp.product.msrp, 400);

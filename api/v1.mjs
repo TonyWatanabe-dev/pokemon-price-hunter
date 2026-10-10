@@ -89,7 +89,7 @@ function route(segs, qs) {
       const modo = str(qs.get('modo'), 10) || 'guardar'; if (!['guardar', 'abrir'].includes(modo)) throw new HttpError(400, 'modo inválido');
       const ordem = str(qs.get('ordem'), 10) || ''; if (ordem && !['score', 'disc', 'price', 'ppb', 'new'].includes(ordem)) throw new HttpError(400, 'ordem inválida');
       const grupo = str(qs.get('grupo'), 20) || ''; if (grupo && !SITE.GROUP_ORDER.includes(grupo)) throw new HttpError(400, 'grupo inválido');
-      const max = str(qs.get('max'), 12) || ''; if (max && !(Number(max) >= 0)) throw new HttpError(400, 'preço máximo inválido');
+      const max = str(qs.get('max'), 12) || ''; if (max && !(Number.isFinite(Number(max)) && Number(max) >= 0)) throw new HttpError(400, 'preço máximo inválido');
       const sp = intIn(qs.get('pagina'), 1, 1, 1000); const sl = intIn(qs.get('limite'), 48, 1, 60);
       return { name: 'site-produtos', kind: 'site', page: sp, limit: sl, F: { mode: modo, sort: ordem, group: grupo, col: str(qs.get('colecao'), 40) || '', store: str(qs.get('loja'), 60) || '',
         type: str(qs.get('tipo'), 40) || '', max, below: bool(qs.get('abaixo')), stock: qs.get('estoque') !== '0', semref: bool(qs.get('semref')) } };
