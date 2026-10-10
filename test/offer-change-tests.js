@@ -133,3 +133,5 @@ t('sem oferta ou sem histórico: sem mudança, com motivo', () => {
 });
 
 console.log(`✓ Mudança da oferta (queda × novo anúncio × restock, #53): ${n} grupos passaram`);
+
+await import('./opportunity-change-api-tests.js');
