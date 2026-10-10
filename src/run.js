@@ -12,7 +12,7 @@ import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIn
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
-import { buildRunRecord, readerSummary, storesSummary, watchedSummary, recordRun } from './opstate.js';
+import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, safeReason, recordRun } from './opstate.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -131,6 +131,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (Date.now() - Date.parse(src.lastCheck) < waitMin * 60e3) return;
     }
     src.checks++; src.lastCheck = T;
+    const t0 = Date.now();
     try {
       const base = store.url.replace(/\/$/, '');
       const platform = store.platform !== 'auto' ? store.platform : (src.platform || await detectPlatform(base));
@@ -210,11 +211,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
-      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null });
+      Object.assign(src, { status: 'ACTIVE', reason: null, fails: 0, ok: src.ok + 1, listings: listings.length, matched, lastSuccess: T, lastNonEmpty: listings.length ? T : src.lastNonEmpty ?? null, lastDurationMs: Date.now() - t0, errorClass: null });
       touched.add(store.id);
     } catch (e) {
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: e.message, fails: (src.fails || 0) + 1 });
-      log(`[${store.id}] ${src.status}: ${e.message}`);
+      const reason = safeReason(e.message);
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason, errorClass: classifyError(e), lastDurationMs: Date.now() - t0, fails: (src.fails || 0) + 1 });
+      log(`[${store.id}] ${src.status} (${src.errorClass}): ${reason}`);
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
@@ -391,9 +393,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), offers: all.length, alerts: delivered.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length });
     recordRun(dataPath('meta.json'), rec);
-    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
+    log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read} · coletores: ${rec.collectors.ok} ok, ${rec.collectors.empty} vazios, ${rec.collectors.failed} com falha de ${rec.collectors.tried} em ${Math.round(rec.durationSec ?? 0)}s`);
   } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;
