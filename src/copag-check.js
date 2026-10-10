@@ -3,14 +3,16 @@ import { readJson, writeJson, configPath } from './db.js';
 import { get } from './http.js';
 import { parseProductPage } from './adapters/jsonld.js';
 import { copagStatus } from './score.js';
+import { isCopagUrl } from './copag-policy.js';
 
 export async function copagCheck({ log = console.log } = {}) {
   const cat = readJson(configPath('catalog.json')); const report = [];
   for (const [id, c] of Object.entries(cat.copag || {})) {
     const p = { id, copag: c };
     const st = copagStatus(p);
-    if (!st.confirmed || c.confidence !== 'OFICIAL') { report.push({ id, status: st.confirmed ? 'CATÁLOGO' : 'NÃO CONFIRMADO' }); continue; }
-    if (c.manual) { report.push({ id, status: 'MANUAL', msrp: c.msrp }); continue; } // tabela confirmada à mão, fonte sem leitura automática
+    // Confere toda fonte oficial da Copag, mesmo vencida (> 30 dias): a conferência que bate é o que renova a validade.
+    if (c.confidence !== 'OFICIAL' || !(c.msrp > 0) || !isCopagUrl(c.source_url)) { report.push({ id, status: 'NÃO CONFIRMADO', reason: st.reason }); continue; }
+    if (c.manual) { report.push({ id, status: st.confirmed ? 'MANUAL' : 'MANUAL ' + st.status.toUpperCase(), msrp: c.msrp }); continue; } // tabela confirmada à mão, fonte sem leitura automática
     try {
       const page = parseProductPage((await get(c.source_url)).text, c.source_url);
       const seen = page?.price?.base ?? null;

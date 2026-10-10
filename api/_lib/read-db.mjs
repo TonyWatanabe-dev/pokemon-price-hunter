@@ -2,6 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
+import { decideCopagFromRows, productCopagFields } from './copag-policy.mjs';
 import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
 import { classifyOfferChange, WINDOW_HOURS, BOUNCE_HOURS } from './offer-change.mjs';
 
@@ -12,17 +13,18 @@ const STOCK_OUT = { in_stock: 'IN_STOCK', out_of_stock: 'OUT_OF_STOCK', preorder
 
 // ---------------------------------------------------------------- Home (formato do state.json, só o necessário)
 const PRODUCTS_SQL = `
-  SELECT p.id, p.legacy_id, p.units, p.variant, p.image_url, p.attrs, c.code AS col_code, c.name AS col_name,
-         r.value AS ref_value, r.verification_status AS ref_status, r.source_url AS ref_url, r.source AS ref_source, r.verified_at AS ref_verified_at,
+  SELECT p.id, p.legacy_id, p.units, p.variant, p.image_url, p.attrs, c.code AS col_code, c.name AS col_name, r.refs,
          (SELECT i.value FROM hunter.product_identifier i WHERE i.product_id = p.id AND i.kind = 'ean' ORDER BY i.value LIMIT 1) AS ean
     FROM hunter.product p
     LEFT JOIN hunter.collection c ON c.id = p.collection_id
-    -- paridade com o site de hoje (robô/catalog.json): só as referências que o robô publica; preço de lançamento (histórico)
-    -- e importações da auditoria NÃO aparecem como "preço Copag" até a fase que decidir a apresentação (6A)
-    LEFT JOIN LATERAL (SELECT value, verification_status, source_url, source, verified_at FROM hunter.reference_price r
+    -- paridade com o robô: só as referências que o robô publica (copag_loja, manual, internet); preço de lançamento
+    -- (histórico) e importações da auditoria NÃO aparecem como "preço Copag". Quem decide confirmado × referência é a
+    -- política única (api/_lib/copag-policy.mjs: fonte oficial da Copag + verificação há no máximo 30 dias), não o SQL.
+    LEFT JOIN LATERAL (SELECT jsonb_agg(jsonb_build_object('id', r.id, 'value', r.value, 'verification_status', r.verification_status,
+                               'source_url', r.source_url, 'source', r.source, 'verified_at', r.verified_at, 'reference_scope', r.reference_scope)) AS refs
+                         FROM hunter.reference_price r
                         WHERE r.product_id = p.id AND r.verification_status IN ('verified', 'pending')
-                          AND r.reference_scope <> 'historical' AND r.source IN ('copag_loja', 'manual', 'internet')
-                        ORDER BY (r.verification_status = 'verified') DESC, r.verified_at DESC NULLS LAST, r.confidence DESC, r.id DESC LIMIT 1) r ON true
+                          AND r.reference_scope <> 'historical' AND r.source IN ('copag_loja', 'manual', 'internet')) r ON true
    WHERE p.legacy_id IS NOT NULL`;
 const OFFERS_SQL = `
   SELECT o.legacy_id, p.legacy_id AS product_legacy, o.store_id, st.name AS store_name, se.name AS seller_name, o.url, o.image_url,
@@ -42,18 +44,21 @@ const COLLECTIONS_SQL = `SELECT code AS id, name, series, aliases FROM hunter.co
  * vêm do banco, e a nota de oportunidade vem do Opportunity Engine; o que ainda só existe no robô (atividade, pistas, reputação, menor preço já visto,
  * data de lançamento de pré-venda, validação da loja) é sobreposto a partir do state.json, por id de oferta/produto.
  */
-export async function stateLikeFromDb(legacy, { dataAt } = {}) {
+export async function stateLikeFromDb(legacy, { dataAt, now = new Date() } = {}) {
   const [prows, orows, crows] = [await q(PRODUCTS_SQL), await q(OFFERS_SQL), await q(COLLECTIONS_SQL)];
   const LP = new Map((legacy.products || []).map((p) => [p.id, p]));
   const LO = new Map((legacy.offers || []).map((o) => [o.id, o]));
   const products = prows.map((r) => {
-    const a = r.attrs || {}; const l = LP.get(r.legacy_id) || {}; const verified = r.ref_status === 'verified';
+    const a = r.attrs || {}; const l = LP.get(r.legacy_id) || {};
+    // preço Copag: mesma decisão do robô (fonte oficial da Copag, verificada há no máximo 30 dias em relação a agora)
+    const d = decideCopagFromRows(r.refs || [], { now: new Date(now) }); const cf = productCopagFields(d); const ref = d.row;
     return {
       id: r.legacy_id, collection: r.col_code, collectionName: r.col_name, type: a.type, typeLabel: a.typeLabel, group: a.group,
       boosters: r.units ?? null, variant: r.variant ?? null, ean: r.ean ?? null, image: r.image_url ?? null,
-      copagConfirmed: verified, msrp: verified ? num(r.ref_value) : null,
-      copagReference: !verified && r.ref_value != null ? num(r.ref_value) : null, copagReferenceUrl: !verified ? r.ref_url ?? null : null,
-      copag: verified ? { source_url: r.ref_url, source_timestamp: iso(r.ref_verified_at), manual: r.ref_source === 'manual' } : null,
+      copagConfirmed: cf.copagConfirmed, msrp: cf.msrp != null ? num(cf.msrp) : null,
+      copagReference: cf.copagReference != null ? num(cf.copagReference) : null, copagReferenceUrl: cf.copagReferenceUrl,
+      copagReferenceStatus: cf.copagReferenceStatus, copagReason: cf.copagReason,
+      copag: cf.copagConfirmed && ref ? { source_url: ref.source_url, source_timestamp: iso(ref.verified_at), manual: ref.source === 'manual' } : null,
       firstSeen: l.firstSeen ?? null, lowestHistorical: l.lowestHistorical ?? null,   // ainda do robô (Price Engine sem histórico suficiente)
       marketAverage: l.marketAverage ?? null, hist: l.hist ?? null,                    // trocados pelo Price Engine na página do produto
     };
