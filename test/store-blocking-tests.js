@@ -1,6 +1,6 @@
 // Coleta nas lojas sem insistir: volume do Shopify, motivo real da falha e espera própria para 429.
 // Offline: fetch simulado (setFetch), nenhuma requisição às lojas. Cobre:
-//   1) Shopify: 1 a 3 páginas de /products.json por loja e rodada (antes: 1 suggest.json por coleção do catálogo, 24);
+//   1) Shopify: 1 a 8 páginas de /products.json por loja e rodada (antes: 1 suggest.json por coleção do catálogo, 24);
 //   2) reason com o status HTTP real (429, 403, desafio com 200, 5xx) e o código de rede (ENOTFOUND, ECONNREFUSED,
 //      TIMEOUT, CERT_*), sem query nem token na URL;
 //   3) espera depois da falha: 429 tem curva própria (Retry-After, 30 min a 2 h); 403/WAF e DNS seguem até 6 h.
@@ -44,20 +44,24 @@ const shopifyStore = (host, products, extra = {}) => {
 };
 
 const measured = {};
-await t('Shopify: no máximo 3 páginas de /products.json por loja, sem uma busca por coleção', async () => {
+const isPage = (p) => p.startsWith('/products.json?limit=250&page=');
+const isSuggest = (p) => p.startsWith('/search/suggest.json?');
+await t('Shopify: no máximo MAX_PAGES (8) páginas de /products.json por loja, sem uma busca por coleção', async () => {
   assert.equal(catalog.collections.length >= 20, true, 'catálogo real com muitas coleções (cada uma era uma busca)');
+  assert.equal(shopify.MAX_PAGES, 8);
   for (const [host, total] of [['vol-pequena.test', 40], ['vol-media.test', 300], ['vol-grande.test', 2000]]) {
     const L = await shopify.search(shopifyStore(host, catalogOf(total)), catalog);
     const req = pages(host);
     measured[host] = { total, requests: req.length, robots: (calls[host] || []).length - req.length };
-    assert.ok(req.length <= 3, `${host}: ${req.length} requisições (${req.join(', ')})`);
-    assert.ok(req.every((p) => p.startsWith('/products.json?limit=250&page=')), `${host}: só /products.json paginado (${req.join(', ')})`);
+    assert.ok(req.length <= shopify.MAX_PAGES, `${host}: ${req.length} requisições (${req.join(', ')})`);
+    assert.ok(req.every(isPage), `${host}: só /products.json paginado (${req.join(', ')})`);
     assert.equal(measured[host].robots, 1, `${host}: robots.txt lido uma vez`);
     assert.ok(L.length > 0 && L.every((l) => /pok[eé]mon/i.test(l.title)), `${host}: só os produtos Pokémon do catálogo`);
   }
   assert.equal(measured['vol-pequena.test'].requests, 1, 'catálogo menor que uma página: 1 requisição (sem pedir a página vazia)');
   assert.equal(measured['vol-media.test'].requests, 2, '300 produtos: 2 páginas');
-  assert.equal(measured['vol-grande.test'].requests, 3, 'catálogo grande: para em 3 páginas');
+  // Na #188 eram 3 requisições (teto de 3 páginas). Com o teto de 8 (regressão da mox.land), 2000 produtos = 8 páginas.
+  assert.equal(measured['vol-grande.test'].requests, 8, 'catálogo grande: para no teto de 8 páginas');
   // o resultado de uma página é o mesmo anúncio que a busca preditiva gerava (mesma extração)
   const [l] = await shopify.search(shopifyStore('vol-um.test', [prod(7, { variants: [{ id: 70, title: 'Default Title', price: '359.90', compare_at_price: '449.90', available: true, sku: 'SH-1', barcode: '789' }], images: [{ src: '//cdn.vol.test/7.jpg' }] })]), catalog);
   assert.deepEqual([l.url, l.price.base, l.listPrice, l.stock, l.sku, l.ean, l.sourceType, l.image],
@@ -165,7 +169,7 @@ await t('rodada completa: sources.json guarda status/código real e a espera cer
     assert.deepEqual([src.r403.status, src.r403.httpStatus], ['BLOCKED', 403]); assert.match(src.r403.reason, /403/);
     assert.deepEqual([src.rdns.status, src.rdns.netCode], ['BLOCKED', 'ENOTFOUND']); assert.match(src.rdns.reason, /ENOTFOUND/);
     assert.equal(src.rok.status, 'ACTIVE');
-    assert.ok(pages('e2e-ok.test').length <= 3, `loja Shopify ativa: ${pages('e2e-ok.test').length} requisições na rodada`);
+    assert.ok(pages('e2e-ok.test').length <= shopify.MAX_PAGES, `loja Shopify ativa: ${pages('e2e-ok.test').length} requisições na rodada`);
     measured.e2eOk = pages('e2e-ok.test').length;
     assert.deepEqual([backoffMs(src.r429), backoffMs(src.r403), backoffMs(src.rdns)].map((x) => x / 60e3), [60, 15, 15], 'espera da 1ª falha: 429 pelo Retry-After (1 h)');
   } finally {
@@ -195,6 +199,108 @@ await t('Shopify /products.json: título sem "Pokémon" que cita coleção do ca
   assert.deepEqual(L.map((l) => l.title).sort(), MOX.map((x) => x[0]).sort(), 'os 4 produtos lacrados entram; Magic e acessório ficam de fora');
   assert.equal(L.filter(casa).length, MOX.length, 'todos casam com o catálogo (como na busca preditiva de antes)');
   assert.equal(pages('mox-titulos.test').length, 1, 'continua 1 página para um catálogo pequeno');
+});
+
+// ---------- 5) regressão da #188, 2ª causa (coleta de 10/10 19:15Z, depois da #191): a mox.land vende outros jogos e
+// os produtos Pokémon dela ficam depois das 3 primeiras páginas de /products.json (148 anúncios lidos, 0 casados).
+const filler = (i) => ({ id: 100000 + i, title: `Card Avulso Magic ${i} Near Mint`, handle: `mtg-avulso-${i}`, product_type: 'Magic', tags: ['MTG'], vendor: 'Wizards',
+  variants: [{ id: 1000000 + i, title: 'Default Title', price: '9.90', available: true }] });
+// catálogo de `total` produtos de outros jogos, com os produtos de `at` ({posição: produto}) no lugar
+const bigCatalog = (total, at = {}) => Array.from({ length: total }, (_, i) => at[i] || filler(i));
+const moxAt = (positions) => Object.fromEntries(positions.map((pos, i) => [pos, moxProd(i)]));
+
+await t('Shopify: catálogo de 1200 com os Pokémon nas páginas 4 e 5 (mox.land) → os anúncios casam', async () => {
+  const host = 'mox-grande.test';
+  const L = await shopify.search(shopifyStore(host, bigCatalog(1200, moxAt([760, 990, 1010, 1190]))), catalog);
+  assert.deepEqual(L.map((l) => l.title).sort(), MOX.map((x) => x[0]).sort(), 'os 4 produtos lacrados depois da página 3 entram');
+  assert.equal(L.filter(casa).length, MOX.length, 'todos casam com o catálogo');
+  assert.deepEqual(pages(host), [1, 2, 3, 4, 5].map((p) => `/products.json?limit=250&page=${p}`), '1200 produtos: 5 páginas, nenhuma busca');
+  assert.equal(L.partial, undefined, 'leu o catálogo inteiro: não é leitura parcial');
+});
+
+await t('Shopify: requisições por tamanho de catálogo; teto atingido registra leitura parcial, sem voltar às 24 buscas', async () => {
+  const counts = {};
+  for (const total of [300, 1200, 3000]) {
+    const host = `cnt-${total}.test`;
+    const L = await shopify.search(shopifyStore(host, bigCatalog(total, { 5: moxProd(0), 2600: moxProd(1) })), catalog);
+    counts[total] = pages(host).length;
+    assert.ok(pages(host).every(isPage), `${host}: só /products.json (${pages(host).join(', ')})`);
+    assert.equal(pages(host).filter(isSuggest).length, 0, `${host}: nenhuma busca suggest.json com catálogo público`);
+    assert.ok(counts[total] <= shopify.MAX_PAGES, `${host}: nunca passa do teto`);
+    assert.equal((calls[host] || []).length, counts[total] + 1, `${host}: páginas + 1 robots.txt`);
+    if (total === 3000) {
+      assert.equal(L.partial, shopify.PARTIAL_REASON, '3000: catálogo maior que o teto fica registrado');
+      assert.match(L.partial, /maior que 8 páginas.*leitura parcial/);
+      assert.deepEqual(L.map((l) => l.title), [MOX[0][0]], '3000: só o que foi lido; nada inventado para o produto depois do teto');
+    } else {
+      assert.equal(L.partial, undefined, `${total}: leitura completa`);
+      assert.deepEqual(L.map((l) => l.title).sort(), [MOX[0][0], ...(total > 2600 ? [MOX[1][0]] : [])].sort());
+    }
+  }
+  measured.counts = counts;
+  assert.deepEqual(counts, { 300: 2, 1200: 5, 3000: 8 }, 'contagem de requisições /products.json');
+});
+
+await t('Shopify: para na página vazia, na página curta e no teto', async () => {
+  // página vazia: catálogo de exatamente 500 → páginas 1 e 2 cheias, a 3 vem vazia e encerra
+  shopifyStore('fim-vazia.test', bigCatalog(500, { 499: moxProd(0) }));
+  const a = await shopify.search({ id: 'v', url: 'https://fim-vazia.test' }, catalog);
+  assert.equal(pages('fim-vazia.test').length, 3, 'página 3 vazia encerra'); assert.equal(a.length, 1); assert.equal(a.partial, undefined);
+  // página curta: 260 → a 2 tem 10 itens e é a última (não pede a 3)
+  shopifyStore('fim-curta.test', bigCatalog(260, { 259: moxProd(0) }));
+  const b = await shopify.search({ id: 'c', url: 'https://fim-curta.test' }, catalog);
+  assert.equal(pages('fim-curta.test').length, 2, 'página curta encerra'); assert.equal(b.length, 1);
+});
+
+await t('Shopify: o mesmo produto em duas páginas vira um anúncio só', async () => {
+  // catálogo mudando durante a leitura: o produto da posição 249 (fim da página 1) reaparece no início da página 2
+  const host = 'dup.test';
+  const list = bigCatalog(400, { 249: moxProd(0), 250: moxProd(0), 300: moxProd(1, { handle: MOX[1][1] }), 301: { ...moxProd(1), id: undefined } });
+  const L = await shopify.search(shopifyStore(host, list), catalog);
+  assert.deepEqual(L.map((l) => l.title).sort(), [MOX[0][0], MOX[1][0]].sort(), 'duplicados por id e por handle/URL entram uma vez');
+  assert.equal(new Set(L.map((l) => l.url)).size, L.length);
+});
+
+await t('Shopify: 429 (Retry-After), 5xx ou timeout no meio da paginação → para, registra o motivo, sem outra rota', async () => {
+  const mid = (host, fail) => { const all = bigCatalog(3000, { 5: moxProd(0) });
+    routes[host] = { handle: (u) => {
+      if (u.pathname !== '/products.json') return json({ resources: { results: { products: [moxProd(1)] } } });
+      const p = Number(u.searchParams.get('page')); return p === 2 ? fail() : json({ products: all.slice((p - 1) * 250, p * 250) });
+    } };
+    return { id: host, url: `https://${host}` };
+  };
+  const e429 = await failure(shopify.search(mid('mid-429.test', () => html('Too Many Requests', 429, { 'retry-after': '900' })), catalog));
+  assert.ok(e429.blocked); assert.equal(e429.httpStatus, 429); assert.equal(e429.retryAfter, 900);
+  assert.equal(pages('mid-429.test').length, 2, '429 na página 2: para ali, sem busca suggest.json');
+  const e500 = await failure(shopify.search(mid('mid-500.test', () => html('erro', 503)), catalog));
+  assert.equal(e500.httpStatus, 503); assert.ok(!e500.blocked); assert.equal(pages('mid-500.test').length, 2, '5xx na página 2: para');
+  const eTo = await failure(shopify.search(mid('mid-to.test', () => { throw Object.assign(new Error('aborted'), { name: 'AbortError' }); }), catalog));
+  assert.equal(eTo.code, 'TIMEOUT'); assert.equal(pages('mid-to.test').length, 2, 'timeout na página 2: para');
+});
+
+await t('rodada: 5xx no meio da paginação fica no sources.json e não vira oferta', async () => {
+  const keep = Object.fromEntries(['HUNTER_CONFIG_DIR', 'HUNTER_DATA_DIR', 'HUNTER_TIPS', 'HUNTER_CEP', 'HUNTER_BUDGET_MIN'].map((k) => [k, process.env[k]]));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-mid-'));
+  try {
+    process.env.HUNTER_CONFIG_DIR = path.join(tmp, 'config'); process.env.HUNTER_DATA_DIR = path.join(tmp, 'data'); process.env.HUNTER_TIPS = '0';
+    delete process.env.HUNTER_CEP; delete process.env.HUNTER_BUDGET_MIN;
+    fs.mkdirSync(process.env.HUNTER_CONFIG_DIR, { recursive: true });
+    fs.copyFileSync(path.join(root, 'config/catalog.json'), path.join(tmp, 'config/catalog.json'));
+    fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: [{ id: 'rmid', name: 'rmid', url: 'https://e2e-mid.test', platform: 'shopify', kind: 'specialist', evidence: {} }] }));
+    fs.writeFileSync(path.join(tmp, 'config/watchlist.json'), JSON.stringify({ settings: { cep: null }, rules: [] }));
+    const all = bigCatalog(1000, { 3: moxProd(0) });
+    routes['e2e-mid.test'] = { handle: (u) => { const p = Number(u.searchParams.get('page')); return p === 2 ? html('erro', 502) : json({ products: all.slice((p - 1) * 250, p * 250) }); } };
+    const { runOnce } = await import('../src/run.js');
+    await runOnce({ log: () => {}, send: { capture: async () => true }, now: new Date() });
+    const src = JSON.parse(fs.readFileSync(path.join(tmp, 'data/sources.json'), 'utf8'));
+    assert.deepEqual([src.rmid.status, src.rmid.httpStatus], ['ERROR', 502]); assert.match(src.rmid.reason, /502/);
+    const offers = Object.values(JSON.parse(fs.readFileSync(path.join(tmp, 'data/offers.json'), 'utf8')));
+    assert.equal(offers.filter((o) => o.storeId === 'rmid').length, 0, 'nenhuma oferta com a leitura pela metade');
+    assert.equal(pages('e2e-mid.test').length, 2);
+  } finally {
+    for (const [k, v] of Object.entries(keep)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
 });
 
 await t('rodada: loja que cai para 0 casados mantém as ofertas stale (sem "removed"); queda parcial remove; sucesso limpa o erro', async () => {
@@ -253,5 +359,5 @@ await t('rodada: loja que cai para 0 casados mantém as ofertas stale (sem "remo
 http.setFetch(globalThis.fetch);
 const v = (h) => measured[h]?.requests;
 console.log(`✓ Coleta sem insistir (Shopify, motivo real, espera do 429): ${n} grupos de testes passaram`
-  + ` | Shopify por loja/rodada: ${v('vol-pequena.test')}/${v('vol-media.test')}/${v('vol-grande.test')} req (40/300/2000 produtos) + 1 robots.txt; antes ${catalog.collections.length} suggest.json + 1 robots.txt`
+  + ` | Shopify por loja/rodada: ${v('vol-pequena.test')}/${v('vol-media.test')}/${v('vol-grande.test')} req (40/300/2000 produtos), ${measured.counts[300]}/${measured.counts[1200]}/${measured.counts[3000]} req (300/1200/3000; teto ${shopify.MAX_PAGES}) + 1 robots.txt; antes ${catalog.collections.length} suggest.json + 1 robots.txt`
   + ` | espera (min) após 1..8 falhas: 429 ${measured.backoff['429'].join(',')}; 403 ${measured.backoff['403'].join(',')}`);
