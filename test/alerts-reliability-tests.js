@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 process.env.HUNTER_CONFIG_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'rel-cfg-')); process.env.HUNTER_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'rel-data-'));
-const { evaluate, dedupe, dispatch, compose } = await import('../src/alerts.js');
+const { evaluate, dedupe, dispatch, compose, tipHits, dispatchTips } = await import('../src/alerts.js');
 let n = 0; const t = async (name, fn) => { await fn(); n++; };
 
 const NOW = Date.parse('2026-10-09T12:00:00Z');
@@ -55,6 +55,72 @@ await t('canal não configurado (null) segue como "só painel": grava e não fic
   const hits = hitsFor(offer()); const sent = {};
   const d = await dispatch(hits, sent, { send: { telegram: async () => null, ntfy: async () => undefined }, now: new Date(NOW) });
   assert.equal(d.length, 1); assert.deepEqual(d[0].channels, []); assert.ok(sent[hits[0].key]);
+});
+
+// Queda/reposição/pista só existem na rodada da transição (run.js gera o evento uma vez; pista só com isNew).
+// Se todos os canais falham, o alerta não pode sumir: fica visível no painel como falha e vai para a fila de
+// pendentes (persistida em alerts-sent.json), reenviada nas rodadas seguintes mesmo sem o evento.
+const counter = () => { const calls = []; return { calls, ok: { telegram: async (m) => { calls.push(m); return true; }, ntfy: async () => null } }; };
+const down = { telegram: async () => false, ntfy: async () => { throw new Error('rede'); } };
+const persist = (s) => JSON.parse(JSON.stringify(s)); // run.js grava e relê alerts-sent.json entre rodadas
+const watch = [{ id: 'w', filter: { productId: 'p1' }, maxPrice: 30 }];  // só a queda dispara
+const restockRule = [{ id: 'rs', filter: { productId: 'p1' }, restock: true }];
+const tip = { id: 't1', isNew: true, productId: 'p1', msrp: 55.99, price: 40, discount: 0.29, collectionName: 'Caos', label: 'Blister', source: 'Pelando', url: 'https://x' };
+
+for (const [nome, rs, ev] of [['queda', watch, { offerId: 'o1', event: 'drop', from: 60 }], ['reposição', restockRule, { offerId: 'o1', event: 'restock' }]]) {
+  await t(`${nome}: falha total fica no painel como falha e é reenviada na rodada seguinte sem o evento, uma vez só`, async () => {
+    let sent = {};
+    const h1 = dedupe(evaluate(rs, [offer()], [ev], prod), sent, {}, NOW, { o1: offer() });
+    assert.equal(h1.length, 1);
+    const d1 = await dispatch(h1, sent, { send: down, now: new Date(NOW) });
+    assert.equal(d1.length, 1, 'não some do painel/alerts.jsonl'); assert.deepEqual(d1[0].channels, []); assert.equal(d1[0].failed, true);
+    sent = persist(sent);
+    const c = counter();
+    const h2 = dedupe(evaluate(rs, [offer()], [], prod), sent, {}, NOW + 900e3, { o1: offer() });
+    assert.equal(h2.length, 0, 'rodada seguinte não tem evento');
+    const d2 = await dispatch(h2, sent, { send: c.ok, now: new Date(NOW + 900e3) });
+    assert.equal(d2.length, 1, 'pendente reenviado'); assert.deepEqual(d2[0].channels, ['telegram']); assert.equal(d2[0].kind, h1[0].kind);
+    assert.equal(c.calls.length, 1); assert.equal(c.calls[0].text, d1[0].text, 'mesma mensagem da rodada original');
+    sent = persist(sent);
+    assert.equal((await dispatch([], sent, { send: c.ok, now: new Date(NOW + 1800e3) })).length, 0, 'entregue: não reenvia');
+    assert.equal(c.calls.length, 1);
+  });
+}
+await t('pista: falha total fica no painel e é reenviada mesmo sem isNew, uma vez só', async () => {
+  let sent = {};
+  const d1 = await dispatchTips(tipHits([tip], sent), sent, { send: down, now: new Date(NOW) });
+  assert.equal(d1.length, 1); assert.deepEqual(d1[0].channels, []); assert.equal(d1[0].failed, true);
+  sent = persist(sent);
+  const c = counter();
+  const h2 = tipHits([{ ...tip, isNew: false }], sent); assert.equal(h2.length, 0);
+  const d2 = await dispatchTips(h2, sent, { send: c.ok, now: new Date(NOW + 900e3) });
+  assert.equal(d2.length, 1); assert.deepEqual(d2[0].channels, ['telegram']); assert.equal(c.calls.length, 1);
+  assert.equal((await dispatchTips([], persist(sent), { send: c.ok, now: new Date(NOW + 1800e3) })).length, 0);
+  assert.equal(c.calls.length, 1);
+  assert.equal((await dispatch([], sent, { send: c.ok, now: new Date(NOW + 900e3) })).length, 0, 'dispatch não mexe na fila de pistas');
+});
+await t('fila: pendente ainda falhando continua pendente; nova queda da mesma oferta substitui o pendente (sem envio duplo); pendente velho expira', async () => {
+  const sent = {};
+  await dispatch(dedupe(evaluate(watch, [offer()], [{ offerId: 'o1', event: 'drop', from: 60 }], prod), sent, {}, NOW, {}), sent, { send: down, now: new Date(NOW) });
+  assert.equal((await dispatch([], sent, { send: down, now: new Date(NOW + 900e3) })).length, 0, 'segue falhando: não repete no painel');
+  const c = counter();
+  const o2 = offer({ total: 35, price: 35 }); // acima do maxPrice: só a queda dispara
+  const h = dedupe(evaluate(watch, [o2], [{ offerId: 'o1', event: 'drop', from: 39.9 }], prod), sent, {}, NOW + 1800e3, {});
+  assert.equal(h.length, 1);
+  const d = await dispatch(h, sent, { send: c.ok, now: new Date(NOW + 1800e3) });
+  assert.equal(d.length, 1); assert.equal(c.calls.length, 1, 'só a queda nova, não a antiga também'); assert.match(c.calls[0].text, /35,00/);
+  assert.equal((await dispatch([], sent, { send: c.ok, now: new Date(NOW + 2700e3) })).length, 0); assert.equal(c.calls.length, 1);
+  const old = {};
+  await dispatch(dedupe(evaluate(watch, [offer()], [{ offerId: 'o1', event: 'drop', from: 60 }], prod), old, {}, NOW, {}), old, { send: down, now: new Date(NOW) });
+  assert.equal((await dispatch([], old, { send: c.ok, now: new Date(NOW + 25 * 3600e3) })).length, 0, 'pendente com mais de 24h não é enviado (informação velha)');
+  assert.equal(c.calls.length, 1); assert.ok(old['drop|o1'] && !old['drop|o1'].pending, 'sai da fila mas segue registrado');
+});
+await t('canal parcialmente ok: entrega e não reenvia a ninguém na rodada seguinte', async () => {
+  const sent = {}; const c = counter();
+  const part = { telegram: c.ok.telegram, ntfy: async () => false };
+  const d = await dispatch(dedupe(evaluate(watch, [offer()], [{ offerId: 'o1', event: 'drop', from: 60 }], prod), sent, {}, NOW, {}), sent, { send: part, now: new Date(NOW) });
+  assert.equal(d.length, 1); assert.deepEqual(d[0].channels, ['telegram']); assert.ok(!d[0].failed); assert.ok(!sent['drop|o1'].pending);
+  assert.equal((await dispatch([], sent, { send: part, now: new Date(NOW + 900e3) })).length, 0); assert.equal(c.calls.length, 1);
 });
 
 console.log(`✓ Confiabilidade dos alertas (#45): ${n} grupos passaram`);

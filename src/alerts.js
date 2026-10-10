@@ -89,18 +89,45 @@ export const transports = {
   },
 };
 
-export async function dispatch(hits, sent, { send = transports, now = new Date() } = {}) {
-  const delivered = [];
-  for (const h of hits) {
-    const msg = compose(h); const channels = []; let failed = 0;
-    // false/exceção = tentativa que falhou; null/undefined = canal não configurado (não conta como falha)
-    for (const [name, fn] of Object.entries(send)) { try { const r = await fn(msg); if (r) channels.push(name); else if (r === false) failed++; } catch { failed++; /* canal indisponível */ } }
-    // Todos os canais configurados falharam: não grava como enviado, a próxima rodada tenta de novo (sem repetir no painel).
-    if (!channels.length && failed) continue;
-    sent[h.key] = { at: now.toISOString(), total: h.offer.total, discount: h.offer.discount ?? null, offerId: h.offer.id };
-    delivered.push({ at: now.toISOString(), kind: h.kind, rule: h.rule.id, ruleLabel: h.rule.label, offerId: h.offer.id, productId: h.offer.productId, total: h.offer.total, channels, text: msg.text, url: msg.url });
+// Envia a todos os canais. false/exceção = tentativa que falhou; null/undefined = canal não configurado (não conta como falha).
+// failed = todos os canais configurados falharam.
+async function sendAll(msg, send) {
+  const channels = []; let failed = 0;
+  for (const [name, fn] of Object.entries(send)) { try { const r = await fn(msg); if (r) channels.push(name); else if (r === false) failed++; } catch { failed++; /* canal indisponível */ } }
+  return { channels, failed: !channels.length && failed > 0 };
+}
+
+// Preço-alvo/desconto: a condição persiste, então a próxima rodada gera o hit de novo e o retry é só não gravar.
+// Queda, reposição e pista só existem na rodada da transição: em falha total vão para a fila de pendentes
+// (campo pending em alerts-sent.json), aparecem no painel como falha e são reenviados nas rodadas seguintes.
+const RETRY_BY_CONDITION = new Set(['target', 'deal']);
+const PENDING_MAX_MS = 24 * 3600e3; // pendente mais velho que isso é informação vencida: sai da fila sem enviar
+
+async function retryPending(sent, mine, handled, send, now) {
+  const out = [];
+  for (const [key, s] of Object.entries(sent)) {
+    if (!s?.pending || !mine(key) || handled.has(key)) continue;
+    if (now.getTime() - Date.parse(s.pending.since) > PENDING_MAX_MS) { delete s.pending; continue; }
+    const { channels, failed } = await sendAll(s.pending.msg, send);
+    if (failed) continue; // segue pendente, sem repetir no painel
+    out.push({ at: now.toISOString(), ...s.pending.alert, channels, text: s.pending.msg.text, url: s.pending.msg.url, retried: true });
+    delete s.pending;
   }
-  return delivered;
+  return out;
+}
+
+export async function dispatch(hits, sent, { send = transports, now = new Date() } = {}) {
+  const delivered = []; const handled = new Set();
+  for (const h of hits) {
+    const msg = compose(h); const { channels, failed } = await sendAll(msg, send);
+    // Todos os canais configurados falharam num alerta que se repete: não grava, a próxima rodada tenta de novo (sem repetir no painel).
+    if (failed && RETRY_BY_CONDITION.has(h.kind)) continue;
+    const alert = { kind: h.kind, rule: h.rule.id, ruleLabel: h.rule.label, offerId: h.offer.id, productId: h.offer.productId, total: h.offer.total };
+    sent[h.key] = { at: now.toISOString(), total: h.offer.total, discount: h.offer.discount ?? null, offerId: h.offer.id, ...(failed ? { pending: { since: now.toISOString(), msg, alert } } : {}) };
+    handled.add(h.key);
+    delivered.push({ at: now.toISOString(), ...alert, channels, text: msg.text, url: msg.url, ...(failed ? { failed: true } : {}) });
+  }
+  return [...delivered, ...await retryPending(sent, (k) => !k.startsWith('tip|'), handled, send, now)];
 }
 
 // Pistas (Pelando/Telegram): avisam só quando o produto foi identificado, o preço Copag está confirmado
@@ -115,13 +142,14 @@ export function composeTip(t) {
   return { title: '💡 Pista: ' + t.label, text: lines.join('\n'), url: t.url, button: 'VER PROMOÇÃO' };
 }
 export async function dispatchTips(hits, sent, { send = transports, now = new Date() } = {}) {
-  const delivered = [];
+  const delivered = []; const handled = new Set();
   for (const t of hits) {
-    const msg = composeTip(t); const channels = []; let failed = 0;
-    for (const [name, fn] of Object.entries(send)) { try { const r = await fn(msg); if (r) channels.push(name); else if (r === false) failed++; } catch { failed++; /* canal indisponível */ } }
-    if (!channels.length && failed) continue;
-    sent['tip|' + t.id] = { at: now.toISOString(), total: t.price };
-    delivered.push({ at: now.toISOString(), kind: 'tip', rule: 'pista', ruleLabel: 'Pista', productId: t.productId, total: t.price, channels, text: msg.text, url: msg.url });
+    const msg = composeTip(t); const { channels, failed } = await sendAll(msg, send);
+    // Pista só é nova uma vez (isNew): falha total vai para a fila de pendentes em vez de sumir.
+    const alert = { kind: 'tip', rule: 'pista', ruleLabel: 'Pista', productId: t.productId, total: t.price };
+    sent['tip|' + t.id] = { at: now.toISOString(), total: t.price, ...(failed ? { pending: { since: now.toISOString(), msg, alert } } : {}) };
+    handled.add('tip|' + t.id);
+    delivered.push({ at: now.toISOString(), ...alert, channels, text: msg.text, url: msg.url, ...(failed ? { failed: true } : {}) });
   }
-  return delivered;
+  return [...delivered, ...await retryPending(sent, (k) => k.startsWith('tip|'), handled, send, now)];
 }
