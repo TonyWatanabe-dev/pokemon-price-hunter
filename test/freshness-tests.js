@@ -236,3 +236,4 @@ await t('12. SEO: sem dados em dia, rota que não é a Home sai sem canonical e 
 
 setLegacyLoader(null);
 console.log(`✓ Frescor dos dados (Lote 2): ${n} grupos de testes passaram${DB ? ' (puro + banco)' : ' (puro)'}`);
+await import('./seo-product-shipping-tests.js');
