@@ -2407,7 +2407,7 @@ function loading(){
     <div class="pod-skel" aria-hidden="true"><i></i><i></i><i></i></div></div></section>`;
     document.body.classList.add("intro");renderDeals.done=true;return;
   }
-  $("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
+  $("#view").innerHTML=`<div class="layout" aria-busy="true"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`;
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
@@ -2482,7 +2482,7 @@ const cardE=(e)=>({p:hydP({...(P[e.p.id]||{}),...e.p}),o:e.o,n:e.n});
 let prodReq="";
 async function renderProdutosApi(){
   const key=prodQuery(1);prodReq=key;
-  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
+  if(!$("#view .prods")){$("#view").innerHTML=`<div class="layout" aria-busy="true"><div class="skel" style="height:330px;border-radius:20px"></div><div><div class="skel" style="height:40px;border-radius:999px"></div><div class="binder" style="margin-top:16px">${'<div class="skel" style="height:250px"></div>'.repeat(6)}</div></div></div>`}
   const d=await apiGet(key);if(prodReq!==key||view!=="produtos")return;
   if(!d||d.notFound){ensureFull();return}
   mergeSide(d);paintProdutos({list:d.items.map(cardE),total:d.total,facets:d.facets,noCopag:null,noCopagCount:d.noCopagCount,refNet:d.refNet,next:d.pages>1?2:null});
@@ -2506,7 +2506,7 @@ function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
   return fullP||=fetchState().then((st)=>{fullP=null;
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
 let refreshing=false;
@@ -2521,7 +2521,7 @@ async function load(){
   loading();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)){render();return}
-  $("#view").innerHTML=`<div class="empty err-state" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  $("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
 }
 
 /* Eventos */
