@@ -11,8 +11,10 @@ execFileSync('node', ['tools/db-migrate.mjs'], { env: process.env, stdio: 'pipe'
 execFileSync('node', ['tools/db-migrate.mjs'], { env: process.env, stdio: 'pipe' }); // 2ª vez não faz nada
 
 const catalog = { collections: [{ id: 'me05', name: 'Escuridão Absoluta', series: 'Megaevolução' }] };
+// Copag verificada ontem (relativo ao relógio): a view do motor só aceita verificação de até 30 dias (migration 010)
+const COPAG_SEEN = new Date(Date.now() - 864e5).toISOString();
 const prod = { id: 'me05-etb', collection: 'me05', collectionName: 'Escuridão Absoluta', type: 'etb', typeLabel: 'Treinador Avançado (ETB)', group: 'ETB', boosters: 9, offerCount: 1,
-  copagConfirmed: true, msrp: 399.99, copag: { source_url: 'https://www.copagloja.com.br/etb/p', confidence: 'OFICIAL', source_timestamp: '2026-10-08T10:00:00Z' } };
+  copagConfirmed: true, msrp: 399.99, copag: { source_url: 'https://www.copagloja.com.br/etb/p', confidence: 'OFICIAL', source_timestamp: COPAG_SEEN } };
 const dup = { ...prod, id: 'ev05-etb', collection: 'ev05', copagConfirmed: false, offerCount: 0 };
 const offer = (price, stock, t) => ({ id: 'o1', productId: 'me05-etb', storeId: 'loja', title: 'ETB', url: 'https://loja/etb', price, total: price, shipping: null, shippingKnown: false, stock, matchConfidence: 0.9, firstSeen: '2026-10-08T10:00:00Z', source_timestamp: t });
 const state = (o) => ({ collections: [], products: [prod, dup], sources: [{ id: 'loja', name: 'Loja', url: 'https://loja.com.br', status: 'ACTIVE' }], reputation: {}, offers: [o] });
@@ -36,6 +38,21 @@ assert.equal((await q('SELECT slug FROM hunter.product'))[0].slug, slug);
 assert.equal((await q('SELECT total_price FROM hunter.offer WHERE legacy_id = $1', ['o1']))[0].total_price, null, 'frete desconhecido: sem total');
 assert.equal((await q("SELECT count(*)::int n FROM hunter.reference_price_current"))[0].n, 1);
 assert.equal((await q("SELECT status FROM hunter.offer WHERE legacy_id = 'velha'"))[0].status, 'removed');
+
+// corrida/retry: resposta antiga não sobrescreve observação mais nova; mesma leitura repetida é idempotente
+const cur = async () => (await q('SELECT price::float, stock_status, last_seen_at FROM hunter.offer WHERE legacy_id = $1', ['o1']))[0];
+const stale = await tx((c) => syncState(c, { state: state(offer(999, 'IN_STOCK', '2026-10-08T12:00:00Z')), catalog, historyLines: [] }));
+assert.equal(stale.offersStale, 1); assert.equal(stale.stockEvents, 0);
+assert.deepEqual([(await cur()).price, (await cur()).stock_status], [320, 'out_of_stock'], 'leitura antiga descartada');
+const retry = await tx((c) => syncState(c, { state: state(offer(320, 'OUT_OF_STOCK', '2026-10-09T10:00:00Z')), catalog, historyLines: [] }));
+assert.equal(retry.offersStale, 0, 'mesmo carimbo é aceito (retry idempotente)');
+await Promise.all([ // dois syncs concorrentes, o mais novo vence qualquer que seja a ordem
+  tx((c) => syncState(c, { state: state(offer(310, 'IN_STOCK', '2026-10-09T11:00:00Z')), catalog, historyLines: [] })),
+  tx((c) => syncState(c, { state: state(offer(305, 'IN_STOCK', '2026-10-09T12:00:00Z')), catalog, historyLines: [] }))]);
+assert.equal((await cur()).price, 305, 'observação mais recente prevalece na concorrência');
+// sem carimbo da fonte: vale como leitura de agora (não congela a oferta)
+await tx((c) => syncState(c, { state: state({ ...offer(300, 'IN_STOCK', null), source_timestamp: undefined }), catalog, historyLines: [] }));
+assert.equal((await cur()).price, 300);
 
 // oferta some da loja → removida, histórico intacto
 await tx((c) => syncState(c, { state: { ...state(offer(320, 'OUT_OF_STOCK', '2026-10-09T10:00:00Z')), offers: [] }, catalog, historyLines: [] }));
