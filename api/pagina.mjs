@@ -7,6 +7,7 @@ import { state, slugs, label, live, SITE, colSlug, typeSlug, esc, brl, pct, best
 import { apiDbEnabled } from './_lib/db.mjs';
 import { listOpportunities } from './_lib/read-db.mjs';
 import { classify, usable, dbDataAt } from './_lib/freshness.mjs';
+import { byComparableTotal, shipKnown } from './_lib/offer-rank.mjs';
 
 let page = { t: 0, html: null };
 const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
@@ -21,6 +22,9 @@ const noindex = (h) => h.replace(/<link rel="canonical" href="[^"]*">\n?/, '').r
 const NAME = 'TCG Price Hunter';
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const crumbs = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + u })) });
+// Frete da oferta em texto (issue #84, mesma leitura do site: index.html shipNote). Só diz "com frete"/"frete grátis"
+// quando o frete é conhecido; sem frete informado, o valor é só o preço e o texto avisa "frete a calcular".
+const shipTag = (o) => (!shipKnown(o) ? 'frete a calcular' : Number(o.shipping) > 0 ? 'com frete' : 'frete grátis');
 const bc = (items) => `<nav class="ssr-bc" aria-label="Caminho">${items.map(([n, u], i) => (i < items.length - 1 ? `<a href="${u}">${esc(n)}</a>` : `<span>${esc(n)}</span>`)).join(' › ')}</nav>`;
 
 function prodRow(p, o, of, extra = '') {
@@ -40,23 +44,25 @@ function build(t, slug, s, opp = null) {
   if (t === 'produto') {
     const p = (s.products || []).find((x) => x.id === (SL[slug] || slug));
     if (!p) return null;
-    const offers = (s.offers || []).filter((o) => o.productId === p.id && live(o)).sort((a, b) => a.total - b.total);
-    const b0 = offers[0]; const name = `${label(p)} ${p.collectionName}`;
+    // Melhor oferta = a mesma do site (index.html bestOffer, #178) e de _seo.mjs bestBy (#182): frete conhecido (ou grátis)
+    // compara pelo total; frete desconhecido nunca vence quem tem frete conhecido; só desconhecidas, vale o menor preço.
+    const offers = (s.offers || []).filter((o) => o.productId === p.id && live(o)).sort(byComparableTotal);
+    const b0 = offers[0]; const k0 = !!b0 && shipKnown(b0); const name = `${label(p)} ${p.collectionName}`;
     const col = (s.collections || []).find((c) => c.id === p.collection); const ty = (s.types || []).find((x) => x.id === p.type);
     const url = `/produto/${of[p.id]}`;
-    const title = `${name} Pokémon TCG${b0 ? `: a partir de ${brl(b0.total)}${pix(b0)}` : ': preço e lojas'} | ${NAME}`;
+    const title = `${name} Pokémon TCG${b0 ? `: a partir de ${brl(b0.total)}${pix(b0)}${k0 ? '' : ' (frete a calcular)'}` : ': preço e lojas'} | ${NAME}`;
     const desc = b0
-      ? `${name} (Pokémon TCG lacrado, Copag): menor preço ${brl(b0.total)}${pix(b0)} em ${b0.storeName}${p.copagConfirmed && b0.discount > 0 ? `, ${pct(b0.discount)} abaixo do preço sugerido Copag (${brl(p.msrp)})` : ''}. Compare ${offers.length} ${offers.length === 1 ? 'loja' : 'lojas'} com estoque.`
+      ? `${name} (Pokémon TCG lacrado, Copag): ${k0 ? 'menor total' : 'menor preço'} ${brl(b0.total)}${pix(b0)} (${shipTag(b0)}) em ${b0.storeName}${p.copagConfirmed && b0.discount > 0 ? `, ${pct(b0.discount)} abaixo do preço sugerido Copag (${brl(p.msrp)})` : ''}. Compare ${offers.length} ${offers.length === 1 ? 'loja' : 'lojas'} com estoque.`
       : `${name} (Pokémon TCG lacrado, Copag): preço sugerido${p.copagConfirmed ? ` ${brl(p.msrp)}` : ''}, histórico e lojas que vendem no Brasil.`;
     const img = b0?.image || p.image || `${SITE}/og.jpg`;
     const ean = [p.ean, ...offers.map((o) => o.ean)].find((x) => /^\d{13}$/.test(String(x || '')));
     const trail = [['Início', '/'], ...(col ? [[col.name, `/colecao/${colSlug(col)}`]] : []), ...(ty ? [[ty.label, `/tipo/${typeSlug(ty)}`]] : []), [label(p), url]];
     const json = [{ '@context': 'https://schema.org', '@type': 'Product', name, image: img, description: desc, sku: p.id, category: p.typeLabel, brand: { '@type': 'Brand', name: 'Pokémon TCG' }, ...(ean ? { gtin13: ean } : {}),
-      ...(offers.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'BRL', lowPrice: offers[0].total, highPrice: offers[offers.length - 1].total, offerCount: offers.length, availability: 'https://schema.org/InStock' } } : {}) }, crumbs(trail)];
+      ...(offers.length ? { offers: { '@type': 'AggregateOffer', priceCurrency: 'BRL', lowPrice: b0.total, highPrice: Math.max(...offers.map((o) => o.total)), offerCount: offers.length, availability: 'https://schema.org/InStock' } } : {}) }, crumbs(trail)];
     const same = prods.filter((x) => x.collection === p.collection && x.id !== p.id).sort(sortP).slice(0, 12);
     const body = `${bc(trail)}<h1>${esc(name)}</h1>
-<p>${b0 ? `Menor preço com estoque agora: <b>${brl(b0.total)}${pix(b0)}</b> em ${esc(b0.storeName)}.` : 'Nenhuma loja acompanhada tem este produto em estoque agora.'}${p.copagConfirmed && p.msrp ? ` Preço sugerido Copag: ${brl(p.msrp)}${b0 && b0.discount > 0 ? ` (${pct(b0.discount)} abaixo)` : ''}.` : ''}${p.boosters ? ` ${p.boosters} boosters${b0 ? `, ${brl(b0.total / p.boosters)} por booster` : ''}.` : ''}</p>
-${offers.length ? `<h2>Onde comprar</h2><table class="ssr-t"><thead><tr><th>Loja</th><th>Preço</th></tr></thead><tbody>${offers.slice(0, 15).map((o) => `<tr><td>${esc(o.storeName)}${o.seller && !String(o.storeName).toLowerCase().includes(String(o.seller).toLowerCase()) ? ` (vendido por ${esc(o.seller)})` : ''}</td><td>${brl(o.total)}${pix(o)}</td></tr>`).join('')}</tbody></table>` : ''}
+<p>${b0 ? (k0 ? `Melhor preço com estoque agora: <b>${brl(b0.total)}${pix(b0)}</b> (${shipTag(b0)}) em ${esc(b0.storeName)}.` : `Menor preço com estoque agora, frete a calcular: <b>${brl(b0.total)}${pix(b0)}</b> em ${esc(b0.storeName)}.`) : 'Nenhuma loja acompanhada tem estoque confirmado deste produto agora.'}${p.copagConfirmed && p.msrp ? ` Preço sugerido Copag: ${brl(p.msrp)}${b0 && b0.discount > 0 ? ` (${pct(b0.discount)} abaixo)` : ''}.` : ''}${p.boosters ? ` ${p.boosters} boosters${b0 ? `, ${brl(b0.total / p.boosters)} por booster` : ''}.` : ''}</p>
+${offers.length ? `<h2>Onde comprar</h2><table class="ssr-t"><thead><tr><th>Loja</th><th>Preço</th></tr></thead><tbody>${offers.slice(0, 15).map((o) => `<tr><td>${esc(o.storeName)}${o.seller && !String(o.storeName).toLowerCase().includes(String(o.seller).toLowerCase()) ? ` (vendido por ${esc(o.seller)})` : ''}</td><td>${brl(o.total)}${pix(o)} (${shipTag(o)})</td></tr>`).join('')}</tbody></table>` : ''}
 ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => prodRow(x, best[x.id], of)).join('')}</ul>` : ''}`;
     return { title, desc, url, img, json, body, noindex: !offers.length };
   }
@@ -102,7 +108,8 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     parts.push(`Opportunity Score ${x.opportunity_score}`);
     return `<li><a href="/produto/${esc(pref)}">${esc(x.product.name)}</a> — <b>${brl(x.price)}</b> em ${esc(x.store?.name || '')} (${parts.join(', ')})</li>`; }).join('')}</ol>` : '';
   if (t === 'precos') main = `<table class="ssr-t"><thead><tr><th>Produto</th><th>Preço sugerido</th></tr></thead><tbody>${(s.products || []).filter((p) => p.copagConfirmed && p.msrp).map((p) => `<tr><td><a href="/produto/${of[p.id]}">${esc(p.collectionName)} · ${esc(label(p))}</a></td><td>${brl(p.msrp)}</td></tr>`).join('')}</tbody></table>`;
-  if (t === 'produtos') { const best = {}; for (const o of s.offers || []) { if (o.stock !== 'IN_STOCK' || o.anomalous || !P[o.productId]) continue; if (!best[o.productId] || o.total < best[o.productId].total) best[o.productId] = o; } main = `<ul>${Object.values(best).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>`; }
+  // melhor oferta de cada produto: a mesma de bestBy (_seo.mjs, issue #84), não o menor total bruto
+  if (t === 'produtos') main = `<ul>${Object.values(best).filter((o) => P[o.productId]).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>`;
   if (t === 'pre-vendas') { const pre = (s.offers || []).filter((o) => o.stock === 'PRE_ORDER' && P[o.productId]); main = pre.length ? `<ul>${pre.slice(0, 30).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>` : '<p>Nenhuma pré-venda aberta agora.</p>'; }
   const json = t === 'home' ? [{ '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'Comparador de preços de Pokémon TCG', url: SITE + '/', inLanguage: 'pt-BR' }, { '@context': 'https://schema.org', '@type': 'Organization', name: NAME, url: SITE + '/', logo: SITE + '/icon-512.png', email: 'contato.tcgpricehunter@gmail.com' }] : [crumbs([['Início', '/'], [h1, url]])];
   return { title, desc, url, json, body: `<h1>${esc(h1)}</h1><p>${esc(desc)}</p>${main}${t === 'home' || t === 'precos' ? navLinks : ''}` };
