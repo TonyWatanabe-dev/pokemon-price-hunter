@@ -43,7 +43,10 @@ export function evaluate(rules, offers, events, products, { opp = new Map(), log
   return [...hits.entries()].map(([key, h]) => ({ key, ...h }));
 }
 
-export function dedupe(hits, sent, { cooldownHours = 6, minDropPct = 0.01 } = {}, now = Date.now(), offersById = {}) {
+export function dedupe(hits, sent, settings, now = Date.now(), offersById = {}) {
+  // Preferências ausentes (settings null/undefined) ou inválidas caem no padrão, sem lançar.
+  const num = (v, d) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : d);
+  const cooldownHours = num(settings?.cooldownHours, 6); const minDropPct = num(settings?.minDropPct, 0.01);
   const out = [];
   for (const h of hits) {
     const prev = sent[h.key];
