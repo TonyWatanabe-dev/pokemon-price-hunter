@@ -24,3 +24,10 @@ Merge na `main` publica em produção. Por isso o merge exige aprovação explí
 - Nunca sobrescrever trabalho alheio nem resolver conflitos descartando alterações.
 - Não ler nem alterar secrets (`.env`, tokens, chaves).
 - Não fazer deploy nem mexer no banco de produção sem autorização.
+
+## Fila pelo GitHub Issues
+
+Além de `~/pph-executor/inbox`, o executor pega issues abertas pelo dono do repositório com a label `executor:ready`, uma por vez, a mais antiga primeiro.
+O ciclo de labels é `executor:ready` → `executor:running` → `executor:done`, `executor:failed` ou `executor:blocked` (cota, limite de uso ou autenticação, sem nova tentativa automática).
+O resultado volta como comentário na issue só com status, branch, SHA, link do PR e CI, porque o repositório é público.
+O merge continua exigindo aprovação humana.

@@ -1,7 +1,9 @@
 // Cliente HTTP educado: UA honesto, timeout, intervalo por domínio, detecção de bloqueio.
 // Nunca tenta contornar CAPTCHA, login ou bloqueio: só reporta.
+import { assertSafeUrl } from './urlguard.js';
 const UA = process.env.HUNTER_UA || 'PokeHunterBR/1.0 (monitor pessoal de precos; respeita robots.txt)';
 const DELAY = Number(process.env.HUNTER_DOMAIN_DELAY_MS ?? 1500);
+const MAX_REDIRECTS = 5;
 let _fetch = globalThis.fetch;
 export const setFetch = (f) => { _fetch = f; };
 export const userAgent = UA;
@@ -18,7 +20,7 @@ export class BlockedError extends Error {
 const CHALLENGE = /cf-chl|challenge-platform|captcha-delivery|just a moment\.\.\.|account-verification|are you a robot|access denied/i;
 
 export async function request(url, { method = 'GET', accept = 'text/html', body, headers = {}, timeout = 10000 } = {}) {
-  const host = new URL(url).host;
+  const host = assertSafeUrl(url).host;
   const wait = (lastHit.get(host) || 0) + (HOST_DELAY[host] ?? DELAY) - Date.now();
   if (wait > 0) await sleep(wait);
   lastHit.set(host, Date.now());
@@ -26,10 +28,20 @@ export async function request(url, { method = 'GET', accept = 'text/html', body,
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeout);
   try {
-    const res = await _fetch(url, {
-      method, body, signal: ctrl.signal, redirect: 'follow',
-      headers: { 'user-agent': UA, accept, 'accept-language': 'pt-BR,pt;q=0.9', ...headers },
-    });
+    // Redirecionamentos seguidos à mão: cada destino passa pela guarda antes de ser buscado.
+    let cur = url; let m = method; let b = body; let res;
+    for (let hop = 0; ; hop++) {
+      res = await _fetch(cur, {
+        method: m, body: b, signal: ctrl.signal, redirect: 'manual',
+        headers: { 'user-agent': UA, accept, 'accept-language': 'pt-BR,pt;q=0.9', ...headers },
+      });
+      const loc = res.status >= 300 && res.status < 400 ? res.headers?.get?.('location') : null;
+      if (!loc) break;
+      if (hop >= MAX_REDIRECTS) throw new Error(`Redirecionamentos demais em ${host}`);
+      cur = assertSafeUrl(new URL(loc, cur)).href;
+      if (![307, 308].includes(res.status)) { m = 'GET'; b = undefined; }
+    }
+    if (cur !== url && !res.url) Object.defineProperty(res, 'url', { value: cur });
     const text = await decodeBody(res);
     const finalUrl = res.url || url;
     const looksChallenge = text.length < 30000 && CHALLENGE.test(text.slice(0, 8000));
