@@ -1,6 +1,7 @@
 // Shopify: /products.json paginado (no máximo 3 páginas) com fallback para a busca preditiva.
 import { getJson, netCode } from '../http.js';
 import { guard, brl, searchTerms } from './common.js';
+import { normalize, detectCollection } from '../match.js';
 
 export async function detect(base) {
   try { const j = await getJson(base + '/products.json?limit=1'); return Array.isArray(j.products); } catch (e) { if (e.blocked && e.status === 429) throw e; return false; /* 401/403 numa rota de teste = não é essa plataforma; o bloqueio real aparece na home */ }
@@ -23,6 +24,17 @@ function toListing(base, p, v, multi) {
   };
 }
 
+// Filtro do /products.json: só reduz volume, quem decide é o matchProduct (a jusante). Muita loja não escreve "Pokémon"
+// no título ("Booster - Megaevolução 4 Caos Ascendente", mox.land): aceita também o título que cita uma coleção do
+// catálogo (os mesmos nomes que a busca preditiva usava), com a mesma regra do matchProduct (detectCollection).
+const citesCollection = (title, catalog) => {
+  if (typeof title !== 'string') return false;
+  const cols = (catalog?.collections || []).map((x) => ({ ...x, aliases: x.aliases || [] }));
+  const c = detectCollection(normalize(title), cols);
+  return !!(c.id || c.ambiguous);
+};
+const pokemonish = (p, catalog) => /pok[eé]mon/i.test(`${p?.title} ${p?.product_type} ${p?.tags} ${p?.vendor}`) || citesCollection(p?.title, catalog);
+
 const add = (out, base, p) => {
   const vs = p?.variants?.length ? p.variants : [{ price: p?.price, available: p?.available }];
   for (const v of vs) { const l = toListing(base, p, v, vs.length > 1); if (l) out.set(l.url, l); }
@@ -41,7 +53,7 @@ export async function search(store, catalog) {
     // bloqueio, rede/timeout ou falha no meio da paginação: para aqui (nunca vira nova tentativa por outra rota)
     catch (e) { if (e.blocked || page > 1 || netCode(e)) throw e; catalogWorks = false; break; }
     if (!Array.isArray(products) || (page === 1 && !products.length)) { if (page === 1) catalogWorks = false; break; }
-    for (const p of products) if (/pok[eé]mon/i.test(`${p?.title} ${p?.product_type} ${p?.tags} ${p?.vendor}`)) add(out, base, p);
+    for (const p of products) if (pokemonish(p, catalog)) add(out, base, p);
     if (products.length < PAGE) break; // última página: não pede a vazia
   }
   if (catalogWorks) return [...out.values()];
