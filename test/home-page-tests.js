@@ -42,7 +42,7 @@ function sandbox(responder) {
     esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     money: (v) => (v == null ? '-' : 'R$ ' + Number(v).toFixed(2).replace('.', ',')), ic: (id) => `<i data-ic="${id}"></i>`,
     photo: () => '<div class="photo"></div>', catOf: () => 'blister', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '',
-    safeUrl: (u) => u, pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', live: () => true, label: (p) => p.type, storeTxt: (o) => o.storeName,
+    safeUrl: (u) => u, outUrl: (u) => u, pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', live: () => true, label: (p) => p.type, storeTxt: (o) => o.storeName,
     sectionHead: (i, title) => `<h2>${title}</h2>`, seeAll: (go, l = 'Ver todas') => `<a data-go="${go}">${l}</a>`,
     stageInit() {}, revealInit() {}, document: { addEventListener() {}, querySelectorAll: () => [] },
     view: 'deals', $: (sel) => slots[sel] || null,

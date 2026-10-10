@@ -40,7 +40,7 @@ function sandbox(api, extra = {}) {
     esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     money: (v) => (v == null ? '-' : 'R$ ' + Number(v).toFixed(2).replace('.', ',')), ic: (id) => `<i data-ic="${id}"></i>`,
     photo: () => '<div class="photo"></div>', catOf: () => 'etb', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '',
-    safeUrl: (u) => u, pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', live: () => true, label: (p) => p.type, storeTxt: (o) => o.storeName,
+    safeUrl: (u) => u, outUrl: (u) => u, pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', live: () => true, label: (p) => p.type, storeTxt: (o) => o.storeName,
     freshAt: (iso) => new Date(iso).toISOString().slice(11, 16), sectionHead: (i, title) => `<h2>${title}</h2>`, seeAll: () => '', stageInit() {}, revealInit: undefined,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: (sel) => slots[sel] || null, IntersectionObserver: undefined,
     apiGet: (path) => { calls.push(path); return Promise.resolve(typeof api === 'function' ? api(path) : api); }, ...extra,

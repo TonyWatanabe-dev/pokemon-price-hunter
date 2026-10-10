@@ -14,7 +14,8 @@ const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 
 const code = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
-    'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive='].map(line),
+    'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=',
+    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl='].map(line),   // destino do clique (afiliado; sem config = URL original)
   cut('const readKnown=', 'const shipNote='),
   cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
