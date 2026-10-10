@@ -434,6 +434,7 @@ a.navbtn{text-decoration:none}
 .hhead h2{margin:0}
 .osort select{appearance:none;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:7px 14px;font-size:14px;font-weight:500}
 .solist{display:flex;flex-direction:column;gap:10px}
+.amz-list{display:flex;flex-direction:column;gap:10px}.amz-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.amz-t{flex:1 1 220px;min-width:0;font-size:14px}.amz-p{margin:4px 0 0}.amz-p b{font-size:16px}.amz-p small,.amz-s{color:var(--muted);font-size:12.5px}.amz-s{margin:2px 0 0}
 .so{border:1px solid var(--line);border-radius:14px;padding:12px;transition:border-color var(--t-fast) ease}
 .so:first-child{border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
 .so.dim{background:var(--ground);opacity:.85}
@@ -1328,7 +1329,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -1944,7 +1945,7 @@ function renderLegal(kind){
   <h3>1. O que é o TCG Price Hunter</h3><p>Um site gratuito que reúne preços de produtos lacrados de Pokémon TCG anunciados em lojas brasileiras e compara com o preço sugerido publicado pela Copag. O site não vende nada, não intermedeia compras e não recebe pagamentos.</p>
   <h3>2. As informações podem mudar</h3><p>Preços, estoque e frete vêm das páginas públicas das lojas e são lidos automaticamente pelo robô. Podem estar desatualizados ou conter erros da própria loja. O preço, o estoque e as condições que valem são os da loja no momento da compra. Confira tudo na loja antes de comprar.</p>
   <h3>3. Notas e alertas são opinião automatizada</h3><p>A nota (Opportunity Score), as faixas, a confiança, os alertas e as pistas são cálculos automáticos para ajudar na comparação. Não são recomendação de compra, garantia de preço nem avaliação definitiva de uma loja. Pistas vindas de canais públicos do Telegram não são verificadas.</p>
-  <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p>
+  <h3>4. Compras são feitas com as lojas</h3><p>Ao clicar em "Ver na loja" você vai para um site de terceiro, com seus próprios termos e políticas. Pagamento, entrega, troca, garantia e atendimento são responsabilidade da loja. O TCG Price Hunter não responde por compras feitas em sites de terceiros.</p><p>Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas. Eles ficam numa área separada, com o preço que a Amazon mostrava na data e hora indicadas, e não entram na comparação de preços, no ranking nem nas notas de oportunidade.</p>
   <h3>5. Marcas</h3><p>O TCG Price Hunter não é afiliado, patrocinado nem endossado pela Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon, os nomes das coleções e as imagens dos produtos pertencem a seus donos e aparecem apenas para identificar os produtos anunciados.</p>
   <h3>6. Lojas</h3><p>O robô respeita o robots.txt de cada site e não tenta contornar bloqueios. <b>Se a sua loja não quiser fazer parte da busca, basta enviar um e-mail para <a href="mailto:${CONTATO}">${CONTATO}</a></b> com o endereço do site: a loja é retirada da lista e o robô deixa de visitá-la. O mesmo e-mail serve para corrigir qualquer dado.</p><p>A reputação mostrada ao lado de cada loja vem das páginas públicas do Reclame Aqui, com a data da consulta e o link para a fonte. O TCG Price Hunter não tem ligação com o Reclame Aqui e não altera essas notas.</p>
   <h3>7. Uso do site</h3><p>Você pode usar o site livremente para uso pessoal. Não é permitido usá-lo para atividades ilegais ou para sobrecarregar o serviço.</p>
@@ -2174,13 +2175,30 @@ function renderProduct(pid){
         return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
       <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
+    <div id="pp-amz">${amzBlock(pid)}</div>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
 </div>`;
   if(pid in HIST)drawHist(pid);else loadHist(pid);
   hashScroll();loadPpOpp(pid,best?.id||null);
+  if(!AMZ)loadAmz().then(()=>{const el=$("#pp-amz");if(el&&view==="produto"&&curPid===pid)el.innerHTML=amzBlock(pid)});
 }
+/* "Também na Amazon" (Amazon Associados): lista curada em config/afiliados/amazon.json, publicada em /data/afiliados-amazon.json.
+   Camada à parte: não vira oferta e não entra em preço, ranking, Opportunity Score nem alerta. O preço é o que a página da
+   Amazon mostrava em capturedAt e aparece sempre com a data e a hora da leitura. A URL chega pronta do arquivo; aqui nada é anexado a ela. */
+let AMZ=null,amzP=null;
+function loadAmz(){if(AMZ)return Promise.resolve(AMZ);
+  return amzP||=Promise.resolve().then(()=>fetch("/data/afiliados-amazon.json")).then((r)=>r.ok?r.json():null).catch(()=>null).then((j)=>AMZ={links:Array.isArray(j?.links)?j.links:[]})}
+const amzWhen=(iso)=>{const d=new Date(iso);return Number.isFinite(d.getTime())?d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"}).replace(","," às"):""};
+function amzRow(l){const when=amzWhen(l.capturedAt);const has=typeof l.price==="number"&&l.price>0;
+  const who=has&&l.seller?`vendido por ${esc(l.seller)}${l.fulfilledBy==="amazon"?" · enviado pela Amazon":""}`:"";
+  return`<div class="amz-row"><div class="amz-t"><span>${esc(l.title)}</span>
+    ${has?`<p class="amz-p"><b>${money(l.price)}</b> <small>em ${esc(when)}</small></p><p class="amz-s">${who}${l.stockNote?`${who?" · ":""}${esc(l.stockNote)}`:""}</p>`:`<p class="amz-s">Sem oferta em destaque na Amazon em ${esc(when)}</p>`}</div>
+    <a class="btn ghost" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`}
+function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);if(!ls.length)return"";
+  return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
+  <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
