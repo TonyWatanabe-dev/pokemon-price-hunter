@@ -15,7 +15,7 @@ const ctx = {
   safeUrl: (u) => u, raBadge: () => '', thirdParty: () => false, stockChip: () => '', pixTag: () => '', pct: (v) => v, scoreChip: () => '',
 };
 vm.createContext(ctx);
-vm.runInContext(line('const ago=') + '\n' + cut('/* Última leitura da oferta', 'const shipNote=') + '\n' + line('const shipNote=') + '\n' + line('const live=') +
+vm.runInContext(line('const ago=') + '\n' + cut('/* Última leitura da oferta', 'const shipNote=') + '\n' + line('const shipNote=') + '\n' + line('const shipOk=') + '\n' + line('const live=') +
   '\n' + cut('function storeOffer(o,p){', 'function renderProduct(pid){') + '\n;globalThis.__t={ago,readKnown,readNote,storeOffer};', ctx);
 const { ago, readKnown, readNote, storeOffer } = ctx.__t;
 const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
