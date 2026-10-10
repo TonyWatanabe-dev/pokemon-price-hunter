@@ -303,6 +303,37 @@ await t('rodada: 5xx no meio da paginação fica no sources.json e não vira ofe
   }
 });
 
+await t('rodada: catálogo maior que o teto grava "partial" no sources.json (ACTIVE); leitura completa limpa o campo', async () => {
+  const keep = Object.fromEntries(['HUNTER_CONFIG_DIR', 'HUNTER_DATA_DIR', 'HUNTER_TIPS', 'HUNTER_CEP', 'HUNTER_BUDGET_MIN'].map((k) => [k, process.env[k]]));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-part-'));
+  try {
+    process.env.HUNTER_CONFIG_DIR = path.join(tmp, 'config'); process.env.HUNTER_DATA_DIR = path.join(tmp, 'data'); process.env.HUNTER_TIPS = '0';
+    delete process.env.HUNTER_CEP; delete process.env.HUNTER_BUDGET_MIN;
+    fs.mkdirSync(process.env.HUNTER_CONFIG_DIR, { recursive: true });
+    fs.copyFileSync(path.join(root, 'config/catalog.json'), path.join(tmp, 'config/catalog.json'));
+    const S = (id, host) => ({ id, name: id, url: `https://${host}`, platform: 'shopify', kind: 'specialist', evidence: {} });
+    fs.writeFileSync(path.join(tmp, 'config/stores.json'), JSON.stringify({ stores: [S('pbig', 'part-3000.test'), S('psmall', 'part-300.test')] }));
+    fs.writeFileSync(path.join(tmp, 'config/watchlist.json'), JSON.stringify({ settings: { cep: null }, rules: [] }));
+    shopifyStore('part-3000.test', bigCatalog(3000, { 5: moxProd(0) }));
+    shopifyStore('part-300.test', bigCatalog(300, { 5: moxProd(1) }));
+    const { runOnce } = await import('../src/run.js');
+    const read = () => JSON.parse(fs.readFileSync(path.join(tmp, 'data/sources.json'), 'utf8'));
+    const t0 = Date.now();
+    await runOnce({ log: () => {}, send: { capture: async () => true }, now: new Date(t0) });
+    let src = read();
+    assert.deepEqual([src.pbig.status, src.pbig.matched, src.pbig.partial], ['ACTIVE', 1, shopify.PARTIAL_REASON], '3000 produtos: leitura parcial registrada');
+    assert.equal(src.psmall.status, 'ACTIVE'); assert.ok(!('partial' in src.psmall), '300 produtos: sem o campo');
+    // a loja grande encolhe para 300: a leitura volta a ser completa e o aviso some
+    shopifyStore('part-3000.test', bigCatalog(300, { 5: moxProd(0) }));
+    await runOnce({ log: () => {}, send: { capture: async () => true }, now: new Date(t0 + 3600e3) });
+    src = read();
+    assert.equal(src.pbig.status, 'ACTIVE'); assert.ok(!('partial' in src.pbig), 'leitura completa limpa o "partial"');
+  } finally {
+    for (const [k, v] of Object.entries(keep)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
 await t('rodada: loja que cai para 0 casados mantém as ofertas stale (sem "removed"); queda parcial remove; sucesso limpa o erro', async () => {
   const keep = Object.fromEntries(['HUNTER_CONFIG_DIR', 'HUNTER_DATA_DIR', 'HUNTER_TIPS', 'HUNTER_CEP', 'HUNTER_BUDGET_MIN'].map((k) => [k, process.env[k]]));
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-zero-'));
