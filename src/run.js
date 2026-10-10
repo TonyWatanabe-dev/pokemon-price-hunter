@@ -336,6 +336,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
   const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log }), sent, watch.settings, now.getTime(), offers);
   const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
+  // Grava o registro de envios já: se a rodada cair depois daqui, o retry não reenvia os mesmos alertas.
+  if (delivered.length) writeJson(dataPath('alerts-sent.json'), sent);
   for (const d of delivered) log(`ALERTA ${d.kind} -> ${d.channels.join(', ') || 'só painel'}: ${d.productId} ${d.total}`);
 
   // Estado para painel e API
