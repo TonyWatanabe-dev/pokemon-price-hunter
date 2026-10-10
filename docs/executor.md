@@ -11,6 +11,8 @@ O executor é o agente local que aplica mudanças no repositório seguindo o `CL
 5. **Pull request:** o branch `task/<slug>` é enviado e abre-se um PR para a `main`.
 6. **CI:** o GitHub Actions roda `npm ci` e `npm test` no job `test` em todo PR para a `main`. O PR só deve ser integrado com o job `test` verde.
 
+Checklist de evidências para o PR: `docs/checklist-release.md`.
+
 ## Merge e produção
 
 Merge na `main` publica em produção. Por isso o merge exige aprovação explícita do usuário. A aprovação vale só para aquele PR e não vale para ações futuras.
