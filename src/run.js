@@ -22,6 +22,7 @@ import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
+import { redact } from './redact.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -250,7 +251,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           catch (e) {
             // Simulação falhou: guarda o motivo e reaproveita a última cotação desta oferta só dentro da validade
             // (shippingQuoteReuse). A data continua a da cotação original; vencida ou ausente, o frete fica desconhecido.
-            shipError = String(e?.message || e).slice(0, 160);
+            shipError = redact(e?.message || e, { max: 160 });
             const reuse = shippingQuoteReuse(lastValidOf(prev[id]), now);
             if (reuse) { ship = reuse.shipping; shipAt = reuse.shippingAt; shipSource = 'anterior'; }
           }
@@ -297,7 +298,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.
       const st = e.httpStatus ?? e.status;
-      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: safeReason(e), fails: (src.fails || 0) + 1,
+      Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: redact(safeReason(e), { max: 300 }), fails: (src.fails || 0) + 1,
         httpStatus: Number.isInteger(st) && st > 0 ? st : null, netCode: netCode(e), retryAfterSec: Number.isFinite(e.retryAfter) ? e.retryAfter : null });
       log(`[${store.id}] ${src.status}: ${src.reason}`);
     }
@@ -484,7 +485,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read}`);
-  } catch (e) { log(`[estado operacional] ${String(e.message).slice(0, 120)}`); }
+  } catch (e) { log(`[estado operacional] ${redact(e.message, { max: 120 })}`); }
   log(`Fontes ativas ${state.coverage.active}/${state.coverage.found} · ofertas ${all.length} · ranking ${ranked.length} · alertas ${delivered.length}`);
   return state;
 }
@@ -494,7 +495,7 @@ if (isMain) {
   const loop = process.argv.includes('--loop');
   const minutes = Number(process.env.HUNTER_INTERVAL_MIN || 10);
   do {
-    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', e); if (!loop) process.exitCode = 1; }
+    try { await runOnce(); } catch (e) { console.error('Falha na rodada:', redact(e?.stack || e, { max: 1500 })); if (!loop) process.exitCode = 1; }
     if (loop) await new Promise((r) => setTimeout(r, minutes * 60e3));
   } while (loop);
 }
