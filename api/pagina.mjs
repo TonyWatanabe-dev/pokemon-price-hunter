@@ -109,7 +109,9 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
 
 export default async function handler(req, res) {
   const q = new URL(req.url, SITE).searchParams; const t = q.get('t') || 'home'; const slug = decodeURIComponent(q.get('slug') || '');
-  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  // Host vem do cabeçalho da requisição: só busca app.html em host conhecido (evita SSRF por Host forjado).
+  const rawHost = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim().toLowerCase();
+  const host = rawHost === new URL(SITE).host || /^[a-z0-9-]+\.vercel\.app$/.test(rawHost) ? rawHost : new URL(SITE).host;
   if (!page.html) page = { t: Date.now(), html: shell(readLocal()) };
   if (!page.html) {
     try { const r = await fetch(`https://${host}/app.html`); const h = r.ok ? shell(await r.text()) : null; if (h) page = { t: Date.now(), html: h }; } catch {}
