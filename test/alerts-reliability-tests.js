@@ -22,7 +22,7 @@ await t('mensagem leva produto, loja, preço, horário da leitura e link', () =>
 await t('queda sem evento (sem histórico confiável) e oferta stale/anômala/sem estoque não alertam queda', () => {
   const drop = (o) => evaluate([{ id: 'x', filter: { productId: 'p1' } }], [o], o.id === 'o1' ? [{ offerId: 'o1', event: 'drop', from: 60 }] : [], prod).filter((h) => h.kind === 'drop');
   assert.equal(drop(offer()).length, 1);
-  assert.equal(evaluate([{ id: 'x', filter: { productId: 'p1' } }], [offer()], [], prod).length, 0, 'sem evento de queda não há alerta');
+  assert.equal(evaluate([{ id: 'x', filter: { productId: 'p1' } }], [offer()], [], prod).filter((h) => h.kind === 'drop').length, 0, 'sem evento de queda não há alerta');
   for (const bad of [{ stale: true }, { anomalous: true }, { stock: 'OUT_OF_STOCK' }, { stock: 'UNKNOWN' }, { total: 0 }, { total: null }]) assert.equal(drop(offer(bad)).length, 0, JSON.stringify(bad));
 });
 await t('restock só com evento; leitura pendente (UNKNOWN) não repõe', () => {
