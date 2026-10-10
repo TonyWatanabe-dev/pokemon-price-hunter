@@ -1,6 +1,7 @@
 // Genérico: sitemap -> páginas de produto -> JSON-LD Product / Open Graph. Funciona em Nuvemshop, Tray, Loja Integrada, WooCommerce etc.
 import { get } from '../http.js';
 import { guard, brl } from './common.js';
+import { availableFromOf } from '../availability.js';
 
 const PRODUCT_URL = /pokemon/i;
 const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|blister|colecao|cole%c3%a7%c3%a3o)/i;
@@ -129,7 +130,7 @@ export function parseProductPage(html, url) {
   if (!title) return null;
   // Título do produto escolhido precisa concordar com o título da página (pega tema que injeta outro produto).
   if (pageTitle && title !== pageTitle && !agrees(title, pageTitle)) return null;
-  let price = { pix: null, base: null }; let listPrice = null; let stock = 'UNKNOWN'; let quantity = null;
+  let price = { pix: null, base: null }; let listPrice = null; let stock = 'UNKNOWN'; let quantity = null; let availableFrom = null;
   let ean = prod?.gtin13 || prod?.gtin || null; let sku = prod?.sku || null; let sourceType = 'open_graph';
   if (ns) { price = ns.price; listPrice = ns.listPrice; stock = ns.stock; quantity = ns.quantity; sku = ns.sku || sku; sourceType = 'store_page'; }
   else if (prod) {
@@ -139,6 +140,7 @@ export function parseProductPage(html, url) {
       price.base = brl(o.price ?? o.priceSpecification?.price ?? (o['@type'] === 'AggregateOffer' && o.lowPrice === o.highPrice ? o.lowPrice : null));
       const av = String(o.availability || '').split('/').pop().toLowerCase();
       stock = AVAIL[av] || 'UNKNOWN';
+      availableFrom = availableFromOf(stock, o.availabilityStarts);
       if (o.inventoryLevel?.value != null) quantity = Number(o.inventoryLevel.value);
     }
     sourceType = 'json_ld';
@@ -164,7 +166,7 @@ export function parseProductPage(html, url) {
   let image = prod?.image; if (Array.isArray(image)) image = image[0]; if (image && typeof image === 'object') image = image.url || image.contentUrl;
   image = image || meta('og:image') || null;
   try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }
-  return { title, url, image, price, listPrice, stock, quantity, sku, ean, seller: null, sourceType };
+  return { title, url, image, price, listPrice, stock, availableFrom, quantity, sku, ean, seller: null, sourceType };
 }
 
 export async function detect(base) {
