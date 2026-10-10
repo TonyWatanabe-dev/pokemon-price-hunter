@@ -67,4 +67,32 @@ assert.ok(!rej('Pokémon Booster Box 36 boosters PT-BR'));
 assert.ok(!rej('Pokémon Booster Box 36 boosters'));
 assert.equal(parseListing('Pokémon Booster Box 36 boosters', emptyCat).language.code, null);
 assert.equal(parseListing('Pokémon Booster Box 36 boosters (EN)', emptyCat).language.evidence, 'en');
+// hífen separa tokens de idioma (EN-US, JP-JA, Inglês-EN), como o \b da regra antiga; pt-br continua PT
+assert.equal(lang('Booster Box 36 boosters EN-US').code, 'en');
+assert.equal(lang('Booster Box JP-JA').code, 'ja');
+assert.equal(lang('Box Treinador Avançado (Inglês-EN)').code, 'en');
+assert.equal(lang('Box Treinador Avançado Japonês-JP').code, 'ja');
+assert.equal(lang('Booster Box 36 boosters PT-BR').code, 'pt');
+assert.equal(lang('Booster Box 36 boosters pt-br').code, 'pt');
+assert.equal(lang('Booster Box 36 boosters ptbr').code, 'pt');
+assert.ok(rej('Pokémon Booster Box 36 boosters EN-US'));
+assert.ok(rej('Pokémon Booster Box 36 boosters JP-JA'));
+assert.ok(rej('Pokémon Booster Box 36 boosters Inglês-EN'));
+assert.ok(rej('Pokémon Booster Box 36 boosters Japonês-JP'));
+assert.ok(!rej('Pokémon Booster Box 36 boosters pt-br'));
+// palavras hifenizadas sem token de idioma não viram idioma
+for (const t of ['Pokémon Mega-Evolução Booster Box', 'Pokémon Sun-Moon Booster', 'Pokémon X-Y Booster Box', 'Booster Box pré-venda', 'Booster Box SV-04 Fenda-Paradoxal', 'Booster Box Escarlate-Violeta 151']) {
+  assert.equal(lang(t).code, null, t); assert.equal(lang(t).conflict, false, t); assert.ok(!rej(t), t);
+}
+{
+  const { matchProduct } = await import('../src/match.js');
+  const catalog = JSON.parse(fs.readFileSync(new URL('../config/catalog.json', import.meta.url), 'utf8'));
+  assert.equal(matchProduct({ title: 'Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters' }, catalog).productId, 'me02-box36');
+  for (const t of ['Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters EN-US', 'Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters JP-JA']) {
+    assert.notEqual(matchProduct({ title: t }, catalog).productId, 'me02-box36', t);
+  }
+  for (const t of ['Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico JP-JA', 'Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico (Inglês-EN)', 'Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico Versão EN-US']) {
+    assert.notEqual(matchProduct({ title: t }, catalog).productId, 'me02-etb', t);
+  }
+}
 console.log('OK — Marketplace Core (conversões)');

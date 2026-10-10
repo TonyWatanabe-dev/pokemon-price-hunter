@@ -28,7 +28,9 @@ const LANG_TOKENS = {
   de: ['alemao', 'alema', 'german'],
   it: ['italiano', 'italiana', 'italian'],
 };
-const LANG_RE = new Map(Object.entries(LANG_TOKENS).map(([k, v]) => [k, new RegExp('(?:^|[^a-z0-9-])(' + v.map(esc).join('|') + ')(?![a-z0-9-])')]));
+// Hífen é fronteira (como o \b da regra antiga): "EN-US" -> en, "JP-JA" -> ja, "Inglês-EN" -> en.
+// Token mais longo primeiro, para "pt-br" sair como evidência inteira em vez de só "pt".
+const LANG_RE = new Map(Object.entries(LANG_TOKENS).map(([k, v]) => [k, new RegExp('(?:^|[^a-z0-9])(' + [...v].sort((a, b) => b.length - a.length).map(esc).join('|') + ')(?![a-z0-9])')]));
 /** t normalizado -> { code, evidence, conflict, found }. code só quando UM idioma aparece; conflict quando aparecem dois ou mais. */
 export function detectLanguage(t) {
   const found = [];
