@@ -85,6 +85,20 @@ test('R2 precisa de regressão, golden tests, rollback, rollout e feature flag j
   assert.equal(good.decision, 'autonomous');
   assert.deepEqual(good.allowedActions, [RELEASE_ACTION.MERGE]);
 
+  const noRegression = evaluateRelease({
+    changedPaths: ['api/v1.mjs'],
+    evidence: evidence({ checks: evidence().checks.filter((x) => x.name !== 'regression') }),
+  });
+  assert.equal(noRegression.decision, 'blocked');
+  assert.ok(noRegression.missingEvidence.some((x) => x.includes('check "regression" ausente')));
+
+  const noGolden = evaluateRelease({
+    changedPaths: ['api/v1.mjs'],
+    evidence: evidence({ checks: evidence().checks.filter((x) => x.name !== 'golden') }),
+  });
+  assert.equal(noGolden.decision, 'blocked');
+  assert.ok(noGolden.missingEvidence.some((x) => x.includes('check "golden" ausente')));
+
   const noRollback = evaluateRelease({
     changedPaths: ['api/v1.mjs'],
     evidence: evidence({ rollback: { documented: true, tested: false } }),
