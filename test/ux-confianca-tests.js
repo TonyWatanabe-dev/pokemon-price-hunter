@@ -147,10 +147,10 @@ await t('C3. ao voltar para a aba, notas com mais de 30 min são buscadas de nov
 });
 
 // ================================================================== pausa (stale_db / 503) e troca de filtro
-await t('P1. /oportunidades pausada: motivo e horário da API, nova tentativa e caminho para /produtos', async () => {
+await t('P1. /oportunidades pausada: motivo e horário da API, nova tentativa e caminho alternativo (/precos; /produtos virou /oportunidades)', async () => {
   const s = sandbox(STALE); await s.t.renderOpp(); const h = s.slots['#view'].innerHTML;
   assert.match(h, /<h3>Oportunidades pausadas<\/h3>/); assert.match(text(h), /há 130 min: as oportunidades ficam pausadas/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
-  assert.match(h, /<button[^>]*data-oppretry>/); assert.match(h, /href="\/produtos" data-go="produtos"/); assert.equal(s.t.OPP_PAUSE.ageMin, 130);
+  assert.match(h, /<button[^>]*data-oppretry>/); assert.match(h, /href="\/precos" data-go="copag"/); assert.equal(s.t.OPP_PAUSE.ageMin, 130);
   assert.doesNotMatch(h, /opp-card|class="meter"/, 'nenhuma nota antiga');
   // 503 (dados sem horário confiável): pausa, não "Pode ser a conexão"
   const s2 = sandbox(null); s2.ctx.API_LAST.set(s2.t.oppQuery(1), 503); await s2.t.renderOpp(); const h2 = s2.slots['#view'].innerHTML;
@@ -164,9 +164,9 @@ await t('P2. pausa: nova tentativa sozinha a cada 5 min; volta ao normal limpa a
   r = page([item()]); s.t.oppTick(Date.now() + 5 * 6e4); await new Promise((q) => setTimeout(q, 0));
   assert.equal(s.calls.length, c0 + 1); assert.equal(s.t.OPP.status, 'ok'); assert.equal(s.t.OPP_PAUSE, null); assert.match(s.slots['#view'].innerHTML, /Caos Ascendente/);
 });
-await t('P3. Home pausada: mesmo bloco (motivo, horário, tentar de novo, /produtos)', async () => {
+await t('P3. Home pausada: mesmo bloco (motivo, horário, tentar de novo, /precos)', async () => {
   const s = sandbox(STALE); s.ctx.view = 'deals'; await s.t.loadHomeOpp(); const h = s.t.podiumOppHTML();
-  assert.match(h, /<div class="stage-empty pause"><h3>Oportunidades pausadas<\/h3>/); assert.match(h, /data-homeretry/); assert.match(h, /href="\/produtos"/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
+  assert.match(h, /<div class="stage-empty pause"><h3>Oportunidades pausadas<\/h3>/); assert.match(h, /data-homeretry/); assert.match(h, /href="\/precos"/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
 });
 await t('F. troca de filtro: a lista atual fica na tela (esmaecida) até a nova chegar', async () => {
   let release; const pending = new Promise((r) => { release = r; });

@@ -125,6 +125,10 @@ r = await call('/api/v1/produtos/me05-etb/ofertas?limite=10'); assert.equal(r.js
 assert.equal(r.json.data.find((o) => o.id === 'oa').total_price, null, 'frete desconhecido: total nulo, nunca o preço');
 r = await call('/api/v1/oportunidades'); assert.equal(r.status, 200); assert.equal(r.json.meta.status, 'requires_db'); assert.deepEqual(r.json.data, []);
 assert.equal((await call('/api/v1/oportunidades?faixa=otima')).status, 400); assert.equal((await call('/api/v1/oportunidades?ofertas=x')).status, 400);
+// filtros novos da página (loja, preço máximo, preço por booster) e lista de lojas
+assert.equal((await call('/api/v1/oportunidades?loja=../x')).status, 400); assert.equal((await call('/api/v1/oportunidades?max=-1')).status, 400);
+assert.equal((await call('/api/v1/oportunidades?max=abc')).status, 400); assert.equal((await call('/api/v1/oportunidades?ordem=booster&loja=moxland&max=300')).status, 200);
+r = await call('/api/v1/oportunidades/lojas'); assert.equal(r.status, 200); assert.deepEqual(r.json.data, []); assert.equal(r.json.meta.status, 'requires_db');
 r = await call('/api/v1/referencias?status=verified'); assert.equal(r.json.data.length, 1);
 
 

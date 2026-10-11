@@ -1327,7 +1327,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <div class="hsearch" id="hsearch"></div>
     <nav class="topnav" aria-label="Seções">
       <a class="navbtn" data-go="" href="/"><span class="lbl">Início</span><svg class="icon nav-ico"><use href="#i-house"/></svg></a>
-      <a class="navbtn" data-go="produtos" href="/produtos"><span class="lbl">Produtos</span><svg class="icon nav-ico"><use href="#i-package"/></svg></a>
+      <a class="navbtn" data-go="oportunidades" href="/oportunidades"><span class="lbl">Oportunidades</span><svg class="icon nav-ico"><use href="#i-flame-f"/></svg></a>
       <a class="navbtn" data-go="pistas" href="/pistas"><span class="lbl">Pistas</span><svg class="icon nav-ico"><use href="#i-lightbulb"/></svg><span class="count c-tip" hidden></span></a>
       <a class="navbtn" data-go="copag" href="/precos"><span class="lbl">Preços Copag</span><svg class="icon nav-ico"><use href="#i-tag"/></svg></a>
       <a class="navbtn" data-go="prevenda" href="/pre-vendas"><span class="lbl">Pré-vendas</span><svg class="icon nav-ico"><use href="#i-calendar-blank"/></svg><span class="count c-pre" hidden></span></a>
@@ -1370,7 +1370,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 </dialog>
 <nav class="tabbar" aria-label="Seções">
   <button type="button" data-go=""><svg class="icon"><use href="#i-house"/></svg><span>Início</span></button>
-  <button type="button" data-go="produtos"><svg class="icon"><use href="#i-package"/></svg><span>Produtos</span></button>
+  <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-flame-f"/></svg><span>Ofertas</span></button>
   <button type="button" data-go="pistas"><svg class="icon"><use href="#i-lightbulb"/></svg><span>Pistas</span><span class="count c-tip" hidden></span></button>
   <button type="button" data-go="copag"><svg class="icon"><use href="#i-tag"/></svg><span>Preços</span></button>
   <button type="button" data-more><svg class="icon"><use href="#i-dots-three"/></svg><span>Mais</span><span class="count c-hit" hidden></span></button>
@@ -1414,8 +1414,8 @@ const outRel=(u)=>outUrl(u)!==u?" nofollow sponsored":"";
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
-const ROUTES={"":"deals",busca:"busca",produtos:"produtos",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
-const PATHS={deals:"",busca:"busca",produtos:"produtos",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const ROUTES={"":"deals",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const PATHS={deals:"",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PRIVATE=["conta","favoritos","alertas","configuracoes"];
 const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
 function parseLoc(){
@@ -1842,7 +1842,7 @@ function colWallHTML(){
   const cols=(S.collections||[]).filter((c)=>stats[c.id]).reverse();
   if(!cols.length)return"";
   const card=(c,i)=>{const st=stats[c.id];
-    return`<a class="colc" href="/produtos" data-col="${esc(c.id)}" data-s="${seriesKey(c)}" style="--i:${Math.min(i,11)}" aria-label="${esc(c.name)}: ver os ${st.ids.size} produtos">
+    return`<a class="colc" href="/oportunidades" data-col="${esc(c.id)}" data-s="${seriesKey(c)}" style="--i:${Math.min(i,11)}" aria-label="${esc(c.name)}: ver os ${st.ids.size} produtos">
       <span class="colc-art">${colMark(c)}</span>
       <span class="colc-txt"><small>${esc(c.series||"")}</small><b>${esc(c.name)}</b><em>${st.ids.size} ${st.ids.size===1?"produto":"produtos"} · a partir de ${money(st.min)}</em></span>
     </a>`};
@@ -1850,7 +1850,7 @@ function colWallHTML(){
   return`<section class="colwall">${sectionHead("sparkle-f","Coleções","Toque na coleção para ver todos os produtos dela, com o menor preço de cada um.")}
   <div class="colgrid">${cols.slice(0,12).map(card).join("")}</div>
   ${cols.length>12?`<details class="colmore"><summary>${ic("caret-down")}Coleções anteriores (${cols.length-12})</summary><div class="colgrid">${cols.slice(12).map(card).join("")}</div></details>`:""}
-  <div class="fmtrow"><span>Ou por formato:</span>${fmts.map((gr)=>`<a class="gchip t" href="/produtos" data-fmt="${esc(gr)}" style="--ec:${GROUP[gr].c}">${ic(GROUP[gr].icon)}${esc(gr)}</a>`).join("")}</div>
+  <div class="fmtrow"><span>Ou por formato:</span>${fmts.map((gr)=>`<a class="gchip t" href="/oportunidades" data-fmt="${esc(gr)}" style="--ec:${GROUP[gr].c}">${ic(GROUP[gr].icon)}${esc(gr)}</a>`).join("")}</div>
   </section>`;
 }
 function groupNav(){
@@ -1903,7 +1903,7 @@ function renderDeals(){
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
   <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>
   ${preHTML()}
-  <section class="home-all home-cta"><a class="allcta" href="/produtos" data-go="produtos"><span class="allcta-i">${ic("package")}</span><span><b>Ver todos os ${all.length} produtos</b><small>Filtre por coleção, formato, loja, preço e estoque.</small></span>${ic("caret-down","icon chev")}</a>
+  <section class="home-all home-cta"><a class="allcta" href="/oportunidades" data-go="oportunidades"><span class="allcta-i">${ic("flame-f")}</span><span><b>Ver todas as oportunidades</b><small>Filtre por coleção, formato, loja, preço e nota.</small></span>${ic("caret-down","icon chev")}</a>
   </section>`;
   homeMotion();startTicker();stageInit();revealInit();
   if(HOMEOPP.status!=="ok"||Date.now()-HOMEOPP.at>=APITTL){const pr=loadHomeOpp();if(HOMEOPP.status!=="ok")paintHomeOpp();pr.then(paintHomeOpp)}
@@ -2576,7 +2576,7 @@ function renderFavs(){
   if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>Não consegui carregar seus favoritos. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const ids=favs().filter((id)=>P[id]);
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>${ids.length?`${ids.length} ${ids.length>1?"produtos":"produto"}. Toque para ver as lojas ou criar um alerta.`:"Nada salvo ainda."}</p>
-  ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="produtos">Ver produtos</button></div>`}</section></div>`;
+  ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="oportunidades">Ver oportunidades</button></div>`}</section></div>`;
 }
 function renderAlerts(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Alertas de preço","Diga quanto quer pagar e o site marca quando alguma loja chegar nesse preço.");return}
@@ -2704,13 +2704,21 @@ function renderSearch(){
 }
 
 /* Categorias do site (tipo ou grupo do produto). Home e /oportunidades leem as oportunidades da API (6B.2: sem oppPool). */
-const CATS=[["","Todos"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
+const CATS=[["","Todos"],["Boosters","Todos os boosters"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
 const catMatch=(p,c)=>!c||p.type===c||p.group===c;
 /* Oportunidades (6B.1): 100% pela API do Opportunity Engine (GET /api/v1/oportunidades).
    Nada de regra de negócio aqui: score, faixa, confiança, referência atual, % abaixo da referência, filtros e ordem
    chegam prontos do servidor. O navegador só monta a URL e desenha. */
-const OF=Object.assign({cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",sort:"score"},store.get("opp2",{}));
-const OSORTS=[["score","Melhor oportunidade"],["abaixo","Mais abaixo da referência"],["economia","Maior economia"],["queda","Maior queda"],["recentes","Mais recentes"],["preco","Menor preço"],["confianca","Maior confiança"]];
+const OF=Object.assign({cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",loja:"",max:"",sort:"score"},store.get("opp2",{}));
+/* filtros da página (ofReset: começa do zero com um filtro só, usado pelos atalhos da Home) */
+const OF_EMPTY={cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",loja:"",max:""};
+function ofReset(o){Object.assign(OF,OF_EMPTY,o||{});store.set("opp2",OF)}
+/* lojas do filtro: GET /api/v1/oportunidades/lojas (lojas com oferta avaliada com estoque), pedido uma vez */
+let OPP_STORES=null;
+async function loadOppStores(){if(OPP_STORES)return;const d=await apiGet("oportunidades/lojas");if(d&&Array.isArray(d.data)){OPP_STORES=d.data;if(view==="oportunidades")paintOpp()}}
+const ofStores=()=>[["","Todas as lojas"],...(OPP_STORES||[]).map((x)=>[x.id,`${x.name} (${x.products})`]),...(OF.loja&&!(OPP_STORES||[]).some((x)=>x.id===OF.loja)?[[OF.loja,OF.loja]]:[])];
+function ofMax(pre="of"){return`<div class="field"><label for="${pre}-max">Preço máximo</label><input id="${pre}-max" data-of="max" type="number" inputmode="decimal" min="0" step="10" placeholder="Sem limite (em reais)" value="${esc(OF.max)}"></div>`}
+const OSORTS=[["score","Melhor oportunidade"],["abaixo","Mais abaixo da referência"],["economia","Maior economia"],["queda","Maior queda"],["recentes","Mais recentes"],["preco","Menor preço"],["booster","Menor preço por booster"],["confianca","Maior confiança"]];
 const OFAIXAS=[["","Todas"],["excelente","Excelente"],["boa","Boa"],["normal","Normal"],["baixa","Baixa"]];
 const OABAIXO=[["","Qualquer"],["10","10% ou mais"],["20","20% ou mais"],["30","30% ou mais"],["40","40% ou mais"]];
 const OREFS=[["","Qualquer"],["copag","Preço sugerido Copag"],["mercado","Mercado"],["nenhuma","Sem referência atual"]];
@@ -2734,25 +2742,26 @@ const rarityOf=(s)=>typeof s==="number"&&Number.isFinite(s)?RARITY.find((t)=>s>=
 const CONF_INT={alta:1,"média":.65,baixa:.35};const confInt=(lv)=>CONF_INT[lv]??1;
 /* destaques da Home: rótulo editorial por posição (não é raridade oficial do produto nem muda a escala global) */
 const HIGHLIGHT=[["foil","FOIL"],["ultra","ULTRA RARA"],["rara","RARA"]];
-const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf].filter(Boolean).length;
+const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf,OF.loja,OF.max].filter(Boolean).length;
 function oppQuery(page){const q=new URLSearchParams({limite:String(OPP_LIMIT),pagina:String(page),ordem:OF.sort||"score"});
   if(OF.cat)q.set("categoria",OF.cat);if(OF.col)q.set("colecao",OF.col);if(OF.faixa)q.set("faixa",OF.faixa);
-  if(OF.abaixo)q.set("abaixo",OF.abaixo);if(OF.ref)q.set("referencia",OF.ref);if(OF.conf)q.set("confianca_minima",OF.conf);return"oportunidades?"+q}
+  if(OF.abaixo)q.set("abaixo",OF.abaixo);if(OF.ref)q.set("referencia",OF.ref);if(OF.conf)q.set("confianca_minima",OF.conf);
+  if(OF.loja)q.set("loja",OF.loja);const mx=Number(OF.max);if(OF.max!==""&&Number.isFinite(mx)&&mx>=0)q.set("max",String(mx));return"oportunidades?"+q}
 const OPP={key:"",total:null,status:"idle",items:[],pages:1};
 /* campos de filtro (um só componente: barra no desktop e gaveta no celular; ids distintos por lugar) */
 function ofSel(k,label,opts,val,pre="of"){return`<div class="field"><label for="${pre}-${k}">${label}</label><select id="${pre}-${k}" data-of="${k}">${opts.map(([v,l])=>`<option value="${esc(v)}"${String(val)===String(v)?" selected":""}>${esc(l)}</option>`).join("")}</select></div>`}
 const ofCols=()=>[["","Todas"],...(S?.collections||[]).map((c)=>[c.id,c.name])];
 function filterControls(){
-  const more=OF.abaixo?1:0;
-  return ofSel("cat","Categoria",CATS,OF.cat)+ofSel("col","Coleção",ofCols(),OF.col)+ofSel("faixa","Oportunidade",OFAIXAS,OF.faixa)+ofSel("ref","Referência",OREFS,OF.ref)+ofSel("conf","Confiança",OCONF,OF.conf)
-    +`<details class="opp-more"><summary>Mais filtros${more?`<span class="count">${more}</span>`:""}</summary><div class="opp-more-pop">${ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo)}</div></details>`
+  const more=[OF.abaixo,OF.ref,OF.conf,OF.max].filter(Boolean).length;
+  return ofSel("cat","Categoria",CATS,OF.cat)+ofSel("col","Coleção",ofCols(),OF.col)+ofSel("loja","Loja",ofStores(),OF.loja)+ofSel("faixa","Oportunidade",OFAIXAS,OF.faixa)
+    +`<details class="opp-more"><summary>Mais filtros${more?`<span class="count">${more}</span>`:""}</summary><div class="opp-more-pop">${ofMax()}${ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo)}${ofSel("ref","Referência",OREFS,OF.ref)}${ofSel("conf","Confiança",OCONF,OF.conf)}</div></details>`
     +ofSel("sort","Ordenar",OSORTS,OF.sort);
 }
 /* gaveta (celular/tablet): Oportunidade em botões, depois os outros campos; ação fixa no rodapé */
 function sheetControls(){
   const chips=OFAIXAS.map(([v,l])=>`<button class="fchip" type="button" data-ofchip="${v}" aria-pressed="${OF.faixa===v}">${l}</button>`).join("");
   return`<div class="field"><span class="flbl" id="fs-faixa">Oportunidade</span><div class="opp-chips" role="group" aria-labelledby="fs-faixa">${chips}</div></div>`
-    +ofSel("cat","Categoria",CATS,OF.cat,"fs")+ofSel("col","Coleção",ofCols(),OF.col,"fs")+ofSel("ref","Referência",OREFS,OF.ref,"fs")+ofSel("conf","Confiança",OCONF,OF.conf,"fs")+ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo,"fs");
+    +ofSel("cat","Categoria",CATS,OF.cat,"fs")+ofSel("col","Coleção",ofCols(),OF.col,"fs")+ofSel("loja","Loja",ofStores(),OF.loja,"fs")+ofMax("fs")+ofSel("ref","Referência",OREFS,OF.ref,"fs")+ofSel("conf","Confiança",OCONF,OF.conf,"fs")+ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo,"fs");
 }
 const pctPts=(v)=>Math.abs(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";   /* formata o % que a API mandou */
 const refOfName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido Copag":"da referência de mercado";
@@ -2854,7 +2863,7 @@ function oppCard(x,i,opt={}){
 }
 const oppSkel=()=>`<div class="deals">${'<div class="skel" style="height:440px;border-radius:20px"></div>'.repeat(4)}</div>`;
 function oppBar(){const n=oppActive();const t=OPP.total;
-  return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span></div>`}
+  return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span>${n?`<button class="linkbtn" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
 function oppBody(){
   if(OPP.status==="loading"&&!OPP.items.length)return oppSkel();
   if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
@@ -2871,6 +2880,7 @@ function paintOpp(){
   watchOppMore();if(typeof revealInit==="function")revealInit();
 }
 async function renderOpp(){
+  loadOppStores();
   const key=oppQuery(1);
   if(OPP.key===key&&OPP.status==="ok"){paintOpp();return}
   /* troca de filtro: a lista atual continua na tela (esmaecida) até a nova chegar; sem lista, esqueleto */
@@ -2904,7 +2914,7 @@ function pauseHTML(p,retry){
   p=p||{};
   return`<h3>Oportunidades pausadas</h3><p>${esc(p.why||"Os preços do banco estão atrasados.")}${p.at?` Últimos preços recebidos em ${freshAt(p.at)}.`:""}</p>
   <p>Nenhuma nota antiga é mostrada como atual; elas voltam sozinhas na próxima atualização dos preços.</p>
-  <p class="pause-act"><button class="btn ghost sm" type="button" ${retry}>${ic("arrow-clockwise")}Tentar de novo</button><a class="btn ghost sm" href="/produtos" data-go="produtos">${ic("package")}Ver preços por produto</a></p>`;
+  <p class="pause-act"><button class="btn ghost sm" type="button" ${retry}>${ic("arrow-clockwise")}Tentar de novo</button><a class="btn ghost sm" href="/precos" data-go="copag">${ic("tag")}Ver preços sugeridos Copag</a></p>`;
 }
 /* boot: as oportunidades da página aberta são pedidas junto com o /home (apiGet compartilha o pedido) */
 function prefetchOpp(){if(view==="deals")loadHomeOpp();else if(view==="oportunidades")apiGet(oppQuery(1))}
@@ -3173,16 +3183,16 @@ document.addEventListener("click",(e)=>{
   const hm=t.closest("[data-hm]");if(hm){HV.mode=hm.dataset.hm;drawHist(curPid);track("view_price_history",{id:curPid,mode:HV.mode});return}
   if(t.closest("[data-fsheet]")){openFilterSheet();return}
   if(t.closest("[data-fclose]")){$("#fsheet").close();return}
-  if(t.closest("[data-ofclear]")){Object.assign(OF,{cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:""});store.set("opp2",OF);if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
+  if(t.closest("[data-ofclear]")){ofReset();if($("#fsheet").open)$("#fsheet").close();renderOpp();return}
   const och=t.closest("[data-ofchip]");if(och){OF.faixa=och.dataset.ofchip;store.set("opp2",OF);syncSheet();renderOpp().then(syncSheet);track("filter_used",{f:"faixa",v:OF.faixa});return}
   if(t.closest("[data-homeretry]")){retryHomeOpp();return}
   if(t.closest("[data-oppretry]")){retryOpp();return}
   const sx=t.closest("[data-sclear]");if(sx){const i=sx.closest(".sbox").querySelector("input");i.value="";sx.hidden=true;acClose();i.focus();return}
   if(t.closest("[data-searchfocus]")){scrollTo({top:0,behavior:"smooth"});setTimeout(()=>{const i=$("#tq");if(i)i.focus({preventScroll:true})},120);return}
   const gb=t.closest(".fchip");if(gb){F.group=gb.dataset.g;F.type="";store.set("f",F);rerenderList();track("filter_used",{f:"group",v:F.group});return}
-  const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);if(view!=="produtos")go("produtos");else render();return}
-  const cc=t.closest("[data-col]");if(cc&&!t.closest("select")){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();Object.assign(F,{col:cc.dataset.col,group:"",type:"",store:"",max:"",below:false,stock:true,sort:""});store.set("f",F);track("collection_card",{col:cc.dataset.col});go("produtos");scrollTo({top:0});return}
-  const fm=t.closest("[data-fmt]");if(fm){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();Object.assign(F,{group:fm.dataset.fmt,col:"",type:"",store:"",max:"",below:false,stock:true,sort:""});store.set("f",F);go("produtos");scrollTo({top:0});return}
+  const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);go("oportunidades");return}
+  const cc=t.closest("[data-col]");if(cc&&!t.closest("select")){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();ofReset({col:cc.dataset.col});track("collection_card",{col:cc.dataset.col});go("oportunidades");scrollTo({top:0});return}
+  const fm=t.closest("[data-fmt]");if(fm){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();ofReset({cat:fm.dataset.fmt==="ETB"?"etb":fm.dataset.fmt});go("oportunidades");scrollTo({top:0});return}
   const nb=t.closest("[data-go]");if(nb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();go(nb.dataset.go);return}
   if(t.closest("[data-home]")){e.preventDefault();go("");return}
   if(t.closest("[data-more]")){$("#more").showModal();return}
