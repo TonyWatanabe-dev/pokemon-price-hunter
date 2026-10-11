@@ -20,7 +20,7 @@ Reduzir confirmações humanas em mudanças rotineiras, sem deixar um LLM decidi
 - A classificação usa os caminhos reais alterados, não o risco declarado pelo agente.
 - Vale sempre o maior risco entre os arquivos alterados.
 - Arquivo crítico, caminho desconhecido, escopo vazio, traversal ou base/evidência incerta falham fechados em R3 ou bloqueio.
-- Cada check precisa estar em `success` e comprovar exatamente o `headSha` analisado; check verde de commit anterior não vale.
+- Cada check precisa estar em `success` e comprovar exatamente o `headSha` analisado; check verde de commit anterior não vale. No CI atual do repositório, o job `test` executa `npm test` completo e pode satisfazer os gates base de CI/testes, regressão e golden; um check nomeado separadamente sempre prevalece sobre esse alias.
 - A branch precisa ser isolada, a base precisa ser `main` e a ausência de conflitos precisa estar comprovada.
 - A primeira implementação não executa comandos, não chama APIs, não lê secrets e não altera permissões. Ela retorna decisão, ações elegíveis e evidências faltantes.
 
