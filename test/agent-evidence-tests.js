@@ -75,7 +75,7 @@ await test('agente de matching: toda proposta leva evidência; sem evidência v�
   const c = reviewCandidates(state, { catalog, now: NOW });
   assert.deepEqual(c.map((x) => x.payload.proposal.kind), ['tipo_desconhecido', 'baixa_confianca', 'baixa_confianca']);
   for (const x of c) {
-    assert.equal(validateReviewProposal(x.payload), null, 'payload continua passando no handler');
+    assert.equal(validateReviewProposal(x.payload, { now: NOW }), null, 'payload continua passando no handler');
     assert.equal(validateEvidence(x.payload.proposal.evidence, { now: NOW }), null, 'evidência válida e coerente');
     assert.equal(x.payload.proposal.evidence.url, x.payload.proposal.url);
   }

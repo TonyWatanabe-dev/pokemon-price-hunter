@@ -63,3 +63,5 @@ assert.deepEqual(items.map((s) => s.id), ['a', 'e', 'b', 'c', 'd']);
 assert.deepEqual(siteStores({}, { now }), { items: [], total: 0 });
 
 console.log('  diretório de lojas: ok');
+
+await import('./push-config-tests.js');

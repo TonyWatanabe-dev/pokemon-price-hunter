@@ -3,6 +3,7 @@
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
 import { decideCopagFromRows, productCopagFields } from './copag-policy.mjs';
+import { normalizeSearch, sqlFold } from './search.mjs';
 import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
 import { classifyOfferChange, WINDOW_HOURS, BOUNCE_HOURS } from './offer-change.mjs';
 
@@ -128,8 +129,14 @@ const productCard = (r) => ({
   status: r.data_status ?? 'no_offers',
 });
 
+// busca sem acento e sem maiúsculas (search.mjs): o termo chega normalizado e o nome é normalizado no SQL. position()
+// mantém o termo literal (% e _ não são curinga). ~250 produtos: translate() por linha é trivial e nenhum índice é usado.
+const BUSCA_MATCH = `position(${sqlFold('$5')} IN ${sqlFold('p.canonical_name')}) > 0`;
+const buscaTerm = (busca) => (busca == null ? null : normalizeSearch(busca));
+
 export async function listProducts({ page, limit, colecao = null, tipo = null, categoria = null, estoque = false, busca = null, ordem = 'relevancia' }) {
   const order = SORTS[ordem] || SORTS.relevancia;
+  busca = buscaTerm(busca);
   const rows = await q(`
     SELECT p.legacy_id, p.slug, p.canonical_name, p.category_id, p.attrs, p.units, p.image_url, c.code AS col_code, c.name AS col_name,
            s.data_status, s.current_price, s.current_total_price, s.median_price, s.reference_price, s.reference_status, s.reference_kind, s.discount_vs_reference,
@@ -140,7 +147,7 @@ export async function listProducts({ page, limit, colecao = null, tipo = null, c
      WHERE p.legacy_id IS NOT NULL
        AND ($1::text IS NULL OR c.code = $1) AND ($2::text IS NULL OR p.attrs->>'type' = $2) AND ($3::text IS NULL OR p.category_id = $3)
        AND (NOT $4::boolean OR s.data_status = 'ok')
-       AND ($5::text IS NULL OR position(lower($5) IN lower(p.canonical_name)) > 0)
+       AND ($5::text IS NULL OR ${BUSCA_MATCH})
      ORDER BY ${order}, p.legacy_id
      LIMIT $6 OFFSET $7`, [colecao, tipo, categoria, !!estoque, busca, limit, (page - 1) * limit]);
   const total = rows.length ? Number(rows[0].total_rows) : (page > 1 ? await countProducts({ colecao, tipo, categoria, estoque, busca }) : 0);
@@ -149,7 +156,7 @@ export async function listProducts({ page, limit, colecao = null, tipo = null, c
 async function countProducts({ colecao, tipo, categoria, estoque, busca }) {
   const r = await q(`SELECT count(*)::int n FROM hunter.product p LEFT JOIN hunter.collection c ON c.id = p.collection_id LEFT JOIN hunter.product_stats s ON s.product_id = p.id
     WHERE p.legacy_id IS NOT NULL AND ($1::text IS NULL OR c.code = $1) AND ($2::text IS NULL OR p.attrs->>'type' = $2) AND ($3::text IS NULL OR p.category_id = $3)
-      AND (NOT $4::boolean OR s.data_status = 'ok') AND ($5::text IS NULL OR position(lower($5) IN lower(p.canonical_name)) > 0)`, [colecao, tipo, categoria, !!estoque, busca]);
+      AND (NOT $4::boolean OR s.data_status = 'ok') AND ($5::text IS NULL OR ${BUSCA_MATCH})`, [colecao, tipo, categoria, !!estoque, busca]);
   return r[0].n;
 }
 

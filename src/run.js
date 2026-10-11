@@ -15,8 +15,9 @@ import { pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { decideCopag, eanDiverges, fromRobotEntry, productCopagFields } from './copag-policy.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
-import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop } from './alerts.js';
+import { tlsModeFor } from './db/ssl.js';
+import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -451,7 +452,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
 
   // Alertas
   const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
-  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log }), sent, watch.settings, now.getTime(), offers);
+  // Queda só vale como novo melhor preço do produto: compara com a melhor oferta da rodada anterior na mesma base de frete (prevBestOf).
+  const prevBest = prevBestOf(Object.values(prev));
+  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log, prevBest }), sent, watch.settings, now.getTime(), offers);
   const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
   // Grava o registro de envios já: se a rodada cair depois daqui, o retry não reenvia os mesmos alertas.
   if (delivered.length) writeJson(dataPath('alerts-sent.json'), sent);
@@ -510,7 +513,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length });
+      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length,
+      tls: tlsModeFor(process.env.DATABASE_URL),      // modo TLS do banco (só o modo; ver docs/tls.md)
+      copag: copagSummary(dbHealth?.copagRefs, T) });  // Copag oficial vencendo em até 7 dias (aviso copag_vencendo do vigia)
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read} · coletores: ${rec.collectors.ok} ok, ${rec.collectors.empty} vazios, ${rec.collectors.failed} com falha de ${rec.collectors.tried} em ${Math.round(rec.durationSec ?? 0)}s`);

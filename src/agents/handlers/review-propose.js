@@ -3,12 +3,14 @@
 // referência, score nem oportunidade. Idempotente por dedupe_key: repetir após timeout ou queda
 // não cria segundo item.
 
+import { validateEvidence } from '../evidence.js';
+
 export const REVIEW_CATEGORIES = ['matching', 'reference_conflict', 'price_anomaly', 'store_blocked', 'duplicate_product', 'affiliate_missing', 'crawler_broken'];
 const MAX_PROPOSAL_BYTES = 8 * 1024;
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const shortStr = (v, max) => typeof v === 'string' && v.length > 0 && v.length <= max;
 
-export function validateReviewProposal(p) {
+export function validateReviewProposal(p, { now = Date.now() } = {}) {
   if (!isPlainObject(p)) return 'payload deve ser objeto';
   if (!REVIEW_CATEGORIES.includes(p.category)) return `categoria desconhecida: ${p.category}`;
   if (!shortStr(p.dedupeKey, 200)) return 'dedupeKey obrigatória (até 200 caracteres)';
@@ -17,6 +19,12 @@ export function validateReviewProposal(p) {
   if (p.confidence != null && !(Number.isInteger(p.confidence) && p.confidence >= 0 && p.confidence <= 100)) return 'confidence deve ser inteiro 0–100';
   if (!isPlainObject(p.proposal)) return 'proposal deve ser objeto';
   if (Buffer.byteLength(JSON.stringify(p.proposal)) > MAX_PROPOSAL_BYTES) return `proposal acima de ${MAX_PROPOSAL_BYTES} bytes`;
+  // Decisão de matching só vira item de revisão com `proposal.evidence` no contrato de ../evidence.js
+  // (fonte, URL http(s), motivo, base e status coerente). Campos soltos (url/title/why) não bastam.
+  if (p.category === 'matching') {
+    const err = validateEvidence(p.proposal.evidence, { now });
+    if (err) return `proposta de matching sem evidência válida: ${err}`;
+  }
   return null;
 }
 

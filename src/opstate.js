@@ -3,6 +3,7 @@
 // Lido pelo vigia (tools/watchdog.mjs) para avisar quando o robô para, o banco não sincroniza ou o leitor falha.
 import fs from 'node:fs';
 import path from 'node:path';
+import { copagExpiringSoon, COPAG_WARN_DAYS } from '../api/_lib/references.mjs';
 
 export const OPS_VERSION = 1;
 export const KEEP_RUNS = 96;            // ~24 h de rodadas a cada 15 min
@@ -87,6 +88,37 @@ export function watchedSummary(sources, ids = WATCHED_SOURCES) {
   return out;
 }
 
+/**
+ * Motor de oportunidades, pela batida (system_event ENGINE_HEARTBEAT) comparada ao generatedAt da rodada anterior:
+ * o motor roda logo depois da sincronização dela. lagMin = generatedAt anterior − batida.
+ *  ok: batida até ENGINE_OK_MIN antes (ou depois) · parado: banco sincronizou (sync ok) e a batida ficou mais de
+ *  ENGINE_STOP_MIN atrás · sem_heartbeat: banco lido, nenhuma batida ainda (estado logo após a implantação: não alerta) ·
+ *  desconhecido: sem banco, sem rodada anterior, ou sync atrasado com batida antiga (o problema é a sincronização).
+ */
+export const ENGINE_STOP_MIN = 30; export const ENGINE_OK_MIN = 60;
+export function engineSummary(dbSync) {
+  const runAt = dbSync?.engineRunAt || null;
+  if (!dbSync || ['desligado', 'indisponivel'].includes(dbSync.status)) return { status: 'desconhecido', runAt, lagMin: null };
+  if (!runAt) return { status: 'sem_heartbeat', runAt: null, lagMin: null };
+  const prev = Date.parse(dbSync.prevGeneratedAt || ''); const at = Date.parse(runAt);
+  if (!Number.isFinite(prev) || !Number.isFinite(at)) return { status: 'desconhecido', runAt, lagMin: null };
+  const lagMin = Math.round((prev - at) / 6e4);
+  if (dbSync.status === 'ok' && lagMin > ENGINE_STOP_MIN) return { status: 'parado', runAt, lagMin };
+  return { status: lagMin <= ENGINE_OK_MIN ? 'ok' : 'desconhecido', runAt, lagMin };
+}
+
+/**
+ * Referência Copag oficial que vence logo (aviso antecipado copag_vencendo; ver docs/referencia-copag.md, "Validade e renovação").
+ * rows: linhas Copag atuais verificadas lidas do banco (readDbHealth → copagRefs); null = banco não lido → null (sem medida, sem aviso).
+ * Só ids, datas e preços: não é problema da rodada (não entra em issues/health) e não muda nota nem ranking.
+ */
+export function copagSummary(rows, asOf, days = COPAG_WARN_DAYS) {
+  if (!Array.isArray(rows)) return null;
+  const expiring = copagExpiringSoon(rows, asOf, { days });
+  return { warnDays: days, checked: new Set(rows.map((r) => String(r?.legacy_id ?? r?.product_id))).size,
+    expiring: expiring.map(({ id, verified_at, expires_at }) => ({ id: clean(id, 80), verified_at, expires_at })) };
+}
+
 /** Problemas da própria rodada (informativo; quem decide alerta é o vigia, com as regras dele). */
 export function runIssues(rec) {
   const out = [];
@@ -97,10 +129,11 @@ export function runIssues(rec) {
   if (rec.dbSync?.status === 'atrasado') out.push('sync_atrasado');
   if (rec.dbSync?.status === 'indisponivel') out.push('banco_indisponivel');
   if (rec.dbSync?.status === 'desligado') out.push('banco_desligado');
+  if (rec.engine?.status === 'parado') out.push('motor_parado');
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, collectors, offers, alerts }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, collectors, offers, alerts, tls = null, copag = null }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -112,6 +145,9 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     result: stores?.deferred > 0 ? 'parcial' : 'ok',
     stores, watched: watched || {}, collectors: collectors || null, offers: offers ?? null, alerts: alerts ?? 0,
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
+    engine: engineSummary(dbSync),
+    copag,                                 // Copag oficial vencendo (copagSummary): só aviso, não entra em issues/health
+    tls,                                   // TLS do PostgreSQL (tlsModeFor, src/db/ssl.js): 'verify' | 'no-verify' | 'local' | 'off' | 'refused' | 'invalid'; só o modo, nunca URL ou CA
   };
   rec.issues = runIssues(rec);
   rec.health = rec.issues.length ? 'degradado' : 'saudavel';

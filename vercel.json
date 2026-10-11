@@ -106,7 +106,8 @@
       "includeFiles": "index.html"
     },
     "api/v1.mjs": {
-      "maxDuration": 15
+      "maxDuration": 15,
+      "includeFiles": "config/affiliates.json"
     }
   },
   "regions": [

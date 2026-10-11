@@ -4,7 +4,7 @@
 //      [--dry-run] (não envia nem grava o livro) · [--test] (envia uma mensagem de teste; o livro não muda)
 //      [--now 2026-10-09T12:00:00Z] (testes)
 import fs from 'node:fs';
-import { evaluate, decide, commitLedger, normalizeLedger } from '../src/ops-watch.js';
+import { evaluate, decide, commitLedger, normalizeLedger, decideWarning, commitWarning } from '../src/ops-watch.js';
 import { sendAll } from '../src/ops-notify.js';
 import { writeJsonAtomic } from '../src/opstate.js';
 
@@ -34,17 +34,25 @@ export async function main({ env = process.env, fetchImpl = fetch, log = console
   const d = decide(ev, ledger, now);
   let sent = { delivered: false, channels: [] };
   if (d.notify && !flag('dry-run')) sent = await sendAll(d.notify, { env, fetchImpl });
-  const next = commitLedger(ledger, ev, d, sent.delivered, now);
+  let next = commitLedger(ledger, ev, d, sent.delivered, now);
+  // aviso antecipado (copag_vencendo): mensagem própria, não mexe no estado nem no incidente
+  const w = decideWarning(ev, next, now);
+  let sentW = { delivered: false, channels: [] };
+  if (w.notify && !flag('dry-run')) sentW = await sendAll(w.notify, { env, fetchImpl });
+  next = commitWarning(next, w, sentW.delivered, now);
   if (ledgerFile && !flag('dry-run')) writeJsonAtomic(ledgerFile, next);
 
   const summary = { status: ev.status, reasons: ev.reasons.map((r) => r.code), facts: ev.facts, notify: d.notify?.kind || null,
-    delivered: d.notify ? sent.delivered : null, channels: sent.channels, notifiedStatus: next.notifiedStatus };
+    delivered: d.notify ? sent.delivered : null, channels: sent.channels, notifiedStatus: next.notifiedStatus,
+    warnings: ev.warnings.map((x) => x.code), warn: w.notify?.kind || null, warnDelivered: w.notify ? sentW.delivered : null };
   log(JSON.stringify(summary));
   if (d.notify) log('\n' + d.notify.text);
+  if (w.notify) log('\n' + w.notify.text);
   if (env.GITHUB_STEP_SUMMARY) {
     const md = [`### Vigia: ${ev.status}`, '', `- Dados publicados: ${ev.facts.dataGeneratedAt || '?'} (${ev.facts.dataAgeMin ?? '?'} min)`,
       `- Última rodada concluída: ${ev.facts.lastRunAt || '?'} (${ev.facts.lastRunConclusion || '?'})`,
-      ...ev.reasons.map((r) => `- ${r.text}`), `- Aviso: ${d.notify ? `${d.notify.kind} (${sent.delivered ? 'entregue' : 'não entregue'})` : 'nenhum'}`].join('\n');
+      ...ev.reasons.map((r) => `- ${r.text}`), ...ev.warnings.map((x) => `- Aviso antecipado: ${x.text}`),
+      `- Aviso: ${d.notify ? `${d.notify.kind} (${sent.delivered ? 'entregue' : 'não entregue'})` : 'nenhum'}`].join('\n');
     try { fs.appendFileSync(env.GITHUB_STEP_SUMMARY, md + '\n'); } catch { /* opcional */ }
   }
   return { ...summary, ledger: next, message: d.notify };

@@ -56,6 +56,12 @@ Passo **Agentes (fila de revisão)** em `hunter.yml`, depois de "Sincronizar com
 - **Auditoria:** `createAuditLog`/`guarded` registram ferramenta, objetivo, resultado (`ok`, `denied`, `failed`) e erro, com segredos redigidos (chaves sensíveis, tokens, URLs de banco). Quem grava é o `sink` (ex.: `system_event`); ligar isso a `AGENT_*` fica para a #36, sem duplicar aqui.
 - **Fora de escopo:** o executor local segue `CLAUDE.md` e `docs/executor.md`; nenhum agente novo nem acesso novo foi criado.
 
+## Evidência obrigatória (issue #36)
+
+Proposta de `matching` sem `proposal.evidence` válido no contrato de `src/agents/evidence.js` (fonte, URL http(s), motivo, base `observado`/`inferido` e `status` coerente; ver `validateEvidence`) é payload inválido, mesmo que traga `url`, `title`, `why` ou `reason` soltos: o job vai direto para `failed`, sem retry e sem `review_item`. Auditoria da issue #36: fila, estados, idempotência, lease/retry/timeout, revisão humana e trilha (`REVIEW_DECIDED`) já existiam; não foi criado módulo novo.
+
+Limitações: a execução é sequencial (sem concorrência paralela, por escolha); o estado `review` é representado por `review_item` aberto, não por status do job; não há tela própria para a fila.
+
 ## Ainda não integrado
 
 Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confiança não remove a oferta já aceita; Catalog Agent com IA.
