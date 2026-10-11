@@ -15,6 +15,11 @@
   - A rodada seguinte lê, só para leitura, `max(offer.last_seen_at)` (ver `src/db-health.js`).
   - Se o valor for igual ao horário da rodada anterior, a sincronização chegou ao banco: `dbSync.status = ok`. Se for menor, não chegou: `atrasado`.
   - Outros estados: `indisponivel` (não deu para ler o banco), `desligado` (sem `DATABASE_URL`), `sem_referencia` (primeira rodada).
+- **Motor de oportunidades**: cada execução concluída grava uma batida em `system_event` (tipo `ENGINE_HEARTBEAT`, fora do prefixo `OPPORTUNITY_` dos eventos de transição; guardada 14 dias, na mesma transação do motor). A rodada seguinte lê a última (`dbSync.engineRunAt`) e registra `engine.status`:
+  - `ok`: batida recente;
+  - `parado`: o banco sincronizou, mas a batida ficou mais de 30 min antes da rodada anterior;
+  - `sem_heartbeat`: nenhuma batida ainda (estado logo após a implantação; nunca avisa);
+  - `desconhecido`: sem banco, sem rodada anterior ou sincronização atrasada (aí o problema é a sincronização).
 - **Vigia (`.github/workflows/watchdog.yml` → `tools/watchdog.mjs` → `src/ops-watch.js`)**:
   - lê os dados publicados e o `meta.json` do mesmo commit do ramo `data`, além das últimas rodadas do robô na API do Actions;
   - decide o estado e avisa só nas transições.
@@ -29,6 +34,7 @@
 | | seção `ops` mais de 45 min atrás dos dados |
 | | nas 2 últimas rodadas registradas: banco sem a rodada anterior, banco ilegível, robô sem `DATABASE_URL` ou leitor indisponível |
 | | **zero notas válidas**: leitor ok, pelo menos 10 linhas lidas e nenhuma válida, nas 2 últimas rodadas. Com menos de 10 lidas, só fica registrado |
+| | **motor parado** (`motor_parado`): `engine.status = parado` nas 2 últimas rodadas registradas |
 | `desconhecido` | sem dados publicados legíveis, ou ainda sem `ops` registrado. Nunca avisa e não muda o livro |
 | `saudavel` | nenhum dos casos acima |
 

@@ -399,3 +399,5 @@ await t('23. motor parado: dados velhos viram "parado" mesmo com o último regis
 
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log(`✓ Detecção operacional (Lote 1): ${n} grupos de testes passaram${DBURL ? ' (puro + banco)' : ' (puro)'}`);
+// Motor de oportunidades parado (extraído da #15; registrado aqui para não mexer no script test do package.json)
+await import('./engine-watch-tests.js');
