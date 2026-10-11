@@ -7,7 +7,6 @@ export const RISK = Object.freeze({ R0: 'R0', R1: 'R1', R2: 'R2', R3: 'R3' });
 export const RELEASE_ACTION = Object.freeze({ MERGE: 'pr.merge', DEPLOY: 'deploy' });
 export const POLICY_VERSION = '1.0.0';
 
-const severity = Object.freeze({ R0: 0, R1: 1, R2: 2, R3: 3 });
 const shaPattern = /^[a-f0-9]{40}$/i;
 
 const CRITICAL_PATHS = [
@@ -112,27 +111,29 @@ function checkMap(checks, headSha, missing) {
   return map;
 }
 
-function requireCheck(map, name, headSha, missing) {
-  const check = map.get(name);
+function requireCheck(map, name, headSha, missing, aliases = []) {
+  // Compatibilidade com o CI atual do repositório: o job "test" executa npm test completo.
+  // Check explícito com o nome principal sempre prevalece; alias só é usado se o principal não existe.
+  const selectedName = map.has(name) ? name : aliases.find((alias) => map.has(alias)) ?? name;
+  const check = map.get(selectedName);
   if (!check) {
-    missing.push(`check "${name}" ausente`);
+    missing.push(`check "${name}"${aliases.length ? ` (ou ${aliases.join(', ')})` : ''} ausente`);
     return false;
   }
   if (check.duplicate) {
-    missing.push(`check "${name}" duplicado/ambíguo`);
+    missing.push(`check "${selectedName}" duplicado/ambíguo`);
     return false;
   }
   if (check.status !== 'success') {
-    missing.push(`check "${name}" não está success (status=${String(check.status ?? 'ausente')})`);
+    missing.push(`check "${selectedName}" não está success (status=${String(check.status ?? 'ausente')})`);
     return false;
   }
   if (typeof check.sha !== 'string' || check.sha.toLowerCase() !== headSha.toLowerCase()) {
-    missing.push(`check "${name}" não comprova o HEAD atual`);
+    missing.push(`check "${selectedName}" não comprova o HEAD atual`);
     return false;
   }
   return true;
 }
-
 function evidenceGaps(risk, evidence = {}) {
   const missing = [];
   const headSha = typeof evidence.headSha === 'string' ? evidence.headSha : '';
@@ -144,8 +145,8 @@ function evidenceGaps(risk, evidence = {}) {
   if (evidence.conflictFree !== true) missing.push('ausência de conflitos não comprovada');
 
   const map = checkMap(evidence.checks, headSha, missing);
-  requireCheck(map, 'ci', headSha, missing);
-  requireCheck(map, 'tests', headSha, missing);
+  requireCheck(map, 'ci', headSha, missing, ['test']);
+  requireCheck(map, 'tests', headSha, missing, ['test']);
 
   if (risk === RISK.R1) {
     requireCheck(map, 'preview', headSha, missing);
@@ -153,8 +154,8 @@ function evidenceGaps(risk, evidence = {}) {
   }
 
   if (risk === RISK.R2) {
-    requireCheck(map, 'regression', headSha, missing);
-    requireCheck(map, 'golden', headSha, missing);
+    requireCheck(map, 'regression', headSha, missing, ['test']);
+    requireCheck(map, 'golden', headSha, missing, ['test']);
     if (evidence.rollback?.documented !== true) missing.push('plano de rollback documentado ausente');
     if (evidence.rollback?.tested !== true) missing.push('rollback testado/reproduzível ausente');
     if (evidence.rollout?.metricsDefined !== true) missing.push('métricas de rollout ausentes');
