@@ -15,7 +15,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { tlsModeFor } from './db/ssl.js';
-import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun } from './opstate.js';
+import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -503,7 +503,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
       stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length,
-      tls: tlsModeFor(process.env.DATABASE_URL) });   // modo TLS do banco (só o modo; ver docs/tls.md)
+      tls: tlsModeFor(process.env.DATABASE_URL),      // modo TLS do banco (só o modo; ver docs/tls.md)
+      copag: copagSummary(dbHealth?.copagRefs, T) });  // Copag oficial vencendo em até 7 dias (aviso copag_vencendo do vigia)
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
     recordRun(dataPath('meta.json'), rec);
     log(`Estado operacional: ${rec.health}${rec.issues.length ? ' (' + rec.issues.join(', ') + ')' : ''} · banco: ${rec.dbSync.status} · leitor: ${rec.reader.status} ${rec.reader.valid}/${rec.reader.read} · coletores: ${rec.collectors.ok} ok, ${rec.collectors.empty} vazios, ${rec.collectors.failed} com falha de ${rec.collectors.tried} em ${Math.round(rec.durationSec ?? 0)}s`);

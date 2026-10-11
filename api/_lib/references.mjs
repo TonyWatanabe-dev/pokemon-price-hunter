@@ -187,6 +187,44 @@ export function copagReferenceStatus(rows, asOf = null) {
   return { status: prices.length > 1 ? 'conflicting' : 'confirmed', prices, verified_at };
 }
 
+// ---------------------------------------------------------------- aviso antecipado de vencimento (vigia)
+/** Fontes aceitas como evidência Copag pela view reference_price_current (migration 010). Só espelha a regra; não a muda. */
+export const COPAG_EVIDENCE_SOURCES = ['copag_loja', 'copag_loja_catalog', 'manual'];
+/** Antecedência do aviso operacional copag_vencendo (dias antes de a verificação passar de COPAG_MAX_AGE_DAYS). */
+export const COPAG_WARN_DAYS = 7;
+/** Instante (ISO UTC) em que a verificação deixa de valer: verified_at + COPAG_MAX_AGE_DAYS. Sem data válida → null. */
+export function copagExpiresAt(verifiedAt) {
+  const v = verifiedAt == null || verifiedAt === '' ? NaN : new Date(verifiedAt).getTime();
+  return Number.isFinite(v) ? new Date(v + COPAG_MAX_AGE_DAYS * 864e5).toISOString() : null;
+}
+/**
+ * Referências Copag oficiais ATUAIS que vencem em até `days` dias (aviso antecipado; não muda nota nem ranking).
+ * rows: linhas de reference_price com o produto em legacy_id (ou product_id). Só conta a linha que a view aceitaria hoje
+ * como evidência (fonte da loja Copag ou manual, URL Copag, verificada); por produto, a situação vem de copagReferenceStatus:
+ * só confirmed/conflicting (ainda valendo) podem estar "vencendo". Vence em verified_at (a mais recente) + COPAG_MAX_AGE_DAYS.
+ * Devolve [{ id, verified_at, expires_at, days_left, prices }] ordenado por vencimento e id.
+ */
+export function copagExpiringSoon(rows, asOf, { days = COPAG_WARN_DAYS } = {}) {
+  const now = new Date(asOf).getTime();
+  if (!Number.isFinite(now)) return [];
+  const by = new Map();
+  for (const r of rows || []) {
+    const id = r?.legacy_id ?? r?.product_id; if (id == null) continue;
+    if (!COPAG_EVIDENCE_SOURCES.includes(r.source) || !isCopagUrl(r.source_url)) continue;
+    if (!by.has(String(id))) by.set(String(id), []);
+    by.get(String(id)).push(r);
+  }
+  const out = [];
+  for (const [id, rs] of by) {
+    const s = copagReferenceStatus(rs, asOf);
+    if (s.status !== 'confirmed' && s.status !== 'conflicting') continue;
+    const exp = copagExpiresAt(s.verified_at); if (!exp) continue;
+    const left = Date.parse(exp) - now;
+    if (left >= 0 && left <= days * 864e5) out.push({ id, verified_at: s.verified_at, expires_at: exp, days_left: Math.round(left / 864e3) / 100, prices: s.prices });
+  }
+  return out.sort((a, b) => a.expires_at.localeCompare(b.expires_at) || a.id.localeCompare(b.id));
+}
+
 /**
  * Referência ATUAL de um produto. copag: linha atual verificada (reference_price_current) ou null; market: saída de marketReferenceOf.
  * asOf: momento do cálculo; Copag verificada há mais de COPAG_MAX_AGE_DAYS é tratada como ausente (cai para mercado ou NONE)
