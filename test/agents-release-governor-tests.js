@@ -1,6 +1,6 @@
 // Release Governor: avaliação determinística de risco, evidências por SHA e escalonamento fechado.
 import assert from 'node:assert/strict';
-import { buildReleaseAuditEvent, evaluateAndRecordRelease } from '../src/agents/release-governor-audit.js';
+import { buildReleaseAuditEvent, createPostgresReleaseAuditSink, evaluateAndRecordRelease } from '../src/agents/release-governor-audit.js';
 import { classifyReleaseRisk, evaluateRelease, RISK, RELEASE_ACTION } from '../src/agents/release-governor.js';
 
 const SHA = 'a'.repeat(40);
@@ -430,5 +430,47 @@ test('event ID é determinístico para a mesma decisão e timestamp', () => {
   assert.equal(buildReleaseAuditEvent(args).eventId, buildReleaseAuditEvent(args).eventId);
 });
 
+
+
+await testAsync('sink PostgreSQL grava evento mínimo em system_event e é idempotente por eventId', async () => {
+  const calls = [];
+  const sink = createPostgresReleaseAuditSink({
+    async query(sql, args) {
+      calls.push({ sql, args });
+      return { rows: [{ id: '42' }] };
+    },
+  });
+  const decision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
+  const event = buildReleaseAuditEvent({
+    decision, changedPaths: ['docs/release.md'], evidence: evidence(),
+    now: new Date('2026-10-11T12:00:00Z'),
+  });
+  const first = await sink(event);
+  const second = await sink(event);
+  assert.equal(first.persisted, true);
+  assert.equal(first.eventId, event.eventId);
+  assert.equal(first.rowId, '42');
+  assert.equal(second.eventId, event.eventId);
+  assert.equal(calls.length, 2);
+  assert.match(calls[0].sql, /pg_advisory_xact_lock/);
+  assert.match(calls[0].sql, /NOT EXISTS/);
+  assert.deepEqual(calls[0].args.slice(1, 4), [
+    'RELEASE_GOVERNOR_DECISION', 'release_governor', event.eventId,
+  ]);
+  assert.equal(JSON.parse(calls[0].args[4]).eventId, event.eventId);
+});
+
+await testAsync('sink PostgreSQL falha fechado se o banco falhar, não confirmar ou receber ID inválido', async () => {
+  assert.throws(() => createPostgresReleaseAuditSink(null), /db.query obrigatório/);
+  const event = buildReleaseAuditEvent({
+    decision: evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() }),
+    changedPaths: ['docs/release.md'], evidence: evidence(),
+  });
+  const noRows = createPostgresReleaseAuditSink({ query: async () => ({ rows: [] }) });
+  await assert.rejects(noRows(event), /não foi confirmado/);
+  const broken = createPostgresReleaseAuditSink({ query: async () => { throw new Error('database unavailable'); } });
+  await assert.rejects(broken(event), /database unavailable/);
+  await assert.rejects(broken({ ...event, eventId: 'not-a-sha' }), /eventId SHA-256 inválido/);
+});
 
 console.log(`✓ Release Governor (política determinística): ${passed} grupos de testes passaram`);
