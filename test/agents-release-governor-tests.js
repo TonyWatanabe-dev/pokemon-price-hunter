@@ -171,7 +171,7 @@ test('deploy R1 exige main integrada, Preview READY, preview-smoke e a11y no SHA
 
   const building = evaluateRelease({
     changedPaths: ['assets/home.css'],
-    evidence: deployedEvidence({ deployment: { ...predeployEvidence().deployment, status: 'building' } }),
+    evidence: predeployEvidence({ deployment: { ...predeployEvidence().deployment, status: 'building' } }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(building.decision, 'blocked');
@@ -197,7 +197,7 @@ test('autorização de deploy R2 exige regressão, golden, rollback testado e ro
 
   const noRollback = evaluateRelease({
     changedPaths: ['api/v1.mjs'],
-    evidence: deployedEvidence({ rollback: { documented: true, tested: false } }),
+    evidence: predeployEvidence({ rollback: { documented: true, tested: false } }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(noRollback.decision, 'blocked');
@@ -205,7 +205,7 @@ test('autorização de deploy R2 exige regressão, golden, rollback testado e ro
 
   const unsafeFlag = evaluateRelease({
     changedPaths: ['api/v1.mjs'],
-    evidence: deployedEvidence({ featureFlag: { applicable: true, present: true, defaultOff: false } }),
+    evidence: predeployEvidence({ featureFlag: { applicable: true, present: true, defaultOff: false } }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(unsafeFlag.decision, 'blocked');
