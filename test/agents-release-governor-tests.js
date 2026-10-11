@@ -1,5 +1,6 @@
 // Release Governor: avaliação determinística de risco, evidências por SHA e escalonamento fechado.
 import assert from 'node:assert/strict';
+import { buildReleaseAuditEvent, createPostgresReleaseAuditSink, evaluateAndRecordRelease } from '../src/agents/release-governor-audit.js';
 import { classifyReleaseRisk, evaluateRelease, RISK, RELEASE_ACTION } from '../src/agents/release-governor.js';
 
 const SHA = 'a'.repeat(40);
@@ -22,6 +23,9 @@ const evidence = (overrides = {}) => ({
 let passed = 0;
 const test = (name, fn) => {
   try { fn(); passed++; } catch (error) { console.error(`✗ ${name}`); throw error; }
+};
+const testAsync = async (name, fn) => {
+  try { await fn(); passed++; } catch (error) { console.error(`✗ ${name}`); throw error; }
 };
 
 test('documentação comum é R0; testes exigem R2 e políticas de agentes são R3', () => {
@@ -312,5 +316,219 @@ test('um único arquivo de maior risco domina a classificação e ações descon
   assert.equal(r.risk, RISK.R3);
   assert.deepEqual(r.allowedActions, []);
 });
+
+
+await testAsync('decisão autônoma é registrada antes de ser devolvida, com action e SHA explícitos', async () => {
+  const rows = [];
+  const result = await evaluateAndRecordRelease({
+    changedPaths: ['docs/release.md'], evidence: evidence(), action: RELEASE_ACTION.MERGE,
+    actor: 'executor', source: 'local-cli', now: new Date('2026-10-11T12:00:00Z'),
+    auditSink: async (event) => { rows.push(event); },
+  });
+  assert.equal(result.decision.decision, 'autonomous');
+  assert.equal(rows.length, 1);
+  assert.equal(result.audit.eventId, rows[0].eventId);
+  assert.equal(result.audit.authorized, true);
+  assert.equal(result.audit.action, RELEASE_ACTION.MERGE);
+  assert.equal(result.audit.headSha, SHA);
+  assert.equal(result.audit.occurredAt, '2026-10-11T12:00:00.000Z');
+  assert.equal(result.audit.policyVersion, '1.0.0');
+  assert.equal(Object.isFrozen(result.audit), true);
+  assert.equal(Object.isFrozen(result.audit.checks), true);
+});
+
+await testAsync('auditoria persiste a decisão bloqueada sem convertê-la em autorização', async () => {
+  const rows = [];
+  const result = await evaluateAndRecordRelease({
+    changedPaths: ['docs/release.md'], evidence: evidence({ checks: [check('ci', 'failure'), check('tests')] }),
+    action: RELEASE_ACTION.MERGE, auditSink: async (event) => rows.push(event),
+  });
+  assert.equal(result.decision.decision, 'blocked');
+  assert.equal(result.audit.decision, 'blocked');
+  assert.equal(result.audit.authorized, false);
+  assert.deepEqual(result.audit.allowedActions, []);
+  assert.equal(rows.length, 1);
+});
+
+await testAsync('eventos de merge e deploy têm permissões separadas', async () => {
+  const merge = buildReleaseAuditEvent({
+    decision: evaluateRelease({ changedPaths: ['assets/home.css'], evidence: evidence(), action: RELEASE_ACTION.MERGE }),
+    changedPaths: ['assets/home.css'], evidence: evidence(),
+  });
+  const deployEvidence = predeployEvidence();
+  const deploy = buildReleaseAuditEvent({
+    decision: evaluateRelease({ changedPaths: ['assets/home.css'], evidence: deployEvidence, action: RELEASE_ACTION.DEPLOY }),
+    changedPaths: ['assets/home.css'], evidence: deployEvidence,
+  });
+  assert.deepEqual(merge.allowedActions, [RELEASE_ACTION.MERGE]);
+  assert.deepEqual(deploy.allowedActions, [RELEASE_ACTION.DEPLOY]);
+  assert.equal(merge.authorized, true);
+  assert.equal(deploy.authorized, true);
+  assert.notEqual(merge.eventId, deploy.eventId);
+});
+
+test('auditoria rejeita decisão adulterada que autoriza ações extras', () => {
+  const changedPaths = ['docs/release.md'];
+  const evidenceInput = evidence();
+  const valid = evaluateRelease({ changedPaths, evidence: evidenceInput, action: RELEASE_ACTION.MERGE });
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...valid, allowedActions: [RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY] },
+    changedPaths, evidence: evidenceInput,
+  }), /ações autorizadas divergem/);
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...valid, allowedActions: ['unknown.action'] },
+    changedPaths, evidence: evidenceInput,
+  }), /lista de ações autorizadas ausente ou inválida/);
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...valid, decision: 'blocked', allowedActions: [RELEASE_ACTION.MERGE] },
+    changedPaths, evidence: evidenceInput,
+  }), /ações autorizadas divergem/);
+});
+
+test('auditoria rejeita risco ou SHA incompatível com evidência', () => {
+  const validDecision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...validDecision, risk: RISK.R3 },
+    changedPaths: ['docs/release.md'], evidence: evidence(),
+  }), /risco da decisão diverge/);
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: validDecision, changedPaths: ['docs/release.md'], evidence: evidence({ headSha: 'b'.repeat(40) }),
+  }), /SHA da decisão diverge/);
+});
+
+await testAsync('sem sink de auditoria ou com sink falhando, nenhuma decisão é devolvida como utilizável', async () => {
+  await assert.rejects(evaluateAndRecordRelease({
+    changedPaths: ['docs/release.md'], evidence: evidence(),
+  }), /auditSink obrigatório/);
+  await assert.rejects(evaluateAndRecordRelease({
+    changedPaths: ['docs/release.md'], evidence: evidence(),
+    auditSink: async () => { throw new Error('disk unavailable'); },
+  }), /disk unavailable/);
+});
+
+test('evento não copia evidência bruta nem divulga tokens', () => {
+  const secret = 'ghp_' + 'a'.repeat(32);
+  const ev = evidence({ accessToken: secret, debug: { authorization: 'Bearer very-secret-value' } });
+  const decision = evaluateRelease({ changedPaths: ['docs/readme.md'], evidence: ev });
+  const event = buildReleaseAuditEvent({
+    decision, changedPaths: ['docs/readme.md'], evidence: ev,
+    actor: secret, source: 'test',
+  });
+  const serialized = JSON.stringify(event);
+  assert.equal(serialized.includes(secret), false);
+  assert.equal(serialized.includes('very-secret-value'), false);
+  assert.equal(event.checks.length, ev.checks.length);
+  assert.equal(event.headSha, SHA);
+});
+
+test('event ID é determinístico para a mesma decisão e timestamp', () => {
+  const d = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
+  const args = {
+    decision: d, changedPaths: ['docs/release.md'], evidence: evidence(),
+    actor: 'executor', source: 'test', now: new Date('2026-10-11T12:00:00Z'),
+  };
+  assert.equal(buildReleaseAuditEvent(args).eventId, buildReleaseAuditEvent(args).eventId);
+});
+
+
+
+await testAsync('sink PostgreSQL grava evento mínimo em system_event e é idempotente por eventId', async () => {
+  const calls = [];
+  let inserted = false;
+  const db = {
+    async query(sql, args = []) {
+      calls.push({ sql: sql.trim(), args });
+      if (sql.trim() === 'SELECT id FROM system_event WHERE type = $1 AND entity_id = $2 LIMIT 1') {
+        return { rows: inserted ? [{ id: '42' }] : [] };
+      }
+      if (sql.trim().startsWith('INSERT INTO system_event')) {
+        inserted = true;
+        return { rows: [{ id: '42' }] };
+      }
+      return { rows: [] };
+    },
+  };
+  const sink = createPostgresReleaseAuditSink(db);
+  const decision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
+  const event = buildReleaseAuditEvent({
+    decision, changedPaths: ['docs/release.md'], evidence: evidence(),
+    now: new Date('2026-10-11T12:00:00Z'),
+  });
+  const first = await sink(event);
+  const second = await sink(event);
+  assert.equal(first.persisted, true);
+  assert.equal(first.duplicate, false);
+  assert.equal(first.eventId, event.eventId);
+  assert.equal(first.rowId, '42');
+  assert.equal(second.persisted, true);
+  assert.equal(second.duplicate, true);
+  assert.equal(second.rowId, '42');
+  assert.equal(calls.filter((c) => c.sql === 'BEGIN').length, 2);
+  assert.equal(calls.filter((c) => c.sql === 'COMMIT').length, 2);
+  assert.equal(calls.filter((c) => c.sql === 'SELECT pg_advisory_xact_lock(hashtext($1))').length, 2);
+  assert.equal(calls.filter((c) => c.sql.startsWith('INSERT INTO system_event')).length, 1);
+  const insert = calls.find((c) => c.sql.startsWith('INSERT INTO system_event'));
+  assert.deepEqual(insert.args.slice(0, 3), [
+    'RELEASE_GOVERNOR_DECISION', 'release_governor', event.eventId,
+  ]);
+  assert.equal(JSON.parse(insert.args[3]).eventId, event.eventId);
+});
+await testAsync('sink PostgreSQL falha fechado se o banco falhar, não confirmar ou receber ID inválido', async () => {
+  assert.throws(() => createPostgresReleaseAuditSink(null), /db.query obrigatório/);
+  const event = buildReleaseAuditEvent({
+    decision: evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() }),
+    changedPaths: ['docs/release.md'], evidence: evidence(),
+  });
+  const noRows = createPostgresReleaseAuditSink({ query: async () => ({ rows: [] }) });
+  await assert.rejects(noRows(event), /não foi confirmado/);
+  const broken = createPostgresReleaseAuditSink({ query: async () => { throw new Error('database unavailable'); } });
+  await assert.rejects(broken(event), /database unavailable/);
+  await assert.rejects(broken({ ...event, eventId: 'not-a-sha' }), /eventId SHA-256 inválido/);
+});
+
+
+// Integração real com PostgreSQL descartável do CI. Nunca usa DATABASE_URL de produção.
+if (process.env.TEST_DATABASE_URL) {
+  await testAsync('integração PostgreSQL real: persistência idempotente e fail-closed', async () => {
+    const { Client } = await import('pg');
+    const client = new Client({ connectionString: process.env.TEST_DATABASE_URL });
+    await client.connect();
+    try {
+      await client.query(`
+        CREATE TEMP TABLE system_event (
+          id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          type text NOT NULL,
+          entity_type text,
+          entity_id text,
+          payload jsonb NOT NULL DEFAULT '{}'::jsonb,
+          created_at timestamptz NOT NULL DEFAULT now()
+        ) ON COMMIT PRESERVE ROWS
+      `);
+      const sink = createPostgresReleaseAuditSink(client);
+      const decision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
+      const event = buildReleaseAuditEvent({
+        decision, changedPaths: ['docs/release.md'], evidence: evidence(),
+        now: new Date('2026-10-11T12:00:00Z'),
+      });
+      const first = await sink(event);
+      const second = await sink(event);
+      const rows = await client.query(
+        'SELECT id, type, entity_type, entity_id, payload FROM system_event WHERE type = $1 AND entity_id = $2',
+        ['RELEASE_GOVERNOR_DECISION', event.eventId],
+      );
+      assert.equal(first.persisted, true);
+      assert.equal(second.persisted, true);
+      assert.equal(rows.rowCount, 1, 'retry não deve duplicar evento');
+      assert.equal(rows.rows[0].entity_type, 'release_governor');
+      assert.equal(rows.rows[0].payload.eventId, event.eventId);
+      await client.query('DROP TABLE system_event');
+      await assert.rejects(sink(event));
+    } finally {
+      await client.end();
+    }
+  });
+} else {
+  console.log('↷ PostgreSQL real ignorado: TEST_DATABASE_URL ausente (CI configura banco descartável).');
+}
 
 console.log(`✓ Release Governor (política determinística): ${passed} grupos de testes passaram`);
