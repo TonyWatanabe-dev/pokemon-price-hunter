@@ -144,6 +144,16 @@ t('Lote 3. ticker: "Nova oportunidade" só com oportunidades disponíveis; pausa
   // a Home repinta o radar quando o status pausado chega depois da primeira pintura
   assert.match(homeCode, /const tk=\$\("\.stage \.ticker"\);if\(tk&&oppPaused\(\)\)\{tk\.outerHTML=tickerHTML\(\);startTicker\(\)\}/);
 });
+// 6C.0 — hierarquia da Home e rodapé dos cards
+t('6C.0. pódio com título visível e rodapé dos cards sem corte', () => {
+  assert.match(renderDealsCode, /<h2 id="pod-h">Melhores oportunidades agora<\/h2>/, 'título visível do pódio');
+  assert.match(renderDealsCode, /href="\/oportunidades" data-go="oportunidades">Ver todas/, 'atalho para a lista completa');
+  assert.ok(renderDealsCode.indexOf('id="pod-h"') < renderDealsCode.indexOf('id="home-pod"'), 'título vem antes do pódio');
+  assert.match(fullHtml, /\.pod-foot\{[^}]*flex-wrap:wrap/, 'rodapé do pódio quebra linha');
+  assert.match(fullHtml, /\.pod-foot \.pod-cta\{flex:1 1 100%/, 'botão do pódio em linha própria');
+  assert.ok(!/\.pod-store\{[^}]*text-overflow:ellipsis/.test(fullHtml), 'loja, selo e horário da nota não são cortados');
+  assert.match(fullHtml, /\.rail \.deal-foot \.deal-cta\{flex:1 1 100%\}/, 'sequência: botão sempre na linha de baixo');
+});
 t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   for (const sc of scripts) { if (sc.trim().startsWith('{')) continue; assert.doesNotThrow(() => new vm.Script(sc), 'erro de sintaxe no index.html'); }

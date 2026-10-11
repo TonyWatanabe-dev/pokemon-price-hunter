@@ -644,10 +644,18 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .stage-sub{margin:20px auto 0;max-width:52ch;font-size:clamp(16px,1.7vw,20px);line-height:1.5;color:rgb(228 233 255 / .78)}
 .stage .live{justify-content:center;color:rgb(228 233 255 / .7);text-align:center}
 @media (max-width:760px){.stage .live{display:block}.stage .live-dot{display:inline-block;margin-right:8px;vertical-align:1px}.stage .tk{justify-content:flex-start}}.stage .live b{color:#fff}
+/* 6C.0: título visível do pódio (antes só havia o aria-label) */
+.stage-h{max-width:640px;margin:56px auto 0;text-align:center}
+.stage-h h2{margin:0;font-size:clamp(20px,2.4vw,28px);font-weight:800;line-height:1.15;letter-spacing:-.02em;color:#fff;text-wrap:balance}
+.stage-h p{margin:6px 0 0;font-size:14px;line-height:1.5;color:rgb(228 233 255 / .7)}
+.stage-h a{display:inline-flex;align-items:center;gap:2px;color:var(--sticker);font-weight:700;text-decoration:none;white-space:nowrap}
+.stage-h a .chev{width:14px;height:14px;transform:rotate(-90deg)}
+@media (hover:hover) and (pointer:fine){.stage-h a:hover{text-decoration:underline;text-underline-offset:3px}}
+@media (max-width:760px){.stage-h{margin-top:40px}.stage-h p{font-size:13.5px}}
 .stage .ticker{max-width:640px;margin:8px auto 0;color:rgb(228 233 255 / .7)}.stage .tk{justify-content:center}.stage .tk b{color:#fff}.stage .tk time{color:rgb(228 233 255 / .6)}
 @media (prefers-reduced-motion:no-preference){
   .intro .stage h1 .ln>span{animation:lineUp 900ms cubic-bezier(.16,1,.3,1) calc(var(--l) * 120ms + 80ms) both}
-  .intro .stage-sub,.intro .stage .live,.intro .stage .ticker,.intro .stage .sbox-wrap{animation:softIn 700ms cubic-bezier(.16,1,.3,1) calc(var(--d) * 1ms) both}
+  .intro .stage-sub,.intro .stage .live,.intro .stage .ticker,.intro .stage .sbox-wrap,.intro .stage-h{animation:softIn 700ms cubic-bezier(.16,1,.3,1) calc(var(--d) * 1ms) both}
 }
 @keyframes lineUp{from{transform:translateY(108%)}}
 @keyframes softIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}}
@@ -712,9 +720,11 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .pod-off{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:4px}
 .pod-off b{font-size:clamp(18px,1.6vw,22px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--ok);font-variant-numeric:tabular-nums}
 .pod-off span{font-size:13px;color:var(--muted)}
-.pod-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)}
+/* 6C.0: botão em linha própria, para loja, selo e horário da nota caberem sem corte (antes: "Sem cadast…", "Nota de 04:2…") */
+.pod-foot{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)}
 .pod-off+.pod-foot,.pod-price+.pod-foot{margin-top:12px}
-.pod-store{min-width:0;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pod-store{flex:1 1 0;min-width:0;font-size:13px;color:var(--ink);overflow-wrap:anywhere}
+.pod-foot .pod-cta{flex:1 1 100%;justify-content:center;min-height:44px}
 .pod-conf{color:var(--muted)}
 .pod-cta{position:relative;z-index:4;flex:none;display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;background:var(--btn);color:var(--btn-ink);font-weight:800;font-size:13.5px;text-decoration:none;transition:transform 140ms var(--ease-out),filter 160ms ease}
 .pod-cta:active{transform:scale(.96)}.pod-cta .icon{width:15px;height:15px}
@@ -735,8 +745,8 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
   .pod[data-r="1"]{--lift:0}.pod[data-r="1"] .cat-media{aspect-ratio:4/3}
   .pod:not([data-r="1"]) .cat-media{aspect-ratio:4/3}
   .pod:not([data-r="1"]) .pod-body{padding:14px 14px 16px}.pod:not([data-r="1"]) .pod-off b{font-size:18px}.pod:not([data-r="1"]) .pod-price strong{font-size:19px}
-  .pod:not([data-r="1"]) .pod-foot{flex-wrap:wrap}.pod:not([data-r="1"]) .pod-cta{flex:1 1 100%;justify-content:center}
   .pod:not([data-r="1"]) .ring{width:38px;height:38px;font-size:12.5px}
+  .pod:not([data-r="1"]) .pod-store{flex-basis:100%}.pod:not([data-r="1"]) .pod-cta{padding:10px 8px;gap:4px;font-size:13px;text-align:center}
   .pod:not([data-r="1"]) .pod-name{font-size:15px}.pod:not([data-r="1"]) .pod-off span{display:none}.pod:not([data-r="1"]) .pod-price s{display:block;width:100%}.pod:not([data-r="1"]) .pod-ref{display:block;width:100%;font-size:12.5px}
   .pod-rank{left:12px;font-size:10px;letter-spacing:.16em}
   .stage{padding-bottom:48px}.stage-copy{margin-top:30px}
@@ -765,6 +775,8 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .seq{margin-top:64px}
 .rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,300px);gap:18px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:10px 4px 26px;margin:0 -4px;scrollbar-width:thin;perspective:1400px}
 .rail>.deal{scroll-snap-align:start}
+/* 6C.0: na sequência, loja e selo numa linha e o botão sempre na de baixo (antes a quebra variava com o tamanho do nome da loja) */
+.rail .deal-foot{row-gap:2px}.rail .deal-foot .deal-cta{flex:1 1 100%}
 .rail .deal-rank{position:absolute;top:12px;left:12px;z-index:3;font-size:12px;font-weight:800;padding:5px 10px;border-radius:999px;background:#0B0F24;color:#fff;font-variant-numeric:tabular-nums}
 .rail .deal-badge{left:auto;right:12px;top:auto;bottom:12px;max-width:calc(100% - 130px)}
 @media (prefers-reduced-motion:no-preference){
@@ -1873,6 +1885,7 @@ function renderDeals(){
       <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><span id="live-t">${freshTxt(freshState(S))[0]}</span> · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
       ${tickerHTML()}
     </div>
+    <header class="stage-h" style="--d:600"><h2 id="pod-h">Melhores oportunidades agora</h2><p>As três primeiras na ordem do Opportunity Score. <a href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></p></header>
     <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
   </div></section>
   <div class="home-slot" id="home-rail">${railOppHTML()}</div>
