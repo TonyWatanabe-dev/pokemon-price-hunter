@@ -24,7 +24,7 @@ const CRITICAL_PATHS = [
   /^docs\/(?:agentes|release-governor|MAPA-DE-AGENTES|ROADMAP-OPERACIONAL|protecao-main)(?:\.md|\/|$)/i,
   /^api\/_lib\/(?:catalog|copag-policy|db|offer-rank|read-db|read-state|references|ssl|shipping-calc)(?:\/|\.|$)/i,
   /^(?:account\.js|tools\/account\.src\.js|package\.json|package-lock\.json|vercel\.json|\.vercelignore)$/i,
-  /^tools\\/(?:deploy-agent|release-governor-check|data-restore|data-backup|db-|push-data|push-config|ml-token|review)(?:\\/|\\.|$)/i,
+  /^tools\/(?:deploy-agent|release-governor-check|data-restore|data-backup|db-|push-data|push-config|ml-token|review)(?:\/|\.|$)/i,
   /(^|\/)(?:auth|authorization|secret|secrets)(\/|\.|$)/i,
   /^(?:CLAUDE\.md|AGENTS\.md|CODEOWNERS)$/i,
 ];
