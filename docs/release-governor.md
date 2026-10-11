@@ -10,10 +10,22 @@ Reduzir confirmações humanas em mudanças rotineiras, sem deixar um LLM decidi
 
 | Nível | Escopo típico | Política |
 |---|---|---|
-| R0 | apenas documentação/testes | pode autorizar merge após CI + testes verdes no SHA atual; não exige deploy |
-| R1 | UI isolada | pode autorizar merge/deploy após CI, testes, preview e acessibilidade no mesmo SHA |
-| R2 | código funcional/runtime | autonomia condicional após CI, testes, regressão, golden tests, rollback documentado e testado, métricas/gatilhos de rollout e feature flag segura ou justificativa explícita para não aplicá-la |
+| R0 | apenas documentação | pode autorizar merge após CI e testes verdes no SHA atual; não exige deploy |
+| R1 | UI estática isolada | pode autorizar merge após CI, testes, preview e acessibilidade no mesmo SHA. Deploy é uma decisão separada, pós-merge |
+| R2 | código funcional/runtime | pode autorizar merge condicional após CI/testes, regressão, golden tests, rollback documentado e testado, métricas/gatilhos de rollout e feature flag segura ou justificativa explícita. Deploy é uma decisão separada, pós-merge |
 | R3 | produção/dados, migrations, secrets/auth, workflow, config crítica, score/ranking, governança ou escopo incerto | nunca autoautoriza; exige escalonamento humano |
+
+## Decisões separadas: merge × deploy
+
+Uma aprovação para `pr.merge` concede somente o merge; nunca concede permissão implícita para publicar. Uma decisão `deploy` usa outro conjunto de evidências, referente ao commit **já integrado** na `main`:
+
+- `merged=true`, `baseRef=headRef=targetRef=main`, e `mainSha=headSha`;
+- deployment de produção na Vercel com estado `READY`, URL HTTPS não local e SHA publicado idêntico ao HEAD validado;
+- checks `test` e `smoke` verdes no SHA exato; mudanças R1 exigem também acessibilidade;
+- mudanças R2 exigem também regressão/golden no mesmo SHA, rollback documentado e testado, métricas e gatilhos de rollback e feature flag segura (ou motivo explícito de inaplicabilidade);
+- documentação pura e R3 nunca recebem autorização autônoma de deploy.
+
+O módulo apenas avalia esses dados. O executor de deploy real ainda precisa coletar as evidências diretamente do GitHub/Vercel e executar a ação somente depois da decisão positiva. Nenhum fluxo de deploy está ativado por esta PR.
 
 ## Regras de classificação
 
