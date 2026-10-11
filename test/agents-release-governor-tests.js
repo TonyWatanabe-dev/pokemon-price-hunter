@@ -53,6 +53,12 @@ test('R0 libera merge somente com CI, testes e branch isolada no SHA atual', () 
   assert.equal(r.deploymentRequired, false);
 });
 
+test('check "test" do CI atual pode comprovar CI e suíte npm test no mesmo SHA', () => {
+  const r = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence({ checks: [check('test')] }) });
+  assert.equal(r.decision, 'autonomous');
+  assert.deepEqual(r.allowedActions, [RELEASE_ACTION.MERGE]);
+});
+
 test('R1 precisa de preview e acessibilidade no mesmo SHA', () => {
   const good = evaluateRelease({ changedPaths: ['index.html'], evidence: evidence() });
   assert.equal(good.decision, 'autonomous');
