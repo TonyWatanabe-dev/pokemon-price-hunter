@@ -1,6 +1,6 @@
 # Regras do Firestore
 
-As regras recomendadas estão em `firebase/firestore.rules`, junto com `firebase/firebase.json`. A pasta fica de propósito **fora da raiz**: nada é publicado automaticamente, nenhum workflow publica regras e o `firebase/` está no `.vercelignore`.
+**Publicadas no console em 11/10/2026.** `firebase/firestore.rules` é a cópia versionada e precisa ficar igual ao console. As regras estão em `firebase/firestore.rules`, junto com `firebase/firebase.json`. A pasta fica de propósito **fora da raiz**: nada é publicado automaticamente, nenhum workflow publica regras e o `firebase/` está no `.vercelignore`.
 
 ## O que o site usa
 

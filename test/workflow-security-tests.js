@@ -89,14 +89,28 @@ await t('4. Dependabot cobre github-actions e npm toda semana, agrupado e com li
 });
 
 // Residual da #17: regras do Firestore versionadas (sem publicação; ver docs/firestore-regras.md).
-await t('5. regras do Firestore versionadas em firebase/ (não na raiz) e mínimas', () => {
+await t('5. regras do Firestore versionadas em firebase/ (não na raiz), iguais às publicadas', () => {
   for (const f of ['firebase.json', 'firestore.rules', '.firebaserc']) assert.equal(fs.existsSync(path.join(root, f)), false, `${f} na raiz implicaria publicação`);
   const r = fs.readFileSync(path.join(root, 'firebase/firestore.rules'), 'utf8');
   const code = r.split('\n').filter((l) => !l.trim().startsWith('//')).join('\n');
   assert.match(code, /rules_version\s*=\s*'2'/);
-  assert.match(code, /match \/users\/\{uid\}\s*\{\s*allow read, write: if request\.auth != null && request\.auth\.uid == uid;\s*\}/);
+  const own = "request.auth != null && request.auth.uid == uid";
+  assert.ok(code.includes(`allow read, delete: if ${own};`), 'ler/apagar só o próprio documento');
+  assert.ok(code.includes(`allow create, update: if ${own}`), 'gravar só o próprio documento');
+  assert.match(code, /request\.resource\.data\.favorites\.size\(\) <= 200/);
+  assert.match(code, /request\.resource\.data\.alerts\.size\(\) <= 50/);
   assert.match(code, /match \/\{document=\*\*\}\s*\{\s*allow read, write: if false;\s*\}/);
-  assert.equal((code.match(/allow /g) || []).length, 2, 'só as duas regras');
+  assert.equal((code.match(/allow /g) || []).length, 3, 'só as três regras');
+  assert.doesNotMatch(code, /allow [a-z, ]*write: if request\.auth/, 'gravação sem lista de campos');
+  // Lista de campos permitidos = campos que a página grava (perfil inicial, saveField, nome, updatedAt do save()).
+  const allowed = JSON.parse(code.match(/keys\(\)\.hasOnly\((\[[^\]]*\])\)/)[1].replace(/'/g, '"')).sort();
+  const page = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const written = new Set(['updatedAt', 'name']);
+  for (const k of page.match(/const base=\{([^}]*)\}/)[1].matchAll(/(\w+):/g)) written.add(k[1]);
+  for (const k of page.matchAll(/saveField\("(\w+)"/g)) written.add(k[1]);
+  assert.deepEqual([...written].sort(), allowed, 'campos gravados pela página fora da lista das regras (ou sobrando)');
+  assert.match(page, /old\.length>=200\)\{toast\("Limite de 200 favoritos"/, 'limite de favoritos da página = regra');
+  assert.match(page, /old\.length>=50\)\{toast\("Limite de 50 alertas"/, 'limite de alertas da página = regra');
   const fj = JSON.parse(fs.readFileSync(path.join(root, 'firebase/firebase.json'), 'utf8'));
   assert.equal(fj.firestore.rules, 'firestore.rules');
   assert.match(fs.readFileSync(path.join(root, '.vercelignore'), 'utf8'), /^firebase\/$/m, 'firebase/ fora do deploy da Vercel');
