@@ -12,7 +12,7 @@
 // - Este módulo não lê secrets: os adaptadores recebem o que precisam de quem os cria.
 import { createHash } from 'node:crypto';
 import { evaluateAndRecordRelease } from './release-governor-audit.js';
-import { RELEASE_ACTION } from './release-governor.js';
+import { RELEASE_ACTION, evaluateRelease } from './release-governor.js';
 
 const SHA_RE = /^[a-f0-9]{40}$/i;
 const TOKEN_LIKE = /(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{16,}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}|postgres(?:ql)?:\/\/\S+|Bearer\s+\S+|[A-Za-z0-9]{24}(?=\b.*vercel))/gi;
@@ -160,7 +160,13 @@ export async function runMerge({ prNumber, repo, github, auditSink, outcomes, lo
   let first;
   try { first = await readPullRequestEvidence(github, prNumber); }
   catch (e) { return { status: 'blocked', reason: `evidência do GitHub indisponível (${e.kind || 'erro'}): ${redact(e.message)}` }; }
-  if (!first.state.open || first.state.merged) return { status: 'blocked', reason: 'PR não está aberto', evidence: first.evidence };
+  if (first.state.merged) {
+    // repetição depois de um merge desta ponte: responde idempotente pela auditoria, sem nova ação
+    const prev = await outcomes.latest(idempotencyKey(action, repo, prNumber, first.evidence.headSha)).catch(() => null);
+    if (prev?.status === 'succeeded') return { status: 'succeeded', idempotent: true, mergeCommitSha: prev.result?.mergeCommitSha ?? null };
+    return { status: 'blocked', reason: 'PR já integrado fora desta ponte', evidence: first.evidence };
+  }
+  if (!first.state.open) return { status: 'blocked', reason: 'PR não está aberto', evidence: first.evidence };
   if (first.state.draft) return { status: 'blocked', reason: 'PR em draft', evidence: first.evidence };
 
   const d1 = await evaluateAndRecordRelease({ changedPaths: first.changedPaths, evidence: first.evidence, action, actor, source: `github:${repo}#${prNumber}`, now: now(), auditSink });
@@ -270,6 +276,14 @@ export async function runDeploy({ prNumber, repo, github, vercel, auditSink, out
     }
     return { state: 'TIMEOUT' };
   };
+
+  // 0. pré-portão: R3 ou mudança sem artefato publicável não chegam a tocar na Vercel (decisão auditada)
+  const pre = evaluateRelease({ changedPaths: ev.changedPaths, evidence: ev.base, action: RELEASE_ACTION.DEPLOY });
+  if (pre.risk === 'R3' || !pre.deploymentRequired) {
+    const d0 = await evaluateAndRecordRelease({ changedPaths: ev.changedPaths, evidence: ev.base, action: RELEASE_ACTION.DEPLOY, actor, source: `vercel:${repo}#${prNumber}`, now: now(), auditSink });
+    if (!d0.decision.deploymentRequired && d0.decision.risk !== 'R3') return { status: 'not_required', reason: d0.decision.missingEvidence.join('; '), decision: d0.decision };
+    return { status: 'human_required', reason: d0.decision.missingEvidence.join('; '), decision: d0.decision };
+  }
 
   const run = await lock(key, async () => {
     const prev = await outcomes.latest(key);

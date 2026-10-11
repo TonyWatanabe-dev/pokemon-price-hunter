@@ -118,6 +118,16 @@ await t('retry idempotente: segunda execução não repete merge nem duplica eve
   assert.equal(gh.s.calls.merge, 1); assert.equal(d.outcomes.events.length, ev);
 });
 
+await t('repetição depois do merge real (PR já fechado): succeeded idempotente pela auditoria; merge alheio bloqueia', async () => {
+  const gh = fakeGithub(); const d = deps(gh);
+  assert.equal((await runMerge(d.args)).status, 'succeeded'); const ev = d.outcomes.events.length;
+  const r2 = await runMerge(d.args);
+  assert.deepEqual([r2.status, r2.idempotent, r2.mergeCommitSha], ['succeeded', true, MERGE]);
+  assert.equal(gh.s.calls.merge, 1); assert.equal(d.outcomes.events.length, ev, 'sem eventos novos');
+  const gh2 = fakeGithub(); Object.assign(gh2.s.pr, { merged: true, state: 'closed', merge_commit_sha: MERGE });
+  const r3 = await runMerge(deps(gh2).args); assert.equal(r3.status, 'blocked'); assert.match(r3.reason, /fora desta ponte/); assert.equal(gh2.s.calls.merge, 0);
+});
+
 await t('dois workers concorrentes: só um executa', async () => {
   const gh = fakeGithub(); const d = deps(gh);
   let release; const gate = new Promise((r) => { release = r; });
@@ -204,8 +214,14 @@ await t('deploy: main avançou depois do merge, ou árvore diferente da testada:
 });
 
 await t('deploy: só documentação não exige deploy; R3 nunca é publicado sozinho', async () => {
-  let r = await runDeploy(deployArgs(mergedGithub(['docs/x.md']), fakeVercel()).args); assert.equal(r.status, 'blocked'); assert.match(r.reason, /não inclui artefatos/);
-  r = await runDeploy(deployArgs(mergedGithub(['vercel.json']), fakeVercel()).args); assert.equal(r.status, 'human_required');
+  let v = fakeVercel(); let { d, args } = deployArgs(mergedGithub(['docs/x.md']), v);
+  let r = await runDeploy(args); assert.equal(r.status, 'not_required'); assert.match(r.reason, /não inclui artefatos/);
+  assert.equal(v.s.created.length, 0, 'não cria Preview'); assert.equal(d.audit.length, 1, 'decisão auditada');
+  v = fakeVercel(); r = await runDeploy(deployArgs(mergedGithub(['vercel.json']), v).args); assert.equal(r.status, 'human_required'); assert.equal(v.s.created.length, 0);
+  // sem token: o CLI passa um adaptador que só falha se for chamado; aqui nem é chamado
+  const noToken = { createDeployment: async () => { throw new ProviderError('sem token', { provider: 'vercel', kind: 'auth' }); }, getDeployment: async () => { throw new Error('x'); } };
+  r = await runDeploy(deployArgs(mergedGithub(['docs/x.md']), noToken).args); assert.equal(r.status, 'not_required');
+  r = await runDeploy(deployArgs(mergedGithub(), noToken).args); assert.equal(r.status, 'blocked'); assert.match(r.reason, /sem token/);
 });
 
 // ------------------------------------------------------------------ adaptadores (sem rede)

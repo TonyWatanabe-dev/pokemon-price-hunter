@@ -35,11 +35,15 @@ try {
   if (cmd === 'merge') r = await runMerge({ prNumber: pr, ...deps });
   else {
     const [org, name] = REPO.split('/');
-    const vercel = vercelAdapter({ token: process.env.VERCEL_TOKEN, teamId: process.env.VERCEL_TEAM_ID, project: process.env.VERCEL_PROJECT || 'tcg-price-hunter', org, repo: name });
+    // sem token, o adaptador só falha se a Vercel for de fato necessária (docs/R3 param antes, no Governor)
+    const fail = async () => vercelAdapter({ token: null });
+    const vercel = process.env.VERCEL_TOKEN
+      ? vercelAdapter({ token: process.env.VERCEL_TOKEN, teamId: process.env.VERCEL_TEAM_ID, project: process.env.VERCEL_PROJECT || 'tcg-price-hunter', org, repo: name })
+      : { createDeployment: fail, getDeployment: fail };
     r = await runDeploy({ prNumber: pr, ...deps, vercel, smoke: (url) => smokeTest(url, SITE_ROUTES),
       rollout: { rollback: { documented: true, tested: true }, rollout: { metricsDefined: true, rollbackTriggersDefined: true }, featureFlag: { applicable: false, reason: 'publicação de commit já integrado; rollback = promover o deploy anterior' } } });
   }
 } catch (e) { r = { status: 'error', reason: String(e.message).slice(0, 300) }; }
 finally { await close().catch(() => {}); }
 out(r);
-process.exit(r.status === 'succeeded' ? 0 : r.status === 'busy' ? 75 : 1);
+process.exit(r.status === 'succeeded' || r.status === 'not_required' ? 0 : r.status === 'busy' ? 75 : 1);
