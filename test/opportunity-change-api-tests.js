@@ -39,6 +39,15 @@ const OLD_KEYS = ['product', 'offer', 'price', 'total', 'shipping', 'stock', 'st
   'current_reference', 'market_composition', 'reference_comparison', 'product_variation_7d', 'historical_context', 'community_reference', 'warnings', 'reasons', 'engine_version', 'updated_at'];
 const CHANGE_KEYS = ['kind', 'label', 'at', 'from', 'to', 'basis', 'reason'];
 
+await t('updated_at = última avaliação do motor (batida), não só a última mudança da nota', async () => {
+  const run = new Date('2026-10-10T14:45:00Z');
+  const db = fakeDb([row(11, 'p1', { engine_run_at: run }), row(12, 'p2', { engine_run_at: null }), row(13, 'p3', { engine_run_at: new Date('2026-10-10T10:00:00Z') })], []);
+  const r = await listOpportunities({ page: 1, limit: 24, query: db.query, now: Date.parse('2026-10-10T15:00:00Z') });
+  assert.deepEqual(r.items.map((x) => x.updated_at), ['2026-10-10T14:45:00.000Z', '2026-10-10T11:00:00.000Z', '2026-10-10T11:00:00.000Z'],
+    'nota inalterada mas reavaliada às 14:45 → 14:45; sem batida → calculated_at; batida mais antiga que a mudança → calculated_at');
+  assert.match(db.calls[0].sql, /max\(created_at\) FROM hunter\.system_event WHERE type = 'ENGINE_HEARTBEAT'/);
+});
+
 await t('módulo único: src/core reexporta o mesmo classificador que a API usa', () => {
   assert.equal(CORE.classifyOfferChange, API.classifyOfferChange);
   assert.equal(CORE.WINDOW_HOURS, 48);
