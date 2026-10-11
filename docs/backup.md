@@ -4,10 +4,32 @@
 
 O ramo `data` é reescrito a cada rodada do robô (`tools/push-data.sh`: um commit só, `push -f`). Não há histórico: uma rodada ruim apaga a única cópia de `state.json`, `offers.json`, `history.jsonl`, `hist/`, `alerts-sent.json`, `meta.json`, `copag-msrp.json` etc.
 
+## Estado: desligado por padrão
+
+O workflow **Backup dos dados** chega à `main` **sem agendamento**: só roda quando alguém dispara (Actions → Backup dos dados → Run workflow) ou por `workflow_dispatch` externo. Nada acontece sozinho depois do merge.
+
+### Como ativar o agendamento
+
+Escolha um dos dois (ou os dois; repetir no mesmo dia não faz mal):
+
+1. **cron-job.org (recomendado)**: criar o job descrito em "Disparo pelo cron-job.org", mais abaixo. Não exige mudar o repositório.
+2. **Agendador do GitHub (reserva)**: em `.github/workflows/backup-data.yml`, descomentar o bloco
+
+   ```yaml
+   on:
+     schedule:
+       - cron: '41 4 * * *'
+     workflow_dispatch:
+   ```
+
+   e publicar a mudança por PR. O agendador do GitHub atrasa e pula execuções neste repositório, por isso fica só como reserva.
+
+Antes de ativar, rodar uma vez à mão e conferir (ver "Como validar depois da publicação").
+
 ## O que está coberto: a pasta data/, por etiquetas
 
 - **Workflow**: `.github/workflows/backup-data.yml` → `tools/data-backup.mjs`.
-- **O que faz**, uma vez por dia:
+- **O que faz**, a cada disparo (o planejado é uma vez por dia, depois de ativado):
   1. busca o ramo `data` e fixa o sha do commit;
   2. valida o retrato:
      - `state.json` legível, com `generatedAt` válido e com a lista `offers`;
@@ -21,7 +43,8 @@ O ramo `data` é reescrito a cada rodada do robô (`tools/push-data.sh`: um comm
   - o job falha (vermelho no Actions, com o motivo no resumo);
   - nada é apagado.
   O vigia não olha este workflow: falha de backup aparece só no Actions e no e-mail de falha do GitHub.
-- **Permissões**: `contents: write`, só para criar e apagar etiquetas.
+- **Permissões**: `contents: write`, só para criar e apagar etiquetas. Nenhum secret é usado (só o `GITHUB_TOKEN` do próprio job e a variável opcional `BACKUP_RETENTION_DAYS`).
+- **Simulação**: `node tools/data-backup.mjs --dry-run` valida e mostra o que faria, sem enviar nada ao remoto.
 
 ### Retenção
 
@@ -80,7 +103,11 @@ gpg --symmetric --cipher-algo AES256 hunter-$(date -u +%F).sql && shred -u hunte
 
 ## Restauração de data/
 
-Ferramenta: `tools/data-restore.mjs`. Só lê do GitHub e grava numa pasta local. Nunca faz push.
+Ferramenta: `tools/data-restore.mjs`. Só lê do GitHub e grava numa pasta local. **Nunca faz push** e nunca mexe no ramo `data`.
+
+- Sem `--apply`, `--to` é sempre **simulação**: só lista o que seria extraído e não grava nada.
+- `--apply` é a confirmação explícita para gravar, e só numa pasta vazia (recusa sobrescrever).
+- Voltar o ramo `data` no GitHub não é feito pela ferramenta: é um passo manual do dono, descrito abaixo.
 
 ```bash
 node tools/data-restore.mjs --list                          # etiquetas no GitHub, mais nova primeiro
@@ -161,7 +188,7 @@ Teste automático desta volta completa: `test/backup-tests.js`. Ele restaura um 
 
 ## Disparo pelo cron-job.org (a ser feito pelo dono da conta)
 
-Mesmo padrão do vigia (`docs/vigia.md`). O `schedule` do workflow fica só como reserva, porque o agendador do GitHub pula execuções neste repositório.
+Mesmo padrão do vigia (`docs/vigia.md`). O `schedule` do workflow vem comentado (desligado); se for ativado, fica só como reserva, porque o agendador do GitHub pula execuções neste repositório.
 
 - **URL** (POST): `https://api.github.com/repos/TonyWatanabe-dev/pokemon-price-hunter/actions/workflows/backup-data.yml/dispatches`
 - **Cabeçalhos**:

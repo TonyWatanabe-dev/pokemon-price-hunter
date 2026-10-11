@@ -115,6 +115,6 @@ export function stateListReferences(st, { page, limit, status = null }) {
     source: r.status === 'verified' ? 'copag_loja' : 'internet', source_url: r.status === 'verified' ? p.copag?.source_url ?? null : p.copagReferenceUrl ?? null,
     verified_at: r.status === 'verified' ? p.copag?.source_timestamp ?? null : null } : null; }).filter(Boolean);
   if (status) items = items.filter((x) => x.status === status);
-  items.sort((a, b) => ((b.status === 'verified') - (a.status === 'verified')) || a.product.name.localeCompare(b.product.name));
+  items.sort((a, b) => ((b.status === 'verified') - (a.status === 'verified')) || a.product.name.localeCompare(b.product.name) || String(a.product.id).localeCompare(String(b.product.id)));
   return { items: items.slice((page - 1) * limit, page * limit), total: items.length };
 }

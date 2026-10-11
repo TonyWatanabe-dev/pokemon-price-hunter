@@ -1,6 +1,7 @@
 // Genérico: sitemap -> páginas de produto -> JSON-LD Product / Open Graph. Funciona em Nuvemshop, Tray, Loja Integrada, WooCommerce etc.
 import { get } from '../http.js';
 import { guard, brl } from './common.js';
+import { availableFromOf } from '../availability.js';
 
 const PRODUCT_URL = /pokemon/i;
 const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|blister|colecao|cole%c3%a7%c3%a3o)/i;
@@ -129,7 +130,7 @@ export function parseProductPage(html, url) {
   if (!title) return null;
   // Título do produto escolhido precisa concordar com o título da página (pega tema que injeta outro produto).
   if (pageTitle && title !== pageTitle && !agrees(title, pageTitle)) return null;
-  let price = { pix: null, base: null }; let listPrice = null; let stock = 'UNKNOWN'; let quantity = null;
+  let price = { pix: null, base: null }; let listPrice = null; let stock = 'UNKNOWN'; let quantity = null; let availableFrom = null;
   let ean = prod?.gtin13 || prod?.gtin || null; let sku = prod?.sku || null; let sourceType = 'open_graph';
   if (ns) { price = ns.price; listPrice = ns.listPrice; stock = ns.stock; quantity = ns.quantity; sku = ns.sku || sku; sourceType = 'store_page'; }
   else if (prod) {
@@ -139,6 +140,7 @@ export function parseProductPage(html, url) {
       price.base = brl(o.price ?? o.priceSpecification?.price ?? (o['@type'] === 'AggregateOffer' && o.lowPrice === o.highPrice ? o.lowPrice : null));
       const av = String(o.availability || '').split('/').pop().toLowerCase();
       stock = AVAIL[av] || 'UNKNOWN';
+      availableFrom = availableFromOf(stock, o.availabilityStarts);
       if (o.inventoryLevel?.value != null) quantity = Number(o.inventoryLevel.value);
     }
     sourceType = 'json_ld';
@@ -164,27 +166,35 @@ export function parseProductPage(html, url) {
   let image = prod?.image; if (Array.isArray(image)) image = image[0]; if (image && typeof image === 'object') image = image.url || image.contentUrl;
   image = image || meta('og:image') || null;
   try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }
-  return { title, url, image, price, listPrice, stock, quantity, sku, ean, seller: null, sourceType };
+  return { title, url, image, price, listPrice, stock, availableFrom, quantity, sku, ean, seller: null, sourceType };
 }
 
 export async function detect(base) {
   try { await guard(base + '/'); const html = (await get(base + '/')).text; return /pok[eé]mon/i.test(html); } catch (e) { if (e.blocked) throw e; return false; }
 }
 
+// Falha de leitura (tentar de novo depois) × resposta definitiva (a página não serve). Transitório: timeout (status 0),
+// erro de rede (sem status), 408, 5xx e site fora do ar. Definitivo: 404, 410, outros 4xx e robots.txt.
+export function transientPageError(e) {
+  if (e?.status === 'robots') return false;
+  if (typeof e?.status === 'number' && e.status >= 400 && e.status < 500) return e.status === 408;
+  return true;
+}
+
 export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
-  const out = []; const failed = [];
+  const out = []; const failed = []; const reasons = {};
   for (const u of urls) {
     try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
     catch (e) {
       if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e;
       // 404/410 (produto não existe mais), outro 4xx definitivo ou robots.txt: a página não serve, não é falha.
       // Rede, timeout, 5xx e site fora do ar: falha de leitura passageira — a oferta da página não some.
-      const gone = e.status === 'robots' || (e.status >= 400 && e.status < 500 && e.status !== 408);
-      if (!gone) failed.push(u);
+      if (transientPageError(e)) { failed.push(u); reasons[u] = String(e?.message || 'falha de leitura').slice(0, 120); }
     }
   }
   out.failed = failed; // páginas que não abriram nesta rodada (src/run.js preserva as ofertas delas)
+  out.failReasons = reasons;
   return out;
 }

@@ -77,12 +77,43 @@ r = await call('/api/v1/produtos?limite=2&pagina=1'); assert.equal(r.json.data.l
 r = await call('/api/v1/produtos?limite=2&pagina=2'); assert.equal(r.json.data.length, 1);
 r = await call('/api/v1/produtos?limite=999'); assert.equal(r.json.meta.limit, 50, 'limite máximo 50');
 r = await call('/api/v1/produtos?pagina=9'); assert.equal(r.json.data.length, 0); assert.equal(r.json.meta.total, 3);
+// limites server-side e páginas sem duplicata/lacuna, em qualquer ordenação
+r = await call('/api/v1/produtos?limite=0&pagina=0'); assert.equal(r.json.meta.page, 1); assert.ok(r.json.meta.limit >= 1, 'limite inválido vira o mínimo');
+r = await call('/api/v1/produtos?limite=abc&pagina=-3'); assert.equal(r.status, 200); assert.equal(r.json.meta.page, 1);
+for (const ordem of ['relevancia', 'nome', 'ofertas']) {
+  const full = (await call(`/api/v1/produtos?limite=50&ordem=${ordem}`)).json.data.map((p) => p.id);
+  const paged = [];
+  for (let pg = 1; pg <= full.length; pg++) paged.push(...(await call(`/api/v1/produtos?limite=1&pagina=${pg}&ordem=${ordem}`)).json.data.map((p) => p.id));
+  assert.deepEqual(paged, full, `páginas concatenadas = lista completa (${ordem})`);
+  assert.equal(new Set(paged).size, paged.length, `sem duplicatas (${ordem})`);
+}
+{
+  const a = (await call('/api/v1/referencias?limite=50')).json.data.map((x) => x.product.id);
+  const b = (await call('/api/v1/referencias?limite=50')).json.data.map((x) => x.product.id);
+  assert.deepEqual(a, b, 'referências em ordem determinística'); assert.equal(new Set(a).size, a.length);
+}
 r = await call('/api/v1/produtos?ordem=xpto'); assert.equal(r.status, 400);
 // produto inexistente / identificador inválido / rota / método
 assert.equal((await call('/api/v1/produtos/nao-existe')).status, 404);
 assert.equal((await call('/api/v1/produtos/..%2F..%2Fetc')).status, 400);
 assert.equal((await call('/api/v1/xyz')).status, 404);
 assert.equal((await call('/api/v1/home', 'POST')).status, 405);
+// inputs extremos: limites fixados, valores absurdos não quebram nem estouram
+r = await call('/api/v1/produtos?limite=-5&pagina=0'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 1); assert.equal(r.json.meta.page, 1);
+r = await call('/api/v1/produtos?limite=abc&pagina=99999999999999999999'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 24); assert.equal(r.json.meta.page, 10_000);
+r = await call('/api/v1/produtos?busca=' + 'x'.repeat(100_000)); assert.equal(r.status, 200, 'busca gigante é truncada, não rejeitada');
+r = await call('/api/v1/site/ofertas?produtos=' + Array.from({ length: 200 }, (_, i) => `p${i}`).join(',')); assert.equal(r.status, 400, 'mais de 60 ids');
+r = await call('/api/v1/site/produtos?limite=100000&pagina=100000'); assert.equal(r.json.limit, 60); assert.equal(r.json.page, 1000);
+assert.equal((await call('/api/v1/produtos/' + 'a'.repeat(500))).status, 400, 'slug longo demais');
+{ const n = _cache.size; for (let i = 0; i < 20; i++) await call(`/api/v1/produtos?limite=2&lixo=${i}`); assert.ok(_cache.size <= n + 1, 'parâmetros desconhecidos não multiplicam entradas do cache'); }
+// prazo total: fonte que não responde vira 503 curto com Retry-After (não deixa o pedido pendurado até a plataforma matar a função)
+{
+  setLegacyLoader(() => new Promise(() => {}));
+  const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } };
+  const t0 = Date.now(); await api({ url: '/api/v1/produtos?pagina=77', method: 'GET' }, res, { deadlineMs: 50 });
+  assert.equal(res.statusCode, 503); assert.equal(res.headers['Retry-After'], '5'); assert.equal(res.headers['Cache-Control'], 'no-store'); assert.ok(Date.now() - t0 < 2000);
+  setLegacyLoader(async () => fx());
+}
 // preço atual, estoque, referência (state)
 r = await call('/api/v1/produtos/me05-etb'); const ps = r.json.data.stats;
 assert.equal(ps.market.current_price, 360, 'menor preço com estoque e confirmado (od não confirmada fica de fora)'); assert.equal(ps.market.current_total_price, 380);
@@ -111,7 +142,7 @@ r = await call('/api/v1/site/produtos?loja=b'); assert.equal(r.json.items[0].o.i
 r = await call('/api/v1/site/produtos?max=300'); assert.equal(r.json.total, 0, 'preço até R$ 300: nenhuma ETB com estoque');
 r = await call('/api/v1/site/produtos?estoque=0&loja=rihappycombr'); assert.equal(r.json.total, 0, 'sem estoque negado: oferta sem estoque (oc) não entra');
 r = await call('/api/v1/site/produtos?grupo=Latas'); assert.equal(r.json.total, 0, 'produto sem oferta não aparece na lista');
-for (const bad of ['modo=x', 'ordem=x', 'grupo=x', 'max=-1']) assert.equal((await call('/api/v1/site/produtos?' + bad)).status, 400, bad);
+for (const bad of ['modo=x', 'ordem=x', 'grupo=x', 'max=-1', 'max=Infinity', 'max=abc']) assert.equal((await call('/api/v1/site/produtos?' + bad)).status, 400, bad);
 // produto: ofertas, frete, referência, pistas; inexistente; sem ofertas
 r = await call('/api/v1/site/produto/me05-etb'); const sp = r.json;
 assert.equal(sp.offers.length, 5); assert.equal(sp.liveCount, 3); assert.equal(sp.product.msrp, 400);

@@ -4,7 +4,10 @@
 import { productOpportunity, eventsFor, OPP_VERSION } from './opportunity-engine.js';
 
 const J = (v) => JSON.stringify(v);
-export const ENGINE_RUN = 'OPPORTUNITY_ENGINE_RUN';   // batida do motor em system_event (não é evento de transição)
+// Batida do motor em system_event: uma linha por execução concluída. Fica FORA do prefixo OPPORTUNITY_ de propósito,
+// para não entrar nas consultas de eventos de transição (LIKE 'OPPORTUNITY_%' em tools/db-validate.mjs e nos testes).
+export const ENGINE_HEARTBEAT = 'ENGINE_HEARTBEAT';
+export const HEARTBEAT_KEEP_DAYS = 14;
 const COLS = { product_id: 'bigint', opportunity_score: 'smallint', opportunity_band: 'text', confidence: 'numeric', price: 'numeric',
   price_signal: 'numeric', historical_signal: 'numeric', reference_signal: 'numeric', stock_signal: 'numeric', freight_signal: 'numeric',
   market_signal: 'numeric', reliability_signal: 'numeric', raw_score: 'numeric', coverage: 'numeric', caps: 'jsonb', reasons: 'jsonb', warnings: 'jsonb',
@@ -72,11 +75,11 @@ export async function runOpportunityEngine(c, { now = new Date(), emitEvents = t
     if (events.length) await c.query(`INSERT INTO system_event (type, entity_type, entity_id, payload)
       SELECT type, 'product', product_id, payload || jsonb_build_object('engine_version', $2::text) FROM jsonb_to_recordset($1::jsonb) AS x(type text, product_id text, payload jsonb)`, [J(events), OPP_VERSION]);
   }
-  // Batida do motor: uma linha por rodada concluída (na mesma transação), porque calculated_at só muda quando a nota
-  // muda e não prova que o motor rodou. Lida pelo robô (src/db-health.js). Guarda só 14 dias.
-  await c.query(`INSERT INTO system_event (type, entity_type, entity_id, payload) VALUES ('${ENGINE_RUN}', 'engine', 'opportunity', $1::jsonb)`,
-    [J({ offersEvaluated: rows.length, written: up.rowCount, removed: gone.rowCount, engine_version: OPP_VERSION })]);
-  await c.query(`DELETE FROM system_event WHERE type = '${ENGINE_RUN}' AND created_at < now() - interval '14 days'`);
+  // Batida: uma linha por execução concluída (mesma transação: rodada que falha não deixa batida). calculated_at só muda
+  // quando a nota muda, então não prova que o motor rodou. Lida pelo robô (src/db-health.js); guarda HEARTBEAT_KEEP_DAYS dias.
+  await c.query(`INSERT INTO system_event (type, entity_type, entity_id, payload) VALUES ($1, 'engine', 'opportunity', $2::jsonb)`,
+    [ENGINE_HEARTBEAT, J({ offersEvaluated: rows.length, written: up.rowCount, removed: gone.rowCount, engine_version: OPP_VERSION })]);
+  await c.query(`DELETE FROM system_event WHERE type = $1 AND created_at < now() - make_interval(days => $2::int)`, [ENGINE_HEARTBEAT, HEARTBEAT_KEEP_DAYS]);
   const bands = {}; for (const r of rows) bands[r.opportunity_band] = (bands[r.opportunity_band] || 0) + 1;
   const ev = {}; for (const e of events) ev[e.type] = (ev[e.type] || 0) + 1;
   return { products: res.length, offersEvaluated: rows.length, written: up.rowCount, removed: gone.rowCount, withBest: res.filter((r) => r.best).length,

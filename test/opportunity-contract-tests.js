@@ -65,7 +65,7 @@ for (const ok of ['categoria=etb', 'categoria=Blisters', 'categoria=Cole%C3%A7%C
 n++;
 if (savedDb) process.env.API_DATABASE_URL = savedDb;
 
-if (!process.env.TEST_DATABASE_URL) { console.log(`✓ Contrato de oportunidades (6B.0): ${n} grupos puros passaram; banco pulado (sem TEST_DATABASE_URL)`); process.exit(0); }
+if (!process.env.TEST_DATABASE_URL) { console.log(`✓ Contrato de oportunidades (6B.0): ${n} grupos puros passaram; banco pulado (sem TEST_DATABASE_URL)`); await import('./outbound-links-tests.js'); process.exit(0); }
 
 // ------------------------------------------------------------------ B) banco
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
@@ -191,3 +191,6 @@ for (const k of ['offer_id', 'product_id', 'reference_gap', 'opp_reference_kind'
 n++;
 await close();
 console.log(`✓ Contrato de oportunidades (6B.0): ${n} grupos passaram (puro + banco)`);
+
+// Links de saída (#116): safeUrl, rel noopener e nenhum tracking anexado. Também roda no ramo sem banco, acima.
+await import('./outbound-links-tests.js');

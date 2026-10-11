@@ -130,3 +130,6 @@ await t('script da página compila', () => {
   for (const sc of scripts) { if (sc.trim().startsWith('{')) continue; assert.doesNotThrow(() => new vm.Script(sc), 'erro de sintaxe no index.html'); }
 });
 console.log(`✓ Consolidação do Opportunity Engine (6C.2): ${n} grupos de testes passaram`);
+
+// Issue #47: contrato comum do anúncio dos coletores (src/adapters/contract.js).
+await import('./listing-contract-tests.js');

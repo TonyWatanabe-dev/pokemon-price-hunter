@@ -100,7 +100,8 @@ const CODE_LABEL = {
   dados_parados: 'preços sem atualizar', sem_rodadas: 'robô sem disparo', rodada_falhou: 'rodada com falha', rodada_sem_publicar: 'dados sem publicar',
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
-  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada', motor_parado: 'motor de oportunidades parado',
+  leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada',
+  motor_parado: 'motor de oportunidades parado',
 };
 
 /** Decide se avisa. Não altera o livro: use commitLedger depois de tentar enviar. */

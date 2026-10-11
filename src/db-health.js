@@ -3,12 +3,13 @@
 // lidas last_seen_at = horário da rodada. Por isso, na rodada seguinte, max(offer.last_seen_at) igual ao generatedAt
 // da rodada anterior prova que ela chegou ao banco; menor que isso prova que não chegou.
 // Nunca lança e nunca trava a rodada; nunca registra endereço de conexão.
+import { pgConnectionConfig } from './db/ssl.js';
 
 const SQL_SEEN = `SELECT max(last_seen_at) AS last_seen_at FROM hunter.offer WHERE status = 'active'`;
 const SQL_ENGINE = `SELECT max(calculated_at) AS engine_at FROM hunter.opportunity`;
-// Batida do motor (uma linha por rodada concluída, src/core/opportunity-run.js). Sem a tabela ou sem batida: null.
+// Batida do motor (uma linha por execução concluída: ENGINE_HEARTBEAT, src/core/opportunity-run.js). Sem a tabela ou sem batida: null.
 const SQL_HAS_EVENTS = `SELECT to_regclass('hunter.system_event') IS NOT NULL AS ok`;
-const SQL_ENGINE_RUN = `SELECT max(created_at) AS run_at FROM hunter.system_event WHERE type = 'OPPORTUNITY_ENGINE_RUN'`;
+const SQL_ENGINE_RUN = `SELECT max(created_at) AS run_at FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT'`;
 
 const safeMsg = (e) => String(e?.code || e?.message || e || 'erro').replace(/postgres(ql)?:\/\/\S+/gi, '[url]').slice(0, 120);
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
@@ -20,8 +21,8 @@ export async function readDbHealth({ env = process.env, timeoutMs = 5000, loadPg
   let client = null; let timer = null;
   try {
     const { default: pg } = await loadPg();
-    const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
-    client = new pg.Client({ connectionString: url, ssl: local ? false : { rejectUnauthorized: false },
+    const { connectionString, ssl } = pgConnectionConfig(url, { env });
+    client = new pg.Client({ connectionString, ssl,
       connectionTimeoutMillis: timeoutMs, query_timeout: timeoutMs });
     client.on('error', () => {});
     const work = (async () => {

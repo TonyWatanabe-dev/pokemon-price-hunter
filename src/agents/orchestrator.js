@@ -7,6 +7,8 @@
 // - Cada job tem idempotency_key; repetir enfileiramento não duplica. Tentativas, timeout, backoff
 //   e lease (locked_by/locked_at) protegem contra falha, travamento e worker morto.
 
+import { redact } from '../redact.js';
+
 export const PROTECTED_NAMESPACES = ['price', 'score', 'ranking', 'opportunity', 'offer', 'reference'];
 
 export const DEFAULTS = Object.freeze({
@@ -100,7 +102,7 @@ export function createOrchestrator({
       if (await store.complete(job.id, workerId, result, now())) summary.completed++;
       else summary.lost++; // lease perdida: outro worker assumiu; nada é sobrescrito
     } catch (e) {
-      const msg = String(e?.message || e).slice(0, 500);
+      const msg = redact(e?.message || e, { max: 500 });
       if (e?.permanent || job.attempts >= job.max_attempts) {
         if (await settle(job, 'failed', msg)) summary.failed++; else summary.lost++;
       } else {

@@ -1,6 +1,7 @@
-// Lote 4 — backup do ramo data por etiquetas (tools/data-backup.mjs) e restauração (tools/data-restore.mjs).
+// Backup do ramo data (extraído da PR #16, Lote 4) por etiquetas (tools/data-backup.mjs) e restauração (tools/data-restore.mjs).
 // Tudo num repositório bare temporário que imita o GitHub: o "robô" reescreve o ramo data com push -f (como tools/push-data.sh).
 // Com TEST_DATABASE_URL (banco descartável), também faz a volta completa: restaurar → db-sync → mesma contagem de ofertas.
+// Sem rede: o remoto é um repositório bare local. Roda dentro de npm test via test/redact-tests.js (await import).
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import crypto from 'node:crypto';
@@ -192,5 +193,5 @@ if (process.env.TEST_DATABASE_URL) {
     assert.equal(live, expected, 'ativas = ofertas do retrato (as removidas são as antigas, só do histórico)');
     await close();
   });
-  console.log(`✓ Backup do ramo data (Lote 4): ${n} grupos passaram (com banco)`);
-} else console.log(`✓ Backup do ramo data (Lote 4): ${n} grupos passaram; banco pulado (sem TEST_DATABASE_URL)`);
+  console.log(`✓ Backup do ramo data: ${n} grupos passaram (com banco)`);
+} else console.log(`✓ Backup do ramo data: ${n} grupos passaram; banco pulado (sem TEST_DATABASE_URL)`);
