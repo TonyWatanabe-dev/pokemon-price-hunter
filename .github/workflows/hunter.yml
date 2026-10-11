@@ -67,6 +67,9 @@ jobs:
         run: npm run hunt
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          # TLS do PostgreSQL (docs/tls.md), opcionais: sem eles (vazios), conecta exatamente como antes e avisa no log.
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
@@ -86,6 +89,8 @@ jobs:
         continue-on-error: true
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
         run: |
           [ -n "$DATABASE_URL" ] || { echo "Banco desligado (sem DATABASE_URL)."; exit 0; }
           npm install --omit=dev --no-audit --no-fund --silent
@@ -103,6 +108,8 @@ jobs:
         timeout-minutes: 2
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
+          PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
