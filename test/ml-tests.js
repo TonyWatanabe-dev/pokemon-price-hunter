@@ -143,3 +143,6 @@ const good = [['Box Treinador Avançado Caos Ascendente Pokémon Tcg Copag', 'me
   ['Pokémon Celebração de 30 anos – Box Coleção com Fichário', 'c30-colecao_fichario'], ['Treinador Avançado Pokémon Megaevolução Lucário ex', 'me01-etb']];
 for (const [n, id] of good) assert.equal(mlReject(n, id, catalog), null, 'não devia barrar: ' + n);
 console.log('OK — Mercado Livre');
+
+// Issue #106: limites de tamanho no parsing de HTML/JSON-LD (módulo novo, ainda não ligado ao jsonld.js).
+await import('./parse-limits-tests.js');

@@ -8,11 +8,14 @@
 //   de estoque desligado) e a melhor pré-venda. Cada oferta leva a nota oficial do Opportunity Engine (opp), quando existe;
 // • a oferta com menor preço por booster (destaques), as ofertas citadas na atividade recente;
 // • atividade, pistas (sem o texto bruto), reputação e evidências só das lojas presentes.
+import { byComparableTotal } from './offer-rank.mjs';
+
 export const HOME_VERSION = 1;
 
 const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 const notOut = (o) => !(o.stale || o.anomalous || o.stock === 'OUT_OF_STOCK') && o.total > 0;
-const byTotal = (a, b) => a.total - b.total || String(a.id).localeCompare(String(b.id));
+// "menor total" comparável (issue #84): frete desconhecido não vence oferta com frete conhecido — ver offer-rank.mjs
+const byTotal = byComparableTotal;
 const first = (list, cmp) => (list.length ? [...list].sort(cmp)[0] : null);
 
 // Só os campos que o código da Home lê (levantamento em tools/page.template.html; ver relatório da fase 3).

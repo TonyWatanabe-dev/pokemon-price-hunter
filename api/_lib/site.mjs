@@ -5,6 +5,7 @@
 // paridade (api-tests + navegador) comparam as duas.
 // Nada de estatística é recalculado aqui: preço médio / menor já visto vêm do Price Engine (product_stats).
 import { PRODUCT_FIELDS, OFFER_FIELDS } from './home.mjs';
+import { byComparableTotal, byComparable } from './offer-rank.mjs';
 
 export const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 export const refOf = (p) => (p.copagConfirmed ? { v: p.msrp, net: false } : p.copagReference ? { v: p.copagReference, net: true } : null);
@@ -12,8 +13,9 @@ export const discOf = (p, o) => { if (!o || o.anomalous) return null; if (p.copa
 export const GROUP_ORDER = ['Boosters', 'ETB', 'Blisters', 'Coleções', 'Latas', 'Baralhos'];
 export const DEFAULT_F = { mode: 'guardar', group: '', col: '', store: '', sort: '', stock: true, type: '', max: '', below: false };
 const idCmp = (a, b) => String(a).localeCompare(String(b));
-/** desempate do site: preço, id (byTot no index.html). Nota de oportunidade não desempata preço. */
-export const byTot = (a, b) => a.total - b.total || idCmp(a.id, b.id);
+/** menor total comparável, depois id. Nota de oportunidade não desempata preço. Frete desconhecido não vence frete
+ *  conhecido (issue #84, mesma regra da página do produto — ver offer-rank.mjs); entre iguais, como o byTot do site. */
+export const byTot = byComparableTotal;
 /** nota oficial da oferta (Opportunity Engine); sem avaliação, null — nunca estimada */
 export const oppScore = (o) => (o?.opp && Number.isFinite(o.opp.score) ? o.opp.score : null);
 
@@ -33,8 +35,9 @@ export function entries(st, F) {
     if (F.mode === 'abrir' && !o.perBooster) continue;
     if (!by.has(p.id)) by.set(p.id, []); by.get(p.id).push(o);
   }
-  const key = F.mode === 'abrir' ? (o) => o.perBooster : (o) => o.total;
-  return [...by.entries()].map(([id, list]) => { list.sort((a, b) => key(a) - key(b) || idCmp(a.id, b.id)); return { p: P.get(id), o: list[0], n: list.length }; });
+  // frete desconhecido não disputa o "menor total" (nem o preço por booster, que deriva dele) com frete conhecido (issue #84)
+  const cmp = F.mode === 'abrir' ? byComparable((o) => o.perBooster) : byComparableTotal;
+  return [...by.entries()].map(([id, list]) => { list.sort(cmp); return { p: P.get(id), o: list[0], n: list.length }; });
 }
 /** sortEntries() do site (com desempate final pelo id do produto, igual ao site). */
 export function sortEntries(list, F) {
@@ -100,9 +103,13 @@ export function siteOffers(st, { ids = null, col = null, type = null }) {
   const keep = new Map(); const add = (o) => o && keep.set(o.id, o);
   const firstBy = (list, cmp) => (list.length ? [...list].sort(cmp)[0] : null);
   for (const [, list] of by) {
-    add(firstBy(list.filter(live), byTot));                                                                              // bestLive
-    add(firstBy(list, byTot));                                                                                           // renderGroup sem estoque
-    add(firstBy(list.filter((o) => !o.anomalous), (a, b) => (a.stock === 'PRE_ORDER' ? 0 : 1) - (b.stock === 'PRE_ORDER' ? 0 : 1) || byTot(a, b))); // bestOfferFor
+    // os recortes "sem estoque" só valem quando o produto não tem oferta com estoque (o site usa bestLive antes): por isso
+    // saem só das ofertas sem estoque. Assim uma oferta com estoque e frete desconhecido não viaja como candidata e não
+    // passa à frente da melhor com frete conhecido no navegador (issue #84).
+    const L = list.filter(live); const rest = list.filter((o) => !live(o));
+    add(firstBy(L, byTot));                                                                                              // bestLive
+    add(firstBy(rest, byTot));                                                                                           // renderGroup sem estoque
+    add(firstBy(rest.filter((o) => !o.anomalous), (a, b) => (a.stock === 'PRE_ORDER' ? 0 : 1) - (b.stock === 'PRE_ORDER' ? 0 : 1) || byTot(a, b))); // bestOfferFor
   }
   const n = liveCounts(st);
   const offers = [...keep.values()];

@@ -18,7 +18,9 @@ const now = () => new Date(t);
 const store = pgStore(p);
 const sink = pgReviewSink(p);
 const orch = (workerId, handlers = [reviewProposeHandler({ sink })], o = {}) => createOrchestrator({ store, now, workerId, handlers, aiEnabled: false, ...o });
-const proposal = (k) => ({ category: 'matching', entityType: 'offer', entityId: 'o1', confidence: 70, dedupeKey: k, proposal: { productId: 'me05-etb' } });
+const { buildEvidence } = await import('../src/agents/evidence.js');
+const evidence = buildEvidence({ source: 'state.offers', url: 'https://omni.com.br/o1', reason: 'título do anúncio bate com o produto', basis: 'observado', observedAt: '2026-10-10T11:45:00Z' }, { now: t }).evidence;
+const proposal = (k) => ({ category: 'matching', entityType: 'offer', entityId: 'o1', confidence: 70, dedupeKey: k, proposal: { productId: 'me05-etb', evidence } });
 const PROTECTED = ['product', 'offer', 'price_history', 'price_daily', 'reference_price', 'product_stats', 'opportunity'];
 const counts = async () => Object.fromEntries(await Promise.all(PROTECTED.map(async (tb) => {
   const ex = (await q('SELECT to_regclass($1) AS r', [`hunter.${tb}`]))[0].r;

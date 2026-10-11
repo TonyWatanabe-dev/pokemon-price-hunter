@@ -1,13 +1,12 @@
-// Lote 3 — motor de oportunidades parado (batida em system_event → db-health → estado da rodada → vigia) e o portão
-// do aviso imediato de falha do hunter.yml (só na transição). Puro; a parte em PostgreSQL fica em opportunity-db-tests.
+// Motor de oportunidades parado (extraído da PR #15): batida ENGINE_HEARTBEAT em system_event → db-health → estado
+// da rodada (engine) → vigia (motor_parado). Puro; a parte em PostgreSQL fica em opportunity-db-tests.
 import assert from 'node:assert/strict';
-import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import fs from 'node:fs'; import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildRunRecord, mergeOps, engineSummary, ENGINE_STOP_MIN } from '../src/opstate.js';
 import { readDbHealth, syncStatus } from '../src/db-health.js';
 import { evaluate, decide } from '../src/ops-watch.js';
-import { gate } from '../tools/failure-alert-gate.mjs';
+import { ENGINE_HEARTBEAT, HEARTBEAT_KEEP_DAYS } from '../src/core/opportunity-run.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0; const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
@@ -27,13 +26,26 @@ function rec({ at, sync = 'ok', engine = 5 } = {}) {
 const metaOf = (...recs) => recs.reduce((m, r) => mergeOps(m, r, r.finishedAt), {});
 const runs = (k = 3) => Array.from({ length: k }, (_, i) => ({ status: 'completed', conclusion: 'success', createdAt: iso(NOW, -15 * i - 7), updatedAt: iso(NOW, -15 * i) }));
 
+await t('0. tipo da batida fora do prefixo OPPORTUNITY_ (não entra nas consultas LIKE de eventos de transição)', () => {
+  assert.equal(ENGINE_HEARTBEAT, 'ENGINE_HEARTBEAT'); assert.equal(HEARTBEAT_KEEP_DAYS, 14);
+  assert.ok(!ENGINE_HEARTBEAT.startsWith('OPPORTUNITY_'));
+  // a consulta do robô usa o mesmo tipo
+  assert.match(fs.readFileSync(path.join(root, 'src/db-health.js'), 'utf8'), new RegExp(`type = '${ENGINE_HEARTBEAT}'`));
+  // nenhuma consulta LIKE 'OPPORTUNITY_%' precisa excluir a batida
+  for (const f of ['tools/db-validate.mjs', 'test/opportunity-db-tests.js']) {
+    const src = fs.readFileSync(path.join(root, f), 'utf8');
+    assert.ok(/LIKE 'OPPORTUNITY_%'/.test(src), `${f} ainda conta eventos de transição por prefixo`);
+    assert.ok(!/OPPORTUNITY_ENGINE_RUN/.test(src), `${f}: nada do nome antigo`);
+  }
+});
+
 // ------------------------------------------------------------------ estado da rodada
 await t('1. engine no registro: ok, parado, sem_heartbeat e desconhecido', () => {
   const at = iso(NOW, -5);
   const ok = rec({ at, engine: 4 }); assert.equal(ok.engine.status, 'ok'); assert.equal(ok.engine.lagMin, -4); assert.equal(ok.dbSync.engineRunAt, iso(iso(at, -15), 4));
   assert.equal(rec({ at, engine: -ENGINE_STOP_MIN }).engine.status, 'ok', '30 min antes ainda é ok');
   const st = rec({ at, engine: -45 }); assert.equal(st.engine.status, 'parado'); assert.deepEqual(st.issues, ['motor_parado']); assert.equal(st.health, 'degradado');
-  const none = rec({ at, engine: null }); assert.equal(none.engine.status, 'sem_heartbeat'); assert.deepEqual(none.issues, [], 'rollout: sem batida não é problema');
+  const none = rec({ at, engine: null }); assert.equal(none.engine.status, 'sem_heartbeat'); assert.deepEqual(none.issues, [], 'implantação: sem batida não é problema');
   assert.equal(rec({ at, sync: 'off' }).engine.status, 'desconhecido');
   assert.equal(rec({ at, sync: 'erro' }).engine.status, 'desconhecido');
   // sync atrasado: o problema é a sincronização (o motor roda depois dela), não "motor parado"
@@ -46,7 +58,7 @@ await t('1. engine no registro: ok, parado, sem_heartbeat e desconhecido', () =>
 });
 
 // ------------------------------------------------------------------ vigia
-await t('2. vigia: motor_parado depois de 2 rodadas paradas; 1 só registra; sem_heartbeat nunca avisa', () => {
+await t('2. vigia: motor_parado depois de 2 rodadas paradas; 1 só não avisa; sem_heartbeat nunca avisa', () => {
   const r1 = rec({ at: iso(NOW, -20), engine: -45 }); const r2 = rec({ at: iso(NOW, -5), engine: -60 });
   const ev = evaluate({ now: NOW, stateGeneratedAt: iso(NOW, -5), meta: metaOf(r1, r2), runs: runs() });
   assert.equal(ev.status, 'degradado'); assert.deepEqual(ev.reasons.map((r) => r.code), ['motor_parado']);
@@ -56,6 +68,9 @@ await t('2. vigia: motor_parado depois de 2 rodadas paradas; 1 só registra; sem
   assert.equal(one.status, 'saudavel', '1 rodada só não avisa');
   const sem = evaluate({ now: NOW, stateGeneratedAt: iso(NOW, -5), meta: metaOf(rec({ at: iso(NOW, -20), engine: null }), rec({ at: iso(NOW, -5), engine: null })), runs: runs() });
   assert.equal(sem.status, 'saudavel', 'sem batida (implantação) não avisa');
+  // registros antigos (sem engine) também não avisam
+  const a = rec({ at: iso(NOW, -20) }); const b = rec({ at: iso(NOW, -5) }); delete a.engine; delete b.engine;
+  assert.equal(evaluate({ now: NOW, stateGeneratedAt: iso(NOW, -5), meta: metaOf(a, b), runs: runs() }).status, 'saudavel');
   // recuperação lista o rótulo do código
   const L = { notifiedStatus: 'degradado', notifiedAt: iso(NOW, -30), notifiedCodes: ['motor_parado'], incidentSince: iso(NOW, -30), lastStatus: 'saudavel' };
   const ok = evaluate({ now: NOW, stateGeneratedAt: iso(NOW, -5), meta: metaOf(rec({ at: iso(NOW, -20) }), rec({ at: iso(NOW, -5) })), runs: runs() });
@@ -68,50 +83,18 @@ await t('3. readDbHealth: engineRunAt da batida; null sem batida ou sem a tabela
     on() {} async connect() {} async end() {}
     async query(sql) { seen.push(sql); for (const [re, r] of rows) if (re.test(sql)) return { rows: [r] }; return { rows: [] }; } } } } }; };
   const base = [[/last_seen_at/, { last_seen_at: '2026-10-09T11:45:00Z' }], [/calculated_at/, { engine_at: '2026-10-09T11:46:00Z' }]];
-  let f = fake([...base, [/to_regclass/, { ok: true }], [/OPPORTUNITY_ENGINE_RUN/, { run_at: '2026-10-09T11:50:00Z' }]]);
+  let f = fake([...base, [/to_regclass/, { ok: true }], [/ENGINE_HEARTBEAT/, { run_at: '2026-10-09T11:50:00Z' }]]);
   let h = await readDbHealth({ env: { DATABASE_URL: 'postgres://u:p@h/x' }, loadPg: async () => f.mod });
   assert.equal(h.status, 'ok'); assert.equal(h.engineRunAt, '2026-10-09T11:50:00.000Z');
   assert.equal(f.seen[0], 'BEGIN READ ONLY'); assert.equal(f.seen.at(-1), 'COMMIT');
   assert.ok(f.seen.every((s) => !/\b(INSERT|UPDATE|DELETE)\b/.test(s)), 'só leitura');
-  f = fake([...base, [/to_regclass/, { ok: true }], [/OPPORTUNITY_ENGINE_RUN/, { run_at: null }]]);
+  f = fake([...base, [/to_regclass/, { ok: true }], [/ENGINE_HEARTBEAT/, { run_at: null }]]);
   assert.equal((await readDbHealth({ env: { DATABASE_URL: 'postgres://u:p@h/x' }, loadPg: async () => f.mod })).engineRunAt, null, 'sem batida');
   f = fake([...base, [/to_regclass/, { ok: false }]]);
   h = await readDbHealth({ env: { DATABASE_URL: 'postgres://u:p@h/x' }, loadPg: async () => f.mod });
-  assert.equal(h.status, 'ok'); assert.equal(h.engineRunAt, null); assert.ok(!f.seen.some((s) => /OPPORTUNITY_ENGINE_RUN/.test(s)), 'sem tabela, nem consulta');
+  assert.equal(h.status, 'ok'); assert.equal(h.engineRunAt, null); assert.ok(!f.seen.some((s) => /ENGINE_HEARTBEAT/.test(s)), 'sem tabela, nem consulta');
   assert.equal((await readDbHealth({ env: {} })).engineRunAt, null);
   assert.equal(syncStatus(h, '2026-10-09T11:45:00Z').engineRunAt, null);
 });
 
-// ------------------------------------------------------------------ portão do aviso de falha (hunter.yml)
-await t('4. portão: anterior falhou → não avisa; anterior ok → avisa; erro/lista vazia → avisa; cancelada não conta', () => {
-  const r = (id, conclusion, min, status = 'completed') => ({ databaseId: id, status, conclusion, createdAt: iso(NOW, min), updatedAt: iso(NOW, min + 6) });
-  const cur = r(10, '', 0, 'in_progress');
-  assert.equal(gate([cur, r(9, 'failure', -15), r(8, 'success', -30)], 10).decision, 'skip');
-  assert.equal(gate([cur, r(9, 'timed_out', -15)], 10).decision, 'skip');
-  assert.equal(gate([cur, r(9, 'success', -15), r(8, 'failure', -30)], 10).decision, 'send', 'primeira falha avisa já');
-  assert.equal(gate([cur, r(9, 'cancelled', -15), r(8, 'failure', -30)], 10).decision, 'skip', 'cancelada é ignorada');
-  assert.equal(gate([cur, r(9, 'cancelled', -15), r(8, 'success', -30)], 10).decision, 'send');
-  assert.equal(gate([cur], 10).decision, 'send', 'sem anterior');
-  assert.equal(gate(null, 10).decision, 'send'); assert.equal(gate('erro', 10).decision, 'send');
-  assert.equal(gate([r(11, 'failure', 5), cur, r(9, 'success', -15)], 10).decision, 'send', 'rodada mais nova que a atual não conta');
-  assert.equal(gate([r(9, 'failure', -15)], 10).decision, 'skip', 'atual fora da lista: usa a última concluída');
-  // CLI: arquivo com erro do gh, ausente ou ilegível → "send"; nunca falha
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'gate-'));
-  const cli = (file, cur) => execFileSync('node', ['tools/failure-alert-gate.mjs', '--runs', file, '--current', cur], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
-  fs.writeFileSync(path.join(tmp, 'erro.json'), 'erro\n'); assert.equal(cli(path.join(tmp, 'erro.json'), '10'), 'send');
-  assert.equal(cli(path.join(tmp, 'nao-existe.json'), '10'), 'send');
-  fs.writeFileSync(path.join(tmp, 'ok.json'), JSON.stringify([cur, r(9, 'failure', -15)])); assert.equal(cli(path.join(tmp, 'ok.json'), '10'), 'skip');
-  fs.rmSync(tmp, { recursive: true, force: true });
-});
-await t('5. hunter.yml: aviso imediato mantido, gate antes do envio, gh com token do workflow e actions: read, falha do gh = avisa', () => {
-  const y = fs.readFileSync(path.join(root, '.github/workflows/hunter.yml'), 'utf8');
-  assert.match(y, /permissions:\s*\n\s*contents: write\s*\n\s*actions: read/);
-  const step = y.slice(y.indexOf('- name: Avisar falha no Telegram'));
-  assert.match(step, /if: failure\(\)/); assert.match(step, /GH_TOKEN: \$\{\{ github\.token \}\}/);
-  assert.match(step, /gh run list[^\n]*--workflow hunter\.yml[\s\S]*\|\| echo 'erro' > "\$R"/, 'erro do gh vira lista ilegível (= avisa)');
-  assert.match(step, /decision=\$\(node tools\/failure-alert-gate\.mjs --runs "\$R" --current "\$GITHUB_RUN_ID" \|\| true\)/);
-  assert.match(step, /\[ "\$decision" = "skip" \] && exit 0\n\s*curl -s --max-time 20[^\n]*sendMessage/, 'só "skip" explícito silencia');
-  assert.doesNotMatch(step, /(echo|printf)[^\n]*(TELEGRAM_BOT_TOKEN|GH_TOKEN|secrets\.)/, 'nenhum segredo impresso');
-});
-
-console.log(`✓ Motor parado e aviso de falha (Lote 3): ${n} grupos passaram`);
+console.log(`✓ Motor parado (batida ENGINE_HEARTBEAT): ${n} grupos passaram`);

@@ -127,6 +127,11 @@ await t('9. nenhuma referência ativa ao Deal Score legado no robô, nos alertas
   assert.doesNotMatch(rd('src/opportunity-read.js'), /\b(INSERT|UPDATE|DELETE|TRUNCATE|DROP|ALTER|CREATE)\b/, 'leitura apenas');
 });
 
+// Cobertura de partições (src/db/partitions.js) e do callback do ML (api/ml-callback.mjs): sem banco e sem rede.
+await import('./partitions-mlcallback-tests.js');
+// Portão do aviso imediato de falha do hunter.yml (extraído da #15; registrado aqui para não mexer no script test do package.json)
+await import('./failure-gate-tests.js');
+
 // ------------------------------------------------------------------ B) banco real: Telegram = API para a mesma oferta
 if (!process.env.TEST_DATABASE_URL) { console.log(`✓ Alertas pela nota oficial (6C.3): ${n} grupos puros passaram; banco pulado (sem TEST_DATABASE_URL)`); process.exit(0); }
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
