@@ -36,7 +36,9 @@ test('UI isolada é R1; código funcional é R2', () => {
 test('config, migrations, workflows, ranking e o próprio governor são R3', () => {
   for (const p of [
     'config/catalog.json', 'db/migrations/099_critical.sql', '.github/workflows/ci.yml',
-    'api/_lib/offer-rank.mjs', 'src/agents/release-governor.js', 'src/agents/governance.js',
+    'api/_lib/offer-rank.mjs', 'api/_lib/references.mjs', 'src/core/price-engine.js',
+    'src/core/opportunity-engine.js', 'src/copag-check.js', 'tools/data-restore.mjs',
+    'src/agents/release-governor.js', 'src/agents/governance.js',
   ]) assert.equal(classifyReleaseRisk([p]).risk, RISK.R3, p);
 });
 
