@@ -251,4 +251,17 @@ await t('11. workflows: todo bloco com o Secret DATABASE_URL repassa PG_CA_CERT 
   assert.doesNotMatch(tlsWf, /db-migrate|db-sync|git push/);
 });
 
+// Residual da #17 (B2): o robô grava o modo TLS em data/meta.json → ops.last.tls (só o modo, nunca URL ou CA).
+await t('meta.json: buildRunRecord grava o modo TLS (padrão null) e run.js passa tlsModeFor(DATABASE_URL)', async () => {
+  const { buildRunRecord } = await import('../src/opstate.js');
+  const base = { env: {}, startedAt: '2026-10-11T12:00:00Z', finishedAt: '2026-10-11T12:01:00Z', generatedAt: '2026-10-11T12:00:00Z', prevGeneratedAt: null };
+  assert.equal(buildRunRecord(base).tls, null, 'sem informação: null');
+  for (const mode of ['verify', 'no-verify', 'local', 'off', 'refused', 'invalid']) assert.equal(buildRunRecord({ ...base, tls: mode }).tls, mode);
+  assert.equal(R.tlsModeFor(undefined, {}), 'off');
+  assert.equal(R.tlsModeFor('postgres://u:s3nh4@db.exemplo.com:5432/x', {}), 'no-verify');
+  const run = fs.readFileSync(path.join(root, 'src/run.js'), 'utf8');
+  assert.match(run, /import \{ tlsModeFor \} from '\.\/db\/ssl\.js';/);
+  assert.match(run, /tls: tlsModeFor\(process\.env\.DATABASE_URL\)/);
+});
+
 console.log(`OK — TLS do PostgreSQL (modo compatível): ${n} testes`);

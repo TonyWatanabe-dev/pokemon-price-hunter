@@ -43,6 +43,7 @@ Detalhes:
   - Se os dois existirem, vale `PG_CA_CERT`.
 - **Verificação**: o Node confere a cadeia com a CA dada e o nome do host contra o certificado. Equivale ao `sslmode=verify-full` que a documentação do Supabase recomenda.
 - **Diagnóstico**: `tools/db-diagnose.mjs` mostra em `tls` o modo, se o estrito está ligado, a validade de cada certificado da CA e, se a verificação falhar, uma dica (`tls.hint`). Como antes, ele sempre conecta com TLS (no modo compatível, sem verificar), mesmo com host local.
+- **Estado operacional**: cada rodada do robô grava o modo em `data/meta.json → ops.last.tls` (`verify`, `no-verify`, `local`, `off`, `refused` ou `invalid`; só o modo, nunca URL ou CA).
 - **Pontos de conexão que usam o helper**:
   - `src/db/pg.js`, que cobre migrations, sincronização, referências, estatísticas, motor, agentes e validação;
   - `src/opportunity-read.js`;
@@ -97,6 +98,7 @@ A partir da próxima rodada, o robô já conecta com verificação (`tlsMode` `v
 3. Falha com `tls.hint` ("o certificado do servidor não confere..."): o arquivo está errado (outro projeto ou CA antiga) ou a `DATABASE_URL` aponta para outro host. Corrija o Secret e rode de novo. Se precisar de tempo, apague o Secret: o robô volta ao modo compatível na rodada seguinte.
 4. Depois do teste, acompanhe uma rodada normal do **Price Hunter**:
    - o log não deve mostrar o aviso `[tls] PG_CA_CERT não definido`;
+   - `data/meta.json` no ramo `data` deve ter `ops.last.tls = "verify"`;
    - o passo "Sincronizar com o banco" deve terminar sem erro.
 
 ### 4. Vercel (API v1)

@@ -1,6 +1,6 @@
 // Segurança dos workflows (extraído da #17): toda ação (`uses:`) fixada por SHA de 40 caracteres com o comentário
 // da versão (# vN, # vN.N ou # vN.N.N — qualquer major, para o Dependabot poder subir de versão), cada ação num único
-// SHA/versão em todos os workflows, e Dependabot semanal para github-actions e npm.
+// SHA/versão em todos os workflows, e Dependabot semanal para github-actions e npm; regras do Firestore em firebase/.
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -86,6 +86,24 @@ await t('4. Dependabot cobre github-actions e npm toda semana, agrupado e com li
     assert.match(b, /open-pull-requests-limit:\s*5\b/, name);
     assert.match(b, /groups:\s*\n\s+[\w-]+:\s*\n\s+patterns:\s*\["\*"\]/, name);
   }
+});
+
+// Residual da #17: regras do Firestore versionadas (sem publicação; ver docs/firestore-regras.md).
+await t('5. regras do Firestore versionadas em firebase/ (não na raiz) e mínimas', () => {
+  for (const f of ['firebase.json', 'firestore.rules', '.firebaserc']) assert.equal(fs.existsSync(path.join(root, f)), false, `${f} na raiz implicaria publicação`);
+  const r = fs.readFileSync(path.join(root, 'firebase/firestore.rules'), 'utf8');
+  const code = r.split('\n').filter((l) => !l.trim().startsWith('//')).join('\n');
+  assert.match(code, /rules_version\s*=\s*'2'/);
+  assert.match(code, /match \/users\/\{uid\}\s*\{\s*allow read, write: if request\.auth != null && request\.auth\.uid == uid;\s*\}/);
+  assert.match(code, /match \/\{document=\*\*\}\s*\{\s*allow read, write: if false;\s*\}/);
+  assert.equal((code.match(/allow /g) || []).length, 2, 'só as duas regras');
+  const fj = JSON.parse(fs.readFileSync(path.join(root, 'firebase/firebase.json'), 'utf8'));
+  assert.equal(fj.firestore.rules, 'firestore.rules');
+  assert.match(fs.readFileSync(path.join(root, '.vercelignore'), 'utf8'), /^firebase\/$/m, 'firebase/ fora do deploy da Vercel');
+  // o site só usa a coleção users (se outra aparecer, as regras precisam mudar junto)
+  const acc = fs.readFileSync(path.join(root, 'tools/account.src.js'), 'utf8');
+  assert.deepEqual([...new Set([...acc.matchAll(/doc\(db,\s*'([^']+)'/g)].map((m) => m[1]))], ['users']);
+  assert.doesNotMatch(acc, /collection\(/);
 });
 
 console.log(`OK — segurança dos workflows: ${n} testes`);

@@ -1,0 +1,17 @@
+rules_version = '2';
+// Regras do Firestore do TCG Price Hunter (Lote 6 — Segurança). VERSIONADAS AQUI, MAS AINDA NÃO PUBLICADAS:
+// publicar substitui POR INTEIRO as regras do console. Antes, siga docs/firestore-regras.md (copiar as regras
+// atuais do console, comparar, testar no emulador). O site só usa users/{uid} (tools/account.src.js:
+// getDoc, setDoc com merge, deleteDoc), sempre com o uid do próprio usuário logado.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Cada conta lê e grava só o próprio documento.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Todo o resto: negado (inclusive subcoleções de users/{uid}, que o site não usa).
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -6,3 +6,4 @@ site-assets/
 .impeccable/
 node_modules/
 *.md
+firebase/
