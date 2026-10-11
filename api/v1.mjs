@@ -6,7 +6,8 @@
 //   GET /api/v1/produtos/:id/historico?dias          → série diária do Price Engine (sem histórico bruto)
 //   GET /api/v1/produtos/:id/estatisticas
 //   GET /api/v1/referencias?pagina&limite&status
-//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&produto&ordem&ofertas=todas
+//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&produto&ordem&ofertas=todas&loja&max
+//   GET /api/v1/oportunidades/lojas                 → lojas com oferta avaliada com estoque (filtro Loja)
 //       → resultado do Opportunity Engine (melhor oferta comprável por produto; referência atual, contexto histórico e
 //       comunitária separados; reference_comparison = distância até a referência atual que o motor usou)
 //       ordem: score | preco | confianca | abaixo | economia | queda | recentes
@@ -86,8 +87,14 @@ function route(segs, qs) {
     const confiancaMinima = qs.get('confianca_minima') != null ? intIn(qs.get('confianca_minima'), 0, 0, 100) : null;   // % (0–100)
     // produto: id ou slug (página do produto). Com ofertas=todas traz a nota oficial de cada oferta avaliada do produto.
     const produto = str(qs.get('produto'), 80) || null; if (produto && !SLUG_RE.test(produto)) throw new HttpError(400, 'produto inválido');
-    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto } };
+    // loja: id da loja (filtro da página); max: preço até R$ (total quando o frete é conhecido, senão o preço do produto)
+    const loja = str(qs.get('loja'), 60) || null; if (loja && !SLUG_RE.test(loja)) throw new HttpError(400, 'loja inválida');
+    const maxS = str(qs.get('max'), 12) || ''; if (maxS && !(Number.isFinite(Number(maxS)) && Number(maxS) >= 0)) throw new HttpError(400, 'preço máximo inválido');
+    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto,
+      loja, max: maxS ? Number(maxS) : null } };
   }
+  // lojas com oferta avaliada com estoque (opções do filtro "Loja" da página de oportunidades)
+  if (a === 'oportunidades' && segs.length === 2 && segs[1] === 'lojas') return { name: 'oportunidades-lojas' };
   // ---- FASE 4: formato do site (listas e página de produto), regras iguais às do site
   if (a === 'site') {
     if (id === 'produtos' && segs.length === 2) {
@@ -142,6 +149,10 @@ async function run(rt, source) {
     case 'historico': { const d = useDb ? await DB.productHistory(rt.id, rt.args) : ST.stateProductHistory((await legacyState()).st, rt.id, rt.args); if (!d) throw new HttpError(404, 'produto não encontrado'); return { body: { data: d } }; }
     case 'estatisticas': { const d = useDb ? await DB.productStats(rt.id) : ST.stateProductStats((await legacyState()).st, rt.id); if (!d) throw new HttpError(404, 'produto não encontrado'); return { body: { data: d } }; }
     case 'referencias': return { body: paged(useDb ? await DB.listReferences(rt.args) : ST.stateListReferences((await legacyState()).st, rt.args), rt.page, rt.limit) };
+    case 'oportunidades-lojas': {
+      if (!useDb) return { body: { data: [], meta: { status: 'requires_db' } } };
+      return { body: { data: await DB.opportunityStores() } };
+    }
     case 'oportunidades': {
       if (!useDb) return { body: { data: [], meta: { page: rt.page, limit: rt.limit, total: 0, pages: 1, status: 'requires_db',
         message: 'Oportunidades vêm do Opportunity Engine no banco; sem banco não há resultado (nada é estimado).' } } };

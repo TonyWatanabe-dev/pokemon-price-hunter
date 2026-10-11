@@ -48,10 +48,6 @@
       "destination": "/api/pagina?t=oportunidades"
     },
     {
-      "source": "/produtos",
-      "destination": "/api/pagina?t=produtos"
-    },
-    {
       "source": "/precos",
       "destination": "/api/pagina?t=precos"
     },
@@ -112,5 +108,12 @@
   },
   "regions": [
     "gru1"
+  ],
+  "redirects": [
+    {
+      "source": "/produtos",
+      "destination": "/oportunidades",
+      "permanent": true
+    }
   ]
 }

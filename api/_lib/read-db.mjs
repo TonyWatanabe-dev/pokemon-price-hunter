@@ -295,14 +295,24 @@ export const OPP_SORTS = { score: 'o.opportunity_score DESC, o.confidence DESC, 
   abaixo: 'o.reference_gap DESC NULLS LAST, o.opportunity_score DESC, o.offer_id',
   economia: '(o.reference_value - o.price) DESC NULLS LAST, o.opportunity_score DESC, o.offer_id',
   queda: 's.variation_7d ASC NULLS LAST, o.opportunity_score DESC, o.offer_id',
-  recentes: 'f.first_seen_at DESC NULLS LAST, o.opportunity_score DESC, o.offer_id' };
+  recentes: 'f.first_seen_at DESC NULLS LAST, o.opportunity_score DESC, o.offer_id',
+  // preço por booster ("para abrir"): produto sem quantidade de boosters vai para o fim
+  booster: '(o.price / NULLIF(p.units, 0)) ASC NULLS LAST, o.opportunity_score DESC, o.offer_id' };
 // Filtro de referência atual (a usada pelo motor; histórico e comunitária não são referência atual)
 export const OPP_REFERENCES = { copag: 'COPAG_OFFICIAL_CURRENT', mercado: 'MARKET_CURRENT', nenhuma: 'NONE' };
 // Categoria = a mesma do site: tipo do produto (etb, booster_box...) ou grupo (Blisters, Coleções...), de product.attrs
 // query/now: só para teste (cliente falso e relógio fixo); a rota monta os argumentos a partir de uma lista fechada.
 export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score',
-  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null, query = q, now = Date.now() }) {
-  const from = todas ? 'hunter.opportunity o' : 'hunter.product_opportunity o';
+  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null, loja = null, max = null, query = q, now = Date.now() }) {
+  // Loja e preço máximo valem ANTES de escolher a melhor oferta de cada produto: com loja X, cada produto mostra a melhor
+  // oferta de X (não some porque outra loja tem nota maior); com preço até R$ N, a melhor oferta dentro do limite.
+  // Mesmas regras da view product_opportunity (com estoque, sem anomalia, mesma ordem de desempate).
+  const SHOWN = "(CASE WHEN fx.shipping_status IN ('known', 'free') AND fx.total_price IS NOT NULL THEN fx.total_price ELSE ox.price END)";
+  const from = todas ? 'hunter.opportunity o'
+    : (loja != null || max != null) ? `(SELECT DISTINCT ON (ox.product_id) ox.* FROM hunter.opportunity ox JOIN hunter.offer fx ON fx.id = ox.offer_id
+        WHERE ox.stock_signal = 1 AND NOT ox.is_anomaly AND ($11::text IS NULL OR fx.store_id = $11) AND ($12::numeric IS NULL OR ${SHOWN} <= $12)
+        ORDER BY ox.product_id, ox.opportunity_score DESC, ox.confidence DESC, ox.price ASC, ox.offer_id) o`
+    : 'hunter.product_opportunity o';
   const rows = await query(`
     SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
@@ -329,9 +339,11 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
        AND ($8::numeric IS NULL OR o.reference_gap >= $8)
        AND ($9::numeric IS NULL OR o.confidence >= $9)
        AND ($10::text IS NULL OR p.legacy_id = $10 OR p.slug = $10)
+       AND ($11::text IS NULL OR f.store_id = $11)
+       AND ($12::numeric IS NULL OR (CASE WHEN f.shipping_status IN ('known', 'free') AND f.total_price IS NOT NULL THEN f.total_price ELSE o.price END) <= $12)
      ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
      LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
-    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto]);
+    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto, loja, max]);
   const changes = await offerChanges(rows.map((r) => r.offer_id), { query, now });
   // change é ADITIVO (#53): campos, ordem, nota e paginação continuam os mesmos
   return { items: rows.map((r) => ({ ...opportunityOut(r), change: changes.get(String(r.offer_id)) ?? noChange('sem dados da oferta') })),
@@ -406,3 +418,14 @@ const opportunityOut = (r) => ({
   // e oferta não avaliada sai da tabela). Por isso vale a mais recente das duas.
   engine_version: r.engine_version, updated_at: iso(latest(r.calculated_at, r.engine_run_at)),
 });
+
+// Lojas para o filtro da página de oportunidades: lojas com pelo menos uma oferta avaliada com estoque (sem anomalia),
+// com o nº de produtos. Lista curta (dezenas), uma consulta.
+export async function opportunityStores({ query = q } = {}) {
+  const rows = await query(`
+    SELECT f.store_id AS id, coalesce(st.name, f.store_id) AS name, count(DISTINCT o.product_id)::int AS products
+      FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id LEFT JOIN hunter.store st ON st.id = f.store_id
+     WHERE o.stock_signal = 1 AND NOT o.is_anomaly AND f.store_id IS NOT NULL
+     GROUP BY f.store_id, st.name ORDER BY lower(coalesce(st.name, f.store_id))`);
+  return rows.map((r) => ({ id: r.id, name: r.name, products: Number(r.products) }));
+}
