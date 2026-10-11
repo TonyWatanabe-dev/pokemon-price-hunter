@@ -111,3 +111,44 @@ export async function evaluateAndRecordRelease({
   await auditSink(event);
   return { decision, audit: event };
 }
+
+
+/**
+ * Durable PostgreSQL sink for hunter.system_event (search_path must include hunter).
+ * Idempotent by eventId; advisory transaction lock closes the concurrent retry race.
+ * Audit failure propagates to evaluateAndRecordRelease (fail-closed).
+ */
+export function createPostgresReleaseAuditSink(db) {
+  if (!db || typeof db.query !== 'function') throw new Error('db.query obrigatório para auditoria persistente');
+  return async function persistReleaseAudit(event) {
+    if (!event || typeof event.eventId !== 'string' || !/^[a-f0-9]{64}$/.test(event.eventId)) {
+      throw new Error('eventId SHA-256 inválido para auditoria persistente');
+    }
+    const sql = `
+      WITH lock AS MATERIALIZED (
+        SELECT pg_advisory_xact_lock(hashtext($1))
+      ), inserted AS (
+        INSERT INTO system_event (type, entity_type, entity_id, payload)
+        SELECT $2, $3, $4, $5::jsonb
+          FROM lock
+         WHERE NOT EXISTS (
+           SELECT 1 FROM system_event WHERE type = $2 AND entity_id = $4
+         )
+        RETURNING id
+      )
+      SELECT id FROM inserted
+      UNION ALL
+      SELECT id FROM system_event WHERE type = $2 AND entity_id = $4
+      LIMIT 1
+    `;
+    const result = await db.query(sql, [
+      event.eventId,
+      'RELEASE_GOVERNOR_DECISION',
+      'release_governor',
+      event.eventId,
+      JSON.stringify(event),
+    ]);
+    if (!result?.rows?.length) throw new Error('evento de auditoria não foi confirmado pelo banco');
+    return { persisted: true, eventId: event.eventId, rowId: result.rows[0].id };
+  };
+}
