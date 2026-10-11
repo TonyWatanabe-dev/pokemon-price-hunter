@@ -434,12 +434,21 @@ test('event ID é determinístico para a mesma decisão e timestamp', () => {
 
 await testAsync('sink PostgreSQL grava evento mínimo em system_event e é idempotente por eventId', async () => {
   const calls = [];
-  const sink = createPostgresReleaseAuditSink({
-    async query(sql, args) {
-      calls.push({ sql, args });
-      return { rows: [{ id: '42' }] };
+  let inserted = false;
+  const db = {
+    async query(sql, args = []) {
+      calls.push({ sql: sql.trim(), args });
+      if (sql.trim() === 'SELECT id FROM system_event WHERE type = $1 AND entity_id = $2 LIMIT 1') {
+        return { rows: inserted ? [{ id: '42' }] : [] };
+      }
+      if (sql.trim().startsWith('INSERT INTO system_event')) {
+        inserted = true;
+        return { rows: [{ id: '42' }] };
+      }
+      return { rows: [] };
     },
-  });
+  };
+  const sink = createPostgresReleaseAuditSink(db);
   const decision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
   const event = buildReleaseAuditEvent({
     decision, changedPaths: ['docs/release.md'], evidence: evidence(),
@@ -448,18 +457,22 @@ await testAsync('sink PostgreSQL grava evento mínimo em system_event e é idemp
   const first = await sink(event);
   const second = await sink(event);
   assert.equal(first.persisted, true);
+  assert.equal(first.duplicate, false);
   assert.equal(first.eventId, event.eventId);
   assert.equal(first.rowId, '42');
-  assert.equal(second.eventId, event.eventId);
-  assert.equal(calls.length, 2);
-  assert.match(calls[0].sql, /pg_advisory_xact_lock/);
-  assert.match(calls[0].sql, /NOT EXISTS/);
-  assert.deepEqual(calls[0].args.slice(1, 4), [
+  assert.equal(second.persisted, true);
+  assert.equal(second.duplicate, true);
+  assert.equal(second.rowId, '42');
+  assert.equal(calls.filter((c) => c.sql === 'BEGIN').length, 2);
+  assert.equal(calls.filter((c) => c.sql === 'COMMIT').length, 2);
+  assert.equal(calls.filter((c) => c.sql === 'SELECT pg_advisory_xact_lock(hashtext($1))').length, 2);
+  assert.equal(calls.filter((c) => c.sql.startsWith('INSERT INTO system_event')).length, 1);
+  const insert = calls.find((c) => c.sql.startsWith('INSERT INTO system_event'));
+  assert.deepEqual(insert.args.slice(0, 3), [
     'RELEASE_GOVERNOR_DECISION', 'release_governor', event.eventId,
   ]);
-  assert.equal(JSON.parse(calls[0].args[4]).eventId, event.eventId);
+  assert.equal(JSON.parse(insert.args[3]).eventId, event.eventId);
 });
-
 await testAsync('sink PostgreSQL falha fechado se o banco falhar, não confirmar ou receber ID inválido', async () => {
   assert.throws(() => createPostgresReleaseAuditSink(null), /db.query obrigatório/);
   const event = buildReleaseAuditEvent({
