@@ -4,7 +4,7 @@
 // reavaliar o SHA imediatamente antes da ação e registrar o resultado em auditoria.
 
 export const RISK = Object.freeze({ R0: 'R0', R1: 'R1', R2: 'R2', R3: 'R3' });
-export const RELEASE_ACTION = Object.freeze({ MERGE: 'pr.merge', DEPLOY: 'deploy' });
+export const RELEASE_ACTION = Object.freeze({ MERGE: 'pr.merge', DEPLOY: 'deploy', VERIFY_DEPLOY: 'deploy.verify' });
 export const POLICY_VERSION = '1.0.0';
 
 const shaPattern = /^[a-f0-9]{40}$/i;
@@ -20,7 +20,8 @@ const CRITICAL_PATHS = [
   /^src\/core\/review(?:\/|\.|$)/i,
   /^src\/core\/(?:price-engine|opportunity-engine|price-stats|references|reference-import|mappers|taxonomy)(?:\/|\.|$)/i,
   /^src\/(?:copag-check|discover)(?:\/|\.|$)/i,
-  /^src\/agents\/(?:governance|release-governor|orchestrator|stores|cycle|notify)(?:\/|\.|$)/i,
+  /^src\/agents(?:\/|\.|$)/i,
+  /^docs\/(?:agentes|release-governor|MAPA-DE-AGENTES|ROADMAP-OPERACIONAL|protecao-main)(?:\.md|\/|$)/i,
   /^api\/_lib\/(?:catalog|copag-policy|db|offer-rank|read-db|read-state|references|ssl|shipping-calc)(?:\/|\.|$)/i,
   /^(?:account\.js|tools\/account\.src\.js|package\.json|package-lock\.json|vercel\.json|\.vercelignore)$/i,
   /^tools\/(?:data-restore|data-backup|db-|push-data|push-config|ml-token|review)(?:\/|\.|$)/i,
@@ -153,8 +154,8 @@ function evidenceGaps(risk, evidence = {}) {
   }
 
   if (risk === RISK.R2) {
-    requireCheck(map, 'regression', headSha, missing, ['test']);
-    requireCheck(map, 'golden', headSha, missing, ['test']);
+    requireCheck(map, 'regression', headSha, missing);
+    requireCheck(map, 'golden', headSha, missing);
     if (evidence.rollback?.documented !== true) missing.push('plano de rollback documentado ausente');
     if (evidence.rollback?.tested !== true) missing.push('rollback testado/reproduzível ausente');
     if (evidence.rollout?.metricsDefined !== true) missing.push('métricas de rollout ausentes');
@@ -188,7 +189,17 @@ function requiresDeploy(paths) {
  * Evidências devem vir de fontes confiáveis e apontar exatamente para evidence.headSha.
  * R3 nunca é autorizado pelo governor; é escalonado para pessoa responsável.
  */
-function deploymentEvidenceGaps(risk, evidence = {}) {
+function isPublicHttpsUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && Boolean(url.hostname) &&
+      !['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  } catch {
+    return false;
+  }
+}
+
+function mainReleaseEvidenceGaps(evidence = {}) {
   const missing = [];
   const headSha = typeof evidence.headSha === 'string' ? evidence.headSha : '';
   if (!shaPattern.test(headSha)) missing.push('headSha de produção válido ausente');
@@ -199,44 +210,64 @@ function deploymentEvidenceGaps(risk, evidence = {}) {
   if (typeof evidence.mainSha !== 'string' || evidence.mainSha.toLowerCase() !== headSha.toLowerCase()) {
     missing.push('headSha não corresponde ao SHA atual verificado da main');
   }
+  return missing;
+}
 
+function deploymentEvidenceGaps(evidence = {}, target = 'preview') {
+  const missing = [];
+  const headSha = typeof evidence.headSha === 'string' ? evidence.headSha : '';
   const deployment = evidence.deployment;
-  if (!deployment || deployment.provider !== 'vercel' || deployment.target !== 'production' ||
+  if (!deployment || deployment.provider !== 'vercel' || deployment.target !== target ||
       deployment.status !== 'ready' || typeof deployment.sha !== 'string' ||
       deployment.sha.toLowerCase() !== headSha.toLowerCase()) {
-    missing.push('deployment Vercel de produção READY no SHA exato ausente');
+    missing.push(`deployment Vercel ${target} READY no SHA exato ausente`);
   }
-  let validProductionUrl = false;
-  try {
-    const url = new URL(deployment?.url);
-    validProductionUrl = url.protocol === 'https:' && Boolean(url.hostname) &&
-      !['localhost', '127.0.0.1', '::1'].includes(url.hostname);
-  } catch {}
-  if (!validProductionUrl) missing.push('URL HTTPS verificável do deployment de produção ausente');
+  if (!isPublicHttpsUrl(deployment?.url)) {
+    missing.push(`URL HTTPS pública do deployment Vercel ${target} ausente`);
+  }
+  return missing;
+}
 
+function runtimeSafetyEvidenceGaps(risk, evidence, map, missing) {
+  if (risk !== RISK.R2) return;
+  requireCheck(map, 'regression', evidence.headSha, missing);
+  requireCheck(map, 'golden', evidence.headSha, missing);
+  if (evidence.rollback?.documented !== true) missing.push('plano de rollback documentado ausente');
+  if (evidence.rollback?.tested !== true) missing.push('rollback testado/reproduzível ausente');
+  if (evidence.rollout?.metricsDefined !== true) missing.push('métricas de rollout ausentes');
+  if (evidence.rollout?.rollbackTriggersDefined !== true) missing.push('gatilhos explícitos de rollback ausentes');
+
+  const flag = evidence.featureFlag;
+  if (!flag || typeof flag.applicable !== 'boolean') {
+    missing.push('aplicabilidade de feature flag não declarada');
+  } else if (flag.applicable && (flag.present !== true || flag.defaultOff !== true)) {
+    missing.push('feature flag deve existir e ficar desligada por padrão para rollout R2');
+  } else if (!flag.applicable && (typeof flag.reason !== 'string' || !flag.reason.trim())) {
+    missing.push('justificativa da ausência de feature flag ausente');
+  }
+}
+
+function deploymentAuthorizationGaps(risk, evidence = {}) {
+  const missing = mainReleaseEvidenceGaps(evidence);
+  const headSha = typeof evidence.headSha === 'string' ? evidence.headSha : '';
   const map = checkMap(evidence.checks, headSha, missing);
   requireCheck(map, 'test', headSha, missing);
-  requireCheck(map, 'smoke', headSha, missing);
+  missing.push(...deploymentEvidenceGaps(evidence, 'preview'));
+  requireCheck(map, 'preview-smoke', headSha, missing);
+  if (risk === RISK.R1) requireCheck(map, 'accessibility', headSha, missing);
+  runtimeSafetyEvidenceGaps(risk, evidence, map, missing);
+  return missing;
+}
 
-  if (risk === RISK.R1) {
-    requireCheck(map, 'accessibility', headSha, missing);
-  }
-  if (risk === RISK.R2) {
-    requireCheck(map, 'regression', headSha, missing);
-    requireCheck(map, 'golden', headSha, missing);
-    if (evidence.rollback?.documented !== true) missing.push('plano de rollback documentado ausente');
-    if (evidence.rollback?.tested !== true) missing.push('rollback testado/reproduzível ausente');
-    if (evidence.rollout?.metricsDefined !== true) missing.push('métricas de rollout ausentes');
-    if (evidence.rollout?.rollbackTriggersDefined !== true) missing.push('gatilhos explícitos de rollback ausentes');
-    const flag = evidence.featureFlag;
-    if (!flag || typeof flag.applicable !== 'boolean') {
-      missing.push('aplicabilidade de feature flag não declarada');
-    } else if (flag.applicable && (flag.present !== true || flag.defaultOff !== true)) {
-      missing.push('feature flag deve existir e ficar desligada por padrão para rollout R2');
-    } else if (!flag.applicable && (typeof flag.reason !== 'string' || !flag.reason.trim())) {
-      missing.push('justificativa da ausência de feature flag ausente');
-    }
-  }
+function productionVerificationGaps(risk, evidence = {}) {
+  const missing = mainReleaseEvidenceGaps(evidence);
+  const headSha = typeof evidence.headSha === 'string' ? evidence.headSha : '';
+  const map = checkMap(evidence.checks, headSha, missing);
+  requireCheck(map, 'test', headSha, missing);
+  missing.push(...deploymentEvidenceGaps(evidence, 'production'));
+  requireCheck(map, 'smoke', headSha, missing);
+  if (risk === RISK.R1) requireCheck(map, 'accessibility', headSha, missing);
+  runtimeSafetyEvidenceGaps(risk, evidence, map, missing);
   return missing;
 }
 
@@ -248,7 +279,6 @@ function deploymentEvidenceGaps(risk, evidence = {}) {
 export function evaluateRelease({ changedPaths, evidence = {}, action = RELEASE_ACTION.MERGE } = {}) {
   const classified = classifyReleaseRisk(changedPaths);
   const deploymentRequired = requiresDeploy(classified.paths);
-  const isDeploy = action === RELEASE_ACTION.DEPLOY;
   const base = {
     policyVersion: POLICY_VERSION,
     action,
@@ -262,14 +292,17 @@ export function evaluateRelease({ changedPaths, evidence = {}, action = RELEASE_
     decision: classified.risk === RISK.R3 ? 'human_required' : 'blocked',
   };
 
-  if (![RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY].includes(action)) {
+  if (![RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY, RELEASE_ACTION.VERIFY_DEPLOY].includes(action)) {
     return { ...base, decision: 'blocked', requiresHuman: true, missingEvidence: ['ação desconhecida; decisão recusada'] };
   }
   if (classified.risk === RISK.R3) {
     return { ...base, missingEvidence: ['classificação crítica ou incerta; Release Governor não pode autoautorizar R3'] };
   }
+  if ((action === RELEASE_ACTION.DEPLOY || action === RELEASE_ACTION.VERIFY_DEPLOY) && !deploymentRequired) {
+    return { ...base, decision: 'blocked', missingEvidence: ['esta alteração não inclui artefatos que exigem deploy'] };
+  }
 
-  if (!isDeploy) {
+  if (action === RELEASE_ACTION.MERGE) {
     const missing = evidenceGaps(classified.risk, evidence);
     if (missing.length) return { ...base, missingEvidence: missing };
     return {
@@ -285,20 +318,22 @@ export function evaluateRelease({ changedPaths, evidence = {}, action = RELEASE_
     };
   }
 
-  if (!deploymentRequired) {
-    return { ...base, decision: 'blocked', missingEvidence: ['esta alteração não inclui artefatos que exigem deploy'] };
-  }
-  const missing = deploymentEvidenceGaps(classified.risk, evidence);
+  const missing = action === RELEASE_ACTION.DEPLOY
+    ? deploymentAuthorizationGaps(classified.risk, evidence)
+    : productionVerificationGaps(classified.risk, evidence);
   if (missing.length) return { ...base, decision: 'blocked', missingEvidence: missing };
+
   return {
     ...base,
-    allowedActions: [RELEASE_ACTION.DEPLOY],
+    allowedActions: [action],
     missingEvidence: [],
     requiresHuman: false,
     decision: 'autonomous',
     classificationReasons: [
       ...classified.reasons,
-      `evidências pós-merge e smoke de produção comprovados no SHA ${evidence.headSha}`,
+      action === RELEASE_ACTION.DEPLOY
+        ? `main SHA e Preview testada comprovados; publicação elegível no HEAD ${evidence.headSha}`
+        : `deployment de produção e smoke comprovados no HEAD ${evidence.headSha}`,
     ],
   };
 }

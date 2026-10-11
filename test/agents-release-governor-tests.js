@@ -24,9 +24,10 @@ const test = (name, fn) => {
   try { fn(); passed++; } catch (error) { console.error(`✗ ${name}`); throw error; }
 };
 
-test('documentação é R0; alterações de testes exigem R2', () => {
+test('documentação comum é R0; testes exigem R2 e políticas de agentes são R3', () => {
   assert.equal(classifyReleaseRisk(['docs/agentes.md', 'README.md']).risk, RISK.R0);
   assert.equal(classifyReleaseRisk(['test/agents-release-governor-tests.js']).risk, RISK.R2);
+  assert.equal(classifyReleaseRisk(['docs/agentes.md']).risk, RISK.R3);
 });
 
 test('UI isolada é R1; código funcional é R2', () => {
@@ -42,7 +43,9 @@ test('config, migrations, workflows, ranking e o próprio governor são R3', () 
     'src/agents/orchestrator.js', 'src/agents/cycle.js',
     'api/_lib/offer-rank.mjs', 'api/_lib/references.mjs', 'src/core/price-engine.js',
     'src/core/opportunity-engine.js', 'src/copag-check.js', 'tools/data-restore.mjs',
-    'src/agents/release-governor.js', 'src/agents/governance.js',
+    'src/agents/release-governor.js', 'src/agents/governance.js', 'src/agents/matching-review.js',
+    'docs/agentes.md', 'docs/release-governor.md', 'docs/MAPA-DE-AGENTES.md',
+    'docs/ROADMAP-OPERACIONAL.md', 'docs/protecao-main.md',
   ]) assert.equal(classifyReleaseRisk([p]).risk, RISK.R3, p);
 });
 
@@ -97,7 +100,7 @@ test('R2 precisa de regressão, golden tests, rollback, rollout e feature flag j
   assert.ok(noFlag.missingEvidence.some((x) => x.includes('feature flag')));
 });
 
-const deployedEvidence = (overrides = {}) => ({
+const predeployEvidence = (overrides = {}) => ({
   merged: true,
   baseRef: 'main',
   headRef: 'main',
@@ -106,18 +109,31 @@ const deployedEvidence = (overrides = {}) => ({
   mainSha: SHA,
   deployment: {
     provider: 'vercel',
-    target: 'production',
+    target: 'preview',
     status: 'ready',
     sha: SHA,
     url: 'https://tcg-price-hunter.vercel.app',
   },
   checks: [
-    check('test'), check('smoke'), check('accessibility'),
+    check('test'), check('preview-smoke'), check('accessibility'),
     check('regression'), check('golden'),
   ],
   rollback: { documented: true, tested: true },
   rollout: { metricsDefined: true, rollbackTriggersDefined: true },
   featureFlag: { applicable: false, reason: 'nenhuma flag nova nesta alteração' },
+  ...overrides,
+});
+
+const productionEvidence = (overrides = {}) => ({
+  ...predeployEvidence(),
+  deployment: {
+    provider: 'vercel',
+    target: 'production',
+    status: 'ready',
+    sha: SHA,
+    url: 'https://tcg-price-hunter.vercel.app',
+  },
+  checks: [check('test'), check('smoke'), check('accessibility'), check('regression'), check('golden')],
   ...overrides,
 });
 
@@ -128,10 +144,10 @@ test('merge não autoriza deploy implicitamente', () => {
   assert.equal(r.deploymentRequired, true);
 });
 
-test('deploy R1 só após merge, main atual, Vercel READY, test+smoke+a11y no SHA exato', () => {
+test('deploy R1 exige main integrada, Preview READY, preview-smoke e a11y no SHA exato', () => {
   const good = evaluateRelease({
     changedPaths: ['assets/home.css'],
-    evidence: deployedEvidence(),
+    evidence: predeployEvidence(),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(good.decision, 'autonomous');
@@ -139,7 +155,7 @@ test('deploy R1 só após merge, main atual, Vercel READY, test+smoke+a11y no SH
 
   const notMerged = evaluateRelease({
     changedPaths: ['assets/home.css'],
-    evidence: deployedEvidence({ merged: false }),
+    evidence: predeployEvidence({ merged: false }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(notMerged.decision, 'blocked');
@@ -147,7 +163,7 @@ test('deploy R1 só após merge, main atual, Vercel READY, test+smoke+a11y no SH
 
   const staleMain = evaluateRelease({
     changedPaths: ['assets/home.css'],
-    evidence: deployedEvidence({ mainSha: 'b'.repeat(40) }),
+    evidence: predeployEvidence({ mainSha: 'b'.repeat(40) }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(staleMain.decision, 'blocked');
@@ -155,7 +171,7 @@ test('deploy R1 só após merge, main atual, Vercel READY, test+smoke+a11y no SH
 
   const building = evaluateRelease({
     changedPaths: ['assets/home.css'],
-    evidence: deployedEvidence({ deployment: { ...deployedEvidence().deployment, status: 'building' } }),
+    evidence: deployedEvidence({ deployment: { ...predeployEvidence().deployment, status: 'building' } }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(building.decision, 'blocked');
@@ -163,17 +179,17 @@ test('deploy R1 só após merge, main atual, Vercel READY, test+smoke+a11y no SH
 
   const staleSmoke = evaluateRelease({
     changedPaths: ['assets/home.css'],
-    evidence: deployedEvidence({ checks: [check('test'), check('smoke', 'success', 'b'.repeat(40)), check('accessibility')] }),
+    evidence: predeployEvidence({ checks: [check('test'), check('preview-smoke', 'success', 'b'.repeat(40)), check('accessibility')] }),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(staleSmoke.decision, 'blocked');
-  assert.ok(staleSmoke.missingEvidence.some((x) => x.includes('smoke') && x.includes('HEAD atual')));
+  assert.ok(staleSmoke.missingEvidence.some((x) => x.includes('preview-smoke') && x.includes('HEAD atual')));
 });
 
-test('deploy R2 exige regressão, golden, rollback testado e rollout seguro', () => {
+test('autorização de deploy R2 exige regressão, golden, rollback testado e rollout seguro', () => {
   const good = evaluateRelease({
     changedPaths: ['api/v1.mjs'],
-    evidence: deployedEvidence(),
+    evidence: predeployEvidence(),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(good.decision, 'autonomous');
@@ -196,10 +212,36 @@ test('deploy R2 exige regressão, golden, rollback testado e rollout seguro', ()
   assert.ok(unsafeFlag.missingEvidence.some((x) => x.includes('feature flag')));
 });
 
+test('verificação pós-deploy só autoriza deploy.verify com produção READY e smoke no SHA exato', () => {
+  const good = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: productionEvidence(),
+    action: RELEASE_ACTION.VERIFY_DEPLOY,
+  });
+  assert.equal(good.decision, 'autonomous');
+  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.VERIFY_DEPLOY]);
+
+  const wrongTarget = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: predeployEvidence(),
+    action: RELEASE_ACTION.VERIFY_DEPLOY,
+  });
+  assert.equal(wrongTarget.decision, 'blocked');
+  assert.ok(wrongTarget.missingEvidence.some((x) => x.includes('production READY')));
+
+  const badSmoke = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: productionEvidence({ checks: [check('test'), check('smoke', 'failure'), check('accessibility')] }),
+    action: RELEASE_ACTION.VERIFY_DEPLOY,
+  });
+  assert.equal(badSmoke.decision, 'blocked');
+  assert.ok(badSmoke.missingEvidence.some((x) => x.includes('smoke')));
+});
+
 test('docs-only não pode iniciar deploy e ação desconhecida é recusada', () => {
   const docs = evaluateRelease({
     changedPaths: ['docs/release.md'],
-    evidence: deployedEvidence(),
+    evidence: predeployEvidence(),
     action: RELEASE_ACTION.DEPLOY,
   });
   assert.equal(docs.decision, 'blocked');
