@@ -307,6 +307,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
     SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
            o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
+           (SELECT max(created_at) FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT') AS engine_run_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
            (SELECT coalesce(jsonb_agg(jsonb_build_object('reference_kind', r.reference_kind, 'value', r.value, 'published_at', r.published_at, 'effective_date', r.effective_date,
@@ -382,6 +383,8 @@ export async function offerChanges(offerIds, { query = q, now = Date.now() } = {
   return out;
 }
 
+const latest = (a, b) => { const x = a == null ? NaN : new Date(a).getTime(), y = b == null ? NaN : new Date(b).getTime();
+  return Number.isFinite(y) && !(y <= x) ? b : a; };
 const opportunityOut = (r) => ({
   product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name, type: r.attrs?.type ?? null, type_label: r.attrs?.typeLabel ?? null, group: r.attrs?.group ?? null,
     image: r.product_image ?? null, collection: { code: r.col_code, name: r.col_name } },
@@ -398,5 +401,8 @@ const opportunityOut = (r) => ({
   historical_context: (r.historical || []).map(contextReferenceView),
   community_reference: r.community ? contextReferenceView(r.community) : null,
   warnings: r.warnings || [], reasons: r.reasons || [],
-  engine_version: r.engine_version, updated_at: iso(r.calculated_at),
+  // updated_at = quando o motor conferiu a nota pela última vez. calculated_at só muda quando a nota MUDA; toda oferta que está
+  // em opportunity foi reavaliada na última execução concluída (a batida ENGINE_HEARTBEAT é gravada na mesma transação,
+  // e oferta não avaliada sai da tabela). Por isso vale a mais recente das duas.
+  engine_version: r.engine_version, updated_at: iso(latest(r.calculated_at, r.engine_run_at)),
 });
