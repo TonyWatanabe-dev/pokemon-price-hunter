@@ -25,7 +25,7 @@ const test = (name, fn) => {
 };
 
 test('documentação comum é R0; testes exigem R2 e políticas de agentes são R3', () => {
-  assert.equal(classifyReleaseRisk(['docs/agentes.md', 'README.md']).risk, RISK.R0);
+  assert.equal(classifyReleaseRisk(['docs/release-notes.md', 'README.md']).risk, RISK.R0);
   assert.equal(classifyReleaseRisk(['test/agents-release-governor-tests.js']).risk, RISK.R2);
   assert.equal(classifyReleaseRisk(['docs/agentes.md']).risk, RISK.R3);
 });
