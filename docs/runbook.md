@@ -60,7 +60,7 @@ Todas as verificações abaixo são de leitura.
 - Falha repetida por código: abra issue/PR com a correção pelo fluxo do executor (`docs/executor.md`). **Não** edite o ramo `data` na mão.
 - Reexecutar o robô (`gh workflow run hunter.yml` ou "Run workflow") publica dados e dispara alertas: é ação de produção, só com autorização.
 
-**Passo "Salvar configuração":** tenta 3 vezes `git pull --rebase -X theirs` na `main`; se esgotar, o passo falha. Isso mexe só em `config/`. Em caso de conflito real, analise as duas versões e preserve as duas intenções; não use `--theirs/--ours` em massa.
+**Passo "Salvar configuração"** (`tools/push-config.sh`): faz commit só de `config/` e tenta 3 vezes `git pull --rebase` (sem `-X theirs`) e `git push` na `main`. Num conflito com uma edição humana em `config/` feita durante a rodada, o robô desiste: aborta o rebase, **não** publica a mudança dele, mantém a edição humana intacta, emite `::warning::` com os nomes dos arquivos e sai 0. A mudança do robô (lojas descobertas, `copag.*.last_check`) é refeita na rodada diária seguinte, a partir do `config/` que estiver na `main`. Falha de rede ou de push nas 3 tentativas: o passo falha (rodada vermelha). Em caso de conflito real, analise as duas versões e preserve as duas intenções; não use `--theirs/--ours` em massa.
 
 ## Rodada pulada
 
