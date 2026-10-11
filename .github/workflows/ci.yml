@@ -34,3 +34,43 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm test
         env: { TEST_DATABASE_URL: 'postgres://postgres:pw@localhost:5432/postgres' }
+
+  # Explicit risk-control jobs: their independent check names are consumed by the Release Governor.
+  # These jobs are read-only and never receive secrets or perform deployment.
+  regression:
+    name: regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Matching regression
+        run: node test/sealed-matching-tests.js && node test/sealed-false-positive-tests.js
+      - name: Price and opportunity regression
+        run: node test/price-engine-tests.js && node test/opportunity-engine-tests.js && node test/score-consistency-tests.js
+      - name: Reference and market regression
+        run: node test/reference-policy-tests.js && node test/market-dedup-tests.js && node test/market-composition-tests.js
+      - name: Agent evidence regression
+        run: node test/agent-evidence-tests.js
+
+  golden:
+    name: golden
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Evaluate synthetic golden cases
+        run: node test/golden-eval-tests.js
