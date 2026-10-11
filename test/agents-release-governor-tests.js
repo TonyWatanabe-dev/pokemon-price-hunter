@@ -24,18 +24,22 @@ const test = (name, fn) => {
   try { fn(); passed++; } catch (error) { console.error(`✗ ${name}`); throw error; }
 };
 
-test('documentação/testes somente são R0', () => {
-  assert.equal(classifyReleaseRisk(['docs/agentes.md', 'test/agents-release-governor-tests.js']).risk, RISK.R0);
+test('documentação é R0; alterações de testes exigem R2', () => {
+  assert.equal(classifyReleaseRisk(['docs/agentes.md', 'README.md']).risk, RISK.R0);
+  assert.equal(classifyReleaseRisk(['test/agents-release-governor-tests.js']).risk, RISK.R2);
 });
 
 test('UI isolada é R1; código funcional é R2', () => {
-  assert.equal(classifyReleaseRisk(['index.html', 'docs/ux.md']).risk, RISK.R1);
+  assert.equal(classifyReleaseRisk(['assets/home.css', 'docs/ux.md']).risk, RISK.R1);
+  assert.equal(classifyReleaseRisk(['index.html']).risk, RISK.R2, 'HTML da Home inclui scripts e lógica');
   assert.equal(classifyReleaseRisk(['api/v1.mjs', 'test/api-tests.js']).risk, RISK.R2);
 });
 
 test('config, migrations, workflows, ranking e o próprio governor são R3', () => {
   for (const p of [
     'config/catalog.json', 'db/migrations/099_critical.sql', '.github/workflows/ci.yml',
+    'package.json', 'package-lock.json', 'vercel.json', '.vercelignore',
+    'src/agents/orchestrator.js', 'src/agents/cycle.js',
     'api/_lib/offer-rank.mjs', 'api/_lib/references.mjs', 'src/core/price-engine.js',
     'src/core/opportunity-engine.js', 'src/copag-check.js', 'tools/data-restore.mjs',
     'src/agents/release-governor.js', 'src/agents/governance.js',
