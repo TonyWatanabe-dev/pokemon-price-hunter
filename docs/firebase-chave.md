@@ -21,7 +21,7 @@ O risco real de uma chave sem restrição é outra API ativada no mesmo projeto 
 
 ## Restringir a chave atual (sem derrubar o login)
 
-**Situação em 11/10/2026:** restrição por sites aplicada (produção, `firebaseapp.com` e `web.app`; sem Previews). Regras do Firestore publicadas com lista de campos e limites.
+**Situação em 11/10/2026:** restrição por sites aplicada (produção, `firebaseapp.com` e `web.app`; sem Previews) e restrição de API aplicada (Identity Toolkit, Token Service e Cloud Firestore), conferidas com `gcloud services api-keys describe`. Regras do Firestore publicadas com lista de campos e limites.
 
 Google Cloud Console → projeto **tcg-price-hunter** → **APIs e serviços → Credenciais** → **Chaves de API** → a chave chamada "Browser key (auto created by Firebase)" (confira os 4 primeiros e os últimos caracteres com o valor de `tools/account.src.js`).
 
