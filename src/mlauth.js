@@ -7,6 +7,7 @@ import { dataPath } from './db.js';
 
 const FILE = () => dataPath('ml-auth.enc');
 const TOKEN_URL = 'https://api.mercadolibre.com/oauth/token';
+export const OAUTH_TIMEOUT_MS = 15000;   // prazo da chamada de token (troca e renovação)
 export const REDIRECT = () => process.env.ML_REDIRECT_URI || 'https://tcg-price-hunter.vercel.app/ml/callback';
 // App ID é público (aparece na URL de autorização); só a Secret Key é segredo.
 const cfg = () => ({ id: process.env.ML_CLIENT_ID || '7868227182755647', secret: process.env.ML_CLIENT_SECRET });
@@ -37,6 +38,7 @@ async function tokenCall(params) {
     method: 'POST',
     headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: id, client_secret: secret, ...params }),
+    signal: AbortSignal.timeout(OAUTH_TIMEOUT_MS),   // prazo: OAuth travado não segura o passo de renovação
   });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.access_token) throw new Error(`OAuth do Mercado Livre recusou (${r.status}): ${j.error || ''} ${j.message || ''}`.trim());
