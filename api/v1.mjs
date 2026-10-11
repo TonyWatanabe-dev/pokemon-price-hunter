@@ -17,6 +17,10 @@
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 //   GET /api/v1/afiliados                           → links de afiliado validados (config/affiliates.json; não lê banco nem state.json)
+// Frete por CEP (issue #84), DESLIGADO por padrão: sem SHIPPING_CALC_ENABLED=1 as duas respondem 404 sem ler nada.
+//   GET /api/v1/frete/estado                        → { enabled, stores } (lojas VTEX com cálculo; a página só mostra o recurso com 200)
+//   GET /api/v1/frete?oferta&cep&quantidade         → cotação da loja (só VTEX). Loja/item/vendedor vêm do servidor (state.json);
+//       o cliente escolhe só oferta, CEP e quantidade. Sem cache de CDN (no-store); limites e cooldown em api/_lib/shipping-calc.mjs.
 // Fonte: banco (API_DATABASE_URL, só leitura) com fallback seguro para o state.json. ?fonte=state força o fallback.
 // Frescor (Lote 2, api/_lib/freshness.mjs): toda resposta traz freshness {status, source, dataAt, ageMin[, fallback]}
 // (em meta nas listas) e os cabeçalhos X-Data-Freshness/X-Data-At. Banco sem sincronizar há mais de 90 min: serve o
@@ -183,6 +187,7 @@ async function handle(req, res, { now }) {
   u.searchParams.delete('path');
   // Afiliados (docs/afiliados.md): só destino de clique, à parte dos dados; sem banco, sem frescor, sem cache por consulta.
   if (path.length === 1 && path[0] === 'afiliados') return send(res, 200, publicAffiliates(), { 'Cache-Control': CDN.default });
+  if (path[0] === 'frete') return frete(req, res, path, u.searchParams);
   let rt;
   try { rt = route(path, u.searchParams); } catch (e) { return send(res, e instanceof HttpError ? e.status : 400, { error: e instanceof HttpError ? e.message : 'pedido inválido' }, { 'Cache-Control': 'public, max-age=60' }); }
   const forced = u.searchParams.get('fonte') === 'state';
@@ -233,4 +238,31 @@ async function handle(req, res, { now }) {
   if (cache.size >= MAX_CACHE) cache.delete(cache.keys().next().value);
   cache.set(key, { at: now, status, json, source, fallback, reason, fr });
   return send(res, status, json, { 'Cache-Control': status >= 500 || fallback || stale(fr) ? 'no-store' : cdn, 'X-Cache': 'MISS', 'X-Data-Source': source, ...FR.headers(fr), ...(fallback ? { 'X-Fallback': fallback, 'X-Fallback-Reason': reason } : {}) });
+}
+
+// ---- Frete por CEP (issue #84). A flag é lida a cada pedido: desligada, 404 sem carregar o módulo nem ler o state.json.
+// O serviço (cache de 5 min, limites por IP e por chave, cooldown por loja) vive na memória da instância da função:
+// é proteção por instância, não global (decisão documentada em docs/arquitetura-e-testes.md).
+export const SHIPPING_FLAG = 'SHIPPING_CALC_ENABLED';
+let freteDeps = null;                                   // testes: { service }
+let freteHandler = null;
+export function _setFrete(deps) { freteDeps = deps || null; freteHandler = null; }
+// IP do cliente: x-real-ip / primeiro x-forwarded-for (a Vercel sobrescreve esses cabeçalhos); sem eles, o socket.
+const clientIp = (req) => String(req.headers?.['x-real-ip'] || String(req.headers?.['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'anon').slice(0, 64);
+async function frete(req, res, path, qs) {
+  const H = { 'Cache-Control': 'no-store' };
+  if (process.env[SHIPPING_FLAG] !== '1') return send(res, 404, { error: 'rota não encontrada' }, H);
+  const SC = await import('./_lib/shipping-calc.mjs');
+  let st;
+  try { st = (await legacyState()).st; } catch { return send(res, 503, { error: 'dados indisponíveis no momento' }, H); }
+  if (path.length === 2 && path[1] === 'estado') {
+    return send(res, 200, { enabled: true, stores: SC.calcSources(st).map((s) => s.id), ttlSec: SC.QUOTE_TTL_MS / 1000,
+      limits: { perIpPerMin: SC.RATE_LIMIT.max, perKeyPerMin: SC.KEY_RATE_LIMIT.max } }, H);
+  }
+  if (path.length !== 1) return send(res, 404, { error: 'rota não encontrada' }, H);
+  freteHandler ||= SC.createShippingCalcHandler({ enabled: true, ...(freteDeps?.service ? { service: freteDeps.service } : {}),
+    resolveOffer: async (id) => SC.resolveVtexOffer((await legacyState()).st, id) });
+  // do pedido só saem oferta, CEP e quantidade; qualquer outro parâmetro (base, url, itemId, sellerId…) é ignorado
+  const r = await freteHandler({ offerId: qs.get('oferta') ?? undefined, cep: qs.get('cep') ?? undefined, quantity: qs.get('quantidade') ?? 1 }, { ip: clientIp(req) });
+  return send(res, r.status, r.body, { ...H, ...(r.status === 429 ? { 'Retry-After': '60' } : {}) });
 }
