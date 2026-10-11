@@ -5,7 +5,7 @@ import { classifyReleaseRisk, evaluateRelease, POLICY_VERSION, RELEASE_ACTION } 
 
 const SHA_RE = /^[a-f0-9]{40}$/i;
 const ACTIONS = new Set(Object.values(RELEASE_ACTION));
-const TOKEN_LIKE = /(gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{16,}|eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}|postgres(?:ql)?:\\/\\/\\S+|Bearer\\s+\\S+)/gi;
+const TOKEN_LIKE = /(gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{16,}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}|postgres(?:ql)?:\/\/\S+|Bearer\s+\S+)/gi;
 const SAFE_CHECK_STATES = new Set([
   'success', 'failure', 'cancelled', 'queued', 'in_progress', 'neutral',
   'skipped', 'action_required', 'timed_out', 'stale', 'blocked', 'missing',
