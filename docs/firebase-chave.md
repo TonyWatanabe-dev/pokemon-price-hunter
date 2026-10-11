@@ -21,6 +21,8 @@ O risco real de uma chave sem restrição é outra API ativada no mesmo projeto 
 
 ## Restringir a chave atual (sem derrubar o login)
 
+**Situação em 11/10/2026:** restrição por sites aplicada (produção, `firebaseapp.com` e `web.app`; sem Previews). Regras do Firestore publicadas com lista de campos e limites.
+
 Google Cloud Console → projeto **tcg-price-hunter** → **APIs e serviços → Credenciais** → **Chaves de API** → a chave chamada "Browser key (auto created by Firebase)" (confira os 4 primeiros e os últimos caracteres com o valor de `tools/account.src.js`).
 
 1. **Restrições de aplicativo → Sites (referenciadores HTTP)**:
@@ -63,7 +65,7 @@ Ordem para não interromper o serviço:
 
 - Firebase → Authentication → **Configurações → Domínios autorizados**: só o domínio de produção, `tcg-price-hunter.firebaseapp.com` e os Previews realmente usados.
 - Authentication → Configurações → **Proteção contra enumeração de e-mail**: ativada.
-- Firestore → **Regras**: publicar `firebase/firestore.rules` seguindo `docs/firestore-regras.md` (o console ainda pode estar com regras antigas ou em modo de teste).
+- Firestore → **Regras**: publicadas em 11/10/2026; `firebase/firestore.rules` é a cópia e `test/workflow-security-tests.js` confere que a lista de campos bate com o que a página grava.
 - Storage: o site não usa. Se o bucket existir, as regras devem negar tudo (`allow read, write: if false;`).
 
 ## Encerrar o alerta

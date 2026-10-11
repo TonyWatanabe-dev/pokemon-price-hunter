@@ -1,13 +1,18 @@
 rules_version = '2';
-// Regras do Firestore do TCG Price Hunter (Lote 6 — Segurança). VERSIONADAS AQUI, MAS AINDA NÃO PUBLICADAS:
-// publicar substitui POR INTEIRO as regras do console. Antes, siga docs/firestore-regras.md (copiar as regras
-// atuais do console, comparar, testar no emulador). O site só usa users/{uid} (tools/account.src.js:
-// getDoc, setDoc com merge, deleteDoc), sempre com o uid do próprio usuário logado.
+// Regras do Firestore do TCG Price Hunter. PUBLICADAS no console em 11/10/2026 (esta é a cópia versionada).
+// Publicar substitui POR INTEIRO as regras do console: mude aqui primeiro e siga docs/firestore-regras.md.
+// O site só usa users/{uid} (tools/account.src.js: getDoc, setDoc com merge, deleteDoc), sempre com o uid
+// do próprio usuário logado. Campos gravados pela página: name, favorites (até 200), alerts (até 50),
+// termsAt, createdAt e updatedAt; test/workflow-security-tests.js confere que a lista bate com o código.
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Cada conta lê e grava só o próprio documento.
+    // Cada conta lê, apaga e grava só o próprio documento, e só com os campos conhecidos.
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name','favorites','alerts','termsAt','createdAt','updatedAt'])
+        && (!('favorites' in request.resource.data) || request.resource.data.favorites.size() <= 200)
+        && (!('alerts' in request.resource.data) || request.resource.data.alerts.size() <= 50);
     }
     // Todo o resto: negado (inclusive subcoleções de users/{uid}, que o site não usa).
     match /{document=**} {
