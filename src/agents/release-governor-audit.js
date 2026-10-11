@@ -5,6 +5,7 @@ import { classifyReleaseRisk, evaluateRelease, POLICY_VERSION, RELEASE_ACTION } 
 
 const SHA_RE = /^[a-f0-9]{40}$/i;
 const ACTIONS = new Set(Object.values(RELEASE_ACTION));
+const TOKEN_LIKE = /(gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{16,}|eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]{10,}|postgres(?:ql)?:\\/\\/\\S+|Bearer\\s+\\S+)/gi;
 const SAFE_CHECK_STATES = new Set([
   'success', 'failure', 'cancelled', 'queued', 'in_progress', 'neutral',
   'skipped', 'action_required', 'timed_out', 'stale', 'blocked', 'missing',
@@ -12,7 +13,7 @@ const SAFE_CHECK_STATES = new Set([
 
 function text(value, max = 160, fallback = '') {
   if (typeof value !== 'string') return fallback;
-  const clean = value.replace(/[\r\n\t]/g, ' ').trim();
+  const clean = value.replace(/[\r\n\t]/g, ' ').replace(TOKEN_LIKE, '[redigido]').trim();
   return clean ? clean.slice(0, max) : fallback;
 }
 
@@ -76,7 +77,7 @@ export function buildReleaseAuditEvent({
       decision.allowedActions.includes(decision.action),
     allowedActions: listOfText(decision.allowedActions, 10, 80).filter((x) => ACTIONS.has(x)),
     headSha: evidenceSha,
-    changedPaths: classified.paths.slice(0, 100),
+    changedPaths: classified.paths.slice(0, 100).map((p) => text(p, 300)),
     checks: normalizedChecks(evidence.checks),
     classificationReasons: listOfText(decision.classificationReasons, 20, 300),
     missingEvidence: listOfText(decision.missingEvidence, 50, 300),
