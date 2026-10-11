@@ -91,7 +91,8 @@ await t('retrocompatível: campos antigos, valores e parâmetros da consulta pri
   const db = fakeDb([row(11, 'p1', { shipping_status: 'unknown', total_price: null })], [chg(11)]);
   const args = { page: 2, limit: 5, faixa: 'boa', colecao: 'me05', minimo: 50, ordem: 'preco', categoria: 'ETB', referencia: 'copag', abaixo: 10, confiancaMinima: 60, produto: 'p1' };
   const r = await listOpportunities({ ...args, query: db.query, now: NOW });
-  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1'], 'mesmos filtros e paginação');
+  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null], 'mesmos filtros e paginação (loja e max novos, no fim, nulos)');
+  assert.match(db.calls[0].sql, /FROM hunter\.product_opportunity o/, 'sem loja e sem preço máximo: mesma view de antes');
   assert.match(db.calls[0].sql, /ORDER BY o\.price ASC, o\.opportunity_score DESC, o\.offer_id\s+LIMIT \$4 OFFSET \$5/, 'mesma ordenação');
   const x = r.items[0];
   assert.deepEqual(Object.keys(x).filter((k) => k !== 'change'), OLD_KEYS, 'nenhum campo antigo some, muda de nome ou aparece fora do change');
@@ -171,6 +172,17 @@ if (!process.env.TEST_DATABASE_URL) {
     assert.equal(calls, 2, 'banco real: 1 consulta principal + 1 em lote');
     assert.equal(r.items.length, 4); assert.deepEqual(r.items.map((x) => x.offer.id), base.items.map((x) => x.offer.id));
     const by = Object.fromEntries(r.items.map((x) => [x.offer.id, x.change]));
+    // filtros da página (loja e preço máximo) no PostgreSQL real: valem antes da escolha da melhor oferta de cada produto
+    const pick = async (args) => (await listOpportunities({ page: 1, limit: 50, query: apiQ, now: NOW, ...args })).items.map((x) => x.offer.id);
+    assert.equal((await pick({})).length, 1, 'sem filtro: a melhor oferta do produto');
+    assert.deepEqual(await pick({ loja: 'b' }), ['ob'], 'loja b: a oferta da loja b, mesmo sem ser a melhor do produto');
+    assert.deepEqual(await pick({ loja: 'd' }), [], 'loja com estoque desconhecido não entra');
+    assert.deepEqual(await pick({ max: 365 }), ['oa'], 'preço máximo: a melhor oferta dentro do limite');
+    assert.deepEqual(await pick({ max: 300 }), [], 'nada dentro do limite');
+    assert.deepEqual(await pick({ loja: 'c', max: 385 }), [], 'loja e preço juntos');
+    assert.equal((await pick({ ordem: 'booster' })).length, 1, 'ordem por preço por booster roda no banco');
+    const { opportunityStores } = await import('../api/_lib/read-db.mjs');
+    assert.deepEqual((await opportunityStores({ query: apiQ })).map((x) => [x.id, x.products]), [['a', 1], ['b', 1], ['c', 1]], 'lojas do filtro: só com oferta avaliada com estoque');
     assert.equal(by.oa.kind, 'queda_preco'); assert.equal(by.oa.basis, 'price'); assert.equal(by.oa.from, 400); assert.equal(by.oa.to, 360); assert.equal(by.oa.at, H(5));
     assert.equal(by.ob.kind, 'novo_anuncio'); assert.equal(by.ob.at, H(10));
     assert.equal(by.oc.kind, 'restock'); assert.equal(by.oc.at, H(3));

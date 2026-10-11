@@ -113,7 +113,7 @@ await t('lista: cada favorito tem o coração "Remover dos favoritos"; vazia lev
   assert.match(ctx.out, /<i heart-f>/); assert.match(ctx.out, /2 produtos/);
   ctx.ACC.favBusy = true; ctx.renderFavs(); assert.equal((ctx.out.match(/ disabled>/g) || []).length, 2, 'bloqueados durante a gravação');
   ctx.ACC.favBusy = false; ctx.ACC.data.favorites = []; ctx.renderFavs();
-  assert.match(ctx.out, /data-go="produtos">Ver produtos</); assert.doesNotMatch(ctx.out, /data-unfav/);
+  assert.match(ctx.out, /data-go="oportunidades">Ver oportunidades</); assert.doesNotMatch(ctx.out, /data-unfav/);
   ctx.ACC.user = null; ctx.renderFavs(); assert.equal(ctx.out, 'GATE');
 });
 await t('o clique no coração é tratado antes do favorito comum e o botão não fica dentro da linha que abre o produto', () => {

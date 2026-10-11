@@ -54,7 +54,7 @@ function sandbox(apiResponse) {
     apiGet: async (path) => { calls.push(path); return typeof apiResponse === 'function' ? apiResponse(path) : apiResponse; },
   };
   vm.createContext(ctx);
-  vm.runInContext(code + '\n;globalThis.__t={oppCard,oppFlags,oppWhy,oppQuery,renderOpp,OF,OPP,filterControls,sheetControls};', ctx);
+  vm.runInContext(code + '\n;globalThis.__t={oppCard,oppFlags,oppWhy,oppQuery,renderOpp,OF,OPP,filterControls,sheetControls};globalThis.ofReset=ofReset;', ctx);
   return { ...ctx.__t, calls, view, ctx };
 }
 const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -62,7 +62,18 @@ const page = (items, meta = {}) => ({ data: items, meta: { page: 1, limit: 24, t
 
 // 1. a página recebe os dados do endpoint de oportunidades
 { const s = sandbox(page([base(), copag()])); await s.renderOpp();
-  assert.deepEqual(s.calls, ['oportunidades?limite=24&pagina=1&ordem=score']); assert.match(s.view.innerHTML, /Fenda Paradoxal/); assert.match(text(s.view.innerHTML), /2 ofertas/); n++; }
+  assert.deepEqual(s.calls, ['oportunidades/lojas', 'oportunidades?limite=24&pagina=1&ordem=score'], 'lojas do filtro (uma vez) + a lista'); assert.match(s.view.innerHTML, /Fenda Paradoxal/); assert.match(text(s.view.innerHTML), /2 ofertas/); n++; }
+// 1b. filtros da página: Loja (lista da API), preço máximo e preço por booster; limpar volta tudo
+{ const lojas = { data: [{ id: 'moxland', name: 'Moxland', products: 40 }, { id: 'rihappycombr', name: 'Ri Happy', products: 12 }] };
+  const s = sandbox((path) => (path === 'oportunidades/lojas' ? lojas : page([base()]))); await s.renderOpp();
+  const bar = s.filterControls(); const sheet = s.sheetControls();
+  for (const h of [bar, sheet]) { assert.match(h, /data-of="loja"/); assert.match(h, /<option value="moxland"[^>]*>Moxland \(40\)<\/option>/); assert.match(h, /data-of="max"/); }
+  assert.match(bar, /<option value="booster"[^>]*>Menor preço por booster<\/option>/);
+  Object.assign(s.OF, { loja: 'moxland', max: '250' });
+  assert.equal(s.oppQuery(1), 'oportunidades?limite=24&pagina=1&ordem=score&loja=moxland&max=250');
+  Object.assign(s.OF, { max: 'abc' }); assert.doesNotMatch(s.oppQuery(1), /max=/, 'preço inválido não vai para a API');
+  s.ctx.ofReset({ col: 'me05' }); assert.equal(s.OF.loja, ''); assert.equal(s.OF.max, ''); assert.equal(s.OF.col, 'me05');
+  n++; }
 // 2–5. score, faixa, confiança e referência atual exatamente como a API mandou
 t('2–5. score, faixa, confiança e referência vêm da API', () => {
   const s = sandbox(page([]));
@@ -143,5 +154,16 @@ t('6C.1. escala Common → Secret Rare pela nota, confiança só na intensidade'
 t('12. state.json não é usado na página de oportunidades', () => {
   assert.ok(!/state\.json|fetchState|ensureFull|OFF\b/.test(oppCode), 'sem state.json no trecho');
   assert.match(html, /const API_VIEWS=new Set\(\[[^\]]*"oportunidades"/, '/oportunidades abre pelo resumo da API, sem baixar o state.json');
+});
+// Oportunidades no lugar de Produtos: menu (topo e barra de baixo), rota antiga, redirecionamento 308 e sitemap
+t('menu leva a /oportunidades; /produtos redireciona', () => {
+  assert.match(html, /<a class="navbtn" data-go="oportunidades" href="\/oportunidades"><span class="lbl">Oportunidades<\/span>/);
+  assert.match(html, /<nav class="tabbar"[\s\S]*?<button type="button" data-go="oportunidades">[\s\S]*?<span>Ofertas<\/span>/);
+  assert.doesNotMatch(html, /data-go="produtos"|href="\/produtos"|go\("produtos"\)/, 'nenhum link para a página antiga');
+  assert.match(html, /const ROUTES=\{[^}]*produtos:"oportunidades"/, 'endereço antigo aberto no site cai em oportunidades');
+  const v = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+  assert.ok(v.redirects.some((r) => r.source === '/produtos' && r.destination === '/oportunidades' && r.permanent === true));
+  assert.ok(!v.rewrites.some((r) => r.source === '/produtos'));
+  assert.doesNotMatch(fs.readFileSync(new URL('../api/sitemap.mjs', import.meta.url), 'utf8'), /'produtos'/);
 });
 console.log(`✓ Página /oportunidades (6B.1 + 6B.1.5): ${n} grupos de testes passaram`);
