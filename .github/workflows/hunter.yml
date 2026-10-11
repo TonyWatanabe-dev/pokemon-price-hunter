@@ -115,14 +115,9 @@ jobs:
           git clean -fdq data
           git config user.name "price-hunter-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add config
-          git diff --cached --quiet && exit 0
-          git commit -m "config $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && exit 0
-            sleep 5
-          done
-          exit 1
+          # Rebase sem resolução automática (tools/push-config.sh): num conflito com edição humana em config/, a
+          # mudança do robô é descartada (aviso no log), a humana fica intacta e o robô refaz na próxima rodada diária.
+          bash tools/push-config.sh origin main
       - name: Avisar falha no Telegram
         if: failure()
         env:
