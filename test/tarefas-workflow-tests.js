@@ -1,13 +1,15 @@
-// Workflow de tarefas paralelas (.github/workflows/tarefas.yml): quem dispara, quantas rodam juntas, o que o Claude
-// pode fazer e quais secrets recebe. Repositório público: o gatilho é o principal controle de segurança.
+// Workflow de tarefas paralelas: segurança do gatilho, permissões, concorrência e resultado final.
 import assert from 'node:assert/strict';
-import fs from 'node:fs'; import path from 'node:path';
+import fs from 'node:fs';
+import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = fs.readFileSync(path.join(root, '.github/workflows/tarefas.yml'), 'utf8');
 const code = src.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
+const firewall = fs.readFileSync(path.join(root, '.github/egress-firewall.yaml'), 'utf8');
+const firewallCode = firewall.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
 let n = 0;
 async function t(name, fn) { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } }
 /** Bloco de um job (do "  nome:" até o próximo job de mesmo recuo). */
@@ -58,15 +60,15 @@ await t('5. cálculo da vaga: issue % TAREFAS_MAX, padrão 3, limitado a 1..10 e
   assert.equal(slot(123, '1'), 'n=0', 'TAREFAS_MAX=1 vira fila única');
 });
 
-await t('6. secrets: só o token do Claude, só no passo do Claude; nada de banco de produção, Vercel ou PAT', () => {
+await t('6. secrets mínimos: só o token do Claude; banco descartável; nada de Vercel/PAT ou logs completos', () => {
   const secrets = [...code.matchAll(/secrets\.(\w+)/g)].map((m) => m[1]);
   assert.deepEqual(secrets, ['CLAUDE_CODE_OAUTH_TOKEN']);
   assert.doesNotMatch(code, /DATABASE_URL:\s*\$\{\{|VERCEL|PG_CA_CERT/);
   assert.match(code, /TEST_DATABASE_URL: postgres:\/\/postgres:pw@localhost:5432\/postgres/, 'só o banco descartável do job');
-  assert.doesNotMatch(code, /show_full_output:\s*true|allowed_non_write_users|allowed_bots/, 'logs públicos e gatilho só de quem tem escrita');
+  assert.doesNotMatch(code, /show_full_output:\s*true|allowed_non_write_users|allowed_bots/);
 });
 
-await t('7. o Claude só roda com ferramentas restritas: sem Bash livre, sem push, sem merge', () => {
+await t('7. ferramentas restritas: sem Bash livre, push forçado ou merge', () => {
   const tools = code.match(/--allowedTools "([^"]+)"/)[1].split(',');
   for (const tool of tools) assert.match(tool, /^Bash\((npm test|npm ci|node test\/\*|git status|git diff:\*|git log:\*|gh pr create:\*|gh pr list:\*)\)$/, tool);
   assert.doesNotMatch(code, /Bash\(\*\)|Bash\(git push|gh pr merge|--dangerously/);
@@ -74,22 +76,35 @@ await t('7. o Claude só roda com ferramentas restritas: sem Bash livre, sem pus
   assert.match(code, /--max-turns \d+/);
 });
 
-await t('8. instruções fixas: CLAUDE.md, nunca main, sem deploy/produção/workflows, npm test e PR com Closes', () => {
+await t('8. instruções fixas: seguir CLAUDE.md; sem deploy/produção/workflows; testar e abrir PR', () => {
   const p = code.match(/--append-system-prompt "([^"]+)"/)[1];
-  for (const s of ['CLAUDE.md', 'nunca na main', 'nunca force-push', '.github/workflows', 'não faça deploy', 'banco de produção', 'npm test', 'gh pr create --base main', 'Closes #', 'não invente'])
+  for (const s of ['CLAUDE.md', 'nunca na main', 'nunca force-push', '.github/workflows', '.github/egress-firewall.yaml', 'não faça deploy', 'banco de produção', 'npm test', 'gh pr create --base main', 'Closes #', 'não invente'])
     assert.ok(p.includes(s), s);
 });
 
-await t('9. ação do Claude fixada por SHA (versão com 2+ semanas) e job com prazo dentro da validade do token', () => {
-  assert.match(code, /uses: anthropics\/claude-code-action@46a42b43239748e5b25771606bf1f551c3b1b517 # v1\.0\.232/);
+await t('9. ação do Claude fixada por SHA verificado, permission-mode auto e timeout abaixo de 60 min', () => {
+  assert.match(code, /uses: anthropics\/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1\.0\.248/);
+  assert.match(code, /--permission-mode auto/);
   const mins = Number(job('tarefa').match(/timeout-minutes: (\d+)/)[1]); assert.ok(mins > 0 && mins < 60, `${mins}`);
   assert.match(job('vaga'), /timeout-minutes: \d+/);
 });
 
-await t('10. resultado sempre volta para a issue (done com PR, failed sem PR) e o label de disparo é removido', () => {
+await t('10. runner com firewall; allowlist em modo enforce e sem wildcards', () => {
+  assert.match(job('tarefa'), /runs-on: ubuntu-24\.04-firewall/);
+  assert.match(firewallCode, /^mode: enforce$/m);
+  assert.match(firewallCode, /- api\.anthropic\.com/);
+  assert.match(firewallCode, /- api\.github\.com/);
+  assert.match(firewallCode, /- registry\.npmjs\.org/);
+  assert.doesNotMatch(firewallCode, /\*/);
+});
+
+await t('11. resultado só marca done após sucesso do Claude e PR aberta; se falhar, preserva link de triagem', () => {
   assert.match(code, /DELETE "repos\/\$REPO\/issues\/\$ISSUE\/labels\/executor:github"/);
   assert.match(code, /name: Resultado na issue\n\s+if: always\(\)/);
+  assert.match(code, /CLAUDE_CONCLUSION: \$\{\{ steps\.claude\.outputs\.conclusion \}\}/);
+  assert.match(code, /\[ "\$CLAUDE_CONCLUSION" = "success" \] && \[ -n "\$pr" \]/);
   assert.match(code, /labels\[\]=executor:done/); assert.match(code, /labels\[\]=executor:failed/);
+  assert.match(code, /PR existe e precisa de triagem: \$pr/);
 });
 
 console.log(`✓ Tarefas paralelas (workflow): ${n} grupos de testes passaram`);
