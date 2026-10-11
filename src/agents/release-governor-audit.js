@@ -57,6 +57,16 @@ export function buildReleaseAuditEvent({
   }
   const classified = classifyReleaseRisk(changedPaths);
   if (decision.risk !== classified.risk) throw new Error('risco da decisão diverge da reclassificação dos arquivos');
+  if (!Array.isArray(decision.allowedActions) ||
+      decision.allowedActions.some((action) => !ACTIONS.has(action))) {
+    throw new Error('lista de ações autorizadas ausente ou inválida');
+  }
+  const expectedAuthorized = decision.decision === 'autonomous' &&
+    decision.allowedActions.length === 1 && decision.allowedActions[0] === decision.action;
+  if ((decision.decision === 'autonomous' && !expectedAuthorized) ||
+      (decision.decision !== 'autonomous' && decision.allowedActions.length !== 0)) {
+    throw new Error('ações autorizadas divergem da decisão do Release Governor');
+  }
   const evidenceSha = typeof evidence.headSha === 'string' && SHA_RE.test(evidence.headSha)
     ? evidence.headSha.toLowerCase() : null;
   const decisionSha = typeof decision.headSha === 'string' && SHA_RE.test(decision.headSha)
@@ -73,9 +83,8 @@ export function buildReleaseAuditEvent({
     action: decision.action,
     risk: classified.risk,
     decision: decision.decision,
-    authorized: decision.decision === 'autonomous' && Array.isArray(decision.allowedActions) &&
-      decision.allowedActions.includes(decision.action),
-    allowedActions: listOfText(decision.allowedActions, 10, 80).filter((x) => ACTIONS.has(x)),
+    authorized: expectedAuthorized,
+    allowedActions: [...decision.allowedActions],
     headSha: evidenceSha,
     changedPaths: classified.paths.slice(0, 100).map((p) => text(p, 300)),
     checks: normalizedChecks(evidence.checks),
