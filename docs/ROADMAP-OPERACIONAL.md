@@ -1,6 +1,6 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 11/10/2026 às 11:53 (America/Sao_Paulo, UTC−03:00)  
+> **Atualizado em:** 11/10/2026 às 11:56 (America/Sao_Paulo, UTC−03:00)  
 > **Base consultada:** `main` em `0e3adbfd6d143c637e5f695014a7e2de99a77475`.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 
@@ -12,6 +12,10 @@
 - Preferir trabalho remoto que não dependa do computador do usuário. Não inventar evidência de runtime.
 - Manter branches/PRs pequenas e baseadas na `main` atual; evitar integrar branches empilhadas com conflitos.
 - Não ligar `SHIPPING_CALC_ENABLED` sem validação real de cotação e autorização separada.
+
+## Mapa de agentes
+
+Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que Claude já implementou no código do que ainda é futuro e exige pré-requisitos/aprovação. As capacidades futuras de UX Research, UI & Design System, Social Media, SEO & Content, Growth & CRO e Brand & Creative não devem ser iniciadas agora.
 
 ## Estado executivo
 
