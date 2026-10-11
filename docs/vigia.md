@@ -43,6 +43,8 @@
 - um lembrete a cada 6 h enquanto o problema continuar;
 - um de recuperação depois de 2 checagens saudáveis seguidas.
 
+O aviso imediato de falha do próprio robô (passo "Avisar falha no Telegram" do `hunter.yml`) sai só na primeira rodada que falha: se a rodada concluída anterior (cancelada ou pulada não conta) também falhou, ele fica quieto e o vigia (`rodadas_falhando`) cuida dos lembretes. Se não der para consultar as rodadas (`gh` com erro, lista vazia ou ilegível), avisa mesmo assim (`tools/failure-alert-gate.mjs`). Por isso o `hunter.yml` tem `actions: read` e passa `GH_TOKEN` (o token do próprio workflow) a esse passo.
+
 O livro do que já foi avisado (`wd/ledger.json`, no cache do Actions) só muda quando a mensagem chega a pelo menos um canal. Se todos falharem, o aviso é tentado de novo na checagem seguinte. Cada canal tem prazo de 10 s.
 
 ## Configuração externa (cron-job.org), a ser feita pelo dono da conta
