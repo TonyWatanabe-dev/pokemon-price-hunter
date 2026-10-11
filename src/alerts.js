@@ -99,26 +99,47 @@ export function compose(h) {
 }
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// Prazo por envio: cada chamada a um canal tem no máximo ALERT_TIMEOUT_MS (10 s, como o vigia em src/ops-notify.js).
+// Estourou = falha daquele canal (segue a fila pending abaixo); um canal travado não segura a rodada (job de 12 min).
+export const ALERT_TIMEOUT_MS = 10000;
+// Canal que falhou CHANNEL_DOWN_AFTER vezes seguidas na mesma chamada de dispatch/dispatchTips fica fora do resto dela
+// (conta como falha sem nova tentativa): numa queda geral do canal, a rodada não espera o prazo a cada alerta.
+export const CHANNEL_DOWN_AFTER = 2;
+const timeoutOf = (ctx) => (Number(ctx?.timeoutMs) > 0 ? Number(ctx.timeoutMs) : ALERT_TIMEOUT_MS);
+// Canal: null = não configurado · true = entregue · false (ou erro, inclusive prazo esgotado) = falhou.
+// ctx.timeoutMs (prazo), ctx.env e ctx.fetchImpl: para testes; em produção valem process.env e fetch.
 export const transports = {
-  async telegram(msg) {
-    const token = process.env.TELEGRAM_BOT_TOKEN; const chat = process.env.TELEGRAM_CHAT_ID; if (!token || !chat) return null;
-    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'content-type': 'application/json' },
+  async telegram(msg, ctx = {}) {
+    const env = ctx.env || process.env; const token = env.TELEGRAM_BOT_TOKEN; const chat = env.TELEGRAM_CHAT_ID; if (!token || !chat) return null;
+    const r = await (ctx.fetchImpl || fetch)(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(timeoutOf(ctx)),
       body: JSON.stringify({ chat_id: chat, text: esc(msg.text), parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: [[{ text: msg.button || 'COMPRAR', url: msg.url }]] } }) });
     return r.ok;
   },
-  async ntfy(msg) {
-    const topic = process.env.NTFY_TOPIC; if (!topic) return null;
-    const r = await fetch(process.env.NTFY_SERVER || 'https://ntfy.sh/', { method: 'POST', headers: { 'content-type': 'application/json' },
+  async ntfy(msg, ctx = {}) {
+    const env = ctx.env || process.env; const topic = env.NTFY_TOPIC; if (!topic) return null;
+    const r = await (ctx.fetchImpl || fetch)(env.NTFY_SERVER || 'https://ntfy.sh/', { method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(timeoutOf(ctx)),
       body: JSON.stringify({ topic, title: msg.title, message: msg.text.split('\n').slice(2).filter(Boolean).join('\n'), click: msg.url, priority: 4, actions: [{ action: 'view', label: msg.button ? 'Ver pista' : 'Comprar', url: msg.url }] }) });
     return r.ok;
   },
 };
 
-// Envia a todos os canais. false/exceção = tentativa que falhou; null/undefined = canal não configurado (não conta como falha).
-// failed = todos os canais configurados falharam.
-async function sendAll(msg, send) {
-  const channels = []; let failed = 0;
-  for (const [name, fn] of Object.entries(send)) { try { const r = await fn(msg); if (r) channels.push(name); else if (r === false) failed++; } catch { failed++; /* canal indisponível */ } }
+// Garantia do prazo também para canal que não repassa o signal ao fetch (ex.: canal injetado): passou do prazo = falha.
+function withDeadline(p, ms) {
+  let timer;
+  const limit = new Promise((_, rej) => { timer = setTimeout(() => rej(Object.assign(new Error('prazo do envio esgotado'), { name: 'TimeoutError' })), ms); });
+  return Promise.race([Promise.resolve(p), limit]).finally(() => clearTimeout(timer));
+}
+
+// Envia a todos os canais. false/exceção/prazo esgotado = tentativa que falhou; null/undefined = canal não configurado
+// (não conta como falha). failed = todos os canais configurados falharam. io.down: falhas seguidas por canal nesta
+// chamada; com CHANNEL_DOWN_AFTER ou mais, o canal é pulado e conta como falha (sem esperar o prazo de novo).
+async function sendAll(msg, send, io = {}) {
+  const channels = []; let failed = 0; const down = io.down || {}; const ms = timeoutOf(io);
+  for (const [name, fn] of Object.entries(send)) {
+    if ((down[name] || 0) >= CHANNEL_DOWN_AFTER) { failed++; continue; }
+    let r; try { r = await withDeadline(fn(msg, { timeoutMs: ms }), ms); } catch { r = false; /* canal indisponível ou prazo esgotado */ }
+    if (r) { channels.push(name); down[name] = 0; } else if (r === false) { failed++; down[name] = (down[name] || 0) + 1; }
+  }
   return { channels, failed: !channels.length && failed > 0 };
 }
 
@@ -128,12 +149,12 @@ async function sendAll(msg, send) {
 const RETRY_BY_CONDITION = new Set(['target', 'deal']);
 const PENDING_MAX_MS = 24 * 3600e3; // pendente mais velho que isso é informação vencida: sai da fila sem enviar
 
-async function retryPending(sent, mine, handled, send, now) {
+async function retryPending(sent, mine, handled, send, now, io) {
   const out = [];
   for (const [key, s] of Object.entries(sent)) {
     if (!s?.pending || !mine(key) || handled.has(key)) continue;
     if (now.getTime() - Date.parse(s.pending.since) > PENDING_MAX_MS) { delete s.pending; continue; }
-    const { channels, failed } = await sendAll(s.pending.msg, send);
+    const { channels, failed } = await sendAll(s.pending.msg, send, io);
     if (failed) continue; // segue pendente, sem repetir no painel
     out.push({ at: now.toISOString(), ...s.pending.alert, channels, text: s.pending.msg.text, url: s.pending.msg.url, retried: true });
     delete s.pending;
@@ -141,10 +162,12 @@ async function retryPending(sent, mine, handled, send, now) {
   return out;
 }
 
-export async function dispatch(hits, sent, { send = transports, now = new Date() } = {}) {
-  const delivered = []; const handled = new Set();
+// opts.timeoutMs: prazo por envio (padrão ALERT_TIMEOUT_MS). opts.down: falhas seguidas por canal (ver sendAll); vale
+// para os alertas novos e para o reenvio dos pendentes desta mesma chamada.
+export async function dispatch(hits, sent, { send = transports, now = new Date(), timeoutMs, down = {} } = {}) {
+  const delivered = []; const handled = new Set(); const io = { timeoutMs, down };
   for (const h of hits) {
-    const msg = compose(h); const { channels, failed } = await sendAll(msg, send);
+    const msg = compose(h); const { channels, failed } = await sendAll(msg, send, io);
     // Todos os canais configurados falharam num alerta que se repete: não grava, a próxima rodada tenta de novo (sem repetir no painel).
     if (failed && RETRY_BY_CONDITION.has(h.kind)) continue;
     const alert = { kind: h.kind, rule: h.rule.id, ruleLabel: h.rule.label, offerId: h.offer.id, productId: h.offer.productId, total: h.offer.total };
@@ -152,7 +175,7 @@ export async function dispatch(hits, sent, { send = transports, now = new Date()
     handled.add(h.key);
     delivered.push({ at: now.toISOString(), ...alert, channels, text: msg.text, url: msg.url, ...(failed ? { failed: true } : {}) });
   }
-  return [...delivered, ...await retryPending(sent, (k) => !k.startsWith('tip|'), handled, send, now)];
+  return [...delivered, ...await retryPending(sent, (k) => !k.startsWith('tip|'), handled, send, now, io)];
 }
 
 // Pistas (Pelando/Telegram): avisam só quando o produto foi identificado, o preço Copag está confirmado
@@ -166,15 +189,15 @@ export function composeTip(t) {
   lines.push('', `Fonte: ${t.source}`, 'Estoque e vendedor não confirmados. Confira antes de comprar.');
   return { title: '💡 Pista: ' + t.label, text: lines.join('\n'), url: t.url, button: 'VER PROMOÇÃO' };
 }
-export async function dispatchTips(hits, sent, { send = transports, now = new Date() } = {}) {
-  const delivered = []; const handled = new Set();
+export async function dispatchTips(hits, sent, { send = transports, now = new Date(), timeoutMs, down = {} } = {}) {
+  const delivered = []; const handled = new Set(); const io = { timeoutMs, down };
   for (const t of hits) {
-    const msg = composeTip(t); const { channels, failed } = await sendAll(msg, send);
+    const msg = composeTip(t); const { channels, failed } = await sendAll(msg, send, io);
     // Pista só é nova uma vez (isNew): falha total vai para a fila de pendentes em vez de sumir.
     const alert = { kind: 'tip', rule: 'pista', ruleLabel: 'Pista', productId: t.productId, total: t.price };
     sent['tip|' + t.id] = { at: now.toISOString(), total: t.price, ...(failed ? { pending: { since: now.toISOString(), msg, alert } } : {}) };
     handled.add('tip|' + t.id);
     delivered.push({ at: now.toISOString(), ...alert, channels, text: msg.text, url: msg.url, ...(failed ? { failed: true } : {}) });
   }
-  return [...delivered, ...await retryPending(sent, (k) => k.startsWith('tip|'), handled, send, now)];
+  return [...delivered, ...await retryPending(sent, (k) => k.startsWith('tip|'), handled, send, now, io)];
 }
