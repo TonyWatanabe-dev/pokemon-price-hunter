@@ -473,8 +473,6 @@ await testAsync('sink PostgreSQL falha fechado se o banco falhar, não confirmar
   await assert.rejects(broken({ ...event, eventId: 'not-a-sha' }), /eventId SHA-256 inválido/);
 });
 
-console.log(`✓ Release Governor (política determinística): ${passed} grupos de testes passaram`);
-
 
 // Integração real com PostgreSQL descartável do CI. Nunca usa DATABASE_URL de produção.
 if (process.env.TEST_DATABASE_URL) {
@@ -519,3 +517,5 @@ if (process.env.TEST_DATABASE_URL) {
 } else {
   console.log('↷ PostgreSQL real ignorado: TEST_DATABASE_URL ausente (CI configura banco descartável).');
 }
+
+console.log(`✓ Release Governor (política determinística): ${passed} grupos de testes passaram`);
