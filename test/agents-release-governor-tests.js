@@ -474,3 +474,48 @@ await testAsync('sink PostgreSQL falha fechado se o banco falhar, não confirmar
 });
 
 console.log(`✓ Release Governor (política determinística): ${passed} grupos de testes passaram`);
+
+
+// Integração real com PostgreSQL descartável do CI. Nunca usa DATABASE_URL de produção.
+if (process.env.TEST_DATABASE_URL) {
+  await testAsync('integração PostgreSQL real: persistência idempotente e fail-closed', async () => {
+    const { Client } = await import('pg');
+    const client = new Client({ connectionString: process.env.TEST_DATABASE_URL });
+    await client.connect();
+    try {
+      await client.query(`
+        CREATE TEMP TABLE system_event (
+          id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          type text NOT NULL,
+          entity_type text,
+          entity_id text,
+          payload jsonb NOT NULL DEFAULT '{}'::jsonb,
+          created_at timestamptz NOT NULL DEFAULT now()
+        ) ON COMMIT PRESERVE ROWS
+      `);
+      const sink = createPostgresReleaseAuditSink(client);
+      const decision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
+      const event = buildReleaseAuditEvent({
+        decision, changedPaths: ['docs/release.md'], evidence: evidence(),
+        now: new Date('2026-10-11T12:00:00Z'),
+      });
+      const first = await sink(event);
+      const second = await sink(event);
+      const rows = await client.query(
+        'SELECT id, type, entity_type, entity_id, payload FROM system_event WHERE type = $1 AND entity_id = $2',
+        ['RELEASE_GOVERNOR_DECISION', event.eventId],
+      );
+      assert.equal(first.persisted, true);
+      assert.equal(second.persisted, true);
+      assert.equal(rows.rowCount, 1, 'retry não deve duplicar evento');
+      assert.equal(rows.rows[0].entity_type, 'release_governor');
+      assert.equal(rows.rows[0].payload.eventId, event.eventId);
+      await client.query('DROP TABLE system_event');
+      await assert.rejects(sink(event));
+    } finally {
+      await client.end();
+    }
+  });
+} else {
+  console.log('↷ PostgreSQL real ignorado: TEST_DATABASE_URL ausente (CI configura banco descartável).');
+}
