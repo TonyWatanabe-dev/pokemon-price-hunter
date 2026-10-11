@@ -124,31 +124,40 @@ export function createPostgresReleaseAuditSink(db) {
     if (!event || typeof event.eventId !== 'string' || !/^[a-f0-9]{64}$/.test(event.eventId)) {
       throw new Error('eventId SHA-256 inválido para auditoria persistente');
     }
-    const sql = `
-      WITH lock AS MATERIALIZED (
-        SELECT pg_advisory_xact_lock(hashtext($1))
-      ), inserted AS (
-        INSERT INTO system_event (type, entity_type, entity_id, payload)
-        SELECT $2, $3, $4, $5::jsonb
-          FROM lock
-         WHERE NOT EXISTS (
-           SELECT 1 FROM system_event WHERE type = $2 AND entity_id = $4
-         )
-        RETURNING id
-      )
-      SELECT id FROM inserted
-      UNION ALL
-      SELECT id FROM system_event WHERE type = $2 AND entity_id = $4
-      LIMIT 1
-    `;
-    const result = await db.query(sql, [
-      event.eventId,
-      'RELEASE_GOVERNOR_DECISION',
-      'release_governor',
-      event.eventId,
-      JSON.stringify(event),
-    ]);
-    if (!result?.rows?.length) throw new Error('evento de auditoria não foi confirmado pelo banco');
-    return { persisted: true, eventId: event.eventId, rowId: result.rows[0].id };
+
+    // A Pool precisa fornecer uma conexão dedicada: BEGIN/lock/SELECT/INSERT devem
+    // ocorrer na mesma sessão para que o advisory transaction lock realmente serialize retries.
+    const isPool = typeof db.connect === 'function' && Number.isFinite(db.totalCount);
+    const client = isPool ? await db.connect() : db;
+    const release = isPool && typeof client.release === 'function';
+    let inTransaction = false;
+    try {
+      await client.query('BEGIN');
+      inTransaction = true;
+      await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [event.eventId]);
+      const existing = await client.query(
+        'SELECT id FROM system_event WHERE type = $1 AND entity_id = $2 LIMIT 1',
+        ['RELEASE_GOVERNOR_DECISION', event.eventId],
+      );
+      if (existing?.rows?.length) {
+        await client.query('COMMIT');
+        inTransaction = false;
+        return { persisted: true, eventId: event.eventId, rowId: existing.rows[0].id, duplicate: true };
+      }
+
+      const inserted = await client.query(
+        'INSERT INTO system_event (type, entity_type, entity_id, payload) VALUES ($1, $2, $3, $4::jsonb) RETURNING id',
+        ['RELEASE_GOVERNOR_DECISION', 'release_governor', event.eventId, JSON.stringify(event)],
+      );
+      if (!inserted?.rows?.length) throw new Error('evento de auditoria não foi confirmado pelo banco');
+      await client.query('COMMIT');
+      inTransaction = false;
+      return { persisted: true, eventId: event.eventId, rowId: inserted.rows[0].id, duplicate: false };
+    } catch (error) {
+      if (inTransaction) await client.query('ROLLBACK').catch(() => {});
+      throw error;
+    } finally {
+      if (release) client.release();
+    }
   };
 }
