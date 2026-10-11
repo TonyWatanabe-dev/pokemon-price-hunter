@@ -79,3 +79,5 @@ await t('reaviso: total com frete conhecido já enviado não é "superado" por p
 
 if (fails.length) { console.error(fails.join('\n')); throw new Error(`Alertas com frete comparável (#84): ${fails.length} grupo(s) falharam`); }
 console.log(`✓ Alertas com frete comparável (#84): ${n} grupos passaram (somente mocks)`);
+// Prazo por envio dos alertas (extraído da #15; registrado aqui para não mexer no script test do package.json)
+await import('./alerts-timeout-tests.js');

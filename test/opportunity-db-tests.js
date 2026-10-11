@@ -81,5 +81,32 @@ if (prevBest >= 75 && oaScore < 75) assert.deepEqual(ev4.map((e) => e.type), ['O
 assert.ok(!ev4.some((e) => e.type === 'OPPORTUNITY_ANOMALY'), 'anomalia já conhecida não gera evento de novo');
 // checagens do banco: nenhuma anomalia ≥ 50, nenhuma sem estoque ≥ 31
 assert.equal((await q(`SELECT count(*)::int n FROM hunter.opportunity WHERE (is_anomaly AND opportunity_score >= 50) OR (stock_signal = 0 AND opportunity_score > 30)`))[0].n, 0);
+// batida do motor (ENGINE_HEARTBEAT): uma linha por execução (mesmo sem nada mudar), sem segredo; poda > 14 dias;
+// fora do prefixo OPPORTUNITY_ (as contagens de eventos de transição acima não a veem)
+{
+  const beats = await q(`SELECT payload, created_at FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT' ORDER BY id`);
+  assert.equal(beats.length, 4, 'r1, r2, r3 e r4: uma batida por execução, inclusive as que não escreveram nada');
+  assert.deepEqual(Object.keys(beats[1].payload).sort(), ['engine_version', 'offersEvaluated', 'removed', 'written']);
+  assert.deepEqual([beats[1].payload.written, beats[1].payload.removed, beats[1].payload.engine_version], [0, 0, 'opportunity-v2.2']);
+  assert.equal(beats[0].payload.offersEvaluated, 4);
+  assert.equal((await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type LIKE 'OPPORTUNITY_%' AND type = 'ENGINE_HEARTBEAT'`))[0].n, 0);
+  await p.query(`INSERT INTO hunter.system_event (type, entity_type, entity_id, payload, created_at) VALUES
+    ('ENGINE_HEARTBEAT', 'engine', 'opportunity', '{}', now() - interval '15 days'),
+    ('ENGINE_HEARTBEAT', 'engine', 'opportunity', '{}', now() - interval '13 days'),
+    ('OPPORTUNITY_FOUND', 'product', 'velho', '{}', now() - interval '30 days')`);
+  // execução que falha no meio não deixa batida (mesma transação)
+  const before = (await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT'`))[0].n;
+  await assert.rejects(tx(async (c) => { await runOpportunityEngine(c, { now }); throw new Error('falha depois do motor'); }));
+  assert.equal((await q(`SELECT count(*)::int n FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT'`))[0].n, before, 'rollback leva a batida junto');
+  await tx((c) => runOpportunityEngine(c, { now }));
+  const left = await q(`SELECT type, (created_at < now() - interval '14 days') AS old FROM hunter.system_event WHERE type IN ('ENGINE_HEARTBEAT', 'OPPORTUNITY_FOUND') AND entity_id IN ('opportunity', 'velho')`);
+  assert.equal(left.filter((r) => r.type === 'ENGINE_HEARTBEAT' && r.old).length, 0, 'batida com mais de 14 dias é podada');
+  assert.equal(left.filter((r) => r.type === 'ENGINE_HEARTBEAT').length, before - 1 + 1, '13 dias fica; nova batida entra');
+  assert.equal(left.filter((r) => r.type === 'OPPORTUNITY_FOUND').length, 1, 'poda só mexe na batida, nunca nos eventos de transição');
+  const { readDbHealth } = await import('../src/db-health.js');
+  const h = await readDbHealth({ env: { DATABASE_URL: process.env.TEST_DATABASE_URL } });
+  const last = (await q(`SELECT max(created_at) m FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT'`))[0].m;
+  assert.equal(h.status, 'ok', h.reason); assert.equal(h.engineRunAt, new Date(last).toISOString(), 'db-health lê a última batida');
+}
 await close();
 console.log(`OK — Opportunity Engine (PostgreSQL) · melhor inicial ${prevBest}, eventos ${JSON.stringify(r1.events)}`);

@@ -36,6 +36,7 @@ Estado atual, arquitetura e matriz de testes: `docs/arquitetura-e-testes.md`.
    - `BRAVE_API_KEY` (opcional, liga a descoberta de lojas)
    - `ML_ACCESS_TOKEN` (opcional, token OAuth de app do Mercado Livre)
    - Variável `HUNTER_CEP` (frete calculado em lojas VTEX)
+   - `PG_CA_CERT` (opcional, com banco): CA do Supabase para TLS verificado; sem ela, a conexão fica como antes. Depois do teste, variável `PG_TLS_STRICT=1`. Passo a passo em `docs/tls.md`
 3. Ative o GitHub Pages na branch principal. O painel fica em `/dashboard/`.
 4. Rode o workflow manualmente uma vez em *Actions → Price Hunter → Run workflow*.
 
