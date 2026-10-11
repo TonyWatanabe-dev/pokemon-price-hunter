@@ -1,4 +1,4 @@
-# Tarefas paralelas (docs/tarefas-paralelas.md): cada issue com o label "executor:github" vira um job próprio do
+# Tarefas paralelas: cada issue com o label "executor:github" vira um job próprio do
 # Claude Code, numa branch tarefa/*, que termina num PR para a main. O merge continua com CI + Release Governor
 # ou com o usuário (R3); este workflow nunca faz merge, deploy nem acessa o banco de produção.
 # Segurança (repositório público): só dispara quando um operador (vars.TAREFAS_OPERADORES, padrão: dono do repo)
@@ -34,8 +34,9 @@ jobs:
 
   tarefa:
     needs: vaga
-    runs-on: ubuntu-latest
-    timeout-minutes: 55   # o token do app do Claude vale 1 h
+    # Runner com firewall de saída conforme o hardening oficial da Claude Code Action.
+    runs-on: ubuntu-24.04-firewall
+    timeout-minutes: 55   # margem dentro da validade de 1 h do token do app
     concurrency:
       group: tarefas-vaga-${{ needs.vaga.outputs.n }}
       cancel-in-progress: false
@@ -48,7 +49,7 @@ jobs:
       actions: read
     services:
       postgres:
-        image: postgres:17   # banco descartável para o npm test; nunca o de produção
+        image: postgres:17   # banco descartável para os testes; nunca o de produção
         env: { POSTGRES_PASSWORD: pw }
         ports: ['5432:5432']
         options: >-
@@ -64,6 +65,9 @@ jobs:
             gh api "repos/$REPO/labels" -f name="$l" -f color=ededed >/dev/null 2>&1 || true
           done
           gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:github" >/dev/null 2>&1 || true
+          for l in executor:done executor:failed; do
+            gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/$l" >/dev/null 2>&1 || true
+          done
           gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:running" >/dev/null
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -72,7 +76,7 @@ jobs:
         with: { node-version: 22 }
       - run: npm ci --no-audit --no-fund
       - id: claude
-        uses: anthropics/claude-code-action@46a42b43239748e5b25771606bf1f551c3b1b517 # v1.0.232
+        uses: anthropics/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1.0.248
         env:
           TEST_DATABASE_URL: postgres://postgres:pw@localhost:5432/postgres
         with:
@@ -81,22 +85,34 @@ jobs:
           branch_prefix: tarefa/
           include_comments_by_actor: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
           claude_args: |
+            --permission-mode auto
             --max-turns 80
             --allowedTools "Bash(npm test),Bash(npm ci),Bash(node test/*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(gh pr create:*),Bash(gh pr list:*)"
-            --append-system-prompt "Você é um executor de tarefas do TCG Price Hunter. Siga o CLAUDE.md do repositório. Trabalhe só na branch criada para esta issue; nunca na main, nunca force-push. Não altere .github/workflows, ROADMAP.md, secrets ou configuração de produção; não faça deploy nem acesse o banco de produção. Rode npm test antes de concluir e corrija falhas sem enfraquecer testes. Ao terminar, abra um PR para a main com gh pr create --base main (título curto; corpo com o que mudou, como foi testado e 'Closes #<número da issue>'). Se a tarefa for ambígua ou exigir decisão do usuário, não invente: explique no comentário e não abra PR."
+            --append-system-prompt "Você é um executor de tarefas do TCG Price Hunter. Siga o CLAUDE.md do repositório. Trabalhe só na branch criada para esta issue; nunca na main, nunca force-push. Não altere .github/workflows, .github/egress-firewall.yaml, ROADMAP.md, secrets ou configuração de produção; não faça deploy nem acesse o banco de produção. Rode npm test antes de concluir e corrija falhas sem enfraquecer testes. Ao terminar, abra um PR para a main com gh pr create --base main (título curto; corpo com o que mudou, como foi testado e 'Closes #<número da issue>'). Se a tarefa for ambígua ou exigir decisão do usuário, não invente: explique no comentário e não abra PR."
       - name: Resultado na issue
         if: always()
         env:
           BRANCH: ${{ steps.claude.outputs.branch_name }}
+          CLAUDE_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           pr=""
-          [ -n "$BRANCH" ] && pr=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$BRANCH&state=open" --jq '.[0].html_url // empty' 2>/dev/null || true)
+          if [ -n "$BRANCH" ]; then
+            pr=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$BRANCH&state=open" --jq '.[0].html_url // empty' 2>/dev/null || true)
+          fi
           gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:running" >/dev/null 2>&1 || true
-          if [ -n "$pr" ]; then
+          if [ "$CLAUDE_CONCLUSION" = "success" ] && [ -n "$pr" ]; then
             gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:done" >/dev/null
+            echo "Resultado: sucesso" >> "$GITHUB_STEP_SUMMARY"
             echo "PR: $pr" >> "$GITHUB_STEP_SUMMARY"
           else
             gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:failed" >/dev/null
-            gh api "repos/$REPO/issues/$ISSUE/comments" -f body="Tarefa terminou sem PR. Veja o comentário do Claude acima e o log: $RUN_URL" >/dev/null
+            if [ -n "$pr" ]; then
+              body="A execução do Claude terminou com status '${CLAUDE_CONCLUSION:-desconhecido}', então a tarefa não foi marcada como concluída. A PR existe e precisa de triagem: $pr. Log: $RUN_URL"
+              echo "Resultado: falha; PR para triagem: $pr" >> "$GITHUB_STEP_SUMMARY"
+            else
+              body="Tarefa terminou sem PR (status do Claude: ${CLAUDE_CONCLUSION:-desconhecido}). Veja os comentários anteriores e o log: $RUN_URL"
+              echo "Resultado: falha; nenhuma PR encontrada." >> "$GITHUB_STEP_SUMMARY"
+            fi
+            gh api "repos/$REPO/issues/$ISSUE/comments" -f body="$body" >/dev/null
           fi
