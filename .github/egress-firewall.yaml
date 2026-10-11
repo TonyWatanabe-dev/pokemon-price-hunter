@@ -13,5 +13,9 @@ allow:
   - release-assets.githubusercontent.com
   # npm ci e instalação de dependências do projeto.
   - registry.npmjs.org
-  # Script de instalação do Bun usado pela action.
+  # Instalação do Bun usado pela action.
   - bun.sh
+  # Pull da imagem descartável postgres:17 usada pelo serviço de testes.
+  - auth.docker.io
+  - registry-1.docker.io
+  - production.cloudflare.docker.com
