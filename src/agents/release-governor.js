@@ -73,7 +73,7 @@ export function classifyReleaseRisk(changedPaths) {
   }
 
   if (paths.every(DOCUMENTATION_ONLY)) {
-    return { risk: RISK.R0, reasons: ['alteração limitada a documentação e/ou testes'], paths };
+    return { risk: RISK.R0, reasons: ['alteração limitada a documentação'], paths };
   }
 
   if (paths.every((p) => UI_ONLY(p) || DOCUMENTATION_ONLY(p))) {
