@@ -27,3 +27,5 @@ for (const f of files) visit(f);
 assert.deepEqual(problems, [], 'imports fora do bundle da Vercel:\n' + problems.join('\n'));
 assert.ok(ignored('src/core/x.js') && ignored('tools/a.mjs') && !ignored('api/_lib/references.mjs'), 'leitura do .vercelignore');
 console.log(`OK — segurança de deploy: ${seen.size} módulos da API, todos dentro do bundle`);
+
+await import('./offer-change-tests.js');

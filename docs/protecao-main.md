@@ -1,6 +1,6 @@
 # Proteção do ramo main
 
-O código deste lote não muda nenhuma configuração do repositório. Os passos abaixo são feitos pelo dono, no GitHub.
+Este documento não muda nenhuma configuração do repositório. Os passos abaixo são feitos pelo dono, no GitHub.
 
 ## Quem escreve em cada ramo hoje
 
@@ -23,7 +23,7 @@ Consequência: uma regra que bloqueie force push precisa valer **só para o `mai
 | Block force pushes | **sim** | ninguém reescreve o histórico do `main`; o robô não usa force push no `main` |
 | Require linear history | **sim** | o robô já publica com rebase (histórico linear); impede commit de merge no `main` |
 | Require a pull request before merging | **não, por enquanto** | o robô grava `config/` direto no `main` com o `GITHUB_TOKEN`, e o `GITHUB_TOKEN` não consegue ser ator de bypass de forma confiável. Com essa regra ligada, o passo "Salvar configuração" falharia todo dia |
-| Require status checks | não | não há CI de PR hoje; ligar sem CI só bloquearia pushes |
+| Require status checks | não, por enquanto | o CI de PR (`ci.yml`, check `test`) só roda em pull request; como o robô e as pessoas ainda dão push direto no `main`, exigir o check bloquearia esses pushes. Faz sentido junto com "Require a pull request" (ver "Opção futura") |
 | Require signed commits | não | os commits do robô (`git push` com `GITHUB_TOKEN`) não são assinados |
 
 ### Passos no GitHub
@@ -53,7 +53,7 @@ Consequência: uma regra que bloqueie force push precisa valer **só para o `mai
 
 ## Conflito entre pessoa e robô em `config/`
 
-Desde o Lote 6, o robô não sobrescreve mais edições humanas. Até então, o workflow usava `git pull --rebase -X theirs`: num conflito, a versão do robô vencia em silêncio. Agora `tools/push-config.sh` funciona assim:
+Desde a #202 (extraída do Lote 6, PR #17), o robô não sobrescreve mais edições humanas. Até então, o workflow usava `git pull --rebase -X theirs`: num conflito, a versão do robô vencia em silêncio. Agora `tools/push-config.sh` funciona assim (resumo operacional também em `docs/runbook.md`):
 
 - **Rebase limpo**: publica normalmente. Isso inclui uma pessoa ter mudado outro arquivo, ou outro trecho do mesmo arquivo, durante a rodada.
 - **Conflito**:

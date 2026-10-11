@@ -1,7 +1,7 @@
 // Conexão de LEITURA para as funções da Vercel (API v1). Driver `pg` padrão, PostgreSQL puro.
 // Variável API_DATABASE_URL (usuário só-leitura hunter_api, pooler em modo transação); sem ela, a API usa o state.json.
 // Consultas sempre com o schema escrito (hunter.tabela): o pooler em modo transação não guarda search_path.
-// TLS: api/_lib/ssl.mjs (cópia idêntica de src/db/ssl.js; CA verificada com PG_CA_CERT; ver docs/tls.md).
+// TLS: api/_lib/ssl.mjs (cópia idêntica de src/db/ssl.js). Sem PG_CA_CERT/PG_TLS_STRICT, igual a antes; ver docs/tls.md.
 import { pgConnectionConfig } from './ssl.mjs';
 let _pool = null;
 export const apiDbUrl = () => process.env.API_DATABASE_URL || null;
@@ -13,8 +13,8 @@ export async function apiPool() {
   const { default: pg } = await import('pg');
   const { connectionString, ssl } = pgConnectionConfig(url);
   _pool = new pg.Pool({
-    connectionString, ssl, max: 2, idleTimeoutMillis: 10000, connectionTimeoutMillis: 4000,
-    statement_timeout: 5000, query_timeout: 6000,
+    connectionString, max: 2, idleTimeoutMillis: 10000, connectionTimeoutMillis: 4000,
+    statement_timeout: 5000, query_timeout: 6000, ssl,
     application_name: 'tcgph-api',
   });
   _pool.on('error', () => { _pool = null; });          // conexão caída: a próxima chamada recria

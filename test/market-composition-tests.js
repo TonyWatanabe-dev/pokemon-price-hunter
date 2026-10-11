@@ -112,3 +112,6 @@ t('API: composição na referência de mercado', () => {
 });
 
 console.log(`✓ Composição do mercado + confiança (6A.2): ${n} grupos de testes passaram`);
+
+// Adaptadores Shopify e VTEX com fixtures locais (registrados aqui para entrar no npm test sem alterar o package.json)
+await import('./adapters-shopify-vtex-tests.js');

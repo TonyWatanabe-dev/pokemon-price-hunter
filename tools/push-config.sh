@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Publica no main as mudanças que o robô fez em config/ (Lote 6 — Segurança). Uso: bash tools/push-config.sh [remoto] [ramo]
+# Publica no main as mudanças que o robô fez em config/ (extraído da #17). Uso: bash tools/push-config.sh [remoto] [ramo]
 #
 # Quem escreve em config/ no robô: src/discover.js (lojas novas em config/stores.json) e src/copag-check.js
 # (config/catalog.json → copag.<id>.last_check), ambos só no gatilho diário. As duas escritas são refeitas a partir
 # do zero na rodada diária seguinte, lendo o config/ que estiver no main naquele momento.
 #
-# Antes (até o Lote 5): `git pull --rebase -X theirs` — num conflito, a versão do robô vencia em silêncio e podia
+# Antes: `git pull --rebase -X theirs` — num conflito, a versão do robô vencia em silêncio e podia
 # apagar uma edição humana feita em config/ durante a rodada. Agora:
 #  - sem mudança em config/ → sai 0 sem commit;
 #  - rebase limpo (inclusive edição humana em OUTRO arquivo ou em outro trecho) → push;

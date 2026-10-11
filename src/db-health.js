@@ -7,9 +7,9 @@ import { pgConnectionConfig } from './db/ssl.js';
 
 const SQL_SEEN = `SELECT max(last_seen_at) AS last_seen_at FROM hunter.offer WHERE status = 'active'`;
 const SQL_ENGINE = `SELECT max(calculated_at) AS engine_at FROM hunter.opportunity`;
-// Batida do motor (uma linha por rodada concluída, src/core/opportunity-run.js). Sem a tabela ou sem batida: null.
+// Batida do motor (uma linha por execução concluída: ENGINE_HEARTBEAT, src/core/opportunity-run.js). Sem a tabela ou sem batida: null.
 const SQL_HAS_EVENTS = `SELECT to_regclass('hunter.system_event') IS NOT NULL AS ok`;
-const SQL_ENGINE_RUN = `SELECT max(created_at) AS run_at FROM hunter.system_event WHERE type = 'OPPORTUNITY_ENGINE_RUN'`;
+const SQL_ENGINE_RUN = `SELECT max(created_at) AS run_at FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT'`;
 
 const safeMsg = (e) => String(e?.code || e?.message || e || 'erro').replace(/postgres(ql)?:\/\/\S+/gi, '[url]').slice(0, 120);
 const iso = (v) => (v == null ? null : new Date(v).toISOString());

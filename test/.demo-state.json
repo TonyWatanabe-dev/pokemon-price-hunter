@@ -108,7 +108,7 @@
       "ean": null,
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
-      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
       "copag": {
         "msrp": null,
         "source_url": null,
@@ -131,6 +131,7 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
+        "enough": false,
         "drop7d": 0
       }
     },
@@ -148,11 +149,11 @@
       "ean": null,
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
-      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
       "copag": {
         "msrp": 449.99,
         "source_url": "https://cop.test/box-display-me05/p",
-        "source_timestamp": "2026-10-06T10:25:00.000Z",
+        "source_timestamp": "2026-10-06T10:20:00.000Z",
         "confidence": "OFICIAL",
         "previous_msrp": null,
         "msrp_updated_at": "2026-10-06T10:00:00.000Z",
@@ -175,6 +176,7 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
+        "enough": false,
         "drop7d": 0
       }
     },
@@ -192,7 +194,7 @@
       "ean": "0196214156098",
       "image": "https://cdn.shop.test/caos.jpg",
       "firstSeen": "2026-10-06T10:00:00.000Z",
-      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
       "copag": {
         "msrp": 449.99,
         "source_url": "https://www.copag.com.br/exemplo-teste",
@@ -217,6 +219,7 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
+        "enough": false,
         "drop7d": 0
       }
     },
@@ -234,7 +237,7 @@
       "ean": null,
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
-      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
       "copag": {
         "msrp": null,
         "source_url": null,
@@ -257,6 +260,7 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
+        "enough": false,
         "drop7d": 0
       }
     },
@@ -274,7 +278,7 @@
       "ean": null,
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
-      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
       "copag": {
         "msrp": 69.99,
         "source_url": "https://www.instagram.com/voltztcg/",
@@ -301,6 +305,7 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
+        "enough": false,
         "drop7d": 0
       }
     },
@@ -318,7 +323,7 @@
       "ean": null,
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
-      "lastSeen": "2026-10-06T10:25:00.000Z",
+      "lastSeen": "2026-10-06T10:20:00.000Z",
       "copag": {
         "msrp": 160.99,
         "source_url": "https://www.instagram.com/voltztcg/",
@@ -345,6 +350,7 @@
       "hist": {
         "days": 1,
         "from": "2026-10-06",
+        "enough": false,
         "drop7d": 0
       }
     }
@@ -383,13 +389,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 39.9,
       "perBooster": 13.3,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://waf.test/pokemon-blister-triplo-caos-ascendente",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -427,13 +436,16 @@
       "priceKindLabel": "Pix",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 369.9,
       "perBooster": 10.27,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://ld.test/pokemon-booster-box-escuridao-absoluta-36",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -471,13 +483,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 359.9,
       "perBooster": 10,
       "stock": "PRE_ORDER",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "json_ld",
       "source_url": "https://ld.test/pokemon-box-caos-ascendente-pre-venda",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -514,13 +529,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 329,
       "perBooster": 9.14,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/box-caos",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -557,13 +575,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 289.9,
       "perBooster": null,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/etb",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -600,13 +621,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 59.9,
       "perBooster": 29.95,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/c30-duplo",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -643,13 +667,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": null,
       "total": 149.9,
       "perBooster": null,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": null,
       "sourceType": "store_json",
       "source_url": "https://shop.test/products/c30-greninja",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -661,49 +688,6 @@
       "savings": 11.09,
       "vsMarket": null,
       "confidence_score": 80
-    },
-    {
-      "id": "af9a476be6e6",
-      "productId": "me04-box36",
-      "matchConfidence": 0.99,
-      "storeId": "vtex",
-      "storeName": "Loja VTEX",
-      "storeKind": "specialist",
-      "seller": "Loja VTEX",
-      "sellerId": "1",
-      "sellerKind": "store",
-      "title": "Caixa Pokémon Caos Ascendente 36 Boosters Copag",
-      "url": "https://vtex.test/caos-36/p",
-      "image": null,
-      "sku": "77",
-      "ean": "196214156098",
-      "prices": {
-        "base": 379.9
-      },
-      "listPrice": 449.99,
-      "price": 379.9,
-      "priceKind": "base",
-      "priceKindLabel": "preço da loja",
-      "shipping": 19.9,
-      "shippingKnown": true,
-      "total": 399.8,
-      "perBooster": 11.11,
-      "stock": "IN_STOCK",
-      "quantity": 4,
-      "sourceType": "store_api",
-      "source_url": "https://vtex.test/caos-36/p",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
-      "firstSeen": "2026-10-06T10:00:00.000Z",
-      "stale": false,
-      "confirmed": true,
-      "pendingFrom": null,
-      "anomalous": false,
-      "storeScore": null,
-      "storeValidated": false,
-      "discount": 0.1115,
-      "savings": 50.19,
-      "vsMarket": -0.0971,
-      "confidence_score": 99
     },
     {
       "id": "3faf55a38213",
@@ -729,13 +713,16 @@
       "priceKindLabel": "preço da loja",
       "shipping": null,
       "shippingKnown": false,
+      "shippingAt": null,
+      "shippingError": "HTTP 404 em https://cop.test/api/checkout/pub/orderForms/simulation",
       "total": 449.99,
       "perBooster": 12.5,
       "stock": "IN_STOCK",
+      "availableFrom": null,
       "quantity": 3,
       "sourceType": "store_api",
       "source_url": "https://cop.test/box-display-me05/p",
-      "source_timestamp": "2026-10-06T10:25:00.000Z",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "stale": false,
       "confirmed": true,
@@ -747,24 +734,74 @@
       "savings": 0,
       "vsMarket": -0.0977,
       "confidence_score": 70
+    },
+    {
+      "id": "af9a476be6e6",
+      "productId": "me04-box36",
+      "matchConfidence": 0.99,
+      "storeId": "vtex",
+      "storeName": "Loja VTEX",
+      "storeKind": "specialist",
+      "seller": "Loja VTEX",
+      "sellerId": "1",
+      "sellerKind": "store",
+      "title": "Caixa Pokémon Caos Ascendente 36 Boosters Copag",
+      "url": "https://vtex.test/caos-36/p",
+      "image": null,
+      "sku": "77",
+      "ean": "196214156098",
+      "prices": {
+        "base": 379.9
+      },
+      "listPrice": 449.99,
+      "price": 379.9,
+      "priceKind": "base",
+      "priceKindLabel": "preço da loja",
+      "shipping": 19.9,
+      "shippingKnown": true,
+      "shippingAt": "2026-10-06T10:20:00.000Z",
+      "shippingError": null,
+      "shippingSource": "anterior",
+      "total": 399.8,
+      "perBooster": 11.11,
+      "stock": "IN_STOCK",
+      "availableFrom": null,
+      "quantity": 4,
+      "sourceType": "store_api",
+      "source_url": "https://vtex.test/caos-36/p",
+      "source_timestamp": "2026-10-06T10:20:00.000Z",
+      "firstSeen": "2026-10-06T10:00:00.000Z",
+      "stale": false,
+      "confirmed": true,
+      "pendingFrom": null,
+      "anomalous": false,
+      "storeScore": null,
+      "storeValidated": false,
+      "discount": 0.1115,
+      "savings": 50.19,
+      "vsMarket": -0.0971,
+      "confidence_score": 99
     }
   ],
   "sources": [
     {
       "id": "shop",
-      "checks": 4,
-      "ok": 4,
+      "checks": 3,
+      "ok": 3,
       "name": "Loja Shopify",
       "kind": "specialist",
       "url": "https://shop.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "platform": "shopify",
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 6,
       "matched": 5,
-      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "lastNonEmpty": "2026-10-06T10:20:00.000Z",
+      "lastDurationMs": 19,
+      "errorClass": null,
       "score": {
         "score": 79,
         "validated": true,
@@ -779,19 +816,22 @@
     },
     {
       "id": "vtex",
-      "checks": 4,
-      "ok": 4,
+      "checks": 3,
+      "ok": 3,
       "name": "Loja VTEX",
       "kind": "specialist",
       "url": "https://vtex.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 1,
       "matched": 1,
-      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "lastNonEmpty": "2026-10-06T10:20:00.000Z",
+      "lastDurationMs": 22,
+      "errorClass": null,
       "score": {
         "score": null,
         "validated": false,
@@ -800,19 +840,25 @@
     },
     {
       "id": "ld",
-      "checks": 4,
-      "ok": 4,
+      "checks": 3,
+      "ok": 3,
       "name": "Loja Nuvem",
       "kind": "specialist",
       "url": "https://ld.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "platform": "jsonld",
+      "pageFailures": 0,
+      "pageGiveUps": 0,
+      "pageFailReason": null,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 2,
       "matched": 2,
-      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "lastNonEmpty": "2026-10-06T10:20:00.000Z",
+      "lastDurationMs": 10,
+      "errorClass": null,
       "score": {
         "score": null,
         "validated": false,
@@ -821,19 +867,25 @@
     },
     {
       "id": "waf",
-      "checks": 4,
-      "ok": 4,
+      "checks": 3,
+      "ok": 3,
       "name": "Loja com firewall nas APIs",
       "kind": "specialist",
       "url": "https://waf.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "platform": "jsonld",
+      "pageFailures": 0,
+      "pageGiveUps": 0,
+      "pageFailReason": null,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 1,
       "matched": 1,
-      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "lastNonEmpty": "2026-10-06T10:20:00.000Z",
+      "lastDurationMs": 5,
+      "errorClass": null,
       "score": {
         "score": null,
         "validated": false,
@@ -842,15 +894,20 @@
     },
     {
       "id": "blk",
-      "checks": 4,
+      "checks": 3,
       "ok": 0,
       "name": "Bloqueada",
       "kind": "specialist",
       "url": "https://blk.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "status": "BLOCKED",
-      "reason": "Acesso bloqueado em blk.test (o site barra robôs, nem o robots.txt abre)",
-      "fails": 4,
+      "reason": "Acesso bloqueado em blk.test (o site barra robôs, nem o robots.txt abre: HTTP 403)",
+      "fails": 3,
+      "httpStatus": 403,
+      "netCode": null,
+      "retryAfterSec": null,
+      "errorClass": "bloqueio",
+      "lastDurationMs": 6,
       "score": {
         "score": null,
         "validated": false,
@@ -874,19 +931,22 @@
     },
     {
       "id": "cop",
-      "checks": 4,
-      "ok": 4,
+      "checks": 3,
+      "ok": 3,
       "name": "Loja Copag (oficial)",
       "kind": "official",
       "url": "https://cop.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "platform": "vtex",
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
       "listings": 1,
       "matched": 1,
-      "lastSuccess": "2026-10-06T10:25:00.000Z",
+      "lastSuccess": "2026-10-06T10:20:00.000Z",
+      "lastNonEmpty": "2026-10-06T10:20:00.000Z",
+      "lastDurationMs": 22,
+      "errorClass": null,
       "score": {
         "score": 45,
         "validated": false,
@@ -898,15 +958,20 @@
     },
     {
       "id": "novatest",
-      "checks": 4,
+      "checks": 3,
       "ok": 0,
       "name": "nova.test",
       "kind": "specialist",
       "url": "https://nova.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
-      "fails": 4,
+      "fails": 3,
+      "httpStatus": null,
+      "netCode": null,
+      "retryAfterSec": null,
+      "errorClass": "plataforma",
+      "lastDurationMs": 8,
       "score": {
         "score": null,
         "validated": false,
@@ -930,15 +995,20 @@
     },
     {
       "id": "botaotest",
-      "checks": 4,
+      "checks": 3,
       "ok": 0,
       "name": "botao.test",
       "kind": "specialist",
       "url": "https://botao.test",
-      "lastCheck": "2026-10-06T10:25:00.000Z",
+      "lastCheck": "2026-10-06T10:20:00.000Z",
       "status": "ERROR",
       "reason": "plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)",
-      "fails": 4,
+      "fails": 3,
+      "httpStatus": null,
+      "netCode": null,
+      "retryAfterSec": null,
+      "errorClass": "plataforma",
+      "lastDurationMs": 9,
       "score": {
         "score": null,
         "validated": false,
@@ -946,16 +1016,7 @@
       }
     }
   ],
-  "unmatched": [
-    {
-      "store": "shop",
-      "title": "Pokémon Chaos Rising Booster Box 36 Packs EN",
-      "url": "https://shop.test/products/en",
-      "why": [
-        "idioma diferente de PT"
-      ]
-    }
-  ],
+  "unmatched": [],
   "tips": [
     {
       "key": "pelando:box-velho-esgotado-aaaa",
@@ -1036,7 +1097,7 @@
       "url": "https://www.amazon.com.br/dp/B0TEST",
       "postUrl": "https://t.me/promopoke/77",
       "expired": false,
-      "postedAt": "2026-10-09T13:51:23.349Z",
+      "postedAt": "2026-10-10T22:29:53.000Z",
       "id": "fe220ca5587c",
       "productId": "me05-etb",
       "matchConfidence": 0.8,
@@ -1168,7 +1229,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1182,7 +1243,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1196,7 +1257,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1210,7 +1271,7 @@
       "channels": [
         "capture"
       ],
-      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00 + frete\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1224,7 +1285,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1238,7 +1299,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1252,7 +1313,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 (preço da loja)\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 + frete (preço da loja)\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
       "url": "https://shop.test/products/etb"
     },
     {
@@ -1266,7 +1327,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: não informado",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 + frete (preço da loja)\n\nCopag: R$ 69,99\n↓ 14,4%\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
       "url": "https://shop.test/products/c30-duplo"
     },
     {

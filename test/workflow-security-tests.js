@@ -1,6 +1,5 @@
-// Lote 6 — segurança dos workflows e arquivos de segurança versionados:
-// toda ação (`uses:`) fixada por SHA de 40 caracteres com o comentário da versão; Dependabot de github-actions;
-// variáveis de TLS ao lado de todo DATABASE_URL; regras do Firestore fora da raiz (não implica publicação).
+// Segurança dos workflows (extraído da #17): toda ação (`uses:`) fixada por SHA de 40 caracteres com o comentário
+// da versão (# vN), sem troca de major, e Dependabot semanal para github-actions e npm; regras do Firestore em firebase/.
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -28,7 +27,7 @@ await t('1. toda ação está fixada por SHA de 40 caracteres, com o comentário
     else if (!u.ref.startsWith('./') && !/^v\d+/.test(u.comment)) bad.push(`${f}:${u.line} ${u.ref} (falta o comentário # vN)`);
   }
   assert.deepEqual(bad, [], 'ações sem SHA fixo:\n' + bad.join('\n'));
-  assert.ok(total >= 19, `uses encontrados: ${total}`);
+  assert.ok(total >= 25, `uses encontrados: ${total}`);
 });
 
 await t('2. o detector recusa tag, ramo e SHA curto (e aceita ação local)', () => {
@@ -50,25 +49,23 @@ await t('3. as ações v4 conhecidas estão nos SHAs registrados (sem troca de m
   }
 });
 
-await t('4. Dependabot cobre github-actions toda semana', () => {
+await t('4. Dependabot cobre github-actions e npm toda semana, agrupado e com limite de PRs', () => {
   const d = fs.readFileSync(path.join(root, '.github/dependabot.yml'), 'utf8');
   assert.match(d, /^version:\s*2/m);
-  assert.match(d, /package-ecosystem:\s*github-actions/);
-  assert.match(d, /directory:\s*\/\s*$/m);
-  assert.match(d, /interval:\s*weekly/);
-});
-
-await t('5. todo passo/job com DATABASE_URL do Secret também recebe PG_CA_CERT e PG_TLS_STRICT', () => {
-  for (const { f, src } of workflows) {
-    const blocks = src.split(/\n(?=\s*- name:|\s*- uses:|\s{2}\w[\w-]*:\s*$)/);
-    for (const b of blocks) if (/DATABASE_URL:\s*\$\{\{\s*secrets\.DATABASE_URL/.test(b)) {
-      assert.match(b, /PG_CA_CERT:\s*\$\{\{\s*secrets\.PG_CA_CERT\s*\}\}/, `${f}: bloco com DATABASE_URL sem PG_CA_CERT`);
-      assert.match(b, /PG_TLS_STRICT:\s*\$\{\{[^}]*\bvars\.PG_TLS_STRICT\b[^}]*\}\}/, `${f}: bloco com DATABASE_URL sem PG_TLS_STRICT`);
-    }
+  const blocks = d.split(/\n(?=\s*- package-ecosystem:)/).slice(1);
+  const eco = (name) => blocks.find((b) => new RegExp(`package-ecosystem:\\s*${name}\\s*$`, 'm').test(b));
+  for (const name of ['github-actions', 'npm']) {
+    const b = eco(name);
+    assert.ok(b, `ecossistema ${name} ausente`);
+    assert.match(b, /directory:\s*\/\s*$/m, name);
+    assert.match(b, /interval:\s*weekly/, name);
+    assert.match(b, /open-pull-requests-limit:\s*5\b/, name);
+    assert.match(b, /groups:\s*\n\s+[\w-]+:\s*\n\s+patterns:\s*\["\*"\]/, name);
   }
 });
 
-await t('6. regras do Firestore versionadas em firebase/ (não na raiz) e mínimas', () => {
+// Residual da #17: regras do Firestore versionadas (sem publicação; ver docs/firestore-regras.md).
+await t('5. regras do Firestore versionadas em firebase/ (não na raiz) e mínimas', () => {
   for (const f of ['firebase.json', 'firestore.rules', '.firebaserc']) assert.equal(fs.existsSync(path.join(root, f)), false, `${f} na raiz implicaria publicação`);
   const r = fs.readFileSync(path.join(root, 'firebase/firestore.rules'), 'utf8');
   const code = r.split('\n').filter((l) => !l.trim().startsWith('//')).join('\n');
@@ -78,6 +75,7 @@ await t('6. regras do Firestore versionadas em firebase/ (não na raiz) e mínim
   assert.equal((code.match(/allow /g) || []).length, 2, 'só as duas regras');
   const fj = JSON.parse(fs.readFileSync(path.join(root, 'firebase/firebase.json'), 'utf8'));
   assert.equal(fj.firestore.rules, 'firestore.rules');
+  assert.match(fs.readFileSync(path.join(root, '.vercelignore'), 'utf8'), /^firebase\/$/m, 'firebase/ fora do deploy da Vercel');
   // o site só usa a coleção users (se outra aparecer, as regras precisam mudar junto)
   const acc = fs.readFileSync(path.join(root, 'tools/account.src.js'), 'utf8');
   assert.deepEqual([...new Set([...acc.matchAll(/doc\(db,\s*'([^']+)'/g)].map((m) => m[1]))], ['users']);

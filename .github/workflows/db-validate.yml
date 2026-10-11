@@ -14,7 +14,7 @@ jobs:
       version: ${{ steps.ver.outputs.version }}
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PG_CA_CERT: ${{ secrets.PG_CA_CERT }}            # TLS verificado (docs/tls.md); vazio = sem verificar, como antes
+      PG_CA_CERT: ${{ secrets.PG_CA_CERT }}            # TLS (docs/tls.md), opcionais: vazios = exatamente como antes
       PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

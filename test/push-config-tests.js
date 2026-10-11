@@ -1,4 +1,4 @@
-// Lote 6 — gravação do robô em config/ no main (tools/push-config.sh), com repositórios Git locais temporários:
+// Extraído da #17 — gravação do robô em config/ no main (tools/push-config.sh), com repositórios Git locais temporários:
 // sem mudança · só o robô mudou · humano mudou outro arquivo durante a rodada (rebase limpo) · humano mudou o mesmo
 // trecho (conflito: rebase abortado, edição humana preservada, aviso, saída 0) · remoto inacessível (saída 1).
 import assert from 'node:assert/strict';

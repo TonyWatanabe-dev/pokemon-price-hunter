@@ -3,6 +3,7 @@
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
 import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
+import { classifyOfferChange, WINDOW_HOURS, BOUNCE_HOURS } from './offer-change.mjs';
 
 const num = (v) => (v == null ? null : Number(v));
 const iso = (v) => (v == null ? null : new Date(v).toISOString());
@@ -291,11 +292,12 @@ export const OPP_SORTS = { score: 'o.opportunity_score DESC, o.confidence DESC, 
 // Filtro de referência atual (a usada pelo motor; histórico e comunitária não são referência atual)
 export const OPP_REFERENCES = { copag: 'COPAG_OFFICIAL_CURRENT', mercado: 'MARKET_CURRENT', nenhuma: 'NONE' };
 // Categoria = a mesma do site: tipo do produto (etb, booster_box...) ou grupo (Blisters, Coleções...), de product.attrs
+// query/now: só para teste (cliente falso e relógio fixo); a rota monta os argumentos a partir de uma lista fechada.
 export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score',
-  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null }) {
+  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null, query = q, now = Date.now() }) {
   const from = todas ? 'hunter.opportunity o' : 'hunter.product_opportunity o';
-  const rows = await q(`
-    SELECT p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
+  const rows = await query(`
+    SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
            o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
@@ -322,8 +324,57 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
      ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
      LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
     abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto]);
-  return { items: rows.map(opportunityOut), total: rows.length ? Number(rows[0].total_rows) : 0 };
+  const changes = await offerChanges(rows.map((r) => r.offer_id), { query, now });
+  // change é ADITIVO (#53): campos, ordem, nota e paginação continuam os mesmos
+  return { items: rows.map((r) => ({ ...opportunityOut(r), change: changes.get(String(r.offer_id)) ?? noChange('sem dados da oferta') })),
+    total: rows.length ? Number(rows[0].total_rows) : 0 };
 }
+
+// Mudança da oferta escolhida (#53): queda de preço, novo anúncio ou restock, pela função pura classifyOfferChange.
+// UMA consulta para a página inteira (sem N+1), só com o mínimo: leituras de price_history das últimas 48 h + a janela
+// anti-vai-e-volta (mais 48 h) e a última leitura com estoque antes dela (o robô grava mudanças, não leituras repetidas);
+// stock_event das últimas 48 h e o último estado CONHECIDO antes delas (unknown nunca vira in/out). Sem dado → kind null
+// com o motivo. Falha nesta consulta não derruba o feed: o campo vem sem mudança, com o motivo.
+const noChange = (reason) => ({ kind: null, label: null, at: null, from: null, to: null, basis: null, reason });
+export async function offerChanges(offerIds, { query = q, now = Date.now() } = {}) {
+  const out = new Map();
+  const ids = [...new Set((offerIds || []).filter((x) => x != null).map(String))];
+  if (!ids.length) return out;
+  const nowMs = now instanceof Date ? now.getTime() : Number(now);
+  const since = new Date(nowMs - WINDOW_HOURS * 3600e3); const histFrom = new Date(nowMs - (WINDOW_HOURS + BOUNCE_HOURS) * 3600e3);
+  let rows;
+  try {
+    rows = await query(`
+      SELECT f.id AS offer_id, f.status, f.stock_status, f.first_seen_at, f.confirmed, f.anomalous,
+             (SELECT coalesce(jsonb_agg(jsonb_build_object('price', h.price, 'total_price', h.total_price, 'stock_status', h.stock_status, 'observed_at', h.observed_at)
+                 ORDER BY h.observed_at), '[]')
+                FROM ((SELECT price, total_price, stock_status, observed_at FROM hunter.price_history
+                        WHERE offer_id = f.id AND observed_at >= $2 AND observed_at <= $4)
+                      UNION ALL
+                      (SELECT price, total_price, stock_status, observed_at FROM hunter.price_history
+                        WHERE offer_id = f.id AND observed_at < $2 AND stock_status = 'in_stock' ORDER BY observed_at DESC LIMIT 1)) h) AS history,
+             (SELECT coalesce(jsonb_agg(jsonb_build_object('from_status', e.from_status, 'to_status', e.to_status, 'observed_at', e.observed_at)
+                 ORDER BY e.observed_at), '[]')
+                FROM ((SELECT from_status, to_status, observed_at FROM hunter.stock_event
+                        WHERE offer_id = f.id AND observed_at >= $3 AND observed_at <= $4)
+                      UNION ALL
+                      (SELECT from_status, to_status, observed_at FROM hunter.stock_event
+                        WHERE offer_id = f.id AND observed_at < $3 AND to_status <> 'unknown' ORDER BY observed_at DESC LIMIT 1)) e) AS stock_events
+        FROM hunter.offer f
+       WHERE f.id = ANY($1::bigint[])`, [ids, histFrom, since, new Date(nowMs)]);
+  } catch (e) {
+    console.error('oportunidades: mudança da oferta indisponível:', e?.message || e);
+    for (const id of ids) out.set(id, noChange('histórico indisponível no momento'));
+    return out;
+  }
+  for (const r of rows) {
+    out.set(String(r.offer_id), classifyOfferChange({
+      offer: { status: r.status, stock_status: r.stock_status, first_seen_at: r.first_seen_at, confirmed: r.confirmed, anomalous: r.anomalous },
+      history: r.history || [], stockEvents: r.stock_events || [], now: nowMs }));
+  }
+  return out;
+}
+
 const opportunityOut = (r) => ({
   product: { id: r.legacy_id, slug: r.slug, name: r.canonical_name, type: r.attrs?.type ?? null, type_label: r.attrs?.typeLabel ?? null, group: r.attrs?.group ?? null,
     image: r.product_image ?? null, collection: { code: r.col_code, name: r.col_name } },

@@ -1,0 +1,14 @@
+{
+  "_nota": "Links de afiliado (leia docs/afiliados.md antes de editar). Só mudam o destino do clique em 'Ver oferta': nunca a ordem, a melhor oferta, o preço, o frete, o estoque ou a nota. Lido apenas por api/_lib/affiliates.mjs.",
+  "mercadolivre": {
+    "_anuncios": "Mapa id do anúncio (MLB + números) -> link gerado no Gerador de links do painel de Afiliados para ESSE anúncio (https://meli.la/... ou mercadolivre.com.br). Vazio = todo anúncio abre na URL original.",
+    "anuncios": {},
+    "_geral": "Link geral do dono. Não é aplicado a anúncios. Só aparece (rodapé, 'Ver mais no Mercado Livre') com ativo=true E destinoConfirmado=true, depois de conferir no painel para onde ele leva.",
+    "geral": {
+      "url": "https://meli.la/1BzQ4PU",
+      "rotulo": "Ver mais no Mercado Livre",
+      "ativo": false,
+      "destinoConfirmado": false
+    }
+  }
+}

@@ -100,3 +100,5 @@ assert.equal(n(st2.current_price), 380); assert.equal(st2.current_total_price, n
 assert.equal((await q('SELECT count(*)::int n FROM hunter.price_history'))[0].n, histBefore);
 await close();
 console.log('OK — Price Engine (PostgreSQL)');
+// migration 010 (evidência Copag na view do motor): registrada aqui para não editar o package.json
+await import('./reference-evidence-db-tests.js');

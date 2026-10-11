@@ -1,14 +1,14 @@
 # Ações do GitHub fixadas por SHA
 
-Desde o Lote 6, toda ação nos workflows fica fixada pelo commit (SHA de 40 caracteres), com a versão num comentário:
+Desde a #201 (extraída do Lote 6, PR #17), toda ação nos workflows fica fixada pelo commit (SHA de 40 caracteres), com a versão num comentário:
 
 ```yaml
 - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 ```
 
-Uma tag (`@v4`) pode ser movida pelo dono da ação. O SHA não muda. `test/workflow-security-tests.js` recusa qualquer `uses:` sem SHA fixo, e `.github/dependabot.yml` abre um PR por semana com as atualizações (SHA e comentário juntos).
+Uma tag (`@v4`) pode ser movida pelo dono da ação. O SHA não muda. `test/workflow-security-tests.js` recusa qualquer `uses:` sem SHA fixo, e `.github/dependabot.yml` abre PRs semanais agrupados com as atualizações (SHA e comentário juntos), no máximo 5 por ecossistema (`github-actions` e `npm`). Nenhum é integrado sozinho: cada um exige revisão e CI verde.
 
-## SHAs atuais (v4, sem troca de major neste lote)
+## SHAs atuais (v4)
 
 | Ação | SHA | Versão |
 |---|---|---|

@@ -183,3 +183,6 @@ t('13. nota: Price Engine e Opportunity Engine não usam Copag vencida', () => {
 });
 
 console.log(`✓ Política de referência atual (6A): ${n} grupos de testes passaram`);
+
+// robots.txt e janela de desconfiança (src/robots.js, src/distrust.js): sem rede, dados em pasta temporária.
+await import('./robots-distrust-tests.js');

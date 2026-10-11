@@ -108,10 +108,13 @@ await t('4. site: indicador usa os mesmos limites e textos claros (nunca "Ao viv
 });
 
 await t('5. site: oportunidades pausadas (stale_db) na Home e em /oportunidades, sem nota antiga', () => {
-  assert.match(html, /a\.meta\?\.status==="stale_db"\)Object\.assign\(HOMEOPP,\{status:"stale",top:\[\]\}\)/);
-  assert.match(html, /d\.meta\?\.status==="stale_db"\)Object\.assign\(OPP,\{status:"stale",total:0\}\)/);
-  assert.match(html, /HOMEOPP\.status==="stale"\)return`<p class="stage-empty">Oportunidades pausadas/);
-  assert.match(html, /OPP\.status==="stale"\)return`<div class="empty"><h3>Oportunidades pausadas<\/h3>/);
+  // UX: a pausa (stale_db ou 503) leva motivo e horário da API; o texto fica em pauseHTML (testes em ux-confianca-tests.js)
+  assert.match(html, /const isPause=\(d,path\)=>d\?\.meta\?\.status==="stale_db"/);
+  assert.match(html, /if\(isPause\(a,HOME_OPP_KEY\)\)\{Object\.assign\(HOMEOPP,\{status:"stale",top:\[\]\}\)/);
+  assert.match(html, /if\(isPause\(d,key\)\)\{Object\.assign\(OPP,\{status:"stale",items:\[\],total:0\}\)/);
+  assert.match(html, /HOMEOPP\.status==="stale"\)return`<div class="stage-empty pause">\$\{pauseHTML\(/);
+  assert.match(html, /OPP\.status==="stale"\)return`<div class="empty pause">\$\{pauseHTML\(/);
+  assert.match(html, /return`<h3>Oportunidades pausadas<\/h3>/);
 });
 
 // ------------------------------------------------------------------ 4) banco (PostgreSQL descartável)
@@ -215,5 +218,33 @@ await t('11. páginas do servidor: preços no HTML só com dados em dia; antigo 
   const bad = run(fx('lixo')); assert.deepEqual(bad, { status: 200, ssr: false, price: false });
 });
 
+await t('12. SEO: sem dados em dia, rota que não é a Home sai sem canonical e com noindex', () => {
+  const script = `import { setFreshnessClock } from ${JSON.stringify(pathToFileURL(path.join(root, 'api/_lib/freshness.mjs')).href)};
+    setFreshnessClock(() => ${NOW}); const st = JSON.parse(process.argv[1]);
+    globalThis.fetch = async () => new Response(JSON.stringify(st), { status: 200 });
+    const { default: h } = await import(${JSON.stringify(pathToFileURL(path.join(root, 'api/pagina.mjs')).href)});
+    const out = {};
+    for (const q of ['t=produto&slug=escuridao-absoluta-treinador-avancado-etb', 't=home']) {
+      const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } };
+      await h({ url: '/api/pagina?' + q, headers: { host: 'x' } }, res);
+      out[q.slice(0, 9)] = { canonical: res.body.includes('rel="canonical"'), noindex: res.body.includes('content="noindex"') };
+    }
+    console.log(JSON.stringify(out));`;
+  const old = JSON.parse(spawnSync(process.execPath, ['--input-type=module', '-e', script, JSON.stringify(fx(ago(200)))], { cwd: root, encoding: 'utf8', env: { ...process.env, API_DATABASE_URL: '' } }).stdout.trim().split('\n').pop());
+  assert.deepEqual(old, { 't=produto': { canonical: false, noindex: true }, 't=home': { canonical: true, noindex: false } });
+});
+
+await t('13. erros internos não vazam: falha da fonte (mesmo com .status) vira 503 genérico, sem URL, segredo ou stack', async () => {
+  const segredo = 'postgres://usuario:senha-secreta@host-interno.exemplo:5432/db';
+  setLegacyLoader(async () => { const e = new Error(`falha em ${segredo}`); e.status = 502; throw e; }); reset();
+  const r = await call('/api/v1/home');
+  assert.equal(r.status, 503); assert.deepEqual(r.json, { error: 'dados indisponíveis no momento' });
+  assert.equal(r.h['Cache-Control'], 'no-store');
+  assert.doesNotMatch(JSON.stringify(r), /senha-secreta|host-interno|postgres:|\bat .*\.mjs|stack/i);
+  const bad = await call('/api/v1/produtos?ordem=' + encodeURIComponent('<x>'));   // erro nosso (400) continua com mensagem útil
+  assert.equal(bad.status, 400); assert.match(bad.json.error, /ordem inválida/);
+});
+
 setLegacyLoader(null);
 console.log(`✓ Frescor dos dados (Lote 2): ${n} grupos de testes passaram${DB ? ' (puro + banco)' : ' (puro)'}`);
+await import('./seo-product-shipping-tests.js');

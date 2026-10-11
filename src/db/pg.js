@@ -1,6 +1,6 @@
 // Conexão PostgreSQL (Supabase ou qualquer Postgres) só pelo driver padrão `pg`.
 // DATABASE_URL ausente = banco desligado: todo o resto do sistema continua funcionando.
-// TLS: src/db/ssl.js (CA verificada com PG_CA_CERT; ver docs/tls.md).
+// TLS: src/db/ssl.js. Sem PG_CA_CERT/PG_TLS_STRICT, igual a antes; ver docs/tls.md.
 import { pgConnectionConfig } from './ssl.js';
 let _pool = null;
 export const dbEnabled = () => !!process.env.DATABASE_URL;

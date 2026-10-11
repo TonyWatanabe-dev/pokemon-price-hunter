@@ -24,11 +24,16 @@ if (u) {
     whitespace: raw !== raw.trim(),
   };
 }
-// TLS (Lote 6, docs/tls.md): modo usado, quantos certificados na CA e a validade deles. Nada disso é segredo.
-rep.tls = { mode: tlsModeFor(raw), strict: /^(1|true|sim|yes)$/i.test(String(process.env.PG_TLS_STRICT || '').trim()) };
+// TLS (docs/tls.md): modo usado, se o estrito está ligado e a validade de cada certificado da CA. Nada disso é segredo.
+// detectLocal: false = como antes, este diagnóstico sempre conecta com TLS (no modo compatível, sem verificar).
+rep.tls = { mode: tlsModeFor(raw, process.env, { detectLocal: false }), strict: /^(1|true|sim|yes)$/i.test(String(process.env.PG_TLS_STRICT || '').trim()) };
 try { const ca = caSummary(); if (ca) rep.tls.ca = ca; } catch (e) { rep.tls.caError = e.message; }
-const conn = (url) => { const { connectionString, ssl } = pgConnectionConfig(url, { warn: () => {} }); return { connectionString, ssl }; };
+const conn = (url) => { const { connectionString, ssl } = pgConnectionConfig(url, { warn: () => {}, detectLocal: false }); return { connectionString, ssl }; };
 const CERT_ERRORS = ['SELF_SIGNED_CERT_IN_CHAIN', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE', 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY', 'DEPTH_ZERO_SELF_SIGNED_CERT', 'ERR_TLS_CERT_ALTNAME_INVALID', 'CERT_HAS_EXPIRED', 'CERT_NOT_YET_VALID'];
+const tlsHint = (e) => {
+  if (CERT_ERRORS.includes(e?.code)) rep.tls.hint = 'o certificado do servidor não confere com a CA de PG_CA_CERT (arquivo errado, CA trocada ou host diferente). Ver docs/tls.md';
+  if (e?.code === 'PG_TLS_STRICT' || e?.code === 'PG_CA_INVALID') rep.tls.hint = e.message;
+};
 let ok = false;
 // Logo após trocar a senha, o pooler do Supabase pode recusar algumas conexões até atualizar o cache
 // de credenciais (doc do Supabase: "a few consecutive reconnects fail before one succeeds"). Tenta até 5 vezes.
@@ -39,7 +44,7 @@ for (let i = 0; i < 5 && !ok; i++) {
     const { default: pg } = await import('pg');
     const c = new pg.Client({ ...conn(raw), connectionTimeoutMillis: 10000 });
     await c.connect(); await c.end(); ok = true; rep.attempts.push('ok');
-  } catch (e) { rep.attempts.push(`${e.code || ''} ${e.message}`); if (e.code !== '28P01') break; }
+  } catch (e) { rep.attempts.push(`${e.code || ''} ${e.message}`); tlsHint(e); if (e.code !== '28P01') break; }
 }
 ok = false;
 try {
@@ -51,8 +56,7 @@ try {
 } catch (e) {
   rep.connected = false;
   rep.error = { code: e.code || null, errno: e.errno || null, syscall: e.syscall || null, message: e.message };
-  if (CERT_ERRORS.includes(e.code)) rep.tls.hint = 'o certificado do servidor não confere com a CA de PG_CA_CERT (arquivo errado, CA trocada ou host diferente) — ver docs/tls.md';
-  if (e.code === 'PG_TLS_STRICT' || e.code === 'PG_CA_INVALID') rep.tls.hint = e.message;
+  tlsHint(e);
 }
 // "tenant/user not found" no pooler: quase sempre o índice do cluster no host (aws-0, aws-1...). Testa os outros
 // só para diagnóstico; não muda nada e não grava a URL.
@@ -65,8 +69,9 @@ if (!ok && u && /tenant\/user .* not found/i.test(rep.error?.message || '') && /
     if (alt.hostname === u.hostname) continue;
     let c = null;
     try {
-      c = new pg.Client({ ...conn(alt.toString()), connectionTimeoutMillis: 8000 }); await c.connect(); const r = await c.query("SELECT current_setting('server_version') v"); rep.clusterProbe[`aws-${k}`] = 'conecta (PostgreSQL ' + r.rows[0].v + ')'; }
-    catch (e) { rep.clusterProbe[`aws-${k}`] = 'falha: ' + (e.code || '') + ' ' + e.message; }
+      c = new pg.Client({ ...conn(alt.toString()), connectionTimeoutMillis: 8000 });
+      await c.connect(); const r = await c.query("SELECT current_setting('server_version') v"); rep.clusterProbe[`aws-${k}`] = 'conecta (PostgreSQL ' + r.rows[0].v + ')';
+    } catch (e) { rep.clusterProbe[`aws-${k}`] = 'falha: ' + (e.code || '') + ' ' + e.message; }
     finally { if (c) await c.end().catch(() => {}); }
   }
 }

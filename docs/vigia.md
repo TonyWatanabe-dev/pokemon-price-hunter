@@ -9,12 +9,17 @@
   - situação da sincronização com o banco;
   - leitor oficial (`ok`/`unavailable`/`off`, com N válidas e M lidas);
   - lojas: ativas, com anúncios, sem resultado, bloqueadas, com erro e adiadas.
+  - coletores (`collectors`): lojas tentadas na rodada, com sucesso, vazias (0 anúncios, sem ser falha), vazias suspeitas (já trouxeram anúncios antes), com falha, soma da duração, as mais lentas e os erros por classe (`bloqueio`, `timeout`, `rede`, `http_4xx`, `http_5xx`, `plataforma`, `parse`, `outro`). Se todos os coletores tentados falham, a rodada fica `degradado` (`coletores_todos_falharam`). O motivo do erro guardado e logado passa por `safeReason`, que remove URL de conexão, token, cookie, e-mail e query string.
   As outras chaves do arquivo (`dataVersion`, `distrust`) são preservadas. São guardados os últimos 96 registros, além de `last` e `lastHealthy`. Um registro inválido nunca substitui o último válido: fica em `lastInvalid`.
 - **Sincronização**: o passo "Sincronizar com o banco" roda depois da publicação, então o resultado dele só pode ser visto na rodada seguinte.
   - A rodada seguinte lê, só para leitura, `max(offer.last_seen_at)` (ver `src/db-health.js`).
   - Se o valor for igual ao horário da rodada anterior, a sincronização chegou ao banco: `dbSync.status = ok`. Se for menor, não chegou: `atrasado`.
   - Outros estados: `indisponivel` (não deu para ler o banco), `desligado` (sem `DATABASE_URL`), `sem_referencia` (primeira rodada).
-- **Motor de oportunidades**: cada execução concluída grava uma batida em `system_event` (`OPPORTUNITY_ENGINE_RUN`, guardada 14 dias). A rodada seguinte lê a última (`dbSync.engineRunAt`) e registra `engine.status`: `ok`; `parado` (banco sincronizou, mas a batida ficou mais de 30 min antes da rodada anterior); `sem_heartbeat` (nenhuma batida ainda: estado logo após a implantação, nunca avisa); `desconhecido` (sem banco ou sem referência).
+- **Motor de oportunidades**: cada execução concluída grava uma batida em `system_event` (tipo `ENGINE_HEARTBEAT`, fora do prefixo `OPPORTUNITY_` dos eventos de transição; guardada 14 dias, na mesma transação do motor). A rodada seguinte lê a última (`dbSync.engineRunAt`) e registra `engine.status`:
+  - `ok`: batida recente;
+  - `parado`: o banco sincronizou, mas a batida ficou mais de 30 min antes da rodada anterior;
+  - `sem_heartbeat`: nenhuma batida ainda (estado logo após a implantação; nunca avisa);
+  - `desconhecido`: sem banco, sem rodada anterior ou sincronização atrasada (aí o problema é a sincronização).
 - **Vigia (`.github/workflows/watchdog.yml` → `tools/watchdog.mjs` → `src/ops-watch.js`)**:
   - lê os dados publicados e o `meta.json` do mesmo commit do ramo `data`, além das últimas rodadas do robô na API do Actions;
   - decide o estado e avisa só nas transições.
@@ -29,7 +34,7 @@
 | | seção `ops` mais de 45 min atrás dos dados |
 | | nas 2 últimas rodadas registradas: banco sem a rodada anterior, banco ilegível, robô sem `DATABASE_URL` ou leitor indisponível |
 | | **zero notas válidas**: leitor ok, pelo menos 10 linhas lidas e nenhuma válida, nas 2 últimas rodadas. Com menos de 10 lidas, só fica registrado |
-| | **motor parado** (`motor_parado`): `engine.status = parado` nas 2 últimas rodadas |
+| | **motor parado** (`motor_parado`): `engine.status = parado` nas 2 últimas rodadas registradas |
 | `desconhecido` | sem dados publicados legíveis, ou ainda sem `ops` registrado. Nunca avisa e não muda o livro |
 | `saudavel` | nenhum dos casos acima |
 
@@ -38,7 +43,7 @@
 - um lembrete a cada 6 h enquanto o problema continuar;
 - um de recuperação depois de 2 checagens saudáveis seguidas.
 
-O aviso imediato de falha do próprio robô (passo "Avisar falha no Telegram" do `hunter.yml`) sai só na primeira rodada que falha: se a rodada concluída anterior também falhou, ele fica quieto e o vigia (`rodadas_falhando`) cuida dos lembretes. Se não der para consultar as rodadas, avisa (`tools/failure-alert-gate.mjs`).
+O aviso imediato de falha do próprio robô (passo "Avisar falha no Telegram" do `hunter.yml`) sai só na primeira rodada que falha: se a rodada concluída anterior (cancelada ou pulada não conta) também falhou, ele fica quieto e o vigia (`rodadas_falhando`) cuida dos lembretes. Se não der para consultar as rodadas (`gh` com erro, lista vazia ou ilegível), avisa mesmo assim (`tools/failure-alert-gate.mjs`). Por isso o `hunter.yml` tem `actions: read` e passa `GH_TOKEN` (o token do próprio workflow) a esse passo.
 
 O livro do que já foi avisado (`wd/ledger.json`, no cache do Actions) só muda quando a mensagem chega a pelo menos um canal. Se todos falharem, o aviso é tentado de novo na checagem seguinte. Cada canal tem prazo de 10 s.
 
@@ -56,6 +61,8 @@ Criar um job **igual ao do robô**, só que apontando para o vigia:
 - **Horário**: a cada 15 min, nos minutos 7, 22, 37 e 52, defasado do robô.
 
 Não é preciso criar endpoint público: o disparo usa a API do GitHub com o token que já existe.
+
+Falhas e recuperação em geral: `docs/runbook.md`.
 
 ## Como validar
 
