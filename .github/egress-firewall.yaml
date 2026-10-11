@@ -1,0 +1,17 @@
+# Allowlist mínima para jobs que executam a Claude Code Action.
+# A execução falha de forma segura se uma dependência precisar de host não listado.
+mode: enforce
+allow:
+  # Claude Code: autenticação OIDC e chamadas ao modelo.
+  - api.anthropic.com
+  # GitHub API: ação, gh CLI e atualização de labels/PRs.
+  - api.github.com
+  # Instalação/execução do Claude Code.
+  - claude.ai
+  - downloads.claude.ai
+  # Downloads de binários das actions/Node.
+  - release-assets.githubusercontent.com
+  # npm ci e instalação de dependências do projeto.
+  - registry.npmjs.org
+  # Script de instalação do Bun usado pela action.
+  - bun.sh
