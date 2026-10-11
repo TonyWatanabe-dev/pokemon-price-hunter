@@ -188,11 +188,70 @@ function requiresDeploy(paths) {
  * Evidências devem vir de fontes confiáveis e apontar exatamente para evidence.headSha.
  * R3 nunca é autorizado pelo governor; é escalonado para pessoa responsável.
  */
-export function evaluateRelease({ changedPaths, evidence = {} } = {}) {
+function deploymentEvidenceGaps(risk, evidence = {}) {
+  const missing = [];
+  const headSha = typeof evidence.headSha === 'string' ? evidence.headSha : '';
+  if (!shaPattern.test(headSha)) missing.push('headSha de produção válido ausente');
+  if (evidence.merged !== true) missing.push('merge confirmado na main ausente');
+  if (evidence.baseRef !== 'main' || evidence.headRef !== 'main' || evidence.targetRef !== 'main') {
+    missing.push('evidência deve apontar para o commit já integrado na main');
+  }
+  if (typeof evidence.mainSha !== 'string' || evidence.mainSha.toLowerCase() !== headSha.toLowerCase()) {
+    missing.push('headSha não corresponde ao SHA atual verificado da main');
+  }
+
+  const deployment = evidence.deployment;
+  if (!deployment || deployment.provider !== 'vercel' || deployment.target !== 'production' ||
+      deployment.status !== 'ready' || typeof deployment.sha !== 'string' ||
+      deployment.sha.toLowerCase() !== headSha.toLowerCase()) {
+    missing.push('deployment Vercel de produção READY no SHA exato ausente');
+  }
+  let validProductionUrl = false;
+  try {
+    const url = new URL(deployment?.url);
+    validProductionUrl = url.protocol === 'https:' && Boolean(url.hostname) &&
+      !['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  } catch {}
+  if (!validProductionUrl) missing.push('URL HTTPS verificável do deployment de produção ausente');
+
+  const map = checkMap(evidence.checks, headSha, missing);
+  requireCheck(map, 'test', headSha, missing);
+  requireCheck(map, 'smoke', headSha, missing);
+
+  if (risk === RISK.R1) {
+    requireCheck(map, 'accessibility', headSha, missing);
+  }
+  if (risk === RISK.R2) {
+    requireCheck(map, 'regression', headSha, missing);
+    requireCheck(map, 'golden', headSha, missing);
+    if (evidence.rollback?.documented !== true) missing.push('plano de rollback documentado ausente');
+    if (evidence.rollback?.tested !== true) missing.push('rollback testado/reproduzível ausente');
+    if (evidence.rollout?.metricsDefined !== true) missing.push('métricas de rollout ausentes');
+    if (evidence.rollout?.rollbackTriggersDefined !== true) missing.push('gatilhos explícitos de rollback ausentes');
+    const flag = evidence.featureFlag;
+    if (!flag || typeof flag.applicable !== 'boolean') {
+      missing.push('aplicabilidade de feature flag não declarada');
+    } else if (flag.applicable && (flag.present !== true || flag.defaultOff !== true)) {
+      missing.push('feature flag deve existir e ficar desligada por padrão para rollout R2');
+    } else if (!flag.applicable && (typeof flag.reason !== 'string' || !flag.reason.trim())) {
+      missing.push('justificativa da ausência de feature flag ausente');
+    }
+  }
+  return missing;
+}
+
+/**
+ * Decide one explicit action. Merge checks describe an isolated PR; deploy checks describe
+ * the already-merged main SHA and a production Vercel deployment. One decision never grants
+ * both permissions. This module only returns a decision; it never performs side effects.
+ */
+export function evaluateRelease({ changedPaths, evidence = {}, action = RELEASE_ACTION.MERGE } = {}) {
   const classified = classifyReleaseRisk(changedPaths);
   const deploymentRequired = requiresDeploy(classified.paths);
+  const isDeploy = action === RELEASE_ACTION.DEPLOY;
   const base = {
     policyVersion: POLICY_VERSION,
+    action,
     risk: classified.risk,
     classificationReasons: classified.reasons,
     headSha: typeof evidence.headSha === 'string' && shaPattern.test(evidence.headSha) ? evidence.headSha : null,
@@ -203,24 +262,43 @@ export function evaluateRelease({ changedPaths, evidence = {} } = {}) {
     decision: classified.risk === RISK.R3 ? 'human_required' : 'blocked',
   };
 
+  if (![RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY].includes(action)) {
+    return { ...base, decision: 'blocked', requiresHuman: true, missingEvidence: ['ação desconhecida; decisão recusada'] };
+  }
   if (classified.risk === RISK.R3) {
     return { ...base, missingEvidence: ['classificação crítica ou incerta; Release Governor não pode autoautorizar R3'] };
   }
 
-  const missing = evidenceGaps(classified.risk, evidence);
-  if (missing.length) return { ...base, missingEvidence: missing };
+  if (!isDeploy) {
+    const missing = evidenceGaps(classified.risk, evidence);
+    if (missing.length) return { ...base, missingEvidence: missing };
+    return {
+      ...base,
+      allowedActions: [RELEASE_ACTION.MERGE],
+      missingEvidence: [],
+      requiresHuman: false,
+      decision: 'autonomous',
+      classificationReasons: [
+        ...classified.reasons,
+        `gates de merge para ${classified.risk} comprovados no HEAD ${evidence.headSha}`,
+      ],
+    };
+  }
 
-  const allowedActions = [RELEASE_ACTION.MERGE];
-  if (deploymentRequired) allowedActions.push(RELEASE_ACTION.DEPLOY);
+  if (!deploymentRequired) {
+    return { ...base, decision: 'blocked', missingEvidence: ['esta alteração não inclui artefatos que exigem deploy'] };
+  }
+  const missing = deploymentEvidenceGaps(classified.risk, evidence);
+  if (missing.length) return { ...base, decision: 'blocked', missingEvidence: missing };
   return {
     ...base,
-    allowedActions,
+    allowedActions: [RELEASE_ACTION.DEPLOY],
     missingEvidence: [],
     requiresHuman: false,
     decision: 'autonomous',
     classificationReasons: [
       ...classified.reasons,
-      `gates exigidos para ${classified.risk} comprovados no HEAD ${evidence.headSha}`,
+      `evidências pós-merge e smoke de produção comprovados no SHA ${evidence.headSha}`,
     ],
   };
 }
