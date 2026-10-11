@@ -44,6 +44,7 @@ test('config, migrations, workflows, ranking e o próprio governor são R3', () 
     'api/_lib/offer-rank.mjs', 'api/_lib/references.mjs', 'src/core/price-engine.js',
     'src/core/opportunity-engine.js', 'src/copag-check.js', 'tools/data-restore.mjs',
     'src/agents/release-governor.js', 'src/agents/governance.js', 'src/agents/matching-review.js',
+    'tools/deploy-agent.mjs', 'tools/release-governor-check.mjs', 'executor.sh',
     'docs/agentes.md', 'docs/release-governor.md', 'docs/MAPA-DE-AGENTES.md',
     'docs/ROADMAP-OPERACIONAL.md', 'docs/protecao-main.md',
   ]) assert.equal(classifyReleaseRisk([p]).risk, RISK.R3, p);
