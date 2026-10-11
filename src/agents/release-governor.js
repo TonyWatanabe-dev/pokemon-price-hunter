@@ -20,29 +20,26 @@ const CRITICAL_PATHS = [
   /^src\/core\/review(?:\/|\.|$)/i,
   /^src\/core\/(?:price-engine|opportunity-engine|price-stats|references|reference-import|mappers|taxonomy)(?:\/|\.|$)/i,
   /^src\/(?:copag-check|discover)(?:\/|\.|$)/i,
-  /^src\/agents\/(?:governance|release-governor)(?:\/|\.|$)/i,
+  /^src\/agents\/(?:governance|release-governor|orchestrator|stores|cycle|notify)(?:\/|\.|$)/i,
   /^api\/_lib\/(?:catalog|copag-policy|db|offer-rank|read-db|read-state|references|ssl|shipping-calc)(?:\/|\.|$)/i,
-  /^(?:account\.js|tools\/account\.src\.js)$/i,
+  /^(?:account\.js|tools\/account\.src\.js|package\.json|package-lock\.json|vercel\.json|\.vercelignore)$/i,
   /^tools\/(?:data-restore|data-backup|db-|push-data|push-config|ml-token|review)(?:\/|\.|$)/i,
   /(^|\/)(?:auth|authorization|secret|secrets)(\/|\.|$)/i,
   /^(?:CLAUDE\.md|AGENTS\.md|CODEOWNERS)$/i,
 ];
 
-const DOCUMENT_OR_TEST = (p) =>
-  p.startsWith('docs/') || p.startsWith('test/') || p.startsWith('tests/') ||
-  /(?:^|\/)[^/]+\.(?:md|txt)$/i.test(p);
+const DOCUMENTATION_ONLY = (p) =>
+  p.startsWith('docs/') || /(?:^|\/)[^/]+\.(?:md|txt)$/i.test(p);
 
-const UI_ONLY = (p) =>
-  p === 'index.html' || p.startsWith('public/') || p.startsWith('assets/') ||
-  p.startsWith('images/') || p.startsWith('logos/') ||
-  /\.(?:css|svg|png|jpe?g|webp|woff2?)$/i.test(p);
+const TEST_FILE = (p) => p.startsWith('test/') || p.startsWith('tests/');
+
+const UI_ONLY = (p) => /\.(?:css|svg|png|jpe?g|webp|woff2?)$/i.test(p);
 
 const RECOGNIZED_RUNTIME = (p) =>
   p.startsWith('api/') || p.startsWith('src/') || p.startsWith('tools/') ||
   p.startsWith('public/') || p.startsWith('assets/') || p.startsWith('images/') ||
   p.startsWith('logos/') || p === 'index.html' || p === 'account.js' ||
-  p === 'package.json' || p === 'package-lock.json' || p === 'vercel.json' ||
-  p === '.vercelignore';
+  TEST_FILE(p);
 
 function normalizePath(input) {
   if (typeof input !== 'string' || !input.trim()) return null;
@@ -75,19 +72,19 @@ export function classifyReleaseRisk(changedPaths) {
     };
   }
 
-  if (paths.every(DOCUMENT_OR_TEST)) {
+  if (paths.every(DOCUMENTATION_ONLY)) {
     return { risk: RISK.R0, reasons: ['alteração limitada a documentação e/ou testes'], paths };
   }
 
-  if (paths.every((p) => UI_ONLY(p) || DOCUMENT_OR_TEST(p))) {
+  if (paths.every((p) => UI_ONLY(p) || DOCUMENTATION_ONLY(p))) {
     return { risk: RISK.R1, reasons: ['alteração visual isolada, sem arquivos críticos ou de domínio'], paths };
   }
 
-  if (paths.some(RECOGNIZED_RUNTIME) && paths.every((p) => RECOGNIZED_RUNTIME(p) || DOCUMENT_OR_TEST(p))) {
+  if (paths.some(RECOGNIZED_RUNTIME) && paths.every((p) => RECOGNIZED_RUNTIME(p) || DOCUMENTATION_ONLY(p))) {
     return { risk: RISK.R2, reasons: ['alteração funcional ou de runtime; exige gates de regressão, rollout e rollback'], paths };
   }
 
-  const unknown = paths.filter((p) => !RECOGNIZED_RUNTIME(p) && !DOCUMENT_OR_TEST(p));
+  const unknown = paths.filter((p) => !RECOGNIZED_RUNTIME(p) && !DOCUMENTATION_ONLY(p));
   return {
     risk: RISK.R3,
     reasons: ['caminho fora da taxonomia conhecida; evidência insuficiente: ' + unknown.join(', ')],
