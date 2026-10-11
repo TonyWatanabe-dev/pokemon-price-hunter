@@ -66,11 +66,11 @@ test('check "test" do CI atual pode comprovar CI e suíte npm test no mesmo SHA'
 });
 
 test('R1 precisa de preview e acessibilidade no mesmo SHA', () => {
-  const good = evaluateRelease({ changedPaths: ['index.html'], evidence: evidence() });
+  const good = evaluateRelease({ changedPaths: ['assets/home.css'], evidence: evidence() });
   assert.equal(good.decision, 'autonomous');
   assert.deepEqual(good.allowedActions, [RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY]);
   const noA11y = evaluateRelease({
-    changedPaths: ['index.html'],
+    changedPaths: ['assets/home.css'],
     evidence: evidence({ checks: [check('ci'), check('tests'), check('preview')] }),
   });
   assert.equal(noA11y.decision, 'blocked');
