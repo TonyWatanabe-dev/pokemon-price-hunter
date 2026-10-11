@@ -3,6 +3,7 @@
 // Lido pelo vigia (tools/watchdog.mjs) para avisar quando o robô para, o banco não sincroniza ou o leitor falha.
 import fs from 'node:fs';
 import path from 'node:path';
+import { copagExpiringSoon, COPAG_WARN_DAYS } from '../api/_lib/references.mjs';
 
 export const OPS_VERSION = 1;
 export const KEEP_RUNS = 96;            // ~24 h de rodadas a cada 15 min
@@ -106,6 +107,18 @@ export function engineSummary(dbSync) {
   return { status: lagMin <= ENGINE_OK_MIN ? 'ok' : 'desconhecido', runAt, lagMin };
 }
 
+/**
+ * Referência Copag oficial que vence logo (aviso antecipado copag_vencendo; ver docs/referencia-copag.md, "Validade e renovação").
+ * rows: linhas Copag atuais verificadas lidas do banco (readDbHealth → copagRefs); null = banco não lido → null (sem medida, sem aviso).
+ * Só ids, datas e preços: não é problema da rodada (não entra em issues/health) e não muda nota nem ranking.
+ */
+export function copagSummary(rows, asOf, days = COPAG_WARN_DAYS) {
+  if (!Array.isArray(rows)) return null;
+  const expiring = copagExpiringSoon(rows, asOf, { days });
+  return { warnDays: days, checked: new Set(rows.map((r) => String(r?.legacy_id ?? r?.product_id))).size,
+    expiring: expiring.map(({ id, verified_at, expires_at }) => ({ id: clean(id, 80), verified_at, expires_at })) };
+}
+
 /** Problemas da própria rodada (informativo; quem decide alerta é o vigia, com as regras dele). */
 export function runIssues(rec) {
   const out = [];
@@ -120,7 +133,7 @@ export function runIssues(rec) {
   return out;
 }
 
-export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, collectors, offers, alerts, tls = null }) {
+export function buildRunRecord({ env = process.env, startedAt, finishedAt, generatedAt, prevGeneratedAt, reader, dbSync, stores, watched, collectors, offers, alerts, tls = null, copag = null }) {
   const s = Date.parse(startedAt); const f = Date.parse(finishedAt);
   const rec = {
     runId: env.GITHUB_RUN_ID ? String(env.GITHUB_RUN_ID) : 'local',
@@ -133,6 +146,7 @@ export function buildRunRecord({ env = process.env, startedAt, finishedAt, gener
     stores, watched: watched || {}, collectors: collectors || null, offers: offers ?? null, alerts: alerts ?? 0,
     reader, dbSync: dbSync ? { ...dbSync, reason: clean(dbSync.reason) } : null,
     engine: engineSummary(dbSync),
+    copag,                                 // Copag oficial vencendo (copagSummary): só aviso, não entra em issues/health
     tls,                                   // TLS do PostgreSQL (tlsModeFor, src/db/ssl.js): 'verify' | 'no-verify' | 'local' | 'off' | 'refused' | 'invalid'; só o modo, nunca URL ou CA
   };
   rec.issues = runIssues(rec);

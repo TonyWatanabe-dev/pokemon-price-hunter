@@ -18,8 +18,10 @@
 // Avisos: um na transição para falha (ou quando surge problema novo), um lembrete a cada REMIND_MIN min enquanto
 // continuar, e um de recuperação depois de 2 checagens saudáveis seguidas (evita aviso em vaivém).
 // O "livro" (ledger) guarda o que já foi avisado; só muda quando a mensagem chega a pelo menos um canal.
+// Aviso antecipado (não é falha, não muda o estado): copag_vencendo — referência Copag oficial que sai da nota em até
+// 7 dias (copagWarnings / decideWarning); avisa quando a lista muda e lembra a cada WARN_REMIND_MIN.
 
-export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2 };
+export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440 };
 const BAD = new Set(['degradado', 'parado']);
 
 const min = (a, b) => (Number.isFinite(a) && Number.isFinite(b) ? Math.round((a - b) / 6e4) : null);
@@ -33,7 +35,29 @@ export function completedRuns(runs) {
     .sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
 }
 
+/**
+ * Aviso antecipado copag_vencendo: a última rodada (ops.last.copag, ver copagSummary em src/opstate.js) listou referência
+ * Copag oficial que sai da view reference_price_current em até 7 dias. Só aviso: não muda o estado (saudável continua
+ * saudável), nem nota, nem ranking. Item já vencido em relação a `now` não entra (a próxima rodada deixa de listá-lo).
+ */
+export function copagWarnings(meta, now) {
+  const N = Date.parse(now);
+  const xs = (Array.isArray(meta?.ops?.last?.copag?.expiring) ? meta.ops.last.copag.expiring : [])
+    .filter((x) => x && typeof x.id === 'string' && Number.isFinite(Date.parse(x.expires_at)) && Date.parse(x.expires_at) >= N)
+    .sort((a, b) => Date.parse(a.expires_at) - Date.parse(b.expires_at) || a.id.localeCompare(b.id));
+  if (!xs.length) return [];
+  const items = xs.map((x) => `${x.id} (verificada em ${hhmm(x.verified_at)}; sai da nota após ${hhmm(x.expires_at)})`);
+  return [{ code: 'copag_vencendo', products: xs.map((x) => x.id), expiresAt: xs[0].expires_at,
+    key: 'copag_vencendo:' + xs.map((x) => `${x.id}@${x.expires_at}`).join(','),
+    text: `Referência Copag oficial vence em breve: ${items.join('; ')}. Sem nova auditoria na loja Copag, esses produtos passam a usar a referência de mercado (ou ficam sem referência). Ver docs/referencia-copag.md, "Validade e renovação".` }];
+}
+
 export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, meta, metaError = null, runs }) {
+  const ev = evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs });
+  return { ...ev, warnings: copagWarnings(meta, now) };
+}
+
+function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs }) {
   const N = Date.parse(now);
   const reasons = [];
   const add = (code, text) => reasons.push({ code, text });
@@ -87,7 +111,7 @@ export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, met
   return { status: 'saudavel', reasons, facts };
 }
 
-const EMPTY = { notifiedStatus: 'saudavel', notifiedAt: null, notifiedCodes: [], incidentSince: null, lastStatus: null, lastCheckAt: null };
+const EMPTY = { notifiedStatus: 'saudavel', notifiedAt: null, notifiedCodes: [], incidentSince: null, lastStatus: null, lastCheckAt: null, warnKey: null, warnAt: null };
 export function normalizeLedger(l) {
   if (!l || typeof l !== 'object' || !['saudavel', 'degradado', 'parado'].includes(l.notifiedStatus)) return { ...EMPTY };
   return { ...EMPTY, ...l, notifiedCodes: Array.isArray(l.notifiedCodes) ? l.notifiedCodes : [] };
@@ -125,6 +149,29 @@ export function decide(ev, ledgerIn, now = new Date().toISOString()) {
     return { notify: { kind: 'recuperado', title: '🟢 TCG Price Hunter recuperado', text: `🟢 TCG Price Hunter recuperado: dados de ${hhmm(ev.facts.dataGeneratedAt)}, banco e leitor oficial normais.${lasted}` } };
   }
   return { notify: null };
+}
+
+/**
+ * Avisos (ev.warnings, hoje só copag_vencendo), separados das falhas: não abrem incidente nem mudam o estado avisado.
+ * Avisa quando a lista (produtos + vencimentos) muda e lembra a cada WARN_REMIND_MIN enquanto continuar.
+ * Não altera o livro: use commitWarning depois de tentar enviar.
+ */
+export function decideWarning(ev, ledgerIn, now = new Date().toISOString()) {
+  const L = normalizeLedger(ledgerIn);
+  const w = Array.isArray(ev?.warnings) ? ev.warnings : [];
+  if (!w.length) return { key: null, notify: null };
+  const key = w.map((x) => x.key || x.code).join('|');
+  const due = L.warnKey === key && L.warnAt && min(Date.parse(now), Date.parse(L.warnAt)) >= RULES.WARN_REMIND_MIN;
+  if (L.warnKey === key && !due) return { key, notify: null };
+  const head = '🟡 TCG Price Hunter: aviso antecipado';
+  return { key, notify: { kind: 'aviso', title: head, text: [`${head}${due ? ' (continua)' : ''}`, '', ...w.map((x) => '• ' + x.text), '', 'Nota e ranking não mudam agora.'].join('\n') } };
+}
+/** Livro dos avisos: só registra o aviso entregue; sem aviso pendente, limpa (um aviso novo pode ser enviado depois). */
+export function commitWarning(ledgerIn, decision, delivered, now = new Date().toISOString()) {
+  const L = normalizeLedger(ledgerIn);
+  if (!decision?.key) return { ...L, warnKey: null, warnAt: null };
+  if (decision.notify && delivered) return { ...L, warnKey: decision.key, warnAt: now };
+  return L;
 }
 
 /** Atualiza o livro. O que foi avisado só muda quando a mensagem chegou a pelo menos um canal. */

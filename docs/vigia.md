@@ -43,6 +43,8 @@
 - um lembrete a cada 6 h enquanto o problema continuar;
 - um de recuperação depois de 2 checagens saudáveis seguidas.
 
+**Aviso antecipado (não é falha, não muda o estado):** `copag_vencendo` — a última rodada (`ops.last.copag`, lido do banco pelo robô) listou referência Copag oficial que sai da nota em até 7 dias (verificação passando de 30 dias). Mensagem própria (🟡) com os produtos e a data; avisa quando a lista muda e lembra a cada 24 h (`WARN_REMIND_MIN`). Não abre incidente, não muda nota nem ranking. Procedimento em `docs/referencia-copag.md`, "Validade e renovação".
+
 O aviso imediato de falha do próprio robô (passo "Avisar falha no Telegram" do `hunter.yml`) sai só na primeira rodada que falha: se a rodada concluída anterior (cancelada ou pulada não conta) também falhou, ele fica quieto e o vigia (`rodadas_falhando`) cuida dos lembretes. Se não der para consultar as rodadas (`gh` com erro, lista vazia ou ilegível), avisa mesmo assim (`tools/failure-alert-gate.mjs`). Por isso o `hunter.yml` tem `actions: read` e passa `GH_TOKEN` (o token do próprio workflow) a esse passo.
 
 O livro do que já foi avisado (`wd/ledger.json`, no cache do Actions) só muda quando a mensagem chega a pelo menos um canal. Se todos falharem, o aviso é tentado de novo na checagem seguinte. Cada canal tem prazo de 10 s.
