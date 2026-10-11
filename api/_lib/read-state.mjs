@@ -4,6 +4,7 @@
 // volta vazio/nulo, nunca inventado.
 import { slugs, label } from '../_seo.mjs';
 import { robotReferenceKind, SCOPE, LABEL, currentReferenceView } from './references.mjs';
+import { normalizeSearch } from './search.mjs';
 
 const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 const STOCK_IN = { IN_STOCK: 'in_stock', OUT_OF_STOCK: 'out_of_stock', PRE_ORDER: 'preorder' };
@@ -39,7 +40,7 @@ export function stateListProducts(st, { page, limit, colecao = null, tipo = null
   if (colecao) items = items.filter((x) => x.collection.code === colecao);
   if (tipo) items = items.filter((x) => x.type === tipo);
   if (estoque) items = items.filter((x) => x.status === 'ok');
-  if (busca) items = items.filter((x) => x.name.toLowerCase().includes(String(busca).toLowerCase()));
+  if (busca) { const term = normalizeSearch(busca); items = items.filter((x) => normalizeSearch(x.name).includes(term)); }   // sem acento, como o banco
   const by = { preco: (a, b) => (a.price.current ?? 1e12) - (b.price.current ?? 1e12), desconto: (a, b) => (b.discount_vs_reference ?? -9) - (a.discount_vs_reference ?? -9),
     nome: () => 0, ofertas: (a, b) => b.offers.active - a.offers.active, relevancia: (a, b) => b.offers.in_stock - a.offers.in_stock }[ordem] || (() => 0);
   items.sort((a, b) => by(a, b) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
