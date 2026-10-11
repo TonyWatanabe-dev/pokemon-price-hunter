@@ -144,3 +144,5 @@ await t('7. auditoria: toda chamada fetch de alerts.js, inbox.js e mlauth.js tem
 });
 
 console.log(`✓ Prazo por envio dos alertas: ${n} grupos passaram`);
+// Queda só como novo melhor preço comparável (residual da #15; registrado aqui para não mexer no script test do package.json)
+await import('./alerts-drop-best-tests.js');

@@ -15,7 +15,7 @@ import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -440,7 +440,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
 
   // Alertas
   const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
-  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log }), sent, watch.settings, now.getTime(), offers);
+  // Queda só vale como novo melhor preço do produto: compara com a melhor oferta da rodada anterior na mesma base de frete (prevBestOf).
+  const prevBest = prevBestOf(Object.values(prev));
+  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log, prevBest }), sent, watch.settings, now.getTime(), offers);
   const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
   // Grava o registro de envios já: se a rodada cair depois daqui, o retry não reenvia os mesmos alertas.
   if (delivered.length) writeJson(dataPath('alerts-sent.json'), sent);

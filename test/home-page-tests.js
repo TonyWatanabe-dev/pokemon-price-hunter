@@ -122,6 +122,28 @@ t('6C.1. pódio: FOIL, ULTRA RARA e RARA sem medalhas; nota e escala intactas', 
   // sequência: escala global visível e sem foil por faixa
   const rail = s.slots['#home-rail'].innerHTML; assert.ok(!/class="deal opp-card foil/.test(rail)); assert.match(text(rail), /Ultra Rare|Rare|Uncommon|Common/);
 });
+// Lote 3 — radar do topo: com oportunidades pausadas (stale/nodb), oferta nova não aparece como "Nova oportunidade"
+t('Lote 3. ticker: "Nova oportunidade" só com oportunidades disponíveis; pausadas → "Novo preço"', () => {
+  const labelCode = cut('/* Início: painel editorial de oportunidades', 'const hhmm=');
+  const tickCode = cut('function tickerHTML(){', 'let tickT=0;');
+  const actItemCode = cut('function actItem(e){', 'function tipItem(t){');
+  const ctx = { HOMEOPP: { status: 'idle' }, P: { p1: { id: 'p1', collectionName: 'Caos Ascendente', type: 'combo' } }, SLUG: { p1: 'p1' },
+    activity: () => [{ type: 'new', productId: 'p1', t: '2026-10-09T18:30:00Z', to: 239, offerId: 'o1' }, { type: 'drop', productId: 'p1', t: '2026-10-09T18:15:00Z', from: 250, to: 239, offerId: 'o2' }],
+    dedupeAct: (l) => l, hhmm: () => '15:30', dayLabel: () => '15:30', pct: () => '', pixOf: () => '', label: () => 'Combo de Booster',
+    esc: (x) => String(x ?? ''), money: (v) => 'R$ ' + Number(v).toFixed(2).replace('.', ','), ic: (id) => `<i data-ic="${id}"></i>` };
+  vm.createContext(ctx);
+  vm.runInContext(labelCode + tickCode + actItemCode + ';globalThis.__k={tickerHTML,actItem,actLabel};', ctx);
+  const k = ctx.__k; const nova = /Nova oportunidade/;
+  for (const st of ['ok', 'idle', 'error']) { ctx.HOMEOPP.status = st; assert.match(k.tickerHTML(), nova, st); }
+  for (const st of ['stale', 'nodb']) {
+    ctx.HOMEOPP.status = st; const h = k.tickerHTML();
+    assert.doesNotMatch(h, nova, st); assert.match(text(h), /15:30 Novo preço Caos Ascendente · Combo de Booster R\$ 239,00/, st);
+    assert.match(h, /Queda de preço/, 'outros tipos seguem iguais');
+    assert.doesNotMatch(k.actItem(ctx.activity()[0]), nova, 'lista de novidades segue o mesmo rótulo');
+  }
+  // a Home repinta o radar quando o status pausado chega depois da primeira pintura
+  assert.match(homeCode, /const tk=\$\("\.stage \.ticker"\);if\(tk&&oppPaused\(\)\)\{tk\.outerHTML=tickerHTML\(\);startTicker\(\)\}/);
+});
 t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   for (const sc of scripts) { if (sc.trim().startsWith('{')) continue; assert.doesNotThrow(() => new vm.Script(sc), 'erro de sintaxe no index.html'); }

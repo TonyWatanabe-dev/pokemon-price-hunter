@@ -23,8 +23,37 @@ const sameBasis = (prev, o) => prev?.shippingKnown == null || prev.shippingKnown
 const eligible = (o) => o.stock === 'IN_STOCK' && o.productId && o.matchConfidence >= 0.75 && !o.anomalous && !o.stale && o.total > 0;
 const passFilter = (f = {}, o, p) => (!f.productId || f.productId === o.productId) && (!f.productType || f.productType === p.type) && (!f.collection || f.collection === p.collection);
 
-/** opts.opp: Map(id da oferta -> nota oficial válida, de officialFor). opts.log: avisos (regra antiga). */
-export function evaluate(rules, offers, events, products, { opp = new Map(), log = () => {} } = {}) {
+// Base de comparação do total (como comparableDrop e offer-change): total com frete conhecido só se compara com total
+// com frete conhecido; preço sem frete, só com preço sem frete. A queda "real" é medida dentro da mesma base.
+const basisOf = (o) => o.productId + (shipKnown(o) ? '|frete' : '|sem-frete');
+
+/** Melhor oferta elegível (e confirmada) de cada produto em cada base de frete, pelo "menor total" comparável
+ *  (byComparableTotal). Map(`${productId}|frete` ou `${productId}|sem-frete` -> oferta). */
+export function bestByBasis(offers) {
+  const best = new Map();
+  for (const o of offers || []) {
+    if (!o || o.confirmed === false || !eligible(o)) continue;
+    const k = basisOf(o); const b = best.get(k); if (!b || byComparableTotal(o, b) < 0) best.set(k, o);
+  }
+  return best;
+}
+
+/** Melhor oferta ANTERIOR (ofertas da rodada passada) por produto e base, pela mesma regra. Oferta que falhou na
+ *  rodada passada (stale, ver src/run.js staleCopy/lastValidOf) conta pela última leitura válida: voltar ao mesmo preço
+ *  não é queda. Stale sem lastValid fica de fora (sem base). */
+export function prevBestOf(prevOffers) {
+  return bestByBasis((prevOffers || []).map((o) => (!o?.stale ? o : o.lastValid ? { ...o, ...o.lastValid, stale: false } : null)));
+}
+
+/**
+ * opts.opp: Map(id da oferta -> nota oficial válida, de officialFor). opts.log: avisos (regra antiga).
+ * opts.prevBest: melhor oferta da rodada anterior por produto e base de frete, de prevBestOf.
+ * Queda de preço só vale como NOVO MELHOR PREÇO do produto na mesma base de frete: a oferta com queda precisa ser a
+ * mais barata das elegíveis agora nessa base (empate no total vale) e ficar abaixo da melhor anterior dessa base (sem
+ * melhor anterior: abaixo do "de" da própria queda, que já é da mesma base). Nunca compara preço sem frete com total
+ * com frete. A chave segue a da main (drop|<id da oferta>), compatível com a fila pending de alerts-sent.json.
+ */
+export function evaluate(rules, offers, events, products, { opp = new Map(), log = () => {}, prevBest = new Map() } = {}) {
   const evBy = new Map(events.map((e) => [e.offerId + '|' + e.event, e]));
   // Produto vigiado (queda de preço, independe de nota): conta TODAS as regras, inclusive a antiga (legada).
   const watched = new Set(rules.flatMap((r) => (r.filter?.productId ? [r.filter.productId] : [])));
@@ -33,6 +62,7 @@ export function evaluate(rules, offers, events, products, { opp = new Map(), log
   for (const r of legacy) log(`[alertas] regra "${r.id}" usa minDealScore (Deal Score legado, desativado): ela não dispara. Troque por minOpportunityScore.`);
   rules = rules.filter((r) => !legacy.includes(r));
   const hits = new Map(); // rule|product -> melhor oferta
+  const nowBest = bestByBasis(offers);
   for (const o of offers) {
     if (!eligible(o)) continue;
     const p = products[o.productId];
@@ -55,8 +85,11 @@ export function evaluate(rules, offers, events, products, { opp = new Map(), log
     }
     const dropEv = evBy.get(o.id + '|drop');
     // Evento que traz a base do valor anterior (src/run.js) só vale na mesma base; evento sem a base segue como antes.
-    if (watched.has(o.productId) && dropEv && (dropEv.fromShippingKnown == null || dropEv.fromShippingKnown === shipKnown(o))) {
-      const key = 'drop|' + o.id; hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: products[o.productId], kind: 'drop', from: dropEv.from, opp: opp.get(o.id) || null });
+    if (watched.has(o.productId) && dropEv && (dropEv.fromShippingKnown == null || dropEv.fromShippingKnown === shipKnown(o))
+      && o.confirmed !== false && o.total === nowBest.get(basisOf(o))?.total) {
+      const pb = prevBest.get(basisOf(o)); const before = pb ? pb.total : dropEv.from;
+      const key = 'drop|' + o.id;
+      if (before > 0 && o.total < before) hits.set(key, { rule: { id: 'drop', label: 'Queda de preço' }, offer: o, product: p, kind: 'drop', from: before, opp: opp.get(o.id) || null });
     }
   }
   return [...hits.entries()].map(([key, h]) => ({ key, ...h }));
