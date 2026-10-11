@@ -367,6 +367,24 @@ await testAsync('eventos de merge e deploy têm permissões separadas', async ()
   assert.notEqual(merge.eventId, deploy.eventId);
 });
 
+test('auditoria rejeita decisão adulterada que autoriza ações extras', () => {
+  const changedPaths = ['docs/release.md'];
+  const evidenceInput = evidence();
+  const valid = evaluateRelease({ changedPaths, evidence: evidenceInput, action: RELEASE_ACTION.MERGE });
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...valid, allowedActions: [RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY] },
+    changedPaths, evidence: evidenceInput,
+  }), /ações autorizadas divergem/);
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...valid, allowedActions: ['unknown.action'] },
+    changedPaths, evidence: evidenceInput,
+  }), /lista de ações autorizadas ausente ou inválida/);
+  assert.throws(() => buildReleaseAuditEvent({
+    decision: { ...valid, decision: 'blocked', allowedActions: [RELEASE_ACTION.MERGE] },
+    changedPaths, evidence: evidenceInput,
+  }), /ações autorizadas divergem/);
+});
+
 test('auditoria rejeita risco ou SHA incompatível com evidência', () => {
   const validDecision = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence() });
   assert.throws(() => buildReleaseAuditEvent({
