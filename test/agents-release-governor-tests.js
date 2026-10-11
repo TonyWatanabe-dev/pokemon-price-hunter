@@ -68,7 +68,7 @@ test('check "test" do CI atual pode comprovar CI e suíte npm test no mesmo SHA'
 test('R1 precisa de preview e acessibilidade no mesmo SHA', () => {
   const good = evaluateRelease({ changedPaths: ['assets/home.css'], evidence: evidence() });
   assert.equal(good.decision, 'autonomous');
-  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY]);
+  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.MERGE]);
   const noA11y = evaluateRelease({
     changedPaths: ['assets/home.css'],
     evidence: evidence({ checks: [check('ci'), check('tests'), check('preview')] }),
@@ -80,7 +80,7 @@ test('R1 precisa de preview e acessibilidade no mesmo SHA', () => {
 test('R2 precisa de regressão, golden tests, rollback, rollout e feature flag justificada', () => {
   const good = evaluateRelease({ changedPaths: ['api/v1.mjs'], evidence: evidence() });
   assert.equal(good.decision, 'autonomous');
-  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.MERGE, RELEASE_ACTION.DEPLOY]);
+  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.MERGE]);
 
   const noRollback = evaluateRelease({
     changedPaths: ['api/v1.mjs'],
@@ -95,6 +95,124 @@ test('R2 precisa de regressão, golden tests, rollback, rollout e feature flag j
   });
   assert.equal(noFlag.decision, 'blocked');
   assert.ok(noFlag.missingEvidence.some((x) => x.includes('feature flag')));
+});
+
+const deployedEvidence = (overrides = {}) => ({
+  merged: true,
+  baseRef: 'main',
+  headRef: 'main',
+  targetRef: 'main',
+  headSha: SHA,
+  mainSha: SHA,
+  deployment: {
+    provider: 'vercel',
+    target: 'production',
+    status: 'ready',
+    sha: SHA,
+    url: 'https://tcg-price-hunter.vercel.app',
+  },
+  checks: [
+    check('test'), check('smoke'), check('accessibility'),
+    check('regression'), check('golden'),
+  ],
+  rollback: { documented: true, tested: true },
+  rollout: { metricsDefined: true, rollbackTriggersDefined: true },
+  featureFlag: { applicable: false, reason: 'nenhuma flag nova nesta alteração' },
+  ...overrides,
+});
+
+test('merge não autoriza deploy implicitamente', () => {
+  const r = evaluateRelease({ changedPaths: ['assets/home.css'], evidence: evidence() });
+  assert.equal(r.decision, 'autonomous');
+  assert.deepEqual(r.allowedActions, [RELEASE_ACTION.MERGE]);
+  assert.equal(r.deploymentRequired, true);
+});
+
+test('deploy R1 só após merge, main atual, Vercel READY, test+smoke+a11y no SHA exato', () => {
+  const good = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: deployedEvidence(),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(good.decision, 'autonomous');
+  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.DEPLOY]);
+
+  const notMerged = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: deployedEvidence({ merged: false }),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(notMerged.decision, 'blocked');
+  assert.ok(notMerged.missingEvidence.some((x) => x.includes('merge confirmado')));
+
+  const staleMain = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: deployedEvidence({ mainSha: 'b'.repeat(40) }),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(staleMain.decision, 'blocked');
+  assert.ok(staleMain.missingEvidence.some((x) => x.includes('SHA atual verificado')));
+
+  const building = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: deployedEvidence({ deployment: { ...deployedEvidence().deployment, status: 'building' } }),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(building.decision, 'blocked');
+  assert.ok(building.missingEvidence.some((x) => x.includes('READY')));
+
+  const staleSmoke = evaluateRelease({
+    changedPaths: ['assets/home.css'],
+    evidence: deployedEvidence({ checks: [check('test'), check('smoke', 'success', 'b'.repeat(40)), check('accessibility')] }),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(staleSmoke.decision, 'blocked');
+  assert.ok(staleSmoke.missingEvidence.some((x) => x.includes('smoke') && x.includes('HEAD atual')));
+});
+
+test('deploy R2 exige regressão, golden, rollback testado e rollout seguro', () => {
+  const good = evaluateRelease({
+    changedPaths: ['api/v1.mjs'],
+    evidence: deployedEvidence(),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(good.decision, 'autonomous');
+  assert.deepEqual(good.allowedActions, [RELEASE_ACTION.DEPLOY]);
+
+  const noRollback = evaluateRelease({
+    changedPaths: ['api/v1.mjs'],
+    evidence: deployedEvidence({ rollback: { documented: true, tested: false } }),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(noRollback.decision, 'blocked');
+  assert.ok(noRollback.missingEvidence.some((x) => x.includes('rollback')));
+
+  const unsafeFlag = evaluateRelease({
+    changedPaths: ['api/v1.mjs'],
+    evidence: deployedEvidence({ featureFlag: { applicable: true, present: true, defaultOff: false } }),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(unsafeFlag.decision, 'blocked');
+  assert.ok(unsafeFlag.missingEvidence.some((x) => x.includes('feature flag')));
+});
+
+test('docs-only não pode iniciar deploy e ação desconhecida é recusada', () => {
+  const docs = evaluateRelease({
+    changedPaths: ['docs/release.md'],
+    evidence: deployedEvidence(),
+    action: RELEASE_ACTION.DEPLOY,
+  });
+  assert.equal(docs.decision, 'blocked');
+  assert.ok(docs.missingEvidence.some((x) => x.includes('não inclui artefatos')));
+
+  const unknown = evaluateRelease({
+    changedPaths: ['docs/release.md'],
+    evidence: evidence(),
+    action: 'pr.production',
+  });
+  assert.equal(unknown.decision, 'blocked');
+  assert.equal(unknown.requiresHuman, true);
+  assert.deepEqual(unknown.allowedActions, []);
 });
 
 test('falha de CI e SHA de check antigo bloqueiam autonomia', () => {
