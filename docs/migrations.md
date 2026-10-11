@@ -44,3 +44,5 @@ Documento de inventário (issue #87). Nada aqui executa migration em produção;
 
 ## Fora do escopo desta entrega
 Nenhuma migration foi executada, nenhum banco de produção foi lido ou alterado e não houve deploy. A PR #20 continua **NÃO INTEGRAR**.
+
+- Rollback da 011: `db/rollback/011_offer_product_status_index.down.sql` (só remove o índice; ver instruções no arquivo).
