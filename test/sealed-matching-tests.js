@@ -156,4 +156,24 @@ test('EAN: cadastrado vence o título; divergente bloqueia', () => {
   assert.equal(div.productId, null); assert.deepEqual(div.why, ['EAN diverge do catálogo']);
 });
 
+test('contagens de boosters documentadas (18/24/36) casam; o produto muda com a contagem', () => {
+  const ids = [18, 24, 36].map((c) => casa(`Pokémon TCG Booster Box Fogo Fantasmagórico ${c} Boosters`, `me02-box${c}`).productId);
+  assert.equal(new Set(ids).size, 3);
+  // Comportamento real (diverge da auditoria §4): não há lista permitida; qualquer contagem explícita vira id próprio (ex.: 30 => box30).
+  assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 30 Boosters').productId, 'me02-box30');
+});
+
+test('"Pré-venda" marca parsed.preorder; título sem o termo não marca', () => {
+  const pre = casa('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Pré-venda', 'me02-box36');
+  assert.equal(pre.parsed.preorder, true);
+  assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters').parsed.preorder, false);
+});
+
+test('confiança: 0,8 base; 0,6 com contagem inferida + coleção por fallback', () => {
+  assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters').confidence, 0.8);
+  const r = casa('Pokémon TCG Box Display Megaevolução', 'me01-box36');
+  assert.ok(r.parsed.boostersInferred && r.parsed.collectionFallback);
+  assert.equal(r.confidence, 0.6);
+});
+
 console.log(`✓ Matching de selados: ${n} grupos de testes passaram`);
