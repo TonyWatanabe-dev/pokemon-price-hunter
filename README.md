@@ -57,7 +57,7 @@ Rodar em casa usa IP residencial brasileiro, que muitas lojas bloqueiam menos qu
 
 ## Limites reais
 
-- **Lojas sem domínio:** Nerb Store, GRB Cards, Cardora, MatosTCG, Gorupa e Culture TCG ficam como "Domínio a confirmar" até você preencher `url` em `config/stores.json`. Liga Pokémon e MYP Cards bloqueiam robôs e estão pausadas (`enabled: false`).
+- **Lojas retiradas:** domínio morto, TLS quebrado, duplicata ou fora do escopo vão para `config/lojas/removidas.txt` (só comentários, com data e motivo) — a coleta ignora o arquivo e o histórico fica. Liga Pokémon e MYP Cards bloqueiam robôs e estão pausadas (`enabled: false`). Diagnóstico por loja: `node tools/coleta-relatorio.mjs`.
 - **Marketplaces:** Mercado Livre só com token OAuth (a busca pública retorna 403 desde 2025). Amazon, Shopee e Magalu não têm API pública de busca e protegem as páginas contra robôs, então ficam como "Sem integração". O agente não contorna bloqueio.
 - **Lojas com plataforma própria:** se não forem Shopify, VTEX nem tiverem JSON-LD, aparecem como erro. Para elas, liste URLs de produto em `productUrls` da loja.
 - **Frete:** calculado por CEP só em VTEX. Nas demais aparece "não informado" e o total é só o produto.

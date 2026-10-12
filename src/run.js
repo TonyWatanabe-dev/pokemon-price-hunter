@@ -96,6 +96,7 @@ export function rankBestDeals(all, opp = new Map()) {
 // 429 (limite de requisições): 30 min, 1 h, 2 h e fica em 2 h; um Retry-After maior que a curva é respeitado (até 6 h).
 // Demais (403/WAF, desafio, DNS, timeout, TLS, 5xx): a curva de sempre, 15 min, 30, 1 h… até 6 h.
 import { safeReason, netCode } from './http.js';
+import { lastFailureOf, platformHintFor } from './diagnostico.js';
 export function backoffMs(src) {
   const fails = Math.max(1, src?.fails || 1);
   if (src?.httpStatus === 429) {
@@ -310,6 +311,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       // Voltou a funcionar: limpa o status HTTP, o código de rede e o Retry-After da última falha.
       Object.assign(src, { status: 'ACTIVE', reason, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null, lastDurationMs: Date.now() - t0, errorClass: null });
       delete src.httpStatus; delete src.netCode; delete src.retryAfterSec;
+      src.platformHint = platformHintFor(base) ?? src.platformHint ?? null; // plataforma vista na resposta (diagnostico.js)
       // Leitura parcial (ex.: Shopify com catálogo maior que o teto de páginas): fica registrada; some quando volta a ser completa.
       if (typeof raw.partial === 'string' && raw.partial) { src.partial = raw.partial; log(`[${store.id}] ${raw.partial}`); } else delete src.partial;
       touched.add(store.id);
@@ -318,7 +320,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       const st = e.httpStatus ?? e.status;
       Object.assign(src, { status: e.blocked ? 'BLOCKED' : 'ERROR', reason: redact(safeReason(e), { max: 300 }), fails: (src.fails || 0) + 1,
         httpStatus: Number.isInteger(st) && st > 0 ? st : null, netCode: netCode(e), retryAfterSec: Number.isFinite(e.retryAfter) ? e.retryAfter : null,
-        errorClass: classifyError(e), lastDurationMs: Date.now() - t0 });
+        errorClass: classifyError(e), lastDurationMs: Date.now() - t0, lastFailure: lastFailureOf(e, { at: T, elapsedMs: Date.now() - t0, code: netCode(e) }) });
       log(`[${store.id}] ${src.status} (${src.errorClass}): ${src.reason}`);
     }
   });

@@ -50,3 +50,20 @@ Escopo: `src/adapters/`, `src/run.js`, `src/core/offer-key.js`, `src/http.js` e 
 3. **Coerência entre campos no contrato** (R1). Arquivos: `src/adapters/contract.js`, `test/listing-contract-tests.js`. Aceite: `IN_STOCK` com `quantity: 0` e `pix > base` são rejeitados com motivo; anúncios válidos existentes continuam passando.
 4. **`mlReject` na busca do Mercado Livre** (R1). Arquivos: `src/adapters/mercadolivre.js`, `test/ml-tests.js`. Aceite: resultado da busca com "kit"/"lote" não vira anúncio.
 5. **Decidir o destino de `groupDuplicateOffers`** (R0, só proposta). Arquivos: `src/core/offer-key.js`, `test/offer-key-tests.js`. Aceite: documento ou teste de integração mostrando onde a chave de deduplicação é aplicada na rodada.
+
+## 5. Diagnóstico de bloqueio (Frente 6, 2026-10-12)
+
+**Política de honestidade (inalterada e reafirmada).** O coletor se identifica (`User-Agent: PokeHunterBR/1.0 …`), lê e respeita o `robots.txt`, espera 1,5 s por domínio e obedece `Retry-After`. Ele **não** contorna WAF, CAPTCHA ou desafio anti-robô, **não** troca de User-Agent para parecer navegador, **não** usa proxies nem IPs rotativos e **não** repete indefinidamente quem respondeu 403/429. Loja que barra o agente honesto fica como `BLOCKED` e só volta pelo backoff (`src/run.js`, `backoffMs`) ou por liberação explícita do lojista. Esta frente acrescenta **observabilidade**, não insistência.
+
+**O que passou a ser registrado em `data/sources.json`, por loja.**
+- `lastFailure` (`src/diagnostico.js` → `forensicsOf`, anexado pelo `src/http.js` em todo erro HTTP/rede e carregado pelo `robots.js`/`guard()`): `{ at, status, errorCode, elapsedMs, server, cfRay, via, waf, setCookieNames, bodyHead }`. `cfRay` guarda só os 8 primeiros caracteres (presença), `setCookieNames` só os **nomes** dos cookies, `bodyHead` os 300 primeiros caracteres de texto sem script/style. Nunca valor de cookie, query, token ou corpo inteiro; poucas centenas de bytes por loja.
+- `waf` (`wafOf`): `cloudflare | akamai | datadome | perimeterx | imperva | sucuri | aws-waf | generic-403 | timeout | dns | tls | unknown`, a partir de cabeçalhos (`server`, `cf-ray`, `x-datadome-*`, `x-px*`, `x-iinfo`, `x-amzn-waf-action`…), nomes de cookie (`datadome`, `_px*`, `visid_incap*`, `ak_bmsc`, `aws-waf-token`) e marcadores do corpo (`cf-chl`, `captcha-delivery`, `incapsula`…).
+- `platformHint` (`platformHintOf`, anotado em respostas boas e gravado após a coleta): `vtex | shopify | nuvemshop | tray | lojaintegrada | woocommerce | magento`.
+
+**Relatório.** `node tools/coleta-relatorio.mjs [data/sources.json] [--json]` imprime a tabela (loja, plataforma, status, última falha, anúncios/casados) agrupada por `waf`. Sem rede.
+
+**Limpeza do inventário (mesma data).** Domínios mortos (ENOTFOUND em todas as rodadas), TLS quebrado no servidor, entradas `PENDING` duplicadas e loja fora do escopo (catálogo em inglês) saíram de `config/stores.json` e das listas `config/lojas/*.txt` para `config/lojas/removidas.txt` (só comentários, com data, motivo e evidência; a coleta ignora o arquivo).
+
+**Filtro do sitemap (`src/adapters/jsonld.js`, `isProductCandidate`).** Além de "URL com `pokemon` + indício de lacrado", aceita link de produto (`/produtos/`, `/produto/`, `/product/`, `/products/`, `/p/`) cujo slug tem `pokemon|tcg|booster|blister|etb|elite-trainer|treinador|lata|tin|box|deck|colecao|coleção|bundle` (palavras inteiras, sem acento). Quem decide se é Pokémon/Copag continua sendo `src/match.js`; o teto de 25 páginas novas por rodada não mudou.
+
+**tcgculture.com (Shopify, 8779 anúncios lidos, 0 casados).** Não é falha do coletor: os títulos são produto em inglês ("Scarlet & Violet", "Obsidian Flames", "Mini Tin") e cartas avulsas com condição TCGplayer ("Near Mint", "Lightly Played"); o catálogo é Copag PT-BR, então o matching recusa tudo (`coleção não identificada`). Retirada para `removidas.txt` (fora do escopo; ~16 requisições por rodada sem retorno). Moeda não confirmada: a rede estava indisponível na análise.
