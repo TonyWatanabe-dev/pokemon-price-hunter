@@ -217,11 +217,12 @@ export function describeProduct(catalog, collection, type, boosters, variant) {
   };
 }
 
+export const normEan = (v) => String(v || '').replace(/\D/g, '').replace(/^0+/, '');
+
 export function matchProduct(listing, catalog) {
   const p = parseListing(listing.title, catalog);
-  const ean = (v) => String(v || '').replace(/\D/g, '').replace(/^0+/, '');
   // EAN cadastrado vence o título.
-  const byEan = listing.ean && (catalog.products || []).find((x) => x.ean && ean(x.ean) === ean(listing.ean));
+  const byEan = listing.ean && (catalog.products || []).find((x) => x.ean && normEan(x.ean) === normEan(listing.ean));
   if (p.rejects.length) return { productId: null, confidence: 0, parsed: p, why: p.rejects };
   if (byEan) {
     const prod = describeProduct(catalog, byEan.collection, byEan.type, byEan.boosters, null);
@@ -232,7 +233,7 @@ export function matchProduct(listing, catalog) {
   if (p.type === 'booster_box' && !p.boosters) return { productId: null, confidence: 0, parsed: p, why: ['quantidade de boosters não informada'] };
   const prod = describeProduct(catalog, p.collection, p.type, p.boosters, p.variant);
   const fixed = (catalog.products || []).find((x) => x.id === prod.id);
-  if (fixed?.ean && listing.ean && ean(fixed.ean) !== ean(listing.ean)) return { productId: null, confidence: 0, parsed: p, why: ['EAN diverge do catálogo'] };
+  if (fixed?.ean && listing.ean && normEan(fixed.ean) !== normEan(listing.ean)) return { productId: null, confidence: 0, parsed: p, why: ['EAN diverge do catálogo'] };
   let confidence = 0.8;
   if (p.boostersInferred) confidence -= 0.1;
   if (p.collectionFallback) confidence -= 0.1;
@@ -267,6 +268,6 @@ export function applyOverride(listing, storeId, m, catalog, idx) {
   const prod = describeProduct(catalog, ov.collection, ov.type, ov.boosters ?? null, ov.variant ?? null);
   if (prod.id !== ov.productId) return m;
   const fixed = (catalog.products || []).find((x) => x.id === prod.id);
-  if (fixed?.ean && listing.ean && fixed.ean.replace(/\D/g, '').replace(/^0+/, '') !== String(listing.ean).replace(/\D/g, '').replace(/^0+/, '')) return m;
+  if (fixed?.ean && listing.ean && normEan(fixed.ean) !== normEan(listing.ean)) return m;
   return { productId: prod.id, product: prod, confidence: 0.8, parsed: m.parsed, why: [], override: ov.reviewId };
 }
