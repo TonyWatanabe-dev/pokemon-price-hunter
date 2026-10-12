@@ -107,6 +107,28 @@ Fluxo de alto nível:
 - **Código documentado:** `src/agents/cycle.js`, `tools/agents-run.mjs`, workflow `hunter.yml`.
 - **Status:** integração declarada no código; verificar runs atuais do Actions e logs para provar uso real.
 
+### 2.8 Dispatcher — implementado; despacho real comprovado em 12/10/2026
+- **Código:** `src/agents/dispatcher.js`, `tools/dispatcher.mjs` e `.github/workflows/dispatcher.yml`.
+- **Disparo:** `workflow_run` depois de "Vigia do robô", cron como reserva, ou manual.
+- **Responsabilidade:** escolher issues `tarefa:aprovada` por operador e despachar para o worker. Respeita dependências, vagas, áreas críticas, lease, backoff, quarentena e idempotência (marcador `dispatch:N:T`).
+- **Limites:** não implementa, não revisa, não faz merge nem deploy. O despacho real só acontece com `DISPATCHER_ATIVO=true`.
+- **Status:** despacho real comprovado (#247 tentativas 1 e 2; #257 até a PR #258). Defeito de lease e quarentena corrigido na #256, que aguarda merge.
+
+### 2.9 Worker de tarefas (Claude Code Action) — implementado; caminho do despacho comprovado
+- **Código:** `.github/workflows/tarefas.yml`, com dois caminhos: label `executor:github` e `workflow_dispatch` do Dispatcher.
+- **Revalidação:** `tools/validar-despacho.mjs` revalida cada despacho antes de qualquer efeito.
+- **Entrega:** só branch e PR, com commits assinados pelo app.
+- **Status:** a execução pelo caminho do despacho e a PR #258 foram comprovadas (worker `38229495517`). O perfil de esforço ainda não está ligado (#248 aberta).
+
+### 2.10 QA/PR Reviewer (`qa-review`) — implementado; não cobre PRs do worker até a #259
+- **Código:** `.github/workflows/revisor.yml`.
+- **Funcionamento:** sessão separada do Claude, só leitura e comentário, veredito estruturado fail-closed. Não aprova pela API de review e não faz merge.
+- **Status:** revisões reais aprovadas nas PRs #244, #250, #252, #254, #256 e #259. Recusou o ator `claude` na #258; correção na #259.
+
+### 2.11 Release Governor — política implementada; Ponte de execução ainda não integrada
+- **Código:** `src/agents/release-governor.js` e `release-governor-audit.js`.
+- **Status:** a exigência de `qa-review` está na #260, aberta. A Ponte (#221), o sink de auditoria e o `VERCEL_TOKEN` estão pendentes, então não há merge nem deploy autônomos.
+
 ## 3. Agentes de domínio mapeados — futuros, por dependência
 
 Os nomes abaixo são capacidades de produto previstas, não declaração de que handlers já existam. Construir somente quando o pré-requisito estiver satisfeito; o núcleo determinístico deve continuar funcionando sem IA.

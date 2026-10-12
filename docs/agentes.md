@@ -158,3 +158,13 @@ Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confian
 - A integração do gatilho ainda exige validação de runtime pós-merge. O run Dispatcher #5 terminou com sucesso, mas a Issue #247 foi mantida em backoff; não remover labels nem forçar a chave para contornar a proteção.
 - Evidência de conclusão exige run de Vigia pós-merge, Dispatcher iniciado por `workflow_run`, job `despacho` elegível, Claude Code Action sem erro de ator, e PR resultante com CI verde.
 - Não usar `allowed_bots: "*"`, bypass de branch protection nem permissões adicionais no worker. O worker continua limitado a branch + PR; merge/deploy seguem sob Release Governor e as regras do projeto.
+
+## Correções de governança encontradas na validação em runtime (12/10/2026)
+
+- **Revisão independente obrigatória (#260):** o Release Governor passa a exigir `qa-review` com sucesso **no mesmo SHA** para qualquer merge. Na `main` atual, ele autorizava R0 com o revisor reprovado (PR #258).
+- **Revisor cobre PRs do worker (#259):** `allowed_bots: claude` só no `revisor.yml`, sem wildcard. Sem isso, toda PR aberta pelo worker reprova o `qa-review` sem ser revisada.
+- **Quarentena e lease do Dispatcher (#256):**
+  - uma tentativa só é considerada concluída por um evento `executor:failed`/`done` **posterior** ao seu despacho;
+  - só um **operador**, ao remover `executor:quarentena`, concede novas tentativas, e a numeração das chaves continua.
+- **Estado de integração:** as três correções são R3 e aguardam aprovação humana. Nada aqui está ativo antes do merge.
+

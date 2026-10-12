@@ -135,6 +135,16 @@ As fases avançam por **critérios de saída**, não por calendário artificial.
 ### Fase 0 — fábrica de desenvolvimento e governança 24/7
 **Prioridade imediata.**
 
+> **Estado dos critérios de saída em 12/10/2026, 09:45 UTC** (evidências em `docs/ROADMAP-OPERACIONAL.md`, seção "Validação em runtime"):
+> - **Tarefa elegível despachada sem label manual:** comprovado (#257 → worker → PR #258).
+> - **Despacho não autorizado ignorado:** coberto por testes. Em runtime, o worker recusou fechado uma tentativa inválida.
+> - **Reexecução não duplica:** a chave idempotente foi comprovada.
+> - **Backoff:** comprovado.
+> - **Retomada depois de quarentena:** depende da #256.
+> - **Esforço adaptativo:** etapa 1 na `main` (#246); a ligação ao worker está na #248, aberta.
+> - **Gate R0–R3 com revisão independente:** #259 e #260 abertas. Até elas entrarem, o Governor não exige `qa-review` e o revisor não revisa PRs do worker.
+> - **Fase 0 continua aberta.**
+
 Trabalho:
 - Confirmar \`TAREFAS_MAX=10\` nas variáveis do repo e conferir \`TAREFAS_OPERADORES\`; começar/validar com 3 e aumentar depois do teste de concorrência.
 - Implementar classificação determinística de tarefas e esforço adaptativo por sessão, roteamento econômico quando suportado, escalada com base em falhas e gestão de orçamento/quota. Medir tokens/custo apenas quando houver telemetria real.
