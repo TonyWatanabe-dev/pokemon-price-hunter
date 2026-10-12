@@ -17,7 +17,7 @@ import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { tlsModeFor } from './db/ssl.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent, capJsonlLines } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -508,6 +508,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   appendJsonl(dataPath('history.jsonl'), history);
   try { trimJsonl(dataPath('history.jsonl')); } catch { /* sem log */ }
   appendJsonl(dataPath('alerts.jsonl'), delivered);
+  try { const f = dataPath('alerts.jsonl'); const kept = capJsonlLines(fs.readFileSync(f, 'utf8')); if (kept) fs.writeFileSync(f, kept); } catch { /* sem log */ }
   // Estado operacional (data/meta.json → ops). Falha aqui nunca derruba a rodada.
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,

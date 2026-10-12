@@ -205,6 +205,15 @@ export function pruneSent(sent, now = Date.now(), maxAgeDays = SENT_MAX_AGE_DAYS
   return Object.fromEntries(Object.entries(sent || {}).filter(([, s]) => s?.pending || !(t - Date.parse(s?.at) > maxMs)));
 }
 
+// Retenção de alerts.jsonl: sem limite o arquivo só cresce. Mantém as últimas maxLines linhas não vazias (GET /alerts
+// lê só as últimas 200, então o resultado não muda enquanto maxLines >= 200). Pura: texto entra, texto sai.
+export const ALERTS_LOG_MAX_LINES = 1000;
+export function capJsonlLines(text, maxLines = ALERTS_LOG_MAX_LINES) {
+  const lines = String(text || '').split('\n').filter(Boolean);
+  if (lines.length <= maxLines) return null;
+  return lines.slice(-maxLines).join('\n') + '\n';
+}
+
 // opts.timeoutMs: prazo por envio (padrão ALERT_TIMEOUT_MS). opts.down: falhas seguidas por canal (ver sendAll); vale
 // para os alertas novos e para o reenvio dos pendentes desta mesma chamada.
 export async function dispatch(hits, sent, { send = transports, now = new Date(), timeoutMs, down = {} } = {}) {
