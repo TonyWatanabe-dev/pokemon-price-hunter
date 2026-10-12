@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { planDispatch, applyPlan, parseDependencies, parseAreas, parseOrder, parseDispatchMarkers, dispatchMarker,
-  clampSlots, hasOpenPull, sanitize, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+  clampSlots, hasOpenPull, sanitize, validateDispatchRequest, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0; const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
@@ -174,18 +174,46 @@ await t('quarentena aplica label e comentário sanitizado, sem disparo', async (
 });
 
 // ------------------------------------------------------------------ workflow e CLI
-await t('dispatcher.yml: agendado, só leitura, sem secrets, sem merge/deploy; CLI planeja por padrão', () => {
+await t('dispatcher.yml: agendado; planeja só leitura; escreve só no job de despacho ligado por DISPATCHER_ATIVO', () => {
   const y = fs.readFileSync(path.join(root, '.github/workflows/dispatcher.yml'), 'utf8');
   const code = y.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
   assert.match(code, /schedule:/); assert.match(code, /workflow_dispatch:/);
-  assert.match(code, /permissions:\s*\n\s+contents: read\s*\n\s+issues: read\s*\n\s+pull-requests: read/);
-  assert.doesNotMatch(code, /: write|secrets\.|pull_request_target|gh pr merge|--executar|vercel|DATABASE_URL/i);
+  const [plano, despacho] = code.split(/\n  despacho:\n/);
+  assert.match(plano, /permissions:\s*\n\s+contents: read\s*\n\s+issues: read\s*\n\s+pull-requests: read/);
+  assert.doesNotMatch(plano, /: write|--executar/i, 'job de plano continua só leitura');
+  assert.match(despacho, /if: vars\.DISPATCHER_ATIVO == 'true'/);
+  assert.deepEqual([...despacho.matchAll(/(\w[\w-]*): write/g)].map((m) => m[1]).sort(), ['actions', 'issues'], 'escrita só em issues (marcador) e actions (disparo)');
+  assert.doesNotMatch(code, /secrets\.|pull_request_target|gh pr merge|vercel|DATABASE_URL|contents: write/i);
   assert.match(code, /concurrency:\s*\n\s+group: dispatcher/);
   for (const m of code.matchAll(/uses:\s*(\S+)/g)) assert.match(m[1], /@[0-9a-f]{40}$/, `${m[1]} fixado por SHA`);
   const cli = fs.readFileSync(path.join(root, 'tools/dispatcher.mjs'), 'utf8');
   assert.match(cli, /--executar/); assert.doesNotMatch(cli, /pulls\/\$\{?[^}]*\}?\/merge|gh pr merge|deployments/);
   const tarefas = fs.readFileSync(path.join(root, '.github/workflows/tarefas.yml'), 'utf8');
   assert.doesNotMatch(tarefas, /gh pr merge|Bash\(git push/, 'worker continua sem merge/push livre');
+});
+
+await t('worker revalida o despacho: só a chave registrada pelo dispatcher, última tentativa, issue ainda elegível', () => {
+  const v = (over = {}, key = 'dispatch:7:1', nr = '7') => validateDispatchRequest({ issueNumber: nr, key, operators: [OP], dispatcherActor: BOT,
+    issue: issue(7, { comments: [{ id: 10, ...marker(7, 1, min(-5)) }], ...over }) });
+  assert.deepEqual(v(), { ok: true, reason: 'despacho válido' });
+  const no = (r) => { assert.equal(r.ok, false); return r.reason; };
+  assert.match(no(v({}, 'dispatch:7:1', '7a')), /número de issue inválido/);
+  assert.match(no(v({}, 'dispatch:8:1')), /chave de despacho inválida ou de outra issue/);
+  assert.match(no(v({}, 'qualquer')), /chave de despacho inválida/);
+  assert.match(no(v({ state: 'closed' })), /fechada/);
+  assert.match(no(v({ author: 'estranho' })), /autor não é operador/);
+  assert.match(no(v({ labelEvents: [{ event: 'labeled', label: QUEUE_LABEL, actor: 'estranho', createdAt: min(-60) }] })), /não aplicado por operador/);
+  assert.match(no(v({ labels: [] })), /ausente/);
+  assert.match(no(v({ labels: [QUEUE_LABEL, LABELS.QUARANTINE] })), /quarentena/);
+  assert.match(no(v({ labels: [QUEUE_LABEL, LABELS.DONE] })), /concluída/);
+  // marcador ausente, de autor não confiável, ou de outra chave: recusa
+  assert.match(no(v({ comments: [] })), /não registrado/);
+  assert.match(no(v({ comments: [{ id: 11, ...marker(7, 1, min(-5), 'estranho') }] })), /não registrado/);
+  // reenvio de um despacho antigo: a chave existe, mas já houve tentativa posterior
+  const two = { comments: [{ id: 10, ...marker(7, 1, min(-90)) }, { id: 12, ...marker(7, 2, min(-5)) }] };
+  assert.match(no(v(two, 'dispatch:7:1')), /não é a última registrada/);
+  assert.equal(v(two, 'dispatch:7:2').ok, true);
+  assert.equal(validateDispatchRequest({ issueNumber: '7', key: 'dispatch:7:1', operators: [], issue: issue(7) }).ok, false, 'sem operadores, fecha');
 });
 
 console.log(`✓ Dispatcher: ${n} grupos de testes passaram`);

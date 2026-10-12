@@ -1,8 +1,9 @@
 # Dispatcher da fila de tarefas (issue #234; src/agents/dispatcher.js, tools/dispatcher.mjs).
-# Etapa 1: SÓ PLANEJA. Lê issues com o label "tarefa:aprovada" (aplicado por operador), dependências, PRs abertas,
-# tarefas em curso, leases e vagas, e publica no resumo do job quem seria despachado. Não escreve em issues, não
-# dispara o worker, não faz merge nem deploy e não usa secrets. Ligar o disparo exige uma entrada workflow_dispatch
-# validada no tarefas.yml (mudança R3, com revisão humana) e trocar as permissões deste workflow.
+# Por padrão SÓ PLANEJA (job "plano", somente leitura): lê issues com o label "tarefa:aprovada" (aplicado por
+# operador), dependências, PRs abertas, tarefas em curso, leases e vagas, e publica no resumo quem seria despachado.
+# Com vars.DISPATCHER_ATIVO == 'true' roda o job "despacho": grava o marcador de despacho na issue, aplica quarentena
+# e dispara o worker (tarefas.yml, workflow_dispatch com issue + chave), que revalida tudo antes de agir.
+# Nenhum dos dois faz merge, deploy ou usa secrets; o worker continua limitado a branch + PR.
 name: Dispatcher
 
 on:
@@ -10,10 +11,7 @@ on:
     - cron: '23 * * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  issues: read
-  pull-requests: read
+permissions: {}
 
 concurrency:
   group: dispatcher
@@ -21,8 +19,13 @@ concurrency:
 
 jobs:
   plano:
+    if: vars.DISPATCHER_ATIVO != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
     env:
       GH_TOKEN: ${{ github.token }}
       TAREFAS_OPERADORES: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
@@ -31,7 +34,32 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version: 22 }
       - name: Plano de despacho
         run: node tools/dispatcher.mjs --json plano.json
+
+  despacho:
+    if: vars.DISPATCHER_ATIVO == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Mínimo para despachar: comentar o marcador/aplicar quarentena (issues) e disparar o worker (actions).
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAREFAS_OPERADORES: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
+      TAREFAS_MAX: ${{ vars.TAREFAS_MAX || '3' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - name: Despachar tarefas aprovadas
+        run: node tools/dispatcher.mjs --executar --json resultado.json
