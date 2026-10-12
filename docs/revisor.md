@@ -22,5 +22,8 @@ O veredito estruturado (`aprovado`, `bloqueantes`, `observacoes`) vira o check *
 ## Custo
 Cada push numa PR aberta roda uma revisão. Um push novo cancela a revisão anterior da mesma PR (`concurrency`).
 
-## Próximo passo (fora desta PR)
-Tornar `qa-review` check obrigatório na proteção da `main` e exigir o check no Release Governor. São mudanças de política, R3, com decisão humana, e só depois de observar as primeiras revisões reais.
+## Uso pelo Release Governor
+Desde a correção desta seção (12/10), o Release Governor **exige `qa-review` com sucesso no mesmo SHA** para autorizar qualquer merge (`src/agents/release-governor.js`).
+- **Motivo:** na PR #258, a primeira aberta pelo worker via Dispatcher, o Governor dava `R0 · autonomous` com o `qa-review` reprovado.
+- **Falta de revisão** é bloqueio (ausência de evidência), inclusive em PRs que o revisor não cobre, como drafts e Dependabot.
+- **Ainda é decisão humana:** tornar `qa-review` check obrigatório na proteção da `main`.
