@@ -195,7 +195,7 @@ export default async function handler(req, res, { now = FR.nowMs(), deadlineMs =
 async function handle(req, res, { now }) {
   const u = new URL(req.url, 'http://local');
   if (req.method && req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'método não permitido' }, { 'Cache-Control': 'no-store', Allow: 'GET, HEAD' });
-  const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).split('/').filter(Boolean);
+  const path = (u.searchParams.get('path') || u.pathname.replace(/^\/api\/v1\/?/, '')).toLowerCase().split('/').filter(Boolean);   // caixa normalizada: /produtos/ABC e /produtos/abc dividem a entrada do cache
   u.searchParams.delete('path');
   // Afiliados (docs/afiliados.md): só destino de clique, à parte dos dados; sem banco, sem frescor, sem cache por consulta.
   if (path.length === 1 && path[0] === 'afiliados') return send(res, 200, publicAffiliates(), { 'Cache-Control': CDN.default });
