@@ -109,3 +109,39 @@ Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais i
   3. Rodar o Dispatcher manualmente.
   4. Conferir marcador, execução do worker, PR com `Closes #N`, CI e label `executor:done`.
   5. Rodar o Dispatcher de novo e confirmar que não há segundo despacho.
+
+## Evidências do primeiro smoke test do Dispatcher — #247
+
+**Estado atual: PENDENTE.** A label `tarefa:aprovada` não comprova que o despacho foi executado. Só marcar o teste como concluído quando houver evidências verificáveis dos itens abaixo.
+
+### Pré-condições e execução
+- [ ] Confirmar que a `main` contém o Dispatcher real e que `DISPATCHER_ATIVO` está desativado até o início deliberado do canário.
+- [ ] Usar uma única issue documental R0 com escopo explícito; issue de teste: #247.
+- [ ] Ativar o gate apenas para o canário, com `TAREFAS_MAX=1` se a configuração permitir; nunca registrar segredo ou chave em texto público.
+- [ ] Disparar pelo workflow suportado e distinguir o job de planejamento (somente leitura) do job de despacho real.
+
+### Evidências obrigatórias
+- [ ] **Run do Dispatcher:** URL, SHA da `main`, evento e conclusão real.
+- [ ] **Seleção da fila:** confirmar que somente #247 foi selecionada e que lock/idempotência foram respeitados.
+- [ ] **Worker:** URL da execução `Tarefas`, issue validada e resultado final, sem expor a chave em claro.
+- [ ] **PR produzida:** URL, branch e arquivos alterados; para #247, somente `docs/tarefas-paralelas.md`.
+- [ ] **CI:** links e sucesso de `test`, `regression` e `golden` no HEAD final.
+- [ ] **Revisão independente:** link do `qa-review` e veredito sem bloqueantes.
+- [ ] **Conclusão:** `executor:done` só depois de o worker confirmar sucesso e existir PR; registrar falhas/quarentena com link do run.
+- [ ] **Idempotência:** segunda execução não cria um despacho duplicado para a mesma tentativa.
+
+### Critérios de sucesso e recuperação
+- Marcar **PASSOU** somente quando todas as evidências obrigatórias existirem e o diff ficar dentro do escopo documental. Antes disso, manter **PENDENTE**.
+- Se a validação recusar o despacho, não deve haver alteração de estado da issue nem branch/PR nova.
+- Se o worker falhar antes da PR, não marcar `executor:done`; registrar o run e respeitar backoff/idempotência.
+- Se houver arquivo fora do escopo, não integrar a PR; corrigir ou fechar a branch de teste e registrar a evidência.
+- Este smoke test não inclui merge, deploy, migration nem alteração de secrets.
+
+### Registro da execução
+- Estado: **PENDENTE — nenhuma execução real comprovada neste registro**.
+- Run do Dispatcher: `pendente`.
+- Run de Tarefas: `pendente`.
+- PR criada pelo worker: `pendente`.
+- CI e `qa-review` da PR criada: `pendente`.
+- Resultado de idempotência: `pendente`.
+- Resultado final: `pendente`.
