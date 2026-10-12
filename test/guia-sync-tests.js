@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
-import { GUIA, plain, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from '../api/_lib/guia.mjs';
+import { GUIA, plain, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD, slugT } from '../api/_lib/guia.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
@@ -47,4 +47,11 @@ await t('3. conteúdo: 6 a 8 perguntas com os temas pedidos, faixas iguais ao mo
   assert.equal(faqLD().mainEntity.length, GUIA.faq.length); assert.equal(glossarioLD(GUIA, 'https://x').hasDefinedTerm.length, GUIA.glossario.length);
 });
 
+await t('SPA: <dt> do glossário tem o mesmo id (âncora) do SSR', () => {
+  const m = html.match(/function renderGlossario\(\)\{[\s\S]*?<\/dl>/); assert.ok(m, 'renderGlossario');
+  assert.match(m[0], /<dt id="\$\{slugify\(x\.t\.replace\(\/<\[\^>\]\+>\/g,""\)\)\}">/);
+  const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const slugify = (t) => norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  for (const x of GUIA.glossario) assert.equal(slugify(plain(x.t)), slugT(x.t), x.t);
+});
 console.log(`✓ Guia em sincronia: ${n} grupos de testes passaram`);

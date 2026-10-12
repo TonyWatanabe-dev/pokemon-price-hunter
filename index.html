@@ -2042,7 +2042,7 @@ function renderGuide(){
 function renderGlossario(){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h1 class="panel-h1">Glossário de Pokémon TCG lacrado</h1>
   <p>Os termos que aparecem nas ofertas e no guia <a href="/como-funciona" data-go="guia">Como funciona</a>, em ordem de uso.</p>
-  <dl class="glossario">${GUIA.glossario.map((x)=>`<dt>${x.t}</dt><dd>${x.d}</dd>`).join("")}</dl>
+  <dl class="glossario">${GUIA.glossario.map((x)=>`<dt id="${slugify(x.t.replace(/<[^>]+>/g,""))}">${x.t}</dt><dd>${x.d}</dd>`).join("")}</dl>
   </section></div>`;
 }
 function renderLegal(kind){
