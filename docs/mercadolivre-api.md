@@ -44,3 +44,8 @@ Em `src/run.js` nada muda de regra: oferta `IN_STOCK` entra em `liveForScore`/`b
 
 ## Fallback em vigor
 Com `/items` fechado, o ranking usa o estoque do catálogo (tabela acima). Teste: `test/ml-estoque-tests.js` (mapeamento, adaptador e rodada completa com oferta do ML chegando ao `bestDeals`).
+
+
+## Decisão de 12/10/2026 — publicação listada conta como disponível
+
+A primeira rodada com o diagnóstico provou que o payload real de `GET /products/{id}/items` **não traz `available_quantity` nem `status`** (campos: `item_id`, `seller_id`, `price`, `original_price`, `condition`, `listing_type_id`, `shipping`, `official_store_id`, `tags`…). Como o catálogo do Mercado Livre só lista anúncios ativos, o dono decidiu: publicação listada, com preço e condição nova, entra como `IN_STOCK` com `stockSource: ml-catalog-listed` (quantidade desconhecida). O Opportunity Engine continua aplicando o teto de marketplace. Quando `/items` abrir, a leitura por anúncio (`ml-items`) volta a mandar.

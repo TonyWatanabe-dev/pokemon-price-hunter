@@ -85,7 +85,8 @@ http.setFetch(async (url) => {
 });
 const L2 = await search({ id: 'mercadolivre' }, catalog);
 assert.equal(L2[0].url, 'https://www.mercadolivre.com.br/p/MLB111?pdp_filters=item_id%3AMLB5551');
-assert.equal(L2[0].stock, 'UNKNOWN', 'sem conferência do anúncio: estoque não confirmado (nunca afirma disponibilidade)');
+assert.equal(L2[0].stock, 'IN_STOCK', 'sem conferência do anúncio: publicação listada no catálogo conta como disponível (decisão do dono, 12/10/2026)');
+assert.equal(L2[0].stockSource, 'ml-catalog-listed', 'origem rastreável: não foi conferido anúncio a anúncio');
 
 // Lote 7 — cache do catálogo e cobertura (catálogo reduzido a 2 coleções para o teste ser rápido)
 const small = { ...catalog, collections: catalog.collections.slice(0, 2) };
