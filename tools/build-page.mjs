@@ -1,9 +1,15 @@
-// Monta index.html a partir de tools/page.template.html: embute a fonte (base64) e os ícones (sprite SVG).
-// Uso: node tools/build-page.mjs <pasta node_modules com @fontsource-variable/rubik e @phosphor-icons/core>
+// DEFASADO: o template parou na #157 (out/2026) e o index.html recebeu dezenas de mudanças depois. O index.html é a
+// FONTE da interface: edite-o diretamente. Rodar este script sobrescreveria o index.html e apagaria essas mudanças,
+// por isso ele recusa sem --sobrescrever-index (só para quem for ressincronizar o template de propósito).
+// Uso original: node tools/build-page.mjs <node_modules com @fontsource-variable/rubik e @phosphor-icons/core> --sobrescrever-index
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+if (!process.argv.includes('--sobrescrever-index')) {
+  console.error('tools/page.template.html está defasado; o index.html é a fonte da interface. Nada foi gerado (use --sobrescrever-index só para ressincronizar de propósito).');
+  process.exit(2);
+}
 const nm = process.argv[2];
 if (!nm) { console.error('Informe a pasta node_modules.'); process.exit(1); }
 const font = fs.readFileSync(path.join(nm, '@fontsource-variable/rubik/files/rubik-latin-wght-normal.woff2')).toString('base64');
