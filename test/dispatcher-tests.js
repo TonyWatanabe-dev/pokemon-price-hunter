@@ -178,6 +178,11 @@ await t('dispatcher.yml: agendado; planeja só leitura; escreve só no job de de
   const y = fs.readFileSync(path.join(root, '.github/workflows/dispatcher.yml'), 'utf8');
   const code = y.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
   assert.match(code, /schedule:/); assert.match(code, /workflow_dispatch:/);
+  // gatilho confiável: fim do Vigia (agendador externo, 15 min), só da main; nada de pull_request/workflow_run de PR
+  assert.match(code, /\n  workflow_run:\n    workflows: \['Vigia do robô'\]\n    types: \[completed\]\n/);
+  for (const job of ['plano', 'despacho']) assert.match(code.split(new RegExp(`\\n  ${job}:\\n`))[1], /^    if: vars\.DISPATCHER_ATIVO [!=]= 'true' && \(github\.event_name != 'workflow_run' \|\| github\.event\.workflow_run\.head_branch == 'main'\)$/m, job);
+  const wf = fs.readFileSync(path.join(root, '.github/workflows/watchdog.yml'), 'utf8');
+  assert.match(wf, /^name: Vigia do robô$/m, 'nome do workflow observado confere');
   const [plano, despacho] = code.split(/\n  despacho:\n/);
   assert.match(plano, /permissions:\s*\n\s+contents: read\s*\n\s+issues: read\s*\n\s+pull-requests: read/);
   assert.doesNotMatch(plano, /: write|--executar/i, 'job de plano continua só leitura');

@@ -4,11 +4,17 @@
 # Com vars.DISPATCHER_ATIVO == 'true' roda o job "despacho": grava o marcador de despacho na issue, aplica quarentena
 # e dispara o worker (tarefas.yml, workflow_dispatch com issue + chave), que revalida tudo antes de agir.
 # Nenhum dos dois faz merge, deploy ou usa secrets; o worker continua limitado a branch + PR.
+# Gatilho: o cron do GitHub é melhor-esforço e, neste repositório, não disparou nenhuma vez em 4 h após a #243
+# (o do Hunter rodou só ~6 vezes/dia). Por isso o Dispatcher também roda ao fim de cada "Vigia do robô", que o
+# agendador externo dispara a cada 15 min. Só conta execução do Vigia na main; o cron fica como reserva.
 name: Dispatcher
 
 on:
   schedule:
     - cron: '23 * * * *'
+  workflow_run:
+    workflows: ['Vigia do robô']
+    types: [completed]
   workflow_dispatch:
 
 permissions: {}
@@ -19,7 +25,7 @@ concurrency:
 
 jobs:
   plano:
-    if: vars.DISPATCHER_ATIVO != 'true'
+    if: vars.DISPATCHER_ATIVO != 'true' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -41,7 +47,7 @@ jobs:
         run: node tools/dispatcher.mjs --json plano.json
 
   despacho:
-    if: vars.DISPATCHER_ATIVO == 'true'
+    if: vars.DISPATCHER_ATIVO == 'true' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # Mínimo para despachar: comentar o marcador/aplicar quarentena (issues) e disparar o worker (actions).
