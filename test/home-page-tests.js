@@ -7,7 +7,7 @@ import vm from 'node:vm';
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const fullHtml = html; // a página inteira (dentro de alguns testes, html é o trecho renderizado)
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
-const hlCode = cut('/* Destaques (6B.2)', 'function preHTML(){');
+const hlCode = cut('/* Destaques (6B.2)', 'function tickerHTML(){');
 const homeCode = cut('/* Home (6B.2): pódio, sequência e destaques', 'let stageIO=null;');
 const renderDealsCode = cut('function renderDeals(){', '/* Produtos: todos os produtos com oferta');
 const oppCode = cut('/* Categorias do site', '/* Pré-vendas: status sempre visível */');
@@ -153,6 +153,13 @@ t('6C.0. pódio com título visível e rodapé dos cards sem corte', () => {
   assert.match(fullHtml, /\.pod-foot \.pod-cta\{flex:1 1 100%/, 'botão do pódio em linha própria');
   assert.ok(!/\.pod-store\{[^}]*text-overflow:ellipsis/.test(fullHtml), 'loja, selo e horário da nota não são cortados');
   assert.match(fullHtml, /\.rail \.deal-foot \.deal-cta\{flex:1 1 100%\}/, 'sequência: botão sempre na linha de baixo');
+});
+t('home sem bloco de Pré-vendas e sem o CTA "Ver todas as oportunidades" no fim', () => {
+  assert.ok(!/preHTML\(/.test(renderDealsCode), 'renderDeals não chama preHTML');
+  assert.ok(!/home-cta|allcta/.test(renderDealsCode), 'renderDeals sem o cartão de CTA');
+  assert.ok(!renderDealsCode.includes('Ver todas as oportunidades'), 'sem o texto do CTA');
+  assert.ok(!/function preHTML\(/.test(fullHtml) && !/\.allcta|\.home-cta/.test(fullHtml), 'função e CSS removidos');
+  assert.ok(/data-go="oportunidades"/.test(renderDealsCode), 'link "Ver todas" do pódio continua');
 });
 t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
