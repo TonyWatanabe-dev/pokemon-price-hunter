@@ -86,6 +86,29 @@ O workflow \`tarefas.yml\` atual é **event-driven por label**, não um planejad
 - **Continuidade:** não depender do computador do usuário como único host. O executor local permanece complementar até ter runtime e heartbeat comprovados. Priorizar Actions/infra remota para operação contínua.
 - **Carga/custo:** 10 tarefas de Claude consomem cota muito mais rápido. O Dispatcher deve medir duração, tentativas, taxa de falha e consumo quando disponível; o objetivo não é manter 10 sessões ocupadas sem necessidade, e sim esvaziar a fila segura com eficiência.
 
+### 3.4 Esforço adaptativo, roteamento de modelos e orçamento sustentável
+
+O objetivo é maximizar trabalho útil aprovado por unidade de consumo, sem esgotar a capacidade nem reduzir qualidade. **Esforço de raciocínio, modelo escolhido, tokens totais e concorrência são controles diferentes** e devem ser geridos separadamente.
+
+**Antes de cada tarefa:**
+- O Planner/Dispatcher determina classe, risco, tamanho aproximado, dependências, arquivos prováveis, histórico de falhas e critérios de aceite usando metadados e regras determinísticas. Não chamar um segundo modelo caro apenas para classificar tarefas simples.
+- O executor inspeciona a integração/modelo realmente utilizado e configura o esforço por sessão/tarefa através de parâmetros oficialmente suportados por essa versão. Não assumir que uma variável global altera uma sessão existente, nem registrar um nível como disponível sem validar o modelo/runtime.
+- Iniciar no menor nível que seja razoável para o escopo. Como padrão orientativo: **Low** para documentação/formatação/testes mecânicos isolados; **Medium** para correções comuns e funcionalidades delimitadas; **High** para bugs difíceis, integrações e mudanças arquiteturais; **XHigh/Max**, se suportado, só para casos excepcionalmente complexos com justificativa.
+- Para segurança, credenciais, permissões, migrations críticas, risco financeiro/dados, ranking/preços em massa e decisões R3, não reduzir esforço abaixo do necessário para análise segura. Nenhum nível de esforço substitui gate humano, revisão independente ou testes.
+
+**Escalada e economia:**
+- Escalar o esforço quando houver falhas de raciocínio/teste recorrentes, contexto contraditório, dependências inesperadas ou risco maior que o inicialmente estimado. Se a tarefa continuar falhando, parar retries cegos, registrar evidência e encaminhar para diagnóstico/revisão.
+- Desescalar tarefas que se mostrem simples, sem reiniciar trabalho desnecessariamente. Preferir chamadas/tool use mínimas, contexto focado, leitura seletiva de arquivos e logs resumidos; não repetir auditorias/documentos já lidos sem mudança de estado.
+- Avaliar roteamento para modelos mais econômicos em tarefas mecânicas/triagem somente quando o executor e as políticas atuais suportarem isso. Usar modelos mais capazes para tarefas complexas ou revisão de risco; o revisor deve ser independente o suficiente para não repetir cegamente conclusões do worker.
+- Gerenciar orçamento global e capacidade: concorrência adaptativa, limite por tarefa e ciclo, timeouts, retries limitados, backoff para rate limit/cota, fila persistente, leases/idempotência e checkpoints recuperáveis. Em esgotamento/indisponibilidade, preservar trabalho e fila, reduzir a carga e retomar quando houver capacidade. **Não prometer operação ilimitada nem contornar cota, rate limits ou políticas do provedor.**
+- Não aumentar automaticamente a concorrência só porque existem slots: custo, quota, conflito entre arquivos e taxa de falha devem determinar o paralelismo. Fazer aumento gradual e manter tasks que competem pelos mesmos arquivos serializadas.
+
+**Medição e prova:**
+- Registrar, quando as interfaces do provedor permitirem, modelo, esforço, tokens de entrada/saída/cache, duração, tentativas, custo calculável, resultado dos testes, motivo de escalada e resultado da PR. Nunca inventar métricas que não estejam disponíveis.
+- Medir custo/uso por tarefa concluída e por PR aprovada, taxa de sucesso na primeira tentativa, retrabalho, latência, concorrência máxima e falhas por cota/rate limit. Proteger logs contra secrets e dados pessoais.
+- Fazer comparação controlada em tarefas representativas para demonstrar economia sem piorar CI, regressões, golden tests, defeitos reabertos ou taxa de rejeição de PRs. Não comparar somente tokens; comparar trabalho útil aceito e qualidade.
+- Antes de ativar roteamento adaptativo em produção, testar configuração, fallback e recuperação em CI/sandbox. Se não existir suporte confiável para ajuste por sessão, documentar a limitação e implementar primeiro os controles que o executor suporta, sem simular adaptatividade.
+
 ## 4. Ciclo de vida de cada tarefa
 
 | Etapa | Dono | Entrada | Saída obrigatória |
@@ -111,6 +134,8 @@ As fases avançam por **critérios de saída**, não por calendário artificial.
 
 Trabalho:
 - Confirmar \`TAREFAS_MAX=10\` nas variáveis do repo e conferir \`TAREFAS_OPERADORES\`; começar/validar com 3 e aumentar depois do teste de concorrência.
+- Implementar classificação determinística de tarefas e esforço adaptativo por sessão, roteamento econômico quando suportado, escalada com base em falhas e gestão de orçamento/quota. Medir tokens/custo apenas quando houver telemetria real.
+- Adicionar retries limitados, backoff, fila persistente, checkpoints e retomada; diante de rate limit ou quota esgotada, preservar progresso e reduzir a carga em vez de repetir tentativas caras.
 - Confirmar cron-job.org ativo para Hunter e Vigia, verificar os últimos runs \`workflow_dispatch\` e provar uma notificação de teste nos canais operacionais configurados.
 - Implementar Planner + Dispatcher com fila aprovada, dependências, idempotência, limite de concorrência, quarentena e logs sanitizados.
 - Implementar QA/PR Reviewer independente, sem permissão de merge/deploy, com inspeção de diff, testes, risco, arquivos críticos e critérios da issue.
@@ -121,6 +146,9 @@ Critérios de saída:
 - Uma tarefa elegível é selecionada sem alguém aplicar manualmente seu label individual; dispatcher não começa tarefa não autorizada.
 - Reexecuções não geram duas branches/PRs para a mesma tarefa.
 - Simulação/teste com jobs concorrentes prova limite, fila, retry, cancelamento e retomada após falha.
+- Diferentes classes de tarefa recebem configurações de esforço coerentes; escalada/desescalada e orçamento são demonstrados por testes ou telemetria real.
+- Há métricas auditáveis de consumo disponíveis (ou uma limitação documentada) e o fallback por quota/rate limit preserva a fila sem tentativas ilimitadas.
+- Testes comparativos mostram que a economia não enfraquece CI, golden tests, revisão ou critérios de segurança.
 - Há evidência de scheduler primário e fallback, watchdog, alerta e recuperação.
 - Gate R0/R1/R2/R3 documentado e testado; a permissão do worker de tarefas continua sem merge/deploy.
 
@@ -322,7 +350,26 @@ O watchdog atual usa limites operacionais já presentes no código. Metas futura
 10. **Ativar agentes por dependência** nas fases 7 e 8 do documento; agentes de experiência/crescimento entram depois que a base técnica e métricas estiverem maduras.
 11. **Rodar hardening e burn-in de sete dias** antes de declarar concluído o projeto. Depois, manter a operação e o backlog evoluindo em ciclos autônomos.
 
+## Autonomia de execução e comunicação por fase
+
+**Instrução de produto:** Claude Code é responsável pela execução ponta a ponta. Não deve interromper o fluxo para pedir autorização rotineira de commit, criação/atualização de PR, correção de CI, merge governado, deploy elegível ou continuidade de tarefas. Executa essas ações automaticamente sempre que existirem permissões técnicas e a decisão do Release Governor for positiva. O workflow worker `tarefas.yml` continua sendo apenas branch + PR; o merge/deploy passa pela ponte dedicada.
+
+A autonomia vale para mudanças que a política `docs/agentes.md` permite aprovar automaticamente (R0/R1 e R2 quando todos os controles estiverem satisfeitos). R3 e R-STOP continuam bloqueados: o ChatGPT deve chamar o proprietário apenas quando houver decisão humana real, não para repetir pedidos rotineiros. Ausência de token ou permissão não deve ser contornada; registrar o bloqueio, continuar o trabalho independente e seguir quando a configuração oficial estiver disponível.
+
+### Relatório de conclusão de cada fase
+
+Ao terminar uma fase, Claude Code deve comprovar todos os critérios de saída, atualizar `docs/ROADMAP-OPERACIONAL.md` e incluir:
+- objetivo da fase e estado final de cada critério de saída;
+- entregas e decisões técnicas, links de PRs/commits e CI;
+- merges/deploys efetivamente feitos, URL/SHA e resultado dos smoke tests, quando aplicável;
+- testes, métricas de qualidade/uso disponíveis e estabilidade observada;
+- riscos/pendências remanescentes, bloqueios humanos (se existirem) e próxima fase autorizada.
+
+Esse registro versionado é a fonte que o monitor do ChatGPT usa para apresentar o relatório ao proprietário ao fim de cada fase. Não enviar ao usuário relatórios a cada pequena PR nem chamar uma coleção de PRs abertas de “fase concluída”. O monitor de ChatGPT opera em verificação horária, portanto o aviso pode ocorrer na próxima verificação, não necessariamente instantaneamente.
+
 ## 10. Regra permanente para agentes
+
+Claude Code tem autonomia para concluir operações rotineiras elegíveis — commits, branches, PRs, correções de CI, merge pelo Release Governor, deploy aprovado e smoke — sem solicitar confirmação passo a passo. Somente escalonar ações que a política classifique como R3/R-STOP ou que dependam de uma decisão comercial/humana não predefinida.
 
 Antes de pegar uma nova tarefa: ler este plano e \`docs/ROADMAP-OPERACIONAL.md\`; consultar \`docs/MAPA-DE-AGENTES.md\` e \`docs/agentes.md\`; verificar na \`main\` as issues/PRs atuais; escolher a próxima tarefa elegível ainda não duplicada; criar branch própria; implementar/testar; abrir PR; avaliar CI/evidência; atualizar status/roadmap. Não alterar a própria política, permissões, secrets ou gates de release para concluir uma tarefa mais rápido.
 

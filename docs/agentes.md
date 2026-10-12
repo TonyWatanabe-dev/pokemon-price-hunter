@@ -45,6 +45,25 @@ O **Release Governor** (agente de governança de release, também chamado *Relea
 
 A autorização é **por política e evidência**, não por aprovação manual a cada operação. O agente só pode executar ações que os tokens, permissões de GitHub/Vercel e regras de branch já permitam. Não deve pedir nem armazenar credenciais fora dos mecanismos secretos oficiais.
 
+### Regra operacional: autonomia ponta a ponta sem confirmações rotineiras
+
+A diretriz do proprietário do projeto é que Claude Code trabalhe ponta a ponta e não peça autorização para operações rotineiras. Quando houver ferramentas/permissões disponíveis e todos os gates objetivos forem aprovados, os agentes devem automaticamente:
+
+- criar e atualizar branches/worktrees isoladas e commits;
+- abrir e atualizar PRs, corrigir falhas de CI, solicitar revisão independente e reexecutar os checks necessários;
+- fazer merge pelo mecanismo governado e deploy dos commits elegíveis, executar smoke tests, verificar saúde pós-deploy e aplicar rollback automático somente quando seguro;
+- atualizar issues, evidências e o roadmap e iniciar a próxima tarefa segura, sem perguntar “posso continuar?”, “posso commitar?”, “posso abrir PR?”, “posso fazer merge?” ou “posso publicar?”;
+- continuar tarefas independentes se uma tarefa ficar bloqueada.
+
+Esta diretriz concede autonomia às operações que a política já classifica como automaticamente aprováveis; **não** revoga R3/R-STOP, não concede permissões técnicas ausentes, não habilita secrets/feature flags por inferência e não autoriza ignorar falhas. O worker de `.github/workflows/tarefas.yml` segue limitado a branch + PR; merge/deploy devem passar pelo Release Governor/Bridge com as credenciais e gates próprios.
+
+### Relatório de fase e comunicação com o proprietário
+
+- Claude Code não deve enviar atualizações rotineiras nem pedir validação ao proprietário a cada PR. Ao concluir uma fase inteira, com todos os seus critérios de saída comprovados, atualizar `docs/ROADMAP-OPERACIONAL.md` com resultado, evidências/links, merges, deploys/smoke, métricas, pendências e fase seguinte.
+- O monitor de projeto no ChatGPT é o canal para entregar um relatório por fase concluída. Entre fases, não emitir relatórios repetitivos de progresso.
+- Se houver uma ação que não possa ser aprovada automaticamente, um R3, R-STOP persistente, incidente crítico ou decisão comercial que realmente exija o proprietário, registrar no GitHub o motivo, evidências, risco, recomendação e a única decisão necessária; o ChatGPT deve avisar o proprietário com esse contexto.
+- Até haver evidência de conclusão de fase, continuar as tarefas elegíveis. Não declarar fase concluída só porque PRs foram abertas ou merged; aplicar critérios de saída e smoke/observação exigidos.
+
 ### Níveis de risco
 
 | Nível | Exemplos | Comportamento |
@@ -118,7 +137,8 @@ O Release Governor só pode autorizar merge se todos forem verdadeiros:
 - **Auditoria:** `createAuditLog`/`guarded` registram ferramenta, objetivo, resultado (`ok`, `denied`, `failed`) e erro, com segredos redigidos (chaves sensíveis, tokens, URLs de banco). Toda decisão de merge/deploy precisa ser ligada a esse log, incluindo risco, evidências e resultado pós-deploy.
 - **Estado de implementação (11/10/2026):** Release Governor v1.0.0 integrado na `main`, com classificação R0–R3 e decisões separadas para `pr.merge`, `deploy` e `deploy.verify`. O CI tem jobs independentes `regression` e `golden`. No repositório executor, o merge guard e o Deploy Agent opt-in foram integrados; o Deploy Agent permanece desligado por padrão.
 - **Auditoria estruturada ainda em revisão:** PR #220 adiciona eventos auditáveis com SHA, ação, risco e fail-closed quando o sink falha; o CI passou, mas a PR continua draft. PR #12 do executor propõe exigir esse evento antes de qualquer autorização de merge e também depende da #220. Não considerar a cadeia de auditoria completa até ambas terem revisão humana, integração e testes de integração.
-- **Sem ativação automática por documentação:** este documento não concede permissões nem habilita variáveis. Até o checkout local de `PPH_REPO` e o executor serem atualizados de forma controlada e o preflight real passar, manter a autonomia desativada. A publicação Vercel exige ainda token, link do projeto, SHA de produção verificável, Preview READY, smoke tests e decisão `deploy.verify`. Um CI verde ou uma publicação do GitHub Pages não comprova o estado do domínio Vercel.
+- **A política define o comportamento-alvo; não cria capacidade técnica.** A autonomia de desenvolvimento (branch, commit, PR, correção de CI e continuidade de tarefas) deve operar sem confirmações rotineiras. Merge/deploy automático só opera onde a Release Executor Bridge/Governor, o executor, os grants e o preflight estejam realmente integrados e saudáveis. Enquanto um destes pré-requisitos técnicos estiver ausente, não fingir que o merge/deploy aconteceu: manter a PR pronta, registrar o bloqueio no GitHub, continuar tarefas independentes e pedir ao ChatGPT que escale apenas a ação humana concreta que desbloqueia a ponte. Não pedir aprovação genérica para cada PR.
+- A publicação Vercel exige token no secret oficial, vínculo/projeto e ambiente corretos, SHA de produção verificável, Preview READY quando aplicável, smoke tests e decisão `deploy.verify`. Não expor ou criar tokens por caminhos inseguros; CI verde ou deploy de GitHub Pages não comprova saúde do domínio Vercel.
 
 ## Evidência obrigatória (issue #36)
 
