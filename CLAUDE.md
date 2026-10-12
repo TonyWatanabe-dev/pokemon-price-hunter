@@ -7,7 +7,7 @@ Regras permanentes para qualquer executor (Claude ou outro agente) que trabalhe 
 - Não reestruture módulos, não troque bibliotecas e não reescreva componentes sem pedido explícito do usuário.
 
 ## Fonte de verdade e contexto antes de executar
-- No início de cada tarefa, leia `docs/ROADMAP-OPERACIONAL.md` para a ordem de prioridades e o estado observado; consulte `docs/MAPA-DE-AGENTES.md` para capacidades e pré-requisitos; consulte `docs/agentes.md` para governança/autonomia; e leia `docs/tarefas-paralelas.md` quando usar o executor GitHub Actions.
+- No início de cada tarefa, leia `docs/PLANO-ENTREGA-TURBO.md` para a sequência completa até a entrega e operação 24/7 e `docs/ROADMAP-OPERACIONAL.md` para o estado observado/próxima prioridade; consulte `docs/MAPA-DE-AGENTES.md` para capacidades e pré-requisitos, `docs/agentes.md` para governança/autonomia e `docs/tarefas-paralelas.md` quando usar o executor GitHub Actions.
 - O roadmap é a fila de prioridade estratégica, não substitui o estado vivo. Antes de agir, conferir na `main` as issues/PRs relacionadas, seus diffs, CI, conflitos e logs recentes para evitar trabalho duplicado e status obsoleto.
 - O executor de tarefas está em `.github/workflows/tarefas.yml`: issue aberta criada por operador autorizado + label `executor:github` → branch isolada → testes → PR para `main`. Essa action **não** faz merge/deploy. Não confundir seu fluxo com a Release Executor Bridge/Release Governor separado.
 - A concorrência suporta de 1 a 10 jobs. O default no workflow é 3 quando a variável `TAREFAS_MAX` não existe; nunca afirmar que 10 está ativo sem conferir Settings → Actions → Variables. Quebrar tarefas por arquivos/áreas para reduzir conflitos e consumo de cota.
@@ -40,6 +40,8 @@ Regras permanentes para qualquer executor (Claude ou outro agente) que trabalhe 
 ## Secrets
 - Não leia, não exiba, não copie e não altere secrets: arquivos `.env`, credenciais, tokens, chaves de API e variáveis de ambiente sensíveis.
 
-## Produção
-- Nunca faça deploy, nunca altere o ambiente de produção e nunca leia ou altere o banco de produção sem autorização explícita do usuário.
-- Uma autorização vale só para a ação pedida. Ela não vale para ações futuras.
+## Produção e fronteira de papéis
+- O worker Claude acionado por issue (workflow `tarefas.yml`) nunca faz deploy, não faz merge, não altera ambiente de produção e não lê/escreve no banco de produção. Ele entrega somente branch + PR + testes.
+- A única exceção para merge/deploy automatizado é a Release Executor Bridge dedicada, usando a política e os gates de `docs/agentes.md`, evidência de CI, SHA fixado, permissões próprias, audit log, smoke e rollback seguro. O worker de tarefas não pode invocar a ponte nem conceder permissão a si mesmo.
+- R3, mudança de política/permissões, secrets, migration crítica ou risco de dados/financeiro exige o gate humano previsto na política. Evidência ausente ou token/configuração inválida deve falhar fechado.
+- Não leia, exiba, copie ou altere secrets; credenciais só são configuradas nos mecanismos oficiais da plataforma. Uma autorização humana vale apenas para a ação explicitamente autorizada.
