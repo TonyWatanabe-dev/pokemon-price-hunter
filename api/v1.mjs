@@ -43,6 +43,11 @@ const cache = new Map();
 export const _cache = cache;                            // testes
 
 const intIn = (v, d, lo, hi) => { const n = Number.parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
+// Número estrito (sem sufixo, hexa ou expoente): "10abc" não vira 10 em silêncio; vazio segue o padrão de intIn.
+const NUM_RE = /^[+-]?\d+(\.\d+)?$/;
+const intStrict = (name, v, d, lo, hi) => { const t = String(v).trim(); if (t && !NUM_RE.test(t)) throw new HttpError(400, `${name} inválido`); return intIn(t, d, lo, hi); };
+// Preço máximo: decimal simples ≥ 0 ("12.5"); "0x10", "1e3", "Infinity" e negativos → 400.
+const maxPrice = (v) => { const s = str(v, 12) || ''; if (s && !/^\d+(\.\d+)?$/.test(s)) throw new HttpError(400, 'preço máximo inválido'); return s; };
 const str = (v, max = 80) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
 const bool = (v) => v === '1' || v === 'true' || v === 'sim';
 // Só parâmetros que a rota lê entram na chave do cache: "?x=1", "?x=2"... não enchem o cache nem forçam consultas repetidas.
@@ -76,20 +81,20 @@ function route(segs, qs) {
     const faixa = str(qs.get('faixa'), 12) || null; if (faixa && !['excelente', 'boa', 'normal', 'baixa'].includes(faixa)) throw new HttpError(400, 'faixa inválida (excelente, boa, normal, baixa)');
     const ordem = str(qs.get('ordem'), 12) || 'score'; if (!Object.keys(DB.OPP_SORTS).includes(ordem)) throw new HttpError(400, `ordem inválida (use: ${Object.keys(DB.OPP_SORTS).join(', ')})`);
     const colecao = str(qs.get('colecao'), 40) || null; if (colecao && !SLUG_RE.test(colecao)) throw new HttpError(400, 'coleção inválida');
-    const minimo = qs.get('minimo') != null ? intIn(qs.get('minimo'), 0, 0, 100) : null;
+    const minimo = qs.get('minimo') != null ? intStrict('minimo', qs.get('minimo'), 0, 0, 100) : null;
     const ofertas = str(qs.get('ofertas'), 10) || ''; if (ofertas && ofertas !== 'todas') throw new HttpError(400, 'ofertas inválido (use: todas)');
     // categoria do site: tipo do produto (etb, booster_box, blister_3...) ou grupo (Boosters, Blisters, Coleções...)
     const categoria = str(qs.get('categoria'), 30) || null;
     if (categoria && !SITE.GROUP_ORDER.includes(categoria) && !/^[a-z][a-z0-9_]{0,29}$/.test(categoria)) throw new HttpError(400, `categoria inválida (tipo do produto ou grupo: ${SITE.GROUP_ORDER.join(', ')})`);
     const referencia = str(qs.get('referencia'), 10) || null;
     if (referencia && !Object.keys(DB.OPP_REFERENCES).includes(referencia)) throw new HttpError(400, `referencia inválida (use: ${Object.keys(DB.OPP_REFERENCES).join(', ')})`);
-    const abaixo = qs.get('abaixo') != null ? intIn(qs.get('abaixo'), 0, 0, 100) : null;                          // % mínimo abaixo da referência atual
-    const confiancaMinima = qs.get('confianca_minima') != null ? intIn(qs.get('confianca_minima'), 0, 0, 100) : null;   // % (0–100)
+    const abaixo = qs.get('abaixo') != null ? intStrict('abaixo', qs.get('abaixo'), 0, 0, 100) : null;                          // % mínimo abaixo da referência atual
+    const confiancaMinima = qs.get('confianca_minima') != null ? intStrict('confianca_minima', qs.get('confianca_minima'), 0, 0, 100) : null;   // % (0–100)
     // produto: id ou slug (página do produto). Com ofertas=todas traz a nota oficial de cada oferta avaliada do produto.
     const produto = str(qs.get('produto'), 80) || null; if (produto && !SLUG_RE.test(produto)) throw new HttpError(400, 'produto inválido');
     // loja: id da loja (filtro da página); max: preço até R$ (total quando o frete é conhecido, senão o preço do produto)
     const loja = str(qs.get('loja'), 60) || null; if (loja && !SLUG_RE.test(loja)) throw new HttpError(400, 'loja inválida');
-    const maxS = str(qs.get('max'), 12) || ''; if (maxS && !(Number.isFinite(Number(maxS)) && Number(maxS) >= 0)) throw new HttpError(400, 'preço máximo inválido');
+    const maxS = maxPrice(qs.get('max'));
     return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto,
       loja, max: maxS ? Number(maxS) : null } };
   }
@@ -101,7 +106,7 @@ function route(segs, qs) {
       const modo = str(qs.get('modo'), 10) || 'guardar'; if (!['guardar', 'abrir'].includes(modo)) throw new HttpError(400, 'modo inválido');
       const ordem = str(qs.get('ordem'), 10) || ''; if (ordem && !['score', 'disc', 'price', 'ppb', 'new'].includes(ordem)) throw new HttpError(400, 'ordem inválida');
       const grupo = str(qs.get('grupo'), 20) || ''; if (grupo && !SITE.GROUP_ORDER.includes(grupo)) throw new HttpError(400, 'grupo inválido');
-      const max = str(qs.get('max'), 12) || ''; if (max && !(Number.isFinite(Number(max)) && Number(max) >= 0)) throw new HttpError(400, 'preço máximo inválido');
+      const max = maxPrice(qs.get('max'));
       const sp = intIn(qs.get('pagina'), 1, 1, 1000); const sl = intIn(qs.get('limite'), 48, 1, 60);
       return { name: 'site-produtos', kind: 'site', page: sp, limit: sl, F: { mode: modo, sort: ordem, group: grupo, col: str(qs.get('colecao'), 40) || '', store: str(qs.get('loja'), 60) || '',
         type: str(qs.get('tipo'), 40) || '', max, below: bool(qs.get('abaixo')), stock: qs.get('estoque') !== '0', semref: bool(qs.get('semref')) } };
