@@ -109,6 +109,7 @@ Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais i
   3. Rodar o Dispatcher manualmente.
   4. Conferir marcador, execução do worker, PR com `Closes #N`, CI e label `executor:done`.
   5. Rodar o Dispatcher de novo e confirmar que não há segundo despacho.
+
 ## Evidências do primeiro smoke test do Dispatcher — #247
 
 **Estado atual: PENDENTE.** A label `tarefa:aprovada` não comprova que o despacho foi executado. Só marcar o teste como concluído quando houver evidências verificáveis dos itens abaixo.
