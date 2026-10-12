@@ -1,6 +1,6 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 11/10/2026 às 21:56 (America/Sao_Paulo, UTC−03:00)  
+> **Atualizado em:** 12/10/2026 às 05:55 (America/Sao_Paulo, UTC−03:00)
 > **Base consultada:** `main` em `eb6554a1b84a88ffe0e45cbfb647518748e51e5e` (após PR #228); produção (Vercel), última evidência registrada, em `f66c929e10d50d6eae7cfb8ff4508599554a4e6c` (#217).  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -25,6 +25,27 @@ Detalhamento completo das responsabilidades, limites, dependências, status de i
 - **Relatórios:** atualizar este arquivo somente com evidências reais, inclusive ao final de cada fase. O relatório de fase inclui critérios de saída, PRs/commits, CI, merges/deploys/smoke, métricas disponíveis, estabilidade, pendências e fase seguinte.
 - **Canal do usuário:** o monitor do ChatGPT deve apresentar os relatórios quando uma fase completar seus critérios e notificar antes quando existir ação crítica realmente não aprovável automaticamente. Sem atualizações repetitivas a cada PR; não confundir a verificação horária do monitor com alerta instantâneo.
 - **Bloqueio:** registrar no GitHub evidência, impacto, recomendação e uma única decisão necessária. Continuar tarefas independentes e seguras enquanto o bloqueio persistir.
+
+
+## Atualização operacional — 12/10/2026 (pós-PRs #252 e #250)
+
+### Evidências confirmadas
+- PR [#252](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/252) integrada: `claude_despacho` permite explicitamente `github-actions` e o teste de contrato restringe a exceção à etapa de despacho; sem wildcard e sem alteração do caminho acionado por `issues`.
+- PR [#250](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/250) integrada: `.github/workflows/dispatcher.yml` contém `workflow_run` para iniciar o Dispatcher após o workflow “Vigia do robô” concluído na `main`, além do cron e do acionamento manual.
+- O run [Dispatcher #5](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38225705913) terminou com sucesso antes do merge da #250, mas a #247 ficou em backoff até `2026-10-12T08:59:02Z` (05:59, horário de Brasília). Esse run não comprova o novo gatilho pós-merge nem a execução bem-sucedida da Claude Code Action.
+- A última execução observada de “Vigia do robô” antes do merge da #250 foi [run #38226234736](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38226234736), às 08:52 UTC. É anterior ao merge; portanto, ainda falta evidência de um evento `workflow_run` pós-merge.
+
+### Próximas verificações obrigatórias
+1. Capturar uma execução de “Vigia do robô” concluída na `main` depois do merge da #250 e confirmar que ela inicia automaticamente o Dispatcher.
+2. No Dispatcher, confirmar o job `despacho` (não apenas `plano`) e verificar se a #247 foi despachada após o backoff, sem duplicar a chave nem remover labels manualmente.
+3. No workflow `Tarefas`, verificar que a Claude Code Action executa sem a recusa de ator não humano e que o agente abre a PR documental esperada.
+4. Registrar run IDs, commit, logs, PR e CI. Não declarar autonomia ponta a ponta concluída antes dessas evidências.
+
+### Estado executivo atualizado
+- Gatilho de workflow: implementado na `main`; validação automática pós-merge pendente.
+- Despacho: o Dispatcher #5 executou com sucesso, mas respeitou o backoff da #247; o despacho posterior ao prazo ainda precisa ser comprovado.
+- Claude Code: a allowlist restrita foi integrada; execução bem-sucedida após a correção ainda não comprovada.
+- Gate de segurança: não usar bypass de branch protection, não usar `allowed_bots: "*"` e não manipular manualmente a chave/labels para contornar backoff.
 
 ## Estado executivo
 
