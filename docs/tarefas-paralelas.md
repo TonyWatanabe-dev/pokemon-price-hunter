@@ -37,6 +37,8 @@ Com mais issues do que vagas, as excedentes ficam na fila do GitHub (até 100 po
 **Operação com 10 vagas (configurada em 12/10/2026):**
 - **Colisão de vaga:** a vaga é `issue % 10`. Issues com o mesmo último dígito (por exemplo #282 e #292) usam a mesma vaga, e a segunda espera a primeira. Na prática, rodam de 8 a 10 em paralelo.
 - **Mesma área, uma por vez:** o Dispatcher não despacha duas tarefas com áreas declaradas em comum enquanto uma delas está em curso. Tarefas no `index.html` andam em série. Para ocupar as vagas, monte levas com áreas distintas.
+- **Sem capacidade do Claude:** se uma sessão é recusada antes de trabalhar (1 turno ou menos, zero tokens, sem PR, conforme a telemetria), o Dispatcher **não conta a tentativa** e **pausa todo o despacho por 30 min**. Isso evita gastar tentativas e mandar tarefas sãs para a quarentena. Incidente de origem: leva 3, 12/10 14:52 UTC, com 8 de 10 sessões recusadas numa rajada.
+- **Rajada limitada:** no máximo 4 despachos novos por ciclo (variável `DISPATCHER_POR_CICLO`, 1–10). As 10 vagas enchem em 2 ou 3 ciclos, sem abrir 10 sessões no mesmo segundo.
 - **Teto de consumo:** dez sessões simultâneas consomem a cota da assinatura Claude mais rápido. Recomenda-se `DISPATCHER_ORCAMENTO_USD` (por exemplo, 30 em 24 h). O custo medido por tarefa em 12/10 foi de US$ 0,13–0,31 (custo reportado a preço de API).
 - **Gargalo:** cada PR ainda depende do merge do proprietário até a Ponte operar o merge R0/R1. Para isso faltam o `qa-review` como check obrigatório, a configuração da auditoria (#267) e o `VERCEL_TOKEN`.
 
