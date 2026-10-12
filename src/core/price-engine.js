@@ -16,6 +16,8 @@
 // • Variação N dias: (preço atual − melhor preço do dia D−N) / melhor preço do dia D−N; sem esse dia, nulo.
 import { marketReferenceOf, resolveCurrentReference } from './references.js';
 export const ENGINE_VERSION = 'pe-1';
+// Fonte única dos limites de plausibilidade/anomalia e do mínimo de dias de histórico:
+// src/score.js (isAnomalous) e src/history.js (backfill, recordDay, MIN_HIST_DAYS) importam daqui.
 export const MIN_HISTORY_DAYS = 3;
 export const PLAUSIBLE_MIN = 0.55;
 export const PLAUSIBLE_MAX = 3;

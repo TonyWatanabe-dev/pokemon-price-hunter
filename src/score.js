@@ -1,4 +1,6 @@
 // Preço Copag, anomalia e STORE_SCORE. A nota de oportunidade é só a oficial (Opportunity Engine, src/core/).
+// Limites de anomalia (0,55× e 3×) vêm do Price Engine: uma só fonte para robô, histórico e motor.
+import { PLAUSIBLE_MIN, PLAUSIBLE_MAX } from './core/price-engine.js';
 const MARKETPLACE_HOSTS = /(mercadolivre|mercadolibre|amazon|shopee|magazineluiza|magalu|americanas|casasbahia|pontofrio|extra\.com|carrefour|kabum|aliexpress|submarino|buscape|zoom\.com)/i;
 
 export function copagStatus(product) {
@@ -36,10 +38,10 @@ export function storeScore(store, sourceStats = {}) {
 
 // Preço anormal: desconto Copag > 45% ou < 55% da média monitorada. Vai para investigação, nunca para o ranking.
 export function isAnomalous(price, msrp, marketAvg) {
-  if (msrp && price < msrp * 0.55) return true;
-  if (marketAvg && price < marketAvg * 0.55) return true;
+  if (msrp && price < msrp * PLAUSIBLE_MIN) return true;
+  if (marketAvg && price < marketAvg * PLAUSIBLE_MIN) return true;
   // Três vezes acima da referência quase sempre é anúncio casado errado (ex.: box anunciada como blister).
-  if (msrp && price > msrp * 3) return true;
-  if (marketAvg && price > marketAvg * 3) return true;
+  if (msrp && price > msrp * PLAUSIBLE_MAX) return true;
+  if (marketAvg && price > marketAvg * PLAUSIBLE_MAX) return true;
   return false;
 }

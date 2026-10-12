@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import { readJson, readJsonl, dataPath } from './db.js';
 import { trustedPoint } from './distrust.js';
+import { PLAUSIBLE_MIN, PLAUSIBLE_MAX, MIN_HISTORY_DAYS } from './core/price-engine.js';
 
 const KEEP_DAYS = 180;
 const day = (iso) => String(iso).slice(0, 10);
@@ -42,7 +43,7 @@ export function backfill(storeNames) {
     const vals = rows.map((x) => x.v).sort((a, b) => a - b); const med = vals[Math.floor(vals.length / 2)];
     const byDay = {};
     for (const { sid, d, v } of rows) {
-      if (v < med * 0.55 || v > med * 3) continue;
+      if (v < med * PLAUSIBLE_MIN || v > med * PLAUSIBLE_MAX) continue;
       const cur = (byDay[d] ||= {})[sid];
       if (!cur || v < cur.v) byDay[d][sid] = { name: storeNames[sid] || sid, d, v };
     }
@@ -60,7 +61,7 @@ export function recordDay(offers, products, T) {
   for (const o of offers) {
     if (o.stock !== 'IN_STOCK' || o.stale || o.anomalous || !(o.total > 0)) continue;
     const msrp = products[o.productId]?.msrp;
-    if ((msrp && o.total < msrp * 0.55) || o.total < med[o.productId] * 0.55) continue; // preço suspeito não entra no gráfico
+    if ((msrp && o.total < msrp * PLAUSIBLE_MIN) || o.total < med[o.productId] * PLAUSIBLE_MIN) continue; // preço suspeito não entra no gráfico
     const s = ((by[o.productId] ||= {})[o.storeId]);
     if (!s || o.total < s.v) by[o.productId][o.storeId] = { name: o.storeName, d, v: o.total };
   }
@@ -85,7 +86,7 @@ export function trimJsonl(file, days = 45) {
 // Resumo do histórico de um produto (menor preço do dia entre todas as lojas), usado no ranking "maior queda".
 // Só calcula o que os dados sustentam: com menos de 2 dias, não há queda.
 // Pontos inválidos (dia malformado, valor ausente, zero ou negativo) são descartados, nunca viram preço; duplicatas do mesmo dia ficam com o menor.
-export const MIN_HIST_DAYS = 3;
+export const MIN_HIST_DAYS = MIN_HISTORY_DAYS; // mesmo mínimo do Price Engine
 export function cleanPoints(pts) {
   const byDay = new Map(); let invalid = 0; let duplicates = 0;
   for (const p of Array.isArray(pts) ? pts : []) {
