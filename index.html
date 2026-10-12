@@ -35,7 +35,7 @@
   --r-card:14px; --r-input:10px; --r-pill:999px;
   --ease-out:cubic-bezier(.23,1,.32,1); --ease-drawer:cubic-bezier(.32,.72,0,1);
   --gutter:16px; --btn:#1B2C74; --btn-ink:#FFFFFF; --btn-hover:#24398F;
-  --hot:#D9432A; --img-bg:#F3F4F7; --line-soft:#E3E7EF; --r-lg:20px; --r-md:14px; --r-sm:10px;
+  --hot:#C93D25; --img-bg:#F3F4F7; --line-soft:#E3E7EF; --r-lg:20px; --r-md:14px; --r-sm:10px;
   --shadow-sm:0 1px 2px rgb(19 31 73 / .05),0 2px 8px rgb(19 31 73 / .04);
   color-scheme:light;
 }
@@ -200,7 +200,7 @@ dialog.sheet.small{max-height:70dvh}
 .mini-img{display:block;height:38px;width:76px;background:center/contain no-repeat}
 .mini-t{font-size:13px;color:var(--cover-muted);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mini-t b{color:var(--cover-ink)}
-.refresh{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--cover-2);color:var(--cover-ink);border-radius:var(--r-pill);padding:7px 12px;font-size:13px;font-weight:600;flex:none;transition:transform 160ms var(--ease-out)}
+.refresh{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;background:var(--cover-2);color:var(--cover-ink);border-radius:var(--r-pill);min-height:44px;min-width:44px;padding:9px 14px;font-size:13px;font-weight:600;flex:none;transition:transform 160ms var(--ease-out)}
 .refresh:active{transform:scale(.95)}
 .refresh.spin .icon{animation:spin 800ms linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -254,7 +254,7 @@ dialog.sheet.small{max-height:70dvh}
 .pk-fav{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--surface);display:grid;place-items:center;box-shadow:0 1px 4px rgb(0 0 0 / .18)}
 .pk-fav .icon{width:16px;height:16px;color:#E5484D}
 .alertbox{background:var(--sunk);border-radius:14px;padding:12px;margin:0 0 14px}
-.alertbox h3{margin:0 0 2px;font-size:15.5px;display:flex;align-items:center;gap:6px}
+.alertbox h2{margin:0 0 2px;font-size:15.5px;display:flex;align-items:center;gap:6px}
 .alertbox p{margin:0 0 10px;font-size:13.5px;color:var(--muted)}
 .alertbox .arow{display:flex;gap:8px;align-items:stretch}
 .alertbox .arow input{flex:1 1 120px;min-width:0;min-height:44px;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-input);padding:9px 12px;font-size:16px}
@@ -296,9 +296,9 @@ a.navbtn{text-decoration:none}
 .alertbox .rs{font-weight:700;color:var(--muted);margin-right:-2px}
 .alertbox.hit{background:var(--ok-bg)}
 .alertbox .hitline{color:var(--ok);font-weight:700}
-.alertbox.saved h3 .icon{animation:bell 700ms var(--ease-out);transform-origin:50% 10%}
+.alertbox.saved h2 .icon{animation:bell 700ms var(--ease-out);transform-origin:50% 10%}
 @keyframes bell{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
-@media (prefers-reduced-motion:reduce){.favbtn.pop .icon,.alertbox.saved h3 .icon{animation:none}}
+@media (prefers-reduced-motion:reduce){.favbtn.pop .icon,.alertbox.saved h2 .icon{animation:none}}
 /* AuthGate */
 .acc-head{display:flex;align-items:center;gap:10px}.acc-head h2{flex:1}
 .gate-ctx{display:flex;align-items:center;gap:12px;background:var(--sunk);border-radius:14px;padding:8px;margin:0 0 16px}
@@ -378,8 +378,8 @@ a.navbtn{text-decoration:none}
 .qchip small{color:var(--muted)}
 @media (hover:hover) and (pointer:fine){.qchip:hover{border-color:var(--ink)}}
 .home-opp,.home-all{margin-top:8px}
-.seeall{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none}.seeall .chev{transform:rotate(-90deg);width:16px;height:16px}
-.page-title h2{display:flex;align-items:center;gap:8px}
+.seeall{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:10px 0;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none}.seeall .chev{transform:rotate(-90deg);width:16px;height:16px}
+.page-title :is(h1,h2){display:flex;align-items:center;gap:8px}
 .home-all .seg{margin:4px 0 0}
 .home-all .filters{margin-top:12px}
 /* Página de produto */
@@ -387,8 +387,8 @@ a.navbtn{text-decoration:none}
 .pp>.crumbs{grid-area:crumbs}.pp>.pp-head{grid-area:head}.pp>.pp-side{grid-area:side}.pp>.pp-main{grid-area:main}
 @media (min-width:1000px){.pp{grid-template-columns:minmax(0,1fr) 380px;grid-template-areas:"crumbs crumbs" "head side" "main side";align-items:start;gap:18px 28px}.pp-side{position:sticky;top:64px}}
 .pp-side,.pp-main{display:flex;flex-direction:column;gap:14px;min-width:0}
-.crumbs{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);flex-wrap:wrap}
-.crumbs a{color:var(--muted);text-decoration:none}.crumbs a:hover{color:var(--ink);text-decoration:underline}
+.crumbs{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);flex-wrap:wrap;margin:-8px 0}
+.crumbs a{display:inline-flex;align-items:center;min-height:44px;padding:0 2px;color:var(--muted);text-decoration:none}.crumbs a:hover{color:var(--ink);text-decoration:underline}
 .crumbs .chev{transform:rotate(-90deg);width:12px;height:12px}
 .crumbs span{color:var(--ink);font-weight:500}
 .pp-head{display:grid;grid-template-columns:140px 1fr;gap:18px;align-items:start;background:var(--surface);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
@@ -450,7 +450,7 @@ a.navbtn{text-decoration:none}
 .pod-age{margin:2px 0 0;font-size:11.5px}
 .pp-opp:empty{display:none}.ppopp{margin-bottom:16px}.ppopp .eyebrow{display:flex;align-items:center;gap:6px}.ppopp .meter{margin-top:10px}.ppopp .btn{margin-top:12px}
 [data-old] .photo,[data-old] .opp-price,[data-old] .pod-price,[data-old] .meter{opacity:.55;filter:grayscale(.6)}
-.opp-stores{position:relative;z-index:4;display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}.opp-stores .icon{width:14px;height:14px}
+.opp-stores{position:relative;z-index:4;display:inline-flex;align-items:center;gap:6px;margin-top:2px;min-height:44px;padding:10px 0;font-size:13px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px}.opp-stores .icon{width:14px;height:14px}
 .so .btn{padding:10px 16px;font-size:14px;flex:none}
 .so-more{margin-top:12px}.so-more summary{font-size:14.5px}
 .so-group{margin:16px 0 8px;font-size:15px}.so-group small{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--muted)}
@@ -526,7 +526,7 @@ a.navbtn{text-decoration:none}
 .fsheet-f .field select{padding-right:34px}
 
 
-.page-title h2 small{font-size:13px;color:var(--muted);font-weight:500;margin-left:4px}
+.page-title :is(h1,h2) small{font-size:13px;color:var(--muted);font-weight:500;margin-left:4px}
 .icon.tgi{color:var(--e-water)}
 /* Abertura do pacote: o pacote rasga, as cartas saem dele, vão para o lugar e viram (uma vez por sessão) */
 @property --fa{syntax:"<angle>";inherits:false;initial-value:0deg}
@@ -631,7 +631,7 @@ a.navbtn{text-decoration:none}
 .stage .sbox-lg .sbox-in:focus-within{border-color:rgb(255 207 51 / .7);box-shadow:0 0 0 4px rgb(255 207 51 / .16),0 18px 50px rgb(0 0 0 / .35)}
 .stage .sbox-x{color:rgb(255 255 255 / .7)}.stage .sbox-x:hover{background:rgb(255 255 255 / .1);color:#fff}
 /* UX: pausa das notas e frescor no topo da Home */
-.pause h3{margin:0 0 6px}.stage-empty.pause h3{color:#fff}.pause p{margin:6px 0 0}
+.pause :is(h2,h3){margin:0 0 6px}.stage-empty.pause h3{color:#fff}.pause p{margin:6px 0 0}
 .pause-act{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px!important}
 body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatualizado"] .live-dot,body[data-fresh="indisponivel"] .live-dot{background:#FF8478}
 .stage-empty{max-width:560px;margin:48px auto 0;text-align:center;color:rgb(228 233 255 / .75);padding:24px;border:1px dashed rgb(255 255 255 / .2);border-radius:20px}
@@ -660,7 +660,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 @keyframes lineUp{from{transform:translateY(108%)}}
 @keyframes softIn{from{opacity:0;transform:translateY(10px);filter:blur(4px)}}
 
-/* Pódio (6C.1): três destaques editoriais FOIL → ULTRA RARA → RARA em cartões claros de carta. Sem medalhas e sem
+/* Pódio (6C.1): três destaques editoriais 1º → 2º → 3º lugar em cartões claros de carta. Sem medalhas e sem
    animação contínua. O rótulo é só apresentação da posição; não muda nota, faixa nem a escala global. */
 :root{--tcg-frame:#D6CCB6;--tcg-silver:linear-gradient(135deg,#EEF1F6,#AAB3C3 30%,#FFFFFF 52%,#9AA4B6 74%,#E3E7EE);
   --tcg-holo:linear-gradient(120deg,#d9c8ff,#bfeaff 24%,#cdf7df 44%,#fff1c4 64%,#ffd0e6 84%,#d9c8ff);
@@ -748,16 +748,13 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
   .pod:not([data-r="1"]) .ring{width:38px;height:38px;font-size:12.5px}
   .pod:not([data-r="1"]) .pod-store{flex-basis:100%}.pod:not([data-r="1"]) .pod-cta{padding:10px 8px;gap:4px;font-size:13px;text-align:center}
   .pod:not([data-r="1"]) .pod-name{font-size:15px}.pod:not([data-r="1"]) .pod-off span{display:none}.pod:not([data-r="1"]) .pod-price s{display:block;width:100%}.pod:not([data-r="1"]) .pod-ref{display:block;width:100%;font-size:12.5px}
-  .pod-rank{left:12px;font-size:10px;letter-spacing:.16em}
+  .pod-rank{left:12px;font-size:11px;letter-spacing:.14em}
   .stage{padding-bottom:48px}.stage-copy{margin-top:30px}
 }
 
-/* Escala global de raridade (6C.1) nos cards fora do pódio: pela nota da API, intensidade pela confiança. */
+/* Escala visual (6C.1) nos cards fora do pódio: moldura pela nota da API, intensidade pela confiança; sem texto de raridade. */
 .rc-row{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap;margin-top:8px}
 .rc-row .opp-conf{margin:0}
-.rar-line{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:10.5px;font-weight:700;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.rar-line .sym{font-size:11px;letter-spacing:0;color:var(--rar-c,var(--muted))}
-.deal[data-rar="u"]{--rar-c:#4F78B8}.deal[data-rar="r"]{--rar-c:#A8873F}.deal[data-rar="ur"]{--rar-c:#7E8AA0}.deal[data-rar="sr"]{--rar-c:#9A6BD8}
 .opp-card .tcg-frame{position:absolute;inset:-1px;border-radius:inherit;padding:var(--fw,1.5px);pointer-events:none;z-index:6;opacity:0;
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
 .opp-card[data-rar="u"]>.tcg-frame{opacity:calc(.8 * var(--int,1));background:#4F78B8;--fw:1px}
@@ -826,7 +823,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 /* Baralho: cartas empilhadas atrás */
 [data-cat="deck"] .cat-deco::before,[data-cat="deck"] .cat-deco::after{content:"";position:absolute;left:50%;top:50%;width:46%;aspect-ratio:63/88;border-radius:10px;border:2px solid color-mix(in srgb,var(--c1) 35%,transparent);background:color-mix(in srgb,var(--c1) 8%,transparent)}
 [data-cat="deck"] .cat-deco::before{transform:translate(-62%,-50%) rotate(-9deg)}[data-cat="deck"] .cat-deco::after{transform:translate(-38%,-50%) rotate(8deg)}
-.cat-chip{position:absolute;left:12px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 7px;border-radius:999px;background:var(--c1);color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 12px color-mix(in srgb,var(--c1) 40%,transparent)}
+.cat-chip{position:absolute;left:12px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 7px;border-radius:999px;background:color-mix(in srgb,var(--c1) 76%,#000);color:#fff;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 12px color-mix(in srgb,var(--c1) 40%,transparent)}
 .cat-chip .icon{width:13px;height:13px}
 .deal[data-cat] .deal-col{color:color-mix(in srgb,var(--c1) 70%,var(--ink))}
 @media (hover:hover) and (pointer:fine){.deal:hover .cat-media .photo img{transform:scale(1.04) translateY(-2px)}}
@@ -839,6 +836,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .ra{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 8px 3px 5px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:filter 160ms ease}
 .ra img{width:14px;height:14px;border-radius:3px;flex:none}
 .ra b{font-weight:700}.ra span{font-weight:600;opacity:.8}.ra em{font-style:normal;font-weight:800}
+.ra::before{content:"";position:absolute;inset:-10px -4px}   /* área de toque ≥44px sem mudar o layout */
 .ra-top,.ra-ok{background:#DCF5E6;color:#0B6B3A}.ra-good{background:#E8F6DA;color:#3D6B12}.ra-mid{background:#FFF3CC;color:#7A5300}.ra-bad{background:#FFE3D6;color:#9A3412}.ra-worst{background:#FDE0DE;color:#A11B12}
 .ra-none{background:var(--sunk);color:var(--muted);border-color:var(--line-soft)}.ra-none img{filter:grayscale(1);opacity:.7}
 :root[data-theme="dark"] .ra-top,:root[data-theme="dark"] .ra-ok{background:rgb(76 212 154 / .14);color:#6FE0AE}
@@ -879,8 +877,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
   .radar .spark i{transform-origin:bottom;transition:transform 700ms cubic-bezier(.16,1,.3,1) calc(var(--j) * 22ms)}
   .drops:not(.seen) .dl-v s{text-decoration-color:transparent}
   .drops .dl-v s{transition:text-decoration-color 300ms ease calc(var(--j) * 90ms + 200ms)}
-  .drops:not(.seen) .dl-v b,.drops:not(.seen) .dl-pct{opacity:0;transform:translateY(6px)}
-  .drops .dl-v b,.drops .dl-pct{transition:opacity 400ms ease calc(var(--j) * 90ms + 420ms),transform 500ms cubic-bezier(.16,1,.3,1) calc(var(--j) * 90ms + 420ms)}
+  /* Lote A: preço novo e % da queda ficam sempre visíveis (antes só apareciam depois da revelação); só o risco do preço antigo anima */
   .deals:not(.seen) .meter i b{animation:none;transform:scaleX(0)}
   .cascade .deal:not(.seen){opacity:0;transform:translateY(14px) scale(.98)}
   .cascade .deal{transition:opacity 500ms ease var(--cd,0ms),transform 700ms cubic-bezier(.16,1,.3,1) var(--cd,0ms)}
@@ -894,7 +891,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .sh2 h2{margin:0;font-size:clamp(21px,2.2vw,26px);font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
 .sh2 p{margin:4px 0 0;color:var(--muted);font-size:15px;max-width:60ch}
 .sh2-i{width:22px;height:22px;color:var(--hot)}
-.seeall{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none;white-space:nowrap;padding:6px 0}
+.seeall{display:inline-flex;align-items:center;gap:4px;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none;white-space:nowrap;min-height:44px;padding:10px 0}
 .seeall .chev{transform:rotate(-90deg);width:16px;height:16px;transition:transform 160ms var(--ease-out)}
 .seeall:hover .chev{transform:rotate(-90deg) translateY(2px)}
 .home-opp,.radar,.duo,.hl,.pre,.home-all{margin-top:64px}
@@ -919,6 +916,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .deal-badge i{width:7px;height:7px;border-radius:50%;background:var(--sc);flex:none}
 .deal-badge.pre{color:var(--warn)}.deal-badge.muted{color:var(--muted)}
 .deal-fav{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);display:grid;place-items:center;box-shadow:0 1px 3px rgb(0 0 0 / .1);color:var(--muted);transition:transform 160ms var(--ease-out),color 160ms ease}
+.deal-fav::before{content:"";position:absolute;inset:-4px;border-radius:50%}   /* 36px visível, 44px de toque */
 .deal-fav .icon{width:18px;height:18px}.deal-fav[aria-pressed="true"]{color:#E5484D}.deal-fav:active{transform:scale(.88)}
 @media (hover:hover) and (pointer:fine){.deal-fav:hover{color:#E5484D}}
 .deal-body{display:flex;flex-direction:column;padding:16px 18px 16px;flex:1;min-width:0}
@@ -938,11 +936,13 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .meter i b{display:block;height:100%;border-radius:2px;background:var(--sc);transform-origin:left;animation:meterIn 900ms cubic-bezier(.16,1,.3,1) both}
 @keyframes meterIn{from{transform:scaleX(0)}}
 .meter strong{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}.meter small{font-size:11px;color:var(--muted);font-weight:500}
-.deal-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px}
+.deal-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 10px;margin-top:auto;padding-top:14px}
 .deal-body>.meter+.deal-foot,.deal-body>.deal-price+.deal-foot{margin-top:14px;border-top:1px solid var(--line-soft)}
 .deal-store{font-size:13px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.deal-store em{font-style:normal;color:var(--muted)}
-.deal-cta{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:var(--hot);text-decoration:none;white-space:nowrap;padding:6px 0;transition:gap 160ms var(--ease-out)}
-.deal-cta .icon{width:15px;height:15px}.deal-cta:hover{gap:8px}.deal-cta:active{opacity:.7}
+/* Lote A: uma só ação primária por cartão, no mesmo botão preenchido do pódio (.pod-cta), com 44px de toque */
+.deal-cta{position:relative;z-index:2;flex:1 1 100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 14px;border-radius:999px;background:var(--btn);color:var(--btn-ink);font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap;transition:transform 140ms var(--ease-out),filter 160ms ease}
+.deal-cta .icon{width:15px;height:15px}.deal-cta:active{transform:scale(.96)}
+@media (hover:hover) and (pointer:fine){.deal-cta:hover{filter:brightness(1.08)}}
 .deal.oos .deal-ph,.deal.pre .deal-ph,.deal.none .deal-ph{opacity:.5;filter:saturate(.3)}
 .deal.oos .deal-price b{color:var(--muted)}
 .deal.foil .deal-ph{isolation:isolate}
@@ -1103,7 +1103,7 @@ button.score{background:none;padding:0;color:var(--ink);font-weight:700}
 
 /* Página do fichário: bolsos */
 .page-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 2px 10px}
-.page-title h2{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em}
+.page-title :is(h1,h2){margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em}
 .page-title span{font-size:13.5px;color:var(--muted)}
 .binder{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:var(--sunk);border-radius:18px;padding:10px}
 @media (min-width:700px){.binder{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:12px}}
@@ -1137,20 +1137,23 @@ details.more p{margin:0 2px 12px;color:var(--muted);font-size:14px;max-width:65c
 
 /* Vazio, carregando, erro */
 .empty{background:var(--surface);border:1.5px dashed var(--line);border-radius:18px;padding:28px 20px;text-align:center}
-.empty h3{margin:0 0 6px;font-size:18px}
+.empty :is(h2,h3){margin:0 0 6px;font-size:18px}
 .empty p{margin:0 auto 16px;color:var(--muted);max-width:44ch;font-size:15px}
 .skel{background:linear-gradient(90deg,var(--sunk) 25%,var(--line) 37%,var(--sunk) 63%);background-size:400% 100%;animation:sh 1.3s ease infinite;border-radius:var(--r-card)}
 @keyframes sh{0%{background-position:100% 0}100%{background-position:0 0}}
 
 /* Tabelas (lojas, comparador) */
 .panel{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
-.panel h2{font-size:19px;margin:0;padding:16px 16px 4px}
+.panel h2,.panel .panel-h1{font-size:19px;margin:0;padding:16px 16px 4px}
 .panel > p{margin:0;padding:0 16px 12px;color:var(--muted);font-size:14px;max-width:65ch}
 .tablewrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:14.5px}
 th{text-align:left;font-weight:600;color:var(--muted);font-size:12.5px;padding:10px 12px;white-space:nowrap;background:var(--sunk)}
 td{padding:11px 12px;border-top:1px solid var(--line);vertical-align:top}
 td.r,th.r{text-align:right}
+caption.tcap{caption-side:top;text-align:left;padding:8px 12px 6px;font-size:13px;color:var(--muted)}caption.tcap a{color:var(--ink);font-weight:600}
+/* Lote A: no celular cada linha da tabela Copag vira 2 níveis: produto + preço / fonte e data em small */
+@media (max-width:760px){.cg thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.cg tr.click{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 12px;border-top:1px solid var(--line)}.cg td{display:block;padding:0;border:0}.cg td:nth-child(3){grid-column:1/-1;font-size:13px;color:var(--muted)}.cg td:nth-child(3) br{display:none}.cg td:nth-child(3) br+small::before{content:" · "}.cg td:nth-child(3) small{font-size:13px}}
 tr.click{cursor:pointer}
 @media (hover:hover) and (pointer:fine){tr.click:hover td{background:var(--ground)}}
 .store-list{display:grid;gap:10px}
@@ -1163,7 +1166,7 @@ tr.click{cursor:pointer}
 .tipmeta{display:block;margin-top:4px;font-size:13px;color:var(--muted)}.tipprice{display:inline-block;margin-bottom:6px;white-space:nowrap}
 .foot{margin:40px 2px 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.foot p{margin:0 0 8px;max-width:80ch}.foot b{color:var(--ink)}.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px}.foot-links a{color:var(--ink);font-weight:600}
 .rule-del{margin-left:auto;font-size:14px;font-weight:600;color:var(--bad)}.rule-fix{margin-left:auto;color:var(--muted)}
-.alertbox{margin:16px 0 4px;padding:14px;border-radius:16px;background:var(--sunk)}.alertbox h3{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}.alrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.alertbox .btn.ghost{background:var(--surface);margin-top:8px;width:100%}.alertbox .note{margin:10px 0 0}.alertbox ul{margin:10px 0 0;padding:0;list-style:none;font-size:14px}.alertbox li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.alertbox{margin:16px 0 4px;padding:14px;border-radius:16px;background:var(--sunk)}.alertbox h2{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}.alrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.alertbox .btn.ghost{background:var(--surface);margin-top:8px;width:100%}.alertbox .note{margin:10px 0 0}.alertbox ul{margin:10px 0 0;padding:0;list-style:none;font-size:14px}.alertbox li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
 .rule{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line);font-size:15px}
 .alert{padding:14px 16px;border-top:1px solid var(--line)}
 .alert pre{margin:0;font:inherit;font-size:14.5px;white-space:pre-wrap}
@@ -1296,6 +1299,16 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   .colgrid::-webkit-scrollbar{display:none}
   .colc{scroll-snap-align:start}
   .colc-txt b{font-size:14px}
+}
+/* Lote A: piso tipográfico no celular. Metadados/eyebrows com menos de 12px sobem para 12px e texto corrido com menos de 13px
+   sobe para 13px; só no celular (o desktop fica como está). Contadores e selos puramente decorativos ficam em 11px. */
+@media (max-width:760px){
+  .refnet,.pod-col,.pixk,.meter>span,.meter small,.hchart .mkl,.colc-txt small,.sblock small,.ac-h,.pp-meta dt,.cmp4 span,.msum dd small,.rs-pt small,.pod-age,
+  .hstats span,.hstats small,.why-sum small,.why-in h4,.opp-upd,.tipc small,.ra,.pod-conf,.deal-badge,.deal-col,.spark-l,.spark-r,.hl-k,.pre-st,.sp-k,.pk-state,.tabbar button{font-size:12px}
+  .opp .deals .opp-card .foil-tag{font-size:11px}
+  .tl-top,.off.sm,.sblock em,.acc .fine,.ac-i small,.amz-p small,.amz-s,.so-seller,.so-ship,.opp-ship,.so-foot,.opp-sheet .flbl,.opp-ref,.opp-conf,.opp-why,.tipc-src,
+  .pod:not([data-r="1"]) .pod-ref,.deal-save span,.ai time,.ai-d small,.dl-pct,.dl-sc,.hl-s,.htip,.sp-row small,.fchip small,.field label,.pk-sub,th,.fact span,.colc-txt em,
+  .prow-main small,.prow-price small,.msum dt,.opp-age,.pod-ship,.opp-tag,.refline,.dl-b small,.dl-v s,.hchart .ax,.htip b,.sp-legal,.xf .chip,.pk-col,.pk-store,.fact small{font-size:13px}
 }
 </style>
 </head>
@@ -1443,13 +1456,16 @@ const pixTag=(o)=>o?.priceKind==="pix"?`<em class="pixk" title="Valor para pagam
 /* Reclame Aqui: reputação pública da loja, com link. Sem página ou sem índice também aparece, com o ícone do próprio site. */
 const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-good"],REGULAR:["Regular","ra-mid"],RUIM:["Ruim","ra-bad"],NAO_RECOMENDADA:["Não recomendada","ra-worst"],SEM_INDICE:["Sem índice","ra-none"],EM_ANALISE:["Em análise","ra-none"],INATIVA:["Inativa","ra-none"],NAO_ENCONTRADA:["Sem cadastro","ra-none"]};
 const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
+/* nos cartões o selo é curto e sempre diz de onde vem: "RA 8,2", "RA: sem cadastro", "RA: sem índice" */
+const raShort=(lb,nota)=>nota?`RA ${nota}`:lb==="RA1000"?lb:`RA: ${lb.charAt(0).toLowerCase()+lb.slice(1)}`;
 function raBadge(o,full){
   const r=raOf(o.storeId);if(!r)return"";const [lb,cls]=RA_ST[r.status]||RA_ST.NAO_ENCONTRADA;
   const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(String(o.storeName||"").replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
   const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
-  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(tip)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(nota&&!full?nota:lb)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
+  const vis=full?lb:raShort(lb,nota);const al=full?tip:`${vis} · ${tip}`;
+  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(al)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(vis)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
@@ -1550,7 +1566,7 @@ const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data d
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
-function dealCard(e,opt={}){
+function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas que só têm o H1 antes dos cartões */
   const{p,o,n}=e;const gg=g(p);const abrir=!opt.plain&&F.mode==="abrir"&&view==="deals";
   const r=refOf(p);const d=discOf(p,o);const hasD=!!(o&&r&&d!=null);
   const state=!o?"none":o.stock==="PRE_ORDER"?"pre":!live(o)?"oos":"";
@@ -1565,7 +1581,7 @@ function dealCard(e,opt={}){
     <button class="deal-fav" type="button" data-fav="${esc(p.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(p.collectionName)}</p>
-    <h3 class="deal-name">${esc(label(p))}</h3>
+    <${H} class="deal-name">${esc(label(p))}</${H}>
     ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
@@ -1686,11 +1702,17 @@ function hlTile(k,x,v,u,j){const pr=x.product||{};const p={id:pr.id,type:pr.type
   return`<a class="hl-t" style="--j:${j}" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}" data-p="${esc(pr.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(p,{image:x.offer?.image},"photo hl-ph")}<span class="hl-n">${esc(pr.collection?.name||"")} · ${esc(pr.type_label||pr.name||"")}</span><span class="hl-s">${esc(x.store?.name||"")} · ${money(x.price)}</span></a>`}
 function highlightsOppHTML(){
   if(HOMEOPP.status!=="ok")return"";
-  const tiles=[];const best=HOMEOPP.top[0];const bl=HOMEOPP.below?.reference_comparison;const sv=HOMEOPP.save?.reference_comparison;
-  if(best?.opportunity_score!=null)tiles.push(hlTile("Melhor oportunidade",best,`${best.opportunity_score}<small>/100</small>`,"Opportunity Score",tiles.length));
-  if(bl?.available&&bl.position==="below")tiles.push(hlTile("Mais abaixo da referência",HOMEOPP.below,pctPts(bl.percentage_below),`abaixo ${refOfName(bl.reference_kind)}`,tiles.length));
-  if(sv?.available&&sv.position==="below"&&sv.amount_below>0)tiles.push(hlTile("Maior economia",HOMEOPP.save,money(sv.amount_below),`abaixo ${refOfName(sv.reference_kind)}`,tiles.length));
-  const ppbPool=OFF.filter((o)=>live(o)&&o.perBooster&&P[o.productId]?.copagConfirmed);const ppb=ppbPool.length?ppbPool.reduce((a,b)=>b.perBooster<a.perBooster?b:a):null;
+  /* Lote A: cada produto aparece uma vez nos destaques. Os candidatos vêm na ordem da API (até 4 por métrica); quando o 1º já
+     está em outro cartão, vale o próximo da mesma lista. Sem candidato novo, o cartão da métrica não aparece. */
+  const tiles=[];const used=new Set();const pick=(list,ok)=>(list||[]).find((x)=>x?.product?.id&&!used.has(x.product.id)&&ok(x));
+  const add=(x,html)=>{used.add(x.product.id);tiles.push(html)};
+  const best=pick(HOMEOPP.top,(x)=>x.opportunity_score!=null);
+  if(best)add(best,hlTile("Melhor oportunidade",best,`${best.opportunity_score}<small>/100</small>`,"Opportunity Score",tiles.length));
+  const below=pick(HOMEOPP.below,(x)=>x.reference_comparison?.available&&x.reference_comparison.position==="below");
+  if(below){const bl=below.reference_comparison;add(below,hlTile("Mais abaixo da referência",below,pctPts(bl.percentage_below),`abaixo ${refOfName(bl.reference_kind)}`,tiles.length))}
+  const save=pick(HOMEOPP.save,(x)=>x.reference_comparison?.available&&x.reference_comparison.position==="below"&&x.reference_comparison.amount_below>0);
+  if(save){const sv=save.reference_comparison;add(save,hlTile("Maior economia",save,money(sv.amount_below),`abaixo ${refOfName(sv.reference_kind)}`,tiles.length))}
+  const ppbPool=OFF.filter((o)=>live(o)&&o.perBooster&&P[o.productId]?.copagConfirmed&&!used.has(o.productId));const ppb=ppbPool.length?ppbPool.reduce((a,b)=>b.perBooster<a.perBooster?b:a):null;
   if(ppb){const p=P[ppb.productId];tiles.push(`<a class="hl-t" style="--j:${tiles.length}" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}"><span class="hl-k">Booster mais barato</span><span class="hl-v">${money(ppb.perBooster)}</span><span class="hl-u">por booster</span>${photo(p,ppb,"photo hl-ph")}<span class="hl-n">${esc(p.collectionName)} · ${esc(label(p))}</span><span class="hl-s">${esc(storeTxt(ppb))} · ${money(ppb.total)}${ppb.priceKind==="pix"?" no Pix":""}</span></a>`)}
   if(tiles.length<2)return"";
   return`<section class="hl">${sectionHead("","Destaques do Hunter","Os recordes do mercado agora.")}<div class="hl-grid">${tiles.join("")}</div></section>`;
@@ -1705,18 +1727,18 @@ function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMo
 
 /* Home (6B.2): pódio, sequência e destaques vêm do Opportunity Engine (GET /api/v1/oportunidades), a mesma fonte da
    /oportunidades. Pódio + sequência = as 15 primeiras na ordem do motor (ordem=score). Nada é calculado aqui. */
-const HOMEOPP={status:"idle",top:[],below:null,save:null,at:0,p:null,fr:null};const HOME_OPP_KEY="oportunidades?limite=15&pagina=1&ordem=score";
+const HOMEOPP={status:"idle",top:[],below:[],save:[],at:0,p:null,fr:null};const HOME_OPP_KEY="oportunidades?limite=15&pagina=1&ordem=score";
 function loadHomeOpp(){
   if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
-  return HOMEOPP.p||=Promise.all([apiGet(HOME_OPP_KEY),apiGet("oportunidades?limite=1&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=1&pagina=1&ordem=economia")])
+  return HOMEOPP.p||=Promise.all([apiGet(HOME_OPP_KEY),apiGet("oportunidades?limite=4&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=4&pagina=1&ordem=economia")])
     .then(([a,b,c])=>{
       if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a||{},HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
       else if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
       else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
-      else{Object.assign(HOMEOPP,{status:"ok",top:a.data,below:b?.data?.[0]||null,save:c?.data?.[0]||null,at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
+      else{Object.assign(HOMEOPP,{status:"ok",top:a.data,below:Array.isArray(b?.data)?b.data:[],save:Array.isArray(c?.data)?c.data:[],at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
       HOMEOPP.p=null});
 }
-/* Pódio: as 3 primeiras do motor como destaques FOIL, ULTRA RARA e RARA (6C.1; mesmo componente, sem medalhas) */
+/* Pódio: as 3 primeiras do motor como destaques 1º, 2º e 3º lugar (6C.1; mesmo componente, sem medalhas nem raridade) */
 function podCardOpp(x,r){
   const pr=x.product||{},of=x.offer||{},st=x.store||{},rc=x.reference_comparison||{},cr=x.current_reference||{};
   const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
@@ -1851,7 +1873,7 @@ function renderGroup(kind,slug){
   <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}<span>${esc(name)}</span></nav>
   <header class="opp-head"><h1>${isCol?`${esc(name)}: preços de Pokémon TCG lacrado`:`${esc(name)} Pokémon TCG: preços no Brasil`}</h1>
   <p>${list.length} ${list.length===1?"produto":"produtos"}${isCol?` da coleção ${esc(name)}`:` neste formato, de todas as coleções`}, comparados com o preço sugerido da Copag. ${inStock?`${inStock} com estoque agora${low?`, a partir de ${money(low)}`:""}.`:"Nenhum com estoque agora."}</p></header>
-  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true})).join("")}</div>`:""}
+  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`:""}
   ${groupNav()}</div>`;
 }
 function renderDeals(){
@@ -1898,7 +1920,7 @@ function paintProdutos(d){
   <header class="opp-head"><h1>${ic("package")}Todos os produtos</h1><p>${d.total} ${d.total===1?"produto":"produtos"} com oferta nas lojas, cada um com o menor preço encontrado e comparado com o preço sugerido da Copag.</p></header>
   <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
   ${filtersHTML(d.facets)}
-  ${d.list.length?`<div class="deals">${d.list.map((e)=>dealCard(e)).join("")}</div>${d.next?moreSentinel(d.next):""}`:`<div class="empty"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
+  ${d.list.length?`<div class="deals">${d.list.map((e)=>dealCard(e,{h:"h2"})).join("")}</div>${d.next?moreSentinel(d.next):""}`:`<div class="empty"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
   ${d.noCopagCount?`<details class="more"${d.noCopag?"":` data-semref="1"`}><summary>${ic("caret-down")}Sem preço sugerido conhecido (${d.noCopagCount})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${d.noCopag?d.noCopag.map((e)=>dealCard(e)).join(""):""}</div></details>`:""}
   ${d.refNet?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
   </div>`;
@@ -1916,16 +1938,21 @@ function renderCopag(){
   const ps=(S.products||[]).slice();const cols=(S.collections||[]);
   const off=ps.filter((p)=>p.copagConfirmed).length,ref=ps.filter((p)=>!p.copagConfirmed&&p.copagReference).length,none=ps.length-off-ref;
   const day=(iso)=>iso?new Date(iso).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}):"";
-  const row=(p)=>{const c=p.copag||{};return`<tr class="click" data-p="${esc(p.id)}" tabindex="0"><td>${esc(label(p))}</td><td class="r">${p.copagConfirmed?`<b>${money(p.msrp)}</b>`:p.copagReference?`<span style="color:var(--muted)">${money(p.copagReference)}</span>`:`<span style="color:var(--muted)">-</span>`}</td><td>${p.copagConfirmed?`<a href="${esc(safeUrl(c.source_url))}" target="_blank" rel="noopener">${/copagloja/.test(c.source_url||"")?"Loja oficial Copag":c.manual?"Tabela de preços Copag":"Fonte Copag"}</a><br><small style="color:var(--muted)">${day(c.source_timestamp||c.msrp_updated_at)}</small>`:p.copagReference?`<span class="chip warn" title="${esc(REFNOTE)}">Ref. internet</span>${p.copagReferenceUrl?`<br><small><a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">fonte</a></small>`:""}`:`<span class="chip">Sem preço</span>`}</td></tr>`};
+  const srcLb=(c)=>/copagloja/.test(c.source_url||"")?"Loja oficial Copag":c.manual?"Tabela de preços Copag":"Fonte Copag";
+  /* a fonte oficial repetida em todas as linhas da coleção vai uma vez só para o caption; na linha fica a data */
+  const row=(p,cap)=>{const c=p.copag||{};const same=cap&&p.copagConfirmed&&srcLb(c)===cap.lb&&(c.source_url||"")===cap.url;
+    return`<tr class="click" data-p="${esc(p.id)}" tabindex="0"><td>${esc(label(p))}</td><td class="r">${p.copagConfirmed?`<b>${money(p.msrp)}</b>`:p.copagReference?`<span style="color:var(--muted)">${money(p.copagReference)}</span>`:`<span style="color:var(--muted)">-</span>`}</td><td>${p.copagConfirmed?`${same?"":`<a href="${esc(safeUrl(c.source_url))}" target="_blank" rel="noopener">${srcLb(c)}</a><br>`}<small style="color:var(--muted)">${same?"Conferido em ":""}${day(c.source_timestamp||c.msrp_updated_at)}</small>`:p.copagReference?`<span class="chip warn" title="${esc(REFNOTE)}">Ref. internet</span>${p.copagReferenceUrl?`<br><small><a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">fonte</a></small>`:""}`:`<span class="chip">Sem preço</span>`}</td></tr>`};
   const order=(p)=>(p.copagConfirmed?0:p.copagReference?1:2);
   const meta=cols.map((c,i)=>({c,i,k:ps.filter((p)=>p.collection===c.id&&p.copagConfirmed).length,r:ps.filter((p)=>p.collection===c.id&&p.copagReference).length})).sort((x,y)=>y.k-x.k||y.r-x.r||y.i-x.i);
   const sec=({c})=>{const l=ps.filter((p)=>p.collection===c.id).sort((a,b)=>order(a)-order(b)||String(a.typeLabel).localeCompare(b.typeLabel));if(!l.length)return"";const k=l.filter((p)=>p.copagConfirmed).length;
-    return`<details class="more cg"${k?" open":""}><summary>${ic("caret-down")}${esc(c.name)} <small>${k?`${k} com preço oficial`:l.some((p)=>p.copagReference)?"só referência":"sem preço oficial"}</small></summary><div class="tablewrap"><table><thead><tr><th>Produto</th><th class="r">Preço sugerido</th><th>Fonte</th></tr></thead><tbody>${l.map(row).join("")}</tbody></table></div></details>`};
+    const srcs=new Set(l.filter((p)=>p.copagConfirmed).map((p)=>srcLb(p.copag||{})+"|"+((p.copag||{}).source_url||"")));
+    const cap=k&&srcs.size===1?{lb:srcLb(l.find((p)=>p.copagConfirmed).copag||{}),url:(l.find((p)=>p.copagConfirmed).copag||{}).source_url||""}:null;
+    return`<details class="more cg"${k?" open":""}><summary>${ic("caret-down")}${esc(c.name)} <small>${k?`${k} com preço oficial`:l.some((p)=>p.copagReference)?"só referência":"sem preço oficial"}</small></summary><div class="tablewrap"><table>${cap?`<caption class="tcap">Fonte: <a href="${esc(safeUrl(cap.url))}" target="_blank" rel="noopener">${esc(cap.lb)}</a></caption>`:""}<thead><tr><th>Produto</th><th class="r">Preço sugerido</th><th>Fonte</th></tr></thead><tbody>${l.map((p)=>row(p,cap)).join("")}</tbody></table></div></details>`};
   const withP=meta.filter((m)=>m.k||m.r),noP=meta.filter((m)=>!m.k&&!m.r&&ps.some((p)=>p.collection===m.c.id));
   const sections=withP.map(sec).join("")+(noP.length?`<details class="more"><summary>${ic("caret-down")}Coleções sem nenhum preço oficial (${noP.length})</summary><p>A loja oficial da Copag não vende mais produtos dessas coleções, então não há preço para conferir.</p>${noP.map(sec).join("")}</details>`:"");
   const wrapEmpty=(html)=>html;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
-  <section class="panel"><h2>Preços sugeridos Copag</h2><p>Só conta como oficial o preço publicado na loja oficial da Copag (copagloja.com.br), com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto nem nos alertas.</p>
+  <section class="panel"><h1 class="panel-h1">Preços sugeridos Copag</h1><p>Só conta como oficial o preço publicado na loja oficial da Copag (copagloja.com.br), com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto nem nos alertas.</p>
   <p class="summary" style="margin:0;padding:0 16px 16px"><span><b>${off}</b> oficiais</span><span><b>${ref}</b> só referência</span><span><b>${none}</b> sem preço</span></p></section>
   ${sections}</div>`;
 }
@@ -2068,10 +2095,12 @@ function chart(s,msrp,avg,min,max){
   const di=Object.fromEntries(days.map((d,i)=>[d,i]));
   const path=(pts)=>{let d="",prev=-2;for(const [day,v] of pts){const i=di[day];if(i==null)continue;d+=(i===prev+1&&d?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)+" ";prev=i}return d};
   const ticks=[0,1,2,3].map((k)=>lo+(hi-lo)*k/3);
+  /* Lote A: faixa menor que R$ 5 → marcas com 1 casa decimal, para o eixo não repetir "R$ 17 / R$ 17" */
+  const tick=(t)=>hi-lo<5?"R$ "+t.toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1}):"R$ "+Math.round(t);
   const mark=(pt,cls,txt)=>{const i=di[pt.d];if(i==null)return"";const x=X(i),y=Y(pt.v);return`<circle class="mk ${cls}" r="4.5" cx="${x}" cy="${y}"/><text class="mkl" x="${Math.min(W-R-14,Math.max(L+14,x))}" y="${cls==="max"?y-10:y+18}" text-anchor="middle">${txt}</text>`};
   const lastB=s.best[s.best.length-1];
   wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Preço por dia">
-    ${ticks.map((t)=>`<line class="grid" x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}"/><text class="ax" x="${L-6}" y="${(Y(t)+4).toFixed(1)}" text-anchor="end">R$ ${Math.round(t)}</text>`).join("")}
+    ${ticks.map((t)=>`<line class="grid" x1="${L}" x2="${W-R}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}"/><text class="ax" x="${L-6}" y="${(Y(t)+4).toFixed(1)}" text-anchor="end">${tick(t)}</text>`).join("")}
     <text class="ax" x="${X(0)}" y="${H-6}" text-anchor="start">${fmtD(days[0])}</text><text class="ax" x="${X(days.length-1)}" y="${H-6}" text-anchor="end">${fmtD(days[days.length-1])}</text>
     ${msrp?`<line class="cop" x1="${L}" x2="${W-R}" y1="${Y(msrp).toFixed(1)}" y2="${Y(msrp).toFixed(1)}"/>`:""}
     ${!byStore&&avg?`<line class="avg" x1="${L}" x2="${W-R}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}"/>`:""}
@@ -2420,7 +2449,7 @@ function alertBox(pid){
   const a=alertOf(pid),o=bestLive(pid);const hit=a&&o&&o.total<=a.v;
   const now=o?`Menor preço com estoque agora: <b>${money(o.total)}${pixTxt(o)}</b> em ${esc(storeTxt(o))}.`:"Sem oferta com estoque confirmado agora.";
   const sug=o?Math.floor(o.total*.9):"";
-  return`<section class="alertbox${hit?" hit":""}" id="abox"><h3>${ic(hit?"bell-ringing":"bell")}${a?"Seu alerta de preço":"Me avise quando baixar"}</h3>
+  return`<section class="alertbox${hit?" hit":""}" id="abox"><h2>${ic(hit?"bell-ringing":"bell")}${a?"Seu alerta de preço":"Me avise quando baixar"}</h2>
   <p>${a?(hit?`<span class="hitline">Chegou no seu preço: ${money(o.total)}${pixTxt(o)} em ${esc(storeTxt(o))}.</span> Seu alvo: ${money(a.v)}.`:`Seu alvo: <b>${money(a.v)}</b>. ${now}`):`${now} Diga quanto quer pagar, com frete informado.`}</p>
   <form class="arow" id="af" data-pid="${esc(pid)}" novalidate><label class="sr" for="af-v">Preço alvo em reais</label><span class="rs">R$</span><input id="af-v" name="v" type="number" inputmode="decimal" min="1" step="0.01" placeholder="${sug||"0,00"}" value="${a?a.v:""}"><button class="btn" type="submit">${a?"Atualizar":"Criar alerta"}</button>${a?`<button class="btn ghost" type="button" data-a="alert-del" data-pid="${esc(pid)}" aria-label="Remover alerta">${ic("trash")}</button>`:""}</form></section>`;
 }
@@ -2572,10 +2601,10 @@ function renderSearch(){
   const q=F.q||"";const res=searchProducts(q);const cols=searchCollections(q).slice(0,6);const tips=q?(S.slim?(SEARCH_TIPS.get(q)||[]):tipHits(q)):[];
   const cards=res.map(({p})=>({p,o:bestOfferFor(p.id),n:S.slim?(p.liveCount||0):nLiveOf(p.id)}));
   const sugg=!res.length?(S.collections||[]).map((c)=>({c,d:lev(norm(q),norm(c.name),6)})).sort((a,b)=>a.d-b.d).slice(0,3).map((x)=>x.c):[];
-  $("#view").innerHTML=`<div class="page-title"><h2>${res.length?`${res.length} ${res.length===1?"produto":"produtos"} para "${esc(q)}"`:`Nenhum produto para "${esc(q)}"`}</h2>${q?`<button class="linkbtn" type="button" data-go="">${ic("x")}Limpar busca</button>`:""}</div>
+  $("#view").innerHTML=`<div class="page-title"><h1>${res.length?`${res.length} ${res.length===1?"produto":"produtos"} para "${esc(q)}"`:`Nenhum produto para "${esc(q)}"`}</h1>${q?`<button class="linkbtn" type="button" data-go="">${ic("x")}Limpar busca</button>`:""}</div>
   ${cols.length?`<div class="qchips">${cols.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)} <small>${c.products}</small></button>`).join("")}</div>`:""}
-  ${res.length?`<div class="deals">${cards.map((e)=>dealCard(e,{plain:true})).join("")}</div>`
-    :`<div class="empty"><h3>Não achamos esse produto</h3><p>Confira a escrita ou tente o nome da coleção, o tipo (ETB, box, blister) ou o código de barras.</p>${sugg.length?`<p>Talvez você quis dizer: ${sugg.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)}</button>`).join(" ")}</p>`:""}<button class="btn ghost" type="button" data-go="">Ver todas as ofertas</button></div>`}
+  ${res.length?`<div class="deals">${cards.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`
+    :`<div class="empty"><h2>Não achamos esse produto</h2><p>Confira a escrita ou tente o nome da coleção, o tipo (ETB, box, blister) ou o código de barras.</p>${sugg.length?`<p>Talvez você quis dizer: ${sugg.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)}</button>`).join(" ")}</p>`:""}<button class="btn ghost" type="button" data-go="">Ver todas as ofertas</button></div>`}
   ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}No Telegram <small>${tips.length}</small></h2></div><div class="tipgrid">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p></section>`:""}`;
 }
 
@@ -2611,13 +2640,13 @@ const oppScore=(o)=>oppOf(o)?.score??null;
 const bandUI=(b)=>BAND_UI[b]||["Sem faixa","var(--muted)","Sem faixa"];
 const confPct=(c)=>c!=null&&Number.isFinite(c)?` (${Math.round(c*100)}%)`:"";
 const NO_SCORE=()=>S?.source==="state"?"As notas oficiais estão indisponíveis agora.":"O Opportunity Engine ainda não avaliou esta oferta.";
-/* 6C.1 TCG Rarity System (só apresentação). Escala global pela nota que a API já entrega; limites configuráveis e sem
-   nada de franquia. A confiança só regula a intensidade dos efeitos (sem confiança: tratamento padrão). */
-const RARITY=[{min:90,id:"sr",name:"Secret Rare",sym:"✦"},{min:80,id:"ur",name:"Ultra Rare",sym:"★★"},{min:65,id:"r",name:"Rare",sym:"★"},{min:50,id:"u",name:"Uncommon",sym:"◆"},{min:-Infinity,id:"c",name:"Common",sym:"●"}];
+/* 6C.1 escala visual pela nota (só a moldura do cartão, via data-rar). Sem vocabulário de raridade na tela: o usuário vê
+   apenas a nota oficial e a faixa ("88 · Boa"). A confiança só regula a intensidade dos efeitos (sem confiança: tratamento padrão). */
+const RARITY=[{min:90,id:"sr"},{min:80,id:"ur"},{min:65,id:"r"},{min:50,id:"u"},{min:-Infinity,id:"c"}];
 const rarityOf=(s)=>typeof s==="number"&&Number.isFinite(s)?RARITY.find((t)=>s>=t.min):null;
 const CONF_INT={alta:1,"média":.65,baixa:.35};const confInt=(lv)=>CONF_INT[lv]??1;
-/* destaques da Home: rótulo editorial por posição (não é raridade oficial do produto nem muda a escala global) */
-const HIGHLIGHT=[["foil","FOIL"],["ultra","ULTRA RARA"],["rara","RARA"]];
+/* destaques da Home: rótulo editorial por posição (as chaves alimentam o visual do pódio; o texto é só a posição) */
+const HIGHLIGHT=[["foil","1º LUGAR"],["ultra","2º LUGAR"],["rara","3º LUGAR"]];
 const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf,OF.loja,OF.max].filter(Boolean).length;
 function oppQuery(page){const q=new URLSearchParams({limite:String(OPP_LIMIT),pagina:String(page),ordem:OF.sort||"score"});
   if(OF.cat)q.set("categoria",OF.cat);if(OF.col)q.set("colecao",OF.col);if(OF.faixa)q.set("faixa",OF.faixa);
@@ -2709,7 +2738,8 @@ function oppWhyBody(x,{sum=true}={}){
 }
 function oppWhy(x){return`<details class="opp-why"><summary>Por que esta nota?</summary><div class="why-in">${oppWhyBody(x)}</div></details>`}
 /* opt: best (selo "Melhor oferta"), rail (Home: cartão compacto na sequência, com #posição e sem o detalhe) */
-function oppCard(x,i,opt={}){
+/* opt.h: nível do título do cartão ("h2" na página /oportunidades, onde só existe o H1 da página antes) */
+function oppCard(x,i,opt={}){const H=opt.h||"h3";
   const pr=x.product||{},of=x.offer||{},st=x.store||{};
   const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
   const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));
@@ -2724,11 +2754,11 @@ function oppCard(x,i,opt={}){
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
-    <h3 class="deal-name">${esc(pr.type_label||pr.name||"")}</h3>
+    <${H} class="deal-name">${esc(pr.type_label||pr.name||"")}</${H}>
     <p class="deal-price opp-price"><b>${money(oppTotal(x))}</b>${pixTag({priceKind:of.price_kind})}</p><p class="opp-ship">${oppShip(x)}</p>
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
-    <div class="rc-row">${rar?`<p class="rar-line" title="Escala visual pela nota (${sc}/100). Não é a raridade oficial do produto."><span class="sym" aria-hidden="true">${rar.sym}</span>${rar.name}</p>`:""}<p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
+    <div class="rc-row"><p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
     ${ageHTML(x)}
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
@@ -2742,12 +2772,12 @@ function oppBar(){const n=oppActive();const t=OPP.total;
   return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span>${n?`<button class="linkbtn" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
 function oppBody(){
   if(OPP.status==="loading"&&!OPP.items.length)return oppSkel();
-  if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h3>Não conseguimos carregar as oportunidades agora</h3><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
-  if(OPP.status==="stale")return`<div class="empty pause">${pauseHTML(OPP_PAUSE,"data-oppretry")}</div>`;
-  if(OPP.status==="nodb")return`<div class="empty"><h3>Oportunidades indisponíveis no momento</h3><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
-  if(!OPP.items.length)return`<div class="empty"><h3>Nenhuma oportunidade encontrada</h3><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
+  if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h2>Não conseguimos carregar as oportunidades agora</h2><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+  if(OPP.status==="stale")return`<div class="empty pause">${pauseHTML(OPP_PAUSE,"data-oppretry","h2")}</div>`;
+  if(OPP.status==="nodb")return`<div class="empty"><h2>Oportunidades indisponíveis no momento</h2><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
+  if(!OPP.items.length)return`<div class="empty"><h2>Nenhuma oportunidade encontrada</h2><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
   const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
-  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i)).join("")}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
+  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i,{h:"h2"})).join("")}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
 }
 function paintOpp(){
   $("#view").innerHTML=`<div class="opp">
@@ -2786,9 +2816,9 @@ function setPause(d,path){
   const f=d?.meta?.freshness||{};
   OPP_PAUSE={at:f.dataAt||null,ageMin:f.ageMin??null,why:d?.meta?.message||"Os preços estão sem atualização confiável no momento.",checked:Date.now()};rf();
 }
-function pauseHTML(p,retry){
+function pauseHTML(p,retry,H="h3"){
   p=p||{};
-  return`<h3>Oportunidades pausadas</h3><p>${esc(p.why||"Os preços do banco estão atrasados.")}${p.at?` Últimos preços recebidos em ${freshAt(p.at)}.`:""}</p>
+  return`<${H}>Oportunidades pausadas</${H}><p>${esc(p.why||"Os preços do banco estão atrasados.")}${p.at?` Últimos preços recebidos em ${freshAt(p.at)}.`:""}</p>
   <p>Nenhuma nota antiga é mostrada como atual; elas voltam sozinhas na próxima atualização dos preços.</p>
   <p class="pause-act"><button class="btn ghost sm" type="button" ${retry}>${ic("arrow-clockwise")}Tentar de novo</button><a class="btn ghost sm" href="/precos" data-go="copag">${ic("tag")}Ver preços sugeridos Copag</a></p>`;
 }
@@ -2850,7 +2880,7 @@ function renderPre(){
   const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].o.total))by[o.productId]={p:P[o.productId],o,n:1};
   const list=Object.values(by);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("calendar-blank")}Pré-vendas</h1><p>Produtos anunciados que ainda não chegaram. Pré-venda não entra no ranking nem nas oportunidades. A data de lançamento aparece quando a loja informa.</p></header>
-  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true})).join("")}</div>`:`<div class="empty"><h3>Nenhuma pré-venda agora</h3><p>Quando uma loja abrir pré-venda de produto lacrado em português, ele aparece aqui.</p></div>`}</div>`;
+  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`:`<div class="empty"><h3>Nenhuma pré-venda agora</h3><p>Quando uma loja abrir pré-venda de produto lacrado em português, ele aparece aqui.</p></div>`}</div>`;
 }
 
 /* Lote 2: frescor dos preços mostrados. Horário = o da fonte realmente servida (banco: última rodada sincronizada;
