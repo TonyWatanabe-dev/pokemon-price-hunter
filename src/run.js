@@ -290,7 +290,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           prices: l.price, listPrice: l.listPrice || null, price: pp.value, priceKind: pp.kind, priceKindLabel: PRICE_LABEL[pp.kind] || '-',
           shipping: ship, shippingKnown: ship != null, shippingAt: ship != null ? shipAt : null, shippingError: shipError,
           ...(shipSource && ship != null ? { shippingSource: shipSource } : {}), total, perBooster: product.boosters && total ? round2(total / product.boosters) : null,
-          stock, availableFrom: availableFromOf(stock, l.availableFrom), quantity: l.quantity ?? null, sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
+          // stockSource: de onde veio a prova de estoque quando o adaptador informa (Mercado Livre: 'ml-catalog' ou 'ml-items').
+          stock, availableFrom: availableFromOf(stock, l.availableFrom), quantity: l.quantity ?? null, ...(l.stockSource && stock !== 'UNKNOWN' ? { stockSource: l.stockSource } : {}),
+          sourceType: l.sourceType, source_url: l.url, source_timestamp: T,
           firstSeen: prev[id]?.firstSeen || T, stale: false,
         };
       }
