@@ -74,6 +74,19 @@ export function parseDispatchMarkers(comments, { trustedAuthors } = {}) {
   return out.sort((a, b) => a.attempt - b.attempt || a.at - b.at);
 }
 
+/**
+ * Configuração do orçamento: DISPATCHER_ORCAMENTO_USD (limite de custo reportado na janela; vazio = sem limite)
+ * e DISPATCHER_ORCAMENTO_JANELA_H (1..168 h, padrão 24). Limite preenchido mas inválido vira `erro` (fail-closed).
+ */
+export function budgetConfig(env = {}) {
+  const raw = String(env.DISPATCHER_ORCAMENTO_USD ?? '').trim();
+  const h = Number(String(env.DISPATCHER_ORCAMENTO_JANELA_H ?? '').trim() || 24);
+  const janelaMs = (Number.isInteger(h) && h >= 1 && h <= 168 ? h : 24) * 3600e3;
+  if (!raw) return { limiteUsd: null, janelaMs, erro: null };
+  const v = /^\d{1,6}(\.\d{1,4})?$/.test(raw) ? Number(raw) : NaN;
+  return Number.isFinite(v) && v > 0 ? { limiteUsd: v, janelaMs, erro: null } : { limiteUsd: null, janelaMs, erro: 'DISPATCHER_ORCAMENTO_USD inválido' };
+}
+
 export const dispatchKey = (issue, attempt) => `dispatch:${issue}:${attempt}`;
 export const dispatchMarker = (issue, attempt, now) =>
   `<!-- dispatcher:despacho chave=${dispatchKey(issue, attempt)} em=${new Date(now).toISOString()} -->`;
@@ -152,6 +165,14 @@ export function planDispatch(s = {}) {
   if (pauseUntil !== null && now < pauseUntil) {
     plan.paused = true;
     for (const i of issues) skip(i, `pausado por rate limit/quota até ${new Date(pauseUntil).toISOString()}`);
+    return plan;
+  }
+  // Orçamento (budgetGate calculado por quem monta o snapshot, a partir da telemetria real): estourado, nada
+  // é despachado nem posto em quarentena até a janela andar; a fila fica intacta.
+  if (s.budget) plan.budget = { permitir: s.budget.permitir !== false, motivo: String(s.budget.motivo ?? '') };
+  if (s.budget && s.budget.permitir === false) {
+    plan.paused = true;
+    for (const i of issues) skip(i, `pausado por orçamento: ${plan.budget.motivo}`);
     return plan;
   }
 
