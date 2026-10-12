@@ -48,6 +48,39 @@ assert.equal(r.text, 'fim'); assert.equal(r.url, 'https://b.example/b');
 http.setFetch(async () => resp(302, { location: '/loop' }));
 await assert.rejects(http.get('https://c.example/loop'), /Redirecionamentos demais/);
 
+// Credenciais (authorization/cookie) não seguem redirect para outra origem; na mesma origem, seguem.
+{
+  const seen = [];
+  const cred = { Authorization: 'Bearer segredo', cookie: 'sid=1', 'x-outro': 'fica' };
+  http.setFetch(async (u, init) => {
+    seen.push({ u, h: init.headers });
+    if (u === 'https://a.example/p') return resp(302, { location: '/q' });
+    if (u === 'https://a.example/q') return resp(302, { location: 'https://b.example/r' });
+    if (u === 'https://b.example/r') return resp(302, { location: 'https://a.example/s' });
+    return resp(200, {}, 'fim');
+  });
+  const r2 = await http.get('https://a.example/p', { headers: cred });
+  assert.equal(r2.text, 'fim');
+  assert.deepEqual(seen.map((s) => s.u), ['https://a.example/p', 'https://a.example/q', 'https://b.example/r', 'https://a.example/s']);
+  for (const s of seen.slice(0, 2)) {
+    assert.equal(s.h.Authorization, 'Bearer segredo', `mesma origem leva authorization (${s.u})`);
+    assert.equal(s.h.cookie, 'sid=1', `mesma origem leva cookie (${s.u})`);
+  }
+  for (const s of seen.slice(2)) {
+    const names = Object.keys(s.h).map((k) => k.toLowerCase());
+    assert.ok(!names.includes('authorization'), `outra origem não leva authorization (${s.u})`);
+    assert.ok(!names.includes('cookie'), `outra origem não leva cookie (${s.u})`);
+    assert.equal(s.h['x-outro'], 'fica', 'demais headers continuam');
+    assert.equal(s.h['user-agent'], http.userAgent);
+  }
+  // Mesmo host com outro esquema (http → https) é outra origem.
+  seen.length = 0;
+  http.setFetch(async (u, init) => { seen.push({ u, h: init.headers }); return u.startsWith('http:') ? resp(301, { location: 'https://a.example/t' }) : resp(200); });
+  await http.get('http://a.example/t', { headers: { authorization: 'Bearer segredo' } });
+  assert.equal(seen[0].h.authorization, 'Bearer segredo');
+  assert.equal(seen[1].h.authorization, undefined, 'troca de esquema remove authorization');
+}
+
 console.log('urlguard-tests: ok');
 // #83: estados de erro e recuperação da UI (registrado aqui para não mexer no script test do package.json)
 await import('./ui-states-tests.js');
