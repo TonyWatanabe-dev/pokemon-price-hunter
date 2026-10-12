@@ -33,12 +33,12 @@ export function classifyTask({ labels = [], title = '', body = '', failures = 0 
   const motivos = [];
   if (areas.some((a) => CRITICAL.some((re) => re.test(a))) || ['security', 'r3', 'risco:r3'].some((l) => L.has(l))
     || /risco previsto:\s*r3\b/i.test(body)
-    || has(text, /\b(migration|migração|secret|credencia|permiss(ão|ões)|token|auth|banco de produção)\b/)) {
+    || has(text, /(migra|secret|credential|credencia|permiss|token|auth|banco de produção)/)) {
     motivos.push('área/assunto crítico (R3: workflows, agentes, banco, credenciais ou permissões)');
     return { classe: CLASSES.CRITICA, motivos, areas };
   }
   if (failures > 0) motivos.push(`${failures} falha(s) anterior(es)`);
-  if (failures >= 2 || L.has('bug') && has(text, /\b(intermitente|race|concorr|depura|investig)/) || has(text, /\b(arquitetura|refator|integra(ção|r) com|debug)\b/)) {
+  if (failures >= 2 || L.has('bug') && has(text, /\b(intermitente|race|concorr|depura|investig)/) || has(text, /(arquitetura|refator|integração\s+com|integrar\s+com|debug)/)) {
     motivos.push('depuração, integração ou arquitetura');
     return { classe: CLASSES.COMPLEXA, motivos, areas };
   }
