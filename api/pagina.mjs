@@ -143,7 +143,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   if (t === 'precos') {
     const withMsrp = (s.products || []).filter((p) => p.msrp > 0);
     const groups = (s.collections || []).map((c) => [c, withMsrp.filter((p) => p.collection === c.id)]).filter(([, l]) => l.length);
-    const row = (p) => { const cp = p.copag || {}; const src = p.copagConfirmed ? cp.source_url : p.copagReferenceUrl || cp.source_url; const at = cp.msrp_updated_at || cp.source_timestamp || p.lastSeen;
+    const row = (p) => { const cp = p.copag || {}; const raw = p.copagConfirmed ? cp.source_url : p.copagReferenceUrl || cp.source_url; const src = /^https?:\/\//i.test(String(raw || '')) ? raw : null; const at = cp.msrp_updated_at || cp.source_timestamp || p.lastSeen;
       return `<tr><td><a href="/produto/${of[p.id]}">${esc(label(p))}</a></td><td>${brl(p.msrp)}</td><td>${p.copagConfirmed ? 'Preço sugerido Copag (oficial)' : 'Referência (não confirmada)'}</td><td>${src ? `<a href="${esc(src)}" rel="nofollow noopener">${esc(hostOf(src) || 'fonte')}</a>` : esc(p.copagReference || '—')}</td><td>${esc(day(at) || '—')}</td></tr>`; };
     main = groups.length ? groups.map(([c, l]) => `<h2><a href="/colecao/${colSlug(c)}">${esc(c.name)}</a></h2><table class="ssr-t"><thead><tr><th>Produto</th><th>Preço sugerido</th><th>Tipo</th><th>Fonte</th><th>Data</th></tr></thead><tbody>${l.map(row).join('')}</tbody></table>`).join('') : '<p>Nenhum preço sugerido disponível agora.</p>';
   }

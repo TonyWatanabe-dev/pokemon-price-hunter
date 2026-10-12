@@ -25,6 +25,7 @@ const prod = (id, col, colName, type, typeLabel, extra = {}) => ({ id, collectio
 const P = [
   prod('p1', 'c1', 'Alfa', 'etb', 'Treinador Avançado (ETB)', { copagConfirmed: true, msrp: 400, copag: { msrp: 400, source_url: 'https://www.copagloja.com.br/etb-alfa/p', source_timestamp: D2, confidence: 'OFICIAL', msrp_updated_at: D1 } }),
   prod('p2', 'c1', 'Alfa', 'booster_box', 'Booster Box', { boosters: 36, msrp: 900, copagConfirmed: false, copagReference: 'lojas (referência)', copagReferenceUrl: 'https://ref.example/box', lastSeen: D2 }),
+  prod('p5', 'c1', 'Alfa', 'etb', 'Treinador Avançado (ETB)', { copagConfirmed: true, msrp: 410, copag: { msrp: 410, source_url: 'javascript:alert(1)', source_timestamp: D2 } }),
   prod('p3', 'c2', 'Beta', 'etb', 'Treinador Avançado (ETB)', { copagConfirmed: true, msrp: 300, copag: { msrp: 300, source_url: 'https://www.copagloja.com.br/etb-beta/p', source_timestamp: D1, msrp_updated_at: D1 } }),
   prod('p4', 'c2', 'Beta', 'booster_box', 'Booster Box', { boosters: 36 }),
 ];
@@ -95,6 +96,8 @@ await t('3. /precos: todo produto com preço sugerido, por coleção, "oficial" 
   const l = links(p.ssr);
   assert.ok(l.includes('https://www.copagloja.com.br/etb-alfa/p') && l.includes('https://ref.example/box') && l.includes('/colecao/alfa'));
   assert.match(p.ssr, /<a href="https:\/\/www\.copagloja\.com\.br\/etb-alfa\/p" rel="nofollow noopener">/);
+  assert.doesNotMatch(p.ssr, /javascript:/i, 'fonte com esquema fora de http(s) não vira link');
+  assert.match(s, /R\$ 410,00 Preço sugerido Copag \(oficial\) —/, 'sem link, a fonte aparece como —');
 });
 
 await t('4. /termos e /privacidade: título, descrição e canonical próprios, indexáveis, com caminho (BreadcrumbList)', () => {
@@ -114,7 +117,7 @@ await t('5. descrições de até 160 caracteres em todos os modelos, com as pala
     if (!/termos|privacidade/.test(q)) assert.match(p.desc, /Pokémon TCG/, q);
   }
   for (const q of ['t=home', 't=oportunidades', 't=precos', 't=pre-vendas', 't=colecao&slug=alfa', 't=tipo&slug=booster-box']) assert.match(pg[q].desc, /preço sugerido Copag/, q);
-  assert.match(pg['t=colecao&slug=alfa'].desc, /^Alfa Pokémon TCG lacrado: 2 produtos/); assert.match(pg['t=tipo&slug=booster-box'].desc, /^Booster Box Pokémon TCG lacrado/);
+  assert.match(pg['t=colecao&slug=alfa'].desc, /^Alfa Pokémon TCG lacrado: 3 produtos/); assert.match(pg['t=tipo&slug=booster-box'].desc, /^Booster Box Pokémon TCG lacrado/);
 });
 
 await t('6. sitemap: lastmod por produto (última conferência da melhor oferta), coleção/formato = maior entre os seus; /termos e /privacidade presentes', () => {
