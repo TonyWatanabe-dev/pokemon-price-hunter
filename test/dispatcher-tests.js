@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { workerAcceptsDispatchYaml } from '../tools/dispatcher-workflow-check.mjs';
 import { planDispatch, applyPlan, parseDependencies, parseAreas, parseOrder, parseDispatchMarkers, dispatchMarker,
   clampSlots, hasOpenPull, sanitize, validateDispatchRequest, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
 
@@ -173,11 +174,24 @@ await t('quarentena aplica label e comentário sanitizado, sem disparo', async (
   assert.equal(sanitize('a\nb postgres://u:p@h/db Bearer abc'), 'a b [redigido] [redigido]');
 });
 
+await t('contrato workflow_dispatch do worker: YAML real aceito; sem inputs/issue falha fechado', () => {
+  const worker = fs.readFileSync(path.join(root, '.github/workflows/tarefas.yml'), 'utf8');
+  assert.equal(workerAcceptsDispatchYaml(worker), true, 'tarefas.yml real precisa declarar issue');
+  assert.equal(workerAcceptsDispatchYaml('on:\n  workflow_dispatch:\n  issues:\n    types: [labeled]\n'), false, 'sem inputs deve recusar');
+  assert.equal(workerAcceptsDispatchYaml('on:\n  workflow_dispatch:\n    inputs:\n      chave:\n        required: true\n'), false, 'sem issue deve recusar');
+  assert.equal(workerAcceptsDispatchYaml('on:\n  workflow_dispatch:\n    inputs:\n      issue:\n        required: true\n'), true, 'contrato mínimo válido deve aceitar');
+});
+
 // ------------------------------------------------------------------ workflow e CLI
 await t('dispatcher.yml: agendado; planeja só leitura; escreve só no job de despacho ligado por DISPATCHER_ATIVO', () => {
   const y = fs.readFileSync(path.join(root, '.github/workflows/dispatcher.yml'), 'utf8');
   const code = y.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
   assert.match(code, /schedule:/); assert.match(code, /workflow_dispatch:/);
+  // gatilho confiável: fim do Vigia (agendador externo, 15 min), só da main; nada de pull_request/workflow_run de PR
+  assert.match(code, /\n  workflow_run:\n    workflows: \['Vigia do robô'\]\n    types: \[completed\]\n/);
+  for (const job of ['plano', 'despacho']) assert.match(code.split(new RegExp(`\\n  ${job}:\\n`))[1], /^    if: vars\.DISPATCHER_ATIVO [!=]= 'true' && \(github\.event_name != 'workflow_run' \|\| github\.event\.workflow_run\.head_branch == 'main'\)$/m, job);
+  const wf = fs.readFileSync(path.join(root, '.github/workflows/watchdog.yml'), 'utf8');
+  assert.match(wf, /^name: Vigia do robô$/m, 'nome do workflow observado confere');
   const [plano, despacho] = code.split(/\n  despacho:\n/);
   assert.match(plano, /permissions:\s*\n\s+contents: read\s*\n\s+issues: read\s*\n\s+pull-requests: read/);
   assert.doesNotMatch(plano, /: write|--executar/i, 'job de plano continua só leitura');

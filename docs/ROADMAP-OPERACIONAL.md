@@ -1,6 +1,6 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 11/10/2026 às 21:56 (America/Sao_Paulo, UTC−03:00)  
+> **Atualizado em:** 12/10/2026 às 05:55 (America/Sao_Paulo, UTC−03:00)
 > **Base consultada:** `main` em `eb6554a1b84a88ffe0e45cbfb647518748e51e5e` (após PR #228); produção (Vercel), última evidência registrada, em `f66c929e10d50d6eae7cfb8ff4508599554a4e6c` (#217).  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -25,6 +25,57 @@ Detalhamento completo das responsabilidades, limites, dependências, status de i
 - **Relatórios:** atualizar este arquivo somente com evidências reais, inclusive ao final de cada fase. O relatório de fase inclui critérios de saída, PRs/commits, CI, merges/deploys/smoke, métricas disponíveis, estabilidade, pendências e fase seguinte.
 - **Canal do usuário:** o monitor do ChatGPT deve apresentar os relatórios quando uma fase completar seus critérios e notificar antes quando existir ação crítica realmente não aprovável automaticamente. Sem atualizações repetitivas a cada PR; não confundir a verificação horária do monitor com alerta instantâneo.
 - **Bloqueio:** registrar no GitHub evidência, impacto, recomendação e uma única decisão necessária. Continuar tarefas independentes e seguras enquanto o bloqueio persistir.
+
+
+## Atualização operacional — 12/10/2026 (pós-PRs #252 e #250)
+
+### Evidências confirmadas
+- PR [#252](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/252) integrada: `claude_despacho` permite explicitamente `github-actions` e o teste de contrato restringe a exceção à etapa de despacho; sem wildcard e sem alteração do caminho acionado por `issues`.
+- PR [#250](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/250) integrada: `.github/workflows/dispatcher.yml` contém `workflow_run` para iniciar o Dispatcher após o workflow “Vigia do robô” concluído na `main`, além do cron e do acionamento manual.
+- O run [Dispatcher #5](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38225705913) terminou com sucesso antes do merge da #250, mas a #247 ficou em backoff até `2026-10-12T08:59:02Z` (05:59, horário de Brasília). Esse run não comprova o novo gatilho pós-merge nem a execução bem-sucedida da Claude Code Action.
+- A última execução observada de “Vigia do robô” antes do merge da #250 foi [run #38226234736](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38226234736), às 08:52 UTC. É anterior ao merge; portanto, ainda falta evidência de um evento `workflow_run` pós-merge.
+
+### Próximas verificações obrigatórias
+1. Capturar uma execução de “Vigia do robô” concluída na `main` depois do merge da #250 e confirmar que ela inicia automaticamente o Dispatcher.
+2. No Dispatcher, confirmar o job `despacho` (não apenas `plano`) e verificar se a #247 foi despachada após o backoff, sem duplicar a chave nem remover labels manualmente.
+3. No workflow `Tarefas`, verificar que a Claude Code Action executa sem a recusa de ator não humano e que o agente abre a PR documental esperada.
+4. Registrar run IDs, commit, logs, PR e CI. Não declarar autonomia ponta a ponta concluída antes dessas evidências.
+
+### Estado executivo atualizado
+- Gatilho de workflow: implementado na `main`; validação automática pós-merge pendente.
+- Despacho: o Dispatcher #5 executou com sucesso, mas respeitou o backoff da #247; o despacho posterior ao prazo ainda precisa ser comprovado.
+- Claude Code: a allowlist restrita foi integrada; execução bem-sucedida após a correção ainda não comprovada.
+- Gate de segurança: não usar bypass de branch protection, não usar `allowed_bots: "*"` e não manipular manualmente a chave/labels para contornar backoff.
+
+
+## Validação em runtime — 12/10/2026, 09:06–09:45 UTC
+
+Esta seção responde às "Próximas verificações obrigatórias" acima. Evidências lidas da API do GitHub; os horários estão em UTC.
+
+| Etapa | Resultado | Evidência |
+|---|---|---|
+| Vigia na `main` depois do merge da #250 → Dispatcher automático | ✅ **comprovado** | Vigia `38227708569` concluído às 09:06:23 → Dispatcher por `workflow_run` [38227741030](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38227741030) às 09:06:25. Repetiu às 09:22 (Vigia → Dispatcher → despacho de #257). |
+| Job `despacho` real e backoff | ✅ **comprovado** | #247 tentativa 1 às 08:29:02; tentativa 2 só às 09:06:38, depois dos 30 min. Chave `dispatch:247:2`, sem repetição. |
+| Worker pelo caminho `workflow_dispatch`, Claude Code Action sem recusa de ator (#252) | ✅ **comprovado** | Issue #257 → worker [38229495517](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38229495517): `Validar despacho` ✅, `claude_despacho` ✅, issue marcada `executor:done`. |
+| PR criada pelo agente | ✅ **comprovado** | PR **#258** aberta pelo `claude[bot]` na branch `tarefa/issue-257-t1`, commit com assinatura verificada, só o arquivo pedido, com `Closes #257`. CI `test`/`regression`/`golden` ✅. |
+| Revisão independente da PR do agente | ✅ **comprovado depois da correção** | Primeiro `qa-review` da #258 recusado pela action ("non-human actor: claude"), com veredito fail-closed. Corrigido pela **#261** (integrada; a #259 ficou redundante). Depois de atualizar a branch da #258, o `qa-review` revisou a PR e **aprovou sem bloqueantes** (09:50 UTC). |
+| Governor sobre a PR do agente | ⚠️ **defeito** | A `main` dava `R0 · autonomous` para a #258 com `qa-review` ❌. Correção: **#260** (exige `qa-review` no mesmo SHA). |
+| #247 | ⚠️ **quarentena indevida** | O ciclo das 09:07:23 viu a tentativa 2 (em curso) como concluída, por causa do label `executor:failed` da tentativa 1, e aplicou quarentena. O worker recusou a tentativa 2. Correção: **#256** (lease pela tentativa atual; reinício só por operador). O label **não** foi removido manualmente. |
+| #255 | ℹ️ **sem defeito** | Tarefa de relatório pelo caminho de label: o Claude terminou com sucesso sem PR, e o worker marcou `executor:failed` por desenho (só conta como entregue com PR). |
+
+**Testes:**
+- **Local:** `npm test` passou nas branches #256, #259 e #260. A única falha é o teste de busca sem acento, que falha só no ambiente local e passa na CI.
+- **CI:** `test`, `regression` e `golden` passaram nas três; `qa-review` passou na #256 e na #259.
+- **Regressão da #256:** o teste reproduz o incidente com os horários reais e falha na `main` anterior.
+
+**Pendências com causa concreta:**
+- Merges R3 (aprovação humana obrigatória): #256, #260, #254 (ou esta PR, que a inclui), #248 e #221. A #259 é redundante com a #261.
+- **#247:** só um operador pode tirar `executor:quarentena`. Depois da #256, isso abre uma nova tentativa (`dispatch:247:3`).
+- **Proteção da `main`:** tornar `qa-review` check obrigatório. A aprovação humana obrigatória impede merge autônomo, inclusive R0 (#231, item 8).
+- **Ponte (#221):** o sink de auditoria e o `VERCEL_TOKEN` não estão definidos. Merge e deploy governados continuam inoperantes.
+- **Rotina agendada do Claude Code:** não criada.
+
+**Próxima prioridade objetiva:** integrar a #260 e a #256. A #258 já tem os 4 checks ✅ e o Governor, pela política da #260, dá `R0 · autonomous`, mas o merge depende da aprovação obrigatória e da Ponte (#221). Depois, a Ponte (#221), após a decisão do sink de auditoria.
 
 ## Estado executivo
 

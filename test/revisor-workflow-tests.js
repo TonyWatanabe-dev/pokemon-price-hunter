@@ -45,7 +45,9 @@ await t('4. credenciais: token do Claude só no passo do Claude e na checagem; t
   assert.equal((code.match(/github\.token/g) || []).length, 1);
   assert.doesNotMatch(code, /\n {4}env:|\n {2}env:/, 'nada de env no job/topo');
   assert.match(code, /persist-credentials: false/);
-  assert.doesNotMatch(code, /DATABASE_URL|VERCEL|show_full_output:\s*true|allowed_non_write_users|allowed_bots/);
+  assert.match(code, /allowed_bots:\s*claude\b/, 'permite apenas o bot Claude que cria PRs; humanos continuam no fluxo normal');
+  assert.doesNotMatch(code, /allowed_bots:\s*['\"]?\*/, 'wildcard de bots proibido');
+  assert.doesNotMatch(code, /DATABASE_URL|VERCEL|show_full_output:\s*true|allowed_non_write_users/);
   assert.match(code, /uses: anthropics\/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1\.0\.248/, 'mesmo SHA do worker');
   assert.match(job, /runs-on: ubuntu-24\.04-firewall/);
 });
