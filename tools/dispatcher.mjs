@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
 import { planDispatch, applyPlan, parseDependencies, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+import { workerAcceptsDispatchYaml } from './dispatcher-workflow-check.mjs';
 
 const REPO = process.env.GITHUB_REPOSITORY || process.env.RELEASE_REPO || 'TonyWatanabe-dev/pokemon-price-hunter';
 if (!/^[\w.-]+\/[\w.-]+$/.test(REPO)) { console.error('repo inválido'); process.exit(2); }
@@ -52,7 +53,7 @@ async function snapshot() {
 
 function workerAcceptsDispatch() {
   const y = fs.readFileSync(new URL('../.github/workflows/tarefas.yml', import.meta.url), 'utf8');
-  return /\n\s*workflow_dispatch:\s*\n[\s\S]*?\n\s+inputs:\s*\n[\s\S]*?\n\s+issue:/.test(y);
+  return workerAcceptsDispatchYaml(y);
 }
 
 const s = await snapshot();
