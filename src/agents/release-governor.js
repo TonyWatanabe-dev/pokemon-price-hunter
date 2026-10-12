@@ -147,6 +147,9 @@ function evidenceGaps(risk, evidence = {}) {
   const map = checkMap(evidence.checks, headSha, missing);
   requireCheck(map, 'ci', headSha, missing, ['test']);
   requireCheck(map, 'tests', headSha, missing, ['test']);
+  // Revisão independente (revisor.yml, check "qa-review", #236): obrigatória em todo merge, no mesmo SHA.
+  // Sem ela o Governor autorizaria R0 com o revisor reprovado (PR #258, 12/10): ausência de evidência é bloqueio.
+  requireCheck(map, 'qa-review', headSha, missing);
 
   if (risk === RISK.R1) {
     requireCheck(map, 'preview', headSha, missing);

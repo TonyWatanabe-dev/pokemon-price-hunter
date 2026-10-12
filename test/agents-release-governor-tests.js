@@ -12,7 +12,7 @@ const evidence = (overrides = {}) => ({
   conflictFree: true,
   checks: [
     check('ci'), check('tests'), check('preview'), check('accessibility'),
-    check('regression'), check('golden'),
+    check('regression'), check('golden'), check('qa-review'),
   ],
   rollback: { documented: true, tested: true },
   rollout: { metricsDefined: true, rollbackTriggersDefined: true },
@@ -68,9 +68,24 @@ test('R0 libera merge somente com CI, testes e branch isolada no SHA atual', () 
 });
 
 test('check "test" do CI atual pode comprovar CI e suíte npm test no mesmo SHA', () => {
-  const r = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence({ checks: [check('test')] }) });
+  const r = evaluateRelease({ changedPaths: ['docs/release.md'], evidence: evidence({ checks: [check('test'), check('qa-review')] }) });
   assert.equal(r.decision, 'autonomous');
   assert.deepEqual(r.allowedActions, [RELEASE_ACTION.MERGE]);
+});
+
+test('revisão independente (qa-review) é obrigatória no mesmo SHA para qualquer merge — caso real da PR #258', () => {
+  const docs = ['docs/smoke/despacho-2026-10-12.md'];
+  const base = [check('test'), check('regression'), check('golden')];
+  const ok = evaluateRelease({ changedPaths: docs, evidence: evidence({ checks: [...base, check('qa-review')] }) });
+  assert.equal(ok.decision, 'autonomous');
+  for (const [why, qa] of [['ausente', []], ['reprovado', [check('qa-review', 'failure')]], ['de outro SHA', [check('qa-review', 'success', 'b'.repeat(40))]],
+    ['em andamento', [check('qa-review', 'in_progress')]], ['duplicado', [check('qa-review'), check('QA-review')]]]) {
+    const r = evaluateRelease({ changedPaths: docs, evidence: evidence({ checks: [...base, ...qa] }) });
+    assert.equal(r.decision, 'blocked', why); assert.deepEqual(r.allowedActions, [], why);
+    assert.ok(r.missingEvidence.some((x) => x.includes('qa-review')), why);
+  }
+  // R3 continua humano mesmo com qa-review aprovado
+  assert.equal(evaluateRelease({ changedPaths: ['.github/workflows/revisor.yml'], evidence: evidence() }).decision, 'human_required');
 });
 
 test('R1 precisa de preview e acessibilidade no mesmo SHA', () => {
