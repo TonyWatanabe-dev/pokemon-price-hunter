@@ -174,6 +174,12 @@ jobs:
           CLAUDE_OUTCOME: ${{ github.event_name == 'workflow_dispatch' && steps.claude_despacho.outcome || steps.claude.outcome }}
           CREDENTIAL_OUTCOME: ${{ steps.credencial.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # Telemetria real da sessão (execution_file da action); o script roda sem GH_TOKEN e só lê números.
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file || steps.claude_despacho.outputs.execution_file }}
+          PERFIL: ${{ steps.esforco.outputs.perfil }}
+          CHAVE: ${{ inputs.chave }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
         run: |
           pr=""
           status="${CLAUDE_CONCLUSION:-$CLAUDE_OUTCOME}"
@@ -196,4 +202,10 @@ jobs:
               echo "Resultado: falha; nenhuma PR encontrada." >> "$GITHUB_STEP_SUMMARY"
             fi
             gh api "repos/$REPO/issues/$ISSUE/comments" -f body="$body" >/dev/null
+          fi
+          # Telemetria: um comentário por execução; falha aqui nunca altera o resultado da tarefa.
+          if [ "$CREDENTIAL_OUTCOME" != "failure" ]; then
+            tele=$(STATUS="$status" PR_URL="$pr" env -u GH_TOKEN node tools/telemetria.mjs registrar) \
+              && gh api "repos/$REPO/issues/$ISSUE/comments" -f body="$tele" >/dev/null \
+              || echo "::warning title=Telemetria::registro da telemetria não publicado"
           fi

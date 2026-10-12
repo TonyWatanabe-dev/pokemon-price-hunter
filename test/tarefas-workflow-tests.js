@@ -241,4 +241,18 @@ await t('16. exceção de bot é restrita ao despacho validado: sem wildcard e a
   assert.equal([...code.matchAll(/allowed_bots\s*:/g)].length, 1, 'exceção existe uma única vez');
 });
 
+await t('17. telemetria: lê o execution_file das duas sessões, roda sem token e nunca muda o resultado da tarefa', () => {
+  const res = stepsOf(job('tarefa')).find((x) => x.name === 'Resultado na issue').src;
+  assert.match(res, /EXECUTION_FILE: \$\{\{ steps\.claude\.outputs\.execution_file \|\| steps\.claude_despacho\.outputs\.execution_file \}\}/);
+  assert.match(res, /PERFIL: \$\{\{ steps\.esforco\.outputs\.perfil \}\}/);
+  assert.match(res, /CHAVE: \$\{\{ inputs\.chave \}\}/, 'chave via env, nunca interpolada no script');
+  const script = res.match(/run: \|\n((?: {10}.*\n?)+)/)[1];
+  assert.match(script, /env -u GH_TOKEN node tools\/telemetria\.mjs registrar/, 'o script de telemetria não recebe o token');
+  assert.match(script, /\|\| echo "::warning title=Telemetria::/, 'falha da telemetria vira aviso');
+  assert.ok(script.indexOf('telemetria.mjs') > script.indexOf('labels[]=executor:done'), 'telemetria depois de decidir done/failed');
+  assert.doesNotMatch(code, /show_full_output|upload-artifact/, 'o execution_file inteiro nunca sai do runner');
+  const esf = fs.readFileSync(path.join(root, 'tools/esforco.mjs'), 'utf8');
+  assert.match(esf, /perfil=\$\{perfil\}/, 'esforco.mjs expõe o perfil para a telemetria');
+});
+
 console.log(`✓ Tarefas paralelas (workflow): ${n} grupos de testes passaram`);

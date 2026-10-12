@@ -24,4 +24,6 @@ const p = profileFor(c.classe, failures);
 const args = claudeArgs(p);
 console.log(`#${n} · classe ${c.classe} · falhas ${failures} · ${p.model}/${p.effort}/${p.maxTurns} turnos${p.escalada ? ' (escalado)' : ''}`);
 for (const m of c.motivos) console.log(`  - ${m}`);
-if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `classe=${c.classe}\nargs<<EOF_ESFORCO\n${args}\nEOF_ESFORCO\n`);
+// `perfil`: JSON de uma linha só com valores de listas fechadas, para a telemetria da execução.
+const perfil = JSON.stringify({ classe: c.classe, model: p.model, effort: p.effort, maxTurns: p.maxTurns, falhas: failures, escalada: p.escalada });
+if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `classe=${c.classe}\nperfil=${perfil}\nargs<<EOF_ESFORCO\n${args}\nEOF_ESFORCO\n`);

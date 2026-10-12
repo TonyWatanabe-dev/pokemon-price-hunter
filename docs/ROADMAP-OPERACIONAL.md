@@ -120,7 +120,7 @@ Esta seção atualiza as pendências da seção anterior. O fluxo Vigia → Disp
 - #239: docs, revisar se continua necessária após a #262.
 
 ### Próximo passo técnico
-Registrar no worker a telemetria real (custo, tokens, turnos) do `execution_file` de cada sessão. `telemetryFromExecution` já existe em `src/agents/esforco.js`; falta ligá-la.
+Telemetria real do worker: implementada (ver item 1 das lacunas abaixo), com validação em runtime pendente.
 
 ## Estado executivo
 
@@ -251,6 +251,11 @@ Prioridades:
 ### Lacunas para a fábrica 24/7
 
 1. **Telemetria real por execução (próxima tarefa técnica):** instrumentar modelo/esforço efetivamente usados, tokens de entrada/saída/cache e custo apenas quando disponibilizados pelo runtime/provedor; duração, tentativas, resultado, escaladas e custo por tarefa/PR aprovada. Não estimar nem inventar valores. Incluir logs sanitizados e testes.
+   - **Status (12/10):** implementada na branch `feat/telemetria-worker` (PR de telemetria, empilhada sobre a #263).
+     - O worker publica um registro por execução, a partir do `execution_file`. O registro tem perfil solicitado, modelo(s) usados, turnos, duração, tokens, custo reportado pelo runtime (a preço de API, não a cobrança da assinatura), status, PR, chave e tentativa. Campo ausente fica `n/d`.
+     - `tools/telemetria.mjs resumo` agrega os registros e calcula o custo por PR integrada, incluindo o retrabalho.
+     - Detalhes: [tarefas-paralelas.md](./tarefas-paralelas.md#telemetria-por-execução).
+     - **Falta:** validar em runtime (primeira execução real com comentário de telemetria) e ligar o `budgetGate` ao Dispatcher.
 2. **Rotina recorrente:** ativar a rotina horária pelo mecanismo de agendamento disponível e validar execuções consecutivas, idempotência, ausência de duplicação e aviso de incidentes. O arquivo rotina-horaria-prompt.md contém o roteiro; a rotina não deve ser declarada ativa sem confirmação de execução real.
 3. **Concorrência:** confirmar TAREFAS_MAX nas Actions Variables. O workflow suporta até 10, mas o padrão no YAML é 3; não anunciar 10 workers ativos sem comprovar o valor configurado e a estabilidade.
 4. **Release Governor / bridge #221:** continua bloqueada por gate humano R3. A ponte não deve ser considerada operacional para deploy até concluir a revisão/decisão de auditoria, configurar VERCEL_TOKEN com segurança e comprovar deploy real + smoke pós-deploy de um SHA elegível.
