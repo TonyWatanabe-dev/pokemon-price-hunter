@@ -104,10 +104,11 @@ export function detectBoosters(t) {
 const VARIANT_STOP = new Set(['box', 'colecao', 'pokemon', 'de', 'da', 'do', 'com', 'e', 'tcg', 'mega', 'cartas', 'copag', 'booster', 'premium', 'especial', 'estampas', 'ilustradas', 'sortidas', 'sortidos', 'sortida', 'sortido', 'modelos', 'variados', 'brilhante', 'brilhantes', 'jumbo']);
 function detectVariant(t) {
   if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
-  let m = t.match(/\b(mega )?([a-z]{3,}) ex\b/);
-  if (m && !VARIANT_STOP.has(m[2])) return (m[1] ? 'mega-' : '') + m[2];
-  m = t.match(/\bex (mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
-  if (m && !VARIANT_STOP.has(m[2])) return (m[1] ? 'mega-' : '') + m[2];
+  const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
+  let m = t.match(/\b(?:mega )?([a-z]{3,}) ex\b/);
+  if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
+  m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
+  if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
   return null;
 }
 
