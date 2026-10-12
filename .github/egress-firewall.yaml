@@ -18,4 +18,4 @@ allow:
   # Pull da imagem descartável postgres:17 usada pelo serviço de testes.
   - auth.docker.io
   - registry-1.docker.io
-  - production.cloudflare.docker.com
+  - production.cloudfront.docker.com
