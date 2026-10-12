@@ -54,12 +54,15 @@ jobs:
         ports: ['5432:5432']
         options: >-
           --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 30
+    # GH_TOKEN (token do workflow) NÃO fica no env do job: só os dois passos de shell que usam `gh` o recebem.
+    # Assim ele não chega ao npm ci (scripts de instalação) nem ao passo do Claude.
     env:
-      GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
       ISSUE: ${{ github.event.issue.number }}
     steps:
       - name: Marcar em execução
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           for l in executor:running executor:done executor:failed; do
             gh api "repos/$REPO/labels" -f name="$l" -f color=ededed >/dev/null 2>&1 || true
@@ -72,6 +75,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
+          # Sem persistir o token do workflow no .git/config: a action do Claude remove essa credencial e
+          # configura a do app do Claude para o push (src/github/operations/git-config.ts, v1.0.248).
+          persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version: 22 }
       - run: npm ci --no-audit --no-fund
@@ -101,6 +107,7 @@ jobs:
       - name: Resultado na issue
         if: always()
         env:
+          GH_TOKEN: ${{ github.token }}
           BRANCH: ${{ steps.claude.outputs.branch_name }}
           CLAUDE_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
           CLAUDE_OUTCOME: ${{ steps.claude.outcome }}
