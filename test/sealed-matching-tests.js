@@ -118,6 +118,12 @@ test('variante: Pokémon ex diferentes são produtos diferentes; "X ou Y" não c
   const a = casa('Pokémon TCG Box Coleção Sylveon ex Fogo Fantasmagórico', 'me02-colecao_ex-sylveon');
   const b = casa('Pokémon TCG Box Coleção Greninja ex Fogo Fantasmagórico', 'me02-colecao_ex-greninja');
   assert.notEqual(a.productId, b.productId);
+  // "mega" em qualquer posição gera o mesmo id; sem "mega" continua o nome puro
+  const g1 = m('Pokémon TCG Box Pokemon ex Greninja mega Fogo Fantasmagórico');
+  const g2 = m('Pokémon TCG Box Mega Greninja ex Fogo Fantasmagórico');
+  assert.equal(g1.productId, 'me02-colecao_ex-mega-greninja');
+  assert.equal(g2.productId, g1.productId);
+  assert.notEqual(g1.productId, b.productId);
   recusa('Pokémon TCG Box Coleção Zapdos ex ou Alakazam ex Fogo Fantasmagórico', /tipo de produto não identificado/);
   // coleção genérica com nome que a diferencia (Dia de Pokémon) não vira a "Box Coleção" genérica
   casa('Pokémon TCG Box Coleção Fogo Fantasmagórico', 'me02-colecao');
