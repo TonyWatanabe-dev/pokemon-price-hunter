@@ -85,7 +85,7 @@ try {
   assert.equal(dbg.searchError.status, 403); assert.equal(dbg.scope, 'offline_access read');
   assert.deepEqual(dbg.catalogFields, ['available_quantity', 'condition', 'item_id', 'listing_type_id', 'official_store_id', 'original_price', 'price', 'seller_address', 'seller_id', 'shipping', 'sold_quantity']);
   assert.deepEqual(dbg.catalogSample, { item_id: 'MLB5551', available_quantity: 4, sold_quantity: 120, condition: 'new', listing_type_id: 'gold_special', price: 299.9, original_price: 349.9, official_store_id: null, free_shipping: true }, 'amostra só com campos de estoque/preço');
-  assert.deepEqual(dbg.catalogStock, { IN_STOCK: 2, OUT_OF_STOCK: 1 }); assert.deepEqual(dbg.publishedStock, { IN_STOCK: 1, UNKNOWN: 1 });
+  assert.deepEqual(dbg.catalogStock, { IN_STOCK: 2, OUT_OF_STOCK: 1 }); assert.deepEqual(dbg.publishedStock, { IN_STOCK: 2 });
   assert.equal(dbg.drop['catálogo: esgotado ou pausado'], 1); assert.equal(dbg.drop['catálogo: usado'], 1);
   assert.ok(!JSON.stringify(dbg).includes('AT-1') && !JSON.stringify(dbg).includes('RT-1'), 'diagnóstico sem token');
   n++;
