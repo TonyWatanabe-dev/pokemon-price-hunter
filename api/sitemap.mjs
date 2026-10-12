@@ -2,7 +2,7 @@
 import { state, slugs, SITE, colSlug, typeSlug, bestBy } from './_seo.mjs';
 import { classify, usable } from './_lib/freshness.mjs';
 export default async function handler(req, res) {
-  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['como-funciona', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
+  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
   let lastmod = new Date().toISOString().slice(0, 10);
   try {
     const s = await state();
@@ -17,7 +17,11 @@ export default async function handler(req, res) {
     const pmod = (p) => { const o = best[p.id]; return (o && (iso(o.source_timestamp) || iso(o.lastValid?.at) || iso(o.firstSeen))) || lastmod; };
     const maxmod = (list) => list.map(pmod).sort().pop() || lastmod;
     urls = urls.concat((s.collections || []).filter((c) => prods.some((p) => p.collection === c.id)).map((c) => [`${SITE}/colecao/${colSlug(c)}`, 'daily', '0.8', maxmod(prods.filter((p) => p.collection === c.id))]));
-    urls = urls.concat((s.types || []).filter((t) => prods.some((p) => p.type === t.id)).map((t) => [`${SITE}/tipo/${typeSlug(t)}`, 'daily', '0.8', maxmod(prods.filter((p) => p.type === t.id))]));
+    const types = (s.types || []).filter((t) => prods.some((p) => p.type === t.id));
+    urls = urls.concat(types.map((t) => [`${SITE}/tipo/${typeSlug(t)}`, 'daily', '0.8', maxmod(prods.filter((p) => p.type === t.id))]));
+    // Lote E: /tipo/blister (página que reúne os formatos de blister), só quando há algum deles com produto.
+    const bl = types.filter((t) => t.group === 'Blisters' || /^blister/i.test(String(t.id)));
+    if (bl.length && !types.some((t) => typeSlug(t) === 'blister')) urls.push([`${SITE}/tipo/blister`, 'daily', '0.8', maxmod(prods.filter((p) => bl.some((t) => t.id === p.type)))]);
     // Produto sem oferta com estoque sai com noindex em /api/pagina: não entra no sitemap.
     urls = urls.concat(prods.filter((p) => inStock[p.id] > 0).map((p) => [`${SITE}/produto/${of[p.id]}`, 'daily', '0.7', pmod(p)]));
   } catch { /* só as páginas fixas */ }

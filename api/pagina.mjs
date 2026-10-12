@@ -8,6 +8,8 @@ import { apiDbEnabled } from './_lib/db.mjs';
 import { listOpportunities } from './_lib/read-db.mjs';
 import { classify, usable, dbDataAt } from './_lib/freshness.mjs';
 import { byComparableTotal, shipKnown } from './_lib/offer-rank.mjs';
+// Lote E: guia, perguntas frequentes e glossário como dados (fonte única com o site).
+import { GUIA, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from './_lib/guia.mjs';
 
 let page = { t: 0, html: null };
 const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
@@ -102,6 +104,22 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const body = `${bc(trail)}<h1>${esc(c.name)}: preços de Pokémon TCG lacrado</h1><p>${list.length} produtos da coleção ${esc(c.name)} (${esc(c.series || 'Pokémon TCG')}) em lojas brasileiras, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><ul>${list.map((p) => prodRow(p, best[p.id], of, best[p.id] && best[p.id].discount > 0 && p.copagConfirmed ? ` (${pct(best[p.id].discount)} abaixo)` : '')).join('')}</ul>${navLinks}`;
     return { title, desc, url, json, body };
   }
+  // Lote E: /tipo/blister reúne os formatos de blister (unitário, duplo, triplo, quádruplo) numa página só,
+  // com link para cada um. Um formato real com esse slug tem prioridade (nunca houve: os rótulos são "Blister Unitário" etc.).
+  const isBlister = (ty) => ty.group === 'Blisters' || /^blister/i.test(String(ty.id));
+  if (t === 'tipo' && slug === 'blister' && !types.some((x) => typeSlug(x) === slug)) {
+    const subs = types.filter(isBlister); if (!subs.length) return null;
+    const ids = new Set(subs.map((x) => x.id));
+    const list = prods.filter((p) => ids.has(p.type)).sort(sortP);
+    const low = list.map((p) => best[p.id]?.total).filter(Boolean).sort((a, b) => a - b)[0];
+    const url = '/tipo/blister';
+    const title = `Blister Pokémon TCG: preços e onde comprar mais barato | ${NAME}`;
+    const desc = fitDesc(`Blister Pokémon TCG lacrado (unitário, duplo, triplo e quádruplo): ${list.length} produtos em lojas do Brasil comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}.`, ' Estoque conferido a cada 15 min.');
+    const trail = [['Início', '/'], ['Blister', url]];
+    const json = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Blister Pokémon TCG: preços', url: SITE + url, mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 30).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/produto/${of[p.id]}`, name: `${label(p)} ${p.collectionName}` })) } }, crumbs(trail)];
+    const body = `${bc(trail)}<h1>Blister Pokémon TCG: preços e onde comprar mais barato</h1><p>${list.length} produtos em blister (${subs.map((x) => x.label.toLowerCase()).join(', ')}), de todas as coleções, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><h2>Por tipo de blister</h2><ul class="ssr-links">${subs.map((x) => `<li><a href="/tipo/${typeSlug(x)}">${esc(x.label)}</a> (${list.filter((p) => p.type === x.id).length})</li>`).join('')}</ul><h2>Todos os blisters</h2><ul>${list.map((p) => prodRow(p, best[p.id], of)).join('')}</ul>${navLinks}`;
+    return { title, desc, url, json, body };
+  }
   if (t === 'tipo') {
     const ty = types.find((x) => typeSlug(x) === slug); if (!ty) return null;
     const list = prods.filter((p) => p.type === ty.id).sort(sortP);
@@ -121,6 +139,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     precos: ['/precos', `Preço sugerido Copag de Pokémon TCG: tabela oficial | ${NAME}`, 'Tabela do preço sugerido Copag de Pokémon TCG por coleção e formato (ETB, booster box, blisters, latas), com fonte e data de cada valor.', 'Preço sugerido Copag de Pokémon TCG'],
     'pre-vendas': ['/pre-vendas', `Pré-venda de Pokémon TCG no Brasil: lançamentos e preços | ${NAME}`, 'Lançamentos de Pokémon TCG em pré-venda nas lojas brasileiras, por coleção e formato, com preço e comparação com o preço sugerido Copag.', 'Pré-vendas de Pokémon TCG'],
     'como-funciona': ['/como-funciona', `Como funciona o comparador e o Opportunity Score | ${NAME}`, 'Como o TCG Price Hunter confere preços, estoque e o preço sugerido Copag de Pokémon TCG, e como calcula o Opportunity Score e a confiança de cada oferta.', 'Como funciona o TCG Price Hunter'],
+    glossario: ['/guia/glossario', `Glossário de Pokémon TCG lacrado: booster, blister, ETB, Copag | ${NAME}`, 'Glossário de Pokémon TCG lacrado: booster, booster box, blister, ETB, lata, deck, coleção, Copag, preço sugerido, Pix, Opportunity Score, confiança e pré-venda.', 'Glossário de Pokémon TCG lacrado'],
     termos: ['/termos', `Termos de uso | ${NAME}`, 'Termos de uso do TCG Price Hunter, comparador de preços de Pokémon TCG lacrado: o que o site faz, limites das informações e responsabilidade das lojas.', 'Termos de uso'],
     privacidade: ['/privacidade', `Política de privacidade | ${NAME}`, 'Política de privacidade do TCG Price Hunter (LGPD): quais dados o site guarda, para quê, por quanto tempo e como excluir a conta.', 'Política de privacidade'],
   };
@@ -152,10 +171,14 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   if (t === 'pre-vendas') { const pre = (s.offers || []).filter((o) => o.stock === 'PRE_ORDER' && P[o.productId]); main = pre.length ? `<ul>${pre.slice(0, 30).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>` : '<p>Nenhuma pré-venda aberta agora.</p>'; }
   // Páginas legais: o texto completo é o do site (index.html renderLegal); aqui vai título, canonical e a introdução.
   if (t === 'termos') main = '<p>Estes termos valem para quem usa o TCG Price Hunter. O site compara preços de lojas brasileiras com o preço sugerido oficial da Copag; as compras são feitas nas lojas, com os termos delas. Confira preço, frete e estoque na loja antes de comprar. O texto completo aparece ao carregar a página.</p>';
+  // Lote E: guia completo (uma seção por h2) + perguntas frequentes (FAQPage); glossário (DefinedTermSet).
+  if (t === 'como-funciona') main = `<p>${esc(GUIA.intro)}</p>${guiaHTML(GUIA)}${faqHTML(GUIA)}<p>Termos do hobby explicados: <a href="/guia/glossario">glossário de Pokémon TCG lacrado</a>.</p>`;
+  if (t === 'glossario') main = `<p>Os termos que aparecem nas ofertas e no guia <a href="/como-funciona">Como funciona</a>, em ordem de uso.</p>${glossarioHTML(GUIA)}`;
   if (t === 'privacidade') main = '<p>Esta política segue a Lei Geral de Proteção de Dados (Lei 13.709/2018). Sem conta, o site não guarda dados pessoais; com conta, guarda e-mail, nome, favoritos e alertas no Firebase, e a exclusão da conta apaga tudo na hora. O texto completo aparece ao carregar a página.</p>';
-  const json = t === 'home' ? [{ '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'Comparador de preços de Pokémon TCG', url: SITE + '/', inLanguage: 'pt-BR' }, { '@context': 'https://schema.org', '@type': 'Organization', name: NAME, url: SITE + '/', logo: SITE + '/icon-512.png', email: 'contato.tcgpricehunter@gmail.com' }] : [crumbs([['Início', '/'], [h1, url]])];
+  const extraLd = t === 'como-funciona' ? [faqLD(GUIA)] : t === 'glossario' ? [glossarioLD(GUIA, SITE)] : [];
+  const json = t === 'home' ? [{ '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'Comparador de preços de Pokémon TCG', url: SITE + '/', inLanguage: 'pt-BR' }, { '@context': 'https://schema.org', '@type': 'Organization', name: NAME, url: SITE + '/', logo: SITE + '/icon-512.png', email: 'contato.tcgpricehunter@gmail.com' }] : [...extraLd, crumbs([['Início', '/'], [h1, url]])];
   // Links internos para coleções e formatos: Home, /precos, /oportunidades e /pre-vendas (página sem lista ainda tem caminho a seguir).
-  return { title, desc, url, json, body: `<h1>${esc(h1)}</h1><p>${esc(desc)}</p>${main}${['home', 'precos', 'oportunidades', 'pre-vendas'].includes(t) ? `<p>Navegue por coleção ou formato:</p>${navLinks}` : ''}` };
+  return { title, desc, url, json, body: `<h1>${esc(h1)}</h1><p>${esc(desc)}</p>${main}${['home', 'precos', 'oportunidades', 'pre-vendas', 'glossario'].includes(t) ? `<p>Navegue por coleção ou formato:</p>${navLinks}` : ''}` };
 }
 
 // Host de onde buscar app.html: só o do SITE ou o do próprio deploy (a Vercel informa VERCEL_URL/VERCEL_BRANCH_URL/
