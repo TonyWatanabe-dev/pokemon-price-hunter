@@ -81,3 +81,31 @@ Se o comentário trouxer o link de uma PR, ela existe mas precisa de triagem man
 - O workflow só permite ao Claude `npm test`, `npm ci`, `node test/*`, leitura de git e `gh pr create`/`gh pr list`. Não há permissão para `gh pr merge`, push na `main` ou deploy.
 - O resultado de uma tarefa é sempre uma PR aberta para a `main`; o merge depende de CI + Release Governor ou de revisão humana.
 - Para confirmar em uma execução: a PR deve estar **Open**, sem merge, e nenhum deploy deve ter sido disparado por ela.
+
+## Dispatcher (fila aprovada)
+
+Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais issues podem ir para o worker; `tools/dispatcher.mjs` lê issues/PRs pela API e `.github/workflows/dispatcher.yml` roda a cada hora (e por `workflow_dispatch`) publicando o plano no resumo do job.
+
+- **Fila:** label `tarefa:aprovada`, válido só se a issue foi aberta por operador **e** o último evento desse label foi aplicado por operador (`TAREFAS_OPERADORES`, padrão: dono do repo).
+- **Ordem:** linha `Ordem: N` do corpo; depois o número da issue.
+- **Bloqueios:** `Depende de: #N` ainda aberta (ou desconhecida), PR aberto para a issue (branch `…/issue-N…` ou `Closes/Fixes/Resolves #N`), `executor:running`/`executor:github`, lease de 70 min após o despacho, `executor:done`, `executor:quarentena`, área crítica em uso (caminhos entre crases em `Áreas:` ou `Risco previsto:`), vagas (`TAREFAS_MAX`, 1..10, padrão 3) e pausa por rate limit (cota da API < 200 ou `DISPATCHER_PAUSA_ATE`).
+- **Idempotência:** chave `dispatch:<issue>:<tentativa>` gravada num comentário-marcador **antes** do disparo; só valem marcadores do ator do dispatcher ou de operadores. Dois dispatchers concorrentes: relê depois de gravar e só dispara quem tem o comentário de menor id com a chave.
+- **Retry e quarentena:** nova tentativa só depois de `executor:failed` (ou lease expirado) e do backoff (30 min, dobrando); com 2 tentativas sem sucesso, label `executor:quarentena` e comentário sanitizado, sem nova tentativa automática.
+- **Disparo real (etapa 2), desligado por padrão:**
+  - **Chave:** variável **`DISPATCHER_ATIVO=true`**, em Settings → Actions → Variables.
+  - **Job `despacho`:** grava o marcador na issue, aplica quarentena e roda `gh workflow run tarefas.yml -f issue=N -f chave=dispatch:N:T`. Tem só `issues: write` e `actions: write`.
+  - **Sem a variável:** só o job `plano` roda, somente leitura.
+- **Revalidação no worker:** o `tarefas.yml` aceita `workflow_dispatch` só com a mesma variável. Antes de qualquer efeito, `tools/validar-despacho.mjs` confere:
+  - issue aberta;
+  - autor e aprovação feitos por operador;
+  - sem quarentena e sem `executor:done`;
+  - marcador do dispatcher com a mesma chave;
+  - tentativa = a última registrada.
+  Despacho recusado falha fechado sem marcar a issue.
+- **Execução pelo despacho:** o Claude roda em modo agente com prompt fixo que só aponta o número da issue (lê título e corpo, nunca comentários). Os commits vão pela API do app (`use_commit_signing`) na branch `tarefa/issue-N-tT`, sem `git push` em Bash, e a PR é aberta para a `main`. Merge e deploy continuam fora do worker.
+- **Teste controlado antes de ampliar:**
+  1. Ligar `DISPATCHER_ATIVO=true` com `TAREFAS_MAX` em 1 ou 3.
+  2. Aprovar **uma** issue de documentação (`tarefa:aprovada`).
+  3. Rodar o Dispatcher manualmente.
+  4. Conferir marcador, execução do worker, PR com `Closes #N`, CI e label `executor:done`.
+  5. Rodar o Dispatcher de novo e confirmar que não há segundo despacho.
