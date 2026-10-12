@@ -4,11 +4,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { workerAcceptsDispatchYaml } from '../tools/dispatcher-workflow-check.mjs';
 import { planDispatch, applyPlan, parseDependencies, parseAreas, parseOrder, parseDispatchMarkers, dispatchMarker,
   clampSlots, hasOpenPull, sanitize, validateDispatchRequest, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-import { workerAcceptsDispatchYaml } from '../tools/dispatcher-workflow-check.mjs';
 let n = 0; const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
 
 const NOW = '2026-10-12T03:00:00Z';
