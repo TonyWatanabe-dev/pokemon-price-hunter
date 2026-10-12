@@ -20,9 +20,26 @@ const routes = {
   'GET /alerts': () => readJsonl(dataPath('alerts.jsonl')).slice(-200).reverse(),
 };
 
+class RuleError extends Error {}
+const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
+// Rejeita (400) regra malformada: tipos/intervalos inválidos ou sem nenhum critério (dispararia em qualquer oferta do filtro).
+function validateRule(rule) {
+  const bad = (m) => { throw new RuleError(m); };
+  if (!rule || typeof rule !== 'object' || Array.isArray(rule)) bad('regra precisa ser um objeto');
+  if (!rule.id || !rule.filter) bad('regra precisa de id e filter');
+  if (typeof rule.id !== 'string') bad('id da regra precisa ser texto');
+  if (typeof rule.filter !== 'object' || Array.isArray(rule.filter)) bad('filter precisa ser um objeto');
+  if (rule.mode != null && rule.mode !== 'target' && rule.mode !== 'deal') bad('mode precisa ser "target" ou "deal"');
+  for (const k of ['maxPrice', 'maxPerBooster']) if (rule[k] != null && (!isNum(rule[k]) || rule[k] <= 0)) bad(`${k} precisa ser número maior que 0`);
+  if (rule.minDiscount != null && (!isNum(rule.minDiscount) || rule.minDiscount < 0 || rule.minDiscount > 1)) bad('minDiscount precisa ser número entre 0 e 1');
+  if (rule.minOpportunityScore != null && (!isNum(rule.minOpportunityScore) || rule.minOpportunityScore < 0 || rule.minOpportunityScore > 100)) bad('minOpportunityScore precisa ser número entre 0 e 100');
+  if (rule.restock != null && typeof rule.restock !== 'boolean') bad('restock precisa ser booleano');
+  if (!(rule.restock || ['maxPrice', 'maxPerBooster', 'minDiscount', 'minOpportunityScore'].some((k) => rule[k] != null))) bad('regra precisa de ao menos um critério (maxPrice, maxPerBooster, minDiscount, minOpportunityScore ou restock)');
+  return rule;
+}
+
 async function upsertRule(req) {
-  const rule = await readBody(req);
-  if (!rule.id || !rule.filter) throw new Error('regra precisa de id e filter');
+  const rule = validateRule(await readBody(req));
   const w = readJson(configPath('watchlist.json'), { settings: {}, rules: [] });
   w.rules = [...w.rules.filter((r) => r.id !== rule.id), rule]; writeJson(configPath('watchlist.json'), w); return rule;
 }
@@ -38,5 +55,5 @@ http.createServer(async (req, res) => {
     if (u.pathname === '/data/state.json') return send(res, 200, fs.readFileSync(dataPath('state.json')));
     if (u.pathname === '/' || u.pathname === '/index.html') return send(res, 200, fs.readFileSync(path.join(ROOT, 'dashboard/index.html')), 'text/html; charset=utf-8');
     send(res, 404, { error: 'rota inexistente' });
-  } catch (e) { console.error(`[server] ${u.pathname}: ${e.message}`); send(res, 400, { error: e instanceof SyntaxError ? 'JSON inválido' : e.message === 'regra precisa de id e filter' ? e.message : 'pedido não pôde ser processado' }); }
+  } catch (e) { console.error(`[server] ${u.pathname}: ${e.message}`); send(res, 400, { error: e instanceof SyntaxError ? 'JSON inválido' : e instanceof RuleError ? e.message : 'pedido não pôde ser processado' }); }
 }).listen(PORT, () => console.log(`Painel e API em http://localhost:${PORT}`));
