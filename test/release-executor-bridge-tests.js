@@ -224,6 +224,30 @@ await t('deploy: só documentação não exige deploy; R3 nunca é publicado soz
   r = await runDeploy(deployArgs(mergedGithub(), noToken).args); assert.equal(r.status, 'blocked'); assert.match(r.reason, /sem token/);
 });
 
+await t('deploy R2 sem evidência de rollout/rollback: Governor bloqueia e produção não é tocada', async () => {
+  const v = fakeVercel(); const { d, args } = deployArgs(mergedGithub(), v, { rollout: {} });
+  const r = await runDeploy(args);
+  assert.equal(r.status, 'blocked'); assert.match(r.reason, /rollback/);
+  assert.deepEqual(v.s.created.map((x) => x.target), ['preview'], 'nenhum deploy de produção');
+  assert.deepEqual(d.outcomes.events.map((e) => e.status), ['blocked']);
+});
+
+await t('CLI e workflows: sem rollout autodeclarado; worker de tarefas não alcança a ponte', async () => {
+  const { default: fs } = await import('node:fs'); const { default: path } = await import('node:path'); const { fileURLToPath } = await import('node:url');
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  const cli = fs.readFileSync(path.join(root, 'tools/release-run.mjs'), 'utf8');
+  assert.doesNotMatch(cli, /tested:\s*true|documented:\s*true|metricsDefined:\s*true|rollbackTriggersDefined:\s*true/, 'evidência R2 não pode ser constante no executor');
+  const dir = path.join(root, '.github/workflows');
+  for (const f of fs.readdirSync(dir)) {
+    const y = fs.readFileSync(path.join(dir, f), 'utf8').split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
+    assert.doesNotMatch(y, /release-run|release-executor-bridge|release-adapters/, `${f} não pode invocar a ponte`);
+  }
+  const tarefas = fs.readFileSync(path.join(dir, 'tarefas.yml'), 'utf8');
+  const tools = (tarefas.match(/--allowedTools\s+"([^"]*)"/) || [])[1];
+  assert.ok(tools, 'allowedTools explícito no worker');
+  assert.doesNotMatch(tools, /node tools|Bash\(node\s*\*|Bash\(node:\*|gh pr merge|gh api|vercel/i, 'worker sem ferramentas de merge/deploy');
+});
+
 // ------------------------------------------------------------------ adaptadores (sem rede)
 await t('adaptador GitHub: status HTTP vira classe de erro; merge envia o SHA', async () => {
   const fakeRun = (status, body) => (cmd, args, o, cb) => cb(status >= 400 ? Object.assign(new Error('x'), { code: 1 }) : null, `HTTP/2.0 ${status} OK\r\nX: y\r\n\r\n${body}`, '');

@@ -40,8 +40,9 @@ try {
     const vercel = process.env.VERCEL_TOKEN
       ? vercelAdapter({ token: process.env.VERCEL_TOKEN, teamId: process.env.VERCEL_TEAM_ID, project: process.env.VERCEL_PROJECT || 'tcg-price-hunter', org, repo: name })
       : { createDeployment: fail, getDeployment: fail };
-    r = await runDeploy({ prNumber: pr, ...deps, vercel, smoke: (url) => smokeTest(url, SITE_ROUTES),
-      rollout: { rollback: { documented: true, tested: true }, rollout: { metricsDefined: true, rollbackTriggersDefined: true }, featureFlag: { applicable: false, reason: 'publicação de commit já integrado; rollback = promover o deploy anterior' } } });
+    // Evidência de rollout/rollback (R2) não é declarada aqui: uma constante no executor seria alegação do
+    // próprio agente. Sem fonte verificável, o Governor bloqueia deploy R2 (fail-closed); R1 não depende dela.
+    r = await runDeploy({ prNumber: pr, ...deps, vercel, smoke: (url) => smokeTest(url, SITE_ROUTES), rollout: {} });
   }
 } catch (e) { r = { status: 'error', reason: String(e.message).slice(0, 300) }; }
 finally { await close().catch(() => {}); }
