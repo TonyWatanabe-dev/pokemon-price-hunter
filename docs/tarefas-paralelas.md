@@ -42,3 +42,42 @@ Com mais issues do que vagas, as excedentes ficam na fila do GitHub (até 100 po
 - **Ferramentas:** a action está fixada por SHA na versão `v1.0.248`, com `--permission-mode auto`. As ferramentas de shell autorizadas são restritas a testes e a criação/listagem de PRs. Não existe permissão para merge/deploy automatizado neste workflow.
 - **Rede:** o runner de firewall limita saídas aos hosts listados no arquivo de allowlist. Dependências de teste que precisem de outro host exigem revisão explícita e allowlist específica.
 - **Logs:** logs de Actions podem ser visíveis no repositório público. A saída completa da conversa do Claude não é habilitada.
+
+## Diagnóstico da primeira execução
+
+Use esta seção quando uma issue com `executor:github` não se comportar como esperado.
+
+### Como verificar o resultado do job
+
+1. Abra a aba **Actions** → workflow **Tarefas** e procure a execução da issue (o título traz o número dela).
+2. Confira o **Summary** da execução. O passo "Resultado na issue" grava ali `Resultado: sucesso` (com o link da PR) ou `Resultado: falha`.
+3. Confira a issue:
+   - `executor:running`: o job está em andamento (ou foi interrompido sem passar pelo passo final).
+   - `executor:done`: a action terminou com sucesso **e** existe uma PR aberta.
+   - `executor:failed`: veja o comentário automático, que traz o status e o link do log.
+4. Abra os logs do passo que falhou. Os passos relevantes, em ordem, são: marcar em execução, `npm ci`, **Validar credencial Claude**, a Claude Code Action e o resultado na issue.
+
+### Falta de secret, app ou runner
+
+| Sintoma | Causa provável | O que fazer |
+| --- | --- | --- |
+| Passo "Validar credencial Claude" falha com `Credencial Claude ausente` | Secret `CLAUDE_CODE_OAUTH_TOKEN` não cadastrado ou vazio | Gere o token com `claude setup-token` e cadastre em Settings → Secrets and variables → Actions. Não cole o token em issue, chat ou log. |
+| A action falha com `Environment variable validation failed` | Nenhuma credencial de modelo chegou à action | Mesma correção do secret acima. |
+| Erro ao criar branch/PR ou ao comentar (403/404) | App do Claude não instalado no repositório ou sem permissão | Instale/revise o app em https://github.com/apps/claude, somente neste repositório. |
+| Job fica em fila (`Queued`) e não inicia | Runner `ubuntu-24.04-firewall` indisponível na conta ou repositório | Verifique a disponibilidade do runner. Não troque por runner comum sem revisão de segurança. |
+| Falha de DNS/download (por exemplo imagem `postgres:17`) | Host fora da allowlist de rede | Revise `.github/egress-firewall.yaml` em uma PR separada; não desative o firewall. |
+
+### Como interpretar `executor:failed`
+
+`executor:failed` significa apenas que a tarefa **não foi concluída com segurança**. Ele aparece quando:
+- a validação de credencial falhou (a Claude Code Action nem chegou a ser chamada);
+- a action terminou com status diferente de sucesso;
+- a action terminou com sucesso, mas não há PR aberta.
+
+Se o comentário trouxer o link de uma PR, ela existe mas precisa de triagem manual antes de qualquer merge. Para repetir: corrija a causa, remova `executor:failed` se ainda estiver na issue e aplique `executor:github` novamente.
+
+### Nenhuma tarefa faz merge ou deploy sozinha
+
+- O workflow só permite ao Claude `npm test`, `npm ci`, `node test/*`, leitura de git e `gh pr create`/`gh pr list`. Não há permissão para `gh pr merge`, push na `main` ou deploy.
+- O resultado de uma tarefa é sempre uma PR aberta para a `main`; o merge depende de CI + Release Governor ou de revisão humana.
+- Para confirmar em uma execução: a PR deve estar **Open**, sem merge, e nenhum deploy deve ter sido disparado por ela.
