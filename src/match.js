@@ -33,18 +33,23 @@ const LANG_TOKENS = {
   ja: ['japones', 'japonesa', 'japanese', 'japao', 'japan', 'jpn', 'jap', 'jp'],
   ko: ['coreano', 'coreana', 'korean', 'kor', 'kr'],
   zh: ['chines', 'chinesa', 'chinese', 'cn'],
-  es: ['espanhol', 'espanhola', 'spanish'],
-  fr: ['frances', 'francesa', 'french'],
-  de: ['alemao', 'alema', 'german'],
-  it: ['italiano', 'italiana', 'italian'],
+  es: ['espanhol', 'espanhola', 'spanish', 'espanol', 'espanola', 'castellano', 'es-es'],
+  fr: ['frances', 'francesa', 'french', 'francais', 'francaise', 'fr', 'fr-fr'],
+  de: ['alemao', 'alema', 'german', 'deutsch', 'deutsche', 'de-de'],
+  it: ['italiano', 'italiana', 'italian', 'ita', 'it-it'],
 };
+// "es", "de" e "it" soltos são ambíguos ("Coleção de ...", "it" do inglês): só valem como último token do título
+// ("Booster Box ... 36 boosters ES").
+const LANG_TAIL = { es: ['es'], de: ['de'], it: ['it'] };
 // Hífen é fronteira (como o \b da regra antiga): "EN-US" -> en, "JP-JA" -> ja, "Inglês-EN" -> en.
 // Token mais longo primeiro, para "pt-br" sair como evidência inteira em vez de só "pt".
-const LANG_RE = new Map(Object.entries(LANG_TOKENS).map(([k, v]) => [k, new RegExp('(?:^|[^a-z0-9])(' + [...v].sort((a, b) => b.length - a.length).map(esc).join('|') + ')(?![a-z0-9])')]));
+const alt = (v) => [...v].sort((a, b) => b.length - a.length).map(esc).join('|');
+const LANG_RE = new Map(Object.entries(LANG_TOKENS).map(([k, v]) => [k, new RegExp('(?:^|[^a-z0-9])(' + alt(v) + ')(?![a-z0-9])'
+  + (LANG_TAIL[k] ? '|(?:^|[^a-z0-9])(' + alt(LANG_TAIL[k]) + ')[^a-z0-9]*$' : ''))]));
 /** t normalizado -> { code, evidence, conflict, found }. code só quando UM idioma aparece; conflict quando aparecem dois ou mais. */
 export function detectLanguage(t) {
   const found = [];
-  for (const [code, re] of LANG_RE) { const m = re.exec(t); if (m) found.push({ code, evidence: m[1] }); }
+  for (const [code, re] of LANG_RE) { const m = re.exec(t); if (m) found.push({ code, evidence: m[1] || m[2] }); }
   if (!found.length) return { code: null, evidence: null, conflict: false, found: [] };
   if (found.length > 1) return { code: null, evidence: null, conflict: true, found };
   return { code: found[0].code, evidence: found[0].evidence, conflict: false, found };

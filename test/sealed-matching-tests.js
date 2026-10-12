@@ -81,6 +81,26 @@ test('idioma diferente de PT nunca casa, nem com EAN cadastrado', () => {
   casa('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Português', 'me02-box36');
 });
 
+test('idioma: abreviações e nomes nativos (FR, Deutsch, Español, ES no fim) também não casam', () => {
+  for (const t of [
+    'Booster Box Fenda Paradoxal 36 boosters FR',
+    'ETB Fenda Paradoxal Deutsch',
+    'ETB Fenda Paradoxal Español',
+    'Booster Box Fenda Paradoxal 36 boosters ES',
+    'Booster Box Fenda Paradoxal 36 boosters (DE)',
+    'Booster Box Fenda Paradoxal 36 boosters - IT',
+    'ETB Fenda Paradoxal Francês',
+    'ETB Fenda Paradoxal Français',
+    'ETB Fenda Paradoxal ITA',
+    'Booster Box Fenda Paradoxal ES-ES 36 boosters',
+  ]) recusa(t, /idioma diferente de PT/);
+  // "de"/"es"/"it" no meio do título não são idioma: casos PT seguem casando
+  casa('Pokémon TCG Box Treinador Avançado Fenda Paradoxal', 'sv4-etb');
+  casa('Pokémon TCG Box de Treinador Avançado Fenda Paradoxal', 'sv4-etb');
+  casa('Booster Box Fenda Paradoxal 36 boosters', 'sv4-box36');
+  casa('Pokémon TCG Caixa de Boosters Fogo Fantasmagórico', 'me02-box36');
+});
+
 test('coleção: diferente vira outro produto; duas coleções no título não casam', () => {
   assert.notEqual(m('Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico').productId, m('Pokémon TCG Box Treinador Avançado Caos Ascendente').productId);
   casa('Pokémon TCG Box Treinador Avançado Caos Ascendente', 'me04-etb');
