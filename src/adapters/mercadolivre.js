@@ -39,6 +39,29 @@ export function mlReject(name, productId, catalog) {
 const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto nosso
 const MIN_SALES = Number(process.env.ML_MIN_SALES || 50); // vendas concluídas mínimas do vendedor
 
+// Estoque a partir do que /products/{id}/items já devolve por vendedor. Pela documentação do ML ("List of publications
+// for a product page"), cada item traz item_id, seller_id, price, original_price, available_quantity, sold_quantity,
+// condition, listing_type_id, shipping, official_store_id — e NÃO traz status: a lista é só de anúncios ativos que
+// disputam a página. Por isso status ausente conta como ativo; quando vem (como em /items), é respeitado.
+// Só afirma com evidência: ativo e quantidade > 0 é IN_STOCK; quantidade 0 ou status pausado/fechado é OUT_OF_STOCK;
+// sem quantidade é UNKNOWN. Nunca inventa estoque. source: de onde veio a leitura ('ml-catalog' ou 'ml-items').
+const INACTIVE = /^(paused|closed|inactive|under_review)$/;
+export function catalogStock(it, source = 'ml-catalog') {
+  if (!it || typeof it !== 'object') return { stock: 'UNKNOWN', quantity: null, stockSource: null };
+  const status = typeof it.status === 'string' ? it.status : null;
+  const qty = it.available_quantity == null ? NaN : Number(it.available_quantity);
+  if (status && INACTIVE.test(status)) return { stock: 'OUT_OF_STOCK', quantity: null, stockSource: source };
+  if (!Number.isFinite(qty)) return { stock: 'UNKNOWN', quantity: null, stockSource: null };
+  if (qty <= 0) return { stock: 'OUT_OF_STOCK', quantity: null, stockSource: source };
+  if (status && status !== 'active') return { stock: 'UNKNOWN', quantity: null, stockSource: null };
+  return { stock: 'IN_STOCK', quantity: qty > 1 ? qty : null, stockSource: source };
+}
+// Corpo estruturado de erro da API (sem token): message, error, cause[], status. Para o diagnóstico em ml-debug.json.
+export const apiError = (b) => (b && typeof b === 'object' ? { status: b.status ?? null, error: b.error ?? null, message: typeof b.message === 'string' ? b.message.slice(0, 200) : null, cause: Array.isArray(b.cause) ? b.cause.slice(0, 5).map((c) => (typeof c === 'string' ? c.slice(0, 200) : { code: c?.code ?? null, message: typeof c?.message === 'string' ? c.message.slice(0, 200) : null })) : b.cause ?? null } : null);
+// Amostra de um item do catálogo só com os campos que interessam ao estoque (sem endereço do vendedor nem termos de venda).
+const SAMPLE_FIELDS = ['item_id', 'status', 'available_quantity', 'sold_quantity', 'condition', 'listing_type_id', 'price', 'original_price', 'official_store_id'];
+const catalogSample = (it) => ({ ...Object.fromEntries(SAMPLE_FIELDS.filter((k) => k in it).map((k) => [k, it[k]])), free_shipping: it.shipping?.free_shipping ?? null });
+
 export async function search(store, catalog, { log = () => {} } = {}) {
   let auth;
   try { auth = await accessToken(); } catch (e) { throw new BlockedError('Mercado Livre: não foi possível renovar o acesso (' + e.message + '). Rode o workflow "Mercado Livre: autorizar".', 'auth'); }
@@ -48,11 +71,18 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     try { return await getJson(API + path, H); } catch (e) { if (e.status === 401) throw new BlockedError('Mercado Livre recusou o acesso (401): autorize de novo.', 401); throw e; }
   };
 
+  // Diagnóstico da rodada (data/ml-debug.json): o que a API abriu/fechou para o app, campos do catálogo e estoque
+  // derivado. Sem token, sem corpo de resposta além do erro estruturado.
+  const dbg = { picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, itemsError: null, scope: auth.scope || null };
+  const drop = (k) => { dbg.drop[k] = (dbg.drop[k] || 0) + 1; };
+  const httpError = (e) => ({ status: e?.status ?? null, error: e?.blocked ? 'blocked' : null, message: String(e?.message || '').slice(0, 200), cause: null });
+
   // Caminho 1: busca de anúncios. Se der 403/bloqueio, passa para o catálogo.
   let open = true; const out = new Map();
   for (const term of searchTerms(catalog).map((t) => t + ' copag lacrado')) {
     let j;
-    try { j = await call(`/sites/MLB/search?q=${encodeURIComponent(term)}&limit=50`); } catch (e) { if (e.blocked || e.status === 403) { open = false; break; } throw e; }
+    try { j = await call(`/sites/MLB/search?q=${encodeURIComponent(term)}&limit=50`); } catch (e) { if (e.blocked || e.status === 403) { open = false; dbg.searchApi = false; dbg.searchError = httpError(e); break; } throw e; }
+    dbg.searchApi = true;
     for (const r of j.results || []) {
       if (r.condition && r.condition !== 'new') continue;
       out.set(r.id, {
@@ -64,7 +94,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       });
     }
   }
-  if (open && out.size) return [...out.values()];
+  if (open && out.size) { writeJson(dataPath('ml-debug.json'), { ...dbg, path: 'search', published: out.size, at: new Date().toISOString() }); return [...out.values()]; }
 
   // Caminho 2: catálogo. Os produtos de catálogo de cada coleção ficam em cache por 1 dia.
   const cacheFile = dataPath('ml-catalog.json');
@@ -108,11 +138,16 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     if (mlReject(p.name, p.productId, catalog)) continue;
     let j; asked++;
     try { j = await call(`/products/${pid}/items`); } catch (e) { if (e.blocked) throw e; if (e.status === 404) continue; itemFails++; log(`ML catálogo: ofertas de ${pid} falharam (${e.message})`); continue; }
+    const readAt = new Date().toISOString(); // momento da leitura do preço/estoque deste produto
     for (const it of j.results || []) {
-      if (it.condition && it.condition !== 'new') continue;
+      if (!it || typeof it !== 'object') continue;
+      if (!dbg.catalogFields) { dbg.catalogFields = Object.keys(it).sort(); dbg.catalogSample = catalogSample(it); } // evidência do formato que a API devolve
+      if (it.condition && it.condition !== 'new') { drop('catálogo: usado'); continue; }
       const id = it.item_id || it.id; const price = Number(it.price);
       if (!id || !(price > 0)) continue;
-      (byProduct[p.productId] ||= []).push({ it, p, pid, id, price });
+      const cs = catalogStock(it); dbg.catalogStock[cs.stock] = (dbg.catalogStock[cs.stock] || 0) + 1;
+      if (cs.stock === 'OUT_OF_STOCK') { drop('catálogo: esgotado ou pausado'); continue; } // sem unidade à venda: não disputa vaga
+      (byProduct[p.productId] ||= []).push({ it, p, pid, id, price, cs, readAt });
     }
   }
   // Nenhuma consulta de ofertas respondeu: é falha da fonte (vira ERROR e as ofertas ficam como não confirmadas), não "zero produtos".
@@ -133,8 +168,9 @@ export async function search(store, catalog, { log = () => {} } = {}) {
 
   // Conferência anúncio a anúncio (/items): ativo, novo, mesmo preço e link oficial do anúncio.
   // Se a API de anúncios não abrir para o app, usa o link da página do produto com o vendedor selecionado.
-  const check = new Map(); let itemsApi = true; const dbg = { picked: 0, sample: null, drop: {} };
-  const drop = (k) => { dbg.drop[k] = (dbg.drop[k] || 0) + 1; };
+  // Se a API de anúncios não abrir para o app (403 access_denied por anúncio, ver docs/mercadolivre-api.md), vale a
+  // leitura do catálogo: link da página do produto com o vendedor selecionado e estoque pelo available_quantity.
+  const check = new Map(); let itemsApi = true;
   for (let i = 0; i < picked.length && itemsApi; i += 20) {
     const ids = picked.slice(i, i + 20).map((r) => r.id).join(',');
     try {
@@ -142,14 +178,17 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (!dbg.sample) dbg.sample = JSON.stringify(arr).slice(0, 600);
       for (const x of arr || []) { const b = x?.body || x; if ((x.code === 200 || !x.code) && b?.id) check.set(b.id, b); }
       // App comum não pode ler anúncio de outro vendedor (403 por anúncio): usa a lista oficial do catálogo.
-      if (!check.size && (arr || []).length && arr.every((x) => x.code === 403)) { itemsApi = false; log('ML: /items fechado para anúncios de terceiros; usando a lista de vendedores do catálogo'); }
-    } catch (e) { if (e.blocked && e.status === 401) throw e; itemsApi = false; log(`ML: conferência por anúncio indisponível (${e.message}); usando link da página do produto`); }
+      if (!check.size && (arr || []).length && arr.every((x) => x.code === 403)) {
+        itemsApi = false; dbg.itemsError = { httpStatus: 200, perItemCode: 403, ...(apiError(arr[0]?.body) || {}) };
+        log('ML: /items fechado para anúncios de terceiros; usando a lista de vendedores do catálogo');
+      }
+    } catch (e) { if (e.blocked && e.status === 401) throw e; itemsApi = false; dbg.itemsError = httpError(e); log(`ML: conferência por anúncio indisponível (${e.message}); usando link da página do produto`); }
   }
 
   const listings = []; const perProduct = {};
-  for (const { it, p, pid, id, price, v, official } of picked) {
+  for (const { it, p, pid, id, price, v, official, cs, readAt } of picked) {
     if ((perProduct[p.productId] || 0) >= PER_PRODUCT) continue;
-    let url = pdpUrl(pid, id); let finalPrice = price; let qty = null; let checkedQty = 0;
+    let url = pdpUrl(pid, id); let finalPrice = price; let st = cs;
     if (itemsApi) {
       const b = check.get(id);
       if (!b) { drop('sem resposta'); continue; }
@@ -158,20 +197,21 @@ export async function search(store, catalog, { log = () => {} } = {}) {
       if (Math.abs(Number(b.price) - price) > 0.009) { drop('preço diferente'); continue; } // mudou entre as leituras: espera a próxima rodada
       if (b.catalog_product_id && b.catalog_product_id !== pid) { drop('outro produto'); continue; }
       if (b.permalink) url = b.permalink;
-      finalPrice = Number(b.price); qty = b.available_quantity > 1 ? b.available_quantity : null; checkedQty = Number(b.available_quantity) || 0;
+      finalPrice = Number(b.price); st = catalogStock(b, 'ml-items');
     }
     perProduct[p.productId] = (perProduct[p.productId] || 0) + 1;
     listings.push({
       title: p.name, url, price: { base: finalPrice }, listPrice: it.original_price > finalPrice ? it.original_price : null,
-      // Em estoque só com prova: anúncio conferido em /items, ativo e com quantidade. Sem conferência (API fechada
-      // para o app) ou sem quantidade, fica "não confirmado" — nunca afirma disponibilidade sem evidência.
-      stock: itemsApi && checkedQty > 0 ? 'IN_STOCK' : 'UNKNOWN', quantity: qty,
-      shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image,
+      // Em estoque só com prova: available_quantity > 0 do anúncio conferido em /items ou, com /items fechado, da
+      // lista oficial do catálogo (mesma leitura que deu o preço e o link). Sem quantidade fica "não confirmado".
+      stock: st.stock, quantity: st.quantity, ...(st.stockSource ? { stockSource: st.stockSource } : {}),
+      shipping: it.shipping?.free_shipping ? 0 : null, sku: id, ean: null, image: p.image, source_timestamp: readAt,
       seller: it.official_store_name || v.name || 'Vendedor no Mercado Livre', sellerId: it.seller_id,
       sellerKind: official ? 'official_store' : 'marketplace_seller', sourceType: 'official_api',
     });
   }
   dbg.picked = picked.length; dbg.itemsApi = itemsApi; dbg.published = listings.length; dbg.at = new Date().toISOString();
+  dbg.publishedStock = listings.reduce((a, l) => { a[l.stock] = (a[l.stock] || 0) + 1; return a; }, {});
   writeJson(dataPath('ml-debug.json'), dbg);
   writeJson(cacheFile, cache);
   return listings;
