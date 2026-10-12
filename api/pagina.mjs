@@ -10,6 +10,8 @@ import { classify, usable, dbDataAt } from './_lib/freshness.mjs';
 import { byComparableTotal, shipKnown } from './_lib/offer-rank.mjs';
 // Lote E: guia, perguntas frequentes e glossário como dados (fonte única com o site).
 import { GUIA, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from './_lib/guia.mjs';
+// Frente 7: /lojas (todas as lojas conhecidas, com busca direta) e "Procurar em outras lojas" no produto.
+import { lojasFromState, sections as lojaSections, outrasLojas, LOJAS_CFG } from './_lib/lojas.mjs';
 
 let page = { t: 0, html: null };
 const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
@@ -41,11 +43,44 @@ const hostOf = (u) => { try { return new URL(u).host.replace(/^www\./, ''); } ca
 // Oferta individual no JSON-LD (dentro do AggregateOffer): preço, loja e disponibilidade; nunca declara frete (#84).
 const ldOffer = (o) => ({ '@type': 'Offer', price: o.total, priceCurrency: 'BRL', availability: 'https://schema.org/InStock', ...(o.url ? { url: o.url } : {}), seller: { '@type': 'Organization', name: o.storeName } });
 
+// ---- Frente 7: lojas ----
+const LOJA_CHIP = { monitorada: ['ok', 'Monitorada'], 'sem-leitura': ['warn', 'Sem leitura automática'], indisponivel: ['warn', 'Sem leitura automática'], marketplace: ['', 'Marketplace'], pausada: ['', 'Pausada'] };
+const stamp = (iso) => (iso && !Number.isNaN(Date.parse(iso)) ? new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '');
+// Link externo para a loja: sempre nofollow + noopener, nova aba. Nunca um preço: só o que o robô leu entra em "Onde comprar".
+const extA = (url, txt) => `<a href="${esc(url)}" rel="nofollow noopener" target="_blank">${txt}<span class="sr"> (abre em nova aba)</span> ↗</a>`;
+function lojaRow(l, oppFilter) {
+  const [cls, lbl] = LOJA_CHIP[l.status] || ['', l.status];
+  const plat = l.platform && LOJAS_CFG.rotulo[l.platform] ? ` <span class="chip">${esc(LOJAS_CFG.rotulo[l.platform])}</span>` : '';
+  const facts = l.status === 'monitorada' ? ` · ${l.offersLive} ${l.offersLive === 1 ? 'oferta' : 'ofertas'} com estoque${l.lastReadAt ? ` · última leitura ${stamp(l.lastReadAt)}` : ''}` : '';
+  const go = l.searchUrl ? ` · ${extA(l.searchUrl, l.searchKind === 'busca' ? 'Buscar Pokémon na loja' : 'Abrir a loja')}` : '';
+  const opp = oppFilter && l.status === 'monitorada' && l.offersLive > 0 ? ` · <a href="/oportunidades?loja=${encodeURIComponent(l.id)}">Ver ofertas</a>` : '';
+  return `<li id="loja-${esc(l.id)}"><b>${esc(l.name)}</b>${plat} <span class="chip ${cls}">${lbl}</span>${facts}${go}${opp}${l.reason ? `<br><small>${esc(l.reason)}</small>` : ''}</li>`;
+}
+function lojasPage(lojas) {
+  const secs = lojaSections(lojas); const n = Object.fromEntries(secs.map(([k, , xs]) => [k, xs.length]));
+  const url = '/lojas'; const h1 = 'Lojas de Pokémon TCG no Brasil';
+  const title = `Lojas de Pokémon TCG no Brasil: todas as lojas monitoradas | ${NAME}`;
+  const desc = fitDesc(`Lojas de Pokémon TCG lacrado que o TCG Price Hunter conhece: ${n.monitoradas} monitoradas agora, ${n['sem-leitura']} sem leitura automática e ${n.marketplaces} marketplaces.`, ' Busca direta em cada uma.');
+  const trail = [['Início', '/'], [h1, url]];
+  const items = lojas.filter((l) => l.url);
+  const json = [{ '@context': 'https://schema.org', '@type': 'ItemList', name: h1, url: SITE + url, numberOfItems: items.length,
+    itemListElement: items.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': l.marketplace ? 'Organization' : 'Store', name: l.name, url: l.url } })) }, crumbs(trail)];
+  const intro = { monitoradas: 'O robô lê estas lojas a cada 15 min: os preços delas aparecem nas ofertas do site.', 'sem-leitura': 'Lojas que vendem Pokémon TCG, mas que o robô não consegue ler. Nenhum preço aparece aqui: confira na própria loja.', marketplaces: 'Muitos vendedores num site só. O robô não lê os preços; a busca abre no próprio marketplace.', pausadas: 'Leitura pausada pelo projeto. A loja continua no ar; os preços só aparecem nela.' };
+  const body = `${bc(trail)}<h1>${esc(h1)}</h1><p>${esc(desc)}</p><p>Preço só aparece quando o robô leu a loja; nas demais, o link leva à busca de Pokémon na própria loja. A compra é sempre na loja.</p>${secs.map(([k, t, xs]) => `<h2 id="${k}">${esc(t)} (${xs.length})</h2><p>${esc(intro[k])}</p>${xs.length ? `<ul class="ssr-lojas">${xs.map((l) => lojaRow(l, true)).join('')}</ul>` : '<p>Nenhuma agora.</p>'}`).join('')}`;
+  return { title, desc, url, json, body };
+}
+// "Procurar em outras lojas" (produto): até 12 links de busca com o nome do produto; marketplaces primeiro. Sem preço.
+function outrasLojasHTML(lojas, q) {
+  const ls = outrasLojas(lojas, q); if (!ls.length) return '';
+  return `<details class="more outras"><summary><h2>Procurar em outras lojas (${ls.length})</h2></summary><p>Preços não lidos pelo Hunter — confira na loja.</p><ul class="ssr-links ssr-lojas">${ls.map((l) => `<li>${extA(l.url, esc(l.name))}</li>`).join('')}</ul></details>`;
+}
+
 function prodRow(p, o, of, extra = '') {
   return `<li><a href="/produto/${of[p.id]}">${esc(p.collectionName)} · ${esc(label(p))}</a>${o ? ` — <b>${brl(o.total)}${pix(o)}</b> em ${esc(o.storeName)}` : ' — sem estoque agora'}${p.copagConfirmed && p.msrp ? ` · Copag ${brl(p.msrp)}` : ''}${extra}</li>`;
 }
 
-function build(t, slug, s, opp = null) {
+function build(t, slug, s, opp = null, lojas = []) {
+  if (t === 'lojas') return lojasPage(lojas);
   const { by: SL, of } = slugs(s.products || []);
   const { by: best, n } = bestBy(s);
   const prods = (s.products || []).filter((p) => p.offerCount > 0);
@@ -88,6 +123,7 @@ function build(t, slug, s, opp = null) {
     const body = `${bc(trail)}<h1>${esc(name)}</h1>
 <p>${lo ? (kl ? `Melhor preço com estoque agora: <b>${brl(lo.total)}${pix(lo)}</b> (${shipTag(lo)}) em ${esc(lo.storeName)}.` : `Menor preço com estoque agora, frete a calcular: <b>${brl(lo.total)}${pix(lo)}</b> em ${esc(lo.storeName)}.`) : 'Nenhuma loja acompanhada tem estoque confirmado deste produto agora.'}${cmpSentence}${p.copagConfirmed && p.msrp ? ` Preço sugerido Copag: ${brl(p.msrp)}${lo && lo.discount > 0 ? ` (${pct(lo.discount)} abaixo)` : ''}.` : ''}${p.boosters ? ` ${p.boosters} boosters${lo ? `, ${brl(lo.total / p.boosters)} por booster` : ''}.` : ''}</p>
 ${offers.length ? `<h2>Onde comprar</h2><table class="ssr-t"><thead><tr><th>Loja</th><th>Preço</th></tr></thead><tbody>${vis.map((o) => `<tr><td>${esc(o.storeName)}${o.seller && !String(o.storeName).toLowerCase().includes(String(o.seller).toLowerCase()) ? ` (vendido por ${esc(o.seller)})` : ''}</td><td>${brl(o.total)}${pix(o)} (${shipTag(o)})</td></tr>`).join('')}</tbody></table>` : ''}
+${outrasLojasHTML(lojas, `${p.collectionName} ${label(p)}`)}
 ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => prodRow(x, best[x.id], of)).join('')}</ul>` : ''}`;
     return { title, desc, url, img, json, body, noindex: !offers.length };
   }
@@ -209,7 +245,10 @@ export default async function handler(req, res) {
     if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { if (usable(classify(await dbDataAt()))) opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20 })).items; } catch { opp = null; } }
     const s = await state();
     if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
-    const m = build(t, slug, s, opp);
+    // Frente 7: lojas conhecidas (sources do state.json; sem ele, sources.json) só para /lojas e para o bloco do produto.
+    let lojas = [];
+    if (t === 'lojas' || t === 'produto') { try { lojas = await lojasFromState(s); } catch { lojas = []; } }
+    const m = build(t, slug, s, opp, lojas);
     if (!m) { status = 404; html = noindex(html); }
     else {
       const url = SITE + m.url;

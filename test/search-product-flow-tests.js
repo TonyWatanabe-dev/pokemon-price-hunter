@@ -51,7 +51,7 @@ function sandbox({ loaded = true } = {}) {
     $: (sel) => slots[sel] || null, ic: (id) => `<i data-ic="${id}"></i>`, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'blister', catChip: () => '',
     isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: (p, o) => (p.copagConfirmed && o ? 1 - o.total / p.msrp : null),
-    colHref: () => '', typeHref: () => '', favBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {},
+    colHref: () => '', typeHref: () => '', favBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
     document: { title: '', getElementById: (id) => boxes[id] || null, querySelectorAll: () => [] },
   };
   vm.createContext(ctx);
