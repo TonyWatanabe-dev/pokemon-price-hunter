@@ -350,7 +350,26 @@ O watchdog atual usa limites operacionais já presentes no código. Metas futura
 10. **Ativar agentes por dependência** nas fases 7 e 8 do documento; agentes de experiência/crescimento entram depois que a base técnica e métricas estiverem maduras.
 11. **Rodar hardening e burn-in de sete dias** antes de declarar concluído o projeto. Depois, manter a operação e o backlog evoluindo em ciclos autônomos.
 
+## Autonomia de execução e comunicação por fase
+
+**Instrução de produto:** Claude Code é responsável pela execução ponta a ponta. Não deve interromper o fluxo para pedir autorização rotineira de commit, criação/atualização de PR, correção de CI, merge governado, deploy elegível ou continuidade de tarefas. Executa essas ações automaticamente sempre que existirem permissões técnicas e a decisão do Release Governor for positiva. O workflow worker `tarefas.yml` continua sendo apenas branch + PR; o merge/deploy passa pela ponte dedicada.
+
+A autonomia vale para mudanças que a política `docs/agentes.md` permite aprovar automaticamente (R0/R1 e R2 quando todos os controles estiverem satisfeitos). R3 e R-STOP continuam bloqueados: o ChatGPT deve chamar o proprietário apenas quando houver decisão humana real, não para repetir pedidos rotineiros. Ausência de token ou permissão não deve ser contornada; registrar o bloqueio, continuar o trabalho independente e seguir quando a configuração oficial estiver disponível.
+
+### Relatório de conclusão de cada fase
+
+Ao terminar uma fase, Claude Code deve comprovar todos os critérios de saída, atualizar `docs/ROADMAP-OPERACIONAL.md` e incluir:
+- objetivo da fase e estado final de cada critério de saída;
+- entregas e decisões técnicas, links de PRs/commits e CI;
+- merges/deploys efetivamente feitos, URL/SHA e resultado dos smoke tests, quando aplicável;
+- testes, métricas de qualidade/uso disponíveis e estabilidade observada;
+- riscos/pendências remanescentes, bloqueios humanos (se existirem) e próxima fase autorizada.
+
+Esse registro versionado é a fonte que o monitor do ChatGPT usa para apresentar o relatório ao proprietário ao fim de cada fase. Não enviar ao usuário relatórios a cada pequena PR nem chamar uma coleção de PRs abertas de “fase concluída”. O monitor de ChatGPT opera em verificação horária, portanto o aviso pode ocorrer na próxima verificação, não necessariamente instantaneamente.
+
 ## 10. Regra permanente para agentes
+
+Claude Code tem autonomia para concluir operações rotineiras elegíveis — commits, branches, PRs, correções de CI, merge pelo Release Governor, deploy aprovado e smoke — sem solicitar confirmação passo a passo. Somente escalonar ações que a política classifique como R3/R-STOP ou que dependam de uma decisão comercial/humana não predefinida.
 
 Antes de pegar uma nova tarefa: ler este plano e \`docs/ROADMAP-OPERACIONAL.md\`; consultar \`docs/MAPA-DE-AGENTES.md\` e \`docs/agentes.md\`; verificar na \`main\` as issues/PRs atuais; escolher a próxima tarefa elegível ainda não duplicada; criar branch própria; implementar/testar; abrir PR; avaliar CI/evidência; atualizar status/roadmap. Não alterar a própria política, permissões, secrets ou gates de release para concluir uma tarefa mais rápido.
 
