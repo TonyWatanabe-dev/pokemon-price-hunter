@@ -1245,7 +1245,6 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   .hsearch .sbox-lg .btn{padding:10px 16px}
 }
 .stage-copy{margin-top:28px}
-/* Atalho para todos os produtos */
 .prods .seg{margin:6px 0 4px}
 /* Título da home: brilho metálico passando em "Procure oportunidade." */
 .stage h1 .gold{position:relative;background:linear-gradient(100deg,var(--sticker) 0%,var(--sticker) 42%,#fff7d1 50%,var(--sticker) 58%,var(--sticker) 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--sticker)}
@@ -1877,8 +1876,7 @@ function renderDeals(){
   ${colWallHTML()}
   ${radarHTML()}
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
-  <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>
-`;
+  <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>`;
   homeMotion();startTicker();stageInit();revealInit();
   if(HOMEOPP.status!=="ok"||Date.now()-HOMEOPP.at>=APITTL){const pr=loadHomeOpp();if(HOMEOPP.status!=="ok")paintHomeOpp();pr.then(paintHomeOpp)}
 }
