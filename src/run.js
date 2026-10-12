@@ -16,7 +16,7 @@ import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { tlsModeFor } from './db/ssl.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
-import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf } from './alerts.js';
+import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
@@ -495,7 +495,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('copag-msrp.json'), copagSeen);
   writeJson(dataPath('url-cache.json'), urlCache);
   writeJson(dataPath('products.json'), registry);
-  writeJson(dataPath('alerts-sent.json'), sent);
+  // Poda: entrada sem pendente e mais velha que SENT_MAX_AGE_DAYS sai (o arquivo não cresce sem limite).
+  writeJson(dataPath('alerts-sent.json'), pruneSent(sent, now));
   writeJson(dataPath('tips.json'), tipStore);
   writeJson(dataPath('inbox.json'), inbox);
   writeJson(dataPath('state.json'), state);

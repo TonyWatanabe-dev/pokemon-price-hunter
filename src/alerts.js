@@ -195,6 +195,16 @@ async function retryPending(sent, mine, handled, send, now, io) {
   return out;
 }
 
+// Retenção de alerts-sent.json (issue #314): sem poda o registro só ganha chaves. Entrada sem pending e com "at" mais
+// velho que maxAgeDays sai; pendente (ainda na fila de reenvio, que tem limite próprio) e recente ficam. "at" inválido
+// fica (não dá para provar que é velho). Pura: devolve um objeto novo, sem mexer em sent. Efeito: depois do prazo,
+// condição que persiste (preço-alvo/desconto) pode avisar de novo, como uma regra sem histórico.
+export const SENT_MAX_AGE_DAYS = 30;
+export function pruneSent(sent, now = Date.now(), maxAgeDays = SENT_MAX_AGE_DAYS) {
+  const t = now instanceof Date ? now.getTime() : Number(now); const maxMs = maxAgeDays * 24 * 3600e3;
+  return Object.fromEntries(Object.entries(sent || {}).filter(([, s]) => s?.pending || !(t - Date.parse(s?.at) > maxMs)));
+}
+
 // opts.timeoutMs: prazo por envio (padrão ALERT_TIMEOUT_MS). opts.down: falhas seguidas por canal (ver sendAll); vale
 // para os alertas novos e para o reenvio dos pendentes desta mesma chamada.
 export async function dispatch(hits, sent, { send = transports, now = new Date(), timeoutMs, down = {} } = {}) {
