@@ -123,9 +123,9 @@ try {
   assert.ok(liveForScore(o), 'entra no conjunto que recebe nota oficial');
   assert.ok(state.bestDeals.includes(o.id), 'ML em estoque entra no bestDeals de produto sem oferta de loja');
   const u = ml.find((x) => x.sku === 'MLB5554');
-  assert.equal(u.stock, 'UNKNOWN'); assert.equal(u.stockSource, undefined); assert.ok(!state.bestDeals.includes(u.id), 'sem quantidade continua fora do ranking');
+  assert.equal(u.stock, 'IN_STOCK'); assert.equal(u.stockSource, 'ml-catalog-listed'); assert.ok(liveForScore(u), 'listado no catálogo entra no ranking com origem rastreável');
   assert.ok(!ml.some((x) => x.sku === 'MLB5553'), 'esgotado não é publicado');
-  assert.equal(state.products.find((p) => p.id === PRODUCT)?.inStockCount, 1);
+  assert.equal(state.products.find((p) => p.id === PRODUCT)?.inStockCount, 2);
   n++;
 } finally {
   if (saved.cfg == null) delete process.env.HUNTER_CONFIG_DIR; else process.env.HUNTER_CONFIG_DIR = saved.cfg;
