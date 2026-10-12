@@ -149,3 +149,22 @@ Limitações: a execução é sequencial (sem concorrência paralela, por escolh
 ## Ainda não integrado
 
 Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confiança não remove a oferta já aceita; Catalog Agent com IA; integração executável do Release Governor com permissões reais do GitHub e deploy da Vercel.
+
+
+## Atualização de operação do Dispatcher (12/10/2026)
+
+- PR #252 integrou `allowed_bots: github-actions` somente na etapa `claude_despacho`, com teste de contrato que proíbe wildcard e garante ausência no caminho `issues`.
+- PR #250 integrou o gatilho `workflow_run` para o Dispatcher após “Vigia do robô” concluído na `main`.
+- A integração do gatilho ainda exige validação de runtime pós-merge. O run Dispatcher #5 terminou com sucesso, mas a Issue #247 foi mantida em backoff; não remover labels nem forçar a chave para contornar a proteção.
+- Evidência de conclusão exige run de Vigia pós-merge, Dispatcher iniciado por `workflow_run`, job `despacho` elegível, Claude Code Action sem erro de ator, e PR resultante com CI verde.
+- Não usar `allowed_bots: "*"`, bypass de branch protection nem permissões adicionais no worker. O worker continua limitado a branch + PR; merge/deploy seguem sob Release Governor e as regras do projeto.
+
+## Correções de governança encontradas na validação em runtime (12/10/2026)
+
+- **Revisão independente obrigatória (#260):** o Release Governor passa a exigir `qa-review` com sucesso **no mesmo SHA** para qualquer merge. Na `main` atual, ele autorizava R0 com o revisor reprovado (PR #258).
+- **Revisor cobre PRs do worker (#261, integrada; a #259 ficou redundante):** `allowed_bots: claude` só no `revisor.yml`, sem wildcard. Sem isso, toda PR aberta pelo worker reprova o `qa-review` sem ser revisada.
+- **Quarentena e lease do Dispatcher (#256):**
+  - uma tentativa só é considerada concluída por um evento `executor:failed`/`done` **posterior** ao seu despacho;
+  - só um **operador**, ao remover `executor:quarentena`, concede novas tentativas, e a numeração das chaves continua.
+- **Estado de integração:** a #261 está na `main`, e a revisão de PR do worker foi comprovada na #258. A #256 e a #260 são R3 e aguardam aprovação humana; não estão ativas antes do merge.
+

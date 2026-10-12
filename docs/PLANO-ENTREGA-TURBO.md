@@ -1,10 +1,13 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 11/10/2026  
+> **Atualizado em:** 12/10/2026
 > **Base consultada:** \`main\` em \`a53d73abb17e88170b7a94930a2d2a161eeb171e\`.  
 > **Objetivo:** levar o produto existente até uma operação comercial útil, confiável e sustentável, com coleta, agentes de engenharia e monitoramento trabalhando 24/7, sem depender de alguém distribuindo cada tarefa manualmente.
 
 Este documento é o plano de execução de ponta a ponta. Use \`docs/ROADMAP-OPERACIONAL.md\` para evidências e estado operacional detalhado, \`docs/MAPA-DE-AGENTES.md\` para contratos dos agentes e \`docs/agentes.md\` para governança de merge/deploy.
+
+
+> **Atualização de execução — 12/10/2026:** PR #252 integrou a allowlist mínima `github-actions` apenas em `claude_despacho`, com teste de contrato; PR #250 integrou o gatilho `workflow_run` após “Vigia do robô”. O gatilho pós-merge ainda não foi comprovado: o último run de Vigia disponível antecede o merge da #250. O Dispatcher #5 terminou com sucesso, mas manteve a Issue #247 em backoff até 08:59 UTC. Próximo critério de saída: run de Vigia pós-merge → Dispatcher automático → job `despacho` elegível → Claude Code Action bem-sucedida → PR documental com CI verde. Ver [roadmap operacional](./ROADMAP-OPERACIONAL.md) para evidências e links dos runs.
 
 ## 1. Resultado final esperado
 
@@ -131,6 +134,16 @@ As fases avançam por **critérios de saída**, não por calendário artificial.
 
 ### Fase 0 — fábrica de desenvolvimento e governança 24/7
 **Prioridade imediata.**
+
+> **Estado dos critérios de saída em 12/10/2026, 09:45 UTC** (evidências em `docs/ROADMAP-OPERACIONAL.md`, seção "Validação em runtime"):
+> - **Tarefa elegível despachada sem label manual:** comprovado (#257 → worker → PR #258).
+> - **Despacho não autorizado ignorado:** coberto por testes. Em runtime, o worker recusou fechado uma tentativa inválida.
+> - **Reexecução não duplica:** a chave idempotente foi comprovada.
+> - **Backoff:** comprovado.
+> - **Retomada depois de quarentena:** depende da #256.
+> - **Esforço adaptativo:** etapa 1 na `main` (#246); a ligação ao worker está na #248, aberta.
+> - **Gate R0–R3 com revisão independente:** o revisor de PRs do worker foi comprovado (#261, PR #258). A exigência de `qa-review` pelo Governor está na #260, aberta.
+> - **Fase 0 continua aberta.**
 
 Trabalho:
 - Confirmar \`TAREFAS_MAX=10\` nas variáveis do repo e conferir \`TAREFAS_OPERADORES\`; começar/validar com 3 e aumentar depois do teste de concorrência.
