@@ -3,6 +3,7 @@
 > **Atualizado em:** 11/10/2026 às 21:56 (America/Sao_Paulo, UTC−03:00)  
 > **Base consultada:** `main` em `eb6554a1b84a88ffe0e45cbfb647518748e51e5e` (após PR #228); produção (Vercel), última evidência registrada, em `f66c929e10d50d6eae7cfb8ff4508599554a4e6c` (#217).  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
+> **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
 
 ## Regras de operação
 
@@ -18,6 +19,16 @@
 Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que Claude já implementou no código do que ainda é futuro e exige pré-requisitos/aprovação. As capacidades futuras de UX Research, UI & Design System, Social Media, SEO & Content, Growth & CRO e Brand & Creative não devem ser iniciadas agora.
 
 ## Estado executivo
+
+### Meta de operação 24/7 — lacunas para fechar
+**Coleta periódica e watchdog estão codificados; desenvolvimento autônomo de ponta a ponta ainda precisa do Planner/Dispatcher.** O plano completo está em [PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md).
+
+- Hunter `hunter.yml`: cron a cada 15 min, mínimo entre rodadas de 8 min por padrão e descoberta/Copag diária. Schedule do GitHub é best-effort; verificar cron-job.org e a saúde real dos dados para comprovar continuidade.
+- Vigia `watchdog.yml`: cron de fallback a cada 30 min e configuração documentada para disparo externo a cada 15 min. A existência do workflow não prova que o cron externo está ativo: verificar runs `workflow_dispatch`, teste de notificação e recuperação.
+- Executor Claude: já foi validado em smoke real (#225 → PR #228 → CI verde), mas ainda depende de issue/label; não existe ainda Dispatcher de backlog comprovado que selecione e envie tarefas elegíveis sem ação por tarefa.
+- Concorrência: workflow suporta 1–10, padrão 3. Confirmar `TAREFAS_MAX=10` em Actions Variables antes de anunciar 10 workers ativos. Realizar teste gradual antes de manter 10 em uso contínuo.
+- Release: manter separação dos workers de implementação e do Release Governor. Nenhum worker de tarefa ganha permissão de merge/deploy; release bridge precisa de configuração, CI, gates e smoke real comprovados.
+- Decisões R3/bloqueios acionáveis devem ser registrados com evidência e recomendação; aviso ao usuário por meio do monitor de projeto do ChatGPT já configurado. Telegram/ntfy seguem para incidentes operacionais, não como substituto da aprovação de decisão.
 
 ### Executor paralelo do Claude Code — GitHub Actions
 **Status: primeira execução ponta a ponta comprovada; capacidade instalada para até 10 tarefas, mas valor de concorrência ativo ainda precisa ser conferido/configurado.**
@@ -86,14 +97,16 @@ Prioridades:
 
 ## Próximos passos ordenados
 
-1. **Ativar a concorrência desejada:** confirmar em Settings → Secrets and variables → Actions → Variables o valor de `TAREFAS_MAX`; definir `10` (limite já validado no workflow, intervalo permitido 1–10). Conferir também `TAREFAS_OPERADORES` e manter somente logins autorizados. Não versionar credenciais.
-2. **Usar o executor para acelerar o trabalho sem duplicar esforço:** decompor as prioridades em issues pequenas, independentes e com critérios de aceitação; aplicar `executor:github` só às issues abertas por operadores. Distribuir tarefas por domínios/arquivos, deixar CI executar e avaliar a PR de cada tarefa. Reutilizar as issues/PRs já existentes antes de abrir duplicatas.
-3. **Release autônomo, ainda incompleto:** revisar/integrar a #221 conforme a política R3 (autorização humana explícita exigida pelo estado atual), configurar `VERCEL_TOKEN` com escopo do time e guardá-lo como secret do ambiente executor/Action; então provar deploy + smoke num PR R1/R2 elegível. Não alegar deploy pela ponte antes dessa evidência.
-4. **Auditoria de PRs ativas contra a main atual:** conferir status atualizado, conflitos, diff, checks obrigatórios, riscos e dependências. Atualizar cada branch em isolamento e rodar CI completo. Não tomar decisões usando números/estados antigos registrados neste documento sem revalidar.
-5. **PR #195 — frete por CEP:** atualizar base e resolver conflitos, revisar o diff e rodar CI completo; preservar cálculo ausente como desconhecido, e não ativar `SHIPPING_CALC_ENABLED` sem cotação real, smoke e autorização separada.
-6. **PR #186 / #20 — política Copag:** manter #186 em draft até decisão comercial sobre as 11 referências provenientes do Instagram. Não integrar #20 (migration com impacto no banco/Opportunity Engine) sem autorização humana específica e plano de rollback.
-7. **Runtime local do executor:** quando o computador estiver disponível, seguir o README do executor privado; parar com segurança, fazer fast-forward sem sobrescrever trabalho, testar e verificar PID + heartbeat + logs + hash do script. O sucesso do executor GitHub Actions não prova que o executor local esteja atualizado.
-8. **Agentes de domínio e produto:** continuar primeiro com confiabilidade de dados, matching, frete, telemetria, auditoria e qualidade do ciclo de release. Catalog/Marketplace/Price Intelligence/Alert/Affiliate só devem ativar após os pré-requisitos no mapa de agentes. UX Research, UI & Design System, Social Media, SEO & Content, Growth & CRO e Brand & Creative continuam **planejamento futuro** — não iniciar antes da maturidade do produto e autorização explícita.
+1. **Fábrica 24/7:** conferir `TAREFAS_MAX`, operadores autorizados, app/secret Claude e runner de firewall; confirmar cron-job.org para Hunter/Vigia e o fluxo de aviso/recuperação. O valor atual da variável e o cron externo não são verificáveis apenas pelo código do repo.
+2. **Planner + Dispatcher + QA Reviewer:** implementar fila de issues pré-aprovadas, seleção por dependência/risco/arquivos, despacho idempotente, quarentena/retry e revisão independente. A action atual continua por label até que o novo dispatcher tenha CI e testes; não relaxar permissões do trigger.
+3. **Release bridge (#221):** revalidar PR/diff/checks, cumprir o gate humano R3 estabelecido, configurar credencial Vercel no ambiente seguro e provar deploy + smoke com um PR elegível. Não confundir merge com publicação.
+4. **Dados e matching:** usar as issues existentes de contratos de coletores (#47/#103/#106), matching (#42/#109/#110), preço/moeda (#79), frescor/histórico (#104/#46/#112/#113), dedupe (#78) e referência Copag (#41). Não duplicar issues.
+5. **Fluxo do site:** busca/detalhe/comparação (#43), estados vazios/loading/erro (#83), acessibilidade/mobile (#82/#98), erros seguros (#100/#115), diretório de lojas (#55) e links/tracking (#116).
+6. **Frete (#195/#84):** resolver conflitos e validar cotações reais da VTEX; manter flag desligada até smoke/rollout e autorização. Ampliar para outras plataformas somente via contratos reais de cada loja.
+7. **Retenção e alertas:** favoritos/contas (#49/#86), quedas/restocks reais (#45), opt-in/dedupe/preferências (#85); provar isolamento entre usuários e entrega idempotente.
+8. **Opportunity Engine e monetização:** score explicável (#44), histórico/fonte oficial, links Meli/Amazon e disclosure. A #186 exige decisão de negócio; #20 permanece bloqueada sem autorização específica de migration e plano de rollback.
+9. **Ativar especialistas por dependência:** Catalog → Marketplace Health → Price Intelligence → Shipping Verification → Alert → Affiliate. UX Research, UI & Design System, SEO & Content, Social Media, Growth & CRO e Brand & Creative continuam futuros até produto/analytics/brand readiness e aprovação.
+10. **Hardening + estabilidade:** segurança/dependências/SSRF (#94/#105), API/paginação/performance (#80/#81/#114), backup/restore/runbook (#87/#108/#118), painel de saúde (#92), SEO (#96) e E2E. Exigir sete dias de observação 24/7 com coleta, sync, fila, CI, deploy e recuperação verificados antes de declarar conclusão.
 
 ## Evidências recentes registradas
 
