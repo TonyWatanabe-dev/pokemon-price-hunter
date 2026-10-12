@@ -110,7 +110,7 @@ t('8. MARKET_HIGHLY_DEVIATED_FROM_HISTORY gera aviso com o texto da API', () => 
 // 9–10. sem referência e sem confiança não quebram; histórico/comunitária ficam como contexto
 t('9–10. sem referência / sem confiança', () => {
   const s = sandbox(page([])); const h = text(s.oppCard(noRef(), 0));
-  assert.match(h, /R\$ 1250,00 Frete grátis Sem referência atual/); assert.match(h, /Confiança não informada/); assert.match(h, /Comparação Sem comparação/);
+  assert.match(h, /R\$ 1250,00 Sem referência atual Frete grátis/); assert.match(h, /Confiança não informada/); assert.match(h, /Comparação Sem comparação/);
   assert.ok(!/−\d|0,0%|abaixo do preço sugerido|abaixo da referência/.test(h), 'nenhum percentual inventado');
   assert.match(h, /Histórico Preço sugerido de lançamento R\$ 29,90 \(2024-01\) Referência comunitária R\$ 25,00 \(não é preço Copag\) Contexto, não é preço atual\./);
   const nulls = base({ opportunity_score: null, opportunity_band: null, confidence: null, current_reference: null, reference_comparison: null, warnings: null, reasons: null, historical_context: null });
@@ -139,8 +139,8 @@ t('11. sem regra de negócio no frontend', () => {
   assert.ok(!/\.sort\(/.test(oppCode), 'ordenação só no servidor'); assert.ok(!/\.filter\(\(x\)=>x\.(opportunity|confidence|reference)/.test(oppCode), 'filtro só no servidor');
 });
 // 12. state.json não é fonte da página
-// 6C.1 — escala global de raridade pela nota da API; confiança só na intensidade; sem foil por faixa
-t('6C.1. escala Common → Secret Rare pela nota, confiança só na intensidade', () => {
+// 6C.1 — escala visual (moldura) pela nota da API; confiança só na intensidade; sem foil por faixa; sem texto de raridade
+t('6C.1. escala visual c → sr pela nota, confiança só na intensidade, sem vocabulário de raridade', () => {
   const s = sandbox(page([]));
   const rar = (sc, x = {}) => { const h = s.oppCard(base({ opportunity_score: sc, ...x }), 2); return [(h.match(/data-rar="(\w+)"/) || [])[1] || null, (h.match(/--int:([\d.]+)/) || [])[1]]; };
   assert.deepEqual([0, 49, 50, 64, 65, 79, 80, 89, 90, 100].map((v) => rar(v)[0]), ['c', 'c', 'u', 'u', 'r', 'r', 'ur', 'ur', 'sr', 'sr']);
@@ -148,8 +148,8 @@ t('6C.1. escala Common → Secret Rare pela nota, confiança só na intensidade'
   assert.deepEqual(['alta', 'média', 'baixa'].map((lv) => rar(70, { confidence_level: lv })), [['r', '1'], ['r', '0.65'], ['r', '0.35']]);
   assert.deepEqual(rar(70, { confidence: null, confidence_level: null }), ['r', '1'], 'sem confiança: tratamento padrão');
   const h = s.oppCard(base(), 0); assert.ok(!/class="deal opp-card foil/.test(h), 'foil por faixa removido');
-  assert.match(text(h), /Opportunity Score 75 · Boa .*Rare .*Baixa confiança/, 'nota da API intacta; escala ao lado da confiança');
-  assert.match(h, /Não é a raridade oficial do produto/);
+  assert.match(text(h), /Opportunity Score 75 · Boa .*Baixa confiança/, 'nota da API e faixa oficial intactas');
+  assert.ok(!/Secret Rare|Ultra Rare|Uncommon|Common|\bRare\b|★|✦|rar-line/.test(h), 'sem vocabulário de raridade no cartão');
 });
 t('12. state.json não é usado na página de oportunidades', () => {
   assert.ok(!/state\.json|fetchState|ensureFull|OFF\b/.test(oppCode), 'sem state.json no trecho');

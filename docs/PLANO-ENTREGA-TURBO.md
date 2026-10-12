@@ -404,3 +404,58 @@ Esta atualização é mais recente que o texto de estado de partida e os critér
 - **Critério final da fábrica 24/7:** ciclo autônomo de desenvolvimento comprovado + scheduler recorrente ativo + telemetria observável + release bridge validada + sete dias de estabilidade real (coleta, freshness, sync, fila, CI, smoke e recuperação). Até lá, classificar como “cadeia funcional comprovada; operação contínua e release autônomo ainda em validação”.
 
 Os bloqueios de produto permanecem inalterados: #195 frete só após cotação real e autorização; #186 depende da decisão comercial Copag; #20 continua **NÃO INTEGRAR** sem autorização específica. Não usar a autonomia dos agentes para contornar R3/R-STOP, branch protection ou configuração de segredos.
+
+## Backlog futuro — auditoria de UX, UI e SEO do site (12/10/2026)
+
+> **Estado: registrado para execução futura; não implementar automaticamente agora.** Esta seção preserva a auditoria de código e renderização mobile/desktop. Prioridades e dependências devem ser revalidadas contra a `main` e os dados atuais antes de cada lote.
+
+### Ordem planejada
+
+#### Lote A — rápidos de UI/UX (prioridade alta, estimativa P)
+- Remover o rótulo de raridade visual que se confunde com a nota de qualidade; manter apenas a nota explicável (ex.: “88 · Boa”) e nomenclatura em português.
+- Unificar o CTA principal “Ver oferta” como botão preenchido e tornar “Comparar” ação secundária consistente.
+- Identificar explicitamente “Reclame Aqui” antes de métricas como “Sem cadastro” e “2,5”.
+- Melhorar legibilidade em mobile: evitar texto abaixo de 12–13 px nos elementos relevantes e aumentar alvos de toque para pelo menos 44 × 44 px quando aplicável.
+- Corrigir contraste de cores de alerta, estrelas e chips; validar WCAG.
+- Corrigir hierarquia de headings: H1 em `/busca` e `/precos`, sem salto H1→H3 em `/oportunidades`.
+- Deduplicar destaques do Hunter e exibir variação percentual em “Maiores quedas”.
+- Corrigir eixo/rotulagem do gráfico e a apresentação da tabela de preços em mobile.
+- Aceite: testes automatizados, checagem de acessibilidade e screenshots em viewport mobile e desktop.
+
+#### Lote C — SEO técnico rápido (prioridade seguinte, estimativa P)
+- Implementar fallback útil em `/oportunidades` quando DB/dados estiverem indisponíveis.
+- Em `/precos`, exibir os preços sugeridos Copag confirmados com fonte e data verificáveis.
+- Corrigir canonical e resolução de rotas, incluindo trailing slash e páginas `/termos` e `/privacidade`; aplicar `noindex` às páginas de busca/pistas ou rotas privadas quando apropriado.
+- Limitar meta descriptions a aproximadamente 160 caracteres, sem cortar informação essencial.
+- Declarar `width`/`height` e textos alternativos adequados nas imagens de cards; avaliar `lastmod` por produto.
+- Aceite: inspeção de HTML SSR, canonicals, sitemap, robots e dados estruturados.
+
+#### Lote B — listas e busca (estimativa M)
+- Tornar os cards de `/oportunidades` mais compactos no mobile, visando aproximadamente dois cards por viewport sem sacrificar legibilidade.
+- Em `/busca`, implementar “Carregar mais” em lotes (inicialmente 24), ordenação e filtros por tipo de produto.
+- Priorizar correspondência de tipo exato antes de resultados relacionados (ex.: busca “booster” não deve colocar blister em primeiro sem justificativa).
+- Aceite: testes de relevância, paginação/carregamento progressivo e regressão de comparação/favoritos.
+
+#### Lote D — consistência de preço e dados estruturados (condicionado)
+- Resolver divergência entre título/JSON-LD (“a partir de R$ 66,57”) e oferta visível de R$ 41,80.
+- **Dependência obrigatória:** revalidar a regra de frete comparável da issue/PR #84. Não publicar `lowPrice` nem título baseado no menor valor bruto se isso contradisser a regra de comparabilidade, frete ou as ofertas efetivamente apresentadas.
+- Escolher uma única regra consistente entre preço destacado, lista de ofertas e Product/AggregateOffer JSON-LD; documentar a regra e testar cenários de frete conhecido/desconhecido.
+- Aceite: preço e JSON-LD coerentes com a política aprovada e com conteúdo visível.
+
+#### Lote E — conteúdo SEO (fase separada, exige autorização explícita)
+- Renderizar o conteúdo completo do guia `/como-funciona` no SSR e avaliar FAQPage somente para perguntas/respostas realmente visíveis e elegíveis.
+- Avaliar páginas agregadas por tipo, começando por `/tipo/blister`, e glossário de termos de Pokémon TCG.
+- **Gate:** o `CLAUDE.md` restringe SEO & Content até autorização explícita. Este registro não concede essa autorização; não iniciar implementação sem ela.
+
+#### Lote F — performance e estratégia de build (fase separada, estimativa G)
+- Reduzir HTML inline por rota (auditoria mediu cerca de 465 KB), CSS/JS/fontes/logo embutidos e dependência de carregar `state.json` de aproximadamente 1,8 MB para exibir conteúdo.
+- Avaliar externalização de CSS, JS, fontes e logo com cache apropriado e payload JSON específico/leve por rota.
+- Antes de implementar, definir estratégia de geração e validar o estado de `page.template.html`, apontado na auditoria como defasado.
+- Medir Core Web Vitals/LCP/CLS e peso transferido antes/depois; não assumir melhoria sem medição.
+
+### Evidências e critérios transversais
+- A auditoria reportou SSR com títulos, canonical, OG e JSON-LD em rotas analisadas; sitemap coerente com o estoque; rótulos de Pix e referência Copag; explicabilidade “Por que esta nota?”; respeito a `prefers-reduced-motion`; sem erros de console ou imagens sem alt na execução reportada.
+- A auditoria foi executada com Playwright em mobile e desktop usando o `index.html` da `main`, rewrites do Vercel e dados do ramo `data`, porque o host de produção estava bloqueado pelo proxy da sessão. Revalidar no host real quando acessível; screenshots originais foram reportadas em `/tmp/claude-0/ux/shots/` e não devem ser presumidas disponíveis no repositório.
+- Ordem sugerida: **A → C → B → D (após revalidar a regra #84) → E (após autorização explícita) → F (após decisão de build)**.
+- Cada lote deve ser entregue em PRs pequenas, com critérios de aceite, testes, evidência visual e revisão independente. Este backlog não autoriza por si só merge, deploy ou mudança de política comercial.
+
