@@ -31,6 +31,8 @@ await t('parsers: ordem, dependências, áreas, vagas', () => {
   assert.deepEqual(parseDependencies('Depende de: #234, #12\nOutro #99'), [12, 234]);
   assert.deepEqual(parseAreas('Fase: 0 · Risco previsto: R3 (`.github/workflows`, `src/agents/`)\nCorpo `x/y`'), ['.github/workflows', 'src/agents']);
   assert.deepEqual(parseAreas('Áreas: `api/v1.mjs` `../fora`'), ['api/v1.mjs']);
+  assert.deepEqual(parseAreas('1. formato (`Ordem:`, `Risco previsto:`, `Áreas:`, `src/agents/x.js`)'), [], 'menção no meio da linha não declara área (#266)');
+  assert.deepEqual(parseAreas('Áreas: `docs/a.md` `Fase:`'), ['docs/a.md'], 'rótulo com dois-pontos não é caminho');
   assert.deepEqual([clampSlots(undefined), clampSlots('10'), clampSlots('50'), clampSlots('0'), clampSlots('x')], [3, 10, 10, 1, 3]);
 });
 

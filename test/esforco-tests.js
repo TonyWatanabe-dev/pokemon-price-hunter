@@ -70,4 +70,16 @@ await t('6. orçamento: pausa só com custo real acima do limite; sem telemetria
   assert.equal(budgetGate({ gastoUsd: 10, limiteUsd: 10 }).permitir, false);
 });
 
+await t('7. regressão #266: risco baixo declarado + áreas não críticas → palavras do corpo não escalam; o resto continua', () => {
+  const corpo = (risco, area) => `Ordem: 1\nFase: 0 · Risco previsto: ${risco} (documentação)\nÁreas: \`${area}\`\n\n## Tarefa\n1. **Aprovar:** formato (\`Ordem:\`, \`Fase:\`, \`Risco previsto:\`, \`Áreas:\`).\nNão alterar código, workflows, \`package.json\`, secrets, tokens ou produção.`;
+  const r = classifyTask({ title: 'F0 · Runbook de operação dos agentes', body: corpo('R0', 'docs/runbook-agentes.md') });
+  assert.equal(r.classe, CLASSES.MECANICA); assert.deepEqual(r.areas, ['docs/runbook-agentes.md'], 'menções no meio do texto não viram área');
+  assert.equal(C({ title: 'Rotacionar token do ML', body: corpo('R0', 'docs/x.md') }), CLASSES.CRITICA, 'título crítico continua crítico');
+  assert.equal(C({ title: 'x', body: corpo('R0', '.github/workflows/ci.yml') }), CLASSES.CRITICA, 'área crítica continua crítica');
+  assert.equal(C({ title: 'x', body: corpo('R3', 'docs/x.md') }), CLASSES.CRITICA, 'R3 declarado continua crítico');
+  assert.equal(C({ title: 'x', labels: ['security'], body: corpo('R0', 'docs/x.md') }), CLASSES.CRITICA, 'label security continua crítico');
+  assert.equal(C({ title: 'x', body: 'Risco previsto: R0\nAjustar o fluxo de secrets' }), CLASSES.CRITICA, 'sem áreas declaradas, o corpo todo conta');
+  assert.equal(C({ title: 'x', body: 'Ajustar secrets\nÁreas: `docs/a.md`' }), CLASSES.CRITICA, 'sem risco declarado, o corpo todo conta');
+});
+
 console.log(`✓ Esforço adaptativo: ${n} grupos de testes passaram`);
