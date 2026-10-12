@@ -77,6 +77,51 @@ Esta seção responde às "Próximas verificações obrigatórias" acima. Evidê
 
 **Próxima prioridade objetiva:** integrar a #260 e a #256. A #258 já tem os 4 checks ✅ e o Governor, pela política da #260, dá `R0 · autonomous`, mas o merge depende da aprovação obrigatória e da Ponte (#221). Depois, a Ponte (#221), após a decisão do sink de auditoria.
 
+## Relatório de desenvolvimento — 12/10/2026 (fechamento da rodada de agentes)
+
+Esta seção atualiza as pendências da seção anterior. O fluxo Vigia → Dispatcher → worker → PR do agente → `qa-review` → Release Governor foi comprovado ponta a ponta em runtime (ver tabela acima). Isso não inclui merge/deploy autônomo: a aprovação obrigatória e a Ponte ainda bloqueiam essa parte.
+
+### Entregas integradas na `main`
+
+| Área | PRs | Resultado |
+|---|---|---|
+| Dispatcher | #240, #243, #250, #251, #256 | Plano read-only; disparo real com revalidação no worker; gatilho `workflow_run` após o Vigia (o cron não disparava); lease pela tentativa atual; reinício de quarentena só por operador. |
+| Worker (`tarefas.yml`) | #241, #252, #246, #248 | `GH_TOKEN` só nos passos com `gh`; despacho por `workflow_dispatch` aceito pela action; esforço adaptativo ligado (classe → modelo/esforço, escalada só com falha). |
+| Revisor independente | #244, #261 | Check `qa-review` fail-closed; também revisa PRs abertas pelo `claude[bot]`. |
+| Release Governor | #260 | Exige `qa-review` aprovado no mesmo SHA para qualquer merge. |
+| Release Executor Bridge | #221 | Integrada; inoperante até o sink de auditoria e o `VERCEL_TOKEN` estarem definidos. |
+| Smoke e docs | #249, #258, #262 | Evidência do primeiro despacho (`docs/smoke/despacho-2026-10-12.md`, PR do agente) e docs de governança atualizados. |
+
+### Defeitos encontrados em runtime e corrigidos
+
+| Defeito | Causa | Correção |
+|---|---|---|
+| Dispatcher nunca executava | O cron não dispara neste repositório | #250 |
+| Worker recusado pela action | Ator `github-actions` fora da allowlist | #252 |
+| Quarentena indevida da #247 | Um label antigo `executor:failed` mascarava a tentativa em curso | #256 |
+| `qa-review` falhava em PR do agente | Ator `claude` fora da allowlist | #261 |
+| Governor liberava merge com `qa-review` ❌ | Check não exigido | #260 |
+| `npm test` quebrado na `main` depois de integrar #221 + #260 | Os fixtures da Ponte não tinham `qa-review` (conflito semântico, sem conflito de texto) | Esta PR: fixtures atualizados e novo teste garantindo que a Ponte não faz merge sem `qa-review` no SHA |
+
+### Limpeza
+- PRs #254 e #259 fechadas sem merge: o conteúdo já estava na `main` via #262 e #261.
+- Issue #247 fechada como concluída: o objetivo foi atendido pela #257/#258.
+
+### Pendências humanas (registradas na #231)
+1. Tornar `qa-review` check obrigatório na proteção da `main`.
+2. Decidir a regra de aprovação obrigatória, que hoje impede o merge autônomo inclusive em R0.
+3. Ponte (#221): definir o sink de auditoria e configurar o `VERCEL_TOKEN`.
+4. Criar a rotina horária pela interface (`rotina-horaria-prompt.md`); a criação pela sessão foi bloqueada pelo ambiente.
+
+### Fora do fluxo, por decisão
+- #20: não integrar.
+- #186: decisão comercial.
+- #195: frete atrás de `SHIPPING_CALC_ENABLED`, desligado.
+- #239: docs, revisar se continua necessária após a #262.
+
+### Próximo passo técnico
+Registrar no worker a telemetria real (custo, tokens, turnos) do `execution_file` de cada sessão. `telemetryFromExecution` já existe em `src/agents/esforco.js`; falta ligá-la.
+
 ## Estado executivo
 
 ### Meta de operação 24/7 — lacunas para fechar

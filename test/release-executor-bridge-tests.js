@@ -14,7 +14,7 @@ const run = (name, conclusion = 'success', sha = HEAD, id = 1) => ({ id, name, s
 function fakeGithub(over = {}) {
   const s = {
     pr: { state: 'open', draft: false, merged: false, mergeable: true, mergeable_state: 'clean', base: { ref: 'main' }, head: { ref: 'docs/x', sha: HEAD }, merge_commit_sha: null },
-    files: ['docs/release-notes.md'], runs: [run('test')], main: MAIN0, tree: { [MERGE]: 'T', [HEAD]: 'T' },
+    files: ['docs/release-notes.md'], runs: [run('test'), run('qa-review', 'success', HEAD, 2)], main: MAIN0, tree: { [MERGE]: 'T', [HEAD]: 'T' },
     calls: { merge: 0, getPull: 0 }, mergeImpl: null, ...over,
   };
   const gh = {
@@ -52,6 +52,13 @@ await t('PR R0 com checks verdes no SHA certo: merge com SHA fixado, auditoria a
 await t('check verde de SHA antigo não vale', async () => {
   const gh = fakeGithub({ runs: [run('test', 'success', OTHER)] }); const d = deps(gh);
   const r = await runMerge(d.args); assert.equal(r.status, 'blocked'); assert.match(r.reason, /check "ci".*ausente|não comprova/); assert.equal(gh.s.calls.merge, 0);
+});
+
+await t('sem qa-review aprovado no SHA certo não há merge (política da #260 chega à Ponte)', async () => {
+  for (const runs of [[run('test')], [run('test'), run('qa-review', 'failure', HEAD, 2)], [run('test'), run('qa-review', 'success', OTHER, 2)]]) {
+    const gh = fakeGithub({ runs }); const d = deps(gh);
+    const r = await runMerge(d.args); assert.equal(r.status, 'blocked'); assert.match(r.reason, /qa-review/); assert.equal(gh.s.calls.merge, 0);
+  }
 });
 
 await t('PR com conflito ou mergeable ainda não calculado bloqueia', async () => {
@@ -141,7 +148,7 @@ await t('ação não autorizada: código (R2) e R3 nunca são autônomos', async
   let gh = fakeGithub({ files: ['api/v1.mjs'] }); let r = await runMerge(deps(gh).args);
   assert.equal(r.status, 'blocked'); assert.match(r.reason, /regression|golden|rollback/); assert.equal(gh.s.calls.merge, 0);
   for (const f of ['src/agents/release-executor-bridge.js', '.github/workflows/ci.yml', 'db/migrations/012_x.sql', 'docs/ROADMAP-OPERACIONAL.md']) {
-    gh = fakeGithub({ files: [f], runs: ['test', 'regression', 'golden', 'preview', 'accessibility'].map((x, i) => run(x, 'success', HEAD, i)) });
+    gh = fakeGithub({ files: [f], runs: ['test', 'regression', 'golden', 'preview', 'accessibility', 'qa-review'].map((x, i) => run(x, 'success', HEAD, i)) });
     r = await runMerge(deps(gh).args); assert.equal(r.status, 'human_required', f); assert.equal(gh.s.calls.merge, 0);
   }
 });
@@ -169,7 +176,7 @@ function fakeVercel(over = {}) {
 }
 const ROLLOUT = { rollback: { documented: true, tested: true }, rollout: { metricsDefined: true, rollbackTriggersDefined: true }, featureFlag: { applicable: false, reason: 'publicação de commit integrado' } };
 function mergedGithub(files = ['index.html', 'test/x-tests.js']) {
-  const gh = fakeGithub({ files, runs: ['test', 'regression', 'golden', 'accessibility'].map((x, i) => run(x, 'success', HEAD, i)), main: MERGE });
+  const gh = fakeGithub({ files, runs: ['test', 'regression', 'golden', 'accessibility', 'qa-review'].map((x, i) => run(x, 'success', HEAD, i)), main: MERGE });
   Object.assign(gh.s.pr, { merged: true, state: 'closed', merge_commit_sha: MERGE }); return gh;
 }
 const okSmoke = async () => ({ ok: true, results: [{ path: '/', status: 200, ok: true }] });
