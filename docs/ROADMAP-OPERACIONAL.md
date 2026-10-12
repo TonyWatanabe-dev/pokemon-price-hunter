@@ -264,6 +264,10 @@ Prioridades:
 5. **Auditoria de release:** a decisão do sink ainda depende do proprietário. A recomendação documentada é começar com comentários append-only no GitHub (opção C); isso é recomendação, não decisão aprovada.
 6. **Proteção da main:** confirmar nos Settings os checks obrigatórios e manter PR, test, regression, golden e revisão independente. Não contornar branch protection nem converter qa-review em aprovação humana.
 7. **Burn-in operacional:** reunir evidências por sete dias de scheduler, coleta/frescor, sincronização, fila, CI, releases, smoke e recuperação antes de declarar a fábrica 24/7 concluída.
+   - **Status (12/10):** medição automática na branch `feat/burnin-fabrica` (`burnin.yml` + `tools/burnin.mjs`; critérios em [burnin.md](./burnin.md)). Publica um comentário por dia na issue `burnin:diario`.
+     - Leitura real, somente leitura, em 12/10: dia **11/10 verde**. Hunter e Vigia tiveram 102 rodadas cada, maior intervalo de 15 min e 100% de sucesso. Sync, leitor e motor ficaram ok em 67 rodadas.
+     - O dia 12/10, em curso, está **vermelho** por 2 falhas do Dispatcher durante a correção da manhã.
+     - **Ainda não coberto pela medição:** releases/smoke pela Ponte (dependem da decisão do sink e do `VERCEL_TOKEN`) e evidência manual de alerta/recuperação (#238).
 
 ### Decisões e limites
 
