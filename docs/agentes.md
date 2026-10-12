@@ -45,6 +45,25 @@ O **Release Governor** (agente de governança de release, também chamado *Relea
 
 A autorização é **por política e evidência**, não por aprovação manual a cada operação. O agente só pode executar ações que os tokens, permissões de GitHub/Vercel e regras de branch já permitam. Não deve pedir nem armazenar credenciais fora dos mecanismos secretos oficiais.
 
+### Regra operacional: autonomia ponta a ponta sem confirmações rotineiras
+
+A diretriz do proprietário do projeto é que Claude Code trabalhe ponta a ponta e não peça autorização para operações rotineiras. Quando houver ferramentas/permissões disponíveis e todos os gates objetivos forem aprovados, os agentes devem automaticamente:
+
+- criar e atualizar branches/worktrees isoladas e commits;
+- abrir e atualizar PRs, corrigir falhas de CI, solicitar revisão independente e reexecutar os checks necessários;
+- fazer merge pelo mecanismo governado e deploy dos commits elegíveis, executar smoke tests, verificar saúde pós-deploy e aplicar rollback automático somente quando seguro;
+- atualizar issues, evidências e o roadmap e iniciar a próxima tarefa segura, sem perguntar “posso continuar?”, “posso commitar?”, “posso abrir PR?”, “posso fazer merge?” ou “posso publicar?”;
+- continuar tarefas independentes se uma tarefa ficar bloqueada.
+
+Esta diretriz concede autonomia às operações que a política já classifica como automaticamente aprováveis; **não** revoga R3/R-STOP, não concede permissões técnicas ausentes, não habilita secrets/feature flags por inferência e não autoriza ignorar falhas. O worker de `.github/workflows/tarefas.yml` segue limitado a branch + PR; merge/deploy devem passar pelo Release Governor/Bridge com as credenciais e gates próprios.
+
+### Relatório de fase e comunicação com o proprietário
+
+- Claude Code não deve enviar atualizações rotineiras nem pedir validação ao proprietário a cada PR. Ao concluir uma fase inteira, com todos os seus critérios de saída comprovados, atualizar `docs/ROADMAP-OPERACIONAL.md` com resultado, evidências/links, merges, deploys/smoke, métricas, pendências e fase seguinte.
+- O monitor de projeto no ChatGPT é o canal para entregar um relatório por fase concluída. Entre fases, não emitir relatórios repetitivos de progresso.
+- Se houver uma ação que não possa ser aprovada automaticamente, um R3, R-STOP persistente, incidente crítico ou decisão comercial que realmente exija o proprietário, registrar no GitHub o motivo, evidências, risco, recomendação e a única decisão necessária; o ChatGPT deve avisar o proprietário com esse contexto.
+- Até haver evidência de conclusão de fase, continuar as tarefas elegíveis. Não declarar fase concluída só porque PRs foram abertas ou merged; aplicar critérios de saída e smoke/observação exigidos.
+
 ### Níveis de risco
 
 | Nível | Exemplos | Comportamento |
