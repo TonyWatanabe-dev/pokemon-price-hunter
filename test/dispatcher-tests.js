@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { workerAcceptsDispatchYaml } from '../tools/dispatcher-workflow-check.mjs';
 import { planDispatch, applyPlan, parseDependencies, parseAreas, parseOrder, parseDispatchMarkers, dispatchMarker,
-  clampSlots, hasOpenPull, sanitize, validateDispatchRequest, budgetConfig, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+  clampSlots, hasOpenPull, sanitize, validateDispatchRequest, capacityFailures, CAPACITY_PAUSE_MIN, budgetConfig, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
 import { budgetGate } from '../src/agents/esforco.js';
 import { buildRecord, formatComment, parseRecords, gastoNaJanela } from '../src/agents/telemetria.js';
 
@@ -309,6 +309,39 @@ await t('orçamento: configuração por variáveis; limite inválido falha fecha
   assert.equal((y.match(/DISPATCHER_ORCAMENTO_USD: \$\{\{ vars\.DISPATCHER_ORCAMENTO_USD \}\}/g) || []).length, 2, 'plano e despacho veem o mesmo limite');
   const cli = fs.readFileSync(path.join(root, 'tools/dispatcher.mjs'), 'utf8');
   assert.match(cli, /if \(erro\) return \{ permitir: false/); assert.match(cli, /limiteUsd === null \? \{ permitir: true[\s\S]*?: \{ permitir: false/, 'leitura falhando com limite: pausa');
+});
+
+await t('regressão leva 3 (12/10 14:52): recusa sem tokens não gasta tentativa, pausa o despacho e não leva à quarentena', () => {
+  // assinatura real da #308: 1 turno, 368 ms, zero tokens, sem PR
+  const tele = (nr, attempt, at, over = {}) => ({ author: BOT, body: `**Telemetria**\n<!-- telemetria:execucao v=1 ${JSON.stringify({ v: 1, issue: nr, chave: `dispatch:${nr}:${attempt}`,
+    sessao: { sucesso: false, subtipo: 'success', turnos: 1, duracaoMs: 368, custoUsdReportado: 0, tokens: { entrada: 0, saida: 0, cacheLeitura: 0, cacheCriacao: 0 } },
+    resultado: { status: 'failure', pr: null }, em: at, ...over })} -->` });
+  const failed = (at) => ({ event: 'labeled', label: LABELS.FAILED, actor: BOT, createdAt: at });
+  assert.equal(capacityFailures([tele(9, 1, min(-5))]).length, 1);
+  assert.equal(capacityFailures([{ ...tele(9, 1, min(-5)), author: 'intruso' }]).length, 0, 'só o bot do workflow');
+  const real = tele(9, 1, min(-5), { sessao: { sucesso: false, turnos: 12, tokens: { entrada: 900, saida: 4000 } } });
+  assert.equal(capacityFailures([real]).length, 0, 'falha com trabalho real continua contando');
+  // dentro da janela: pausa tudo (sem despacho e sem quarentena)
+  const i9 = issue(9, { labels: [QUEUE_LABEL, LABELS.FAILED], labelEvents: [...issue(9).labelEvents, failed(min(-4))], comments: [marker(9, 1, min(-6)), tele(9, 1, min(-5))] });
+  const p1 = planDispatch(snap([i9, issue(10)]));
+  assert.equal(p1.paused, true); assert.deepEqual([p1.dispatch, p1.quarantine], [[], []]);
+  assert.match(p1.skipped[0].reason, /sem capacidade/);
+  // depois da janela: redespacha a #9 SEM backoff (a recusa não contou) e com nova chave
+  const p2 = planDispatch(snap([i9, issue(10)], { now: min(CAPACITY_PAUSE_MIN) }));
+  assert.equal(p2.paused, false);
+  assert.deepEqual(p2.dispatch.map((d) => d.key), ['dispatch:9:2', 'dispatch:10:1']);
+  // duas recusas seguidas não colocam em quarentena
+  const i9b = { ...i9, comments: [...i9.comments, marker(9, 2, min(-100)), tele(9, 2, min(-99))], labelEvents: [...i9.labelEvents, failed(min(-98))] };
+  const i9c = { ...i9b, comments: [marker(9, 1, min(-200)), tele(9, 1, min(-199)), marker(9, 2, min(-100)), tele(9, 2, min(-99))] };
+  const p3 = planDispatch(snap([i9c], { now: min(0) }));
+  assert.deepEqual(p3.quarantine, []); assert.deepEqual(p3.dispatch.map((d) => d.key), ['dispatch:9:3']);
+});
+
+await t('rajada: no máximo 4 despachos por ciclo (configurável), o resto espera o próximo ciclo', () => {
+  const many = Array.from({ length: 10 }, (_, k) => issue(100 + k));
+  const p = planDispatch(snap(many, { maxSlots: 10 }));
+  assert.equal(p.dispatch.length, 4); assert.ok(p.skipped.some((x) => /limite de 4 despachos por ciclo/.test(x.reason)));
+  assert.equal(planDispatch(snap(many, { maxSlots: 10, maxPerCycle: 10 })).dispatch.length, 10);
 });
 
 console.log(`✓ Dispatcher: ${n} grupos de testes passaram`);

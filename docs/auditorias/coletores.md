@@ -25,6 +25,7 @@ Escopo: `src/adapters/`, `src/run.js`, `src/core/offer-key.js`, `src/http.js` e 
 | Shopify (paginação, coleções, parcial) e VTEX (vendedor padrão, preço, frete) | `test/adapters-shopify-vtex-tests.js` |
 | Falha passageira de página JSON-LD preserva a oferta | `test/jsonld-recovery-tests.js`, `test/collectors-tests.js` |
 | Fluxo do catálogo do Mercado Livre | `test/ml-tests.js` |
+| Mercado Livre: estoque pelo catálogo (`catalogStock`), 403 em `/items` e oferta no `bestDeals` | `test/ml-estoque-tests.js` (ver `docs/mercadolivre-api.md`) |
 | Chave de deduplicação e URL canônica | `test/offer-key-tests.js` |
 | Limites de parsing (`parse-limits.js`) | `test/parse-limits-tests.js` |
 

@@ -50,12 +50,13 @@ async function tokenCall(params) {
 // Primeira autorização: troca o código que o ML devolve no /ml/callback.
 export const exchange = (code) => tokenCall({ grant_type: 'authorization_code', code, redirect_uri: REDIRECT() });
 
-// Token de acesso válido (renova se faltar menos de 30 min). Retorna { token, refreshed }.
+// Token de acesso válido (renova se faltar menos de 30 min). Retorna { token, refreshed, scope }.
+// scope é só o nome dos escopos que o OAuth devolveu (ex.: "offline_access read"), para o diagnóstico; nunca o token.
 export async function accessToken({ marginMs = 30 * 60e3 } = {}) {
   const t = load();
-  if (!t) return { token: process.env.ML_ACCESS_TOKEN || null, refreshed: false };
-  if (t.expiresAt - Date.now() > marginMs) return { token: t.access, refreshed: false };
-  if (!t.refresh) return { token: null, refreshed: false };
+  if (!t) return { token: process.env.ML_ACCESS_TOKEN || null, refreshed: false, scope: null };
+  if (t.expiresAt - Date.now() > marginMs) return { token: t.access, refreshed: false, scope: t.scope || null };
+  if (!t.refresh) return { token: null, refreshed: false, scope: null };
   const n = await tokenCall({ grant_type: 'refresh_token', refresh_token: t.refresh });
-  return { token: n.access, refreshed: true };
+  return { token: n.access, refreshed: true, scope: n.scope || null };
 }

@@ -41,6 +41,7 @@ jobs:
       # Orçamento pela telemetria real do worker (custo reportado na janela); vazio = sem limite.
       DISPATCHER_ORCAMENTO_USD: ${{ vars.DISPATCHER_ORCAMENTO_USD }}
       DISPATCHER_ORCAMENTO_JANELA_H: ${{ vars.DISPATCHER_ORCAMENTO_JANELA_H }}
+      DISPATCHER_POR_CICLO: ${{ vars.DISPATCHER_POR_CICLO }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -68,6 +69,7 @@ jobs:
       # Orçamento pela telemetria real do worker (custo reportado na janela); vazio = sem limite.
       DISPATCHER_ORCAMENTO_USD: ${{ vars.DISPATCHER_ORCAMENTO_USD }}
       DISPATCHER_ORCAMENTO_JANELA_H: ${{ vars.DISPATCHER_ORCAMENTO_JANELA_H }}
+      DISPATCHER_POR_CICLO: ${{ vars.DISPATCHER_POR_CICLO }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

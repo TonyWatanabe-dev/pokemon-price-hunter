@@ -110,6 +110,14 @@ await t('preço: 0, negativo, NaN, Infinity, texto, objeto ausente, chave descon
   bad({ ...good, price: { base: null }, stock: 'PRE_ORDER' }, SH, /PRE_ORDER/, 'pré-venda sem preço');
   bad({ ...good, listPrice: 0 }, SH, /preço "de"/, 'preço "de" zero');
 });
+await t('coerência entre campos: IN_STOCK com quantidade 0 e pix > base são recusados', () => {
+  bad({ ...good, quantity: 0 }, SH, /IN_STOCK com quantidade 0/, 'em estoque com quantidade 0');
+  bad({ ...good, price: { base: 100, pix: 120 } }, SH, /pix .* maior que o base/, 'pix maior que base');
+  ok({ ...good, quantity: 0, stock: 'OUT_OF_STOCK' }, SH, 'esgotado com quantidade 0');
+  ok({ ...good, quantity: 3 }, SH, 'em estoque com quantidade');
+  ok({ ...good, price: { base: 100, pix: 95 } }, SH, 'pix com desconto');
+  ok({ ...good, price: { base: 100, pix: 100 } }, SH, 'pix igual ao base');
+});
 await t('moeda: USD (currency ou priceCurrency) é recusada', () => {
   bad({ ...good, currency: 'USD' }, SH, /moeda USD/, 'currency USD');
   bad({ ...good, priceCurrency: 'usd' }, SH, /moeda usd/, 'priceCurrency usd');

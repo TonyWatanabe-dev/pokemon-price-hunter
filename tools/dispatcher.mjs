@@ -50,7 +50,8 @@ async function snapshot() {
     issueStates[d] = byN.get(d)?.state || (await api(`repos/${REPO}/issues/${d}`).catch(() => null))?.state || 'unknown';
   }
   const pulls = (await pages(`repos/${REPO}/pulls?state=open&per_page=100`)).map((p) => ({ number: p.number, headRef: p.head?.ref, body: p.body || '' }));
-  return { now, operators, maxSlots: process.env.TAREFAS_MAX, pauseUntil, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
+  const porCiclo = Number(process.env.DISPATCHER_POR_CICLO);
+  return { now, operators, maxSlots: process.env.TAREFAS_MAX, maxPerCycle: Number.isInteger(porCiclo) && porCiclo > 0 && porCiclo <= 10 ? porCiclo : undefined, pauseUntil, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
 }
 
 // Orçamento pela telemetria real (comentários `telemetria:execucao` do bot do workflow na janela).

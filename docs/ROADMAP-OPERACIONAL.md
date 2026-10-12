@@ -135,6 +135,47 @@ Telemetria real do worker: implementada (ver item 1 das lacunas abaixo), com val
 - **Burn-in:** a issue #271 recebe o veredito diário. 11/10 foi verde. 12/10 está vermelho por 2 falhas do Dispatcher pela manhã, durante as correções.
 - **Gargalo atual:** merge humano por PR. A Ponte autônoma depende de: `qa-review` obrigatório na `main`, `RELEASE_AUDIT_*` configurados para a #267 e `VERCEL_TOKEN`.
 
+## Estado consolidado — 12/10/2026, fim da tarde
+
+**Fila zerada:** nenhuma PR aberta e nenhuma tarefa aprovada pendente. Tudo abaixo está integrado na `main` (`612a6e1`).
+
+**Fábrica de agentes (operando):**
+- Ciclo Vigia → Dispatcher → worker → PR → `qa-review` → Governor, comprovado em runtime.
+- 10 vagas (`TAREFAS_MAX=10`). Comprovado com 6 agentes simultâneos (#290–#295).
+- Telemetria por execução (#264) e orçamento no Dispatcher (#265). Classificador de esforço corrigido (#272): docs saem sonnet/low.
+- Burn-in automático (#270, issue #271). Sequência verde 1/7: 11/10 verde, 12/10 vermelho pelas falhas da manhã.
+- Suíte por descoberta automática (#304): teste novo é só criar `test/*-tests.js`, sem editar o `package.json`.
+- `index.html` é a fonte da interface (#302); o template antigo está defasado e travado.
+- Sink de auditoria GitHub da Ponte (#267): integrado, ainda não ativo.
+- Custo medido: US$ 0,13–0,31 por tarefa (custo reportado a preço de API).
+
+**Entregas de produto via agentes:**
+- testes de carga/retry e fallback (#282, #283);
+- duplo envio em alertas e favoritos (#286);
+- foco no título ao trocar de página (#284);
+- vazios anunciados e focusErr (#287).
+
+**Entregas de produto do proprietário:**
+- UX lote A (#288): nota única, CTA único, tipografia, alvos e contraste no celular.
+- UX lote B (#305): card compacto em /oportunidades; busca com paginação, ordenação e filtro de tipo.
+- SEO lote C + produto lote D (#303): fallbacks SSR, /precos, rotas, descriptions, sitemap, lowPrice.
+- SEO lote E (#306): guia SSR com FAQ, /tipo/blister e glossário.
+- Backlog futuro de UX/UI/SEO (#285).
+
+**Auditorias integradas (base da próxima leva):** `docs/estados-ui.md`, `docs/acessibilidade-dinamica.md` e `docs/auditorias/` com coletores, matching, api, alertas, seguranca e motor. Cada uma propõe de 3 a 6 tarefas.
+
+**Decisões do proprietário:** #186 (Copag) e #195 (frete) fechadas sem merge. #84 segue aberta e a flag de frete continua desligada.
+
+**Pendências humanas:**
+1. `qa-review` obrigatório na proteção da `main` (hoje são exigidas 0 aprovações).
+2. Ativar a auditoria da Ponte: `RELEASE_AUDIT_SINK/ISSUE/ACTOR`.
+3. `VERCEL_TOKEN`.
+4. `DISPATCHER_ORCAMENTO_USD`.
+5. Teste de aviso do Vigia (#238).
+6. Rotina horária pela interface.
+
+**Próximo passo técnico:** leva 3, com cerca de 10 tarefas tiradas das auditorias, em áreas distintas.
+
 ## Estado executivo
 
 ### Meta de operação 24/7 — lacunas para fechar
