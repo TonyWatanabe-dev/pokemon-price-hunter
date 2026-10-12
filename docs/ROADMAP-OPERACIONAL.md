@@ -18,6 +18,14 @@
 
 Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que Claude já implementou no código do que ainda é futuro e exige pré-requisitos/aprovação. As capacidades futuras de UX Research, UI & Design System, Social Media, SEO & Content, Growth & CRO e Brand & Creative não devem ser iniciadas agora.
 
+## Contrato de autonomia e comunicação
+
+- **Executor:** Claude Code conduz o desenvolvimento ponta a ponta. Não pede permissão para commits, branches, PRs, resolver CI ou continuar trabalho seguro. Merge/deploy são automáticos para R0/R1 e R2 quando Release Governor, permissões técnicas, CI, auditoria e smoke aplicáveis aprovarem.
+- **Fronteira:** `tarefas.yml` continua branch + PR. Não conferir ao worker poderes novos para merge/deploy; usar Release Executor Bridge/Governor. R3 e R-STOP continuam a exigir intervenção do proprietário e não podem ser contornados.
+- **Relatórios:** atualizar este arquivo somente com evidências reais, inclusive ao final de cada fase. O relatório de fase inclui critérios de saída, PRs/commits, CI, merges/deploys/smoke, métricas disponíveis, estabilidade, pendências e fase seguinte.
+- **Canal do usuário:** o monitor do ChatGPT deve apresentar os relatórios quando uma fase completar seus critérios e notificar antes quando existir ação crítica realmente não aprovável automaticamente. Sem atualizações repetitivas a cada PR; não confundir a verificação horária do monitor com alerta instantâneo.
+- **Bloqueio:** registrar no GitHub evidência, impacto, recomendação e uma única decisão necessária. Continuar tarefas independentes e seguras enquanto o bloqueio persistir.
+
 ## Estado executivo
 
 ### Meta de operação 24/7 — lacunas para fechar
