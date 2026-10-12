@@ -81,3 +81,22 @@ Se o comentário trouxer o link de uma PR, ela existe mas precisa de triagem man
 - O workflow só permite ao Claude `npm test`, `npm ci`, `node test/*`, leitura de git e `gh pr create`/`gh pr list`. Não há permissão para `gh pr merge`, push na `main` ou deploy.
 - O resultado de uma tarefa é sempre uma PR aberta para a `main`; o merge depende de CI + Release Governor ou de revisão humana.
 - Para confirmar em uma execução: a PR deve estar **Open**, sem merge, e nenhum deploy deve ter sido disparado por ela.
+
+## Dispatcher (fila aprovada) — em construção (#234)
+
+O objetivo é despachar tarefas sem aplicar o label `executor:github` em cada issue. A aprovação passa a ser o label **`tarefa:aprovada`**, aplicado por um operador numa issue aberta por um operador.
+
+O núcleo de decisão está em `src/agents/dispatcher.js`. É determinístico, não chama modelo nem executa nada. Ele despacha uma tarefa só quando todas estas condições valem:
+- a aprovação veio de um operador;
+- as dependências (`Depende de: #n`) estão fechadas;
+- não há tarefa em curso, PR aberta, quarentena nem bloqueio;
+- há vaga livre (`TAREFAS_MAX`).
+
+Também controla o andamento:
+- **Arquivos críticos:** duas tarefas que declaram o mesmo arquivo crítico (`Arquivos:`) não rodam juntas.
+- **Falhas:** backoff de 30 min, 60 min, 120 min… e quarentena após 3 falhas.
+- **Idempotência:** chave issue + tentativa.
+
+Para ver o plano com dados reais, **sem efeito**: `node tools/dispatcher-plan.mjs` (ou `--json`).
+
+Ainda falta o disparo: um `workflow_dispatch` autenticado no `tarefas.yml` e um workflow agendado do dispatcher. Eles entram depois da correção de segurança #241, que mexe no mesmo arquivo.
