@@ -114,4 +114,60 @@ await t('11. falha rápido quando falta o secret, e o status final usa outcome c
   assert.match(code, /PR existe e precisa de triagem: \$pr/);
 });
 
+/** Passos de um job: blocos que começam em "      - " (recuo do YAML deste workflow), com nome legível. */
+export function stepsOf(jobSrc) {
+  const body = jobSrc.split(/\n    steps:\n/)[1] || '';
+  return body.split(/\n(?= {6}- )/).filter((b) => b.trim().startsWith('- ')).map((b) => ({
+    name: (b.match(/name: (.+)/) || b.match(/uses: ([^@\s]+)/) || b.match(/run: (.+)/) || [, '?'])[1].trim(), src: b,
+  }));
+}
+/** Token do workflow ou credencial do GitHub referenciada num trecho de YAML. */
+const TOKEN_RE = /github\.token|secrets\.GITHUB_TOKEN|\bGH_TOKEN\b|\bGITHUB_TOKEN\b|github_token:/;
+/** Verifica o escopo do token do workflow: devolve as violações encontradas (vazio = ok). */
+export function tokenScopeViolations(workflowCode) {
+  const bad = [];
+  const tarefa = workflowCode.match(/\n  tarefa:\n([\s\S]*?)(?=\n  [\w-]+:\n|$)/)[1];
+  const top = workflowCode.split(/\njobs:\n/)[0];
+  if (TOKEN_RE.test(top)) bad.push('token no env/topo do workflow');
+  const jobEnv = (tarefa.split(/\n    steps:\n/)[0].match(/\n    env:\n((?: {6}.+\n?)+)/) || [, ''])[1];
+  if (TOKEN_RE.test(jobEnv)) bad.push('token no env do job tarefa (vaza para todos os passos)');
+  const ALLOWED = new Set(['Marcar em execução', 'Resultado na issue']);
+  for (const st of stepsOf(tarefa)) {
+    if (!TOKEN_RE.test(st.src)) continue;
+    if (!ALLOWED.has(st.name)) bad.push(`token no passo "${st.name}"`);
+    else if (!/\n {8}env:\n(?: {10}.+\n)*? {10}GH_TOKEN: \$\{\{ github\.token \}\}/.test(st.src)) bad.push(`passo "${st.name}" usa token fora do env do próprio passo`);
+  }
+  const checkout = stepsOf(tarefa).find((x) => x.name === 'actions/checkout');
+  if (!checkout || !/persist-credentials: false/.test(checkout.src)) bad.push('checkout persiste o token do workflow no .git/config');
+  return bad;
+}
+
+await t('12. token do workflow só nos passos de shell que usam gh; nunca no npm ci nem no passo do Claude', () => {
+  assert.deepEqual(tokenScopeViolations(code), []);
+  const tarefa = job('tarefa'); const steps = stepsOf(tarefa);
+  const names = steps.map((x) => x.name);
+  for (const n of ['Marcar em execução', 'actions/checkout', 'actions/setup-node', 'npm ci --no-audit --no-fund', 'Validar credencial Claude', 'anthropics/claude-code-action', 'Resultado na issue'])
+    assert.ok(names.includes(n), `passo ${n} (achados: ${names.join(' | ')})`);
+  const claude = steps.find((x) => x.name === 'anthropics/claude-code-action');
+  assert.doesNotMatch(claude.src, TOKEN_RE, 'o passo do Claude não recebe o token do workflow');
+  assert.doesNotMatch(steps.find((x) => x.name.startsWith('npm ci')).src, TOKEN_RE);
+  assert.equal((code.match(/github\.token/g) || []).length, 2, 'só os dois passos que usam gh');
+  // os passos que usam gh continuam com o token (labels, comentário e consulta da PR)
+  for (const n of ['Marcar em execução', 'Resultado na issue']) assert.match(steps.find((x) => x.name === n).src, /gh api/);
+});
+
+await t('13. o detector de escopo recusa as formas inseguras (token no job, no Claude, checkout persistente)', () => {
+  const ok = code;
+  const jobLevel = ok.replace('    env:\n      REPO:', '    env:\n      GH_TOKEN: ${{ github.token }}\n      REPO:');
+  assert.ok(tokenScopeViolations(jobLevel).some((v) => v.includes('env do job')));
+  const inClaude = ok.replace('          claude_code_oauth_token:', '          github_token: ${{ github.token }}\n          claude_code_oauth_token:');
+  assert.ok(tokenScopeViolations(inClaude).some((v) => v.includes('anthropics/claude-code-action')));
+  const persist = ok.replace('          persist-credentials: false\n', '');
+  assert.ok(tokenScopeViolations(persist).some((v) => v.includes('checkout')));
+  const npmTok = ok.replace('      - run: npm ci --no-audit --no-fund', '      - run: npm ci --no-audit --no-fund\n        env: { GH_TOKEN: ${{ github.token }} }');
+  assert.ok(tokenScopeViolations(npmTok).some((v) => v.includes('npm ci')));
+  const topLevel = ok.replace('permissions: {}', 'env:\n  GH_TOKEN: ${{ github.token }}\npermissions: {}');
+  assert.ok(tokenScopeViolations(topLevel).some((v) => v.includes('topo')));
+});
+
 console.log(`✓ Tarefas paralelas (workflow): ${n} grupos de testes passaram`);
