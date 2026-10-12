@@ -16,4 +16,12 @@ for (const f of ['../index.html', '../tools/page.template.html']) {
   assert.match(html, /id="fresh" aria-live="polite"/, `${f}: frescor live`);
   assert.match(html, /class="ticker" aria-live="off"/, `${f}: ticker não deve ser anunciado`);
 }
+{
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /function focusTitle\(\)\{[^}]*#view h1, #view h2[^}]*setAttribute\("tabindex","-1"\)[^}]*focus\(\{preventScroll:true\}\)/, 'título do #view deve ter tabindex=-1 e receber foco sem rolar');
+  const calls = html.match(/focusTitle\(\)/g) || [];
+  assert.ok(calls.length >= 8, 'foco no título esperado em go, hashchange, popstate, grupo, produto e busca');
+  assert.match(html, /render\(\);scrollTo\(\{top:0\}\);focusTitle\(\)/, 'go() deve focar o título depois do render');
+  assert.doesNotMatch(html.slice(html.indexOf('function render(){'), html.indexOf('function render(){') + 400), /focusTitle/, 'render() não deve roubar o foco ao recarregar dados');
+}
 console.log('a11y-dynamic-tests: ok');
