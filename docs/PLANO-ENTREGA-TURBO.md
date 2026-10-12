@@ -1,10 +1,13 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 11/10/2026  
+> **Atualizado em:** 12/10/2026
 > **Base consultada:** \`main\` em \`a53d73abb17e88170b7a94930a2d2a161eeb171e\`.  
 > **Objetivo:** levar o produto existente até uma operação comercial útil, confiável e sustentável, com coleta, agentes de engenharia e monitoramento trabalhando 24/7, sem depender de alguém distribuindo cada tarefa manualmente.
 
 Este documento é o plano de execução de ponta a ponta. Use \`docs/ROADMAP-OPERACIONAL.md\` para evidências e estado operacional detalhado, \`docs/MAPA-DE-AGENTES.md\` para contratos dos agentes e \`docs/agentes.md\` para governança de merge/deploy.
+
+
+> **Atualização de execução — 12/10/2026:** PR #252 integrou a allowlist mínima `github-actions` apenas em `claude_despacho`, com teste de contrato; PR #250 integrou o gatilho `workflow_run` após “Vigia do robô”. O gatilho pós-merge ainda não foi comprovado: o último run de Vigia disponível antecede o merge da #250. O Dispatcher #5 terminou com sucesso, mas manteve a Issue #247 em backoff até 08:59 UTC. Próximo critério de saída: run de Vigia pós-merge → Dispatcher automático → job `despacho` elegível → Claude Code Action bem-sucedida → PR documental com CI verde. Ver [roadmap operacional](./ROADMAP-OPERACIONAL.md) para evidências e links dos runs.
 
 ## 1. Resultado final esperado
 
