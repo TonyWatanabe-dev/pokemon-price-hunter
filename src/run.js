@@ -310,7 +310,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       }
       // Voltou a funcionar: limpa o status HTTP, o código de rede e o Retry-After da última falha.
       Object.assign(src, { status: 'ACTIVE', reason, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null, lastDurationMs: Date.now() - t0, errorClass: null });
-      delete src.httpStatus; delete src.netCode; delete src.retryAfterSec;
+      delete src.httpStatus; delete src.netCode; delete src.retryAfterSec; delete src.lastFailure;
       src.platformHint = platformHintFor(base) ?? src.platformHint ?? null; // plataforma vista na resposta (diagnostico.js)
       // Leitura parcial (ex.: Shopify com catálogo maior que o teto de páginas): fica registrada; some quando volta a ser completa.
       if (typeof raw.partial === 'string' && raw.partial) { src.partial = raw.partial; log(`[${store.id}] ${raw.partial}`); } else delete src.partial;

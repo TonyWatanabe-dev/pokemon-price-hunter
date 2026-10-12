@@ -214,4 +214,8 @@ await t('runOnce: sources.json ganha lastFailure na loja bloqueada e platformHin
   fs.rmSync(tmp, { recursive: true, force: true });
 });
 
+await t('bodyHead não guarda IP nem segredo ecoado pela página de bloqueio', () => {
+  const h = diag.bodyHead('<html>Access denied for 187.45.12.9 and 2804:14d:1::9a; token=abcDEF123456 ok</html>');
+  assert.ok(!/187\.45\.12\.9|2804:14d/.test(h), h); assert.ok(/\[ip\]/.test(h)); assert.ok(!/abcDEF123456/.test(h), h);
+});
 console.log(`coleta-diagnostico: ${n} testes OK`);

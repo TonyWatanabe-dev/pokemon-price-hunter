@@ -2,7 +2,10 @@
 // (UA identificado, robots.txt respeitado). Nunca serve para contornar WAF, CAPTCHA ou limite: serve para o relatório
 // (tools/coleta-relatorio.mjs) dizer por que uma loja não abre e qual plataforma ela usa. Guarda pouco e nunca guarda
 // valor de cookie, token, query ou corpo inteiro: no máximo nomes de cookie, cabeçalhos curtos e 300 caracteres de texto.
+import { redact } from './redact.js';
 const MAX_HEAD = 300; const MAX_HDR = 40; const MAX_COOKIES = 6;
+// Páginas de bloqueio costumam ecoar o IP do cliente: nunca gravar endereço IP nem segredos no trecho guardado.
+const noIp = (s) => s == null ? null : s.replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '[ip]').replace(/\b(?:[0-9a-f]{0,4}:){2,7}[0-9a-f]{1,4}\b/gi, '[ip]');
 const clip = (s, n) => (s == null ? null : String(s).replace(/\s+/g, ' ').trim().slice(0, n) || null);
 
 // Cabeçalhos podem vir como Headers (fetch), Map ou objeto simples.
@@ -31,7 +34,8 @@ export function cookieNames(headers) {
 // Primeiros caracteres do texto visível (sem script/style/tags), espaços colapsados, para reconhecer a página de bloqueio.
 export function bodyHead(text, n = MAX_HEAD) {
   if (!text) return null;
-  return clip(String(text).slice(0, 64 * 1024).replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<!--[\s\S]*?-->/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' '), n);
+  const t = clip(String(text).slice(0, 64 * 1024).replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<!--[\s\S]*?-->/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' '), n);
+  return t == null ? null : noIp(redact(t, { max: n }));
 }
 
 const has = (s, re) => !!s && re.test(s);
@@ -61,7 +65,7 @@ export function wafOf({ status = null, headers = null, body = '', code = null } 
   if (names.some((n) => n.startsWith('x-px')) || cookies.some((n) => n.startsWith('_px')) || has(head, /px-captcha|perimeterx|_pxhd|human security/i)) return 'perimeterx';
   if (names.includes('x-iinfo') || /incapsula|imperva/.test((headerOf(headers, 'x-cdn') || '').toLowerCase()) || cookies.some((n) => n.startsWith('visid_incap') || n.startsWith('incap_ses')) || has(head, /incapsula|imperva/i)) return 'imperva';
   if (server.includes('sucuri') || names.some((n) => n.startsWith('x-sucuri')) || has(head, /sucuri/i)) return 'sucuri';
-  if (names.includes('x-amzn-waf-action') || names.includes('x-amzn-requestid') && status === 403 || cookies.some((n) => n.startsWith('aws-waf-token')) || has(head, /awswaf|aws-waf|challenge\.js.*token\.awswaf/i)) return 'aws-waf';
+  if (names.includes('x-amzn-waf-action') || (names.includes('x-amzn-requestid') && status === 403) || cookies.some((n) => n.startsWith('aws-waf-token')) || has(head, /awswaf|aws-waf|challenge\.js.*token\.awswaf/i)) return 'aws-waf';
   if (status === 403 || status === 401) return 'generic-403';
   return 'unknown';
 }
