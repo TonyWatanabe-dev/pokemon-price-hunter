@@ -47,7 +47,7 @@ Em Settings → Secrets and variables → Actions → Variables:
 | Variável | Efeito | Sem a variável |
 | --- | --- | --- |
 | `DISPATCHER_ATIVO` | `true` liga o job `despacho` e o `workflow_dispatch` do worker. | Só o job `plano` roda, somente leitura. |
-| `TAREFAS_MAX` | Jobs simultâneos, limitado a 1–10. | 3. |
+| `TAREFAS_MAX` | Jobs simultâneos, limitado a 1–10. | 3 sem a variável. **Configurado em 10 pelo proprietário em 12/10/2026.** |
 | `TAREFAS_OPERADORES` | Logins, separados por vírgula, que podem abrir/aprovar/disparar. | Só o dono do repositório. |
 | `DISPATCHER_ORCAMENTO_USD` | Limite de custo reportado na janela. | O plano só mostra o gasto da janela. |
 | `DISPATCHER_ORCAMENTO_JANELA_H` | Janela do orçamento, 1–168 h. | 24 h. |
