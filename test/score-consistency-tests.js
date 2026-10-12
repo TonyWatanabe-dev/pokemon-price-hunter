@@ -12,7 +12,7 @@ const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const cut = (a, b, src = html) => { const i = src.indexOf(a); const j = src.indexOf(b, i); assert.ok(i >= 0 && j > i, `trecho ${a}`); return src.slice(i, j); };
 let n = 0; const t = async (name, fn) => { await fn(); n++; };
 
-const helpers = cut('const BAND_UI=', '/* 6C.1 TCG Rarity System');
+const helpers = cut('const BAND_UI=', 'const RARITY=');
 const dialCode = cut('function dial(', 'function scoreBlock(');
 const blockCode = cut('function scoreBlock(o){', '/* PriceDisplay:');
 const meterCode = cut('function scoreMeter(x){', 'function dealCard(');
