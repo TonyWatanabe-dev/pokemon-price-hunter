@@ -97,6 +97,7 @@ await t('10. runner com firewall; allowlist em modo enforce e sem wildcards', ()
   assert.match(firewallCode, /- registry\.npmjs\.org/);
   assert.match(firewallCode, /- registry-1\.docker\.io/);
   assert.match(firewallCode, /- auth\.docker\.io/);
+  assert.match(firewallCode, /- production\.cloudfront\.docker\.com/);
   assert.doesNotMatch(firewallCode, /\*/);
 });
 
