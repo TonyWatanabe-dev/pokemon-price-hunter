@@ -5,8 +5,11 @@
 // Requisitos (fail-closed): `gh` autenticado com permissão de merge no repositório; DATABASE_URL (auditoria e lock
 // em hunter.system_event); para deploy, VERCEL_TOKEN com acesso ao projeto (VERCEL_TEAM_ID / VERCEL_PROJECT).
 // --avaliar: só lê evidências e mostra a decisão do Governor (sem lock, sem efeito, auditoria em memória).
+// Sink de auditoria (opção C da #231 item 3, NÃO ativo por padrão): sem RELEASE_AUDIT_SINK continua o PostgreSQL.
+// RELEASE_AUDIT_SINK=github + RELEASE_AUDIT_ISSUE=<n> + RELEASE_AUDIT_ACTOR=<login> grava cada decisão como
+// comentário na issue de auditoria; configuração inválida ou incompleta falha fechado antes de qualquer ação.
 import { runMerge, runDeploy, readPullRequestEvidence, smokeTest, memoryOutcomeStore } from '../src/agents/release-executor-bridge.js';
-import { githubAdapter, vercelAdapter } from '../src/agents/release-adapters.js';
+import { githubAdapter, vercelAdapter, githubIssueAuditSink, parseAuditSinkConfig } from '../src/agents/release-adapters.js';
 import { evaluateRelease, RELEASE_ACTION } from '../src/agents/release-governor.js';
 
 const REPO = process.env.RELEASE_REPO || 'TonyWatanabe-dev/pokemon-price-hunter';
@@ -25,11 +28,16 @@ if (args.includes('--avaliar')) {
 }
 
 if (!process.env.DATABASE_URL) { console.error('DATABASE_URL ausente: sem auditoria persistente não há ação protegida.'); process.exit(3); }
+let auditConfig;
+try { auditConfig = parseAuditSinkConfig(process.env); }
+catch (e) { console.error(`auditoria mal configurada: ${e.message}`); process.exit(3); }
 const { pool, close } = await import('../src/db/pg.js');
 const { createPostgresReleaseAuditSink } = await import('../src/agents/release-governor-audit.js');
 const { pgOutcomeStore, pgAdvisoryLock } = await import('../src/agents/release-executor-bridge.js');
 const db = await pool();
-const deps = { repo: REPO, github, auditSink: createPostgresReleaseAuditSink(db), outcomes: pgOutcomeStore(db), lock: pgAdvisoryLock(db), actor: process.env.RELEASE_ACTOR || 'release-executor' };
+const deps = { repo: REPO, github, auditSink: auditConfig.kind === 'github'
+  ? githubIssueAuditSink({ repo: REPO, issueNumber: auditConfig.issueNumber, expectedActor: auditConfig.expectedActor })
+  : createPostgresReleaseAuditSink(db), outcomes: pgOutcomeStore(db), lock: pgAdvisoryLock(db), actor: process.env.RELEASE_ACTOR || 'release-executor' };
 let r;
 try {
   if (cmd === 'merge') r = await runMerge({ prNumber: pr, ...deps });
