@@ -5,6 +5,7 @@ Regras permanentes para qualquer executor (Claude ou outro agente) que trabalhe 
 ## Arquitetura
 - Preserve a arquitetura existente. Siga os padrões, a estrutura de pastas e as convenções já usadas no código.
 - Não reestruture módulos, não troque bibliotecas e não reescreva componentes sem pedido explícito do usuário.
+- A interface do site é o `index.html`, editado diretamente. `tools/page.template.html` está defasado desde a #157: não edite o template nem regenere o `index.html` a partir dele (`tools/build-page.mjs` recusa sem `--sobrescrever-index`).
 
 ## Fonte de verdade e contexto antes de executar
 - No início de cada tarefa, leia `docs/PLANO-ENTREGA-TURBO.md` para a sequência completa até a entrega e operação 24/7 e `docs/ROADMAP-OPERACIONAL.md` para o estado observado/próxima prioridade; consulte `docs/MAPA-DE-AGENTES.md` para capacidades e pré-requisitos, `docs/agentes.md` para governança/autonomia e `docs/tarefas-paralelas.md` quando usar o executor GitHub Actions.
