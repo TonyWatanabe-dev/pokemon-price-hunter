@@ -40,6 +40,8 @@ Regras permanentes para qualquer executor (Claude ou outro agente) que trabalhe 
 ## Secrets
 - Não leia, não exiba, não copie e não altere secrets: arquivos `.env`, credenciais, tokens, chaves de API e variáveis de ambiente sensíveis.
 
-## Produção
-- Nunca faça deploy, nunca altere o ambiente de produção e nunca leia ou altere o banco de produção sem autorização explícita do usuário.
-- Uma autorização vale só para a ação pedida. Ela não vale para ações futuras.
+## Produção e fronteira de papéis
+- O worker Claude acionado por issue (workflow `tarefas.yml`) nunca faz deploy, não faz merge, não altera ambiente de produção e não lê/escreve no banco de produção. Ele entrega somente branch + PR + testes.
+- A única exceção para merge/deploy automatizado é a Release Executor Bridge dedicada, usando a política e os gates de `docs/agentes.md`, evidência de CI, SHA fixado, permissões próprias, audit log, smoke e rollback seguro. O worker de tarefas não pode invocar a ponte nem conceder permissão a si mesmo.
+- R3, mudança de política/permissões, secrets, migration crítica ou risco de dados/financeiro exige o gate humano previsto na política. Evidência ausente ou token/configuração inválida deve falhar fechado.
+- Não leia, exiba, copie ou altere secrets; credenciais só são configuradas nos mecanismos oficiais da plataforma. Uma autorização humana vale apenas para a ação explicitamente autorizada.
