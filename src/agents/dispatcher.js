@@ -78,6 +78,25 @@ export const dispatchKey = (issue, attempt) => `dispatch:${issue}:${attempt}`;
 export const dispatchMarker = (issue, attempt, now) =>
   `<!-- dispatcher:despacho chave=${dispatchKey(issue, attempt)} em=${new Date(now).toISOString()} -->`;
 
+/** Momento (ms) do último evento `labeled` de algum dos labels, ou null se não há eventos desses labels. */
+function lastLabeledAt(issue, names, { event = 'labeled', actors = null } = {}) {
+  const want = new Set(names.map(lower));
+  const evs = (issue.labelEvents || []).filter((e) => e?.event === event && want.has(lower(e?.label)) && (!actors || actors.has(lower(e?.actor))));
+  const ts = evs.map((e) => ms(e.createdAt)).filter((t) => t !== null);
+  return ts.length ? Math.max(...ts) : null;
+}
+
+/**
+ * A última tentativa despachada já terminou? Com eventos de label: houve executor:failed/done DEPOIS do marcador.
+ * Sem eventos (snapshot antigo): cai no estado atual dos labels.
+ */
+function attemptConcluded(i) {
+  if (!i.last) return false;
+  const resultAt = lastLabeledAt(i, [LABELS.FAILED, LABELS.DONE]);
+  if (resultAt !== null) return resultAt >= i.last.at;
+  return i.labels.has(LABELS.FAILED) || i.labels.has(LABELS.DONE);
+}
+
 /** O label da fila foi aplicado (por último) por um operador e continua presente? */
 function queueLabelByOperator(issue, ops) {
   const evs = (issue.labelEvents || []).filter((e) => lower(e?.label) === QUEUE_LABEL);
@@ -120,8 +139,11 @@ export function planDispatch(s = {}) {
     })
     .sort((a, b) => a.order - b.order || a.number - b.number);
 
-  // Em curso: rodando no worker ou despachado há menos que o lease (e ainda sem resultado).
-  const leased = (i) => i.last && now - i.last.at < leaseMs && !i.labels.has(LABELS.FAILED) && !i.labels.has(LABELS.DONE);
+  // Em curso: rodando no worker ou despachado há menos que o lease e ainda SEM resultado DESTA tentativa.
+  // O resultado é o evento executor:failed/done posterior ao último despacho (o label de uma tentativa anterior
+  // continua na issue até o worker marcar "em execução"; usá-lo fazia o ciclo seguinte ver a tentativa em curso
+  // como concluída e aplicar quarentena indevida — incidente da #247, 12/10 09:07 UTC).
+  const leased = (i) => i.last && now - i.last.at < leaseMs && !attemptConcluded(i);
   const active = issues.filter((i) => i.state === 'open' && (i.labels.has(LABELS.RUNNING) || i.labels.has(LABELS.QUEUED) || leased(i)));
   const plan = { slots: maxSlots, active: active.map((i) => i.number), paused: false, dispatch: [], quarantine: [], skipped: [] };
   const skip = (i, reason) => plan.skipped.push({ issue: i.number, reason });
@@ -147,13 +169,17 @@ export function planDispatch(s = {}) {
     const pending = i.deps.filter((d) => states[d] !== 'closed');
     if (pending.length) { skip(i, `dependência aberta ou desconhecida: ${pending.map((d) => '#' + d).join(', ')}`); continue; }
 
+    // Numeração global (a chave nunca se repete); orçamento de tentativas conta só os despachos depois da última
+    // vez que um OPERADOR tirou a quarentena — é assim que o operador concede novas tentativas.
     const attempts = i.markers.length ? Math.max(...i.markers.map((m) => m.attempt)) : 0;
-    if (attempts >= maxAttempts) {
-      plan.quarantine.push({ issue: i.number, attempts, reason: `${attempts} tentativa(s) sem sucesso; limite ${maxAttempts}` });
+    const resetAt = lastLabeledAt(i, [LABELS.QUARANTINE], { event: 'unlabeled', actors: ops });
+    const budgetUsed = i.markers.filter((m) => resetAt === null || m.at > resetAt).length;
+    if (budgetUsed >= maxAttempts) {
+      plan.quarantine.push({ issue: i.number, attempts: budgetUsed, reason: `${budgetUsed} tentativa(s) sem sucesso; limite ${maxAttempts}` });
       continue;
     }
-    if (i.last) {
-      const wait = backoffMs * 2 ** (attempts - 1);
+    if (i.last && budgetUsed > 0) {
+      const wait = backoffMs * 2 ** (budgetUsed - 1);
       if (now - i.last.at < wait) { skip(i, `backoff até ${new Date(i.last.at + wait).toISOString()}`); continue; }
     }
     if (i.areas.length && busyAreas.some((a) => areasConflict(i.areas, a))) { skip(i, `área crítica em uso por outra tarefa: ${i.areas.join(', ')}`); continue; }

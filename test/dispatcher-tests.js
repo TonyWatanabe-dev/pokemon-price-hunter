@@ -230,4 +230,50 @@ await t('worker revalida o despacho: só a chave registrada pelo dispatcher, úl
   assert.equal(validateDispatchRequest({ issueNumber: '7', key: 'dispatch:7:1', operators: [], issue: issue(7) }).ok, false, 'sem operadores, fecha');
 });
 
+await t('regressão #247 (12/10): tentativa em curso não vira quarentena só porque o label failed da anterior ainda está lá', () => {
+  const at = (iso) => iso;
+  const base = {
+    labels: [QUEUE_LABEL, LABELS.FAILED],
+    labelEvents: [{ event: 'labeled', label: QUEUE_LABEL, actor: OP, createdAt: '2026-10-12T03:29:24Z' },
+      { event: 'labeled', label: LABELS.RUNNING, actor: BOT, createdAt: '2026-10-12T08:34:41Z' },
+      { event: 'unlabeled', label: LABELS.RUNNING, actor: BOT, createdAt: '2026-10-12T08:34:50Z' },
+      { event: 'labeled', label: LABELS.FAILED, actor: BOT, createdAt: '2026-10-12T08:34:51Z' }],
+    comments: [{ id: 1, ...marker(247, 1, at('2026-10-12T08:29:02.921Z')) }, { id: 2, ...marker(247, 2, at('2026-10-12T09:06:38.601Z')) }],
+  };
+  // estado exato visto pelo ciclo de 09:07:23: a tentativa 2 acabou de sair e o worker ainda não marcou "em execução"
+  const p = planDispatch(snap([issue(247, base)], { now: '2026-10-12T09:07:23Z' }));
+  assert.deepEqual(p.quarantine, [], 'sem quarentena indevida');
+  assert.deepEqual(p.active, [247], 'tentativa 2 conta como em curso (lease)');
+  assert.match(p.skipped.find((x) => x.issue === 247).reason, /lease ativo/);
+  // o worker revalida e aceita a tentativa 2 (a issue não foi para a quarentena)
+  assert.equal(validateDispatchRequest({ issueNumber: '247', key: 'dispatch:247:2', operators: [OP], dispatcherActor: BOT, issue: issue(247, base) }).ok, true);
+  // resultado da tentativa 2 (failed DEPOIS do marcador 2): agora sim conta, e com o limite 2 vai para quarentena
+  const failed2 = { ...base, labelEvents: [...base.labelEvents, { event: 'labeled', label: LABELS.FAILED, actor: BOT, createdAt: '2026-10-12T09:20:00Z' }] };
+  const p2 = planDispatch(snap([issue(247, failed2)], { now: '2026-10-12T09:21:00Z' }));
+  assert.deepEqual(p2.active, []); assert.deepEqual(p2.quarantine.map((q) => q.issue), [247]);
+  // sucesso da tentativa (done depois do marcador) libera a vaga e não redespacha
+  const done2 = { ...base, labels: [QUEUE_LABEL, LABELS.DONE], labelEvents: [...base.labelEvents, { event: 'labeled', label: LABELS.DONE, actor: BOT, createdAt: '2026-10-12T09:20:00Z' }] };
+  const p3 = planDispatch(snap([issue(247, done2)], { now: '2026-10-12T09:21:00Z' }));
+  assert.deepEqual([p3.active, p3.dispatch], [[], []]); assert.match(p3.skipped[0].reason, /concluída/);
+});
+
+await t('quarentena: só um OPERADOR concede novas tentativas (tirando o label); numeração continua, sem backoff no reinício', () => {
+  const evs = [{ event: 'labeled', label: QUEUE_LABEL, actor: OP, createdAt: min(-300) },
+    { event: 'labeled', label: LABELS.FAILED, actor: BOT, createdAt: min(-100) },
+    { event: 'labeled', label: LABELS.QUARANTINE, actor: BOT, createdAt: min(-90) }];
+  const comments = [{ id: 1, ...marker(9, 1, min(-200)) }, { id: 2, ...marker(9, 2, min(-110)) }];
+  // operador tirou o label de quarentena: orçamento novo; próxima chave é a 3 (nunca reusa 1 ou 2)
+  const byOp = issue(9, { labels: [QUEUE_LABEL, LABELS.FAILED], comments, labelEvents: [...evs, { event: 'unlabeled', label: LABELS.QUARANTINE, actor: OP, createdAt: min(-5) }] });
+  const p = planDispatch(snap([byOp]));
+  assert.deepEqual(p.dispatch.map((d) => [d.issue, d.attempt, d.key]), [[9, 3, 'dispatch:9:3']]);
+  // quem tirou não é operador: continua valendo o orçamento antigo → quarentena de novo
+  const byOther = issue(9, { labels: [QUEUE_LABEL, LABELS.FAILED], comments, labelEvents: [...evs, { event: 'unlabeled', label: LABELS.QUARANTINE, actor: 'estranho', createdAt: min(-5) }] });
+  assert.deepEqual(planDispatch(snap([byOther])).quarantine.map((q) => q.issue), [9]);
+  // depois do reinício, a nova tentativa que falha entra no backoff normal (conta a partir do reinício)
+  const after = issue(9, { labels: [QUEUE_LABEL, LABELS.FAILED], comments: [...comments, { id: 3, ...marker(9, 3, min(-10)) }],
+    labelEvents: [...evs, { event: 'unlabeled', label: LABELS.QUARANTINE, actor: OP, createdAt: min(-30) }, { event: 'labeled', label: LABELS.FAILED, actor: BOT, createdAt: min(-8) }] });
+  const p2 = planDispatch(snap([after]));
+  assert.deepEqual(p2.dispatch, []); assert.match(p2.skipped[0].reason, /backoff até/);
+});
+
 console.log(`✓ Dispatcher: ${n} grupos de testes passaram`);
