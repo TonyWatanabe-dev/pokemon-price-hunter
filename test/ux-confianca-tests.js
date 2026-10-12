@@ -149,7 +149,7 @@ await t('C3. ao voltar para a aba, notas com mais de 30 min são buscadas de nov
 // ================================================================== pausa (stale_db / 503) e troca de filtro
 await t('P1. /oportunidades pausada: motivo e horário da API, nova tentativa e caminho alternativo (/precos; /produtos virou /oportunidades)', async () => {
   const s = sandbox(STALE); await s.t.renderOpp(); const h = s.slots['#view'].innerHTML;
-  assert.match(h, /<h3>Oportunidades pausadas<\/h3>/); assert.match(text(h), /há 130 min: as oportunidades ficam pausadas/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
+  assert.match(h, /<h2>Oportunidades pausadas<\/h2>/, 'em /oportunidades o estado vem logo depois do H1: título H2'); assert.match(text(h), /há 130 min: as oportunidades ficam pausadas/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
   assert.match(h, /<button[^>]*data-oppretry>/); assert.match(h, /href="\/precos" data-go="copag"/); assert.equal(s.t.OPP_PAUSE.ageMin, 130);
   assert.doesNotMatch(h, /opp-card|class="meter"/, 'nenhuma nota antiga');
   // 503 (dados sem horário confiável): pausa, não "Pode ser a conexão"
