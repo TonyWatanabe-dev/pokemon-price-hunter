@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { matchProduct, applyOverride, overridesIndex, canonicalUrl } from '../src/match.js';
+import { matchProduct, applyOverride, overridesIndex, canonicalUrl, normEan } from '../src/match.js';
 import { validateResolution, resolutionProduct, triage } from '../src/core/review.js';
 
 let n = 0;
@@ -51,6 +51,9 @@ await test('override nunca passa por cima de idioma, acessório, EAN ou coleçã
   const idxE = overridesIndex({ enabled: true, overrides: [{ store: 's', url: 'loja.com.br/e', collection: ean.collection, type: ean.type, boosters: ean.boosters, productId: ean.id, reviewId: '2' }] });
   const lt = { title: 'Pokémon Box Display', url: 'https://loja.com.br/e', ean: '7890000000000' };
   assert.equal(applyOverride(lt, 's', matchProduct(lt, catalog), catalog, idxE).productId, null, 'EAN divergente continua recusado');
+  const padded = { ...lt, ean: '00' + ean.ean };
+  assert.equal(normEan('0' + ean.ean), normEan(ean.ean), 'zeros à esquerda ignorados');
+  assert.equal(applyOverride(padded, 's', matchProduct(padded, catalog), catalog, idxE).productId, ean.id, 'override com EAN zero-padded = match direto');
   const bad = overridesIndex({ enabled: true, overrides: [{ store: 's', url: 'loja.com.br/p', ...res, productId: 'me05-etb', reviewId: '3' }] });
   assert.equal(applyOverride({ title: c.title, url: 'https://loja.com.br/p' }, 's', matchProduct({ title: c.title }, catalog), catalog, bad).productId, null, 'productId que não confere é ignorado');
 });
