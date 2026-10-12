@@ -1,7 +1,7 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 12/10/2026 às 05:55 (America/Sao_Paulo, UTC−03:00)
-> **Base consultada:** `main` em `eb6554a1b84a88ffe0e45cbfb647518748e51e5e` (após PR #228); produção (Vercel), última evidência registrada, em `f66c929e10d50d6eae7cfb8ff4508599554a4e6c` (#217).  
+> **Atualizado em:** 12/10/2026 às 13:45 (America/Sao_Paulo, UTC−03:00)
+> **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
 
@@ -341,3 +341,46 @@ Prioridades:
 
 ---
 *Este roadmap é um resumo operacional versionado. Atualizar data/hora e evidências em cada revisão; nunca substituir validação de CI/runtime/produção por texto de status.*
+
+
+## Atualização de desenvolvimento — 12/10/2026, 13:45 (America/Sao_Paulo)
+
+### Base verificada no GitHub
+- `main`: `5a70b1c1a008890082f21890c8f73c2bda985d19` — PR [#335](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/335) integrada.
+- Fila de PRs abertas: **zero no momento da consulta**.
+- PRs recentes integradas: [#335](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/335) loja oficial Pokémon no Mercado Livre e prioridade no catálogo; [#334](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/334) testes de histórico; [#332](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/332) limpeza de alertas enviados; [#331](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/331) testes para anomalias, score de loja e seleção de preço; [#330](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/330) proteção de credenciais em redirects cross-origin; [#329](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/329) testes de dependências; [#328](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/328) validação numérica estrita na API; [#327](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/327) rejeição de títulos em idioma não português; [#326](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/326) limites no JSON-LD; [#325](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/325) correção de título VTEX; [#333](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/333) disponibilidade de publicação de catálogo Mercado Livre.
+- Outras entregas integradas na mesma rodada: [#322](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/322) diagnóstico seguro de bloqueios e filtros de sitemap; [#324](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/324) diretório `/lojas` e busca alternativa; [#323](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/323) disponibilidade baseada no catálogo oficial do Mercado Livre.
+- Workflows após #335 ainda estavam em execução quando consultados: [deploy Pages #38279377618](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38279377618), [CI #38279230164](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38279230164) e [qa-review #38279230132](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38279230132). Não declarar o deploy validado até obter conclusão e smoke test adequado.
+- A sequência de burn-in de sete dias **não está concluída**: 11/10 foi verde e 12/10 teve falhas do Dispatcher durante a rodada da manhã. Uma execução posterior bem-sucedida não substitui sete dias verdes consecutivos.
+
+### Estado por frente
+| Frente | Estado observado | Próximo critério de saída |
+|---|---|---|
+| Catálogo e descoberta | Diretório de lojas, caminhos de busca alternativos e disponibilidade do catálogo ML integrados | Confirmar cobertura/frescor e links finais em runtime; não tratar catálogo publicado como estoque físico confirmado sem evidência |
+| Qualidade de dados | Validação de idioma, limites JSON-LD, consistência de ofertas e validação numérica integradas | Medir falsos positivos/falsos negativos e frescor usando dados reais; registrar cobertura por loja |
+| Segurança e manutenção | Redirect cross-origin sem encaminhar auth/cookie; limpeza de histórico/alertas e testes integrados | Manter CI verde e revisar logs de segurança sem expor credenciais |
+| UX/SEO | Melhorias anteriores e backlog futuro documentado em [#285](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/285) | Preservar backlog; não iniciar agentes futuros de UX Research, UI & Design System, Social, SEO & Content, Growth/CRO ou Brand sem replanejamento |
+| Frete por CEP | Não lançado; #195 fechada sem merge por decisão do proprietário; #84 permanece aberta | Implementar somente com cotações reais por CEP e métodos oferecidos pela loja, teste de contrato e feature flag desligada por padrão |
+| Copag/preço de referência | #186 fechada sem merge por decisão comercial; #20 explicitamente não integrar | Não alterar a política de selo Copag nem migrar sem nova decisão explícita |
+| Fábrica de agentes | Fluxo Vigia → Dispatcher → worker → PR → qa-review → Governor provado; capacidade até 10 configurada anteriormente | Revalidar concorrência/capacidade com runs recentes; merge/deploy autônomos só pela Ponte/Governor e gates reais |
+| Release/produção | Deploy iniciado após #335, resultado ainda pendente na consulta | Confirmar Actions, commit publicado e smoke pós-deploy; não inferir saúde da Vercel a partir de Pages/CI |
+| Operação 24/7 | Burn-in automático implementado, sem sete dias verdes | Corrigir/explicar falhas, validar alertas e recuperação e acumular sete dias consecutivos dentro dos limites definidos |
+
+### Próximos passos priorizados
+1. **Fechar o ciclo da PR #335:** verificar os runs de CI, revisor e deploy; se falhar, corrigir e reexecutar. Fazer smoke do diretório `/lojas`, página de produto, destino oficial do Mercado Livre e ordenação do catálogo; registrar SHA e URLs verificadas.
+2. **Auditar a cobertura de lojas e o frescor dos dados:** medir por loja última coleta bem-sucedida, ofertas válidas, bloqueios, erros e participação no ranking. Priorizar melhorias de coletores sem contornar bloqueios, CAPTCHA ou regras de acesso.
+3. **Validar a integridade do ranking:** usar casos dourados e amostras reais para confirmar correspondência exata de idioma/coleção/quantidade, preço selecionado, disponibilidade e ausência de influência de comissão afiliada. Não alterar score/ranking em massa sem revisão R3.
+4. **Retomar a fábrica com uma leva limitada e paralela:** tarefas independentes de testes, diagnóstico e qualidade de dados; cada tarefa com branch/PR, CI, `qa-review` no mesmo SHA e Governor. Não abrir volume artificial de PRs; manter foco em entregas que removam riscos ou aumentem cobertura.
+5. **Desbloquear governança de release sem contornar gates:** acompanhar a issue [#231](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/231), confirmar `qa-review` obrigatório, decisão de auditoria e pré-requisitos da Ponte/`VERCEL_TOKEN`. Segredos só pela configuração oficial do GitHub/Vercel; nunca em commits ou chat.
+6. **Continuar o burn-in de sete dias:** registrar diariamente Hunter, Vigia, Dispatcher, sincronização, frescor, releases/smoke e recuperação. Falha ou dado ausente mantém o dia não verde; não declarar 24/7 antes de sete dias consecutivos aprovados.
+7. **Manter itens bloqueados fora do lançamento:** `SHIPPING_CALC_ENABLED` desligada; #195 sem merge; #186 sem merge; #20 não integrar. Não iniciar o backlog futuro de agentes de UX/Growth/Brand sem replanejamento.
+
+### Critérios para declarar a próxima fase concluída
+- PRs relevantes integradas com CI obrigatório e revisão independente no mesmo SHA.
+- Deploy com commit identificado, resultado verde e smoke pós-deploy registrado.
+- Nenhuma alteração de ranking/preço de referência sem regressão e aprovação compatível com o risco.
+- Métricas de coleta/frescor por loja disponíveis, com falhas e dados ausentes explícitos.
+- Burn-in reportado separadamente; não declarar operação 24/7 até cumprir sete dias consecutivos verdes.
+- Pendências R3/R-STOP continuam bloqueadas e são escaladas somente com evidência, impacto e uma decisão concreta.
+
+---
