@@ -16,4 +16,14 @@ for (const f of ['../index.html', '../tools/page.template.html']) {
   assert.match(html, /id="fresh" aria-live="polite"/, `${f}: frescor live`);
   assert.match(html, /class="ticker" aria-live="off"/, `${f}: ticker não deve ser anunciado`);
 }
+
+// Vazios e contagem anunciados (role=status) e focusErr funcional (tabindex=-1 nos <p class="err">).
+const idx = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+assert.match(idx, /<h2 role="status">\$\{res\.length\?/, 'contagem da busca sem role=status');
+for (const h of ['Nenhum produto com esses filtros', 'Nenhuma pista com', 'Nenhuma oportunidade encontrada', 'Nenhuma pré-venda agora'])
+  assert.ok(idx.includes(`<div class="empty" role="status"><h3>${h}`), `vazio sem role=status: ${h}`);
+assert.ok(!idx.includes('<div class="empty" role="status"><h3>Não achamos esse produto'), 'vazio da busca duplicaria o anúncio do h2');
+const errPs = idx.match(/<p class="err[^"]*"[^>]*>/g) || [];
+assert.ok(errPs.length >= 2, 'parágrafos .err esperados');
+for (const e of errPs) assert.match(e, /tabindex="-1"/, `focusErr não consegue focar: ${e}`);
 console.log('a11y-dynamic-tests: ok');
