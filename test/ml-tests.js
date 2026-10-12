@@ -143,6 +143,19 @@ for (const [n, id] of bad) assert.ok(mlReject(n, id, catalog), 'devia barrar: ' 
 const good = [['Box Treinador Avançado Caos Ascendente Pokémon Tcg Copag', 'me04-etb'], ['Blister Triplo Pokémon TCG Amigos de Jornada com Scraggy – Escarlate e Violeta', 'sv9-blister3'],
   ['Pokémon Celebração de 30 anos – Box Coleção com Fichário', 'c30-colecao_fichario'], ['Treinador Avançado Pokémon Megaevolução Lucário ex', 'me01-etb']];
 for (const [n, id] of good) assert.equal(mlReject(n, id, catalog), null, 'não devia barrar: ' + n);
+// busca de anúncios aberta: kit/lote não vira anúncio, título válido passa
+fs.writeFileSync(path.join(dir, 'ml-auth.enc'), ml.seal({ ...ml.load?.(), access: 'AT-9', refresh: 'RT-9', expiresAt: Date.now() + 36e5 }));
+http.setFetch(async (url) => {
+  const j = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'content-type': 'application/json' } });
+  if (url.includes('/sites/MLB/search')) return j({ results: [
+    { id: 'MLB1', title: `Kit 3 Blister Pokémon ${coll} Copag`, permalink: 'https://produto.mercadolivre.com.br/MLB-1-pokemon-_JM', price: 100, condition: 'new', available_quantity: 2 },
+    { id: 'MLB2', title: `Lote Cartas Pokémon ${coll} Copag`, permalink: 'https://produto.mercadolivre.com.br/MLB-2-pokemon-_JM', price: 50, condition: 'new', available_quantity: 2 },
+    { id: 'MLB3', title: `Pokémon TCG ${coll} Treinador Avançado Copag`, permalink: 'https://produto.mercadolivre.com.br/MLB-3-pokemon-_JM', price: 299.9, condition: 'new', available_quantity: 2 },
+  ] });
+  return j({}, 404);
+});
+{ const R = await search({ id: 'mercadolivre' }, catalog);
+  assert.deepEqual(R.map((l) => l.sku), ['MLB3'], 'kit e lote barrados na busca; anúncio válido fica'); }
 console.log('OK — Mercado Livre');
 
 // Issue #106: limites de tamanho no parsing de HTML/JSON-LD (módulo novo, ainda não ligado ao jsonld.js).
