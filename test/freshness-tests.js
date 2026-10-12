@@ -114,7 +114,7 @@ await t('5. site: oportunidades pausadas (stale_db) na Home e em /oportunidades,
   assert.match(html, /if\(isPause\(d,key\)\)\{Object\.assign\(OPP,\{status:"stale",items:\[\],total:0\}\)/);
   assert.match(html, /HOMEOPP\.status==="stale"\)return`<div class="stage-empty pause">\$\{pauseHTML\(/);
   assert.match(html, /OPP\.status==="stale"\)return`<div class="empty pause">\$\{pauseHTML\(/);
-  assert.match(html, /return`<h3>Oportunidades pausadas<\/h3>/);
+  assert.match(html, /return`<\$\{H\}>Oportunidades pausadas<\/\$\{H\}>/);   // nível do título por página (h2 em /oportunidades, h3 na Home)
 });
 
 // ------------------------------------------------------------------ 4) banco (PostgreSQL descartável)
