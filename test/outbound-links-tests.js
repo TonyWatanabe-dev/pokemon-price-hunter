@@ -166,6 +166,23 @@ t('src/, api/ e as páginas não anexam parâmetros de tracking a URLs', () => {
   for (const a of ALLOW) assert.ok(scan(read(a.file)).some((h) => h.text.includes(a.snippet)), `exceção sem uso: ${a.file} ${a.snippet}`);
 });
 
+t('todo <img> externo (https:// ou src dinâmico) tem referrerpolicy="no-referrer" (segurança T6)', () => {
+  const externo = (tag) => /\ssrc="(?:https?:\/\/|\$\{)/i.test(tag);
+  const ok = (tag) => /\sreferrerpolicy="no-referrer"/.test(tag);
+  // controle positivo do detector
+  assert.ok(externo('<img src="https://icons.duckduckgo.com/x.ico" alt="">') && !ok('<img src="https://x/y.ico">'));
+  assert.ok(externo('<img src="${esc(safeUrl(u.photo))}">') && ok('<img src="${esc(src)}" referrerpolicy="no-referrer">'));
+  assert.ok(!externo('<img src="/logos/colecoes/${esc(file)}">') && !externo('<img src="data:image/webp;base64,AAAA">'));
+  const sem = []; let vistos = 0;
+  for (const f of PAGES) for (const m of read(f).matchAll(/<img\s[^>]*>/gi)) {
+    if (!externo(m[0])) continue;
+    vistos++;
+    if (!ok(m[0])) sem.push(`${f}: ${m[0].slice(0, 120)}`);
+  }
+  assert.ok(vistos >= 4, `<img> externos encontrados: ${vistos} (mudou de forma? atualize o teste)`);
+  assert.deepEqual(sem, [], `<img> externo sem referrerpolicy="no-referrer":\n${sem.join('\n')}`);
+});
+
 console.log(`✓ Links de saída (#116): ${n} grupos passaram (safeUrl real de ${PAGES.length} páginas, rel noopener, sem tracking)`);
 
 await import('./affiliate-links-tests.js');

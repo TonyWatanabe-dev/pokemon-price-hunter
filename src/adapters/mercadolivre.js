@@ -92,6 +92,8 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     dbg.searchApi = true;
     for (const r of j.results || []) {
       if (r.condition && r.condition !== 'new') continue;
+      // Mesmo filtro do catálogo: kit, lote e caixa fechada não são o produto vendido. Sem produto reconhecido, vale só a parte genérica.
+      if (mlReject(r.title || '', matchProduct({ title: r.title || '', url: '' }, catalog).productId || '', catalog)) continue;
       out.set(r.id, {
         title: r.title, url: r.permalink, price: { base: r.price }, listPrice: r.original_price || null,
         stock: r.available_quantity > 0 ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: r.available_quantity > 1 ? r.available_quantity : null,
