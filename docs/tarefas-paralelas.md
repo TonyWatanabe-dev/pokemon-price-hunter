@@ -91,9 +91,29 @@ Antes de chamar uma sessão Claude, o worker executa `node tools/esforco.mjs "$I
 - **Complexa ou crítica/R3:** `opus` + `high` + 80 turnos; assuntos e áreas críticos não são rebaixados.
 - **Escalada por falhas anteriores:** aumenta esforço e, quando aplicável, passa de `sonnet` para `opus`, com limites fechados. `max` nunca é escolhido automaticamente.
 - O CLI escreve valores pré-validados em `GITHUB_OUTPUT`; ambos os caminhos (`executor:github` e Dispatcher) consomem o mesmo resultado. O texto da issue não é inserido em shell nem em `claude_args`.
-- O perfil atua na seleção de modelo/esforço/turnos da sessão. Helpers de telemetria e orçamento ainda não registram custo/tokens nem impõem um limite global neste worker; não assumir que esses controles já estão operacionais.
+- O perfil atua na seleção de modelo/esforço/turnos da sessão. O orçamento global (`budgetGate`) ainda não é aplicado pelo Dispatcher; não assumir que esse controle já está operacional.
 
 Os testes de workflow verificam a ordem: revalidar despacho → marcar/instalar dependências → verificar credencial → selecionar perfil → executar Claude. O worker continua sem permissão para merge ou deploy.
+
+## Telemetria por execução
+
+Ao final de cada execução (sucesso ou falha, exceto quando falta a credencial do Claude), o passo "Resultado na issue" roda `node tools/telemetria.mjs registrar`. O script roda sem `GH_TOKEN` e sem rede. Depois o passo publica um comentário na issue com uma tabela legível e um marcador `<!-- telemetria:execucao v=1 {...} -->`. Esse marcador é lido apenas quando o autor é `github-actions[bot]`.
+
+- **Fonte:** o `execution_file` da Claude Code Action (mensagens do Agent SDK).
+  - Da mensagem `result`: turnos, duração, tokens (entrada, saída, cache de leitura e de criação), `total_cost_usd` e os modelos de `modelUsage`.
+  - Da `system/init`: o modelo da sessão.
+  - Do `tools/esforco.mjs`, saída `perfil`: o perfil solicitado (classe, modelo, esforço, turnos, falhas anteriores e escalada).
+  - Do workflow: status, PR, chave e tentativa.
+- **Sem estimativa:** quando um campo não vem, o registro guarda `null` e a tabela mostra "n/d". Se o `execution_file` não existir, `sessao` fica `null`.
+- **Custo:** é o valor a preço de API que o SDK reporta. Com login por assinatura (`CLAUDE_CODE_OAUTH_TOKEN`), ele não é a cobrança efetiva. Serve para comparar tarefas e acompanhar tendência.
+- **Sanitização:** o registro só tem números e valores de listas ou formatos fechados (modelo `claude-*`, chave `dispatch:N:T`, PR do próprio repositório). Nenhum texto do modelo, da issue ou do log é copiado. O `execution_file` inteiro nunca sai do runner.
+- **Falha da telemetria:** gera só um aviso (`::warning`). Não muda `executor:done`/`executor:failed`.
+- **Resumo:** `node tools/telemetria.mjs resumo [--desde AAAA-MM-DD] [--json]` é somente leitura e usa o `gh`. Mostra:
+  - execuções, entregas com PR, falhas e escaladas;
+  - tokens e custo reportado, com a contagem de execuções sem dado;
+  - custo por PR integrada, somando todas as tentativas da issue (o retrabalho conta). Se alguma execução da PR não tiver custo, essa média fica `n/d`.
+
+Próximo passo: o Dispatcher passa a usar `gastoNaJanela` + `budgetGate` (`src/agents/telemetria.js`, `src/agents/esforco.js`) com um limite configurável para pausar despachos quando o gasto reportado da janela passar do limite.
 
 ## Dispatcher (fila aprovada)
 
