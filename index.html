@@ -1984,7 +1984,7 @@ function paintProdutos(d){
   <header class="opp-head"><h1>${ic("package")}Todos os produtos</h1><p>${d.total} ${d.total===1?"produto":"produtos"} com oferta nas lojas, cada um com o menor preço encontrado e comparado com o preço sugerido da Copag.</p></header>
   <div class="seg" id="seg" data-v="${F.mode}" role="group" aria-label="Objetivo da compra"><span class="thumb" aria-hidden="true"></span><button type="button" data-v="guardar" aria-pressed="${F.mode==="guardar"}">${ic("package")}Para guardar</button><button type="button" data-v="abrir" aria-pressed="${F.mode==="abrir"}">${ic("lightning-f")}Para abrir</button></div>
   ${filtersHTML(d.facets)}
-  ${d.list.length?`<div class="deals">${d.list.map((e)=>dealCard(e,{h:"h2"})).join("")}</div>${d.next?moreSentinel(d.next):""}`:`<div class="empty"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
+  ${d.list.length?`<div class="deals">${d.list.map((e)=>dealCard(e,{h:"h2"})).join("")}</div>${d.next?moreSentinel(d.next):""}`:`<div class="empty" role="status"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
   ${d.noCopagCount?`<details class="more"${d.noCopag?"":` data-semref="1"`}><summary>${ic("caret-down")}Sem preço sugerido conhecido (${d.noCopagCount})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${d.noCopag?d.noCopag.map((e)=>dealCard(e)).join(""):""}</div></details>`:""}
   ${d.refNet?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
   </div>`;
@@ -2080,7 +2080,7 @@ function tipHits(q){
 function renderTips(){
   const t=S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
-  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
+  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty" role="status"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
   ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
 }
 
@@ -2402,8 +2402,8 @@ function refreshProdTools(pid){const fb=document.querySelector(".ptools [data-fa
 function renderGate(){
   const sh=$("#sheet");const a=ACC.gate||{type:"page"};const [title,sub]=GATE[a.type]||GATE.page;const p=a.pid?P[a.pid]:null;
   const fe=ACC.step==="form"&&ACC.err&&ACC.errField?ACC.errField:null;   /* erro de um campo: aparece colado nele */
-  const msgs=`${ACC.ok?`<p class="ok" role="status">${esc(ACC.ok)}</p>`:""}${ACC.err&&!fe?`<p class="err" role="alert">${esc(ACC.err)}</p>`:""}`;
-  const ferr=(k)=>fe===k?`<p class="err field-err" id="a-err" role="alert">${esc(ACC.err)}</p>`:"";
+  const msgs=`${ACC.ok?`<p class="ok" role="status">${esc(ACC.ok)}</p>`:""}${ACC.err&&!fe?`<p class="err" tabindex="-1" role="alert">${esc(ACC.err)}</p>`:""}`;
+  const ferr=(k)=>fe===k?`<p class="err field-err" id="a-err" tabindex="-1" role="alert">${esc(ACC.err)}</p>`:"";
   const inv=(k)=>fe===k?` aria-invalid="true" aria-describedby="a-err"`:"";const fv=(k)=>esc(ACC.form?.[k]||"");
   const ctx=p?`<div class="gate-ctx">${photo(p,bestLive(p.id),"photo gphoto")}<div><b>${esc(p.collectionName)}</b><span>${esc(label(p))}${a.type==="alert"&&a.v?` · alvo ${money(a.v)}`:""}</span></div></div>`:"";
   const terms=`<a href="/termos" target="_blank" rel="noopener">Termos</a> e a <a href="/privacidade" target="_blank" rel="noopener">Privacidade</a>`;
@@ -2891,7 +2891,7 @@ function oppBody(){
   if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h2>Não conseguimos carregar as oportunidades agora</h2><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   if(OPP.status==="stale")return`<div class="empty pause">${pauseHTML(OPP_PAUSE,"data-oppretry","h2")}</div>`;
   if(OPP.status==="nodb")return`<div class="empty"><h2>Oportunidades indisponíveis no momento</h2><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
-  if(!OPP.items.length)return`<div class="empty"><h2>Nenhuma oportunidade encontrada</h2><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
+  if(!OPP.items.length)return`<div class="empty" role="status"><h2>Nenhuma oportunidade encontrada</h2><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
   const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
   return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i,{h:"h2"})).join("")}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
 }
@@ -2996,7 +2996,7 @@ function renderPre(){
   const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].o.total))by[o.productId]={p:P[o.productId],o,n:1};
   const list=Object.values(by);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("calendar-blank")}Pré-vendas</h1><p>Produtos anunciados que ainda não chegaram. Pré-venda não entra no ranking nem nas oportunidades. A data de lançamento aparece quando a loja informa.</p></header>
-  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`:`<div class="empty"><h3>Nenhuma pré-venda agora</h3><p>Quando uma loja abrir pré-venda de produto lacrado em português, ele aparece aqui.</p></div>`}</div>`;
+  ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`:`<div class="empty" role="status"><h3>Nenhuma pré-venda agora</h3><p>Quando uma loja abrir pré-venda de produto lacrado em português, ele aparece aqui.</p></div>`}</div>`;
 }
 
 /* Lote 2: frescor dos preços mostrados. Horário = o da fonte realmente servida (banco: última rodada sincronizada;
