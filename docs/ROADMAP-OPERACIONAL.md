@@ -109,16 +109,17 @@ Prioridades:
 
 ## Próximos passos ordenados
 
-1. **Esforço/custo adaptativos:** auditar o executor para configurar esforço por sessão, roteamento de modelo suportado, orçamento, retries/backoff, fila retomável e métricas de consumo. Validar economia junto com qualidade antes de aumentar workers.\n2. **Fábrica 24/7:** conferir `TAREFAS_MAX`, operadores autorizados, app/secret Claude e runner de firewall; confirmar cron-job.org para Hunter/Vigia e o fluxo de aviso/recuperação. O valor atual da variável e o cron externo não são verificáveis apenas pelo código do repo.
-2. **Planner + Dispatcher + QA Reviewer:** implementar fila de issues pré-aprovadas, seleção por dependência/risco/arquivos, despacho idempotente, quarentena/retry e revisão independente. A action atual continua por label até que o novo dispatcher tenha CI e testes; não relaxar permissões do trigger.
-3. **Release bridge (#221):** revalidar PR/diff/checks, cumprir o gate humano R3 estabelecido, configurar credencial Vercel no ambiente seguro e provar deploy + smoke com um PR elegível. Não confundir merge com publicação.
-4. **Dados e matching:** usar as issues existentes de contratos de coletores (#47/#103/#106), matching (#42/#109/#110), preço/moeda (#79), frescor/histórico (#104/#46/#112/#113), dedupe (#78) e referência Copag (#41). Não duplicar issues.
-5. **Fluxo do site:** busca/detalhe/comparação (#43), estados vazios/loading/erro (#83), acessibilidade/mobile (#82/#98), erros seguros (#100/#115), diretório de lojas (#55) e links/tracking (#116).
-6. **Frete (#195/#84):** resolver conflitos e validar cotações reais da VTEX; manter flag desligada até smoke/rollout e autorização. Ampliar para outras plataformas somente via contratos reais de cada loja.
-7. **Retenção e alertas:** favoritos/contas (#49/#86), quedas/restocks reais (#45), opt-in/dedupe/preferências (#85); provar isolamento entre usuários e entrega idempotente.
-8. **Opportunity Engine e monetização:** score explicável (#44), histórico/fonte oficial, links Meli/Amazon e disclosure. A #186 exige decisão de negócio; #20 permanece bloqueada sem autorização específica de migration e plano de rollback.
-9. **Ativar especialistas por dependência:** Catalog → Marketplace Health → Price Intelligence → Shipping Verification → Alert → Affiliate. UX Research, UI & Design System, SEO & Content, Social Media, Growth & CRO e Brand & Creative continuam futuros até produto/analytics/brand readiness e aprovação.
-10. **Hardening + estabilidade:** segurança/dependências/SSRF (#94/#105), API/paginação/performance (#80/#81/#114), backup/restore/runbook (#87/#108/#118), painel de saúde (#92), SEO (#96) e E2E. Exigir sete dias de observação 24/7 com coleta, sync, fila, CI, deploy e recuperação verificados antes de declarar conclusão.
+1. **Esforço/custo adaptativos:** auditar o executor para configurar esforço por sessão, roteamento de modelo suportado, orçamento, retries/backoff, fila retomável e métricas de consumo. Validar economia junto com qualidade antes de aumentar workers.
+2. **Fábrica 24/7:** conferir `TAREFAS_MAX`, operadores autorizados, app/secret Claude e runner de firewall; confirmar cron-job.org para Hunter/Vigia e o fluxo de aviso/recuperação. O valor atual da variável e o cron externo não são verificáveis apenas pelo código do repo.
+3. **Planner + Dispatcher + QA Reviewer:** implementar fila de issues pré-aprovadas, seleção por dependência/risco/arquivos, despacho idempotente, quarentena/retry e revisão independente. A action atual continua por label até que o novo dispatcher tenha CI e testes; não relaxar permissões do trigger.
+4. **Release bridge (#221):** revalidar PR/diff/checks, cumprir o gate humano R3 estabelecido, configurar credencial Vercel no ambiente seguro e provar deploy + smoke com um PR elegível. Não confundir merge com publicação.
+5. **Dados e matching:** usar as issues existentes de contratos de coletores (#47/#103/#106), matching (#42/#109/#110), preço/moeda (#79), frescor/histórico (#104/#46/#112/#113), dedupe (#78) e referência Copag (#41). Não duplicar issues.
+6. **Fluxo do site:** busca/detalhe/comparação (#43), estados vazios/loading/erro (#83), acessibilidade/mobile (#82/#98), erros seguros (#100/#115), diretório de lojas (#55) e links/tracking (#116).
+7. **Frete (#195/#84):** resolver conflitos e validar cotações reais da VTEX; manter flag desligada até smoke/rollout e autorização. Ampliar para outras plataformas somente via contratos reais de cada loja.
+8. **Retenção e alertas:** favoritos/contas (#49/#86), quedas/restocks reais (#45), opt-in/dedupe/preferências (#85); provar isolamento entre usuários e entrega idempotente.
+9. **Opportunity Engine e monetização:** score explicável (#44), histórico/fonte oficial, links Meli/Amazon e disclosure. A #186 exige decisão de negócio; #20 permanece bloqueada sem autorização específica de migration e plano de rollback.
+10. **Ativar especialistas por dependência:** Catalog → Marketplace Health → Price Intelligence → Shipping Verification → Alert → Affiliate. UX Research, UI & Design System, SEO & Content, Social Media, Growth & CRO e Brand & Creative continuam futuros até produto/analytics/brand readiness e aprovação.
+11. **Hardening + estabilidade:** segurança/dependências/SSRF (#94/#105), API/paginação/performance (#80/#81/#114), backup/restore/runbook (#87/#108/#118), painel de saúde (#92), SEO (#96) e E2E. Exigir sete dias de observação 24/7 com coleta, sync, fila, CI, deploy e recuperação verificados antes de declarar conclusão.
 
 ## Evidências recentes registradas
 
