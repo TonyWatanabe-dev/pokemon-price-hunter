@@ -7,6 +7,7 @@ import { isRestock, availableFromOf } from './availability.js';
 import { shipping as vtexShipping } from './adapters/vtex.js';
 import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 import { validateListing } from './adapters/contract.js';
+import { loadHandoff } from './discovery/handoff.js';
 
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
@@ -130,6 +131,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       stores.push({ id: host.replace(/[^a-z0-9]/gi, '').toLowerCase(), name: host, url: u.origin, platform: 'auto', kind: 'specialist', evidence: {}, fromList: true });
     }
   } catch { /* sem lojas.txt */ }
+  const handoff = loadHandoff(stores); // URLs achadas pela descoberta (data/discovery-urls.json) entram em store.productUrls
   const watch = readJson(configPath('watchlist.json'), { settings: {}, rules: [] });
   // Alertas criados pelo site: um arquivo .json por alerta em config/alertas/
   try {
@@ -208,6 +210,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         store = { ...store, plannedUrls: planned };
       }
       const raw = await adapters[platform].search(store, catalog);
+      handoff.seen(store.id, raw); // URL descoberta que virou anúncio sai da fila; as outras têm até 3 tentativas
       const failedUrls = new Set(raw.failed || []);
       // Contrato comum do anúncio (#47): anúncio fora do contrato não vira oferta. Conta o motivo por loja e segue com os
       // outros (um anúncio ruim não derruba a loja). Se a oferta já existia, fica como leitura que falhou (staleCopy:
@@ -494,6 +497,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('lowest.json'), lowest);
   writeJson(dataPath('copag-msrp.json'), copagSeen);
   writeJson(dataPath('url-cache.json'), urlCache);
+  handoff.save();
   writeJson(dataPath('products.json'), registry);
   // Poda: entrada sem pendente e mais velha que SENT_MAX_AGE_DAYS sai (o arquivo não cresce sem limite).
   writeJson(dataPath('alerts-sent.json'), pruneSent(sent, now));

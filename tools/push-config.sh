@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Publica no main as mudanças que o robô fez em config/ (extraído da #17). Uso: bash tools/push-config.sh [remoto] [ramo]
 #
-# Quem escreve em config/ no robô: src/discover.js (lojas novas em config/stores.json) e src/copag-check.js
-# (config/catalog.json → copag.<id>.last_check), ambos só no gatilho diário. As duas escritas são refeitas a partir
+# Quem escreve em config/ no robô: src/discovery/ (lojas novas em config/lojas/descobertas.txt; ou src/discover.js em
+# config/stores.json com HUNTER_DISCOVERY=0) e src/copag-check.js (config/catalog.json → copag.<id>.last_check), só no gatilho diário. As duas escritas são refeitas a partir
 # do zero na rodada diária seguinte, lendo o config/ que estiver no main naquele momento.
 #
 # Antes: `git pull --rebase -X theirs` — num conflito, a versão do robô vencia em silêncio e podia

@@ -149,6 +149,8 @@ Funções:
 
 ### 3.2 Marketplace Agent — futuro
 
+**Status (12/10/2026):** o agente em si continua futuro. A parte determinística de descoberta de fontes existe como **Discovery Intelligence Engine v0** (`src/discovery/`, `docs/discovery-engine.md`): conectores de busca intercambiáveis (Brave real; Bing/Serper atrás de chave, indisponíveis sem ela), consultas geradas do catálogo, ledger com seleção heurística (sem IA) e hand-off de lojas/URLs ao coletor. Ligado no passo diário do `hunter.yml` (desliga com `HUNTER_DISCOVERY=0`). Sem validação ao vivo neste repositório: só testes offline.
+
 **Missão:** diagnosticar cobertura e qualidade dos coletores, não substituir crawlers.
 
 Funções:

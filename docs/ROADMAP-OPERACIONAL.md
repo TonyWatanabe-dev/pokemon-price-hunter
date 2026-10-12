@@ -279,6 +279,14 @@ Prioridades:
 10. **Ativar especialistas por dependência:** Catalog → Marketplace Health → Price Intelligence → Shipping Verification → Alert → Affiliate. UX Research, UI & Design System, SEO & Content, Social Media, Growth & CRO e Brand & Creative continuam futuros até produto/analytics/brand readiness e aprovação.
 11. **Hardening + estabilidade:** segurança/dependências/SSRF (#94/#105), API/paginação/performance (#80/#81/#114), backup/restore/runbook (#87/#108/#118), painel de saúde (#92), SEO (#96) e E2E. Exigir sete dias de observação 24/7 com coleta, sync, fila, CI, deploy e recuperação verificados antes de declarar conclusão.
 
+## Discovery Intelligence Engine v0 — 12/10/2026 (branch `discovery-engine`, PR a abrir)
+
+- Entregue em código (não validado ao vivo): `src/discovery/` (conectores brave/bing/serper, `queries.js`, `ledger.js`, `hosts.js`, `pipeline.js`, `handoff.js`, `index.js`, `cli.js`), `npm run discovery`, `npm run discovery:relatorio` (`tools/discovery-relatorio.mjs`), `test/discovery-tests.js` (offline), `docs/discovery-engine.md`.
+- `hunter.yml`: passo diário usa `npm run discovery` (ou o `discover.js` legado com a variável `HUNTER_DISCOVERY=0`); entrada `discovery` no `workflow_dispatch` força uma rodada; secrets `BING_SEARCH_KEY`/`SERPER_API_KEY` opcionais (ausentes = conector indisponível, nada simulado).
+- `src/run.js`: 4 linhas de hand-off (`data/discovery-urls.json` → `store.productUrls`, consumo após anúncio, 3 tentativas).
+- Escritas do motor: `config/lojas/descobertas.txt` (linha ativa = loja aceita; `# candidata` = conferir), `data/discovery-urls.json`, `data/discovery.json` (ledger), `data/meta.json.discovery`.
+- Pendente de evidência: primeira rodada real com `BRAVE_API_KEY` no Actions, relatório baseline × combinado após alguns dias, ajuste dos pesos da heurística pelas métricas. Bing e Serper nunca foram exercitados contra o serviço real.
+
 ## Evidências recentes registradas
 
 - 11/10 à noite: primeira execução do executor Claude Code Actions concluída ponta a ponta; run #38189573700 success; smoke issue #225; PR #228 mergeada após CI #38189888732 success; merge commit `eb6554a1b84a88ffe0e45cbfb647518748e51e5e`.
