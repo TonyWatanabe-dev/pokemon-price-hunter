@@ -73,7 +73,7 @@ await t('6. secrets mínimos: só o token do Claude; banco descartável; nada de
   assert.deepEqual(secrets, ['CLAUDE_CODE_OAUTH_TOKEN']);
   assert.doesNotMatch(code, /DATABASE_URL:\s*\$\{\{|VERCEL|PG_CA_CERT/);
   assert.match(code, /TEST_DATABASE_URL: postgres:\/\/postgres:pw@localhost:5432\/postgres/, 'só o banco descartável do job');
-  assert.doesNotMatch(code, /show_full_output:\s*true|allowed_non_write_users|allowed_bots/);
+  assert.doesNotMatch(code, /show_full_output:\s*true|allowed_non_write_users/);
 });
 
 await t('7. ferramentas restritas: sem Bash livre, push forçado ou merge', () => {
@@ -218,6 +218,19 @@ await t('15. Dispatcher: só planeja por padrão; despacho real só com DISPATCH
   assert.match(desp, /node tools\/dispatcher\.mjs --executar/);
   assert.doesNotMatch(d, /secrets\.|contents: write|npm ci|npm install/, 'sem secrets, sem escrita no repo, sem dependências instaladas');
   for (const src of [plano, desp]) assert.match(src, /persist-credentials: false/);
+});
+
+
+await t('16. exceção de bot é restrita ao despacho validado: sem wildcard e ausente no gatilho por issue', () => {
+  const claudes = stepsOf(job('tarefa')).filter((x) => x.name === 'anthropics/claude-code-action');
+  assert.equal(claudes.length, 2, 'há exatamente um passo Claude por caminho');
+  const [label, dispatch] = claudes;
+  assert.match(label.src, /if: github\\.event_name == 'issues'/);
+  assert.doesNotMatch(label.src, /allowed_bots\\s*:/, 'caminho por label não permite bot');
+  assert.match(dispatch.src, /if: github\\.event_name == 'workflow_dispatch'/);
+  assert.match(dispatch.src, /allowed_bots:\\s*github-actions\\b/, 'só o bot do Dispatcher é permitido');
+  assert.doesNotMatch(dispatch.src, /allowed_bots:\\s*['"]?\\*/, 'wildcard proibido');
+  assert.equal([...code.matchAll(/allowed_bots\\s*:/g)].length, 1, 'exceção existe uma única vez');
 });
 
 console.log(`✓ Tarefas paralelas (workflow): ${n} grupos de testes passaram`);
