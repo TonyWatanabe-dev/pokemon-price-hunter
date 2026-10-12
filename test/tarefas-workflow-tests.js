@@ -82,7 +82,8 @@ await t('7. ferramentas restritas: sem Bash livre, push forçado ou merge', () =
   for (const tool of lists.flat()) assert.match(tool, /^(Bash\((npm test|npm ci|node test\/\*|git status|git diff:\*|git log:\*|gh issue view:\*|gh pr create:\*|gh pr list:\*)\)|mcp__github_file_ops__(commit_files|delete_files))$/, tool);
   assert.doesNotMatch(code, /Bash\(\*\)|Bash\(git push|gh pr merge|--dangerously/);
   assert.match(code, /include_comments_by_actor: \$\{\{ vars\.TAREFAS_OPERADORES \|\| github\.repository_owner \}\}/);
-  assert.match(code, /--max-turns \d+/);
+  assert.equal((code.match(/\$\{\{ steps\.esforco\.outputs\.args \}\}/g) || []).length, 2, 'perfil dinâmico em ambos os caminhos');
+  assert.doesNotMatch(code, /--max-turns 80/, 'não há limite hardcoded no workflow');
 });
 
 await t('8. instruções fixas: seguir CLAUDE.md; sem deploy/produção/workflows; testar e abrir PR', () => {
@@ -140,7 +141,7 @@ export function tokenScopeViolations(workflowCode) {
   if (TOKEN_RE.test(top)) bad.push('token no env/topo do workflow');
   const jobEnv = (tarefa.split(/\n    steps:\n/)[0].match(/\n    env:\n((?: {6}.+\n?)+)/) || [, ''])[1];
   if (TOKEN_RE.test(jobEnv)) bad.push('token no env do job tarefa (vaza para todos os passos)');
-  const ALLOWED = new Set(['Validar despacho', 'Marcar em execução', 'Resultado na issue']);
+  const ALLOWED = new Set(['Validar despacho', 'Marcar em execução', 'Selecionar esforço', 'Resultado na issue']);
   for (const st of stepsOf(tarefa)) {
     if (!TOKEN_RE.test(st.src)) continue;
     if (!ALLOWED.has(st.name)) bad.push(`token no passo "${st.name}"`);
@@ -155,13 +156,13 @@ await t('12. token do workflow só nos passos de shell que usam gh; nunca no npm
   assert.deepEqual(tokenScopeViolations(code), []);
   const tarefa = job('tarefa'); const steps = stepsOf(tarefa);
   const names = steps.map((x) => x.name);
-  for (const n of ['Marcar em execução', 'actions/checkout', 'actions/setup-node', 'npm ci --no-audit --no-fund', 'Validar credencial Claude', 'anthropics/claude-code-action', 'Resultado na issue'])
+  for (const n of ['Marcar em execução', 'actions/checkout', 'actions/setup-node', 'npm ci --no-audit --no-fund', 'Validar credencial Claude', 'Selecionar esforço', 'anthropics/claude-code-action', 'Resultado na issue'])
     assert.ok(names.includes(n), `passo ${n} (achados: ${names.join(' | ')})`);
   const claudes = steps.filter((x) => x.name === 'anthropics/claude-code-action');
   assert.equal(claudes.length, 2, 'passo do Claude no caminho do label e no do despacho');
   for (const c of claudes) assert.doesNotMatch(c.src, TOKEN_RE, 'nenhum passo do Claude recebe o token do workflow');
   assert.doesNotMatch(steps.find((x) => x.name.startsWith('npm ci')).src, TOKEN_RE);
-  assert.equal((code.match(/github\.token/g) || []).length, 3, 'só os três passos que usam gh');
+  assert.equal((code.match(/github\.token/g) || []).length, 4, 'só os quatro passos que usam gh');
   // os passos que usam gh continuam com o token (labels, comentário e consulta da PR)
   for (const n of ['Marcar em execução', 'Resultado na issue']) assert.match(steps.find((x) => x.name === n).src, /gh api/);
 });
@@ -188,6 +189,13 @@ await t('14. despacho: valida antes de qualquer efeito, sem efeito quando recusa
   assert.match(val, /if: github\.event_name == 'workflow_dispatch'/);
   assert.match(val, /run: node tools\/validar-despacho\.mjs "\$ISSUE" "\$CHAVE"/, 'entradas só via env, nunca interpoladas no shell');
   assert.match(val, /CHAVE: \$\{\{ inputs\.chave \}\}/);
+  const credIndex = names.indexOf('Validar credencial Claude');
+  const effortIndex = names.indexOf('Selecionar esforço');
+  const claudeIndices = names.map((x, i) => x === 'anthropics/claude-code-action' ? i : -1).filter((i) => i >= 0);
+  assert.ok(effortIndex > credIndex && claudeIndices.every((i) => effortIndex < i), 'seleciona o perfil depois do preflight e antes das duas sessões');
+  const effort = steps[effortIndex];
+  assert.match(effort.src, /GH_TOKEN: \$\{\{ github\.token \}\}/, 'token só no passo leitor');
+  assert.match(effort.src, /node tools\/esforco\.mjs "\$ISSUE"/, 'issue via env, sem interpolação na linha de comando');
   assert.doesNotMatch(code, /run:[^\n]*\$\{\{ inputs\./, 'nenhuma entrada do dispatch interpolada direto em run');
   const res = steps.find((x) => x.name === 'Resultado na issue').src;
   assert.match(res, /if: always\(\) && steps\.despacho\.outcome != 'failure'/, 'despacho recusado não mexe na issue');
