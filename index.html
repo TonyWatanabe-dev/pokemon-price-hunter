@@ -1442,11 +1442,13 @@ addEventListener("popstate",()=>{
 function toast(msg,warn){const t=$("#toast"),now=Date.now();if(!warn&&toast.until>now){clearTimeout(toast.q);toast.q=setTimeout(()=>toast(msg),toast.until-now);return}const d=warn?5200:2400;t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.until=warn?now+d:0;toast.t=setTimeout(()=>t.classList.remove("show"),d)}
 
 function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${esc(o.quantity)} em estoque`:esc(l)}</span>`}
-function photo(p,o,cls="photo"){
+function photo(p,o,cls="photo",eager=false){
   const src=String(o?.image||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
   const fb=`<div class="${cls} fallback" style="--ec:${gg.c}" aria-hidden="true">${ic(gg.icon)}</div>`;
   if(!src)return fb;
-  return`<div class="${cls}"><img src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.photo').outerHTML=this.closest('.photo').dataset.fb" ></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
+  /* width/height na proporção do CSS (.cat-media 4/3; .photo 1/1) evitam salto de layout; lazy em tudo menos no pódio (eager). alt descritivo: coleção · formato. */
+  const r43=eager||/deal-ph/.test(cls);const alt=[p?.collectionName,p?.typeLabel?label(p):""].filter(Boolean).join(" · ");
+  return`<div class="${cls}"><img src="${esc(src)}" alt="${esc(alt)}" width="${r43?800:600}" height="600" loading="${eager?"eager":"lazy"}"${eager?' fetchpriority="high"':""} decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.photo').outerHTML=this.closest('.photo').dataset.fb" ></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
 }
 const live=(o)=>o.stock==="IN_STOCK"&&!o.stale&&!o.anomalous&&o.total>0;
 /* Quem vende: em marketplace (Ri Happy, PBKIDS...) o preço é do vendedor parceiro, não da loja. Nunca atribuir à loja o preço de outro. */
@@ -1753,7 +1755,7 @@ function podCardOpp(x,r){
   return`<article class="pod"${ol?" data-old":""} data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
     ${hl?`<span class="pod-rank"><i aria-hidden="true"></i>${hl}</span>`:""}
     <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(oppTotal(x))} em ${esc(st.name||"")}"></a>
-    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
+    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo",true)}${catChip(p)}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
     <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
