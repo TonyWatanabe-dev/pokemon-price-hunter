@@ -190,5 +190,36 @@ Prioridades:
 - Executor privado: `master` `5de582bf67312c2e43f30b84d689a79448cebfb8` (última SHA confirmada na auditoria do executor; conferir novamente antes de agir).
 - PRs/Issues vinculadas: [#31](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/31), [#30](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/30), [#33](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/33), [#195](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/195), [#186](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/186), [#20](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/20).
 
+
+## Atualização operacional — autonomia dos agentes (12/10/2026, revisão mais recente)
+
+> Esta seção prevalece sobre notas anteriores deste arquivo que descrevam o ciclo Planner/Dispatcher/worker/revisor como ainda não comprovado. As evidências históricas permanecem preservadas para auditoria.
+
+### Estado do ciclo de desenvolvimento autônomo
+
+- **Comprovado em runtime:** Vigia → Dispatcher → worker Claude Code → PR do agente → revisão independente qa-review → classificação pelo Release Governor. O canário #257 gerou a PR #258, com commit verificado e CI verde; qa-review aprovou a mesma SHA e a PR foi integrada.
+- **Correções integradas reportadas:** #250 (gatilho do Dispatcher após o Vigia), #252 (ator github-actions restrito ao despacho), #256 (lease/quarentena considera a tentativa atual), #260 (Governor exige qa-review aprovado na mesma SHA) e #261 (revisor aceita PRs de agentes sem abrir a allowlist de forma ampla). #243/#244/#246 também integram partes do Dispatcher, QA e classificação de esforço.
+- **Esforço adaptativo:** classificador integrado; ligação ao worker reportada como concluída/destravada. Isso não equivale a telemetria real de tokens/custos, que continua sendo a próxima tarefa técnica.
+- **Limpeza reportada:** #254 e #259 foram fechadas sem merge por redundância; #247 foi concluída com o canário #257/#258. Revalidar no GitHub antes de usar estes itens para decisões futuras.
+- **Conclusão:** a cadeia funcional foi demonstrada, mas isso ainda não prova operação 24/7 sustentada nem autonomia completa de release/deploy.
+
+### Lacunas para a fábrica 24/7
+
+1. **Telemetria real por execução (próxima tarefa técnica):** instrumentar modelo/esforço efetivamente usados, tokens de entrada/saída/cache e custo apenas quando disponibilizados pelo runtime/provedor; duração, tentativas, resultado, escaladas e custo por tarefa/PR aprovada. Não estimar nem inventar valores. Incluir logs sanitizados e testes.
+2. **Rotina recorrente:** ativar a rotina horária pelo mecanismo de agendamento disponível e validar execuções consecutivas, idempotência, ausência de duplicação e aviso de incidentes. O arquivo rotina-horaria-prompt.md contém o roteiro; a rotina não deve ser declarada ativa sem confirmação de execução real.
+3. **Concorrência:** confirmar TAREFAS_MAX nas Actions Variables. O workflow suporta até 10, mas o padrão no YAML é 3; não anunciar 10 workers ativos sem comprovar o valor configurado e a estabilidade.
+4. **Release Governor / bridge #221:** continua bloqueada por gate humano R3. A ponte não deve ser considerada operacional para deploy até concluir a revisão/decisão de auditoria, configurar VERCEL_TOKEN com segurança e comprovar deploy real + smoke pós-deploy de um SHA elegível.
+5. **Auditoria de release:** a decisão do sink ainda depende do proprietário. A recomendação documentada é começar com comentários append-only no GitHub (opção C); isso é recomendação, não decisão aprovada.
+6. **Proteção da main:** confirmar nos Settings os checks obrigatórios e manter PR, test, regression, golden e revisão independente. Não contornar branch protection nem converter qa-review em aprovação humana.
+7. **Burn-in operacional:** reunir evidências por sete dias de scheduler, coleta/frescor, sincronização, fila, CI, releases, smoke e recuperação antes de declarar a fábrica 24/7 concluída.
+
+### Decisões e limites
+
+- A issue [#231 — decisões pendentes do proprietário](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/231) continua sendo o registro único de decisões humanas: sink de auditoria, credencial Vercel segura, configuração de proteção/checks e ativação de rotina.
+- O executor de tarefas continua responsável por branch + PR; merge/deploy só pela ponte e pelo Governor, com permissões próprias e evidência. R3 e R-STOP continuam bloqueados até a decisão/autorização exigida.
+- Não alterar nem ativar automaticamente SHIPPING_CALC_ENABLED; #195 permanece dependente de cotação real e autorização. #186 continua dependendo da decisão comercial Copag; #20 permanece explicitamente **NÃO INTEGRAR** sem autorização específica.
+- Enquanto existir bloqueio humano de release, continuar em paralelo as tarefas R0–R2 pré-aprovadas e independentes. Notificar o usuário apenas por marco material, incidente crítico ou decisão real, não por cada PR.
+- Critério de sucesso: cadeia autônoma comprovada + rotina recorrente real + métricas observáveis + governança de release validada + sete dias de estabilidade. Uma execução canário bem-sucedida não substitui esses critérios.
+
 ---
 *Este roadmap é um resumo operacional versionado. Atualizar data/hora e evidências em cada revisão; nunca substituir validação de CI/runtime/produção por texto de status.*
