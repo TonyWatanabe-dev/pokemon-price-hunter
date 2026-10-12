@@ -142,7 +142,7 @@ As fases avançam por **critérios de saída**, não por calendário artificial.
 > - **Backoff:** comprovado.
 > - **Retomada depois de quarentena:** depende da #256.
 > - **Esforço adaptativo:** etapa 1 na `main` (#246); a ligação ao worker está na #248, aberta.
-> - **Gate R0–R3 com revisão independente:** #259 e #260 abertas. Até elas entrarem, o Governor não exige `qa-review` e o revisor não revisa PRs do worker.
+> - **Gate R0–R3 com revisão independente:** o revisor de PRs do worker foi comprovado (#261, PR #258). A exigência de `qa-review` pelo Governor está na #260, aberta.
 > - **Fase 0 continua aberta.**
 
 Trabalho:

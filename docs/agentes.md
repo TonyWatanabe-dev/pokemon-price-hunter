@@ -162,9 +162,9 @@ Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confian
 ## Correções de governança encontradas na validação em runtime (12/10/2026)
 
 - **Revisão independente obrigatória (#260):** o Release Governor passa a exigir `qa-review` com sucesso **no mesmo SHA** para qualquer merge. Na `main` atual, ele autorizava R0 com o revisor reprovado (PR #258).
-- **Revisor cobre PRs do worker (#259):** `allowed_bots: claude` só no `revisor.yml`, sem wildcard. Sem isso, toda PR aberta pelo worker reprova o `qa-review` sem ser revisada.
+- **Revisor cobre PRs do worker (#261, integrada; a #259 ficou redundante):** `allowed_bots: claude` só no `revisor.yml`, sem wildcard. Sem isso, toda PR aberta pelo worker reprova o `qa-review` sem ser revisada.
 - **Quarentena e lease do Dispatcher (#256):**
   - uma tentativa só é considerada concluída por um evento `executor:failed`/`done` **posterior** ao seu despacho;
   - só um **operador**, ao remover `executor:quarentena`, concede novas tentativas, e a numeração das chaves continua.
-- **Estado de integração:** as três correções são R3 e aguardam aprovação humana. Nada aqui está ativo antes do merge.
+- **Estado de integração:** a #261 está na `main`, e a revisão de PR do worker foi comprovada na #258. A #256 e a #260 são R3 e aguardam aprovação humana; não estão ativas antes do merge.
 

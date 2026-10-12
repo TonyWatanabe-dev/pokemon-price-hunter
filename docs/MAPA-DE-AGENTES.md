@@ -120,10 +120,10 @@ Fluxo de alto nível:
 - **Entrega:** só branch e PR, com commits assinados pelo app.
 - **Status:** a execução pelo caminho do despacho e a PR #258 foram comprovadas (worker `38229495517`). O perfil de esforço ainda não está ligado (#248 aberta).
 
-### 2.10 QA/PR Reviewer (`qa-review`) — implementado; não cobre PRs do worker até a #259
+### 2.10 QA/PR Reviewer (`qa-review`) — implementado; revisão de PR do worker comprovada
 - **Código:** `.github/workflows/revisor.yml`.
 - **Funcionamento:** sessão separada do Claude, só leitura e comentário, veredito estruturado fail-closed. Não aprova pela API de review e não faz merge.
-- **Status:** revisões reais aprovadas nas PRs #244, #250, #252, #254, #256 e #259. Recusou o ator `claude` na #258; correção na #259.
+- **Status:** revisões reais aprovadas nas PRs #244, #250, #252, #254, #256 e #259. Na #258, recusou o ator `claude`; depois da #261 (integrada), revisou a #258 e aprovou sem bloqueantes.
 
 ### 2.11 Release Governor — política implementada; Ponte de execução ainda não integrada
 - **Código:** `src/agents/release-governor.js` e `release-governor-audit.js`.

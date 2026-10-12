@@ -58,7 +58,7 @@ Esta seção responde às "Próximas verificações obrigatórias" acima. Evidê
 | Job `despacho` real e backoff | ✅ **comprovado** | #247 tentativa 1 às 08:29:02; tentativa 2 só às 09:06:38, depois dos 30 min. Chave `dispatch:247:2`, sem repetição. |
 | Worker pelo caminho `workflow_dispatch`, Claude Code Action sem recusa de ator (#252) | ✅ **comprovado** | Issue #257 → worker [38229495517](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38229495517): `Validar despacho` ✅, `claude_despacho` ✅, issue marcada `executor:done`. |
 | PR criada pelo agente | ✅ **comprovado** | PR **#258** aberta pelo `claude[bot]` na branch `tarefa/issue-257-t1`, commit com assinatura verificada, só o arquivo pedido, com `Closes #257`. CI `test`/`regression`/`golden` ✅. |
-| Revisão independente da PR do agente | ❌ **falhou** | O `qa-review` da #258 foi recusado pela action ("non-human actor: claude"). O veredito falhou fechado. Correção: **#259**. |
+| Revisão independente da PR do agente | ✅ **comprovado depois da correção** | Primeiro `qa-review` da #258 recusado pela action ("non-human actor: claude"), com veredito fail-closed. Corrigido pela **#261** (integrada; a #259 ficou redundante). Depois de atualizar a branch da #258, o `qa-review` revisou a PR e **aprovou sem bloqueantes** (09:50 UTC). |
 | Governor sobre a PR do agente | ⚠️ **defeito** | A `main` dava `R0 · autonomous` para a #258 com `qa-review` ❌. Correção: **#260** (exige `qa-review` no mesmo SHA). |
 | #247 | ⚠️ **quarentena indevida** | O ciclo das 09:07:23 viu a tentativa 2 (em curso) como concluída, por causa do label `executor:failed` da tentativa 1, e aplicou quarentena. O worker recusou a tentativa 2. Correção: **#256** (lease pela tentativa atual; reinício só por operador). O label **não** foi removido manualmente. |
 | #255 | ℹ️ **sem defeito** | Tarefa de relatório pelo caminho de label: o Claude terminou com sucesso sem PR, e o worker marcou `executor:failed` por desenho (só conta como entregue com PR). |
@@ -69,13 +69,13 @@ Esta seção responde às "Próximas verificações obrigatórias" acima. Evidê
 - **Regressão da #256:** o teste reproduz o incidente com os horários reais e falha na `main` anterior.
 
 **Pendências com causa concreta:**
-- Merges R3 (aprovação humana obrigatória): #256, #259, #260, #254 (ou esta PR, que a inclui), #248 e #221.
+- Merges R3 (aprovação humana obrigatória): #256, #260, #254 (ou esta PR, que a inclui), #248 e #221. A #259 é redundante com a #261.
 - **#247:** só um operador pode tirar `executor:quarentena`. Depois da #256, isso abre uma nova tentativa (`dispatch:247:3`).
 - **Proteção da `main`:** tornar `qa-review` check obrigatório. A aprovação humana obrigatória impede merge autônomo, inclusive R0 (#231, item 8).
 - **Ponte (#221):** o sink de auditoria e o `VERCEL_TOKEN` não estão definidos. Merge e deploy governados continuam inoperantes.
 - **Rotina agendada do Claude Code:** não criada.
 
-**Próxima prioridade objetiva:** com a #259 e a #260 integradas, comprovar `qa-review` ✅ numa PR do worker e a decisão do Governor pela política nova. Depois, a Ponte (#221), após a decisão do sink de auditoria.
+**Próxima prioridade objetiva:** integrar a #260 e a #256. A #258 já tem os 4 checks ✅ e o Governor, pela política da #260, dá `R0 · autonomous`, mas o merge depende da aprovação obrigatória e da Ponte (#221). Depois, a Ponte (#221), após a decisão do sink de auditoria.
 
 ## Estado executivo
 
