@@ -162,7 +162,8 @@ const quiet = () => {};
   assert.ok(!fs.existsSync(dat('discovery.json')) && !fs.existsSync(cfg('lojas/descobertas.txt')));
   assert.equal(enabled({ HUNTER_DISCOVERY: '0' }), false); assert.equal(enabled({}), true);
   const n = await runDiscovery({ log: quiet, env: {} });
-  assert.deepEqual([n.ok, n.skipped], [true, 'sem conector']); assert.equal(requested.length, 0); assert.ok(!fs.existsSync(dat('discovery.json')));
+  assert.deepEqual([n.ok, n.skipped], [true, 'sem conector']); assert.equal(requested.length, 0);
+  const lg = JSON.parse(fs.readFileSync(dat('discovery.json'), 'utf8')); const last = lg.runs.at(-1); assert.equal(last.skipped, 'sem conector'); assert.ok(last.connectors.brave && last.connectors.brave.available === false, 'ledger registra por que pulou, sem valores de segredo'); assert.ok(!JSON.stringify(lg).includes('"k"'), 'sem valor de chave no ledger');
 }
 
 // 6. Rodada completa com o Brave simulado: classificação, descobertas.txt, discovery-urls.json, ledger, meta.json.
@@ -186,8 +187,8 @@ const quiet = () => {};
   assert.equal(led.hosts['gringa.test'].verdict, 'rejected'); assert.equal(led.hosts['gringa.test'].reason, 'sem sinal de loja brasileira');
   assert.equal(led.hosts['fechada.test'].reason, 'robots.txt proíbe'); assert.equal(led.hosts['meio.test'].verdict, 'candidate');
   assert.ok(led.hosts['morta.test'] && !led.hosts['morta.test'].verdict, 'removida fica só anotada no ledger');
-  assert.equal(led.runs.length, 1); assert.equal(led.runs[0].storesAccepted, 1); assert.equal(led.runs[0].urlsAccepted, 1); assert.equal(led.runs[0].cost.queries, 5);
-  assert.deepEqual(led.runs[0].baseline, { knownHosts: 3, offers: 1, liveOffers: 1, productsWithOffers: 1 });
+  assert.equal(led.runs.length, 2, "a rodada pulada (sem conector) também fica registrada"); assert.equal(led.runs[1].storesAccepted, 1); assert.equal(led.runs[1].urlsAccepted, 1); assert.equal(led.runs[1].cost.queries, 5);
+  assert.deepEqual(led.runs[1].baseline, { knownHosts: 3, offers: 1, liveOffers: 1, productsWithOffers: 1 });
   assert.equal(led.connectors.brave.calls, 5);
   const caos = Object.values(led.queries).find((q) => q.acceptedStores === 1); assert.ok(caos && /lacrado|caos/i.test(caos.q) && caos.acceptedUrls === 1 && caos.lastNewAt);
   assert.equal(rd(dat('meta.json')).discovery.last.storesAccepted, 1);
