@@ -177,9 +177,9 @@ await t('quarentena aplica label e comentário sanitizado, sem disparo', async (
 await t('contrato workflow_dispatch do worker: YAML real aceito; sem inputs/issue falha fechado', () => {
   const worker = fs.readFileSync(path.join(root, '.github/workflows/tarefas.yml'), 'utf8');
   assert.equal(workerAcceptsDispatchYaml(worker), true, 'tarefas.yml real precisa declarar issue');
-  assert.equal(workerAcceptsDispatchYaml('on:\\n  workflow_dispatch:\\n  issues:\\n    types: [labeled]\\n'), false, 'sem inputs deve recusar');
-  assert.equal(workerAcceptsDispatchYaml('on:\\n  workflow_dispatch:\\n    inputs:\\n      chave:\\n        required: true\\n'), false, 'sem issue deve recusar');
-  assert.equal(workerAcceptsDispatchYaml('on:\\n  workflow_dispatch:\\n    inputs:\\n      issue:\\n        required: true\\n'), true, 'contrato mínimo válido deve aceitar');
+  assert.equal(workerAcceptsDispatchYaml('on:\n  workflow_dispatch:\n  issues:\n    types: [labeled]\n'), false, 'sem inputs deve recusar');
+  assert.equal(workerAcceptsDispatchYaml('on:\n  workflow_dispatch:\n    inputs:\n      chave:\n        required: true\n'), false, 'sem issue deve recusar');
+  assert.equal(workerAcceptsDispatchYaml('on:\n  workflow_dispatch:\n    inputs:\n      issue:\n        required: true\n'), true, 'contrato mínimo válido deve aceitar');
 });
 
 // ------------------------------------------------------------------ workflow e CLI
