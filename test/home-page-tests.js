@@ -53,12 +53,13 @@ function sandbox(responder) {
   return { ...ctx.__t, calls, slots, ctx };
 }
 const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-const api = (path) => path.includes('ordem=score') ? page(TOP) : path.includes('ordem=abaixo') ? page([market('d', 75)]) : page([market('d', 75)]);
+// destaques: "abaixo" e "economia" chegam com o mesmo 1º produto (d); a economia tem um 2º candidato (f) que entra no lugar
+const api = (path) => path.includes('ordem=score') ? page(TOP) : path.includes('ordem=abaixo') ? page([market('d', 75)]) : page([market('d', 75), mk('f', 70, 'boa', { reference_comparison: { available: true, reference_kind: 'COPAG_OFFICIAL_CURRENT', reference_label: 'Preço sugerido Copag', reference_value: 55.99, percentage_below: 20.0, amount_below: 11.2, position: 'below' } })]);
 
-// 1. a Home recebe as oportunidades da API (uma chamada para pódio+sequência, duas de 1 item para os destaques)
+// 1. a Home recebe as oportunidades da API (uma chamada para pódio+sequência, duas de até 4 candidatos para os destaques)
 const s = sandbox(api); assert.match(s.podiumOppHTML(), /pod-skel/, '12. carregando: esqueleto do pódio');
 await s.loadHomeOpp(); s.paintHomeOpp();
-assert.deepEqual(s.calls, ['oportunidades?limite=15&pagina=1&ordem=score', 'oportunidades?limite=1&pagina=1&ordem=abaixo', 'oportunidades?limite=1&pagina=1&ordem=economia']); n++;
+assert.deepEqual(s.calls, ['oportunidades?limite=15&pagina=1&ordem=score', 'oportunidades?limite=4&pagina=1&ordem=abaixo', 'oportunidades?limite=4&pagina=1&ordem=economia']); n++;
 // 2. pódio = as 3 primeiras na ordem da API, com o Opportunity Score de cada uma
 t('2. pódio usa a ordem e o Opportunity Score da API', () => {
   const pod = s.slots['#home-pod'].innerHTML; const cards = pod.split('<article class="pod"').slice(1);
@@ -82,10 +83,15 @@ t('6–10. referência, comparação, score, faixa e confiança da API', () => {
   assert.ok(!/Por que esta nota/.test(rail), 'detalhe fica na /oportunidades e no produto');
   assert.equal((s.slots['#home-rail'].innerHTML.match(/<article class="deal opp-card/g) || []).length, 12, 'sequência = posições 4 a 15 da API');
 });
-t('destaques: recordes vêm prontos da API', () => {
-  const hl = text(s.slots['#home-hl'].innerHTML);
+t('destaques: recordes vêm prontos da API, um produto por cartão', () => {
+  const raw = s.slots['#home-hl'].innerHTML; const hl = text(raw);
   assert.match(hl, /Melhor oportunidade 90 \/100 Opportunity Score/); assert.match(hl, /Mais abaixo da referência 32,3% abaixo da referência de mercado/);
-  assert.match(hl, /Maior economia R\$ 594,95 abaixo da referência de mercado/); assert.ok(!/Deal Score|Maior desconto|desconto/i.test(hl));
+  // "Maior economia" tinha o mesmo produto (d) do cartão anterior: entra o próximo candidato da própria lista (f)
+  assert.match(hl, /Maior economia R\$ 11,20 abaixo do preço sugerido Copag/); assert.ok(!/R\$ 594,95/.test(hl), 'produto repetido não aparece duas vezes');
+  const ids = [...raw.matchAll(/data-p="(\w+)"/g)].map((m) => m[1]); assert.equal(new Set(ids).size, ids.length, 'sem produto repetido nos destaques');
+  assert.ok(!/Deal Score|Maior desconto|desconto/i.test(hl));
+  // sem candidato novo, o cartão da métrica some em vez de repetir o produto
+  const h = s.HOMEOPP; const keep = h.save; h.save = [market('d', 75)]; assert.ok(!/Maior economia/.test(s.highlightsOppHTML())); h.save = keep;
 });
 // 11–14. sem banco, erro e vazio
 { const x = sandbox(() => ({ data: [], meta: { status: 'requires_db', total: 0 } })); await x.loadHomeOpp(); x.paintHomeOpp();
@@ -103,24 +109,27 @@ t('3–5. Home sem Deal Score, sem oppPool e sem state.json para oportunidades',
   assert.match(renderDealsCode, /podiumOppHTML\(\)/); assert.match(renderDealsCode, /loadHomeOpp\(\)/);
 });
 // a página inteira continua com JavaScript válido (o pódio é montado por template literals)
-// 6C.1 — destaques FOIL → ULTRA RARA → RARA; escala global oculta no pódio e independente da posição
-t('6C.1. pódio: FOIL, ULTRA RARA e RARA sem medalhas; nota e escala intactas', () => {
+// 6C.1 — destaques 1º → 2º → 3º lugar; escala visual (moldura) oculta como texto e independente da posição
+t('6C.1. pódio: 1º, 2º e 3º lugar sem medalhas nem raridade; nota e escala intactas', () => {
   const html = s.slots['#home-pod'].innerHTML; const cards = html.split('<article class="pod"').slice(1);
   assert.ok(!/OURO|PRATA|BRONZE|--medal/.test(html + homeCode), 'sem ouro, prata nem bronze');
   // brilho que passa pelo cartão: voltou a pedido (visual anterior), um por card, só sem movimento reduzido
   assert.equal((html.match(/class="pod-sheen" aria-hidden="true"/g) || []).length, 3, 'brilho decorativo nos três cards');
   assert.match(fullHtml, /@media \(prefers-reduced-motion:no-preference\)\{\.pod \.pod-sheen\{animation:sheen/, 'brilho só anima sem movimento reduzido');
   assert.deepEqual(cards.map((c) => c.match(/data-hl="(\w+)"/)[1]), ['foil', 'ultra', 'rara']);
-  assert.deepEqual(cards.map((c) => text(c.match(/class="pod-rank">([\s\S]*?)<\/span>/)[1])), ['FOIL', 'ULTRA RARA', 'RARA']);
+  assert.deepEqual(cards.map((c) => text(c.match(/class="pod-rank">([\s\S]*?)<\/span>/)[1])), ['1º LUGAR', '2º LUGAR', '3º LUGAR']);
+  assert.ok(!/FOIL|ULTRA RARA|RARA\b/.test(text(html)), 'sem vocabulário de raridade no pódio');
   // escala global pela nota (90 → sr, 79 → r, 61 → u), não pela posição; não aparece como texto no pódio
   assert.deepEqual(cards.map((c) => c.match(/data-rar="(\w+)"/)[1]), ['sr', 'r', 'u']);
   assert.ok(!/rar-line|Secret Rare|Uncommon/.test(html), 'escala global oculta nos três cards do pódio');
-  const low = s.podCardOpp(mk('q', 72, 'normal'), 1); assert.match(low, /data-hl="foil"/); assert.match(low, /data-rar="r"/, '1º lugar com nota 72 continua Rare');
+  const low = s.podCardOpp(mk('q', 72, 'normal'), 1); assert.match(low, /data-hl="foil"/); assert.match(low, /data-rar="r"/, '1º lugar com nota 72 continua na faixa visual r');
   // confiança só muda a intensidade
   assert.match(cards[0], /--int:0\.65/); assert.match(cards[1], /--int:1/); assert.match(cards[2], /--int:1/, 'sem confiança: tratamento padrão');
   assert.ok(!/foilSpin/.test(html), 'sem animação contínua');
-  // sequência: escala global visível e sem foil por faixa
-  const rail = s.slots['#home-rail'].innerHTML; assert.ok(!/class="deal opp-card foil/.test(rail)); assert.match(text(rail), /Ultra Rare|Rare|Uncommon|Common/);
+  // sequência: moldura pela nota (data-rar), sem foil por faixa e sem texto de raridade; a faixa oficial aparece
+  const rail = s.slots['#home-rail'].innerHTML; assert.ok(!/class="deal opp-card foil/.test(rail)); assert.match(rail, /data-rar="\w+"/);
+  assert.ok(!/Secret Rare|Ultra Rare|Uncommon|Common|\bRare\b|★|✦|rar-line/.test(rail), 'sem vocabulário de raridade na sequência');
+  assert.match(text(rail), /Opportunity Score \d+ · (Excelente|Boa|Normal|Baixa)/);
 });
 // Lote 3 — radar do topo: com oportunidades pausadas (stale/nodb), oferta nova não aparece como "Nova oportunidade"
 t('Lote 3. ticker: "Nova oportunidade" só com oportunidades disponíveis; pausadas → "Novo preço"', () => {

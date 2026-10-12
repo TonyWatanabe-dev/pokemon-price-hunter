@@ -16,13 +16,22 @@ for (const f of ['../index.html', '../tools/page.template.html']) {
   assert.match(html, /id="fresh" aria-live="polite"/, `${f}: frescor live`);
   assert.match(html, /class="ticker" aria-live="off"/, `${f}: ticker não deve ser anunciado`);
 }
+{
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /function focusTitle\(\)\{[^}]*#view h1, #view h2[^}]*setAttribute\("tabindex","-1"\)[^}]*focus\(\{preventScroll:true\}\)/, 'título do #view deve ter tabindex=-1 e receber foco sem rolar');
+  const calls = html.match(/focusTitle\(\)/g) || [];
+  assert.ok(calls.length >= 8, 'foco no título esperado em go, hashchange, popstate, grupo, produto e busca');
+  assert.match(html, /render\(\);scrollTo\(\{top:0\}\);focusTitle\(\)/, 'go() deve focar o título depois do render');
+  assert.doesNotMatch(html.slice(html.indexOf('function render(){'), html.indexOf('function render(){') + 400), /focusTitle/, 'render() não deve roubar o foco ao recarregar dados');
+}
 
 // Vazios e contagem anunciados (role=status) e focusErr funcional (tabindex=-1 nos <p class="err">).
 const idx = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-assert.match(idx, /<h2 role="status">\$\{res\.length\?/, 'contagem da busca sem role=status');
+// a contagem da busca é anunciada pelo foco no título (focusTitle em doSearch, #279), sem role=status duplicado no h1
+assert.match(idx, /view="busca";render\(\);scrollTo\(\{top:0\}\);focusTitle\(\)/, 'contagem da busca não é anunciada');
 for (const h of ['Nenhum produto com esses filtros', 'Nenhuma pista com', 'Nenhuma oportunidade encontrada', 'Nenhuma pré-venda agora'])
-  assert.ok(idx.includes(`<div class="empty" role="status"><h3>${h}`), `vazio sem role=status: ${h}`);
-assert.ok(!idx.includes('<div class="empty" role="status"><h3>Não achamos esse produto'), 'vazio da busca duplicaria o anúncio do h2');
+  assert.match(idx, new RegExp(`<div class="empty" role="status"><h[23]>${h}`), `vazio sem role=status: ${h}`);
+assert.doesNotMatch(idx, /<div class="empty" role="status"><h[23]>Não achamos esse produto/, 'vazio da busca duplicaria o anúncio do título');
 const errPs = idx.match(/<p class="err[^"]*"[^>]*>/g) || [];
 assert.ok(errPs.length >= 2, 'parágrafos .err esperados');
 for (const e of errPs) assert.match(e, /tabindex="-1"/, `focusErr não consegue focar: ${e}`);
