@@ -14,7 +14,7 @@ export const LABELS = Object.freeze({
   QUEUED: 'executor:github', RUNNING: 'executor:running', DONE: 'executor:done', FAILED: 'executor:failed',
   QUARANTINE: 'executor:quarentena',
 });
-export const DEFAULTS = Object.freeze({ maxSlots: 3, maxAttempts: 2, leaseMinutes: 70, backoffMinutes: 30 });
+export const DEFAULTS = Object.freeze({ maxSlots: 3, maxAttempts: 2, leaseMinutes: 70, backoffMinutes: 30, maxPerCycle: 4 });
 const MARKER_RE = /<!--\s*dispatcher:despacho\s+chave=(dispatch:(\d+):(\d+))\s+em=(\S+)\s*-->/g;
 
 const lower = (s) => String(s ?? '').trim().toLowerCase();
@@ -88,6 +88,27 @@ export function budgetConfig(env = {}) {
   return Number.isFinite(v) && v > 0 ? { limiteUsd: v, janelaMs, erro: null } : { limiteUsd: null, janelaMs, erro: 'DISPATCHER_ORCAMENTO_USD inválido' };
 }
 
+// Falha "sem capacidade": a sessão do Claude foi recusada antes de trabalhar (1 turno ou menos, zero tokens, sem PR)
+// — limite de uso/concorrência da conta, não defeito da tarefa. Lida da telemetria do worker (marcador
+// telemetria:execucao do bot do workflow). Não conta como tentativa e pausa o despacho por CAPACITY_PAUSE_MIN.
+const TELE_RE = /<!--\s*telemetria:execucao v=1 (\{[^<>]*\})\s*-->/g;
+export const CAPACITY_PAUSE_MIN = 30;
+export function capacityFailures(comments, { trustedAuthor = 'github-actions[bot]' } = {}) {
+  const out = [];
+  for (const c of comments || []) {
+    if (lower(c?.author) !== trustedAuthor) continue;
+    for (const m of String(c?.body ?? '').matchAll(TELE_RE)) {
+      let r; try { r = JSON.parse(m[1]); } catch { continue; }
+      const se = r?.sessao; const tok = se?.tokens || {};
+      const semTokens = ['entrada', 'saida', 'cacheLeitura', 'cacheCriacao'].every((k) => !tok[k]);
+      if (se && se.sucesso === false && (se.turnos ?? 0) <= 1 && semTokens && !r?.resultado?.pr && typeof r.chave === 'string') {
+        const at = ms(r.em); if (at !== null) out.push({ key: r.chave, at });
+      }
+    }
+  }
+  return out;
+}
+
 export const dispatchKey = (issue, attempt) => `dispatch:${issue}:${attempt}`;
 export const dispatchMarker = (issue, attempt, now) =>
   `<!-- dispatcher:despacho chave=${dispatchKey(issue, attempt)} em=${new Date(now).toISOString()} -->`;
@@ -149,7 +170,8 @@ export function planDispatch(s = {}) {
     .map((i) => {
       const labels = labelNames(i); const markers = parseDispatchMarkers(i.comments, { trustedAuthors: trusted });
       const last = markers.at(-1) || null;
-      return { ...i, labels, markers, last, order: parseOrder(i.body), deps: parseDependencies(i.body), areas: parseAreas(i.body) };
+      const capFails = capacityFailures(i.comments);
+      return { ...i, labels, markers, last, capFails, order: parseOrder(i.body), deps: parseDependencies(i.body), areas: parseAreas(i.body) };
     })
     .sort((a, b) => a.order - b.order || a.number - b.number);
 
@@ -168,6 +190,15 @@ export function planDispatch(s = {}) {
     for (const i of issues) skip(i, `pausado por rate limit/quota até ${new Date(pauseUntil).toISOString()}`);
     return plan;
   }
+  // Sem capacidade do Claude (recusa imediata, sem tokens) recente: pausa tudo até a janela passar; despachar de
+  // novo só gastaria tentativas e levaria tarefas sãs à quarentena (incidente da leva 3, 12/10 14:52 UTC).
+  const lastCap = Math.max(-Infinity, ...issues.flatMap((i) => i.capFails.map((f) => f.at)));
+  if (Number.isFinite(lastCap) && now - lastCap < CAPACITY_PAUSE_MIN * 60_000) {
+    plan.paused = true;
+    const ate = new Date(lastCap + CAPACITY_PAUSE_MIN * 60_000).toISOString();
+    for (const i of issues) skip(i, `pausado: Claude sem capacidade (sessão recusada sem tokens) até ${ate}`);
+    return plan;
+  }
   // Orçamento (budgetGate calculado por quem monta o snapshot, a partir da telemetria real): estourado, nada
   // é despachado nem posto em quarentena até a janela andar; a fila fica intacta.
   if (s.budget) plan.budget = { permitir: s.budget.permitir !== false, motivo: String(s.budget.motivo ?? '') };
@@ -178,6 +209,7 @@ export function planDispatch(s = {}) {
   }
 
   let free = maxSlots - active.length;
+  const perCycle = Number.isInteger(s.maxPerCycle) && s.maxPerCycle > 0 ? s.maxPerCycle : DEFAULTS.maxPerCycle;
   const busyAreas = active.map((i) => i.areas);
   for (const i of issues) {
     if (i.state !== 'open') { skip(i, 'issue fechada'); continue; }
@@ -195,7 +227,8 @@ export function planDispatch(s = {}) {
     // vez que um OPERADOR tirou a quarentena — é assim que o operador concede novas tentativas.
     const attempts = i.markers.length ? Math.max(...i.markers.map((m) => m.attempt)) : 0;
     const resetAt = lastLabeledAt(i, [LABELS.QUARANTINE], { event: 'unlabeled', actors: ops });
-    const budgetUsed = i.markers.filter((m) => resetAt === null || m.at > resetAt).length;
+    const semCap = new Set(i.capFails.map((f) => f.key));   // recusa por capacidade não gasta tentativa
+    const budgetUsed = i.markers.filter((m) => (resetAt === null || m.at > resetAt) && !semCap.has(m.key)).length;
     if (budgetUsed >= maxAttempts) {
       plan.quarantine.push({ issue: i.number, attempts: budgetUsed, reason: `${budgetUsed} tentativa(s) sem sucesso; limite ${maxAttempts}` });
       continue;
@@ -206,6 +239,7 @@ export function planDispatch(s = {}) {
     }
     if (i.areas.length && busyAreas.some((a) => areasConflict(i.areas, a))) { skip(i, `área crítica em uso por outra tarefa: ${i.areas.join(', ')}`); continue; }
     if (free <= 0) { skip(i, 'sem vaga livre'); continue; }
+    if (plan.dispatch.length >= perCycle) { skip(i, `limite de ${perCycle} despachos por ciclo (evita rajada de sessões)`); continue; }
 
     const attempt = attempts + 1;
     plan.dispatch.push({ issue: i.number, title: String(i.title ?? '').slice(0, 120), attempt, key: dispatchKey(i.number, attempt), areas: i.areas });

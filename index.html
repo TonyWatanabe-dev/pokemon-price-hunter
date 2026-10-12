@@ -913,6 +913,16 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .ssr{max-width:860px;margin:24px auto 0;line-height:1.55}.ssr h1{font-size:clamp(26px,4vw,40px);line-height:1.1;margin:8px 0 12px}.ssr h2{font-size:20px;margin:24px 0 8px}
 .ssr ul,.ssr ol{padding-left:20px}.ssr li{margin:4px 0}.ssr a{color:inherit}.ssr-bc{font-size:13px;color:var(--muted)}.ssr-links{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0!important}
 .ssr-t{border-collapse:collapse;width:100%}.ssr-t td,.ssr-t th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+/* Frente 7: /lojas e "Procurar em outras lojas" (SSR: toque ≥44px nos links; SPA: lista mobile first) */
+.ssr-lojas{list-style:none;padding:0!important}.ssr-lojas li{padding:8px 0;border-bottom:1px solid var(--line)}.ssr-lojas a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px}.ssr-lojas small{color:var(--muted)}
+.ssr details.outras summary h2{display:inline;font-size:20px}
+.lj-nav{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 8px}
+.lj-list{list-style:none;margin:0;padding:0 16px}.lj{padding:12px 0;border-bottom:1px solid var(--line)}.lj:last-child{border-bottom:0}
+.lj-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lj-top b{font-size:15.5px;overflow-wrap:anywhere}.lj-top .chip{margin-left:0}
+.lj-facts{margin:4px 0 0;font-size:13.5px;color:var(--muted)}
+.lj-act{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.lj-act .btn.sm{margin-left:0;min-height:44px}
+.lj-links{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}.lj-links .btn.sm{margin-left:0;min-height:44px}
+.card.outras details.more{margin-top:0}.card.outras summary h2{margin:0;display:inline-flex}.card.outras summary .icon:first-child{order:2;margin-left:auto}
 /* Navegue por coleção e formato */
 .gnav{margin-top:64px}.gnav-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .gchip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line-soft);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;transition:border-color 160ms ease,transform 140ms var(--ease-out)}
@@ -1395,7 +1405,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/lojas" data-go="lojas">Lojas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -1408,6 +1418,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas de preço<small>Aviso quando chegar no seu preço</small></span><span class="count c-hit" hidden></span></button>
     <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-vendas<small>Lançamentos que ainda não chegaram</small></span><span class="count c-pre" hidden></span></button>
     <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades<small>Todas as ofertas abaixo da Copag, com filtros</small></span></button>
+    <button type="button" data-go="lojas"><svg class="icon"><use href="#i-storefront"/></svg><span>Lojas<small>Todas as lojas conhecidas, com busca direta</small></span></button>
     <button type="button" data-go="guia"><svg class="icon"><use href="#i-info"/></svg><span>Como funciona<small>Opportunity Score, preço Copag e dicas de compra</small></span></button>
     <button type="button" data-go="termos"><svg class="icon"><use href="#i-info"/></svg><span>Termos e privacidade<small>Regras de uso e o que o site guarda</small></span></button>
     <button type="button" class="theme-btn"><svg class="icon"><use href="#i-moon"/></svg><span class="theme-lbl">Tema escuro<small>Muda as cores do site</small></span></button>
@@ -1463,10 +1474,10 @@ const outRel=(u)=>outUrl(u)!==u?" nofollow sponsored":"";
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
-const ROUTES={"":"deals",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
-const PATHS={deals:"",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",glossario:"guia/glossario",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const ROUTES={"":"deals",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas",lojas:"lojas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const PATHS={deals:"",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",lojas:"lojas",guia:"como-funciona",glossario:"guia/glossario",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PRIVATE=["conta","favoritos","alertas","configuracoes"];
-const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
+const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"lojas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
 function parseLoc(){
   const seg=location.pathname.replace(/^\/+|\/+$/g,"").split("/");
   if(seg[0]==="produto"&&seg[1])return{view:"produto",slug:decodeURIComponent(seg[1])};
@@ -1475,7 +1486,6 @@ function parseLoc(){
   return{view:ROUTES[seg[0]]||"deals",pid:null};
 }
 (function(){const h=location.hash.slice(1);if(h&&OLDHASH[h])history.replaceState(null,"","/"+OLDHASH[h]);
-  if(/^\/lojas\/?$/.test(location.pathname))history.replaceState(null,"","/"+location.search); /* página Lojas foi retirada */
   if(location.pathname.startsWith("/busca"))buscaFromURL(location.search)})();
 const pathOf=(v)=>"/"+(PATHS[v]??"");
 let curGroup=parseLoc().slug||null;let view=parseLoc().view||"deals",xfOpen=false,fOpen=false,prodPushed=false;
@@ -2045,6 +2055,60 @@ function renderGlossario(){
   <dl class="glossario">${GUIA.glossario.map((x)=>`<dt id="${slugify(x.t.replace(/<[^>]+>/g,""))}">${x.t}</dt><dd>${x.d}</dd>`).join("")}</dl>
   </section></div>`;
 }
+/* Frente 7: lojas (dados). Espelho de api/_lib/lojas.mjs: LOJAS_CFG é cópia literal e lojasNormalize dá o mesmo resultado (test/lojas-page-tests.js).
+   Nunca mostra preço: só o que o robô leu entra em "Onde comprar"; aqui o link leva à busca de Pokémon na própria loja. */
+const LOJAS_CFG={"busca":{"shopify":"/search?q={q}","vtex":"/{q}?_q={q}&map=ft","nuvemshop":"/search/?q={q}","tray":"/loja/busca.php?palavra_busca={q}","woocommerce":"/?s={q}&post_type=product","lojaintegrada":"/buscar?q={q}","magento":"/catalogsearch/result/?q={q}","opencart":"/index.php?route=product/search&search={q}"},"rotulo":{"shopify":"Shopify","vtex":"VTEX","nuvemshop":"Nuvemshop","tray":"Tray","woocommerce":"WooCommerce","lojaintegrada":"Loja Integrada","magento":"Magento","opencart":"OpenCart","mercadolivre":"API Mercado Livre"},"marketplaces":{"mercadolivre":{"name":"Mercado Livre","host":"mercadolivre.com.br","url":"https://www.mercadolivre.com.br","busca":"https://lista.mercadolivre.com.br/{slug}"},"amazon":{"name":"Amazon Brasil","host":"amazon.com.br","url":"https://www.amazon.com.br","busca":"https://www.amazon.com.br/s?k={q+}"},"shopee":{"name":"Shopee Brasil","host":"shopee.com.br","url":"https://shopee.com.br","busca":"https://shopee.com.br/search?keyword={q}"},"magalu":{"name":"Magalu","host":"magazineluiza.com.br","url":"https://www.magazineluiza.com.br","busca":"https://www.magazineluiza.com.br/busca/{q}/"}},"plataformaPorHost":{"gatogingado.com.br":"lojaintegrada","lojalifegeek.com.br":"lojaintegrada","dalaran.com.br":"lojaintegrada","loja.drop1.com.br":"lojaintegrada","omniverse.com.br":"lojaintegrada","happynerd.com.br":"tray","lojaarenagames.com.br":"woocommerce","supertcg.com.br":"woocommerce","maximuxtcg.com":"woocommerce","grifogeek.com.br":"woocommerce","pokebola.com.br":"woocommerce","cavernatcg.com.br":"woocommerce","livrariacolecionador.com.br":"magento","cardora.com.br":"nuvemshop","shisuistore.com.br":"nuvemshop","geekworldcascavel.com.br":"opencart"},"buscaPorHost":{"kalunga.com.br":"/busca/1?q={q}","bravojogos.com.br":"/busca?q={q}","kantonerd.com.br":"/selados?search={q}"},"termo":"pokemon","termoMarketplace":"pokemon tcg"};
+const ljHost=(u)=>{try{const x=new URL(String(u||""));return/^https?:$/.test(x.protocol)?x.host.toLowerCase().replace(/^www\./,""):null}catch{return null}};
+const ljOrigin=(u)=>{try{const x=new URL(String(u||""));return/^https?:$/.test(x.protocol)?x.origin:null}catch{return null}};
+const ljNorm=(s)=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"");
+const ljFill=(tpl,q)=>tpl.replace(/\{q\+\}/g,encodeURIComponent(q).replace(/%20/g,"+")).replace(/\{q\}/g,encodeURIComponent(q)).replace(/\{slug\}/g,String(q).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""));
+function ljInfer(urls){const ps=[];for(const u of urls||[]){try{ps.push(new URL(u).pathname)}catch{}}if(!ps.length)return null;if(ps.every((p)=>/^\/products\//.test(p)))return"shopify";if(ps.every((p)=>/^\/produtos\//.test(p)))return"nuvemshop";if(ps.every((p)=>/\/p$/.test(p)))return"vtex";return null}
+function ljTemplate(l,cfg=LOJAS_CFG){if(l.marketplace&&cfg.marketplaces[l.marketplace])return{tpl:cfg.marketplaces[l.marketplace].busca,kind:"busca"};const o=ljOrigin(l.url);if(!o)return null;const own=l.host&&cfg.buscaPorHost[l.host];if(own)return{tpl:o+own,kind:"busca"};const p=l.platform&&cfg.busca[l.platform];if(p)return{tpl:o+p,kind:"busca"};return{tpl:o+"/",kind:"inicio"}}
+const ljSearchUrl=(l,q=null,cfg=LOJAS_CFG)=>{const t=ljTemplate(l,cfg);return t?ljFill(t.tpl,q??(l.marketplace?cfg.termoMarketplace:cfg.termo)):null};
+const LJ_ST={ACTIVE:"monitorada",PAUSED:"pausada",BLOCKED:"sem-leitura",ERROR:"sem-leitura",PENDING:"sem-leitura",UNAVAILABLE:"indisponivel"};
+function ljReason(src,status){
+  if(status==="marketplace")return"Marketplace com muitos vendedores: o robô não lê os preços; confira na busca do próprio site.";
+  if(status==="pausada")return"Leitura pausada pelo projeto; os preços só aparecem na loja.";
+  if(status==="indisponivel")return"Sem API pública de busca: o robô não lê os preços desta loja.";
+  if(status==="sem-leitura"){if(!src.url)return"Endereço da loja ainda não confirmado.";if(src.errorClass==="bloqueio"||src.httpStatus===403)return"A loja não aceita leitura automática; os preços só aparecem nela.";if(src.errorClass==="plataforma")return"Plataforma ainda sem leitura automática.";if(String(src.status).toUpperCase()==="PENDING")return"Leitura ainda não configurada.";return"Sem leitura automática no momento; confira os preços na loja."}
+  return null}
+function lojasNormalize({sources=[],offers=[],cfg=LOJAS_CFG}={}){
+  const list=Array.isArray(sources)?sources:Object.entries(sources||{}).map(([id,v])=>({id,...v}));const mk=cfg.marketplaces;
+  const byStore=new Map();for(const o of offers){if(!o?.storeId)continue;if(!byStore.has(o.storeId))byStore.set(o.storeId,[]);byStore.get(o.storeId).push(o)}
+  const raw=[];
+  for(const s of list){if(!s?.id)continue;const m=mk[s.id]||null;const url=ljOrigin(s.url&&!/api\.mercadolibre\.com/.test(s.url)?s.url:null)||(m?m.url:null);const host=m?m.host:ljHost(url);
+    const up=String(s.status||"").toUpperCase();const status=m?(up==="ACTIVE"?"monitorada":"marketplace"):(LJ_ST[up]||"sem-leitura");const offs=byStore.get(s.id)||[];
+    const hint=s.platformHint||(host&&cfg.plataformaPorHost[host])||(cfg.busca[s.platform]?s.platform:null)||ljInfer(offs.map((o)=>o.url));
+    const stamps=offs.map((o)=>Date.parse(o.source_timestamp||"")).filter(Number.isFinite);const lastRead=stamps.length?new Date(Math.max(...stamps)).toISOString():(s.lastSuccess||null);
+    raw.push({id:s.id,name:m?m.name:(s.name||host||s.id),host,url,platform:m?(s.platform==="mercadolivre"?"mercadolivre":null):hint,marketplace:m?s.id:null,status,offersLive:offs.filter(live).length,lastReadAt:status==="monitorada"?lastRead:null,reason:ljReason(s,status)})}
+  const rank=(x)=>x.status==="monitorada"?3:x.marketplace?2:1;const byHost=new Map();for(const x of raw){if(!x.host)continue;const y=byHost.get(x.host);if(!y||rank(x)>rank(y))byHost.set(x.host,x)}
+  const names=new Set(raw.filter((x)=>x.host).map((x)=>ljNorm(x.name)));const ids=raw.filter((x)=>x.host).map((x)=>x.id);const out=[];
+  for(const x of raw){if(x.host){if(byHost.get(x.host)!==x)continue}else if(names.has(ljNorm(x.name))||ids.some((id)=>id!==x.id&&id.startsWith(x.id)))continue;
+    const t=x.url||x.marketplace?ljTemplate(x,cfg):null;out.push({...x,searchUrl:t?ljFill(t.tpl,x.marketplace?cfg.termoMarketplace:cfg.termo):null,searchKind:t?t.kind:null})}
+  const order={monitorada:0,"sem-leitura":1,indisponivel:1,marketplace:2,pausada:3};
+  out.sort((a,b)=>order[a.status]-order[b.status]||b.offersLive-a.offersLive||a.name.localeCompare(b.name,"pt-BR")||a.id.localeCompare(b.id));return out}
+const lojasSections=(ls)=>[["monitoradas","Monitoradas agora",ls.filter((l)=>l.status==="monitorada")],["sem-leitura","Conhecidas, sem leitura automática",ls.filter((l)=>l.status==="sem-leitura"||l.status==="indisponivel")],["marketplaces","Marketplaces",ls.filter((l)=>l.status==="marketplace")],["pausadas","Pausadas",ls.filter((l)=>l.status==="pausada")]];
+function outrasLojas(ls,q,{max=12,cfg=LOJAS_CFG}={}){const mk=Object.keys(cfg.marketplaces).map((id)=>ls.find((l)=>l.marketplace===id)||{id,name:cfg.marketplaces[id].name,host:cfg.marketplaces[id].host,url:cfg.marketplaces[id].url,marketplace:id,status:"marketplace"});
+  const rest=ls.filter((l)=>!l.marketplace&&l.status!=="monitorada"&&l.searchKind==="busca").sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
+  return[...mk,...rest].slice(0,max).map((l)=>({id:l.id,name:l.name,host:l.host,url:ljSearchUrl(l,q,cfg)})).filter((l)=>l.url)}
+/* Frente 7: lojas (telas) */
+const LJ_CHIP={monitorada:["ok","Monitorada"],"sem-leitura":["warn","Sem leitura automática"],indisponivel:["warn","Sem leitura automática"],marketplace:["","Marketplace"],pausada:["","Pausada"]};
+const ljExt=(url,txt,cls="btn sm")=>`<a class="${cls}" href="${esc(safeUrl(url))}" target="_blank" rel="noopener nofollow">${txt}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>`;
+function ljRow(l){const[c,lb]=LJ_CHIP[l.status]||["",l.status];const plat=l.platform&&LOJAS_CFG.rotulo[l.platform]?`<span class="chip">${esc(LOJAS_CFG.rotulo[l.platform])}</span>`:"";
+  const facts=l.status==="monitorada"?`${l.offersLive} ${l.offersLive===1?"oferta":"ofertas"} com estoque${l.lastReadAt?` · última leitura ${ago(l.lastReadAt)}`:""}`:l.reason||"";
+  return`<li class="lj" id="loja-${esc(l.id)}"><div class="lj-top"><b>${esc(l.name)}</b>${plat}<span class="chip ${c}">${lb}</span></div>${facts?`<p class="lj-facts">${esc(facts)}</p>`:""}<div class="lj-act">${l.searchUrl?ljExt(l.searchUrl,l.searchKind==="busca"?"Buscar Pokémon na loja":"Abrir a loja"):""}${l.status==="monitorada"&&l.offersLive>0?`<a class="btn sm ghost" href="/oportunidades?loja=${encodeURIComponent(l.id)}" data-oppstore="${esc(l.id)}">Ver ofertas</a>`:""}</div></li>`}
+function renderLojas(){
+  const ls=lojasNormalize({sources:S.sources||[],offers:OFF});const secs=lojasSections(ls);const n=Object.fromEntries(secs.map(([k,,xs])=>[k,xs.length]));
+  const intro={monitoradas:"O robô lê estas lojas a cada 15 min: os preços delas aparecem nas ofertas do site.","sem-leitura":"Lojas que vendem Pokémon TCG, mas que o robô não consegue ler. Nenhum preço aparece aqui: confira na própria loja.",marketplaces:"Muitos vendedores num site só. O robô não lê os preços; a busca abre no próprio marketplace.",pausadas:"Leitura pausada pelo projeto. A loja continua no ar; os preços só aparecem nela."};
+  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide lojas"><h1 class="panel-h1">Lojas de Pokémon TCG no Brasil</h1>
+  <p>${n.monitoradas} monitoradas agora, ${n["sem-leitura"]} conhecidas sem leitura automática e ${n.marketplaces} marketplaces. Preço só aparece quando o robô leu a loja; nas demais, o link leva à busca de Pokémon na própria loja. A compra é sempre na loja.</p>
+  <nav class="lj-nav" aria-label="Seções desta página">${secs.map(([k,t,xs])=>`<a class="gchip" href="#${k}">${t} (${xs.length})</a>`).join("")}</nav>
+  ${secs.map(([k,t,xs])=>`<h2 class="guide-h2" id="${k}">${t} <small>${xs.length}</small></h2><p>${intro[k]}</p>${xs.length?`<ul class="lj-list">${xs.map(ljRow).join("")}</ul>`:"<p>Nenhuma agora.</p>"}`).join("")}
+  </section></div>`;
+}
+/* "Procurar em outras lojas" (produto): até 12 buscas com o nome do produto, marketplaces primeiro; fechado no celular. Sem preço. */
+function outrasLojasBlock(p){const ls=outrasLojas(lojasNormalize({sources:S.sources||[],offers:OFF}),`${p.collectionName} ${label(p)}`);if(!ls.length)return"";
+  return`<section class="card outras"><details class="more"${matchMedia("(min-width:860px)").matches?" open":""}><summary>${ic("caret-down")}<h2>${ic("magnifying-glass")}Procurar em outras lojas <small>${ls.length}</small></h2></summary><p>Preços não lidos pelo Hunter — confira na loja.</p><ul class="lj-links">${ls.map((l)=>`<li>${ljExt(l.url,esc(l.name),"btn sm ghost")}</li>`).join("")}</ul></details></section>`}
 function renderLegal(kind){
   const contato=CONTATO?`<a href="mailto:${esc(CONTATO)}">${esc(CONTATO)}</a>`:`<b>(e-mail de contato a definir)</b>`;
   const T={termos:`<h2>Termos de uso</h2><p>Última atualização: 8 de outubro de 2026.</p>
@@ -2283,6 +2347,7 @@ function renderProduct(pid){
         return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
       <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
+    ${outrasLojasBlock(p)}
     <div id="pp-amz">${amzBlock(pid)}</div>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
@@ -2580,12 +2645,12 @@ function renderConfig(){
 }
 
 const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
-const TITLES={busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
+const TITLES={busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",lojas:"Lojas de Pokémon TCG no Brasil",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
   const tq=$("#tq");if(tq&&document.activeElement!==tq){tq.value=view==="busca"?(F.q||""):"";const x=tq.closest(".sbox")?.querySelector(".sbox-x");if(x)x.hidden=!tq.value}
-  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","guia","glossario","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
+  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","lojas","guia","glossario","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   if(S?.slim&&PRIVATE.includes(view))ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
@@ -2605,6 +2670,7 @@ function render(){
   else if(view==="copag")renderCopag();
   else if(view==="guia")renderGuide();
   else if(view==="glossario")renderGlossario();
+  else if(view==="lojas")renderLojas();   /* Frente 7 */
   else if(view==="termos")renderLegal("termos");
   else if(view==="privacidade")renderLegal("privacidade");
   else if(view==="prevenda")renderPre();
@@ -3217,6 +3283,7 @@ document.addEventListener("click",(e)=>{
   const sb=t.closest(".seg button");if(sb){F.mode=sb.dataset.v;F.sort="";store.set("f",F);go("oportunidades");return}
   const cc=t.closest("[data-col]");if(cc&&!t.closest("select")){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();ofReset({col:cc.dataset.col});track("collection_card",{col:cc.dataset.col});go("oportunidades");scrollTo({top:0});return}
   const fm=t.closest("[data-fmt]");if(fm){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();ofReset({cat:fm.dataset.fmt==="ETB"?"etb":fm.dataset.fmt});go("oportunidades");scrollTo({top:0});return}
+  const os=t.closest("[data-oppstore]");if(os){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();ofReset({loja:os.dataset.oppstore});go("oportunidades");scrollTo({top:0});return}   /* Frente 7: /lojas → Oportunidades filtradas pela loja */
   const nb=t.closest("[data-go]");if(nb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();go(nb.dataset.go);return}
   if(t.closest("[data-home]")){e.preventDefault();go("");return}
   if(t.closest("[data-more]")){$("#more").showModal();return}

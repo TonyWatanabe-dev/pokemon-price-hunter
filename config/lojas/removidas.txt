@@ -1,0 +1,24 @@
+# Lojas retiradas do inventário (histórico). TODAS as linhas deste arquivo são comentário: src/run.js lê qualquer
+# config/lojas/*.txt e ignora o que vem depois de "#", então um domínio aqui NÃO entra na coleta. Para reativar uma
+# loja, mova a linha (sem "#") de volta para um dos arquivos de varredura. Formato: domínio | data | motivo | evidência.
+#
+# --- 2026-10-12 — Frente 6 (diagnóstico de bloqueio + limpeza do inventário) ---
+# Domínio morto (DNS ENOTFOUND em todas as rodadas; data/sources.json do branch `data`, 0 sucesso):
+# uzgames.com.br        | 2026-10-12 | DNS não resolve (ENOTFOUND)        | 204 rodadas, 0 ok, netCode ENOTFOUND (lista amazon.com.br.txt)
+# geek-shop.com.br      | 2026-10-12 | DNS não resolve (ENOTFOUND)        | 204 rodadas, 0 ok, netCode ENOTFOUND (lista amazon.com.br.txt)
+# monsterstcg.com.br    | 2026-10-12 | DNS não resolve (ENOTFOUND)        | 204 rodadas, 0 ok, netCode ENOTFOUND (lista amazon.com.br.txt)
+# brofist.com.br        | 2026-10-12 | DNS não resolve (ENOTFOUND)        | 204 rodadas, 0 ok, netCode ENOTFOUND (lista amazon.com.br.txt)
+# bandecole.com.br      | 2026-10-12 | DNS não resolve (ENOTFOUND)        | 121 rodadas, 0 ok, netCode ENOTFOUND (lista varredura-outubro.txt)
+# onlinelojageek.com.br | 2026-10-12 | DNS não resolve (ENOTFOUND)        | 74 rodadas, 0 ok, netCode ENOTFOUND (lista varredura-outubro-2.txt)
+# TLS quebrado no servidor (handshake falha antes de qualquer página; não é bloqueio nosso nem contornável com honestidade):
+# collectandplay.com.br | 2026-10-12 | TLS: ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR | 204 rodadas, 0 ok (lista amazon.com.br.txt). Reavaliar se o certificado for consertado.
+# Fora do escopo (produto Pokémon em inglês/importado, catálogo estilo TCGplayer com condição "Near Mint/Lightly Played"):
+# tcgculture.com        | 2026-10-12 | 0 anúncios Copag em 450 rodadas    | Shopify, 8779 anúncios lidos por rodada (8 páginas + coleções) e 0 casados; títulos "Scarlet & Violet", "Obsidian Flames", singles com condição. O catálogo é Copag PT-BR, então o 0 é correto, não falha de coleta. Moeda não confirmada (rede indisponível na análise). (lista resetnerdstore.com.br.txt)
+#
+# Entradas PENDING removidas de config/stores.json na mesma data (url: null desde a criação; duplicavam a entrada viva criada pela lista .txt):
+# nerbstore  | 2026-10-12 | sem domínio confirmado; nenhum candidato resolve (nerbstore.com.br / nerdstore.com.br sem histórico de sucesso) — reincluir quando houver URL
+# grbcards   | 2026-10-12 | duplicava grbcards.com.br (id grbcardscombr, ACTIVE, 13 anúncios / 7 casados)
+# cardora    | 2026-10-12 | duplicava cardora.com.br (id cardoracombr, ACTIVE)
+# matostcg   | 2026-10-12 | duplicava www.matostcg.com.br (id matostcgcombr, ACTIVE)
+# gorupa     | 2026-10-12 | duplicava www.gorupa.com.br (id gorupacombr, ACTIVE, 26 anúncios / 18 casados)
+# culturetcg | 2026-10-12 | duplicava tcgculture.com (id tcgculturecom; ver acima, fora do escopo)

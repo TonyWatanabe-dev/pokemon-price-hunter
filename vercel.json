@@ -65,6 +65,10 @@
       "destination": "/api/pagina?t=pre-vendas"
     },
     {
+      "source": "/lojas",
+      "destination": "/api/pagina?t=lojas"
+    },
+    {
       "source": "/como-funciona",
       "destination": "/api/pagina?t=como-funciona"
     },
@@ -121,7 +125,7 @@
   "trailingSlash": false,
   "functions": {
     "api/pagina.mjs": {
-      "includeFiles": "index.html"
+      "includeFiles": "{index.html,config/stores.json}"
     },
     "api/v1.mjs": {
       "maxDuration": 15,

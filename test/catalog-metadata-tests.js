@@ -100,6 +100,7 @@ export function auditCollections(catalog, { now = new Date() } = {}) {
     if (prodIds.has(p.id)) errs.push(`produto ${p.id}: id duplicado`); prodIds.add(p.id);
     if (!ids.has(p.collection)) errs.push(`produto ${p.id}: coleção inexistente ${p.collection}`);
     if (typeof p.id !== 'string' || !p.id.startsWith(`${p.collection}-`)) errs.push(`produto ${p.id}: id não começa pela coleção ${p.collection}`);
+    if (p.ean !== undefined && !/^\d+$/.test(String(p.ean))) errs.push(`produto ${p.id}: EAN com caractere não numérico ${JSON.stringify(p.ean)}`);
   }
   for (const key of Object.keys(catalog.copag || {})) {
     const col = key.split('-')[0];
@@ -193,6 +194,14 @@ t('coleção combinada: só referencia coleções reais, da mesma série', () =>
 t('produtos e preços Copag só apontam para coleções existentes', () => {
   const p = base(); p.products = [{ id: 'sv7-etb', collection: 'sv7' }]; fails(p, /coleção inexistente sv7/);
   const q = base(); q.copag = { 'sv7-etb': { msrp: 1 } }; fails(q, /preço Copag sv7-etb/);
+});
+
+t('EAN de produto: só dígitos (ausente é permitido)', () => {
+  const ok = base(); ok.products = [{ id: 'sv8-box36', collection: 'sv8', ean: '0196214156098' }, { id: 'sv8-etb', collection: 'sv8' }];
+  assert.deepEqual(auditCollections(ok, { now: NOW }), []);
+  for (const v of ['0196-214156098', '01962141560A8', ' 0196214156098', '', 196214156098]) {
+    const c = base(); c.products = [{ id: 'sv8-box36', collection: 'sv8', ean: v }]; if (typeof v === 'number') assert.deepEqual(auditCollections(c, { now: NOW }), []); else fails(c, /EAN com caractere não numérico/);
+  }
 });
 
 console.log(`✓ Metadados de coleção (catalog.json): ${n} grupos de testes passaram`);

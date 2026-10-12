@@ -1,6 +1,7 @@
 // Cliente HTTP educado: UA honesto, timeout, intervalo por domínio, detecção de bloqueio.
 // Nunca tenta contornar CAPTCHA, login ou bloqueio: só reporta.
 import { assertSafeUrl } from './urlguard.js';
+import { forensicsOf, platformHintOf, notePlatform } from './diagnostico.js';
 const UA = process.env.HUNTER_UA || 'PokeHunterBR/1.0 (monitor pessoal de precos; respeita robots.txt)';
 const DELAY = Number(process.env.HUNTER_DOMAIN_DELAY_MS ?? 1500);
 const MAX_REDIRECTS = 5;
@@ -107,6 +108,9 @@ async function requestOnce(url, { method = 'GET', accept = 'text/html', body, he
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeout);
+  const t0 = Date.now();
+  // Forense da falha (diagnostico.js): só o que a loja respondeu ao nosso agente honesto, compacto e sem valor de cookie.
+  const forensics = (res, text, code = null) => forensicsOf({ status: res?.status ?? null, headers: res?.headers ?? null, body: text, code, elapsedMs: Date.now() - t0 });
   try {
     // Redirecionamentos seguidos à mão: cada destino passa pela guarda antes de ser buscado.
     let cur = url; let m = method; let b = body; let res;
@@ -130,20 +134,22 @@ async function requestOnce(url, { method = 'GET', accept = 'text/html', body, he
     if (res.status === 429) {
       // Limite de requisições: não é "barra robôs". Guarda o Retry-After para a próxima tentativa respeitar.
       const retryAfter = retryAfterSec(res.headers?.get?.('retry-after'));
-      throw new BlockedError(`Limite de requisições (429) em ${host}${retryAfter != null ? `, Retry-After ${retryAfter} s` : ''}`, 429, { httpStatus: 429, retryAfter });
+      throw new BlockedError(`Limite de requisições (429) em ${host}${retryAfter != null ? `, Retry-After ${retryAfter} s` : ''}`, 429, { httpStatus: 429, retryAfter, forensics: forensics(res, text) });
     }
     if ([401, 403].includes(res.status) || /account-verification|captcha/i.test(finalUrl) || (res.status >= 400 && looksChallenge) || (looksChallenge && !/application\/json/.test(accept))) {
       const what = res.status < 300 ? `desafio anti-robô com HTTP ${res.status}` : String(res.status);
-      throw new BlockedError(`Acesso bloqueado (${what}) em ${host}`, res.status, { httpStatus: res.status });
+      throw new BlockedError(`Acesso bloqueado (${what}) em ${host}`, res.status, { httpStatus: res.status, forensics: forensics(res, text) });
     }
-    if (!res.ok) { const e = new Error(`HTTP ${res.status} em ${safeUrl(url)}`); e.status = res.status; e.httpStatus = res.status; throw e; }
+    if (!res.ok) { const e = new Error(`HTTP ${res.status} em ${safeUrl(url)}`); e.status = res.status; e.httpStatus = res.status; e.forensics = forensics(res, text); throw e; }
+    // Resposta boa: anota a plataforma reconhecida nos marcadores (sem requisição extra); run.js grava em sources.json.
+    { const hint = platformHintOf({ headers: res.headers, body: /json/.test(accept) ? '' : text, url: finalUrl }); if (hint) notePlatform(host, hint); }
     // JSON malformado: SyntaxError (falha de leitura, não bloqueio; classifyError → 'parse'), sem repetir o conteúdo recebido.
     const json = () => { try { return JSON.parse(text); } catch { const e = new SyntaxError(`Resposta não é JSON válido em ${host}`); e.status = res.status; e.malformed = true; throw e; } };
     return { status: res.status, url: finalUrl, text, json };
   } catch (e) {
-    if (e.name === 'AbortError') { const t = new Error(`Timeout em ${host}`); t.status = 0; t.code = 'TIMEOUT'; throw t; }
+    if (e.name === 'AbortError') { const t = new Error(`Timeout em ${host}`); t.status = 0; t.code = 'TIMEOUT'; t.forensics = forensics(null, '', 'TIMEOUT'); throw t; }
     // Erro de rede do fetch ("fetch failed"): o motivo real (DNS, conexão recusada, TLS) fica no código.
-    if (!e.blocked && e.status == null && !e.unsafe && !(e instanceof SyntaxError)) { const c = netCode(e); if (c) { try { e.code ??= c; } catch { /* exceção congelada */ } if (!e.message.includes(host)) e.message = `Erro de rede em ${host}: ${c}`; } }
+    if (!e.blocked && e.status == null && !e.unsafe && !(e instanceof SyntaxError)) { const c = netCode(e); if (c) { try { e.code ??= c; e.forensics ??= forensics(null, '', c); } catch { /* exceção congelada */ } if (!e.message.includes(host)) e.message = `Erro de rede em ${host}: ${c}`; } }
     throw e;
   } finally { clearTimeout(timer); }
 }

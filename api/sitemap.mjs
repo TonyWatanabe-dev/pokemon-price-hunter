@@ -2,7 +2,7 @@
 import { state, slugs, SITE, colSlug, typeSlug, bestBy } from './_seo.mjs';
 import { classify, usable } from './_lib/freshness.mjs';
 export default async function handler(req, res) {
-  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
+  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
   let lastmod = new Date().toISOString().slice(0, 10);
   try {
     const s = await state();
