@@ -132,6 +132,23 @@ await import('./partitions-mlcallback-tests.js');
 // Portão do aviso imediato de falha do hunter.yml (extraído da #15; registrado aqui para não mexer no script test do package.json)
 await import('./failure-gate-tests.js');
 
+await t('T6. officialFor com preço fracionado/string: comportamento atual (compara em centavos, com coerção numérica)', () => {
+  const ok = (o, r) => officialFor(o, r, NOW);
+  // fracionado: compara Math.round(preço*100); meio centavo arredonda para cima e diverge de 39,90
+  assert.ok(ok(offer({ price: 39.904 }), row()), '39,904 → 3990 centavos: casa com 39,90');
+  assert.equal(ok(offer({ price: 39.905 }), row()), null, '39,905 → 3991 centavos: não casa');
+  assert.ok(ok(offer({ price: 19.99 }), row({ price: 19.990000000000002 })), 'ruído de ponto flutuante não derruba');
+  // string numérica: > 0 e a multiplicação coagem para número, então ainda casa
+  assert.ok(ok(offer({ price: '39.9' }), row()), 'preço da oferta em string numérica casa');
+  assert.ok(ok(offer(), row({ price: '39.9' })), 'preço da linha em string numérica casa');
+  // string inválida / vazia / negativa: sem nota oficial
+  for (const bad of ['abc', '', '-1', NaN, 0, null]) assert.equal(ok(offer({ price: bad }), row()), null, `oferta ${JSON.stringify(bad)}`);
+  assert.equal(ok(offer(), row({ price: 'abc' })), null);
+  // nota em string numérica vira número; texto inválido derruba
+  assert.equal(ok(offer(), row({ score: '80' })).score, 80);
+  assert.equal(ok(offer(), row({ score: 'alta' })), null);
+});
+
 // ------------------------------------------------------------------ B) banco real: Telegram = API para a mesma oferta
 if (!process.env.TEST_DATABASE_URL) { console.log(`✓ Alertas pela nota oficial (6C.3): ${n} grupos puros passaram; banco pulado (sem TEST_DATABASE_URL)`); process.exit(0); }
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;

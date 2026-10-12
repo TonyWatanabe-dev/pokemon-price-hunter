@@ -38,5 +38,14 @@ const write = (pid, stores) => fs.writeFileSync(histPath(pid), JSON.stringify({ 
   const h = histSummary('ok', { stores: ['b'], until: '2026-10-03' });
   assert.equal(h.enough, true); assert.equal(h.days, 3); assert.equal(h.drop7d, 0.2);
 }
+// série antiga (último ponto bem no passado): "hoje" é o último dia da série, não a data real; comportamento atual
+{
+  write('antiga', { a: { name: 'A', pts: [['2020-01-01', 100], ['2020-01-02', 100], ['2020-01-03', 80]] } });
+  const h = histSummary('antiga');
+  assert.deepEqual({ ...h }, { days: 3, from: '2020-01-01', enough: true, drop7d: 0.2 }, 'série de 2020 ainda gera queda, sem checar idade');
+  // pontos além da janela de 7 dias do último dia não entram na referência
+  write('antiga-janela', { a: { name: 'A', pts: [['2020-01-01', 500], ['2020-01-10', 100], ['2020-01-11', 100], ['2020-01-12', 90]] } });
+  assert.equal(histSummary('antiga-janela').drop7d, 0.1, 'referência = maior preço dentro de 7 dias (100), não o de 500');
+}
 assert.equal(histSummary('inexistente'), null, 'sem arquivo: sem resumo');
 console.log('OK — qualidade do histórico');
