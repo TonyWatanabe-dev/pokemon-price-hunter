@@ -1061,6 +1061,7 @@ button.score{background:none;padding:0;color:var(--ink);font-weight:700}
 .sp-more{display:inline-block;margin-top:10px;font-size:14px;font-weight:600;background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .legal h2{margin:0;padding:16px 16px 0}.legal>p:first-of-type{color:var(--muted);font-size:13px}.legal a{color:var(--ink);font-weight:600}
 .guide h3{margin:18px 16px 6px;font-size:16px}.guide p,.guide li{font-size:14.5px;color:var(--muted)}.guide ul{margin:0;padding:0 16px 8px 34px}.guide p{margin:0;padding:0 16px 10px}
+.guide .guide-h2{margin:22px 16px 4px;font-size:18px}.guide dl{margin:0;padding:0 16px 8px}.guide dt{margin-top:12px;font-weight:600;color:var(--ink)}.guide dd{margin:2px 0 0;font-size:14.5px;color:var(--muted)}
 .guide table{width:calc(100% - 32px);margin:4px 16px 12px;border-collapse:collapse;font-size:14px}.guide td{padding:7px 4px;border-top:1px solid var(--line);vertical-align:top}.guide td:last-child{text-align:right;white-space:nowrap;font-weight:600;color:var(--ink)}
 
 /* Filtros */
@@ -1345,7 +1346,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -1410,13 +1411,14 @@ const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
 const ROUTES={"":"deals",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
-const PATHS={deals:"",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const PATHS={deals:"",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",guia:"como-funciona",glossario:"guia/glossario",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PRIVATE=["conta","favoritos","alertas","configuracoes"];
 const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
 function parseLoc(){
   const seg=location.pathname.replace(/^\/+|\/+$/g,"").split("/");
   if(seg[0]==="produto"&&seg[1])return{view:"produto",slug:decodeURIComponent(seg[1])};
   if((seg[0]==="colecao"||seg[0]==="tipo")&&seg[1])return{view:seg[0],slug:decodeURIComponent(seg[1])};
+  if(seg[0]==="guia"&&seg[1]==="glossario")return{view:"glossario",pid:null};   /* Lote E */
   return{view:ROUTES[seg[0]]||"deals",pid:null};
 }
 (function(){const h=location.hash.slice(1);if(h&&OLDHASH[h])history.replaceState(null,"","/"+OLDHASH[h]);
@@ -1822,6 +1824,11 @@ function revealInit(){
 const colSlugOf=(c)=>slugify(c.name);const typeSlugOf=(t)=>slugify(t.label);
 const colHref=(id)=>{const c=(S.collections||[]).find((x)=>x.id===id);return c?"/colecao/"+colSlugOf(c):null};
 const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo/"+typeSlugOf(t):null};
+/* Lote E: /tipo/blister é um grupo virtual que reúne os formatos de blister (unitário, duplo, triplo, quádruplo). */
+const isBlisterType=(t)=>t.group==="Blisters"||/^blister/i.test(String(t.id));
+function typeGroupOf(slug){const t=(S.types||[]).find((x)=>typeSlugOf(x)===slug);if(t)return t;
+  if(slug==="blister"){const subs=(S.types||[]).filter(isBlisterType);if(subs.length)return{id:"blister",label:"Blister",virtual:true,subs,ids:subs.map((x)=>x.id)}}return null}
+const inGroup=(g,p)=>g.ids?g.ids.includes(p.type):p.type===g.id;
 function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0});focusTitle()}
 /* Coleções como cartas: logo oficial da coleção (arquivo em logos/colecoes, enviado pelo responsável do site)
    ou o nome escrito em destaque. Borda holográfica e inclinação. Clique abre /produtos filtrado pela coleção. */
@@ -1863,19 +1870,20 @@ function groupNav(){
 }
 function renderGroup(kind,slug){
   const isCol=kind==="colecao";
-  const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):(S.types||[]).find((t)=>typeSlugOf(t)===slug);
+  const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):typeGroupOf(slug);
   if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Página não encontrada</h3><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
   const name=isCol?g0.name:g0.label;
-  const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:p.type===g0.id));
+  const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:inGroup(g0,p)));
   const best={},n={};if(S.slim)for(const p of ps)n[p.id]=p.liveCount||0;for(const o of OFF){if(!live(o))continue;if(!S.slim)n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||byTot(o,best[o.productId])<0)best[o.productId]=o}
   const list=ps.map((p)=>({p,o:best[p.id]||OFF.filter((o)=>o.productId===p.id).sort(byTot)[0]||null,n:n[p.id]||0}))
     .sort((a,b)=>((b.n?1:0)-(a.n?1:0))||((oppScore(b.o)??-1)-(oppScore(a.o)??-1))||((discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9)));
   const inStock=list.filter((e)=>e.n).length;const low=list.filter((e)=>e.n).map((e)=>e.o.total).sort((a,b)=>a-b)[0];
-  document.title=isCol?`${name} Pokémon TCG: preços | TCG Price Hunter`:`Preço de ${name} Pokémon TCG no Brasil | TCG Price Hunter`;
+  document.title=isCol?`${name} Pokémon TCG: preços | TCG Price Hunter`:g0.virtual?`Blister Pokémon TCG: preços e onde comprar mais barato | TCG Price Hunter`:`Preço de ${name} Pokémon TCG no Brasil | TCG Price Hunter`;
   $("#view").innerHTML=`<div class="opp grp">
   <nav class="crumbs" aria-label="Caminho"><a href="/" data-go="">Início</a>${ic("caret-down","icon chev")}<span>${esc(name)}</span></nav>
-  <header class="opp-head"><h1>${isCol?`${esc(name)}: preços de Pokémon TCG lacrado`:`${esc(name)} Pokémon TCG: preços no Brasil`}</h1>
+  <header class="opp-head"><h1>${isCol?`${esc(name)}: preços de Pokémon TCG lacrado`:g0.virtual?`Blister Pokémon TCG: preços e onde comprar mais barato`:`${esc(name)} Pokémon TCG: preços no Brasil`}</h1>
   <p>${list.length} ${list.length===1?"produto":"produtos"}${isCol?` da coleção ${esc(name)}`:` neste formato, de todas as coleções`}, comparados com o preço sugerido da Copag. ${inStock?`${inStock} com estoque agora${low?`, a partir de ${money(low)}`:""}.`:"Nenhum com estoque agora."}</p></header>
+  ${g0.virtual?`<p class="grp-subs">Por tipo: ${g0.subs.map((t)=>`<a class="gchip t" href="/tipo/${typeSlugOf(t)}" data-group="tipo/${typeSlugOf(t)}">${esc(t.label)}</a>`).join(" ")}</p>`:""}
   ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`:""}
   ${groupNav()}</div>`;
 }
@@ -1959,20 +1967,29 @@ function renderCopag(){
   <p class="summary" style="margin:0;padding:0 16px 16px"><span><b>${off}</b> oficiais</span><span><b>${ref}</b> só referência</span><span><b>${none}</b> sem preço</span></p></section>
   ${sections}</div>`;
 }
+/* Lote E: o texto do guia, as perguntas frequentes e o glossário vêm de api/_lib/guia.mjs (fonte única). A linha
+   const GUIA abaixo é a cópia literal (JSON) daquele objeto: test/guia-sync-tests.js confere que as duas são idênticas. */
+const GUIA={"title":"Como o site avalia as ofertas","intro":"O objetivo é um só: te ajudar a fazer bons negócios com produto lacrado em português, sem cair em preço inflado ou golpe.","sections":[{"h":"Opportunity Score (0 a 100)","blocks":[{"p":"A nota responde a uma pergunta: quão interessante é comprar esta oferta agora. Quem calcula é o Opportunity Engine, com os preços já coletados das lojas. Cada oferta tem uma nota só, e ela é a mesma no início, em Oportunidades, nas listas e na página do produto."},{"table":[["Referência atual","Desconto em relação ao preço sugerido Copag atual e verificado. Sem ele, em relação a uma referência de mercado formada por várias lojas.","peso 30%"],["Histórico","Onde o preço está entre o menor e a média já vistos. Só conta com 3 dias ou mais de dados.","peso 20%"],["Mercado","Distância da mediana das lojas com estoque agora. Precisa de 2 lojas ou mais.","peso 20%"],["Menor preço agora","Distância do menor preço com estoque neste momento.","peso 10%"],["Frete","Frete informado e quanto ele pesa no total. Frete desconhecido não conta.","peso 10%"],["Confiabilidade","Reputação pública da loja no Reclame Aqui e vendedor oficial.","peso 10%"]]},{"p":"Um critério sem dado confiável fica de fora: nunca é inventado. Com pouca evidência, a nota fica perto de 50. Alguns limites seguram a nota, mesmo com bom desconto: estoque não confirmado, pré-venda, preço acima da referência atual, loja mal avaliada ou preço fora do esperado para o produto."}]},{"h":"O que cada faixa quer dizer","blocks":[{"bands":[["excelente","Excelente oportunidade","90 a 100"],["boa","Boa oportunidade","75 a 89"],["normal","Oportunidade normal","50 a 74"],["baixa","Oportunidade baixa","0 a 49"]]}]},{"h":"Confiança","blocks":[{"p":"Vem separada da nota e diz o quanto os dados por trás dela estão completos. Cai com histórico curto, frete desconhecido, poucas lojas com estoque, queda de preço ainda não confirmada ou referência de mercado formada só por marketplaces. Alta: 75% ou mais. Média: de 50% a 74%. Baixa: abaixo de 50%."}]},{"h":"Motivos e avisos","blocks":[{"p":"Cada nota traz os motivos que pesaram a favor ou contra (por exemplo, \"28,7% abaixo do preço sugerido Copag\") e os avisos para conferir antes de comprar (por exemplo, \"Frete não confirmado\"). Toque em <b>Por que esta nota?</b> para ver."}]},{"h":"Sem nota oficial","blocks":[{"p":"Quando o motor ainda não avaliou a oferta, ou quando as notas estão indisponíveis, o site mostra \"Sem nota oficial\". Nenhuma nota é estimada no lugar."},{"p":"O Opportunity Score é uma avaliação automática feita por algoritmo, com dados públicos das lojas. Não é recomendação financeira nem de compra."}]},{"h":"Preço sugerido Copag","blocks":[{"p":"Só vale o preço publicado na loja oficial da Copag, com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto."}]},{"h":"O que nunca entra no ranking","blocks":[{"ul":["Preço mais de 45% abaixo da Copag ou da média das lojas (pode ser erro, usado ou golpe).","Estoque não confirmado pela loja.","Produto usado, aberto, importado ou em outro idioma.","Pistas do Telegram, que ninguém verificou."]}]},{"h":"Antes de comprar","blocks":[{"ul":["Simule o frete: ele muda a conta.","Confira CNPJ, avaliações e política de troca de lojas que você não conhece.","Prefira Pix ou cartão com proteção. Desconfie de pagamento por fora.","Veja o menor preço já visto na ficha do produto antes de decidir."]}]}],"faq":[{"q":"O que é o Opportunity Score e o que significam as faixas?","a":"É uma nota de 0 a 100 que diz quão interessante é comprar uma oferta de Pokémon TCG lacrado agora, calculada pelo Opportunity Engine com o preço, o histórico, o mercado, o frete e a reputação da loja. Excelente: 90 a 100. Boa: 75 a 89. Normal: 50 a 74. Baixa: 0 a 49. A nota é a mesma em todas as páginas do site."},{"q":"O que é a \"confiança\" de uma oferta?","a":"É uma medida separada da nota: diz o quanto os dados por trás dela estão completos. Alta (75% ou mais) quando há histórico, frete informado e várias lojas com estoque; média (50% a 74%) ou baixa (abaixo de 50%) quando falta dado, como frete desconhecido, histórico curto ou mercado formado só por marketplaces."},{"q":"O que é o preço sugerido Copag e de onde ele vem?","a":"É o preço de venda sugerido publicado pela Copag, distribuidora oficial de Pokémon TCG no Brasil, na loja oficial dela. O site só usa como oficial o valor lido na loja da Copag, com link e data da leitura. Preço divulgado por outras lojas ou canais aparece como referência, sem entrar no cálculo do desconto."},{"q":"Por que pré-venda e produto sem estoque não entram no ranking?","a":"Porque não dá para comprar agora pelo preço mostrado. Oferta sem estoque confirmado pela loja fica fora da comparação, e pré-venda aparece numa página própria, com a nota limitada: o preço pode mudar até o lançamento e a loja pode não entregar. O ranking só compara oferta com estoque confirmado."},{"q":"O que significa \"preço no Pix\" e \"preço antes do frete\"?","a":"\"No Pix\" é o preço com desconto para pagamento por Pix, quando a loja anuncia um valor menor nessa forma de pagamento; o site sinaliza quando o preço mostrado é esse. \"Antes do frete\" ou \"frete a calcular\" quer dizer que a loja não informou o frete para o CEP consultado, então o total pode subir. Quando o frete é conhecido, ele entra no total e na comparação."},{"q":"Como o site ganha dinheiro? Isso muda a nota?","a":"O site é gratuito e não tem anúncios. Alguns links para a Amazon e, quando ativados, para o Mercado Livre são de afiliado: o site pode receber uma comissão se você comprar por eles, sem custo extra para você. O afiliado nunca muda o ranking, a melhor oferta, o preço, o frete nem a nota: o cálculo não lê a configuração de afiliados, e isso é conferido por teste automático."},{"q":"Como evitar golpe ao comprar Pokémon TCG lacrado?","a":"Desconfie de preço muito abaixo do mercado (mais de 45% abaixo da Copag fica fora do ranking por isso), confira CNPJ, reputação no Reclame Aqui e política de troca de lojas que você não conhece, prefira Pix para CNPJ da loja ou cartão com proteção e nunca pague por fora do site da loja. Ao receber, confira o lacre e a embalagem em português antes de aceitar."},{"q":"Como criar um alerta de preço?","a":"Abra a página do produto, vá até \"Me avise quando baixar\", digite o preço que quer pagar e toque em \"Criar alerta\". É preciso ter uma conta gratuita (e-mail ou Google). Quando uma loja acompanhada tiver estoque por esse valor ou menos, o alerta aparece em Alertas e na própria página do produto. Dá para ter até 50 alertas."}],"glossario":[{"t":"Booster","d":"Pacote lacrado com cerca de 10 cartas aleatórias de uma coleção. É a menor unidade de venda e a base dos outros formatos."},{"t":"Booster Box","d":"Caixa lacrada com 36 boosters da mesma coleção, vendida pela Copag e pelas lojas. O preço por booster costuma ser o menor entre os formatos."},{"t":"Blister","d":"Cartela lacrada com 1, 2, 3 ou 4 boosters e, às vezes, uma carta promocional ou moeda. Vendida como blister unitário, duplo, triplo ou quádruplo."},{"t":"ETB (Treinador Avançado)","d":"Elite Trainer Box, a \"Caixa de Treinador Avançado\": kit com boosters, cartas de energia, dados, marcadores e caixa para guardar o baralho, de uma coleção específica."},{"t":"Lata","d":"Lata lacrada com boosters e uma ou mais cartas promocionais (geralmente um Pokémon ex ou V). Versões menores são vendidas como minilata."},{"t":"Deck","d":"Baralho pronto para jogar, com 60 cartas, vendido lacrado. Inclui os decks de batalha, kits de treinador e decks de desafio."},{"t":"Coleção","d":"Conjunto de cartas lançado de uma vez, com nome próprio (por exemplo, Escarlate e Violeta: Evoluções Prismáticas). Cada produto lacrado pertence a uma coleção."},{"t":"Copag","d":"Distribuidora oficial de Pokémon TCG no Brasil. Fabrica as cartas em português e publica o preço sugerido de cada produto na loja oficial."},{"t":"Preço sugerido","d":"Preço de venda recomendado pela Copag para um produto. No site, só vale o valor publicado na loja oficial da Copag, com link e data; o resto é referência."},{"t":"Pix","d":"Pagamento instantâneo do Banco Central. Muitas lojas dão desconto no Pix: quando a oferta é \"no Pix\", o preço mostrado vale só nessa forma de pagamento."},{"t":"Opportunity Score","d":"Nota de 0 a 100 que diz quão interessante é comprar uma oferta agora. Excelente de 90 a 100, boa de 75 a 89, normal de 50 a 74 e baixa de 0 a 49."},{"t":"Confiança","d":"Quanto os dados por trás de uma nota estão completos: alta (75% ou mais), média (50% a 74%) ou baixa (abaixo de 50%). Cai com frete desconhecido, histórico curto ou poucas lojas."},{"t":"Pré-venda","d":"Produto anunciado antes do lançamento, com entrega futura. Fica numa página própria e fora do ranking, porque o preço e a entrega podem mudar."},{"t":"Frete comparável","d":"Regra de comparação do site: oferta com frete conhecido (ou grátis) é comparada pelo total; oferta com frete desconhecido nunca vence uma com frete conhecido."},{"t":"Reclame Aqui","d":"Site público de reclamações de consumidores. A reputação da loja lá entra no critério de confiabilidade da nota, com a data da consulta e o link para a fonte."},{"t":"Lacrado","d":"Produto fechado de fábrica, com o selo intacto. O site só compara produto lacrado em português; usado, aberto, importado ou em outro idioma fica fora."}]};
+function guiaBlock(b){
+  if(b.p)return`<p>${b.p}</p>`;
+  if(b.ul)return`<ul>${b.ul.map((x)=>`<li>${x}</li>`).join("")}</ul>`;
+  if(b.table)return`<table>${b.table.map(([n,h,w])=>`<tr><td><b style="color:var(--ink)">${n}</b><br>${h}</td><td>${w}</td></tr>`).join("")}</table>`;
+  if(b.bands)return`<table>${b.bands.map(([k,n,r])=>`<tr><td><b style="color:${BAND_UI[k][1]}">●</b> ${n}</td><td>${r}</td></tr>`).join("")}</table>`;
+  return"";
+}
 function renderGuide(){
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h1 class="panel-h1">Como o site avalia as ofertas</h1>
-  <p>O objetivo é um só: te ajudar a fazer bons negócios com produto lacrado em português, sem cair em preço inflado ou golpe.</p>
-  <h3>Opportunity Score (0 a 100)</h3><p>A nota responde a uma pergunta: quão interessante é comprar esta oferta agora. Quem calcula é o Opportunity Engine, com os preços já coletados das lojas. Cada oferta tem uma nota só, e ela é a mesma no início, em Oportunidades, nas listas e na página do produto.</p>
-  <table>${[["Referência atual","Desconto em relação ao preço sugerido Copag atual e verificado. Sem ele, em relação a uma referência de mercado formada por várias lojas.","30%"],["Histórico","Onde o preço está entre o menor e a média já vistos. Só conta com 3 dias ou mais de dados.","20%"],["Mercado","Distância da mediana das lojas com estoque agora. Precisa de 2 lojas ou mais.","20%"],["Menor preço agora","Distância do menor preço com estoque neste momento.","10%"],["Frete","Frete informado e quanto ele pesa no total. Frete desconhecido não conta.","10%"],["Confiabilidade","Reputação pública da loja no Reclame Aqui e vendedor oficial.","10%"]].map(([n,h,w])=>`<tr><td><b style="color:var(--ink)">${n}</b><br>${h}</td><td>peso ${w}</td></tr>`).join("")}</table>
-  <p>Um critério sem dado confiável fica de fora: nunca é inventado. Com pouca evidência, a nota fica perto de 50. Alguns limites seguram a nota, mesmo com bom desconto: estoque não confirmado, pré-venda, preço acima da referência atual, loja mal avaliada ou preço fora do esperado para o produto.</p>
-  <h3>O que cada faixa quer dizer</h3><table>${[["excelente","90 a 100"],["boa","75 a 89"],["normal","50 a 74"],["baixa","0 a 49"]].map(([k,r])=>`<tr><td><b style="color:${BAND_UI[k][1]}">●</b> ${BAND_UI[k][0]}</td><td>${r}</td></tr>`).join("")}</table>
-  <h3>Confiança</h3><p>Vem separada da nota e diz o quanto os dados por trás dela estão completos. Cai com histórico curto, frete desconhecido, poucas lojas com estoque, queda de preço ainda não confirmada ou referência de mercado formada só por marketplaces. Alta: 75% ou mais. Média: de 50% a 74%. Baixa: abaixo de 50%.</p>
-  <h3>Motivos e avisos</h3><p>Cada nota traz os motivos que pesaram a favor ou contra (por exemplo, "28,7% abaixo do preço sugerido Copag") e os avisos para conferir antes de comprar (por exemplo, "Frete não confirmado"). Toque em <b>Por que esta nota?</b> para ver.</p>
-  <h3>Sem nota oficial</h3><p>Quando o motor ainda não avaliou a oferta, ou quando as notas estão indisponíveis, o site mostra "Sem nota oficial". Nenhuma nota é estimada no lugar.</p>
-  <p>O Opportunity Score é uma avaliação automática feita por algoritmo, com dados públicos das lojas. Não é recomendação financeira nem de compra.</p>
-  <h3>Preço sugerido Copag</h3><p>Só vale o preço publicado na loja oficial da Copag, com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto.</p>
-  <h3>O que nunca entra no ranking</h3><ul><li>Preço mais de 45% abaixo da Copag ou da média das lojas (pode ser erro, usado ou golpe).</li><li>Estoque não confirmado pela loja.</li><li>Produto usado, aberto, importado ou em outro idioma.</li><li>Pistas do Telegram, que ninguém verificou.</li></ul>
-  <h3>Antes de comprar</h3><ul><li>Simule o frete: ele muda a conta.</li><li>Confira CNPJ, avaliações e política de troca de lojas que você não conhece.</li><li>Prefira Pix ou cartão com proteção. Desconfie de pagamento por fora.</li><li>Veja o menor preço já visto na ficha do produto antes de decidir.</li></ul>
+  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h1 class="panel-h1">${GUIA.title}</h1>
+  <p>${GUIA.intro}</p>
+  ${GUIA.sections.map((s)=>`<h3>${s.h}</h3>${s.blocks.map(guiaBlock).join("")}`).join("")}
+  <h2 class="guide-h2">Perguntas frequentes</h2>
+  ${GUIA.faq.map((f)=>`<h3>${f.q}</h3><p>${f.a}</p>`).join("")}
+  <p>Termos do hobby explicados: <a href="/guia/glossario" data-go="glossario">glossário de Pokémon TCG lacrado</a>.</p>
+  </section></div>`;
+}
+function renderGlossario(){
+  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h1 class="panel-h1">Glossário de Pokémon TCG lacrado</h1>
+  <p>Os termos que aparecem nas ofertas e no guia <a href="/como-funciona" data-go="guia">Como funciona</a>, em ordem de uso.</p>
+  <dl class="glossario">${GUIA.glossario.map((x)=>`<dt>${x.t}</dt><dd>${x.d}</dd>`).join("")}</dl>
   </section></div>`;
 }
 function renderLegal(kind){
@@ -2510,12 +2527,12 @@ function renderConfig(){
 }
 
 const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
-const TITLES={busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",guia:"Como funciona",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
+const TITLES={busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
   const tq=$("#tq");if(tq&&document.activeElement!==tq){tq.value=view==="busca"?(F.q||""):"";const x=tq.closest(".sbox")?.querySelector(".sbox-x");if(x)x.hidden=!tq.value}
-  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","guia","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
+  const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","guia","glossario","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   if(S?.slim&&PRIVATE.includes(view))ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
@@ -2534,6 +2551,7 @@ function render(){
   else if(view==="pistas")renderTips();
   else if(view==="copag")renderCopag();
   else if(view==="guia")renderGuide();
+  else if(view==="glossario")renderGlossario();
   else if(view==="termos")renderLegal("termos");
   else if(view==="privacidade")renderLegal("privacidade");
   else if(view==="prevenda")renderPre();
@@ -2999,9 +3017,9 @@ async function loadPage(key){
     if(!curPid||curPid!==d.product.id){curPid=d.product.id;if(!SLUG[curPid]){SLUG[curPid]=parseLoc().slug||curPid;BYSLUG[SLUG[curPid]]=curPid}}
     PAGE_DONE.add("p:"+curPid);return true}
   if(key.startsWith("colecao:")||key.startsWith("tipo:")){const isCol=key.startsWith("colecao:");const slug=key.slice(key.indexOf(":")+1);
-    const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):(S.types||[]).find((t)=>typeSlugOf(t)===slug);if(!g0)return true;
-    const d=await apiGet(`site/ofertas?${isCol?"colecao":"tipo"}=${encodeURIComponent(g0.id)}`);if(!d||d.notFound)return false;
-    mergeProducts(d.products);mergeOffers(d.offers);mergeSide(d);return true}
+    const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):typeGroupOf(slug);if(!g0)return true;
+    for(const id of g0.ids||[g0.id]){const d=await apiGet(`site/ofertas?${isCol?"colecao":"tipo"}=${encodeURIComponent(id)}`);if(!d||d.notFound)return false;
+      mergeProducts(d.products);mergeOffers(d.offers);mergeSide(d)}return true}
   if(key.startsWith("b:")){const q=key.slice(2);const ids=q?searchProducts(q).slice(0,60).map(({p})=>p.id):[];
     if(!q)return true;const d=await apiGet(`site/ofertas?busca=${encodeURIComponent(q)}${ids.length?"&produtos="+ids.map(encodeURIComponent).join(","):""}`);if(!d||d.notFound)return false;
     mergeProducts(d.products||[]);mergeOffers(d.offers||[]);mergeSide({sources:d.sources,reputation:d.reputation});SEARCH_TIPS.set(q,d.tips||[]);return true}

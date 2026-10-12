@@ -69,6 +69,10 @@
       "destination": "/api/pagina?t=como-funciona"
     },
     {
+      "source": "/guia/glossario",
+      "destination": "/api/pagina?t=glossario"
+    },
+    {
       "source": "/termos",
       "destination": "/api/pagina?t=termos"
     },

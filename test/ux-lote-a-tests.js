@@ -213,8 +213,8 @@ await t('7. cada rota desenha um único H1 em #view', async () => {
     const ctx = { OFF: [pre], P: { 'p-a': PA }, Object, ic, $: () => slot, dealCard: (e, opt) => `<article><${opt.h} class="deal-name">${e.p.typeLabel}</${opt.h}></article>` };
     run(cutFn('function renderPre'), ctx, 'renderPre').renderPre(); got.prevenda = slot.innerHTML; assert.match(got.prevenda, /<h2 class="deal-name">/, 'pré-venda: cartões em H2');
     ctx.OFF = []; ctx.__t.renderPre(); got['prevenda-vazia'] = slot.innerHTML; }
-  // /guia
-  { const slot = { innerHTML: '' }; run(cutFn('function renderGuide'), { BAND_UI: { excelente: ['Excelente', '#0a0'], boa: ['Boa', '#0a0'], normal: ['Normal', '#aa0'], baixa: ['Baixa', '#a00'] }, ic, $: () => slot }, 'renderGuide').renderGuide(); got.guia = slot.innerHTML; }
+  // /guia (Lote E: o texto vem da const GUIA, logo acima de renderGuide)
+  { const slot = { innerHTML: '' }; run(cut('const GUIA=', 'function renderGlossario'), { BAND_UI: { excelente: ['Excelente', '#0a0'], boa: ['Boa', '#0a0'], normal: ['Normal', '#aa0'], baixa: ['Baixa', '#a00'] }, ic, $: () => slot }, 'renderGuide').renderGuide(); got.guia = slot.innerHTML; }
   for (const [route, h] of Object.entries(got)) assert.equal(h1s(h), 1, `${route}: um H1 (${h1s(h)})`);
   assert.match(got.guia, /<h1 class="panel-h1">Como o site avalia as ofertas<\/h1>/);
   assert.match(got.home, /<h1><span class="ln"/, 'home: H1 do palco');
