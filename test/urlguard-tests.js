@@ -13,6 +13,13 @@ for (const u of ['http://[64:ff9b::a9fe:a9fe]/', 'http://[::a9fe:a9fe]/', 'http:
   assert.throws(() => assertSafeUrl(u), (e) => e.unsafe === true, `deveria bloquear ${u}`);
 assert.doesNotThrow(() => assertSafeUrl('https://[2001:4860:4860::8888]/'), 'IPv6 público continua permitido');
 
+// Formas alternativas de IP (decimal, hex, octal, curto), IPv4-mapeado em hex, credenciais e esquemas não-http
+for (const u of ['http://2130706433/', 'http://0x7f000001/', 'http://017700000001/', 'http://0x7f.1/', 'http://127.1/', 'http://[::ffff:7f00:1]/', 'http://[::ffff:a9fe:a9fe]/', 'http://user@example.com/', 'http://:pw@example.com/', 'data:text/plain,hi', 'data://x/'])
+  assert.throws(() => assertSafeUrl(u), (e) => e.unsafe === true, `deveria bloquear ${u}`);
+// Limite documentado: a guarda é sintática e não resolve DNS; hostname público que resolve para IP privado (DNS rebinding) passa.
+for (const u of ['http://localtest.me/', 'http://127.0.0.1.nip.io/'])
+  assert.doesNotThrow(() => assertSafeUrl(u), `limite conhecido: hostname público não é resolvido (${u})`);
+
 // api/pagina.mjs: só busca app.html no host do SITE ou do próprio deploy (nunca em outro *.vercel.app)
 {
   const { pickFetchHost } = await import('../api/pagina.mjs');
