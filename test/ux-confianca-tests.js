@@ -9,7 +9,7 @@ const pagina = fs.readFileSync(new URL('../api/pagina.mjs', import.meta.url), 'u
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
 const oppCode = cut('/* Categorias do site', '/* Pré-vendas: status sempre visível */');
 const homeCode = cut('/* Home (6B.2): pódio, sequência e destaques', 'let stageIO=null;');
-const hlCode = cut('/* Destaques (6B.2)', 'function preHTML(){');
+const hlCode = cut('/* Destaques (6B.2)', 'function tickerHTML(){');
 const freshCode = cut('const FRESH_LIM=', 'setInterval(fresh,30e3);');
 const apiCode = cut('const APIC=new Map();', 'const PAGE_DONE=');
 const clickCode = cut('/* UX-E: clique em "Ver oferta"', 'function track(name,data){');

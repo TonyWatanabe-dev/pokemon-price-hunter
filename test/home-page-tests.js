@@ -7,7 +7,7 @@ import vm from 'node:vm';
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const fullHtml = html; // a página inteira (dentro de alguns testes, html é o trecho renderizado)
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
-const hlCode = cut('/* Destaques (6B.2)', 'function preHTML(){');
+const hlCode = cut('/* Destaques (6B.2)', 'function tickerHTML(){');
 const homeCode = cut('/* Home (6B.2): pódio, sequência e destaques', 'let stageIO=null;');
 const renderDealsCode = cut('function renderDeals(){', '/* Produtos: todos os produtos com oferta');
 const oppCode = cut('/* Categorias do site', '/* Pré-vendas: status sempre visível */');
