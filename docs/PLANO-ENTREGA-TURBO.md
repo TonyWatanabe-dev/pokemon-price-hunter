@@ -134,6 +134,8 @@ As fases avançam por **critérios de saída**, não por calendário artificial.
 
 Trabalho:
 - Confirmar \`TAREFAS_MAX=10\` nas variáveis do repo e conferir \`TAREFAS_OPERADORES\`; começar/validar com 3 e aumentar depois do teste de concorrência.
+- Implementar classificação determinística de tarefas e esforço adaptativo por sessão, roteamento econômico quando suportado, escalada com base em falhas e gestão de orçamento/quota. Medir tokens/custo apenas quando houver telemetria real.
+- Adicionar retries limitados, backoff, fila persistente, checkpoints e retomada; diante de rate limit ou quota esgotada, preservar progresso e reduzir a carga em vez de repetir tentativas caras.
 - Confirmar cron-job.org ativo para Hunter e Vigia, verificar os últimos runs \`workflow_dispatch\` e provar uma notificação de teste nos canais operacionais configurados.
 - Implementar Planner + Dispatcher com fila aprovada, dependências, idempotência, limite de concorrência, quarentena e logs sanitizados.
 - Implementar QA/PR Reviewer independente, sem permissão de merge/deploy, com inspeção de diff, testes, risco, arquivos críticos e critérios da issue.
@@ -143,7 +145,10 @@ Trabalho:
 Critérios de saída:
 - Uma tarefa elegível é selecionada sem alguém aplicar manualmente seu label individual; dispatcher não começa tarefa não autorizada.
 - Reexecuções não geram duas branches/PRs para a mesma tarefa.
-- Simulação/teste com jobs concorrentes prova limite, fila, retry, cancelamento e retomada após falha.\n- Diferentes classes de tarefa recebem configurações de esforço coerentes; escalada/desescalada e orçamento são demonstrados por testes ou telemetria real.\n- Há métricas auditáveis de consumo disponíveis (ou uma limitação documentada) e o fallback por quota/rate limit preserva a fila sem tentativas ilimitadas.\n- Testes comparativos mostram que a economia não enfraquece CI, golden tests, revisão ou critérios de segurança.
+- Simulação/teste com jobs concorrentes prova limite, fila, retry, cancelamento e retomada após falha.
+- Diferentes classes de tarefa recebem configurações de esforço coerentes; escalada/desescalada e orçamento são demonstrados por testes ou telemetria real.
+- Há métricas auditáveis de consumo disponíveis (ou uma limitação documentada) e o fallback por quota/rate limit preserva a fila sem tentativas ilimitadas.
+- Testes comparativos mostram que a economia não enfraquece CI, golden tests, revisão ou critérios de segurança.
 - Há evidência de scheduler primário e fallback, watchdog, alerta e recuperação.
 - Gate R0/R1/R2/R3 documentado e testado; a permissão do worker de tarefas continua sem merge/deploy.
 
