@@ -50,6 +50,8 @@ const braveResults = (q) => /lacrado|caos/i.test(q) ? [
   { url: 'https://morta.test/produtos/pokemon-box', title: 'removida' },
   { url: 'https://nova.test/produtos/pokemon-booster-box', title: 'loja nova boa' },
   { url: 'https://meio.test/', title: 'candidata' },
+  { url: 'https://semreal.test/', title: 'jogo digital sem R$' },
+  { url: 'https://empresas.atacado-tcg.test/', title: 'portal B2B' },
   { url: 'https://gringa.test/pokemon', title: 'sem sinal BR' },
   { url: 'https://fechada.test/', title: 'robots proíbe' },
   { url: 'http://127.0.0.1/pokemon', title: 'insegura' },
@@ -73,6 +75,10 @@ const fake = async (url, opt = {}) => {
     if (u.pathname === '/') return html('<html><body>Loja de brinquedos. Pelúcia Pokémon por R$ 59,90</body></html>');
     return html('', 404);
   }
+  if (u.host === 'semreal.test') {
+    if (u.pathname === '/products.json') return json({ products: [{ title: 'Pokémon TCG Pocket pack', variants: [] }] });
+    if (u.pathname === '/') return html('<html lang="pt-BR"><body>Pokémon TCG Pocket: compre booster com moedas do jogo</body></html>');
+  }
   if (u.host === 'gringa.test') return html('<html lang="en"><body>Pokemon TCG booster box $ 120</body></html>');
   return html('', 404);
 };
@@ -91,7 +97,7 @@ const quiet = () => {};
   assert.equal(b.pick().id, 'brave');
   assert.equal(b.status().bing.reason, 'sem chave');
   const res = await b.byId('brave').search('caos', { count: 20 });
-  assert.equal(res.length, 12); assert.ok(res.every((x) => x.url && 'title' in x && 'snippet' in x));
+  assert.equal(res.length, 14); assert.ok(res.every((x) => x.url && 'title' in x && 'snippet' in x));
   // bing/serper: implementações reais atrás da chave (chamadas simuladas aqui)
   const all = registry({ BING_SEARCH_KEY: 'k', SERPER_API_KEY: 'k' });
   assert.equal((await all.byId('bing').search('q'))[0].url, 'https://nova.test/');
@@ -159,7 +165,7 @@ const quiet = () => {};
   requested.length = 0;
   const r = await runDiscovery({ log: quiet, env: { HUNTER_DISCOVERY: '0', BRAVE_API_KEY: 'k' } });
   assert.deepEqual([r.ok, r.skipped], [true, 'desligado']); assert.equal(requested.length, 0);
-  assert.ok(!fs.existsSync(dat('discovery.json')) && !fs.existsSync(cfg('lojas/descobertas.txt')));
+  assert.ok(!fs.existsSync(dat('discovery.json')) && !fs.existsSync(dat('discovery-stores.txt')));
   assert.equal(enabled({ HUNTER_DISCOVERY: '0' }), false); assert.equal(enabled({}), true);
   const n = await runDiscovery({ log: quiet, env: {} });
   assert.deepEqual([n.ok, n.skipped], [true, 'sem conector']); assert.equal(requested.length, 0);
@@ -175,10 +181,13 @@ const quiet = () => {};
   assert.ok(r.connectors.bing.reason === 'sem chave' && r.connectors.serper.reason === 'sem chave');
   assert.ok(logs.some((m) => /bing indisponível: sem chave/.test(m)), 'conector sem chave reportado');
   assert.ok(!requested.some((u) => /mercadolivre|morta\.test|127\.0\.0\.1/.test(u)), 'marketplace, removida e URL insegura: nenhuma requisição');
-  const txt = fs.readFileSync(cfg('lojas/descobertas.txt'), 'utf8');
+  const txt = fs.readFileSync(dat('discovery-stores.txt'), 'utf8');
   assert.match(txt, /^https:\/\/nova\.test  # DIE brave store:\S+ 2026-10-12$/m, 'loja aceita = linha ATIVA');
   assert.match(txt, /^# candidata https:\/\/meio\.test  # menciona Pokémon, mas sem sinal de TCG lacrado \(DIE brave /m, 'candidata = linha comentada');
   assert.ok(!/gringa\.test|fechada\.test|morta\.test|shop\.test/.test(txt), 'rejeitadas, removidas e conhecidas não entram no arquivo');
+  assert.match(txt, /^# candidata https:\/\/semreal\.test  # sem preço em R\$ na página inicial/m, 'Pokémon + lacrado + plataforma, mas sem R$: só candidata (falso positivo da 1ª rodada real)');
+  assert.ok(!requested.some((u) => /empresas\.atacado-tcg\.test/.test(u)) && !/atacado-tcg/.test(txt), 'subdomínio B2B ignorado sem requisição');
+  assert.ok(!fs.existsSync(cfg('lojas/descobertas.txt')), 'descoberta não escreve na config (main protegida)');
   const urls = rd(dat('discovery-urls.json'));
   assert.deepEqual(urls.ld.map((x) => x.url), ['https://ld.test/produtos/pokemon-booster-box-caos-ascendente'], 'só a URL de produto nova da loja jsonld conhecida');
   assert.ok(!urls.shop, 'loja Shopify não recebe productUrls');
@@ -196,7 +205,7 @@ const quiet = () => {};
   const n1 = requested.length;
   const r2 = await runDiscovery({ log: quiet, env: { BRAVE_API_KEY: 'k', DISCOVERY_BUDGET: '5' }, now: new Date('2026-10-13T09:17:00Z') });
   assert.equal(r2.ok, true);
-  assert.equal(fs.readFileSync(cfg('lojas/descobertas.txt'), 'utf8'), txt, 'nenhuma linha repetida');
+  assert.equal(fs.readFileSync(dat('discovery-stores.txt'), 'utf8'), txt, 'nenhuma linha repetida');
   assert.ok(!requested.slice(n1).some((u) => /nova\.test|meio\.test|gringa\.test|fechada\.test/.test(u)), 'hosts com veredito recente não são revalidados');
   assert.equal(rd(dat('discovery-urls.json')).ld.length, 1, 'URL já na fila não duplica');
   const sel = L.selectQueries(L.loadLedger(), generateQueries(catalog), 5, Date.parse('2026-10-14T00:00:00Z'));

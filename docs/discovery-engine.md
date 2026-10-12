@@ -11,7 +11,7 @@ Código em `src/discovery/`. Comando: `npm run discovery`. Relatório: `npm run 
 ## Arquitetura (uma rodada)
 ```
 connectors/  →  queries.js  →  ledger.js (seleção)  →  conector.search  →  pipeline.js  →  escritas
- brave/bing/     catálogo →      score heurístico       [{url,title,snippet}]   classifica/valida   config/lojas/descobertas.txt
+ brave/bing/     catálogo →      score heurístico       [{url,title,snippet}]   classifica/valida   data/discovery-stores.txt
  serper          consultas       budget por rodada                                                  data/discovery-urls.json
                                                                                                     data/discovery.json (ledger)
                                                                                                     data/meta.json (chave discovery)
@@ -57,7 +57,7 @@ Para cada resultado: `assertSafeUrl` → host sem `www` → classificação:
 - **host de `config/lojas/removidas.txt`** (formato `# host | data | motivo`) → `removed`: nunca reproposto.
 - **host conhecido** (`config/stores.json`, `config/lojas/*.txt`, `data/sources.json`, ofertas de `data/state.json`): se a URL parece página de produto (`isProductCandidate` de `src/adapters/jsonld.js`), a loja é jsonld/auto (plataforma observada em `sources.json`) e a URL não está nas ofertas nem no `url-cache.json` → entra em `data/discovery-urls.json[storeId]` (`storeId` = id de `stores.json`, ou `host.replace(/[^a-z0-9]/gi,'').toLowerCase()` como o `run.js` deriva para as listas `.txt`).
 - **host novo** → validação honesta (uma vez por host por rodada; veredito guardado por `DISCOVERY_REVALIDATE_DAYS` = 30 dias): robots permite → página inicial via `http.get` → sinais BR (`.br`, `R$`, `lang=pt-BR`) → menciona Pokémon → TCG lacrado (`booster|treinador avan|elite trainer|tcg|estampas ilustradas`) → `detectPlatform`.
-  - `accepted` (BR + lacrado + plataforma): linha **ativa** em `config/lojas/descobertas.txt`: `https://host  # DIE <conector> <queryId> <data>` → entra na coleta na próxima rodada do `run.js` (que lê qualquer `config/lojas/*.txt`).
+  - `accepted` (BR + lacrado + **preço em R$** + plataforma): linha **ativa** em `data/discovery-stores.txt` (ramo data; a main é protegida): `https://host  # DIE <conector> <queryId> <data>` → entra na coleta na próxima rodada do `run.js` (que lê qualquer `config/lojas/*.txt`).
   - `candidate` (BR + Pokémon, mas sem lacrado ou sem plataforma): linha comentada `# candidata https://host  # motivo (DIE …)` — conferir à mão.
   - `rejected`: só no ledger, com motivo.
 Limites por rodada: `DISCOVERY_MAX_NEW_STORES` (10), `DISCOVERY_MAX_URLS` (50), `DISCOVERY_MAX_VALIDATIONS` (40 hosts validados; cada validação custa até ~5 requisições: robots, home, Shopify, VTEX, JSON-LD).
@@ -93,3 +93,13 @@ Métricas que decidem se o motor vale a pena: lojas aceitas que viram ofertas ca
 
 ## O que a v0 não faz
 Não usa modelo de linguagem; não lê snippets para decidir; não pontua lojas por qualidade; não revalida vereditos antes de 30 dias; não remove lojas (isso continua manual via `removidas.txt`); não substitui o `discover.js` no código (só no fluxo diário, atrás da flag).
+
+## 1ª rodada real (12/10/2026, conector Serper)
+
+40 consultas, 393 resultados, 74 domínios novos analisados (34 rejeitados: 22 bloqueiam robôs, 8 sem robots.txt acessível, 3 sem Pokémon, 1 sem sinal BR), 5 aceitos, 1 candidato, 48 URLs de produto para lojas conhecidas. Revisão manual dos 5 aceitos: 2 lojas reais (suika.com.br, geralgeek.com.br → `config/lojas/descobertas.txt`) e 3 falsos positivos (loja do jogo digital TCG Pocket, portal B2B da Devir, revenda entre pessoas → `removidas.txt`). Ajustes que saíram dessa rodada:
+
+- aceite exige preço em R$ na página inicial (os 3 falsos positivos não tinham; as 2 reais tinham);
+- subdomínios de atacado/B2B (`empresas.`, `atacado.`, `b2b.`…) são ignorados sem requisição;
+- URLs de produto não são enviadas para lojas que o robô não lê (BLOCKED/PAUSED/UNAVAILABLE);
+- lojas aceitas vão para `data/discovery-stores.txt` (ramo data), lido por `src/run.js`; a escrita em `config/` falhava porque a main é protegida.
+- o job do workflow subiu de 12 para 18 min (a rodada com descoberta era cancelada antes de salvar).

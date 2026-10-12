@@ -124,6 +124,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const texts = [];
     try { texts.push(fs.readFileSync(configPath('lojas.txt'), 'utf8')); } catch { /* opcional */ }
     try { for (const f of fs.readdirSync(dir)) if (f.endsWith('.txt')) texts.push(fs.readFileSync(dir + '/' + f, 'utf8')); } catch { /* opcional */ }
+    try { texts.push(fs.readFileSync(dataPath('discovery-stores.txt'), 'utf8')); } catch { /* lojas aceitas pela descoberta (ramo data) */ }
     for (const line of texts.join('\n').split(/\r?\n/)) {
       const raw = line.replace(/#.*/, '').trim(); if (!raw) continue;
       let u; try { u = new URL(/^https?:\/\//.test(raw) ? raw : 'https://' + raw); } catch { continue; }

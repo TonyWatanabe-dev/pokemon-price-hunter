@@ -5,7 +5,7 @@
 //     nas ofertas/url-cache → entra em data/discovery-urls.json[storeId] (hand-off ao src/run.js);
 //   host desconhecido → validação honesta igual à do src/discover.js (robots.txt permite, página inicial via http.request
 //     com UA identificado, sinais BR, Pokémon lacrado, plataforma reconhecida) → 'accepted' (linha ativa em
-//     config/lojas/descobertas.txt), 'candidate' (linha comentada) ou 'rejected' (só no ledger).
+//     data/discovery-stores.txt), 'candidate' (linha comentada) ou 'rejected' (só no ledger).
 // Limites por rodada: DISCOVERY_MAX_NEW_STORES (10), DISCOVERY_MAX_URLS (50), DISCOVERY_MAX_VALIDATIONS (40).
 // Um host validado não é revalidado por DISCOVERY_REVALIDATE_DAYS (30) dias (veredito guardado no ledger).
 import fs from 'node:fs';
@@ -21,7 +21,10 @@ import { noteHost } from './ledger.js';
 const envInt = (env, k, d) => { const n = Number(env[k]); return Number.isFinite(n) && n >= 0 ? Math.floor(n) : d; };
 export const limits = (env = process.env) => ({ stores: envInt(env, 'DISCOVERY_MAX_NEW_STORES', 10), urls: envInt(env, 'DISCOVERY_MAX_URLS', 50), validations: envInt(env, 'DISCOVERY_MAX_VALIDATIONS', 40), revalidateDays: envInt(env, 'DISCOVERY_REVALIDATE_DAYS', 30) });
 export const urlsFile = () => dataPath('discovery-urls.json');
-export const storesFile = () => configPath('lojas/descobertas.txt');
+// Lojas aceitas vão para o ramo data (a main é protegida e só aceita PR); src/run.js lê este arquivo como lê config/lojas/*.txt.
+// Subdomínios que não são varejo (atacado, B2B, portal de empresas, área do revendedor).
+export const NOT_RETAIL = /^(empresas|atacado|b2b|revenda|revendedor|lojista|parceiros?|corporativo)\./i;
+export const storesFile = () => dataPath('discovery-stores.txt');
 const HEADER = '# Lojas encontradas pelo Discovery Intelligence Engine (docs/discovery-engine.md). Linha ativa = entra na coleta\n# (src/run.js lê qualquer config/lojas/*.txt). "# candidata" = sinais parciais, conferir à mão antes de ativar.\n';
 
 /** Validação honesta de um host desconhecido. Devolve { verdict, reason, signals }. */
@@ -41,7 +44,10 @@ export async function validateHost(host) {
   let platform = null;
   try { platform = await detectPlatform(origin); } catch (e) { if (e?.blocked) return { verdict: 'rejected', reason: 'bloqueia robôs nas APIs', signals }; }
   if (platform) signals.push('plataforma:' + platform);
-  if (sealed && platform) return { verdict: 'accepted', reason: 'loja BR com Pokémon TCG lacrado e plataforma ' + platform, signals, platform };
+  // Aceite exige preço em reais na página: na 1ª rodada real (12/10) os 3 falsos positivos (loja do jogo digital,
+  // portal B2B, revenda entre pessoas) não tinham "R$" na página inicial; as 2 lojas reais tinham.
+  if (sealed && platform && signals.includes('R$')) return { verdict: 'accepted', reason: 'loja BR com Pokémon TCG lacrado, preço em R$ e plataforma ' + platform, signals, platform };
+  if (sealed && platform) return { verdict: 'candidate', reason: 'sem preço em R$ na página inicial', signals, platform };
   return { verdict: 'candidate', reason: !sealed ? 'menciona Pokémon, mas sem sinal de TCG lacrado' : 'plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)', signals, platform };
 }
 
@@ -63,10 +69,11 @@ export function createPipeline({ inv, ledger, log = () => {}, now = new Date(), 
     if (known) {
       counts.known++; noteHost(ledger, host, { queryId: q.id, at });
       const platformOk = !['shopify', 'vtex', 'mercadolivre', 'unsupported'].includes(known.detected || known.platform);
-      if (!known.id || !platformOk || !isProductCandidate(u.href) || inv.urls.has(u.href) || queued.has(u.href) || newUrls.length >= lim.urls) return 'known';
+      if (!known.id || !platformOk || known.unreadable || !isProductCandidate(u.href) || inv.urls.has(u.href) || queued.has(u.href) || newUrls.length >= lim.urls) return 'known';
       queued.add(u.href); newUrls.push({ storeId: known.id, url: u.href, q: q.id, at });
       counts.urlsAccepted++; return 'url';
     }
+    if (NOT_RETAIL.test(host)) { counts.ignored++; noteHost(ledger, host, { queryId: q.id, at }); return 'ignored'; }
     // host novo: valida uma vez por rodada e respeita o veredito recente do ledger
     if (seenHosts.has(host)) return 'dup';
     seenHosts.add(host);
@@ -82,10 +89,10 @@ export function createPipeline({ inv, ledger, log = () => {}, now = new Date(), 
     return v.verdict;
   }
 
-  // Grava o que a rodada rendeu: linhas em config/lojas/descobertas.txt e URLs em data/discovery-urls.json.
+  // Grava o que a rodada rendeu: linhas em data/discovery-stores.txt e URLs em data/discovery-urls.json.
   function flush() {
     if (newStores.length || candidates.length) {
-      const f = storesFile(); fs.mkdirSync(configPath('lojas'), { recursive: true });
+      const f = storesFile();
       const head = fs.existsSync(f) ? '' : HEADER;
       const body = [...newStores.map((s) => `https://${s.host}  # DIE ${connector} ${s.q} ${date}`), ...candidates.map((c) => `# candidata https://${c.host}  # ${c.reason} (DIE ${connector} ${c.q} ${date})`)].join('\n') + '\n';
       fs.appendFileSync(f, head + body);
