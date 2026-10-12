@@ -1,0 +1,131 @@
+# Tarefas paralelas: cada issue com o label "executor:github" vira um job próprio do
+# Claude Code, numa branch tarefa/*, que termina num PR para a main. O merge continua com CI + Release Governor
+# ou com o usuário (R3); este workflow nunca faz merge, deploy nem acessa o banco de produção.
+# Segurança (repositório público): só dispara quando um operador (vars.TAREFAS_OPERADORES, padrão: dono do repo)
+# aplica o label numa issue aberta por um operador; comentários de terceiros não entram no contexto do Claude.
+# Paralelismo: até vars.TAREFAS_MAX vagas (padrão 3, máximo 10); as demais tarefas esperam na fila do GitHub.
+name: Tarefas
+
+on:
+  issues:
+    types: [labeled]
+
+permissions: {}
+
+jobs:
+  vaga:
+    if: >-
+      github.event.label.name == 'executor:github' && github.event.issue.state == 'open' &&
+      contains(format(',{0},', vars.TAREFAS_OPERADORES || github.repository_owner), format(',{0},', github.event.sender.login)) &&
+      contains(format(',{0},', vars.TAREFAS_OPERADORES || github.repository_owner), format(',{0},', github.event.issue.user.login))
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      n: ${{ steps.vaga.outputs.n }}
+    steps:
+      - id: vaga
+        env:
+          ISSUE: ${{ github.event.issue.number }}
+          MAX: ${{ vars.TAREFAS_MAX || '3' }}
+        run: |
+          case "$MAX" in ''|*[!0-9]*) MAX=3 ;; esac
+          [ "$MAX" -lt 1 ] && MAX=1; [ "$MAX" -gt 10 ] && MAX=10
+          echo "n=$(( ISSUE % MAX ))" >> "$GITHUB_OUTPUT"
+
+  tarefa:
+    needs: vaga
+    # Runner com firewall de saída conforme o hardening oficial da Claude Code Action.
+    runs-on: ubuntu-24.04-firewall
+    timeout-minutes: 55   # margem dentro da validade de 1 h do token do app
+    concurrency:
+      group: tarefas-vaga-${{ needs.vaga.outputs.n }}
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write   # o app oficial do Claude troca o token OIDC pelo token do app
+      actions: read
+    services:
+      postgres:
+        image: postgres:17   # banco descartável para os testes; nunca o de produção
+        env: { POSTGRES_PASSWORD: pw }
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ISSUE: ${{ github.event.issue.number }}
+    steps:
+      - name: Marcar em execução
+        run: |
+          for l in executor:running executor:done executor:failed; do
+            gh api "repos/$REPO/labels" -f name="$l" -f color=ededed >/dev/null 2>&1 || true
+          done
+          gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:github" >/dev/null 2>&1 || true
+          for l in executor:done executor:failed; do
+            gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/$l" >/dev/null 2>&1 || true
+          done
+          gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:running" >/dev/null
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund
+      - name: Validar credencial Claude
+        id: credencial
+        env:
+          CLAUDE_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_TOKEN" ]; then
+            echo "::error title=Credencial Claude ausente::Cadastre o secret CLAUDE_CODE_OAUTH_TOKEN em Settings -> Secrets and variables -> Actions. Gere o token localmente com claude setup-token; nunca o imprima nos logs."
+            exit 1
+          fi
+      - id: claude
+        uses: anthropics/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1.0.248
+        env:
+          TEST_DATABASE_URL: postgres://postgres:pw@localhost:5432/postgres
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          label_trigger: executor:github
+          branch_prefix: tarefa/
+          include_comments_by_actor: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
+          claude_args: |
+            --permission-mode auto
+            --max-turns 80
+            --allowedTools "Bash(npm test),Bash(npm ci),Bash(node test/*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(gh pr create:*),Bash(gh pr list:*)"
+            --append-system-prompt "Você é um executor de tarefas do TCG Price Hunter. Siga o CLAUDE.md do repositório. Trabalhe só na branch criada para esta issue; nunca na main, nunca force-push. Não altere .github/workflows, .github/egress-firewall.yaml, ROADMAP.md, secrets ou configuração de produção; não faça deploy nem acesse o banco de produção. Rode npm test antes de concluir e corrija falhas sem enfraquecer testes. Ao terminar, abra um PR para a main com gh pr create --base main (título curto; corpo com o que mudou, como foi testado e 'Closes #<número da issue>'). Se a tarefa for ambígua ou exigir decisão do usuário, não invente: explique no comentário e não abra PR."
+      - name: Resultado na issue
+        if: always()
+        env:
+          BRANCH: ${{ steps.claude.outputs.branch_name }}
+          CLAUDE_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
+          CLAUDE_OUTCOME: ${{ steps.claude.outcome }}
+          CREDENTIAL_OUTCOME: ${{ steps.credencial.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          pr=""
+          status="${CLAUDE_CONCLUSION:-$CLAUDE_OUTCOME}"
+          if [ "$CREDENTIAL_OUTCOME" = "failure" ]; then status=failure; fi
+          if [ -n "$BRANCH" ]; then
+            pr=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$BRANCH&state=open" --jq '.[0].html_url // empty' 2>/dev/null || true)
+          fi
+          gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:running" >/dev/null 2>&1 || true
+          if [ "$status" = "success" ] && [ -n "$pr" ]; then
+            gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:done" >/dev/null
+            echo "Resultado: sucesso" >> "$GITHUB_STEP_SUMMARY"
+            echo "PR: $pr" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:failed" >/dev/null
+            if [ -n "$pr" ]; then
+              body="A execução do Claude terminou com status '${status:-desconhecido}', então a tarefa não foi marcada como concluída. A PR existe e precisa de triagem: $pr. Log: $RUN_URL"
+              echo "Resultado: falha; PR para triagem: $pr" >> "$GITHUB_STEP_SUMMARY"
+            else
+              body="Tarefa terminou sem PR (status do Claude: ${status:-desconhecido}). Veja os comentários anteriores e o log: $RUN_URL"
+              echo "Resultado: falha; nenhuma PR encontrada." >> "$GITHUB_STEP_SUMMARY"
+            fi
+            gh api "repos/$REPO/issues/$ISSUE/comments" -f body="$body" >/dev/null
+          fi
