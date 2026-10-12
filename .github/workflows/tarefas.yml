@@ -75,6 +75,15 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with: { node-version: 22 }
       - run: npm ci --no-audit --no-fund
+      - name: Validar credencial Claude
+        id: credencial
+        env:
+          CLAUDE_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "$CLAUDE_TOKEN" ]; then
+            echo "::error title=Credencial Claude ausente::Cadastre o secret CLAUDE_CODE_OAUTH_TOKEN em Settings -> Secrets and variables -> Actions. Gere o token localmente com claude setup-token; nunca o imprima nos logs."
+            exit 1
+          fi
       - id: claude
         uses: anthropics/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1.0.248
         env:
@@ -94,24 +103,28 @@ jobs:
         env:
           BRANCH: ${{ steps.claude.outputs.branch_name }}
           CLAUDE_CONCLUSION: ${{ steps.claude.outputs.conclusion }}
+          CLAUDE_OUTCOME: ${{ steps.claude.outcome }}
+          CREDENTIAL_OUTCOME: ${{ steps.credencial.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           pr=""
+          status="${CLAUDE_CONCLUSION:-$CLAUDE_OUTCOME}"
+          if [ "$CREDENTIAL_OUTCOME" = "failure" ]; then status=failure; fi
           if [ -n "$BRANCH" ]; then
             pr=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$BRANCH&state=open" --jq '.[0].html_url // empty' 2>/dev/null || true)
           fi
           gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:running" >/dev/null 2>&1 || true
-          if [ "$CLAUDE_CONCLUSION" = "success" ] && [ -n "$pr" ]; then
+          if [ "$status" = "success" ] && [ -n "$pr" ]; then
             gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:done" >/dev/null
             echo "Resultado: sucesso" >> "$GITHUB_STEP_SUMMARY"
             echo "PR: $pr" >> "$GITHUB_STEP_SUMMARY"
           else
             gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:failed" >/dev/null
             if [ -n "$pr" ]; then
-              body="A execução do Claude terminou com status '${CLAUDE_CONCLUSION:-desconhecido}', então a tarefa não foi marcada como concluída. A PR existe e precisa de triagem: $pr. Log: $RUN_URL"
+              body="A execução do Claude terminou com status '${status:-desconhecido}', então a tarefa não foi marcada como concluída. A PR existe e precisa de triagem: $pr. Log: $RUN_URL"
               echo "Resultado: falha; PR para triagem: $pr" >> "$GITHUB_STEP_SUMMARY"
             else
-              body="Tarefa terminou sem PR (status do Claude: ${CLAUDE_CONCLUSION:-desconhecido}). Veja os comentários anteriores e o log: $RUN_URL"
+              body="Tarefa terminou sem PR (status do Claude: ${status:-desconhecido}). Veja os comentários anteriores e o log: $RUN_URL"
               echo "Resultado: falha; nenhuma PR encontrada." >> "$GITHUB_STEP_SUMMARY"
             fi
             gh api "repos/$REPO/issues/$ISSUE/comments" -f body="$body" >/dev/null

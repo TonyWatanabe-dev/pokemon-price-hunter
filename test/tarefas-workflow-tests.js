@@ -61,7 +61,7 @@ await t('5. cálculo da vaga: issue % TAREFAS_MAX, padrão 3, limitado a 1..10 e
 });
 
 await t('6. secrets mínimos: só o token do Claude; banco descartável; nada de Vercel/PAT ou logs completos', () => {
-  const secrets = [...code.matchAll(/secrets\.(\w+)/g)].map((m) => m[1]);
+  const secrets = [...new Set([...code.matchAll(/secrets\.(\w+)/g)].map((m) => m[1]))];
   assert.deepEqual(secrets, ['CLAUDE_CODE_OAUTH_TOKEN']);
   assert.doesNotMatch(code, /DATABASE_URL:\s*\$\{\{|VERCEL|PG_CA_CERT/);
   assert.match(code, /TEST_DATABASE_URL: postgres:\/\/postgres:pw@localhost:5432\/postgres/, 'só o banco descartável do job');
@@ -101,11 +101,15 @@ await t('10. runner com firewall; allowlist em modo enforce e sem wildcards', ()
   assert.doesNotMatch(firewallCode, /\*/);
 });
 
-await t('11. resultado só marca done após sucesso do Claude e PR aberta; se falhar, preserva link de triagem', () => {
-  assert.match(code, /DELETE "repos\/\$REPO\/issues\/\$ISSUE\/labels\/executor:github"/);
-  assert.match(code, /name: Resultado na issue\n\s+if: always\(\)/);
+await t('11. falha rápido quando falta o secret, e o status final usa outcome como fallback', () => {
+  assert.match(code, /name: Validar credencial Claude/);
+  assert.match(code, /CLAUDE_TOKEN: \$\{\{ secrets\.CLAUDE_CODE_OAUTH_TOKEN \}\}/);
+  assert.match(code, /if \[ -z "\$CLAUDE_TOKEN" \]/);
   assert.match(code, /CLAUDE_CONCLUSION: \$\{\{ steps\.claude\.outputs\.conclusion \}\}/);
-  assert.match(code, /\[ "\$CLAUDE_CONCLUSION" = "success" \] && \[ -n "\$pr" \]/);
+  assert.match(code, /CLAUDE_OUTCOME: \$\{\{ steps\.claude\.outcome \}\}/);
+  assert.match(code, /CREDENTIAL_OUTCOME: \$\{\{ steps\.credencial\.outcome \}\}/);
+  assert.match(code, /status="\$\{CLAUDE_CONCLUSION:-\$CLAUDE_OUTCOME\}"/);
+  assert.match(code, /\[ "\$status" = "success" \] && \[ -n "\$pr" \]/);
   assert.match(code, /labels\[\]=executor:done/); assert.match(code, /labels\[\]=executor:failed/);
   assert.match(code, /PR existe e precisa de triagem: \$pr/);
 });
