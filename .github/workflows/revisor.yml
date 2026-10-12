@@ -5,6 +5,7 @@
 # ou se o veredito não vier (fail-closed). O Release Governor pode passar a exigir esse check depois.
 # Segurança: só PRs do próprio repositório (secrets nunca vão para PR de fork), só pull_request (nunca _target),
 # token do workflow restrito a contents: read + pull-requests: write (o token do app do Claude não é usado).
+# Exceção de bot: só "claude" (PRs abertas pelo worker), para que essas PRs também sejam revisadas.
 name: Revisor
 
 on:
@@ -50,6 +51,10 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # token do workflow (contents: read, pull-requests: write): comentar sem poder fazer push
           github_token: ${{ github.token }}
+          # PRs do worker (tarefas.yml) são abertas pelo app do Claude; sem isto a action recusa o ator "claude"
+          # e o qa-review falha sem revisar (PR #258, 12/10). Só esse bot — nunca '*'. O guard de PR do próprio
+          # repositório (head.repo == repository) continua valendo, e o job só lê e comenta.
+          allowed_bots: claude
           prompt: |
             Você é o revisor INDEPENDENTE do TCG Price Hunter. Não foi você quem implementou esta mudança e você não pode alterá-la.
             Repositório: ${{ github.repository }} · PR #${{ github.event.pull_request.number }} (o código da PR está no diretório atual).
