@@ -387,3 +387,20 @@ Claude Code tem autonomia para concluir operações rotineiras elegíveis — co
 Antes de pegar uma nova tarefa: ler este plano e \`docs/ROADMAP-OPERACIONAL.md\`; consultar \`docs/MAPA-DE-AGENTES.md\` e \`docs/agentes.md\`; verificar na \`main\` as issues/PRs atuais; escolher a próxima tarefa elegível ainda não duplicada; criar branch própria; implementar/testar; abrir PR; avaliar CI/evidência; atualizar status/roadmap. Não alterar a própria política, permissões, secrets ou gates de release para concluir uma tarefa mais rápido.
 
 **Modo Turbo significa paralelismo com controle, não ausência de controle.** O objetivo é manter os agentes trabalhando continuamente na próxima tarefa segura, enquanto operações críticas ficam bloqueadas até a autorização exigida e são comunicadas pelo canal do ChatGPT.
+
+
+## Atualização posterior — estado real após validação de runtime (12/10/2026)
+
+Esta atualização é mais recente que o texto de estado de partida e os critérios provisórios da Fase 0 acima. Não apaga o histórico: atualiza a leitura operacional atual.
+
+- **Ciclo ponta a ponta de desenvolvimento comprovado:** Vigia → Dispatcher → worker → PR do agente → qa-review independente → Release Governor. O canário #257 produziu a PR #258; a revisão independente aprovou a mesma SHA, o Governor classificou como R0 e a PR foi integrada. Correções reportadas como integradas: #250, #252, #256, #260 e #261; #243/#244/#246 compõem o Dispatcher/revisor/classificador.
+- **O que isso prova:** uma tarefa elegível pode percorrer a cadeia sem alguém aplicar manualmente cada etapa da execução, com backoff/idempotência e gates técnicos. **Não prova ainda operação 24/7 sustentada, dez workers ativos ou deploy autônomo em produção.**
+- **Próxima tarefa técnica:** implementar telemetria real por execução no worker/executor — modelo e esforço efetivos, tokens de entrada/saída/cache e custo apenas se o runtime fornecer esses dados; duração, retries, falhas, escaladas, CI e resultado por PR. Não inventar estimativas quando a fonte não fornecer tokens/custos. Usar logs sanitizados e testes.
+- **Rotina horária:** ainda precisa ser criada/ativada pelo mecanismo de agendamento disponível e validada com execuções reais consecutivas. rotina-horaria-prompt.md é o roteiro, não prova de que o agendamento esteja ativo.
+- **Release ainda é uma fronteira separada:** a #221 permanece R3/bloqueada até a revisão humana e a decisão do sink de auditoria; VERCEL_TOKEN precisa ser configurado diretamente no ambiente seguro correto. Só declarar a ponte operacional depois de um deploy real por SHA elegível e smoke pós-deploy comprovado.
+- **Concorrência:** confirmar TAREFAS_MAX nas variáveis do GitHub Actions. O padrão no workflow é 3 e o limite suportado é 10; não anunciar dez workers ativos sem evidência de configuração e teste gradual.
+- **Proteção e qualidade:** verificar checks obrigatórios nos Settings, manter qa-review na mesma SHA e os checks test, regression, golden. A revisão automatizada não substitui aprovação humana quando a política exigir.
+- **Decisões humanas consolidadas na issue #231:** sink de auditoria (recomendação técnica: comentários append-only no GitHub, opção C, ainda não aprovada), credencial Vercel, regras de proteção/checks e rotina horária.
+- **Critério final da fábrica 24/7:** ciclo autônomo de desenvolvimento comprovado + scheduler recorrente ativo + telemetria observável + release bridge validada + sete dias de estabilidade real (coleta, freshness, sync, fila, CI, smoke e recuperação). Até lá, classificar como “cadeia funcional comprovada; operação contínua e release autônomo ainda em validação”.
+
+Os bloqueios de produto permanecem inalterados: #195 frete só após cotação real e autorização; #186 depende da decisão comercial Copag; #20 continua **NÃO INTEGRAR** sem autorização específica. Não usar a autonomia dos agentes para contornar R3/R-STOP, branch protection ou configuração de segredos.
