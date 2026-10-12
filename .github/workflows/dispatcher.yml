@@ -4,6 +4,8 @@
 # Com vars.DISPATCHER_ATIVO == 'true' roda o job "despacho": grava o marcador de despacho na issue, aplica quarentena
 # e dispara o worker (tarefas.yml, workflow_dispatch com issue + chave), que revalida tudo antes de agir.
 # Nenhum dos dois faz merge, deploy ou usa secrets; o worker continua limitado a branch + PR.
+# Orçamento: com vars.DISPATCHER_ORCAMENTO_USD, pausa quando o custo reportado pela telemetria do worker na janela
+# (vars.DISPATCHER_ORCAMENTO_JANELA_H, padrão 24 h) atinge o limite; com limite definido, valor inválido ou telemetria ilegível também pausa.
 # Gatilho: o cron do GitHub é melhor-esforço e, neste repositório, não disparou nenhuma vez em 4 h após a #243
 # (o do Hunter rodou só ~6 vezes/dia). Por isso o Dispatcher também roda ao fim de cada "Vigia do robô", que o
 # agendador externo dispara a cada 15 min. Só conta execução do Vigia na main; o cron fica como reserva.
@@ -36,6 +38,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       TAREFAS_OPERADORES: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
       TAREFAS_MAX: ${{ vars.TAREFAS_MAX || '3' }}
+      # Orçamento pela telemetria real do worker (custo reportado na janela); vazio = sem limite.
+      DISPATCHER_ORCAMENTO_USD: ${{ vars.DISPATCHER_ORCAMENTO_USD }}
+      DISPATCHER_ORCAMENTO_JANELA_H: ${{ vars.DISPATCHER_ORCAMENTO_JANELA_H }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -60,6 +65,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       TAREFAS_OPERADORES: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
       TAREFAS_MAX: ${{ vars.TAREFAS_MAX || '3' }}
+      # Orçamento pela telemetria real do worker (custo reportado na janela); vazio = sem limite.
+      DISPATCHER_ORCAMENTO_USD: ${{ vars.DISPATCHER_ORCAMENTO_USD }}
+      DISPATCHER_ORCAMENTO_JANELA_H: ${{ vars.DISPATCHER_ORCAMENTO_JANELA_H }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

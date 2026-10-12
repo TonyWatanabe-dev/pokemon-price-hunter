@@ -6,7 +6,9 @@
 // --executar falha fechado se o tarefas.yml não declarar `workflow_dispatch` com a entrada `issue`.
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
-import { planDispatch, applyPlan, parseDependencies, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+import { planDispatch, applyPlan, parseDependencies, sanitize, budgetConfig, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+import { budgetGate } from '../src/agents/esforco.js';
+import { parseRecords, gastoNaJanela } from '../src/agents/telemetria.js';
 import { workerAcceptsDispatchYaml } from './dispatcher-workflow-check.mjs';
 
 const REPO = process.env.GITHUB_REPOSITORY || process.env.RELEASE_REPO || 'TonyWatanabe-dev/pokemon-price-hunter';
@@ -48,7 +50,33 @@ async function snapshot() {
     issueStates[d] = byN.get(d)?.state || (await api(`repos/${REPO}/issues/${d}`).catch(() => null))?.state || 'unknown';
   }
   const pulls = (await pages(`repos/${REPO}/pulls?state=open&per_page=100`)).map((p) => ({ number: p.number, headRef: p.head?.ref, body: p.body || '' }));
-  return { now, operators, maxSlots: process.env.TAREFAS_MAX, pauseUntil, dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
+  return { now, operators, maxSlots: process.env.TAREFAS_MAX, pauseUntil, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
+}
+
+// Orçamento pela telemetria real (comentários `telemetria:execucao` do bot do workflow na janela).
+// Sem limite configurado: só informa. Com limite e leitura falhando: pausa (fail-closed).
+async function budget(now) {
+  const { limiteUsd, janelaMs, erro } = budgetConfig(process.env);
+  if (erro) return { permitir: false, motivo: `${erro}: despacho pausado até corrigir a variável` };
+  const desde = new Date(Date.parse(now) - janelaMs).toISOString();
+  try {
+    // paginação explícita (page=N), limitada; mais que isso na janela é anomalia → erro (fail-closed com limite)
+    const raw = [];
+    for (let page = 1; ; page++) {
+      if (page > 30) throw new Error('comentários demais na janela');
+      const batch = await api(`repos/${REPO}/issues/comments?since=${desde}&per_page=100&page=${page}`);
+      raw.push(...(batch || []));
+      if (!batch || batch.length < 100) break;
+    }
+    const recs = parseRecords(raw.filter((c) => String(c.body || '').includes('telemetria:execucao')).map((c) => ({ author: c.user?.login, body: c.body })));
+    const gastoUsd = gastoNaJanela(recs, { now: Date.parse(now), janelaMs });
+    const g = budgetGate({ gastoUsd, limiteUsd });
+    const h = janelaMs / 3600e3;
+    return { ...g, motivo: `${g.motivo} · gasto reportado em ${h} h: ${gastoUsd === null ? 'n/d' : `US$ ${gastoUsd.toFixed(2)}`} (${recs.length} registro(s))` };
+  } catch (e) {
+    return limiteUsd === null ? { permitir: true, motivo: 'telemetria indisponível; sem limite configurado' }
+      : { permitir: false, motivo: `telemetria indisponível com limite configurado (${sanitize(e.message, 120)})` };
+  }
 }
 
 function workerAcceptsDispatch() {
@@ -58,7 +86,8 @@ function workerAcceptsDispatch() {
 
 const s = await snapshot();
 const plan = planDispatch(s);
-const lines = [`## Dispatcher — ${EXECUTAR ? 'execução' : 'plano (sem escrita)'}`, '', `Vagas: ${plan.slots} · em curso: ${plan.active.map((x) => '#' + x).join(', ') || 'nenhuma'}${plan.paused ? ' · **pausado (rate limit/quota)**' : ''}`, '',
+const lines = [`## Dispatcher — ${EXECUTAR ? 'execução' : 'plano (sem escrita)'}`, '', `Vagas: ${plan.slots} · em curso: ${plan.active.map((x) => '#' + x).join(', ') || 'nenhuma'}${plan.paused ? ` · **pausado (${plan.budget && !plan.budget.permitir ? 'orçamento' : 'rate limit/quota'})**` : ''}`,
+  ...(plan.budget ? [`Orçamento: ${plan.budget.motivo}`] : []), '',
   ...plan.dispatch.map((d) => `- despachar #${d.issue} (tentativa ${d.attempt}, chave \`${d.key}\`)`),
   ...plan.quarantine.map((q) => `- quarentena #${q.issue}: ${q.reason}`),
   ...plan.skipped.map((x) => `- aguardando #${x.issue}: ${x.reason}`)];

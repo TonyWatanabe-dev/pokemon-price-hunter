@@ -91,7 +91,7 @@ Antes de chamar uma sessão Claude, o worker executa `node tools/esforco.mjs "$I
 - **Complexa ou crítica/R3:** `opus` + `high` + 80 turnos; assuntos e áreas críticos não são rebaixados.
 - **Escalada por falhas anteriores:** aumenta esforço e, quando aplicável, passa de `sonnet` para `opus`, com limites fechados. `max` nunca é escolhido automaticamente.
 - O CLI escreve valores pré-validados em `GITHUB_OUTPUT`; ambos os caminhos (`executor:github` e Dispatcher) consomem o mesmo resultado. O texto da issue não é inserido em shell nem em `claude_args`.
-- O perfil atua na seleção de modelo/esforço/turnos da sessão. O orçamento global (`budgetGate`) ainda não é aplicado pelo Dispatcher; não assumir que esse controle já está operacional.
+- O perfil atua na seleção de modelo/esforço/turnos da sessão. O orçamento global é aplicado pelo Dispatcher a partir da telemetria (ver "Orçamento" na seção do Dispatcher).
 
 Os testes de workflow verificam a ordem: revalidar despacho → marcar/instalar dependências → verificar credencial → selecionar perfil → executar Claude. O worker continua sem permissão para merge ou deploy.
 
@@ -113,7 +113,7 @@ Ao final de cada execução (sucesso ou falha, exceto quando falta a credencial 
   - tokens e custo reportado, com a contagem de execuções sem dado;
   - custo por PR integrada, somando todas as tentativas da issue (o retrabalho conta). Se alguma execução da PR não tiver custo, essa média fica `n/d`.
 
-Próximo passo: o Dispatcher passa a usar `gastoNaJanela` + `budgetGate` (`src/agents/telemetria.js`, `src/agents/esforco.js`) com um limite configurável para pausar despachos quando o gasto reportado da janela passar do limite.
+O Dispatcher usa esses registros para o orçamento (seção do Dispatcher).
 
 ## Dispatcher (fila aprovada)
 
@@ -124,6 +124,14 @@ Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais i
 - **Bloqueios:** `Depende de: #N` ainda aberta (ou desconhecida), PR aberto para a issue (branch `…/issue-N…` ou `Closes/Fixes/Resolves #N`), `executor:running`/`executor:github`, lease de 70 min após o despacho, `executor:done`, `executor:quarentena`, área crítica em uso (caminhos entre crases em `Áreas:` ou `Risco previsto:`), vagas (`TAREFAS_MAX`, 1..10, padrão 3) e pausa por rate limit (cota da API < 200 ou `DISPATCHER_PAUSA_ATE`).
 - **Idempotência:** chave `dispatch:<issue>:<tentativa>` gravada num comentário-marcador **antes** do disparo; só valem marcadores do ator do dispatcher ou de operadores. Dois dispatchers concorrentes: relê depois de gravar e só dispara quem tem o comentário de menor id com a chave.
 - **Retry e quarentena:** nova tentativa só depois de `executor:failed` (ou lease expirado) e do backoff (30 min, dobrando); com 2 tentativas sem sucesso, label `executor:quarentena` e comentário sanitizado, sem nova tentativa automática.
+- **Orçamento (opcional):**
+  - **Configuração:** variável `DISPATCHER_ORCAMENTO_USD` (limite) e `DISPATCHER_ORCAMENTO_JANELA_H` (janela, 1..168 h, padrão 24), em Settings → Actions → Variables.
+  - **Como mede:** a cada ciclo, o Dispatcher soma o custo reportado pela telemetria do worker (comentários `telemetria:execucao` do `github-actions[bot]`) na janela.
+  - **Pausa:** com soma ≥ limite, pausa como no rate limit, sem despacho nem quarentena. A fila fica intacta e volta sozinha quando a janela anda.
+  - **Sem dado de custo:** não inventa gasto e segue despachando.
+  - **Fail-closed:** com limite definido, valor inválido ou falha ao ler a telemetria também pausa.
+  - **Unidade:** o limite é em custo reportado a preço de API. Com assinatura, isso não é a cobrança; serve como teto de consumo.
+  - **Sem a variável:** o plano só mostra o gasto da janela.
 - **Disparo real (etapa 2), desligado por padrão:**
   - **Chave:** variável **`DISPATCHER_ATIVO=true`**, em Settings → Actions → Variables.
   - **Job `despacho`:** grava o marcador na issue, aplica quarentena e roda `gh workflow run tarefas.yml -f issue=N -f chave=dispatch:N:T`. Tem só `issues: write` e `actions: write`.

@@ -6,7 +6,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { workerAcceptsDispatchYaml } from '../tools/dispatcher-workflow-check.mjs';
 import { planDispatch, applyPlan, parseDependencies, parseAreas, parseOrder, parseDispatchMarkers, dispatchMarker,
-  clampSlots, hasOpenPull, sanitize, validateDispatchRequest, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+  clampSlots, hasOpenPull, sanitize, validateDispatchRequest, budgetConfig, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+import { budgetGate } from '../src/agents/esforco.js';
+import { buildRecord, formatComment, parseRecords, gastoNaJanela } from '../src/agents/telemetria.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0; const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
@@ -274,6 +276,37 @@ await t('quarentena: só um OPERADOR concede novas tentativas (tirando o label);
     labelEvents: [...evs, { event: 'unlabeled', label: LABELS.QUARANTINE, actor: OP, createdAt: min(-30) }, { event: 'labeled', label: LABELS.FAILED, actor: BOT, createdAt: min(-8) }] });
   const p2 = planDispatch(snap([after]));
   assert.deepEqual(p2.dispatch, []); assert.match(p2.skipped[0].reason, /backoff até/);
+});
+
+await t('orçamento: gasto reportado na janela ≥ limite pausa tudo (sem despacho nem quarentena); abaixo, segue', () => {
+  const at = (h) => Date.parse(`2026-10-12T0${h}:00:00Z`);
+  const rec = (custo, h) => buildRecord({ issue: 9, chave: 'dispatch:9:1', status: 'success', now: at(h), repo: 'o/r',
+    messages: [{ type: 'result', subtype: 'success', is_error: false, total_cost_usd: custo, usage: {} }] });
+  // ida e volta pelo comentário, como o tools/dispatcher.mjs lê
+  const recs = parseRecords([rec(3, 1), rec(4, 2), rec(50, 0)].map((r) => ({ author: BOT, body: formatComment(r) })));
+  const janela = 2.5 * 3600e3; // 00:30–03:00: o de 50 USD (00:00) fica fora
+  const gasto = gastoNaJanela(recs, { now: Date.parse(NOW), janelaMs: janela });
+  assert.equal(gasto, 7);
+  const cheio = planDispatch(snap([issue(1), issue(2, { comments: [marker(2, 1, min(-200)), marker(2, 2, min(-100))] })], { budget: budgetGate({ gastoUsd: gasto, limiteUsd: 7 }) }));
+  assert.equal(cheio.paused, true); assert.deepEqual([cheio.dispatch, cheio.quarantine], [[], []]);
+  assert.ok(cheio.skipped.every((x) => /pausado por orçamento: gasto 7\.00 ≥ limite 7\.00/.test(x.reason)));
+  assert.deepEqual(cheio.budget, { permitir: false, motivo: 'gasto 7.00 ≥ limite 7.00 USD na janela' });
+  const folga = planDispatch(snap([issue(1)], { budget: budgetGate({ gastoUsd: gasto, limiteUsd: 10 }) }));
+  assert.equal(folga.paused, false); assert.deepEqual(folga.dispatch.map((d) => d.issue), [1]);
+  const semDado = planDispatch(snap([issue(1)], { budget: budgetGate({ gastoUsd: null, limiteUsd: 10 }) }));
+  assert.deepEqual(semDado.dispatch.map((d) => d.issue), [1], 'sem telemetria de custo não inventa gasto');
+  assert.equal(planDispatch(snap([issue(1)])).budget, undefined, 'sem orçamento no snapshot: comportamento anterior');
+});
+
+await t('orçamento: configuração por variáveis; limite inválido falha fechado, janela inválida volta a 24 h', () => {
+  assert.deepEqual(budgetConfig({}), { limiteUsd: null, janelaMs: 24 * 3600e3, erro: null });
+  assert.deepEqual(budgetConfig({ DISPATCHER_ORCAMENTO_USD: '25.5', DISPATCHER_ORCAMENTO_JANELA_H: '6' }), { limiteUsd: 25.5, janelaMs: 6 * 3600e3, erro: null });
+  for (const bad of ['abc', '-1', '0', '1e9', '10 USD']) assert.match(budgetConfig({ DISPATCHER_ORCAMENTO_USD: bad }).erro, /inválido/, bad);
+  for (const h of ['0', '500', 'x', '1.5']) assert.equal(budgetConfig({ DISPATCHER_ORCAMENTO_JANELA_H: h }).janelaMs, 24 * 3600e3, h);
+  const y = fs.readFileSync(path.join(root, '.github/workflows/dispatcher.yml'), 'utf8');
+  assert.equal((y.match(/DISPATCHER_ORCAMENTO_USD: \$\{\{ vars\.DISPATCHER_ORCAMENTO_USD \}\}/g) || []).length, 2, 'plano e despacho veem o mesmo limite');
+  const cli = fs.readFileSync(path.join(root, 'tools/dispatcher.mjs'), 'utf8');
+  assert.match(cli, /if \(erro\) return \{ permitir: false/); assert.match(cli, /limiteUsd === null \? \{ permitir: true[\s\S]*?: \{ permitir: false/, 'leitura falhando com limite: pausa');
 });
 
 console.log(`✓ Dispatcher: ${n} grupos de testes passaram`);

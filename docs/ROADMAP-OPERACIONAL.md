@@ -255,7 +255,9 @@ Prioridades:
      - O worker publica um registro por execução, a partir do `execution_file`. O registro tem perfil solicitado, modelo(s) usados, turnos, duração, tokens, custo reportado pelo runtime (a preço de API, não a cobrança da assinatura), status, PR, chave e tentativa. Campo ausente fica `n/d`.
      - `tools/telemetria.mjs resumo` agrega os registros e calcula o custo por PR integrada, incluindo o retrabalho.
      - Detalhes: [tarefas-paralelas.md](./tarefas-paralelas.md#telemetria-por-execução).
-     - **Falta:** validar em runtime (primeira execução real com comentário de telemetria) e ligar o `budgetGate` ao Dispatcher.
+     - Integrada na `main` pela #264, que também levou o conteúdo da #263 (a #263 ficou redundante).
+     - **Orçamento no Dispatcher (branch `feat/dispatcher-orcamento`):** `DISPATCHER_ORCAMENTO_USD`/`_JANELA_H` pausam despachos quando o custo reportado na janela atinge o limite. Com limite definido, configuração inválida ou telemetria ilegível também pausa (fail-closed).
+     - **Falta:** validar em runtime a primeira execução real com comentário de telemetria. Depois, o proprietário decide se define um limite (#231).
 2. **Rotina recorrente:** ativar a rotina horária pelo mecanismo de agendamento disponível e validar execuções consecutivas, idempotência, ausência de duplicação e aviso de incidentes. O arquivo rotina-horaria-prompt.md contém o roteiro; a rotina não deve ser declarada ativa sem confirmação de execução real.
 3. **Concorrência:** confirmar TAREFAS_MAX nas Actions Variables. O workflow suporta até 10, mas o padrão no YAML é 3; não anunciar 10 workers ativos sem comprovar o valor configurado e a estabilidade.
 4. **Release Governor / bridge #221:** continua bloqueada por gate humano R3. A ponte não deve ser considerada operacional para deploy até concluir a revisão/decisão de auditoria, configurar VERCEL_TOKEN com segurança e comprovar deploy real + smoke pós-deploy de um SHA elegível.
