@@ -86,6 +86,29 @@ O workflow \`tarefas.yml\` atual é **event-driven por label**, não um planejad
 - **Continuidade:** não depender do computador do usuário como único host. O executor local permanece complementar até ter runtime e heartbeat comprovados. Priorizar Actions/infra remota para operação contínua.
 - **Carga/custo:** 10 tarefas de Claude consomem cota muito mais rápido. O Dispatcher deve medir duração, tentativas, taxa de falha e consumo quando disponível; o objetivo não é manter 10 sessões ocupadas sem necessidade, e sim esvaziar a fila segura com eficiência.
 
+### 3.4 Esforço adaptativo, roteamento de modelos e orçamento sustentável
+
+O objetivo é maximizar trabalho útil aprovado por unidade de consumo, sem esgotar a capacidade nem reduzir qualidade. **Esforço de raciocínio, modelo escolhido, tokens totais e concorrência são controles diferentes** e devem ser geridos separadamente.
+
+**Antes de cada tarefa:**
+- O Planner/Dispatcher determina classe, risco, tamanho aproximado, dependências, arquivos prováveis, histórico de falhas e critérios de aceite usando metadados e regras determinísticas. Não chamar um segundo modelo caro apenas para classificar tarefas simples.
+- O executor inspeciona a integração/modelo realmente utilizado e configura o esforço por sessão/tarefa através de parâmetros oficialmente suportados por essa versão. Não assumir que uma variável global altera uma sessão existente, nem registrar um nível como disponível sem validar o modelo/runtime.
+- Iniciar no menor nível que seja razoável para o escopo. Como padrão orientativo: **Low** para documentação/formatação/testes mecânicos isolados; **Medium** para correções comuns e funcionalidades delimitadas; **High** para bugs difíceis, integrações e mudanças arquiteturais; **XHigh/Max**, se suportado, só para casos excepcionalmente complexos com justificativa.
+- Para segurança, credenciais, permissões, migrations críticas, risco financeiro/dados, ranking/preços em massa e decisões R3, não reduzir esforço abaixo do necessário para análise segura. Nenhum nível de esforço substitui gate humano, revisão independente ou testes.
+
+**Escalada e economia:**
+- Escalar o esforço quando houver falhas de raciocínio/teste recorrentes, contexto contraditório, dependências inesperadas ou risco maior que o inicialmente estimado. Se a tarefa continuar falhando, parar retries cegos, registrar evidência e encaminhar para diagnóstico/revisão.
+- Desescalar tarefas que se mostrem simples, sem reiniciar trabalho desnecessariamente. Preferir chamadas/tool use mínimas, contexto focado, leitura seletiva de arquivos e logs resumidos; não repetir auditorias/documentos já lidos sem mudança de estado.
+- Avaliar roteamento para modelos mais econômicos em tarefas mecânicas/triagem somente quando o executor e as políticas atuais suportarem isso. Usar modelos mais capazes para tarefas complexas ou revisão de risco; o revisor deve ser independente o suficiente para não repetir cegamente conclusões do worker.
+- Gerenciar orçamento global e capacidade: concorrência adaptativa, limite por tarefa e ciclo, timeouts, retries limitados, backoff para rate limit/cota, fila persistente, leases/idempotência e checkpoints recuperáveis. Em esgotamento/indisponibilidade, preservar trabalho e fila, reduzir a carga e retomar quando houver capacidade. **Não prometer operação ilimitada nem contornar cota, rate limits ou políticas do provedor.**
+- Não aumentar automaticamente a concorrência só porque existem slots: custo, quota, conflito entre arquivos e taxa de falha devem determinar o paralelismo. Fazer aumento gradual e manter tasks que competem pelos mesmos arquivos serializadas.
+
+**Medição e prova:**
+- Registrar, quando as interfaces do provedor permitirem, modelo, esforço, tokens de entrada/saída/cache, duração, tentativas, custo calculável, resultado dos testes, motivo de escalada e resultado da PR. Nunca inventar métricas que não estejam disponíveis.
+- Medir custo/uso por tarefa concluída e por PR aprovada, taxa de sucesso na primeira tentativa, retrabalho, latência, concorrência máxima e falhas por cota/rate limit. Proteger logs contra secrets e dados pessoais.
+- Fazer comparação controlada em tarefas representativas para demonstrar economia sem piorar CI, regressões, golden tests, defeitos reabertos ou taxa de rejeição de PRs. Não comparar somente tokens; comparar trabalho útil aceito e qualidade.
+- Antes de ativar roteamento adaptativo em produção, testar configuração, fallback e recuperação em CI/sandbox. Se não existir suporte confiável para ajuste por sessão, documentar a limitação e implementar primeiro os controles que o executor suporta, sem simular adaptatividade.
+
 ## 4. Ciclo de vida de cada tarefa
 
 | Etapa | Dono | Entrada | Saída obrigatória |
@@ -120,7 +143,7 @@ Trabalho:
 Critérios de saída:
 - Uma tarefa elegível é selecionada sem alguém aplicar manualmente seu label individual; dispatcher não começa tarefa não autorizada.
 - Reexecuções não geram duas branches/PRs para a mesma tarefa.
-- Simulação/teste com jobs concorrentes prova limite, fila, retry, cancelamento e retomada após falha.
+- Simulação/teste com jobs concorrentes prova limite, fila, retry, cancelamento e retomada após falha.\n- Diferentes classes de tarefa recebem configurações de esforço coerentes; escalada/desescalada e orçamento são demonstrados por testes ou telemetria real.\n- Há métricas auditáveis de consumo disponíveis (ou uma limitação documentada) e o fallback por quota/rate limit preserva a fila sem tentativas ilimitadas.\n- Testes comparativos mostram que a economia não enfraquece CI, golden tests, revisão ou critérios de segurança.
 - Há evidência de scheduler primário e fallback, watchdog, alerta e recuperação.
 - Gate R0/R1/R2/R3 documentado e testado; a permissão do worker de tarefas continua sem merge/deploy.
 
