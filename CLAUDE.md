@@ -48,6 +48,7 @@ Regras permanentes para qualquer executor (Claude ou outro agente) que trabalhe 
 
 ## Testes antes de integrar
 - Rode `npm test` antes de integrar qualquer mudança.
+- Teste novo: crie `test/<nome>-tests.js` (ou importe-o no fim de um teste existente). `test/run-all.mjs` descobre o arquivo sozinho; **não edite o script `test` do `package.json`**.
 - Corrija as falhas antes de integrar. Não desative, não pule e não enfraqueça testes para fazê-los passar.
 
 ## Trabalho alheio e conflitos
