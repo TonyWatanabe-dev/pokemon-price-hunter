@@ -30,6 +30,18 @@ Detalhamento completo das responsabilidades, limites, dependências, status de i
 - Release: manter separação dos workers de implementação e do Release Governor. Nenhum worker de tarefa ganha permissão de merge/deploy; release bridge precisa de configuração, CI, gates e smoke real comprovados.
 - Decisões R3/bloqueios acionáveis devem ser registrados com evidência e recomendação; aviso ao usuário por meio do monitor de projeto do ChatGPT já configurado. Telegram/ntfy seguem para incidentes operacionais, não como substituto da aprovação de decisão.
 
+
+### Gestão adaptativa de esforço e consumo Claude — prioridade Fase 0
+**Objetivo:** manter a fábrica progredindo sem desperdiçar tokens ou esgotar a cota com sessões desnecessárias.
+
+- Classificar tarefas de forma determinística usando tipo, risco, escopo, dependências e falhas anteriores; não chamar um modelo separado para tarefas simples só para escolher esforço.
+- Ajustar esforço por sessão/tarefa com os parâmetros oficialmente suportados pelo modelo/runtime real. Início orientativo: Low (mecânico/documentação), Medium (desenvolvimento comum), High (depuração/arquitetura), nível máximo suportado somente em exceções justificadas. Não reduzir análise de R3/segurança.
+- Roteamento de modelos econômicos apenas quando suportado e validado; revisão independente continua obrigatória.
+- Concorrência adaptativa, retries limitados, backoff para quota/rate limit, fila persistente, checkpoint/retomada, idempotência e controle contra ciclos de tentativas caras. Em falta de cota, preservar estado e aguardar capacidade; não contornar limites.
+- Instrumentar modelo/esforço/tokens/cache/duração/custo apenas se dados reais estiverem disponíveis. Medir custo por PR aprovada, retrabalho e qualidade; documentar métricas indisponíveis em vez de estimar ou inventar.
+- Validar em sandbox/CI com tarefas representativas e comparar consumo junto com sucesso, regressões e defeitos; economia não pode relaxar testes, revisão, segurança ou governança.
+- **Estado:** requisito incorporado ao plano; implementação ainda não declarada como concluída. Próximo passo é auditar o executor real e abrir PRs pequenas cobrindo configuração por sessão, budget/queue/retry e telemetria conforme dependências.
+
 ### Executor paralelo do Claude Code — GitHub Actions
 **Status: primeira execução ponta a ponta comprovada; capacidade instalada para até 10 tarefas, mas valor de concorrência ativo ainda precisa ser conferido/configurado.**
 
@@ -97,7 +109,7 @@ Prioridades:
 
 ## Próximos passos ordenados
 
-1. **Fábrica 24/7:** conferir `TAREFAS_MAX`, operadores autorizados, app/secret Claude e runner de firewall; confirmar cron-job.org para Hunter/Vigia e o fluxo de aviso/recuperação. O valor atual da variável e o cron externo não são verificáveis apenas pelo código do repo.
+1. **Esforço/custo adaptativos:** auditar o executor para configurar esforço por sessão, roteamento de modelo suportado, orçamento, retries/backoff, fila retomável e métricas de consumo. Validar economia junto com qualidade antes de aumentar workers.\n2. **Fábrica 24/7:** conferir `TAREFAS_MAX`, operadores autorizados, app/secret Claude e runner de firewall; confirmar cron-job.org para Hunter/Vigia e o fluxo de aviso/recuperação. O valor atual da variável e o cron externo não são verificáveis apenas pelo código do repo.
 2. **Planner + Dispatcher + QA Reviewer:** implementar fila de issues pré-aprovadas, seleção por dependência/risco/arquivos, despacho idempotente, quarentena/retry e revisão independente. A action atual continua por label até que o novo dispatcher tenha CI e testes; não relaxar permissões do trigger.
 3. **Release bridge (#221):** revalidar PR/diff/checks, cumprir o gate humano R3 estabelecido, configurar credencial Vercel no ambiente seguro e provar deploy + smoke com um PR elegível. Não confundir merge com publicação.
 4. **Dados e matching:** usar as issues existentes de contratos de coletores (#47/#103/#106), matching (#42/#109/#110), preço/moeda (#79), frescor/histórico (#104/#46/#112/#113), dedupe (#78) e referência Copag (#41). Não duplicar issues.
