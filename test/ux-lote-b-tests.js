@@ -173,7 +173,7 @@ await t('8. CSS: na busca o preço é o maior elemento e o % de desconto vem emb
   assert.match(css, /\.busca-more\{display:flex;justify-content:center/);
 });
 
-t('mobile: texto resumido fica só visualmente oculto (nome acessível preservado)', () => {
+await t('mobile: texto resumido fica só visualmente oculto (nome acessível preservado)', () => {
   const css = html.slice(html.indexOf('<style'), html.indexOf('</style>'));
   for (const sel of ['.opp-stores-x', '.opp-cmp-r']) {
     const i = css.indexOf('.opp .deals .opp-card ' + sel); assert.ok(i > 0, sel);
