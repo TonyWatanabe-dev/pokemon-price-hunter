@@ -1957,7 +1957,7 @@ function renderCopag(){
   ${sections}</div>`;
 }
 function renderGuide(){
-  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h2>Como o site avalia as ofertas</h2>
+  $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide"><h1 class="panel-h1">Como o site avalia as ofertas</h1>
   <p>O objetivo é um só: te ajudar a fazer bons negócios com produto lacrado em português, sem cair em preço inflado ou golpe.</p>
   <h3>Opportunity Score (0 a 100)</h3><p>A nota responde a uma pergunta: quão interessante é comprar esta oferta agora. Quem calcula é o Opportunity Engine, com os preços já coletados das lojas. Cada oferta tem uma nota só, e ela é a mesma no início, em Oportunidades, nas listas e na página do produto.</p>
   <table>${[["Referência atual","Desconto em relação ao preço sugerido Copag atual e verificado. Sem ele, em relação a uma referência de mercado formada por várias lojas.","30%"],["Histórico","Onde o preço está entre o menor e a média já vistos. Só conta com 3 dias ou mais de dados.","20%"],["Mercado","Distância da mediana das lojas com estoque agora. Precisa de 2 lojas ou mais.","20%"],["Menor preço agora","Distância do menor preço com estoque neste momento.","10%"],["Frete","Frete informado e quanto ele pesa no total. Frete desconhecido não conta.","10%"],["Confiabilidade","Reputação pública da loja no Reclame Aqui e vendedor oficial.","10%"]].map(([n,h,w])=>`<tr><td><b style="color:var(--ink)">${n}</b><br>${h}</td><td>peso ${w}</td></tr>`).join("")}</table>
