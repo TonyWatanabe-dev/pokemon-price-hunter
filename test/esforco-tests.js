@@ -13,9 +13,13 @@ await t('1. classes coerentes: docs → mecânica, comum por padrão, depuraçã
   assert.equal(C({ title: 'Filtro de loja na página de busca', body: 'Áreas: `index.html`, `api/v1.mjs`' }), CLASSES.COMUM);
   assert.equal(C({ labels: ['bug'], title: 'Falha intermitente no coletor', body: 'investigar race na gravação' }), CLASSES.COMPLEXA);
   assert.equal(C({ title: 'Refatorar arquitetura do coletor' }), CLASSES.COMPLEXA);
+  assert.equal(C({ title: 'Refatorar o parser de ofertas' }), CLASSES.COMPLEXA, 'refatorar sem a palavra arquitetura');
+  assert.equal(C({ title: 'Integração com Vercel' }), CLASSES.COMPLEXA, 'integração com sem outra palavra de arquitetura');
   for (const body of ['Áreas: `.github/workflows/tarefas.yml`', 'Áreas: `src/agents/x.js`', 'Áreas: `db/011.sql`', 'Risco previsto: R3 (`package.json`)'])
     assert.equal(C({ title: 'x', body }), CLASSES.CRITICA, body);
   assert.equal(C({ title: 'Rotacionar secret do ML' }), CLASSES.CRITICA, 'assunto de credencial é crítico mesmo sem área');
+  for (const title of ['Rotacionar credenciais', 'Atualizar migrations', 'Revisar permissões', 'Renovar tokens', 'Update secrets', 'Change credentials'])
+    assert.equal(C({ title }), CLASSES.CRITICA, `assunto crítico com flexão: ${title}`);
   assert.equal(C({ labels: ['security'], title: 'x' }), CLASSES.CRITICA);
   assert.equal(C({ title: 'Ponte', body: 'Fase: 0 · Risco previsto: R3 (merge humano)' }), CLASSES.CRITICA, 'R3 declarado basta');
   assert.equal(C({ title: 'x', body: 'Risco previsto: R0 (docs)' }), CLASSES.COMUM);
