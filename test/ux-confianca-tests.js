@@ -107,7 +107,7 @@ await t('E1. "Comparar N ofertas com estoque" leva à seção Onde comprar (live
   const s = sandbox(page([])); s.ctx.P['me04-etb'] = { id: 'me04-etb', liveCount: 4 };
   const card = s.t.oppCard(item(), 0); const link = card.match(/<a class="opp-stores"[^>]*>.*?<\/a>/)[0];
   assert.match(link, /href="\/produto\/caos-ascendente-etb#ondecomprar"/); assert.match(link, /data-p="me04-etb" data-hash="ondecomprar"/); assert.match(text(link), /Comparar 4 ofertas com estoque/);
-  assert.match(s.t.podCardOpp(item(), 1), /Comparar 4 ofertas com estoque/);
+  assert.match(text(s.t.podCardOpp(item(), 1)), /Comparar 4 ofertas com estoque/);
   s.ctx.P['me04-etb'].liveCount = 1; assert.doesNotMatch(s.t.oppCard(item(), 0), /opp-stores/, 'uma oferta só: nada a comparar');
   delete s.ctx.P['me04-etb']; assert.doesNotMatch(s.t.oppCard(item(), 0), /opp-stores/, 'sem resumo: sem atalho (nada estimado)');
   assert.match(html, /PENDING_HASH=pb\.dataset\.hash\|\|"";openProduct\(pb\.dataset\.p\)/); assert.match(html, /if\(pid in HIST\)drawHist\(pid\);else loadHist\(pid\);\n  hashScroll\(\);/);

@@ -376,6 +376,20 @@ a.navbtn{text-decoration:none}
 .qchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .qchip{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:6px 12px;font-size:13.5px;font-weight:500;transition:border-color var(--t-fast) ease,background-color var(--t-fast) ease}
 .qchip small{color:var(--muted)}
+/* Lote B — /busca: chips de tipo + ordenação numa barra; "Carregar mais" abaixo da lista; no cartão o preço é sempre o maior
+   elemento e o % de desconto vem embaixo, menor (antes alternava: com desconto o % ficava acima do preço, em 30px) */
+.busca-bar{display:flex;align-items:center;gap:10px 14px;margin:14px 0 18px}
+.busca-tipos{display:flex;gap:8px;flex:1;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:2px 0}
+.busca-tipos::-webkit-scrollbar{display:none}
+.busca-tipos .fchip{padding:8px 12px;font-size:14px;min-height:40px;flex:none}
+.busca-ord{flex:none;margin-left:auto}.busca-ord select{min-height:40px}
+@media (max-width:760px){.busca-bar{flex-wrap:wrap}.busca-tipos{flex:1 1 100%;margin:0 calc(var(--gutter) * -1);padding:2px var(--gutter)}.busca-ord{margin-left:0;flex:1 1 100%}.busca-ord select{width:100%}}
+.busca-more{display:flex;justify-content:center;margin-top:22px}.busca-more .btn{min-height:44px}
+.busca-deals .deal-body{display:flex;flex-direction:column}
+.busca-deals .deal-col{order:0}.busca-deals .deal-name{order:1}.busca-deals .deal-price{order:2}.busca-deals .deal-save{order:3}.busca-deals .so-ship{order:4}.busca-deals .meter{order:5}.busca-deals .deal-foot{order:6}
+.busca-deals .deal-price b{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.busca-deals .deal-save{margin:4px 0 0;gap:6px;align-items:baseline}.busca-deals .deal-save b{font-size:15px;font-weight:800}.busca-deals .deal-save span{font-size:12.5px}.busca-deals .deal-save span br{display:none}.busca-deals .deal-save em::before{content:" · "}
+.busca-deals .deal-body>.deal-price+.deal-foot{margin-top:14px}
 @media (hover:hover) and (pointer:fine){.qchip:hover{border-color:var(--ink)}}
 .home-opp,.home-all{margin-top:8px}
 .seeall{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:10px 0;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none}.seeall .chev{transform:rotate(-90deg);width:16px;height:16px}
@@ -500,6 +514,41 @@ a.navbtn{text-decoration:none}
 .opp-cmp.up b{color:var(--bad)}.opp-cmp.eq{color:var(--ink)}
 .opp-ref{margin:2px 0 0;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}.opp-ref.none{margin-top:4px;font-size:13px}
 .opp-card .meter strong small{font-weight:600}
+/* Lote B: preço, comparação e frete num bloco; botão e "Comparar N" num bloco de ação no rodapé */
+.opp-pv{display:flex;flex-direction:column;min-width:0}
+.opp-act{flex:1 1 100%;display:flex;flex-direction:column;align-items:stretch;gap:2px;min-width:0}
+.opp-act .deal-cta{flex:1 1 auto}
+.rc-row .opp-age{margin:0}
+/* Lote B: cartão compacto no celular (~2 por tela): imagem baixa, uma linha de preço, nota em barra fina, confiança + idade juntas,
+   loja + RA e botão com "Comparar N" na mesma linha. Nada some: a frase completa continua no title e em "Por que esta nota?". */
+@media (max-width:760px){
+  .opp .deals .opp-card .deal-media{aspect-ratio:auto;height:132px;padding:10px 14px}
+  .opp .deals .opp-card .deal-ph img{max-height:112px}
+  .opp .deals .opp-card .deal-badge{top:8px;left:8px;padding:4px 9px}
+  .opp .deals .opp-card .deal-fav{top:6px;right:6px;width:34px;height:34px}
+  .opp .deals .opp-card .cat-chip{left:8px;bottom:8px;padding:4px 9px 4px 6px;font-size:11px}
+  .opp .deals .opp-card .foil-tag{bottom:8px;right:8px}
+  .opp .deals .opp-card .deal-body{padding:10px 14px 12px}
+  .opp .deals .opp-card .deal-name{margin:2px 0 8px;font-size:15.5px;-webkit-line-clamp:1}
+  .opp .deals .opp-card .opp-pv{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:0 6px}
+  .opp .deals .opp-card .opp-pv>*{margin:0}
+  .opp .deals .opp-card .opp-price b{font-size:21px}
+  .opp .deals .opp-card .opp-cmp,.opp .deals .opp-card .opp-ref{font-size:13px}
+  .opp .deals .opp-card .opp-cmp{flex:1 0 auto}   /* 1ª linha: preço · %; 2ª linha: referência · frete */
+  .opp .deals .opp-card .opp-cmp::before,.opp .deals .opp-card .opp-ship::before{content:"·";margin-right:6px;color:var(--muted);font-weight:400}
+  .opp .deals .opp-card .opp-cmp-r,.opp .deals .opp-card .opp-cmp:not(.up) .opp-cmp-w{display:none}   /* o sinal "−" já diz "abaixo"; "acima" continua escrito */
+  .opp .deals .opp-card .opp-ship{font-size:13px}
+  .opp .deals .opp-card .meter{margin-top:8px;gap:8px}.opp .deals .opp-card .meter i{height:4px}
+  .opp .deals .opp-card .rc-row{margin-top:6px;gap:4px 10px}.opp .deals .opp-card .rc-row .opp-age,.opp .deals .opp-card .opp-conf{font-size:13px}
+  .opp .deals .opp-card .rc-row .opp-age::before{content:"·";color:var(--muted);margin-right:2px}
+  .opp .deals .opp-card .opp-flags{margin-top:6px}
+  .opp .deals .opp-card .opp-why{margin-top:4px}.opp .deals .opp-card .opp-why summary{min-height:28px;padding:2px 0}
+  .opp .deals .opp-card .deal-foot{padding-top:8px;gap:6px 8px}.opp .deals .opp-card .deal-body>.meter+.deal-foot{margin-top:8px}
+  .opp .deals .opp-card .opp-act{flex-direction:row;align-items:center;gap:10px}
+  .opp .deals .opp-card .opp-act .deal-cta{flex:1 1 auto;min-width:0}
+  .opp .deals .opp-card .opp-stores{flex:0 0 auto;margin:0;padding:10px 2px;white-space:nowrap}
+  .opp .deals .opp-card .opp-stores-x{display:none}
+}
 .opp-conf{display:flex;align-items:center;gap:6px;margin:8px 0 0;font-size:12.5px;color:var(--muted)}
 .opp-conf i{width:7px;height:7px;border-radius:50%;background:var(--line);flex:none}
 .opp-conf.lv-alta i{background:var(--ok)}.opp-conf.lv-media i{background:var(--warn)}.opp-conf.lv-baixa i{background:var(--muted)}
@@ -1396,7 +1445,11 @@ const STOCK={IN_STOCK:["ok","Em estoque"],OUT_OF_STOCK:["","Sem estoque"],PRE_OR
 const SRC={ACTIVE:["ok","Ativa"],BLOCKED:["bad","Bloqueia robôs"],ERROR:["bad","Com erro"],PENDING:["warn","Sem endereço"],UNAVAILABLE:["","Sem integração"],PAUSED:["","Pausada"]};
 
 let S=null,P={},OFF=[];
-const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:true,q:"",type:"",max:"",below:false},store.get("f",{}));
+const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:true,q:"",type:"",max:"",below:false,tipo:"",ord:""},store.get("f",{}));
+/* Lote B — /busca: chips de tipo (taxonomia dos produtos) e ordenação; definidos aqui porque a URL é lida antes do resto do script */
+const BTIPOS=[["booster_box","Booster Box",(t)=>t==="booster_box"],["etb","ETB",(t)=>t==="etb"],["blister","Blister",(t)=>/^blister/.test(t)],["booster_pack","Booster avulso",(t)=>t==="booster_pack"],["combo","Combo",(t)=>t==="combo"],["lata","Lata",(t)=>t==="lata"||t==="minilata"],["deck","Deck",(t)=>t==="deck"||t==="desafio"],["colecao","Coleção",(t)=>/^colecao/.test(t)]];
+const btipoOf=(p)=>(BTIPOS.find(([,,f])=>f(String(p?.type||"")))||[""])[0];
+const BORDS=[["","Relevância"],["preco","Menor preço"],["desconto","Maior desconto"],["nota","Melhor nota"]];
 const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"#";
 /* Afiliados (docs/afiliados.md): muda só o destino do clique em "Ver oferta". O dado da oferta (o.url), a ordem, a melhor oferta, o preço e a nota não mudam.
    Só anúncio do Mercado Livre com link próprio (gerado no painel para ESSE anúncio) troca; o resto abre na URL original. AFIL vem de /api/v1/afiliados. */
@@ -1421,7 +1474,7 @@ function parseLoc(){
 }
 (function(){const h=location.hash.slice(1);if(h&&OLDHASH[h])history.replaceState(null,"","/"+OLDHASH[h]);
   if(/^\/lojas\/?$/.test(location.pathname))history.replaceState(null,"","/"+location.search); /* página Lojas foi retirada */
-  const q=new URLSearchParams(location.search).get("q");if(location.pathname.startsWith("/busca"))F.q=(q||"").slice(0,80)})();
+  if(location.pathname.startsWith("/busca"))buscaFromURL(location.search)})();
 const pathOf=(v)=>"/"+(PATHS[v]??"");
 let curGroup=parseLoc().slug||null;let view=parseLoc().view||"deals",xfOpen=false,fOpen=false,prodPushed=false;
 function go(v){
@@ -1434,7 +1487,7 @@ addEventListener("popstate",()=>{
   const r=parseLoc();const sh=$("#sheet");if(sh.open){sh.dataset.kind="";sh.close()}acClose();
   if(r.view==="produto"){const pid=S?pidFromSlug(r.slug):null;view="produto";curPid=pid;render();return}
   if(r.view==="colecao"||r.view==="tipo"){view=r.view;curGroup=r.slug;render();scrollTo({top:0});return}
-  if(r.view==="busca")F.q=(new URLSearchParams(location.search).get("q")||"").slice(0,80);
+  if(r.view==="busca")buscaFromURL(location.search);
   view=r.view;render();scrollTo({top:0});
 });
 
@@ -2563,7 +2616,9 @@ function buildIndex(){
   IDX=(S.products||[]).filter((p)=>p.offerCount>0).map((p)=>{const c=cols[p.collection]||{};
     const colT=new Set(toks([p.collectionName,c.series,(c.aliases||[]).join(" "),EN[p.collection]||""].join(" ")));
     const typT=new Set(toks([p.typeLabel,p.variant,TSYN[p.type]||"",p.group,p.boosters?p.boosters+" boosters":""].join(" ")));
-    return{p,colT:[...colT],typT:[...typT],codes:[...(codes[p.id]||[]),...(p.codes||[]).map((c)=>norm(String(c))),p.ean?norm(String(p.ean)):""].filter(Boolean)}});
+    /* Lote B: tyC = só o tipo em si (rótulo + sinônimos), sem "4 boosters" de um blister; nmT = nome do produto (rótulo + variante) */
+    const tyC=new Set(toks([p.typeLabel,TSYN[p.type]||""].join(" ")));const nmT=new Set(toks(label(p)));
+    return{p,colT:[...colT],typT:[...typT],tyC:[...tyC],nmT:[...nmT],codes:[...(codes[p.id]||[]),...(p.codes||[]).map((c)=>norm(String(c))),p.ean?norm(String(p.ean)):""].filter(Boolean)}});
   CIDX=(S.collections||[]).map((c)=>({c,t:[...new Set(toks([c.name,c.series,(c.aliases||[]).join(" "),EN[c.id]||""].join(" ")))]}));
 }
 function tokScore(q,list){let best=0;for(const t of list){if(t===q)return 3;if(t.startsWith(q)&&q.length>=2)best=Math.max(best,2.2);else if(q.length>=4&&t.startsWith(q.slice(0,-1)))best=Math.max(best,1.4);else if(q.length>=4){const d=lev(q,t,q.length>=8?2:1);if(d<=(q.length>=8?2:1))best=Math.max(best,1.2)}}return best}
@@ -2573,13 +2628,36 @@ function searchProducts(q){
   if(/^[a-z0-9-]{6,}$/.test(code)&&/\d{4,}/.test(code)){const hit=IDX.filter((x)=>x.codes.some((c)=>c===code||c.includes(code)));if(hit.length)return hit.map((x)=>({p:x.p,score:10}))}
   const qs=toks(raw);if(!qs.length)return[];
   const out=[];
-  for(const x of IDX){let sum=0,ok=true;for(const w of qs){const s=Math.max(tokScore(w,x.colT)*1.6,tokScore(w,x.typT));if(!s){ok=false;break}sum+=s}if(ok)out.push({p:x.p,score:sum})}
+  const ex=(w,l)=>l.includes(w)?1:0;   /* Lote B: termo igual (após normalizar/stem) ao tipo, ao nome ou à coleção */
+  for(const x of IDX){let sum=0,ok=true;for(const w of qs){const s=Math.max(tokScore(w,x.colT)*1.6,tokScore(w,x.typT));if(!s){ok=false;break}sum+=s}
+    if(ok)out.push({p:x.p,score:sum,tm:qs.reduce((a,w)=>a+ex(w,x.tyC||[]),0),nm:qs.reduce((a,w)=>a+ex(w,x.nmT||[]),0),cm:qs.reduce((a,w)=>a+ex(w,x.colT),0)})}
   const bl={};for(const o of OFF)if(live(o)&&(!bl[o.productId]||o.total<bl[o.productId].total))bl[o.productId]=o;
-  return out.sort((a,b)=>b.score-a.score||(!!bl[b.p.id]-!!bl[a.p.id])||((oppScore(bl[b.p.id])??-1)-(oppScore(bl[a.p.id])??-1)));
+  /* "booster" → booster box / booster avulso (tipo exato) antes de blisters que só contêm boosters; depois nome, coleção e pontuação difusa */
+  return out.sort((a,b)=>b.tm-a.tm||b.nm-a.nm||b.cm-a.cm||b.score-a.score||(!!bl[b.p.id]-!!bl[a.p.id])||((oppScore(bl[b.p.id])??-1)-(oppScore(bl[a.p.id])??-1)));
 }
 function searchCollections(q){const qs=toks(q);if(!qs.length)return[];return CIDX.map((x)=>({c:x.c,s:qs.reduce((a,w)=>{const s=tokScore(w,x.t);return a<0||!s?-1:a+s},0)})).filter((x)=>x.s>0).sort((a,b)=>b.s-a.s).map((x)=>x.c)}
 function bestOfferFor(pid){return bestLive(pid)||OFF.filter((o)=>o.productId===pid&&!o.anomalous).sort((a,b)=>(a.stock==="PRE_ORDER"?0:1)-(b.stock==="PRE_ORDER"?0:1)||byTot(a,b))[0]||null}
 const nLiveOf=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).length;
+/* Lote B — /busca: chips de tipo (taxonomia dos produtos), ordenação e paginação de 24 em 24.
+   Estado na URL (/busca?q=&tipo=&ord=) e espelhado em F.q/F.tipo/F.ord: voltar/avançar refaz a mesma lista. */
+const B_PAGE=24;
+function sortBusca(cards,ord){
+  const nil=(v)=>v==null||Number.isNaN(v);
+  const by=(f,dir)=>(a,b)=>{const x=f(a),y=f(b);if(nil(x)&&nil(y))return 0;if(nil(x))return 1;if(nil(y))return -1;return dir*(x-y)};
+  const c=cards.slice();   /* sort é estável: empates (e quem não tem oferta) mantêm a ordem de relevância */
+  if(ord==="preco")return c.sort(by((e)=>e.o&&live(e.o)?e.o.total:null,1));
+  if(ord==="desconto")return c.sort(by((e)=>e.o&&live(e.o)?discOf(e.p,e.o):null,-1));
+  if(ord==="nota")return c.sort(by((e)=>e.o&&live(e.o)?oppScore(e.o):null,-1));
+  return c;
+}
+function buscaURL(){const u=new URLSearchParams();if(F.q)u.set("q",F.q);if(F.tipo)u.set("tipo",F.tipo);if(F.ord)u.set("ord",F.ord);const s=u.toString();return"/busca"+(s?"?"+s:"")}
+function buscaFromURL(search){const u=new URLSearchParams(search);F.q=(u.get("q")||"").slice(0,80);F.tipo=BTIPOS.some(([k])=>k===u.get("tipo"))?u.get("tipo"):"";F.ord=BORDS.some(([k])=>k===u.get("ord"))?u.get("ord"):""}
+function buscaCards(q){const all=searchProducts(q);const res=F.tipo?all.filter(({p})=>btipoOf(p)===F.tipo):all;
+  const cards=sortBusca(res.map(({p})=>({p,o:bestOfferFor(p.id),n:S.slim?(p.liveCount||0):nLiveOf(p.id)})),F.ord);
+  const tipos=BTIPOS.map(([k,l])=>[k,l,all.filter(({p})=>btipoOf(p)===k).length]).filter((t)=>t[2]>0);
+  return{all,res,cards,tipos}}
+const buscaMoreBtn=(rest)=>rest>0?`<div class="busca-more"><button class="btn" type="button" id="busca-more" data-buscamore>Carregar mais (${rest} ${rest===1?"restante":"restantes"})</button></div>`:"";
+const buscaLive=(n,total)=>`Mostrando ${n} de ${total} ${total===1?"produto":"produtos"}`;
 
 /* SearchInput com autocomplete: rápido, sem buscar nada na rede */
 let acSel=-1;
@@ -2597,20 +2675,35 @@ function acRender(input){
 }
 function acClose(){document.querySelectorAll(".ac").forEach((b)=>{b.hidden=true});document.querySelectorAll(".sbox input").forEach((i)=>i.setAttribute("aria-expanded","false"))}
 function doSearch(q){q=String(q||"").trim().slice(0,80);acClose();if(!q){go("");return}
-  F.q=q;const u="/busca?q="+encodeURIComponent(q);if(location.pathname+location.search!==u)history.pushState(null,"",u);
+  F.q=q;F.tipo="";const u=buscaURL();if(location.pathname+location.search!==u)history.pushState(null,"",u);
   view="busca";render();scrollTo({top:0});track("search",{q:q.slice(0,60),results:searchProducts(q).length})}
 
 /* Resultados da busca */
 function renderSearch(){
-  const q=F.q||"";const res=searchProducts(q);const cols=searchCollections(q).slice(0,6);const tips=q?(S.slim?(SEARCH_TIPS.get(q)||[]):tipHits(q)):[];
-  const cards=res.map(({p})=>({p,o:bestOfferFor(p.id),n:S.slim?(p.liveCount||0):nLiveOf(p.id)}));
-  const sugg=!res.length?(S.collections||[]).map((c)=>({c,d:lev(norm(q),norm(c.name),6)})).sort((a,b)=>a.d-b.d).slice(0,3).map((x)=>x.c):[];
+  const q=F.q||"";const{all,res,cards,tipos}=buscaCards(q);const cols=searchCollections(q).slice(0,6);const tips=q?(S.slim?(SEARCH_TIPS.get(q)||[]):tipHits(q)):[];
+  const sugg=!all.length?(S.collections||[]).map((c)=>({c,d:lev(norm(q),norm(c.name),6)})).sort((a,b)=>a.d-b.d).slice(0,3).map((x)=>x.c):[];
+  const shown=cards.slice(0,B_PAGE);   /* Lote B: 24 por vez; "Carregar mais" acrescenta os próximos 24 */
   $("#view").innerHTML=`<div class="page-title"><h1>${res.length?`${res.length} ${res.length===1?"produto":"produtos"} para "${esc(q)}"`:`Nenhum produto para "${esc(q)}"`}</h1>${q?`<button class="linkbtn" type="button" data-go="">${ic("x")}Limpar busca</button>`:""}</div>
   ${cols.length?`<div class="qchips">${cols.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)} <small>${c.products}</small></button>`).join("")}</div>`:""}
-  ${res.length?`<div class="deals">${cards.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`
+  ${all.length?`<div class="busca-bar">${tipos.length>1?`<div class="busca-tipos" role="group" aria-label="Filtrar por tipo">${tipos.map(([k,l,n])=>`<button type="button" class="fchip" data-btipo="${k}" aria-pressed="${F.tipo===k}">${l} <small>${n}</small></button>`).join("")}</div>`:""}
+    <div class="field busca-ord"><label for="b-ord" class="sr">Ordenar</label><select id="b-ord" data-bord>${BORDS.map(([v,l])=>`<option value="${v}"${(F.ord||"")===v?" selected":""}>${l}</option>`).join("")}</select></div></div>`:""}
+  ${res.length?`<div class="deals busca-deals" id="busca-deals">${shown.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>${buscaMoreBtn(cards.length-shown.length)}<p class="sr" id="busca-live" aria-live="polite">${buscaLive(shown.length,cards.length)}</p>`
+    :all.length?`<div class="empty"><h2>Nenhum produto desse tipo</h2><p>Os ${all.length} resultados para "${esc(q)}" são de outros tipos.</p><button class="btn ghost" type="button" data-btipo="${esc(F.tipo)}">Ver todos os tipos</button></div>`
     :`<div class="empty"><h2>Não achamos esse produto</h2><p>Confira a escrita ou tente o nome da coleção, o tipo (ETB, box, blister) ou o código de barras.</p>${sugg.length?`<p>Talvez você quis dizer: ${sugg.map((c)=>`<button type="button" class="qchip" data-q="${esc(c.name)}">${esc(c.name)}</button>`).join(" ")}</p>`:""}<button class="btn ghost" type="button" data-go="">Ver todas as ofertas</button></div>`}
   ${tips.length?`<section class="home-tg"><div class="page-title"><h2>${ic("lightbulb","icon tgi")}No Telegram <small>${tips.length}</small></h2></div><div class="tipgrid">${tips.map(tipCard).join("")}</div><p class="hnote">Promoções postadas em canais públicos. Ninguém confirmou estoque nem vendedor: confira antes de comprar. Não entram no ranking.</p></section>`:""}`;
 }
+
+function moreBusca(){
+  const box=$("#busca-deals"),btn=$("#busca-more");if(!box||!btn)return;
+  const{cards}=buscaCards(F.q||"");const from=box.querySelectorAll(".deal").length;const next=cards.slice(from,from+B_PAGE);
+  box.insertAdjacentHTML("beforeend",next.map((e)=>dealCard(e,{plain:true,h:"h2"})).join(""));
+  const rest=cards.length-from-next.length;if(rest>0)btn.textContent=`Carregar mais (${rest} ${rest===1?"restante":"restantes"})`;else btn.closest(".busca-more")?.remove();
+  const lv=$("#busca-live");if(lv)lv.textContent=buscaLive(from+next.length,cards.length);
+  box.querySelectorAll(".deal-hit")[from]?.focus({preventScroll:true});   /* leitor de tela segue para o 1º cartão novo */
+  if(typeof revealInit==="function")revealInit();
+}
+/* chip de tipo ou ordenação: nova entrada no histórico (voltar desfaz) e a lista é redesenhada do começo */
+function buscaNav(){const u=buscaURL();if(location.pathname+location.search!==u)history.pushState(null,"",u);view="busca";render()}
 
 /* Categorias do site (tipo ou grupo do produto). Home e /oportunidades leem as oportunidades da API (6B.2: sem oppPool). */
 const CATS=[["","Todos"],["Boosters","Todos os boosters"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
@@ -2688,7 +2781,7 @@ function oppShip(x){
    Sem o resumo (estado completo), o atalho não aparece: esta página só lê a API. */
 const liveN=(pid)=>P[pid]?.liveCount??0;
 function cmpLink(pr){const n=liveN(pr.id);if(n<2)return"";
-  return`<a class="opp-stores" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}#ondecomprar" data-p="${esc(pr.id)}" data-hash="ondecomprar">${ic("storefront")}Comparar ${n} ofertas com estoque</a>`}
+  return`<a class="opp-stores" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}#ondecomprar" data-p="${esc(pr.id)}" data-hash="ondecomprar">${ic("storefront")}Comparar ${n}<span class="opp-stores-x"> ofertas com estoque</span></a>`}
 const ctaData=(x)=>`data-store="${esc(x.offer?.id||"")}" data-pid="${esc(x.product?.id||"")}" data-sid="${esc(x.store?.id||"")}" data-price="${oppTotal(x)??""}"`;
 /* UX-C: idade da nota (updated_at = quando o motor avaliou). Acima de 90 min na tela: "Nota de HH:MM" e "Conferir na loja". */
 const OPP_OLD_MIN=90;
@@ -2709,8 +2802,9 @@ function oppCmp(rc){
   /* no cartão a frase é curta e o tipo da referência vem na 2ª linha; a frase completa fica no title e em "Por que esta nota?" */
   const full=(w)=>`${pctPts(rc.percentage_below)} ${w} ${refOfName(rc.reference_kind)}`;
   const shortRef=rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência";
-  const head=rc.position==="below"?`<p class="opp-cmp" title="${full("abaixo")}"><b>−${pctPts(rc.percentage_below)}</b> abaixo ${shortRef}</p>`
-    :rc.position==="above"?`<p class="opp-cmp up" title="${full("acima")}"><b>${pctPts(rc.percentage_below)}</b> acima ${shortRef}</p>`
+  /* Lote B: "abaixo/acima" e o resto da frase em spans separados; no cartão compacto do celular só "do preço sugerido" some */
+  const head=rc.position==="below"?`<p class="opp-cmp" title="${full("abaixo")}"><b>−${pctPts(rc.percentage_below)}</b> <span class="opp-cmp-w">abaixo</span> <span class="opp-cmp-r">${shortRef}</span></p>`
+    :rc.position==="above"?`<p class="opp-cmp up" title="${full("acima")}"><b>${pctPts(rc.percentage_below)}</b> <span class="opp-cmp-w">acima</span> <span class="opp-cmp-r">${shortRef}</span></p>`
     :`<p class="opp-cmp eq">${refAtName(rc.reference_kind)}</p>`;
   return head+`<p class="opp-ref">${refShort(rc.reference_kind)} · ${money(rc.reference_value)}</p>`;
 }
@@ -2759,15 +2853,12 @@ function oppCard(x,i,opt={}){const H=opt.h||"h3";
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
     <${H} class="deal-name">${esc(pr.type_label||pr.name||"")}</${H}>
-    <p class="deal-price opp-price"><b>${money(oppTotal(x))}</b>${pixTag({priceKind:of.price_kind})}</p><p class="opp-ship">${oppShip(x)}</p>
-    ${oppCmp(x.reference_comparison)}
+    <div class="opp-pv"><p class="deal-price opp-price"><b>${money(oppTotal(x))}</b>${pixTag({priceKind:of.price_kind})}</p>${oppCmp(x.reference_comparison)}<p class="opp-ship">${oppShip(x)}</p></div>
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
-    <div class="rc-row"><p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p></div>
-    ${ageHTML(x)}
+    <div class="rc-row"><p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p>${ageHTML(x)}</div>
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
-    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<a class="deal-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
-    ${cmpLink(pr)}
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${cmpLink(pr)}</div></div>
   </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
 }
@@ -3087,6 +3178,8 @@ document.addEventListener("click",(e)=>{
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
   const stb=t.closest("[data-store]");if(stb){const d=storeClick(stb);if(d)track("click_store",d);return}
   const grpb=t.closest("[data-group]");if(grpb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();const [k,sl]=grpb.dataset.group.split("/");openGroup(k,sl);return}
+  const bm=t.closest("[data-buscamore]");if(bm){moreBusca();return}
+  const bt=t.closest("[data-btipo]");if(bt){F.tipo=F.tipo===bt.dataset.btipo?"":bt.dataset.btipo;buscaNav();track("filter_used",{f:"busca_tipo",v:F.tipo});return}
   const qb=t.closest("[data-q]");if(qb){if(qb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();doSearch(qb.dataset.q);return}
   const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();PENDING_HASH=pb.dataset.hash||"";openProduct(pb.dataset.p);return}
   const hp=t.closest("[data-hp]");if(hp){HV.period=Number(hp.dataset.hp);drawHist(curPid);track("view_price_history",{id:curPid,period:HV.period});return}
@@ -3130,6 +3223,7 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){
 }
 document.addEventListener("toggle",(e)=>{if(e.target.id==="xf")xfOpen=e.target.open},true);
 document.addEventListener("change",(e)=>{const t=e.target;
+  if(t.dataset?.bord!=null){F.ord=t.value;buscaNav();track("filter_used",{f:"busca_ord",v:F.ord});return}
   if(t.id==="osort"){offerSort=t.value;renderProduct(curPid);return}
   const ok=t.dataset?.of;if(ok){OF[ok]=t.value;store.set("opp2",OF);const pm=t.closest(".opp-more");if(pm)pm.open=false;syncSheet();renderOpp().then(syncSheet);track("filter_used",{f:ok,v:String(OF[ok])});return}
   const k=t.dataset?.f;if(!k)return;F[k]=t.type==="checkbox"?t.checked:t.value;store.set("f",F);rerenderList();track("filter_used",{f:k})});

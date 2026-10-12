@@ -42,7 +42,7 @@ await t('1. raShort e raBadge: prefixo RA e aria-label com "Reclame Aqui"', () =
 const flowCode = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
     'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=',
-    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel='].map(line),
+    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),
   cut('const readKnown=', 'const shipNote='),
   cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
@@ -110,7 +110,7 @@ await t('2. oppCard e dealCard: botão primário "Ver oferta" e link secundário
   const o = oppSandbox([oppItem()]);
   const card = o.oppCard(oppItem(), 0, { h: 'h2' });
   assert.match(card, /<a class="deal-cta" href="https:\/\/ml\/x"[^>]*><span class="cta-l">Ver oferta<\/span>/, 'oportunidade: âncora com a classe do botão preenchido');
-  assert.match(card, /<a class="opp-stores" href="\/produto\/[^"]*#ondecomprar"[^>]*>[\s\S]*?Comparar 3 ofertas com estoque<\/a>/, 'link secundário de comparação');
+  assert.match(card, /<a class="opp-stores" href="\/produto\/[^"]*#ondecomprar"[^>]*>[\s\S]*?Comparar 3(<span class="opp-stores-x">)? ofertas com estoque(<\/span>)?<\/a>/, 'link secundário de comparação');
   assert.ok(card.indexOf('class="deal-cta"') < card.indexOf('class="opp-stores"'), 'botão antes do link secundário');
   assert.equal((card.match(/class="deal-cta"/g) || []).length, 1, 'uma CTA só');
   const f = flowSandbox();
