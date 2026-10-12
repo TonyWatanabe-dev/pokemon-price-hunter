@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
 import { planDispatch, applyPlan, parseDependencies, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+import { workerAcceptsDispatchYaml } from './dispatcher-workflow-check.mjs';
 
 const REPO = process.env.GITHUB_REPOSITORY || process.env.RELEASE_REPO || 'TonyWatanabe-dev/pokemon-price-hunter';
 if (!/^[\w.-]+\/[\w.-]+$/.test(REPO)) { console.error('repo inválido'); process.exit(2); }
