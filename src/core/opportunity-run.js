@@ -34,6 +34,11 @@ export async function loadOpportunityInputs(c) {
   return { stats, offers, context, prevBest, prevAnom };
 }
 
+// Guarda do DELETE: rodada sem nenhuma linha avaliada (carga vazia/falha parcial) não apaga as avaliações existentes —
+// com rows = [] o DELETE abaixo removeria a tabela inteira e a nota sumiria para todos. Devolve o aviso, ou null.
+export const EMPTY_RUN_WARNING = 'EMPTY_RUN_DELETE_SKIPPED';
+export function emptyRunGuard(rows) { return rows.length ? null : EMPTY_RUN_WARNING; }
+
 export function computeOpportunities({ stats, offers, context = [] }, { now = new Date() } = {}) {
   const ctxBy = new Map(context.map((c) => [String(c.product_id), { historical: c.historical || [], community: c.community || [] }]));
   const byP = new Map();
@@ -60,8 +65,11 @@ export async function runOpportunityEngine(c, { now = new Date(), emitEvents = t
     SELECT offer_id, ${cols.join(', ')}, $2 FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, ${cols.map((k) => `${k} ${COLS[k]}`).join(', ')})
     ON CONFLICT (offer_id) DO UPDATE SET ${cols.map((k) => `${k} = EXCLUDED.${k}`).join(', ')}, calculated_at = EXCLUDED.calculated_at
     WHERE (${cols.map((k) => `opportunity.${k}`).join(', ')}) IS DISTINCT FROM (${cols.map((k) => `EXCLUDED.${k}`).join(', ')})`, [J(rows), new Date(now).toISOString()]) : { rowCount: 0 };
-  // oferta que saiu (removida/sem preço) deixa de ter avaliação
-  const gone = await c.query(`DELETE FROM opportunity o WHERE NOT (o.offer_id = ANY($1::bigint[]))`, [rows.map((r) => r.offer_id)]);
+  // oferta que saiu (removida/sem preço) deixa de ter avaliação — exceto em rodada vazia (emptyRunGuard)
+  const warning = emptyRunGuard(rows);
+  if (warning) console.warn(`[opportunity] ${warning}: rodada sem ofertas avaliadas (${res.length} produtos); opportunity mantida`);
+  const gone = warning ? { rowCount: 0 }
+    : await c.query(`DELETE FROM opportunity o WHERE NOT (o.offer_id = ANY($1::bigint[]))`, [rows.map((r) => r.offer_id)]);
 
   // eventos de transição (por produto)
   let events = [];
@@ -78,10 +86,10 @@ export async function runOpportunityEngine(c, { now = new Date(), emitEvents = t
   // Batida: uma linha por execução concluída (mesma transação: rodada que falha não deixa batida). calculated_at só muda
   // quando a nota muda, então não prova que o motor rodou. Lida pelo robô (src/db-health.js); guarda HEARTBEAT_KEEP_DAYS dias.
   await c.query(`INSERT INTO system_event (type, entity_type, entity_id, payload) VALUES ($1, 'engine', 'opportunity', $2::jsonb)`,
-    [ENGINE_HEARTBEAT, J({ offersEvaluated: rows.length, written: up.rowCount, removed: gone.rowCount, engine_version: OPP_VERSION })]);
+    [ENGINE_HEARTBEAT, J({ offersEvaluated: rows.length, written: up.rowCount, removed: gone.rowCount, engine_version: OPP_VERSION, ...(warning ? { warning } : {}) })]);
   await c.query(`DELETE FROM system_event WHERE type = $1 AND created_at < now() - make_interval(days => $2::int)`, [ENGINE_HEARTBEAT, HEARTBEAT_KEEP_DAYS]);
   const bands = {}; for (const r of rows) bands[r.opportunity_band] = (bands[r.opportunity_band] || 0) + 1;
   const ev = {}; for (const e of events) ev[e.type] = (ev[e.type] || 0) + 1;
   return { products: res.length, offersEvaluated: rows.length, written: up.rowCount, removed: gone.rowCount, withBest: res.filter((r) => r.best).length,
-    bands, events: ev, seconds: (Date.now() - t0) / 1000 };
+    bands, events: ev, seconds: (Date.now() - t0) / 1000, ...(warning ? { warning } : {}) };
 }

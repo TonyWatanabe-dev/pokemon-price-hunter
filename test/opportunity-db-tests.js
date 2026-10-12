@@ -1,5 +1,12 @@
 // Opportunity Engine no PostgreSQL real: só roda com TEST_DATABASE_URL (banco descartável).
 import assert from 'node:assert/strict';
+// guarda do DELETE (unitário, roda sempre): sem linhas avaliadas → aviso; com linhas → null (fluxo normal)
+{
+  const { emptyRunGuard, EMPTY_RUN_WARNING } = await import('../src/core/opportunity-run.js');
+  assert.equal(EMPTY_RUN_WARNING, 'EMPTY_RUN_DELETE_SKIPPED');
+  assert.equal(emptyRunGuard([]), EMPTY_RUN_WARNING);
+  assert.equal(emptyRunGuard([{ offer_id: '1' }]), null);
+}
 if (!process.env.TEST_DATABASE_URL) { console.log('— testes de banco do Opportunity Engine pulados (sem TEST_DATABASE_URL)'); process.exit(0); }
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
 const { pool, tx, close } = await import('../src/db/pg.js');
@@ -81,6 +88,27 @@ if (prevBest >= 75 && oaScore < 75) assert.deepEqual(ev4.map((e) => e.type), ['O
 assert.ok(!ev4.some((e) => e.type === 'OPPORTUNITY_ANOMALY'), 'anomalia já conhecida não gera evento de novo');
 // checagens do banco: nenhuma anomalia ≥ 50, nenhuma sem estoque ≥ 31
 assert.equal((await q(`SELECT count(*)::int n FROM hunter.opportunity WHERE (is_anomaly AND opportunity_score >= 50) OR (stock_signal = 0 AND opportunity_score > 30)`))[0].n, 0);
+// rodada com entrada vazia (carga vazia/falha parcial) não apaga opportunity: registra aviso e mantém as linhas.
+// Roda numa transação desfeita no fim, para não mexer no estado usado pelos blocos seguintes.
+{
+  const ROLLBACK = new Error('desfaz rodada vazia');
+  const before = (await q(`SELECT count(*)::int n FROM hunter.opportunity`))[0].n;
+  assert.ok(before > 0);
+  const warns = []; const warn = console.warn; console.warn = (...a) => warns.push(a.join(' '));
+  await assert.rejects(tx(async (c) => {
+    try {
+      await c.query(`DELETE FROM product_stats`);
+      const r = await runOpportunityEngine(c, { now });
+      assert.equal(r.offersEvaluated, 0); assert.equal(r.removed, 0); assert.equal(r.warning, 'EMPTY_RUN_DELETE_SKIPPED');
+      assert.equal((await c.query(`SELECT count(*)::int n FROM opportunity`)).rows[0].n, before, 'entrada vazia não apaga opportunity');
+      const beat = (await c.query(`SELECT payload FROM system_event WHERE type = 'ENGINE_HEARTBEAT' ORDER BY id DESC LIMIT 1`)).rows[0].payload;
+      assert.equal(beat.warning, 'EMPTY_RUN_DELETE_SKIPPED');
+    } finally { console.warn = warn; }
+    throw ROLLBACK;
+  }), (e) => { if (e !== ROLLBACK) throw e; return true; });
+  assert.ok(warns.some((w) => w.includes('EMPTY_RUN_DELETE_SKIPPED')), 'aviso registrado no log');
+  assert.equal((await q(`SELECT count(*)::int n FROM hunter.opportunity`))[0].n, before);
+}
 // batida do motor (ENGINE_HEARTBEAT): uma linha por execução (mesmo sem nada mudar), sem segredo; poda > 14 dias;
 // fora do prefixo OPPORTUNITY_ (as contagens de eventos de transição acima não a veem)
 {
