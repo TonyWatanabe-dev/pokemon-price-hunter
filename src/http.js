@@ -114,15 +114,16 @@ async function requestOnce(url, { method = 'GET', accept = 'text/html', body, he
   try {
     // Redirecionamentos seguidos à mão: cada destino passa pela guarda antes de ser buscado.
     let cur = url; let m = method; let b = body; let res;
+    let hdrs = { 'user-agent': UA, accept, 'accept-language': 'pt-BR,pt;q=0.9', ...headers };
     for (let hop = 0; ; hop++) {
-      res = await _fetch(cur, {
-        method: m, body: b, signal: ctrl.signal, redirect: 'manual',
-        headers: { 'user-agent': UA, accept, 'accept-language': 'pt-BR,pt;q=0.9', ...headers },
-      });
+      res = await _fetch(cur, { method: m, body: b, signal: ctrl.signal, redirect: 'manual', headers: hdrs });
       const loc = res.status >= 300 && res.status < 400 ? res.headers?.get?.('location') : null;
       if (!loc) break;
       if (hop >= MAX_REDIRECTS) throw Object.assign(new Error(`Redirecionamentos demais em ${host}`), { code: 'TOO_MANY_REDIRECTS' });
-      cur = assertSafeUrl(new URL(loc, cur)).href;
+      const next = assertSafeUrl(new URL(loc, cur));
+      // Redirect para outra origem não leva credenciais (token do ML, cookie de sessão); depois de removidas, não voltam.
+      if (next.origin !== new URL(cur).origin) hdrs = Object.fromEntries(Object.entries(hdrs).filter(([k]) => !/^(authorization|cookie)$/i.test(k)));
+      cur = next.href;
       if (![307, 308].includes(res.status)) { m = 'GET'; b = undefined; }
     }
     if (cur !== url && !res.url) Object.defineProperty(res, 'url', { value: cur });
