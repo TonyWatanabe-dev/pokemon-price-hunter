@@ -139,4 +139,36 @@ await t('limite por rodada: no máximo 25 páginas novas, mesmo com falhas volta
   assert.ok(after - before <= 25, `lidas ${after - before} novas`);
 });
 
+// ---------------------------------------------------------------- limites de parsing (parseLimits)
+const { parseProductPage } = await import('../src/adapters/jsonld.js');
+const { DEFAULT_LIMITS } = await import('../src/adapters/parse-limits.js');
+const ldPage = (product, extraBlocks = '') => `<html><head><title>${product.name}</title>${extraBlocks}<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', offers: { '@type': 'Offer', price: '39.90', priceCurrency: 'BRL', availability: 'https://schema.org/InStock' }, ...product })}</script></head><body><h1>${product.name}</h1><p>R$ 39,90</p></body></html>`;
+const NOME = 'Pokémon Blister Triplo Escuridão Absoluta Copag';
+await t('limites: página com JSON-LD dentro do limite continua sendo lida', () => {
+  const l = parseProductPage(ldPage({ name: NOME }), 'https://ld.test/pokemon-blister-triplo-escuridao');
+  assert.equal(l?.sourceType, 'json_ld'); assert.equal(l.price.base, 39.9);
+});
+await t('limites: bloco JSON-LD acima de jsonLdMaxBlockBytes descarta a página, sem exceção', () => {
+  const big = ldPage({ name: NOME, description: 'x'.repeat(DEFAULT_LIMITS.jsonLdMaxBlockBytes + 1) });
+  assert.equal(parseProductPage(big, 'https://ld.test/pokemon-blister-triplo-escuridao'), null);
+});
+await t('limites: blocos demais, nós demais ou aninhamento profundo demais descartam a página, sem exceção', () => {
+  const u = 'https://ld.test/pokemon-blister-triplo-escuridao';
+  const many = '<script type="application/ld+json">{"@type":"WebSite"}</script>'.repeat(DEFAULT_LIMITS.jsonLdMaxBlocks);
+  assert.equal(parseProductPage(ldPage({ name: NOME }, many), u), null, 'blocos demais');
+  const nodes = `<script type="application/ld+json">${JSON.stringify({ '@graph': Array.from({ length: DEFAULT_LIMITS.jsonLdMaxNodes }, () => ({ '@type': 'Thing' })) })}</script>`;
+  assert.equal(parseProductPage(ldPage({ name: NOME }, nodes), u), null, 'nós demais');
+  let deep = [{ '@type': 'Thing' }]; for (let i = 0; i < DEFAULT_LIMITS.jsonLdMaxDepth + 1; i++) deep = [deep];
+  assert.equal(parseProductPage(ldPage({ name: NOME }, `<script type="application/ld+json">${JSON.stringify(deep)}</script>`), u), null, 'profundo demais');
+});
+await t('limites: teto ajustável por HUNTER_JSONLD_MAX_BLOCK_BYTES; no adaptador a página some sem virar falha', async () => {
+  process.env.HUNTER_JSONLD_MAX_BLOCK_BYTES = '200';
+  try {
+    assert.equal(parseProductPage(ldPage({ name: NOME, description: 'y'.repeat(300) }), 'https://ld.test' + P.B), null);
+    const out = await search({ id: 'ld', url: 'https://ld.test', plannedUrls: ['https://ld.test' + P.B] });
+    assert.equal(out.length, 0, 'página com JSON-LD acima do limite não vira anúncio');
+    assert.deepEqual(out.failed, [], 'nem falha de leitura');
+  } finally { delete process.env.HUNTER_JSONLD_MAX_BLOCK_BYTES; }
+});
+
 console.log(`✓ Recuperação de páginas JSON-LD: ${n} grupos passaram`);

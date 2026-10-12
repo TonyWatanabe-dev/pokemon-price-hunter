@@ -2,6 +2,7 @@
 import { get } from '../http.js';
 import { guard, brl } from './common.js';
 import { availableFromOf } from '../availability.js';
+import { jsonLdNodes } from './parse-limits.js';
 
 const PRODUCT_URL = /pokemon/i;
 const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|blister|colecao|cole%c3%a7%c3%a3o)/i;
@@ -34,11 +35,6 @@ export async function productUrls(base, max = 60) {
   return [...new Set(urls)].slice(0, max);
 }
 
-function flatten(node, acc = []) {
-  if (Array.isArray(node)) node.forEach((n) => flatten(n, acc));
-  else if (node && typeof node === 'object') { acc.push(node); if (node['@graph']) flatten(node['@graph'], acc); }
-  return acc;
-}
 const AVAIL = { instock: 'IN_STOCK', outofstock: 'OUT_OF_STOCK', soldout: 'OUT_OF_STOCK', preorder: 'PRE_ORDER', presale: 'PRE_ORDER', backorder: 'PRE_ORDER', discontinued: 'UNAVAILABLE', limitedavailability: 'IN_STOCK', instoreonly: 'UNAVAILABLE' };
 
 const norm = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -121,8 +117,9 @@ export function visiblePrice(html, value) {
 }
 
 export function parseProductPage(html, url) {
-  const nodes = [];
-  for (const [, raw] of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) { try { flatten(JSON.parse(raw.trim()), nodes); } catch { /* JSON-LD inválido */ } }
+  // JSON-LD com tetos (parse-limits.js): bloco grande demais, blocos/nós demais ou aninhamento fundo demais descartam a página.
+  const { nodes, stats } = jsonLdNodes(html);
+  if (stats.tooLarge || stats.tooMany || stats.truncated || stats.tooDeep) return null;
   const meta = (p) => { const v = html.match(new RegExp(`<meta[^>]+(?:property|name)=["']${p}["'][^>]+content=["']([^"']+)`, 'i'))?.[1] || html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']${p}["']`, 'i'))?.[1]; return v ? unesc(v) : v; };
   const path = (u) => { try { return decodeURIComponent(new URL(u, url).pathname).replace(/\/$/, '').toLowerCase(); } catch { return ''; } };
   const here = path(url);
