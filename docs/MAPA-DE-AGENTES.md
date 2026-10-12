@@ -2,6 +2,7 @@
 
 > **Atualizado em:** 11/10/2026 às 11:56 (America/Sao_Paulo, UTC−03:00)  
 > **Escopo:** inventário de agentes existentes, capacidades previstas e critérios de ativação.  
+> **Plano de entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) descreve as fases até lançamento, operação 24/7, Dispatcher e ordem de ativação dos especialistas.  
 > **Regra de leitura:** “implementado no código” não significa “comprovadamente ativo em produção”. Só afirmar operação real com logs/execuções verificáveis.
 
 ## 1. Arquitetura e princípios
