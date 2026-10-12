@@ -82,6 +82,19 @@ Se o comentário trouxer o link de uma PR, ela existe mas precisa de triagem man
 - O resultado de uma tarefa é sempre uma PR aberta para a `main`; o merge depende de CI + Release Governor ou de revisão humana.
 - Para confirmar em uma execução: a PR deve estar **Open**, sem merge, e nenhum deploy deve ter sido disparado por ela.
 
+## Esforço adaptativo no worker (#235, etapa 2)
+
+Antes de chamar uma sessão Claude, o worker executa `node tools/esforco.mjs "$ISSUE"` depois de validar o gatilho e a credencial. O comando é somente leitura: usa `GH_TOKEN` apenas dentro do próprio passo, lê título/corpo/labels/eventos da issue e calcula o perfil com regras locais determinísticas.
+
+- **Mecânica/documentação isolada:** `sonnet` + `low` + 30 turnos.
+- **Comum:** `sonnet` + `medium` + 60 turnos.
+- **Complexa ou crítica/R3:** `opus` + `high` + 80 turnos; assuntos e áreas críticos não são rebaixados.
+- **Escalada por falhas anteriores:** aumenta esforço e, quando aplicável, passa de `sonnet` para `opus`, com limites fechados. `max` nunca é escolhido automaticamente.
+- O CLI escreve valores pré-validados em `GITHUB_OUTPUT`; ambos os caminhos (`executor:github` e Dispatcher) consomem o mesmo resultado. O texto da issue não é inserido em shell nem em `claude_args`.
+- O perfil atua na seleção de modelo/esforço/turnos da sessão. Helpers de telemetria e orçamento ainda não registram custo/tokens nem impõem um limite global neste worker; não assumir que esses controles já estão operacionais.
+
+Os testes de workflow verificam a ordem: revalidar despacho → marcar/instalar dependências → verificar credencial → selecionar perfil → executar Claude. O worker continua sem permissão para merge ou deploy.
+
 ## Dispatcher (fila aprovada)
 
 Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais issues podem ir para o worker; `tools/dispatcher.mjs` lê issues/PRs pela API e `.github/workflows/dispatcher.yml` roda a cada hora (e por `workflow_dispatch`) publicando o plano no resumo do job.
