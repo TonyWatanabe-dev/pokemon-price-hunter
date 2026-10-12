@@ -24,4 +24,15 @@ for (const f of ['../index.html', '../tools/page.template.html']) {
   assert.match(html, /render\(\);scrollTo\(\{top:0\}\);focusTitle\(\)/, 'go() deve focar o título depois do render');
   assert.doesNotMatch(html.slice(html.indexOf('function render(){'), html.indexOf('function render(){') + 400), /focusTitle/, 'render() não deve roubar o foco ao recarregar dados');
 }
+
+// Vazios e contagem anunciados (role=status) e focusErr funcional (tabindex=-1 nos <p class="err">).
+const idx = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+// a contagem da busca é anunciada pelo foco no título (focusTitle em doSearch, #279), sem role=status duplicado no h1
+assert.match(idx, /view="busca";render\(\);scrollTo\(\{top:0\}\);focusTitle\(\)/, 'contagem da busca não é anunciada');
+for (const h of ['Nenhum produto com esses filtros', 'Nenhuma pista com', 'Nenhuma oportunidade encontrada', 'Nenhuma pré-venda agora'])
+  assert.match(idx, new RegExp(`<div class="empty" role="status"><h[23]>${h}`), `vazio sem role=status: ${h}`);
+assert.doesNotMatch(idx, /<div class="empty" role="status"><h[23]>Não achamos esse produto/, 'vazio da busca duplicaria o anúncio do título');
+const errPs = idx.match(/<p class="err[^"]*"[^>]*>/g) || [];
+assert.ok(errPs.length >= 2, 'parágrafos .err esperados');
+for (const e of errPs) assert.match(e, /tabindex="-1"/, `focusErr não consegue focar: ${e}`);
 console.log('a11y-dynamic-tests: ok');

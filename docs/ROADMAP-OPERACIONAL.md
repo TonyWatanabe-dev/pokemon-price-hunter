@@ -122,6 +122,19 @@ Esta seção atualiza as pendências da seção anterior. O fluxo Vigia → Disp
 ### Próximo passo técnico
 Telemetria real do worker: implementada (ver item 1 das lacunas abaixo), com validação em runtime pendente.
 
+## Atualização — 12/10/2026, tarde (modo turbo)
+
+- **Concorrência:** `TAREFAS_MAX=10` configurado pelo proprietário em Actions Variables. A comprovação em runtime (mais de 3 tarefas simultâneas) vem com a próxima leva.
+- **Fila de PRs limpa pelo proprietário:**
+  - integradas: #267 (sink GitHub da Ponte, ainda não ativo), #269, #270 (burn-in), #272, #275 e #276;
+  - **fechadas sem merge:** #186 (política Copag) e #195 (frete por CEP), por decisão do proprietário, e #239 (superada).
+  - A issue #84 (frete) segue aberta. `SHIPPING_CALC_ENABLED` continua desligada.
+- **Fábrica produzindo trabalho de produto:**
+  - os inventários #273/#276 (estados da UI) e #274/#275 (acessibilidade) viraram tarefas;
+  - leva 1: #277–#281, que geraram as PRs #282–#284 com 4 checks verdes, a US$ 0,13–0,18 cada (sonnet/medium).
+- **Burn-in:** a issue #271 recebe o veredito diário. 11/10 foi verde. 12/10 está vermelho por 2 falhas do Dispatcher pela manhã, durante as correções.
+- **Gargalo atual:** merge humano por PR. A Ponte autônoma depende de: `qa-review` obrigatório na `main`, `RELEASE_AUDIT_*` configurados para a #267 e `VERCEL_TOKEN`.
+
 ## Estado executivo
 
 ### Meta de operação 24/7 — lacunas para fechar
