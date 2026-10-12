@@ -19,6 +19,10 @@ export const LOJAS_CFG = {
     shopee: { name: 'Shopee Brasil', host: 'shopee.com.br', url: 'https://shopee.com.br', busca: 'https://shopee.com.br/search?keyword={q}' },
     magalu: { name: 'Magalu', host: 'magazineluiza.com.br', url: 'https://www.magazineluiza.com.br', busca: 'https://www.magazineluiza.com.br/busca/{q}/' },
   },
+  // Lojas oficiais de marca dentro de um marketplace: link direto (a leitura do ML vem do catálogo oficial, por produto).
+  lojasOficiais: {
+    'ml-pokemon': { name: 'Pokémon · loja oficial no Mercado Livre', host: 'mercadolivre.com.br/loja/pokemon', url: 'https://www.mercadolivre.com.br/loja/pokemon', marketplace: 'mercadolivre' },
+  },
   // Plataforma confirmada na página inicial da loja (marcadores de CDN/meta) em 12/10/2026. O robô só distingue
   // Shopify/VTEX; "jsonld" é método de leitura, não plataforma. Sem confirmação, o link vai para a página inicial.
   plataformaPorHost: { 'gatogingado.com.br': 'lojaintegrada', 'lojalifegeek.com.br': 'lojaintegrada', 'dalaran.com.br': 'lojaintegrada', 'loja.drop1.com.br': 'lojaintegrada', 'omniverse.com.br': 'lojaintegrada',
@@ -47,6 +51,7 @@ export function inferPlatform(urls) {
 
 /** Modelo da busca da loja: { tpl, kind: 'busca' | 'inicio' }. Sem padrão confirmado, a página inicial. */
 export function searchTemplate(loja, cfg = LOJAS_CFG) {
+  if (loja.oficial && loja.url) return { tpl: loja.url, kind: 'loja' };
   if (loja.marketplace && cfg.marketplaces[loja.marketplace]) return { tpl: cfg.marketplaces[loja.marketplace].busca, kind: 'busca' };
   const origin = originOf(loja.url); if (!origin) return null;
   const own = loja.host && cfg.buscaPorHost[loja.host];
@@ -114,6 +119,12 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
     const t = loja.url || loja.marketplace ? searchTemplate(loja, cfg) : null;
     out.push({ ...loja, searchUrl: t ? fill(t.tpl, loja.marketplace ? cfg.termoMarketplace : cfg.termo) : null, searchKind: t ? t.kind : null });
   }
+  for (const [id, o] of Object.entries(cfg.lojasOficiais || {})) {
+    if (out.some((x) => x.id === id)) continue;
+    const loja = { id, name: o.name, host: o.host, url: o.url, platform: null, marketplace: o.marketplace, oficial: true, status: 'marketplace', offersLive: 0, lastReadAt: null,
+      reason: 'Loja oficial da marca dentro do marketplace; os anúncios dela entram pela leitura do catálogo do Mercado Livre quando estão nas páginas de produto.' };
+    out.push({ ...loja, searchUrl: o.url, searchKind: 'loja' });
+  }
   const order = { monitorada: 0, 'sem-leitura': 1, indisponivel: 1, marketplace: 2, pausada: 3 };
   out.sort((a, b) => order[a.status] - order[b.status] || b.offersLive - a.offersLive || a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id));
   return out;
@@ -132,8 +143,9 @@ export function sections(lojas) {
 /** "Procurar em outras lojas" do produto: os 4 marketplaces primeiro, depois lojas não monitoradas com busca própria, em ordem alfabética; até `max` links. */
 export function outrasLojas(lojas, q, { max = 12, cfg = LOJAS_CFG } = {}) {
   const mk = Object.keys(cfg.marketplaces).map((id) => lojas.find((l) => l.marketplace === id) || { id, name: cfg.marketplaces[id].name, host: cfg.marketplaces[id].host, url: cfg.marketplaces[id].url, marketplace: id, status: 'marketplace' });
+  const of = lojas.filter((l) => l.oficial);
   const rest = lojas.filter((l) => !l.marketplace && l.status !== 'monitorada' && l.searchKind === 'busca').sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
-  return [...mk, ...rest].slice(0, max).map((l) => ({ id: l.id, name: l.name, host: l.host, url: searchUrlFor(l, q, cfg) })).filter((l) => l.url);
+  return [...mk, ...of, ...rest].slice(0, max).map((l) => ({ id: l.id, name: l.name, host: l.host, url: searchUrlFor(l, q, cfg) })).filter((l) => l.url);
 }
 
 // ---- leitura dos dados (servidor) ----

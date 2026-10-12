@@ -54,6 +54,7 @@ const ITEMS = [
   { item_id: 'MLB5552', seller_id: 78, price: 250, available_quantity: 7, condition: 'used', shipping: { free_shipping: false } },
   { item_id: 'MLB5553', seller_id: 79, price: 280, available_quantity: 0, condition: 'new', shipping: { free_shipping: false } },
   { item_id: 'MLB5554', seller_id: 80, price: 310, condition: 'new', shipping: { free_shipping: false } },
+  { item_id: 'MLB5555', seller_id: 81, price: 330, condition: 'new', official_store_id: 4242, official_store_name: 'Pokémon', shipping: { free_shipping: true } },
 ];
 const ML_403 = { message: 'Access to the requested resource is forbidden', error: 'access_denied', status: 403, cause: null };
 const mlFetch = async (url) => {
@@ -85,7 +86,9 @@ try {
   assert.equal(dbg.searchError.status, 403); assert.equal(dbg.scope, 'offline_access read');
   assert.deepEqual(dbg.catalogFields, ['available_quantity', 'condition', 'item_id', 'listing_type_id', 'official_store_id', 'original_price', 'price', 'seller_address', 'seller_id', 'shipping', 'sold_quantity']);
   assert.deepEqual(dbg.catalogSample, { item_id: 'MLB5551', available_quantity: 4, sold_quantity: 120, condition: 'new', listing_type_id: 'gold_special', price: 299.9, original_price: 349.9, official_store_id: null, free_shipping: true }, 'amostra só com campos de estoque/preço');
-  assert.deepEqual(dbg.catalogStock, { IN_STOCK: 2, OUT_OF_STOCK: 1 }); assert.deepEqual(dbg.publishedStock, { IN_STOCK: 2 });
+  assert.deepEqual(dbg.catalogStock, { IN_STOCK: 3, OUT_OF_STOCK: 1 }); assert.deepEqual(dbg.publishedStock, { IN_STOCK: 3 });
+  assert.deepEqual(dbg.officialStores, { 4242: { name: 'Pokémon', sellerId: 81, listings: 1 } }, 'lojas oficiais vistas no catálogo ficam no diagnóstico');
+  assert.equal(by.MLB5555.sellerKind, 'official_store'); assert.equal(by.MLB5555.seller, 'Pokémon'); assert.equal(by.MLB5555.stockSource, 'ml-catalog-listed');
   assert.equal(dbg.drop['catálogo: esgotado ou pausado'], 1); assert.equal(dbg.drop['catálogo: usado'], 1);
   assert.ok(!JSON.stringify(dbg).includes('AT-1') && !JSON.stringify(dbg).includes('RT-1'), 'diagnóstico sem token');
   n++;
@@ -103,8 +106,31 @@ try {
   assert.equal(readData('ml-debug.json').itemsError, null);
   n++;
 
+  fs.rmSync(path.join(tmp, 'data/ml-catalog.json'), { force: true });
+  // 2b. Vagas por produto (PER_PRODUCT = 6) via search(): loja oficial ganha vaga até 25% acima do menor preço; muito acima, disputa por preço.
+
+  const many = (officialPrice) => [
+    ...[100, 110, 115, 130, 140, 150, 160].map((price, i) => ({ item_id: 'MLB60' + (i + 1), seller_id: 91 + i, price, condition: 'new', shipping: { free_shipping: false } })),
+    { item_id: 'MLB6099', seller_id: 99, price: officialPrice, condition: 'new', official_store_id: 4242, official_store_name: 'Pokémon', shipping: { free_shipping: true } },
+  ];
+  const run = async (items) => {
+    http.setFetch(async (url) => {
+      if (url.includes('/sites/MLB/search')) return j({ message: 'forbidden', error: 'forbidden', status: 403 }, 403);
+      if (url.includes('/products/search')) return j({ results: url.includes(encodeURIComponent('pokemon ' + COLL)) ? [{ id: 'MLB111', name: `Pokémon TCG ${COLL} Treinador Avançado Copag` }] : [] });
+      if (url.endsWith('/products/MLB111/items')) return j({ results: items });
+      if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 403, body: { id, ...ML_403 } })));
+      if (/\/users\/9[1-9]$/.test(url)) return j({ nickname: 'LOJA_' + url.slice(-2), seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
+      return j({}, 404);
+    });
+    const r = await search({ id: 'mercadolivre' }, { ...fullCatalog, collections: fullCatalog.collections.filter((c) => c.name === COLL) });
+    return r.map((l) => l.sku).sort();
+  };
+  assert.deepEqual(await run(many(120)), ['MLB601', 'MLB602', 'MLB603', 'MLB604', 'MLB605', 'MLB6099'], 'oficial a 20% acima do menor preço entra nas 6 vagas; a 6ª mais barata (150) fica de fora');
+  assert.deepEqual(await run(many(200)), ['MLB601', 'MLB602', 'MLB603', 'MLB604', 'MLB605', 'MLB606'], 'oficial a 100% acima não tem prioridade: só as 6 mais baratas');
+  http.setFetch(mlFetch); fs.rmSync(path.join(tmp, 'data/ml-catalog.json'), { force: true }); n++;
+
   // 3. Rodada completa: produto sem oferta de loja → a oferta do ML em estoque entra no bestDeals (desconto Copag).
-  fs.rmSync(path.join(tmp, 'data/ml-catalog.json'));
+  fs.rmSync(path.join(tmp, 'data/ml-catalog.json'), { force: true });
   http.setFetch(mlFetch);
   const cat = structuredClone(fullCatalog);
   cat.collections = cat.collections.filter((c) => c.name === COLL);
@@ -125,7 +151,7 @@ try {
   const u = ml.find((x) => x.sku === 'MLB5554');
   assert.equal(u.stock, 'IN_STOCK'); assert.equal(u.stockSource, 'ml-catalog-listed'); assert.ok(liveForScore(u), 'listado no catálogo entra no ranking com origem rastreável');
   assert.ok(!ml.some((x) => x.sku === 'MLB5553'), 'esgotado não é publicado');
-  assert.equal(state.products.find((p) => p.id === PRODUCT)?.inStockCount, 2);
+  assert.equal(state.products.find((p) => p.id === PRODUCT)?.inStockCount, 3);
   n++;
 } finally {
   if (saved.cfg == null) delete process.env.HUNTER_CONFIG_DIR; else process.env.HUNTER_CONFIG_DIR = saved.cfg;

@@ -100,7 +100,7 @@ await t('1. normalização: status por fonte, marketplaces, duplicata por host/p
   for (const l of L) { assert.doesNotMatch(String(l.reason || ''), /fora do ar|lento|timeout|HTTP/i, `${l.id}: ${l.reason}`); assert.ok(!('price' in l) && !('total' in l), 'nunca preço'); }
   assert.match(by.delta.reason, /não aceita leitura automática/); assert.match(by.kalungacombr.reason, /Plataforma ainda sem leitura/); assert.match(by.zeta.reason, /Sem API pública/);
   assert.match(by.amazon.reason, /Marketplace/); assert.match(by.eta.reason, /pausada/i);
-  const secs = sections(L); assert.deepEqual(secs.map(([k, , xs]) => [k, xs.length]), [['monitoradas', 6], ['sem-leitura', 5], ['marketplaces', 3], ['pausadas', 1]]);
+  const secs = sections(L); assert.deepEqual(secs.map(([k, , xs]) => [k, xs.length]), [['monitoradas', 6], ['sem-leitura', 5], ['marketplaces', 4], ['pausadas', 1]]);
   assert.deepEqual(secs[0][2].slice(0, 2).map((l) => l.id), ['alfa', 'beta'], 'monitoradas: mais ofertas vivas primeiro');
 });
 
@@ -134,7 +134,9 @@ await t('2. searchUrl: padrão por plataforma, dica/inferência pelas URLs das o
   for (const [k, v] of Object.entries(LOJAS_CFG.busca)) assert.ok(v.startsWith('/') && v.includes('{q}'), k);
   const out = outrasLojas(L, 'Escuridão Absoluta Blister Triplo');
   assert.deepEqual(out.slice(0, 4).map((x) => x.id), ['mercadolivre', 'amazon', 'shopee', 'magalu'], 'marketplaces primeiro');
-  assert.deepEqual(out.slice(4).map((x) => x.id), ['eps', 'kalungacombr'], 'depois só loja não monitorada com busca própria, em ordem alfabética');
+  assert.deepEqual(out.slice(4).map((x) => x.id), ['ml-pokemon', 'eps', 'kalungacombr'], 'depois a loja oficial dentro do marketplace e só loja não monitorada com busca própria, em ordem alfabética');
+  assert.equal(out.find((x) => x.id === 'ml-pokemon').url, 'https://www.mercadolivre.com.br/loja/pokemon', 'loja oficial: link direto da loja, sem inventar busca');
+  const pk = L.find((l) => l.id === 'ml-pokemon'); assert.equal(pk.status, 'marketplace'); assert.equal(pk.oficial, true); assert.equal(pk.offersLive, 0); assert.equal(pk.searchKind, 'loja');
   assert.ok(out.length <= 12);
   assert.equal(outrasLojas(L, 'x', { max: 5 }).length, 5);
 });
@@ -149,10 +151,10 @@ await t('3. SSR /lojas: título, descrição ≤160, 1 h1, 4 seções (h2) na or
   const p = pg['t=lojas']; assert.equal(p.status, 200); assert.equal(p.noindex, false);
   assert.equal(p.title, 'Lojas de Pokémon TCG no Brasil: todas as lojas monitoradas | TCG Price Hunter');
   assert.equal(p.canonical, 'https://tcg-price-hunter.vercel.app/lojas');
-  assert.ok(p.desc.length > 60 && p.desc.length <= 160, p.desc.length); assert.match(p.desc, /6 monitoradas agora, 5 sem leitura automática e 3 marketplaces\. Busca direta em cada uma\.$/);
+  assert.ok(p.desc.length > 60 && p.desc.length <= 160, p.desc.length); assert.match(p.desc, /6 monitoradas agora, 5 sem leitura automática e 4 marketplaces\. Busca direta em cada uma\.$/);
   assert.equal((p.ssr.match(/<h1[ >]/g) || []).length, 1);
   const h2 = [...p.ssr.matchAll(/<h2 id="([^"]*)">([^<]*)<\/h2>/g)].map((m) => [m[1], m[2]]);
-  assert.deepEqual(h2, [['monitoradas', 'Monitoradas agora (6)'], ['sem-leitura', 'Conhecidas, sem leitura automática (5)'], ['marketplaces', 'Marketplaces (3)'], ['pausadas', 'Pausadas (1)']]);
+  assert.deepEqual(h2, [['monitoradas', 'Monitoradas agora (6)'], ['sem-leitura', 'Conhecidas, sem leitura automática (5)'], ['marketplaces', 'Marketplaces (4)'], ['pausadas', 'Pausadas (1)']]);
   assert.ok(!/<h3|<h4/.test(p.ssr) && p.ssr.indexOf('<h1') < p.ssr.indexOf('<h2'), 'h1 → h2');
   const s = text(p.ssr);
   assert.match(s, /Alfa Cards Shopify Monitorada · 1 oferta com estoque · última leitura \d\d\/\d\d, \d\d:\d\d · Buscar Pokémon na loja/);
@@ -169,7 +171,7 @@ await t('3. SSR /lojas: título, descrição ≤160, 1 h1, 4 seções (h2) na or
   const opp = anchors(p.ssr).filter((a) => a.href.startsWith('/oportunidades?loja=')).map((a) => a.href);
   assert.deepEqual(opp, ['/oportunidades?loja=alfa', '/oportunidades?loja=beta'], 'filtro de loja só para monitorada com oferta viva');
   const il = p.ld.find((x) => x['@type'] === 'ItemList'); assert.ok(il, 'ItemList');
-  assert.equal(il.numberOfItems, il.itemListElement.length); assert.equal(il.itemListElement.length, 14, 'toda loja com endereço (a pendente sem domínio fica fora)');
+  assert.equal(il.numberOfItems, il.itemListElement.length); assert.equal(il.itemListElement.length, 15, 'toda loja com endereço, inclusive a loja oficial dentro do marketplace (a pendente sem domínio fica fora)');
   assert.ok(!il.itemListElement.some((x) => x.item.name === 'Iota'));
   for (const it of il.itemListElement) { assert.ok(['Store', 'Organization'].includes(it.item['@type'])); assert.ok(/^https?:\/\//.test(it.item.url)); assert.ok(!('offers' in it.item) && !('price' in it.item)); }
   assert.equal(il.itemListElement.find((x) => x.item.name === 'Amazon Brasil').item['@type'], 'Organization'); assert.equal(il.itemListElement.find((x) => x.item.name === 'Alfa Cards').item['@type'], 'Store');
@@ -182,10 +184,10 @@ await t('4. SSR do produto: "Procurar em outras lojas" abaixo de "Onde comprar",
   assert.ok(i1 > 0 && i2 > i1 && (i3 === -1 || i2 < i3), 'bloco depois de Onde comprar');
   assert.ok(!/<details class="more outras" open/.test(p.ssr), 'fechado (sem open)');
   const block = p.ssr.slice(i2, p.ssr.indexOf('</details>', i2));
-  assert.match(block, /<summary><h2>Procurar em outras lojas \(6\)<\/h2><\/summary>/); assert.match(block, /Preços não lidos pelo Hunter — confira na loja\./);
+  assert.match(block, /<summary><h2>Procurar em outras lojas \(7\)<\/h2><\/summary>/); assert.match(block, /Preços não lidos pelo Hunter — confira na loja\./);
   assert.doesNotMatch(block, /R\$/);
-  const a = anchors(block); assert.equal(a.length, 6);
-  for (const x of a) { assert.equal(x.rel, 'nofollow noopener'); assert.equal(x.target, '_blank'); assert.ok(/Escurid%C3%A3o%20Absoluta%20Blister%20Triplo|Escurid%C3%A3o\+Absoluta\+Blister\+Triplo|escuridao-absoluta-blister-triplo/.test(x.href), x.href); }
+  const a = anchors(block); assert.equal(a.length, 7);
+  for (const x of a) { assert.equal(x.rel, 'nofollow noopener'); assert.equal(x.target, '_blank'); assert.ok(/Escurid%C3%A3o%20Absoluta%20Blister%20Triplo|Escurid%C3%A3o\+Absoluta\+Blister\+Triplo|escuridao-absoluta-blister-triplo/.test(x.href) || x.href === 'https://www.mercadolivre.com.br/loja/pokemon', x.href); }
   assert.deepEqual(a.slice(0, 4).map((x) => x.href), ['https://lista.mercadolivre.com.br/escuridao-absoluta-blister-triplo', 'https://www.amazon.com.br/s?k=Escurid%C3%A3o+Absoluta+Blister+Triplo',
     'https://shopee.com.br/search?keyword=Escurid%C3%A3o%20Absoluta%20Blister%20Triplo', 'https://www.magazineluiza.com.br/busca/Escurid%C3%A3o%20Absoluta%20Blister%20Triplo/']);
   assert.ok(a.some((x) => x.href.startsWith('https://eps.com.br/search?q=')) && a.some((x) => x.href.startsWith('https://www.kalunga.com.br/busca/1?q=')));

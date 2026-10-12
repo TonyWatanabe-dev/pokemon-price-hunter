@@ -37,6 +37,7 @@ export function mlReject(name, productId, catalog) {
   return null;
 }
 const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto nosso
+const OFFICIAL_MARGIN = Number(process.env.ML_OFFICIAL_MARGIN || 0.25); // loja oficial garante vaga até 25% acima do menor preço
 const MIN_SALES = Number(process.env.ML_MIN_SALES || 50); // vendas concluídas mínimas do vendedor
 
 // Estoque a partir do que /products/{id}/items já devolve por vendedor. Pela documentação do ML ("List of publications
@@ -79,7 +80,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
 
   // Diagnóstico da rodada (data/ml-debug.json): o que a API abriu/fechou para o app, campos do catálogo e estoque
   // derivado. Sem token, sem corpo de resposta além do erro estruturado.
-  const dbg = { picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, itemsError: null, scope: auth.scope || null };
+  const dbg = { picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, officialStores: {}, itemsError: null, scope: auth.scope || null };
   const drop = (k) => { dbg.drop[k] = (dbg.drop[k] || 0) + 1; };
   const httpError = (e) => ({ status: e?.status ?? null, error: e?.blocked ? 'blocked' : null, message: String(e?.message || '').slice(0, 200), cause: null });
 
@@ -148,6 +149,9 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     for (const it of j.results || []) {
       if (!it || typeof it !== 'object') continue;
       if (!dbg.catalogFields) { dbg.catalogFields = Object.keys(it).sort(); dbg.catalogSample = catalogSample(it); } // evidência do formato que a API devolve
+      if (it.official_store_id != null) { // quais lojas oficiais aparecem no catálogo (id e quantas publicações) — ex.: a loja oficial Pokémon
+        const k = String(it.official_store_id); const o = dbg.officialStores[k] || (dbg.officialStores[k] = { name: it.official_store_name || null, sellerId: it.seller_id ?? null, listings: 0 }); o.listings++;
+      }
       if (it.condition && it.condition !== 'new') { drop('catálogo: usado'); continue; }
       const id = it.item_id || it.id; const price = Number(it.price);
       if (!id || !(price > 0)) continue;
@@ -160,7 +164,11 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   if (asked && itemFails === asked) { writeJson(cacheFile, cache); throw new Error(`Mercado Livre: todas as ${asked} consultas de ofertas do catálogo falharam`); }
   const picked = [];
   for (const list of Object.values(byProduct)) {
-    list.sort((a, b) => a.price - b.price);
+    // Loja oficial (a marca ou distribuidor autorizado) não fica de fora por não ser a mais barata — desde que o preço dela
+    // esteja perto do menor do catálogo (até OFFICIAL_MARGIN acima). Muito acima disso, disputa por preço como qualquer vendedor.
+    const floor = Math.min(...list.map((r) => r.price));
+    const prio = (r) => (r.it.official_store_id && r.price <= floor * (1 + OFFICIAL_MARGIN) ? 1 : 0);
+    list.sort((a, b) => prio(b) - prio(a) || a.price - b.price);
     let kept = 0; const seen = new Set();
     for (const row of list) {
       if (kept >= PER_PRODUCT * 2) break; // folga para a conferência abaixo
