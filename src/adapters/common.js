@@ -7,14 +7,14 @@ export async function guard(url) {
   const u = new URL(url);
   if (r.why === 'robots') throw new BlockedError(`robots.txt não permite ${u.pathname}`, 'robots');
   const f = (await failureOf(url)) || {};
-  const httpStatus = f.httpStatus ?? null; const code = f.code ?? null; const retryAfter = f.retryAfter ?? null;
+  const httpStatus = f.httpStatus ?? null; const code = f.code ?? null; const retryAfter = f.retryAfter ?? null; const forensics = f.forensics || null; // forense do robots.txt (diagnostico.js)
   if (r.why === 'blocked') {
-    if (httpStatus === 429) throw new BlockedError(`Limite de requisições (429) em ${u.host}: o robots.txt pediu para esperar${retryAfter != null ? ` (Retry-After ${retryAfter} s)` : ''}`, 429, { httpStatus, retryAfter });
+    if (httpStatus === 429) throw new BlockedError(`Limite de requisições (429) em ${u.host}: o robots.txt pediu para esperar${retryAfter != null ? ` (Retry-After ${retryAfter} s)` : ''}`, 429, { httpStatus, retryAfter, forensics });
     const what = httpStatus == null ? 'bloqueio' : httpStatus < 300 ? `desafio anti-robô com HTTP ${httpStatus}` : `HTTP ${httpStatus}`;
-    throw new BlockedError(`Acesso bloqueado em ${u.host} (o site barra robôs, nem o robots.txt abre: ${what})`, 403, { httpStatus });
+    throw new BlockedError(`Acesso bloqueado em ${u.host} (o site barra robôs, nem o robots.txt abre: ${what})`, 403, { httpStatus, forensics });
   }
   const what = code === 'TIMEOUT' ? 'tempo esgotado, TIMEOUT' : code ? `erro de rede ${code}` : httpStatus ? `HTTP ${httpStatus}` : 'erro de rede';
-  throw new BlockedError(`${u.host} fora do ar ou lento para responder (robots.txt: ${what})`, 'unreachable', { httpStatus, code });
+  throw new BlockedError(`${u.host} fora do ar ou lento para responder (robots.txt: ${what})`, 'unreachable', { httpStatus, code, forensics });
 }
 // Preço em reais (número com no máximo 2 casas) ou null. Nunca chuta: negativo, zero, NaN/infinito, faixa ("10 - 20"),
 // mais de um valor no texto ("12x de 28,25") e separadores incoerentes viram null.

@@ -10,7 +10,6 @@ https://www.extra.com.br/
 https://www.pontofrio.com.br/
 https://www.kalunga.com.br/
 https://www.leitura.com.br/
-https://www.uzgames.com.br/
 https://www.copag.com.br/
 https://supertcg.com.br/
 https://freitastcg.com.br/
@@ -18,10 +17,7 @@ https://meruru.com.br/
 https://www.newstation.com.br/
 https://www.epicgame.com.br/
 https://vip-tcg.com/
-https://www.geek-shop.com.br/
-https://collectandplay.com.br/
 https://mestracards.com.br/
-https://monsterstcg.com.br/
 https://www.cardshall.com.br/
 https://www.playgroundgames.com.br/
 https://magicstorebrasil.com.br/
@@ -33,7 +29,6 @@ https://www.mtgbrasil.com.br/
 https://salvaiastore.com.br/
 https://cardsofparadise.com.br/
 https://rasengan.com.br/
-https://brofist.com.br/
 https://loja.drop1.com.br/
 http://www.thedragonshop.com.br/
 https://www.paladinsgames.com.br/

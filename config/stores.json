@@ -94,54 +94,6 @@
       "evidence": {}
     },
     {
-      "id": "nerbstore",
-      "name": "Nerb Store",
-      "url": null,
-      "platform": "auto",
-      "kind": "specialist",
-      "evidence": {}
-    },
-    {
-      "id": "grbcards",
-      "name": "GRB Cards",
-      "url": null,
-      "platform": "auto",
-      "kind": "specialist",
-      "evidence": {}
-    },
-    {
-      "id": "cardora",
-      "name": "Cardora",
-      "url": null,
-      "platform": "auto",
-      "kind": "specialist",
-      "evidence": {}
-    },
-    {
-      "id": "matostcg",
-      "name": "MatosTCG",
-      "url": null,
-      "platform": "auto",
-      "kind": "specialist",
-      "evidence": {}
-    },
-    {
-      "id": "gorupa",
-      "name": "Gorupa",
-      "url": null,
-      "platform": "auto",
-      "kind": "specialist",
-      "evidence": {}
-    },
-    {
-      "id": "culturetcg",
-      "name": "Culture TCG",
-      "url": null,
-      "platform": "auto",
-      "kind": "specialist",
-      "evidence": {}
-    },
-    {
       "id": "mercadolivre",
       "name": "Mercado Livre",
       "url": "https://api.mercadolibre.com",

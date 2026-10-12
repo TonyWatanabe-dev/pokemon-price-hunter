@@ -34,7 +34,7 @@ async function load(origin) {
   try { return { rules: parseRobots((await request(origin + '/robots.txt', { accept: 'text/plain' })).text) }; }
   catch (e) {
     // Guarda o motivo real (status HTTP, Retry-After, código de rede) para o diagnóstico; a decisão continua a mesma.
-    const fail = { httpStatus: Number.isInteger(e.httpStatus ?? e.status) && (e.httpStatus ?? e.status) > 0 ? (e.httpStatus ?? e.status) : null, code: netCode(e), retryAfter: e.retryAfter ?? null };
+    const fail = { httpStatus: Number.isInteger(e.httpStatus ?? e.status) && (e.httpStatus ?? e.status) > 0 ? (e.httpStatus ?? e.status) : null, code: netCode(e), retryAfter: e.retryAfter ?? null, forensics: e.forensics || null };
     if (e.blocked) return { rules: [], blocked: true, fail };
     if (e.status >= 400 && e.status < 500) return { rules: [] }; // sem robots = liberado
     return { rules: [], unreachable: true, fail };                // 5xx/timeout/rede = não rastrear

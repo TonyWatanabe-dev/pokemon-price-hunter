@@ -5,6 +5,20 @@ import { availableFromOf } from '../availability.js';
 
 const PRODUCT_URL = /pokemon/i;
 const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|blister|colecao|cole%c3%a7%c3%a3o)/i;
+// Filtro mais amplo (#frente 6): muita loja não escreve "pokemon" no link ("/produtos/booster-box-caos-ascendente",
+// "/product/lata-charizard"): 18 lojas ativas liam 0 páginas. Aceita também o link de produto (/produtos/, /produto/,
+// /product/, /products/, /p/) cujo slug tem uma palavra de produto Pokémon lacrado. Quem decide se é Pokémon/Copag
+// continua sendo o matching (src/match.js): aqui só se escolhe o que vale a pena ler, dentro do teto de 25 novas por rodada.
+const PRODUCT_PATH = /\/(?:produtos?|products?|p)\/[^/?#]+/i;
+const SLUG_WORDS = new Set(['pokemon', 'tcg', 'booster', 'boosters', 'blister', 'etb', 'treinador', 'lata', 'latas', 'tin', 'tins', 'box', 'deck', 'decks', 'colecao', 'bundle']);
+const SLUG_PAIRS = ['elite trainer', 'treinador avancado'];
+const slugOf = (loc) => { let p = loc; try { p = decodeURIComponent(new URL(loc).pathname); } catch { /* usa o texto */ } return p.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); };
+export function isProductCandidate(loc) {
+  if (PRODUCT_URL.test(loc) && SEALED_HINT.test(loc)) return true;
+  const m = slugOf(loc).match(PRODUCT_PATH); if (!m) return false;
+  const words = m[0].split(/[^a-z0-9]+/).filter(Boolean); const joined = words.join(' ');
+  return words.some((w) => SLUG_WORDS.has(w)) || SLUG_PAIRS.some((x) => joined.includes(x));
+}
 
 export async function productUrls(base, max = 60) {
   const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = [];
@@ -14,7 +28,7 @@ export async function productUrls(base, max = 60) {
     let xml; try { xml = (await get(sm, { accept: 'application/xml' })).text; } catch { continue; }
     for (const [, loc] of xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)) {
       if (/\.xml(\.gz)?$/i.test(loc)) { if (/product|produto|sitemap/i.test(loc)) queue.push(loc); }
-      else if (PRODUCT_URL.test(loc) && SEALED_HINT.test(loc)) urls.push(loc);
+      else if (isProductCandidate(loc)) urls.push(loc);
     }
   }
   return [...new Set(urls)].slice(0, max);
