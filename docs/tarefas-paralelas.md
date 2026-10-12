@@ -81,3 +81,14 @@ Se o comentário trouxer o link de uma PR, ela existe mas precisa de triagem man
 - O workflow só permite ao Claude `npm test`, `npm ci`, `node test/*`, leitura de git e `gh pr create`/`gh pr list`. Não há permissão para `gh pr merge`, push na `main` ou deploy.
 - O resultado de uma tarefa é sempre uma PR aberta para a `main`; o merge depende de CI + Release Governor ou de revisão humana.
 - Para confirmar em uma execução: a PR deve estar **Open**, sem merge, e nenhum deploy deve ter sido disparado por ela.
+
+## Dispatcher (fila aprovada) — etapa 1: só plano
+
+Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais issues podem ir para o worker; `tools/dispatcher.mjs` lê issues/PRs pela API e `.github/workflows/dispatcher.yml` roda a cada hora (e por `workflow_dispatch`) publicando o plano no resumo do job.
+
+- **Fila:** label `tarefa:aprovada`, válido só se a issue foi aberta por operador **e** o último evento desse label foi aplicado por operador (`TAREFAS_OPERADORES`, padrão: dono do repo).
+- **Ordem:** linha `Ordem: N` do corpo; depois o número da issue.
+- **Bloqueios:** `Depende de: #N` ainda aberta (ou desconhecida), PR aberto para a issue (branch `…/issue-N…` ou `Closes/Fixes/Resolves #N`), `executor:running`/`executor:github`, lease de 70 min após o despacho, `executor:done`, `executor:quarentena`, área crítica em uso (caminhos entre crases em `Áreas:` ou `Risco previsto:`), vagas (`TAREFAS_MAX`, 1..10, padrão 3) e pausa por rate limit (cota da API < 200 ou `DISPATCHER_PAUSA_ATE`).
+- **Idempotência:** chave `dispatch:<issue>:<tentativa>` gravada num comentário-marcador **antes** do disparo; só valem marcadores do ator do dispatcher ou de operadores. Dois dispatchers concorrentes: relê depois de gravar e só dispara quem tem o comentário de menor id com a chave.
+- **Retry e quarentena:** nova tentativa só depois de `executor:failed` (ou lease expirado) e do backoff (30 min, dobrando); com 2 tentativas sem sucesso, label `executor:quarentena` e comentário sanitizado, sem nova tentativa automática.
+- **Estado atual:** o workflow tem só permissões de leitura e não passa `--executar`. Ligar o disparo depende de uma entrada `workflow_dispatch` validada no `tarefas.yml` (a Claude Code Action precisaria rodar em modo `prompt` nesse caminho) e de `issues: write` + `actions: write` no dispatcher — mudança R3 de workflow/permissões, com revisão humana. O `--executar` recusa rodar enquanto o `tarefas.yml` não declarar essa entrada.
