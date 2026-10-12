@@ -106,6 +106,13 @@ r = await call('/api/v1/site/ofertas?produtos=' + Array.from({ length: 200 }, (_
 r = await call('/api/v1/site/produtos?limite=100000&pagina=100000'); assert.equal(r.json.limit, 60); assert.equal(r.json.page, 1000);
 assert.equal((await call('/api/v1/produtos/' + 'a'.repeat(500))).status, 400, 'slug longo demais');
 { const n = _cache.size; for (let i = 0; i < 20; i++) await call(`/api/v1/produtos?limite=2&lixo=${i}`); assert.ok(_cache.size <= n + 1, 'parâmetros desconhecidos não multiplicam entradas do cache'); }
+// bordas das rotas site/*: parâmetros inválidos, afiliados, HEAD, 405 e cache sem distinção de caixa
+for (const q of ['modo=x', 'ordem=x', 'grupo=x', 'max=abc', 'max=-1', 'max=1e3']) assert.equal((await call(`/api/v1/site/produtos?${q}`)).status, 400, q);
+r = await call('/api/v1/afiliados'); assert.equal(r.status, 200); assert.ok(r.headers['Cache-Control']);
+assert.ok((await call('/api/v1/home', 'HEAD')).status < 500, 'HEAD sem 5xx');
+r = await call('/api/v1/produtos', 'DELETE'); assert.equal(r.status, 405); assert.equal(r.headers.Allow, 'GET, HEAD');
+{ _cache.clear(); const a = await call('/api/v1/produtos/ME05-ETB'); const n = _cache.size; const b = await call('/api/v1/produtos/me05-etb');
+  assert.equal(_cache.size, n, 'ABC e abc usam uma entrada só'); assert.equal(b.headers['X-Cache'], 'HIT'); assert.deepEqual(a.json, b.json); }
 // prazo total: fonte que não responde vira 503 curto com Retry-After (não deixa o pedido pendurado até a plataforma matar a função)
 {
   setLegacyLoader(() => new Promise(() => {}));
