@@ -4,6 +4,11 @@ on:
     - cron: '*/15 * * * *'
     - cron: '17 9 * * *'
   workflow_dispatch:
+    inputs:
+      discovery:
+        description: 'Rodar a descoberta de lojas (DIE) nesta execução, fora do horário diário'
+        type: boolean
+        default: false
 permissions:
   contents: write
   actions: read
@@ -36,14 +41,24 @@ jobs:
         run: |
           last=$(git log -1 --format=%ct FETCH_HEAD 2>/dev/null || echo 0)
           age=$(( ($(date +%s) - last) / 60 ))
-          if [ "${{ github.event.schedule }}" != "17 9 * * *" ] && [ "$age" -lt "$GAP" ]; then
+          # A rodada diária e a descoberta forçada (workflow_dispatch com discovery=true) nunca pulam: precisam gravar config/ e data/.
+          if [ "${{ github.event.schedule }}" != "17 9 * * *" ] && [ "${{ github.event.inputs.discovery }}" != "true" ] && [ "$age" -lt "$GAP" ]; then
             echo "Última rodada há ${age} min (mínimo ${GAP}). Pulando."; echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
+      # Descoberta de lojas: Discovery Intelligence Engine (docs/discovery-engine.md) por padrão; com a variável
+      # HUNTER_DISCOVERY=0 volta ao src/discover.js legado. Sem chave de conector, o DIE só registra "indisponível".
+      # A entrada `discovery` do workflow_dispatch força a descoberta fora do horário diário (a caça segue a regra do intervalo).
       - name: Descoberta e verificação Copag (diário)
-        if: github.event.schedule == '17 9 * * *'
-        run: npm run discover && npm run copag-check
+        if: github.event.schedule == '17 9 * * *' || github.event.inputs.discovery == 'true'
+        run: |
+          if [ "$HUNTER_DISCOVERY" = "0" ]; then npm run discover; else npm run discovery; fi
+          npm run copag-check
         env:
+          HUNTER_DISCOVERY: ${{ vars.HUNTER_DISCOVERY }}
           BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
+          BING_SEARCH_KEY: ${{ secrets.BING_SEARCH_KEY }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+          DISCOVERY_BUDGET: ${{ vars.DISCOVERY_BUDGET }}
       - name: Renovar acesso ao Mercado Livre
         id: ml
         if: steps.gap.outputs.skip != 'true'

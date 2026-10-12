@@ -11,6 +11,8 @@
     "hunt": "node src/run.js",
     "loop": "node src/run.js --loop",
     "discover": "node src/discover.js",
+    "discovery": "node src/discovery/cli.js",
+    "discovery:relatorio": "node tools/discovery-relatorio.mjs",
     "copag-check": "node src/copag-check.js",
     "serve": "node src/server.js",
     "test": "node test/run-all.mjs",
