@@ -75,6 +75,8 @@ export function validateListing(listing, store, opts = {}) {
     }
     // Esgotado/indisponível/não confirmado pode vir sem preço (VTEX escreve 0 no esgotado; o adaptador manda null).
     if (!priced && NEEDS_PRICE.has(l.stock)) reasons.push(`sem preço válido para estoque ${l.stock}`);
+    // Coerência: pix é preço à vista com desconto, nunca maior que o preço base.
+    if (isNum(l.price.pix) && isNum(l.price.base) && l.price.pix > l.price.base) reasons.push(`preço pix (${l.price.pix}) maior que o base (${l.price.base})`);
   }
   if (l.listPrice != null && !(isNum(l.listPrice) && l.listPrice > 0)) reasons.push(`preço "de" inválido (${String(l.listPrice)})`);
 
@@ -100,6 +102,7 @@ export function validateListing(listing, store, opts = {}) {
 
   // Opcionais: quando presentes, precisam ser coerentes.
   if (l.quantity != null && !(isNum(l.quantity) && l.quantity >= 0)) reasons.push(`quantidade inválida (${String(l.quantity)})`);
+  if (l.stock === 'IN_STOCK' && isNum(l.quantity) && l.quantity === 0) reasons.push('estoque IN_STOCK com quantidade 0');
   if (l.shipping != null && !(isNum(l.shipping) && l.shipping >= 0)) reasons.push(`frete inválido (${String(l.shipping)})`);
   if (l.image != null) { let ok = false; try { ok = /^https?:$/.test(new URL(l.image).protocol); } catch { /* inválida */ } if (!ok) reasons.push('imagem não é link http(s) absoluto'); }
   if (l.source_timestamp != null) checkTimestamp(l.source_timestamp, now, reasons);
