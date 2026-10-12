@@ -65,8 +65,8 @@ await t('1. CSS: no celular (≤760px) a imagem do cartão de oportunidade tem a
   const h = Number((m[1].match(/height:(\d+)px/) || [])[1]);
   assert.ok(h >= 120 && h <= 140, `altura da imagem entre 120 e 140px (${h})`); assert.match(m[1], /aspect-ratio:auto/, 'sem o 4/3 do desktop');
   assert.match(css, /\.opp \.deals \.opp-card \.opp-act\{flex-direction:row/, 'botão e "Comparar N" na mesma linha');
-  assert.match(css, /\.opp \.deals \.opp-card \.opp-stores-x\{display:none\}/, 'no celular o link fica "Comparar N"');
-  assert.match(css, /\.opp \.deals \.opp-card \.opp-cmp-r,\.opp \.deals \.opp-card \.opp-cmp:not\(\.up\) \.opp-cmp-w\{display:none\}/, '"acima" continua escrito; só "abaixo" vira o sinal −');
+  assert.match(css, /\.opp \.deals \.opp-card \.opp-stores-x\{position:absolute;width:1px;height:1px[^}]*clip:rect\(0 0 0 0\)/, 'no celular o link mostra "Comparar N" mas mantém o nome acessível');
+  assert.match(css, /\.opp \.deals \.opp-card \.opp-cmp-r,\.opp \.deals \.opp-card \.opp-cmp:not\(\.up\) \.opp-cmp-w\{position:absolute;width:1px;height:1px[^}]*clip:rect\(0 0 0 0\)/, '"acima" continua escrito; só "abaixo" vira o sinal −');
   assert.match(css, /\.deal-cta\{[^}]*min-height:44px/, 'botão ≥ 44px continua');
   assert.doesNotMatch(css, /\.opp \.deals \.opp-card \.pixk\{[^}]*display:none/, 'etiqueta Pix nunca some');
 });
@@ -173,4 +173,12 @@ await t('8. CSS: na busca o preço é o maior elemento e o % de desconto vem emb
   assert.match(css, /\.busca-more\{display:flex;justify-content:center/);
 });
 
+t('mobile: texto resumido fica só visualmente oculto (nome acessível preservado)', () => {
+  const css = html.slice(html.indexOf('<style'), html.indexOf('</style>'));
+  for (const sel of ['.opp-stores-x', '.opp-cmp-r']) {
+    const i = css.indexOf('.opp .deals .opp-card ' + sel); assert.ok(i > 0, sel);
+    const rule = css.slice(i, css.indexOf('}', i));
+    assert.ok(!/display:none/.test(rule) && /clip:rect\(0 0 0 0\)/.test(rule), sel + ' deve usar ocultação visual, não display:none');
+  }
+});
 console.log(`ux-lote-b: ${n} testes ok`);

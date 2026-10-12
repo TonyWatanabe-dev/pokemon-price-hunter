@@ -536,7 +536,7 @@ a.navbtn{text-decoration:none}
   .opp .deals .opp-card .opp-cmp,.opp .deals .opp-card .opp-ref{font-size:13px}
   .opp .deals .opp-card .opp-cmp{flex:1 0 auto}   /* 1ª linha: preço · %; 2ª linha: referência · frete */
   .opp .deals .opp-card .opp-cmp::before,.opp .deals .opp-card .opp-ship::before{content:"·";margin-right:6px;color:var(--muted);font-weight:400}
-  .opp .deals .opp-card .opp-cmp-r,.opp .deals .opp-card .opp-cmp:not(.up) .opp-cmp-w{display:none}   /* o sinal "−" já diz "abaixo"; "acima" continua escrito */
+  .opp .deals .opp-card .opp-cmp-r,.opp .deals .opp-card .opp-cmp:not(.up) .opp-cmp-w{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}   /* o sinal "−" já diz "abaixo"; "acima" continua escrito */
   .opp .deals .opp-card .opp-ship{font-size:13px}
   .opp .deals .opp-card .meter{margin-top:8px;gap:8px}.opp .deals .opp-card .meter i{height:4px}
   .opp .deals .opp-card .rc-row{margin-top:6px;gap:4px 10px}.opp .deals .opp-card .rc-row .opp-age,.opp .deals .opp-card .opp-conf{font-size:13px}
@@ -547,7 +547,7 @@ a.navbtn{text-decoration:none}
   .opp .deals .opp-card .opp-act{flex-direction:row;align-items:center;gap:10px}
   .opp .deals .opp-card .opp-act .deal-cta{flex:1 1 auto;min-width:0}
   .opp .deals .opp-card .opp-stores{flex:0 0 auto;margin:0;padding:10px 2px;white-space:nowrap}
-  .opp .deals .opp-card .opp-stores-x{display:none}
+  .opp .deals .opp-card .opp-stores-x{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 }
 .opp-conf{display:flex;align-items:center;gap:6px;margin:8px 0 0;font-size:12.5px;color:var(--muted)}
 .opp-conf i{width:7px;height:7px;border-radius:50%;background:var(--line);flex:none}
