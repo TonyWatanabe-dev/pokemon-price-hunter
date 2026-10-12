@@ -208,3 +208,32 @@ export async function applyPlan(plan, snapshot, adapters, { now = () => new Date
   }
   return results;
 }
+
+/**
+ * Revalidação no worker (defesa em profundidade): um `workflow_dispatch` do tarefas.yml só executa se a issue
+ * ainda estiver elegível e o despacho tiver sido registrado pelo dispatcher com a MESMA chave, e se essa for a
+ * última tentativa registrada (despacho antigo/reenviado não roda). Pura; quem chama busca issue/eventos/comentários.
+ * @returns {{ ok: boolean, reason: string }}
+ */
+export function validateDispatchRequest({ issueNumber, key, issue, operators, dispatcherActor } = {}) {
+  const no = (reason) => ({ ok: false, reason });
+  const n = Number(issueNumber);
+  if (!Number.isInteger(n) || n <= 0 || String(issueNumber).trim() !== String(n)) return no('número de issue inválido');
+  const km = String(key ?? '').match(/^dispatch:(\d+):(\d+)$/);
+  if (!km || Number(km[1]) !== n) return no('chave de despacho inválida ou de outra issue');
+  if (!issue || issue.number !== n) return no('issue não encontrada');
+  const ops = operatorSet(operators);
+  if (!ops.size) return no('lista de operadores vazia');
+  const labels = labelNames(issue);
+  if (issue.state !== 'open') return no('issue fechada');
+  if (!ops.has(lower(issue.author))) return no('autor não é operador');
+  if (!labels.has(QUEUE_LABEL) || !queueLabelByOperator(issue, ops)) return no(`label ${QUEUE_LABEL} ausente ou não aplicado por operador`);
+  if (labels.has(LABELS.QUARANTINE)) return no('em quarentena');
+  if (labels.has(LABELS.DONE)) return no('já concluída');
+  const trusted = [...ops, ...(dispatcherActor ? [lower(dispatcherActor)] : [])];
+  const markers = parseDispatchMarkers(issue.comments, { trustedAuthors: trusted });
+  if (!markers.some((m) => m.key === key)) return no('despacho não registrado pelo dispatcher com esta chave');
+  const latest = Math.max(...markers.map((m) => m.attempt));
+  if (Number(km[2]) !== latest) return no(`tentativa ${km[2]} não é a última registrada (${latest})`);
+  return { ok: true, reason: 'despacho válido' };
+}
