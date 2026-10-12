@@ -174,4 +174,57 @@ t('layout responsivo: viewport e media queries presentes', () => {
   assert.match(html, /@media ?\(max-width:\s*\d+px\)/);
   assert.match(html, /\.deals\{[^}]*grid/); assert.match(html, /\.pp\{[^}]*(grid|flex)/);
 });
+
+// ------------------------------------------------------------------ fallback de página (apiPageReady/ensureFull) e busca concorrente
+// Código real de index.html com fetch/fetchState/init/render falsos. Comportamento real: loadPage falho zera pageKey e chama ensureFull;
+// ensureFull sem state.json troca a view pelo erro com #retry; resposta de busca antiga é descartada (pageKey mudou) sem render nem PAGE_DONE.
+const pageCode = [cut('const API_VIEWS=', '/* histórico do produto'), line('let fullP=null;'), cutFn('function ensureFull')].join('\n');
+const tick = () => new Promise((r) => setTimeout(r, 0));
+function pageBox({ state = { generatedAt: 'x' } } = {}) {
+  const log = { render: 0, loading: 0, init: [], fetchState: 0, urls: [] }; const pend = [];
+  const slots = { '#view': { innerHTML: '' } };
+  const ctx = {
+    console, setTimeout, clearTimeout, AbortController, encodeURIComponent, URLSearchParams, Map, Set,
+    S: { slim: true, collections: [], types: [], products: [] }, P: {}, OFF: [], SLUG: {}, BYSLUG: {}, HIST: {}, F: { q: '' }, view: 'busca', curPid: null, curGroup: '',
+    parseLoc: () => ({ slug: '' }), colSlugOf: () => '', typeSlugOf: () => '', searchProducts: () => [], ic: () => '', $: (sel) => slots[sel] || null,
+    loading: () => { log.loading++; }, render: () => { log.render++; },
+    fetchState: async () => { log.fetchState++; return state; }, init: (st) => { log.init.push(st); },
+    fetch: (url) => new Promise((resolve) => { log.urls.push(url); pend.push({ url, resolve }); }),
+  };
+  vm.createContext(ctx);
+  vm.runInContext(pageCode + '\n;globalThis.__p={apiPageReady,PAGE_DONE,getKey:()=>pageKey};', ctx);
+  const reply = (i, status, body) => pend[i].resolve({ status, ok: status >= 200 && status < 300, json: async () => body });
+  return { ...ctx.__p, ctx, log, slots, pend, reply };
+}
+const okBusca = { products: [], offers: [], tips: [] };
+await (async () => {
+  // falha da API -> cai no state.json (init com o estado completo), sem render parcial e sem marcar a página como pronta
+  let b = pageBox(); b.ctx.F.q = 'charizard';
+  assert.equal(b.apiPageReady(), false, 'página sem dados ainda não está pronta'); assert.equal(b.log.loading, 1); assert.equal(b.getKey(), 'b:charizard');
+  assert.equal(b.apiPageReady(), false); assert.equal(b.pend.length, 1, 'mesma página: um pedido só');
+  b.reply(0, 500, null); await tick(); await tick();
+  assert.equal(b.log.fetchState, 1, 'fallback pede o state.json'); assert.deepEqual(b.log.init, [{ generatedAt: 'x' }]); assert.equal(b.log.render, 0);
+  assert.ok(!b.PAGE_DONE.has('b:charizard')); assert.equal(b.getKey(), '', 'pageKey zerado para tentar de novo depois');
+  // sem state.json -> erro com retry
+  b = pageBox({ state: null }); b.ctx.F.q = 'charizard'; b.apiPageReady(); b.reply(0, 503, null); await tick(); await tick();
+  const v = b.slots['#view'].innerHTML; assert.match(v, /class="empty err-state" role="alert"/); assert.match(v, /Não conseguimos carregar os preços agora/); assert.match(v, /<button class="btn" type="button" id="retry">/);
+  assert.equal(b.log.init.length, 0); assert.equal(b.log.render, 0);
+  // sucesso: marca como pronta e redesenha uma vez; segunda chamada já é true
+  b = pageBox(); b.ctx.F.q = 'charizard'; b.apiPageReady(); b.reply(0, 200, okBusca); await tick(); await tick();
+  assert.ok(b.PAGE_DONE.has('b:charizard')); assert.equal(b.log.render, 1); assert.equal(b.log.fetchState, 0); assert.equal(b.apiPageReady(), true);
+  // busca antiga respondendo depois da nova não sobrescreve nem redesenha
+  b = pageBox(); b.ctx.F.q = 'char'; b.apiPageReady(); b.ctx.F.q = 'pika'; b.apiPageReady();
+  assert.equal(b.pend.length, 2); assert.equal(b.getKey(), 'b:pika');
+  b.reply(1, 200, okBusca); await tick(); await tick();
+  b.reply(0, 200, okBusca); await tick(); await tick();
+  assert.equal(b.log.render, 1, 'só a busca nova redesenha'); assert.ok(b.PAGE_DONE.has('b:pika')); assert.ok(!b.PAGE_DONE.has('b:char'), 'busca antiga não vira página pronta');
+  assert.equal(b.getKey(), 'b:pika');
+  // busca antiga que FALHA depois da nova não aciona o fallback nem mostra erro
+  b = pageBox(); b.ctx.F.q = 'char'; b.apiPageReady(); b.ctx.F.q = 'pika'; b.apiPageReady();
+  b.reply(0, 500, null); await tick(); await tick();
+  assert.equal(b.log.fetchState, 0, 'falha antiga é ignorada'); assert.equal(b.slots['#view'].innerHTML, ''); assert.equal(b.getKey(), 'b:pika');
+  b.reply(1, 200, okBusca); await tick(); await tick(); assert.equal(b.log.render, 1); assert.ok(b.PAGE_DONE.has('b:pika'));
+  n++;
+})();
+
 console.log(`✓ Busca e produto (issue #43): ${n} grupos de testes passaram`);
