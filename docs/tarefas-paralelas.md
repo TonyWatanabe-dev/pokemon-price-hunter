@@ -34,6 +34,12 @@ O workflow só deve ser habilitado depois de o app e o secret estarem configurad
 
 Com mais issues do que vagas, as excedentes ficam na fila do GitHub (até 100 por grupo) e começam quando uma vaga é liberada. A vaga de cada tarefa é `número da issue % TAREFAS_MAX`.
 
+**Operação com 10 vagas (configurada em 12/10/2026):**
+- **Colisão de vaga:** a vaga é `issue % 10`. Issues com o mesmo último dígito (por exemplo #282 e #292) usam a mesma vaga, e a segunda espera a primeira. Na prática, rodam de 8 a 10 em paralelo.
+- **Mesma área, uma por vez:** o Dispatcher não despacha duas tarefas com áreas declaradas em comum enquanto uma delas está em curso. Tarefas no `index.html` andam em série. Para ocupar as vagas, monte levas com áreas distintas.
+- **Teto de consumo:** dez sessões simultâneas consomem a cota da assinatura Claude mais rápido. Recomenda-se `DISPATCHER_ORCAMENTO_USD` (por exemplo, 30 em 24 h). O custo medido por tarefa em 12/10 foi de US$ 0,13–0,31 (custo reportado a preço de API).
+- **Gargalo:** cada PR ainda depende do merge do proprietário até a Ponte operar o merge R0/R1. Para isso faltam o `qa-review` como check obrigatório, a configuração da auditoria (#267) e o `VERCEL_TOKEN`.
+
 ## Limites e cuidados
 
 - **Cota:** cada tarefa é uma sessão do Claude Code na sua assinatura. Dez tarefas em paralelo consomem a cota muito mais rapidamente do que três; valide primeiro com uma issue pequena.
