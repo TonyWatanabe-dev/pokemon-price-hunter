@@ -1,0 +1,4 @@
+# Lojas achadas pelo Discovery Intelligence Engine e conferidas antes de entrar (uma por linha; # comenta).
+# A partir de 12/10/2026 o DIE grava as aceitas no ramo data (data/discovery-stores.txt); este arquivo guarda as revisadas à mão.
+https://suika.com.br  # DIE serper 12/10/2026 — loja BR, Pokémon TCG lacrado, R$, JSON-LD (revisada)
+https://geralgeek.com.br  # DIE serper 12/10/2026 — loja BR, Pokémon TCG lacrado, R$, JSON-LD (revisada)

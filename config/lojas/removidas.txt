@@ -22,3 +22,8 @@
 # matostcg   | 2026-10-12 | duplicava www.matostcg.com.br (id matostcgcombr, ACTIVE)
 # gorupa     | 2026-10-12 | duplicava www.gorupa.com.br (id gorupacombr, ACTIVE, 26 anúncios / 18 casados)
 # culturetcg | 2026-10-12 | duplicava tcgculture.com (id tcgculturecom; ver acima, fora do escopo)
+
+# --- DIE 12/10/2026: falsos positivos da 1ª rodada real, não repropor ---
+# store.pokemontcgpocket.com | 2026-10-12 | loja do jogo digital Pokémon TCG Pocket, não vende produto lacrado
+# empresas.devir.com.br | 2026-10-12 | portal B2B/atacado da Devir, não é varejo
+# droper.app | 2026-10-12 | revenda entre pessoas (itens de terceiros), fora do escopo de loja

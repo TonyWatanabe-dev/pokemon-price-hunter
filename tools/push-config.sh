@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Publica no main as mudanças que o robô fez em config/ (extraído da #17). Uso: bash tools/push-config.sh [remoto] [ramo]
 #
-# Quem escreve em config/ no robô: src/discovery/ (lojas novas em config/lojas/descobertas.txt; ou src/discover.js em
+# Quem escreve em config/ no robô: src/discover.js legado (em
 # config/stores.json com HUNTER_DISCOVERY=0) e src/copag-check.js (config/catalog.json → copag.<id>.last_check), só no gatilho diário. As duas escritas são refeitas a partir
 # do zero na rodada diária seguinte, lendo o config/ que estiver no main naquele momento.
 #
