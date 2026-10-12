@@ -149,3 +149,12 @@ Limitações: a execução é sequencial (sem concorrência paralela, por escolh
 ## Ainda não integrado
 
 Tela própria para a fila (hoje: Actions/CLI); rejeitar um caso de baixa confiança não remove a oferta já aceita; Catalog Agent com IA; integração executável do Release Governor com permissões reais do GitHub e deploy da Vercel.
+
+
+## Atualização de operação do Dispatcher (12/10/2026)
+
+- PR #252 integrou `allowed_bots: github-actions` somente na etapa `claude_despacho`, com teste de contrato que proíbe wildcard e garante ausência no caminho `issues`.
+- PR #250 integrou o gatilho `workflow_run` para o Dispatcher após “Vigia do robô” concluído na `main`.
+- A integração do gatilho ainda exige validação de runtime pós-merge. O run Dispatcher #5 terminou com sucesso, mas a Issue #247 foi mantida em backoff; não remover labels nem forçar a chave para contornar a proteção.
+- Evidência de conclusão exige run de Vigia pós-merge, Dispatcher iniciado por `workflow_run`, job `despacho` elegível, Claude Code Action sem erro de ator, e PR resultante com CI verde.
+- Não usar `allowed_bots: "*"`, bypass de branch protection nem permissões adicionais no worker. O worker continua limitado a branch + PR; merge/deploy seguem sob Release Governor e as regras do projeto.
