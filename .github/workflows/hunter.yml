@@ -18,7 +18,7 @@ concurrency:
 jobs:
   hunt:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 18   # caça (~7 min de orçamento + salvar) + descoberta diária (~3 min); 12 cortava a rodada com descoberta antes de salvar
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
