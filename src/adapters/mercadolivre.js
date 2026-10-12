@@ -51,7 +51,13 @@ export function catalogStock(it, source = 'ml-catalog') {
   const status = typeof it.status === 'string' ? it.status : null;
   const qty = it.available_quantity == null ? NaN : Number(it.available_quantity);
   if (status && INACTIVE.test(status)) return { stock: 'OUT_OF_STOCK', quantity: null, stockSource: source };
-  if (!Number.isFinite(qty)) return { stock: 'UNKNOWN', quantity: null, stockSource: null };
+  if (!Number.isFinite(qty)) {
+    // Rodada de 12/10/2026 provou que o payload real do catálogo NÃO traz available_quantity nem status. Decisão do
+    // dono (12/10): publicação listada no catálogo, com preço e condição "new", conta como disponível — o catálogo do
+    // ML só lista anúncios ativos. Fica rastreável em stockSource 'ml-catalog-listed'; quantidade segue desconhecida.
+    if (source === 'ml-catalog' && Number.isFinite(Number(it.price)) && Number(it.price) > 0 && (it.condition == null || it.condition === 'new') && !status) return { stock: 'IN_STOCK', quantity: null, stockSource: 'ml-catalog-listed' };
+    return { stock: 'UNKNOWN', quantity: null, stockSource: null };
+  }
   if (qty <= 0) return { stock: 'OUT_OF_STOCK', quantity: null, stockSource: source };
   if (status && status !== 'active') return { stock: 'UNKNOWN', quantity: null, stockSource: null };
   return { stock: 'IN_STOCK', quantity: qty > 1 ? qty : null, stockSource: source };
