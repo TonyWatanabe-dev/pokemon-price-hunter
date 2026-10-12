@@ -217,6 +217,14 @@ await t('sem título/nome do produto: não vira oferta "undefined"', async () =>
     assert.deepEqual(await shSearch(`sh-sem-titulo-${i}.test`, suggest(shProduct({ title }))), [], `Shopify title=${JSON.stringify(title)}: descartado`);
     assert.deepEqual(await vtSearch(`vt-sem-nome-${i}.test`, [vtProduct({ productName: title })]), [], `VTEX productName=${JSON.stringify(title)}: descartado`);
   }
+  // VTEX com vários SKUs: com nome do SKU, o título o inclui; sem nome (ou nome inválido), fica só o nome do produto.
+  const name = 'Box Display Pokémon ME05 Escuridão Absoluta 36 Boosters Copag';
+  const multi = vtProduct({ items: [vtItem({ itemId: '1', name: 'Display' }), vtItem({ itemId: '2', name: undefined }), vtItem({ itemId: '3', name: null }),
+    vtItem({ itemId: '4', name: '  ' }), vtItem({ itemId: '5', name: 7 })] });
+  const L = await vtSearch('vt-sku-sem-nome.test', [multi]);
+  assert.deepEqual(L.map((x) => [x.title, x.url]), [[`${name} Display`, 'https://vt.test/me05-display/p?skuId=1'],
+    ...['2', '3', '4', '5'].map((id) => [name, `https://vt.test/me05-display/p?skuId=${id}`])], 'SKU sem nome: título só com productName');
+  for (const l of L) assert.ok(!/undefined|null/.test(l.title), `título sem "undefined": ${l.title}`);
 });
 
 http.setFetch(globalThis.fetch);

@@ -22,8 +22,10 @@ export async function search(store, catalog) {
       const o = s.commertialOffer || {};
       const qty = Number(o.AvailableQuantity ?? 0);
       const price = typeof o.Price === 'number' && Number.isFinite(o.Price) && o.Price > 0 ? o.Price : null;
+      // Nome do SKU só se for texto: SKU sem nome fica com o nome do produto (nunca "… undefined").
+      const skuName = p.items.length > 1 && typeof it.name === 'string' ? it.name.trim() : '';
       const l = {
-        title: p.productName + (p.items.length > 1 ? ' ' + it.name : ''),
+        title: p.productName + (skuName ? ' ' + skuName : ''),
         url: link + (p.items.length > 1 ? `?skuId=${it.itemId}` : ''),
         price: { base: price }, listPrice: price && typeof o.ListPrice === 'number' && Number.isFinite(o.ListPrice) && o.ListPrice > price ? o.ListPrice : null,
         stock: qty > 0 && o.IsAvailable !== false && price ? 'IN_STOCK' : 'OUT_OF_STOCK', quantity: qty > 0 && qty < 99999 ? qty : null,
