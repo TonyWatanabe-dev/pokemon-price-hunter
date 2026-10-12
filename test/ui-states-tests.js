@@ -74,6 +74,49 @@ for (const file of ['../index.html', '../tools/page.template.html']) {
     assert.match(html, /const prb=t\.closest\("\[data-prodretry\]"\);if\(prb\)\{if\(prb\.disabled\)return;prb\.disabled=true;/);
   });
 
+  // ---------------------------------------------------------------- carga inicial load() e botão #retry (estados-ui §4, proposta 1)
+  const loadCode = cut('async function load(){', '/* Eventos */');
+  const loadCtx = (over = {}) => { const v = el(), calls = { init: [], render: 0, loading: 0, prefetch: 0 };
+    const ctx = run(loadCode, { view: 'deals', API_VIEWS: new Set(['deals']), PRIVATE: ['conta'], fetchHome: async () => null, fetchState: async () => null,
+      init: (st) => calls.init.push(st), render: () => { calls.render++; }, loading: () => { calls.loading++; }, prefetchOpp: () => { calls.prefetch++; },
+      ic: (n) => `<i data-ic="${n}"></i>`, $: (q) => (q === '#view' ? v : null), ...over }); return { ctx, v, calls }; };
+  await t(`${file}: load() com fetchHome e fetchState falhando mostra .err-state com #retry`, async () => {
+    const { ctx, v, calls } = loadCtx();
+    await ctx.load();
+    assert.equal(calls.loading, 1, 'esqueleto de carregamento aparece primeiro');
+    assert.match(v.innerHTML, /class="empty err-state"/); assert.match(v.innerHTML, /role="alert"/);
+    assert.match(v.innerHTML, /<button[^>]*id="retry"/, 'botão de nova tentativa'); assert.match(v.innerHTML, /Tentar de novo/);
+    assert.equal(calls.init.length, 0, 'não renderiza dados que não existem');
+  });
+  await t(`${file}: load() cai no state.json quando a API da home falha`, async () => {
+    let home = 0, state = 0; const st = { products: [] };
+    const { ctx, v, calls } = loadCtx({ fetchHome: async () => { home++; return null; }, fetchState: async () => { state++; return st; } });
+    await ctx.load();
+    assert.deepEqual([home, state], [1, 1]); assert.equal(calls.init[0], st); assert.doesNotMatch(v.innerHTML, /err-state/);
+  });
+  await t(`${file}: load() com sucesso na home renderiza sem buscar o state.json`, async () => {
+    let state = 0; const h = { slim: true };
+    const { ctx, v, calls } = loadCtx({ fetchHome: async () => h, fetchState: async () => { state++; return null; } });
+    await ctx.load();
+    assert.equal(state, 0); assert.equal(calls.init[0], h); assert.equal(v.innerHTML, '');
+  });
+  await t(`${file}: view fora das da API usa só o state.json; página privada sem dados renderiza sem erro`, async () => {
+    let home = 0;
+    const a = loadCtx({ view: 'produtos', fetchHome: async () => { home++; return { slim: true }; }, fetchState: async () => ({ ok: 1 }) });
+    await a.ctx.load(); assert.equal(home, 0); assert.deepEqual(a.calls.init, [{ ok: 1 }]);
+    const b = loadCtx({ view: 'conta' }); await b.ctx.load();
+    assert.equal(b.calls.render, 1); assert.equal(b.v.innerHTML, '', 'conta não mostra o erro de preços');
+  });
+  await t(`${file}: segundo clique em #retry durante a nova tentativa não chama load() de novo`, async () => {
+    const m = html.match(/const rtb=t\.closest\("#retry"\);.*?return\}/); assert.ok(m, 'trecho do #retry');
+    let loads = 0, loadings = 0; const btn = { disabled: false };
+    const handler = vm.runInNewContext(`(function(t,loading,load){${m[0]}})`, {});
+    const target = { closest: (s) => (s === '#retry' ? btn : null) };
+    const click = () => handler(target, () => { loadings++; }, () => { loads++; });
+    click(); click();
+    assert.equal(loads, 1, 'load() chamado uma vez'); assert.equal(loadings, 1); assert.equal(btn.disabled, true, 'botão desabilitado no primeiro clique');
+  });
+
   // ---------------------------------------------------------------- /oportunidades (só existe no index.html)
   if (html.includes('async function moreOpp(page){')) {
     const oppCode = cut('async function moreOpp(page){', '/* "Mais filtros" fecha');
