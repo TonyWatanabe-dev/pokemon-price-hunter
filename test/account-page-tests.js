@@ -8,6 +8,7 @@ const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i); assert.ok(i > 0 && j > i, `trecho ${a}`); return html.slice(i, j); };
 const onUserCode = cut('async function onUser(u){', '/* AuthGate:');
 const favCode = cut('async function saveField(', 'const saveAlerts=');
+const alertCode = cut('const saveAlerts=', 'function favBtn(');
 const renderFavsCode = cut('function renderFavs(){', 'function renderAlerts(){');
 let n = 0; const t = async (name, fn) => { await fn(); n++; };
 
@@ -21,20 +22,21 @@ function makeMod({ doc = null, fail = false, delay = 0 } = {}) {
   };
 }
 function sandbox(mod, extra = {}) {
-  const toasts = []; let renders = 0;
+  const toasts = [], tracks = []; let renders = 0;
   const btns = [];
   const ctx = {
     ACC: { mod, user: null, data: null, ready: false, signupName: '', favBusy: false },
-    store: { set() {} }, track() {}, accSync() {}, resumeGate: async () => {}, console: { warn() {} },
+    store: { set() {} }, track: (...a) => { tracks.push(a); }, accSync() {}, resumeGate: async () => {}, console: { warn() {} },
     toast: (m) => toasts.push(m), render: () => { renders++; }, syncFavButtons() {}, pulse() {}, authGate() {},
     PRIVATE: ['conta', 'favoritos', 'alertas', 'configuracoes'], view: 'favoritos',
     document: { querySelectorAll: () => btns, querySelector: () => null },
-    toasts, get renders() { return renders; }, Date, Promise, structuredClone, ...extra,
+    toasts, tracks, bestLive: () => null, alertOf: () => null, get renders() { return renders; }, Date, Promise, structuredClone, ...extra,
   };
   ctx.favs = () => ctx.ACC.data?.favorites || [];
+  ctx.alertsL = () => ctx.ACC.data?.alerts || [];
   ctx.isFav = (pid) => ctx.favs().includes(pid);
   vm.createContext(ctx);
-  vm.runInContext(onUserCode + favCode, ctx);
+  vm.runInContext(onUserCode + favCode + alertCode, ctx);
   return ctx;
 }
 const pwUser = (name = '') => ({ uid: 'u1', email: 'a@b.c', name, photo: '', verified: false, provider: 'password' });
@@ -172,5 +174,31 @@ await t('busca e páginas públicas não passam pelo AuthGate; só salvar favori
 await t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   for (const sc of scripts) { if (sc.trim().startsWith('{')) continue; assert.doesNotThrow(() => new vm.Script(sc), 'erro de sintaxe no index.html'); }
+});
+await t('alerta: dois cliques seguidos geram uma gravação e um track', async () => {
+  const { c, mod } = await logged({ delay: 10 });
+  await Promise.all([c.setAlert('p1', 50), c.setAlert('p1', 50)]);
+  assert.equal(mod.saves.length, 1);
+  assert.equal(c.tracks.filter((x) => x[0] === 'create_alert').length, 1);
+  assert.equal(c.ACC.alertBusy, false);
+});
+await t('submitAlert: botão desabilitado com aria-busy durante o envio e reabilitado no fim', async () => {
+  const { c, mod } = await logged({ delay: 10 });
+  const attrs = {}; const btn = { disabled: false, setAttribute: (k, v) => { attrs[k] = v; }, removeAttribute: (k) => { delete attrs[k]; } };
+  const f = { dataset: { pid: 'p1' }, querySelector: (q) => (q === '[type=submit]' ? btn : { focus() {} }) };
+  c.FormData = function () { return { get: () => '50' }; };
+  c.authGate = (a) => c.setAlert(a.pid, a.v);
+  const p1 = c.submitAlert(f), p2 = c.submitAlert(f);
+  assert.equal(btn.disabled, true); assert.equal(attrs['aria-busy'], 'true');
+  await Promise.all([p1, p2]);
+  assert.equal(btn.disabled, false); assert.equal(attrs['aria-busy'], undefined);
+  assert.equal(mod.saves.length, 1);
+});
+await t('setFav com pid já na lista não duplica nem regrava', async () => {
+  const { c, mod } = await logged({ delay: 10 });
+  await Promise.all([c.setFav('p9', true), c.setFav('p9', true)]);
+  await c.setFav('p1', true);
+  assert.equal(mod.saves.length, 1);
+  assert.equal(JSON.stringify(c.ACC.data.favorites), JSON.stringify(['p1', 'p2', 'p3', 'p9']));
 });
 console.log(`✓ Conta (6C.1.1): ${n} grupos de testes passaram`);
