@@ -73,7 +73,7 @@ jobs:
         ports: ['5432:5432']
         options: >-
           --health-cmd "pg_isready -U postgres" --health-interval 2s --health-timeout 5s --health-retries 30
-    # GH_TOKEN (token do workflow) NÃO fica no env do job: só os dois passos de shell que usam `gh` o recebem.
+    # GH_TOKEN (token do workflow) NÃO fica no env do job: só os passos de shell que usam `gh` o recebem.
     # Assim ele não chega ao npm ci (scripts de instalação) nem ao passo do Claude.
     env:
       REPO: ${{ github.repository }}
@@ -118,6 +118,12 @@ jobs:
             echo "::error title=Credencial Claude ausente::Cadastre o secret CLAUDE_CODE_OAUTH_TOKEN em Settings -> Secrets and variables -> Actions. Gere o token localmente com claude setup-token; nunca o imprima nos logs."
             exit 1
           fi
+      # Seleciona um perfil fechado por issue/falhas; GH_TOKEN é só leitura e só existe neste passo.
+      - name: Selecionar esforço
+        id: esforco
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/esforco.mjs "$ISSUE"
       # Caminho do label (operador aplica executor:github): modo tag da action, como antes.
       - id: claude
         if: github.event_name == 'issues'
@@ -131,7 +137,7 @@ jobs:
           include_comments_by_actor: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
           claude_args: |
             --permission-mode auto
-            --max-turns 80
+            ${{ steps.esforco.outputs.args }}
             --allowedTools "Bash(npm test),Bash(npm ci),Bash(node test/*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(gh pr create:*),Bash(gh pr list:*)"
             --append-system-prompt "Você é um executor de tarefas do TCG Price Hunter. Siga o CLAUDE.md do repositório. Trabalhe só na branch criada para esta issue; nunca na main, nunca force-push. Não altere .github/workflows, .github/egress-firewall.yaml, ROADMAP.md, secrets ou configuração de produção; não faça deploy nem acesse o banco de produção. Rode npm test antes de concluir e corrija falhas sem enfraquecer testes. Ao terminar, abra um PR para a main com gh pr create --base main (título curto; corpo com o que mudou, como foi testado e 'Closes #<número da issue>'). Se a tarefa for ambígua ou exigir decisão do usuário, não invente: explique no comentário e não abra PR."
       # Caminho do Dispatcher (despacho já revalidado): modo agente com prompt fixo que só aponta a issue.
@@ -154,7 +160,7 @@ jobs:
             --head ${{ steps.despacho.outputs.branch }}, incluindo "Closes #${{ needs.vaga.outputs.issue }}" no corpo.
           claude_args: |
             --permission-mode auto
-            --max-turns 80
+            ${{ steps.esforco.outputs.args }}
             --allowedTools "Bash(npm test),Bash(npm ci),Bash(node test/*),Bash(git status),Bash(git diff:*),Bash(git log:*),Bash(gh issue view:*),Bash(gh pr create:*),Bash(gh pr list:*),mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files"
             --append-system-prompt "Você é um executor de tarefas do TCG Price Hunter. Siga o CLAUDE.md do repositório. Trabalhe só na branch criada para esta issue; nunca na main, nunca force-push. Não altere .github/workflows, .github/egress-firewall.yaml, ROADMAP.md, secrets ou configuração de produção; não faça deploy nem acesse o banco de produção. Rode npm test antes de concluir e corrija falhas sem enfraquecer testes. Ao terminar, abra um PR para a main com gh pr create --base main (título curto; corpo com o que mudou, como foi testado e 'Closes #<número da issue>'). Se a tarefa for ambígua ou exigir decisão do usuário, não invente: explique no comentário e não abra PR."
       # Despacho recusado na validação: nenhum efeito na issue (o dispatcher conta a tentativa e aplica backoff).
