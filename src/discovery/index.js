@@ -26,7 +26,13 @@ export async function runDiscovery({ log = console.log, env = process.env, now =
   const status = connectors.status();
   const conn = connectors.pick();
   for (const [id, s] of Object.entries(status)) if (!s.available) log(`DIE: conector ${id} indisponível: ${s.reason} (${s.keyName})`);
-  if (!conn) { log('DIE: nenhum conector disponível; nada a fazer.'); return { ok: true, skipped: 'sem conector', connectors: status }; }
+  if (!conn) {
+    log('DIE: nenhum conector disponível; nada a fazer.');
+    // Mesmo sem rodar, deixa evidência no ramo data: qual conector faltou e por quê (nomes de variável, nunca valores).
+    try { const ledger = loadLedger(); ledger.runs.push({ at, skipped: 'sem conector', connectors: status, durationMs: Date.now() - t0 }); saveLedger(ledger); } catch (e) { log(`DIE: não gravou o ledger (${e.message})`); }
+    try { const f = dataPath('meta.json'); const meta = readMeta(f); meta.discovery = { version: 1, last: { at, skipped: 'sem conector', connectors: status } }; writeJsonAtomic(f, meta); } catch {}
+    return { ok: true, skipped: 'sem conector', connectors: status };
+  }
   try {
     const ledger = loadLedger();
     const catalog = readJson(configPath('catalog.json'), { collections: [], products: [] });
