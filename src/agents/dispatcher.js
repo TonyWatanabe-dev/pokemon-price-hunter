@@ -48,10 +48,11 @@ export function parseDependencies(body) {
 export function parseAreas(body) {
   const areas = new Set();
   for (const line of String(body ?? '').split(/\r?\n/)) {
-    if (!/^\s*(?:Áreas|Areas)\s*:/i.test(line) && !/Risco previsto\s*:/i.test(line)) continue;
+    // só as linhas de declaração (início da linha), não menções no meio do texto (#266)
+    if (!/^\s*(?:Áreas|Areas)\s*:/i.test(line) && !/^\s*(?:Fase\s*:[^\n]*?)?Risco previsto\s*:/i.test(line)) continue;
     for (const a of line.matchAll(/`([^`\s]+)`/g)) {
       const p = a[1].replace(/\\/g, '/').replace(/^\.\//, '').replace(/\/+$/, '');
-      if (p && !p.includes('..')) areas.add(p);
+      if (p && !p.includes('..') && !p.endsWith(':')) areas.add(p);
     }
   }
   return [...areas].sort();

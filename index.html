@@ -1245,15 +1245,6 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   .hsearch .sbox-lg .btn{padding:10px 16px}
 }
 .stage-copy{margin-top:28px}
-/* Atalho para todos os produtos */
-.home-cta{margin-top:28px}
-.allcta{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:var(--r-lg,18px);background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none;box-shadow:var(--shadow-sm);transition:transform 160ms ease,box-shadow 200ms ease,border-color 160ms ease}
-.allcta-i{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--sticker);color:var(--sticker-ink);flex:none}
-.allcta-i .icon{width:24px;height:24px}
-.allcta b{display:block;font-size:18px}
-.allcta small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
-.allcta>.chev{margin-left:auto;transform:rotate(-90deg);color:var(--muted)}
-@media (hover:hover) and (pointer:fine){.allcta:hover{transform:translateY(-2px);border-color:var(--ink);box-shadow:var(--shadow-md,0 10px 30px rgb(0 0 0 / .12))}}
 .prods .seg{margin:6px 0 4px}
 /* Título da home: brilho metálico passando em "Procure oportunidade." */
 .stage h1 .gold{position:relative;background:linear-gradient(100deg,var(--sticker) 0%,var(--sticker) 42%,#fff7d1 50%,var(--sticker) 58%,var(--sticker) 100%);background-size:260% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--sticker)}
@@ -1704,13 +1695,6 @@ function highlightsOppHTML(){
   if(tiles.length<2)return"";
   return`<section class="hl">${sectionHead("","Destaques do Hunter","Os recordes do mercado agora.")}<div class="hl-grid">${tiles.join("")}</div></section>`;
 }
-function preHTML(){
-  const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].total))by[o.productId]=o;
-  const list=Object.values(by).slice(0,6);
-  return`<section class="pre">${sectionHead("","Pré-vendas","Lançamentos anunciados pelas lojas. Não entram no ranking.",list.length?seeAll("prevenda","Ver todas"):"")}
-  ${list.length?`<div class="pre-row">${list.map((o)=>{const p=P[o.productId];const r=refOf(p);return`<a class="pre-c" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}">${photo(p,o,"photo pre-ph")}<span><small class="pre-st">Pré-venda${o.releaseDate?` · lança ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</small><b>${esc(p.collectionName)} · ${esc(label(p))}</b><span>${money(o.total)}${r?` <s>${money(r.v)}</s>`:""} · ${esc(o.storeName)}</span></span></a>`}).join("")}</div>`
-  :`<p class="soft-empty">Nenhuma pré-venda aberta agora. Quando uma loja anunciar um lançamento em português, ele aparece aqui.</p>`}</section>`;
-}
 function tickerHTML(){
   const ev=dedupeAct(activity()).slice(0,6);if(!ev.length)return"";
   return`<div class="ticker" aria-live="off">${ev.map((e,i)=>{const p=P[e.productId];const [lbl,icn,tone]=actLabel(e.type);return`<span class="tk${i?"":" on"}"><time>${hhmm(e.t)}</time><span class="tk-t ${tone}">${ic(icn)}${lbl}</span>${esc(p.collectionName)} · ${esc(label(p))}${e.type==="drop"||e.type==="lowest"?` <s>${money(e.from)}</s> → <b>${money(e.to)}</b>${pixOf(e.offerId)}`:` <b>${money(e.to)}</b>${pixOf(e.offerId)}`}</span>`}).join("")}</div>`;
@@ -1892,10 +1876,7 @@ function renderDeals(){
   ${colWallHTML()}
   ${radarHTML()}
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
-  <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>
-  ${preHTML()}
-  <section class="home-all home-cta"><a class="allcta" href="/oportunidades" data-go="oportunidades"><span class="allcta-i">${ic("flame-f")}</span><span><b>Ver todas as oportunidades</b><small>Filtre por coleção, formato, loja, preço e nota.</small></span>${ic("caret-down","icon chev")}</a>
-  </section>`;
+  <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>`;
   homeMotion();startTicker();stageInit();revealInit();
   if(HOMEOPP.status!=="ok"||Date.now()-HOMEOPP.at>=APITTL){const pr=loadHomeOpp();if(HOMEOPP.status!=="ok")paintHomeOpp();pr.then(paintHomeOpp)}
 }

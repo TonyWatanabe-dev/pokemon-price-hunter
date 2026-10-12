@@ -1,0 +1,40 @@
+# Burn-in da fábrica 24/7 (docs/PLANO-ENTREGA-TURBO.md, "sete dias de estabilidade real"; issue #238).
+# Depois de cada "Vigia do robô" na main, avalia ontem e hoje (Brasília) com dados reais (API do Actions e
+# data/meta.json) e publica um comentário por dia na issue do operador com o label `burnin:diario`: atualiza o de
+# hoje, finaliza o de ontem; dia encerrado não muda. Somente leitura do código; escreve só comentários nessa issue.
+# Sem a issue, só publica o resumo do job. Não usa secrets, não instala dependências, não faz merge/deploy.
+name: Burn-in
+
+on:
+  workflow_run:
+    workflows: ['Vigia do robô']
+    types: [completed]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: burnin
+  cancel-in-progress: true
+
+jobs:
+  avaliar:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - name: Avaliar e publicar o burn-in
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAREFAS_OPERADORES: ${{ vars.TAREFAS_OPERADORES || github.repository_owner }}
+        run: node tools/burnin.mjs --publicar

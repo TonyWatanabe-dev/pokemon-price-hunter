@@ -29,7 +29,11 @@ const has = (text, re) => re.test(String(text || '').toLowerCase());
 export function classifyTask({ labels = [], title = '', body = '', failures = 0 } = {}) {
   const L = new Set(labels.map((l) => String(typeof l === 'string' ? l : l?.name).toLowerCase()));
   const areas = parseAreas(body);
-  const text = `${title}\n${body}`;
+  // Tarefa que declara risco baixo (R0–R2) e só áreas não críticas: palavras-chave valem só no título. No corpo,
+  // essas tarefas costumam citar o que NÃO tocar ("não alterar secrets") — isso escalava doc simples para opus/high
+  // (#266). Áreas críticas, labels e R3 declarado continuam decidindo; sem áreas declaradas, o corpo todo conta.
+  const riscoBaixo = /^\s*(?:fase\s*:[^\n]*?)?risco previsto\s*:\s*r[0-2]\b/im.test(body) && areas.length > 0;
+  const text = riscoBaixo ? title : `${title}\n${body}`;
   const motivos = [];
   if (areas.some((a) => CRITICAL.some((re) => re.test(a))) || ['security', 'r3', 'risco:r3'].some((l) => L.has(l))
     || /risco previsto:\s*r3\b/i.test(body)
