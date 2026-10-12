@@ -1,9 +1,10 @@
-// Issue #84 (continuação da #182) — SEO da página do produto (api/pagina.mjs): título, descrição, og:, JSON-LD e o HTML
-// pré-renderizado usam a mesma "melhor oferta" do site (index.html bestOffer, PR #178) e de api/_seo.mjs (bestBy):
-// frete conhecido (ou grátis) compara pelo total; frete desconhecido nunca vence uma oferta com frete conhecido;
-// se todas forem desconhecidas, vale o menor preço, dizendo "frete a calcular". Nunca se inventa frete (sem
-// shippingDetails/shippingRate). Estoque desconhecido não vira "com estoque" nem "sem estoque"; produto sem oferta com
-// estoque segue com noindex (#141). Sem rede: o state.json vem de um fetch falso, num processo separado por cenário.
+// Issue #84 (continuação da #182) + Lote D (SEO) — SEO da página do produto (api/pagina.mjs).
+// Lote D (decisão do dono): título, descrição, og: e AggregateOffer.lowPrice usam o MENOR PREÇO VISÍVEL na tabela
+// "Onde comprar" (a oferta com estoque mais barata, Pix incluído e sinalizado); sem frete informado, diz "frete a calcular".
+// A regra #84 ("menor total com frete comparável": frete conhecido compara pelo total; frete desconhecido nunca vence frete
+// conhecido) continua no corpo como frase própria e segue ordenando a tabela e a lista de /produtos (bestBy).
+// Nunca se inventa frete (sem shippingDetails/shippingRate). Estoque desconhecido não vira "com estoque" nem "sem estoque";
+// produto sem oferta com estoque segue com noindex (#141). Sem rede: o state.json vem de um fetch falso, em processo separado.
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -63,35 +64,45 @@ const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/&#39;/g, "'").replace(/\
 const out = render(['t=produto&slug=p1', 't=produto&slug=p2', 't=produto&slug=p3', 't=produto&slug=p4', 't=produtos']);
 const pg = Object.fromEntries(Object.entries(out).map(([q, r]) => [q, { status: r.status, ...parse(r.body) }]));
 
-await t('1. A R$ 100 (frete desconhecido) × B R$ 105 (frete grátis): título, descrição, og: e JSON-LD usam B como menor total', () => {
+await t('1. A R$ 100 (frete desconhecido) × B R$ 105 (frete grátis): título/descrição/lowPrice = menor preço visível (A); menor total comparável (B) no corpo', () => {
   const p = pg['t=produto&slug=p1'];
   assert.equal(p.status, 200); assert.equal(p.noindex, false);
-  assert.match(p.title, /a partir de R\$ 105,00/); assert.doesNotMatch(p.title, /R\$ 100,00/);
-  assert.match(p.desc, /R\$ 105,00 \(frete grátis\) em Loja b/); assert.doesNotMatch(p.desc, /R\$ 100,00|Loja a/);
+  assert.match(p.title, /a partir de R\$ 100,00 \(frete a calcular\)/); assert.doesNotMatch(p.title, /R\$ 105,00/);
+  assert.match(p.desc, /a partir de R\$ 100,00 \(frete a calcular\) em Loja a/); assert.doesNotMatch(p.desc, /R\$ 105,00|Loja b/);
+  assert.ok(p.desc.length <= 160, 'descrição de até 160 caracteres');
   assert.equal(p.ogTitle, p.title); assert.equal(p.ogDesc, p.desc);
   const ao = product(p).offers;
-  assert.equal(ao['@type'], 'AggregateOffer'); assert.equal(ao.lowPrice, 105, 'lowPrice = total de B, não o preço sem frete de A');
+  assert.equal(ao['@type'], 'AggregateOffer'); assert.equal(ao.lowPrice, 100, 'lowPrice = menor preço visível na tabela (A)');
+  assert.equal(ao.lowPrice, Math.min(...ao.offers.map((o) => o.price)), 'lowPrice bate com o menor Offer listado');
   assert.ok(ao.highPrice >= ao.lowPrice, 'highPrice nunca abaixo do lowPrice'); assert.equal(ao.offerCount, 2);
-  assert.match(product(p).description, /R\$ 105,00/);
+  assert.equal(ao.availability, undefined, 'availability sai do AggregateOffer');
+  assert.deepEqual(ao.offers.map((o) => [o['@type'], o.price, o.availability, o.seller.name]), [['Offer', 105, 'https://schema.org/InStock', 'Loja b'], ['Offer', 100, 'https://schema.org/InStock', 'Loja a']], 'cada Offer listada com availability, na ordem da tabela');
+  assert.match(product(p).description, /R\$ 100,00/);
   const ssr = text(p.ssr);
-  assert.match(ssr, /Melhor preço com estoque agora: R\$ 105,00 \(frete grátis\) em Loja b/);
-  assert.match(ssr, /Loja b R\$ 105,00 \(frete grátis\) Loja a R\$ 100,00 \(frete a calcular\)/, 'tabela: B antes de A; A sem total inventado');
+  assert.match(ssr, /Menor preço com estoque agora, frete a calcular: R\$ 100,00 em Loja a\./);
+  assert.match(ssr, /Menor total com frete comparável: R\$ 105,00 \(frete grátis\) em Loja b\./, 'regra #84 segue no corpo, em frase própria');
+  assert.match(ssr, /Loja b R\$ 105,00 \(frete grátis\) Loja a R\$ 100,00 \(frete a calcular\)/, 'tabela: B antes de A (#84); A sem total inventado');
+  const bcl = p.ld.find((x) => x['@type'] === 'BreadcrumbList').itemListElement.map((i) => i.name);
+  assert.deepEqual(bcl, ['Início', 'Alfa', 'Treinador Avançado (ETB)', 'Treinador Avançado (ETB) Alfa'], 'último item do caminho = produto, não o formato de novo');
 });
 
-await t('2. só frete desconhecido: menor preço dizendo "frete a calcular", sem frete nem total inventado', () => {
+await t('2. só frete desconhecido: menor preço dizendo "frete a calcular", sem frete nem total inventado; sem segunda frase (é a mesma oferta)', () => {
   const p = pg['t=produto&slug=p2'];
   assert.match(p.title, /a partir de R\$ 80,00 \(frete a calcular\)/);
-  assert.match(p.desc, /menor preço R\$ 80,00 \(frete a calcular\) em Loja d/); assert.doesNotMatch(p.desc, /frete grátis|com frete|total/i);
+  assert.match(p.desc, /a partir de R\$ 80,00 \(frete a calcular\) em Loja d/); assert.doesNotMatch(p.desc, /frete grátis|com frete|total/i);
   const ao = product(p).offers; assert.equal(ao.lowPrice, 80); assert.equal(ao.highPrice, 90);
+  assert.equal(ao.lowPrice, Math.min(...ao.offers.map((o) => o.price)));
   assert.match(text(p.ssr), /Menor preço com estoque agora, frete a calcular: R\$ 80,00 em Loja d/);
-  assert.doesNotMatch(text(p.ssr), /frete grátis|com frete/);
+  assert.doesNotMatch(text(p.ssr), /frete grátis|com frete|Menor total com frete comparável/);
 });
 
-await t('3. frete pago conhecido: total (preço + frete) decide; a oferta de frete desconhecido mais barata não entra no "a partir de"', () => {
+await t('3. frete pago conhecido: título/lowPrice = menor preço visível (G, frete a calcular); menor total comparável (F, R$ 120) no corpo; tabela pela #84', () => {
   const p = pg['t=produto&slug=p3'];
-  assert.match(p.title, /a partir de R\$ 120,00/); assert.doesNotMatch(p.title, /R\$ 60,00/);
-  assert.match(p.desc, /menor total R\$ 120,00 \(com frete\) em Loja f/);
-  const ao = product(p).offers; assert.equal(ao.lowPrice, 120); assert.equal(ao.highPrice, 130);
+  assert.match(p.title, /a partir de R\$ 60,00 \(frete a calcular\)/); assert.doesNotMatch(p.title, /R\$ 120,00/);
+  assert.match(p.desc, /a partir de R\$ 60,00 \(frete a calcular\) em Loja g/);
+  const ao = product(p).offers; assert.equal(ao.lowPrice, 60); assert.equal(ao.highPrice, 130);
+  assert.equal(ao.lowPrice, Math.min(...ao.offers.map((o) => o.price)));
+  assert.match(text(p.ssr), /Menor total com frete comparável: R\$ 120,00 \(com frete\) em Loja f\./);
   assert.match(text(p.ssr), /Loja f R\$ 120,00 \(com frete\) Loja e R\$ 130,00 \(com frete\) Loja g R\$ 60,00 \(frete a calcular\)/);
 });
 
@@ -116,4 +127,5 @@ await t('6. /produtos: melhor oferta de cada produto pela mesma regra (B em p1, 
   assert.match(s, /Beta · Treinador Avançado \(ETB\) — R\$ 80,00 em Loja d/); assert.doesNotMatch(s, /Delta/);
 });
 
-console.log(`✓ SEO da página do produto com frete (issue #84): ${n} grupos de testes passaram`);
+console.log(`✓ SEO da página do produto com frete (issue #84 + Lote D): ${n} grupos de testes passaram`);
+await import('./seo-lote-c-tests.js');

@@ -1477,28 +1477,31 @@ function parseLoc(){
   if(location.pathname.startsWith("/busca"))buscaFromURL(location.search)})();
 const pathOf=(v)=>"/"+(PATHS[v]??"");
 let curGroup=parseLoc().slug||null;let view=parseLoc().view||"deals",xfOpen=false,fOpen=false,prodPushed=false;
+function focusTitle(){const h=document.querySelector("#view h1, #view h2");if(!h)return;h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}
 function go(v){
   v=v||"deals";const path=pathOf(v);
   if(location.pathname!==path)history.pushState(null,"",path);
-  prodPushed=false;view=v;if($("#more").open)$("#more").close();if($("#sheet").open){$("#sheet").dataset.kind="";$("#sheet").close()}try{$("#scorepop").hidePopover()}catch{}render();scrollTo({top:0})
+  prodPushed=false;view=v;if($("#more").open)$("#more").close();if($("#sheet").open){$("#sheet").dataset.kind="";$("#sheet").close()}try{$("#scorepop").hidePopover()}catch{}render();scrollTo({top:0});focusTitle()
 }
-addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(OLDHASH[h]){history.replaceState(null,"","/"+OLDHASH[h]);view=parseLoc().view;render();scrollTo({top:0})}});
+addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(OLDHASH[h]){history.replaceState(null,"","/"+OLDHASH[h]);view=parseLoc().view;render();scrollTo({top:0});focusTitle()}});
 addEventListener("popstate",()=>{
   const r=parseLoc();const sh=$("#sheet");if(sh.open){sh.dataset.kind="";sh.close()}acClose();
-  if(r.view==="produto"){const pid=S?pidFromSlug(r.slug):null;view="produto";curPid=pid;render();return}
-  if(r.view==="colecao"||r.view==="tipo"){view=r.view;curGroup=r.slug;render();scrollTo({top:0});return}
+  if(r.view==="produto"){const pid=S?pidFromSlug(r.slug):null;view="produto";curPid=pid;render();focusTitle();return}
+  if(r.view==="colecao"||r.view==="tipo"){view=r.view;curGroup=r.slug;render();scrollTo({top:0});focusTitle();return}
   if(r.view==="busca")buscaFromURL(location.search);
-  view=r.view;render();scrollTo({top:0});
+  view=r.view;render();scrollTo({top:0});focusTitle();
 });
 
 function toast(msg,warn){const t=$("#toast"),now=Date.now();if(!warn&&toast.until>now){clearTimeout(toast.q);toast.q=setTimeout(()=>toast(msg),toast.until-now);return}const d=warn?5200:2400;t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.until=warn?now+d:0;toast.t=setTimeout(()=>t.classList.remove("show"),d)}
 
 function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${esc(o.quantity)} em estoque`:esc(l)}</span>`}
-function photo(p,o,cls="photo"){
+function photo(p,o,cls="photo",eager=false){
   const src=String(o?.image||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
   const fb=`<div class="${cls} fallback" style="--ec:${gg.c}" aria-hidden="true">${ic(gg.icon)}</div>`;
   if(!src)return fb;
-  return`<div class="${cls}"><img src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.photo').outerHTML=this.closest('.photo').dataset.fb" ></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
+  /* width/height na proporção do CSS (.cat-media 4/3; .photo 1/1) evitam salto de layout; lazy em tudo menos no pódio (eager). alt descritivo: coleção · formato. */
+  const r43=eager||/deal-ph/.test(cls);const alt=[p?.collectionName,p?.typeLabel?label(p):""].filter(Boolean).join(" · ");
+  return`<div class="${cls}"><img src="${esc(src)}" alt="${esc(alt)}" width="${r43?800:600}" height="600" loading="${eager?"eager":"lazy"}"${eager?' fetchpriority="high"':""} decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.photo').outerHTML=this.closest('.photo').dataset.fb" ></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
 }
 const live=(o)=>o.stock==="IN_STOCK"&&!o.stale&&!o.anomalous&&o.total>0;
 /* Quem vende: em marketplace (Ri Happy, PBKIDS...) o preço é do vendedor parceiro, não da loja. Nunca atribuir à loja o preço de outro. */
@@ -1805,7 +1808,7 @@ function podCardOpp(x,r){
   return`<article class="pod"${ol?" data-old":""} data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
     ${hl?`<span class="pod-rank"><i aria-hidden="true"></i>${hl}</span>`:""}
     <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(oppTotal(x))} em ${esc(st.name||"")}"></a>
-    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo")}${catChip(p)}
+    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo",true)}${catChip(p)}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
     <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
@@ -1872,7 +1875,7 @@ function revealInit(){
 const colSlugOf=(c)=>slugify(c.name);const typeSlugOf=(t)=>slugify(t.label);
 const colHref=(id)=>{const c=(S.collections||[]).find((x)=>x.id===id);return c?"/colecao/"+colSlugOf(c):null};
 const typeHref=(id)=>{const t=(S.types||[]).find((x)=>x.id===id);return t?"/tipo/"+typeSlugOf(t):null};
-function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0})}
+function openGroup(kind,slug){const path=`/${kind}/${slug}`;if(location.pathname!==path)history.pushState(null,"",path);view=kind;curGroup=slug;if($("#more").open)$("#more").close();render();scrollTo({top:0});focusTitle()}
 /* Coleções como cartas: logo oficial da coleção (arquivo em logos/colecoes, enviado pelo responsável do site)
    ou o nome escrito em destaque. Borda holográfica e inclinação. Clique abre /produtos filtrado pela coleção. */
 const COL_LOGOS={"c30":"c30.webp","me01":"me01.webp","me02":"me02.webp","me02_5":"me02_5.webp","me03":"me03.webp","me04":"me04.webp","me05":"me05.webp","sv1":"sv1.webp","sv10":"sv10.webp","sv10_5":"sv10_5.webp","sv10_5r":"sv10_5r.webp","sv10_5w":"sv10_5w.webp","sv2":"sv2.webp","sv3":"sv3.webp","sv3_5":"sv3_5.webp","sv4":"sv4.webp","sv4_5":"sv4_5.webp","sv5":"sv5.webp","sv6":"sv6.webp","sv6_5":"sv6_5.webp","sv7":"sv7.webp","sv8":"sv8.webp","sv8_5":"sv8_5.webp","sv9":"sv9.webp"};
@@ -2189,7 +2192,7 @@ function openProduct(pid,{push=true}={}){
   if(!P[pid])return;const path="/produto/"+(SLUG[pid]||encodeURIComponent(pid));
   if(location.pathname!==path){if(push)history.pushState(null,"",path);else history.replaceState(null,"",path)}
   if($("#more").open)$("#more").close();try{$("#scorepop").hidePopover()}catch{}
-  const same=view==="produto"&&curPid===pid;view="produto";curPid=pid;render();if(!same)scrollTo({top:0});
+  const same=view==="produto"&&curPid===pid;view="produto";curPid=pid;render();if(!same){scrollTo({top:0});focusTitle()}
   if(!same)track("view_product",{id:pid});
 }
 /* selo da oferta na lista de lojas: nota oficial daquela oferta, ou "Sem nota" explícito */
@@ -2676,7 +2679,7 @@ function acRender(input){
 function acClose(){document.querySelectorAll(".ac").forEach((b)=>{b.hidden=true});document.querySelectorAll(".sbox input").forEach((i)=>i.setAttribute("aria-expanded","false"))}
 function doSearch(q){q=String(q||"").trim().slice(0,80);acClose();if(!q){go("");return}
   F.q=q;F.tipo="";const u=buscaURL();if(location.pathname+location.search!==u)history.pushState(null,"",u);
-  view="busca";render();scrollTo({top:0});track("search",{q:q.slice(0,60),results:searchProducts(q).length})}
+  view="busca";render();scrollTo({top:0});focusTitle();track("search",{q:q.slice(0,60),results:searchProducts(q).length})}
 
 /* Resultados da busca */
 function renderSearch(){
