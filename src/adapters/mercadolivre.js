@@ -79,7 +79,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
 
   // Diagnóstico da rodada (data/ml-debug.json): o que a API abriu/fechou para o app, campos do catálogo e estoque
   // derivado. Sem token, sem corpo de resposta além do erro estruturado.
-  const dbg = { picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, itemsError: null, scope: auth.scope || null };
+  const dbg = { picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, officialStores: {}, itemsError: null, scope: auth.scope || null };
   const drop = (k) => { dbg.drop[k] = (dbg.drop[k] || 0) + 1; };
   const httpError = (e) => ({ status: e?.status ?? null, error: e?.blocked ? 'blocked' : null, message: String(e?.message || '').slice(0, 200), cause: null });
 
@@ -148,6 +148,9 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     for (const it of j.results || []) {
       if (!it || typeof it !== 'object') continue;
       if (!dbg.catalogFields) { dbg.catalogFields = Object.keys(it).sort(); dbg.catalogSample = catalogSample(it); } // evidência do formato que a API devolve
+      if (it.official_store_id != null) { // quais lojas oficiais aparecem no catálogo (id e quantas publicações) — ex.: a loja oficial Pokémon
+        const k = String(it.official_store_id); const o = dbg.officialStores[k] || (dbg.officialStores[k] = { name: it.official_store_name || null, sellerId: it.seller_id ?? null, listings: 0 }); o.listings++;
+      }
       if (it.condition && it.condition !== 'new') { drop('catálogo: usado'); continue; }
       const id = it.item_id || it.id; const price = Number(it.price);
       if (!id || !(price > 0)) continue;
@@ -160,7 +163,8 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   if (asked && itemFails === asked) { writeJson(cacheFile, cache); throw new Error(`Mercado Livre: todas as ${asked} consultas de ofertas do catálogo falharam`); }
   const picked = [];
   for (const list of Object.values(byProduct)) {
-    list.sort((a, b) => a.price - b.price);
+    // Loja oficial primeiro (a marca ou distribuidor autorizado), depois o preço: ela não pode ficar de fora por não ser a mais barata.
+    list.sort((a, b) => Number(!!b.it.official_store_id) - Number(!!a.it.official_store_id) || a.price - b.price);
     let kept = 0; const seen = new Set();
     for (const row of list) {
       if (kept >= PER_PRODUCT * 2) break; // folga para a conferência abaixo

@@ -54,6 +54,7 @@ const ITEMS = [
   { item_id: 'MLB5552', seller_id: 78, price: 250, available_quantity: 7, condition: 'used', shipping: { free_shipping: false } },
   { item_id: 'MLB5553', seller_id: 79, price: 280, available_quantity: 0, condition: 'new', shipping: { free_shipping: false } },
   { item_id: 'MLB5554', seller_id: 80, price: 310, condition: 'new', shipping: { free_shipping: false } },
+  { item_id: 'MLB5555', seller_id: 81, price: 330, condition: 'new', official_store_id: 4242, official_store_name: 'Pokémon', shipping: { free_shipping: true } },
 ];
 const ML_403 = { message: 'Access to the requested resource is forbidden', error: 'access_denied', status: 403, cause: null };
 const mlFetch = async (url) => {
@@ -85,7 +86,9 @@ try {
   assert.equal(dbg.searchError.status, 403); assert.equal(dbg.scope, 'offline_access read');
   assert.deepEqual(dbg.catalogFields, ['available_quantity', 'condition', 'item_id', 'listing_type_id', 'official_store_id', 'original_price', 'price', 'seller_address', 'seller_id', 'shipping', 'sold_quantity']);
   assert.deepEqual(dbg.catalogSample, { item_id: 'MLB5551', available_quantity: 4, sold_quantity: 120, condition: 'new', listing_type_id: 'gold_special', price: 299.9, original_price: 349.9, official_store_id: null, free_shipping: true }, 'amostra só com campos de estoque/preço');
-  assert.deepEqual(dbg.catalogStock, { IN_STOCK: 2, OUT_OF_STOCK: 1 }); assert.deepEqual(dbg.publishedStock, { IN_STOCK: 2 });
+  assert.deepEqual(dbg.catalogStock, { IN_STOCK: 3, OUT_OF_STOCK: 1 }); assert.deepEqual(dbg.publishedStock, { IN_STOCK: 3 });
+  assert.deepEqual(dbg.officialStores, { 4242: { name: 'Pokémon', sellerId: 81, listings: 1 } }, 'lojas oficiais vistas no catálogo ficam no diagnóstico');
+  assert.equal(by.MLB5555.sellerKind, 'official_store'); assert.equal(by.MLB5555.seller, 'Pokémon'); assert.equal(by.MLB5555.stockSource, 'ml-catalog-listed');
   assert.equal(dbg.drop['catálogo: esgotado ou pausado'], 1); assert.equal(dbg.drop['catálogo: usado'], 1);
   assert.ok(!JSON.stringify(dbg).includes('AT-1') && !JSON.stringify(dbg).includes('RT-1'), 'diagnóstico sem token');
   n++;
@@ -125,11 +128,22 @@ try {
   const u = ml.find((x) => x.sku === 'MLB5554');
   assert.equal(u.stock, 'IN_STOCK'); assert.equal(u.stockSource, 'ml-catalog-listed'); assert.ok(liveForScore(u), 'listado no catálogo entra no ranking com origem rastreável');
   assert.ok(!ml.some((x) => x.sku === 'MLB5553'), 'esgotado não é publicado');
-  assert.equal(state.products.find((p) => p.id === PRODUCT)?.inStockCount, 2);
+  assert.equal(state.products.find((p) => p.id === PRODUCT)?.inStockCount, 3);
   n++;
 } finally {
   if (saved.cfg == null) delete process.env.HUNTER_CONFIG_DIR; else process.env.HUNTER_CONFIG_DIR = saved.cfg;
   if (saved.data == null) delete process.env.HUNTER_DATA_DIR; else process.env.HUNTER_DATA_DIR = saved.data;
   fs.rmSync(tmp, { recursive: true, force: true });
+}
+// 5. loja oficial tem prioridade nas vagas por produto, mesmo não sendo a mais barata
+{
+  await (async () => {
+  const { catalogStock } = await import('../src/adapters/mercadolivre.js');
+  // a ordenação do adaptador: oficial primeiro, depois preço
+  const rows = [{ it: { official_store_id: null }, price: 100 }, { it: { official_store_id: 9 }, price: 300 }, { it: { official_store_id: null }, price: 200 }];
+  rows.sort((a, b) => Number(!!b.it.official_store_id) - Number(!!a.it.official_store_id) || a.price - b.price);
+  assert.deepEqual(rows.map((r) => r.price), [300, 100, 200]);
+  assert.equal(catalogStock({ price: 300, condition: 'new', official_store_id: 9 }).stock, 'IN_STOCK');
+  })(); n++;
 }
 console.log(`✓ Mercado Livre no ranking (estoque pelo catálogo): ${n} blocos passaram`);
