@@ -128,6 +128,13 @@ assert.equal((await call('/api/v1/oportunidades?faixa=otima')).status, 400); ass
 // filtros novos da página (loja, preço máximo, preço por booster) e lista de lojas
 assert.equal((await call('/api/v1/oportunidades?loja=../x')).status, 400); assert.equal((await call('/api/v1/oportunidades?max=-1')).status, 400);
 assert.equal((await call('/api/v1/oportunidades?max=abc')).status, 400); assert.equal((await call('/api/v1/oportunidades?ordem=booster&loja=moxland&max=300')).status, 200);
+// números estritos: sem sufixo, hexa, expoente ou Infinity (#313); ausentes e válidos seguem como antes
+for (const bad of ['minimo=abc', 'minimo=10abc', 'abaixo=x', 'abaixo=20%25', 'confianca_minima=abc', 'confianca_minima=50x', 'max=0x10', 'max=1e3', 'max=Infinity', 'max=12,5'])
+  assert.equal((await call('/api/v1/oportunidades?' + bad)).status, 400, bad);
+for (const ok of ['minimo=70', 'abaixo=20', 'confianca_minima=60', 'minimo=150&abaixo=-5', 'minimo=', 'max=12.5', 'max=0', 'max=250'])
+  assert.equal((await call('/api/v1/oportunidades?' + ok)).status, 200, ok);
+for (const bad of ['max=0x10', 'max=1e3', 'max=12,5']) assert.equal((await call('/api/v1/site/produtos?' + bad)).status, 400, bad);
+assert.equal((await call('/api/v1/site/produtos?max=12.5')).status, 200, 'max=12.5');
 r = await call('/api/v1/oportunidades/lojas'); assert.equal(r.status, 200); assert.deepEqual(r.json.data, []); assert.equal(r.json.meta.status, 'requires_db');
 r = await call('/api/v1/referencias?status=verified'); assert.equal(r.json.data.length, 1);
 
