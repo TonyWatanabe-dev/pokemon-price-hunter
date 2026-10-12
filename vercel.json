@@ -36,6 +36,15 @@
           "value": "noindex"
         }
       ]
+    },
+    {
+      "source": "/(busca|pistas|conta|favoritos|alertas|configuracoes)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -58,6 +67,18 @@
     {
       "source": "/como-funciona",
       "destination": "/api/pagina?t=como-funciona"
+    },
+    {
+      "source": "/guia/glossario",
+      "destination": "/api/pagina?t=glossario"
+    },
+    {
+      "source": "/termos",
+      "destination": "/api/pagina?t=termos"
+    },
+    {
+      "source": "/privacidade",
+      "destination": "/api/pagina?t=privacidade"
     },
     {
       "source": "/produto/:slug",
@@ -97,6 +118,7 @@
     }
   ],
   "cleanUrls": false,
+  "trailingSlash": false,
   "functions": {
     "api/pagina.mjs": {
       "includeFiles": "index.html"
