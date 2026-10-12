@@ -52,7 +52,7 @@ async function snapshot() {
 
 function workerAcceptsDispatch() {
   const y = fs.readFileSync(new URL('../.github/workflows/tarefas.yml', import.meta.url), 'utf8');
-  return /\n\s*workflow_dispatch:\s*\n[\s\S]*?\n\s+inputs:\s*\n[\s\S]*?\n\s+issue:/.test(y);
+  return /\n[ \t]*workflow_dispatch:[ \t]*\n[\s\S]*?\n[ \t]+inputs:[ \t]*\n[\s\S]*?\n[ \t]+issue:/.test(y);
 }
 
 const s = await snapshot();
