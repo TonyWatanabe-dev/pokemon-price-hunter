@@ -37,6 +37,7 @@ export function mlReject(name, productId, catalog) {
   return null;
 }
 const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto nosso
+const OFFICIAL_MARGIN = Number(process.env.ML_OFFICIAL_MARGIN || 0.25); // loja oficial garante vaga até 25% acima do menor preço
 const MIN_SALES = Number(process.env.ML_MIN_SALES || 50); // vendas concluídas mínimas do vendedor
 
 // Estoque a partir do que /products/{id}/items já devolve por vendedor. Pela documentação do ML ("List of publications
@@ -163,8 +164,11 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   if (asked && itemFails === asked) { writeJson(cacheFile, cache); throw new Error(`Mercado Livre: todas as ${asked} consultas de ofertas do catálogo falharam`); }
   const picked = [];
   for (const list of Object.values(byProduct)) {
-    // Loja oficial primeiro (a marca ou distribuidor autorizado), depois o preço: ela não pode ficar de fora por não ser a mais barata.
-    list.sort((a, b) => Number(!!b.it.official_store_id) - Number(!!a.it.official_store_id) || a.price - b.price);
+    // Loja oficial (a marca ou distribuidor autorizado) não fica de fora por não ser a mais barata — desde que o preço dela
+    // esteja perto do menor do catálogo (até OFFICIAL_MARGIN acima). Muito acima disso, disputa por preço como qualquer vendedor.
+    const floor = Math.min(...list.map((r) => r.price));
+    const prio = (r) => (r.it.official_store_id && r.price <= floor * (1 + OFFICIAL_MARGIN) ? 1 : 0);
+    list.sort((a, b) => prio(b) - prio(a) || a.price - b.price);
     let kept = 0; const seen = new Set();
     for (const row of list) {
       if (kept >= PER_PRODUCT * 2) break; // folga para a conferência abaixo

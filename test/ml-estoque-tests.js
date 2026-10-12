@@ -106,8 +106,31 @@ try {
   assert.equal(readData('ml-debug.json').itemsError, null);
   n++;
 
+  fs.rmSync(path.join(tmp, 'data/ml-catalog.json'), { force: true });
+  // 2b. Vagas por produto (PER_PRODUCT = 6) via search(): loja oficial ganha vaga até 25% acima do menor preço; muito acima, disputa por preço.
+
+  const many = (officialPrice) => [
+    ...[100, 110, 115, 130, 140, 150, 160].map((price, i) => ({ item_id: 'MLB60' + (i + 1), seller_id: 91 + i, price, condition: 'new', shipping: { free_shipping: false } })),
+    { item_id: 'MLB6099', seller_id: 99, price: officialPrice, condition: 'new', official_store_id: 4242, official_store_name: 'Pokémon', shipping: { free_shipping: true } },
+  ];
+  const run = async (items) => {
+    http.setFetch(async (url) => {
+      if (url.includes('/sites/MLB/search')) return j({ message: 'forbidden', error: 'forbidden', status: 403 }, 403);
+      if (url.includes('/products/search')) return j({ results: url.includes(encodeURIComponent('pokemon ' + COLL)) ? [{ id: 'MLB111', name: `Pokémon TCG ${COLL} Treinador Avançado Copag` }] : [] });
+      if (url.endsWith('/products/MLB111/items')) return j({ results: items });
+      if (url.includes('/items?ids=')) return j(url.match(/ids=([^&]+)/)[1].split(',').map((id) => ({ code: 403, body: { id, ...ML_403 } })));
+      if (/\/users\/9[1-9]$/.test(url)) return j({ nickname: 'LOJA_' + url.slice(-2), seller_reputation: { level_id: '5_green', transactions: { completed: 900 } } });
+      return j({}, 404);
+    });
+    const r = await search({ id: 'mercadolivre' }, { ...fullCatalog, collections: fullCatalog.collections.filter((c) => c.name === COLL) });
+    return r.map((l) => l.sku).sort();
+  };
+  assert.deepEqual(await run(many(120)), ['MLB601', 'MLB602', 'MLB603', 'MLB604', 'MLB605', 'MLB6099'], 'oficial a 20% acima do menor preço entra nas 6 vagas; a 6ª mais barata (150) fica de fora');
+  assert.deepEqual(await run(many(200)), ['MLB601', 'MLB602', 'MLB603', 'MLB604', 'MLB605', 'MLB606'], 'oficial a 100% acima não tem prioridade: só as 6 mais baratas');
+  http.setFetch(mlFetch); fs.rmSync(path.join(tmp, 'data/ml-catalog.json'), { force: true }); n++;
+
   // 3. Rodada completa: produto sem oferta de loja → a oferta do ML em estoque entra no bestDeals (desconto Copag).
-  fs.rmSync(path.join(tmp, 'data/ml-catalog.json'));
+  fs.rmSync(path.join(tmp, 'data/ml-catalog.json'), { force: true });
   http.setFetch(mlFetch);
   const cat = structuredClone(fullCatalog);
   cat.collections = cat.collections.filter((c) => c.name === COLL);
@@ -134,16 +157,5 @@ try {
   if (saved.cfg == null) delete process.env.HUNTER_CONFIG_DIR; else process.env.HUNTER_CONFIG_DIR = saved.cfg;
   if (saved.data == null) delete process.env.HUNTER_DATA_DIR; else process.env.HUNTER_DATA_DIR = saved.data;
   fs.rmSync(tmp, { recursive: true, force: true });
-}
-// 5. loja oficial tem prioridade nas vagas por produto, mesmo não sendo a mais barata
-{
-  await (async () => {
-  const { catalogStock } = await import('../src/adapters/mercadolivre.js');
-  // a ordenação do adaptador: oficial primeiro, depois preço
-  const rows = [{ it: { official_store_id: null }, price: 100 }, { it: { official_store_id: 9 }, price: 300 }, { it: { official_store_id: null }, price: 200 }];
-  rows.sort((a, b) => Number(!!b.it.official_store_id) - Number(!!a.it.official_store_id) || a.price - b.price);
-  assert.deepEqual(rows.map((r) => r.price), [300, 100, 200]);
-  assert.equal(catalogStock({ price: 300, condition: 'new', official_store_id: 9 }).stock, 'IN_STOCK');
-  })(); n++;
 }
 console.log(`✓ Mercado Livre no ranking (estoque pelo catálogo): ${n} blocos passaram`);
