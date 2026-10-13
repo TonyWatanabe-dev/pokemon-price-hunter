@@ -2,11 +2,6 @@ name: SEO public smoke
 
 on:
   workflow_dispatch:
-    inputs:
-      site_url:
-        description: Optional canonical site URL override
-        required: false
-        type: string
   schedule:
     - cron: '23 10 * * *'
 
@@ -29,6 +24,4 @@ jobs:
         with:
           node-version: 22
       - name: Check public SEO contract
-        env:
-          SITE_URL: \${{ inputs.site_url }}
         run: node tools/seo-public-smoke.mjs
