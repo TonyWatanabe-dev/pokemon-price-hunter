@@ -121,7 +121,7 @@ if (process.env.TEST_DATABASE_URL) {
     copagConfirmed: true, msrp: 400, copag: { source_url: 'https://www.copagloja.com.br/etb/p', confidence: 'OFICIAL', source_timestamp: '2026-10-08T10:00:00Z' } };
   const mk = (id, storeId, price, conf) => ({ id, productId: 'me05-etb', storeId, title: 'Escuridão Absoluta - Caixa de Booster - Pokémon', url: `https://${storeId}.com.br/etb`, price, total: price,
     shipping: null, shippingKnown: false, stock: 'IN_STOCK', matchConfidence: conf, firstSeen: '2026-10-05T10:00:00Z', source_timestamp: '2026-10-09T12:00:00Z' });
-  const state = { collections: [], products: [prod], sources: ['a', 'b'].map((id) => ({ id, name: id, url: `https://${id}.com.br`, status: 'ACTIVE' })), reputation: {},
+  const state = { generatedAt: '2026-10-10T12:00:00Z', collections: [], products: [prod], sources: ['a', 'b'].map((id) => ({ id, name: id, url: `https://${id}.com.br`, status: 'ACTIVE' })), reputation: {},
     offers: [mk('oa', 'a', 380, 0.85), mk('ob', 'b', 360, 0.6)], unmatched };
   await tx((c) => syncState(c, { state, catalog: cat, historyLines: [] }));
   await tx((c) => runPriceEngine(c, { asOf: new Date('2026-10-10T12:00:00Z') }));
