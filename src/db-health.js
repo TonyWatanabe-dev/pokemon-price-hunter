@@ -73,3 +73,34 @@ export function syncStatus(health, prevGeneratedAt) {
   // tolerância de 1 s (arredondamento de timestamp no banco)
   return { ...base, lagMin: Math.max(0, lagMin), status: seen >= prev - 1000 ? 'ok' : 'atrasado' };
 }
+
+// Sync parcial por loja (docs/auditorias/frescor-sync.md, proposta 6): o max(last_seen_at) global acima é mascarado por
+// uma única loja atualizada. Aqui, o max por loja ativa (só ofertas ativas; loja sem oferta ativa não tem medida e fica de fora).
+export const SQL_SEEN_BY_STORE = `SELECT o.store_id, max(o.last_seen_at) AS last_seen_at
+  FROM hunter.offer o JOIN hunter.store s ON s.id = o.store_id
+ WHERE s.status = 'active' AND o.status = 'active'
+ GROUP BY o.store_id ORDER BY o.store_id`;
+export const STORE_LAG_MAX_MIN = 90;
+
+/** Lê o max(last_seen_at) por loja ativa num client já conectado (dentro da transação READ ONLY de quem chama). */
+export async function readStoreSeen(client) {
+  const { rows } = await client.query(SQL_SEEN_BY_STORE);
+  return rows.map((r) => ({ storeId: String(r.store_id), lastSeenAt: isoOrNull(r.last_seen_at) }));
+}
+
+/**
+ * Situação do sync por loja, a partir de readStoreSeen. Referência: a loja mais recente (o último sync que chegou ao banco).
+ * ok: nenhuma loja ativa mais de maxLagMin atrás · atrasado: alguma ficou (lista em `late`) · sem_referencia: sem medida.
+ */
+export function storeSyncStatus(rows, { maxLagMin = STORE_LAG_MAX_MIN } = {}) {
+  const seen = (Array.isArray(rows) ? rows : [])
+    .map((r) => ({ storeId: r?.storeId, at: Date.parse(r?.lastSeenAt || '') }))
+    .filter((r) => r.storeId && Number.isFinite(r.at));
+  if (!seen.length) return { status: 'sem_referencia', refAt: null, maxLagMin, stores: 0, late: [] };
+  const ref = Math.max(...seen.map((r) => r.at));
+  const late = seen
+    .filter((r) => ref - r.at > maxLagMin * 6e4)
+    .map((r) => ({ storeId: r.storeId, lastSeenAt: new Date(r.at).toISOString(), lagMin: Math.round((ref - r.at) / 6e4) }))
+    .sort((a, b) => b.lagMin - a.lagMin || a.storeId.localeCompare(b.storeId));
+  return { status: late.length ? 'atrasado' : 'ok', refAt: new Date(ref).toISOString(), maxLagMin, stores: seen.length, late };
+}
