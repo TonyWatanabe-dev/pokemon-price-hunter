@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
 import { avaliarDia, formatarDia, parseDias, planoPublicacao, sequenciaVerde, janelaDia, diaSP, DIA_MS } from '../src/agents/burnin.js';
+import { comRetry } from './gh-retry.mjs';
 import { parseRecords, summarize } from '../src/agents/telemetria.js';
 
 const REPO = process.env.GITHUB_REPOSITORY || 'TonyWatanabe-dev/pokemon-price-hunter';
@@ -19,10 +20,12 @@ if (!Number.isFinite(now)) { console.error('--now inválido'); process.exit(2); 
 const OPERADOR = String(process.env.TAREFAS_OPERADORES || REPO.split('/')[0]).split(',')[0].trim();
 const ATOR = 'github-actions[bot]';
 
-const gh = (a, input) => new Promise((resolve, reject) => {
+const ghUma = (a, input) => new Promise((resolve, reject) => {
   const p = execFile('gh', a, { maxBuffer: 50 * 1024 * 1024, timeout: 60_000 }, (err, out, errOut) => (err ? reject(new Error(String(errOut || err.message).slice(0, 300))) : resolve(out)));
   if (input !== undefined) { p.stdin.end(input); }
 });
+// Leituras (`gh api` GET) têm retentativa limitada; escritas passam uma única vez.
+const gh = (a, input) => comRetry(ghUma, a, input);
 const api = async (path) => JSON.parse((await gh(['api', path])) || 'null');
 /** Paginação explícita (o proxy de algumas sessões recusa os links de paginação), limitada. */
 async function pages(path, pick = (x) => x, max = 20) {
