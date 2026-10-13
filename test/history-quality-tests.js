@@ -47,5 +47,11 @@ const write = (pid, stores) => fs.writeFileSync(histPath(pid), JSON.stringify({ 
   write('antiga-janela', { a: { name: 'A', pts: [['2020-01-01', 500], ['2020-01-10', 100], ['2020-01-11', 100], ['2020-01-12', 90]] } });
   assert.equal(histSummary('antiga-janela').drop7d, 0.1, 'referência = maior preço dentro de 7 dias (100), não o de 500');
 }
+// asOf: série terminada há mais de 7 dias é stale e sem queda; dentro de 7 dias segue normal; sem asOf, sem campo stale
+{
+  assert.deepEqual({ ...histSummary('antiga', null, '2020-01-10') }, { days: 3, from: '2020-01-01', enough: true, drop7d: 0.2, stale: false }, 'exatamente 7 dias: não é stale');
+  assert.deepEqual({ ...histSummary('antiga', null, '2020-01-11') }, { days: 3, from: '2020-01-01', enough: true, drop7d: 0, stale: true }, 'mais de 7 dias: stale, sem queda');
+  assert.equal('stale' in histSummary('antiga'), false, 'sem asOf: resultado inalterado');
+}
 assert.equal(histSummary('inexistente'), null, 'sem arquivo: sem resumo');
 console.log('OK — qualidade do histórico');
