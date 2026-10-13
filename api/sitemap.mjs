@@ -4,10 +4,12 @@ import { classify, usable } from './_lib/freshness.mjs';
 export default async function handler(req, res) {
   let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
   let lastmod = new Date().toISOString().slice(0, 10);
+  let stale = true;
   try {
     const s = await state();
     // Dados antigos: só as páginas fixas (nada de produto/coleção/formato que possa estar desatualizado).
     if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
+    stale = false;
     lastmod = String(s.generatedAt || '').slice(0, 10) || lastmod; const { of } = slugs(s.products || []);
     const { by: best, n: inStock } = bestBy(s);
     const prods = (s.products || []).filter((p) => p.offerCount > 0);
@@ -24,7 +26,11 @@ export default async function handler(req, res) {
     if (bl.length && !types.some((t) => typeSlug(t) === 'blister')) urls.push([`${SITE}/tipo/blister`, 'daily', '0.8', maxmod(prods.filter((p) => bl.some((t) => t.id === p.type)))]);
     // Produto sem oferta com estoque sai com noindex em /api/pagina: não entra no sitemap.
     urls = urls.concat(prods.filter((p) => inStock[p.id] > 0).map((p) => [`${SITE}/produto/${of[p.id]}`, 'daily', '0.7', pmod(p)]));
-  } catch { /* só as páginas fixas */ }
+  } catch (e) {
+    // Dados desatualizados não é erro; qualquer outra exceção depois da checagem é inesperada e fica no log.
+    if (!stale) console.error(`sitemap: erro inesperado: ${String(e?.message || e).slice(0, 200)}`);
+    /* só as páginas fixas */
+  }
   res.setHeader('content-type', 'application/xml; charset=utf-8');
   res.setHeader('cache-control', 'public, max-age=0, s-maxage=3600');
   res.end(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(([u, f, pr, lm]) => `<url><loc>${u}</loc><lastmod>${lm || lastmod}</lastmod><changefreq>${f}</changefreq><priority>${pr}</priority></url>`).join('\n')}\n</urlset>\n`);
