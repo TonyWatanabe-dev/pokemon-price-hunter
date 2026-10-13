@@ -6,7 +6,7 @@
 // --executar falha fechado se o tarefas.yml não declarar `workflow_dispatch` com a entrada `issue`.
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
-import { planDispatch, applyPlan, parseDependencies, sanitize, budgetConfig, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
+import { planDispatch, applyPlan, parseDependencies, sanitize, budgetConfig, rateLimitPause, QUEUE_LABEL, LABELS } from '../src/agents/dispatcher.js';
 import { budgetGate } from '../src/agents/esforco.js';
 import { parseRecords, gastoNaJanela } from '../src/agents/telemetria.js';
 import { workerAcceptsDispatchYaml } from './dispatcher-workflow-check.mjs';
@@ -25,10 +25,9 @@ const pages = async (path) => JSON.parse((await gh(['api', '--paginate', '--slur
 async function snapshot() {
   const now = new Date().toISOString();
   const operators = process.env.TAREFAS_OPERADORES || REPO.split('/')[0];
-  // pausa por rate limit: com pouca cota de API, não despacha (a fila fica intacta)
-  let pauseUntil = process.env.DISPATCHER_PAUSA_ATE || null;
-  const rl = await api('rate_limit').catch(() => null);
-  if (rl?.resources?.core && rl.resources.core.remaining < 200) pauseUntil = new Date(rl.resources.core.reset * 1000).toISOString();
+  // pausa por rate limit: com pouca cota de API ou leitura falhando (fail-closed), não despacha (a fila fica intacta)
+  const rateLimit = rateLimitPause(await api('rate_limit').catch((e) => e), { now });
+  const pauseUntil = rateLimit.pauseUntil || process.env.DISPATCHER_PAUSA_ATE || null;
 
   const byN = new Map();
   for (const label of [QUEUE_LABEL, LABELS.RUNNING, LABELS.QUEUED]) {
@@ -51,7 +50,7 @@ async function snapshot() {
   }
   const pulls = (await pages(`repos/${REPO}/pulls?state=open&per_page=100`)).map((p) => ({ number: p.number, headRef: p.head?.ref, body: p.body || '' }));
   const porCiclo = Number(process.env.DISPATCHER_POR_CICLO);
-  return { now, operators, maxSlots: process.env.TAREFAS_MAX, maxPerCycle: Number.isInteger(porCiclo) && porCiclo > 0 && porCiclo <= 10 ? porCiclo : undefined, pauseUntil, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
+  return { now, operators, maxSlots: process.env.TAREFAS_MAX, maxPerCycle: Number.isInteger(porCiclo) && porCiclo > 0 && porCiclo <= 10 ? porCiclo : undefined, pauseUntil, rateLimit: rateLimit.motivo, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
 }
 
 // Orçamento pela telemetria real (comentários `telemetria:execucao` do bot do workflow na janela).
@@ -88,7 +87,7 @@ function workerAcceptsDispatch() {
 const s = await snapshot();
 const plan = planDispatch(s);
 const lines = [`## Dispatcher — ${EXECUTAR ? 'execução' : 'plano (sem escrita)'}`, '', `Vagas: ${plan.slots} · em curso: ${plan.active.map((x) => '#' + x).join(', ') || 'nenhuma'}${plan.paused ? ` · **pausado (${plan.budget && !plan.budget.permitir ? 'orçamento' : 'rate limit/quota'})**` : ''}`,
-  ...(plan.budget ? [`Orçamento: ${plan.budget.motivo}`] : []), '',
+  `Rate limit: ${s.rateLimit}`, ...(plan.budget ? [`Orçamento: ${plan.budget.motivo}`] : []), '',
   ...plan.dispatch.map((d) => `- despachar #${d.issue} (tentativa ${d.attempt}, chave \`${d.key}\`)`),
   ...plan.quarantine.map((q) => `- quarentena #${q.issue}: ${q.reason}`),
   ...plan.skipped.map((x) => `- aguardando #${x.issue}: ${x.reason}`)];

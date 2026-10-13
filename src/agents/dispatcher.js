@@ -88,6 +88,28 @@ export function budgetConfig(env = {}) {
   return Number.isFinite(v) && v > 0 ? { limiteUsd: v, janelaMs, erro: null } : { limiteUsd: null, janelaMs, erro: 'DISPATCHER_ORCAMENTO_USD inválido' };
 }
 
+/**
+ * Pausa por rate limit a partir da resposta de `GET /rate_limit` (fail-closed): resposta ausente, erro, sem
+ * `resources.core.remaining` numérico ou cota baixa com `reset` inválido/passado pausa por RATE_LIMIT_FAIL_PAUSE_MIN;
+ * cota abaixo de RATE_LIMIT_MIN_REMAINING pausa até o `reset`; senão, sem pausa (`pauseUntil: null`).
+ * @returns {{ pauseUntil: string|null, motivo: string }}
+ */
+export const RATE_LIMIT_MIN_REMAINING = 200;
+export const RATE_LIMIT_FAIL_PAUSE_MIN = 15;
+export function rateLimitPause(rl, { now } = {}) {
+  const t = ms(now) ?? (typeof now === 'number' ? now : null);
+  if (t === null) throw new Error('now obrigatório (ISO) para decidir a pausa por rate limit');
+  const falha = (motivo) => ({ pauseUntil: new Date(t + RATE_LIMIT_FAIL_PAUSE_MIN * 60_000).toISOString(), motivo: `${motivo}: despacho pausado (fail-closed)` });
+  if (rl == null) return falha('leitura de rate_limit sem resposta');
+  if (rl instanceof Error) return falha(`leitura de rate_limit falhou (${sanitize(rl.message, 120)})`);
+  const core = rl?.resources?.core;
+  if (!Number.isFinite(core?.remaining)) return falha('resposta de rate_limit sem cota core');
+  if (core.remaining >= RATE_LIMIT_MIN_REMAINING) return { pauseUntil: null, motivo: `cota da API: ${core.remaining} restante(s)` };
+  const reset = Number.isFinite(core.reset) ? core.reset * 1000 : NaN;
+  if (!(reset > t)) return falha(`cota da API baixa (${core.remaining}) com reset inválido`);
+  return { pauseUntil: new Date(reset).toISOString(), motivo: `cota da API baixa (${core.remaining} < ${RATE_LIMIT_MIN_REMAINING})` };
+}
+
 // Falha "sem capacidade": a sessão do Claude foi recusada antes de trabalhar (1 turno ou menos, zero tokens, sem PR)
 // — limite de uso/concorrência da conta, não defeito da tarefa. Lida da telemetria do worker (marcador
 // telemetria:execucao do bot do workflow). Não conta como tentativa e pausa o despacho por CAPACITY_PAUSE_MIN.
