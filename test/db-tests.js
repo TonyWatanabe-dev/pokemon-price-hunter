@@ -50,9 +50,15 @@ await Promise.all([ // dois syncs concorrentes, o mais novo vence qualquer que s
   tx((c) => syncState(c, { state: state(offer(310, 'IN_STOCK', '2026-10-09T11:00:00Z')), catalog, historyLines: [] })),
   tx((c) => syncState(c, { state: state(offer(305, 'IN_STOCK', '2026-10-09T12:00:00Z')), catalog, historyLines: [] }))]);
 assert.equal((await cur()).price, 305, 'observação mais recente prevalece na concorrência');
-// sem carimbo da fonte: vale como leitura de agora (não congela a oferta)
-await tx((c) => syncState(c, { state: state({ ...offer(300, 'IN_STOCK', null), source_timestamp: undefined }), catalog, historyLines: [] }));
+// sem carimbo da fonte (#626): a oferta não congela (preço atualiza), mas last_seen_at não vira now(); oferta nova sem horário não é gravada
+const seenBefore = (await cur()).last_seen_at.toISOString();
+const untimed = await tx((c) => syncState(c, { state: { ...state({ ...offer(300, 'IN_STOCK', null), source_timestamp: undefined }),
+  offers: [{ ...offer(300, 'IN_STOCK', null), source_timestamp: undefined }, { ...offer(290, 'IN_STOCK', null), id: 'o-sem-hora', source_timestamp: undefined }] }, catalog, historyLines: [] }));
 assert.equal((await cur()).price, 300);
+assert.equal((await cur()).last_seen_at.toISOString(), seenBefore, 'ausência de horário não é leitura nova');
+assert.equal(seenBefore, '2026-10-09T12:00:00.000Z');
+assert.equal(untimed.offersNoTimestamp, 1); assert.equal(untimed.offersStale, 0);
+assert.equal((await q("SELECT count(*)::int n FROM hunter.offer WHERE legacy_id = 'o-sem-hora'"))[0].n, 0, 'NOT NULL mantido sem inventar horário');
 
 // oferta some da loja → removida, histórico intacto
 await tx((c) => syncState(c, { state: { ...state(offer(320, 'OUT_OF_STOCK', '2026-10-09T10:00:00Z')), offers: [] }, catalog, historyLines: [] }));
