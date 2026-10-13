@@ -85,7 +85,7 @@ function reasonOf(src, status) {
  * Lista normalizada de lojas. sources: array (state.sources) ou objeto {id: ...} (sources.json); stores: config/stores.json;
  * offers: state.offers (contagem de ofertas vivas e última leitura, nunca preço).
  */
-export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = LOJAS_CFG } = {}) {
+export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = LOJAS_CFG, now = Date.now() } = {}) {
   const list = Array.isArray(sources) ? sources : Object.entries(sources || {}).map(([id, v]) => ({ id, ...v }));
   const cfgStore = new Map((Array.isArray(stores) ? stores : stores?.stores || []).map((s) => [s.id, s]));
   const mk = cfg.marketplaces;
@@ -103,8 +103,10 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
     if (c.enabled === false && status === 'monitorada') status = 'pausada';
     const offs = byStore.get(s.id) || [];
     const hint = s.platformHint || (c.platform && cfg.busca[c.platform] ? c.platform : null) || (host && cfg.plataformaPorHost[host]) || (cfg.busca[s.platform] ? s.platform : null) || inferPlatform(offs.map((o) => o.url));
-    const stamps = offs.map((o) => Date.parse(o.source_timestamp || '')).filter(Number.isFinite);
-    const lastRead = stamps.length ? new Date(Math.max(...stamps)).toISOString() : (s.lastSuccess || null);
+    // Horário no futuro (> 5 min: relógio adiantado) não é leitura válida e não vira "última leitura" (#620).
+    const okAt = (t) => Number.isFinite(t) && t <= now + 5 * 60e3;
+    const stamps = offs.map((o) => Date.parse(o.source_timestamp || '')).filter(okAt);
+    const lastRead = stamps.length ? new Date(Math.max(...stamps)).toISOString() : (okAt(Date.parse(s.lastSuccess || '')) ? s.lastSuccess : null);
     raw.push({ id: s.id, name: m ? m.name : (s.name || c.name || host || s.id), host, url, platform: m ? (s.platform === 'mercadolivre' ? 'mercadolivre' : null) : hint, marketplace: m ? s.id : null, status,
       offersLive: offs.filter(live).length, lastReadAt: status === 'monitorada' ? lastRead : null, reason: reasonOf(s, status), _src: s });
   }
