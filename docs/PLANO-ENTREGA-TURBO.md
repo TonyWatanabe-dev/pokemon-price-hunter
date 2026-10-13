@@ -7,7 +7,7 @@
 Este documento é o plano de execução de ponta a ponta. Use \`docs/ROADMAP-OPERACIONAL.md\` para evidências e estado operacional detalhado, \`docs/MAPA-DE-AGENTES.md\` para contratos dos agentes e \`docs/agentes.md\` para governança de merge/deploy.
 
 
-> **Atualização de execução — 12/10/2026:** PR #252 integrou a allowlist mínima `github-actions` apenas em `claude_despacho`, com teste de contrato; PR #250 integrou o gatilho `workflow_run` após “Vigia do robô”. O gatilho pós-merge ainda não foi comprovado: o último run de Vigia disponível antecede o merge da #250. O Dispatcher #5 terminou com sucesso, mas manteve a Issue #247 em backoff até 08:59 UTC. Próximo critério de saída: run de Vigia pós-merge → Dispatcher automático → job `despacho` elegível → Claude Code Action bem-sucedida → PR documental com CI verde. Ver [roadmap operacional](./ROADMAP-OPERACIONAL.md) para evidências e links dos runs.
+> **Atualização de execução — 13/10/2026:** o fluxo Vigia → Dispatcher → worker → PR de agente → revisão independente foi documentado como comprovado em runtime no [roadmap operacional](./ROADMAP-OPERACIONAL.md). Isso não comprova sete dias verdes de burn-in nem autoriza ativar agentes de publicação. As PRs #597–#600 de SEO foram integradas; a CI posterior revelou uma regressão no contrato antigo de `robots.txt`, em correção na #601. A #602 adiciona smoke público diário/manual, ainda aguardando CI e primeira execução real. Use os checks, runs e o burn-in atuais como fonte de verdade; não reutilize estados antigos deste plano como evidência atual.
 
 ## 1. Resultado final esperado
 
