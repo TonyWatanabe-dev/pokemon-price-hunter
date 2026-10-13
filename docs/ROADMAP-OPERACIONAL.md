@@ -456,3 +456,23 @@ Atualizar este roadmap quando houver mudança comprovada de fase, entrega integr
 - **Issue #618:** fechada como concluída após a integração da correção de falha total dos coletores.
 - **Próximas correções de frescor na fila:** [#619](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/619), loja JSON-LD sem sucesso quando todas as páginas falham; [#620](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/620), impedir que timestamp futuro contamine a sincronização. #620 está explicitamente dependente de #619 para evitar concorrência em áreas compartilhadas.
 - **Não declarar Fase 1 nem operação 24/7 concluídas por causa deste merge isolado:** confirmar execução das tarefas seguintes, CI/revisão, smoke aplicável e os sete dias consecutivos de burn-in exigidos.
+
+
+### Fila Turbo — 10 tarefas aprovadas (13/10/2026)
+
+A fila contém dez tarefas aprovadas, ordenadas por dependência. Isso significa **dez tarefas elegíveis em backlog**, não dez workers simultâneos. A concorrência permanece conservadora até comprovar idempotência e despacho real; não alterar `TAREFAS_MAX` para 10 apenas para aumentar o número na fila.
+
+1. [#619 — JSON-LD: todas as páginas falham](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/619) — primeira correção; diferencia resposta de sitemap em cache de coleta real.
+2. [#620 — timestamps futuros no sync e na listagem de lojas](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/620) — depende de #619.
+3. [#625 — frescor por oferta na API](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/625) — depende de #620; sem novos limites de frescor.
+4. [#626 — oferta legada sem timestamp](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/626) — depende de #625; contrato e testes primeiro, sem migration.
+5. [#627 — isolar timestamp inválido no sync](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/627) — depende de #626; não enfraquecer atomicidade.
+6. [#94 — cadeia de suprimentos/dependências](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/94) — retomada com auditoria evidenciada e upgrades mínimos.
+7. [#82 — acessibilidade e responsividade do fluxo de compra](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/82) — retomada para auditar apenas lacunas restantes.
+8. [#83 — loading, vazio, erro e recuperação da UI](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/83) — depende de #82.
+9. [#53 — oportunidades verificáveis e deduplicadas](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/53) — depende de #83; usa score existente e não confirma frete desconhecido.
+10. [#84 — cotação real de frete por CEP](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/84) — depende de #53; R2, flag permanece desligada e nenhuma cotação é inventada.
+
+Todas as tarefas da fila foram reabertas/criadas com escopo atualizado e etiqueta `tarefa:aprovada` aplicada após a criação/abertura, para registrar o evento de elegibilidade do Dispatcher. A issue [#612 — smoke SEO público](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/612) foi retirada da fila automática porque exige que um operador dispare ou aguarde o workflow público e anexe a evidência real; não é uma tarefa que o worker possa declarar concluída com teste offline.
+
+**Estado de execução:** a fila está preparada, mas a execução dos workers não foi confirmada nesta atualização. Não declarar tarefas iniciadas até haver evento/run/PR observável. A publicação de frete permanece protegida por flag e os sete dias verdes de burn-in continuam obrigatórios.
