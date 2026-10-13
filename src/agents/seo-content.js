@@ -7,6 +7,7 @@ export const SEO_AGENT_ENABLED_DEFAULT = false;
 export const DESC_MAX = 160;                       // mesmo limite de api/pagina.mjs (fitDesc)
 export const SEVERIDADES = ['alta', 'media', 'baixa'];
 const PESO = { alta: 0, media: 1, baixa: 2 };
+const FRESCOR = new Set(['atual', 'atrasado', 'desatualizado', 'indisponivel']);   // estados de classify() (api/_lib/freshness.mjs)
 
 // Pré-requisitos do agente (docs/MAPA-DE-AGENTES.md §4.4, docs/PLANO-ENTREGA-TURBO.md agente 14 e Fase 8, issue #594).
 export const PREREQUISITOS = Object.freeze([
@@ -64,12 +65,14 @@ export function auditPage(page = {}, { site } = {}) {
   const p = parsePage(page.html);
   const status = page.status ?? 200;
   const indexavel = status === 200 && !p.noindex;
-  const fr = page.freshness && typeof page.freshness === 'object' ? page.freshness : null;
+  // Frescor sem um estado conhecido não é evidência: abstém-se em vez de tratá-lo como desatualizado.
+  const fr = page.freshness && typeof page.freshness === 'object' && FRESCOR.has(page.freshness.status) ? page.freshness : null;
   const usable = fr ? fr.status === 'atual' || fr.status === 'atrasado' : null;
   const temSsr = !!(p.ssr && p.ssr.replace(/<[^>]*>/g, '').trim());
   const at = { url, file };
   const f = []; const abstencoes = [];
-  if (!site) abstencoes.push('canonical: host do site não informado');
+  const sh = site ? hostOf(site) : null;               // site inválido equivale a não informado: sem host, não há o que comparar
+  if (!sh) abstencoes.push('canonical: host do site não informado');
   if (!fr) abstencoes.push('frescor: sem evidência');
 
   if (indexavel) {
@@ -78,8 +81,8 @@ export function auditPage(page = {}, { site } = {}) {
     else if (p.desc.length > DESC_MAX) f.push(achado('SEO-DESCRICAO-LONGA', 'baixa', { ...at, evidencia: `meta description com ${p.desc.length} caracteres: "${cut(p.desc)}"`, recomendacao: `Reduzir para até ${DESC_MAX} caracteres sem cortar informação essencial (usar fitDesc).` }));
     if (!p.canonical) f.push(achado('SEO-CANONICAL-AUSENTE', 'alta', { ...at, evidencia: '<link rel="canonical"> ausente em página indexável', recomendacao: 'Emitir canonical absoluto para a própria URL ou marcar a página como noindex.' }));
   }
-  if (p.canonical && site) {
-    const ch = hostOf(p.canonical); const sh = hostOf(site);
+  if (p.canonical && sh) {
+    const ch = hostOf(p.canonical);
     if (ch !== sh) f.push(achado('SEO-CANONICAL-HOST', 'alta', { ...at, evidencia: `canonical=${p.canonical} (host esperado ${sh})`, recomendacao: 'Apontar o canonical para o host canônico do site (SITE em api/_seo.mjs).' }));
     else if (url && indexavel) {
       const want = abs(url, site); const got = abs(p.canonical, site);
@@ -115,7 +118,7 @@ export function sourceRegex(src) {
 /** Inventário de rotas públicas (rewrites → /api/pagina) e checagem robots.txt × X-Robots-Tag do vercel.json. */
 export function auditRoutes({ vercel, robots, site } = {}) {
   if (!vercel || typeof vercel !== 'object' || typeof robots !== 'string') return { rotas: [], abstained: true, abstencoes: ['sem evidência: vercel.json ou robots.txt não informado'], findings: [] };
-  const f = [];
+  const f = []; const sh = site ? hostOf(site) : null;
   const noindexSrc = (vercel.headers || []).filter((h) => (h.headers || []).some((x) => /^x-robots-tag$/i.test(x.key) && /noindex/i.test(x.value))).map((h) => h.source);
   const noindexRe = noindexSrc.map((s) => [s, sourceRegex(s)]).filter(([, r]) => r);
   const disallow = robots.split('\n').map((l) => l.trim()).filter((l) => /^disallow:/i.test(l)).map((l) => l.slice(9).trim()).filter(Boolean);
@@ -129,20 +132,22 @@ export function auditRoutes({ vercel, robots, site } = {}) {
       recomendacao: 'Proposta: robô bloqueado pelo robots.txt não lê o noindex; se o objetivo for tirar a URL do índice, permitir o rastreamento e manter o noindex. Se for só poupar rastreamento, manter.' }));
   }
   if (!sitemapLine) f.push(achado('SEO-ROBOTS-SEM-SITEMAP', 'media', { url: '/robots.txt', file: 'robots.txt', evidencia: 'robots.txt sem linha Sitemap:', recomendacao: 'Declarar o sitemap.xml do host canônico.' }));
-  else if (site && hostOf(sitemapLine.slice(8).trim()) !== hostOf(site)) f.push(achado('SEO-ROBOTS-SITEMAP-HOST', 'alta', { url: '/robots.txt', file: 'robots.txt', evidencia: sitemapLine, recomendacao: 'Sitemap no host canônico.' }));
-  return { rotas, abstained: false, abstencoes: [], findings: f };
+  else if (sh && hostOf(sitemapLine.slice(8).trim()) !== sh) f.push(achado('SEO-ROBOTS-SITEMAP-HOST', 'alta', { url: '/robots.txt', file: 'robots.txt', evidencia: sitemapLine, recomendacao: 'Sitemap no host canônico.' }));
+  return { rotas, abstained: false, abstencoes: sh ? [] : ['host do site não informado'], findings: f };
 }
 
-/** Relatório consolidado. Nunca liga o agente: enabled vem só do gate de prontidão. */
+/** Relatório consolidado. Nunca liga o agente: enabled vem só do gate de prontidão, e falha fechado se o gate
+ *  recebido não estiver pronto (um objeto { enabled: true } sem prontidão comprovada não liga nada). */
 export function report({ readiness: rd, pages = [], sitemap = null, routes = null, geradoEm = null } = {}) {
   const findings = [...(routes?.findings || []), ...(sitemap?.findings || []), ...pages.flatMap((p) => p.findings || [])]
     .sort((a, b) => PESO[a.severidade] - PESO[b.severidade] || a.regra.localeCompare(b.regra) || a.url.localeCompare(b.url));
   const porSeveridade = Object.fromEntries(SEVERIDADES.map((s) => [s, findings.filter((x) => x.severidade === s).length]));
-  const abstencoes = [...(routes?.abstained ? routes.abstencoes : []), ...(sitemap?.abstained ? sitemap.abstencoes : []),
+  const gateOk = rd?.enabled === true && rd.status === 'pronto' && Array.isArray(rd.bloqueios) && rd.bloqueios.length === 0;
+  const abstencoes = [...(routes?.abstencoes || []).map((a) => `rotas: ${a}`), ...(sitemap?.abstencoes || []).map((a) => `sitemap: ${a}`),
     ...pages.flatMap((p) => (p.abstencoes || []).map((a) => `${p.url || p.file}: ${a}`))];
   return {
     agente: 'seo-content', modo: 'somente-leitura', publica: false, geradoEm,
-    enabled: !!rd?.enabled, prontidao: rd || readiness({}),
+    enabled: gateOk, prontidao: rd || readiness({}),
     inventario: { rotas: routes?.rotas || [], sitemap: sitemap?.urls || [], paginas: pages.map((p) => ({ url: p.url, file: p.file, indexavel: p.indexavel, abstained: p.abstained })) },
     porSeveridade, findings, abstencoes,
   };
