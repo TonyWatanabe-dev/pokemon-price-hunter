@@ -1,6 +1,7 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 12/10/2026 às 13:45 (America/Sao_Paulo, UTC−03:00)
+> **Atualizado em:** 13/10/2026 (America/Sao_Paulo, UTC−03:00)
+> **Base consultada para esta atualização:** `main` em `0d5472ca0186a2cf6dab3d39f221da4ee26992be`.
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -402,5 +403,29 @@ Prioridades:
 - Métricas de coleta/frescor por loja disponíveis, com falhas e dados ausentes explícitos.
 - Burn-in reportado separadamente; não declarar operação 24/7 até cumprir sete dias consecutivos verdes.
 - Pendências R3/R-STOP continuam bloqueadas e são escaladas somente com evidência, impacto e uma decisão concreta.
+
+
+## Atualização de planejamento — 13/10/2026
+
+### Fase 2 — dados e backend
+- **Status confirmado: concluída**, conforme relatório de fechamento desta própria roadmap.
+- A próxima fase registrada é a **Fase 3 — experiência de compra**.
+- A conclusão da Fase 2 não implica que a fábrica de desenvolvimento/oper operação 24/7 esteja concluída: burn-in, governança de release e configurações pendentes permanecem controlados pelas evidências operacionais acima.
+
+### Frente futura — Social Media e comunidade
+- Planejamento registrado na issue [#560 — Agente Social Media e comunidade TCG Price Hunter](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/560).
+- **Não iniciar implementação antes do gate de conclusão da Fase 1**; até esse momento, manter somente planejamento e cadastro de requisitos.
+- Comunidade: **TCG Price Hunter**.
+- Instagram informado: **@tcgpricehunter151**.
+- Telegram informado: [t.me/PokemonTCGHunterBR_bot](https://t.me/PokemonTCGHunterBR_bot). O endereço parece ser de bot; confirmar o link correto do canal/grupo e as permissões antes da integração.
+- WhatsApp: pendente. O link fornecido inicialmente era o mesmo endereço do Telegram; aguardar convite real do grupo criado pelo proprietário.
+- Afiliados já informados: Mercado Livre — https://meli.la/1BzQ4PU; Amazon — https://link.amazon/B0bVBmGRD. Shopee e outras contas/canais continuam pendentes.
+- Escopo previsto: conteúdo e criativos (artes, roteiros, Reels/cortes), calendário editorial, publicação multicanal, moderação, roteamento de links afiliados e análise de desempenho.
+- Piloto previsto: Telegram e Instagram primeiro; WhatsApp após validar uma integração oficial adequada à conta. Não usar automação que simule WhatsApp Web ou contorne controles da plataforma.
+- Regras: ofertas precisam vir do catálogo validado, com preço/estoque/frescor confirmados; prevenir duplicatas; divulgar links afiliados; nunca influenciar o ranking pela comissão; proteger credenciais; publicar automaticamente somente após validação e testes.
+- Checklist antes do início: confirmar gate da Fase 1; verificar links e permissões de canal; validar elegibilidade do Instagram; receber convite real do WhatsApp e link da Shopee; definir voz visual/editorial, disclosure, fila, armazenamento de mídia, auditoria, limites e critérios de pausa; executar piloto controlado antes da ativação ampla.
+
+### Convenção de atualização deste documento
+Atualizar este roadmap quando houver mudança comprovada de fase, entrega integrada, bloqueio ou decisão do proprietário. Usar issues, PRs, commits, CI, logs e smoke tests como evidência; não inferir conclusão apenas por labels, quantidade de PRs ou sucesso isolado de workflow. O Plano de Entrega Turbo continua sendo a fonte dos critérios de saída; este roadmap registra o estado observado e a próxima prioridade.
 
 ---
