@@ -157,8 +157,9 @@ export function detectType(t) {
   return r(null);
 }
 
+// "Reservado" não é pré-venda: "reserva" só casa a palavra inteira.
 export function detectStock(t) {
-  if (has(t, /\b(pre ?venda|pre-venda|encomenda|lancamento previsto|reserva)\b/)) return 'PRE_ORDER';
+  if (has(t, /\b(pre ?venda|pre-venda|pre[- ]?order|pre[- ]?lancamento|encomenda|lancamento previsto|reserva)\b/)) return 'PRE_ORDER';
   return null;
 }
 
