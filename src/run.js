@@ -10,7 +10,9 @@ import { validateListing } from './adapters/contract.js';
 import { loadHandoff } from './discovery/handoff.js';
 
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
-async function pool(items, n, fn) { let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
+// Variável numérica positiva; ausente, 0, negativa ou não numérica usa o padrão.
+export const positiveEnv = (name, def) => { const v = Number(process.env[name]); return Number.isFinite(v) && v > 0 ? v : def; };
+export async function pool(items, n, fn) { n = Number.isInteger(n) && n > 0 ? n : 1; let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
@@ -168,10 +170,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set();
   // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio: mais lojas ao mesmo tempo, nunca mais pressa numa loja), prazo por rodada
   // e rodízio — quem ficou para trás numa rodada vai primeiro na seguinte.
-  const deadline = Date.now() + Number(process.env.HUNTER_BUDGET_MIN || 7) * 60e3;
+  const deadline = Date.now() + positiveEnv('HUNTER_BUDGET_MIN', 7) * 60e3;
   const urlCache = readJson(dataPath('url-cache.json'), {});
   const order = [...stores].sort((a, b) => (sources[a.id]?.lastCheck || '').localeCompare(sources[b.id]?.lastCheck || ''));
-  await pool(order, Number(process.env.HUNTER_CONCURRENCY || 16), async (store) => {
+  await pool(order, Math.floor(positiveEnv('HUNTER_CONCURRENCY', 16)), async (store) => {
     const src = (sources[store.id] ||= { checks: 0, ok: 0 });
     src.name = store.name; src.kind = store.kind; src.url = store.url;
     if (store.platform === 'unsupported') { Object.assign(src, { status: 'UNAVAILABLE', reason: store.note }); return; }

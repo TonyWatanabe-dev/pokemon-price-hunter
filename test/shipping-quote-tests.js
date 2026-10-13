@@ -123,9 +123,9 @@ const T1 = 15 + 25 * 60 + 90;
 await t('loja pulada (prazo da rodada): cópia recente mantém o frete como reaproveitado, sem renovar a data', async () => {
   s = await runOnce({ log: quiet, send, now: at(T1) });
   assert.deepEqual(view(offerOf(s, 'me05-box36')), [19.9, true, 469.8, at(T1).toISOString(), 'simulacao']);
-  process.env.HUNTER_BUDGET_MIN = '-1'; // prazo já estourado: toda loja fica para a próxima rodada
-  s = await runOnce({ log: quiet, send, now: at(T1 + 60) });
-  delete process.env.HUNTER_BUDGET_MIN;
+  process.env.HUNTER_BUDGET_MIN = '0.000001'; // prazo ínfimo (valor <= 0 agora vale o padrão)
+  const realNow = Date.now; let tick = 0; Date.now = () => realNow() + 1000 * tick++; // relógio avança: prazo já estourado, toda loja fica para a próxima rodada
+  try { s = await runOnce({ log: quiet, send, now: at(T1 + 60) }); } finally { Date.now = realNow; delete process.env.HUNTER_BUDGET_MIN; }
   const a = offerOf(s, 'me05-box36');
   assert.deepEqual(view(a), [19.9, true, 469.8, at(T1).toISOString(), 'anterior']);
   assert.equal(offersRows([a])[0].shipping_reused, true, 'cópia não renova shipping_quote.checked_at');
