@@ -146,13 +146,13 @@ export function parseProductPage(html, url) {
   if (ns) { price = ns.price; listPrice = ns.listPrice; stock = ns.stock; quantity = ns.quantity; sku = ns.sku || sku; sourceType = 'store_page'; }
   else if (prod) {
     const offers = [].concat(prod.offers || []).flatMap((o) => (o['@type'] === 'AggregateOffer' && o.offers ? [].concat(o.offers) : [o]));
-    const o = offers.find((x) => x && (x.priceCurrency || 'BRL') === 'BRL') || offers[0];
+    const o = offers.find((x) => x && (x.priceCurrency || 'BRL') === 'BRL') || null; // só BRL (ou sem moeda): USD etc. não vira preço
     if (o) {
       price.base = brl(o.price ?? o.priceSpecification?.price ?? (o['@type'] === 'AggregateOffer' && o.lowPrice === o.highPrice ? o.lowPrice : null));
       const av = String(o.availability || '').split('/').pop().toLowerCase();
       stock = AVAIL[av] || 'UNKNOWN';
       availableFrom = availableFromOf(stock, o.availabilityStarts);
-      if (o.inventoryLevel?.value != null) quantity = Number(o.inventoryLevel.value);
+      if (o.inventoryLevel?.value != null) { const q = Number(o.inventoryLevel.value); quantity = Number.isFinite(q) && q >= 0 ? q : null; }
     }
     sourceType = 'json_ld';
     price.pix = pixNear(html, price.base);
