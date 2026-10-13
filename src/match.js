@@ -240,6 +240,7 @@ export function matchProduct(listing, catalog) {
   if (p.boostersInferred) confidence -= 0.1;
   if (p.collectionFallback) confidence -= 0.1;
   if (/\b(lacrad[oa]|original|copag)\b/.test(p.normalized)) confidence += 0.05;
+  if (p.preorder && p.collectionFallback) confidence = Math.min(confidence, 0.65);
   return { productId: prod.id, product: prod, confidence: Math.min(0.99, +confidence.toFixed(2)), parsed: p, why: [] };
 }
 
