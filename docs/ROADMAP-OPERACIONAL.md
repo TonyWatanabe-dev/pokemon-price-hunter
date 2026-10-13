@@ -176,6 +176,26 @@ Telemetria real do worker: implementada (ver item 1 das lacunas abaixo), com val
 
 **Próximo passo técnico:** leva 3, com cerca de 10 tarefas tiradas das auditorias, em áreas distintas.
 
+## Fechamento da Fase 2 (dados e backend) — 13/10/2026
+
+**Critério:** lacunas de backend apontadas pelas auditorias atacadas por tarefas pequenas, com testes e PR integrada. **Status: concluída.**
+
+- **Auditorias (21, em `docs/auditorias/` e `docs/estados-ui.md`/`acessibilidade-dinamica.md`):** coletores, adaptadores, matching, matching-novos, API, alertas, alertas-usuario, segurança, motor, motor-oportunidades, frescor-sync, desempenho, cobertura-lojas, dados-historico, banco-migrations, backup-recuperacao, afiliados, contas-firebase, paginas-servidor, agentes-fabrica, agentes-produto, cabecalhos-http, pistas-telegram, observabilidade, rodada-robo.
+- **Execução:** cerca de 120 PRs de agentes integradas entre 12 e 13/10 (levas 1 a 19), a US$ 0,10–0,50 cada (custo reportado). Os testes da suíte passaram de 78 para mais de 150 arquivos.
+- **Melhorias da fábrica no período:** recusa por capacidade não gasta tentativa (#321), rajada limitada a 4 por ciclo, suíte por descoberta automática (#304), `index.html` como fonte da UI (#302) e burn-in automático (#270).
+- **Restos (não bloqueiam):**
+  - #548: retry automático.
+  - #453: em quarentena, reescopada na #577 com autorização do proprietário para ajustar o `golden` só em `caps`/`explain`.
+- **Aprovadas em 13/10 e em execução:** HSTS + Permissions-Policy (#578), gravação de `alerts-sent.json` logo após o envio (#579) e dedupe de pistas entre fontes (#580).
+- **Fora da fase, aguardando decisão:** tabela de preferências de notificação (migration).
+
+**Fábrica 24/7, ainda em aberto:**
+- burn-in em 0/7, reiniciado em 13/10 (#271);
+- pendências do proprietário: `qa-review` obrigatório, auditoria da Ponte (`RELEASE_AUDIT_*`), `VERCEL_TOKEN`, rotina horária e `DISPATCHER_ORCAMENTO_USD`;
+- 53 issues antigas já entregues aguardam fechamento manual.
+
+**Próxima fase:** Fase 3, experiência de compra. O backlog de UX/UI/SEO está na #285.
+
 ## Estado executivo
 
 ### Meta de operação 24/7 — lacunas para fechar
