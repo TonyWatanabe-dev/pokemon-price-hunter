@@ -59,7 +59,9 @@ try {
     const { overrides, skipped } = await approvedOverrides(p, catalog);
     let cur = {}; try { cur = JSON.parse(fs.readFileSync(OUT, 'utf8')); } catch { /* novo */ }
     const next = { _nota: cur._nota, enabled: cur.enabled === true, overrides };
-    fs.writeFileSync(OUT, JSON.stringify(next, null, 2) + '\n');
+    const tmp = `${OUT}.${process.pid}.tmp`;
+    try { fs.writeFileSync(tmp, JSON.stringify(next, null, 2) + '\n'); fs.renameSync(tmp, OUT); }
+    catch (e) { fs.rmSync(tmp, { force: true }); throw e; }
     console.log(`${overrides.length} overrides exportados (enabled: ${next.enabled}); ${skipped.length} inválidos ignorados${skipped.length ? ': ' + skipped.map((s) => `#${s.id} ${s.err}`).join('; ') : ''}`);
   } else {
     console.error('comando: list | triage | approve | reject | dismiss | export'); code = 2;
