@@ -103,7 +103,21 @@ export function parseRecords(comments, { trustedAuthor = AUTOR_CONFIAVEL } = {})
       try { const r = JSON.parse(m[2]); if (r && r.v === VERSAO && int(r.issue) !== null) out.push(r); } catch { /* marcador corrompido: ignora */ }
     }
   }
-  return out.sort((a, b) => String(a.em).localeCompare(String(b.em)));
+  return dedupe(out.sort((a, b) => String(a.em).localeCompare(String(b.em))));
+}
+
+/**
+ * Um registro por execução: (issue, chave, run.id, run.tentativa). O mesmo marcador em comentários repetidos (reenvio
+ * do workflow) conta uma vez só; fica a primeira ocorrência. Sem run.id não há como identificar a execução: mantém.
+ */
+export function dedupe(records) {
+  const vistos = new Set();
+  return (records || []).filter((r) => {
+    if (r?.run?.id == null) return true;
+    const k = JSON.stringify([r.issue, r.chave ?? null, r.run.id, r.run.tentativa ?? null]);
+    if (vistos.has(k)) return false;
+    vistos.add(k); return true;
+  });
 }
 
 const add = (a, b) => (b === null || b === undefined ? a : a + b);
@@ -113,7 +127,7 @@ const add = (a, b) => (b === null || b === undefined ? a : a + b);
  * contagem do que veio sem dado (nunca preenchido). `prsIntegradas` (números de PR com merge) dá o custo por PR.
  */
 export function summarize(records, { prsIntegradas = [] } = {}) {
-  const rs = records || [];
+  const rs = dedupe(records);
   const merged = new Set(prsIntegradas.map(Number));
   const tok = { entrada: 0, saida: 0, cacheLeitura: 0, cacheCriacao: 0 };
   let custo = 0, semCusto = 0, semSessao = 0, duracao = 0, turnos = 0;
@@ -153,6 +167,6 @@ export function summarize(records, { prsIntegradas = [] } = {}) {
 /** Gasto reportado na janela (para o budgetGate). Sem nenhum custo informado na janela: null (não inventa zero). */
 export function gastoNaJanela(records, { now = Date.now(), janelaMs = 24 * 3600e3 } = {}) {
   const desde = now - janelaMs;
-  const custos = (records || []).filter((r) => Date.parse(r.em) >= desde).map((r) => r.sessao?.custoUsdReportado).filter((v) => typeof v === 'number');
+  const custos = dedupe(records).filter((r) => Date.parse(r.em) >= desde).map((r) => r.sessao?.custoUsdReportado).filter((v) => typeof v === 'number');
   return custos.length ? custos.reduce((a, b) => a + b, 0) : null;
 }
