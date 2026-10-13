@@ -31,6 +31,13 @@ import { redact } from './redact.js';
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
 // Motivo de recusa do contrato sem o valor entre parênteses (link, host, texto do preço): vira chave de contagem.
+// Rotação atômica (tmp + rename): se o rename falhar, o alerts.jsonl original segue íntegro.
+export function capAlertsLog(f, max) {
+  const kept = capJsonlLines(fs.readFileSync(f, 'utf8'), max); if (!kept) return false;
+  const tmp = f + '.tmp';
+  try { fs.writeFileSync(tmp, kept); fs.renameSync(tmp, f); } catch (e) { try { fs.rmSync(tmp, { force: true }); } catch { /* ok */ } throw e; }
+  return true;
+}
 export const reasonKey = (r) => String(r).replace(/\s*\(.*\)\s*$/, '');
 // Resumo da rodada para data/meta.json (ops): só contagens por loja e motivo, sem link nem valor lido.
 export function rejectedSummary(sources, ids) {
@@ -512,7 +519,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   appendJsonl(dataPath('history.jsonl'), history);
   try { trimJsonl(dataPath('history.jsonl')); } catch { /* sem log */ }
   appendJsonl(dataPath('alerts.jsonl'), delivered);
-  try { const f = dataPath('alerts.jsonl'); const kept = capJsonlLines(fs.readFileSync(f, 'utf8')); if (kept) fs.writeFileSync(f, kept); } catch { /* sem log */ }
+  try { capAlertsLog(dataPath('alerts.jsonl')); } catch { /* sem log */ }
   // Estado operacional (data/meta.json → ops). Falha aqui nunca derruba a rodada.
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
