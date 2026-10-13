@@ -1,0 +1,44 @@
+{
+  "_sobre": "Evidências do gate de prontidão do SEO & Content Agent (issue #594). Cada item só conta como comprovado com ok=true e referência verificável. Atualizar apenas com evidência real; a ausência de evidência é bloqueio. Lido por tools/seo-audit.mjs e conferido por test/seo-content-agent-tests.js.",
+  "conferidoEm": "2026-10-13",
+  "base-tecnica-estavel": {
+    "ok": false,
+    "ref": ["docs/ROADMAP-OPERACIONAL.md"],
+    "nota": "Burn-in de sete dias em 0/7, reiniciado em 13/10/2026 (#271), segundo o fechamento da Fase 2 no roadmap."
+  },
+  "analytics-consentido": {
+    "ok": false,
+    "ref": ["index.html"],
+    "nota": "A instrumentação existe (/_vercel/insights/script.js, anônima e sem cookies, informada na Privacidade), mas não há evidência de acesso autorizado aos dados para o agente nem de volume. Os eventos personalizados (track) não aparecem no plano gratuito, segundo o comentário em index.html."
+  },
+  "search-console": {
+    "ok": false,
+    "ref": [],
+    "nota": "Não há verificação do Search Console no repositório (meta google-site-verification ou registro de propriedade), nem autorização documentada."
+  },
+  "politica-conteudo": {
+    "ok": false,
+    "ref": [],
+    "nota": "Não existe política de conteúdo/editorial aprovada no repositório. Os guardrails do MAPA §4.4 e da issue #594 limitam o agente, mas não substituem a política."
+  },
+  "fonte-canonica": {
+    "ok": false,
+    "ref": ["api/_seo.mjs", "index.html", "robots.txt", "docs/PLANO-ENTREGA-TURBO.md"],
+    "nota": "O código é consistente (SITE=https://tcg-price-hunter.vercel.app em api/_seo.mjs, canonical do index.html e Sitemap do robots.txt), mas a decisão de fonte canônica de produção (GitHub Pages × Vercel) continua pendente na Fase 8 do plano."
+  },
+  "seo-tecnico-base": {
+    "ok": true,
+    "ref": ["api/pagina.mjs", "api/sitemap.mjs", "robots.txt", "vercel.json", "test/seo-lote-c-tests.js", "test/seo-lote-e-tests.js"],
+    "nota": "O SSR gera título, description (até 160 caracteres), canonical, OG e JSON-LD; o sitemap traz lastmod por produto e omite produto sem estoque; rotas privadas recebem X-Robots-Tag noindex. Comprovado no código e nos testes offline, sem verificação no host de produção nesta tarefa."
+  },
+  "frescor-conteudo": {
+    "ok": true,
+    "ref": ["api/_lib/freshness.mjs", "test/freshness-tests.js", "test/sitemap-falha-tests.js"],
+    "nota": "Com dados acima de 90 min, as páginas saem sem preço e com noindex (exceto a Home), e o sitemap fica só com as páginas fixas. Comprovado no código e nos testes, sem medição em produção nesta tarefa."
+  },
+  "testes-indexabilidade": {
+    "ok": true,
+    "ref": ["test/seo-lote-c-tests.js", "test/seo-lote-e-tests.js", "test/robots-consistency-tests.js", "test/sitemap-falha-tests.js"],
+    "nota": "Testes offline de SSR, canonical, noindex, sitemap e robots rodam no npm test."
+  }
+}

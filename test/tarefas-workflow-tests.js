@@ -120,7 +120,9 @@ await t('11. falha rápido quando falta o secret, e o status final usa outcome c
   assert.match(code, /CREDENTIAL_OUTCOME: \$\{\{ steps\.credencial\.outcome \}\}/);
   assert.match(code, /status="\$\{CLAUDE_CONCLUSION:-\$CLAUDE_OUTCOME\}"/);
   assert.match(code, /\[ "\$status" = "success" \] && \[ -n "\$pr" \]/);
-  assert.match(code, /labels\[\]=executor:done/); assert.match(code, /labels\[\]=executor:failed/);
+  // Sucesso com PR = executor:pr-open; executor:done só vem do issue-lifecycle.yml depois do merge (nunca do worker).
+  assert.match(code, /labels\[\]=executor:pr-open/); assert.match(code, /labels\[\]=executor:failed/);
+  assert.doesNotMatch(code, /labels\[\]=executor:done/, 'o worker não marca concluído antes do merge');
   assert.match(code, /PR existe e precisa de triagem: \$pr/);
 });
 
@@ -249,7 +251,7 @@ await t('17. telemetria: lê o execution_file das duas sessões, roda sem token 
   const script = res.match(/run: \|\n((?: {10}.*\n?)+)/)[1];
   assert.match(script, /env -u GH_TOKEN node tools\/telemetria\.mjs registrar/, 'o script de telemetria não recebe o token');
   assert.match(script, /\|\| echo "::warning title=Telemetria::/, 'falha da telemetria vira aviso');
-  assert.ok(script.indexOf('telemetria.mjs') > script.indexOf('labels[]=executor:done'), 'telemetria depois de decidir done/failed');
+  assert.ok(script.indexOf('telemetria.mjs') > script.indexOf('labels[]=executor:pr-open'), 'telemetria depois de decidir pr-open/failed');
   assert.doesNotMatch(code, /show_full_output|upload-artifact/, 'o execution_file inteiro nunca sai do runner');
   const esf = fs.readFileSync(path.join(root, 'tools/esforco.mjs'), 'utf8');
   assert.match(esf, /perfil=\$\{perfil\}/, 'esforco.mjs expõe o perfil para a telemetria');

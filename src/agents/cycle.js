@@ -20,7 +20,9 @@ export async function runAgentCycle({ db, state, catalog = null, send, now = () 
   } catch (e) { fail('orquestrador', e); return report; }
 
   try {
-    const cands = reviewCandidates(state, { catalog, limit: cfg.maxNew });
+    // Mesmo relógio do orquestrador: o handler revalida a evidência com now(); com relógios diferentes, o status
+    // (completa/incompleta pela idade da leitura) diverge e a proposta é recusada como incoerente.
+    const cands = reviewCandidates(state, { catalog, limit: cfg.maxNew, now: now().getTime() });
     report.candidates = cands.length;
     for (const c of cands) {
       try { if ((await orch.enqueue({ type: 'review.propose', idempotencyKey: c.idempotencyKey, payload: c.payload, priority: 100 })).created) report.enqueued++; }
