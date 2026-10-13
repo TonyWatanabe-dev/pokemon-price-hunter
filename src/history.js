@@ -97,7 +97,7 @@ export function cleanPoints(pts) {
   return { pts: [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0])), invalid, duplicates };
 }
 
-export function histSummary(pid, distrust = null) {
+export function histSummary(pid, distrust = null, asOf = null) {
   const h = readJson(histPath(pid), null); if (!h) return null;
   const byDay = {};
   for (const [sid, s] of Object.entries(h.stores || {})) for (const [d, v] of cleanPoints(s.pts).pts) if (trustedPoint(distrust, sid, d) && (!byDay[d] || v < byDay[d])) byDay[d] = v;
@@ -108,5 +108,9 @@ export function histSummary(pid, distrust = null) {
   const ref = prev.length ? Math.max(...prev) : null;
   // Série curta (< MIN_HIST_DAYS dias válidos) não tem queda: dois pontos não sustentam o ranking "maior queda".
   const enough = days.length >= MIN_HIST_DAYS;
-  return { days: days.length, from: days[0], enough, drop7d: enough && ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
+  // Com asOf (YYYY-MM-DD), série cujo último dia tem mais de 7 dias é "stale" e não tem queda; sem asOf nada muda.
+  const stale = asOf ? Date.parse(asOf) - Date.parse(today) > 7 * 864e5 : false;
+  const out = { days: days.length, from: days[0], enough, drop7d: enough && !stale && ref && cur < ref ? +(1 - cur / ref).toFixed(4) : 0 };
+  if (asOf) out.stale = stale;
+  return out;
 }
