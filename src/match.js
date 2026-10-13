@@ -81,7 +81,8 @@ export function detectCollection(t, collections) {
     if (combo) return { id: combo.id };
     return { id: null, ambiguous: hits.map((h) => h.id) };
   }
-  const fb = collections.filter((c) => (c.fallbackAliases || []).some((a) => wordRe(a).test(t)));
+  // Alias de fallback seguido de número ("Mega Evolução 99") é coleção numerada fora dos aliases: não cai no fallback.
+  const fb = collections.filter((c) => (c.fallbackAliases || []).some((a) => wordRe(a).test(t) && !new RegExp(esc(a).replace(/ /g, '\\s?') + '\\s?0*\\d+(?!\\d|\\s?(?:cartas?|cards?|boosters?|pacotes?|envelopes?|packs?|un|unidades?|blisters?|x)\\b)').test(t)));
   return fb.length === 1 ? { id: fb[0].id, fallback: true } : { id: null };
 }
 

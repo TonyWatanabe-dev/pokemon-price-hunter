@@ -196,4 +196,14 @@ test('confiança: 0,8 base; 0,6 com contagem inferida + coleção por fallback',
   assert.equal(r.confidence, 0.6);
 });
 
+test('"Mega Evolução 99" (número fora dos aliases) não cai no fallback me01', () => {
+  for (const title of ['Pokémon TCG Box Display Mega Evolução 99', 'Pokémon TCG Box Display Megaevolução 99']) {
+    const r = m(title);
+    assert.equal(r.productId, null, title);
+    assert.equal(r.parsed.collectionFallback, false, title);
+    assert.deepEqual(r.why, ['coleção não identificada'], title);
+  }
+  casa('Pokémon TCG Booster Box Mega Evolução 1 36 Boosters', 'me01-box36');
+});
+
 console.log(`✓ Matching de selados: ${n} grupos de testes passaram`);
