@@ -3,7 +3,7 @@
 // Importado por test/agents-integration-tests.js (roda no npm test). Puro: sem rede nem banco.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { buildEvidence, validateEvidence, EVIDENCE_BASIS, EVIDENCE_STATUS } from '../src/agents/evidence.js';
+import { buildEvidence, validateEvidence, EVIDENCE_BASIS, EVIDENCE_STATUS, EVIDENCE_MAX_AGE_MS } from '../src/agents/evidence.js';
 import { reviewCandidates } from '../src/agents/matching-review.js';
 import { validateReviewProposal } from '../src/agents/handlers/review-propose.js';
 
@@ -47,6 +47,22 @@ await test('horário ausente, ilegível ou no futuro: não é inventado, evidên
   }
   // pequena diferença de relógio entre máquinas é tolerada
   assert.equal(buildEvidence({ ...base, observedAt: '2026-10-10T12:04:00Z' }, { now: NOW }).evidence.status, 'completa');
+});
+
+await test('horário mais velho que o limite (72 h): mantido, mas evidência incompleta', async () => {
+  assert.equal(EVIDENCE_MAX_AGE_MS, 72 * 3_600_000);
+  const velho = '2026-10-07T11:59:59Z'; // 72 h + 1 s antes de NOW
+  const r = buildEvidence({ ...base, observedAt: velho }, { now: NOW });
+  assert.equal(r.ok, true);
+  assert.equal(r.evidence.observedAt, '2026-10-07T11:59:59.000Z', 'horário real não é apagado nem corrigido');
+  assert.equal(r.evidence.status, 'incompleta'); assert.deepEqual(r.evidence.missing, ['observedAt']);
+  assert.equal(validateEvidence(r.evidence, { now: NOW }), null);
+  assert.match(validateEvidence({ ...r.evidence, status: 'completa' }, { now: NOW }), /status de evidência incoerente/);
+  // exatamente no limite e evidências recentes não mudam
+  for (const observedAt of ['2026-10-07T12:00:00Z', '2026-10-09T08:00:00Z', base.observedAt]) {
+    const ok = buildEvidence({ ...base, observedAt }, { now: NOW }).evidence;
+    assert.equal(ok.status, 'completa', observedAt); assert.deepEqual(ok.missing, []);
+  }
 });
 
 await test('validateEvidence não confia em status nem horário vindos de fora', async () => {
