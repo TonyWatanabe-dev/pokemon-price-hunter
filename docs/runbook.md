@@ -138,6 +138,25 @@ Todas as verificações abaixo são de leitura.
 
 `node tools/review.mjs list | triage | export` lê/gera a fila de revisão humana (`docs/agentes.md`). Ela usa `DATABASE_URL`: contra produção, só com autorização, e decisões (`approve`, `reject`, `dismiss`) exigem operador autorizado (`REVIEW_OPERATORS`). Job de agente `failed`/`blocked` gera aviso pelo vigia; `ai_disabled` é esperado quando `AI_AGENTS_ENABLED` não está ligado.
 
+## Perdi dados
+
+Detalhes e cuidados em `docs/backup.md`. A ferramenta só lê do GitHub e grava numa pasta local; nunca faz push.
+
+```bash
+node tools/data-restore.mjs --list                          # etiquetas no GitHub, mais nova primeiro
+node tools/data-restore.mjs --verify 2026-10-09             # confere o retrato
+node tools/data-restore.mjs --to /tmp/rest 2026-10-09       # SIMULAÇÃO
+node tools/data-restore.mjs --to /tmp/rest 2026-10-09 --apply   # extrai para /tmp/rest/data (pasta vazia)
+```
+
+Voltar o ramo `data` é passo manual do dono (pausar o robô antes), descrito em `docs/backup.md`. Se o banco foi perdido, ressincronize a partir do `data/` restaurado (manual, pelo dono):
+
+```bash
+node tools/db-sync.mjs /tmp/rest/data        # produtos, lojas, ofertas e histórico (idempotente)
+```
+
+Os passos completos (`db-migrate`, `db-grants`, `db-import-references`, `db-opportunity`) estão em "Ressincronizar o banco" no `docs/backup.md`.
+
 ## O que nunca fazer
 
 - Commitar, imprimir ou colar secrets, URLs de banco ou tokens.
