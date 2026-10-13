@@ -460,7 +460,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Estado para painel e API
   const all = Object.values(offers);
   const ranked = rankBestDeals(all, opp);
-  const cov = Object.values(sources).reduce((a, s) => { a.found++; a[s.status] = (a[s.status] || 0) + 1; return a; }, { found: 0 });
+  // Lojas retiradas da lista continuam em sources.json (histórico), mas ficam fora da cobertura e do estado.
+  const listed = Object.entries(sources).filter(([id]) => stores.some((s) => s.id === id));
+  const cov = listed.map(([, s]) => s).reduce((a, s) => { a.found++; a[s.status] = (a[s.status] || 0) + 1; return a; }, { found: 0 });
   // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
   try {
     const nb = backfill(Object.fromEntries(stores.map((x) => [x.id, x.name])));
@@ -481,7 +483,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     bestDeals: ranked.map((o) => o.id),
     // Preço fora do plausível não é publicado: fica em data/review.json para conferência.
     offers: all.filter((o) => !o.anomalous),
-    sources: Object.entries(sources).map(([id, s]) => ({ id, ...s, score: storeScores[id] || null })),
+    sources: listed.map(([id, s]) => ({ id, ...s, score: storeScores[id] || null })),
     unmatched: unmatched.slice(0, 200),
     tips: tips.slice(0, 150),
     activity,
