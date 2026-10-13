@@ -2176,7 +2176,7 @@ const HIST={};const HV={period:30,mode:"best"};
 const PERIODS=[[7,"7D"],[30,"30D"],[90,"90D"],[365,"1A"]];
 const fmtD=(d)=>{const [y,m,dd]=d.split("-");return`${dd}/${m}`};
 async function loadHist(pid){
-  if(!(pid in HIST)){const h=(await histFromApi(pid))||await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`);
+  if(!(pid in HIST)){let h=null;try{h=(await histFromApi(pid))||await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`)}catch{}
     /* leituras antigas não confiáveis (antes da correção do leitor de páginas) não entram no gráfico */
     const D=S.distrust;if(h&&D&&D.stores)for(const[sid,x]of Object.entries(h.stores||{})){if(D.stores.includes(sid))x.pts=x.pts.filter((p)=>p[0]>D.until);if(!x.pts.length)delete h.stores[sid]}
     HIST[pid]=h}
@@ -2204,6 +2204,7 @@ function drawHist(pid){
   const s=h?histSeries(h,HV.period):null;
   const tabs=`<div class="htabs" role="group" aria-label="Período">${PERIODS.map(([d,l])=>`<button type="button" data-hp="${d}" aria-pressed="${HV.period===d}">${l}</button>`).join("")}</div>`;
   const head=`<div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2>${tabs}</div>`;
+  if(!h){box.innerHTML=head+`<p class="hnote" role="status">Histórico indisponível agora</p>`;return}
   if(!s||!s.best.length){box.innerHTML=head+`<p class="hnote">Ainda não há histórico com estoque confirmado para este produto.</p>`;return}
   const vals=s.best.map((x)=>x.v);const bl=bestLive(pid);const cur=bl?bl.total:vals[vals.length-1];
   const min=s.best.reduce((a,b)=>b.v<a.v?b:a),max=s.best.reduce((a,b)=>b.v>a.v?b:a);

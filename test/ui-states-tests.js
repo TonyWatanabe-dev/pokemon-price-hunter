@@ -140,4 +140,24 @@ for (const file of ['../index.html', '../tools/page.template.html']) {
     });
   }
 }
+
+// #442 — falha do histórico: mensagem curta, sem quebrar a página (só index.html)
+{
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const i = html.indexOf('async function loadHist(pid){'), j = html.indexOf('function histSeries', i);
+  const k = html.indexOf('function drawHist(pid){'), l = html.indexOf('function chart(', k);
+  assert.ok(i > 0 && j > i && k > 0 && l > k, 'trechos do histórico');
+  const mk = (api, data) => { const box = el(); const ctx = { HIST: {}, view: 'produto', curPid: 'x', S: {}, histFromApi: api, fetchData: data,
+    $: () => box, P: {}, HV: { period: 30, mode: 'best' }, PERIODS: [[7, '7D']], ic: () => '', histSeries: () => null };
+    vm.createContext(ctx); vm.runInContext(html.slice(i, j) + html.slice(k, l), ctx); return { ctx, box }; };
+  await t('histórico: falha de rede/API mostra "Histórico indisponível agora"', async () => {
+    const { ctx, box } = mk(async () => { throw new Error('x'); }, async () => null);
+    await ctx.loadHist('x'); assert.match(box.innerHTML, /Histórico indisponível agora/);
+    const b = mk(async () => null, async () => null); await b.ctx.loadHist('x'); assert.match(b.box.innerHTML, /Histórico indisponível agora/);
+  });
+  await t('histórico: sem pontos continua com a mensagem antiga', async () => {
+    const { ctx, box } = mk(async () => ({ stores: {} }), async () => null);
+    await ctx.loadHist('x'); assert.match(box.innerHTML, /Ainda não há histórico/); assert.doesNotMatch(box.innerHTML, /indisponível/);
+  });
+}
 console.log(`✓ Estados de erro e recuperação da UI (#83): ${n} grupos passaram`);
