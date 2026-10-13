@@ -7,10 +7,17 @@ import { syncState } from '../src/core/sync.js';
 
 if (!dbEnabled()) { console.log('Banco desligado (sem DATABASE_URL): nada a sincronizar.'); process.exit(0); }
 const dir = process.argv[2] || 'data';
-const state = JSON.parse(fs.readFileSync(path.join(dir, 'state.json'), 'utf8'));
-const lines = fs.existsSync(path.join(dir, 'history.jsonl'))
-  ? fs.readFileSync(path.join(dir, 'history.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
-const catalog = JSON.parse(fs.readFileSync(new URL('../config/catalog.json', import.meta.url), 'utf8'));
+// Arquivo ausente ou corrompido: mensagem curta (sem stack), código 1 e o banco nem é aberto.
+let state, lines, catalog, arquivo;
+try {
+  arquivo = path.join(dir, 'state.json'); state = JSON.parse(fs.readFileSync(arquivo, 'utf8'));
+  arquivo = path.join(dir, 'history.jsonl');
+  lines = fs.existsSync(arquivo) ? fs.readFileSync(arquivo, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : [];
+  arquivo = 'config/catalog.json'; catalog = JSON.parse(fs.readFileSync(new URL('../config/catalog.json', import.meta.url), 'utf8'));
+} catch (e) {
+  console.error(`Sincronização com o banco não iniciada: ${arquivo} ilegível (${e.message}). O banco não foi tocado.`);
+  process.exit(1);
+}
 const t0 = Date.now();
 try {
   const s = await tx((c) => syncState(c, { state, catalog, historyLines: lines }));
