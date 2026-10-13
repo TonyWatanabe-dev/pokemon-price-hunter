@@ -36,7 +36,7 @@ function fakeDb(mainRows, changeRows, { failChanges = false } = {}) {
   return { calls, query };
 }
 const OLD_KEYS = ['product', 'offer', 'price', 'total', 'shipping', 'stock', 'store', 'marketplace', 'opportunity_score', 'opportunity_band', 'confidence', 'confidence_level',
-  'current_reference', 'market_composition', 'reference_comparison', 'product_variation_7d', 'historical_context', 'community_reference', 'warnings', 'reasons', 'engine_version', 'updated_at'];
+  'current_reference', 'market_composition', 'reference_comparison', 'product_variation_7d', 'historical_context', 'community_reference', 'warnings', 'reasons', 'caps', 'engine_version', 'updated_at'];
 const CHANGE_KEYS = ['kind', 'label', 'at', 'from', 'to', 'basis', 'reason'];
 
 await t('updated_at = última avaliação do motor (batida), não só a última mudança da nota', async () => {
