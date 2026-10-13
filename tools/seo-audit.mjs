@@ -45,7 +45,7 @@ export async function run({ statePath, agora, evidenciaPath = path.join(root, 'd
   const res = () => ({ statusCode: 200, headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } });
   const sm = res(); await sitemap({}, sm);
   const sAudit = auditSitemap(sm.body, { site: SITE });
-  const freshness = st ? fresh.classify(st.generatedAt) : fresh.classify(null);
+  const freshness = st ? fresh.classify(fresh.stateDataAt(st)) : fresh.classify(null);
   const pages = [];
   for (const u of sAudit.urls) {
     const pathname = new URL(u).pathname.replace(/(.)\/$/, '$1');

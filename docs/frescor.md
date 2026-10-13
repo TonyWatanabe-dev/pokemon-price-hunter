@@ -12,8 +12,8 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Rodada pulada por prazo | `src/run.js` (`recentRead`) | Oferta lida há menos de 3 h e não stale é mantida como está, com o horário antigo. Horário ausente, inválido ou no futuro (> 5 min) não é recente: vira `staleCopy`. |
 | Frete | `src/run.js` (`carryShipping`) | Se a simulação falha (ou a oferta é copiada sem nova leitura), o frete anterior só é reaproveitado dentro da validade de 24 h da cotação (`HUNTER_SHIPPING_TTL_H`), com `shippingAt` = data da cotação original (não renova); a falha da simulação fica em `shippingError`. Vencido ou sem data, o frete vira desconhecido e o total volta ao preço. |
 | Banco | `src/core/mappers.js` | `last_seen_at` = `source_timestamp`; stale vira `status = 'pending'` e `stock_status = 'unknown'`. Oferta que sumiu da rodada vira `removed`. |
-| API | `api/_lib/read-db.mjs`, `read-state.mjs` | `pending` volta como `stale: true`; `source_timestamp` = `last_seen_at`. O frescor da resposta é `freshness` (e os cabeçalhos `X-Data-*`). |
-| UI | `index.html` (`readKnown`/`readNote`, `freshState`) | "Atualizado há …" vem de `source_timestamp` (ausente, inválido ou no futuro além de 5 min: "Data da leitura desconhecida"); `stale` mostra o selo "Leitura antiga". A barra "Ao vivo / Atualizado há" usa o frescor da fonte servida (`freshness.dataAt` ou `generatedAt`). |
+| API | `api/_lib/read-db.mjs`, `read-state.mjs` | `pending` volta como `stale: true`; `source_timestamp` = `last_seen_at`. O frescor da resposta é `freshness` (e os cabeçalhos `X-Data-*`); com o `state.json`, vem de `stateDataAt` (`dataAt`). |
+| UI | `index.html` (`readKnown`/`readNote`, `freshState`) | "Atualizado há …" vem de `source_timestamp` (ausente, inválido ou no futuro além de 5 min: "Data da leitura desconhecida"); `stale` mostra o selo "Leitura antiga". A barra "Ao vivo / Atualizado há" usa o frescor da fonte servida (`freshness.dataAt`; no `state.json` lido direto, `dataAt`, e só sem o campo, `generatedAt`). |
 
 ## Regras
 
@@ -45,6 +45,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 - `test/freshness-tests.js`: limites, fallback entre banco e `state.json`, cabeçalhos e páginas.
 - `test/freshness-contract-tests.js`: a matriz acima (ausente, inválido, futuro, fresco, envelhecendo, stale e falha parcial).
 - `test/collector-sync-contract-tests.js`: rodadas reais com coletor simulado, conferindo cada etapa (abaixo).
+- `test/state-data-at-tests.js`: `dataAt` do `state.json` na falha total, parcial e recuperação (API e UI).
 - `test/offer-freshness-tests.js`: horário preservado ao reaproveitar, mapeamento para o banco e envelhecimento
   pelos limites configurados.
 
@@ -60,19 +61,20 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
 | `status` da fonte (`ACTIVE`/`ERROR`/`BLOCKED`) → `source_health.status` (`store.status` fica `active` em `ERROR`) | coletor → banco | a cada tentativa | estado das ofertas |
 | `offer.source_timestamp` → `offer.last_seen_at` → `last_seen_at` da API | coletor → banco → API → UI | só leitura real da oferta | — (é o horário por oferta) |
 | `max(last_seen_at)` (ativas/pendentes) | banco → API (`freshness`) | alguma oferta foi lida e sincronizada | que todas estão frescas (cada uma tem o seu) |
-| `state.generatedAt` | `state.json` → API (fallback) → UI (barra) | toda rodada que termina | que alguma oferta foi lida (lacuna 4) |
+| `state.generatedAt` | `state.json` (identifica a rodada; ops, watchdog, backup) | toda rodada que termina | que alguma oferta foi lida |
+| `state.dataAt` (`lastReadAt`: maior `source_timestamp` das ofertas publicadas, ≤ rodada) | `state.json` → API (fallback, `stateDataAt`) → páginas/sitemap → UI (barra) | alguma oferta foi lida (reaproveitar não renova `source_timestamp`) | que todas estão frescas |
 
 | Cenário | Coletor | Banco (`offersRows`/`storesRows`) | API (`stateProductOffers` + `classify`) | UI (`index.html`) |
 |---|---|---|---|---|
 | Sucesso | `stale: false`, horário da rodada; fonte `ACTIVE`, `lastSuccess` = rodada | `active`, `last_seen_at` = rodada | `active`, `atual` | "Atualizado agora/há N min" |
 | Erro parcial: loja fora do ar | fonte `ERROR`, `lastCheck` novo, `lastSuccess` antigo; ofertas `staleCopy` | `pending`, `unknown`, `last_seen_at` antigo; `source_health` `ERROR` | `pending`, idade real | selo "Leitura antiga" |
 | Erro parcial: página da loja | fonte `ACTIVE`, `lastSuccess` novo, `pageFailures` > 0; oferta `staleCopy` | idem (a fonte parece saudável) | idem | idem |
-| Falha total | todas `staleCopy`; `generatedAt` avança | `max(last_seen_at)` não avança | por oferta: idade real; `state.json`: `atual` (lacuna 4) | "Última leitura há …"; barra pelo `generatedAt` |
+| Falha total | todas `staleCopy`; `generatedAt` avança, `dataAt` não | `max(last_seen_at)` não avança | por oferta: idade real; `state.json`: idade de `dataAt` (#621) | "Última leitura há …"; barra pela idade de `dataAt` |
 | Horário ausente (legado) | continua ausente na falha | `last_seen_at` nulo (sync grava `now()`: lacuna 2) | `null`, `indisponivel` | "Data da leitura desconhecida" |
 | Horário no futuro | continua no futuro na falha (não corrigido nem renovado) | gravado como veio (lacuna 6) | `indisponivel` | "Data da leitura desconhecida" (corrigido na #614: antes "Atualizado agora") |
 | Recuperação | `stale: false`, sem `lastValid`, horário novo; fonte `ACTIVE`, `fails: 0` | `active`, `last_seen_at` novo | `active`, `atual` | "Atualizado agora"; volta a concorrer |
 
-## Lacunas conhecidas (não alteradas aqui)
+## Lacunas conhecidas
 
 1. O frescor por oferta individual ainda não é devolvido pela API: a resposta traz o frescor da fonte inteira, e a
    UI só mostra o selo `stale` e o "Atualizado há …". Expor um status por oferta exigiria definir como ele se combina
@@ -83,11 +85,14 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
    rodada, então o caso só ocorre com dado legado; mudar exige decidir o tratamento no banco (`NOT NULL`) em issue própria.
 3. Horário inválido (texto não interpretável) faz o mapeamento recusar a oferta e a sincronização falha inteira
    (fecha em vez de inventar); isolar a oferta ruim também fica para issue própria.
-4. `generatedAt` do `state.json` é o horário da rodada, não da última leitura: avança mesmo quando todos os coletores
-   falham. O fallback da API para o `state.json` (`api/v1.mjs`, banco desatualizado) e a barra da UI podem então dizer
-   "atual" com todas as ofertas stale (cada oferta continua marcada e com a idade real). Corrigir exige decidir um
-   horário de "última leitura real" no `state.json` (por exemplo, o maior `source_timestamp` não stale) e como ele
-   convive com o `generatedAt` que a Home, o sitemap e as páginas já usam; fica para issue própria.
+4. **Corrigida na #621.** `generatedAt` do `state.json` continua sendo o horário da rodada (avança mesmo quando todos
+   os coletores falham) e segue identificando a rodada para ops, watchdog, backup e o "Dados novos" da UI. O frescor do
+   `state.json` agora vem de `dataAt` (`lastReadAt` em `src/run.js`): o maior `source_timestamp` das ofertas publicadas,
+   nunca depois da rodada. Inclui as stale porque reaproveitar não renova o horário, então na falha total ele fica na
+   última leitura e envelhece; na falha parcial e na recuperação é a rodada. Sem horário válido, `null`
+   (`indisponivel`). Usam `dataAt` (por `stateDataAt` em `api/_lib/freshness.mjs`): o fallback da API, as páginas, o
+   sitemap, o cache do `_seo`, `tools/seo-audit.mjs` e `freshState` da UI. `state.json` antigo, sem o campo, continua
+   no `generatedAt`. Teste: `test/state-data-at-tests.js` e os casos 3–6 de `test/collector-sync-contract-tests.js`.
 5. JSON-LD com todas as páginas fora do ar conta como `ACTIVE` (a loja "respondeu" porque o sitemap está em cache) e
    avança `lastSuccess`; só `pageFailures` mostra a falha, e `collectorsSummary` conta a loja como ok.
    Tratar "todas as páginas falharam" como falha da fonte muda backoff e alertas: issue própria.

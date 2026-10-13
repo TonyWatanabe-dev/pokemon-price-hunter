@@ -1,6 +1,6 @@
 // Compartilhado pelas funções de SEO. Mesmo algoritmo de URL do site (tools/page.template.html: buildSlugs).
 import { byComparableTotal } from './_lib/offer-rank.mjs';
-import { classify, usable } from './_lib/freshness.mjs';
+import { classify, usable, stateDataAt } from './_lib/freshness.mjs';
 export const RAW = 'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/data/data/state.json';
 export const SITE = 'https://tcg-price-hunter.vercel.app';
 const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -24,7 +24,7 @@ export async function state() {
   } catch (e) {
     // Falha do GitHub raw (429/5xx, rede): usa o último state bom enquanto ele ainda estiver dentro do frescor
     // (docs/auditorias/paginas-servidor.md §4, proposta 5). Sem cache ou com cache velho, lança como antes.
-    if (cache.s && usable(classify(cache.s.generatedAt))) return cache.s;
+    if (cache.s && usable(classify(stateDataAt(cache.s)))) return cache.s;
     throw e;
   }
 }

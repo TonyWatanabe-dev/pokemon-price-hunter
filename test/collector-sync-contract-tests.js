@@ -43,7 +43,7 @@ http.setFetch(async (url) => {
 
 const { runOnce, recentRead, rankBestDeals, liveForScore } = await import('../src/run.js');
 const { offersRows, storesRows } = await import('../src/core/mappers.js');
-const { classify } = await import('../api/_lib/freshness.mjs');
+const { classify, stateDataAt } = await import('../api/_lib/freshness.mjs');
 const { stateProductOffers } = await import('../api/_lib/read-state.mjs');
 
 // UI: código real de index.html num sandbox (como test/trust-ux-tests.js).
@@ -85,7 +85,7 @@ await t('1. rodada bem-sucedida: o mesmo horário em todas as etapas', async () 
     Date.now = () => base + 5 * 60e3; try { assert.equal(readKnown(o), true); assert.equal(readNote(o), 'Atualizado há 5 min'); } finally { Date.now = realNow; }
   }
   for (const id of ['vt', 'ld']) { assert.equal(src(s, id).status, 'ACTIVE'); assert.deepEqual([health(s, id).last_check_at, health(s, id).last_success_at], [iso(0), iso(0)]); }
-  assert.equal(s.generatedAt, iso(0)); assert.equal(dbAt(s), iso(0));
+  assert.equal(s.generatedAt, iso(0)); assert.equal(s.dataAt, iso(0)); assert.equal(dbAt(s), iso(0));
 });
 
 await t('2. erro parcial: loja que falhou e página que falhou ficam stale com o horário antigo; a fonte diz o que houve', async () => {
@@ -107,9 +107,10 @@ await t('2. erro parcial: loja que falhou e página que falhou ficam stale com o
   }
   assert.deepEqual(rankBestDeals(s.offers), [], 'nenhuma oferta parada no ranking');
   assert.equal(dbAt(s), iso(0), 'o banco não avança sem leitura nova');
+  assert.deepEqual([s.generatedAt, s.dataAt], [iso(15), iso(0)], 'state.json: rodada nova, última leitura antiga');
 });
 
-await t('3. falha total: horário por oferta envelhece; generatedAt do state.json avança (lacuna 4)', async () => {
+await t('3. falha total: horário por oferta envelhece; generatedAt avança, mas o frescor do state.json é o da última leitura (#621)', async () => {
   ld.down = true; // vt continua fora do ar
   s = await roundAt(120);
   for (const o of [vtOf(s), ldOf(s)]) {
@@ -118,11 +119,13 @@ await t('3. falha total: horário por oferta envelhece; generatedAt do state.jso
     Date.now = () => base + 120 * 60e3; try { assert.equal(staleNote(o), 'Última leitura há 2 h'); } finally { Date.now = realNow; }
   }
   assert.equal(classify(dbAt(s), base + 120 * 60e3).status, 'desatualizado', 'frescor do banco: só leituras reais contam');
-  // Lacuna 4 (docs/frescor.md): generatedAt é o horário da rodada, não da última leitura. Sem nenhuma leitura nova, o
-  // state.json (fallback da API) e a barra da UI dizem "atual". Ao corrigir a lacuna, troque estas asserções.
+  // #621 (antes, lacuna 4): generatedAt é o horário da rodada e avança; o frescor do state.json (fallback da API,
+  // páginas e barra da UI) vem de dataAt, a última leitura real, e envelhece como as ofertas.
   assert.equal(s.generatedAt, iso(120));
-  assert.equal(classify(s.generatedAt, base + 120 * 60e3).status, 'atual');
-  assert.equal(freshState(s, base + 120 * 60e3).status, 'atual');
+  assert.equal(s.dataAt, iso(0));
+  assert.equal(classify(stateDataAt(s), base + 120 * 60e3).status, 'desatualizado');
+  assert.equal(freshState(s, base + 120 * 60e3).status, 'desatualizado', 'a barra não diz "atual" sem leitura nova');
+  assert.equal(freshState(s, base + 120 * 60e3).ageMin, 120);
   assert.equal(src(s, 'ld').status, 'ACTIVE', 'JSON-LD com todas as páginas fora do ar ainda conta como ACTIVE (lacuna 5)');
   assert.equal(src(s, 'ld').pageFailures, 1);
 });
@@ -147,6 +150,8 @@ await t('4. horário ausente ou no futuro na leitura anterior: nada inventa hor�
     assert.equal(readKnown({ source_timestamp: iso(139) }), true, 'folga de relógio de até 5 min, como classify');
   } finally { Date.now = realNow; }
   assert.equal(recentRead(sv, at(135)), false); assert.equal(recentRead(sl, at(135)), false);
+  assert.equal(s.dataAt, null, 'sem horário ausente nem no futuro como "última leitura"');
+  assert.equal(freshState(s, base + 135 * 60e3).status, 'indisponivel');
 });
 
 await t('5. recuperação: a primeira rodada bem-sucedida renova tudo, em todas as etapas', async () => {
@@ -164,6 +169,17 @@ await t('5. recuperação: a primeira rodada bem-sucedida renova tudo, em todas 
   assert.equal(src(s, 'ld').pageFailures, 0);
   assert.equal(dbAt(s), T); assert.equal(classify(dbAt(s), now).status, 'atual');
   for (const o of [vtOf(s), ldOf(s)]) assert.equal(liveForScore(o), true, `${o.storeId}: lida de novo, volta a concorrer`);
+  assert.deepEqual([s.generatedAt, s.dataAt], [T, T]); assert.equal(freshState(s, now).status, 'atual', 'recuperação: a barra volta a "atual"');
+});
+
+await t('6. sucesso parcial depois da recuperação: uma loja lida basta para o state.json estar em dia (#621)', async () => {
+  vt.down = true;
+  s = await roundAt(24 * 60 + 45);
+  const T = iso(24 * 60 + 45); const now = base + (24 * 60 + 45) * 60e3;
+  assert.deepEqual([vtOf(s).stale, vtOf(s).source_timestamp], [true, iso(24 * 60 + 30)], 'a loja fora do ar fica stale com o horário dela');
+  assert.deepEqual([ldOf(s).stale, ldOf(s).source_timestamp], [false, T]);
+  assert.deepEqual([s.generatedAt, s.dataAt], [T, T]);
+  assert.equal(classify(stateDataAt(s), now).status, 'atual'); assert.equal(freshState(s, now).status, 'atual');
 });
 
 console.log(`collector-sync-contract-tests: ${n} testes ok`);

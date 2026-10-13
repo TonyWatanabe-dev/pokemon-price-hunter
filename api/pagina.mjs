@@ -6,7 +6,7 @@ import path from 'node:path';
 import { state, slugs, label, live, SITE, colSlug, typeSlug, esc, brl, pct, bestBy, pix } from './_seo.mjs';
 import { apiDbEnabled } from './_lib/db.mjs';
 import { listOpportunities } from './_lib/read-db.mjs';
-import { classify, usable, dbDataAt } from './_lib/freshness.mjs';
+import { classify, usable, dbDataAt, stateDataAt } from './_lib/freshness.mjs';
 import { byComparableTotal, shipKnown } from './_lib/offer-rank.mjs';
 // Lote E: guia, perguntas frequentes e glossário como dados (fonte única com o site).
 import { GUIA, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from './_lib/guia.mjs';
@@ -246,7 +246,7 @@ export default async function handler(req, res) {
     // Fora disso, vai a página sem o conteúdo pré-renderizado: o site carrega e mostra o aviso de dados desatualizados.
     if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { if (usable(classify(await dbDataAt()))) opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20 })).items; } catch { opp = null; } }
     const s = await state();
-    if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
+    if (!usable(classify(stateDataAt(s)))) throw new Error('dados desatualizados');
     // Frente 7: lojas conhecidas (sources do state.json; sem ele, sources.json) só para /lojas e para o bloco do produto.
     let lojas = [];
     if (t === 'lojas' || t === 'produto') { try { lojas = await lojasFromState(s); } catch { lojas = []; } }

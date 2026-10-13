@@ -1,6 +1,6 @@
 // /sitemap.xml: páginas públicas, coleções, formatos e todos os produtos com endereço amigável.
 import { state, slugs, SITE, colSlug, typeSlug, bestBy } from './_seo.mjs';
-import { classify, usable } from './_lib/freshness.mjs';
+import { classify, usable, stateDataAt } from './_lib/freshness.mjs';
 export default async function handler(req, res) {
   const fixed = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
   // Sem dados utilizáveis, a Home mantém canonical/indexabilidade; as demais páginas ficam noindex em pagina.mjs.
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   try {
     const s = await state();
     // Dados antigos: só as páginas fixas (nada de produto/coleção/formato que possa estar desatualizado).
-    if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
+    if (!usable(classify(stateDataAt(s)))) throw new Error('dados desatualizados');
     stale = false;
     urls = fixed;
     lastmod = String(s.generatedAt || '').slice(0, 10) || lastmod; const { of } = slugs(s.products || []);

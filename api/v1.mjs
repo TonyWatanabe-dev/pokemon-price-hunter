@@ -220,7 +220,7 @@ async function handle(req, res, { now }) {
     if (dbFr && !FR.usable(dbFr)) {
       if (rt.name === 'oportunidades') out = { body: staleOpportunities(rt, dbFr) };
       else {
-        const L = await legacyState({ now }).catch(() => null); const stFr = L ? FR.classify(L.st?.generatedAt, now, 'state') : null;
+        const L = await legacyState({ now }).catch(() => null); const stFr = L ? FR.classify(FR.stateDataAt(L.st), now, 'state') : null;
         if (FR.usable(stFr) && Date.parse(stFr.dataAt) > Date.parse(dbFr.dataAt || 0)) { source = 'state'; fallback = 'banco-desatualizado'; reason = dbFr.ageMin != null ? `banco-${dbFr.ageMin}min` : 'banco-sem-horario'; }
       }
     }
@@ -243,7 +243,7 @@ async function handle(req, res, { now }) {
   let fr = null;
   if (!out.status || out.status < 400) {
     if (source === 'db') fr = dbFr || FR.classify(null, now, 'db');
-    else { const L = await legacyState({ now }).catch(() => null); fr = FR.classify(L?.st?.generatedAt, now, 'state'); }
+    else { const L = await legacyState({ now }).catch(() => null); fr = FR.classify(FR.stateDataAt(L?.st), now, 'state'); }
     if (fr.status === 'indisponivel' && !out.body?.meta?.status) out = { status: 503, body: { error: 'dados desatualizados ou sem horário confiável no momento' } };
     FR.attach(out.body, fr, fallback ? { from: 'db', reason: fallback, ...(dbFr?.dataAt ? { dbDataAt: dbFr.dataAt, dbAgeMin: dbFr.ageMin } : {}) } : null);
   }

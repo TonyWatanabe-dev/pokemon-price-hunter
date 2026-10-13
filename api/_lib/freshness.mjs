@@ -3,7 +3,9 @@
 //  • banco: max(offer.last_seen_at) das ofertas ativas/pendentes. A sincronização grava last_seen_at = horário da
 //    rodada do robô em toda oferta lida, então esse valor é a rodada mais recente que chegou ao banco. Se a
 //    sincronização parar, ele para junto (o generatedAt do state.json, não).
-//  • state.json: generatedAt (horário da rodada que gerou o arquivo).
+//  • state.json: dataAt (última leitura real: maior source_timestamp das ofertas, que reaproveitar não renova).
+//    generatedAt é só o horário da rodada e avança mesmo quando todos os coletores falham; serve de horário apenas
+//    para state.json antigo, sem o campo dataAt. dataAt nulo = nenhum horário de leitura = indisponivel.
 // Limites (minutos), a partir do ciclo do robô: rodada a cada 15 min; job de 5–8 min (máx. observado 7,8 min);
 // a sincronização termina ~1–2 min depois de publicar. Idade normal do banco: até ~25 min.
 //  • atual: até 30 min · atrasado: até 90 min (1 a ~5 rodadas perdidas; é o mesmo limite que o site já usa para
@@ -28,6 +30,9 @@ export function classify(at, now = nowMs(), source = null) {
   return { status, source, dataAt: new Date(t).toISOString(), ageMin, limits: LIMITS };
 }
 export const usable = (fr) => !!fr && USABLE.has(fr.status);
+
+/** Horário que prova o frescor de um state.json (ver o topo do arquivo). */
+export const stateDataAt = (st) => (st && typeof st === 'object' ? ('dataAt' in st ? st.dataAt : st.generatedAt) : null) ?? null;
 
 const DB_AT_SQL = `SELECT max(last_seen_at) AS at FROM hunter.offer WHERE status IN ('active', 'pending')`;
 let dbCache = { at: 0, v: undefined };
