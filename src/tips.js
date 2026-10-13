@@ -27,7 +27,9 @@ export const firstPrice = (txt) => {
   return DE.test(t) && all.length > 1 ? Math.min(...all) : all[0];
 };
 const STORE_NAMES = { amazon: 'Amazon', 'mercado-livre': 'Mercado Livre', mercadolivre: 'Mercado Livre', shopee: 'Shopee', magalu: 'Magalu', 'magazine-luiza': 'Magalu', americanas: 'Americanas', 'casas-bahia': 'Casas Bahia', aliexpress: 'AliExpress' };
-const storeFromHost = (u) => { try { const h = new URL(u).hostname.replace(/^www\./, ''); for (const [k, v] of Object.entries(STORE_NAMES)) if (h.includes(k.replace('-', ''))) return v; if (/amzn\./.test(h)) return 'Amazon'; if (/meli\.la|mercadolivre/.test(h)) return 'Mercado Livre'; return h; } catch { return null; } };
+// Loja pelo domínio: host igual ou subdomínio de um domínio conhecido (ou encurtador). Não casa por substring.
+const STORE_DOMAINS = { 'amazon.com.br': 'Amazon', 'amazon.com': 'Amazon', 'amzn.to': 'Amazon', 'amzn.com': 'Amazon', 'mercadolivre.com.br': 'Mercado Livre', 'mercadolivre.com': 'Mercado Livre', 'meli.la': 'Mercado Livre', 'shopee.com.br': 'Shopee', 'magazineluiza.com.br': 'Magalu', 'magalu.com': 'Magalu', 'americanas.com.br': 'Americanas', 'casasbahia.com.br': 'Casas Bahia', 'aliexpress.com': 'AliExpress' };
+export const storeFromHost = (u) => { try { const h = new URL(u).hostname.toLowerCase().replace(/^www\./, ''); for (const [d, v] of Object.entries(STORE_DOMAINS)) if (h === d || h.endsWith('.' + d)) return v; return h; } catch { return null; } };
 
 // Pelando: a busca é renderizada no servidor; cada promoção tem link /d/<slug>.
 export function parsePelando(html) {
