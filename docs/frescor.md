@@ -13,7 +13,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Frete | `src/run.js` (`carryShipping`) | Se a simulação falha (ou a oferta é copiada sem nova leitura), o frete anterior só é reaproveitado dentro da validade de 24 h da cotação (`HUNTER_SHIPPING_TTL_H`), com `shippingAt` = data da cotação original (não renova); a falha da simulação fica em `shippingError`. Vencido ou sem data, o frete vira desconhecido e o total volta ao preço. |
 | Banco | `src/core/mappers.js` | `last_seen_at` = `source_timestamp`; stale vira `status = 'pending'` e `stock_status = 'unknown'`. Oferta que sumiu da rodada vira `removed`. |
 | API | `api/_lib/read-db.mjs`, `read-state.mjs` | `pending` volta como `stale: true`; `source_timestamp` = `last_seen_at`. O frescor da resposta é `freshness` (e os cabeçalhos `X-Data-*`). |
-| UI | `tools/page.template.html` | "Atualizado há …" vem de `source_timestamp`; `stale` mostra o selo "Leitura antiga". |
+| UI | `index.html` (`readKnown`/`readNote`, `freshState`) | "Atualizado há …" vem de `source_timestamp` (ausente, inválido ou no futuro além de 5 min: "Data da leitura desconhecida"); `stale` mostra o selo "Leitura antiga". A barra "Ao vivo / Atualizado há" usa o frescor da fonte servida (`freshness.dataAt` ou `generatedAt`). |
 
 ## Regras
 
@@ -44,8 +44,33 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 - `test/collectors-tests.js`: falha da fonte, recuperação, sem reposição/queda falsa.
 - `test/freshness-tests.js`: limites, fallback entre banco e `state.json`, cabeçalhos e páginas.
 - `test/freshness-contract-tests.js`: a matriz acima (ausente, inválido, futuro, fresco, envelhecendo, stale e falha parcial).
+- `test/collector-sync-contract-tests.js`: rodadas reais com coletor simulado, conferindo cada etapa (abaixo).
 - `test/offer-freshness-tests.js`: horário preservado ao reaproveitar, mapeamento para o banco e envelhecimento
   pelos limites configurados.
+
+## Sincronização entre etapas (issue #614)
+
+Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado em `test/collector-sync-contract-tests.js`
+(VTEX + JSON-LD simulados, rodadas reais de `runOnce`).
+
+| Horário / estado | Etapa | Avança quando | Não prova |
+|---|---|---|---|
+| `sources[id].lastCheck` → `source_health.last_check_at` | coletor → banco | a loja é tentada (não avança em backoff nem rodada pulada) | que a leitura deu certo |
+| `sources[id].lastSuccess` → `source_health.last_success_at` (`coalesce` mantém o anterior) | coletor → banco | a loja respondeu, mesmo com páginas que falharam (`pageFailures`) | que cada oferta foi lida |
+| `status` da fonte (`ACTIVE`/`ERROR`/`BLOCKED`) → `source_health.status` (`store.status` fica `active` em `ERROR`) | coletor → banco | a cada tentativa | estado das ofertas |
+| `offer.source_timestamp` → `offer.last_seen_at` → `last_seen_at` da API | coletor → banco → API → UI | só leitura real da oferta | — (é o horário por oferta) |
+| `max(last_seen_at)` (ativas/pendentes) | banco → API (`freshness`) | alguma oferta foi lida e sincronizada | que todas estão frescas (cada uma tem o seu) |
+| `state.generatedAt` | `state.json` → API (fallback) → UI (barra) | toda rodada que termina | que alguma oferta foi lida (lacuna 4) |
+
+| Cenário | Coletor | Banco (`offersRows`/`storesRows`) | API (`stateProductOffers` + `classify`) | UI (`index.html`) |
+|---|---|---|---|---|
+| Sucesso | `stale: false`, horário da rodada; fonte `ACTIVE`, `lastSuccess` = rodada | `active`, `last_seen_at` = rodada | `active`, `atual` | "Atualizado agora/há N min" |
+| Erro parcial: loja fora do ar | fonte `ERROR`, `lastCheck` novo, `lastSuccess` antigo; ofertas `staleCopy` | `pending`, `unknown`, `last_seen_at` antigo; `source_health` `ERROR` | `pending`, idade real | selo "Leitura antiga" |
+| Erro parcial: página da loja | fonte `ACTIVE`, `lastSuccess` novo, `pageFailures` > 0; oferta `staleCopy` | idem (a fonte parece saudável) | idem | idem |
+| Falha total | todas `staleCopy`; `generatedAt` avança | `max(last_seen_at)` não avança | por oferta: idade real; `state.json`: `atual` (lacuna 4) | "Última leitura há …"; barra pelo `generatedAt` |
+| Horário ausente (legado) | continua ausente na falha | `last_seen_at` nulo (sync grava `now()`: lacuna 2) | `null`, `indisponivel` | "Data da leitura desconhecida" |
+| Horário no futuro | continua no futuro na falha (não corrigido nem renovado) | gravado como veio (lacuna 6) | `indisponivel` | "Data da leitura desconhecida" (corrigido na #614: antes "Atualizado agora") |
+| Recuperação | `stale: false`, sem `lastValid`, horário novo; fonte `ACTIVE`, `fails: 0` | `active`, `last_seen_at` novo | `active`, `atual` | "Atualizado agora"; volta a concorrer |
 
 ## Lacunas conhecidas (não alteradas aqui)
 
@@ -58,3 +83,17 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
    rodada, então o caso só ocorre com dado legado; mudar exige decidir o tratamento no banco (`NOT NULL`) em issue própria.
 3. Horário inválido (texto não interpretável) faz o mapeamento recusar a oferta e a sincronização falha inteira
    (fecha em vez de inventar); isolar a oferta ruim também fica para issue própria.
+4. `generatedAt` do `state.json` é o horário da rodada, não da última leitura: avança mesmo quando todos os coletores
+   falham. O fallback da API para o `state.json` (`api/v1.mjs`, banco desatualizado) e a barra da UI podem então dizer
+   "atual" com todas as ofertas stale (cada oferta continua marcada e com a idade real). Corrigir exige decidir um
+   horário de "última leitura real" no `state.json` (por exemplo, o maior `source_timestamp` não stale) e como ele
+   convive com o `generatedAt` que a Home, o sitemap e as páginas já usam; fica para issue própria.
+5. JSON-LD com todas as páginas fora do ar conta como `ACTIVE` (a loja "respondeu" porque o sitemap está em cache) e
+   avança `lastSuccess`; só `pageFailures` mostra a falha, e `collectorsSummary` conta a loja como ok.
+   Tratar "todas as páginas falharam" como falha da fonte muda backoff e alertas: issue própria.
+6. Horário no futuro (relógio do robô adiantado) é gravado como veio em `last_seen_at`. A guarda do sync
+   (`offer.last_seen_at <= EXCLUDED.last_seen_at`) passa a descartar as leituras reais seguintes da oferta até o relógio
+   alcançar, e o `max(last_seen_at)` deixa o frescor do banco `indisponivel`. Hoje `source_timestamp` é sempre o `T` da
+   rodada, então só ocorre com relógio do runner errado; recusar ou limitar no mapeamento exige o `now` da
+   sincronização e decidir o tratamento (issue própria). A página de lojas (`lojasNormalize`) também usa o maior
+   `source_timestamp` sem esse limite.

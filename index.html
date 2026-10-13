@@ -1628,8 +1628,9 @@ function priceBlock(p,o,abrir){
   return`<div class="pblock"><span class="big" data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</span>${off}</div>
   <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
-/* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -" */
-const readKnown=(o)=>Number.isFinite(Date.parse(o?.source_timestamp??""));
+/* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -". No futuro além de 5 min
+   (relógio adiantado) também é desconhecida, como em freshState e na API (classify), nunca "Atualizado agora". */
+const readKnown=(o)=>{const t=Date.parse(o?.source_timestamp??"");return Number.isFinite(t)&&t-Date.now()<=3e5};
 const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data da leitura desconhecida";
 /* Só leitura antiga (estados-ui 4): todas as ofertas do produto são reaproveitadas (stale). Devolve a mais recente para dizer
    há quanto tempo foi a última leitura, em vez de "Nenhuma loja com oferta agora". */
