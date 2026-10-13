@@ -1631,6 +1631,10 @@ function priceBlock(p,o,abrir){
 /* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -" */
 const readKnown=(o)=>Number.isFinite(Date.parse(o?.source_timestamp??""));
 const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data da leitura desconhecida";
+/* Só leitura antiga (estados-ui 4): todas as ofertas do produto são reaproveitadas (stale). Devolve a mais recente para dizer
+   há quanto tempo foi a última leitura, em vez de "Nenhuma loja com oferta agora". */
+const staleOnly=(xs)=>{xs=xs.filter((o)=>!o.anomalous);return xs.length&&xs.every((o)=>o.stale)?xs.sort((a,b)=>String(b.source_timestamp??"").localeCompare(String(a.source_timestamp??"")))[0]:null};
+const staleNote=(o)=>readKnown(o)?`Última leitura ${ago(o.source_timestamp)}`:"Última leitura em data desconhecida";
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
@@ -1638,10 +1642,11 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
   const{p,o,n}=e;const gg=g(p);const abrir=!opt.plain&&F.mode==="abrir"&&view==="deals";
   const r=refOf(p);const d=discOf(p,o);const hasD=!!(o&&r&&d!=null);
   const state=!o?"none":o.stock==="PRE_ORDER"?"pre":!live(o)?"oos":"";
+  const old=!o?staleOnly(OFF.filter((x)=>x.productId===p.id)):o.stale?o:null;
   const fav=isFav(p.id);const href="/produto/"+(SLUG[p.id]||encodeURIComponent(p.id));
   const sx=o&&live(o)?oppOf(o):null;
   const foil=!!opt.foil&&!state;
-  const badge=state==="pre"?`<span class="deal-badge pre">Pré-venda${o.releaseDate?` · ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</span>`:state?`<span class="deal-badge muted">${state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:sx?`<span class="deal-badge" style="--sc:${bandUI(sx.band)[1]}"><i></i>${esc(bandUI(sx.band)[0])}</span>`:"";
+  const badge=state==="pre"?`<span class="deal-badge pre">Pré-venda${o.releaseDate?` · ${new Date(o.releaseDate).toLocaleDateString("pt-BR")}`:""}</span>`:state?`<span class="deal-badge muted">${old?"Leitura antiga":state==="none"?"Sem oferta agora":"Sem estoque"}</span>`:sx?`<span class="deal-badge" style="--sc:${bandUI(sx.band)[1]}"><i></i>${esc(bandUI(sx.band)[0])}</span>`:"";
   const save=hasD&&d>=.0005&&!abrir;
   return`<article class="deal${state?" "+state:""}${foil?" foil":""}${CHANGED.has(p.id)?" upd":""}" data-cat="${catOf(p)}" style="--ec:${gg.c}${opt.i!=null?`;--i:${opt.i}`:""}">${opt.i!=null?`<span class="deal-back" aria-hidden="true"></span>`:""}
   <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" aria-label="${esc(p.collectionName+" "+label(p))}"></a>
@@ -1655,7 +1660,7 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
     <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
-    :`<p class="deal-price"><span>${r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
+    :`<p class="deal-price"><span>${old?`${staleNote(old)}${r?` · Copag ${money(r.v)}`:""}`:r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
 }
@@ -2297,7 +2302,7 @@ function renderProduct(pid){
   const p=P[pid];
   if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
   const gg=g(p);const offers=OFF.filter((o)=>o.productId===pid).sort(OFFER_SORTS[offerSort]);
-  const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");
+  const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");const old=!best&&!pre&&staleOnly(offers);
   const c=p.copag||{};const col=(S.collections||[]).find((x)=>x.id===p.collection);
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
@@ -2326,7 +2331,7 @@ function renderProduct(pid){
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
       <a class="btn wide" href="${esc(safeUrl(outUrl(best.url)))}" target="_blank" rel="noopener${outRel(best.url)}" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
-    </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
+    </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":old?"Leitura antiga":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:old?`${staleNote(old)}, em ${esc(old.storeName)}. Preço e estoque podem ter mudado desde então. Crie um alerta para saber quando voltar com preço bom.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
     ${alertBox(pid)}
   </aside>
   <div class="pp-main">
