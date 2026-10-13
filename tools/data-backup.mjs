@@ -8,6 +8,8 @@
 //   --retention 14    dias de retenção (padrão: BACKUP_RETENTION_DAYS ou 14; inválido/fora de 3–365 → 14)
 //   --now <ISO>       relógio (só para teste)
 //   --dry-run         valida e mostra o que faria, sem enviar nada ao remoto
+//   --check-age       só confere a idade: sai 1 se a etiqueta mais nova for mais velha que --max-days (padrão 2) ou não existir
+//   --max-days N      limite de idade para --check-age
 //
 // Regras:
 // - marca o commit BUSCADO (sha fixo), nunca o nome do ramo: se o robô reescrever o ramo no meio, a etiqueta continua
@@ -155,10 +157,33 @@ export function runBackup({ git, remote = 'origin', branch = 'data', now = new D
   return { status, tag, commit, errors: [], pruned, check, kept: tags.map((x) => x.name).filter((n) => !pruned.includes(n)) };
 }
 
+// Idade da etiqueta datada mais nova, em dias inteiros (UTC); ok=false se não houver etiqueta ou se passar de maxDays.
+export function checkAge(git, { remote = 'origin', now = new Date().toISOString(), maxDays = 2 } = {}) {
+  const today = Date.parse(new Date(now).toISOString().slice(0, 10) + 'T00:00:00Z');
+  const dates = listBackupTags(git, remote).map((x) => ({ name: x.name, t: tagDate(x.name) })).filter((x) => x.t != null);
+  if (!dates.length) return { ok: false, newest: null, ageDays: null, maxDays };
+  const newest = dates.reduce((a, b) => (b.t > a.t ? b : a));
+  const ageDays = Math.round((today - newest.t) / DAY);
+  return { ok: ageDays <= maxDays, newest: newest.name, ageDays, maxDays };
+}
+
 function arg(argv, name) { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : undefined; }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const argv = process.argv.slice(2);
+  if (argv.includes('--check-age')) {
+    const raw = String(arg(argv, '--max-days') ?? '2').trim();
+    const maxDays = /^\d+$/.test(raw) ? Number(raw) : 2;
+    try {
+      const r = checkAge(makeGit(), { remote: arg(argv, '--remote') || 'origin', now: arg(argv, '--now') || new Date().toISOString(), maxDays });
+      console.log(r.newest ? `${r.newest}: ${r.ageDays} dia(s) (limite ${maxDays}) → ${r.ok ? 'ok' : 'VELHA'}` : 'Nenhuma etiqueta data-backup/AAAA-MM-DD no remoto.');
+      process.exitCode = r.ok ? 0 : 1;
+    } catch (e) {
+      console.log(`Checagem falhou: ${(e.stderr?.toString() || e.message).trim()}`);
+      process.exitCode = 1;
+    }
+    process.exit();
+  }
   const retention = retentionDays(arg(argv, '--retention') ?? process.env.BACKUP_RETENTION_DAYS);
   const lines = [];
   const log = (s) => { console.log(s); lines.push(s); };
