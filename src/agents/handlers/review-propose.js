@@ -6,6 +6,7 @@
 import { validateEvidence } from '../evidence.js';
 
 export const REVIEW_CATEGORIES = ['matching', 'reference_conflict', 'price_anomaly', 'store_blocked', 'duplicate_product', 'affiliate_missing', 'crawler_broken'];
+const EVIDENCE_REQUIRED = ['matching', 'price_anomaly'];
 const MAX_PROPOSAL_BYTES = 8 * 1024;
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const shortStr = (v, max) => typeof v === 'string' && v.length > 0 && v.length <= max;
@@ -19,11 +20,11 @@ export function validateReviewProposal(p, { now = Date.now() } = {}) {
   if (p.confidence != null && !(Number.isInteger(p.confidence) && p.confidence >= 0 && p.confidence <= 100)) return 'confidence deve ser inteiro 0–100';
   if (!isPlainObject(p.proposal)) return 'proposal deve ser objeto';
   if (Buffer.byteLength(JSON.stringify(p.proposal)) > MAX_PROPOSAL_BYTES) return `proposal acima de ${MAX_PROPOSAL_BYTES} bytes`;
-  // Decisão de matching só vira item de revisão com `proposal.evidence` no contrato de ../evidence.js
-  // (fonte, URL http(s), motivo, base e status coerente). Campos soltos (url/title/why) não bastam.
-  if (p.category === 'matching') {
+  // Decisão de matching ou anomalia de preço só vira item de revisão com `proposal.evidence` no contrato
+  // de ../evidence.js (fonte, URL http(s), motivo, base e status coerente). Campos soltos (url/title/why) não bastam.
+  if (EVIDENCE_REQUIRED.includes(p.category)) {
     const err = validateEvidence(p.proposal.evidence, { now });
-    if (err) return `proposta de matching sem evidência válida: ${err}`;
+    if (err) return `proposta de ${p.category} sem evidência válida: ${err}`;
   }
   return null;
 }

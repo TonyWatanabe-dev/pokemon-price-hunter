@@ -220,4 +220,22 @@ await test('matching sem evidência: falha direto, sem retry e sem item de revis
   assert.equal(sink.items[0].dedupeKey, 'm:com'); assert.deepEqual(sink.items[0].proposal.evidence, evidence);
 });
 
+await test('price_anomaly sem evidência: falha direto, sem retry e sem item de revisão', async () => {
+  const anomalia = (k, inner) => ({ ...proposal(k), category: 'price_anomaly', proposal: inner });
+  const v = (inner) => validateReviewProposal(anomalia('pa:v', inner), { now: T0 });
+  assert.equal(v({ offerId: 'o1', price: 9.9, evidence }), null);
+  assert.match(v({ offerId: 'o1', price: 9.9 }), /proposta de price_anomaly sem evidência válida: evidência ausente/);
+  assert.match(v({ url: 'https://omni.com.br/o1', why: 'preço 90% abaixo da referência' }), /evidência ausente/);
+  assert.match(v({ evidence: { ...evidence, url: 'javascript:alert(1)' } }), /falta url/);
+  const { orch, store, sink } = setup();
+  await orch.enqueue({ type: 'review.propose', idempotencyKey: 'pa-sem', payload: anomalia('pa:sem', { offerId: 'o1', price: 9.9 }) });
+  await orch.enqueue({ type: 'review.propose', idempotencyKey: 'pa-com', payload: anomalia('pa:com', { offerId: 'o1', price: 9.9, evidence }) });
+  const r = await orch.runOnce();
+  assert.equal(r.failed, 1); assert.equal(r.retried, 0);
+  assert.equal(store.jobs[0].status, 'failed'); assert.equal(store.jobs[0].attempts, 1);
+  assert.equal(sink.items.length, 1, 'só a anomalia com evidência vira item de revisão');
+  assert.equal(sink.items[0].dedupeKey, 'pa:com'); assert.equal(sink.items[0].category, 'price_anomaly');
+  assert.deepEqual(sink.items[0].proposal.evidence, evidence);
+});
+
 console.log(`✓ Hunter Orchestrator: ${n} grupos de testes passaram (puro)`);
