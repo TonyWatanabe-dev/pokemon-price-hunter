@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { buildRecord, formatComment, parseRecords, parsePerfil, summarize, gastoNaJanela, AUTOR_CONFIAVEL } from '../src/agents/telemetria.js';
+import { buildRecord, formatComment, parseRecords, parsePerfil, summarize, gastoNaJanela, dedupe, AUTOR_CONFIAVEL } from '../src/agents/telemetria.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
@@ -105,6 +105,25 @@ await t('7. CLI registrar: lê o arquivo do env, imprime o comentário, grava o 
   const semArquivo = execFileSync('node', [path.join(root, 'tools/telemetria.mjs'), 'registrar'], { env: { ...env, EXECUTION_FILE: path.join(dir, 'nao-existe.json'), GITHUB_STEP_SUMMARY: '' }, encoding: 'utf8' });
   assert.equal(parseRecords([{ author: AUTOR_CONFIAVEL, body: semArquivo }])[0].sessao, null);
   assert.throws(() => execFileSync('node', [path.join(root, 'tools/telemetria.mjs'), 'registrar'], { env: { ...env, ISSUE: 'x' }, stdio: 'pipe' }));
+});
+
+await t('8. sem contagem dupla: mesmo (issue, chave, run.id, run.tentativa) conta uma vez', () => {
+  const at = (h) => Date.parse(`2026-10-12T${h}:00:00Z`);
+  const r = buildRecord({ ...base, messages: msgs({ total_cost_usd: 0.75 }), now: at('09') });
+  const body = formatComment(r);
+  const reenvio = formatComment({ ...r, em: new Date(at('10')).toISOString() });
+  const recs = parseRecords([{ author: AUTOR_CONFIAVEL, body }, { author: AUTOR_CONFIAVEL, body }, { author: AUTOR_CONFIAVEL, body: reenvio }]);
+  assert.deepEqual(recs, [r], 'fica a primeira ocorrência');
+  assert.equal(gastoNaJanela([r, r, { ...r, em: new Date(at('10')).toISOString() }], { now: at('10') }), 0.75);
+  const s = summarize([r, r], { prsIntegradas: [258] });
+  assert.deepEqual([s.execucoes, s.sucesso, s.falhas, s.custoUsdReportado.soma, s.custoPorPrIntegrada, s.porIssue[0].execucoes], [1, 1, 0, 0.75, 0.75, 1]);
+  // execuções distintas continuam contando: outra tentativa do run, outro run, outra chave ou outra issue
+  const outras = [{ ...r, run: { id: r.run.id, tentativa: 2 } }, { ...r, run: { id: 1, tentativa: 1 } }, { ...r, chave: 'dispatch:257:2' }, { ...r, issue: 999 }];
+  assert.equal(dedupe([r, ...outras]).length, 5);
+  assert.equal(gastoNaJanela([r, ...outras], { now: at('10') }), 3.75);
+  // sem run.id a execução não é identificável: não descarta
+  const semRun = { ...r, run: { id: null, tentativa: null } };
+  assert.equal(dedupe([semRun, semRun]).length, 2);
 });
 
 console.log(`✓ Telemetria do worker: ${n} grupos de testes passaram`);
