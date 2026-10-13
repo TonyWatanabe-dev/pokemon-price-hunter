@@ -154,11 +154,13 @@ export function outrasLojas(lojas, q, { max = 12, cfg = LOJAS_CFG } = {}) {
 // ---- leitura dos dados (servidor) ----
 export const RAW_SOURCES = RAW.replace(/state\.json$/, 'sources.json');
 let cache = { t: 0, s: null };
+// Prazo do fetch de sources.json: rede lenta cai no caminho sem lojas (catch em api/pagina.mjs) em vez de segurar a função até o 504.
+export const SOURCES_TIMEOUT_MS = 4000;
 /** sources: o array já presente no state.json; sem ele, sources.json do branch data (cache de 10 min, como state()). */
-export async function loadSources(st = null) {
+export async function loadSources(st = null, { timeoutMs = SOURCES_TIMEOUT_MS } = {}) {
   if (Array.isArray(st?.sources) && st.sources.length) return st.sources;
   if (cache.s && Date.now() - cache.t < 10 * 60e3) return cache.s;
-  const r = await fetch(RAW_SOURCES); if (!r.ok) throw new Error('sources ' + r.status);
+  const r = await fetch(RAW_SOURCES, { signal: AbortSignal.timeout(timeoutMs) }); if (!r.ok) throw new Error('sources ' + r.status);
   cache = { t: Date.now(), s: await r.json() }; return cache.s;
 }
 const STORES_FILE = new URL('../../config/stores.json', import.meta.url);
