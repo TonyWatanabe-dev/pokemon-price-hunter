@@ -22,7 +22,7 @@ function urlsFor(generatedAt) {
     cwd: root, encoding: 'utf8', timeout: 10000
   });
   assert.equal(result.status, 0, result.stderr || 'sitemap child process failed');
-  return [...result.stdout.matchAll(/<loc>([^<]+)<\\/loc>/g)].map((m) => m[1]);
+  return [...result.stdout.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
 }
 
 const stale = urlsFor('2020-01-01T00:00:00.000Z');
