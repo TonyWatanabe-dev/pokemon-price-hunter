@@ -54,6 +54,9 @@ export const staleCopy = (o, now = new Date()) => carryShipping({ ...o, stale: t
 // Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
 // lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
 export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
+// Rodada pulada por prazo: só fica como está a leitura válida (não stale) das últimas 3 h. Horário ausente, inválido ou
+// no futuro além de 5 min (mesma folga de classify em api/_lib/freshness.mjs) não é recente: a oferta vira staleCopy.
+export const recentRead = (o, now = new Date()) => { const age = now.getTime() - Date.parse(o?.source_timestamp ?? ''); return !!o && !o.stale && age >= -5 * 60e3 && age < 3 * 3600e3; };
 
 // Validade da cotação de frete reaproveitada quando a simulação falha (HUNTER_SHIPPING_TTL_H, padrão 24 h).
 export const shippingTtlMs = () => { const h = Number(process.env.HUNTER_SHIPPING_TTL_H); return (Number.isFinite(h) && h > 0 ? h : 24) * 3600e3; };
@@ -346,7 +349,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
-    const recent = skipped.has(o.storeId) && !o.stale && now.getTime() - Date.parse(o.source_timestamp) < 3 * 3600e3;
+    const recent = skipped.has(o.storeId) && recentRead(o, now);
     offers[id] = recent ? carryShipping({ ...o }, now) : staleCopy(o, now);
   }
 
