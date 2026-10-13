@@ -1,13 +1,17 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 12/10/2026
-> **Base consultada:** \`main\` em \`a53d73abb17e88170b7a94930a2d2a161eeb171e\`.  
+> **Atualizado em:** 13/10/2026
+> **Base consultada:** \`main\` em \`8ea86cb4166e5303f73a9684297c2525a82e51a9\`.  
 > **Objetivo:** levar o produto existente até uma operação comercial útil, confiável e sustentável, com coleta, agentes de engenharia e monitoramento trabalhando 24/7, sem depender de alguém distribuindo cada tarefa manualmente.
 
 Este documento é o plano de execução de ponta a ponta. Use \`docs/ROADMAP-OPERACIONAL.md\` para evidências e estado operacional detalhado, \`docs/MAPA-DE-AGENTES.md\` para contratos dos agentes e \`docs/agentes.md\` para governança de merge/deploy.
 
 
-> **Atualização de execução — 13/10/2026:** o fluxo Vigia → Dispatcher → worker → PR de agente → revisão independente foi documentado como comprovado em runtime no [roadmap operacional](./ROADMAP-OPERACIONAL.md). Isso não comprova sete dias verdes de burn-in nem autoriza ativar agentes de publicação. As PRs #597–#600 de SEO foram integradas; a CI posterior revelou uma regressão no contrato antigo de `robots.txt`, em correção na #601. A #602 adiciona smoke público diário/manual, ainda aguardando CI e primeira execução real. Use os checks, runs e o burn-in atuais como fonte de verdade; não reutilize estados antigos deste plano como evidência atual.
+> **Atualização de execução — 13/10/2026:** o fluxo Vigia → Dispatcher → worker → PR de agente → revisão independente foi documentado como comprovado em runtime no [roadmap operacional](./ROADMAP-OPERACIONAL.md). Isso não comprova sete dias verdes de burn-in nem autoriza autopublicação irrestrita. As PRs #597–#600 de SEO foram integradas; consulte o roadmap para o estado atualizado dos smoke tests. Use checks, runs e burn-in atuais como fonte de verdade; não reutilize estados antigos deste plano como evidência atual.
+
+
+
+> **Decisão de escopo — 13/10/2026 (prioridade atual):** o proprietário está satisfeito com a automação já construída e autorizou uma última rodada curta para as correções de integridade #626/#627. Não prolongar a estabilização por melhorias marginais: se houver bloqueio de permissões/infra, necessidade de migration ou retrabalho além de uma rodada focada, documentar e estacionar. As verificações #612 (smoke público), #231 (configuração operacional) e #271 (sete dias verdes) continuam em paralelo e não impedem construir o MVP Social Media em modo de rascunho. **O MVP Social Media está autorizado em paralelo agora**: ofertas validadas → deduplicação/frescor → calendário/fila → geração de conteúdo e prévia → aprovação humana → piloto controlado. Autopublicação só após validação de contas/APIs oficiais, links de afiliado, controles de frequência, kill switch, logs e dados atuais. Telegram primeiro; Instagram após elegibilidade/API; WhatsApp somente com integração oficial confirmada. Não enfraquecer nem falsificar os gates de operação 24/7.
 
 ## 1. Resultado final esperado
 
