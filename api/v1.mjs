@@ -56,6 +56,10 @@ const KEY_PARAMS = new Set(['pagina', 'limite', 'colecao', 'tipo', 'categoria', 
 const SLUG_RE = /^[a-z0-9][a-z0-9_.-]{0,120}$/i;
 
 class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
+// Teto de OFFSET nas listas do banco: pagina * limite acima de 10 000 linhas → 400 (OFFSET profundo varre e descarta
+// tudo antes; ninguém navega até lá). Com limite 50 vai até a página 200; com o padrão 24, até a 416.
+const MAX_OFFSET = 10_000;
+const capOffset = (rt) => { if (rt.page * rt.limit > MAX_OFFSET) throw new HttpError(400, `página além do limite (pagina × limite até ${MAX_OFFSET})`); return rt; };
 
 function route(segs, qs) {
   const page = intIn(qs.get('pagina'), 1, 1, 10_000); const limit = intIn(qs.get('limite'), 24, 1, 50);
@@ -63,19 +67,19 @@ function route(segs, qs) {
   if (a === 'home' && segs.length === 1) return { name: 'home', kind: 'home' };
   if (a === 'produtos' && segs.length === 1) {
     const ordem = str(qs.get('ordem'), 20) || 'relevancia'; if (!DB.PRODUCT_SORTS.includes(ordem)) throw new HttpError(400, `ordem inválida (use: ${DB.PRODUCT_SORTS.join(', ')})`);
-    return { name: 'produtos', page, limit, args: { page, limit, colecao: str(qs.get('colecao'), 40), tipo: str(qs.get('tipo'), 40), categoria: str(qs.get('categoria'), 60),
-      estoque: bool(qs.get('estoque')), busca: str(qs.get('busca'), 60), ordem } };
+    return capOffset({ name: 'produtos', page, limit, args: { page, limit, colecao: str(qs.get('colecao'), 40), tipo: str(qs.get('tipo'), 40), categoria: str(qs.get('categoria'), 60),
+      estoque: bool(qs.get('estoque')), busca: str(qs.get('busca'), 60), ordem } });
   }
   if (a === 'produtos' && id) {
     if (!SLUG_RE.test(id)) throw new HttpError(400, 'identificador de produto inválido');
     if (!sub) return { name: 'produto', id };
-    if (sub === 'ofertas' && segs.length === 3) return { name: 'ofertas', id, page, limit, args: { page, limit, todas: bool(qs.get('todas')) } };
+    if (sub === 'ofertas' && segs.length === 3) return capOffset({ name: 'ofertas', id, page, limit, args: { page, limit, todas: bool(qs.get('todas')) } });
     if (sub === 'historico' && segs.length === 3) return { name: 'historico', id, args: { dias: intIn(qs.get('dias'), 30, 1, 365), lojas: bool(qs.get('lojas')) } };
     if (sub === 'estatisticas' && segs.length === 3) return { name: 'estatisticas', id };
   }
   if (a === 'referencias' && segs.length === 1) {
     const status = str(qs.get('status'), 20); if (status && !['verified', 'pending', 'conflicting', 'unknown'].includes(status)) throw new HttpError(400, 'status inválido');
-    return { name: 'referencias', page, limit, args: { page, limit, status } };
+    return capOffset({ name: 'referencias', page, limit, args: { page, limit, status } });
   }
   if (a === 'oportunidades' && segs.length === 1) {
     const faixa = str(qs.get('faixa'), 12) || null; if (faixa && !['excelente', 'boa', 'normal', 'baixa'].includes(faixa)) throw new HttpError(400, 'faixa inválida (excelente, boa, normal, baixa)');
@@ -95,8 +99,8 @@ function route(segs, qs) {
     // loja: id da loja (filtro da página); max: preço até R$ (total quando o frete é conhecido, senão o preço do produto)
     const loja = str(qs.get('loja'), 60) || null; if (loja && !SLUG_RE.test(loja)) throw new HttpError(400, 'loja inválida');
     const maxS = maxPrice(qs.get('max'));
-    return { name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto,
-      loja, max: maxS ? Number(maxS) : null } };
+    return capOffset({ name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto,
+      loja, max: maxS ? Number(maxS) : null } });
   }
   // lojas com oferta avaliada com estoque (opções do filtro "Loja" da página de oportunidades)
   if (a === 'oportunidades' && segs.length === 2 && segs[1] === 'lojas') return { name: 'oportunidades-lojas' };
