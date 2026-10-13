@@ -2,6 +2,7 @@
 // O banco é um falso que responde por trecho do SQL; o relógio é injetado.
 import assert from 'node:assert/strict';
 import { runAgentCycle } from '../src/agents/cycle.js';
+import { composeAgentAlert } from '../src/agents/notify.js';
 
 let n = 0;
 const test = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -9,15 +10,15 @@ const test = async (name, fn) => { try { await fn(); n++; } catch (e) { console.
 const job = (id) => ({ id, type: 'tipo.sem-handler', priority: 100, attempts: 1, max_attempts: 3, payload: {}, run_after: new Date(0), locked_at: new Date(0), idempotency_key: `k${id}` });
 // claimSizes: quantos jobs cada chamada de claim devolve (depois da lista, 0).
 const fakeDb = ({ claimSizes = [], events = [] } = {}) => {
-  const log = { claims: 0, cursor: 0 };
+  const log = { claims: 0, cursor: 0, upTo: null };
   let id = 0;
   return {
     log,
-    query: async (sql) => {
+    query: async (sql, params) => {
       if (/WITH c AS/.test(sql)) return { rows: Array.from({ length: claimSizes[log.claims++] ?? 0 }, () => job(++id)) };
       if (/AGENT_ALERT_CURSOR' ORDER BY/.test(sql)) return { rows: [] };
-      if (/FROM system_event/.test(sql)) return { rows: events };
-      if (/INSERT INTO system_event .*AGENT_ALERT_CURSOR/.test(sql)) { log.cursor++; return { rows: [] }; }
+      if (/FROM system_event/.test(sql)) return { rows: events.slice(0, params[2]) };
+      if (/INSERT INTO system_event .*AGENT_ALERT_CURSOR/.test(sql)) { log.cursor++; log.upTo = JSON.parse(params[0]).upTo; return { rows: [] }; }
       return { rows: [] }; // fail/event/complete dos jobs sem handler
     },
   };
@@ -53,6 +54,26 @@ await test('erro em candidatos não impede o notify', async () => {
   const r = await run(db, { state, clock: () => 0, send: async (m) => { sent.push(m); return { delivered: true }; } });
   assert.equal(r.ok, false); assert.ok(r.errors.some((e) => /^candidatos: estado corrompido/.test(e)));
   assert.equal(sent.length, 1); assert.equal(r.notify.events, 1); assert.equal(r.notify.delivered, true); assert.equal(db.log.cursor, 1);
+});
+
+const evs = (k) => Array.from({ length: k }, (_, i) => ({ id: i + 1, type: 'AGENT_JOB_FAILED', payload: { type: 'x', error: 'boom' } }));
+const notifyWith = async (k) => {
+  const db = fakeDb({ events: evs(k) }); const sent = [];
+  const r = await run(db, { clock: () => 0, send: async (m) => { sent.push(m); return { delivered: true }; } });
+  return { db, sent, r };
+};
+
+await test('notify: mais de MAX_EVENTS pendentes avisa que há mais eventos e o cursor para no 50º', async () => {
+  const { db, sent, r } = await notifyWith(51);
+  assert.equal(sent.length, 1); assert.match(sent[0].text, /há mais eventos/); assert.match(sent[0].text, /50× x — boom/);
+  assert.equal(r.notify.events, 50); assert.equal(db.log.upTo, '50');
+});
+
+await test('notify: até MAX_EVENTS pendentes o texto não muda', async () => {
+  const { db, sent, r } = await notifyWith(50);
+  assert.equal(sent.length, 1); assert.doesNotMatch(sent[0].text, /há mais eventos/);
+  assert.equal(sent[0].text, composeAgentAlert(evs(50)).text);
+  assert.equal(r.notify.events, 50); assert.equal(db.log.upTo, '50');
 });
 
 console.log(`agents-cycle-tests ok (${n})`);
