@@ -105,3 +105,22 @@ const products = { p1: { name: 'Produto 1', msrp: 100 } };
 
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log('history-write-tests: ok');
+
+// merge atômico: falha na escrita mantém o arquivo anterior íntegro e não deixa .tmp
+{
+  const T = iso(0);
+  recordDay([offer({ productId: 'pa', total: 100 })], { pa: { name: 'A', msrp: 100 } }, T);
+  const before = fs.readFileSync(histPath('pa'), 'utf8');
+  const orig = fs.renameSync; fs.renameSync = () => { throw new Error('falha simulada'); };
+  try { assert.throws(() => recordDay([offer({ productId: 'pa', total: 90 })], { pa: { name: 'A', msrp: 100 } }, T), /falha simulada/); } finally { fs.renameSync = orig; }
+  assert.equal(fs.readFileSync(histPath('pa'), 'utf8'), before, 'arquivo anterior intacto');
+  assert.ok(!fs.existsSync(histPath('pa') + '.tmp'), 'sem .tmp');
+}
+
+// recordDay: anômalos não entram na mediana (sem msrp, a mediana inflada por anômalos barraria o preço válido)
+{
+  const T = iso(0);
+  const offers = [offer({ productId: 'pm', storeId: 'a', total: 50 }), offer({ productId: 'pm', storeId: 'b', total: 1000, anomalous: true }), offer({ productId: 'pm', storeId: 'c', total: 1000, anomalous: true })];
+  assert.equal(recordDay(offers, { pm: { name: 'M' } }, T), 1);
+  assert.deepEqual(Object.keys(read('pm').stores), ['a']);
+}
