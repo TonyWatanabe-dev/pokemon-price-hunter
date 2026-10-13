@@ -1,10 +1,18 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
 > **Atualizado em:** 13/10/2026 (America/Sao_Paulo, UTC−03:00)
-> **Base consultada para esta atualização:** `main` em `2ee66dd6619a0dd69c24af0fe4c5ae00dfca882e` (PR #595 integrada).
+> **Base consultada para esta atualização:** `main` em `604f1cea333a68dcb311b4ce0172fa4ac5f7bad6` (PRs #597 e #598 integradas).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
+
+## Atualização operacional — SEO técnico (13/10/2026, pós-PRs #597 e #598)
+
+- **PR #597 integrada** — `robots.txt` deixa rastreáveis as rotas privadas que enviam `X-Robots-Tag: noindex`; `/api/` continua bloqueado. Merge commit: `acccfa1e3450b96c68e77487950714423dbf0d9f`.
+- **PR #598 integrada** — com dados stale/indisponíveis, o sitemap mantém somente a Home indexável; páginas fixas adicionais entram quando os dados estão utilizáveis. Adicionado teste isolado para cenários stale/fresh. Merge commit: `604f1cea333a68dcb311b4ce0172fa4ac5f7bad6`.
+- **PR #599 aberta** — corrige a description estática da Home (155 caracteres) e alinha o auditor SEO ao sitemap stale atualizado pela #598. Não marcar como concluída até CI completo e revisão independente.
+- O deploy de GitHub Pages associado à `main` em `604f1ce` terminou com `build`, `report-build-status` e `deploy` em sucesso (run [38434740204](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38434740204)). Isso não substitui smoke test do domínio público Vercel.
+- O agente SEO & Content permanece **desativado por padrão**, somente leitura. Burn-in continua exigindo sete dias encerrados consecutivos verdes; a amostra visível mais recente ainda não demonstra a conclusão do gate.
 
 ## Regras de operação
 
