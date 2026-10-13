@@ -44,6 +44,8 @@ Sem frescor informado, as regras de frescor se abstêm. Sem dados em dia, a pág
 
 Endurecimento (issue #607): frescor sem estado conhecido de `classify()` (`atual`, `atrasado`, `desatualizado`, `indisponivel`) conta como ausente; host do site ausente **ou inválido** gera abstenção, não achado de canonical, sitemap ou robots; o relatório lista também as abstenções parciais de sitemap e rotas (prefixos `sitemap:` e `rotas:`); e `report()` só marca `enabled: true` quando recebe um gate `pronto`, sem bloqueios e com `enabled: true`, falhando fechado diante de objeto forjado ou incompleto.
 
+Isolamento e falhas (issue #613): entrada malformada (`null`, array, string, `vercel.json` com `headers`/`rewrites` inválidos) vira abstenção em vez de exceção; `report()` descarta achado sem regra, severidade conhecida, URL ou arquivo, evidência e recomendação (o descarte entra em `abstencoes`) e devolve os aceitos só com os campos do contrato. `test/seo-content-isolation-tests.js` cobre: job de SEO na fila do orquestrador fica `blocked` sem handler (e sem rodar com IA desligada), falha/timeout de um handler de SEO não impede a revisão real da rodada, a rodada de agentes só escreve em `automation_job`/`system_event`, a rodada principal (coleta, ciclo, servidor, API, scripts npm e workflows) não importa o auditor, e a CLI com dados desatualizados/indisponíveis não altera state, páginas ou configuração nem leva preço/oferta/ranking ao relatório.
+
 ## Gate de prontidão (conferido em 13/10/2026 na `main` `d85e352`)
 
 | Pré-requisito | Estado | Evidência |
@@ -81,7 +83,7 @@ Nenhuma dessas propostas foi implementada: mudar SEO de produção exige tarefa 
 7. **Orçamento:** local, cerca de 2 s para 159 URLs. Sem chamadas de modelo.
 8. **Abstinência:** sem HTML, sitemap, configuração, host ou frescor, registra abstenção e não recomenda.
 9. **Métricas:** contagem por severidade e abstenções. Precisão/recall em produção ainda não medidas (casos sintéticos medem regressão).
-10. **Testes:** `test/seo-content-agent-tests.js` (casos dourados + CLI de ponta a ponta offline) e `test/seo-content-hardening-tests.js` (frescor real/desconhecido, canonical, robots/sitemap, rastreabilidade de toda regra, entradas congeladas, gate fechado e CLI sem escrita fora de `--out`).
+10. **Testes:** `test/seo-content-agent-tests.js` (casos dourados + CLI de ponta a ponta offline) `test/seo-content-hardening-tests.js` (frescor real/desconhecido, canonical, robots/sitemap, rastreabilidade de toda regra, entradas congeladas, gate fechado e CLI sem escrita fora de `--out`) e `test/seo-content-isolation-tests.js` (agente desativado na fila, falha isolada, entradas malformadas, achado sem evidência descartado, stale sem efeito colateral).
 11. **Rollout:** desativado por padrão. Ver o plano de ativação.
 12. **Aceite:** CI verde no PR e revisão independente.
 

@@ -22,10 +22,15 @@ export const PREREQUISITOS = Object.freeze([
 ]);
 
 const refs = (r) => (Array.isArray(r) ? r : [r]).filter((x) => typeof x === 'string' && x.trim());
+// Entrada malformada (null, array, string) equivale a ausente: o auditor se abstém em vez de lançar (issue #613).
+const obj = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o : {});
+const list = (x) => (Array.isArray(x) ? x.filter((e) => e && typeof e === 'object' && !Array.isArray(e)) : []);
+const str = (x) => (typeof x === 'string' ? x : '');
 
 /** Gate de prontidão. Cada pré-requisito só é "comprovado" com ok === true E referência (arquivo/URL).
  *  Ausência de evidência é bloqueio. Mesmo com tudo comprovado, só liga com autorização explícita (authorized: true). */
-export function readiness(evidencia = {}, { authorized = false } = {}) {
+export function readiness(evidencia = {}, opts = {}) {
+  const { authorized = false } = obj(opts);
   const ev = evidencia && typeof evidencia === 'object' ? evidencia : {};
   const items = PREREQUISITOS.map((p) => {
     const e = ev[p.id];
@@ -59,7 +64,8 @@ export function parsePage(html) {
 
 /** Audita uma página renderizada. page = { url, file, html, status, freshness, inSitemap }; opts = { site }.
  *  freshness = saída de classify() (api/_lib/freshness.mjs) ou null quando não se sabe (abstém-se das regras de frescor). */
-export function auditPage(page = {}, { site } = {}) {
+export function auditPage(entrada, opts) {
+  const page = obj(entrada); const { site } = obj(opts);
   const url = String(page.url || ''); const file = String(page.file || '');
   if (typeof page.html !== 'string' || !page.html.trim()) return { url, file, abstained: true, abstencoes: ['sem evidência: HTML não informado'], indexavel: null, findings: [] };
   const p = parsePage(page.html);
@@ -97,7 +103,8 @@ export function auditPage(page = {}, { site } = {}) {
 }
 
 /** Audita o sitemap.xml. Sem XML, abstém-se. */
-export function auditSitemap(xml, { site, file = 'api/sitemap.mjs' } = {}) {
+export function auditSitemap(xml, opts) {
+  const { site, file = 'api/sitemap.mjs' } = obj(opts);
   if (typeof xml !== 'string' || !xml.includes('<urlset')) return { urls: [], abstained: true, abstencoes: ['sem evidência: sitemap não informado'], findings: [] };
   const entries = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => ({ loc: unesc(pick(m[1], /<loc>([^<]*)<\/loc>/) || ''), lastmod: pick(m[1], /<lastmod>([^<]*)<\/lastmod>/) }));
   const f = []; const seen = new Set(); const sh = site ? hostOf(site) : null;
@@ -116,14 +123,15 @@ export function sourceRegex(src) {
 }
 
 /** Inventário de rotas públicas (rewrites → /api/pagina) e checagem robots.txt × X-Robots-Tag do vercel.json. */
-export function auditRoutes({ vercel, robots, site } = {}) {
-  if (!vercel || typeof vercel !== 'object' || typeof robots !== 'string') return { rotas: [], abstained: true, abstencoes: ['sem evidência: vercel.json ou robots.txt não informado'], findings: [] };
+export function auditRoutes(entrada) {
+  const { vercel, robots, site } = obj(entrada);
+  if (!vercel || typeof vercel !== 'object' || Array.isArray(vercel) || typeof robots !== 'string') return { rotas: [], abstained: true, abstencoes: ['sem evidência: vercel.json ou robots.txt não informado'], findings: [] };
   const f = []; const sh = site ? hostOf(site) : null;
-  const noindexSrc = (vercel.headers || []).filter((h) => (h.headers || []).some((x) => /^x-robots-tag$/i.test(x.key) && /noindex/i.test(x.value))).map((h) => h.source);
+  const noindexSrc = list(vercel.headers).filter((h) => typeof h.source === 'string' && list(h.headers).some((x) => /^x-robots-tag$/i.test(x.key) && /noindex/i.test(x.value))).map((h) => h.source);
   const noindexRe = noindexSrc.map((s) => [s, sourceRegex(s)]).filter(([, r]) => r);
   const disallow = robots.split('\n').map((l) => l.trim()).filter((l) => /^disallow:/i.test(l)).map((l) => l.slice(9).trim()).filter(Boolean);
   const sitemapLine = robots.split('\n').map((l) => l.trim()).find((l) => /^sitemap:/i.test(l));
-  const rotas = (vercel.rewrites || []).filter((r) => String(r.destination || '').startsWith('/api/pagina')).map((r) => ({
+  const rotas = list(vercel.rewrites).filter((r) => typeof r.source === 'string' && String(r.destination || '').startsWith('/api/pagina')).map((r) => ({
     rota: r.source, destino: r.destination, noindexHeader: noindexRe.some(([, re]) => re.test(r.source)), robotsDisallow: disallow.some((d) => r.source.startsWith(d)) }));
   for (const d of disallow) {
     const path = d.replace(/\/$/, '');
@@ -136,19 +144,29 @@ export function auditRoutes({ vercel, robots, site } = {}) {
   return { rotas, abstained: false, abstencoes: sh ? [] : ['host do site não informado'], findings: f };
 }
 
+// Achado só entra no relatório com regra, severidade conhecida, URL ou arquivo, evidência e recomendação (issue #613).
+const rastreavel = (f) => !!(str(f.regra).trim() && SEVERIDADES.includes(f.severidade) && (str(f.url).trim() || str(f.file).trim())
+  && str(f.evidencia).trim() && str(f.recomendacao).trim());
+
 /** Relatório consolidado. Nunca liga o agente: enabled vem só do gate de prontidão, e falha fechado se o gate
- *  recebido não estiver pronto (um objeto { enabled: true } sem prontidão comprovada não liga nada). */
-export function report({ readiness: rd, pages = [], sitemap = null, routes = null, geradoEm = null } = {}) {
-  const findings = [...(routes?.findings || []), ...(sitemap?.findings || []), ...pages.flatMap((p) => p.findings || [])]
+ *  recebido não estiver pronto (um objeto { enabled: true } sem prontidão comprovada não liga nada).
+ *  Achado sem evidência rastreável é descartado (vira abstenção); os aceitos saem só com os campos do contrato. */
+export function report(entrada) {
+  const { readiness: rd, sitemap: sm, routes: rt, geradoEm = null } = obj(entrada);
+  const pages = list(obj(entrada).pages); const sitemap = obj(sm); const routes = obj(rt);
+  const recebidos = [...list(routes.findings), ...list(sitemap.findings), ...pages.flatMap((p) => list(p.findings))];
+  const descartados = recebidos.filter((f) => !rastreavel(f)).map((f) => `achado descartado sem evidência rastreável: ${cut(str(f.regra) || '(sem regra)', 60)}`);
+  const findings = recebidos.filter(rastreavel).map((f) => achado(f.regra, f.severidade, { url: str(f.url), file: str(f.file), evidencia: f.evidencia, recomendacao: f.recomendacao }))
     .sort((a, b) => PESO[a.severidade] - PESO[b.severidade] || a.regra.localeCompare(b.regra) || a.url.localeCompare(b.url));
   const porSeveridade = Object.fromEntries(SEVERIDADES.map((s) => [s, findings.filter((x) => x.severidade === s).length]));
   const gateOk = rd?.enabled === true && rd.status === 'pronto' && Array.isArray(rd.bloqueios) && rd.bloqueios.length === 0;
-  const abstencoes = [...(routes?.abstencoes || []).map((a) => `rotas: ${a}`), ...(sitemap?.abstencoes || []).map((a) => `sitemap: ${a}`),
-    ...pages.flatMap((p) => (p.abstencoes || []).map((a) => `${p.url || p.file}: ${a}`))];
+  const textos = (x) => (Array.isArray(x) ? x.filter((a) => typeof a === 'string') : []);
+  const abstencoes = [...textos(routes.abstencoes).map((a) => `rotas: ${a}`), ...textos(sitemap.abstencoes).map((a) => `sitemap: ${a}`),
+    ...pages.flatMap((p) => textos(p.abstencoes).map((a) => `${p.url || p.file}: ${a}`)), ...descartados];
   return {
     agente: 'seo-content', modo: 'somente-leitura', publica: false, geradoEm,
     enabled: gateOk, prontidao: rd || readiness({}),
-    inventario: { rotas: routes?.rotas || [], sitemap: sitemap?.urls || [], paginas: pages.map((p) => ({ url: p.url, file: p.file, indexavel: p.indexavel, abstained: p.abstained })) },
+    inventario: { rotas: list(routes.rotas), sitemap: textos(sitemap.urls), paginas: pages.map((p) => ({ url: p.url, file: p.file, indexavel: p.indexavel, abstained: p.abstained })) },
     porSeveridade, findings, abstencoes,
   };
 }
