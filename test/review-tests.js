@@ -208,6 +208,7 @@ if (process.env.TEST_DATABASE_URL) {
     assert.equal(ex.status, 0, ex.stderr); assert.match(ex.stdout, /enabled: false/);
     const f = JSON.parse(fs.readFileSync(out, 'utf8'));
     assert.equal(f.enabled, false); assert.equal(f._nota, 'x'); assert.ok(f.overrides.some((o) => o.productId === 'me02-booster' && o.reviewId === ids[6]));
+    assert.deepEqual(fs.readdirSync(dir), ['ov.json'], 'gravação atômica: nenhum .tmp sobrando');
     fs.rmSync(dir, { recursive: true });
     assert.equal(await guarded(), before, 'oferta, preço, estatística, referência e oportunidade intactos');
   });
