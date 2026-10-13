@@ -96,9 +96,10 @@ await t('2. erro parcial: loja que falhou e página que falhou ficam stale com o
   assert.equal(src(s, 'vt').status, 'ERROR');
   assert.deepEqual([health(s, 'vt').last_check_at, health(s, 'vt').last_success_at], [iso(15), iso(0)]);
   assert.equal(storesRows(s.sources).find((r) => r.id === 'vt').health.status, 'ERROR', 'falha da fonte chega ao banco em source_health');
-  // JSON-LD respondeu, mas a página do produto falhou: a loja é ACTIVE (lastSuccess avança) e a oferta é stale.
-  assert.equal(src(s, 'ld').status, 'ACTIVE'); assert.equal(src(s, 'ld').pageFailures, 1);
-  assert.equal(health(s, 'ld').last_success_at, iso(15), 'sucesso da loja ≠ oferta lida: last_success_at não prova frescor da oferta');
+  // JSON-LD: a única página planejada falhou, então nada foi lido (#619, antes lacuna 5): a loja é ERROR e lastSuccess
+  // não avança; pageFailures continua registrando a falha. Falha parcial de página: test/jsonld-all-pages-failed-tests.js.
+  assert.equal(src(s, 'ld').status, 'ERROR'); assert.equal(src(s, 'ld').pageFailures, 1);
+  assert.deepEqual([health(s, 'ld').last_check_at, health(s, 'ld').last_success_at], [iso(15), iso(0)], 'sem página lida, last_success_at não avança');
   for (const o of [v, l]) {
     assert.deepEqual([o.stale, o.stock, o.source_timestamp, o.lastValid.at], [true, 'UNKNOWN', iso(0), iso(0)], `${o.storeId}: horário não renovado`);
     const r = rowOf(o); assert.deepEqual([r.status, r.stock_status, r.last_seen_at], ['pending', 'unknown', iso(0)]);
@@ -126,8 +127,8 @@ await t('3. falha total: horário por oferta envelhece; generatedAt avança, mas
   assert.equal(classify(stateDataAt(s), base + 120 * 60e3).status, 'desatualizado');
   assert.equal(freshState(s, base + 120 * 60e3).status, 'desatualizado', 'a barra não diz "atual" sem leitura nova');
   assert.equal(freshState(s, base + 120 * 60e3).ageMin, 120);
-  assert.equal(src(s, 'ld').status, 'ACTIVE', 'JSON-LD com todas as páginas fora do ar ainda conta como ACTIVE (lacuna 5)');
-  assert.equal(src(s, 'ld').pageFailures, 1);
+  assert.equal(src(s, 'ld').status, 'ERROR', 'JSON-LD com todas as páginas fora do ar é falha da fonte (#619)');
+  assert.equal(src(s, 'ld').pageFailures, 1); assert.equal(health(s, 'ld').last_success_at, iso(0));
 });
 
 await t('4. horário ausente ou no futuro na leitura anterior: nada inventa horário na falha', async () => {

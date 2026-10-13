@@ -266,6 +266,13 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       }
       // Página que não abriu (rede, timeout, 5xx) não é produto removido: a oferta fica como estoque não confirmado.
       if (failedUrls.size) for (const [id, o] of Object.entries(prev)) if (o.storeId === store.id && failedUrls.has(o.url)) offers[id] = staleCopy(o, now);
+      // JSON-LD em que todas as páginas planejadas falharam: nada foi lido (o sitemap pode estar só em cache). É falha da
+      // fonte (ERROR, backoff, lastSuccess parado), não sucesso; pageFailures e pageFailReason ficam como telemetria.
+      // O status HTTP vem do motivo da 1ª página ("HTTP 503 em …", de src/http.js), só para classificar o erro.
+      if (cache && planned.length && planned.every((u) => failedUrls.has(u))) {
+        const st = Number(/^HTTP (\d{3}) /.exec(src.pageFailReason)?.[1]) || undefined;
+        throw Object.assign(new Error(`todas as ${planned.length} página(s) planejadas falharam: ${src.pageFailReason}`), { status: st });
+      }
       const why = {};
       for (const { l, reasons } of rejected) {
         for (const k of new Set(reasons.map(reasonKey))) why[k] = (why[k] || 0) + 1;
