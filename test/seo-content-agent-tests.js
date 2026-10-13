@@ -122,13 +122,12 @@ t('sitemap: ausência, host, duplicata e lastmod', () => {
 // ---- Rotas: vercel.json × robots.txt do próprio repositório ----
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
-t('rotas reais: inventário e robots bloqueando o noindex das rotas privadas', () => {
+t('rotas reais: rotas privadas rastreáveis para que buscadores leiam o noindex', () => {
   assert.equal(auditRoutes({}).abstained, true); assert.equal(auditRoutes({ vercel }).abstained, true);
   const r = auditRoutes({ vercel, robots, site: SITE });
   for (const rota of ['/', '/produto/:slug', '/colecao/:slug', '/tipo/:slug', '/lojas', '/termos']) assert.ok(r.rotas.some((x) => x.rota === rota), rota);
   assert.ok(r.rotas.every((x) => !x.noindexHeader && !x.robotsDisallow), 'nenhuma rota pública com noindex/Disallow');
-  assert.deepEqual(r.findings.map((f) => f.url).sort(), ['/alertas', '/configuracoes', '/conta', '/favoritos']);
-  assert.ok(r.findings.every((f) => f.regra === 'SEO-ROBOTS-BLOQUEIA-NOINDEX' && f.severidade === 'baixa'));
+  assert.deepEqual(r.findings, [], 'robots não deve bloquear rotas privadas que precisam comunicar noindex');
   assert.deepEqual(rules(auditRoutes({ vercel, robots: 'User-agent: *\nAllow: /\n', site: SITE })), ['SEO-ROBOTS-SEM-SITEMAP']);
   assert.deepEqual(rules(auditRoutes({ vercel, robots: 'Sitemap: https://x.github.io/sitemap.xml\n', site: SITE })), ['SEO-ROBOTS-SITEMAP-HOST']);
 });
@@ -146,7 +145,7 @@ t('relatório: somente leitura, sem publicar, ordenado por severidade, todo acha
   assert.equal(r.modo, 'somente-leitura'); assert.equal(r.publica, false); assert.equal(r.enabled, false); assert.equal(r.prontidao.status, 'bloqueado');
   assert.deepEqual(r.findings.map((f) => f.severidade), [...r.findings.map((f) => f.severidade)].sort((a, b) => ['alta', 'media', 'baixa'].indexOf(a) - ['alta', 'media', 'baixa'].indexOf(b)));
   assert.equal(r.findings[0].regra, 'SEO-TITULO');
-  assert.deepEqual(r.porSeveridade, { alta: 1, media: 0, baixa: 5 });
+  assert.deepEqual(r.porSeveridade, { alta: 1, media: 0, baixa: 1 });
   for (const f of r.findings) { assert.ok(f.url || f.file); assert.ok(f.evidencia); assert.ok(f.recomendacao); assert.ok(['alta', 'media', 'baixa'].includes(f.severidade)); }
   assert.ok(r.abstencoes.some((a) => /sitemap não informado/.test(a)) && r.abstencoes.some((a) => a.startsWith('/v: sem evidência')));
   assert.equal(r.inventario.paginas.length, 3);
@@ -181,7 +180,7 @@ t('CLI com dados em dia: produtos auditados, só os achados de rotas, agente des
   assert.equal(rep.enabled, false); assert.equal(rep.publica, false); assert.equal(rep.fonte.frescor, 'atual'); assert.match(err, /agente desativado/);
   assert.ok(rep.inventario.sitemap.includes(`${SITE}/produto/alfa-treinador-avancado-etb`) && rep.inventario.sitemap.includes(`${SITE}/colecao/alfa`));
   assert.ok(rep.inventario.paginas.length >= 12 && rep.inventario.paginas.every((p) => p.indexavel === true && !p.abstained));
-  assert.deepEqual([...new Set(rep.findings.map((f) => f.regra))], ['SEO-ROBOTS-BLOQUEIA-NOINDEX']);
+  assert.deepEqual([...new Set(rep.findings.map((f) => f.regra))], []);
 });
 t('CLI sem dados (ou desatualizados): sitemap fixo, páginas noindex listadas e description da Home', () => {
   for (const args of [[], ['--state', statePath, '--agora', '2026-10-10T18:00:00.000Z']]) {
