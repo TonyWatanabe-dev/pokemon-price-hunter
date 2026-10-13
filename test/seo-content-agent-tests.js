@@ -182,15 +182,15 @@ t('CLI com dados em dia: produtos auditados, só os achados de rotas, agente des
   assert.ok(rep.inventario.paginas.length >= 12 && rep.inventario.paginas.every((p) => p.indexavel === true && !p.abstained));
   assert.deepEqual([...new Set(rep.findings.map((f) => f.regra))], []);
 });
-t('CLI sem dados (ou desatualizados): sitemap fixo, páginas noindex listadas e description da Home', () => {
+t('CLI sem dados (ou desatualizados): sitemap mantém somente a Home indexável e descriptions válidas', () => {
   for (const args of [[], ['--state', statePath, '--agora', '2026-10-10T18:00:00.000Z']]) {
     const { rep } = cli(args);
     assert.equal(rep.enabled, false); assert.notEqual(rep.fonte.frescor, 'atual');
     assert.ok(!rep.inventario.sitemap.some((u) => u.includes('/produto/')), 'sem produto no sitemap com dado velho');
     const noidx = rep.findings.filter((f) => f.regra === 'SEO-NOINDEX-NO-SITEMAP').map((f) => new URL(f.url).pathname).sort();
-    assert.deepEqual(noidx, ['/como-funciona', '/guia/glossario', '/lojas', '/oportunidades', '/pre-vendas', '/precos', '/privacidade', '/termos']);
+    assert.deepEqual(noidx, [], 'páginas noindex não devem estar no sitemap quando os dados estão stale');
     assert.ok(!rep.findings.some((f) => f.regra === 'SEO-DADOS-DESATUALIZADOS' || f.regra === 'SEO-CONTEUDO-VAZIO'));
-    assert.ok(rep.findings.some((f) => f.regra === 'SEO-DESCRICAO-LONGA' && f.url === `${SITE}/`), 'description estática da Home acima de 160');
+    assert.ok(!rep.findings.some((f) => f.regra === 'SEO-DESCRICAO-LONGA' && f.url === `${SITE}/`), 'description estática da Home deve ter até 160 caracteres');
   }
 });
 fs.rmSync(tmp, { recursive: true, force: true });
