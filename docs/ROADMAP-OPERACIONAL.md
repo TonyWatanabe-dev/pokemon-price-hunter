@@ -1,7 +1,7 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
 > **Atualizado em:** 13/10/2026 (America/Sao_Paulo, UTC−03:00)
-> **Base consultada para esta atualização:** `main` em `0d5472ca0186a2cf6dab3d39f221da4ee26992be`.
+> **Base consultada para esta atualização:** `main` em `2ee66dd6619a0dd69c24af0fe4c5ae00dfca882e` (PR #595 integrada).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -17,7 +17,7 @@
 
 ## Mapa de agentes
 
-Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que Claude já implementou no código do que ainda é futuro e exige pré-requisitos/aprovação. As capacidades futuras de UX Research, UI & Design System, Social Media, SEO & Content, Growth & CRO e Brand & Creative não devem ser iniciadas agora.
+Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que Claude já implementou no código do que ainda é futuro e exige pré-requisitos/aprovação. UX Research, UI & Design System, Social Media, Growth & CRO e Brand & Creative continuam futuras e bloqueadas por dependências. SEO & Content iniciou apenas o MVP de auditoria somente leitura pela PR #595; o agente permanece desativado até satisfazer o gate de prontidão.
 
 ## Contrato de autonomia e comunicação
 
@@ -195,7 +195,7 @@ Telemetria real do worker: implementada (ver item 1 das lacunas abaixo), com val
 - pendências do proprietário: `qa-review` obrigatório, auditoria da Ponte (`RELEASE_AUDIT_*`), `VERCEL_TOKEN`, rotina horária e `DISPATCHER_ORCAMENTO_USD`;
 - 53 issues antigas já entregues aguardam fechamento manual.
 
-**Próxima fase:** Fase 3, experiência de compra. O backlog de UX/UI/SEO está na #285.
+**Próxima fase:** Fase 3 iniciada pela frente SEO & Content Agent (PR #595), em modo de auditoria somente leitura. O gate segue bloqueado; não declarar agente ativo nem conteúdo publicado. O backlog de UX/UI/SEO continua na #285.
 
 ## Estado executivo
 
@@ -425,12 +425,13 @@ Prioridades:
 - Regras: ofertas precisam vir do catálogo validado, com preço/estoque/frescor confirmados; prevenir duplicatas; divulgar links afiliados; nunca influenciar o ranking pela comissão; proteger credenciais; publicar automaticamente somente após validação e testes.
 - Checklist antes do início: confirmar gate da Fase 1; verificar links e permissões de canal; validar elegibilidade do Instagram; receber convite real do WhatsApp e link da Shopee; definir voz visual/editorial, disclosure, fila, armazenamento de mídia, auditoria, limites e critérios de pausa; executar piloto controlado antes da ativação ampla.
 
-### Frente SEO & Content Agent — gate de prontidão (issue #594, 13/10/2026)
-- Autorização do proprietário para começar a Fase 3 pelo agente de conteúdo, com escopo restrito a leitura e proposta, sem publicação externa (issue [#594](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/594)).
-- Entregue em PR desta issue, ainda não integrada: auditor somente leitura `src/agents/seo-content.js` (sem imports e não registrado como handler), CLI offline `tools/seo-audit.mjs`, evidências versionadas `docs/seo-content-readiness.json`, relatório `docs/seo-content-agent.md` e `test/seo-content-agent-tests.js`.
+### Frente SEO & Content Agent — gate de prontidão (issue #594; PR #595 integrada em 13/10/2026)
+- Autorização do proprietário para começar a Fase 3 pelo agente de conteúdo, com escopo restrito a leitura e proposta, sem publicação externa (issue [#594](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/594)). Merge: [PR #595](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/595), commit `2ee66dd6619a0dd69c24af0fe4c5ae00dfca882e`.
+- Entregue e integrada: auditor somente leitura `src/agents/seo-content.js` (sem imports e não registrado como handler), CLI offline `tools/seo-audit.mjs`, evidências versionadas `docs/seo-content-readiness.json`, relatório `docs/seo-content-agent.md` e `test/seo-content-agent-tests.js`. Correções adicionais na mesma PR alinharam o relógio do ciclo de agentes e o teste de contrato do worker, sem alterar workflows.
 - **Gate: bloqueado, agente desativado por padrão.** Faltam evidências de burn-in de 7 dias (0/7), Search Console, política de conteúdo, acesso autorizado ao analytics e decisão de fonte canônica (Pages × Vercel). Comprovados no código e nos testes: SSR/canonical/sitemap/metadados, frescor e testes de indexabilidade.
-- Render local com o `state.json` do ramo `data` (13/10, 15:30 UTC): 159 URLs do sitemap auditadas, sem achado de página. Propostas não aplicadas: robots.txt bloqueia o `noindex` de 4 rotas privadas (baixa); sem dados em dia, 8 páginas fixas saem `noindex` mas continuam no sitemap (média); a description estática da Home tem 199 caracteres (baixa).
-- O host de produção não foi auditado nesta tarefa.
+- Validação reportada na PR: `npm test` com 165 arquivos OK; 20 casos específicos do agente; `npm run golden:eval` 31/31. O inventário offline examinou 159 URLs do sitemap a partir do `state.json` do ramo `data` (13/10, 15:30 UTC), sem achado de página. Propostas não aplicadas: `robots.txt` bloqueia o `noindex` de 4 rotas privadas (baixa); sem dados em dia, 8 páginas fixas saem `noindex` mas continuam no sitemap (média); description estática da Home tem 199 caracteres (baixa).
+- **Deploy:** checks `build` e `report-build-status` passaram no run [38431199161](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38431199161); o job `deploy` ainda estava em execução na última consulta. Produção não declarada validada; host público ainda não foi auditado.
+- **Gate bloqueado:** burn-in 0/7, Search Console não verificado, política editorial ausente, acesso autorizado aos dados de analytics não comprovado e fonte canônica (Pages × Vercel) não decidida. O agente continua desativado por padrão.
 
 ### Convenção de atualização deste documento
 Atualizar este roadmap quando houver mudança comprovada de fase, entrega integrada, bloqueio ou decisão do proprietário. Usar issues, PRs, commits, CI, logs e smoke tests como evidência; não inferir conclusão apenas por labels, quantidade de PRs ou sucesso isolado de workflow. O Plano de Entrega Turbo continua sendo a fonte dos critérios de saída; este roadmap registra o estado observado e a próxima prioridade.
