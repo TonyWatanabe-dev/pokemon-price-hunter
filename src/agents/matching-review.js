@@ -29,8 +29,8 @@ const parsedOf = (title, catalog) => {
 // O horário vem da própria fonte (generatedAt da rodada para recusas; source_timestamp para ofertas);
 // se faltar, não é inventado: a evidência sai 'incompleta'.
 export function reviewCandidates(state, { catalog = null, limit = 25, maxConfidence = LOW_CONFIDENCE_MAX, now = Date.now() } = {}) {
-  const out = []; const seen = new Set();
-  const push = (kind, store, url, entity, proposal, evidenceIn, confidence = null) => {
+  const refusals = []; const low = []; const seen = new Set();
+  const push = (out, kind, store, url, entity, proposal, evidenceIn, confidence = null) => {
     if (!store || !url) return;
     const ev = buildEvidence({ url, ...evidenceIn }, { now });
     if (!ev.ok) return;
@@ -45,16 +45,19 @@ export function reviewCandidates(state, { catalog = null, limit = 25, maxConfide
     if (why.length !== 1) continue;
     const kind = REASONS.find(([re]) => re.test(why[0]))?.[1];
     if (!kind) continue;
-    push(kind, u.store, u.url, { entityType: 'listing', entityId: canonicalUrl(u.url).slice(0, 100) },
+    push(refusals, kind, u.store, u.url, { entityType: 'listing', entityId: canonicalUrl(u.url).slice(0, 100) },
       { title: String(u.title || '').slice(0, 300), why: why[0].slice(0, 200), parsed: parsedOf(u.title || '', catalog) },
       { source: 'state.unmatched', reason: why[0], basis: 'observado', observedAt: state?.generatedAt });
   }
   for (const o of state?.offers || []) {
     if (!(typeof o.matchConfidence === 'number' && o.matchConfidence <= maxConfidence) || !o.productId) continue;
-    push('baixa_confianca', o.storeId, o.url, { entityType: 'offer', entityId: String(o.id).slice(0, 100) },
+    push(low, 'baixa_confianca', o.storeId, o.url, { entityType: 'offer', entityId: String(o.id).slice(0, 100) },
       { title: String(o.title || '').slice(0, 300), productId: o.productId, matchConfidence: o.matchConfidence },
       { source: 'state.offers', reason: `matching aceito com confiança ${o.matchConfidence} (até ${maxConfidence})`, basis: 'inferido', observedAt: o.source_timestamp },
       Math.round(o.matchConfidence * 100));
   }
-  return out.slice(0, limit);
+  // Cota: até 1/5 do limite fica reservado à baixa confiança, para recusas em massa não esconderem as ofertas.
+  // Abaixo do limite nada muda; vaga que um lado não usa fica com o outro.
+  const lowSlots = Math.min(low.length, Math.max(limit - refusals.length, Math.ceil(limit / 5)));
+  return [...refusals.slice(0, Math.max(0, limit - lowSlots)), ...low.slice(0, lowSlots)];
 }
