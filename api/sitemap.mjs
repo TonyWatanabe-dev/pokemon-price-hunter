@@ -2,7 +2,10 @@
 import { state, slugs, SITE, colSlug, typeSlug, bestBy } from './_seo.mjs';
 import { classify, usable } from './_lib/freshness.mjs';
 export default async function handler(req, res) {
-  let urls = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
+  const fixed = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
+  // Sem dados utilizáveis, a Home mantém canonical/indexabilidade; as demais páginas ficam noindex em pagina.mjs.
+  // Não liste no sitemap URLs que a própria página pede para remover do índice.
+  let urls = [fixed[0]];
   let lastmod = new Date().toISOString().slice(0, 10);
   let stale = true;
   try {
@@ -10,6 +13,7 @@ export default async function handler(req, res) {
     // Dados antigos: só as páginas fixas (nada de produto/coleção/formato que possa estar desatualizado).
     if (!usable(classify(s?.generatedAt))) throw new Error('dados desatualizados');
     stale = false;
+    urls = fixed;
     lastmod = String(s.generatedAt || '').slice(0, 10) || lastmod; const { of } = slugs(s.products || []);
     const { by: best, n: inStock } = bestBy(s);
     const prods = (s.products || []).filter((p) => p.offerCount > 0);
