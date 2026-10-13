@@ -41,6 +41,21 @@ await test('seleção: só casos com evidência, um por página, chave estável'
   assert.deepEqual(reviewCandidates({}), []);
 });
 
+await test('cota: recusas em massa não escondem ofertas de baixa confiança', async () => {
+  const muitas = Array.from({ length: 30 }, (_, i) => U(`loja${i}`, `Pokémon Box ${i}`, 'tipo de produto não identificado'));
+  const ofertas = [offerFx('b1', 0.6), offerFx('b2', 0.5), offerFx('b3', 0.4)];
+  const state = { generatedAt: new Date().toISOString(), unmatched: muitas, offers: ofertas };
+  const c = reviewCandidates(state, { limit: 25 });
+  assert.equal(c.length, 25);
+  assert.deepEqual(c.filter((x) => x.payload.proposal.kind === 'baixa_confianca').map((x) => x.payload.entityId), ['b1', 'b2', 'b3']);
+  assert.equal(c.filter((x) => x.payload.proposal.kind === 'tipo_desconhecido').length, 22);
+  const so = reviewCandidates({ ...state, offers: Array.from({ length: 30 }, (_, i) => offerFx(`m${i}`, 0.6)) }, { limit: 25 });
+  assert.equal(so.filter((x) => x.payload.proposal.kind === 'baixa_confianca').length, 5, 'cota é 1/5 do limite');
+  const poucas = reviewCandidates({ ...state, unmatched: muitas.slice(0, 2), offers: Array.from({ length: 30 }, (_, i) => offerFx(`m${i}`, 0.6)) }, { limit: 25 });
+  assert.equal(poucas.length, 25); assert.equal(poucas.filter((x) => x.payload.proposal.kind === 'tipo_desconhecido').length, 2, 'vaga livre fica com o outro lado');
+  assert.deepEqual(reviewCandidates(state, { limit: 0 }), []);
+});
+
 await test('aviso agregado; nada a avisar = nenhuma mensagem', async () => {
   assert.equal(composeAgentAlert([]), null);
   const m = composeAgentAlert([
