@@ -458,21 +458,34 @@ Atualizar este roadmap quando houver mudança comprovada de fase, entrega integr
 - **Não declarar Fase 1 nem operação 24/7 concluídas por causa deste merge isolado:** confirmar execução das tarefas seguintes, CI/revisão, smoke aplicável e os sete dias consecutivos de burn-in exigidos.
 
 
-### Fila Turbo — 10 tarefas aprovadas (13/10/2026)
+### Fila Turbo — encerramento da Fase 1 (atualizado em 13/10/2026, 20:40 UTC)
 
-A fila contém dez tarefas aprovadas, ordenadas por dependência. Isso significa **dez tarefas elegíveis em backlog**, não dez workers simultâneos. A concorrência permanece conservadora até comprovar idempotência e despacho real; não alterar `TAREFAS_MAX` para 10 apenas para aumentar o número na fila.
+**Escopo da Fase 1:** integridade dos dados e do catálogo. A fila de execução foi restringida às correções de frescor ainda necessárias; tarefas de experiência, oportunidades e frete foram retiradas da elegibilidade automática para não misturar as Fases 2/3/5 com o gate de conclusão da Fase 1.
 
-1. [#619 — JSON-LD: todas as páginas falham](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/619) — primeira correção; diferencia resposta de sitemap em cache de coleta real.
-2. [#620 — timestamps futuros no sync e na listagem de lojas](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/620) — depende de #619.
-3. [#625 — frescor por oferta na API](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/625) — depende de #620; sem novos limites de frescor.
-4. [#626 — oferta legada sem timestamp](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/626) — depende de #625; contrato e testes primeiro, sem migration.
-5. [#627 — isolar timestamp inválido no sync](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/627) — depende de #626; não enfraquecer atomicidade.
-6. [#94 — cadeia de suprimentos/dependências](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/94) — retomada com auditoria evidenciada e upgrades mínimos.
-7. [#82 — acessibilidade e responsividade do fluxo de compra](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/82) — retomada para auditar apenas lacunas restantes.
-8. [#83 — loading, vazio, erro e recuperação da UI](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/83) — depende de #82.
-9. [#53 — oportunidades verificáveis e deduplicadas](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/53) — depende de #83; usa score existente e não confirma frete desconhecido.
-10. [#84 — cotação real de frete por CEP](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/84) — depende de #53; R2, flag permanece desligada e nenhuma cotação é inventada.
+**Evidência nova:** a PR [#628](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/628) foi integrada no commit `c5b6ceca309aadb55172656352e3bcd38f184aa9`, fechando a issue [#619](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/619): quando todas as páginas JSON-LD falham, a loja não pode parecer saudável. O Dispatcher #157 leu `DISPATCHER_ORCAMENTO_USD=100`, registrou US$ 55,54 de gasto reportado e despachou #619. **O runtime mostrou `DISPATCHER_ORCAMENTO_JANELA_H` vazia**, então essa configuração continua pendente; não inferir que a janela de 24 h está ativa.
 
-Todas as tarefas da fila foram reabertas/criadas com escopo atualizado e etiqueta `tarefa:aprovada` aplicada após a criação/abertura, para registrar o evento de elegibilidade do Dispatcher. A issue [#612 — smoke SEO público](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/612) foi retirada da fila automática porque exige que um operador dispare ou aguarde o workflow público e anexe a evidência real; não é uma tarefa que o worker possa declarar concluída com teste offline.
+#### Fila de implementação — ordem por dependência
 
-**Estado de execução:** a fila está preparada, mas a execução dos workers não foi confirmada nesta atualização. Não declarar tarefas iniciadas até haver evento/run/PR observável. A publicação de frete permanece protegida por flag e os sete dias verdes de burn-in continuam obrigatórios.
+1. [#620 — rejeitar timestamp futuro e permitir recuperação de leituras válidas](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/620) — elegível após #619 integrada.
+2. [#625 — expor frescor por oferta na API](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/625) — depende de #620.
+3. [#626 — contrato para ofertas legadas sem timestamp](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/626) — depende de #625.
+4. [#627 — isolar oferta com timestamp inválido no sync](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/627) — depende de #626.
+
+As quatro issues mantêm a etiqueta `tarefa:aprovada`. Não foram adicionadas tarefas duplicadas. As issues #94, #82, #83, #53 e #84 continuam no backlog para suas fases próprias, mas tiveram a etiqueta de elegibilidade automática removida: revisão de dependências/hardening, acessibilidade, recuperação da UI, oportunidades e frete não são pré-requisitos diretos do critério de saída da Fase 1. A flag de frete permanece desligada.
+
+#### Gates obrigatórios de encerramento — não automatizar como se fossem tarefas de código
+
+- [#612 — smoke SEO público](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/612): continua manual/operacional. Exige um run real no domínio público e evidência de Home, canonical, robots, sitemap e rotas privadas com noindex. Testes offline não substituem esse gate.
+- [#231 — configurações finais de autonomia/release](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/231): continua aberta. Teto de orçamento US$ 100 confirmado no Dispatcher #157; `DISPATCHER_ORCAMENTO_JANELA_H` apareceu vazio e precisa ser definido/verificado. Também faltam as configurações de auditoria de release, escopo do token Vercel, proteção/checks da `main`, rotina horária e validação de recuperação/alerta conforme checklist.
+- [#271 — burn-in 24/7](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/271): permanece aberta. Critério rígido de sete dias encerrados consecutivos verdes. Último registro consultado: 13/10 parcial, sequência 0/7; o dia vermelho de 12/10 reiniciou a contagem.
+
+#### Critérios para declarar Fase 1 concluída
+
+1. #620, #625, #626 e #627 integradas com testes de contrato/regressão, CI `test`, `regression`, `golden` e `qa-review` verdes.
+2. Golden tests demonstram que variante/idioma/quantidade e fonte oficial continuam corretos; ofertas stale, inválidas ou sem evidência não recebem selo/score/alerta como se estivessem atuais.
+3. Smoke público executado e registrado com evidência real; falhas de rede/permissão distinguidas de falhas reais do site.
+4. Configuração operacional e de release validada sem bypass de branch protection nem exposição de secrets.
+5. Sete dias consecutivos verdes de burn-in registrados em #271.
+6. Roadmap atualizado com PRs/commits, runs, checks, smoke, resultado de burn-in e bloqueios remanescentes. Até todos os critérios serem provados, **Fase 1 continua aberta**.
+
+**Concorrência:** o runtime reportou `TAREFAS_MAX=10`, mas isso representa capacidade, não garantia de dez workers simultâneos. A fila deve respeitar dependências e os limites de orçamento; nunca executar em paralelo duas tarefas que alterem os mesmos contratos/arquivos compartilhados sem isolamento demonstrado.
