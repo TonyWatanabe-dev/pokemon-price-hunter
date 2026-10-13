@@ -42,6 +42,8 @@
 
 Sem frescor informado, as regras de frescor se abstêm. Sem dados em dia, a página sem SSR é o comportamento previsto e não vira `SEO-CONTEUDO-VAZIO`.
 
+Endurecimento (issue #607): frescor sem estado conhecido de `classify()` (`atual`, `atrasado`, `desatualizado`, `indisponivel`) conta como ausente; host do site ausente **ou inválido** gera abstenção, não achado de canonical, sitemap ou robots; o relatório lista também as abstenções parciais de sitemap e rotas (prefixos `sitemap:` e `rotas:`); e `report()` só marca `enabled: true` quando recebe um gate `pronto`, sem bloqueios e com `enabled: true`, falhando fechado diante de objeto forjado ou incompleto.
+
 ## Gate de prontidão (conferido em 13/10/2026 na `main` `d85e352`)
 
 | Pré-requisito | Estado | Evidência |
@@ -79,7 +81,7 @@ Nenhuma dessas propostas foi implementada: mudar SEO de produção exige tarefa 
 7. **Orçamento:** local, cerca de 2 s para 159 URLs. Sem chamadas de modelo.
 8. **Abstinência:** sem HTML, sitemap, configuração, host ou frescor, registra abstenção e não recomenda.
 9. **Métricas:** contagem por severidade e abstenções. Precisão/recall em produção ainda não medidas (casos sintéticos medem regressão).
-10. **Testes:** `test/seo-content-agent-tests.js` (casos dourados + CLI de ponta a ponta offline).
+10. **Testes:** `test/seo-content-agent-tests.js` (casos dourados + CLI de ponta a ponta offline) e `test/seo-content-hardening-tests.js` (frescor real/desconhecido, canonical, robots/sitemap, rastreabilidade de toda regra, entradas congeladas, gate fechado e CLI sem escrita fora de `--out`).
 11. **Rollout:** desativado por padrão. Ver o plano de ativação.
 12. **Aceite:** CI verde no PR e revisão independente.
 
