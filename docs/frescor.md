@@ -46,7 +46,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 - `test/freshness-contract-tests.js`: a matriz acima (ausente, inválido, futuro, fresco, envelhecendo, stale e falha parcial).
 - `test/collector-sync-contract-tests.js`: rodadas reais com coletor simulado, conferindo cada etapa (abaixo).
 - `test/state-data-at-tests.js`: `dataAt` do `state.json` na falha total, parcial e recuperação (API e UI).
-- `test/offer-freshness-tests.js`: horário preservado ao reaproveitar, mapeamento para o banco e envelhecimento
+- `test/api-offer-freshness-tests.js`. horário preservado ao reaproveitar, mapeamento para o banco e envelhecimento
   pelos limites configurados.
 - `test/future-last-seen-tests.js`: `last_seen_at` no futuro barrado no sync, recuperação de valor já gravado, frescor
   do banco e página de lojas (#620).
@@ -79,9 +79,12 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
 
 ## Lacunas conhecidas
 
-1. O frescor por oferta individual ainda não é devolvido pela API: a resposta traz o frescor da fonte inteira, e a
-   UI só mostra o selo `stale` e o "Atualizado há …". Expor um status por oferta exigiria definir como ele se combina
-   com `stale`; fica como decisão do roadmap, sem inventar limite novo.
+1. **Corrigida na #625.** Cada oferta devolvida pela API (`/v1/produtos/:id/ofertas`, banco e fallback do
+   `state.json`) traz `freshness: { status, ageMin }`, calculado por `offerFreshness` (`api/_lib/freshness.mjs`) sobre o
+   `last_seen_at` da própria oferta, com os mesmos `LIMITS` do `classify`. Não herda o frescor da loja nem o
+   `meta.freshness` da resposta: sem horário, inválido ou no futuro (> 5 min) = `indisponivel` com `ageMin: null`.
+   É independente de `stale`/`status: 'pending'` (uma oferta reaproveitada continua `pending` e mostra a idade real da
+   última leitura). Campos existentes inalterados; ranking e UI não mudam nesta entrega. Teste: `test/api-offer-freshness-tests.js`.
 2. Sem horário da fonte, a sincronização grava `last_seen_at = now()` (`coalesce` em `src/core/sync.js`, contrato
    documentado ali para não congelar ofertas de fontes sem data). Uma oferta stale antiga sem horário ganharia, no
    banco, um horário de agora e entraria no `max(last_seen_at)` do frescor. Hoje o robô sempre grava o horário da
