@@ -248,7 +248,8 @@ export default async function handler(req, res) {
     // Frente 7: lojas conhecidas (sources do state.json; sem ele, sources.json) só para /lojas e para o bloco do produto.
     let lojas = [];
     if (t === 'lojas' || t === 'produto') { try { lojas = await lojasFromState(s); } catch { lojas = []; } }
-    const m = build(t, slug, s, opp, lojas);
+    let m;
+    try { m = build(t, slug, s, opp, lojas); } catch (e) { console.error(`pagina: erro inesperado em build (t=${t}): ${String(e?.message || e).slice(0, 200)}`); throw e; }
     if (!m) { status = 404; html = noindex(html); }
     else {
       ssr = true;
