@@ -27,9 +27,7 @@ export const firstPrice = (txt) => {
   return DE.test(t) && all.length > 1 ? Math.min(...all) : all[0];
 };
 const STORE_NAMES = { amazon: 'Amazon', 'mercado-livre': 'Mercado Livre', mercadolivre: 'Mercado Livre', shopee: 'Shopee', magalu: 'Magalu', 'magazine-luiza': 'Magalu', americanas: 'Americanas', 'casas-bahia': 'Casas Bahia', aliexpress: 'AliExpress' };
-// Loja pelo domínio: host igual ou subdomínio de um domínio conhecido (ou encurtador). Não casa por substring.
-const STORE_DOMAINS = { 'amazon.com.br': 'Amazon', 'amazon.com': 'Amazon', 'amzn.to': 'Amazon', 'amzn.com': 'Amazon', 'mercadolivre.com.br': 'Mercado Livre', 'mercadolivre.com': 'Mercado Livre', 'meli.la': 'Mercado Livre', 'shopee.com.br': 'Shopee', 'magazineluiza.com.br': 'Magalu', 'magalu.com': 'Magalu', 'americanas.com.br': 'Americanas', 'casasbahia.com.br': 'Casas Bahia', 'aliexpress.com': 'AliExpress' };
-export const storeFromHost = (u) => { try { const h = new URL(u).hostname.toLowerCase().replace(/^www\./, ''); for (const [d, v] of Object.entries(STORE_DOMAINS)) if (h === d || h.endsWith('.' + d)) return v; return h; } catch { return null; } };
+const storeFromHost = (u) => { try { const h = new URL(u).hostname.replace(/^www\./, ''); for (const [k, v] of Object.entries(STORE_NAMES)) if (h.includes(k.replace('-', ''))) return v; if (/amzn\./.test(h)) return 'Amazon'; if (/meli\.la|mercadolivre/.test(h)) return 'Mercado Livre'; return h; } catch { return null; } };
 
 // Pelando: a busca é renderizada no servidor; cada promoção tem link /d/<slug>.
 export function parsePelando(html) {
@@ -69,14 +67,18 @@ const slugify = (q) => q.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().
 const channelOf = (c) => String(c).trim().replace(/^@/, '').replace(/^https?:\/\/(t\.me|telegram\.me)\/(s\/)?/i, '').split(/[/?#]/)[0];
 
 // Lê todas as fontes configuradas e devolve as pistas brutas (com produto identificado quando possível).
-export async function collectTips(cfg, catalog, log = () => {}) {
+// `deadline` (opcional, ms epoch): vencido, as fontes restantes são puladas com reason "prazo", sem requisição.
+export async function collectTips(cfg, catalog, log = () => {}, deadline = null) {
   const raw = []; const status = [];
+  const vencido = () => deadline != null && Date.now() >= deadline;
   for (const q of cfg.pelando?.buscas || []) {
+    if (vencido()) { status.push({ source: 'Pelando: ' + q, ok: false, reason: 'prazo' }); continue; }
     const url = `https://www.pelando.com.br/busca/${slugify(q)}`;
     try { await guard(url); const r = await get(url); const found = parsePelando(r.text); raw.push(...found); status.push({ source: 'Pelando: ' + q, ok: true, found: found.length }); }
     catch (e) { status.push({ source: 'Pelando: ' + q, ok: false, reason: e.message }); log(`[pistas] Pelando "${q}": ${e.message}`); }
   }
   for (const c of cfg.telegram || []) {
+    if (vencido()) { status.push({ source: 'Telegram ' + c, ok: false, reason: 'prazo' }); continue; }
     const ch = channelOf(c); if (!/^[A-Za-z0-9_]{4,}$/.test(ch)) { status.push({ source: 'Telegram ' + c, ok: false, reason: 'use o @ ou o link t.me do canal' }); continue; }
     const url = `https://t.me/s/${ch}`;
     try {
