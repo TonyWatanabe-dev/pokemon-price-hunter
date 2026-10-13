@@ -116,17 +116,18 @@ export function siteOffers(st, { ids = null, col = null, type = null }) {
   return { products: [...want].map((id) => cardP(P.get(id), n)), offers: offers.map((o) => pick(o, OFFER_FIELDS)), liveCount: Object.fromEntries([...want].map((id) => [id, n[id] || 0])), ...sideOf(st, offers) };
 }
 
-/** tipHits() do site: pistas do Telegram que batem com o termo da busca (todas as palavras, sem acento). */
+/** tipHits() do site: pistas do Telegram que batem com o termo da busca (todas as palavras, sem acento).
+ *  O texto bruto entra no filtro, mas não sai na resposta (TIP_DROP, como na página do produto e na Home). */
+const TIP_DROP = new Set(['text', 'raw', 'html', 'media', 'entities']);
 const norm = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 export function tipHits(st, q) {
   const ws = norm(q).split(/\s+/).filter(Boolean); if (!ws.length) return [];
   return (st.tips || []).filter((x) => !x.expired).filter((x) => { const hay = norm([x.collectionName, x.label, x.title, x.text, x.store].join(' ')); return ws.every((w) => hay.includes(w)); })
     .sort((a, b) => String(b.postedAt || b.firstSeen).localeCompare(String(a.postedAt || a.firstSeen))).slice(0, 8)
-    .map((t) => Object.fromEntries(Object.entries(t).filter(([k]) => !['raw', 'html', 'media', 'entities'].includes(k))));
+    .map((t) => Object.fromEntries(Object.entries(t).filter(([k]) => !TIP_DROP.has(k))));
 }
 
 const PAGE_OFFER = [...OFFER_FIELDS, 'source_timestamp', 'ean', 'sku', 'priceKindLabel', 'storeKind', 'sellerKind'];
-const TIP_DROP = new Set(['text', 'raw', 'html', 'media', 'entities']);
 /**
  * Página do produto: o produto, todas as suas ofertas atuais, pistas do Telegram dele, lojas e reputação.
  * stats (Price Engine) define "preço médio" e "menor já visto"; sem histórico suficiente, o menor já visto do robô
