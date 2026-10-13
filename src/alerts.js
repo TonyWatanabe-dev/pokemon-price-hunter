@@ -253,3 +253,9 @@ export async function dispatchTips(hits, sent, { send = transports, now = new Da
   }
   return [...delivered, ...await retryPending(sent, (k) => k.startsWith('tip|'), handled, send, now, io)];
 }
+
+// Limite diário por usuário: deixa passar só as vagas restantes (max - já entregues), preservando a ordem.
+export function capPerUser(hits, deliveredToday, max) {
+  const left = Math.max(0, Math.floor(Number(max) || 0) - Math.max(0, Math.floor(Number(deliveredToday) || 0)));
+  return (hits || []).slice(0, left);
+}
