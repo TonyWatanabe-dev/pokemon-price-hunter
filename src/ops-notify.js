@@ -7,13 +7,25 @@ const mask = (s, env) => {
   return out.replace(/bot\d+:[\w-]+/g, 'bot***').slice(0, 160);
 };
 
-async function post(fetchImpl, url, body, timeoutMs) {
+const RETRY_WAIT_MS = 300;
+
+async function postOnce(fetchImpl, url, body, timeoutMs) {
   const ac = new AbortController(); const t = setTimeout(() => ac.abort(new Error('tempo esgotado')), timeoutMs);
   try {
     const r = await fetchImpl(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: ac.signal });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    if (!r.ok) throw Object.assign(new Error(`HTTP ${r.status}`), { status: r.status });
     return true;
   } finally { clearTimeout(t); }
+}
+
+// Uma única retentativa após espera curta, só para falha transitória (rede/prazo/5xx); 4xx não repete.
+async function post(fetchImpl, url, body, timeoutMs, waitMs = RETRY_WAIT_MS) {
+  try { return await postOnce(fetchImpl, url, body, timeoutMs); }
+  catch (e) {
+    if (e?.status && e.status < 500) throw e;
+    await new Promise((res) => setTimeout(res, waitMs));
+    return postOnce(fetchImpl, url, body, timeoutMs);
+  }
 }
 
 export const CHANNELS = {
