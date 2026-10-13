@@ -37,6 +37,20 @@ Ficou de fora, de propósito (o lote é mínimo):
    - Se o console estiver em **modo de teste** (`allow read, write: if request.time < timestamp.date(...)`), qualquer pessoa pode ler e gravar tudo até essa data. Publicar a proposta fecha essa brecha.
 3. **Veja o uso real**: Console → **Firestore Database** → **Data**. Confirme que só existe a coleção `users`.
 
+## Checklist de divergência (console × repositório)
+
+Use sempre que alguém mexer nas regras pelo console ou antes de publicar. Sem rede: a conferência é manual.
+
+1. Console → **Firestore Database** → **Rules** → copie o texto inteiro para `regras-console-AAAA-MM-DD.rules`.
+2. Compare com a versão do repositório:
+   ```bash
+   diff -u regras-console-AAAA-MM-DD.rules firebase/firestore.rules
+   ```
+3. Sem saída = iguais. Qualquer diferença: decida se o repositório ou o console está certo e alinhe os dois (o repositório é a fonte; publicar substitui o console por inteiro).
+4. Atualize a data abaixo.
+
+**Última conferência console × repositório:** AAAA-MM-DD (preencher; nenhuma conferência registrada por este checklist ainda)
+
 ## Testar no emulador (local, sem tocar em produção)
 
 Pré-requisitos: Node 22, Java 21 ou mais novo, e a Firebase CLI (`npm i -g firebase-tools`).
