@@ -6,10 +6,12 @@ const URLS = [
   'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/main/data/state.json',
 ];
 const TTL_MS = 60_000;
+const NEG_MS = 5_000;                                 // cache negativo: após falha, não volta à rede por 5 s
 let cache = { at: 0, st: null, from: null };
+let fail = null;                                      // { at, err } da última falha
 let loader = null;                                    // testes injetam um carregador
 
-export function setLegacyLoader(fn) { loader = fn; cache = { at: 0, st: null, from: null }; }
+export function setLegacyLoader(fn) { loader = fn; cache = { at: 0, st: null, from: null }; fail = null; }
 
 async function fetchJson(url, ms) {
   const ac = new AbortController(); const t = setTimeout(() => ac.abort(), ms);
@@ -20,12 +22,19 @@ async function fetchJson(url, ms) {
 /** Retorna { st, from, age } ou lança erro se nenhuma fonte responder. */
 export async function legacyState({ now = Date.now() } = {}) {
   if (cache.st && now - cache.at < TTL_MS) return { st: cache.st, from: cache.from, age: now - cache.at, cached: true };
-  if (loader) { const st = await loader(); cache = { at: now, st, from: 'injected' }; return { st, from: 'injected', age: 0, cached: false }; }
+  if (fail && now - fail.at >= 0 && now - fail.at < NEG_MS) {
+    if (cache.st) return { st: cache.st, from: cache.from + ' (cópia antiga)', age: now - cache.at, cached: true };
+    throw fail.err;
+  }
   let last = null;
-  for (const u of URLS) {
-    try { const st = await fetchJson(u, 5000); if (st?.products && st?.offers) { cache = { at: now, st, from: u.includes('/data/data/') ? 'ramo data' : 'ramo main' }; return { st, from: cache.from, age: 0, cached: false }; } }
+  if (loader) {
+    try { const st = await loader(); cache = { at: now, st, from: 'injected' }; fail = null; return { st, from: 'injected', age: 0, cached: false }; }
+    catch (e) { last = e; }
+  } else for (const u of URLS) {
+    try { const st = await fetchJson(u, 5000); if (st?.products && st?.offers) { cache = { at: now, st, from: u.includes('/data/data/') ? 'ramo data' : 'ramo main' }; fail = null; return { st, from: cache.from, age: 0, cached: false }; } }
     catch (e) { last = e; }
   }
+  fail = { at: now, err: new Error('state.json indisponível' + (last ? `: ${last.message}` : '')) };
   if (cache.st) return { st: cache.st, from: cache.from + ' (cópia antiga)', age: now - cache.at, cached: true };   // melhor um dado de minutos atrás que nada
-  throw new Error('state.json indisponível' + (last ? `: ${last.message}` : ''));
+  throw fail.err;
 }
