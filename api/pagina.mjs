@@ -22,7 +22,7 @@ function readLocal() {
   }
   return null;
 }
-const noindex = (h) => h.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', '<meta name="robots" content="noindex">\n</head>');
+const noindex = (h) => h.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', () => '<meta name="robots" content="noindex">\n</head>');
 const NAME = 'TCG Price Hunter';
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const crumbs = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + u })) });
@@ -229,7 +229,8 @@ export function pickFetchHost(headers = {}, env = process.env) {
 }
 
 export default async function handler(req, res) {
-  const q = new URL(req.url, SITE).searchParams; const t = q.get('t') || 'home'; const slug = decodeURIComponent(q.get('slug') || '');
+  const q = new URL(req.url, SITE).searchParams; const t = q.get('t') || 'home'; let slug = ''; let slugBad = false;
+  try { slug = decodeURIComponent(q.get('slug') || ''); } catch { slugBad = true; }
   // Host vem do cabeçalho da requisição: só busca app.html em host conhecido (evita SSRF por Host forjado).
   const host = pickFetchHost(req.headers);
   if (!page.html) page = { t: Date.now(), html: shell(readLocal()) };
@@ -238,7 +239,8 @@ export default async function handler(req, res) {
   }
   if (!page.html) { res.setHeader('Cache-Control', 'no-store'); res.statusCode = 302; res.setHeader('Location', '/app.html'); return res.end(); }
   let html = page.html; let status = 200;
-  try {
+  if (slugBad) { status = 404; html = noindex(html); }
+  else try {
     let opp = null;
     // Lote 2: oportunidades só com o banco em dia; preços no HTML só com o state.json em dia (até 90 min).
     // Fora disso, vai a página sem o conteúdo pré-renderizado: o site carrega e mostra o aviso de dados desatualizados.
@@ -253,17 +255,17 @@ export default async function handler(req, res) {
     else {
       const url = SITE + m.url;
       html = html
-        .replace(/<title>[^<]*<\/title>/, `<title>${esc(m.title)}</title>`)
-        .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(m.desc)}">`)
-        .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(m.title)}">`)
-        .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${esc(m.desc)}">`)
-        .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${esc(url)}">`)
-        .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${esc(url)}">`)
-        .replace('</head>', `${m.json.map(ld).join('\n')}\n</head>`)
-        .replace('<div id="view"></div>', `<div id="view"><div class="ssr">${m.body}</div></div>`);
-      if (m.img) html = html.replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${esc(m.img)}">`);
+        .replace(/<title>[^<]*<\/title>/, () => `<title>${esc(m.title)}</title>`)
+        .replace(/<meta name="description" content="[^"]*">/, () => `<meta name="description" content="${esc(m.desc)}">`)
+        .replace(/<meta property="og:title" content="[^"]*">/, () => `<meta property="og:title" content="${esc(m.title)}">`)
+        .replace(/<meta property="og:description" content="[^"]*">/, () => `<meta property="og:description" content="${esc(m.desc)}">`)
+        .replace(/<meta property="og:url" content="[^"]*">/, () => `<meta property="og:url" content="${esc(url)}">`)
+        .replace(/<link rel="canonical" href="[^"]*">/, () => `<link rel="canonical" href="${esc(url)}">`)
+        .replace('</head>', () => `${m.json.map(ld).join('\n')}\n</head>`)
+        .replace('<div id="view"></div>', () => `<div id="view"><div class="ssr">${m.body}</div></div>`);
+      if (m.img) html = html.replace(/<meta property="og:image" content="[^"]*">/, () => `<meta property="og:image" content="${esc(m.img)}">`);
       // Produto sem nenhuma oferta com estoque é página vazia: fica fora do índice (o endereço continua abrindo).
-      if (m.noindex) html = html.replace('</head>', '<meta name="robots" content="noindex">\n</head>');
+      if (m.noindex) html = html.replace('</head>', () => '<meta name="robots" content="noindex">\n</head>');
     }
   } catch {
     // Sem dados em dia: devolve a página normal, o site carrega sozinho. Como o HTML base traz título e canonical da Home,
