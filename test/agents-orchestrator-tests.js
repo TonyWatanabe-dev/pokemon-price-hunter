@@ -183,7 +183,7 @@ await test('prioridade e limite por rodada', async () => {
 });
 
 await test('validação do handler de revisão', async () => {
-  assert.equal(validateReviewProposal(proposal()), null);
+  assert.equal(validateReviewProposal(proposal(), { now: T0 }), null);
   assert.match(validateReviewProposal({ ...proposal(), confidence: 101 }), /confidence/);
   assert.match(validateReviewProposal({ ...proposal(), dedupeKey: '' }), /dedupeKey/);
   assert.match(validateReviewProposal({ ...proposal(), proposal: [] }), /proposal/);
