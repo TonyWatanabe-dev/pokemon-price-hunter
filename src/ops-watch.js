@@ -120,7 +120,7 @@ export function normalizeLedger(l) {
 const LABEL = { parado: 'TCG Price Hunter parado', degradado: 'TCG Price Hunter com problema' };
 const HEAD = { parado: '🔴 ' + LABEL.parado, degradado: '🟠 ' + LABEL.degradado };
 const ACTIONS = 'https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions';
-const CODE_LABEL = {
+export const CODE_LABEL = {
   dados_parados: 'preços sem atualizar', sem_rodadas: 'robô sem disparo', rodada_falhou: 'rodada com falha', rodada_sem_publicar: 'dados sem publicar',
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
