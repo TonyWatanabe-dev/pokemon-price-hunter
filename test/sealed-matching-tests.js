@@ -169,6 +169,26 @@ test('"Pré-venda" marca parsed.preorder; título sem o termo não marca', () =>
   assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters').parsed.preorder, false);
 });
 
+test('"pre-order", "preorder" e "pré-lançamento" também marcam pré-venda; "Reservado" não', () => {
+  for (const termo of ['Pre-Order', 'Preorder', 'Pré-lançamento', 'Pre Order', 'Pré Lançamento']) {
+    const r = casa(`Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters ${termo}`, 'me02-box36');
+    assert.equal(r.parsed.preorder, true, termo);
+  }
+  assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Reservado').parsed.preorder, false);
+  assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Lançamento').parsed.preorder, false);
+  assert.equal(m('Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico').parsed.preorder, false);
+});
+
+test('coleção desconhecida (sem fallback) não casa, inclusive em pré-venda', () => {
+  for (const title of ['Pokémon TCG Booster Box Coleção Inexistente Zeta 36 Boosters', 'Pokémon TCG Booster Box Coleção Inexistente Zeta 36 Boosters Pré-venda']) {
+    const r = m(title);
+    assert.equal(r.productId, null, `${title} casou com ${r.productId}`);
+    assert.equal(r.parsed.collection, null, title);
+    assert.deepEqual(r.why, ['coleção não identificada'], title);
+  }
+  assert.equal(m('Pokémon TCG Booster Box Coleção Inexistente Zeta 36 Boosters Pré-venda').parsed.preorder, true);
+});
+
 test('confiança: 0,8 base; 0,6 com contagem inferida + coleção por fallback', () => {
   assert.equal(m('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters').confidence, 0.8);
   const r = casa('Pokémon TCG Box Display Megaevolução', 'me01-box36');
