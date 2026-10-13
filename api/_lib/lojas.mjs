@@ -22,6 +22,9 @@ export const LOJAS_CFG = {
   // Lojas oficiais de marca dentro de um marketplace: link direto (a leitura do ML vem do catálogo oficial, por produto).
   lojasOficiais: {
     'ml-pokemon': { name: 'Pokémon · loja oficial no Mercado Livre', host: 'mercadolivre.com.br/loja/pokemon', url: 'https://www.mercadolivre.com.br/loja/pokemon', marketplace: 'mercadolivre' },
+    'shopee-lvftcg': { name: 'LVF TCG · loja na Shopee', host: 'shopee.com.br/lvftcg', url: 'https://shopee.com.br/lvftcg', marketplace: 'shopee', reason: 'Loja dentro da Shopee: o robô não lê a Shopee; confira os preços na própria loja.' },
+    'ml-lvftcg': { name: 'LVF TCG · loja no Mercado Livre', host: 'mercadolivre.com.br/pagina/lvftcg', url: 'https://www.mercadolivre.com.br/pagina/lvftcg', marketplace: 'mercadolivre', reason: 'Vendedor no Mercado Livre: os anúncios entram pela leitura do catálogo quando estão nas páginas de produto.' },
+    'shopee-asuamaneirafestas': { name: 'A Sua Maneira Festas · loja na Shopee', host: 'shopee.com.br/asuamaneirafestas', url: 'https://shopee.com.br/asuamaneirafestas', marketplace: 'shopee', reason: 'Loja dentro da Shopee: o robô não lê a Shopee; confira os preços na própria loja.' },
   },
   // Plataforma confirmada na página inicial da loja (marcadores de CDN/meta) em 12/10/2026. O robô só distingue
   // Shopify/VTEX; "jsonld" é método de leitura, não plataforma. Sem confirmação, o link vai para a página inicial.
@@ -122,7 +125,7 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
   for (const [id, o] of Object.entries(cfg.lojasOficiais || {})) {
     if (out.some((x) => x.id === id)) continue;
     const loja = { id, name: o.name, host: o.host, url: o.url, platform: null, marketplace: o.marketplace, oficial: true, status: 'marketplace', offersLive: 0, lastReadAt: null,
-      reason: 'Loja oficial da marca dentro do marketplace; os anúncios dela entram pela leitura do catálogo do Mercado Livre quando estão nas páginas de produto.' };
+      reason: o.reason || 'Loja oficial da marca dentro do marketplace; os anúncios dela entram pela leitura do catálogo do Mercado Livre quando estão nas páginas de produto.' };
     out.push({ ...loja, searchUrl: o.url, searchKind: 'loja' });
   }
   const order = { monitorada: 0, 'sem-leitura': 1, indisponivel: 1, marketplace: 2, pausada: 3 };
@@ -142,7 +145,7 @@ export function sections(lojas) {
 
 /** "Procurar em outras lojas" do produto: os 4 marketplaces primeiro, depois lojas não monitoradas com busca própria, em ordem alfabética; até `max` links. */
 export function outrasLojas(lojas, q, { max = 12, cfg = LOJAS_CFG } = {}) {
-  const mk = Object.keys(cfg.marketplaces).map((id) => lojas.find((l) => l.marketplace === id) || { id, name: cfg.marketplaces[id].name, host: cfg.marketplaces[id].host, url: cfg.marketplaces[id].url, marketplace: id, status: 'marketplace' });
+  const mk = Object.keys(cfg.marketplaces).map((id) => lojas.find((l) => l.marketplace === id && !l.oficial) || { id, name: cfg.marketplaces[id].name, host: cfg.marketplaces[id].host, url: cfg.marketplaces[id].url, marketplace: id, status: 'marketplace' });
   const of = lojas.filter((l) => l.oficial);
   const rest = lojas.filter((l) => !l.marketplace && l.status !== 'monitorada' && l.searchKind === 'busca').sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   return [...mk, ...of, ...rest].slice(0, max).map((l) => ({ id: l.id, name: l.name, host: l.host, url: searchUrlFor(l, q, cfg) })).filter((l) => l.url);
