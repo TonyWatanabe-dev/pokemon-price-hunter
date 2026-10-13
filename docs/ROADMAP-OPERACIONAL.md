@@ -16,6 +16,17 @@
 - **PR #602 aberta** — acrescenta smoke público somente leitura para Home, `robots.txt`, `sitemap.xml` e cabeçalhos noindex, com execução diária/manual. Ainda não existe evidência de sucesso de runtime até o primeiro run passar.
 - O deploy de GitHub Pages associado à `main` em `604f1ce` terminou com `build`, `report-build-status` e `deploy` em sucesso (run [38434740204](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38434740204)). Isso não substitui smoke test do domínio público Vercel.
 - O agente SEO & Content permanece **desativado por padrão**, somente leitura. Burn-in continua exigindo sete dias encerrados consecutivos verdes; a amostra visível mais recente ainda não demonstra a conclusão do gate.
+## Decisão de escopo — 13/10/2026: limite para automação e início do Social Media
+
+O proprietário declarou estar satisfeito com o nível atual de automação e autorizou mudar o foco sem perseguir hardening indefinidamente.
+
+- **Última rodada limitada de integridade:** priorizar #626 (contrato de oferta legada sem timestamp) e #627 (isolar timestamp inválido no sync), em PRs pequenas e sequenciais conforme dependência. #620 e #625 estão integradas na `main` pelos commits #629 e #630. Se a correção restante exigir migration, alteração destrutiva, acesso externo indisponível ou mais de uma rodada focada de retrabalho, documentar o limite e estacionar; não prolongar a Fase 1 por refinamentos marginais.
+- **Gates operacionais em paralelo:** manter #612 (smoke público), #231 (configuração operacional) e #271 (burn-in de sete dias verdes) abertos até haver evidência real. Eles não bloqueiam o desenvolvimento do MVP Social Media em modo de rascunho; continuam bloqueando qualquer alegação de operação 24/7 plenamente validada e podem limitar publicação automática.
+- **Social Media autorizado agora — MVP limitado:** iniciar pela ingestão de ofertas já validadas, deduplicação/frescor, calendário editorial e geração de rascunhos com disclosure de afiliados. Primeira entrega deve ser útil sem depender de todas as contas externas: fila de conteúdo + prévia + aprovação humana + trilha de auditoria.
+- **Publicação por etapas:** Telegram primeiro após confirmar se o link fornecido é bot/canal e validar permissões; Instagram via API oficial quando a conta for elegível e as credenciais estiverem configuradas; WhatsApp somente após confirmação da integração oficial e convite real do grupo. Não simular WhatsApp Web.
+- **Autopublicação não entra no primeiro corte:** só habilitar após piloto controlado, validação dos links de afiliado, checks de dados atuais, deduplicação, limites de frequência, kill switch e logs auditáveis. Nenhuma publicação promocional se preço, estoque, variante ou frescor estiverem incertos.
+- **Critério de mudança de foco:** terminar #626/#627 se forem correções localizadas e seguras; se a frente de automação passar a depender de permissões humanas/infra externa ou exigir expansão significativa, congelar melhorias não críticas e dedicar a capacidade de desenvolvimento ao Social Media. O burn-in segue rodando em segundo plano, sem falsificar ou relaxar seus critérios.
+
 ## Regras de operação
 
 - Não fazer merge de PRs de produto, deploy, migration, nem alterar secrets/configuração de produção sem autorização explícita.
@@ -27,7 +38,7 @@
 
 ## Mapa de agentes
 
-Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que Claude já implementou no código do que ainda é futuro e exige pré-requisitos/aprovação. UX Research, UI & Design System, Social Media, Growth & CRO e Brand & Creative continuam futuras e bloqueadas por dependências. SEO & Content iniciou apenas o MVP de auditoria somente leitura pela PR #595; o agente permanece desativado até satisfazer o gate de prontidão.
+Detalhamento completo das responsabilidades, limites, dependências, status de implementação e critérios de ativação: [docs/MAPA-DE-AGENTES.md](./MAPA-DE-AGENTES.md). O inventário separa o que já está implementado do que ainda é futuro. Por decisão de escopo de 13/10/2026, o MVP de Social Media está autorizado em paralelo e com publicação inicialmente controlada; UX Research, UI & Design System, Growth & CRO e Brand & Creative continuam futuras e bloqueadas por dependências. SEO & Content permanece limitado ao MVP de auditoria somente leitura até satisfazer seu gate de prontidão.
 
 ## Contrato de autonomia e comunicação
 
@@ -422,9 +433,9 @@ Prioridades:
 - A próxima fase registrada é a **Fase 3 — experiência de compra**.
 - A conclusão da Fase 2 não implica que a fábrica de desenvolvimento/oper operação 24/7 esteja concluída: burn-in, governança de release e configurações pendentes permanecem controlados pelas evidências operacionais acima.
 
-### Frente futura — Social Media e comunidade
+### Frente autorizada — MVP Social Media e comunidade em paralelo
 - Planejamento registrado na issue [#560 — Agente Social Media e comunidade TCG Price Hunter](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/560).
-- **Não iniciar implementação antes do gate de conclusão da Fase 1**; até esse momento, manter somente planejamento e cadastro de requisitos.
+- **Implementação autorizada agora dentro do escopo limitado acima.** Não esperar o burn-in completo para desenvolver rascunhos e calendário; gates de estabilidade continuam exigidos para declarar operação 24/7 e para ativar autopublicação.
 - Comunidade: **TCG Price Hunter**.
 - Instagram informado: **@tcgpricehunter151**.
 - Telegram informado: [t.me/PokemonTCGHunterBR_bot](https://t.me/PokemonTCGHunterBR_bot). O endereço parece ser de bot; confirmar o link correto do canal/grupo e as permissões antes da integração.
@@ -433,7 +444,7 @@ Prioridades:
 - Escopo previsto: conteúdo e criativos (artes, roteiros, Reels/cortes), calendário editorial, publicação multicanal, moderação, roteamento de links afiliados e análise de desempenho.
 - Piloto previsto: Telegram e Instagram primeiro; WhatsApp após validar uma integração oficial adequada à conta. Não usar automação que simule WhatsApp Web ou contorne controles da plataforma.
 - Regras: ofertas precisam vir do catálogo validado, com preço/estoque/frescor confirmados; prevenir duplicatas; divulgar links afiliados; nunca influenciar o ranking pela comissão; proteger credenciais; publicar automaticamente somente após validação e testes.
-- Checklist antes do início: confirmar gate da Fase 1; verificar links e permissões de canal; validar elegibilidade do Instagram; receber convite real do WhatsApp e link da Shopee; definir voz visual/editorial, disclosure, fila, armazenamento de mídia, auditoria, limites e critérios de pausa; executar piloto controlado antes da ativação ampla.
+- Ordem de entrega: (1) contrato de dados, frescor, dedupe e disclosure; (2) calendário/fila, gerador de rascunhos e prévia; (3) aprovação humana e auditoria; (4) piloto de publicação Telegram; (5) Instagram pela API oficial; (6) WhatsApp apenas após validar API oficial e convite. O link da Shopee e demais contas ficam como dependências, não bloqueiam o primeiro corte.
 
 ### Frente SEO & Content Agent — gate de prontidão (issue #594; PR #595 integrada em 13/10/2026)
 - Autorização do proprietário para começar a Fase 3 pelo agente de conteúdo, com escopo restrito a leitura e proposta, sem publicação externa (issue [#594](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/594)). Merge: [PR #595](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/595), commit `2ee66dd6619a0dd69c24af0fe4c5ae00dfca882e`.
