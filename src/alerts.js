@@ -232,8 +232,18 @@ export async function dispatch(hits, sent, { send = transports, now = new Date()
 
 // Pistas (Pelando/Telegram): avisam só quando o produto foi identificado, o preço Copag está confirmado
 // e o desconto passa do mínimo. Sempre marcadas como não verificadas (sem estoque confirmado).
-export function tipHits(tips, sent, { tipMinDiscount = 0.15 } = {}) {
-  return tips.filter((t) => t.isNew && t.productId && t.msrp && t.price && !t.anomalous && !t.expired && t.discount >= tipMinDiscount && !sent['tip|' + t.id]);
+// Pistas iguais (mesmo produto e preço) de fontes diferentes geram um só alerta: a marca tipp|<produto>|<preço> em sent
+// vale por TIP_DEDUPE_HORAS (padrão 24h, opção tipDedupeHoras); preço diferente gera outro alerta.
+export const TIP_DEDUPE_HORAS = 24;
+const tipPriceKey = (t) => `tipp|${t.productId}|${t.price}`;
+export function tipHits(tips, sent, { tipMinDiscount = 0.15, tipDedupeHoras = TIP_DEDUPE_HORAS, now = Date.now() } = {}) {
+  const maxMs = tipDedupeHoras * 3600000; const seen = new Set();
+  return tips.filter((t) => {
+    if (!(t.isNew && t.productId && t.msrp && t.price && !t.anomalous && !t.expired && t.discount >= tipMinDiscount && !sent['tip|' + t.id])) return false;
+    const k = tipPriceKey(t); const at = Date.parse(sent[k]?.at);
+    if (seen.has(k) || now - at <= maxMs) return false;
+    seen.add(k); return true;
+  });
 }
 export function composeTip(t) {
   const lines = ['💡 PISTA (NÃO VERIFICADA)', '', t.collectionName.toUpperCase(), t.label, '', money(t.price), ...(t.store ? [`Loja: ${t.store}`] : []), '', `Copag: ${money(t.msrp)}`, `↓ ${pct(t.discount)}`];
@@ -248,6 +258,7 @@ export async function dispatchTips(hits, sent, { send = transports, now = new Da
     // Pista só é nova uma vez (isNew): falha total vai para a fila de pendentes em vez de sumir.
     const alert = { kind: 'tip', rule: 'pista', ruleLabel: 'Pista', productId: t.productId, total: t.price };
     sent['tip|' + t.id] = { at: now.toISOString(), total: t.price, ...(failed ? { pending: { since: now.toISOString(), msg, alert } } : {}) };
+    sent[tipPriceKey(t)] = { at: now.toISOString(), total: t.price };
     handled.add('tip|' + t.id);
     delivered.push({ at: now.toISOString(), ...alert, channels, text: msg.text, url: msg.url, ...(failed ? { failed: true } : {}) });
   }
