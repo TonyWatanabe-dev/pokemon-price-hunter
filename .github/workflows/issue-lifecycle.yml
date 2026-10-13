@@ -1,0 +1,64 @@
+# Fecha o ciclo da tarefa somente depois que a PR realmente foi integrada.
+# O worker marca executor:pr-open ao abrir a PR; nunca chama isso de concluído antes do merge.
+name: Issue lifecycle after merge
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions: {}
+
+jobs:
+  conclude-linked-tasks:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      pull-requests: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      PR_URL: ${{ github.event.pull_request.html_url }}
+      MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+    steps:
+      - name: Close verified executor issues and record evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Only explicit closing references in the merged PR body are eligible.
+          # PR_BODY is an environment value, never interpolated into shell source.
+          mapfile -t issue_numbers < <(
+            printf '%s\n' "${PR_BODY:-}" |
+              grep -Eio '(close[sd]?|fix(e[sd])?|resolve[sd]?) #[0-9]+' |
+              grep -Eo '[0-9]+' |
+              sort -u || true
+          )
+
+          for number in "${issue_numbers[@]}"; do
+            issue_json=$(gh api "repos/$REPO/issues/$number")
+            labels=$(jq -r '[.labels[].name] | join(",")' <<< "$issue_json")
+            state=$(jq -r '.state' <<< "$issue_json")
+
+            # Never change arbitrary issues: only tasks explicitly marked as awaiting merge.
+            if [[ ",$labels," != *",executor:pr-open,"* ]]; then
+              echo "Issue #$number: skipped (not labeled executor:pr-open)."
+              continue
+            fi
+
+            # The PR is confirmed merged and explicitly closes this issue.
+            if [[ "$state" == "open" ]]; then
+              gh api --method PATCH "repos/$REPO/issues/$number" \
+                -f state=closed -f state_reason=completed >/dev/null
+            fi
+
+            gh api --method DELETE "repos/$REPO/issues/$number/labels/executor:pr-open" >/dev/null 2>&1 || true
+            gh api --method DELETE "repos/$REPO/issues/$number/labels/executor:running" >/dev/null 2>&1 || true
+            gh api --method DELETE "repos/$REPO/issues/$number/labels/executor:failed" >/dev/null 2>&1 || true
+            gh api --method POST "repos/$REPO/issues/$number/labels" -f 'labels[]=executor:done' >/dev/null
+            gh api "repos/$REPO/issues/$number/comments" -f body="Concluída automaticamente após merge verificado. PR: $PR_URL | merge commit: $MERGE_SHA" >/dev/null
+
+            echo "Issue #$number concluída após merge verificado."
+          done
