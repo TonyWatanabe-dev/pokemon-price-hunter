@@ -29,6 +29,9 @@ export function classify(at, now = nowMs(), source = null) {
   const status = ageMin <= LIMITS.ATUAL_MIN ? 'atual' : ageMin <= LIMITS.ATRASADO_MIN ? 'atrasado' : ageMin <= LIMITS.EXPIRA_MIN ? 'desatualizado' : 'indisponivel';
   return { status, source, dataAt: new Date(t).toISOString(), ageMin, limits: LIMITS };
 }
+/** Frescor de UMA oferta, pelo horário da própria leitura (last_seen_at / source_timestamp), com os mesmos limites.
+ *  Nunca herda o frescor da loja ou da resposta: oferta sem horário, inválido ou no futuro (> 5 min) = indisponivel. */
+export function offerFreshness(at, now = nowMs()) { const c = classify(at, now); return { status: c.status, ageMin: c.ageMin }; }
 export const usable = (fr) => !!fr && USABLE.has(fr.status);
 
 /** Horário que prova o frescor de um state.json (ver o topo do arquivo). */

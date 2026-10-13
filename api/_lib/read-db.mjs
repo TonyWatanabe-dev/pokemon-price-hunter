@@ -2,6 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
+import { offerFreshness } from './freshness.mjs';
 import { normalizeSearch, sqlFold } from './search.mjs';
 import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
 import { classifyOfferChange, WINDOW_HOURS, BOUNCE_HOURS } from './offer-change.mjs';
@@ -233,6 +234,7 @@ const offerOut = (r) => ({
   total_price: num(r.total_price),                      // nulo quando o frete é desconhecido (nunca inventado)
   stock: r.stock_status, quantity: r.quantity ?? null, status: r.status, confirmed: r.confirmed, anomalous: r.anomalous,
   first_seen_at: iso(r.first_seen_at), last_seen_at: iso(r.last_seen_at),
+  freshness: offerFreshness(iso(r.last_seen_at)),       // frescor desta oferta, não o da loja nem o da resposta
 });
 export async function productOffers(key, { page, limit, todas = false }) {
   const p = await productRow(key); if (!p) return null;
