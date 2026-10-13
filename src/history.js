@@ -24,7 +24,7 @@ function merge(file, pid, meta, byStore) {
   }
   const cut = day(new Date(Date.now() - KEEP_DAYS * 864e5).toISOString());
   for (const [sid, s] of Object.entries(h.stores)) { s.pts = s.pts.filter((p) => p[0] >= cut); if (!s.pts.length) delete h.stores[sid]; }
-  if (JSON.stringify(h) !== before) { fs.mkdirSync(dataPath('hist'), { recursive: true }); fs.writeFileSync(file, JSON.stringify(h)); return true; }
+  if (JSON.stringify(h) !== before) { fs.mkdirSync(dataPath('hist'), { recursive: true }); const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, JSON.stringify(h)); fs.renameSync(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; } return true; }
   return false;
 }
 
@@ -56,7 +56,7 @@ export function backfill(storeNames) {
 export function recordDay(offers, products, T) {
   const d = day(T); const by = {};
   const med = {};
-  for (const o of offers) if (o.stock === 'IN_STOCK' && !o.stale && o.total > 0) (med[o.productId] ||= []).push(o.total);
+  for (const o of offers) if (o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0) (med[o.productId] ||= []).push(o.total);
   for (const k of Object.keys(med)) { const v = med[k].sort((a, b) => a - b); med[k] = v[Math.floor(v.length / 2)]; }
   for (const o of offers) {
     if (o.stock !== 'IN_STOCK' || o.stale || o.anomalous || !(o.total > 0)) continue;
