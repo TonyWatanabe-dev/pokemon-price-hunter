@@ -12,3 +12,18 @@ assert.equal(hdr['x-frame-options'], 'DENY', 'X-Frame-Options deve ser DENY');
 assert.ok(hdr['referrer-policy'], 'Referrer-Policy ausente');
 assert.ok(hdr['permissions-policy'], 'Permissions-Policy ausente');
 assert.ok(hdr['content-security-policy'], 'Content-Security-Policy ausente');
+
+// HSTS de 1 ano com subdomínios, sem preload (#578).
+assert.equal(hdr['strict-transport-security'], 'max-age=31536000; includeSubDomains',
+  'Strict-Transport-Security deve ser max-age=31536000; includeSubDomains');
+assert.ok(!/preload/i.test(hdr['strict-transport-security']), 'HSTS não deve ter preload');
+
+// Permissions-Policy: inclui browsing-topics e não bloqueia recurso usado pelo index.html.
+const pp = Object.fromEntries(hdr['permissions-policy'].split(',').map(d => d.trim().split('=')));
+assert.equal(pp['browsing-topics'], '()', 'Permissions-Policy deve ter browsing-topics=()');
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const usos = { camera: /getUserMedia/, microphone: /getUserMedia/, geolocation: /\bgeolocation\b/,
+  payment: /PaymentRequest/, usb: /navigator\.usb/, 'browsing-topics': /browsingTopics/ };
+for (const [rec, re] of Object.entries(usos)) {
+  if (pp[rec] === '()') assert.ok(!re.test(html), `index.html usa ${rec}, bloqueado pela Permissions-Policy`);
+}
