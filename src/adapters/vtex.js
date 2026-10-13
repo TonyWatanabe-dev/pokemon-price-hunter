@@ -6,10 +6,14 @@ export async function detect(base) {
   try { const j = await getJson(`${base}/api/catalog_system/pub/products/search?ft=pokemon&_from=0&_to=0`); return Array.isArray(j); } catch (e) { if (e.blocked && e.status === 429) throw e; return false; /* 401/403 numa rota de teste = não é essa plataforma; o bloqueio real aparece na home */ }
 }
 
+const PAGE_SIZE = 50; // a API pública devolve no máximo 50 produtos por chamada (_from/_to)
+const MAX_PAGES = 10; // teto de páginas por termo; ao atingi-lo com página cheia, a leitura fica parcial
+const PARTIAL_PAGES = `VTEX: teto de ${MAX_PAGES} páginas por termo atingido; resultados podem estar incompletos`;
+
 export async function search(store, catalog) {
-  const base = store.url.replace(/\/$/, ''); const out = new Map();
-  for (const term of ['pokemon', ...searchTerms(catalog)]) {
-    const url = `${base}/api/catalog_system/pub/products/search?ft=${encodeURIComponent(term)}&_from=0&_to=49`;
+  const base = store.url.replace(/\/$/, ''); const out = new Map(); let partial = null;
+  for (const term of ['pokemon', ...searchTerms(catalog)]) for (let page = 0; ; page++) {
+    const url = `${base}/api/catalog_system/pub/products/search?ft=${encodeURIComponent(term)}&_from=${page * PAGE_SIZE}&_to=${page * PAGE_SIZE + PAGE_SIZE - 1}`;
     await guard(url);
     const arr = await getJson(url);
     // Só o vendedor padrão: é o preço que a página do link mostra. Vendedor secundário do marketplace
@@ -34,8 +38,10 @@ export async function search(store, catalog) {
       };
       out.set(l.url + '|' + s.sellerId, l);
     }
+    if (!Array.isArray(arr) || arr.length < PAGE_SIZE) break;
+    if (page + 1 >= MAX_PAGES) { partial = PARTIAL_PAGES; break; }
   }
-  return [...out.values()];
+  const r = [...out.values()]; if (partial) r.partial = partial; return r;
 }
 
 export async function shipping(listing, cep) {
