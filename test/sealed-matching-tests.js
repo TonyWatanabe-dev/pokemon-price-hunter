@@ -206,4 +206,15 @@ test('"Mega Evolução 99" (número fora dos aliases) não cai no fallback me01'
   casa('Pokémon TCG Booster Box Mega Evolução 1 36 Boosters', 'me01-box36');
 });
 
+test('pré-venda + fallback de coleção: confiança ≤ 0,65; pré-venda com alias exato mantém', () => {
+  const fb = casa('Pokémon TCG Booster Box Megaevolução 36 Boosters Pré-venda', 'me01-box36');
+  assert.ok(fb.parsed.preorder && fb.parsed.collectionFallback);
+  assert.ok(fb.confidence <= 0.65, String(fb.confidence));
+  const fbLacrado = casa('Pokémon TCG Booster Box Megaevolução 36 Boosters Lacrado Pré-venda', 'me01-box36');
+  assert.ok(fbLacrado.confidence <= 0.65, String(fbLacrado.confidence));
+  const ex = casa('Pokémon TCG Booster Box Mega Evolução 1 36 Boosters Pré-venda', 'me01-box36');
+  assert.ok(ex.parsed.preorder && !ex.parsed.collectionFallback);
+  assert.equal(ex.confidence, 0.8);
+});
+
 console.log(`✓ Matching de selados: ${n} grupos de testes passaram`);
