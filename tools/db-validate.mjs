@@ -4,12 +4,27 @@
 // Uso: DATABASE_URL=... node tools/db-validate.mjs <pasta-data> <saida.json> [logs-de-migration...]
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { pool, tx, close } from '../src/db/pg.js';
 import { syncState } from '../src/core/sync.js';
 import { runPriceEngine } from '../src/core/price-stats.js';
 import { runOpportunityEngine, loadOpportunityInputs, computeOpportunities } from '../src/core/opportunity-run.js';
 import { importReferences } from '../src/core/reference-import.js';
 
+// db/migrations/*.sql comparado com hunter.schema_migrations: falta (arquivo sem registro) e sobra (registro sem arquivo)
+export function migrationChecks(files, versions) {
+  const f = new Set(files), v = new Set(versions);
+  const missing = [...f].filter((x) => !v.has(x)).sort(), extra = [...v].filter((x) => !f.has(x)).sort();
+  return [
+    { name: 'toda migration do repositório registrada', ok: missing.length === 0, detail: missing.length ? `sem registro: ${missing.join(', ')}` : `${f.size} migrations` },
+    { name: 'nenhuma versão registrada sem arquivo', ok: extra.length === 0, detail: extra.length ? `sem arquivo: ${extra.join(', ')}` : `${v.size} versões` },
+  ];
+}
+
+// só roda como script; importar o módulo (testes) não conecta no banco. Corpo sem reindentar para manter o diff pequeno.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
+
+async function main() {
 const [dir = 'data', out = 'db-validation.json', ...migLogs] = process.argv.slice(2);
 const rep = { at: new Date().toISOString(), checks: [], errors: [] };
 const check = (name, ok, detail) => rep.checks.push({ name, ok: !!ok, detail });
@@ -34,6 +49,8 @@ try {
   rep.migrations = await q('SELECT version, applied_at FROM hunter.schema_migrations ORDER BY version');
   rep.migrationLogs = Object.fromEntries(migLogs.filter((f) => fs.existsSync(f)).map((f) => [path.basename(f), fs.readFileSync(f, 'utf8').trim()]));
   check('migrations 001 e 002 registradas', ['001_core.sql', '002_seed.sql'].every((v) => rep.migrations.some((m) => m.version === v)));
+  const migFiles = fs.readdirSync(new URL('../db/migrations/', import.meta.url)).filter((f) => f.endsWith('.sql'));
+  for (const c of migrationChecks(migFiles, rep.migrations.map((m) => m.version))) check(c.name, c.ok, c.detail);
   rep.objects = await one(`SELECT
     count(*) FILTER (WHERE c.relkind IN ('r','p') AND NOT c.relispartition) AS tables,
     count(*) FILTER (WHERE c.relkind = 'r' AND c.relispartition) AS partitions,
@@ -396,3 +413,4 @@ for (const x of rep.checks) console.log(`${x.ok ? 'OK  ' : 'FALHA'} ${x.name}`);
 for (const e of rep.errors) console.log('ERRO', e.message);
 console.log(rep.ok ? 'VALIDAÇÃO OK' : 'VALIDAÇÃO COM FALHAS');
 process.exitCode = rep.ok ? 0 : 1;
+}
