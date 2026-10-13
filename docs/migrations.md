@@ -5,7 +5,7 @@ Documento de inventário (issue #87). Nada aqui executa migration em produção;
 ## Como o runner funciona (`tools/db-migrate.mjs`)
 - Aplica `db/migrations/*.sql` em ordem alfabética do nome, uma vez cada, registrando em `hunter.schema_migrations (version, applied_at)`.
 - Cada arquivo roda numa transação própria (`BEGIN` … `INSERT` em `schema_migrations` … `COMMIT`). Se falhar, faz `ROLLBACK` daquele arquivo, para no primeiro erro e sai com código 1. Migrations anteriores permanecem aplicadas.
-- Não existe migration "down". Não há checksum: editar um arquivo já aplicado não é detectado e não reexecuta.
+- Não existe migration "down" no runner: rollbacks manuais ficam em `db/rollback/`, fora do migrador (ver "Rollback e forward-fix"). Não há checksum: editar um arquivo já aplicado não é detectado e não reexecuta.
 - Os arquivos usam `SET search_path = hunter;` e nomes sem prefixo de schema. Não use `BEGIN/COMMIT` dentro deles.
 
 ## Inventário
@@ -31,6 +31,7 @@ Documento de inventário (issue #87). Nada aqui executa migration em produção;
 
 ## Validação automatizada
 - `test/migrations-static-tests.js` (roda no `npm test`, sem banco): nomes `NNN_descricao.sql`, sequência sem buracos, `SET search_path = hunter` em todos, ausência de controle de transação, e lista fechada de operações destrutivas por arquivo (tabela acima). Uma nova `DROP`/`TRUNCATE`/`DELETE` falha o teste até ser revisada e documentada aqui. Também exige que este documento cite cada migration.
+- `test/rollback-static-tests.js` (roda no `npm test`, sem banco): todo arquivo em `db/rollback/` segue `NNN_descricao.down.sql`, tem a migration correspondente em `db/migrations/`, usa `SET search_path = hunter`, não tem `BEGIN/COMMIT/ROLLBACK` e é citado neste documento.
 - `test/db-tests.js` (com `TEST_DATABASE_URL`, banco descartável): recria o schema, aplica todas as migrations duas vezes (a segunda não faz nada) e exercita o Core. Sem `TEST_DATABASE_URL` ele é pulado; no ambiente sem banco, só a validação estática é garantida.
 - Não validado automaticamente: equivalência entre o schema de um banco já em produção e o resultado das migrations (não há comparação de schema nem checksum). Verifique manualmente comparando `hunter.schema_migrations` com a lista de arquivos.
 
@@ -41,8 +42,9 @@ Documento de inventário (issue #87). Nada aqui executa migration em produção;
 - **006/007 (`UPDATE` de reclassificação):** o valor antigo das colunas atualizadas não é guardado. Reverter de verdade só com backup/snapshot do banco anterior à migration. Os rótulos novos são deriváveis, os antigos não.
 - **Regra prática:** antes de qualquer migration com operação destrutiva ou `UPDATE` em produção, tirar backup do banco e registrar a versão atual de `schema_migrations`. Se a migration já foi aplicada e há problema, corrigir adiante com nova migration; restaurar backup só como último recurso e com autorização.
 - Não editar migration já aplicada: crie a próxima número.
+- **Rollbacks manuais ficam em `db/rollback/`, fora do migrador:** `tools/db-migrate.mjs` só lê `db/migrations/`, então nenhum deles roda sozinho. Aplicar exige decisão humana e autorização explícita para o banco de produção; nenhum apaga o registro em `hunter.schema_migrations` (cada arquivo explica o que fazer com ele).
+  - Rollback da 010: `db/rollback/010_reference_evidence.down.sql` (recria a view `reference_price_current` como na 006 e remove o comentário; nenhum dado é alterado).
+  - Rollback da 011: `db/rollback/011_offer_product_status_index.down.sql` (só remove o índice; ver instruções no arquivo).
 
 ## Fora do escopo desta entrega
 Nenhuma migration foi executada, nenhum banco de produção foi lido ou alterado e não houve deploy. A PR #20 continua **NÃO INTEGRAR**.
-
-- Rollback da 011: `db/rollback/011_offer_product_status_index.down.sql` (só remove o índice; ver instruções no arquivo).
