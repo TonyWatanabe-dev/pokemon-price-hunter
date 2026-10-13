@@ -2513,7 +2513,12 @@ async function accAction(a,btn){
   if(a==="gate-up"||a==="gate-in"){ACC.step="form";ACC.tab=a==="gate-up"?"up":"in";renderGate();$("#a-email")?.focus();return}
   if(a.startsWith("tab-")){ACC.tab=a.slice(4);renderGate();$("#a-email")?.focus();return}
   if(a==="gate-back"){ACC.gate=null;try{sessionStorage.removeItem("ph:gate")}catch{};$("#sheet").dataset.kind="";$("#sheet").close();return}
-  if(a==="alert-del"){try{await saveAlerts(alertsL().filter((x)=>x.p!==btn.dataset.pid));toast("Alerta removido")}catch{}return}
+  if(a==="alert-del"){
+    const i=[...document.querySelectorAll("#view .prow")].findIndex((r)=>r.dataset.p===btn.dataset.pid);
+    try{await saveAlerts(alertsL().filter((x)=>x.p!==btn.dataset.pid));toast("Alerta removido")}catch{return}
+    if(view!=="alertas")return;render();
+    const rs=[...document.querySelectorAll("#view .prow")];(rs[i]||rs[i-1]||document.querySelector("#view .empty-in .btn")||document.querySelector("#view h2"))?.focus?.();
+    return}
   if(a==="del-no"){render();return}
   if(!m)return;
   btn.disabled=true;btn.setAttribute("aria-busy","true");

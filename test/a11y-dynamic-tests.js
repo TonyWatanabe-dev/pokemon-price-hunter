@@ -36,3 +36,13 @@ const errPs = idx.match(/<p class="err[^"]*"[^>]*>/g) || [];
 assert.ok(errPs.length >= 2, 'parágrafos .err esperados');
 for (const e of errPs) assert.match(e, /tabindex="-1"/, `focusErr não consegue focar: ${e}`);
 console.log('a11y-dynamic-tests: ok');
+
+// Foco após remover alerta ou favorito: vai para o próximo item ou, com a lista vazia, para o botão/título da lista.
+{
+  const fn = (n) => idx.slice(idx.indexOf(n), idx.indexOf(n) + 900);
+  const fav = fn('async function unfav(pid)');
+  assert.match(fav, /render\(\);\s*const bs=\[\.\.\.document\.querySelectorAll\("\[data-unfav\]"\)\];\(bs\[i\]\|\|bs\[i-1\]\|\|[^;]*#view h2"\)\)\?\.focus\?\.\(\)/, 'unfav deve focar o próximo favorito ou o título');
+  const al = fn('if(a==="alert-del")');
+  assert.match(al, /if\(view!=="alertas"\)return;render\(\);/, 'alert-del deve re-renderizar a lista de alertas');
+  assert.match(al, /\(rs\[i\]\|\|rs\[i-1\]\|\|document\.querySelector\("#view \.empty-in \.btn"\)\|\|document\.querySelector\("#view h2"\)\)\?\.focus\?\.\(\)/, 'alert-del deve focar o próximo alerta ou o título');
+}
