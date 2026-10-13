@@ -35,6 +35,12 @@ assert.doesNotMatch(idx, /<div class="empty" role="status"><h[23]>Não achamos e
 const errPs = idx.match(/<p class="err[^"]*"[^>]*>/g) || [];
 assert.ok(errPs.length >= 2, 'parágrafos .err esperados');
 for (const e of errPs) assert.match(e, /tabindex="-1"/, `focusErr não consegue focar: ${e}`);
+
+// Botões ocupados: aria-busy + texto de estado, e restauram o conteúdo original no fim.
+assert.match(idx, /function setBusy\(b,on,txt\)\{[^]*?setAttribute\("aria-busy","true"\);b\.textContent=txt\|\|"Salvando…"[^]*?removeAttribute\("aria-busy"\);if\(b\._idle!=null\)\{b\.innerHTML=b\._idle/, 'setBusy deve pôr texto de estado e restaurar o original');
+assert.equal((idx.match(/b\.setAttribute\("aria-busy","true"\)/g) || []).length, 1, 'aria-busy em botões só via setBusy');
+for (const m of ['setBusy(b,true,"Salvando…")', 'setBusy(b,true,"Excluindo…")', 'setBusy(b,true,"Removendo…")'])
+  assert.ok(idx.includes(m), `botão ocupado sem texto de estado: ${m}`);
 console.log('a11y-dynamic-tests: ok');
 
 // Foco após remover alerta ou favorito: vai para o próximo item ou, com a lista vazia, para o botão/título da lista.
