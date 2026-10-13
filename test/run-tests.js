@@ -164,6 +164,8 @@ assert.ok(kept && !kept.stale && kept.stock === 'IN_STOCK', 'oferta recente pres
 delete process.env.HUNTER_BUDGET_MIN;
 fs.copyFileSync(path.join(tmp, 'data/state.json'), path.join(root, 'test/.demo-state.json'));
 
+// Estado da loja com firewall antes da queda total da rodada 4 (nela, todas as páginas falham: ERROR, #619).
+const wafUp = structuredClone(s.sources.find((x) => x.id === 'waf'));
 // Rodada 4: loja Shopify cai -> ofertas viram estoque desconhecido, saem do ranking
 http.setFetch(async () => new Response('', { status: 503 }));
 s = await runOnce({ log: quiet, send, now: new Date('2026-10-06T10:30:00Z') });
@@ -173,9 +175,11 @@ assert.equal(stale.stock, 'UNKNOWN'); assert.ok(stale.stale && !s.bestDeals.incl
 
 // --- 403 só nas rotas de teste de plataforma não é bloqueio da loja ---
 {
+  assert.equal(wafUp.status, 'ACTIVE', 'loja com 403 só em /products.json e /api fica ativa: ' + wafUp.reason);
+  assert.equal(wafUp.platform, 'jsonld');
   const w = s.sources.find((x) => x.id === 'waf');
-  assert.equal(w.status, 'ACTIVE', 'loja com 403 só em /products.json e /api fica ativa: ' + w.reason);
-  assert.equal(w.platform, 'jsonld');
+  assert.equal(w.status, 'ERROR', 'na queda total (503), todas as páginas falharam: falha da fonte, não bloqueio (#619)');
+  assert.equal(w.pageFailures, 1); assert.equal(w.lastSuccess, wafUp.lastSuccess, 'lastSuccess não avança sem página lida');
   assert.equal(s.sources.find((x) => x.id === 'blk').status, 'BLOCKED', 'bloqueio real na home continua bloqueio');
 }
 // --- alerta criado pelo site (config/alertas/*.json), sem exigir Copag oficial para preço-alvo em R$ ---
@@ -330,7 +334,10 @@ assert.ok(sentMsgs.every((m) => !/Deal Score/i.test(m.text) && !/Opportunity Sco
   const runs = meta.ops.runs; const last = meta.ops.last;
   assert.ok(runs.length >= 5, 'um registro por rodada'); assert.equal(last.runId, 'local');
   assert.equal(last.reader.status, 'off'); assert.equal(last.dbSync.status, 'desligado'); assert.equal(last.health, 'degradado');
-  assert.deepEqual(last.issues, ['leitor_desligado', 'banco_desligado']);
+  // A última rodada ainda usa o fetch da queda total (503 em tudo): as lojas JSON-LD também falham (#619), então
+  // nenhum coletor leu nada e o alerta de todos falharam aparece (antes, a lacuna 5 o escondia).
+  assert.deepEqual([last.collectors.tried > 0, last.collectors.ok, last.collectors.failed], [true, 0, last.collectors.tried]);
+  assert.deepEqual(last.issues, ['leitor_desligado', 'coletores_todos_falharam', 'banco_desligado']);
   assert.ok(last.stores.found > 0 && last.stores.active >= last.stores.withListings && last.stores.blocked >= 1, JSON.stringify(last.stores));
   assert.equal(last.stores.active, last.stores.withListings + last.stores.empty);
   assert.ok(Number.isFinite(last.durationSec) && last.offers > 0, 'duração e ofertas');

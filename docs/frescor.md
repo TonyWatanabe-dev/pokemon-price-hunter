@@ -57,7 +57,7 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
 | Horário / estado | Etapa | Avança quando | Não prova |
 |---|---|---|---|
 | `sources[id].lastCheck` → `source_health.last_check_at` | coletor → banco | a loja é tentada (não avança em backoff nem rodada pulada) | que a leitura deu certo |
-| `sources[id].lastSuccess` → `source_health.last_success_at` (`coalesce` mantém o anterior) | coletor → banco | a loja respondeu, mesmo com páginas que falharam (`pageFailures`) | que cada oferta foi lida |
+| `sources[id].lastSuccess` → `source_health.last_success_at` (`coalesce` mantém o anterior) | coletor → banco | a loja respondeu, mesmo com páginas que falharam (`pageFailures`); no JSON-LD, ao menos uma página planejada abriu (#619) | que cada oferta foi lida |
 | `status` da fonte (`ACTIVE`/`ERROR`/`BLOCKED`) → `source_health.status` (`store.status` fica `active` em `ERROR`) | coletor → banco | a cada tentativa | estado das ofertas |
 | `offer.source_timestamp` → `offer.last_seen_at` → `last_seen_at` da API | coletor → banco → API → UI | só leitura real da oferta | — (é o horário por oferta) |
 | `max(last_seen_at)` (ativas/pendentes) | banco → API (`freshness`) | alguma oferta foi lida e sincronizada | que todas estão frescas (cada uma tem o seu) |
@@ -69,6 +69,7 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
 | Sucesso | `stale: false`, horário da rodada; fonte `ACTIVE`, `lastSuccess` = rodada | `active`, `last_seen_at` = rodada | `active`, `atual` | "Atualizado agora/há N min" |
 | Erro parcial: loja fora do ar | fonte `ERROR`, `lastCheck` novo, `lastSuccess` antigo; ofertas `staleCopy` | `pending`, `unknown`, `last_seen_at` antigo; `source_health` `ERROR` | `pending`, idade real | selo "Leitura antiga" |
 | Erro parcial: página da loja | fonte `ACTIVE`, `lastSuccess` novo, `pageFailures` > 0; oferta `staleCopy` | idem (a fonte parece saudável) | idem | idem |
+| JSON-LD: todas as páginas planejadas falharam (#619) | fonte `ERROR` (backoff), `lastCheck` novo, `lastSuccess` antigo, `pageFailures`/`pageFailReason` mantidos; ofertas `staleCopy` | idem loja fora do ar (`source_health` `ERROR`) | idem | idem |
 | Falha total | todas `staleCopy`; `generatedAt` avança, `dataAt` não | `max(last_seen_at)` não avança | por oferta: idade real; `state.json`: idade de `dataAt` (#621) | "Última leitura há …"; barra pela idade de `dataAt` |
 | Horário ausente (legado) | continua ausente na falha | `last_seen_at` nulo (sync grava `now()`: lacuna 2) | `null`, `indisponivel` | "Data da leitura desconhecida" |
 | Horário no futuro | continua no futuro na falha (não corrigido nem renovado) | gravado como veio (lacuna 6) | `indisponivel` | "Data da leitura desconhecida" (corrigido na #614: antes "Atualizado agora") |
@@ -93,9 +94,12 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
    (`indisponivel`). Usam `dataAt` (por `stateDataAt` em `api/_lib/freshness.mjs`): o fallback da API, as páginas, o
    sitemap, o cache do `_seo`, `tools/seo-audit.mjs` e `freshState` da UI. `state.json` antigo, sem o campo, continua
    no `generatedAt`. Teste: `test/state-data-at-tests.js` e os casos 3–6 de `test/collector-sync-contract-tests.js`.
-5. JSON-LD com todas as páginas fora do ar conta como `ACTIVE` (a loja "respondeu" porque o sitemap está em cache) e
-   avança `lastSuccess`; só `pageFailures` mostra a falha, e `collectorsSummary` conta a loja como ok.
-   Tratar "todas as páginas falharam" como falha da fonte muda backoff e alertas: issue própria.
+5. **Corrigida na #619.** JSON-LD com todas as páginas planejadas fora do ar (rede, timeout, 5xx) contava como
+   `ACTIVE` (o sitemap está em cache) e avançava `lastSuccess`. Agora é falha da fonte (`src/run.js`): `ERROR`, `fails`
+   + 1, backoff, `lastSuccess` parado e `collectorsSummary` contando a loja como falha; `pageFailures`, `pageFailReason`,
+   `errorClass` e `httpStatus` (do motivo da 1ª página) ficam como telemetria, e as ofertas como `staleCopy`. Basta uma
+   página aberta para a loja seguir `ACTIVE` (falha parcial). Sitemap sem nenhuma página planejada não é falha.
+   Teste: `test/jsonld-all-pages-failed-tests.js` e os casos 2–3 de `test/collector-sync-contract-tests.js`.
 6. Horário no futuro (relógio do robô adiantado) é gravado como veio em `last_seen_at`. A guarda do sync
    (`offer.last_seen_at <= EXCLUDED.last_seen_at`) passa a descartar as leituras reais seguintes da oferta até o relógio
    alcançar, e o `max(last_seen_at)` deixa o frescor do banco `indisponivel`. Hoje `source_timestamp` é sempre o `T` da
