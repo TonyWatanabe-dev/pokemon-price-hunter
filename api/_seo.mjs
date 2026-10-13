@@ -1,5 +1,6 @@
 // Compartilhado pelas funções de SEO. Mesmo algoritmo de URL do site (tools/page.template.html: buildSlugs).
 import { byComparableTotal } from './_lib/offer-rank.mjs';
+import { classify, usable } from './_lib/freshness.mjs';
 export const RAW = 'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/data/data/state.json';
 export const SITE = 'https://tcg-price-hunter.vercel.app';
 const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -17,8 +18,15 @@ export function slugs(products) {
 let cache = { t: 0, s: null };
 export async function state() {
   if (cache.s && Date.now() - cache.t < 10 * 60e3) return cache.s;
-  const r = await fetch(RAW); if (!r.ok) throw new Error('state ' + r.status);
-  cache = { t: Date.now(), s: await r.json() }; return cache.s;
+  try {
+    const r = await fetch(RAW); if (!r.ok) throw new Error('state ' + r.status);
+    cache = { t: Date.now(), s: await r.json() }; return cache.s;
+  } catch (e) {
+    // Falha do GitHub raw (429/5xx, rede): usa o último state bom enquanto ele ainda estiver dentro do frescor
+    // (docs/auditorias/paginas-servidor.md §4, proposta 5). Sem cache ou com cache velho, lança como antes.
+    if (cache.s && usable(classify(cache.s.generatedAt))) return cache.s;
+    throw e;
+  }
 }
 export const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 
