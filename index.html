@@ -2578,7 +2578,7 @@ async function setAlert(pid,v){
   const old=alertsL();if(!old.some((a)=>a.p===pid)&&old.length>=50){toast("Limite de 50 alertas");return}
   ACC.alertBusy=true;
   try{await saveAlerts([...old.filter((a)=>a.p!==pid),{p:pid,v,at:new Date().toISOString()}]);
-    pulse("#abox","saved");track("create_alert",{id:pid});const o=bestLive(pid);toast(o&&o.total<=v?"Alerta criado: já tem loja nesse preço":"Alerta criado")}catch{}finally{ACC.alertBusy=false}
+    pulse("#abox","saved");track("create_alert",{id:pid});const o=bestLive(pid);toast(o&&o.total<=v?(freshState(S).status==="atual"?"Alerta criado: já tem loja nesse preço":"Alerta criado: confirme o preço, os dados podem estar desatualizados"):"Alerta criado")}catch{}finally{ACC.alertBusy=false}
   if(PRIVATE.includes(view))render();
 }
 async function submitAlert(f){

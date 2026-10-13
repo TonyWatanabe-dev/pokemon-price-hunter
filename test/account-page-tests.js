@@ -201,4 +201,14 @@ await t('setFav com pid já na lista não duplica nem regrava', async () => {
   assert.equal(mod.saves.length, 1);
   assert.equal(JSON.stringify(c.ACC.data.favorites), JSON.stringify(['p1', 'p2', 'p3', 'p9']));
 });
+await t('setAlert: só afirma "já tem loja nesse preço" com dado fresco', async () => {
+  for (const [status, afirma] of [['atual', true], ['atrasado', false], ['desatualizado', false], ['indisponivel', false]]) {
+    const { c } = await logged();
+    c.S = {}; c.freshState = () => ({ status }); c.bestLive = () => ({ total: 40 });
+    await c.setAlert('p1', 50);
+    const msg = c.toasts.at(-1);
+    assert.equal(msg.includes('já tem loja nesse preço'), afirma, status);
+    if (!afirma) assert.match(msg, /confirme o preço/);
+  }
+});
 console.log(`✓ Conta (6C.1.1): ${n} grupos de testes passaram`);
