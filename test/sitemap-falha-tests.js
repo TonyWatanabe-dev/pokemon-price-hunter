@@ -1,7 +1,6 @@
-// Sitemap usa o último state bom (docs/auditorias/paginas-servidor.md §4, proposta 5): se o fetch do state.json falhar
-// (503 do GitHub raw ou erro de rede) depois do cache de 10 min, state() devolve o último state bom enquanto ele estiver
-// dentro do frescor, e o sitemap segue com coleções, formatos e produtos. Sem cache (ou com cache velho), só as páginas
-// fixas, como antes. Sem rede: fetch simulado, cada cenário num processo separado (o cache de state() é do módulo).
+// Sitemap usa o último state bom se o fetch falhar dentro do frescor. Sem cache (ou com cache velho), só a Home
+// permanece indexável; as outras páginas fixas e dinâmicas recebem noindex e não devem aparecer no sitemap.
+// Sem rede: fetch simulado, cada cenário num processo separado (o cache de state() é do módulo).
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -40,7 +39,7 @@ function run(steps) {
   return JSON.parse(r.stdout.trim().split('\n').pop());
 }
 const locs = (xml) => [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1]);
-const FIXAS = 9;
+const FIXAS = 1; // apenas a Home permanece indexável quando não há dados utilizáveis
 const dinamicas = (xml) => locs(xml).filter((u) => /\/(colecao|tipo|produto)\//.test(u));
 
 let n = 0;
@@ -61,7 +60,7 @@ t('2. erro de rede depois de um fetch ok: também usa o último state bom', () =
   assert.equal(b.fetched, 1); assert.equal(b.body, a.body);
 });
 
-t('3. sem cache: 503 e erro de rede dão só as páginas fixas, como hoje', () => {
+t('3. sem cache: 503 e erro de rede mantêm somente a Home indexável', () => {
   for (const resp of [{ status: 503 }, 'rede']) {
     const [a] = run([{ at: 0, resp }]);
     assert.equal(locs(a.body).length, FIXAS); assert.deepEqual(dinamicas(a.body), []);
@@ -69,7 +68,7 @@ t('3. sem cache: 503 e erro de rede dão só as páginas fixas, como hoje', () =
   }
 });
 
-t('4. cache fora do frescor (dados velhos) não é servido: só as fixas', () => {
+t('4. cache fora do frescor (dados velhos) não é servido: somente a Home permanece no sitemap', () => {
   const [a, b] = run([{ at: 0, resp: ok }, { at: 120, resp: { status: 503 } }]);
   assert.ok(dinamicas(a.body).length > 0);
   assert.equal(locs(b.body).length, FIXAS); assert.deepEqual(dinamicas(b.body), []);
