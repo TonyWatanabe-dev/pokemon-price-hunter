@@ -260,33 +260,40 @@ export function sanitize(text, max = 400) {
  * já foi registrada ou se a issue deixou de ser elegível — duas execuções concorrentes não despacham a mesma chave.
  * O marcador é gravado ANTES do disparo; se o disparo falhar, a tentativa conta (sem repetição imediata).
  * Corrida entre dois dispatchers: depois de gravar, relê; só dispara quem tem o comentário de menor id com a chave.
+ * Erro de API isolado por item (o laço segue): antes do marcador vira `error`; depois dele, `dispatch_failed`
+ * (a chave já conta como tentativa e, sem confirmação do registro, não dispara).
  * adapters: { reload(n) → issue, comment(n, body) → { id }, addLabel(n, label), dispatch(n, key) }
  */
 export async function applyPlan(plan, snapshot, adapters, { now = () => new Date() } = {}) {
   const trusted = [...operatorSet(snapshot.operators), ...(snapshot.dispatcherActor ? [lower(snapshot.dispatcherActor)] : [])];
   const results = [];
   for (const q of plan.quarantine) {
-    await adapters.addLabel(q.issue, LABELS.QUARANTINE);
-    await adapters.comment(q.issue, `Dispatcher: tarefa em quarentena — ${sanitize(q.reason)}. Não haverá nova tentativa automática; um operador decide se remove o label \`${LABELS.QUARANTINE}\`.`);
-    results.push({ issue: q.issue, status: 'quarantined' });
+    try {
+      await adapters.addLabel(q.issue, LABELS.QUARANTINE);
+      await adapters.comment(q.issue, `Dispatcher: tarefa em quarentena — ${sanitize(q.reason)}. Não haverá nova tentativa automática; um operador decide se remove o label \`${LABELS.QUARANTINE}\`.`);
+      results.push({ issue: q.issue, status: 'quarantined' });
+    } catch (e) { results.push({ issue: q.issue, status: 'error', reason: sanitize(e?.message) }); }
   }
   for (const d of plan.dispatch) {
-    const fresh = await adapters.reload(d.issue);
-    const recheck = planDispatch({ ...snapshot, now: now().toISOString(), issues: [fresh], maxSlots: 10 });
-    const still = recheck.dispatch.find((x) => x.issue === d.issue);
-    if (!still || still.key !== d.key) {
-      results.push({ issue: d.issue, status: 'skipped', reason: recheck.skipped[0]?.reason || 'chave já usada' });
-      continue;
-    }
-    const posted = await adapters.comment(d.issue, `Dispatcher: despachando a tentativa ${d.attempt}.\n${dispatchMarker(d.issue, d.attempt, now())}`);
-    const after = await adapters.reload(d.issue);
-    const ids = parseDispatchMarkers(after?.comments, { trustedAuthors: trusted }).filter((m) => m.key === d.key).map((m) => m.commentId);
-    if (posted?.id == null || !ids.includes(posted.id) || ids.some((id) => id == null || id < posted.id)) {
-      results.push({ issue: d.issue, status: 'skipped', reason: 'outro dispatcher registrou a mesma chave primeiro (ou registro não confirmado)' });
-      continue;
-    }
-    try { await adapters.dispatch(d.issue, d.key); results.push({ issue: d.issue, status: 'dispatched', key: d.key }); }
-    catch (e) { results.push({ issue: d.issue, status: 'dispatch_failed', key: d.key, reason: sanitize(e?.message) }); }
+    let marked = false;
+    try {
+      const fresh = await adapters.reload(d.issue);
+      const recheck = planDispatch({ ...snapshot, now: now().toISOString(), issues: [fresh], maxSlots: 10 });
+      const still = recheck.dispatch.find((x) => x.issue === d.issue);
+      if (!still || still.key !== d.key) {
+        results.push({ issue: d.issue, status: 'skipped', reason: recheck.skipped[0]?.reason || 'chave já usada' });
+        continue;
+      }
+      const posted = await adapters.comment(d.issue, `Dispatcher: despachando a tentativa ${d.attempt}.\n${dispatchMarker(d.issue, d.attempt, now())}`);
+      marked = true;
+      const after = await adapters.reload(d.issue);
+      const ids = parseDispatchMarkers(after?.comments, { trustedAuthors: trusted }).filter((m) => m.key === d.key).map((m) => m.commentId);
+      if (posted?.id == null || !ids.includes(posted.id) || ids.some((id) => id == null || id < posted.id)) {
+        results.push({ issue: d.issue, status: 'skipped', reason: 'outro dispatcher registrou a mesma chave primeiro (ou registro não confirmado)' });
+        continue;
+      }
+      await adapters.dispatch(d.issue, d.key); results.push({ issue: d.issue, status: 'dispatched', key: d.key });
+    } catch (e) { results.push({ issue: d.issue, status: marked ? 'dispatch_failed' : 'error', key: d.key, reason: sanitize(e?.message) }); }
   }
   return results;
 }

@@ -170,6 +170,40 @@ await t('falha ao disparar conta a tentativa (marcador antes do efeito) e respei
   assert.deepEqual(later.dispatch.map((d) => d.key), ['dispatch:43:2']);
 });
 
+await t('erro de API em um item não aborta o lote: error/dispatch_failed e o laço continua (#392)', async () => {
+  const now = () => new Date(NOW);
+  const boom = (msg) => { throw new Error(msg); };
+  // comment lança no 1º item: error (sem marcador), o 2º ainda é despachado
+  let r = fakeRepo([issue(50), issue(51)]); let s = snap([...r.byN.values()]);
+  const comment = r.adapters.comment;
+  r.adapters.comment = async (nr, body) => (nr === 50 ? boom('HTTP 502 token ghp_' + 'x'.repeat(30)) : comment(nr, body));
+  let res = await applyPlan(planDispatch(s), s, r.adapters, { now });
+  assert.deepEqual(res.map((x) => [x.issue, x.status]), [[50, 'error'], [51, 'dispatched']]);
+  assert.doesNotMatch(res[0].reason, /ghp_x/); assert.deepEqual(r.calls.dispatch, ['dispatch:51:1']);
+  // reload lança no 1º item: error, o 2º ainda é despachado
+  r = fakeRepo([issue(52), issue(53)]); s = snap([...r.byN.values()]);
+  const reload = r.adapters.reload;
+  r.adapters.reload = async (nr) => (nr === 52 ? boom('ECONNRESET') : reload(nr));
+  res = await applyPlan(planDispatch(s), s, r.adapters, { now });
+  assert.deepEqual(res.map((x) => [x.issue, x.status]), [[52, 'error'], [53, 'dispatched']]);
+  // releitura depois do marcador lança: dispatch_failed (chave consumida, sem disparo) e o laço continua
+  r = fakeRepo([issue(54), issue(55)]); s = snap([...r.byN.values()]);
+  const reread = r.adapters.reload;
+  r.adapters.reload = async (nr) => (nr === 54 && r.byN.get(54).comments.length ? boom('timeout') : reread(nr));
+  res = await applyPlan(planDispatch(s), s, r.adapters, { now });
+  assert.deepEqual(res.map((x) => [x.issue, x.status, x.key]), [[54, 'dispatch_failed', 'dispatch:54:1'], [55, 'dispatched', 'dispatch:55:1']]);
+  assert.deepEqual(r.calls.dispatch, ['dispatch:55:1']);
+  const next = planDispatch(snap([...r.byN.values()], { now: min(80) })).dispatch.filter((d) => d.issue === 54);
+  assert.deepEqual(next.map((d) => d.key), ['dispatch:54:2'], 'marcador gravado conta a tentativa');
+  // addLabel lança na 1ª quarentena: error; a 2ª quarentena e o despacho seguem
+  const failed = (nr) => issue(nr, { labels: [QUEUE_LABEL, LABELS.FAILED], comments: [marker(nr, 1, min(-300)), marker(nr, 2, min(-200))] });
+  r = fakeRepo([failed(56), failed(57), issue(58)]); s = snap([...r.byN.values()]);
+  const addLabel = r.adapters.addLabel;
+  r.adapters.addLabel = async (nr, l) => (nr === 56 ? boom('HTTP 500') : addLabel(nr, l));
+  res = await applyPlan(planDispatch(s), s, r.adapters, { now });
+  assert.deepEqual(res.map((x) => [x.issue, x.status]), [[56, 'error'], [57, 'quarantined'], [58, 'dispatched']]);
+});
+
 await t('quarentena aplica label e comentário sanitizado, sem disparo', async () => {
   const r = fakeRepo([issue(44, { labels: [QUEUE_LABEL, LABELS.FAILED], comments: [marker(44, 1, min(-300)), marker(44, 2, min(-200))] })]);
   const s = snap([...r.byN.values()]);
