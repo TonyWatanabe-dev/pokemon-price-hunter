@@ -316,7 +316,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
   const rows = await query(`
     SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
-           o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.engine_version, o.calculated_at,
+           o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
            (SELECT max(created_at) FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT') AS engine_run_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
@@ -413,6 +413,7 @@ const opportunityOut = (r) => ({
   historical_context: (r.historical || []).map(contextReferenceView),
   community_reference: r.community ? contextReferenceView(r.community) : null,
   warnings: r.warnings || [], reasons: r.reasons || [],
+  caps: Array.isArray(r.caps) ? r.caps : [],   // travas do motor gravadas com a nota (só leitura: a nota não muda)
   // updated_at = quando o motor conferiu a nota pela última vez. calculated_at só muda quando a nota MUDA; toda oferta que está
   // em opportunity foi reavaliada na última execução concluída (a batida ENGINE_HEARTBEAT é gravada na mesma transação,
   // e oferta não avaliada sai da tabela). Por isso vale a mais recente das duas.

@@ -65,6 +65,22 @@ for (const ok of ['categoria=etb', 'categoria=Blisters', 'categoria=Cole%C3%A7%C
 n++;
 if (savedDb) process.env.API_DATABASE_URL = savedDb;
 
+// caps (motor-oportunidades T2): o item traz as travas gravadas pelo motor como lista; nota, faixa e confiança passam intactas
+{
+  const { listOpportunities } = await import('../api/_lib/read-db.mjs');
+  const row = (offerId, extra = {}) => ({ offer_id: offerId, legacy_id: 'p' + offerId, slug: 'p' + offerId, canonical_name: 'ETB', attrs: { type: 'etb' }, col_code: 'me05', col_name: 'X',
+    offer_legacy: 'of' + offerId, url: 'https://loja/x', title_raw: 'ETB', first_seen_at: now, total_price: '370.00', shipping_status: 'known', stock_status: 'in_stock', store_id: 'a',
+    store_name: 'A', marketplace_id: 'store', price: '350.00', opportunity_score: 49, opportunity_band: 'fraca', confidence: '0.30', reasons: [], warnings: [],
+    engine_version: 'opportunity-v2.2', calculated_at: now, market_composition: 'NONE', historical: [], community: null, total_rows: '3', ...extra });
+  const calls = [];
+  const query = async (sql) => { calls.push(sql); return /WHERE f\.id = ANY/.test(sql) ? [] : [row(1, { caps: ['anomaly', 'stock_unknown'] }), row(2, { caps: [] }), row(3, { caps: null })]; };
+  const r = await listOpportunities({ page: 1, limit: 20, query, now: now.getTime() });
+  assert.match(calls[0], /\bo\.caps\b/, 'a consulta principal lê caps de opportunity');
+  assert.deepEqual(r.items.map((x) => x.caps), [['anomaly', 'stock_unknown'], [], []], 'sempre lista; ausente → []');
+  for (const x of r.items) { assert.equal(x.opportunity_score, 49); assert.equal(x.opportunity_band, 'fraca'); assert.equal(x.confidence, 0.3); }
+  n++;
+}
+
 if (!process.env.TEST_DATABASE_URL) { console.log(`✓ Contrato de oportunidades (6B.0): ${n} grupos puros passaram; banco pulado (sem TEST_DATABASE_URL)`); await import('./outbound-links-tests.js'); process.exit(0); }
 
 // ------------------------------------------------------------------ B) banco
@@ -113,13 +129,16 @@ const all = await get();
 assert.equal(all.meta.total, 3); assert.equal(all.meta.engine, 'opportunity-v2.2');
 for (const x of all.data) {
   for (const k of ['product', 'offer', 'price', 'total', 'stock', 'store', 'marketplace', 'opportunity_score', 'opportunity_band', 'confidence', 'current_reference', 'market_composition',
-    'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at', 'reference_comparison', 'product_variation_7d', 'confidence_level']) assert.ok(k in x, k);
+    'historical_context', 'community_reference', 'warnings', 'reasons', 'updated_at', 'reference_comparison', 'product_variation_7d', 'confidence_level', 'caps']) assert.ok(k in x, k);
+  assert.ok(Array.isArray(x.caps) && x.caps.every((c) => typeof c === 'string'), 'caps é lista de códigos');
   assert.equal(x.confidence_level, opportunityConfidenceLevel(x.confidence));
   for (const k of ['type', 'type_label', 'group', 'image', 'collection']) assert.ok(k in x.product, 'product.' + k);
   for (const k of ['id', 'title', 'url', 'image', 'first_seen_at', 'price_kind']) assert.ok(k in x.offer, 'offer.' + k);
 }
 const scores = all.data.map((x) => x.opportunity_score); assert.deepEqual(scores, [...scores].sort((a, b) => b - a), 'ordem padrão continua score');
 const by = Object.fromEntries(all.data.map((x) => [x.product.id, x]));
+const capsDb = Object.fromEntries((await p.query('SELECT f.legacy_id, o.caps FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id')).rows.map((r) => [r.legacy_id, r.caps]));
+for (const x of all.data) assert.deepEqual(x.caps, capsDb[x.offer.id], `caps da API = gravadas pelo motor (${x.offer.id})`);
 
 // Copag atual
 const etb = by['me05-etb'];
