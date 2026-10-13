@@ -2078,14 +2078,14 @@ function ljReason(src,status){
   if(status==="indisponivel")return"Sem API pública de busca: o robô não lê os preços desta loja.";
   if(status==="sem-leitura"){if(!src.url)return"Endereço da loja ainda não confirmado.";if(src.errorClass==="bloqueio"||src.httpStatus===403)return"A loja não aceita leitura automática; os preços só aparecem nela.";if(src.errorClass==="plataforma")return"Plataforma ainda sem leitura automática.";if(String(src.status).toUpperCase()==="PENDING")return"Leitura ainda não configurada.";return"Sem leitura automática no momento; confira os preços na loja."}
   return null}
-function lojasNormalize({sources=[],offers=[],cfg=LOJAS_CFG}={}){
+function lojasNormalize({sources=[],offers=[],cfg=LOJAS_CFG,now=Date.now()}={}){
   const list=Array.isArray(sources)?sources:Object.entries(sources||{}).map(([id,v])=>({id,...v}));const mk=cfg.marketplaces;
   const byStore=new Map();for(const o of offers){if(!o?.storeId)continue;if(!byStore.has(o.storeId))byStore.set(o.storeId,[]);byStore.get(o.storeId).push(o)}
   const raw=[];
   for(const s of list){if(!s?.id)continue;const m=mk[s.id]||null;const url=ljOrigin(s.url&&!/api\.mercadolibre\.com/.test(s.url)?s.url:null)||(m?m.url:null);const host=m?m.host:ljHost(url);
     const up=String(s.status||"").toUpperCase();const status=m?(up==="ACTIVE"?"monitorada":"marketplace"):(LJ_ST[up]||"sem-leitura");const offs=byStore.get(s.id)||[];
     const hint=s.platformHint||(host&&cfg.plataformaPorHost[host])||(cfg.busca[s.platform]?s.platform:null)||ljInfer(offs.map((o)=>o.url));
-    const stamps=offs.map((o)=>Date.parse(o.source_timestamp||"")).filter(Number.isFinite);const lastRead=stamps.length?new Date(Math.max(...stamps)).toISOString():(s.lastSuccess||null);
+    const okAt=(t)=>Number.isFinite(t)&&t<=now+5*60e3;const stamps=offs.map((o)=>Date.parse(o.source_timestamp||"")).filter(okAt);const lastRead=stamps.length?new Date(Math.max(...stamps)).toISOString():(okAt(Date.parse(s.lastSuccess||""))?s.lastSuccess:null);
     raw.push({id:s.id,name:m?m.name:(s.name||host||s.id),host,url,platform:m?(s.platform==="mercadolivre"?"mercadolivre":null):hint,marketplace:m?s.id:null,status,offersLive:offs.filter(live).length,lastReadAt:status==="monitorada"?lastRead:null,reason:ljReason(s,status)})}
   const rank=(x)=>x.status==="monitorada"?3:x.marketplace?2:1;const byHost=new Map();for(const x of raw){if(!x.host)continue;const y=byHost.get(x.host);if(!y||rank(x)>rank(y))byHost.set(x.host,x)}
   const names=new Set(raw.filter((x)=>x.host).map((x)=>ljNorm(x.name)));const ids=raw.filter((x)=>x.host).map((x)=>x.id);const out=[];

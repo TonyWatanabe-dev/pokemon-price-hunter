@@ -12,6 +12,10 @@ const STOCK = { IN_STOCK: 'in_stock', OUT_OF_STOCK: 'out_of_stock', PRE_ORDER: '
 export const stockOf = (s) => STOCK[s] || 'unknown';
 const money = (v) => (v == null || !Number.isFinite(Number(v)) ? null : Math.round(Number(v) * 100) / 100);
 const ts = (v) => (v ? new Date(v).toISOString() : null);
+// Horário de leitura além da folga de relógio (a mesma de src/adapters/contract.js e api/_lib/freshness.mjs) é impossível.
+export const FUTURE_TOLERANCE_MS = 5 * 60e3;
+/** true se o horário (ISO) passa de `now` + 5 min. Ausente ou inválido não é "futuro" (tratado em outro lugar). */
+export const isFutureAt = (v, now) => { const t = Date.parse(v ?? ''); return Number.isFinite(t) && t > now + FUTURE_TOLERANCE_MS; };
 
 export function collectionsRows(collections) {
   return collections.map((c) => ({

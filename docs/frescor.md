@@ -37,7 +37,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Stale (falha da fonte) | `stale: true`, `stock: UNKNOWN`, `lastValid` | pela idade do horário antigo | fora do ranking e dos alertas; Opportunity Engine com teto `pending` e `evidence: 'stale'` | `pending`, `unknown`, total nulo sem frete; vem por último na lista |
 | Falha parcial | parte das páginas/lojas falhou na rodada | cada oferta pelo seu horário | só a leitura atual concorre; preço antigo mais baixo não vence | as lidas `active`, as demais `pending` |
 | Horário ausente | `source_timestamp` nulo/vazio | `indisponivel` | rodada pulada não a mantém (vira stale) | `last_seen_at` nulo no mapeamento (ver lacuna 2) |
-| Horário inválido ou no futuro (> 5 min) | não interpretável por `Date.parse` ou adiantado | `indisponivel` | idem ausente | inválido: o mapeamento recusa (nunca grava horário inventado) |
+| Horário inválido ou no futuro (> 5 min) | não interpretável por `Date.parse` ou adiantado | `indisponivel` | idem ausente | inválido: o mapeamento recusa (nunca grava horário inventado); futuro: o sync não grava e mantém a leitura válida anterior (#620) |
 
 ## Testes
 
@@ -48,6 +48,8 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 - `test/state-data-at-tests.js`: `dataAt` do `state.json` na falha total, parcial e recuperação (API e UI).
 - `test/offer-freshness-tests.js`: horário preservado ao reaproveitar, mapeamento para o banco e envelhecimento
   pelos limites configurados.
+- `test/future-last-seen-tests.js`: `last_seen_at` no futuro barrado no sync, recuperação de valor já gravado, frescor
+  do banco e página de lojas (#620).
 
 ## Sincronização entre etapas (issue #614)
 
@@ -72,7 +74,7 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
 | JSON-LD: todas as páginas planejadas falharam (#619) | fonte `ERROR` (backoff), `lastCheck` novo, `lastSuccess` antigo, `pageFailures`/`pageFailReason` mantidos; ofertas `staleCopy` | idem loja fora do ar (`source_health` `ERROR`) | idem | idem |
 | Falha total | todas `staleCopy`; `generatedAt` avança, `dataAt` não | `max(last_seen_at)` não avança | por oferta: idade real; `state.json`: idade de `dataAt` (#621) | "Última leitura há …"; barra pela idade de `dataAt` |
 | Horário ausente (legado) | continua ausente na falha | `last_seen_at` nulo (sync grava `now()`: lacuna 2) | `null`, `indisponivel` | "Data da leitura desconhecida" |
-| Horário no futuro | continua no futuro na falha (não corrigido nem renovado) | gravado como veio (lacuna 6) | `indisponivel` | "Data da leitura desconhecida" (corrigido na #614: antes "Atualizado agora") |
+| Horário no futuro | continua no futuro na falha (não corrigido nem renovado) | não gravado (> 5 min pelo relógio do banco): fica a última leitura válida (#620, lacuna 6) | `indisponivel` | "Data da leitura desconhecida" (corrigido na #614: antes "Atualizado agora") |
 | Recuperação | `stale: false`, sem `lastValid`, horário novo; fonte `ACTIVE`, `fails: 0` | `active`, `last_seen_at` novo | `active`, `atual` | "Atualizado agora"; volta a concorrer |
 
 ## Lacunas conhecidas
@@ -100,9 +102,13 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
    `errorClass` e `httpStatus` (do motivo da 1ª página) ficam como telemetria, e as ofertas como `staleCopy`. Basta uma
    página aberta para a loja seguir `ACTIVE` (falha parcial). Sitemap sem nenhuma página planejada não é falha.
    Teste: `test/jsonld-all-pages-failed-tests.js` e os casos 2–3 de `test/collector-sync-contract-tests.js`.
-6. Horário no futuro (relógio do robô adiantado) é gravado como veio em `last_seen_at`. A guarda do sync
-   (`offer.last_seen_at <= EXCLUDED.last_seen_at`) passa a descartar as leituras reais seguintes da oferta até o relógio
-   alcançar, e o `max(last_seen_at)` deixa o frescor do banco `indisponivel`. Hoje `source_timestamp` é sempre o `T` da
-   rodada, então só ocorre com relógio do runner errado; recusar ou limitar no mapeamento exige o `now` da
-   sincronização e decidir o tratamento (issue própria). A página de lojas (`lojasNormalize`) também usa o maior
-   `source_timestamp` sem esse limite.
+6. **Corrigida na #620.** Horário no futuro (relógio do robô adiantado) era gravado como veio em `last_seen_at`; a guarda
+   do sync (`offer.last_seen_at <= EXCLUDED.last_seen_at`) passava a descartar as leituras reais seguintes e o
+   `max(last_seen_at)` deixava o frescor do banco `indisponivel`. Agora (`src/core/sync.js`), com o relógio do banco
+   (`SELECT now()`, não o do robô): oferta com `last_seen_at` mais de 5 min no futuro não é gravada (fica a última
+   leitura válida, a oferta segue viva e conta em `offersFuture`); ponto de histórico no futuro também não entra; a
+   guarda aceita substituir carimbo já gravado além de `now + 5 min` (recuperação de dado antigo); e o
+   `max(observed_at)` do histórico ignora ponto futuro. O frescor do banco (`DB_AT_SQL` em `api/_lib/freshness.mjs`)
+   ignora `last_seen_at` futuro. A página de lojas (`normalizeLojas`/`lojasNormalize`) não usa horário futuro (oferta
+   ou `lastSuccess`) como última leitura. Teste: `test/future-last-seen-tests.js`. Dados de produção não são corrigidos
+   em lote: o valor futuro some na próxima leitura válida da oferta.

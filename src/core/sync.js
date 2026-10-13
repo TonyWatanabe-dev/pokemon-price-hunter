@@ -1,12 +1,15 @@
 // Grava o estado atual do robô no banco (Marketplace Core). Idempotente: rodar de novo não duplica.
 // Não altera nada do que o site lê hoje (arquivos do ramo data).
-import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows } from './mappers.js';
+import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows, isFutureAt, FUTURE_TOLERANCE_MS } from './mappers.js';
 import { ensureMonth } from '../db/partitions.js';
 
 const J = (v) => JSON.stringify(v);
 
-export async function syncState(c, { state, catalog = null, historyLines = [], log = () => {} }) {
+export async function syncState(c, { state, catalog = null, historyLines = [], log = () => {}, now = null }) {
   const stats = {};
+  // Relógio da sincronização: o do banco (o do robô pode estar adiantado, que é justamente o caso a barrar). `now` só em testes.
+  const nowMs = Number.isFinite(now) ? now : new Date((await c.query('SELECT now() AS now')).rows?.[0]?.now ?? NaN).getTime() || Date.now();
+  const maxSeen = new Date(nowMs + FUTURE_TOLERANCE_MS).toISOString();
   // Coleções: catálogo de configuração + o que o robô viu
   const colSrc = [...new Map([...(catalog?.collections || []), ...(state.collections || [])].map((x) => [x.id, x])).values()];
   const colIds = new Set(colSrc.map((x) => x.id));
@@ -80,7 +83,12 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   stats.stores = stores.length;
 
   // 5) Vendedores de marketplace
-  const offers = offersRows(state.offers || []).filter((o) => pid.has(o.product_legacy_id));
+  const allOffers = offersRows(state.offers || []).filter((o) => pid.has(o.product_legacy_id));
+  // Leitura com horário no futuro (> 5 min, relógio do robô adiantado) não é gravada: last_seen_at futuro faria a guarda
+  // abaixo descartar as leituras reais seguintes e envenenaria o max(last_seen_at) do frescor. A oferta mantém no banco a
+  // última leitura válida (nada é inventado) e continua viva (não vira 'removed').
+  const offers = allOffers.filter((o) => !isFutureAt(o.last_seen_at, nowMs));
+  stats.offersFuture = allOffers.length - offers.length;
   const sellers = [...new Map(offers.filter((o) => o.seller).map((o) => [o.marketplace_id + '|' + o.seller.external_id, { marketplace_id: o.marketplace_id, ...o.seller }])).values()];
   if (sellers.length) await c.query(`INSERT INTO seller (marketplace_id, external_id, name, is_official, checked_at)
     SELECT marketplace_id, external_id, name, is_official, now() FROM jsonb_to_recordset($1::jsonb) AS x(marketplace_id text, external_id text, name text, is_official boolean)
@@ -102,14 +110,15 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
       shipping_status = EXCLUDED.shipping_status, shipping_price = EXCLUDED.shipping_price, total_price = EXCLUDED.total_price, stock_status = EXCLUDED.stock_status,
       quantity = EXCLUDED.quantity, match_confidence = EXCLUDED.match_confidence, confirmed = EXCLUDED.confirmed, anomalous = EXCLUDED.anomalous, status = EXCLUDED.status,
       last_seen_at = EXCLUDED.last_seen_at, updated_at = now()
-    WHERE offer.last_seen_at IS NULL OR offer.last_seen_at <= EXCLUDED.last_seen_at
-    RETURNING legacy_id`, [J(rows)]);
+    WHERE offer.last_seen_at IS NULL OR offer.last_seen_at <= EXCLUDED.last_seen_at OR offer.last_seen_at > $2::timestamptz
+    RETURNING legacy_id`, [J(rows), maxSeen]);
   // Corrida entre syncs/retries: leitura com carimbo mais antigo que o já gravado é descartada (igual passa, então repetir é idempotente).
   // Sem carimbo da fonte (source_timestamp ausente) a leitura vale como feita agora, como sempre; não congela oferta cuja fonte não informa data.
+  // Carimbo gravado no futuro (> 5 min, dado de antes da #620) é impossível: a próxima leitura válida o substitui (recuperação).
   const applied = new Set(up.rows.map((r) => r.legacy_id));
   stats.offersStale = rows.length - applied.size;
   const oid = new Map((await c.query('SELECT legacy_id, id FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, Number(r.id)]));
-  const live = new Set(rows.map((r) => r.legacy_id));
+  const live = new Set(allOffers.map((r) => r.legacy_id));
   const gone = await c.query(`UPDATE offer SET status = 'removed', stock_status = 'unknown', updated_at = now() WHERE status <> 'removed' AND legacy_id IS NOT NULL AND NOT (legacy_id = ANY($1::text[]))`, [[...live]]);
   // Evento de estoque só entre estados lidos de verdade: oferta desatualizada nesta rodada (status 'pending': loja ou
   // página falhou) não gera evento, e 'unknown' anterior (rodada que falhou ou oferta removida) é trocado pelo último
@@ -133,6 +142,8 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   Object.assign(stats, { offers: rows.length, offersRemoved: gone.rowCount, stockEvents: stockEv.length, shippingQuotes: ship.length });
 
   // 7a) Ofertas que só existem no histórico (já sumiram das lojas): entram como 'removed' para o histórico não se perder
+  // Ponto de histórico no futuro (> 5 min) também não entra: envenenaria o max(observed_at) abaixo e barraria o histórico real.
+  historyLines = historyLines.filter((h) => !isFutureAt(h.t, nowMs));
   const hrows = historyRows(historyLines);
   const ghosts = [...new Map(historyLines.filter((h) => h.offerId && !oid.has(h.offerId) && pid.has(h.productId))
     .map((h) => [h.offerId, { legacy_id: h.offerId, product_id: pid.get(h.productId), store_id: h.storeId, marketplace_id: h.storeId === 'mercadolivre' ? 'mercadolivre' : 'direct', t: h.t }])).values()]
@@ -149,7 +160,7 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   if (removedEv.length) await c.query(`INSERT INTO stock_event (offer_id, from_status, to_status, observed_at) SELECT offer_id, NULL, 'removed', observed_at
     FROM jsonb_to_recordset($1::jsonb) AS x(offer_id bigint, observed_at timestamptz) ON CONFLICT DO NOTHING`, [J(removedEv)]);
   // 7) Histórico: só o que é mais novo que o último registro do robô
-  const last = (await c.query(`SELECT max(observed_at) AS m FROM price_history WHERE source = 'robot'`)).rows[0].m;
+  const last = (await c.query(`SELECT max(observed_at) AS m FROM price_history WHERE source = 'robot' AND observed_at <= $1::timestamptz`, [maxSeen])).rows[0].m;
   const hist = hrows.filter((h) => !last || new Date(h.observed_at) > last)
     .map((h) => ({ ...h, offer_id: oid.get(h.offer_legacy_id), product_id: pid.get(h.product_legacy_id) }))
     .filter((h) => h.offer_id && h.product_id && h.event !== 'removed');

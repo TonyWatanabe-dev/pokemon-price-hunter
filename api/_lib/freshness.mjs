@@ -34,7 +34,8 @@ export const usable = (fr) => !!fr && USABLE.has(fr.status);
 /** Horário que prova o frescor de um state.json (ver o topo do arquivo). */
 export const stateDataAt = (st) => (st && typeof st === 'object' ? ('dataAt' in st ? st.dataAt : st.generatedAt) : null) ?? null;
 
-const DB_AT_SQL = `SELECT max(last_seen_at) AS at FROM hunter.offer WHERE status IN ('active', 'pending')`;
+// last_seen_at no futuro (> 5 min, gravado antes da #620) é impossível e fica fora do max: senão o banco inteiro viraria indisponivel.
+export const DB_AT_SQL = `SELECT max(last_seen_at) AS at FROM hunter.offer WHERE status IN ('active', 'pending') AND last_seen_at <= now() + interval '5 minutes'`;
 let dbCache = { at: 0, v: undefined };
 /** Horário da rodada mais recente que chegou ao banco (cache de 60 s, como o catálogo). Lança se o banco falhar. */
 export async function dbDataAt({ now = nowMs() } = {}) {
