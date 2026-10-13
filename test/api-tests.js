@@ -100,7 +100,15 @@ assert.equal((await call('/api/v1/xyz')).status, 404);
 assert.equal((await call('/api/v1/home', 'POST')).status, 405);
 // inputs extremos: limites fixados, valores absurdos não quebram nem estouram
 r = await call('/api/v1/produtos?limite=-5&pagina=0'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 1); assert.equal(r.json.meta.page, 1);
-r = await call('/api/v1/produtos?limite=abc&pagina=99999999999999999999'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 24); assert.equal(r.json.meta.page, 10_000);
+r = await call('/api/v1/produtos?limite=abc&pagina=416'); assert.equal(r.status, 200); assert.equal(r.json.meta.limit, 24); assert.equal(r.json.meta.page, 416);
+// teto de OFFSET (pagina × limite ≤ 10 000): página gigante (fixada em 10 000 × 24) e logo após o teto → 400; até o teto → 200
+r = await call('/api/v1/produtos?limite=abc&pagina=99999999999999999999'); assert.equal(r.status, 400); assert.match(r.json.error, /10000/);
+assert.equal((await call('/api/v1/produtos?pagina=417')).status, 400, '417 × 24 > 10 000');
+assert.equal((await call('/api/v1/produtos?limite=50&pagina=200')).status, 200, '200 × 50 = 10 000');
+for (const q of ['produtos?limite=50&pagina=201', 'produtos/me05-etb/ofertas?limite=50&pagina=201', 'referencias?limite=50&pagina=201', 'oportunidades?limite=50&pagina=201'])
+  assert.equal((await call(`/api/v1/${q}`)).status, 400, q);
+for (const q of ['produtos/me05-etb/ofertas?limite=50&pagina=200', 'referencias?limite=50&pagina=200', 'oportunidades?limite=50&pagina=200', 'produtos/me05-etb?pagina=10000'])
+  assert.equal((await call(`/api/v1/${q}`)).status, 200, q);
 r = await call('/api/v1/produtos?busca=' + 'x'.repeat(100_000)); assert.equal(r.status, 200, 'busca gigante é truncada, não rejeitada');
 r = await call('/api/v1/site/ofertas?produtos=' + Array.from({ length: 200 }, (_, i) => `p${i}`).join(',')); assert.equal(r.status, 400, 'mais de 60 ids');
 r = await call('/api/v1/site/produtos?limite=100000&pagina=100000'); assert.equal(r.json.limit, 60); assert.equal(r.json.page, 1000);
