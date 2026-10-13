@@ -1,7 +1,7 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
 > **Atualizado em:** 13/10/2026 (America/Sao_Paulo, UTC−03:00)
-> **Base consultada para esta atualização:** `main` em `2ee03c82770e1b1fb96ccba6065a7d6a7613db77` (PRs #597–#600 integradas; PR #601 em validação; PR #602 aberta).
+> **Base consultada para esta atualização:** `main` em `8ea86cb4166e5303f73a9684297c2525a82e51a9` (PRs #629 e #630 integradas; escopo atualizado em 13/10/2026).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -305,7 +305,7 @@ Prioridades:
 - Segurança de workflows, cadeia de dependências, TLS, proteção de configuração e regras do Firestore versionadas.
 - A PR #17 foi relatada como integrada em 11/10; confirmar o estado de CI/deploy por evidência específica antes de alegar que está publicado.
 - Regras Firebase/Firestore e alterações de produção devem seguir revisão e procedimento de rollback; documentação ou commit não substituem confirmação do estado real do console.
-- Agentes futuros de UX Research, UI/Design System, Social Media, SEO/Content, Growth/CRO e Brand/Creative permanecem **planejamento futuro**, não iniciar até produto/infra estarem maduros e haver autorização explícita.
+- UX Research, UI/Design System, Growth/CRO e Brand/Creative permanecem **planejamento futuro** até produto/infra estarem maduros e haver autorização explícita. Social Media recebeu autorização específica para um MVP limitado em paralelo, conforme a decisão de escopo de 13/10/2026; SEO/Content segue sujeito ao seu gate próprio.
 
 ## Próximos passos ordenados
 
