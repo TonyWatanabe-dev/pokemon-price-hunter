@@ -95,7 +95,7 @@ export function createOrchestrator({
     if (h.ai && !aiEnabled) { await settle(job, 'blocked', 'ai_disabled', { refund: true }); summary.blocked++; return; }
 
     try {
-      const invalid = h.validate?.(job.payload);
+      const invalid = h.validate?.(job.payload, { now: now() }); // relógio do orquestrador, não o da máquina
       if (invalid) throw new PermanentError(`payload inválido: ${invalid}`);
       const raw = await withTimeout((signal) => h.run(job.payload, { signal, job, now }), h.timeoutMs ?? cfg.timeoutMs);
       const result = checkResult(raw, cfg.maxResultBytes);
