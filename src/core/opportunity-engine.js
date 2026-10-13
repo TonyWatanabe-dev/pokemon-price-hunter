@@ -38,6 +38,9 @@ export const BANDS = [[90, 'excelente'], [75, 'boa'], [50, 'normal'], [0, 'baixa
 export const BAND_LABEL = { excelente: 'Excelente', boa: 'Boa', normal: 'Normal', baixa: 'Baixa' };
 export const bandOf = (score) => (score == null ? null : BANDS.find(([min]) => score >= min)[1]);
 export const CAPS = { out_of_stock: 30, pending: 40, anomaly: 49, far_above_reference: 49, preorder: 60, stock_unknown: 70, unconfirmed: 74, bad_store: 74, above_reference: 74, too_good: 89 };
+const CAP_LABEL = { out_of_stock: 'sem estoque', pending: 'loja não lida recentemente', anomaly: 'preço anômalo', far_above_reference: 'muito acima da referência',
+  preorder: 'pré-venda', stock_unknown: 'estoque não confirmado', unconfirmed: 'queda não confirmada', bad_store: 'loja mal avaliada',
+  above_reference: 'acima da referência', too_good: 'desconto fora do comum' };
 const RA = { OTIMO: 1, BOM: 0.85, REGULAR: 0.55, SEM_INDICE: 0.6, NAO_ENCONTRADA: 0.5, RUIM: 0.2, NAO_RECOMENDADA: 0 };
 const STOCK = { in_stock: 1, preorder: 0.4, unknown: 0.3, out_of_stock: 0 };
 
@@ -174,8 +177,9 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   let score = 50 + (raw - 50) * coverage;
 
   // --- travas e riscos
+  // caps lista só as travas que de fato reduziram a nota (a última é a que limitou); a nota é a mesma com ou sem a lista
   const caps = [];
-  const cap = (c, code) => { if (score > c) { score = c; } caps.push(code); };
+  const cap = (c, code) => { if (score > c) { score = c; caps.push(code); } };
   const implausible = anchor != null && !plausible(price, anchor);
   const isAnomaly = !!offer.anomalous || implausible;
   if (isAnomaly) { cap(CAPS.anomaly, 'anomaly'); w('ANOMALY', implausible ? `Preço fora do esperado para o produto (régua ${brl(anchor)}): conferir antes de comprar` : 'Preço marcado como anômalo pelo robô: conferir antes de comprar'); }
@@ -234,10 +238,12 @@ export function productOpportunity(stats, offers, opts) {
   return { best: buyable[0] || null, offers: all, reason: !all.length ? 'NO_OFFERS' : !buyable.length ? 'NO_BUYABLE_OFFER' : null };
 }
 
-/** Texto curto para o site: "91 — 23,7% abaixo da referência Copag · + ... · − ..." */
+/** Texto curto para o site: "74 — Normal · limitada a 74: acima da referência\n+ ... \n− ..." (a trava só aparece se limitou a nota) */
 export function explain(o) {
   if (!o || o.opportunity_score == null) return null;
-  const lines = [`${o.opportunity_score} — ${BAND_LABEL[o.opportunity_band]}`];
+  const last = (o.caps || []).at(-1);
+  const capText = last && last in CAPS ? ` · limitada a ${CAPS[last]}: ${CAP_LABEL[last]}` : '';
+  const lines = [`${o.opportunity_score} — ${BAND_LABEL[o.opportunity_band]}${capText}`];
   for (const x of o.reasons) lines.push(`${x.impact === '-' ? '−' : x.impact === '=' ? '·' : '+'} ${x.text}`);
   for (const x of o.warnings) lines.push(`− ${x.text}`);
   return lines.join('\n');

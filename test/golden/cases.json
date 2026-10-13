@@ -32,8 +32,8 @@
   ],
   "opportunity": [
     { "id": "P01-preco-otimo", "area": "preco", "offer": { "price": 300, "total_price": 300 }, "expect": { "minScore": 85, "review": false, "notWarnings": ["ANOMALY", "TOO_GOOD"] } },
-    { "id": "P02-muito-acima-da-referencia", "area": "preco", "offer": { "price": 620, "total_price": 620 }, "expect": { "maxScore": 49, "caps": ["far_above_reference"], "review": false } },
-    { "id": "P03-pouco-acima-da-referencia", "area": "preco", "offer": { "price": 420, "total_price": 420 }, "expect": { "maxScore": 74, "caps": ["above_reference"], "review": false } },
+    { "id": "P02-muito-acima-da-referencia", "area": "preco", "offer": { "price": 620, "total_price": 620 }, "expect": { "maxScore": 49, "caps": [], "review": false } },
+    { "id": "P03-pouco-acima-da-referencia", "area": "preco", "offer": { "price": 420, "total_price": 420 }, "expect": { "maxScore": 74, "caps": [], "review": false } },
     { "id": "P04-bom-demais-pede-revisao", "area": "preco", "offer": { "price": 230, "total_price": 230 }, "expect": { "maxScore": 89, "caps": ["too_good"], "warnings": ["TOO_GOOD"], "review": true } },
     { "id": "P05-anomalia-pede-revisao", "area": "preco", "offer": { "price": 120, "total_price": 120 }, "expect": { "maxScore": 49, "caps": ["anomaly"], "warnings": ["ANOMALY"], "review": true } },
     { "id": "P06-sem-referencia-atual", "area": "preco", "stats": { "reference_price": null, "reference_kind": null, "reference_status": null }, "expect": { "warnings": ["NO_CURRENT_REFERENCE"], "review": false } },

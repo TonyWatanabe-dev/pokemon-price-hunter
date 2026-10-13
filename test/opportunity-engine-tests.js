@@ -44,7 +44,7 @@ t('3. oportunidade normal', () => {
 t('4. preço ruim', () => {
   const r = C(S({ median_price: 600, lowest_current_price: 590 }), O({ price: 600 }));  // 50% acima da Copag, mesmo sendo o "mercado"
   assert.equal(r.opportunity_band, 'baixa', String(r.opportunity_score));
-  assert.ok(r.caps.includes('far_above_reference')); assert.ok(codes(r.reasons).includes('ABOVE_REFERENCE'));
+  assert.ok(r.opportunity_score < 49 && !r.caps.includes('far_above_reference'), 'nota já abaixo da trava: a trava não reduziu nada'); assert.ok(codes(r.reasons).includes('ABOVE_REFERENCE'));
   assert.equal(r.reasons.find((x) => x.code === 'ABOVE_REFERENCE').impact, '-');
   // pouco acima da Copag nunca chega a Boa, mesmo com todo o resto excelente
   const m = C(S({ historical_min: 420, historical_average: 470, median_price: 500, lowest_current_price: 410 }), O({ price: 410 }));
@@ -232,6 +232,24 @@ t('evidência: referência Copag ausente', () => {
 t('evidência: oferta desatualizada (stale)', () => {
   const r = C(S(), O({ status: 'pending' }));
   assert.equal(r.evidence, 'stale'); assert.ok(codes(r.warnings).includes('STALE')); assert.ok(r.opportunity_score <= 40);
+});
+
+t('caps: só as travas que reduziram a nota; explain cita a que limitou', () => {
+  // acima da referência com nota alta: a trava de 74 limita e aparece no texto
+  const lim = C(S({ historical_min: 420, historical_average: 470, median_price: 500, lowest_current_price: 410 }), O({ price: 410 }));
+  assert.equal(lim.opportunity_score, 74); assert.deepEqual(lim.caps, ['above_reference']);
+  assert.match(explain(lim), /^74 — Normal · limitada a 74: acima da referência\n/);
+  // muito acima da referência: a nota já fica abaixo de 49 sem a trava → nenhuma trava listada nem citada
+  const ruim = C(S({ median_price: 600, lowest_current_price: 590 }), O({ price: 600 }));
+  assert.ok(ruim.opportunity_score < 49); assert.deepEqual(ruim.caps, []); assert.doesNotMatch(explain(ruim), /limitada/);
+  // várias travas: só entram as que baixaram a nota, na ordem; o texto cita a última (a que limitou)
+  const v = C(S(), O({ confirmed: false, stock_status: 'preorder' }));
+  assert.equal(v.opportunity_score, 60); assert.deepEqual(v.caps, ['unconfirmed', 'preorder']);
+  assert.match(explain(v), /^60 — Normal · limitada a 60: pré-venda\n/);
+  const sem = C(S(), O({ status: 'pending', stock_status: 'preorder' }));   // 40 primeiro: a de 60 não reduz mais nada
+  assert.equal(sem.opportunity_score, 40); assert.deepEqual(sem.caps, ['pending']);
+  // sem trava: texto igual ao de antes
+  const ok = C(S(), O()); assert.deepEqual(ok.caps, []); assert.match(explain(ok), /^\d+ — Excelente\n/);
 });
 
 console.log(`✓ Opportunity Engine: ${n} grupos de testes passaram`);

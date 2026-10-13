@@ -118,7 +118,9 @@ t('9. frete desconhecido não vira zero', () => {
 t('10. estoque incerto: regras de estoque mantidas', () => {
   const s = stats(market5);
   const o = opp(s, O({ stock_status: 'unknown' }));
-  assert.ok(o.opportunity_score <= 70 && o.caps.includes('stock_unknown') && codes(o.warnings).includes('UNCERTAIN_STOCK'));
+  assert.ok(o.opportunity_score <= 70 && codes(o.warnings).includes('UNCERTAIN_STOCK'));
+  // caps só lista trava que reduziu a nota: aqui a nota (63) já está abaixo de 70, então stock_unknown não entra
+  assert.equal(o.caps.includes('stock_unknown'), opp(s, O()).opportunity_score > 70);
   // ofertas sem estoque não entram na referência de mercado
   const s2 = stats([...market5.slice(0, 2), off(3, 'c', 100, { stock_status: 'out_of_stock' })]);
   assert.equal(s2.reference_kind, 'NONE');
