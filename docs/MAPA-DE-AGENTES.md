@@ -258,6 +258,8 @@ Funções:
 
 **Pré-requisitos:** base técnica estável, Search Console/analytics autorizados, política de conteúdo e testes de renderização/indexabilidade.
 
+**Gate de prontidão e MVP somente leitura (issue #594):** [docs/seo-content-agent.md](./seo-content-agent.md). Estado: bloqueado e desativado por padrão.
+
 ### 4.5 Growth & CRO Agent — futuro
 
 - Formular hipóteses de conversão, priorizar por impacto/confiança/esforço e propor experimentos.

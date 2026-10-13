@@ -425,6 +425,13 @@ Prioridades:
 - Regras: ofertas precisam vir do catálogo validado, com preço/estoque/frescor confirmados; prevenir duplicatas; divulgar links afiliados; nunca influenciar o ranking pela comissão; proteger credenciais; publicar automaticamente somente após validação e testes.
 - Checklist antes do início: confirmar gate da Fase 1; verificar links e permissões de canal; validar elegibilidade do Instagram; receber convite real do WhatsApp e link da Shopee; definir voz visual/editorial, disclosure, fila, armazenamento de mídia, auditoria, limites e critérios de pausa; executar piloto controlado antes da ativação ampla.
 
+### Frente SEO & Content Agent — gate de prontidão (issue #594, 13/10/2026)
+- Autorização do proprietário para começar a Fase 3 pelo agente de conteúdo, com escopo restrito a leitura e proposta, sem publicação externa (issue [#594](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/594)).
+- Entregue em PR desta issue, ainda não integrada: auditor somente leitura `src/agents/seo-content.js` (sem imports e não registrado como handler), CLI offline `tools/seo-audit.mjs`, evidências versionadas `docs/seo-content-readiness.json`, relatório `docs/seo-content-agent.md` e `test/seo-content-agent-tests.js`.
+- **Gate: bloqueado, agente desativado por padrão.** Faltam evidências de burn-in de 7 dias (0/7), Search Console, política de conteúdo, acesso autorizado ao analytics e decisão de fonte canônica (Pages × Vercel). Comprovados no código e nos testes: SSR/canonical/sitemap/metadados, frescor e testes de indexabilidade.
+- Render local com o `state.json` do ramo `data` (13/10, 15:30 UTC): 159 URLs do sitemap auditadas, sem achado de página. Propostas não aplicadas: robots.txt bloqueia o `noindex` de 4 rotas privadas (baixa); sem dados em dia, 8 páginas fixas saem `noindex` mas continuam no sitemap (média); a description estática da Home tem 199 caracteres (baixa).
+- O host de produção não foi auditado nesta tarefa.
+
 ### Convenção de atualização deste documento
 Atualizar este roadmap quando houver mudança comprovada de fase, entrega integrada, bloqueio ou decisão do proprietário. Usar issues, PRs, commits, CI, logs e smoke tests como evidência; não inferir conclusão apenas por labels, quantidade de PRs ou sucesso isolado de workflow. O Plano de Entrega Turbo continua sendo a fonte dos critérios de saída; este roadmap registra o estado observado e a próxima prioridade.
 
