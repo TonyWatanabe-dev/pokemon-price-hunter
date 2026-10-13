@@ -1,7 +1,7 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
 > **Atualizado em:** 13/10/2026 (America/Sao_Paulo, UTC−03:00)
-> **Base consultada para esta atualização:** `main` em `604f1cea333a68dcb311b4ce0172fa4ac5f7bad6` (PRs #597 e #598 integradas).
+> **Base consultada para esta atualização:** `main` em `2ee03c82770e1b1fb96ccba6065a7d6a7613db77` (PRs #597–#600 integradas; PR #601 em validação; PR #602 aberta).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -10,10 +10,12 @@
 
 - **PR #597 integrada** — `robots.txt` deixa rastreáveis as rotas privadas que enviam `X-Robots-Tag: noindex`; `/api/` continua bloqueado. Merge commit: `acccfa1e3450b96c68e77487950714423dbf0d9f`.
 - **PR #598 integrada** — com dados stale/indisponíveis, o sitemap mantém somente a Home indexável; páginas fixas adicionais entram quando os dados estão utilizáveis. Adicionado teste isolado para cenários stale/fresh. Merge commit: `604f1cea333a68dcb311b4ce0172fa4ac5f7bad6`.
-- **PR #599 aberta** — corrige a description estática da Home (155 caracteres) e alinha o auditor SEO ao sitemap stale atualizado pela #598. Não marcar como concluída até CI completo e revisão independente.
+- **PR #599 integrada** — ajusta a description da Home para 155 caracteres e atualiza o teste do auditor SEO para o contrato do sitemap stale.
+- **PR #600 integrada** — atualiza esta seção de roadmap com os merges #597 e #598; o documento precisava refletir a integração posterior de #599/#600.
+- **PR #601 aberta** — corrige a regressão em `test/robots-consistency-tests.js`: a regra antiga exigia uma rota não-API em `Disallow`, em contradição com a decisão SEO de deixar rotas noindex rastreáveis. A CI de #599/#600 falhou precisamente nesse teste.
+- **PR #602 aberta** — acrescenta smoke público somente leitura para Home, `robots.txt`, `sitemap.xml` e cabeçalhos noindex, com execução diária/manual. Ainda não existe evidência de sucesso de runtime até o primeiro run passar.
 - O deploy de GitHub Pages associado à `main` em `604f1ce` terminou com `build`, `report-build-status` e `deploy` em sucesso (run [38434740204](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38434740204)). Isso não substitui smoke test do domínio público Vercel.
 - O agente SEO & Content permanece **desativado por padrão**, somente leitura. Burn-in continua exigindo sete dias encerrados consecutivos verdes; a amostra visível mais recente ainda não demonstra a conclusão do gate.
-
 ## Regras de operação
 
 - Não fazer merge de PRs de produto, deploy, migration, nem alterar secrets/configuração de produção sem autorização explícita.
