@@ -21,7 +21,7 @@
 // Aviso antecipado (não é falha, não muda o estado): copag_vencendo — referência Copag oficial que sai da nota em até
 // 7 dias (copagWarnings / decideWarning); avisa quando a lista muda e lembra a cada WARN_REMIND_MIN.
 
-export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440 };
+export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440, UNKNOWN_CONSEC: 3 };
 const BAD = new Set(['degradado', 'parado']);
 
 const min = (a, b) => (Number.isFinite(a) && Number.isFinite(b) ? Math.round((a - b) / 6e4) : null);
@@ -111,7 +111,7 @@ function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs }) {
   return { status: 'saudavel', reasons, facts };
 }
 
-const EMPTY = { notifiedStatus: 'saudavel', notifiedAt: null, notifiedCodes: [], incidentSince: null, lastStatus: null, lastCheckAt: null, warnKey: null, warnAt: null };
+const EMPTY = { notifiedStatus: 'saudavel', notifiedAt: null, notifiedCodes: [], incidentSince: null, lastStatus: null, lastCheckAt: null, warnKey: null, warnAt: null, unkCount: 0, unkAt: null };
 export function normalizeLedger(l) {
   if (!l || typeof l !== 'object' || !['saudavel', 'degradado', 'parado'].includes(l.notifiedStatus)) return { ...EMPTY };
   return { ...EMPTY, ...l, notifiedCodes: Array.isArray(l.notifiedCodes) ? l.notifiedCodes : [] };
@@ -133,7 +133,14 @@ export function decide(ev, ledgerIn, now = new Date().toISOString()) {
   const L = normalizeLedger(ledgerIn);
   const codes = ev.reasons.map((r) => r.code);
   const lines = ev.reasons.map((r) => '• ' + r.text);
-  if (ev.status === 'desconhecido') return { notify: null };
+  if (ev.status === 'desconhecido') {
+    // dados_indisponiveis persistente: avisa na 3ª checagem seguida e só lembra a cada REMIND_MIN; outros motivos de desconhecido nunca avisam
+    if (!codes.includes('dados_indisponiveis') || (L.unkCount || 0) + 1 < RULES.UNKNOWN_CONSEC) return { notify: null };
+    const head = '🟡 TCG Price Hunter: dados publicados indisponíveis';
+    if (!L.unkAt) return { notify: { kind: 'indisponivel', title: head, text: [head, '', ...lines, `Já são ${RULES.UNKNOWN_CONSEC} checagens seguidas sem conseguir ler.`, '', ACTIONS].join('\n') } };
+    if (min(Date.parse(now), Date.parse(L.unkAt)) >= RULES.REMIND_MIN) return { notify: { kind: 'lembrete_indisponivel', title: head + ' (continua)', text: [head + ' (continua)', '', ...lines, '', ACTIONS].join('\n') } };
+    return { notify: null };
+  }
   if (BAD.has(ev.status)) {
     const changed = L.notifiedStatus !== ev.status;
     const fresh = codes.filter((c) => !L.notifiedCodes.includes(c));
@@ -177,8 +184,13 @@ export function commitWarning(ledgerIn, decision, delivered, now = new Date().to
 /** Atualiza o livro. O que foi avisado só muda quando a mensagem chegou a pelo menos um canal. */
 export function commitLedger(ledgerIn, ev, decision, delivered, now = new Date().toISOString()) {
   const L = normalizeLedger(ledgerIn);
-  if (ev.status === 'desconhecido') return { ...L, lastCheckAt: now };
-  const out = { ...L, lastStatus: ev.status, lastCheckAt: now };
+  if (ev.status === 'desconhecido') {
+    if (!ev.reasons.some((r) => r.code === 'dados_indisponiveis')) return { ...L, lastCheckAt: now, unkCount: 0, unkAt: null };
+    const out = { ...L, lastCheckAt: now, unkCount: (L.unkCount || 0) + 1 };
+    if (decision?.notify && delivered) out.unkAt = now;
+    return out;
+  }
+  const out = { ...L, lastStatus: ev.status, lastCheckAt: now, unkCount: 0, unkAt: null };
   if (BAD.has(ev.status) && !L.incidentSince) out.incidentSince = now;
   if (decision.notify && delivered) {
     out.notifiedAt = now;
