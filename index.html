@@ -2510,14 +2510,14 @@ async function accAction(a,btn){
   if(a==="alert-del"){try{await saveAlerts(alertsL().filter((x)=>x.p!==btn.dataset.pid));toast("Alerta removido")}catch{}return}
   if(a==="del-no"){render();return}
   if(!m)return;
-  btn.disabled=true;btn.setAttribute("aria-busy","true");
+  setBusy(btn,true,a==="out"?"Saindo…":a==="resend"?"Enviando…":a==="reload"?"Verificando…":"Entrando…");
   try{
     if(a==="google"){if(m.authMode==="redirect")redirFlag(true);try{await m.google()}catch(e){redirFlag(false);throw e}if(m.authMode==="redirect")return}
     else if(a==="out"){await m.out();toast("Você saiu da conta");go("")}
     else if(a==="resend"){await m.resend();toast("Link reenviado. Confira a caixa de entrada e o spam.")}
     else if(a==="reload"){const u=await m.reload();ACC.user=u;toast(u?.verified?"E-mail confirmado":"Ainda não aparece confirmado. Abra o link do e-mail.");render()}
   }catch(e){ACC.err=aerr(e);if(ACC.err&&!$("#sheet").open)toast(ACC.err)}
-  btn.disabled=false;btn.removeAttribute("aria-busy");
+  setBusy(btn,false);
   if($("#sheet").open&&$("#sheet").dataset.kind==="gate"&&!ACC.user)renderGate();
 }
 function focusErr(){const k=ACC.errField;const el=k&&$(k==="terms"?"#a-terms":`#a-${k}`);if(el)el.focus();else $("#sheet .err")?.focus?.()}
@@ -2531,7 +2531,7 @@ async function submitAcc(f){
   else if(t!=="reset"&&String(d.pw||"").length<6){ACC.err="A senha precisa ter pelo menos 6 caracteres.";ACC.errField="pw"}
   else if(t==="up"&&!d.terms){ACC.err="Para criar a conta, aceite os Termos e a Privacidade.";ACC.errField="terms"}
   if(ACC.err){renderGate();focusErr();return}
-  b.disabled=true;b.setAttribute("aria-busy","true");
+  setBusy(b,true,t==="up"?"Criando conta…":t==="reset"?"Enviando…":"Entrando…");
   try{
     if(t==="in")await m.emailIn(email,d.pw);
     else if(t==="up"){const nm=String(d.name||"").trim().slice(0,60);ACC.signupName=nm;let r;try{r=await m.emailUp(email,d.pw,nm)}finally{ACC.signupName=""}track("signup_completed",{method:"email"});
@@ -2539,12 +2539,12 @@ async function submitAcc(f){
       else if(!r?.verified)toast("Conta criada. Confirme seu e-mail pelo link que mandamos.",true)}
     else{await m.reset(email);ACC.ok="Se houver conta com esse e-mail, o link chega em alguns minutos. Olhe também o spam.";ACC.tab="in"}
   }catch(e){ACC.err=aerr(e);ACC.errField=ACC.err?AFIELD[e?.code]||null:null}
-  b.disabled=false;b.removeAttribute("aria-busy");if(!ACC.user){renderGate();focusErr()}
+  setBusy(b,false);if(!ACC.user){renderGate();focusErr()}
 }
 async function submitDel(f){
-  const m=ACC.mod;if(!m)return;const pw=new FormData(f).get("pw");const b=f.querySelector("[type=submit]");b.disabled=true;b.setAttribute("aria-busy","true");
+  const m=ACC.mod;if(!m)return;const pw=new FormData(f).get("pw");const b=f.querySelector("[type=submit]");setBusy(b,true,"Excluindo…");
   try{await m.wipe(pw||undefined);ACC.data=null;toast("Conta e dados excluídos");go("")}
-  catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");b.disabled=false;b.removeAttribute("aria-busy")}
+  catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");setBusy(b,false)}
 }
 async function saveField(k,v,old){
   if(!ACC.user||!ACC.data){toast("Entre na sua conta para salvar.");throw Object.assign(new Error("sem login"),{code:"auth/no-user"})}
@@ -2562,11 +2562,17 @@ async function setFav(pid,on){
   if(PRIVATE.includes(view))render();else syncFavButtons();
 }
 const toggleFav=(pid)=>ACC.user?setFav(pid,!isFav(pid)):authGate({type:"fav",pid});
+/* Botão ocupado: aria-busy + texto de estado ("Salvando…"); no fim volta o conteúdo original. */
+function setBusy(b,on,txt){
+  if(!b)return;
+  if(on){if(b._idle==null)b._idle=b.innerHTML;b.disabled=true;b.setAttribute("aria-busy","true");b.textContent=txt||"Salvando…"}
+  else{b.disabled=false;b.removeAttribute("aria-busy");if(b._idle!=null){b.innerHTML=b._idle;b._idle=null}}
+}
 /* Favoritos (perfil): tira um produto da lista. Um de cada vez, para não haver duas gravações da lista ao mesmo tempo. */
 async function unfav(pid){
   if(ACC.favBusy||!ACC.user||!isFav(pid))return;
   const i=[...document.querySelectorAll("[data-unfav]")].findIndex((b)=>b.dataset.unfav===pid);
-  ACC.favBusy=true;document.querySelectorAll("[data-unfav]").forEach((b)=>{b.disabled=true;if(b.dataset.unfav===pid)b.setAttribute("aria-busy","true")});
+  ACC.favBusy=true;document.querySelectorAll("[data-unfav]").forEach((b)=>{b.disabled=true;if(b.dataset.unfav===pid)setBusy(b,true,"Removendo…")});
   try{await setFav(pid,false)}finally{ACC.favBusy=false}
   if(view!=="favoritos")return;render();
   const bs=[...document.querySelectorAll("[data-unfav]")];(bs[i]||bs[i-1]||document.querySelector("#view .empty-in .btn")||document.querySelector("#view h2"))?.focus?.();
@@ -2584,8 +2590,8 @@ async function submitAlert(f){
   const pid=f.dataset.pid;const v=Math.round(Number(String(new FormData(f).get("v")||"").replace(",","."))*100)/100;
   if(!(v>0&&v<100000)){toast("Digite um valor em reais");f.querySelector("input")?.focus();return}
   const b=f.querySelector("[type=submit]");if(b?.disabled)return;
-  if(b){b.disabled=true;b.setAttribute("aria-busy","true")}
-  try{await authGate({type:"alert",pid,v})}finally{if(b){b.disabled=false;b.removeAttribute("aria-busy")}}
+  setBusy(b,true,"Salvando…");
+  try{await authGate({type:"alert",pid,v})}finally{setBusy(b,false)}
 }
 function favBtn(pid){const on=isFav(pid);return`<button class="btn ghost favbtn" type="button" data-fav="${esc(pid)}" aria-pressed="${on}">${ic(on?"heart-f":"heart")}${on?"Nos favoritos":"Favoritar"}</button>`}
 function alertBox(pid){
