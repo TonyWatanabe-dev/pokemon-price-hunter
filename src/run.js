@@ -97,6 +97,18 @@ function resolveCopag(p, catalog, copagSeen) {
 }
 
 // Oferta que pode ter nota oficial e entrar no bestDeals: em estoque, atual, plausível, confirmada e com preço.
+// Última leitura real publicada (docs/frescor.md): o maior source_timestamp das ofertas, nunca depois da rodada.
+// Reaproveitar (staleCopy, rodada pulada) não renova source_timestamp, então com todos os coletores falhando ele fica
+// no horário da última leitura e envelhece. Vai para o state.json como dataAt; sem nenhum horário válido, null.
+// generatedAt continua sendo o horário da rodada.
+export function lastReadAt(offers, T) {
+  const lim = Date.parse(T ?? ''); let best = -Infinity;
+  for (const o of offers || []) {
+    const t = Date.parse(o?.source_timestamp ?? '');
+    if (Number.isFinite(t) && t <= lim && t > best) best = t;
+  }
+  return Number.isFinite(best) ? new Date(best).toISOString() : null;
+}
 export const liveForScore = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.confirmed !== false && o.total > 0;
 // bestDeals: oferta ao vivo com nota oficial válida ou com desconto Copag. Ordem: nota oficial (sem nota por último),
 // depois desconto, total e id — o mesmo critério do site quando falta a nota (6C.2).
@@ -490,6 +502,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try { activity = recordActivity({ T, offers, prev, products, newLowest, quiet, distrust, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])) }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
   const state = {
     generatedAt: T,
+    dataAt: lastReadAt(all.filter((o) => !o.anomalous), T),
     coverage: { found: cov.found, active: cov.ACTIVE || 0, blocked: cov.BLOCKED || 0, error: cov.ERROR || 0, pending: cov.PENDING || 0, unavailable: cov.UNAVAILABLE || 0, paused: cov.PAUSED || 0 },
     totals: { products: Object.keys(products).length, offers: all.filter((o) => !o.anomalous).length, review: all.filter((o) => o.anomalous).length, copagConfirmed: Object.values(products).filter((p) => p.copagConfirmed).length },
     collections: catalog.collections.map(({ id, name, series, aliases }) => ({ id, name, series, aliases: aliases || [], products: Object.values(products).filter((p) => p.collection === id).length })).filter((c) => c.products),
