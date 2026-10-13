@@ -1,5 +1,6 @@
 // Issue #41 — situação da referência Copag por produto: ausente, desatualizada, confirmada e conflitante. Testes puros.
 import assert from 'node:assert/strict';
+import { copagStatus } from '../src/score.js';
 import { copagReferenceStatus, resolveCurrentReference } from '../src/core/references.js';
 
 let n = 0; const t = (name, fn) => { fn(); n++; };
@@ -63,6 +64,32 @@ t('datas nulas ou inválidas são ignoradas e nunca viram a data escolhida', () 
 
 t('lista vazia: missing sem data', () => {
   assert.deepEqual(copagReferenceStatus([], asOf10), { status: 'missing', prices: [], verified_at: null });
+});
+
+// copagStatus (src/score.js): um teste por ramo, na ordem em que o código decide.
+t('copagStatus: sem valor, sem fonte e produto sem copag', () => {
+  for (const p of [{}, { copag: {} }, { copag: { msrp: 0, source_url: 'https://loja.copag.com.br/x', confidence: 'OFICIAL' } }, { copag: { msrp: -5, source_url: 'https://loja.copag.com.br/x' } }])
+    assert.deepEqual(copagStatus(p), { confirmed: false, reason: 'sem valor' });
+  assert.deepEqual(copagStatus({ copag: { msrp: 99.9, confidence: 'OFICIAL' } }), { confirmed: false, reason: 'sem fonte' });
+});
+
+t('copagStatus: fonte marketplace não confirma, mesmo marcada OFICIAL', () => {
+  const st = copagStatus({ copag: { msrp: 99.9, source_url: 'https://www.mercadolivre.com.br/p/1', confidence: 'OFICIAL' } });
+  assert.equal(st.confirmed, false); assert.match(st.reason, /marketplace/);
+});
+
+t('copagStatus: catálogo de terceiros vira só referência', () => {
+  const st = copagStatus({ copag: { msrp: 115.99, source_url: 'https://blog.test/x', confidence: 'CATALOGO_COPAG' } });
+  assert.equal(st.confirmed, false); assert.equal(st.reference, 115.99); assert.equal(st.referenceUrl, 'https://blog.test/x');
+  assert.match(st.reason, /catálogo Copag/);
+});
+
+t('copagStatus: confiança desconhecida não confirma', () => {
+  assert.deepEqual(copagStatus({ copag: { msrp: 99.9, source_url: 'https://blog.test/x', confidence: 'OUTRA' } }), { confirmed: false, reason: 'fonte não marcada como oficial' });
+});
+
+t('copagStatus: oficial confirma com msrp e source', () => {
+  assert.deepEqual(copagStatus({ copag: { msrp: 349.99, source_url: 'https://loja.copag.com.br/x', confidence: 'OFICIAL' } }), { confirmed: true, msrp: 349.99, source: 'OFICIAL' });
 });
 
 console.log(`copag-status-tests: ${n} ok`);
