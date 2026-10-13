@@ -100,7 +100,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          for l in executor:running executor:done executor:failed; do
+          for l in executor:running executor:done executor:failed executor:pr-open; do
             gh api "repos/$REPO/labels" -f name="$l" -f color=ededed >/dev/null 2>&1 || true
           done
           gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:github" >/dev/null 2>&1 || true
@@ -189,8 +189,8 @@ jobs:
           fi
           gh api -X DELETE "repos/$REPO/issues/$ISSUE/labels/executor:running" >/dev/null 2>&1 || true
           if [ "$status" = "success" ] && [ -n "$pr" ]; then
-            gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:done" >/dev/null
-            echo "Resultado: sucesso" >> "$GITHUB_STEP_SUMMARY"
+            gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:pr-open" >/dev/null
+            echo "Resultado: PR aberta; aguardando merge e fechamento verificado da issue" >> "$GITHUB_STEP_SUMMARY"
             echo "PR: $pr" >> "$GITHUB_STEP_SUMMARY"
           else
             gh api "repos/$REPO/issues/$ISSUE/labels" -f "labels[]=executor:failed" >/dev/null
