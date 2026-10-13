@@ -10,14 +10,16 @@
 //   observedAt  horário ISO da leitura que gerou a decisão; nunca inventado: se a fonte não tem,
 //               fica null e a evidência é rotulada 'incompleta'
 //   status      'completa' | 'incompleta' (calculado aqui, nunca vindo de fora)
-//   missing     campos que faltaram ou foram descartados por serem inválidos
+//   missing     campos que faltaram, foram descartados por serem inválidos ou estão velhos demais
 //
 // Regra: sem source, url ou reason válidos, ou com basis desconhecido, a decisão é RECUSADA (não vira
 // proposta). Horário ausente, ilegível ou no futuro não é corrigido nem substituído: vira null e a
-// evidência sai rotulada 'incompleta', para o revisor saber que não há horário confiável.
+// evidência sai rotulada 'incompleta', para o revisor saber que não há horário confiável. Horário mais
+// antigo que EVIDENCE_MAX_AGE_MS é mantido como veio, mas também rotula 'incompleta' (observedAt em missing).
 
 export const EVIDENCE_BASIS = Object.freeze(['observado', 'inferido']);
 export const EVIDENCE_STATUS = Object.freeze(['completa', 'incompleta']);
+export const EVIDENCE_MAX_AGE_MS = 72 * 3_600_000; // leitura mais velha que isso não sustenta decisão sozinha
 const FUTURE_TOLERANCE_MS = 5 * 60_000; // relógios de máquinas diferentes; além disso é dado errado
 
 const text = (v, max) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null);
@@ -40,7 +42,8 @@ const isoTime = (v, nowMs) => {
 export function buildEvidence({ source, url, reason, basis, observedAt } = {}, { now = Date.now() } = {}) {
   const nowMs = now instanceof Date ? now.getTime() : Number(now);
   const ev = { source: text(source, 100), url: httpUrl(url), reason: text(reason, 200), basis: EVIDENCE_BASIS.includes(basis) ? basis : null, observedAt: isoTime(observedAt, nowMs) };
-  const missing = ['source', 'url', 'reason', 'basis', 'observedAt'].filter((k) => ev[k] == null);
+  const stale = ev.observedAt != null && Number.isFinite(nowMs) && Date.parse(ev.observedAt) < nowMs - EVIDENCE_MAX_AGE_MS;
+  const missing = ['source', 'url', 'reason', 'basis', 'observedAt'].filter((k) => ev[k] == null || (k === 'observedAt' && stale));
   const fatal = missing.filter((k) => k !== 'observedAt');
   if (fatal.length) return { ok: false, error: `decisão sem evidência válida: falta ${fatal.join(', ')}`, missing };
   return { ok: true, evidence: { ...ev, status: missing.length ? 'incompleta' : 'completa', missing } };
