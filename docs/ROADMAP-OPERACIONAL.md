@@ -447,3 +447,12 @@ Prioridades:
 Atualizar este roadmap quando houver mudança comprovada de fase, entrega integrada, bloqueio ou decisão do proprietário. Usar issues, PRs, commits, CI, logs e smoke tests como evidência; não inferir conclusão apenas por labels, quantidade de PRs ou sucesso isolado de workflow. O Plano de Entrega Turbo continua sendo a fonte dos critérios de saída; este roadmap registra o estado observado e a próxima prioridade.
 
 ---
+
+
+### Atualização de execução — 13/10/2026 (PR #624)
+
+- **Integrada:** PR [#624](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/624), commit `0b031afe537109b482b37d4b4fb4eae7def342bc7`. O `state.json` agora separa o horário da rodada (`generatedAt`) da última leitura real (`dataAt`); API, páginas, sitemap, cache SEO, auditor SEO e barra da UI usam o timestamp de dados para avaliar frescor, preservando compatibilidade com state.json legado.
+- **Validação reportada na PR:** 172 arquivos de teste passaram; revisão independente registrou ausência de bloqueantes. Isso não equivale a smoke pós-deploy em produção, que permanece sem confirmação nesta atualização.
+- **Issue #618:** fechada como concluída após a integração da correção de falha total dos coletores.
+- **Próximas correções de frescor na fila:** [#619](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/619), loja JSON-LD sem sucesso quando todas as páginas falham; [#620](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/620), impedir que timestamp futuro contamine a sincronização. #620 está explicitamente dependente de #619 para evitar concorrência em áreas compartilhadas.
+- **Não declarar Fase 1 nem operação 24/7 concluídas por causa deste merge isolado:** confirmar execução das tarefas seguintes, CI/revisão, smoke aplicável e os sete dias consecutivos de burn-in exigidos.
