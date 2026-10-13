@@ -1,11 +1,10 @@
 // Public, read-only smoke test for the canonical Vercel deployment.
 import assert from 'node:assert/strict';
 
-const SITE = (process.env.SITE_URL || 'https://tcg-price-hunter.vercel.app').replace(/\/+$/, '');
-const timeout = AbortSignal.timeout(15_000);
+const SITE = 'https://tcg-price-hunter.vercel.app';
 
 async function get(path) {
-  const response = await fetch(SITE + path, { redirect: 'follow', signal: timeout, headers: { 'user-agent': 'tcg-price-hunter-seo-smoke/1.0' } });
+  const response = await fetch(SITE + path, { redirect: 'follow', signal: AbortSignal.timeout(15_000), headers: { 'user-agent': 'tcg-price-hunter-seo-smoke/1.0' } });
   const body = await response.text();
   return { response, body };
 }
