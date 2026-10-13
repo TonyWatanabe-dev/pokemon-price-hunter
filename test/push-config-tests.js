@@ -1,6 +1,7 @@
 // Extraído da #17 — gravação do robô em config/ no main (tools/push-config.sh), com repositórios Git locais temporários:
 // sem mudança · só o robô mudou · humano mudou outro arquivo durante a rodada (rebase limpo) · humano mudou o mesmo
-// trecho (conflito: rebase abortado, edição humana preservada, aviso, saída 0) · remoto inacessível (saída 1).
+// trecho (conflito: rebase abortado, edição humana preservada, aviso, saída 0) · remoto inacessível (saída 1) ·
+// push recusado 3 vezes com pull funcionando (saída 1, #490).
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -100,6 +101,21 @@ await t('5. remoto inacessível: 3 tentativas e saída 1 (rodada vermelha, como 
   git(s.robot, 'remote', 'set-url', 'origin', path.join(tmp, 'nao-existe.git'));
   const r = runScript(s.robot);
   assert.equal(r.status, 1); assert.match(r.stdout, /::error::/);
+  assert.equal(rebasing(s.robot), false);
+});
+
+await t('5b. push recusado pelo remoto (pull ok): exatamente 3 tentativas de push e saída 1', () => {
+  const s = setup(); const before = originHead(s);
+  const log = path.join(path.dirname(s.origin), 'tentativas.log');
+  // pre-receive no remoto bare: registra cada push e recusa — o pull continua funcionando
+  write(s.origin, 'hooks/pre-receive', `#!/bin/sh\necho x >> '${log}'\nexit 1\n`);
+  fs.chmodSync(path.join(s.origin, 'hooks/pre-receive'), 0o755);
+  write(s.robot, 'config/stores.json', lines(6));
+  const r = runScript(s.robot);
+  assert.equal(r.status, 1, r.stderr + r.stdout);
+  assert.match(r.stdout, /::error::.*3 tentativas/); assert.doesNotMatch(r.stdout, /publicada/);
+  assert.equal(read(path.dirname(log), 'tentativas.log').split('\n').filter(Boolean).length, 3);
+  assert.equal(originHead(s), before);                  // nada chegou ao main
   assert.equal(rebasing(s.robot), false);
 });
 
