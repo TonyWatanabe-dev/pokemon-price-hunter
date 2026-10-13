@@ -1,0 +1,32 @@
+name: SEO public smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Optional canonical site URL override
+        required: false
+        type: string
+  schedule:
+    - cron: '23 10 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-public-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check public SEO contract
+        env:
+          SITE_URL: \${{ inputs.site_url }}
+        run: node tools/seo-public-smoke.mjs
