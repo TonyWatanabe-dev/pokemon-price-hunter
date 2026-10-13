@@ -340,6 +340,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     }
   });
   if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
+  // Grava já o resultado da coleta: se a pós-coleta (nota oficial, alertas, estado) cair, checks/lastCheck/backoff não se perdem.
+  writeJson(dataPath('sources.json'), sources);
+  writeJson(dataPath('url-cache.json'), urlCache);
   // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
   for (const [id, o] of Object.entries(prev)) {
     if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
