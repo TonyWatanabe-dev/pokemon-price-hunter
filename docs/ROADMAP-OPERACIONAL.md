@@ -195,7 +195,7 @@ Telemetria real do worker: implementada (ver item 1 das lacunas abaixo), com val
 - pendências do proprietário: `qa-review` obrigatório, auditoria da Ponte (`RELEASE_AUDIT_*`), `VERCEL_TOKEN`, rotina horária e `DISPATCHER_ORCAMENTO_USD`;
 - 53 issues antigas já entregues aguardam fechamento manual.
 
-**Próxima fase:** Fase 3, experiência de compra. O backlog de UX/UI/SEO está na #285.
+**Próxima fase:** Fase 3 iniciada pela frente SEO & Content Agent (PR #595), em modo de auditoria somente leitura. O gate segue bloqueado; não declarar agente ativo nem conteúdo publicado. O backlog de UX/UI/SEO continua na #285.
 
 ## Estado executivo
 
