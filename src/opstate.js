@@ -38,6 +38,9 @@ export function classifyError(e) {
   if (!e) return null;
   const st = Number(e.status);
   const msg = String(e.message || e);
+  // robots.txt inacessível (DNS, timeout, TLS, 5xx) é loja fora do ar, não loja que barra robô; credencial ausente é falha nossa.
+  if (e.blocked && e.status === 'unreachable') return /timeout|aborted/i.test(`${e.code || ''} ${msg}`) ? 'timeout' : 'rede';
+  if (e.blocked && e.status === 'auth') return 'auth';
   if (e.blocked || st === 403 || st === 429) return 'bloqueio';
   if (/timeout|aborted/i.test(msg) || e.name === 'AbortError') return 'timeout';
   if (st >= 500) return 'http_5xx';
