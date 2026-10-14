@@ -11,7 +11,7 @@ export const NOME_MAX = 300;
 export const LOJA_MAX = 80;
 export const DISCLOSURE = 'Link de afiliado: o TCG Price Hunter pode receber uma comissão se você comprar, sem custo extra para você. Isso não muda o ranking, a melhor oferta, o preço nem a nota.';
 export const AVISO_COMPRA = 'Confira preço, frete e estoque na loja antes de comprar.';
-const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Só liga com SOCIAL_ENABLED=1 explícito; ausente ou qualquer outro valor = desligado. Quem chama o gerador confere isto. */
 export const socialEnabled = (env = {}) => SOCIAL_ENABLED_DEFAULT || (env && env.SOCIAL_ENABLED === '1');
@@ -31,14 +31,14 @@ export function limpar(s) {
 }
 
 // Corta por ponto de código (nunca parte um emoji ao meio) medindo em unidades UTF-16, que é o que as APIs contam.
-function cortar(s, max) {
+export function cortar(s, max) {
   if (s.length <= max) return s;
   let out = '';
   for (const ch of s) { if (out.length + ch.length > max - 1) break; out += ch; }
   return out.trimEnd() + '…';
 }
 
-const quando = (iso) => (typeof iso === 'string' && !Number.isNaN(Date.parse(iso))
+export const quando = (iso) => (typeof iso === 'string' && !Number.isNaN(Date.parse(iso))
   ? new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
   : null);
 
