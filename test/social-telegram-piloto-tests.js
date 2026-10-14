@@ -134,6 +134,12 @@ if (temPillow) await t('11. social-card.py: recorta foto de fundo branco e gera 
   assert.equal(spawnSync('python3', [card, '--foto', branca, '--saida', out]).status, 0);
   assert.equal(py(`from PIL import Image;i=Image.open('${out}');assert i.size==(1080,1080) and i.format=='JPEG';assert i.getpixel((540,600))[0]>150`).status, 0, 'produto no centro do card');
   assert.equal(spawnSync('python3', [card, '--foto', cheia, '--saida', out + '2']).status, 3);
+  const r = py(`import sys;sys.dont_write_bytecode=True;import importlib.util as u
+s=u.spec_from_file_location('c','${card}');c=u.module_from_spec(s);s.loader.exec_module(c)
+from PIL import Image,ImageDraw;m=Image.new('L',(800,800),0);d=ImageDraw.Draw(m);d.rectangle((40,40,300,160),fill=255);d.rectangle((250,250,700,740),fill=255)
+o=c.so_produto(m);assert o.getpixel((100,100))==0,'logo solto removido';assert o.getpixel((500,500))==255,'produto mantido'
+d.rectangle((5,250,240,740),fill=255);assert c.so_produto(m).getpixel((100,500))==255,'kit: segundo item grande fica'`);
+  assert.equal(r.status, 0, r.stderr);
 });
 else console.log('(social-card.py não testado: Pillow ausente neste ambiente)');
 

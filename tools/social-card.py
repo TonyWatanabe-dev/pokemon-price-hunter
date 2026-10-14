@@ -54,6 +54,34 @@ def sem_rodape(alfa):
     return h
 
 
+def so_produto(alfa, fracao=0.5):
+    """Mantém só o produto: o maior bloco recortado e os que tiverem pelo menos `fracao` da área dele (kits com
+    duas caixas). Logos, selos e textos soltos ao lado da foto (ex.: logo da coleção) saem. Rotulagem numa versão
+    reduzida da máscara, ampliada de volta e cruzada com a máscara original (borda continua precisa)."""
+    w, h = alfa.size
+    k = max(1, max(w, h) // 240)
+    peq = alfa.resize((max(1, w // k), max(1, h // k)), Image.NEAREST).point(lambda v: 255 if v > 127 else 0)
+    pw, ph = peq.size
+    px = peq.load()
+    areas = {}
+    rotulo = 1
+    for y in range(ph):
+        for x in range(pw):
+            if px[x, y] == 255:
+                if rotulo > 250:                       # ruído demais: não arrisca, mantém a máscara inteira
+                    return alfa
+                ImageDraw.floodfill(peq, (x, y), rotulo)
+                rotulo += 1
+    hist = peq.histogram()
+    areas = {r: hist[r] for r in range(1, rotulo)}
+    if len(areas) <= 1:
+        return alfa
+    maior = max(areas.values())
+    manter = {r for r, a in areas.items() if a >= maior * fracao}
+    sel = peq.point(lambda v: 255 if v in manter else 0).resize((w, h), Image.NEAREST).filter(ImageFilter.MaxFilter(2 * k + 1))
+    return Image.composite(alfa, Image.new('L', (w, h), 0), sel)
+
+
 def gerar(foto_path, saida, fundo_path=FUNDO_PADRAO):
     fundo = Image.open(fundo_path).convert('RGB').resize((LADO, LADO), Image.LANCZOS)
     foto = Image.open(foto_path).convert('RGB')
@@ -65,6 +93,7 @@ def gerar(foto_path, saida, fundo_path=FUNDO_PADRAO):
     corte = sem_rodape(alfa)
     alfa = alfa.crop((0, 0, w, corte)).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1))
     foto = foto.crop((0, 0, w, corte))
+    alfa = so_produto(alfa)
     caixa = alfa.getbbox()
     if not caixa:
         return 3
