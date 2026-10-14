@@ -42,6 +42,12 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
+      - name: Dados atuais (ramo data, publicado pelo robô a cada rodada)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data
+          path: dados
+          persist-credentials: false
       - name: Prévia (sem rede, sem secrets)
         if: inputs.modo == 'previa'
         env:
@@ -49,7 +55,7 @@ jobs:
         run: |
           set -- previa
           [ -n "$OFERTA" ] && set -- "$@" --oferta "$OFERTA"
-          node tools/social-telegram-piloto.mjs "$@" | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Conferir chat / enviar
         if: inputs.modo == 'conferir' || inputs.modo == 'enviar'
         env:
@@ -65,5 +71,5 @@ jobs:
           set -- "$MODO" --titulo "$TITULO"
           [ -n "$OFERTA" ] && set -- "$@" --oferta "$OFERTA"
           [ "$MODO" = enviar ] && set -- "$@" --confirmar "$CONFIRMAR"
-          node tools/social-telegram-piloto.mjs "$@" | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json | tee -a "$GITHUB_STEP_SUMMARY"
           exit "${PIPESTATUS[0]}"
