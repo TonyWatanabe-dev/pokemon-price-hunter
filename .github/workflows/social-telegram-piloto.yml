@@ -1,6 +1,6 @@
 name: Social Telegram piloto
 
-# Piloto controlado do Telegram (#690). Só manual. "previa" não usa rede nem secrets; "conferir" só lê o título do
+# Piloto controlado do Telegram (#690). Só manual. "previa" não usa secrets (só baixa a foto da loja para o card); "conferir" só lê o título do
 # chat; "enviar" manda UMA mensagem e só com confirmar=ENVIAR e o título exato do grupo. Sem agenda, sem push.
 
 on:
@@ -48,14 +48,16 @@ jobs:
           ref: data
           path: dados
           persist-credentials: false
-      - name: Prévia (sem rede, sem secrets)
+      - name: Pillow para o card (tools/social-card.py)
+        run: python3 -m pip install --quiet --disable-pip-version-check 'pillow==12.0.0'
+      - name: Prévia (sem secrets)
         if: inputs.modo == 'previa'
         env:
           OFERTA: ${{ inputs.oferta }}
         run: |
           set -- previa
           [ -n "$OFERTA" ] && set -- "$@" --oferta "$OFERTA"
-          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json --card "$RUNNER_TEMP/card.jpg" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Conferir chat / enviar
         if: inputs.modo == 'conferir' || inputs.modo == 'enviar'
         env:
@@ -71,5 +73,13 @@ jobs:
           set -- "$MODO" --titulo "$TITULO"
           [ -n "$OFERTA" ] && set -- "$@" --oferta "$OFERTA"
           [ "$MODO" = enviar ] && set -- "$@" --confirmar "$CONFIRMAR"
-          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json --card "$RUNNER_TEMP/card.jpg" | tee -a "$GITHUB_STEP_SUMMARY"
           exit "${PIPESTATUS[0]}"
+      - name: Card gerado (para conferir)
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: card
+          path: ${{ runner.temp }}/card.jpg
+          if-no-files-found: ignore
+          retention-days: 7
