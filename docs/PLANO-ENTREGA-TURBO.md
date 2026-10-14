@@ -1,6 +1,6 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 13/10/2026
+> **Atualizado em:** 14/10/2026
 > **Base consultada:** \`main\` em \`8ea86cb4166e5303f73a9684297c2525a82e51a9\`.  
 > **Objetivo:** levar o produto existente até uma operação comercial útil, confiável e sustentável, com coleta, agentes de engenharia e monitoramento trabalhando 24/7, sem depender de alguém distribuindo cada tarefa manualmente.
 
@@ -12,6 +12,26 @@ Este documento é o plano de execução de ponta a ponta. Use \`docs/ROADMAP-OPE
 
 
 > **Decisão de escopo — 13/10/2026 (prioridade atual):** o proprietário está satisfeito com a automação já construída e autorizou uma última rodada curta para as correções de integridade #626/#627. Não prolongar a estabilização por melhorias marginais: se houver bloqueio de permissões/infra, necessidade de migration ou retrabalho além de uma rodada focada, documentar e estacionar. As verificações #612 (smoke público), #231 (configuração operacional) e #271 (sete dias verdes) continuam em paralelo e não impedem construir o MVP Social Media em modo de rascunho. **O MVP Social Media está autorizado em paralelo agora**: ofertas validadas → deduplicação/frescor → calendário/fila → geração de conteúdo e prévia → aprovação humana → piloto controlado. Autopublicação só após validação de contas/APIs oficiais, links de afiliado, controles de frequência, kill switch, logs e dados atuais. Telegram primeiro; Instagram após elegibilidade/API; WhatsApp somente com integração oficial confirmada. Não enfraquecer nem falsificar os gates de operação 24/7.
+
+## Canais e destinos do Social Media — atualizado em 14/10/2026
+
+Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, grupo e bot; não tratar o bot como grupo.
+
+| Canal | Endereço | Estado / uso |
+|---|---|---|
+| Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Destino de publicação a validar pelo chat ID antes do primeiro envio. |
+| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; ainda é necessário validar o chat ID do grupo público e comprovar o primeiro envio pela Bot API. |
+| Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
+| TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
+| YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
+| WhatsApp | Sem link de convite confirmado nesta atualização | Não alterar o grupo existente nem presumir acesso à API de grupos. Integração somente por caminho oficial confirmado. |
+| Shopee Afiliados | Link de afiliado pendente | Não inventar nem substituir link. |
+
+Links de afiliados já informados:
+- Mercado Livre: https://meli.la/1BzQ4PU
+- Amazon: https://link.amazon/B0bVBmGRD
+
+**Estado operacional:** registrar um canal não significa que o publisher esteja implementado ou que uma mensagem tenha sido enviada. Telegram segue em implementação/piloto controlado pela issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/690). Até existir evidência de sucesso da Bot API, não declarar publicação real concluída. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
 
 ## 1. Resultado final esperado
 
