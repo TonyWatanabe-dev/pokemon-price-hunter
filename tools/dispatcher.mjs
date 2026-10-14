@@ -2,7 +2,7 @@
 // Uso: node tools/dispatcher.mjs [--executar] [--json plano.json]
 //   padrão: só planeja (nenhuma escrita). --executar: grava marcador, aplica quarentena e dispara o worker.
 // Requisitos: `gh` autenticado (GH_TOKEN). Variáveis: TAREFAS_OPERADORES (padrão: dono do repo), TAREFAS_MAX
-// (1..10, padrão 3), DISPATCHER_ATOR (autor dos marcadores, padrão github-actions[bot]), DISPATCHER_PAUSA_ATE (ISO).
+// (1..50, padrão 3), DISPATCHER_ATOR (autor dos marcadores, padrão github-actions[bot]), DISPATCHER_PAUSA_ATE (ISO).
 // --executar falha fechado se o tarefas.yml não declarar `workflow_dispatch` com a entrada `issue`.
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
@@ -50,7 +50,7 @@ async function snapshot() {
   }
   const pulls = (await pages(`repos/${REPO}/pulls?state=open&per_page=100`)).map((p) => ({ number: p.number, headRef: p.head?.ref, body: p.body || '' }));
   const porCiclo = Number(process.env.DISPATCHER_POR_CICLO);
-  return { now, operators, maxSlots: process.env.TAREFAS_MAX, maxPerCycle: Number.isInteger(porCiclo) && porCiclo > 0 && porCiclo <= 10 ? porCiclo : undefined, pauseUntil, rateLimit: rateLimit.motivo, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
+  return { now, operators, maxSlots: process.env.TAREFAS_MAX, maxPerCycle: Number.isInteger(porCiclo) && porCiclo > 0 && porCiclo <= 50 ? porCiclo : undefined, pauseUntil, rateLimit: rateLimit.motivo, budget: await budget(now), dispatcherActor: process.env.DISPATCHER_ATOR || 'github-actions[bot]', issues, pulls, issueStates };
 }
 
 // Orçamento pela telemetria real (comentários `telemetria:execucao` do bot do workflow na janela).

@@ -129,7 +129,7 @@ Issue #234. `src/agents/dispatcher.js` decide, de forma determinística, quais i
 
 - **Fila:** label `tarefa:aprovada`, válido só se a issue foi aberta por operador **e** o último evento desse label foi aplicado por operador (`TAREFAS_OPERADORES`, padrão: dono do repo).
 - **Ordem:** linha `Ordem: N` do corpo; depois o número da issue.
-- **Bloqueios:** `Depende de: #N` ainda aberta (ou desconhecida), PR aberto para a issue (branch `…/issue-N…` ou `Closes/Fixes/Resolves #N`), `executor:running`/`executor:github`, lease de 70 min após o despacho, `executor:done`, `executor:quarentena`, área crítica em uso (caminhos entre crases em `Áreas:` ou `Risco previsto:`), vagas (`TAREFAS_MAX`, 1..10, padrão 3) e pausa por rate limit (cota da API < 200 ou `DISPATCHER_PAUSA_ATE`).
+- **Bloqueios:** `Depende de: #N` ainda aberta (ou desconhecida), PR aberto para a issue (branch `…/issue-N…` ou `Closes/Fixes/Resolves #N`), `executor:running`/`executor:github`, lease de 70 min após o despacho, `executor:done`, `executor:quarentena`, área crítica em uso (caminhos entre crases em `Áreas:` ou `Risco previsto:`), vagas (`TAREFAS_MAX`, 1..50, padrão 3) e pausa por rate limit (cota da API < 200 ou `DISPATCHER_PAUSA_ATE`).
 - **Idempotência:** chave `dispatch:<issue>:<tentativa>` gravada num comentário-marcador **antes** do disparo; só valem marcadores do ator do dispatcher ou de operadores. Dois dispatchers concorrentes: relê depois de gravar e só dispara quem tem o comentário de menor id com a chave.
 - **Retry e quarentena:** nova tentativa só depois de `executor:failed` (ou lease expirado) e do backoff (30 min, dobrando); com 2 tentativas sem sucesso, label `executor:quarentena` e comentário sanitizado, sem nova tentativa automática.
 - **Orçamento (opcional):**

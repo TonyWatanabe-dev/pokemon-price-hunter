@@ -3,7 +3,7 @@
 # ou com o usuário (R3); este workflow nunca faz merge, deploy nem acessa o banco de produção.
 # Segurança (repositório público): só dispara quando um operador (vars.TAREFAS_OPERADORES, padrão: dono do repo)
 # aplica o label numa issue aberta por um operador; comentários de terceiros não entram no contexto do Claude.
-# Paralelismo: até vars.TAREFAS_MAX vagas (padrão 3, máximo 10); as demais tarefas esperam na fila do GitHub.
+# Paralelismo: até vars.TAREFAS_MAX vagas (padrão 3, máximo 50); as demais tarefas esperam na fila do GitHub.
 # Despacho pelo Dispatcher (#234): workflow_dispatch com issue + chave, aceito só com vars.DISPATCHER_ATIVO == 'true'.
 # O worker revalida tudo (issue aberta, autor e aprovação por operador, marcador do dispatcher com a mesma chave e
 # última tentativa) antes de marcar a issue ou chamar o Claude; despacho inválido falha fechado sem efeito.
@@ -48,7 +48,7 @@ jobs:
           [ "${#ISSUE}" -le 7 ] || { echo "::error::número de issue inválido"; exit 1; }
           echo "issue=$ISSUE" >> "$GITHUB_OUTPUT"
           case "$MAX" in ''|*[!0-9]*) MAX=3 ;; esac
-          [ "$MAX" -lt 1 ] && MAX=1; [ "$MAX" -gt 10 ] && MAX=10
+          [ "$MAX" -lt 1 ] && MAX=1; [ "$MAX" -gt 50 ] && MAX=50
           echo "n=$(( ISSUE % MAX ))" >> "$GITHUB_OUTPUT"
 
   tarefa:
