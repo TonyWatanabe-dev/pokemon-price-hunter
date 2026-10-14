@@ -9,6 +9,7 @@ export const CANAIS = Object.freeze(['telegram', 'instagram']);
 export const LIMITES = Object.freeze({ telegram: 1024, instagram: 2200 });   // legenda de mídia do Telegram; legenda do Instagram
 export const NOME_MAX = 300;
 export const LOJA_MAX = 80;
+export const CHAMADA_MAX = 160;   // linha de abertura opcional (modelos editoriais, src/agents/social/modelos.js)
 export const DISCLOSURE = 'Link de afiliado: o TCG Price Hunter pode receber uma comissão se você comprar, sem custo extra para você. Isso não muda o ranking, a melhor oferta, o preço nem a nota.';
 export const AVISO_COMPRA = 'Confira preço, frete e estoque na loja antes de comprar.';
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -43,9 +44,10 @@ const quando = (iso) => (typeof iso === 'string' && !Number.isNaN(Date.parse(iso
   : null);
 
 /** oferta = { produto: { nome, slug }, loja: { nome }, preco, precoTotal|null, url, urlDestino, disclosure, lidaEm };
- *  opts = { canal: 'telegram'|'instagram', siteUrl }. Devolve { canal, texto, link, avisos } ou lança erro explícito. */
+ *  opts = { canal: 'telegram'|'instagram', siteUrl, chamada? }. chamada = linha de abertura opcional, texto puro de uma linha.
+ *  Devolve { canal, texto, link, avisos } ou lança erro explícito. */
 export function gerarRascunho(oferta, opts) {
-  const { canal, siteUrl } = obj(opts);
+  const { canal, siteUrl, chamada: chamadaBruta } = obj(opts);
   if (!CANAIS.includes(canal)) throw erro(`canal desconhecido: ${String(canal)}`);
   const o = obj(oferta); const produto = obj(o.produto); const loja = obj(o.loja);
   if (typeof o.preco !== 'number' || !Number.isFinite(o.preco) || o.preco <= 0) throw erro('oferta sem preço válido');
@@ -56,6 +58,13 @@ export function gerarRascunho(oferta, opts) {
   const slug = typeof produto.slug === 'string' ? produto.slug : '';
   if (!SLUG.test(slug)) throw erro('slug do produto inválido');
   const avisos = [];
+  let chamada = '';
+  if (chamadaBruta != null) {
+    if (typeof chamadaBruta !== 'string') throw erro('chamada não é texto');
+    chamada = limpar(chamadaBruta);
+    if (!chamada) throw erro('chamada vazia');
+    if (chamada.length > CHAMADA_MAX) throw erro('chamada excede o limite');
+  }
 
   const nomeLimpo = limpar(produto.nome); const lojaLimpa = limpar(loja.nome);
   if (!nomeLimpo) throw erro('produto sem nome');
@@ -81,9 +90,9 @@ export function gerarRascunho(oferta, opts) {
   ].filter(Boolean).join('\n');
 
   // O nome é a única parte variável longa: é ele que encolhe para caber no limite, nunca preço, link ou divulgação.
-  const espaco = LIMITES[canal] - rodape.length - 1;
+  const espaco = LIMITES[canal] - rodape.length - 1 - (chamada ? chamada.length + 1 : 0);
   if (espaco < 1) throw erro('texto fixo excede o limite do canal');
   const nome = cortar(nomeLimpo, Math.min(NOME_MAX, espaco));
   if (nome !== nomeLimpo) avisos.push('nome do produto truncado');
-  return { canal, texto: `${nome}\n${rodape}`, link, avisos };
+  return { canal, texto: `${chamada ? chamada + '\n' : ''}${nome}\n${rodape}`, link, avisos };
 }
