@@ -5,9 +5,14 @@ name: Social Telegram automático
 # KILL SWITCH: só roda com a variável do repositório SOCIAL_AUTO = 1 (Settings → Secrets and variables → Actions →
 # Variables). Apagar ou mudar a variável desliga na próxima rodada. O diário de envios fica no cache do Actions.
 
+# Disparo principal: logo depois de cada rodada do robô (Price Hunter, a cada ~15 min), então novidade sai na hora.
+# O agendamento abaixo é só reserva, caso o robô atrase.
 on:
+  workflow_run:
+    workflows: ['Price Hunter']
+    types: [completed]
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -19,7 +24,7 @@ concurrency:
 
 jobs:
   auto:
-    if: vars.SOCIAL_AUTO == '1'
+    if: vars.SOCIAL_AUTO == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
