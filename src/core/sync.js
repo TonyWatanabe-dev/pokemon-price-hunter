@@ -4,6 +4,8 @@ import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, h
 import { ensureMonth } from '../db/partitions.js';
 
 const J = (v) => JSON.stringify(v);
+// Mesmo critério do `ts` de mappers.js: valor presente que não vira data válida.
+const invalidAt = (v) => !!v && Number.isNaN(new Date(v).getTime());
 
 export async function syncState(c, { state, catalog = null, historyLines = [], log = () => {}, now = null }) {
   const stats = {};
@@ -83,7 +85,14 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   stats.stores = stores.length;
 
   // 5) Vendedores de marketplace
-  const allOffers = offersRows(state.offers || []).filter((o) => pid.has(o.product_legacy_id));
+  // Horário não interpretável (source_timestamp ou firstSeen) faz o mapeamento recusar a oferta (nunca inventa horário).
+  // Ela é isolada aqui para não derrubar a sincronização inteira: não é gravada (o banco mantém a última leitura válida),
+  // continua viva (não vira 'removed') e fica observável em `offersInvalidTimestamp` e `offersInvalidTimestampIds`.
+  const badTs = new Set((state.offers || []).filter((o) => invalidAt(o.source_timestamp) || invalidAt(o.firstSeen)));
+  const badIds = [...badTs].filter((o) => pid.has(o.productId)).map((o) => o.id);
+  stats.offersInvalidTimestamp = badIds.length;
+  stats.offersInvalidTimestampIds = badIds.slice(0, 20);
+  const allOffers = offersRows((state.offers || []).filter((o) => !badTs.has(o))).filter((o) => pid.has(o.product_legacy_id));
   // Leitura com horário no futuro (> 5 min, relógio do robô adiantado) não é gravada: last_seen_at futuro faria a guarda
   // abaixo descartar as leituras reais seguintes e envenenaria o max(last_seen_at) do frescor. A oferta mantém no banco a
   // última leitura válida (nada é inventado) e continua viva (não vira 'removed').
@@ -126,7 +135,7 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   const applied = new Set(up.rows.map((r) => r.legacy_id));
   stats.offersStale = rows.length - applied.size;
   const oid = new Map((await c.query('SELECT legacy_id, id FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, Number(r.id)]));
-  const live = new Set(allOffers.map((r) => r.legacy_id));
+  const live = new Set([...allOffers.map((r) => r.legacy_id), ...badIds]);
   const gone = await c.query(`UPDATE offer SET status = 'removed', stock_status = 'unknown', updated_at = now() WHERE status <> 'removed' AND legacy_id IS NOT NULL AND NOT (legacy_id = ANY($1::text[]))`, [[...live]]);
   // Evento de estoque só entre estados lidos de verdade: oferta desatualizada nesta rodada (status 'pending': loja ou
   // página falhou) não gera evento, e 'unknown' anterior (rodada que falhou ou oferta removida) é trocado pelo último
