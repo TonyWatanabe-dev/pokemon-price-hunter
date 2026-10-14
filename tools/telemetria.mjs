@@ -3,11 +3,12 @@
 //                                          comentário em stdout e grava o resumo no GITHUB_STEP_SUMMARY.
 //                                          Não usa rede nem token: quem posta é o passo "Resultado na issue".
 //   node tools/telemetria.mjs resumo [--desde AAAA-MM-DD] [--json] → somente leitura (gh): agrega os registros
-//                                          dos comentários do bot do workflow e o custo por PR integrada.
+//                                          dos comentários do bot do workflow e o custo por PR integrada
+//                                          e por issue (inclui tentativas falhas; "n/d" sem dado).
 // Env de `registrar`: EXECUTION_FILE, PERFIL, ISSUE, CHAVE, RUN_ID, RUN_ATTEMPT, STATUS, PR_URL, GITHUB_REPOSITORY.
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
-import { buildRecord, formatComment, parseRecords, summarize } from '../src/agents/telemetria.js';
+import { buildRecord, formatComment, formatResumo, parseRecords, summarize } from '../src/agents/telemetria.js';
 
 const REPO = process.env.GITHUB_REPOSITORY || 'TonyWatanabe-dev/pokemon-price-hunter';
 if (!/^[\w.-]+\/[\w.-]+$/.test(REPO)) { console.error('repositório inválido'); process.exit(2); }
@@ -44,11 +45,7 @@ if (mode === 'registrar') {
   for (const n of prs) { const p = JSON.parse(await gh(['api', `repos/${REPO}/pulls/${n}`])); if (p.merged_at) merged.push(n); }
   const s = summarize(recs, { prsIntegradas: merged });
   if (rest.includes('--json')) { console.log(JSON.stringify(s, null, 2)); process.exit(0); }
-  const usd = (v) => (v === null ? 'n/d' : `US$ ${v.toFixed(2)}`);
-  console.log(`Telemetria do worker${desde ? ` desde ${desde}` : ''}: ${s.execucoes} execução(ões), ${s.sucesso} com PR, ${s.falhas} sem entrega, ${s.escaladas} escalada(s).`);
-  console.log(`Custo reportado: ${usd(s.custoUsdReportado.soma)} (${s.custoUsdReportado.execucoesSemCusto} sem dado) · por PR integrada: ${usd(s.custoPorPrIntegrada)} (${s.prsIntegradas} PR).`);
-  console.log(`Tokens: entrada ${s.tokens.entrada}, saída ${s.tokens.saida}, cache leitura ${s.tokens.cacheLeitura}, cache criação ${s.tokens.cacheCriacao} · ${s.semExecutionFile} execução(ões) sem execution_file.`);
-  for (const x of s.porIssue) console.log(`  #${x.issue}: ${x.execucoes} exec., ${x.escaladas} escalada(s), ${usd(x.semCusto === x.execucoes ? null : x.custoUsdReportado)}, PR ${x.prs.map((p) => `#${p}`).join(', ') || '—'}${x.prIntegrada ? ' (integrada)' : ''}`);
+  console.log(formatResumo(s, { desde }));
 } else {
   console.error('uso: telemetria.mjs registrar | resumo [--desde AAAA-MM-DD] [--json]'); process.exit(2);
 }
