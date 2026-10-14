@@ -1,6 +1,6 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 14/10/2026, 11:30 (America/Sao_Paulo, UTC−03:00) — Telegram automático em operação (#690 fechada).
+> **Atualizado em:** 14/10/2026, 17:00 (America/Sao_Paulo, UTC−03:00) — Fase 1 aguardando burn-in; Social Media MVP com Telegram em operação e acervo de fotos em andamento.
 > **Base consultada para esta atualização:** `main` em `8ea86cb4166e5303f73a9684297c2525a82e51a9` (PRs #629 e #630 integradas; escopo atualizado em 13/10/2026).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
@@ -40,7 +40,20 @@ Etapa concluída. Issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price
 
 **Regras em vigor** (`src/agents/social/auto.js`): oferta nova no radar (≤ 60 min) sai na hora, até 3 por rodada; demais no máximo 1 por rodada e ≥ 5 min entre mensagens; mesma oferta 1× a cada 24 h; links de afiliado do anúncio primeiro; 0h–7h (BRT) só ofertas novas. **Kill switch:** variável do repositório `SOCIAL_AUTO` (`1` = ligado; ligado em 14/10/2026). Diário de envios no cache do Actions; só entra envio confirmado pela Bot API.
 
-**Pendências não bloqueantes:** cadastrar links de afiliado por anúncio em `config/affiliates.json` (sem eles os posts usam a URL da loja); recorte do card mantém elementos soltos da foto (ex.: logo ao lado da caixa); Instagram, WhatsApp, TikTok e YouTube ainda não iniciados como publisher.
+**Pendências não bloqueantes:** cadastrar links de afiliado por anúncio em `config/affiliates.json` (sem eles os posts usam a URL da loja); Instagram, TikTok e YouTube ainda não iniciados como publisher.
+
+## Onde estamos — 14/10/2026, 17:00
+
+| Frente | Estado | Evidência / próximo passo |
+|---|---|---|
+| **Fase 1 — confiabilidade operacional** | Código concluído; **aguardando burn-in** | [#271](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/271): 14/10 parcial verde, sequência 0/7 (fecha no 7º dia verde consecutivo, ~21/10 se não houver falha). [#231](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/231) aguarda decisões do proprietário; [#612](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/612) tem evidência de smoke registrada e pode ser fechada. |
+| **Social Media MVP — Telegram** | **Em operação automática** | Seção acima (#690 fechada). Kill switch `SOCIAL_AUTO`. |
+| Card: recorte só do produto | Integrado | [#699](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/699) |
+| **Acervo de fotos revisadas** (corrigir caixas cortadas) | **Em andamento** | Ferramenta e workflow manual `social-acervo.yml` ([#700](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/700), correções [#701](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/701), [#702](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/702), [#703](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/703)). 1ª rodada (run 38611519808): 203/263 fotos, ~120 com embalagem semitransparente e 60 falhas por HTTP 429 — **reprovada, nada integrado**. #703 trocou para recorte híbrido (fundo branco + IA) com pausa por loja. Próximo: nova rodada → revisão humana das folhas de contato → PR com as fotos aprovadas em `assets/social/produtos/`. |
+| **WhatsApp** | **Bloqueado por decisão do proprietário** | Não há caminho oficial gratuito e automático para grupos/Canais (Groups API oficial: até 8 participantes; Canais sem API). Opções apresentadas: (a) lista oficial de assinantes via WhatsApp Business Platform (paga, ~R$ 0,31–0,38 por mensagem de marketing, número exclusivo); (b) resposta grátis sob pedido do usuário; (c) número-bot com automação não oficial — contraria a regra "Não simular WhatsApp Web" e só pode seguir com decisão explícita do proprietário, chip exclusivo e proprietário como admin do grupo. Nenhuma implementação iniciada. |
+| Links de afiliado por anúncio | Aguardando proprietário | Enviar links gerados no painel do Mercado Livre para cadastro em `config/affiliates.json`. |
+
+**Fase atual:** fechamento da **Fase 1** (só falta o burn-in passar e as decisões da #231) em paralelo com o **MVP de Social Media** autorizado em 13/10. A Fase 2 (dados/backend) foi fechada em 13/10; Fases 3+ seguem a ordem de `docs/PLANO-ENTREGA-TURBO.md`.
 
 ## Atualização operacional — SEO técnico (13/10/2026, pós-PRs #597 e #598)
 
