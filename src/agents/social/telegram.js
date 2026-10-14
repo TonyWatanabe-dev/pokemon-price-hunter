@@ -111,11 +111,22 @@ function prepararFoto(item, o) {
   const p = preparar(item, o);
   if (p.motivo) return p;
   if (p.item.texto.length > LEGENDA_MAX) return { motivo: MOTIVOS.LEGENDA_LONGA };
-  const foto = fotoValida(o.foto);
-  if (!foto) return { motivo: MOTIVOS.SEM_FOTO };
-  return { item: p.item, url: p.url.replace(/\/sendMessage$/, '/sendPhoto'), body: { chat_id: p.body.chat_id, photo: foto, caption: p.item.texto } };
+  const arquivo = o.arquivo instanceof Uint8Array && o.arquivo.length > 0 ? o.arquivo : null;   // card gerado (JPEG)
+  const foto = arquivo ? null : fotoValida(o.foto);
+  if (!arquivo && !foto) return { motivo: MOTIVOS.SEM_FOTO };
+  const body = { chat_id: p.body.chat_id, photo: foto ?? '(arquivo card.jpg)', caption: p.item.texto };
+  if (o.parseMode === 'HTML') body.parse_mode = 'HTML';
+  return { item: p.item, url: p.url.replace(/\/sendMessage$/, '/sendPhoto'), body, arquivo };
 }
-/** Como publicar(), via sendPhoto. opts = { env, token, chatId, foto, fetch, simular = true, apiBase?, timeoutMs? }. */
+// Envio com arquivo: multipart (FormData nativo do Node); sem arquivo: JSON com a URL da foto.
+function corpo(p) {
+  if (!p.arquivo) return { headers: { 'content-type': 'application/json' }, body: JSON.stringify(p.body) };
+  const fd = new FormData();
+  for (const [k, v] of Object.entries(p.body)) if (k !== 'photo') fd.append(k, String(v));
+  fd.append('photo', new Blob([p.arquivo], { type: 'image/jpeg' }), 'card.jpg');
+  return { body: fd };
+}
+/** Como publicar(), via sendPhoto. opts = { env, token, chatId, foto | arquivo (Uint8Array JPEG), parseMode?, fetch, simular = true, apiBase?, timeoutMs? }. */
 export async function publicarFoto(item, opts = {}) {
   const o = opts && typeof opts === 'object' ? opts : {};
   const p = prepararFoto(item, o);
@@ -126,7 +137,7 @@ export async function publicarFoto(item, opts = {}) {
   const ms = Number.isFinite(o.timeoutMs) && o.timeoutMs > 0 ? o.timeoutMs : TIMEOUT_PADRAO_MS;
   const base = { itemId: sim.itemId, requisicao: sim.requisicao };
   try {
-    const r = await o.fetch(p.url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(p.body), signal: AbortSignal.timeout(ms) });
+    const r = await o.fetch(p.url, { method: 'POST', ...corpo(p), signal: AbortSignal.timeout(ms) });
     let dado = null;
     try { dado = await r.json(); } catch { /* corpo não-JSON */ }
     if (!r.ok || dado?.ok !== true) {

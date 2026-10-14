@@ -4,7 +4,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { main, lerArgs } from '../tools/social-telegram-piloto.mjs';
+import { main, lerArgs, escolher, gerarCard, linkDe } from '../tools/social-telegram-piloto.mjs';
+import { montarLegenda, precoAnterior } from '../src/agents/social/legenda.js';
+import { spawnSync } from 'node:child_process';
 import { publicarFoto, MOTIVOS } from '../src/agents/social/telegram.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -86,5 +88,53 @@ await t('7. workflow: só manual, leitura, secrets só no passo de conferir/envi
   assert.doesNotMatch(previa, /secrets\./, 'prévia sem secrets');
   for (const run of y.split('run: |').slice(1)) assert.doesNotMatch(run.split(/\n {6}- /)[0], /\$\{\{/, 'sem interpolação no shell');
 });
+
+await t('8. legenda no formato aprovado: De só com preço anterior real, centavos, escape, divulgação só com afiliado', () => {
+  const l = montarLegenda({ titulo: 'Blister <b>ME04</b> & Cia', atual: 11, anterior: 13, loja: 'Loja Oficial', link: 'https://meli.la/18VoNnj', afiliado: true });
+  assert.equal(l.parseMode, 'HTML');
+  assert.equal(l.texto, '🇧🇷 <b>Blister ME04 &amp; Cia</b>\n\nDe <b>R$ 13,00</b> ❌\nPor <b>R$ 11,00</b> ✅\n\nLoja Oficial\nhttps://meli.la/18VoNnj\n\nLink de afiliado: podemos receber comissão, sem custo extra para você.');
+  const s = montarLegenda({ titulo: 'X', atual: 13.99, anterior: 10, loja: 'L', link: 'https://l.test/p' }).texto;
+  assert.doesNotMatch(s, /De |afiliado/, 'anterior menor que o atual não vira "De"; sem afiliado sem divulgação');
+  assert.match(s, /Por <b>R\$ 13,99<\/b> ✅/); assert.doesNotMatch(s, /\d{2}:\d{2}/, 'sem horário');
+  assert.equal(precoAnterior({ price: 11, listPrice: 13 }), 13); assert.equal(precoAnterior({ price: 11, listPrice: null }), null); assert.equal(precoAnterior({ price: 11, listPrice: 11 }), null);
+  assert.throws(() => montarLegenda({ titulo: 'X', atual: 1, loja: 'L', link: 'http://x' }));
+  assert.ok(montarLegenda({ titulo: 'a'.repeat(5000), atual: 1, loja: 'L', link: 'https://x.test/p' }).texto.length <= 1024);
+});
+
+await t('9. link: afiliado do anúncio tem prioridade na escolha e vira o link do post', () => {
+  const st2 = structuredClone(st);
+  st2.offers.push({ ...st.offers[0], id: 'o2', storeId: 'ml', storeName: 'Mercado Livre', price: 950, total: 950, url: 'https://produto.mercadolivre.com.br/MLB-1234567890-x', listPrice: 1000 });
+  const af = { anuncios: { MLB1234567890: 'https://meli.la/abc' } };
+  assert.deepEqual(linkDe(st2.offers[1], af), { link: 'https://meli.la/abc', afiliado: true });
+  assert.deepEqual(linkDe(st2.offers[0], af), { link: 'https://vt.test/p', afiliado: false });
+  const e = escolher(st2, { afiliados: af });
+  assert.equal(e.item.ofertaId, 'o2'); assert.equal(e.afiliado, true);
+  assert.match(e.item.texto, /https:\/\/meli\.la\/abc/); assert.match(e.item.texto, /De <b>R\$ 1\.000,00<\/b> ❌/);
+  assert.equal(escolher(st2, { afiliados: {} }).item.ofertaId, 'o1', 'sem afiliado mantém a ordem da prévia');
+});
+
+await t('10. card: arquivo vai em multipart com parse_mode HTML; falha do card cai na foto original', async () => {
+  const f = fakeFetch(); const item = { id: 'i1', canal: 'telegram', chaveDedupe: 'k', texto: '<b>oi</b>', estado: 'aprovado', criadoEm: new Date().toISOString(), atualizadoEm: new Date().toISOString(), agendadoPara: null, motivo: null };
+  const r = await publicarFoto(item, { env: { SOCIAL_ENABLED: '1' }, token: TOKEN, chatId: '-100', arquivo: new Uint8Array([255, 216, 255]), parseMode: 'HTML', fetch: f, simular: false });
+  assert.equal(r.ok, true);
+  const fd = f.calls[0].init.body; assert.ok(fd instanceof FormData);
+  assert.equal(fd.get('parse_mode'), 'HTML'); assert.equal(fd.get('caption'), '<b>oi</b>'); assert.ok(fd.get('photo') instanceof Blob);
+  const falha = async () => ({ ok: false, status: 404 });
+  assert.equal(await gerarCard('https://x.test/f.jpg', path.join(tmp, 'c.jpg'), falha), null);
+  const img = async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(4) });
+  assert.equal(await gerarCard('https://x.test/f.jpg', path.join(tmp, 'c.jpg'), img, () => ({ status: 3 })), null, 'foto sem fundo branco: original');
+});
+
+const temPillow = spawnSync('python3', ['-c', 'import PIL'], { encoding: 'utf8' }).status === 0;
+if (temPillow) await t('11. social-card.py: recorta foto de fundo branco e gera JPEG 1080; foto sem fundo branco devolve 3', () => {
+  const py = (code) => spawnSync('python3', ['-c', code], { encoding: 'utf8' });
+  const branca = path.join(tmp, 'b.png'); const cheia = path.join(tmp, 'c.png'); const out = path.join(tmp, 'card.jpg');
+  assert.equal(py(`from PIL import Image,ImageDraw;i=Image.new('RGB',(400,600),'white');ImageDraw.Draw(i).rectangle((100,80,300,520),fill=(200,30,30));i.save('${branca}');Image.new('RGB',(400,600),(90,60,40)).save('${cheia}')`).status, 0);
+  const card = path.join(root, 'tools/social-card.py');
+  assert.equal(spawnSync('python3', [card, '--foto', branca, '--saida', out]).status, 0);
+  assert.equal(py(`from PIL import Image;i=Image.open('${out}');assert i.size==(1080,1080) and i.format=='JPEG';assert i.getpixel((540,600))[0]>150`).status, 0, 'produto no centro do card');
+  assert.equal(spawnSync('python3', [card, '--foto', cheia, '--saida', out + '2']).status, 3);
+});
+else console.log('(social-card.py não testado: Pillow ausente neste ambiente)');
 
 console.log(`✓ Piloto Telegram (#690): ${n} grupos passaram`);
