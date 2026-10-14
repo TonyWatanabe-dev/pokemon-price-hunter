@@ -33,7 +33,7 @@ jobs:
         run: |
           set -o pipefail
           python3 -m venv "$RUNNER_TEMP/venv"
-          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check --progress-bar off 'pillow==12.0.0' 'rembg[cpu]==2.0.80' 2>&1 | tail -n 20
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check --progress-bar off 'pillow==12.3.0' 'rembg[cpu]==2.0.80' 2>&1 | tail -n 20
       - name: Gerar acervo
         env:
           SO: ${{ inputs.so }}
