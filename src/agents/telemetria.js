@@ -124,7 +124,8 @@ const add = (a, b) => (b === null || b === undefined ? a : a + b);
 
 /**
  * Agregado por período: execuções, sucesso/falha, escaladas, turnos, duração, tokens e custo reportado, com a
- * contagem do que veio sem dado (nunca preenchido). `prsIntegradas` (números de PR com merge) dá o custo por PR.
+ * contagem do que veio sem dado (nunca preenchido). `prsIntegradas` (números de PR com merge) dá o custo por PR
+ * (média e `porPrIntegrada`, uma linha por issue com PR integrada).
  */
 export function summarize(records, { prsIntegradas = [] } = {}) {
   const rs = dedupe(records);
@@ -138,14 +139,16 @@ export function summarize(records, { prsIntegradas = [] } = {}) {
     if (s?.custoUsdReportado == null) semCusto++; else custo += s.custoUsdReportado;
     duracao = add(duracao, s?.duracaoMs); turnos = add(turnos, s?.turnos);
     for (const k of Object.keys(tok)) tok[k] = add(tok[k], s?.tokens?.[k]);
-    const i = porIssue.get(r.issue) || { issue: r.issue, execucoes: 0, sucesso: 0, escaladas: 0, custoUsdReportado: 0, semCusto: 0, prs: new Set() };
-    i.execucoes++; if (r.resultado?.status === 'success' && r.resultado?.pr) i.sucesso++;
+    const i = porIssue.get(r.issue) || { issue: r.issue, execucoes: 0, sucesso: 0, falhas: 0, escaladas: 0, custoUsdReportado: 0, semCusto: 0, prs: new Set() };
+    i.execucoes++; if (r.resultado?.status === 'success' && r.resultado?.pr) i.sucesso++; else i.falhas++;
     if (r.perfil?.escalada) i.escaladas++;
     if (s?.custoUsdReportado == null) i.semCusto++; else i.custoUsdReportado += s.custoUsdReportado;
     if (r.resultado?.pr) i.prs.add(r.resultado.pr);
     porIssue.set(r.issue, i);
   }
-  const issues = [...porIssue.values()].map((i) => ({ ...i, prs: [...i.prs].sort((a, b) => a - b), prIntegrada: [...i.prs].some((p) => merged.has(p)) }));
+  // custoTotalUsd: soma de todas as execuções da issue só quando nenhuma veio sem custo; senão null (n/d, nunca parcial)
+  const issues = [...porIssue.values()].map((i) => ({ ...i, prs: [...i.prs].sort((a, b) => a - b), prIntegrada: [...i.prs].some((p) => merged.has(p)),
+    custoTotalUsd: i.semCusto === 0 ? i.custoUsdReportado : null }));
   const integradas = issues.filter((i) => i.prIntegrada);
   // custo por PR integrada soma TODAS as execuções da issue (inclui as tentativas que falharam: retrabalho conta)
   const custoIntegradas = integradas.reduce((a, i) => a + i.custoUsdReportado, 0);
@@ -160,8 +163,36 @@ export function summarize(records, { prsIntegradas = [] } = {}) {
     custoUsdReportado: { soma: rs.length > semCusto ? custo : null, execucoesSemCusto: semCusto },
     prsIntegradas: integradas.length,
     custoPorPrIntegrada: integradas.length && custoCompleto ? custoIntegradas / integradas.length : null,
+    porPrIntegrada: integradas.map((i) => ({ issue: i.issue, prs: i.prs.filter((p) => merged.has(p)), execucoes: i.execucoes,
+      tentativasFalhas: i.falhas, custoTotalUsd: i.custoTotalUsd, custoUsdReportado: i.custoUsdReportado, execucoesSemCusto: i.semCusto })).sort((a, b) => a.prs[0] - b.prs[0]),
     porIssue: issues.sort((a, b) => a.issue - b.issue),
   };
+}
+
+/**
+ * Relatório legível do `summarize` (CLI `resumo`). Custo da issue/PR = todas as execuções, inclui tentativas falhas;
+ * com qualquer execução sem custo informado vira "n/d" (o parcial aparece entre parênteses, nunca como total).
+ */
+export function formatResumo(s, { desde = null } = {}) {
+  const usd2 = (v) => (v === null || v === undefined ? 'n/d' : `US$ ${v.toFixed(2)}`);
+  const custo = (total, parcial, semCusto, execucoes) => (total !== null ? usd2(total)
+    : semCusto < execucoes ? `n/d (parcial ${usd2(parcial)}; ${semCusto} sem dado)` : 'n/d');
+  const linhas = [
+    `Telemetria do worker${desde ? ` desde ${desde}` : ''}: ${s.execucoes} execução(ões), ${s.sucesso} com PR, ${s.falhas} sem entrega, ${s.escaladas} escalada(s).`,
+    `Custo reportado: ${usd2(s.custoUsdReportado.soma)} (${s.custoUsdReportado.execucoesSemCusto} sem dado) · por PR integrada: ${usd2(s.custoPorPrIntegrada)} (${s.prsIntegradas} PR).`,
+    `Tokens: entrada ${s.tokens.entrada}, saída ${s.tokens.saida}, cache leitura ${s.tokens.cacheLeitura}, cache criação ${s.tokens.cacheCriacao} · ${s.semExecutionFile} execução(ões) sem execution_file.`,
+  ];
+  if (s.porPrIntegrada.length) {
+    linhas.push('Custo por PR integrada (todas as execuções da issue, inclui tentativas falhas):');
+    for (const x of s.porPrIntegrada) {
+      linhas.push(`  PR ${x.prs.map((p) => `#${p}`).join(', ')} (issue #${x.issue}): ${custo(x.custoTotalUsd, x.custoUsdReportado, x.execucoesSemCusto, x.execucoes)} · ${x.execucoes} exec., ${x.tentativasFalhas} tentativa(s) falha(s)`);
+    }
+  }
+  if (s.porIssue.length) linhas.push('Custo por issue (inclui tentativas falhas):');
+  for (const x of s.porIssue) {
+    linhas.push(`  #${x.issue}: ${x.execucoes} exec., ${x.falhas} tentativa(s) falha(s), ${x.escaladas} escalada(s), ${custo(x.custoTotalUsd, x.custoUsdReportado, x.semCusto, x.execucoes)}, PR ${x.prs.map((p) => `#${p}`).join(', ') || '—'}${x.prIntegrada ? ' (integrada)' : ''}`);
+  }
+  return linhas.join('\n');
 }
 
 /** Gasto reportado na janela (para o budgetGate). Sem nenhum custo informado na janela: null (não inventa zero). */
