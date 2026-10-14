@@ -4,7 +4,7 @@
 // Regras fixas (padrão fechado: na dúvida, não despacha):
 // - Só issues abertas, criadas por operador e com o label de fila aplicado por operador (evento de label conferido).
 // - Respeita `Depende de: #N` (dependência precisa estar fechada), PR já existente, tarefa em curso, lease ativo,
-//   conflito de áreas críticas com tarefa em curso e o limite de vagas (1..10, padrão 3).
+//   conflito de áreas críticas com tarefa em curso e o limite de vagas (1..50, padrão 3).
 // - Idempotência por issue + tentativa: a mesma chave nunca é despachada duas vezes.
 // - Falha repetida vai para quarentena (sem nova tentativa); entre tentativas há backoff exponencial.
 // - Rate limit/quota: com `pauseUntil` no futuro, nada é despachado e a fila fica intacta.
@@ -22,10 +22,11 @@ const operatorSet = (ops) => new Set((Array.isArray(ops) ? ops : String(ops ?? '
 const labelNames = (issue) => new Set((issue?.labels || []).map((l) => lower(typeof l === 'string' ? l : l?.name)));
 const ms = (iso) => { const t = Date.parse(iso); return Number.isFinite(t) ? t : null; };
 
-/** Vagas efetivas: inteiro 1..10; valor ausente ou inválido usa o padrão (como o `tarefas.yml`). */
+/** Vagas efetivas: inteiro 1..50 (autorizado pelo proprietário em 14/10/2026); valor ausente ou inválido usa o padrão (como o `tarefas.yml`). */
+export const MAX_SLOTS = 50;
 export function clampSlots(v, fallback = DEFAULTS.maxSlots) {
   const n = /^\d+$/.test(String(v ?? '').trim()) ? Number(v) : fallback;
-  return Math.min(10, Math.max(1, n));
+  return Math.min(MAX_SLOTS, Math.max(1, n));
 }
 
 /** `Ordem: N` do corpo da issue (sem ordem = fim da fila). */

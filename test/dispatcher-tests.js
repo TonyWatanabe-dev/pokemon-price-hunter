@@ -33,7 +33,7 @@ await t('parsers: ordem, dependências, áreas, vagas', () => {
   assert.deepEqual(parseAreas('Áreas: `api/v1.mjs` `../fora`'), ['api/v1.mjs']);
   assert.deepEqual(parseAreas('1. formato (`Ordem:`, `Risco previsto:`, `Áreas:`, `src/agents/x.js`)'), [], 'menção no meio da linha não declara área (#266)');
   assert.deepEqual(parseAreas('Áreas: `docs/a.md` `Fase:`'), ['docs/a.md'], 'rótulo com dois-pontos não é caminho');
-  assert.deepEqual([clampSlots(undefined), clampSlots('10'), clampSlots('50'), clampSlots('0'), clampSlots('x')], [3, 10, 10, 1, 3]);
+  assert.deepEqual([clampSlots(undefined), clampSlots('10'), clampSlots('50'), clampSlots('80'), clampSlots('0'), clampSlots('x')], [3, 10, 50, 50, 1, 3]);
 });
 
 await t('tarefa elegível é despachada sem label manual por issue; ordem por "Ordem:" e número', () => {

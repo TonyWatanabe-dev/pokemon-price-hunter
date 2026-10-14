@@ -52,7 +52,7 @@ await t('4. paralelismo por vagas: grupo pela vaga, sem cancelar, com fila (queu
   assert.match(job('tarefa'), /needs: vaga/);
 });
 
-await t('5. cálculo da vaga: issue % TAREFAS_MAX, padrão 3, limitado a 1..10 e imune a valor inválido', () => {
+await t('5. cálculo da vaga: issue % TAREFAS_MAX, padrão 3, limitado a 1..50 e imune a valor inválido', () => {
   const script = job('vaga').match(/run: \|\n((?: {10}.*\n?)+)/)[1].replace(/^ {10}/gm, '');
   const slot = (ISSUE, MAX) => {
     const out = path.join(fs.mkdtempSync(path.join(fs.realpathSync(process.env.TMPDIR || '/tmp'), 'vaga-')), 'out');
@@ -64,7 +64,7 @@ await t('5. cálculo da vaga: issue % TAREFAS_MAX, padrão 3, limitado a 1..10 e
   for (const bad of ['', 'abc', '12; rm -rf /', '1 2', '12345678']) assert.throws(() => slot(bad, '3'), `issue inválida: ${bad}`);
   assert.equal(slot(7, '3'), 'n=1'); assert.equal(slot(9, '3'), 'n=0');
   assert.equal(slot(7, ''), 'n=1', 'padrão 3'); assert.equal(slot(7, 'abc'), 'n=1', 'inválido vira 3');
-  assert.equal(slot(7, '0'), 'n=0', 'mínimo 1'); assert.equal(slot(25, '50'), 'n=5', 'máximo 10');
+  assert.equal(slot(7, '0'), 'n=0', 'mínimo 1'); assert.equal(slot(25, '50'), 'n=25', '50 vagas'); assert.equal(slot(125, '80'), 'n=25', 'máximo 50');
   assert.equal(slot(123, '1'), 'n=0', 'TAREFAS_MAX=1 vira fila única');
 });
 
