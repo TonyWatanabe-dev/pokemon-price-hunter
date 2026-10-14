@@ -3227,10 +3227,23 @@ async function moreProdutos(page){
   const box=$("#view .prods .deals");if(!box)return;mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((e)=>dealCard(cardE(e))).join(""));
   $("#prod-more")?.remove();if(page<d.pages)box.insertAdjacentHTML("afterend",moreSentinel(page+1));watchMore();if(typeof revealInit==="function")revealInit();
 }
-/* "Sem preço sugerido": a API manda só a contagem; os cartões vêm quando o bloco abre (todas as páginas) */
-document.addEventListener("toggle",async(e)=>{const el=e.target;if(!el.matches?.("details[data-semref]")||!el.open||el.dataset.loaded)return;el.dataset.loaded="1";
-  const box=el.querySelector(".deals");let page=1,pages=1;do{const d=await apiGet(prodQuery(page,true));if(!d||d.notFound){el.dataset.loaded="";return}
-    mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((x)=>dealCard(cardE(x))).join(""));pages=d.pages;page++}while(page<=pages&&page<=20);if(typeof revealInit==="function")revealInit()},true);
+/* "Sem preço sugerido": a API manda só a contagem; os cartões vêm quando o bloco abre (todas as páginas).
+   #83: enquanto carrega, esqueleto + aria-busy; se uma página falha, aviso com nova tentativa que continua da página que falhou
+   (os cartões já mostrados ficam e não se repetem). Uma carga por vez. */
+async function loadSemref(el){
+  if(el.dataset.loaded)return;el.dataset.loaded="1";
+  const box=el.querySelector(".deals");if(!box)return;el.querySelector(".semref-msg")?.remove();
+  let page=+el.dataset.next||1,pages=1;box.setAttribute("aria-busy","true");
+  if(!box.children.length)box.innerHTML='<div class="skel semref-skel" style="height:250px" aria-hidden="true"></div>'.repeat(3);
+  const unskel=()=>box.querySelectorAll(".semref-skel").forEach((x)=>x.remove());
+  do{const d=await apiGet(prodQuery(page,true));
+    if(!d||d.notFound||!Array.isArray(d.items)){unskel();box.removeAttribute("aria-busy");el.dataset.loaded="";el.dataset.next=page;
+      box.insertAdjacentHTML("afterend",`<p class="soft-empty semref-msg" role="alert">Não conseguimos carregar ${page>1?"o restante destes produtos":"estes produtos"} agora.${page>1?" A lista acima continua válida.":""} <button class="linkbtn" type="button" data-semretry>Tentar de novo</button></p>`);return}
+    unskel();mergeSide(d);box.insertAdjacentHTML("beforeend",d.items.map((x)=>dealCard(cardE(x))).join(""));pages=d.pages;page++;el.dataset.next=page}while(page<=pages&&page<=20);
+  box.removeAttribute("aria-busy");if(!box.children.length)box.insertAdjacentHTML("afterend",'<p class="soft-empty semref-msg">Nenhum produto sem preço sugerido agora.</p>');   /* vazio de verdade, sem cartão inventado */
+  if(typeof revealInit==="function")revealInit();
+}
+document.addEventListener("toggle",(e)=>{const el=e.target;if(el.matches?.("details[data-semref]")&&el.open)loadSemref(el)},true);
 const moreSentinel=(n)=>`<div id="prod-more" class="prod-more" data-page="${n}" style="height:1px"></div>`;
 let moreIO=null;
 function watchMore(){const el=$("#prod-more");if(!el)return;if(!("IntersectionObserver" in window)){moreProdutos(+el.dataset.page);return}
@@ -3277,6 +3290,7 @@ document.addEventListener("click",(e)=>{
   const thb=t.closest("[data-theme-set]");if(thb){const v=thb.dataset.themeSet;if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme;store.set("theme",v||null);themeSync();render();return}
   const rtb=t.closest("#retry");if(rtb){if(rtb.disabled)return;rtb.disabled=true;loading();load();return}
   const prb=t.closest("[data-prodretry]");if(prb){if(prb.disabled)return;prb.disabled=true;const box=prb.closest("#prod-more");if(box)box.style.height="1px";box?.replaceChildren();moreProdutos(+prb.dataset.prodretry);return}
+  const srb=t.closest("[data-semretry]");if(srb){if(srb.disabled)return;srb.disabled=true;const d=srb.closest("details[data-semref]");if(d)loadSemref(d);return}
   const omb=t.closest("[data-oppmoreretry]");if(omb){if(omb.disabled)return;omb.disabled=true;const box=omb.closest("#opp-more");if(box)box.style.height="1px";box?.replaceChildren();moreOpp(+omb.dataset.oppmoreretry);return}
   const ufb=t.closest("[data-unfav]");if(ufb){e.preventDefault();unfav(ufb.dataset.unfav);return}
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
