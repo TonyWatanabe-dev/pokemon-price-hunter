@@ -1,6 +1,6 @@
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 14/10/2026 (America/Sao_Paulo, UTC−03:00)
+> **Atualizado em:** 14/10/2026, 11:30 (America/Sao_Paulo, UTC−03:00) — Telegram automático em operação (#690 fechada).
 > **Base consultada para esta atualização:** `main` em `8ea86cb4166e5303f73a9684297c2525a82e51a9` (PRs #629 e #630 integradas; escopo atualizado em 13/10/2026).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
@@ -13,7 +13,7 @@ Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, g
 | Canal | Endereço | Estado / uso |
 |---|---|---|
 | Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Destino de publicação a validar pelo chat ID antes do primeiro envio. |
-| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; ainda é necessário validar o chat ID do grupo público e comprovar o primeiro envio pela Bot API. |
+| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; chat ID validado e envio comprovado pela Bot API em 14/10/2026 (#690). |
 | Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
 | TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
 | YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
@@ -24,7 +24,23 @@ Links de afiliados já informados:
 - Mercado Livre: https://meli.la/1BzQ4PU
 - Amazon: https://link.amazon/B0bVBmGRD
 
-**Estado operacional:** registrar um canal não significa que o publisher esteja implementado ou que uma mensagem tenha sido enviada. Telegram segue em implementação/piloto controlado pela issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/690). Até existir evidência de sucesso da Bot API, não declarar publicação real concluída. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
+**Estado operacional:** registrar um canal não significa que o publisher esteja implementado. Só o Telegram publica de verdade (abaixo); Instagram, TikTok, YouTube e WhatsApp seguem sem publicação automatizada. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
+
+## Social Media — Telegram em operação automática (14/10/2026)
+
+Etapa concluída. Issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/690) fechada com evidência.
+
+| Entrega | PR | Evidência |
+|---|---|---|
+| Prévia manual (só leitura, ramo `data`) | [#693](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/693) | workflow `social-preview.yml` |
+| Piloto manual com dupla trava (`confirmar=ENVIAR` + título do chat) | [#694](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/694) | 1º envio real 14/10 08:59 (blister ME04, pbkids) |
+| Card ambientado (foto real recortada sobre a mesa) + legenda aprovada (🇧🇷 / De ❌ / Por ✅ / loja / link) + prioridade de afiliado | [#695](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/695) | `tools/social-card.py`, `src/agents/social/legenda.js` |
+| Envio automático com as regras do proprietário | [#696](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/696) | run 38570688326: post 14/10 10:18 (Box Display ME05, Mercado Livre) confirmado por print |
+| Disparo logo após cada rodada do robô (`workflow_run`), cron de reserva 30 min, madrugada só novidades | [#697](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/697) | 1ª rodada automática 14/10 11:11, sucesso |
+
+**Regras em vigor** (`src/agents/social/auto.js`): oferta nova no radar (≤ 60 min) sai na hora, até 3 por rodada; demais no máximo 1 por rodada e ≥ 5 min entre mensagens; mesma oferta 1× a cada 24 h; links de afiliado do anúncio primeiro; 0h–7h (BRT) só ofertas novas. **Kill switch:** variável do repositório `SOCIAL_AUTO` (`1` = ligado; ligado em 14/10/2026). Diário de envios no cache do Actions; só entra envio confirmado pela Bot API.
+
+**Pendências não bloqueantes:** cadastrar links de afiliado por anúncio em `config/affiliates.json` (sem eles os posts usam a URL da loja); recorte do card mantém elementos soltos da foto (ex.: logo ao lado da caixa); Instagram, WhatsApp, TikTok e YouTube ainda não iniciados como publisher.
 
 ## Atualização operacional — SEO técnico (13/10/2026, pós-PRs #597 e #598)
 
