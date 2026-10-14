@@ -9,24 +9,46 @@ Gera também folhas de contato (contato-NN.jpg) para revisão humana e manifesto
 Uso: python3 tools/social-acervo.py --state data/state.json --saida acervo/ [--limite N] [--so id1,id2]
 """
 import argparse
+import importlib.util
 import io
 import json
 import os
 import sys
+import time
+import urllib.error
 import urllib.request
+from urllib.parse import urlparse
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
+
+_spec = importlib.util.spec_from_file_location('social_card', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'social-card.py'))
+_card = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_card)
 
 LADO_MAX = 900
 UA = 'Mozilla/5.0 (compatible; TCGPriceHunterBot/1.0; +https://tcg-price-hunter.vercel.app)'
 
 
-def baixar(url):
-    req = urllib.request.Request(url, headers={'User-Agent': UA, 'Accept': 'image/*'})
-    with urllib.request.urlopen(req, timeout=20) as r:
-        if r.status != 200:
-            raise RuntimeError(f'HTTP {r.status}')
-        return Image.open(io.BytesIO(r.read()))
+_ultimo = {}
+
+
+def baixar(url, espera=1.5):
+    """Uma requisição por vez por host, com pausa, e uma nova tentativa (após 20 s) em 429/503."""
+    host = urlparse(url).hostname
+    for tentativa in (1, 2):
+        dt = espera - (time.monotonic() - _ultimo.get(host, 0))
+        if dt > 0:
+            time.sleep(dt)
+        _ultimo[host] = time.monotonic()
+        req = urllib.request.Request(url, headers={'User-Agent': UA, 'Accept': 'image/*'})
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r:
+                return Image.open(io.BytesIO(r.read()))
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 503) and tentativa == 1:
+                time.sleep(20)
+                continue
+            raise
 
 
 def candidatos(prod, ofertas):
@@ -43,7 +65,26 @@ def recortar(img, sessao, remove):
         a = rgba.getchannel('A')
         if a.getextrema()[0] < 250:          # já vem com fundo transparente (render oficial): usa como está
             return rgba
-    return remove(img.convert('RGB'), session=sessao)
+    rgb = img.convert('RGB')
+    ia = remove(rgb, session=sessao).getchannel('A').point(lambda v: 255 if v > 128 else 0)
+    # Híbrido: o fundo branco ligado às bordas (flood fill) dá borda exata e embalagem opaca; a IA recupera as partes
+    # claras da embalagem que encostam no fundo. Fica produto o que QUALQUER um dos dois disser que é produto.
+    branco = _card.mascara(rgb)
+    if 1 - sum(branco.histogram()[128:]) / (rgb.width * rgb.height) < 0.08:
+        alfa = ia                                   # foto sem fundo branco: só a IA
+    else:
+        alfa = ImageChops.lighter(branco, ia)
+    alfa = _card.so_produto(alfa)
+    out = rgb.copy()
+    out.putalpha(alfa)
+    return out
+
+
+def nota(rgba):
+    """Qualidade do recorte: fração de pixels semitransparentes (fantasma) dentro da caixa do produto. 0 = limpo."""
+    a = rgba.getchannel('A')
+    h = a.histogram()
+    return round(sum(h[20:236]) / max(1, sum(h)), 3)
 
 
 def folhas(itens, pasta):
@@ -95,8 +136,9 @@ def main(argv=None):
                 arq = os.path.join(o.saida, f"{p['id']}.webp")
                 rec.save(arq, 'WEBP', quality=90, method=6)
                 reg['fonte'] = url
+                reg['nota'] = nota(rec)
                 reg['erro'] = None
-                itens.append((p['id'], arq))
+                itens.append((f"{p['id']} {reg['nota']:.2f}", arq))
                 break
             except Exception as e:  # noqa: BLE001 — tenta a próxima foto
                 reg['erro'] = f'{type(e).__name__}: {e}'[:200]
