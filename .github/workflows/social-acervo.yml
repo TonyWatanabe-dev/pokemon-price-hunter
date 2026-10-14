@@ -30,14 +30,18 @@ jobs:
           path: dados
           persist-credentials: false
       - name: Dependências (Pillow + rembg)
-        run: python3 -m pip install --quiet --disable-pip-version-check 'pillow==12.0.0' 'rembg[cpu]==2.0.80'
+        run: |
+          set -o pipefail
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check --progress-bar off 'pillow==12.0.0' 'rembg[cpu]==2.0.80' 2>&1 | tail -n 20
       - name: Gerar acervo
         env:
           SO: ${{ inputs.so }}
         run: |
+          set -o pipefail
           set -- --state dados/data/state.json --saida "$RUNNER_TEMP/acervo"
           [ -n "$SO" ] && set -- "$@" --so "$SO"
-          python3 tools/social-acervo.py "$@" | tail -n 1 | tee -a "$GITHUB_STEP_SUMMARY"
+          "$RUNNER_TEMP/venv/bin/python" tools/social-acervo.py "$@" | tail -n 1 | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: acervo
