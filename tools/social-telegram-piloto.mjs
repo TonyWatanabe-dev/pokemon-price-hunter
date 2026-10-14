@@ -44,21 +44,25 @@ export function linkDe(oferta, afiliados) {
   return { link, afiliado: link !== oferta.url };
 }
 
-/** Escolhe a oferta (elegível agora, pela prévia), monta a legenda aprovada e devolve a foto original. Puro.
- *  Sem --oferta: primeiro as que têm link de afiliado, depois a ordem da prévia. */
-export function escolher(state, { oferta, now, env = {}, afiliados = {} } = {}) {
+/** Todas as ofertas elegíveis agora, já com legenda aprovada, foto e link. Ordem: afiliado primeiro, depois a da prévia. */
+export function candidatos(state, { now, env = {}, afiliados = {} } = {}) {
   const p = gerarPrevia(state, { canais: ['telegram'], now, env, limite: 50 });
-  const itens = p.itens.filter((i) => i.canal === 'telegram');
-  const off = (i) => state.offers.find((x) => x.id === i.ofertaId);
-  const ordem = oferta ? itens.filter((i) => i.ofertaId === oferta)
-    : [...itens].sort((a, b) => Number(linkDe(off(b), afiliados).afiliado) - Number(linkDe(off(a), afiliados).afiliado));
-  const it = ordem[0];
-  if (!it) throw new Error(oferta ? `oferta ${oferta} não está entre as elegíveis agora` : 'nenhuma oferta elegível agora');
-  const o = off(it);
-  const { link, afiliado } = linkDe(o, afiliados);
-  const { texto, parseMode } = montarLegenda({ titulo: o.title, atual: o.price, anterior: precoAnterior(o), loja: o.storeName, link, afiliado });
-  const fila = { ...p.fila, itens: p.fila.itens.map((x) => (x.id === it.id ? { ...x, texto } : x)) };
-  return { item: { ...it, texto }, fila, foto: o.image ?? null, parseMode, afiliado };
+  const lista = p.itens.filter((i) => i.canal === 'telegram').map((it) => {
+    const o = state.offers.find((x) => x.id === it.ofertaId);
+    const { link, afiliado } = linkDe(o, afiliados);
+    const { texto, parseMode } = montarLegenda({ titulo: o.title, atual: o.price, anterior: precoAnterior(o), loja: o.storeName, link, afiliado });
+    const fila = { ...p.fila, itens: p.fila.itens.map((x) => (x.id === it.id ? { ...x, texto } : x)) };
+    return { item: { ...it, texto }, fila, oferta: o, foto: o.image ?? null, parseMode, afiliado };
+  });
+  return lista.sort((a, b) => Number(b.afiliado) - Number(a.afiliado));   // sort estável: mantém a ordem da prévia
+}
+
+/** Escolhe a oferta (elegível agora) para o envio manual. Sem --oferta: a primeira de candidatos(). */
+export function escolher(state, { oferta, now, env = {}, afiliados = {} } = {}) {
+  const lista = candidatos(state, { now, env, afiliados });
+  const c = oferta ? lista.find((x) => x.item.ofertaId === oferta) : lista[0];
+  if (!c) throw new Error(oferta ? `oferta ${oferta} não está entre as elegíveis agora` : 'nenhuma oferta elegível agora');
+  return c;
 }
 
 /** Baixa a foto e gera o card. Devolve o JPEG (Uint8Array) ou null (usa a foto original). Nunca lança. */
@@ -76,7 +80,7 @@ export async function gerarCard(foto, saida, fetchFn, run = spawnSync) {
 
 const mascarar = (s, token) => redact(token ? String(s).split(token).join('***') : String(s), { env: {}, max: 300 });
 
-async function getChat(fetchFn, token, chatId) {
+export async function getChat(fetchFn, token, chatId) {
   const r = await fetchFn(`${API_PADRAO}/bot${token}/getChat?chat_id=${encodeURIComponent(chatId)}`, { signal: AbortSignal.timeout(10000) });
   const d = await r.json().catch(() => null);
   if (!r.ok || d?.ok !== true) throw new Error(`getChat falhou: HTTP ${r.status}${d?.description ? ': ' + d.description : ''}`);

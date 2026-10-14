@@ -1,0 +1,61 @@
+name: Social Telegram automático
+
+# Envio automático ao grupo do Telegram (#690). Regras do proprietário em src/agents/social/auto.js:
+# 5 min entre mensagens (oferta nova no radar sai na hora), mesma oferta no máximo 1× a cada 24 h, afiliado primeiro.
+# KILL SWITCH: só roda com a variável do repositório SOCIAL_AUTO = 1 (Settings → Secrets and variables → Actions →
+# Variables). Apagar ou mudar a variável desliga na próxima rodada. O diário de envios fica no cache do Actions.
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-telegram-auto
+  cancel-in-progress: false
+
+jobs:
+  auto:
+    if: vars.SOCIAL_AUTO == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Dados atuais (ramo data, publicado pelo robô a cada rodada)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data
+          path: dados
+          persist-credentials: false
+      - name: Pillow para o card (tools/social-card.py)
+        run: python3 -m pip install --quiet --disable-pip-version-check 'pillow==12.0.0'
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: social/diario.json
+          key: social-telegram-diario-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: social-telegram-diario-
+      - name: Rodada de envio
+        env:
+          SOCIAL_ENABLED: '1'
+          SOCIAL_AUTO: ${{ vars.SOCIAL_AUTO }}
+          TITULO: ${{ vars.SOCIAL_TELEGRAM_TITULO || 'TCG Price Hunter | 01' }}
+          SOCIAL_TELEGRAM_BOT_TOKEN: ${{ secrets.SOCIAL_TELEGRAM_BOT_TOKEN }}
+          SOCIAL_TELEGRAM_CHAT_ID: ${{ secrets.SOCIAL_TELEGRAM_CHAT_ID }}
+        run: |
+          mkdir -p social
+          node tools/social-telegram-auto.mjs --state dados/data/state.json --diario social/diario.json --titulo "$TITULO" --card-dir "$RUNNER_TEMP" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit "${PIPESTATUS[0]}"
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && hashFiles('social/diario.json') != ''
+        continue-on-error: true
+        with:
+          path: social/diario.json
+          key: social-telegram-diario-${{ github.run_id }}-${{ github.run_attempt }}
