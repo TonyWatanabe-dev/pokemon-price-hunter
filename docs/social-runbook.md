@@ -9,6 +9,7 @@ Este runbook descreve **só o que existe no código** em `src/agents/social/`. O
 |---|---|---|---|
 | Ofertas elegíveis, dedupe e aviso de afiliado | `src/agents/social/elegiveis.js` | `selecionarElegiveis`, `ofertaElegivel`, `chaveDedupe`, `exigeDisclosure` | não (exporta `socialHabilitado`; quem chama confere) |
 | Texto do rascunho | `src/agents/social/rascunho.js` | `gerarRascunho` | não (exporta `socialEnabled`; quem chama confere) |
+| Modelos editoriais (oferta do dia, queda de preço, reposição, comparação) | `src/agents/social/modelos.js` | `verificarModelo`, `modelosElegiveis`, `gerarPost` (texto final via `gerarRascunho`) | não (reexporta `socialEnabled`; quem chama confere) |
 | Fila, calendário e kill switch | `src/agents/social/fila.js` | `enfileirar`, `aprovar`, `rejeitar`, `agendar`, `pausado`, `paraJson`, `deJson` | só `agendar` (devolve `desligado`) |
 | Aprovação humana e auditoria | `src/agents/social/aprovacao.js` | `decidir`, `aprovacaoValida`, `verificarTrilha`, `ultimoHash` | sim (`decidir` falha fechado) |
 | Link geral de afiliado do canal | `src/agents/social/afiliados.js` + `config/social-afiliados.json` | `linkParaPost`, `loadConfig` | não |
