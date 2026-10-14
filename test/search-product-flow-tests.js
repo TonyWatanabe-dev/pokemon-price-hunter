@@ -43,7 +43,7 @@ const OB = off('ob', 'p-b', { total: 52 });
 const OC = off('oc', 'p-c', { total: 100, stock: 'OUT_OF_STOCK' });
 
 function sandbox({ loaded = true } = {}) {
-  const slots = { '#view': { innerHTML: '' } }; const boxes = { 'q-ac': { innerHTML: '', hidden: true } };
+  const slots = { '#view': { innerHTML: '' } }; const boxes = { 'q-ac': { innerHTML: '', hidden: true, querySelectorAll: () => [] } };
   const ctx = {
     console, S: loaded ? { collections: [col], products: [PA, PB, PC], reputation: { lojas: {} } } : null, OFF: [O1, O2, O3, OB, OC], P: { 'p-a': PA, 'p-b': PB, 'p-c': PC },
     SLUG: { 'p-a': 'caos-ascendente-blister-quadruplo-charizard', 'p-b': 'caos-ascendente-blister-quadruplo-pikachu', 'p-c': 'caos-ascendente-elite-trainer-box' },
@@ -60,7 +60,7 @@ function sandbox({ loaded = true } = {}) {
   // resultado do vm vem com o Array de outro realm: deepStrictEqual compararia protótipos diferentes
   return { ...ctx.__t, searchProducts: (q) => Array.from(ctx.__t.searchProducts(q)), ctx, slots, boxes };
 }
-const input = (value) => { const attrs = {}; return { id: 'q', value, attrs, setAttribute: (k, v) => { attrs[k] = v; } }; };
+const input = (value) => { const attrs = {}; return { id: 'q', value, attrs, setAttribute: (k, v) => { attrs[k] = v; }, removeAttribute: (k) => { delete attrs[k]; } }; };
 const search = (s, q) => { s.ctx.F.q = q; s.renderSearch(); return s.slots['#view'].innerHTML; };
 const cardOf = (s, pid) => s.dealCard({ p: s.ctx.P[pid], o: s.bestOfferFor(pid), n: s.nLiveOf(pid) }, { plain: true });
 const detail = (s, pid) => { s.renderProduct(pid); return s.slots['#view'].innerHTML; };

@@ -349,7 +349,7 @@ a.navbtn{text-decoration:none}
 
 
 /* ===== Fase 1: tokens de tipo e componentes ===== */
-:root{--fs-xs:12px;--fs-sm:13.5px;--fs-md:15px;--fs-lg:18px;--fs-xl:22px;--fs-price:36px;--fs-display:30px;--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--t-fast:160ms;--t-med:220ms}
+:root{--water-txt:color-mix(in srgb,var(--e-water) 75%,var(--ink));--fs-xs:12px;--fs-sm:13.5px;--fs-md:15px;--fs-lg:18px;--fs-xl:22px;--fs-price:36px;--fs-display:30px;--sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--t-fast:160ms;--t-med:220ms}
 .icon.fire{color:var(--e-fire)}
 /* SearchInput + autocomplete */
 .hero-search{background:var(--surface);border-radius:20px;box-shadow:var(--shadow);padding:22px 18px 18px;margin-top:16px;position:relative}
@@ -371,18 +371,18 @@ a.navbtn{text-decoration:none}
 .ac-i b{display:block;font-weight:600;font-size:15px}.ac-i small{display:block;font-size:12.5px;color:var(--muted)}
 .ac-pr{font-weight:700;white-space:nowrap}
 .ac-i:hover,.ac-i.sel,.ac-all.sel{background:var(--sunk)}
-.ac-all{display:block;width:100%;border:0;border-top:1px solid var(--line);background:none;text-align:left;padding:11px 10px;margin-top:4px;font-weight:600;font-size:14px;color:var(--e-water);border-radius:0 0 10px 10px}
+.ac-all{display:block;width:100%;border:0;border-top:1px solid var(--line);background:none;text-align:left;min-height:44px;padding:11px 10px;margin-top:4px;font-weight:600;font-size:14px;color:var(--water-txt);border-radius:0 0 10px 10px}
 .ac-empty{margin:0;padding:12px;color:var(--muted);font-size:14px}
 .qchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.qchip{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:6px 12px;font-size:13.5px;font-weight:500;transition:border-color var(--t-fast) ease,background-color var(--t-fast) ease}
+.qchip{min-height:44px;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:6px 12px;font-size:13.5px;font-weight:500;transition:border-color var(--t-fast) ease,background-color var(--t-fast) ease}
 .qchip small{color:var(--muted)}
 /* Lote B — /busca: chips de tipo + ordenação numa barra; "Carregar mais" abaixo da lista; no cartão o preço é sempre o maior
    elemento e o % de desconto vem embaixo, menor (antes alternava: com desconto o % ficava acima do preço, em 30px) */
 .busca-bar{display:flex;align-items:center;gap:10px 14px;margin:14px 0 18px}
 .busca-tipos{display:flex;gap:8px;flex:1;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:2px 0}
 .busca-tipos::-webkit-scrollbar{display:none}
-.busca-tipos .fchip{padding:8px 12px;font-size:14px;min-height:40px;flex:none}
-.busca-ord{flex:none;margin-left:auto}.busca-ord select{min-height:40px}
+.busca-tipos .fchip{padding:8px 12px;font-size:14px;min-height:44px;flex:none}
+.busca-ord{flex:none;margin-left:auto}.busca-ord select{min-height:44px}
 @media (max-width:760px){.busca-bar{flex-wrap:wrap}.busca-tipos{flex:1 1 100%;margin:0 calc(var(--gutter) * -1);padding:2px var(--gutter)}.busca-ord{margin-left:0;flex:1 1 100%}.busca-ord select{width:100%}}
 .busca-more{display:flex;justify-content:center;margin-top:22px}.busca-more .btn{min-height:44px}
 .busca-deals .deal-body{display:flex;flex-direction:column}
@@ -634,8 +634,8 @@ a.navbtn{text-decoration:none}
 .tipc-p{display:flex;align-items:center;gap:8px}.tipc-p b{font-size:18px;font-weight:800;letter-spacing:-.01em}
 .tipc small{font-size:11.5px;color:var(--muted)}
 /* Referência coletada na internet */
-.off.ref{background:color-mix(in srgb,var(--e-water) 14%,var(--surface));color:var(--e-water)}
-.refnet{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--e-water);cursor:help}
+.off.ref{background:color-mix(in srgb,var(--e-water) 14%,var(--surface));color:var(--water-txt)}
+.refnet{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--water-txt);cursor:help}
 .refline{display:flex;gap:6px;align-items:flex-start;margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.4}.refline .icon{width:14px;height:14px;flex:none;margin-top:1px}.refline a{color:var(--ink);font-weight:600}
 @media (prefers-reduced-motion:reduce){.fan-c{animation:fanIn 1ms both}.packstage .pack{display:none}.packstage.opening .deal,.packstage.opening .deal-back{animation:none}.deal:hover{transform:none}.deal.foil,.deal.foil .photo::after{animation:none}}
 
@@ -649,7 +649,7 @@ a.navbtn{text-decoration:none}
 .sbox-lg input{font-size:18px;padding:14px 0}
 .sbox-lg .btn{padding:14px 26px;font-size:16px}
 .sbox-lg .sbox-in>.icon{width:22px;height:22px}
-.sbox-x{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:0;background:transparent;color:var(--muted);flex:none;transition:background-color 150ms ease}
+.sbox-x{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--muted);flex:none;transition:background-color 150ms ease}
 .sbox-x:hover{background:var(--sunk);color:var(--ink)}.sbox-x .icon{width:18px;height:18px}
 .ac-load{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--ink);margin-right:8px;vertical-align:-2px;animation:spin 700ms linear infinite}
 .live{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:13.5px;color:var(--muted)}
@@ -663,7 +663,7 @@ a.navbtn{text-decoration:none}
 .tk.on{opacity:1;transform:none}
 .tk time{font-variant-numeric:tabular-nums;color:var(--muted)}.tk b{color:var(--ink)}
 .tk-t{display:inline-flex;align-items:center;gap:4px;font-weight:600}.tk-t .icon{width:14px;height:14px}
-.tk-t.hot,.ai-tag.hot{color:var(--hot)}.tk-t.ok,.ai-tag.ok{color:var(--ok)}.tk-t.info,.ai-tag.info{color:var(--e-water)}
+.tk-t.hot,.ai-tag.hot{color:var(--hot)}.tk-t.ok,.ai-tag.ok{color:var(--ok)}.tk-t.info,.ai-tag.info{color:var(--water-txt)}
 
 /* ===== Início 3: palco escuro, pódio das 3 melhores e cartas com o mundo de cada formato ===== */
 .stage{position:relative;isolation:isolate;margin:-16px calc(50% - 50vw) 0;padding:28px var(--gutter) 64px;color:#F4F6FF;overflow:hidden;
@@ -1140,7 +1140,7 @@ button.score{background:none;padding:0;color:var(--ink);font-weight:700}
 .filters{display:flex;flex-direction:column;gap:10px}
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--gutter) * -1);padding:2px var(--gutter)}
 .chips::-webkit-scrollbar{display:none}
-.fchip{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:8px 14px 8px 11px;font-size:14.5px;font-weight:500;white-space:nowrap;transition:transform 160ms var(--ease-out),border-color 160ms ease,background-color 160ms ease}
+.fchip{display:inline-flex;align-items:center;gap:7px;min-height:44px;border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r-pill);padding:8px 14px 8px 11px;font-size:14.5px;font-weight:500;white-space:nowrap;transition:transform 160ms var(--ease-out),border-color 160ms ease,background-color 160ms ease}
 .fchip .icon{color:var(--ec,var(--muted))}
 .fchip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface)}
 .fchip[aria-pressed="true"] .icon{color:var(--ec-on,currentColor)}
@@ -1148,7 +1148,7 @@ button.score{background:none;padding:0;color:var(--ink);font-weight:700}
 .fchip small{font-size:12.5px;opacity:.7}
 .selects{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media (min-width:640px){.selects{grid-template-columns:repeat(2,minmax(0,280px))}}
-.xf summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--muted);min-height:40px;padding:0 2px}
+.xf summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--muted);min-height:44px;padding:0 2px}
 .xf summary::-webkit-details-marker{display:none}
 .xf[open] summary{color:var(--ink)}
 .xf .selects{margin-top:4px;align-items:end}
@@ -2768,7 +2768,7 @@ const buscaLive=(n,total)=>`Mostrando ${n} de ${total} ${total===1?"produto":"pr
 /* SearchInput com autocomplete: rápido, sem buscar nada na rede */
 let acSel=-1;
 function acRender(input){
-  const box=document.getElementById(input.id+"-ac");if(!box)return;const q=input.value.trim();
+  const box=document.getElementById(input.id+"-ac");if(!box)return;const q=input.value.trim();input.removeAttribute("aria-activedescendant");
   if(q.length>=2&&!S){box.innerHTML=`<p class="ac-empty"><span class="ac-load" aria-hidden="true"></span>Carregando os produtos…</p>`;box.hidden=false;input.setAttribute("aria-expanded","true");return}
   if(q.length<2){box.hidden=true;input.setAttribute("aria-expanded","false");return}
   const cols=searchCollections(q).slice(0,3);const prods=searchProducts(q).slice(0,6);
@@ -2776,10 +2776,11 @@ function acRender(input){
   acSel=-1;
   box.innerHTML=`${cols.length?`<p class="ac-h">Coleções</p>${cols.map((c)=>`<button type="button" class="ac-i" role="option" data-q="${esc(c.name)}"><span><b>${esc(c.name)}</b><small>${esc(c.series||"")} · ${c.products} ${c.products===1?"produto":"produtos"}</small></span></button>`).join("")}`:""}
   ${prods.length?`<p class="ac-h">Produtos</p>${prods.map(({p})=>{const o=bestLive(p.id);return`<a class="ac-i" role="option" href="/produto/${SLUG[p.id]}" data-p="${esc(p.id)}"><span><b>${esc(label(p))}</b><small>${esc(p.collectionName)}</small></span><span class="ac-pr">${o?money(o.total)+pixTxt(o):"<small>sem estoque</small>"}</span></a>`}).join("")}`:""}
-  <button type="button" class="ac-all" data-q="${esc(q)}">Ver todos os resultados para "${esc(q)}"</button>`;
+  <button type="button" class="ac-all" role="option" data-q="${esc(q)}">Ver todos os resultados para "${esc(q)}"</button>`;
+  box.querySelectorAll(".ac-i,.ac-all").forEach((x,k)=>{x.id=box.id+"-o"+k;x.setAttribute("aria-selected","false")});
   box.hidden=false;input.setAttribute("aria-expanded","true");
 }
-function acClose(){document.querySelectorAll(".ac").forEach((b)=>{b.hidden=true});document.querySelectorAll(".sbox input").forEach((i)=>i.setAttribute("aria-expanded","false"))}
+function acClose(){document.querySelectorAll(".ac").forEach((b)=>{b.hidden=true});document.querySelectorAll(".sbox input").forEach((i)=>{i.setAttribute("aria-expanded","false");i.removeAttribute("aria-activedescendant")})}
 function doSearch(q){q=String(q||"").trim().slice(0,80);acClose();if(!q){go("");return}
   F.q=q;F.tipo="";const u=buscaURL();if(location.pathname+location.search!==u)history.pushState(null,"",u);
   view="busca";render();scrollTo({top:0});focusTitle();track("search",{q:q.slice(0,60),results:searchProducts(q).length})}
@@ -3334,7 +3335,7 @@ document.addEventListener("keydown",(e)=>{
   const i=e.target;
   if(i.closest?.(".sbox")&&i.tagName==="INPUT"){const box=document.getElementById(i.id+"-ac");const items=box&&!box.hidden?[...box.querySelectorAll(".ac-i,.ac-all")]:[];
     if(e.key==="Escape"){acClose();return}
-    if((e.key==="ArrowDown"||e.key==="ArrowUp")&&items.length){e.preventDefault();acSel=(acSel+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;items.forEach((x,k)=>x.classList.toggle("sel",k===acSel));items[acSel].scrollIntoView({block:"nearest"});return}}
+    if((e.key==="ArrowDown"||e.key==="ArrowUp")&&items.length){e.preventDefault();acSel=(acSel+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;items.forEach((x,k)=>{x.classList.toggle("sel",k===acSel);x.setAttribute("aria-selected",String(k===acSel))});i.setAttribute("aria-activedescendant",items[acSel].id);items[acSel].scrollIntoView({block:"nearest"});return}}
   if(e.key==="Enter"){const r=e.target.closest?.("tr[data-p]");if(r)openProduct(r.dataset.p)}
 });
 let hT=0;
