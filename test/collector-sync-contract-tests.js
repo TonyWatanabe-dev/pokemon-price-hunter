@@ -139,7 +139,7 @@ await t('4. horário ausente ou no futuro na leitura anterior: nada inventa hor�
   s = await roundAt(135);
   const sv = vtOf(s); const sl = ldOf(s);
   assert.equal(sv.stale, true); assert.equal(sv.source_timestamp, undefined, 'ausente continua ausente');
-  assert.equal(rowOf(sv).last_seen_at, null, 'banco recebe nulo (o sync usa now(): lacuna 2)'); assert.equal(apiItem(s, sv).last_seen_at, null);
+  assert.equal(rowOf(sv).last_seen_at, null, 'banco recebe nulo (o sync não renova: lacuna 2, #626)'); assert.equal(apiItem(s, sv).last_seen_at, null);
   assert.equal(classify(apiItem(s, sv).last_seen_at, base + 135 * 60e3).status, 'indisponivel');
   assert.equal(readKnown(sv), false); assert.equal(readNote(sv), 'Data da leitura desconhecida'); assert.equal(staleNote(sv), 'Última leitura em data desconhecida');
   assert.equal(sl.stale, true); assert.equal(sl.source_timestamp, iso(24 * 60), 'horário no futuro não é corrigido nem renovado');

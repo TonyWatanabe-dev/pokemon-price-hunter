@@ -11,7 +11,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Falha da fonte | `src/run.js` (`staleCopy`) | Reaproveita a oferta anterior com `stale: true` e `stock: UNKNOWN`. **`source_timestamp` não muda** e a última leitura válida fica em `lastValid`. |
 | Rodada pulada por prazo | `src/run.js` (`recentRead`) | Oferta lida há menos de 3 h e não stale é mantida como está, com o horário antigo. Horário ausente, inválido ou no futuro (> 5 min) não é recente: vira `staleCopy`. |
 | Frete | `src/run.js` (`carryShipping`) | Se a simulação falha (ou a oferta é copiada sem nova leitura), o frete anterior só é reaproveitado dentro da validade de 24 h da cotação (`HUNTER_SHIPPING_TTL_H`), com `shippingAt` = data da cotação original (não renova); a falha da simulação fica em `shippingError`. Vencido ou sem data, o frete vira desconhecido e o total volta ao preço. |
-| Banco | `src/core/mappers.js` | `last_seen_at` = `source_timestamp`; stale vira `status = 'pending'` e `stock_status = 'unknown'`. Oferta que sumiu da rodada vira `removed`. |
+| Banco | `src/core/mappers.js`, `src/core/sync.js` | `last_seen_at` = `source_timestamp`; stale vira `status = 'pending'` e `stock_status = 'unknown'`. Oferta que sumiu da rodada vira `removed`. Sem `source_timestamp`, o sync não grava horário novo (#626, lacuna 2). |
 | API | `api/_lib/read-db.mjs`, `read-state.mjs` | `pending` volta como `stale: true`; `source_timestamp` = `last_seen_at`. O frescor da resposta é `freshness` (e os cabeçalhos `X-Data-*`); com o `state.json`, vem de `stateDataAt` (`dataAt`). |
 | UI | `index.html` (`readKnown`/`readNote`, `freshState`) | "Atualizado há …" vem de `source_timestamp` (ausente, inválido ou no futuro além de 5 min: "Data da leitura desconhecida"); `stale` mostra o selo "Leitura antiga". A barra "Ao vivo / Atualizado há" usa o frescor da fonte servida (`freshness.dataAt`; no `state.json` lido direto, `dataAt`, e só sem o campo, `generatedAt`). |
 
@@ -36,7 +36,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Envelhecendo | sem leitura nova, mesmo horário | `atrasado` ≤ 90 min (utilizável) → `desatualizado` ≤ 24 h → `indisponivel` | rodada pulada mantém só até 3 h; depois vira stale | horário antigo, nunca renovado |
 | Stale (falha da fonte) | `stale: true`, `stock: UNKNOWN`, `lastValid` | pela idade do horário antigo | fora do ranking e dos alertas; Opportunity Engine com teto `pending` e `evidence: 'stale'` | `pending`, `unknown`, total nulo sem frete; vem por último na lista |
 | Falha parcial | parte das páginas/lojas falhou na rodada | cada oferta pelo seu horário | só a leitura atual concorre; preço antigo mais baixo não vence | as lidas `active`, as demais `pending` |
-| Horário ausente | `source_timestamp` nulo/vazio | `indisponivel` | rodada pulada não a mantém (vira stale) | `last_seen_at` nulo no mapeamento (ver lacuna 2) |
+| Horário ausente | `source_timestamp` nulo/vazio | `indisponivel` | rodada pulada não a mantém (vira stale); sem evento de estoque | `last_seen_at` nulo no mapeamento; o sync mantém o já gravado ou, oferta nova, não grava (lacuna 2, #626) |
 | Horário inválido ou no futuro (> 5 min) | não interpretável por `Date.parse` ou adiantado | `indisponivel` | idem ausente | inválido: o mapeamento recusa (nunca grava horário inventado); futuro: o sync não grava e mantém a leitura válida anterior (#620) |
 
 ## Testes
@@ -50,6 +50,8 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
   pelos limites configurados.
 - `test/future-last-seen-tests.js`: `last_seen_at` no futuro barrado no sync, recuperação de valor já gravado, frescor
   do banco e página de lojas (#620).
+- `test/untimed-offer-tests.js`: oferta legada sem horário não vira leitura nova no sync; leitura real com horário avança (#626).
+  No PostgreSQL real: `test/db-tests.js`.
 
 ## Sincronização entre etapas (issue #614)
 
@@ -73,7 +75,7 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
 | Erro parcial: página da loja | fonte `ACTIVE`, `lastSuccess` novo, `pageFailures` > 0; oferta `staleCopy` | idem (a fonte parece saudável) | idem | idem |
 | JSON-LD: todas as páginas planejadas falharam (#619) | fonte `ERROR` (backoff), `lastCheck` novo, `lastSuccess` antigo, `pageFailures`/`pageFailReason` mantidos; ofertas `staleCopy` | idem loja fora do ar (`source_health` `ERROR`) | idem | idem |
 | Falha total | todas `staleCopy`; `generatedAt` avança, `dataAt` não | `max(last_seen_at)` não avança | por oferta: idade real; `state.json`: idade de `dataAt` (#621) | "Última leitura há …"; barra pela idade de `dataAt` |
-| Horário ausente (legado) | continua ausente na falha | `last_seen_at` nulo (sync grava `now()`: lacuna 2) | `null`, `indisponivel` | "Data da leitura desconhecida" |
+| Horário ausente (legado) | continua ausente na falha | `last_seen_at` nulo no mapeamento; o sync mantém o horário já gravado (não renova) e não grava oferta nova sem horário (#626) | `null`, `indisponivel` | "Data da leitura desconhecida" |
 | Horário no futuro | continua no futuro na falha (não corrigido nem renovado) | não gravado (> 5 min pelo relógio do banco): fica a última leitura válida (#620, lacuna 6) | `indisponivel` | "Data da leitura desconhecida" (corrigido na #614: antes "Atualizado agora") |
 | Recuperação | `stale: false`, sem `lastValid`, horário novo; fonte `ACTIVE`, `fails: 0` | `active`, `last_seen_at` novo | `active`, `atual` | "Atualizado agora"; volta a concorrer |
 
@@ -85,10 +87,20 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
    `meta.freshness` da resposta: sem horário, inválido ou no futuro (> 5 min) = `indisponivel` com `ageMin: null`.
    É independente de `stale`/`status: 'pending'` (uma oferta reaproveitada continua `pending` e mostra a idade real da
    última leitura). Campos existentes inalterados; ranking e UI não mudam nesta entrega. Teste: `test/api-offer-freshness-tests.js`.
-2. Sem horário da fonte, a sincronização grava `last_seen_at = now()` (`coalesce` em `src/core/sync.js`, contrato
-   documentado ali para não congelar ofertas de fontes sem data). Uma oferta stale antiga sem horário ganharia, no
-   banco, um horário de agora e entraria no `max(last_seen_at)` do frescor. Hoje o robô sempre grava o horário da
-   rodada, então o caso só ocorre com dado legado; mudar exige decidir o tratamento no banco (`NOT NULL`) em issue própria.
+2. **Corrigida na #626.** Ausência de horário não é uma leitura nova. Antes, sem `source_timestamp`, o sync gravava
+   `last_seen_at = now()` (`coalesce` em `src/core/sync.js`) e uma oferta stale antiga sem horário entrava no
+   `max(last_seen_at)` do frescor como lida agora. Contrato atual, compatível com o schema (`last_seen_at NOT NULL`,
+   sem migration nem correção de dados):
+   - O mapeamento (`offersRows`) continua mandando `last_seen_at` nulo; nada inventa horário.
+   - Oferta já gravada: os demais campos atualizam como antes (status `pending`, estoque `unknown`, preço; a oferta não
+     congela), mas `last_seen_at` fica o gravado (`CASE` com a lista `$3` das ofertas sem horário). A idade e o frescor
+     continuam pela última leitura real.
+   - Oferta nova sem horário não é gravada no banco (não há horário real para o `NOT NULL`): segue no `state.json`, não
+     vira `removed` e conta em `offersNoTimestamp`. O `now()` do `SELECT` só preenche a linha candidata, porque o
+     `NOT NULL` é checado antes do `ON CONFLICT`.
+   - Leitura sem horário não gera evento de estoque (não há `observed_at` real).
+   Hoje o robô sempre grava o horário da rodada, então o caso só ocorre com dado legado. Gravar oferta nova sem horário
+   exigiria `last_seen_at` anulável (migration), fora deste contrato. Teste: `test/untimed-offer-tests.js` e `test/db-tests.js`.
 3. Horário inválido (texto não interpretável) faz o mapeamento recusar a oferta e a sincronização falha inteira
    (fecha em vez de inventar); isolar a oferta ruim também fica para issue própria.
 4. **Corrigida na #621.** `generatedAt` do `state.json` continua sendo o horário da rodada (avança mesmo quando todos
