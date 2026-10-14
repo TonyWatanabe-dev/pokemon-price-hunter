@@ -14,7 +14,7 @@ Este runbook descreve **só o que existe no código** em `src/agents/social/`. O
 | Link geral de afiliado do canal | `src/agents/social/afiliados.js` + `config/social-afiliados.json` | `linkParaPost`, `loadConfig` | não |
 | Classificador de mensagens da comunidade | `src/agents/social/moderacao.js` | `classificarMensagem`, `hostsDeLojas` | não (exporta `socialHabilitado`) |
 
-**Não existe:** publicador, chamada a API de Telegram/Instagram/WhatsApp, comando de CLI, serviço ou cron que rode esses módulos, nem persistência da fila ou da trilha. Os módulos são funções puras: o estado (fila, trilha, `env`) é passado por quem chama. Na fila, a transição para `publicado` é sempre recusada (`TRANSICOES` em `fila.js`).
+**Não existe:** publicador, chamada a API de Telegram/Instagram/WhatsApp, serviço ou cron que rode esses módulos, nem persistência da fila ou da trilha. O único comando é a prévia local `tools/social-preview.mjs` (contrato em `docs/social-media.md`), que só grava `preview.md`/`preview.json`. Os módulos são funções puras: o estado (fila, trilha, `env`) é passado por quem chama. Na fila, a transição para `publicado` é sempre recusada (`TRANSICOES` em `fila.js`).
 
 ### Ligar e desligar
 - **Desligado por padrão.** `SOCIAL_ENABLED` ausente = desligado em todos os módulos.
@@ -24,6 +24,8 @@ Este runbook descreve **só o que existe no código** em `src/agents/social/`. O
 ## Gerar prévia
 
 A prévia é local e só lê um `state.json` (o mesmo formato publicado na branch `data`). Não acessa banco, não publica e não lê secrets.
+
+Atalho: com o `state.json` do passo 1, `node tools/social-preview.mjs --state /tmp/state.json --dry-run` gera a prévia para os dois canais e grava `preview.md`/`preview.json` com horário sugerido (ver `docs/social-media.md`). O script abaixo continua valendo para inspeção rápida.
 
 1. Na raiz de um clone atualizado da `main`, obtenha um `state.json` recente. O de `data/state.json` no clone pode estar velho; o publicado fica na branch `data`: `git fetch origin data && git show origin/data:data/state.json > /tmp/state.json`.
 2. Salve o script abaixo fora do repositório (por exemplo `/tmp/previa-social.mjs`) e rode na raiz do clone: `node --input-type=module - /tmp/state.json < /tmp/previa-social.mjs`.
