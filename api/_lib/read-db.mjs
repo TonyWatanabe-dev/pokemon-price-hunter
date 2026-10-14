@@ -318,7 +318,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
   const rows = await query(`
     SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
-           o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
+           f.last_seen_at, f.status AS offer_status, o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
            (SELECT max(created_at) FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT') AS engine_run_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
@@ -347,8 +347,8 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
      LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
     abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto, loja, max]);
   const changes = await offerChanges(rows.map((r) => r.offer_id), { query, now });
-  // change é ADITIVO (#53): campos, ordem, nota e paginação continuam os mesmos
-  return { items: rows.map((r) => ({ ...opportunityOut(r), change: changes.get(String(r.offer_id)) ?? noChange('sem dados da oferta') })),
+  // change e criteria são ADITIVOS (#53): campos, ordem, nota e paginação continuam os mesmos
+  return { items: rows.map((r) => ({ ...opportunityOut(r), change: changes.get(String(r.offer_id)) ?? noChange('sem dados da oferta'), criteria: opportunityCriteria(r, now) })),
     total: rows.length ? Number(rows[0].total_rows) : 0 };
 }
 
@@ -421,6 +421,24 @@ const opportunityOut = (r) => ({
   // e oferta não avaliada sai da tabela). Por isso vale a mais recente das duas.
   engine_version: r.engine_version, updated_at: iso(latest(r.calculated_at, r.engine_run_at)),
 });
+
+// Critérios verificáveis do item (#53, #664): só o que o Opportunity Engine já usou e gravou — nada recalculado, nota e ordem
+// intactas. reference/discount = referência ATUAL e distância gravadas em opportunity (a mesma de reference_comparison);
+// freshness = frescor da PRÓPRIA oferta (offerFreshness) + stale = oferta pendente (trava 'pending' do motor);
+// confidence = confiança do motor e sua faixa. dedupe_key = produto|loja|preço em centavos, o mesmo formato de chaveDedupe
+// (src/agents/social/elegiveis.js; um teste garante a igualdade); null se faltar algum dos três.
+export function opportunityCriteria(r, now = Date.now()) {
+  const cmp = referenceComparison({ kind: r.opp_reference_kind, value: r.opp_reference_value, gap: r.opp_reference_gap, price: r.price, reasons: r.reasons });
+  const fr = offerFreshness(iso(r.last_seen_at), now instanceof Date ? now.getTime() : Number(now));
+  const price = num(r.price); const product = r.legacy_id != null ? String(r.legacy_id).trim() : ''; const store = r.store_id != null ? String(r.store_id).trim() : '';
+  return {
+    reference: { available: cmp.available, kind: cmp.reference_kind, value: cmp.reference_value, ...(cmp.available ? {} : { reason: cmp.reason }) },
+    discount: { available: cmp.available, fraction: cmp.available ? num(r.opp_reference_gap) : null, percentage_below: cmp.percentage_below, amount_below: cmp.amount_below, position: cmp.position },
+    freshness: { status: fr.status, age_min: fr.ageMin, last_seen_at: iso(r.last_seen_at), stale: r.offer_status === 'pending' },
+    confidence: { value: num(r.confidence), level: opportunityConfidenceLevel(num(r.confidence)) },
+    dedupe_key: product && store && Number.isFinite(price) && price > 0 ? `${product}|${store}|${Math.round(price * 100)}` : null,
+  };
+}
 
 // Lojas para o filtro da página de oportunidades: lojas com pelo menos uma oferta avaliada com estoque (sem anomalia),
 // com o nº de produtos. Lista curta (dezenas), uma consulta.
