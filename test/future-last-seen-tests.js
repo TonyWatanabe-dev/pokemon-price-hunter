@@ -106,13 +106,14 @@ await t('5. futuro dentro da tolerância (≤ 5 min) é leitura válida e é gra
   assert.equal(s.offersFuture, 0); assert.equal(seenOf(db, 'x'), at(4)); assert.equal(classify(dbAt(db), NOW).status, 'atual');
 });
 
-await t('6. horário ausente não vira "agora" (#626, ver untimed-offer-tests.js); inválido continua recusado sem gravar nada', async () => {
+await t('6. horário ausente não vira "agora" (#626, ver untimed-offer-tests.js); inválido é isolado sem gravar nada (#627, ver invalid-timestamp-offer-tests.js)', async () => {
   const db = fakeDb();
   const s = await sync(db, [offer('x', null)]);
   assert.equal(s.offersFuture, 0); assert.equal(s.offersNoTimestamp, 1); assert.equal(seenOf(db, 'x'), null, 'oferta nova sem horário não é gravada com now()');
   const db2 = fakeDb();
-  await assert.rejects(() => sync(db2, [offer('y', 'lixo')]), RangeError);
-  assert.equal(db2.upserts, 0, 'nenhuma oferta gravada com horário inventado');
+  const s2 = await sync(db2, [offer('y', 'lixo')]);
+  assert.equal(s2.offersInvalidTimestamp, 1); assert.equal(s2.offers, 0);
+  assert.equal(db2.offers.has('y'), false, 'nenhuma oferta gravada com horário inventado');
 });
 
 await t('7. o limite usa o relógio do banco: robô adiantado não consegue gravar o próprio horário', async () => {

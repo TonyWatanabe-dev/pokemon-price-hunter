@@ -37,7 +37,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 | Stale (falha da fonte) | `stale: true`, `stock: UNKNOWN`, `lastValid` | pela idade do horário antigo | fora do ranking e dos alertas; Opportunity Engine com teto `pending` e `evidence: 'stale'` | `pending`, `unknown`, total nulo sem frete; vem por último na lista |
 | Falha parcial | parte das páginas/lojas falhou na rodada | cada oferta pelo seu horário | só a leitura atual concorre; preço antigo mais baixo não vence | as lidas `active`, as demais `pending` |
 | Horário ausente | `source_timestamp` nulo/vazio | `indisponivel` | rodada pulada não a mantém (vira stale); sem evento de estoque | `last_seen_at` nulo no mapeamento; o sync mantém o já gravado ou, oferta nova, não grava (lacuna 2, #626) |
-| Horário inválido ou no futuro (> 5 min) | não interpretável por `Date.parse` ou adiantado | `indisponivel` | idem ausente | inválido: o mapeamento recusa (nunca grava horário inventado); futuro: o sync não grava e mantém a leitura válida anterior (#620) |
+| Horário inválido ou no futuro (> 5 min) | não interpretável por `Date.parse` ou adiantado | `indisponivel` | idem ausente | inválido: o mapeamento recusa (nunca grava horário inventado) e o sync isola só essa oferta, mantendo a leitura válida anterior (#627); futuro: o sync não grava e mantém a leitura válida anterior (#620) |
 
 ## Testes
 
@@ -51,6 +51,7 @@ Mapa do fluxo e regras de "desatualizado" e "desconhecido". Nenhum limite novo: 
 - `test/future-last-seen-tests.js`: `last_seen_at` no futuro barrado no sync, recuperação de valor já gravado, frescor
   do banco e página de lojas (#620).
 - `test/untimed-offer-tests.js`: oferta legada sem horário não vira leitura nova no sync; leitura real com horário avança (#626).
+- `test/invalid-timestamp-offer-tests.js`: horário inválido isola só a oferta ruim no sync; as válidas são gravadas e a próxima leitura válida recupera (#627).
   No PostgreSQL real: `test/db-tests.js`.
 
 ## Sincronização entre etapas (issue #614)
@@ -101,8 +102,22 @@ Cada etapa tem o seu horário e nenhum deles prova o frescor de outra. Testado e
    - Leitura sem horário não gera evento de estoque (não há `observed_at` real).
    Hoje o robô sempre grava o horário da rodada, então o caso só ocorre com dado legado. Gravar oferta nova sem horário
    exigiria `last_seen_at` anulável (migration), fora deste contrato. Teste: `test/untimed-offer-tests.js` e `test/db-tests.js`.
-3. Horário inválido (texto não interpretável) faz o mapeamento recusar a oferta e a sincronização falha inteira
-   (fecha em vez de inventar); isolar a oferta ruim também fica para issue própria.
+3. **Corrigida na #627.** Horário inválido (texto não interpretável em `source_timestamp` ou `firstSeen`) fazia o
+   mapeamento recusar a oferta e a sincronização inteira falhar. O mapeamento continua recusando (`offersRows` lança;
+   nada inventa horário), mas o sync (`src/core/sync.js`) separa antes as ofertas com horário inválido, pelo mesmo
+   critério do mapeamento. Compatível com a transação atual (a separação acontece antes de qualquer escrita de oferta;
+   sem migration nem mudança de schema):
+   - A oferta inválida não é gravada: oferta já gravada mantém a última leitura válida (preço, estoque e
+     `last_seen_at`); oferta nova não entra. Não gera evento de estoque.
+   - Continua viva: não vira `removed` (ela segue no `state.json`).
+   - As ofertas válidas do mesmo lote são gravadas normalmente; com todas inválidas, nenhuma é gravada e o
+     `max(last_seen_at)` do frescor não avança.
+   - Observável: `offersInvalidTimestamp` (contagem) e `offersInvalidTimestampIds` (até 20 ids) nas estatísticas da
+     sync (log de `tools/db-sync.mjs`).
+   - Recuperação: a próxima leitura com horário válido grava a oferta pela guarda normal.
+   Horário ausente não é inválido (segue a lacuna 2). Fora deste contrato: ponto do `history.jsonl` com `t` não
+   interpretável ainda faz `historyRows` recusar e a sincronização falhar inteira (o robô grava `t` com o horário da
+   rodada); isolá-lo fica para issue própria. Teste: `test/invalid-timestamp-offer-tests.js`.
 4. **Corrigida na #621.** `generatedAt` do `state.json` continua sendo o horário da rodada (avança mesmo quando todos
    os coletores falham) e segue identificando a rodada para ops, watchdog, backup e o "Dados novos" da UI. O frescor do
    `state.json` agora vem de `dataAt` (`lastReadAt` em `src/run.js`): o maior `source_timestamp` das ofertas publicadas,
