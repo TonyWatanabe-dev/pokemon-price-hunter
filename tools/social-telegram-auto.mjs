@@ -47,7 +47,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     const feitos = [];
     let falhou = false;
     for (const [i, c] of plano.enviar.entries()) {
-      const card = o.cardDir && c.foto ? await gerarCard(c.foto, path.join(o.cardDir, `card-${i}.jpg`), fetchFn) : null;
+      const card = o.cardDir ? await gerarCard(c.foto, path.join(o.cardDir, `card-${i}.jpg`), fetchFn, undefined, c.oferta?.productId) : null;
       const aprovado = validarFila(aprovar(c.fila, c.item.id, { now: now() }).fila).itens.find((x) => x.id === c.item.id);
       const r = await publicarFoto(aprovado, { env, token, chatId, foto: c.foto, arquivo: card, parseMode: c.parseMode, fetch: fetchFn, simular: false });
       if (!r.ok) { io.error(`- ${c.item.ofertaId}: ${r.status} ${mascarar(r.motivo)}`); falhou = true; break; }

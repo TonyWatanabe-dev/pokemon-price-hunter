@@ -65,13 +65,26 @@ export function escolher(state, { oferta, now, env = {}, afiliados = {} } = {}) 
   return c;
 }
 
-/** Baixa a foto e gera o card. Devolve o JPEG (Uint8Array) ou null (usa a foto original). Nunca lança. */
-export async function gerarCard(foto, saida, fetchFn, run = spawnSync) {
+export const ACERVO = fileURLToPath(new URL('../assets/social/produtos/', import.meta.url));
+const SLUG_ID = /^[a-z0-9][a-z0-9-]*$/;
+/** Foto revisada do acervo (assets/social/produtos/<productId>.webp), se existir. */
+export function fotoAcervo(productId, dir = ACERVO) {
+  if (typeof productId !== 'string' || !SLUG_ID.test(productId)) return null;
+  const f = path.join(dir, `${productId}.webp`);
+  return fs.existsSync(f) ? f : null;
+}
+
+/** Gera o card. Usa a foto do acervo quando houver; senão baixa a foto da loja. Devolve o JPEG (Uint8Array) ou
+ *  null (usa a foto original). Nunca lança. */
+export async function gerarCard(foto, saida, fetchFn, run = spawnSync, productId = null, dir = ACERVO) {
   try {
-    const r = await fetchFn(foto, { signal: AbortSignal.timeout(15000) });
-    if (!r.ok) return null;
-    const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'card-')), 'foto');
-    fs.writeFileSync(tmp, Buffer.from(await r.arrayBuffer()));
+    let tmp = fotoAcervo(productId, dir);
+    if (!tmp) {
+      const r = await fetchFn(foto, { signal: AbortSignal.timeout(15000) });
+      if (!r.ok) return null;
+      tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'card-')), 'foto');
+      fs.writeFileSync(tmp, Buffer.from(await r.arrayBuffer()));
+    }
     const script = fileURLToPath(new URL('./social-card.py', import.meta.url));
     const x = run('python3', [script, '--foto', tmp, '--saida', saida], { encoding: 'utf8', timeout: 60000 });
     return x.status === 0 && fs.existsSync(saida) ? new Uint8Array(fs.readFileSync(saida)) : null;
@@ -96,7 +109,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       const state = JSON.parse(fs.readFileSync(o.state || STATE_PADRAO, 'utf8'));
       let afiliados = {}; try { afiliados = loadAffiliates(); } catch { /* sem config: links originais */ }
       const { item, fila, foto, parseMode, afiliado } = escolher(state, { oferta: o.oferta, env, afiliados });
-      const card = o.card && foto ? await gerarCard(foto, o.card, fetchFn) : null;
+      const card = o.card ? await gerarCard(foto, o.card, fetchFn, spawnSync, item.produtoId ?? state.offers.find((x) => x.id === item.ofertaId)?.productId) : null;
       io.log(`## Prévia Telegram (piloto #690)\n\nOferta: \`${item.ofertaId}\` · chave \`${item.chaveDedupe}\` · link ${afiliado ? 'de afiliado' : 'da loja'}\nFoto: ${foto ?? '(sem foto: não pode ser enviada)'}${o.card ? `\nCard: ${card ? o.card : 'não gerado (usa a foto original)'}` : ''}\n\n\`\`\`\n${item.texto}\n\`\`\``);
       if (o.modo === 'previa') return 0;
       if (o.confirmar !== CONFIRMACAO) { io.error(`envio recusado: --confirmar ${CONFIRMACAO} ausente`); return 2; }

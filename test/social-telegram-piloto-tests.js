@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { main, lerArgs, escolher, gerarCard, linkDe } from '../tools/social-telegram-piloto.mjs';
+import { main, lerArgs, escolher, gerarCard, linkDe, fotoAcervo } from '../tools/social-telegram-piloto.mjs';
 import { montarLegenda, precoAnterior } from '../src/agents/social/legenda.js';
 import { spawnSync } from 'node:child_process';
 import { publicarFoto, MOTIVOS } from '../src/agents/social/telegram.js';
@@ -125,6 +125,19 @@ await t('10. card: arquivo vai em multipart com parse_mode HTML; falha do card c
   assert.equal(await gerarCard('https://x.test/f.jpg', path.join(tmp, 'c.jpg'), img, () => ({ status: 3 })), null, 'foto sem fundo branco: original');
 });
 
+await t('10b. acervo: foto revisada do produto tem prioridade e dispensa download', async () => {
+  const dir = fs.mkdtempSync(path.join(tmp, 'acervo-')); fs.writeFileSync(path.join(dir, 'me05-etb.webp'), 'x');
+  assert.equal(fotoAcervo('me05-etb', dir), path.join(dir, 'me05-etb.webp'));
+  assert.equal(fotoAcervo('../etc/passwd', dir), null); assert.equal(fotoAcervo('me05-box36', dir), null);
+  let baixou = false; let arg = null;
+  const f = async () => { baixou = true; return { ok: false }; };
+  const out = path.join(tmp, 'acv.jpg'); fs.writeFileSync(out, 'jpg');
+  const r = await gerarCard('https://x.test/f.jpg', out, f, (cmd, a) => { arg = a; return { status: 0 }; }, 'me05-etb', dir);
+  assert.ok(r instanceof Uint8Array); assert.equal(baixou, false); assert.equal(arg[arg.indexOf('--foto') + 1], path.join(dir, 'me05-etb.webp'));
+  await gerarCard('https://x.test/f.jpg', out, f, () => ({ status: 0 }), 'me05-box36', dir);
+  assert.equal(baixou, true, 'sem acervo: baixa a foto da loja');
+});
+
 const temPillow = spawnSync('python3', ['-c', 'import PIL'], { encoding: 'utf8' }).status === 0;
 if (temPillow) await t('11. social-card.py: recorta foto de fundo branco e gera JPEG 1080; foto sem fundo branco devolve 3', () => {
   const py = (code) => spawnSync('python3', ['-c', code], { encoding: 'utf8' });
@@ -140,6 +153,10 @@ from PIL import Image,ImageDraw;m=Image.new('L',(800,800),0);d=ImageDraw.Draw(m)
 o=c.so_produto(m);assert o.getpixel((100,100))==0,'logo solto removido';assert o.getpixel((500,500))==255,'produto mantido'
 d.rectangle((5,250,240,740),fill=255);assert c.so_produto(m).getpixel((100,500))==255,'kit: segundo item grande fica'`);
   assert.equal(r.status, 0, r.stderr);
+  const rgba = path.join(tmp, 'acervo.png'); const outa = path.join(tmp, 'card-a.jpg');
+  assert.equal(py(`from PIL import Image,ImageDraw;i=Image.new('RGBA',(300,500),(0,0,0,0));ImageDraw.Draw(i).rectangle((20,20,280,480),fill=(250,250,250,255));i.save('${rgba}')`).status, 0);
+  assert.equal(spawnSync('python3', [card, '--foto', rgba, '--saida', outa]).status, 0, 'foto do acervo (transparente, até branca) vira card sem recorte');
+  assert.equal(py(`from PIL import Image;i=Image.open('${outa}').convert('RGB');assert min(i.getpixel((540,600)))>230,'produto branco preservado'`).status, 0);
 });
 else console.log('(social-card.py não testado: Pillow ausente neste ambiente)');
 
