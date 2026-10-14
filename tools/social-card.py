@@ -84,7 +84,11 @@ def so_produto(alfa, fracao=0.5):
 
 def gerar(foto_path, saida, fundo_path=FUNDO_PADRAO):
     fundo = Image.open(fundo_path).convert('RGB').resize((LADO, LADO), Image.LANCZOS)
-    foto = Image.open(foto_path).convert('RGB')
+    bruta = Image.open(foto_path)
+    if bruta.mode == 'RGBA' and bruta.getchannel('A').getextrema()[0] < 250:
+        prod = bruta.crop(bruta.getchannel('A').getbbox())       # foto do acervo, já recortada e revisada
+        return compor(fundo, prod, saida)
+    foto = bruta.convert('RGB')
     alfa = mascara(foto)
     w, h = foto.size
     removido = 1 - sum(alfa.histogram()[128:]) / (w * h)
@@ -99,6 +103,10 @@ def gerar(foto_path, saida, fundo_path=FUNDO_PADRAO):
         return 3
     prod = foto.crop(caixa)
     prod.putalpha(alfa.crop(caixa))
+    return compor(fundo, prod, saida)
+
+
+def compor(fundo, prod, saida):
     escala = min(LADO * ALTURA / prod.height, LADO * LARGURA_MAX / prod.width)
     prod = prod.resize((max(1, round(prod.width * escala)), max(1, round(prod.height * escala))), Image.LANCZOS)
     cx = LADO // 2

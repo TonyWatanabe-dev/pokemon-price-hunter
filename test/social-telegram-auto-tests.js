@@ -102,4 +102,12 @@ await t('8. workflow: kill switch por variável, só leitura, sem interpolação
   for (const run of y.split('run: |').slice(1)) assert.doesNotMatch(run.split(/\n {6}- /)[0], /\$\{\{/);
 });
 
+await t('9. workflow do acervo: só manual, só leitura, rembg e Pillow fixados', () => {
+  const y = fs.readFileSync(path.join(root, '.github/workflows/social-acervo.yml'), 'utf8').split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
+  assert.match(y, /^on:\n {2}workflow_dispatch:/m); assert.doesNotMatch(y, /schedule:|push:|pull_request|workflow_run/);
+  assert.match(y, /^permissions:\n {2}contents: read$/m); assert.doesNotMatch(y, /: write|secrets\./);
+  assert.match(y, /rembg\[cpu\]==\d/); assert.match(y, /pillow==\d/);
+  for (const run of y.split('run: |').slice(1)) assert.doesNotMatch(run.split(/\n {6}- /)[0], /\$\{\{/);
+});
+
 console.log(`✓ Telegram automático (#690): ${n} grupos passaram`);
