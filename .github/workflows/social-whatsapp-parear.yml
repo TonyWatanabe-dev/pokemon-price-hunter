@@ -1,0 +1,48 @@
+name: Social WhatsApp parear
+
+# Liga o número do bot ao WhatsApp (#690). Automação NÃO oficial (Baileys), por decisão do proprietário em 14/10/2026.
+# Rodar à mão: o resumo mostra um código de 8 caracteres. No celular do número do bot: WhatsApp → Aparelhos conectados
+# → Conectar aparelho → "Conectar com número de telefone" → digitar o código. A sessão é salva CIFRADA no cache do
+# Actions (chave no secret SOCIAL_WHATSAPP_CHAVE). Só leitura no repositório.
+
+on:
+  workflow_dispatch:
+    inputs:
+      numero:
+        description: 'Número do bot com DDI e DDD, só dígitos (ex.: 5511900000000)'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-whatsapp
+  cancel-in-progress: false
+
+jobs:
+  parear:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Baileys (só neste job, sem alterar package.json)
+        run: npm install --no-save --no-audit --no-fund '@whiskeysockets/baileys@7.0.0-rc14'
+      - name: Parear
+        env:
+          NUMERO: ${{ inputs.numero }}
+          SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
+        run: |
+          mkdir -p social
+          node tools/social-whatsapp.mjs parear --sessao social/wa-sessao.bin --numero "$NUMERO" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit "${PIPESTATUS[0]}"
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: success() && hashFiles('social/wa-sessao.bin') != ''
+        with:
+          path: social/wa-sessao.bin
+          key: social-whatsapp-sessao-${{ github.run_id }}-${{ github.run_attempt }}
