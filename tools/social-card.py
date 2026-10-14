@@ -11,7 +11,7 @@ import argparse
 import os
 import sys
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 LADO = 1080
 ALTURA = 0.76        # altura do produto em fração do card
@@ -82,6 +82,21 @@ def so_produto(alfa, fracao=0.5):
     return Image.composite(alfa, Image.new('L', (w, h), 0), sel)
 
 
+_sessao = None
+
+
+def mascara_ia(foto):
+    """Máscara binária do produto pela IA (rembg, isnet-general-use), ou None se o rembg não estiver instalado."""
+    global _sessao
+    try:
+        from rembg import new_session, remove
+    except ImportError:
+        return None
+    if _sessao is None:
+        _sessao = new_session('isnet-general-use')
+    return remove(foto, session=_sessao).getchannel('A').point(lambda v: 255 if v > 128 else 0)
+
+
 def gerar(foto_path, saida, fundo_path=FUNDO_PADRAO):
     fundo = Image.open(fundo_path).convert('RGB').resize((LADO, LADO), Image.LANCZOS)
     bruta = Image.open(foto_path)
@@ -94,6 +109,10 @@ def gerar(foto_path, saida, fundo_path=FUNDO_PADRAO):
     removido = 1 - sum(alfa.histogram()[128:]) / (w * h)
     if removido < 0.08:
         return 3                         # foto ambientada/sem fundo branco: não recorta, quem chama usa a original
+    ia = mascara_ia(foto)
+    if ia is not None:
+        # Híbrido: a IA devolve as partes claras da embalagem que o fundo branco "comeu" (caixa rasgada).
+        alfa = ImageChops.lighter(alfa, ia)
     corte = sem_rodape(alfa)
     alfa = alfa.crop((0, 0, w, corte)).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(1))
     foto = foto.crop((0, 0, w, corte))
