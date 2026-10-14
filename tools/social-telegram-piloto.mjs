@@ -86,7 +86,7 @@ export async function gerarCard(foto, saida, fetchFn, run = spawnSync, productId
       fs.writeFileSync(tmp, Buffer.from(await r.arrayBuffer()));
     }
     const script = fileURLToPath(new URL('./social-card.py', import.meta.url));
-    const x = run('python3', [script, '--foto', tmp, '--saida', saida], { encoding: 'utf8', timeout: 60000 });
+    const x = run(process.env.SOCIAL_PYTHON || 'python3', [script, '--foto', tmp, '--saida', saida], { encoding: 'utf8', timeout: 180000 });
     return x.status === 0 && fs.existsSync(saida) ? new Uint8Array(fs.readFileSync(saida)) : null;
   } catch { return null; }
 }

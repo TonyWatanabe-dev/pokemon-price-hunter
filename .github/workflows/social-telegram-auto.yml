@@ -40,8 +40,18 @@ jobs:
           ref: data
           path: dados
           persist-credentials: false
-      - name: Pillow para o card (tools/social-card.py)
-        run: python3 -m pip install --quiet --disable-pip-version-check 'pillow==12.0.0'
+      - name: Cache do modelo de recorte (rembg)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.u2net
+          key: rembg-isnet-general-use-v1
+      - name: Pillow + rembg para o card (tools/social-card.py)
+        run: |
+          set -o pipefail
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check --progress-bar off 'pillow==12.3.0' 'rembg[cpu]==2.0.80' 2>&1 | tail -n 5
+          echo "SOCIAL_PYTHON=$RUNNER_TEMP/venv/bin/python" >> "$GITHUB_ENV"
+          echo "U2NET_HOME=$HOME/.u2net" >> "$GITHUB_ENV"
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: social/diario.json
