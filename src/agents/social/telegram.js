@@ -25,6 +25,8 @@ export const MOTIVOS = Object.freeze({
   SEM_CHAT: 'chat ausente ou inválido',
   SEM_FETCH: 'envio real exige fetch injetado',
   API_INVALIDA: 'apiBase inválida',
+  SEM_FOTO: 'foto ausente ou não é URL https',
+  LEGENDA_LONGA: 'legenda acima de 1024 caracteres',
 });
 
 const TOKEN = /^\d{1,20}:[\w-]{20,100}$/;
@@ -88,6 +90,45 @@ export async function publicar(item, opts = {}) {
     const r = await o.fetch(p.url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(p.body), signal: AbortSignal.timeout(ms) });
     let dado = null;
     try { dado = await r.json(); } catch { /* corpo não-JSON: decide pelo status */ }
+    if (!r.ok || dado?.ok !== true) {
+      const desc = dado && typeof dado.description === 'string' ? `: ${dado.description}` : '';
+      return { ok: false, status: 'falhou', motivo: mascarar(`HTTP ${r.status}${desc}`, o.token), ...base };
+    }
+    const messageId = Number.isSafeInteger(dado.result?.message_id) ? dado.result.message_id : null;
+    return { ok: true, status: 'enviado', motivo: '', ...base, messageId };
+  } catch (e) {
+    return { ok: false, status: 'falhou', motivo: mascarar(e?.message || 'erro de rede', o.token), ...base };
+  }
+}
+
+// ---------------------------------------------------------------- sendPhoto (piloto #690)
+// Mesmo gate de preparar(), com foto por URL https pública (imagem original da oferta) e legenda até 1024 caracteres.
+export const LEGENDA_MAX = 1024;
+function fotoValida(u) {
+  try { const x = new URL(u); return x.protocol === 'https:' && !x.username && !x.password ? x.href : null; } catch { return null; }
+}
+function prepararFoto(item, o) {
+  const p = preparar(item, o);
+  if (p.motivo) return p;
+  if (p.item.texto.length > LEGENDA_MAX) return { motivo: MOTIVOS.LEGENDA_LONGA };
+  const foto = fotoValida(o.foto);
+  if (!foto) return { motivo: MOTIVOS.SEM_FOTO };
+  return { item: p.item, url: p.url.replace(/\/sendMessage$/, '/sendPhoto'), body: { chat_id: p.body.chat_id, photo: foto, caption: p.item.texto } };
+}
+/** Como publicar(), via sendPhoto. opts = { env, token, chatId, foto, fetch, simular = true, apiBase?, timeoutMs? }. */
+export async function publicarFoto(item, opts = {}) {
+  const o = opts && typeof opts === 'object' ? opts : {};
+  const p = prepararFoto(item, o);
+  if (p.motivo) return recusa(p.motivo, item);
+  const sim = simulado(p, o.token);
+  if (o.simular !== false) return sim;
+  if (typeof o.fetch !== 'function') return recusa(MOTIVOS.SEM_FETCH, item);
+  const ms = Number.isFinite(o.timeoutMs) && o.timeoutMs > 0 ? o.timeoutMs : TIMEOUT_PADRAO_MS;
+  const base = { itemId: sim.itemId, requisicao: sim.requisicao };
+  try {
+    const r = await o.fetch(p.url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(p.body), signal: AbortSignal.timeout(ms) });
+    let dado = null;
+    try { dado = await r.json(); } catch { /* corpo não-JSON */ }
     if (!r.ok || dado?.ok !== true) {
       const desc = dado && typeof dado.description === 'string' ? `: ${dado.description}` : '';
       return { ok: false, status: 'falhou', motivo: mascarar(`HTTP ${r.status}${desc}`, o.token), ...base };

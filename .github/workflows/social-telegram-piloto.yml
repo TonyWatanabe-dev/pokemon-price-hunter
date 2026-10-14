@@ -1,0 +1,75 @@
+name: Social Telegram piloto
+
+# Piloto controlado do Telegram (#690). Só manual. "previa" não usa rede nem secrets; "conferir" só lê o título do
+# chat; "enviar" manda UMA mensagem e só com confirmar=ENVIAR e o título exato do grupo. Sem agenda, sem push.
+
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: 'previa | conferir | enviar'
+        type: choice
+        options: [previa, conferir, enviar]
+        default: previa
+      oferta:
+        description: 'ID da oferta (vazio = primeira elegível)'
+        type: string
+        default: ''
+      titulo:
+        description: 'Título exato do grupo (obrigatório para enviar)'
+        type: string
+        default: 'TCG Price Hunter | 01'
+      confirmar:
+        description: 'Digite ENVIAR para o modo enviar'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-telegram-piloto
+  cancel-in-progress: false
+
+jobs:
+  piloto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Dados atuais (ramo data, publicado pelo robô a cada rodada)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data
+          path: dados
+          persist-credentials: false
+      - name: Prévia (sem rede, sem secrets)
+        if: inputs.modo == 'previa'
+        env:
+          OFERTA: ${{ inputs.oferta }}
+        run: |
+          set -- previa
+          [ -n "$OFERTA" ] && set -- "$@" --oferta "$OFERTA"
+          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Conferir chat / enviar
+        if: inputs.modo == 'conferir' || inputs.modo == 'enviar'
+        env:
+          MODO: ${{ inputs.modo }}
+          OFERTA: ${{ inputs.oferta }}
+          TITULO: ${{ inputs.titulo }}
+          CONFIRMAR: ${{ inputs.confirmar }}
+          SOCIAL_ENABLED: '1'
+          SOCIAL_TELEGRAM_BOT_TOKEN: ${{ secrets.SOCIAL_TELEGRAM_BOT_TOKEN }}
+          SOCIAL_TELEGRAM_CHAT_ID: ${{ secrets.SOCIAL_TELEGRAM_CHAT_ID }}
+        run: |
+          case "$MODO" in conferir|enviar) ;; *) echo "::error::modo inválido"; exit 1 ;; esac
+          set -- "$MODO" --titulo "$TITULO"
+          [ -n "$OFERTA" ] && set -- "$@" --oferta "$OFERTA"
+          [ "$MODO" = enviar ] && set -- "$@" --confirmar "$CONFIRMAR"
+          node tools/social-telegram-piloto.mjs "$@" --state dados/data/state.json | tee -a "$GITHUB_STEP_SUMMARY"
+          exit "${PIPESTATUS[0]}"
