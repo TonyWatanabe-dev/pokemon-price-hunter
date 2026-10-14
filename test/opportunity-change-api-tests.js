@@ -95,7 +95,7 @@ await t('retrocompatível: campos antigos, valores e parâmetros da consulta pri
   assert.match(db.calls[0].sql, /FROM hunter\.product_opportunity o/, 'sem loja e sem preço máximo: mesma view de antes');
   assert.match(db.calls[0].sql, /ORDER BY o\.price ASC, o\.opportunity_score DESC, o\.offer_id\s+LIMIT \$4 OFFSET \$5/, 'mesma ordenação');
   const x = r.items[0];
-  assert.deepEqual(Object.keys(x).filter((k) => k !== 'change'), OLD_KEYS, 'nenhum campo antigo some, muda de nome ou aparece fora do change');
+  assert.deepEqual(Object.keys(x).filter((k) => k !== 'change' && k !== 'criteria'), OLD_KEYS, 'nenhum campo antigo some, muda de nome ou aparece fora do change/criteria');
   assert.equal(x.price, 350); assert.equal(x.total, null, 'total com frete desconhecido continua nulo'); assert.equal(x.shipping, 'unknown');
   assert.equal(x.opportunity_score, 80); assert.equal(x.confidence, 0.8); assert.equal(x.confidence_level, 'alta');
   assert.deepEqual(x.offer, { id: 'of-p1', title: 'ETB', url: 'https://loja/p1', image: null, first_seen_at: '2026-10-01T10:00:00.000Z', price_kind: null });
