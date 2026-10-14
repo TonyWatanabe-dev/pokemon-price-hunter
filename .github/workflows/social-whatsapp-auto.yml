@@ -1,0 +1,85 @@
+name: Social WhatsApp automático
+
+# Envio automático ao grupo do WhatsApp "TCG Price Hunter | 01" (#690). Automação NÃO oficial (Baileys), por decisão
+# do proprietário em 14/10/2026 ("sim, assumo o risco"). Regras mais espaçadas que o Telegram (REGRAS_WHATSAPP):
+# 30 min entre mensagens, 1 oferta nova por rodada, teto de 20 mensagens em 24 h, madrugada só novidades.
+# KILL SWITCH: variável do repositório SOCIAL_WHATSAPP_AUTO = 1. Sessão cifrada e diário ficam no cache do Actions.
+on:
+  workflow_run:
+    workflows: ['Price Hunter']
+    types: [completed]
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-whatsapp
+  cancel-in-progress: false
+
+jobs:
+  auto:
+    if: vars.SOCIAL_WHATSAPP_AUTO == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Dados atuais (ramo data, publicado pelo robô a cada rodada)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data
+          path: dados
+          persist-credentials: false
+      - name: Cache do modelo de recorte (rembg)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.u2net
+          key: rembg-isnet-general-use-v1
+      - name: Pillow + rembg para o card (tools/social-card.py)
+        run: |
+          set -o pipefail
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check --progress-bar off 'pillow==12.3.0' 'rembg[cpu]==2.0.80' 2>&1 | tail -n 5
+          echo "SOCIAL_PYTHON=$RUNNER_TEMP/venv/bin/python" >> "$GITHUB_ENV"
+          echo "U2NET_HOME=$HOME/.u2net" >> "$GITHUB_ENV"
+      - name: Baileys (só neste job, sem alterar package.json)
+        run: npm install --no-save --no-audit --no-fund '@whiskeysockets/baileys@7.0.0-rc14'
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: social/wa-diario.json
+          key: social-whatsapp-diario-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: social-whatsapp-diario-
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: social/wa-sessao.bin
+          key: social-whatsapp-sessao-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: social-whatsapp-sessao-
+      - name: Rodada de envio
+        env:
+          SOCIAL_ENABLED: '1'
+          SOCIAL_WHATSAPP_AUTO: ${{ vars.SOCIAL_WHATSAPP_AUTO }}
+          TITULO: ${{ vars.SOCIAL_WHATSAPP_GRUPO || 'TCG Price Hunter | 01' }}
+          SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
+        run: |
+          mkdir -p social
+          node tools/social-whatsapp.mjs enviar --sessao social/wa-sessao.bin --state dados/data/state.json --diario social/wa-diario.json --titulo "$TITULO" --card-dir "$RUNNER_TEMP" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit "${PIPESTATUS[0]}"
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && hashFiles('social/wa-diario.json') != ''
+        continue-on-error: true
+        with:
+          path: social/wa-diario.json
+          key: social-whatsapp-diario-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && hashFiles('social/wa-sessao.bin') != ''
+        continue-on-error: true
+        with:
+          path: social/wa-sessao.bin
+          key: social-whatsapp-sessao-${{ github.run_id }}-${{ github.run_attempt }}

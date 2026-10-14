@@ -22,11 +22,15 @@ export function planejar(candidatos, diario, { now = Date.now(), regras = REGRAS
   const nova = (c) => { const f = ms(c.oferta?.firstSeen); return f != null && now - f <= regras.novaMin * 60e3 && !ultimoPorOferta.has(c.item.ofertaId); };
   const vistos = new Set();
   const unicos = candidatos.filter((c) => !vistos.has(c.item.ofertaId) && vistos.add(c.item.ofertaId));
+  if (regras.maxDia) {   // teto de mensagens em 24 h (WhatsApp); vale também para ofertas novas
+    const hoje = (Array.isArray(diario) ? diario : []).filter((d) => { const t = ms(d?.at); return t != null && now - t < 24 * 3600e3; }).length;
+    if (hoje >= regras.maxDia) return { enviar: [], motivo: `teto de ${regras.maxDia} mensagens em 24 h` };
+  }
   const novas = unicos.filter(nova).slice(0, regras.novasPorRodada);
   if (novas.length) return { enviar: novas, motivo: 'oferta nova no radar' };
   const hora = Number(new Date(now).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour: 'numeric', hourCycle: 'h23' }));
   if (regras.silencio && hora >= regras.silencio[0] && hora < regras.silencio[1]) return { enviar: [], motivo: 'madrugada: só ofertas novas' };
-  if (ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: 'intervalo de 5 min ainda não passou' };
+  if (ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: `intervalo de ${regras.intervaloMin} min ainda não passou` };
   const prox = unicos.find(livre);
   return prox ? { enviar: [prox], motivo: prox.afiliado ? 'próxima com link de afiliado' : 'próxima da fila' } : { enviar: [], motivo: 'todas já postadas nas últimas 24 h' };
 }
@@ -36,3 +40,6 @@ export function registrar(diario, envios, { now = Date.now(), regras = REGRAS } 
   const corte = now - 2 * regras.repetirHoras * 3600e3;
   return [...(Array.isArray(diario) ? diario : []), ...envios].filter((d) => (ms(d?.at) ?? 0) >= corte).slice(-regras.diarioMax);
 }
+
+// WhatsApp (decisão do proprietário em 14/10/2026, automação não oficial): mais espaçado para reduzir risco de bloqueio.
+export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 30, novasPorRodada: 1, maxDia: 20 });
