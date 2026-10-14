@@ -2,9 +2,10 @@
 //   1. Intervalo mínimo de 5 min entre mensagens, para não floodar o grupo.
 //   2. Exceção: oferta que acabou de entrar no radar (firstSeen recente) e nunca foi postada sai na hora.
 //   3. A mesma oferta no máximo 1× a cada 24 h.
+//   5. Madrugada (0h–7h, horário de Brasília): só ofertas novas; as repostagens ficam para o dia.
 //   4. Entre as demais, links de afiliado do proprietário primeiro (ordem já vem de candidatos()).
 // Diário = lista { ofertaId, at (ISO), messageId } dos envios feitos; só entra o que a Bot API confirmou.
-export const REGRAS = Object.freeze({ intervaloMin: 5, repetirHoras: 24, novaMin: 60, novasPorRodada: 3, diarioMax: 2000 });
+export const REGRAS = Object.freeze({ intervaloMin: 5, repetirHoras: 24, novaMin: 60, novasPorRodada: 3, diarioMax: 2000, silencio: [0, 7] });
 
 const ms = (iso) => { const t = Date.parse(iso); return Number.isFinite(t) ? t : null; };
 
@@ -23,6 +24,8 @@ export function planejar(candidatos, diario, { now = Date.now(), regras = REGRAS
   const unicos = candidatos.filter((c) => !vistos.has(c.item.ofertaId) && vistos.add(c.item.ofertaId));
   const novas = unicos.filter(nova).slice(0, regras.novasPorRodada);
   if (novas.length) return { enviar: novas, motivo: 'oferta nova no radar' };
+  const hora = Number(new Date(now).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour: 'numeric', hourCycle: 'h23' }));
+  if (regras.silencio && hora >= regras.silencio[0] && hora < regras.silencio[1]) return { enviar: [], motivo: 'madrugada: só ofertas novas' };
   if (ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: 'intervalo de 5 min ainda não passou' };
   const prox = unicos.find(livre);
   return prox ? { enviar: [prox], motivo: prox.afiliado ? 'próxima com link de afiliado' : 'próxima da fila' } : { enviar: [], motivo: 'todas já postadas nas últimas 24 h' };

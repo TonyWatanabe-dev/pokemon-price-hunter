@@ -10,7 +10,7 @@ import { main } from '../tools/social-telegram-auto.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TOKEN = '123456:ABCDEFGHIJKLMNOPQRSTUVWXYZabcd';
 const ENV = { SOCIAL_ENABLED: '1', SOCIAL_AUTO: '1', SOCIAL_TELEGRAM_BOT_TOKEN: TOKEN, SOCIAL_TELEGRAM_CHAT_ID: '-100123' };
-const NOW = Date.now(); const iso = (minAtras) => new Date(NOW - minAtras * 60e3).toISOString();
+const NOW = Date.parse('2026-10-14T15:00:00Z'); const iso = (minAtras) => new Date(NOW - minAtras * 60e3).toISOString();   // 12h em Brasília
 let n = 0;
 const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
 const c = (id, { firstSeen = iso(5000), afiliado = false } = {}) => ({ item: { ofertaId: id }, oferta: { firstSeen }, afiliado });
@@ -38,6 +38,18 @@ await t('4. diário: limpa entradas antigas e ignora lixo', () => {
   const d = registrar([{ ofertaId: 'v', at: iso(49 * 60) }, { ofertaId: 'r', at: iso(10) }, null], [{ ofertaId: 'z', at: iso(0) }], { now: NOW });
   assert.deepEqual(d.map((x) => x.ofertaId), ['r', 'z']);
   assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.repetirHoras, 24);
+});
+
+await t('4b. madrugada (0h–7h BRT): só oferta nova sai', () => {
+  const tres = Date.parse('2026-10-14T06:00:00Z');   // 3h em Brasília
+  assert.deepEqual(planejar([c('a')], [], { now: tres }).enviar, []);
+  assert.equal(planejar([c('n', { firstSeen: new Date(tres - 10 * 60e3).toISOString() })], [], { now: tres }).enviar.length, 1);
+});
+
+await t('4c. workflow dispara logo depois de cada rodada bem-sucedida do robô', () => {
+  const y = fs.readFileSync(path.join(root, '.github/workflows/social-telegram-auto.yml'), 'utf8');
+  assert.match(y, /workflow_run:\n {4}workflows: \['Price Hunter'\]\n {4}types: \[completed\]/);
+  assert.match(y, /github\.event\.workflow_run\.conclusion == 'success'/);
 });
 
 // ---------------------------------------------------------------- ferramenta
