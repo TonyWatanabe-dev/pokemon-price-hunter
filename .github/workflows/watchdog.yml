@@ -1,7 +1,7 @@
 name: Vigia do robô
 # Vigia por estado (tools/watchdog.mjs + src/ops-watch.js): avisa no Telegram/ntfy quando o robô para, o banco
-# deixa de sincronizar ou o leitor da nota oficial falha, e avisa de novo quando volta ao normal. Sem aviso repetido:
-# o que já foi avisado fica num "livro" guardado no cache do Actions.
+# deixa de sincronizar, o leitor da nota oficial falha ou o deploy de produção falha/fica preso, e avisa de novo
+# quando volta ao normal. Sem aviso repetido: o que já foi avisado fica num "livro" guardado no cache do Actions.
 # Disparo principal: cron-job.org a cada 15 min (workflow_dispatch; ver docs/vigia.md). O agendamento abaixo é só
 # reserva: o agendador do GitHub atrasa e pula execuções neste repositório.
 on:
@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read
   actions: read
+  deployments: read
 concurrency:
   group: watchdog
   cancel-in-progress: false
@@ -41,6 +42,19 @@ jobs:
         run: |
           gh run list -R "${{ github.repository }}" --workflow hunter.yml --limit 10 \
             --json databaseId,status,conclusion,createdAt,updatedAt,event > wd/runs.json || echo '[]' > wd/runs.json
+      # Último deploy de produção (integração Vercel → API de deployments do GitHub), só leitura. Falha na leitura
+      # não derruba o Vigia: sem o arquivo, o deploy simplesmente não é verificado.
+      - name: Último deploy de produção
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          id=$(gh api "repos/${{ github.repository }}/deployments?environment=Production&per_page=1" --jq '.[0].id // empty') || id=''
+          if [ -n "$id" ]; then
+            gh api "repos/${{ github.repository }}/deployments/$id" --jq '{sha, created_at, environment}' > wd/deploy-d.json \
+              && gh api "repos/${{ github.repository }}/deployments/$id/statuses?per_page=10" --jq '[.[] | {state, created_at}]' > wd/deploy-s.json \
+              && jq -n --slurpfile d wd/deploy-d.json --slurpfile s wd/deploy-s.json '{deployment: $d[0], "statuses": $s[0]}' > wd/deploy.json \
+              || rm -f wd/deploy.json
+          fi
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: wd/ledger.json
@@ -54,7 +68,7 @@ jobs:
           TESTE: ${{ inputs.teste }}
         run: |
           if [ "$TESTE" = "true" ]; then node tools/watchdog.mjs --test; exit 0; fi
-          node tools/watchdog.mjs --state wd/state.json --meta wd/meta.json --runs wd/runs.json --ledger wd/ledger.json
+          node tools/watchdog.mjs --state wd/state.json --meta wd/meta.json --runs wd/runs.json --ledger wd/ledger.json --deploy wd/deploy.json
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         if: always() && hashFiles('wd/ledger.json') != ''
         continue-on-error: true
