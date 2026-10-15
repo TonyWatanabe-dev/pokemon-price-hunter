@@ -2155,7 +2155,7 @@ function renderLegal(kind){
   <h3>Contato</h3><p>${contato}</p>`,
   privacidade:`<h2>Política de privacidade</h2><p>Última atualização: 7 de outubro de 2026. Esta política segue a Lei Geral de Proteção de Dados (Lei 13.709/2018).</p>
   <h3>Resumo</h3><p>Você pode usar o site sem conta. Se criar uma, guardamos só o necessário para ela funcionar: nome, e-mail, favoritos e alertas de preço. Não vendemos nem compartilhamos esses dados para publicidade, e não temos anúncios. A medição de visitas é anônima e sem cookies.</p>
-  <h3>Se você criar uma conta</h3><ul><li><b>O que guardamos</b>: e-mail, nome ou apelido (opcional), foto do perfil quando você entra com Google, a data em que aceitou estes termos, os produtos favoritados e os preços-alvo dos seus alertas.</li><li><b>Para quê</b>: fazer o login funcionar, mostrar seus favoritos e marcar quando um alerta chega no preço. Base legal: execução do serviço que você pediu (art. 7º, V, da LGPD).</li><li><b>Onde</b>: no Firebase, do Google, que faz o login e guarda os dados como operador. O banco de dados fica em São Paulo. O login pode tratar dados em servidores do Google fora do Brasil, com as garantias contratuais do Google.</li><li><b>Senha</b>: quem guarda é o Firebase, de forma protegida. Nós não temos acesso a ela. Com Google, a senha fica com o Google.</li><li><b>Por quanto tempo</b>: enquanto a conta existir. Ao excluir a conta em Minha conta, a conta, os favoritos e os alertas são apagados na hora, sem volta.</li><li><b>E-mails</b>: só os necessários para a conta (confirmação de e-mail e troca de senha). Nada de marketing sem você pedir.</li></ul>
+  <h3>Se você criar uma conta</h3><ul><li><b>O que guardamos</b>: e-mail, nome ou apelido (opcional), foto do perfil quando você entra com Google, a data em que aceitou estes termos, os produtos favoritados e os preços-alvo dos seus alertas. Se você ligar os alertas no Telegram, também o número da conversa com o nosso bot e o registro dos avisos enviados (para não repetir), apagados quando você desliga ou exclui a conta.</li><li><b>Para quê</b>: fazer o login funcionar, mostrar seus favoritos e marcar quando um alerta chega no preço. Base legal: execução do serviço que você pediu (art. 7º, V, da LGPD).</li><li><b>Onde</b>: no Firebase, do Google, que faz o login e guarda os dados como operador. O banco de dados fica em São Paulo. O login pode tratar dados em servidores do Google fora do Brasil, com as garantias contratuais do Google.</li><li><b>Senha</b>: quem guarda é o Firebase, de forma protegida. Nós não temos acesso a ela. Com Google, a senha fica com o Google.</li><li><b>Por quanto tempo</b>: enquanto a conta existir. Ao excluir a conta em Minha conta, a conta, os favoritos e os alertas são apagados na hora, sem volta.</li><li><b>E-mails</b>: só os necessários para a conta (confirmação de e-mail e troca de senha). Nada de marketing sem você pedir.</li></ul>
   <h3>O que fica no seu aparelho</h3><p>Suas preferências (filtros, tema claro ou escuro) ficam salvas só no seu navegador, no armazenamento local. Se você entrar na conta, o navegador também guarda a sessão para você não precisar entrar de novo. Nada disso é usado para rastrear você, e você pode apagar limpando os dados do site no navegador. Não usamos cookies de rastreamento.</p>
   <h3>Serviços de terceiros que você acessa ao usar o site</h3><ul><li><b>Firebase (Google)</b>: login e dados da conta, só se você criar uma. Ao entrar com Google, vale também a política do Google.</li><li><b>Vercel</b> hospeda o site e, como qualquer servidor, registra dados técnicos de acesso (como endereço IP e navegador) para segurança e funcionamento, conforme a política dela.</li><li><b>Contagem de visitas (Vercel Web Analytics)</b>: estatística anônima e agregada (páginas vistas, país, tipo de aparelho e navegador), sem cookies e sem identificar quem visita. Serve só para saber se o site está sendo útil.</li><li><b>GitHub</b> fornece o arquivo de preços que o site carrega, com registros técnicos semelhantes.</li><li><b>Imagens dos produtos</b> são carregadas direto das lojas, sem enviar a página de origem.</li><li><b>Lojas</b>: ao clicar em "Ver na loja" você passa a seguir a política daquela loja.</li><li><b>Canal no Telegram</b>: se você entrar, vale a política do Telegram. Não temos acesso aos seus dados de lá além do que o Telegram mostra a administradores de canal.</li></ul>
   <h3>Seus direitos</h3><p>Pela LGPD você pode pedir confirmação, acesso, correção, portabilidade e exclusão dos seus dados. A exclusão você faz sozinho em Minha conta. Para o resto, escreva para o contato abaixo e respondemos em até 15 dias.</p>
@@ -2641,6 +2641,7 @@ async function accAction(a,btn){
     if(view!=="alertas")return;render();
     const rs=[...document.querySelectorAll("#view .prow")];(rs[i]||rs[i-1]||document.querySelector("#view .empty-in .btn")||document.querySelector("#view h2"))?.focus?.();
     return}
+  if(a.startsWith("tg-")){await tgAction(a,btn);return}
   if(a==="del-no"){render();return}
   if(!m)return;
   setBusy(btn,true,a==="out"?"Saindo…":a==="resend"?"Enviando…":a==="reload"?"Verificando…":"Entrando…");
@@ -2765,20 +2766,61 @@ function renderFavs(){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Favoritos</h2><p>${ids.length?`${ids.length} ${ids.length>1?"produtos":"produto"}. Toque para ver as lojas ou criar um alerta.`:"Nada salvo ainda."}</p>
   ${ids.length?`<div class="plist">${ids.map((id)=>`<div class="fav-row">${prodRow(id)}<button class="fav-x" type="button" data-unfav="${esc(id)}" aria-label="Remover dos favoritos: ${esc(P[id].collectionName)} · ${esc(label(P[id]))}"${ACC.favBusy?" disabled":""}>${ic("heart-f")}</button></div>`).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e toque em <b>Favoritar</b> para acompanhar o menor preço aqui.</p><button class="btn ghost" type="button" data-go="oportunidades">Ver oportunidades</button></div>`}</section></div>`;
 }
+/* Alertas no Telegram (docs/alertas-telegram-usuario.md). O botão só aparece quando o robô publica o nome do bot
+   (S.telegramUsuario.bot, recurso ligado). Vínculo de uso único: guardamos no documento só o hash do segredo e a hora;
+   o segredo vai no link t.me/<bot>?start=<uid>_<segredo> e o /start no bot liga o chat à conta (consentimento explícito).
+   Estados: desligado, aguardando confirmação (pedido com menos de 30 min) e ligado (telegram.chatId, gravado só pelo robô). */
+const TG_TTL=30*60e3;
+const tgBot=()=>{const b=S?.telegramUsuario?.bot;return typeof b==="string"&&/^[A-Za-z0-9_]{5,32}$/.test(b)?b:""};
+const tgKey=()=>"ph:tg:"+(ACC.user?.uid||"");
+const tgSecret=(v)=>{try{if(v===undefined)return sessionStorage.getItem(tgKey())||"";if(v)sessionStorage.setItem(tgKey(),v);else sessionStorage.removeItem(tgKey())}catch{}return""};
+const tgOn=()=>Number(ACC.data?.telegram?.chatId)>0;
+const tgWait=()=>{const p=ACC.data?.telegramPedido;return!tgOn()&&!!p&&Date.now()-Number(p.criadoEm)<TG_TTL};
+const tgLink=()=>{const s=tgSecret(),b=tgBot(),u=ACC.user?.uid||"";return s&&b&&/^[A-Za-z0-9]{1,31}$/.test(u)?`https://t.me/${b}?start=${u}_${s}`:""};
+async function sha256hex(t){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(d)].map((x)=>x.toString(16).padStart(2,"0")).join("")}
+function tgBox(){
+  const bot=tgBot();if(!bot&&!tgOn())return"";
+  let st,body;
+  if(tgOn()){st=`<span class="chip ok">${ic("check-circle")}Ligado</span>`;
+    body=`<p>Os alertas de preço desta conta chegam no seu Telegram${bot?`, pelo <b>@${esc(bot)}</b>`:""}. No bot, <b>/status</b> mostra o estado e <b>/parar</b> desliga.</p>
+    <div class="gate-row"><button class="btn ghost" type="button" data-a="tg-off">Desligar alertas no Telegram</button></div>`}
+  else if(tgWait()){const l=tgLink();st=`<span class="chip">${ic("clock")}Aguardando confirmação</span>`;
+    body=`<p>${l?`Abra o Telegram e toque em <b>Iniciar</b> na conversa com o bot. `:`O link de ativação foi aberto em outra aba ou aparelho. Se não concluiu, gere um novo. `}A confirmação chega aqui em até 15 minutos. O link vale 30 minutos e só uma vez.</p>
+    <div class="gate-row">${l?`<a class="btn" id="tg-open" href="${esc(safeUrl(l))}" target="_blank" rel="noopener noreferrer">${ic("arrow-square-out")}Abrir o Telegram</a>`:`<button class="btn" type="button" data-a="tg-on">Gerar novo link</button>`}<button class="btn ghost" type="button" data-a="tg-check">${ic("arrow-clockwise")}Já confirmei</button><button class="btn ghost" type="button" data-a="tg-cancel">Cancelar</button></div>`}
+  else{st=`<span class="chip">Desligado</span>`;
+    body=`<p>Receba no Telegram o aviso quando uma loja chegar no preço dos seus alertas, no máximo alguns por dia. Guardamos só o número da conversa com o bot: nada de telefone nem e-mail. Você desliga quando quiser.</p>
+    <div class="gate-row"><button class="btn" type="button" data-a="tg-on">${ic("bell")}Ativar alertas no Telegram</button></div>`}
+  return`<section class="panel" id="tgbox" aria-labelledby="tg-h"><h2 id="tg-h">Alertas no Telegram</h2><p role="status" aria-live="polite">${st}</p>${body}</section>`;
+}
+async function tgAction(a,btn){
+  if(!ACC.user||!ACC.data)return;
+  const focus=(sel)=>{render();(document.querySelector(sel)||document.querySelector("#tgbox h2"))?.focus?.()};
+  if(a==="tg-check"){setBusy(btn,true,"Verificando…");try{const d=await ACC.mod.load();if(d){ACC.data.telegram=d.telegram??null;ACC.data.telegramPedido=d.telegramPedido??null}}catch{toast("Sem conexão. Tente de novo.")}
+    setBusy(btn,false);toast(tgOn()?"Alertas no Telegram ligados":"Ainda não confirmado. Toque em Iniciar no bot e aguarde alguns minutos.");focus("#tgbox [data-a]");return}
+  if(a==="tg-on"){
+    if(!tgBot()){toast("Alertas no Telegram indisponíveis agora.");return}
+    const r=new Uint8Array(16);crypto.getRandomValues(r);const sec=[...r].map((x)=>x.toString(16).padStart(2,"0")).join("");
+    setBusy(btn,true,"Gerando link…");
+    try{await saveField("telegramPedido",{hash:await sha256hex(sec),criadoEm:Date.now()},ACC.data.telegramPedido??null);tgSecret(sec);track("telegram_link_started",{})}
+    catch{setBusy(btn,false);toast("Não consegui gerar o link. Confira se a data e a hora do aparelho estão certas e tente de novo.");return}
+    focus("#tg-open");return}
+  if(a==="tg-cancel"){try{await saveField("telegramPedido",null,ACC.data.telegramPedido??null);tgSecret(null)}catch{return}focus("#tgbox [data-a]");return}
+  if(a==="tg-off"){setBusy(btn,true,"Desligando…");try{await saveField("telegram",null,ACC.data.telegram??null);tgSecret(null);toast("Alertas no Telegram desligados")}catch{setBusy(btn,false);return}focus("#tgbox [data-a]");return}
+}
 function renderAlerts(){
   if(!ACC.user){$("#view").innerHTML=privateGate("Alertas de preço","Diga quanto quer pagar e o site marca quando alguma loja chegar nesse preço.");return}
   if(ACC.loadFailed){$("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>Não consegui carregar seus alertas. Confira a conexão e recarregue a página.</p></section></div>`;return}
   const rows=alertsL().filter((a)=>P[a.p]).map((a)=>({a,o:bestLive(a.p)})).map((r)=>({...r,hit:r.o&&r.o.total<=r.a.v})).sort((x,y)=>(y.hit-x.hit)||((x.o?x.o.total-x.a.v:1e9)-(y.o?y.o.total-y.a.v:1e9)));
   const st=(r)=>r.hit?`<span class="chip ok">${ic("bell-ringing")}No seu preço</span>`:r.o?`<span class="chip">Faltam ${money(r.o.total-r.a.v)}</span>`:`<span class="chip">Sem estoque</span>`;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel"><h2>Alertas de preço</h2><p>${rows.length?`${rows.filter((r)=>r.hit).length} de ${rows.length} já ${rows.filter((r)=>r.hit).length===1?"chegou":"chegaram"} no seu preço. O aviso aparece aqui e no menu.`:"Nenhum alerta ainda."}</p>
-  ${rows.length?`<div class="plist">${rows.map((r)=>prodRow(r.a.p,`<span class="prow-alert">Alvo ${money(r.a.v)} ${st(r)}</span>`)).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e use <b>Me avise quando baixar</b>.</p><button class="btn ghost" type="button" data-go="">Ver ofertas</button></div>`}</section></div>`;
+  ${rows.length?`<div class="plist">${rows.map((r)=>prodRow(r.a.p,`<span class="prow-alert">Alvo ${money(r.a.v)} ${st(r)}</span>`)).join("")}</div>`:`<div class="empty-in"><p>Abra um produto e use <b>Me avise quando baixar</b>.</p><button class="btn ghost" type="button" data-go="">Ver ofertas</button></div>`}</section>${tgBox()}</div>`;
 }
 function renderConfig(){
   const u=ACC.user;if(!u){$("#view").innerHTML=privateGate("Configurações","Entre para mudar as configurações da sua conta.");return}
   const th=document.documentElement.dataset.theme||"";const pwUser=u.provider==="password";
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel cfg"><h2>Configurações</h2>
   <h3>Tema</h3><div class="tabs" role="group" aria-label="Tema">${[["","Automático"],["light","Claro"],["dark","Escuro"]].map(([v,l])=>`<button type="button" data-theme-set="${v}" aria-pressed="${th===v}">${l}</button>`).join("")}</div>
-  <h3>Seus dados</h3><p>Guardamos nome, e-mail, favoritos e alertas. Veja a <a href="/privacidade" data-go="privacidade">Política de privacidade</a>.</p>
+  <h3>Seus dados</h3><p>Guardamos nome, e-mail, favoritos e alertas (e, se você ligar os alertas no Telegram, o número da conversa com o bot). Veja a <a href="/privacidade" data-go="privacidade">Política de privacidade</a>.</p>
   <h3 style="color:var(--bad)">Excluir conta</h3><p>Apaga sua conta, favoritos e alertas na hora. Não dá para desfazer.</p>
   <form id="delf" class="delf" novalidate>${pwUser?`<div class="field"><label for="d-pw">Confirme sua senha</label><input id="d-pw" name="pw" type="password" autocomplete="current-password" required></div>`:""}<button class="btn danger" type="submit">${ic("trash")}Excluir conta e dados</button></form>
   </section></div>`;

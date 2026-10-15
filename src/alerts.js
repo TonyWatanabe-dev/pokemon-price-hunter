@@ -153,6 +153,8 @@ export function compose(h) {
 }
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// Corpo do sendMessage de um alerta (mesmo formato no canal do dono e no chat de cada usuário, src/telegram-usuario.js).
+export const telegramBody = (msg, chat) => ({ chat_id: chat, text: esc(msg.text), parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: [[{ text: msg.button || 'COMPRAR', url: msg.url }]] } });
 // Prazo por envio: cada chamada a um canal tem no máximo ALERT_TIMEOUT_MS (10 s, como o vigia em src/ops-notify.js).
 // Estourou = falha daquele canal (segue a fila pending abaixo); um canal travado não segura a rodada (job de 12 min).
 export const ALERT_TIMEOUT_MS = 10000;
@@ -166,7 +168,7 @@ export const transports = {
   async telegram(msg, ctx = {}) {
     const env = ctx.env || process.env; const token = env.TELEGRAM_BOT_TOKEN; const chat = env.TELEGRAM_CHAT_ID; if (!token || !chat) return null;
     const r = await (ctx.fetchImpl || fetch)(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(timeoutOf(ctx)),
-      body: JSON.stringify({ chat_id: chat, text: esc(msg.text), parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: [[{ text: msg.button || 'COMPRAR', url: msg.url }]] } }) });
+      body: JSON.stringify(telegramBody(msg, chat)) });
     return r.ok;
   },
   async ntfy(msg, ctx = {}) {

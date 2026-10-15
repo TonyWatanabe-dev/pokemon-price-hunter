@@ -7,6 +7,7 @@ import { parseProductPage } from './adapters/jsonld.js';
 import { matchProduct } from './match.js';
 import { firstPrice } from './tips.js';
 import { money, pct } from './format.js';
+import { parseComando, TEXTOS, MAX_COMANDOS } from './telegram-usuario.js';
 
 // Prazo de 10 s por chamada à API do Telegram (getUpdates usa timeout: 0, sem long polling): Telegram travado não segura a rodada.
 export const API_TIMEOUT_MS = 10000;
@@ -47,15 +48,26 @@ export async function verdict({ title, price, stock }, catalog, copagOf) {
   return { ok: true, productId: m.productId, lines };
 }
 
-export async function processInbox(state, catalog, copagOf, log = () => {}) {
+// opts.usuario: contexto dos alertas por usuário (src/telegram-usuario.js, desligado por padrão). Com ele, /start <token>,
+// /parar e /status de QUALQUER conversa privada vão para tratarComando (no máximo MAX_COMANDOS por rodada); sem ele,
+// o bot segue atendendo só o seu chat, como antes. O offset (state.offset, data/inbox.json) é o mesmo para os dois.
+export async function processInbox(state, catalog, copagOf, log = () => {}, { usuario = null } = {}) {
   const token = process.env.TELEGRAM_BOT_TOKEN; const chat = String(process.env.TELEGRAM_CHAT_ID || '');
   if (!token || !chat) return { handled: 0 };
   const res = await api('getUpdates', { offset: state.offset || 0, timeout: 0, allowed_updates: ['message'] });
   if (!res.ok) { log(`[bot] getUpdates: ${res.description}`); return { handled: 0 }; }
-  let handled = 0;
+  let handled = 0; let comandos = 0; let falhas = 0;
+  const responder = (chatId, text) => api('sendMessage', { chat_id: chatId, text, disable_web_page_preview: true });
   for (const u of res.result || []) {
     state.offset = u.update_id + 1;
-    const msg = u.message; if (!msg || String(msg.chat?.id) !== chat) continue; // só o seu chat
+    const msg = u.message; if (!msg) continue;
+    if (usuario && parseComando(msg.text)) {
+      if (comandos >= MAX_COMANDOS) continue;
+      comandos++;
+      try { await usuario.tratar(msg, responder); } catch { falhas++; try { await responder(msg.chat.id, TEXTOS.ERRO); } catch { /* Telegram fora */ } }
+      continue;
+    }
+    if (String(msg.chat?.id) !== chat) continue; // só o seu chat
     const text = msg.text || msg.caption || ''; if (!text.trim() || /^\/start/.test(text)) continue;
     const urls = [...new Set([...text.matchAll(/https?:\/\/[^\s<>"')]+/g)].map((m) => m[0]))].slice(0, 3);
     const bodyTitle = text.replace(/https?:\/\/\S+/g, ' ').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 4).join(' ');
@@ -69,5 +81,6 @@ export async function processInbox(state, catalog, copagOf, log = () => {}) {
     await api('sendMessage', { chat_id: chat, text: reply, reply_to_message_id: msg.message_id, disable_web_page_preview: true });
     handled++;
   }
-  return { handled };
+  if (comandos) log(`[alertas-usuario] ${comandos} comandos de usuários${falhas ? `, ${falhas} com erro` : ''}`);
+  return { handled, comandos };
 }

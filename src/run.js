@@ -19,6 +19,7 @@ import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
 import { tlsModeFor } from './db/ssl.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
+import { contexto as telegramUsuario } from './telegram-usuario.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent, capJsonlLines } from './alerts.js';
 import { collectTips, firstPrice } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -491,7 +492,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
 
   // Bot: analisa links/promoções que você encaminhar para ele no Telegram.
   const inbox = readJson(dataPath('inbox.json'), {});
-  try { const r = await processInbox(inbox, catalog, copagOf, log); if (r.handled) log(`[bot] ${r.handled} mensagens respondidas`); } catch (e) { log(`[bot] ${e.message}`); }
+  // Alertas por usuário no Telegram (src/telegram-usuario.js): null = desligado (padrão) ou sem configuração.
+  const tgUsuario = telegramUsuario(process.env, { log });
+  try { const r = await processInbox(inbox, catalog, copagOf, log, { usuario: tgUsuario }); if (r.handled) log(`[bot] ${r.handled} mensagens respondidas`); } catch (e) { log(`[bot] ${e.message}`); }
 
   // Nota oficial (Opportunity Engine, hunter.opportunity): só leitura, com prazo curto. Vale só para a oferta com o
   // mesmo preço lido agora e calculada há no máximo 60 min. Fica num mapa à parte, NÃO vai para state.json/offers.json
@@ -512,6 +515,15 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Grava o registro de envios já: se a rodada cair depois daqui, o retry não reenvia os mesmos alertas.
   if (delivered.length) writeJson(dataPath('alerts-sent.json'), sent);
   for (const d of delivered) log(`ALERTA ${d.kind} -> ${d.channels.join(', ') || 'só painel'}: ${d.productId} ${d.total}`);
+  // Depois dos alertas do dono: cada usuário ligado recebe, no próprio chat, só os alertas das próprias regras.
+  let tgBot = null;
+  if (tgUsuario) {
+    try {
+      const r = await tgUsuario.entregar({ offers: okOffers, products, opp, now, settings: watch.settings });
+      log(`[alertas-usuario] ${r.usuarios} usuários ligados · ${r.enviados} enviados · ${r.falhas} falhas · ${r.bloqueados} bloquearam o bot · ${r.erros} erros de gravação`);
+    } catch (e) { log(`[alertas-usuario] entrega indisponível: ${e.message}`); }
+    tgBot = await tgUsuario.bot();
+  }
 
   // Estado para painel e API
   const all = Object.values(offers);
@@ -549,6 +561,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     rules: watch.rules || [],
     // Reputação no Reclame Aqui: tabela consultada à mão (config/reclameaqui.json); o robô não acessa o site.
     reputation: (() => { const r = readJson(configPath('reclameaqui.json'), null); return r ? { consultadoEm: r.consultadoEm, lojas: r.lojas } : null; })(),
+    // Só o nome público do bot, para o botão "Ativar alertas no Telegram" do site (ausente = recurso desligado).
+    ...(tgBot ? { telegramUsuario: { bot: tgBot } } : {}),
     recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].slice(0, 50),
   };
   writeJson(dataPath('offers.json'), offers);
