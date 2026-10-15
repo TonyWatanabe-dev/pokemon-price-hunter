@@ -2025,7 +2025,7 @@ function renderList(title,intro,list,emptyMsg){
 const REPO={owner:"tonywatanabe-dev",repo:"pokemon-price-hunter"};
 function repoInfo(){const h=location.hostname.match(/^([^.]+)\.github\.io$/);const seg=location.pathname.split("/").filter(Boolean)[0];return h&&seg?{owner:h[1],repo:seg}:REPO}
 function renderCopag(){
-  const ps=(S.products||[]).slice();const cols=(S.collections||[]);
+  const ps=S.slim&&PG.copag?PG.copag.map((id)=>P[id]).filter(Boolean):(S.products||[]).slice();const cols=(S.collections||[]);
   const off=ps.filter((p)=>p.copagConfirmed).length,ref=ps.filter((p)=>!p.copagConfirmed&&p.copagReference).length,none=ps.length-off-ref;
   const day=(iso)=>iso?new Date(iso).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}):"";
   const srcLb=(c)=>/copagloja/.test(c.source_url||"")?"Loja oficial Copag":c.manual?"Tabela de preços Copag":"Fonte Copag";
@@ -2115,7 +2115,7 @@ function ljRow(l){const[c,lb]=LJ_CHIP[l.status]||["",l.status];const plat=l.plat
   const facts=l.status==="monitorada"?`${l.offersLive} ${l.offersLive===1?"oferta":"ofertas"} com estoque${l.lastReadAt?` · última leitura ${ago(l.lastReadAt)}`:""}`:l.reason||"";
   return`<li class="lj" id="loja-${esc(l.id)}"><div class="lj-top"><b>${esc(l.name)}</b>${plat}<span class="chip ${c}">${lb}</span></div>${facts?`<p class="lj-facts">${esc(facts)}</p>`:""}<div class="lj-act">${l.searchUrl?ljExt(l.searchUrl,l.searchKind==="busca"?"Buscar Pokémon na loja":"Abrir a loja"):""}${l.status==="monitorada"&&l.offersLive>0?`<a class="btn sm ghost" href="/oportunidades?loja=${encodeURIComponent(l.id)}" data-oppstore="${esc(l.id)}">Ver ofertas</a>`:""}</div></li>`}
 function renderLojas(){
-  const ls=lojasNormalize({sources:S.sources||[],offers:OFF});const secs=lojasSections(ls);const n=Object.fromEntries(secs.map(([k,,xs])=>[k,xs.length]));
+  const ls=S.slim&&PG.lojas?PG.lojas:lojasNormalize({sources:S.sources||[],offers:OFF});const secs=lojasSections(ls);const n=Object.fromEntries(secs.map(([k,,xs])=>[k,xs.length]));
   const intro={monitoradas:"O robô lê estas lojas a cada 15 min: os preços delas aparecem nas ofertas do site.","sem-leitura":"Lojas que vendem Pokémon TCG, mas que o robô não consegue ler. Nenhum preço aparece aqui: confira na própria loja.",marketplaces:"Muitos vendedores num site só. O robô não lê os preços; a busca abre no próprio marketplace.",pausadas:"Leitura pausada pelo projeto. A loja continua no ar; os preços só aparecem nela."};
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide lojas"><h1 class="panel-h1">Lojas de Pokémon TCG no Brasil</h1>
   <p>${n.monitoradas} monitoradas agora, ${n["sem-leitura"]} conhecidas sem leitura automática e ${n.marketplaces} marketplaces. Preço só aparece quando o robô leu a loja; nas demais, o link leva à busca de Pokémon na própria loja. A compra é sempre na loja.</p>
@@ -2159,7 +2159,7 @@ function tipHits(q){
     .sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))).slice(0,8);
 }
 function renderTips(){
-  const t=S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
+  const t=S.slim&&PG.pistas?PG.pistas:S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
   ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty" role="status"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
   ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
@@ -3185,7 +3185,7 @@ function syncSheet(){const d=$("#fsheet");if(!d?.open)return;const b=d.querySele
 
 /* Pré-vendas: status sempre visível */
 function renderPre(){
-  const by={};for(const o of OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].o.total))by[o.productId]={p:P[o.productId],o,n:1};
+  const by={};for(const o of S.slim&&PG.prevenda?PG.prevenda:OFF)if(o.stock==="PRE_ORDER"&&P[o.productId]&&(!by[o.productId]||o.total<by[o.productId].o.total))by[o.productId]={p:P[o.productId],o,n:1};
   const list=Object.values(by);
   $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("calendar-blank")}Pré-vendas</h1><p>Produtos anunciados que ainda não chegaram. Pré-venda não entra no ranking nem nas oportunidades. A data de lançamento aparece quando a loja informa.</p></header>
   ${list.length?`<div class="deals">${list.map((e)=>dealCard(e,{plain:true,h:"h2"})).join("")}</div>`:`<div class="empty" role="status"><h3>Nenhuma pré-venda agora</h3><p>Quando uma loja abrir pré-venda de produto lacrado em português, ele aparece aqui.</p></div>`}</div>`;
@@ -3261,7 +3261,9 @@ async function fetchHome(){
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
    Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
-const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades","guia","glossario","termos","privacidade"]);   /* 6B.1: /oportunidades só pela API; Lote F: páginas de texto não baixam o state.json (~1,8 MB) */
+const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades","guia","glossario","termos","privacidade","copag","pistas","prevenda","lojas"]);   /* 6B.1: /oportunidades só pela API; Lote F: páginas de texto, Copag, pistas, pré-vendas e lojas não baixam o state.json (~1,8 MB) */
+/* Lote F: /precos, /pistas, /pre-vendas e /lojas pela API (site/pagina/…). PG guarda a lista de cada página na ordem do estado */
+const PG_VIEWS=new Set(["copag","pistas","prevenda","lojas"]);let PG={};
 const APIC=new Map();const APITTL=60e3;
 /* API_LAST: status HTTP da última resposta de cada caminho (0 = sem resposta). 503 = dados sem atualização confiável, não é a conexão.
    APIP: o mesmo pedido em andamento é compartilhado (a Home e /oportunidades começam junto com o /home). */
@@ -3275,7 +3277,7 @@ function apiGet(path,ms=8000){
   APIP.set(path,pr);return pr;
 }
 const PAGE_DONE=new Set();const SEARCH_TIPS=new Map();let pageP=null,pageKey="";
-function apiReset(){APIC.clear();PAGE_DONE.clear();SEARCH_TIPS.clear();pageKey="";pageP=null;for(const k of Object.keys(HIST))delete HIST[k]}
+function apiReset(){APIC.clear();PAGE_DONE.clear();SEARCH_TIPS.clear();PG={};pageKey="";pageP=null;for(const k of Object.keys(HIST))delete HIST[k]}
 function hydP(p){const c=(S.collections||[]).find((x)=>x.id===p.collection),t=(S.types||[]).find((x)=>x.id===p.type);
   p.collectionName??=c?.name;p.typeLabel??=t?.label;p.group??=t?.group;p.copagConfirmed=!!p.copagConfirmed;return p}
 function mergeProducts(list){for(const p0 of list){const p=hydP({...p0});if(P[p.id])Object.assign(P[p.id],p);else{P[p.id]=p;S.products.push(p)}}}
@@ -3287,7 +3289,7 @@ function mergeSide(d){
 }
 /* a página atual já tem seus dados? Senão busca na API e redesenha quando chegar */
 function apiPageReady(){
-  const key=view==="produto"?"p:"+(curPid||parseLoc().slug):view==="colecao"||view==="tipo"?view+":"+curGroup:view==="busca"?"b:"+(F.q||""):"";
+  const key=view==="produto"?"p:"+(curPid||parseLoc().slug):view==="colecao"||view==="tipo"?view+":"+curGroup:view==="busca"?"b:"+(F.q||""):PG_VIEWS.has(view)?"pg:"+view:"";
   if(!key||PAGE_DONE.has(key))return true;
   if(pageKey!==key){pageKey=key;loading();pageP=loadPage(key).then((ok)=>{pageP=null;if(pageKey!==key)return;if(ok)PAGE_DONE.add(key);else{pageKey="";return ensureFull()}render()})}
   return false;
@@ -3306,6 +3308,13 @@ async function loadPage(key){
   if(key.startsWith("b:")){const q=key.slice(2);const ids=q?searchProducts(q).slice(0,60).map(({p})=>p.id):[];
     if(!q)return true;const d=await apiGet(`site/ofertas?busca=${encodeURIComponent(q)}${ids.length?"&produtos="+ids.map(encodeURIComponent).join(","):""}`);if(!d||d.notFound)return false;
     mergeProducts(d.products||[]);mergeOffers(d.offers||[]);mergeSide({sources:d.sources,reputation:d.reputation});SEARCH_TIPS.set(q,d.tips||[]);return true}
+  if(key.startsWith("pg:")){const k=key.slice(3);const d=await apiGet("site/pagina/"+k);if(!d||d.notFound)return false;
+    if(k==="lojas"){if(!Array.isArray(d.lojas))return false;PG.lojas=d.lojas;return true}
+    if(!Array.isArray(d.products))return false;const n0=S.products.length;mergeProducts(d.products);
+    if(k==="copag"){PG.copag=d.products.map((p)=>p.id);if(S.products.length>n0)buildSlugs()}   /* com todos os produtos, os endereços saem iguais aos do estado completo */
+    else if(k==="pistas")PG.pistas=d.tips||[];
+    else{mergeOffers(d.offers||[]);mergeSide({sources:d.sources,reputation:d.reputation});PG.prevenda=d.offers||[]}
+    return true}
   return true;
 }
 /* histórico do produto: série diária do Price Engine, por loja (o gráfico monta o "melhor preço" igual antes) */

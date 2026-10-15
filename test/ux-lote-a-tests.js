@@ -210,7 +210,7 @@ await t('7. cada rota desenha um único H1 em #view', async () => {
   { const slot = { innerHTML: '' }; run(cutFn('function renderCopag'), { S: { products: [PA], collections: [col] }, esc, money, ic, safeUrl: (u) => u, REFNOTE: 'ref', label: (p) => p.typeLabel, Date, $: () => slot }, 'renderCopag').renderCopag(); got.precos = slot.innerHTML; }
   // /prevenda (com e sem pré-venda)
   { const slot = { innerHTML: '' }; const pre = { ...O1, id: 'pre', stock: 'PRE_ORDER' };
-    const ctx = { OFF: [pre], P: { 'p-a': PA }, Object, ic, $: () => slot, dealCard: (e, opt) => `<article><${opt.h} class="deal-name">${e.p.typeLabel}</${opt.h}></article>` };
+    const ctx = { S: {}, OFF: [pre], P: { 'p-a': PA }, Object, ic, $: () => slot, dealCard: (e, opt) => `<article><${opt.h} class="deal-name">${e.p.typeLabel}</${opt.h}></article>` };
     run(cutFn('function renderPre'), ctx, 'renderPre').renderPre(); got.prevenda = slot.innerHTML; assert.match(got.prevenda, /<h2 class="deal-name">/, 'pré-venda: cartões em H2');
     ctx.OFF = []; ctx.__t.renderPre(); got['prevenda-vazia'] = slot.innerHTML; }
   // /guia (Lote E: o texto vem da const GUIA, logo acima de renderGuide)
