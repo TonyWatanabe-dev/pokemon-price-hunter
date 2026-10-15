@@ -1,3 +1,4 @@
+import { slim } from './_lib/slim.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 // Todas as páginas públicas passam por aqui: a mesma página do site, já com título, descrição, endereço canônico,
@@ -238,7 +239,8 @@ export default async function handler(req, res) {
     try { const r = await fetch(`https://${host}/app.html`); const h = r.ok ? shell(await r.text()) : null; if (h) page = { t: Date.now(), html: h }; } catch {}
   }
   if (!page.html) { res.setHeader('Cache-Control', 'no-store'); res.statusCode = 302; res.setHeader('Location', '/app.html'); return res.end(); }
-  let html = page.html; let status = 200; let ssr = false;
+  if (!page.slim) page.slim = slim(page.html).html;          // Lote F: CSS/JS grandes por arquivo com hash (mesmo nome do build)
+  let html = page.slim; let status = 200; let ssr = false;
   if (slugBad) { status = 404; html = noindex(html); }
   else try {
     let opp = null;
