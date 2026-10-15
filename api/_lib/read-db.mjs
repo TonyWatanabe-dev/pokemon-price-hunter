@@ -2,7 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
-import { offerFreshness } from './freshness.mjs';
+import { offerFreshness, usable } from './freshness.mjs';
 import { normalizeSearch, sqlFold } from './search.mjs';
 import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
 import { classifyOfferChange, WINDOW_HOURS, BOUNCE_HOURS } from './offer-change.mjs';
@@ -437,7 +437,26 @@ export function opportunityCriteria(r, now = Date.now()) {
     freshness: { status: fr.status, age_min: fr.ageMin, last_seen_at: iso(r.last_seen_at), stale: r.offer_status === 'pending' },
     confidence: { value: num(r.confidence), level: opportunityConfidenceLevel(num(r.confidence)) },
     dedupe_key: product && store && Number.isFinite(price) && price > 0 ? `${product}|${store}|${Math.round(price * 100)}` : null,
+    confirmation: opportunityConfirmation(r, cmp, fr),
   };
+}
+
+// Oportunidade CONFIRMADA (#53): só com todos os dados essenciais — preço sugerido Copag atual (a referência de mercado não
+// substitui; nada é inferido), preço abaixo dela, custo total comparável (frete conhecido), leitura fresca da própria oferta,
+// estoque confirmado e preço sem anomalia nem queda aguardando 2ª leitura. Variante: toda linha de opportunity já é de um
+// produto resolvido (coleção, tipo, boosters e variante). Só exposição: não muda nota, faixa, ordem nem filtros; cada
+// bloqueio vem com código e motivo.
+const CONFIRM_WARNINGS = { ANOMALY: ['anomaly', 'preço marcado como anômalo'], UNCONFIRMED: ['price_unconfirmed', 'preço aguardando 2ª leitura'] };
+export function opportunityConfirmation(r, cmp, fr) {
+  const blockers = []; const add = (code, reason) => blockers.push({ code, reason });
+  if (cmp.reference_kind !== 'COPAG_OFFICIAL_CURRENT') add('no_copag_reference', cmp.available ? 'sem preço sugerido Copag atual: só referência de mercado' : 'sem preço sugerido Copag atual');
+  else if (!(num(r.opp_reference_gap) > 0)) add('not_below_reference', 'preço igual ou acima do preço sugerido Copag');
+  if (!['known', 'free'].includes(r.shipping_status) || num(r.total_price) == null) add('unknown_shipping', 'frete desconhecido: sem custo total comparável');
+  if (r.offer_status === 'pending' || !usable(fr)) add('stale', 'leitura da oferta antiga ou indisponível');
+  if (r.stock_status !== 'in_stock') add('stock_not_confirmed', 'estoque não confirmado');
+  const codes = new Set((Array.isArray(r.warnings) ? r.warnings : []).map((x) => x?.code));
+  for (const [code, [c, reason]] of Object.entries(CONFIRM_WARNINGS)) if (codes.has(code)) add(c, reason);
+  return { confirmed: blockers.length === 0, blockers };
 }
 
 // Lojas para o filtro da página de oportunidades: lojas com pelo menos uma oferta avaliada com estoque (sem anomalia),

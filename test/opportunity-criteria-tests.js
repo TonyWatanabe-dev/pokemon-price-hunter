@@ -83,7 +83,7 @@ await t('listOpportunities: criteria aditivo, nota/ordem/parâmetros intactos', 
   assert.deepEqual(r.items.map((x) => x.product.id), ['p1', 'p2', 'p3', 'p1'], 'ordem do banco preservada');
   assert.equal(r.total, 4);
   for (const x of r.items) { assert.equal(x.opportunity_score, 80); assert.equal(x.opportunity_band, 'boa'); assert.equal(x.confidence, 0.8); }
-  assert.deepEqual(r.items.map((x) => Object.keys(x.criteria)), r.items.map(() => ['reference', 'discount', 'freshness', 'confidence', 'dedupe_key']));
+  assert.deepEqual(r.items.map((x) => Object.keys(x.criteria)), r.items.map(() => ['reference', 'discount', 'freshness', 'confidence', 'dedupe_key', 'confirmation']));
   const cmp = r.items[0].reference_comparison;
   assert.deepEqual(r.items[0].criteria.discount, { available: true, fraction: 0.125, percentage_below: cmp.percentage_below, amount_below: cmp.amount_below, position: cmp.position },
     'desconto = os mesmos números de reference_comparison');
