@@ -135,6 +135,8 @@ O proprietário declarou estar satisfeito com o nível atual de automação e au
 
 **Decisões do proprietário:** (1) política de deploy (desligar deploy da `main` na Vercel e usar a Ponte, ou formalizar o merge como gate); (2) domínio canônico (`tcgpricehunter.com.br` × `vercel.app`, e 307 → 308); (3) desativar o GitHub Pages; (4) ligar o backup diário de `data/` (cron-job.org ou `schedule`) e decidir backup do banco.
 
+
+
 ## Fase 5 — matriz de saída (15/10/2026)
 
 **Fase 5 NÃO concluída** (critério 2 depende de decisão do proprietário). Critérios de `docs/PLANO-ENTREGA-TURBO.md` × evidência na `main` (`cc9d140`) e PRs abertas. Issues #44, #46 e #113 já estavam fechadas (13/10, via [#121](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/121), [#162](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/162), [#155](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/155), todas integradas).
