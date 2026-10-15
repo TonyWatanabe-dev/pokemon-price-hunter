@@ -195,12 +195,12 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const list = Object.values(best).filter((o) => P[o.productId]).sort((a, b) => (b.discount ?? -9) - (a.discount ?? -9));
     main = list.length ? `<h2>Melhores ofertas com estoque agora</h2><p>Lista sem Opportunity Score (o motor de oportunidades está indisponível): a oferta com estoque mais barata de cada produto, pelo menor total com frete comparável.</p><ol>${list.slice(0, 40).map((o) => prodRow(P[o.productId], o, of, ` (${shipTag(o)})${P[o.productId].copagConfirmed && o.discount > 0 ? ` · ${pct(o.discount)} abaixo do preço sugerido Copag` : ''}`)).join('')}</ol>` : '';
   }
-  // /precos: todo produto com preço sugerido, agrupado por coleção, dizendo se é o oficial da Copag ou só referência, com fonte e data.
+  // /precos: todo produto com preço sugerido, agrupado por coleção, dizendo se é o oficial da Copag ou referência da comunidade, com fonte e data.
   if (t === 'precos') {
     const withMsrp = (s.products || []).filter((p) => p.msrp > 0);
     const groups = (s.collections || []).map((c) => [c, withMsrp.filter((p) => p.collection === c.id)]).filter(([, l]) => l.length);
     const row = (p) => { const cp = p.copag || {}; const raw = p.copagConfirmed ? cp.source_url : p.copagReferenceUrl || cp.source_url; const src = /^https?:\/\//i.test(String(raw || '')) ? raw : null; const at = cp.msrp_updated_at || cp.source_timestamp || p.lastSeen;
-      return `<tr><td><a href="/produto/${of[p.id]}">${esc(label(p))}</a></td><td>${brl(p.msrp)}</td><td>${p.copagConfirmed ? 'Preço sugerido Copag (oficial)' : 'Referência (não confirmada)'}</td><td>${src ? `<a href="${esc(src)}" rel="nofollow noopener">${esc(hostOf(src) || 'fonte')}</a>` : esc(p.copagReference || '—')}</td><td>${esc(day(at) || '—')}</td></tr>`; };
+      return `<tr><td><a href="/produto/${of[p.id]}">${esc(label(p))}</a></td><td>${brl(p.msrp)}</td><td>${p.copagConfirmed ? 'Preço sugerido Copag (oficial)' : '<span title="Preço divulgado fora do site da Copag; não confirmado">Referência da comunidade (não confirmada)</span>'}</td><td>${src ? `<a href="${esc(src)}" rel="nofollow noopener">${esc(hostOf(src) || 'fonte')}</a>` : esc(p.copagReference || '—')}</td><td>${esc(day(at) || '—')}</td></tr>`; };
     main = groups.length ? groups.map(([c, l]) => `<h2><a href="/colecao/${colSlug(c)}">${esc(c.name)}</a></h2><table class="ssr-t"><thead><tr><th>Produto</th><th>Preço sugerido</th><th>Tipo</th><th>Fonte</th><th>Data</th></tr></thead><tbody>${l.map(row).join('')}</tbody></table>`).join('') : '<p>Nenhum preço sugerido disponível agora.</p>';
   }
   // melhor oferta de cada produto: a mesma de bestBy (_seo.mjs, issue #84), não o menor total bruto

@@ -110,7 +110,7 @@ export function calculateOpportunity(stats, offer, { now = new Date() } = {}) {
   }
   if (commCtx.length) { const c = commCtx[0]; const d = (price - c.price) / c.price;
     w(!refOk && !histCtx.length ? 'COMMUNITY_REFERENCE_ONLY' : 'COMMUNITY_REFERENCE',
-      `Existe uma referência comunitária de ${brl(c.price)} (não é preço oficial Copag nem referência atual e não entra no score)${Math.abs(d) >= 0.005 ? `; esta oferta está ${pct(d)} ${d > 0 ? 'acima' : 'abaixo'} dela` : ''}`); }
+      `Existe uma referência da comunidade de ${brl(c.price)} (não é preço oficial Copag nem referência atual e não entra no score)${Math.abs(d) >= 0.005 ? `; esta oferta está ${pct(d)} ${d > 0 ? 'acima' : 'abaixo'} dela` : ''}`); }
 
   // --- histórico (só com série suficiente; tendências só quando o Price Engine as calculou)
   let historical = null;

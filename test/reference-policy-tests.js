@@ -59,7 +59,7 @@ t('4. sem Copag + mercado insuficiente + comunitária → NONE; comunitária só
   assert.equal(withC.opportunity_score, without.opportunity_score, 'comunitária não sobe nem desce o score');
   assert.equal(withC.confidence, without.confidence);
   const w = withC.warnings.find((x) => x.code === 'COMMUNITY_REFERENCE_ONLY');
-  assert.ok(w); assert.match(w.text, /referência comunitária de R\$ 399,99/); assert.match(w.text, /não é preço oficial Copag nem referência atual e não entra no score/);
+  assert.ok(w); assert.match(w.text, /referência da comunidade de R\$ 399,99/); assert.match(w.text, /não é preço oficial Copag nem referência atual e não entra no score/);
 });
 
 t('5. somente Copag histórica → nunca referência atual', () => {
@@ -141,7 +141,7 @@ t('contrato da API: referência atual, contexto e comunitária', () => {
   const h = contextReferenceView({ reference_kind: 'COPAG_OFFICIAL_HISTORICAL', value: 369.99, published_at: '2023-08', confidence: 90, source_url: 'https://copag.com.br/pokemon/blog/detalhes/x' });
   assert.equal(h.label, 'Preço sugerido de lançamento'); assert.equal(h.confidence, 0.9); assert.equal(h.published_at, '2023-08'); assert.equal(h.effective_date, null);
   const k = contextReferenceView({ reference_kind: 'COMMUNITY_REFERENCE', value: 399.99, confidence: 95, source_url: 'https://www.instagram.com/voltztcg/' });
-  assert.equal(k.label, 'Referência comunitária'); assert.equal(k.source, 'instagram.com/voltztcg'); assert.ok(!/Copag/.test(k.label));
+  assert.equal(k.label, 'Referência da comunidade'); assert.equal(k.source, 'instagram.com/voltztcg'); assert.ok(!/Copag/.test(k.label));
 });
 
 // Auditoria de referências: Copag verificada vale COPAG_MAX_AGE_DAYS; vencida fica gravada, mas não entra na nota.

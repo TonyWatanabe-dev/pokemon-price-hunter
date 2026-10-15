@@ -123,7 +123,10 @@ await t('/oportunidades continua com a mesma explicação de antes (oppWhy = <de
   const x = { price: 50, opportunity_score: 80, opportunity_band: 'boa', confidence: 0.51, confidence_level: 'média', current_reference: { kind: 'MARKET_CURRENT', price: 70, market_sources: 4 },
     reference_comparison: { available: true, reference_kind: 'MARKET_CURRENT', reference_value: 70, percentage_below: 28.57, amount_below: 20, position: 'below' },
     warnings: [{ text: 'Aviso' }], reasons: [{ text: 'Motivo', impact: '-' }], historical_context: [{ label: 'Lançamento', price: 60, published_at: '2024-01' }], community_reference: { price: 65 }, updated_at: '2026-10-09T00:00:00Z', engine_version: 'opportunity-v2.2' };
-  assert.equal(now.oppWhy(x), old.oppWhyOld(x));
+  // única diferença intencional desde 2df9e86: o rótulo da referência comunitária (decisão do proprietário, 15/10/2026)
+  const relabel = (h) => h.replace('<li>Referência comunitária R$ 65.00 (não é preço Copag)</li>', '<li>Referência da comunidade R$ 65.00 (preço divulgado fora do site da Copag; não confirmado)</li>');
+  const was = old.oppWhyOld(x); assert.notEqual(relabel(was), was, 'o rótulo antigo estava no código de 2df9e86');
+  assert.equal(now.oppWhy(x), relabel(was));
 });
 await t('script da página compila', () => {
   const scripts = [...html.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
