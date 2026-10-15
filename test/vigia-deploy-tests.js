@@ -77,7 +77,10 @@ await t('watchdog.mjs: --deploy lido do arquivo; arquivo ausente ou ilegível n�
 await t('watchdog.yml: deployments só leitura, sem escrita nova; leitura tolerante; passa --deploy', () => {
   const y = fs.readFileSync(path.join(root, '.github/workflows/watchdog.yml'), 'utf8');
   assert.match(y, /permissions:\s*\n\s*contents: read\s*\n\s*actions: read\s*\n\s*deployments: read\s*\n/);
-  assert.doesNotMatch(y, /:\s*write\b/, 'nenhuma permissão de escrita');
+  // job da checagem (e permissões do topo) sem escrita; outro job, se existir, declara as próprias permissões
+  const check = y.split('\n  check:\n')[1].split(/\n  [\w-]+:\n/)[0];
+  const topo = y.split('\njobs:\n')[0];
+  assert.doesNotMatch(check, /:\s*write\b/, 'job check sem escrita'); assert.doesNotMatch(topo, /:\s*write\b/, 'permissões do topo sem escrita');
   assert.match(y, /deployments\?environment=Production&per_page=1/);
   assert.match(y, /\|\| rm -f wd\/deploy\.json/);
   assert.match(y, /--ledger wd\/ledger\.json --deploy wd\/deploy\.json/);
