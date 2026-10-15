@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { slim, MIN_BYTES } from '../api/_lib/slim.mjs';
-import { main } from '../tools/build-slim.mjs';
+import { main } from '../api/_lib/build-slim.mjs';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const r = slim(html);
@@ -33,3 +33,9 @@ assert.equal(fs.readFileSync(path.join(out, 'assets/web', js.nome), 'utf8'), js.
 const h = JSON.parse(fs.readFileSync(new URL('../vercel.json', import.meta.url), 'utf8')).headers.find((x) => x.source === '/assets/web/(.*)');
 assert.ok(h, 'header de cache de /assets/web');
 console.log('perf-slim-tests ok');
+// o build roda no Vercel: nada do comando de build pode estar no .vercelignore
+{
+  const ign = fs.readFileSync(new URL('../.vercelignore', import.meta.url), 'utf8').split('\n').map((l) => l.trim()).filter(Boolean);
+  const build = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')).scripts.build;
+  for (const m of build.matchAll(/node (\S+)/g)) assert.ok(!ign.some((p) => m[1].startsWith(p.replace(/\*$/, ''))), `${m[1]} ignorado no deploy`);
+}

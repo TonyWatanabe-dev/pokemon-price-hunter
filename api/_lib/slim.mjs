@@ -1,6 +1,6 @@
 // Lote F (performance): a mesma casca do site, sem o CSS e o JS grandes inline. O index.html continua sendo a fonte
 // editada (CLAUDE.md); esta transformação é determinística e roda em dois lugares que precisam concordar:
-//   • build (tools/build-slim.mjs): grava public/assets/web/app-<hash>.css/.js e o public/app.html enxuto;
+//   • build (api/_lib/build-slim.mjs): grava public/assets/web/app-<hash>.css/.js e o public/app.html enxuto;
 //   • api/pagina.mjs: aplica a mesma troca no HTML que serve (o nome sai do hash do conteúdo, então bate com o build).
 // Nome com hash + Cache-Control immutable: o navegador baixa uma vez por versão. Se algo não casar, devolve o HTML
 // original (nunca quebra a página).

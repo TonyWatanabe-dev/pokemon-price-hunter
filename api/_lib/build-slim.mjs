@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Build (Lote F): gera public/assets/web/app-<hash>.css/.js e o public/app.html enxuto a partir do index.html.
-// Uso: node tools/build-slim.mjs [--entrada index.html] [--saida public]
+// Build (Lote F; fica em api/_lib porque tools/ está no .vercelignore): gera public/assets/web/app-<hash>.css/.js e o public/app.html enxuto a partir do index.html.
+// Uso: node api/_lib/build-slim.mjs [--entrada index.html] [--saida public]
 import fs from 'node:fs';
 import path from 'node:path';
-import { slim } from '../api/_lib/slim.mjs';
+import { slim } from './slim.mjs';
 
 export function main(argv = process.argv.slice(2), log = console.log) {
   const a = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
