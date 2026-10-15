@@ -16,15 +16,18 @@ const STOCK_OUT = { in_stock: 'IN_STOCK', out_of_stock: 'OUT_OF_STOCK', preorder
 const PRODUCTS_SQL = `
   SELECT p.id, p.legacy_id, p.units, p.variant, p.image_url, p.attrs, c.code AS col_code, c.name AS col_name,
          r.value AS ref_value, r.verification_status AS ref_status, r.source_url AS ref_url, r.source AS ref_source, r.verified_at AS ref_verified_at,
+         r.reference_kind AS ref_kind,
          (SELECT i.value FROM hunter.product_identifier i WHERE i.product_id = p.id AND i.kind = 'ean' ORDER BY i.value LIMIT 1) AS ean
     FROM hunter.product p
     LEFT JOIN hunter.collection c ON c.id = p.collection_id
     -- paridade com o site de hoje (robô/catalog.json): só as referências que o robô publica; preço de lançamento (histórico)
     -- e importações da auditoria NÃO aparecem como "preço Copag" até a fase que decidir a apresentação (6A)
-    LEFT JOIN LATERAL (SELECT value, verification_status, source_url, source, verified_at FROM hunter.reference_price r
+    -- referência comunitária (tabela de lojas/Instagram) nunca é "Copag confirmada", mesmo verificada: a Copag oficial vence
+    LEFT JOIN LATERAL (SELECT value, verification_status, source_url, source, verified_at, reference_kind FROM hunter.reference_price r
                         WHERE r.product_id = p.id AND r.verification_status IN ('verified', 'pending')
                           AND r.reference_scope <> 'historical' AND r.source IN ('copag_loja', 'manual', 'internet')
-                        ORDER BY (r.verification_status = 'verified') DESC, r.verified_at DESC NULLS LAST, r.confidence DESC, r.id DESC LIMIT 1) r ON true
+                        ORDER BY (r.verification_status = 'verified' AND r.reference_kind <> 'COMMUNITY_REFERENCE') DESC,
+                                 (r.verification_status = 'verified') DESC, r.verified_at DESC NULLS LAST, r.confidence DESC, r.id DESC LIMIT 1) r ON true
    WHERE p.legacy_id IS NOT NULL`;
 const OFFERS_SQL = `
   SELECT o.legacy_id, p.legacy_id AS product_legacy, o.store_id, st.name AS store_name, se.name AS seller_name, o.url, o.image_url,
@@ -49,7 +52,7 @@ export async function stateLikeFromDb(legacy, { dataAt } = {}) {
   const LP = new Map((legacy.products || []).map((p) => [p.id, p]));
   const LO = new Map((legacy.offers || []).map((o) => [o.id, o]));
   const products = prows.map((r) => {
-    const a = r.attrs || {}; const l = LP.get(r.legacy_id) || {}; const verified = r.ref_status === 'verified';
+    const a = r.attrs || {}; const l = LP.get(r.legacy_id) || {}; const verified = r.ref_status === 'verified' && r.ref_kind !== 'COMMUNITY_REFERENCE';
     return {
       id: r.legacy_id, collection: r.col_code, collectionName: r.col_name, type: a.type, typeLabel: a.typeLabel, group: a.group,
       boosters: r.units ?? null, variant: r.variant ?? null, ean: r.ean ?? null, image: r.image_url ?? null,

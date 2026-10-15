@@ -11,6 +11,8 @@ export function copagStatus(product) {
   // Só vale preço verificável na fonte oficial (loja oficial Copag ou página oficial cadastrada à mão).
   // Catálogo divulgado por terceiros fica como referência, sem calcular desconto nem disparar alerta.
   if (c.confidence === 'CATALOGO_COPAG') return { confirmed: false, reason: 'preço do catálogo Copag divulgado por terceiros, sem fonte oficial verificável', reference: c.msrp, referenceUrl: c.source_url };
+  // Tabela divulgada pela comunidade (lojas, Instagram): referência até a Copag publicar o preço no próprio site.
+  if (c.confidence === 'COMUNIDADE') return { confirmed: false, reason: 'referência da comunidade, sem preço oficial publicado pela Copag', reference: c.msrp, referenceUrl: c.source_url };
   if (c.confidence !== 'OFICIAL') return { confirmed: false, reason: 'fonte não marcada como oficial' };
   return { confirmed: true, msrp: c.msrp, source: c.confidence };
 }
