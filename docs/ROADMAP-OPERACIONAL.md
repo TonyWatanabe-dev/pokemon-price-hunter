@@ -42,7 +42,7 @@ Etapa concluída. Issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price
 
 **Pendências não bloqueantes:** cadastrar links de afiliado por anúncio em `config/affiliates.json` (sem eles os posts usam a URL da loja); Instagram, TikTok e YouTube ainda não iniciados como publisher.
 
-## Onde estamos — 15/10/2026
+## Onde estamos — 15/10/2026 (tarde)
 
 | Frente | Estado | Evidência / próximo passo |
 |---|---|---|
@@ -54,6 +54,11 @@ Etapa concluída. Issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price
 | Links de afiliado | Parcial | 18 links meli.la do proprietário nos posts ([#709](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/709)). Gerar o restante no painel exige a conversa ligada ao computador do proprietário. |
 | Cupons do Mercado Livre nos posts | Adiado | Sonda em Actions (branch `feat/cupons-sonda`): Promobit expõe cupons estruturados (código, desconto, mínimo); Cuponomia esconde o código; Pelando bloqueia robôs; página de cupons do ML exige login. **Adiado pelo proprietário em 15/10/2026** ("depois vemos cupom"). |
 | **Fase 3 — frete por CEP** | **Código integrado, flag desligada; bloqueado na rede** | [#710](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/710) integrada (rota `/api/v1/frete`, só VTEX, `SHIPPING_CALC_ENABLED` desligada). [#711](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/711) integrada: cada modalidade da loja, retirada à parte. [#712](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/712) integrada (smoke por botão em Actions → Frete smoke) — **0/3 lojas VTEX (pbkids, rihappy, Copag) responderam 429 aos IPs do GitHub Actions em 2 rodadas** (run 38698675289). Não ligar a flag: falta caminho de rede que a loja aceite (decisão do proprietário). |
+| **Burn-in #271 — cadência do robô** | **Corrigido em 15/10** | 14/10 vermelho por 50 rodadas operacionais (mínimo 60): o intervalo de 8 min era medido do fim da rodada (~10 min) e o gatilho de 15 min pulava uma vez sim, outra não. [#717](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/717) mede do início da rodada; após o merge, rodadas a cada 15 min (11:15, 11:30, 11:45 UTC). Sequência verde recomeça; fecha ~23/10 se nenhum dia falhar. |
+| Cadeia de suprimentos (#94) | Integrado | [#718](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/718): `npm audit` 0 vulnerabilidades; `npm ci` no robô; Baileys com `--ignore-scripts`; teste trava ações com SHA fixo. Limite registrado: transitivas do Baileys/rembg sem lockfile. |
+| Smoke público (#612) | Fechada | Evidência de 14/10 registrada; novo smoke em produção após o Lote F passou (run 38730954223). |
+| **Lote F — performance** | **Passos 1–2 em produção; passo 3 em PR** | [#719](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/719) fonte/logo como arquivos com cache imutável; [#720](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/720) CSS/JS da casca por arquivo com hash (build e SSR geram o mesmo nome; `index.html` segue a fonte editada). HTML por página **509 KB → 29 KB**. [#721](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/721): guia, glossário, termos e privacidade sem o `state.json` (~1,8 MB). Pendente: endpoints próprios para /precos, /pistas, /pre-vendas e /lojas. |
+| #231 — configurações do proprietário | Aguardando proprietário | Variáveis `DISPATCHER_ATIVO`, `DISPATCHER_ORCAMENTO_JANELA_H=24`, `RELEASE_AUDIT_SINK/ISSUE/ACTOR` e secret `VERCEL_TOKEN` (a sessão não lê nem grava configurações do Actions). |
 
 **Fase atual:** fechamento da **Fase 1** (só falta o burn-in passar e as decisões da #231); Social Media em operação; **Fase 3 iniciada** e parada no bloqueio de rede da cotação VTEX. A Fase 2 (dados/backend) foi fechada em 13/10; Fases 3+ seguem a ordem de `docs/PLANO-ENTREGA-TURBO.md`.
 
