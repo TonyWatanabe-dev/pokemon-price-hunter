@@ -1,0 +1,38 @@
+name: Frete smoke (CEP real)
+
+# Evidência para ligar SHIPPING_CALC_ENABLED (#84): cota frete real nas lojas VTEX para um CEP. Só leitura;
+# não liga a flag, não grava nada e não usa secrets.
+on:
+  workflow_dispatch:
+    inputs:
+      cep:
+        description: CEP de teste
+        default: '01310100'
+      max:
+        description: Máximo de lojas
+        default: '8'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: data
+          path: dados
+          persist-credentials: false
+      - name: Cotações reais
+        env:
+          CEP: ${{ inputs.cep || '01310100' }}
+          MAX: ${{ inputs.max || '8' }}
+        run: node tools/frete-smoke.mjs --state dados/data/state.json --cep "$CEP" --max "$MAX" | tee -a "$GITHUB_STEP_SUMMARY"
