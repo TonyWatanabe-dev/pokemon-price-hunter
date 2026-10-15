@@ -51,6 +51,7 @@ Em Settings → Secrets and variables → Actions → Variables:
 | `TAREFAS_OPERADORES` | Logins, separados por vírgula, que podem abrir/aprovar/disparar. | Só o dono do repositório. |
 | `DISPATCHER_ORCAMENTO_USD` | Limite de custo reportado na janela. | O plano só mostra o gasto da janela. |
 | `DISPATCHER_ORCAMENTO_JANELA_H` | Janela do orçamento, 1–168 h. | 24 h. |
+| `DISPATCHER_MAX_DESPACHOS_JANELA` | Teto de despachos na mesma janela (1–500), contado pelos marcadores do Dispatcher; vale mesmo sem custo reportado. Teto atingido ou leitura falhando pausa, sem quarentena. Valor inválido pausa. | 60. |
 
 Não afirme que um valor está ativo sem conferir essa tela. Secrets (ex.: `CLAUDE_CODE_OAUTH_TOKEN`) nunca vão para issue, chat ou log.
 

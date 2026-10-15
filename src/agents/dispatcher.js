@@ -90,6 +90,27 @@ export function budgetConfig(env = {}) {
 }
 
 /**
+ * Teto de despachos na janela (independe da telemetria de custo): DISPATCHER_MAX_DESPACHOS_JANELA (1..500;
+ * vazio = DEFAULT_MAX_DESPACHOS_JANELA) conta os marcadores `dispatcher:despacho` gravados pelo próprio Dispatcher
+ * na mesma janela do orçamento (DISPATCHER_ORCAMENTO_JANELA_H). Pega o que o teto em USD não vê: execução que
+ * morreu sem reportar custo, telemetria ausente e rajadas. Valor preenchido mas inválido vira `erro` (fail-closed).
+ */
+export const DEFAULT_MAX_DESPACHOS_JANELA = 60;
+export function dispatchCapConfig(env = {}) {
+  const raw = String(env.DISPATCHER_MAX_DESPACHOS_JANELA ?? '').trim();
+  if (!raw) return { limite: DEFAULT_MAX_DESPACHOS_JANELA, erro: null };
+  const v = /^\d{1,3}$/.test(raw) ? Number(raw) : NaN;
+  return v >= 1 && v <= 500 ? { limite: v, erro: null } : { limite: null, erro: 'DISPATCHER_MAX_DESPACHOS_JANELA inválido' };
+}
+
+/** Despachos registrados pelo Dispatcher (autor confiável) a partir de `desde` (ms). Chave repetida conta uma vez. */
+export function countDispatchesInWindow(comments, { desde, dispatcherActor = 'github-actions[bot]' } = {}) {
+  if (!Number.isFinite(desde)) throw new Error('desde obrigatório (ms) para contar despachos na janela');
+  const keys = new Set(parseDispatchMarkers(comments, { trustedAuthors: [dispatcherActor] }).filter((m) => m.at >= desde).map((m) => m.key));
+  return keys.size;
+}
+
+/**
  * Pausa por rate limit a partir da resposta de `GET /rate_limit` (fail-closed): resposta ausente, erro, sem
  * `resources.core.remaining` numérico ou cota baixa com `reset` inválido/passado pausa por RATE_LIMIT_FAIL_PAUSE_MIN;
  * cota abaixo de RATE_LIMIT_MIN_REMAINING pausa até o `reset`; senão, sem pausa (`pauseUntil: null`).
@@ -231,8 +252,25 @@ export function planDispatch(s = {}) {
     return plan;
   }
 
+  // Teto de despachos na janela (s.dispatchCap = { limite, usados, janelaH } ou { erro }): leitura falhando ou
+  // configuração inválida pausa (fail-closed); teto atingido pausa sem quarentena; perto do teto, só o que resta.
+  let capRestante = Infinity;
+  if (s.dispatchCap) {
+    const c = s.dispatchCap;
+    const ok = !c.erro && Number.isInteger(c.limite) && c.limite > 0 && Number.isInteger(c.usados) && c.usados >= 0;
+    const janela = Number.isFinite(c.janelaH) ? `${c.janelaH} h` : 'janela';
+    plan.dispatchCap = ok ? { limite: c.limite, usados: c.usados, motivo: `${c.usados}/${c.limite} despacho(s) em ${janela}` }
+      : { limite: null, usados: null, motivo: `teto de despachos indisponível (${sanitize(c.erro || 'dados inválidos', 160)})` };
+    if (!ok || c.usados >= c.limite) {
+      plan.paused = true;
+      for (const i of issues) skip(i, `pausado por teto de despachos na janela: ${plan.dispatchCap.motivo}`);
+      return plan;
+    }
+    capRestante = c.limite - c.usados;
+  }
+
   let free = maxSlots - active.length;
-  const perCycle = Number.isInteger(s.maxPerCycle) && s.maxPerCycle > 0 ? s.maxPerCycle : DEFAULTS.maxPerCycle;
+  const perCycle = Math.min(capRestante, Number.isInteger(s.maxPerCycle) && s.maxPerCycle > 0 ? s.maxPerCycle : DEFAULTS.maxPerCycle);
   const busyAreas = active.map((i) => i.areas);
   for (const i of issues) {
     if (i.state !== 'open') { skip(i, 'issue fechada'); continue; }
@@ -262,6 +300,7 @@ export function planDispatch(s = {}) {
     }
     if (i.areas.length && busyAreas.some((a) => areasConflict(i.areas, a))) { skip(i, `área crítica em uso por outra tarefa: ${i.areas.join(', ')}`); continue; }
     if (free <= 0) { skip(i, 'sem vaga livre'); continue; }
+    if (plan.dispatch.length >= capRestante) { skip(i, `teto de despachos na janela: ${plan.dispatchCap.motivo}, resta(m) ${capRestante}`); continue; }
     if (plan.dispatch.length >= perCycle) { skip(i, `limite de ${perCycle} despachos por ciclo (evita rajada de sessões)`); continue; }
 
     const attempt = attempts + 1;

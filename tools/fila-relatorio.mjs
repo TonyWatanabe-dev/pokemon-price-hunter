@@ -17,6 +17,7 @@ export const MOTIVOS = Object.freeze([
   { id: 'vaga', titulo: 'Sem vaga livre', re: /^sem vaga livre/ },
   { id: 'ciclo', titulo: 'Limite de despachos por ciclo', re: /^limite de \d+ despachos por ciclo/ },
   { id: 'orcamento', titulo: 'Orçamento', re: /^pausado por orçamento/ },
+  { id: 'teto', titulo: 'Teto de despachos na janela', re: /^(pausado por teto de despachos|teto de despachos na janela)/ },
   { id: 'quarentena', titulo: 'Quarentena', re: /^em quarentena/ },
   { id: 'pausa', titulo: 'Pausa (rate limit, quota ou capacidade)', re: /^pausado/ },
   { id: 'backoff', titulo: 'Backoff entre tentativas', re: /^backoff/ },

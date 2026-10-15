@@ -6,6 +6,8 @@
 # Nenhum dos dois faz merge, deploy ou usa secrets; o worker continua limitado a branch + PR.
 # Orçamento: com vars.DISPATCHER_ORCAMENTO_USD, pausa quando o custo reportado pela telemetria do worker na janela
 # (vars.DISPATCHER_ORCAMENTO_JANELA_H, padrão 24 h) atinge o limite; com limite definido, valor inválido ou telemetria ilegível também pausa.
+# Teto de despachos: na mesma janela, no máximo vars.DISPATCHER_MAX_DESPACHOS_JANELA (padrão 60) despachos, contados
+# pelos marcadores do próprio Dispatcher — vale mesmo sem custo reportado; leitura falhando ou valor inválido pausa.
 # Gatilho: o cron do GitHub é melhor-esforço e, neste repositório, não disparou nenhuma vez em 4 h após a #243
 # (o do Hunter rodou só ~6 vezes/dia). Por isso o Dispatcher também roda ao fim de cada "Vigia do robô", que o
 # agendador externo dispara a cada 15 min. Só conta execução do Vigia na main; o cron fica como reserva.
@@ -41,6 +43,8 @@ jobs:
       # Orçamento pela telemetria real do worker (custo reportado na janela); vazio = sem limite.
       DISPATCHER_ORCAMENTO_USD: ${{ vars.DISPATCHER_ORCAMENTO_USD }}
       DISPATCHER_ORCAMENTO_JANELA_H: ${{ vars.DISPATCHER_ORCAMENTO_JANELA_H }}
+      # Teto de despachos na mesma janela, contado pelos marcadores do Dispatcher (vazio = 60; inválido pausa).
+      DISPATCHER_MAX_DESPACHOS_JANELA: ${{ vars.DISPATCHER_MAX_DESPACHOS_JANELA }}
       DISPATCHER_POR_CICLO: ${{ vars.DISPATCHER_POR_CICLO }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -69,6 +73,8 @@ jobs:
       # Orçamento pela telemetria real do worker (custo reportado na janela); vazio = sem limite.
       DISPATCHER_ORCAMENTO_USD: ${{ vars.DISPATCHER_ORCAMENTO_USD }}
       DISPATCHER_ORCAMENTO_JANELA_H: ${{ vars.DISPATCHER_ORCAMENTO_JANELA_H }}
+      # Teto de despachos na mesma janela, contado pelos marcadores do Dispatcher (vazio = 60; inválido pausa).
+      DISPATCHER_MAX_DESPACHOS_JANELA: ${{ vars.DISPATCHER_MAX_DESPACHOS_JANELA }}
       DISPATCHER_POR_CICLO: ${{ vars.DISPATCHER_POR_CICLO }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
