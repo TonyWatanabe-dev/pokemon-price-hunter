@@ -64,6 +64,23 @@ Etapa concluída. Issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price
 
 **Próximos passos (15/10):** (1) Fase 1: burn-in #271 (~21/10) e decisões da #231; (2) Fase 3: achar caminho de rede aceito pelas lojas VTEX para a cotação — sem contornar bloqueio — ou estacionar; (3) seguir para Fase 4 (contas, favoritos, alertas) ou Lote F (performance), conforme decisão do proprietário; (4) cupons e links de afiliado restantes quando o proprietário retomar.
 
+## Fase 4 — matriz de saída (15/10/2026)
+
+**Fase 4 NÃO concluída.** Critérios de `docs/PLANO-ENTREGA-TURBO.md` × evidência na `main` (`2d9d612`). Testes de banco rodam no job `test` do CI com PostgreSQL descartável (`.github/workflows/ci.yml`); conferidos também localmente em 15/10 (PostgreSQL 16 descartável, `npm test` verde, 220 arquivos).
+
+| Critério | Estado | Evidência |
+|---|---|---|
+| Isolamento por usuário — PostgreSQL (favoritos, alertas, entregas) | ✅ comprovado | `test/user-isolation-db-tests.js` (8 grupos: A não lê/edita/apaga de B, rollback, cascata), `test/user-alerts-tests.js` (pela função `src/db/user-alerts.js`); [#134](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/commit/0081e8d), issues [#86](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/86), [#458](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/458) |
+| Isolamento por usuário — regras Firestore | ⚠️ parcial | `firebase/firestore.rules` só libera `users/{uid}` ao dono e nega o resto; conferência **estática** em `test/workflow-security-tests.js` (teste 5) e `test/firestore-rules-shape-tests.js`. **Falta teste de comportamento no emulador** (`@firebase/rules-unit-testing`): o jar do emulador não é baixável neste ambiente (host bloqueado) e o CI não tem Firebase CLI. Roteiro manual em `docs/firestore-regras.md` |
+| Opt-in/out | ⚠️ parcial | Canal global: sem regras = nada enviado e canal não configurado = só painel (`test/alerts-idempotency-tests.js`, `test/alerts-reliability-tests.js`); `price_alert.active` gravado e isolado (`setActive`). **Falta**: não existe envio por usuário — alertas da conta (Firestore `users.alerts` / `price_alert`) não são lidos por nenhum emissor, então opt-in/out por usuário não tem o que desligar. Exige decisão de produto (canal por usuário, consentimento) |
+| Cooldown | ✅ comprovado | `test/alerts-idempotency-tests.js` (cooldown, mudança real, reposição, preferências ausentes), `test/alerts-reliability-tests.js`; [#133](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/commit/3695f48) |
+| Retry sem duplicação | ✅ comprovado | `test/alerts-reliability-tests.js` (falha total, fila `pending`, reenvio único, expiração 24 h), `test/alerts-timeout-tests.js`, `test/alerts-dedupe-robustez-tests.js`; unicidade de `alert_delivery` em `test/user-isolation-db-tests.js`; [#45 fila](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/commit/0f062d1) |
+| "Queda" não dispara por falha de coleta | ✅ peças na `main`; teste ponta a ponta em PR | `test/alerts-drop-best-tests.js` (10), `test/offer-freshness-tests.js`, `test/offer-change-tests.js`. Encadeamento real `staleCopy → offerEvents → evaluate → dispatch`: [PR #726](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/726) (aberta) |
+| Alerta explica produto, loja, mudança, timestamp e motivo de comparabilidade | ⏳ em PR | Na `main`: produto, loja, valor/`de → para`, frete e `Lido em` (`test/alerts-reliability-tests.js`, `test/alerts-shipping-tests.js`); **faltavam motivo e base de comparação** → [PR #724](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/724) (aberta) acrescenta `Motivo:` e `Comparação:` com `test/alerts-explicacao-tests.js` |
+| Navegação pública sem login | ✅ comprovado (estático) | `test/account-page-tests.js` ("busca e páginas públicas não passam pelo AuthGate"); issue [#49](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/49) |
+
+**Para fechar a Fase 4:** integrar #724 e #726 com CI verde; teste de regras no emulador Firestore (job de CI com Firebase CLI + Java, ou execução manual registrada); decisão sobre envio por usuário (sem ele, opt-in/out e `capPerUser` — `test/alerts-cap-tests.js`, ainda sem uso na rodada — ficam só no canal global).
+
 ## Atualização operacional — SEO técnico (13/10/2026, pós-PRs #597 e #598)
 
 - **PR #597 integrada** — `robots.txt` deixa rastreáveis as rotas privadas que enviam `X-Robots-Tag: noindex`; `/api/` continua bloqueado. Merge commit: `acccfa1e3450b96c68e77487950714423dbf0d9f`.
