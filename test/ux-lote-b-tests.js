@@ -17,7 +17,7 @@ const run = (code, ctx, expose) => { vm.createContext(ctx); vm.runInContext(code
 const flowCode = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
     'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=',
-    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),
+    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const afilSelo=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),
   cut('const readKnown=', 'const shipNote='),
   cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
@@ -83,7 +83,7 @@ await t('2. oppCard: Pix e referência continuam visíveis, "Por que esta nota?"
     historical_context: [], community_reference: null, warnings: [], reasons: [], engine_version: 'opportunity-v2.2', updated_at: new Date().toISOString() };
   const ctx = { console, URLSearchParams, Math, String, Number, Array, JSON, Object, Promise, setTimeout, Date, store: { get: (k, d) => d, set() {} },
     S: { collections: [], reputation: { lojas: {} } }, SLUG: {}, esc: (s) => String(s ?? ''), money: (v) => 'R$ ' + v.toFixed(2).replace('.', ','), ic, photo: () => '<div class="photo"></div>',
-    catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '',
+    catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', afilSelo: () => '',
     pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', OFF: [], P: { 'sv4-box36': { liveCount: 5 } }, live: () => true,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: () => null };
   const { oppCard } = run(oppPage, ctx, 'oppCard');
