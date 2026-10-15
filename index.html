@@ -458,6 +458,15 @@ a.navbtn{text-decoration:none}
 .so-mid>div{min-width:0}
 .so-price{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-right:8px}
 .so-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.fcalc form{display:grid;gap:6px;margin-top:8px}.fcalc label[for=fc-cep]{font-weight:600;font-size:14px}
+.fc-in{display:flex;flex-wrap:wrap;gap:8px}.fc-in input{flex:1 1 150px;min-width:0;font:inherit;font-size:16px;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+.fc-in input[aria-invalid=true]{border-color:var(--bad)}.fc-in .btn[aria-disabled=true]{opacity:.6;cursor:progress}
+.fc-err{margin:0;color:var(--bad);font-size:14px;font-weight:600}.fc-status{margin:12px 0 0;font-size:14px;font-weight:600}.fc-status:empty{display:none}
+.fcalc h3{font-size:15px;margin:12px 0 0}.fc-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:10px}
+.fc-row{border:1px solid var(--line);border-radius:12px;padding:10px 12px}.fc-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.fc-total{font-weight:800;font-variant-numeric:tabular-nums}.fc-total.unk{color:var(--muted);font-weight:600}
+.fc-opts{border:0;margin:6px 0 0;padding:0;display:grid;gap:2px}.fc-opts legend{padding:0;font-size:12.5px;color:var(--muted)}
+.fc-opt{display:flex;align-items:center;gap:8px;min-height:36px;font-size:14px}.fc-opt input{width:18px;height:18px;margin:0}
 /* UX A/C/E: frete, idade da nota, nota velha e atalho de comparação nos cartões do motor */
 .opp-ship{margin:2px 0 0;font-size:12.5px;color:var(--muted)}.pod-ship{margin:4px 0 0;font-size:12px;color:var(--muted)}
 .opp-age{display:flex;align-items:center;gap:5px;margin:6px 0 0;font-size:12px;color:var(--muted)}.opp-age .icon{width:13px;height:13px}.opp-age.old{color:var(--warn);font-weight:600}
@@ -2355,6 +2364,7 @@ function renderProduct(pid){
         return`${on.length?`${sk.length?ls(sk):""}${su.length?`${sk.length?`<h3 class="so-group">Frete a calcular <small>Preço antes do frete: não dá para comparar com os totais acima.</small></h3>`:""}${ls(su)}`:""}`:`<p class="hnote">Nenhuma loja com estoque confirmado agora.</p>`}
       ${off.length?`<details class="more so-more"><summary>${ic("caret-down")}Outras ofertas (${off.length}): sem estoque, estoque não confirmado ou preço fora do normal</summary><div class="solist">${off.map((o)=>storeOffer(o,p)).join("")}</div></details>`:""}`})()}
       <p class="note">Total = preço${offers.some((o)=>o.priceKind==="pix")?" no Pix quando a loja informa":""} mais frete quando a loja informa. Sem frete informado, o valor é o preço antes do frete e a oferta não disputa o menor total.</p></section>
+    <div id="pp-frete">${fcBlock(pid)}</div>
     ${outrasLojasBlock(p)}
     <div id="pp-amz">${amzBlock(pid)}</div>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
@@ -2364,6 +2374,8 @@ function renderProduct(pid){
   if(pid in HIST)drawHist(pid);else loadHist(pid);
   hashScroll();loadPpOpp(pid,best?.id||null);
   if(!AMZ)loadAmz().then(()=>{const el=$("#pp-amz");if(el&&view==="produto"&&curPid===pid)el.innerHTML=amzBlock(pid)});
+  if(!FCCFG)loadShipCalc().then(()=>{const el=$("#pp-frete");if(el&&view==="produto"&&curPid===pid)el.innerHTML=fcBlock(pid)}).catch(()=>{});
+  else if(FC.pid===pid)fcArm(pid);
 }
 /* "Também na Amazon" (Amazon Associados): lista curada em config/afiliados/amazon.json, publicada em /data/afiliados-amazon.json.
    Camada à parte: não vira oferta e não entra em preço, ranking, Opportunity Score nem alerta. O preço é o que a página da
@@ -2380,6 +2392,99 @@ function amzRow(l){const when=amzWhen(l.capturedAt);const has=typeof l.price==="
 function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);if(!ls.length)return"";
   return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
   <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
+
+/* Frete por CEP (issue #84). Só aparece quando a API diz que o recurso está ligado (GET /api/v1/frete/estado → 200;
+   desligado = 404 e nada é desenhado). A página manda só oferta, CEP e quantidade: loja, item e vendedor são resolvidos
+   no servidor. O valor é a cotação da loja (só VTEX); frete que a loja não informou nunca vira R$ 0: fica "a calcular".
+   Ordem dos totais = byComparableTotal, a mesma regra de api/_lib/offer-rank.mjs (frete conhecido primeiro, depois total, depois id). */
+let FCCFG=null,fcP=null;
+const FC={pid:null,cep:"",raw:"",phase:"idle",err:"",res:{},pick:{},seq:0,timer:0,say:""};
+function loadShipCalc(){if(FCCFG)return Promise.resolve(FCCFG);
+  return fcP||=Promise.resolve().then(()=>fetch("/api/v1/frete/estado",{headers:{accept:"application/json"}})).then((r)=>r&&r.ok?r.json():null).catch(()=>null)
+    .then((j)=>FCCFG=j&&j.enabled===true&&Array.isArray(j.stores)?{on:true,stores:new Set(j.stores.map(String))}:{on:false,stores:new Set()})}
+const fcShipKnown=(o)=>o?.shippingKnown===true;
+const fcNum=(v)=>(Number.isFinite(v)?v:1e12);
+const byComparableTotal=(a,b)=>(fcShipKnown(b)-fcShipKnown(a))||fcNum(a.total)-fcNum(b.total)||String(a.id).localeCompare(String(b.id));
+/* mesmo critério do servidor (normalizeCep): 8 dígitos, sem faixa "00…" nem dígito repetido */
+const fcCep=(s)=>{const t=String(s??"").trim();if(!/^\d{5}-?\d{3}$/.test(t))return null;const d=t.replace("-","");return d.startsWith("00")||/^(\d)\1{7}$/.test(d)?null:d};
+const fcCepFmt=(d)=>d?d.slice(0,5)+"-"+d.slice(5):"";
+const fcOffers=(pid)=>FCCFG?.on?OFF.filter((o)=>o.productId===pid&&live(o)&&o.price>0&&FCCFG.stores.has(String(o.storeId))).sort((a,b)=>a.price-b.price||String(a.id).localeCompare(String(b.id))).slice(0,5):[];
+const FCUNIT={business_days:["dia útil","dias úteis"],days:["dia","dias"],hours:["hora","horas"],minutes:["minuto","minutos"]};
+const fcEta=(e)=>e&&FCUNIT[e.unit]&&Number.isFinite(e.value)?` · em até ${e.value} ${FCUNIT[e.unit][e.value===1?0:1]}`:"";
+const fcExpired=(q,now)=>q?.status==="ok"&&!(Date.parse(q.expiresAt)>now);
+/* oferta + cotação: total só com frete confirmado e dentro da validade; senão o "total" é o preço (vai para o fim pela regra) */
+function fcApplied(o,q,m,now){
+  const ok=q?.status==="ok"&&Array.isArray(q.options)&&q.options.length>0&&!fcExpired(q,now);
+  const opt=ok?(m!=null?q.options.find((x)=>x.method===m):q.options.reduce((a,b)=>(b.price<a.price?b:a))):null;
+  const known=!!opt&&Number.isFinite(opt.price)&&opt.price>=0;
+  return{id:o.id,o,q,opt:known?opt:null,shippingKnown:known,total:known?Math.round((o.price+opt.price)*100)/100:o.price,expired:fcExpired(q,now)}}
+const fcHour=(t)=>new Date(t).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"});
+function fcWhy(q,now){const s=q?.status;
+  if(s==="ok")return"Cotação expirada: calcule de novo para ver o valor atual.";
+  if(s==="store_cooldown"){const t=Date.parse(q.retryAt);return`A loja pediu uma pausa nas consultas${Number.isFinite(t)&&t>now?`: tente de novo depois das ${fcHour(t)}`:""}.`}
+  if(s==="rate_limited")return"Muitas consultas seguidas: espere um minuto e tente de novo.";
+  if(s==="timeout"||s==="error")return"A loja não respondeu à cotação agora.";
+  if(s==="unavailable")return typeof q.reason==="string"&&q.reason?q.reason+".":"Frete não disponível para cálculo no site.";
+  return"Sem cotação da loja."}
+function fcRows(pid,now){return fcOffers(pid).filter((o)=>FC.res[o.id]).map((o)=>fcApplied(o,FC.res[o.id],FC.pick[o.id]??null,now)).sort(byComparableTotal)}
+function fcRow(r,now){const o=r.o,q=r.q;const ok=q?.status==="ok"&&!r.expired;
+  const opts=ok?`<fieldset class="fc-opts"><legend>Modalidade de entrega na ${esc(o.storeName)}</legend>${q.options.map((x)=>`<label class="fc-opt"><input type="radio" name="fcm-${esc(o.id)}" value="${esc(x.method)}" data-fcm="${esc(o.id)}"${r.opt&&r.opt.method===x.method?" checked":""}><span>${esc(x.method)} · ${x.price===0?"Frete grátis":money(x.price)}${fcEta(x.estimate)}</span></label>`).join("")}</fieldset>`:"";
+  const line=r.shippingKnown?`Produto ${money(o.price)} + ${r.opt.price===0?"frete grátis confirmado pela loja":`frete ${money(r.opt.price)}`} (${esc(r.opt.method)})`
+    :`Preço antes do frete · frete a calcular. ${esc(fcWhy(q,now))}`;
+  return`<li class="fc-row" data-fc="${esc(o.id)}"><div class="fc-head"><b>${esc(o.storeName)}</b><span class="fc-total${r.shippingKnown?"":" unk"}">${money(r.total)}</span></div><p class="so-ship">${line}</p>${opts}</li>`}
+/* texto do aviso (role=status): o que mudou, em uma frase. Lista e escolha ficam fora da região viva. */
+function fcSay(pid,now){if(FC.pid!==pid)return"";
+  if(FC.phase==="loading")return`Calculando o frete em ${fcOffers(pid).length} ${fcOffers(pid).length===1?"loja":"lojas"}…`;
+  if(FC.phase!=="done")return"";
+  const rows=fcRows(pid,now);if(rows.some((r)=>r.expired))return"A cotação expirou: calcule de novo para ver o valor atual.";
+  if(FC.say)return FC.say;
+  const b=rows.find((r)=>r.shippingKnown);
+  return b?`Frete calculado para o CEP ${fcCepFmt(FC.cep)}: menor total ${money(b.total)} na ${b.o.storeName}.`:`Nenhuma loja informou o frete para o CEP ${fcCepFmt(FC.cep)}: os valores ficam a calcular.`}
+function fcResultsHTML(pid,now=Date.now()){if(FC.pid!==pid||FC.phase!=="done")return"";
+  const rows=fcRows(pid,now);if(!rows.length)return"";
+  return`<h3 id="fc-res" tabindex="-1">Total com frete para o CEP ${fcCepFmt(FC.cep)}</h3><ol class="fc-list">${rows.map((r)=>fcRow(r,now)).join("")}</ol>
+  <p class="hnote">Cotado agora, direto na loja, para 1 unidade. Vale por 5 minutos. Frete que a loja não informou fica "a calcular" e vai para o fim da lista.</p>`}
+function fcBlock(pid){const xs=fcOffers(pid);if(!xs.length)return"";
+  const mine=FC.pid===pid;const err=mine?FC.err:"";const val=mine?(FC.raw||fcCepFmt(FC.cep)):"";
+  const names=[...new Set(xs.map((o)=>o.storeName))];
+  return`<section class="card fcalc" aria-labelledby="fc-h"><h2 id="fc-h">${ic("truck")}Calcular frete <small>${xs.length} ${xs.length===1?"oferta":"ofertas"}</small></h2>
+  <form id="fc-form" data-pid="${esc(pid)}" novalidate><label for="fc-cep">CEP de entrega</label>
+    <div class="fc-in"><input id="fc-cep" name="cep" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" value="${esc(val)}" aria-describedby="fc-hint${err?" fc-err":""}"${err?' aria-invalid="true"':""}><button class="btn" type="submit"${mine&&FC.phase==="loading"?' aria-disabled="true"':""}>Calcular frete</button></div>
+    <p id="fc-hint" class="hnote">Cotação na hora, direto na loja (${names.map(esc).join(", ")}). Seu CEP não fica salvo.</p>
+    <p id="fc-err" class="fc-err"${err?"":" hidden"}>${esc(err)}</p></form>
+  <p id="fc-say" class="fc-status" role="status" aria-live="polite">${esc(fcSay(pid,Date.now()))}</p>
+  <div id="fc-out">${fcResultsHTML(pid)}</div></section>`}
+/* atualiza só as partes que mudam: o campo não é recriado (não perde foco nem o que foi digitado) */
+function fcPaint(pid){const box=$("#pp-frete");if(!box||curPid!==pid)return;const i=box.querySelector("#fc-cep");
+  if(!i){box.innerHTML=fcBlock(pid);return}
+  if(FC.err){i.setAttribute("aria-invalid","true");i.setAttribute("aria-describedby","fc-hint fc-err")}else{i.removeAttribute("aria-invalid");i.setAttribute("aria-describedby","fc-hint")}
+  const e=box.querySelector("#fc-err");if(e){e.textContent=FC.err;e.hidden=!FC.err}
+  const b=box.querySelector("#fc-form button");if(b){if(FC.phase==="loading")b.setAttribute("aria-disabled","true");else b.removeAttribute("aria-disabled")}
+  const s=box.querySelector("#fc-say");if(s)s.textContent=fcSay(pid,Date.now());
+  const out=box.querySelector("#fc-out");if(out)out.innerHTML=fcResultsHTML(pid)}
+/* cotação vence em 5 min: quando a primeira vencer, redesenha (mostra "expirada" e tira o total) */
+function fcArm(pid){clearTimeout(FC.timer);const now=Date.now();
+  const ts=Object.values(FC.res).filter((q)=>q?.status==="ok").map((q)=>Date.parse(q.expiresAt)).filter((t)=>Number.isFinite(t)&&t>now);
+  if(ts.length)FC.timer=setTimeout(()=>{if(curPid===pid&&FC.pid===pid){FC.say="";fcPaint(pid);fcArm(pid)}},Math.min(...ts)-now+50)}
+const fcGet=(o,cep)=>fetch(`/api/v1/frete?oferta=${encodeURIComponent(o.id)}&cep=${cep}&quantidade=1`,{headers:{accept:"application/json"}})
+  .then((r)=>r.json().catch(()=>null).then((j)=>(j&&typeof j==="object"&&typeof j.status==="string"?j:{status:r.status===429?"rate_limited":"error",options:[]})))
+  .catch(()=>({status:"error",options:[]}));
+async function fcSubmit(f){const pid=f.dataset.pid;const i=f.querySelector("#fc-cep");const raw=i?i.value:"";
+  if(FC.pid===pid&&FC.phase==="loading")return;
+  const cep=fcCep(raw);
+  if(!cep){if(FC.pid!==pid)Object.assign(FC,{pid,phase:"idle",res:{},pick:{}});Object.assign(FC,{raw,err:"CEP inválido. Digite os 8 números do CEP, por exemplo 01310-100.",say:""});fcPaint(pid);if(i)i.focus();return}
+  const xs=fcOffers(pid);const seq=++FC.seq;clearTimeout(FC.timer);
+  Object.assign(FC,{pid,cep,raw:fcCepFmt(cep),err:"",phase:"loading",res:{},pick:{},say:""});fcPaint(pid);
+  const out=await Promise.all(xs.map((o)=>fcGet(o,cep)));
+  if(seq!==FC.seq||FC.pid!==pid)return;                       /* outra consulta começou depois desta */
+  if(out.some((q)=>q.status==="invalid_cep")){Object.assign(FC,{phase:"idle",raw,err:"CEP inválido. Digite os 8 números do CEP, por exemplo 01310-100."});fcPaint(pid);const j=$("#fc-cep");if(j)j.focus();return}
+  xs.forEach((o,k)=>{FC.res[o.id]=out[k]});FC.phase="done";fcPaint(pid);
+  const h=$("#fc-res");if(h)h.focus();fcArm(pid);track("shipping_calc",{n:xs.length})}
+/* troca de modalidade: recalcula o total e a ordem; o foco volta para a opção escolhida */
+function fcChoose(oid,method){const pid=FC.pid;if(!pid||!FC.res[oid])return;FC.pick[oid]=method;
+  const r=fcApplied(OFF.find((o)=>o.id===oid)||{id:oid,price:0},FC.res[oid],method,Date.now());
+  FC.say=r.shippingKnown?`Total na ${r.o.storeName} com ${method}: ${money(r.total)}.`:"Cotação expirada: calcule de novo para ver o valor atual.";
+  fcPaint(pid);const box=$("#fc-out");const el=box?[...box.querySelectorAll("input[data-fcm]")].find((x)=>x.dataset.fcm===oid&&x.value===method):null;if(el)el.focus()}
 
 /* Conta: login com Google ou e-mail, favoritos e alertas de preço-alvo.
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
@@ -3327,7 +3432,7 @@ document.addEventListener("click",(e)=>{
 });
 document.addEventListener("submit",(e)=>{const f=e.target;
   if(f.dataset.search){e.preventDefault();const i=f.querySelector("input");const sel=f.querySelector(".ac-i.sel");if(sel){sel.click();return}doSearch(i.value);return}
-  if(f.id==="accf"){e.preventDefault();submitAcc(f)}else if(f.id==="delf"){e.preventDefault();submitDel(f)}else if(f.id==="af"){e.preventDefault();submitAlert(f)}});
+  if(f.id==="accf"){e.preventDefault();submitAcc(f)}else if(f.id==="delf"){e.preventDefault();submitDel(f)}else if(f.id==="af"){e.preventDefault();submitAlert(f)}else if(f.id==="fc-form"){e.preventDefault();fcSubmit(f)}});
 let acT=0;
 document.addEventListener("input",(e)=>{const i=e.target;if(i.closest?.(".sbox")){const x=i.closest(".sbox").querySelector(".sbox-x");if(x)x.hidden=!i.value;clearTimeout(acT);acT=setTimeout(()=>acRender(i),60)}});
 document.addEventListener("focusin",(e)=>{const i=e.target;if(i.closest?.(".sbox")&&i.value.trim().length>=2)acRender(i)});
@@ -3347,6 +3452,7 @@ document.addEventListener("toggle",(e)=>{if(e.target.id==="xf")xfOpen=e.target.o
 document.addEventListener("change",(e)=>{const t=e.target;
   if(t.dataset?.bord!=null){F.ord=t.value;buscaNav();track("filter_used",{f:"busca_ord",v:F.ord});return}
   if(t.id==="osort"){offerSort=t.value;renderProduct(curPid);return}
+  if(t.dataset?.fcm){fcChoose(t.dataset.fcm,t.value);return}
   const ok=t.dataset?.of;if(ok){OF[ok]=t.value;store.set("opp2",OF);const pm=t.closest(".opp-more");if(pm)pm.open=false;syncSheet();renderOpp().then(syncSheet);track("filter_used",{f:ok,v:String(OF[ok])});return}
   const k=t.dataset?.f;if(!k)return;F[k]=t.type==="checkbox"?t.checked:t.value;store.set("f",F);rerenderList();track("filter_used",{f:k})});
 $("#mini-img").style.backgroundImage=`url("${$(".brand img").src}")`;document.documentElement.style.setProperty("--logo",`url("${$(".brand img").src}")`);
