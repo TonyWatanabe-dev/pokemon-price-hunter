@@ -102,6 +102,23 @@ O proprietário declarou estar satisfeito com o nível atual de automação e au
 - **Autopublicação não entra no primeiro corte:** só habilitar após piloto controlado, validação dos links de afiliado, checks de dados atuais, deduplicação, limites de frequência, kill switch e logs auditáveis. Nenhuma publicação promocional se preço, estoque, variante ou frescor estiverem incertos.
 - **Critério de mudança de foco:** terminar #626/#627 se forem correções localizadas e seguras; se a frente de automação passar a depender de permissões humanas/infra externa ou exigir expansão significativa, congelar melhorias não críticas e dedicar a capacidade de desenvolvimento ao Social Media. O burn-in segue rodando em segundo plano, sem falsificar ou relaxar seus critérios.
 
+## Fase 8 — matriz de saída (15/10/2026)
+
+**Fase 8 NÃO concluída.** Critérios de `docs/PLANO-ENTREGA-TURBO.md` × evidência na `main` (`cc9d140`). Issues citadas: #80, #81, #87, #92, #96, #105, #108, #114, #117, #118 já estavam fechadas (13/10); [#94](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/94) fechada hoje com a evidência da [#718](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/718).
+
+| Critério | Estado | Evidência |
+|---|---|---|
+| Checks CI/regression/golden verdes | ✅ por PR | `ci.yml` só roda em PR (sem CI em push na `main`); as PRs integradas em 15/10 (#718, #723–#730) e as da Fase 8 (#731, #735, #738) têm `test`, `regression`, `golden`, `qa-review` verdes |
+| Zero vulnerabilidade crítica sem mitigação | ✅ | [#718](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/718): `npm audit` 0 (reconferido hoje); `test/supply-chain-tests.js`; limite: transitivas do Baileys/rembg sem lockfile, mitigadas por versão fixa e `--ignore-scripts` |
+| API com limites/timeout | ✅ | `api/v1.mjs`: `DEADLINE_MS` 12 s (< `maxDuration` 15 s), teto de OFFSET 10 000, `limite` ≤ 50/60, 405 fora de GET/HEAD; #114 fechada |
+| Backup restaurado em ambiente de teste; runbook seguível | ⏳ em PR | [PR #738](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/738): ensaio com o retrato real do ramo `data` (remoto git local + PostgreSQL descartável) → restauração idêntica e `VALIDAÇÃO OK`; achou o `db-stats` faltando no runbook (corrigido + teste). **Limite:** nenhuma etiqueta `data-backup/*` existe no GitHub (workflow nunca rodou, sem agendamento); banco Supabase sem backup próprio |
+| Smoke pós-deploy: busca, detalhe, API/dados, links | ⏳ em PR | [PR #731](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/731): `tools/post-deploy-smoke.mjs` no `seo-public-smoke.yml` (busca, `/produto/:slug`, `/api/v1/home`, `/api/v1/site/pagina/*`, links internos, `/assets/web` imutável). Conferência manual em produção (GET, 13:20 UTC) ok. Runtime do passo só depois do merge. Conta/alerta: fora (rotas privadas são casca + noindex, já cobertas pelo smoke SEO) |
+| Rodada 24/7 de 7 dias | ⏳ em andamento | [#271](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/271) (burn-in; não alterado) |
+| Sem deploy automático baseado só no merge | ❌ | Integração Git da Vercel publica cada merge na `main` em produção (deployments com o SHA de cada merge). Ponte com gates (`tools/release-run.mjs deploy`) existe, mas sem `VERCEL_TOKEN`/sink (#231, #221). **Decisão do proprietário** — opções em `docs/producao-canonica.md` |
+| Fonte canônica de produção documentada | ⏳ em PR | [PR #735](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/735): `docs/producao-canonica.md` + teste estático. Vercel é canônico; GitHub Pages é legado (recomendação: desativar). **Achado:** `tcg-price-hunter.vercel.app` faz 307 → `tcgpricehunter.com.br`, mas o código declara o `vercel.app` como canonical |
+
+**Decisões do proprietário:** (1) política de deploy (desligar deploy da `main` na Vercel e usar a Ponte, ou formalizar o merge como gate); (2) domínio canônico (`tcgpricehunter.com.br` × `vercel.app`, e 307 → 308); (3) desativar o GitHub Pages; (4) ligar o backup diário de `data/` (cron-job.org ou `schedule`) e decidir backup do banco.
+
 ## Regras de operação
 
 - Não fazer merge de PRs de produto, deploy, migration, nem alterar secrets/configuração de produção sem autorização explícita.
