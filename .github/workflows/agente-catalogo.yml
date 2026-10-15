@@ -1,0 +1,28 @@
+name: Agente de catálogo (relatório)
+# Fase 7, item 6 — Catalog Agent em modo SOMENTE PROPOSTA (tools/agente-catalogo.mjs): lê o state.json publicado no
+# ramo data e o catálogo, e escreve no resumo do job as propostas de normalização e possíveis duplicatas, com evidência.
+# Não grava catálogo, banco, fila, preço, ranking nem score; não usa secrets. Desligado por padrão: só roda com a
+# variável de repositório AGENTE_CATALOGO=true e por acionamento manual.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: agente-catalogo
+  cancel-in-progress: true
+jobs:
+  relatorio:
+    if: vars.AGENTE_CATALOGO == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - name: Ler dados publicados (ramo data)
+        run: |
+          mkdir -p rel
+          git fetch -q --depth 1 origin data
+          git show FETCH_HEAD:data/state.json > rel/state.json
+      - name: Relatório no resumo do job
+        run: node tools/agente-catalogo.mjs rel >> "$GITHUB_STEP_SUMMARY"
