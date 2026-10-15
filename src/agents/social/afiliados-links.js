@@ -13,6 +13,15 @@ export function lerLinks(arquivo = ARQUIVO) {
   } catch { return []; }
 }
 
+// Allowlist de destino para ler o id no HTML: só página https do Mercado Livre (meli.la, mercadolivre/mercadolibre).
+// Página final fora dela (link curto que leva para outro site) não vira link de afiliado do anúncio: o post usa a URL
+// da loja. O id lido da própria URL já é restrito ao Mercado Livre por mlListingId().
+const HOST_ML = /^(?:meli\.la|(?:[a-z0-9-]+\.)*mercadoli(?:vre|bre)\.com(?:\.[a-z]{2})?)$/;
+export function destinoPermitido(url) {
+  let u; try { u = new URL(String(url ?? '')); } catch { return false; }
+  return u.protocol === 'https:' && !u.username && !u.password && !u.port && HOST_ML.test(u.hostname.toLowerCase());
+}
+
 const ID_NO_HTML = /item_id(?:%3A|:|"\s*:\s*")(MLB\d{6,15})|"(?:item_id|id)"\s*:\s*"(MLB\d{6,15})"/i;
 
 /** Segue o link curto (até 6 redirecionamentos, sem executar nada) e devolve o id MLB do anúncio, ou null. */
@@ -25,7 +34,7 @@ export async function idDoLink(link, fetchFn, { timeoutMs = 10000 } = {}) {
     try { r = await fetchFn(url, { redirect: 'manual', signal: AbortSignal.timeout(timeoutMs), headers: { 'user-agent': 'TCGPriceHunterBot/1.0' } }); } catch { return null; }
     const loc = r.headers?.get?.('location');
     if (r.status >= 300 && r.status < 400 && loc) { url = new URL(loc, url).href; continue; }
-    if (r.ok) { try { const m = (await r.text()).match(ID_NO_HTML); return m ? (m[1] || m[2]).toUpperCase() : null; } catch { return null; } }
+    if (r.ok) { if (!destinoPermitido(url)) return null; try { const m = (await r.text()).match(ID_NO_HTML); return m ? (m[1] || m[2]).toUpperCase() : null; } catch { return null; } }
     return null;
   }
   return null;

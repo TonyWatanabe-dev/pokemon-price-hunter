@@ -7,7 +7,7 @@
 //
 //   loja
 //   link                           ← link de afiliado do anúncio quando existir (config/affiliates.json), senão o da loja
-//   [linha de divulgação]          ← só quando o link é de afiliado
+//   [linha de divulgação]          ← quando o link é de afiliado (flag de quem chama OU link com cara de afiliado)
 //
 // Saída em HTML do Telegram (parse_mode=HTML): tudo que vem da loja passa por limpar() e escape, então nenhum texto
 // externo vira marcação. Sem horário. Centavos sempre mantidos.
@@ -20,6 +20,16 @@ export const DIVULGACAO = 'Link de afiliado: podemos receber comissão, sem cust
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const valor = (v) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null);
 export const reais = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+// Hosts de link curto de afiliado e parâmetro de associado da Amazon: link assim SEMPRE leva a divulgação, mesmo que
+// quem chama não tenha marcado `afiliado` (ex.: URL da oferta que já veio com link de afiliado). Só detecta; nada é montado.
+const HOSTS_AFILIADO = new Set(['meli.la', 'amzn.to', 'link.amazon']);
+const AMAZON = /(^|\.)amazon\.com(\.br)?$/;
+/** true quando o link, por si só, é de afiliado (link curto de programa ou Amazon com id de associado). */
+export function linkDeAfiliado(link) {
+  let u; try { u = new URL(String(link ?? '')); } catch { return false; }
+  const h = u.hostname.toLowerCase();
+  return HOSTS_AFILIADO.has(h) || (AMAZON.test(h) && u.searchParams.has('tag'));
+}
 const https = (u) => { try { const x = new URL(u); return x.protocol === 'https:' && !x.username && !x.password ? u : null; } catch { return null; } };
 
 /** Preço anterior confiável: o "de" que a própria loja mostra (listPrice), só se for maior que o atual. Senão null. */
@@ -37,7 +47,7 @@ export function montarLegenda({ titulo, atual, anterior = null, loja, link, afil
   if (!url) throw new Error('legenda: link não é https');
   const de = valor(anterior) != null && anterior > a ? anterior : null;
   const precos = [de != null && `De <b>${esc(reais(de))}</b> ❌`, `Por <b>${esc(reais(a))}</b> ✅`].filter(Boolean).join('\n');
-  const rodape = `\n\n${precos}\n\n${esc(l)}\n${esc(url)}${afiliado ? '\n\n' + esc(DIVULGACAO) : ''}`;
+  const rodape = `\n\n${precos}\n\n${esc(l)}\n${esc(url)}${afiliado || linkDeAfiliado(url) ? '\n\n' + esc(DIVULGACAO) : ''}`;
   const espaco = LEGENDA_MAX - rodape.length - '🇧🇷 <b></b>'.length;
   if (espaco < 10) throw new Error('legenda: texto fixo excede o limite');
   const texto = `🇧🇷 <b>${esc(cortar(t, Math.floor(espaco / 5)))}</b>${rodape}`;   // /5: pior caso do escape (&amp;)

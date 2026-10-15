@@ -51,6 +51,10 @@ Use sempre que alguém mexer nas regras pelo console ou antes de publicar. Sem r
 
 **Última conferência console × repositório:** AAAA-MM-DD (preencher; nenhuma conferência registrada por este checklist ainda)
 
+## Teste automático no emulador (CI)
+
+`.github/workflows/firestore-regras.yml` roda em PR/push que altere `firebase/**` (ou o próprio teste) e por `workflow_dispatch`: instala Java 21, `firebase-tools`, `@firebase/rules-unit-testing` e `firebase` em versões fixas num diretório temporário (`--no-save`, nada no `package.json`), sobe só o emulador do Firestore no projeto `demo-tcgph` e roda `firebase/test/regras-emulador.mjs` com os casos de `firebase/test/casos.mjs` (dono lê/grava/apaga `users/{uid}`; outro usuário e anônimo negados; campos fora da lista e limites de 200 favoritos/50 alertas; subcoleções e outras coleções negadas). O resumo sai como anotação `::notice::` do job. Sem secrets, só leitura, não publica nada. `test/firestore-regras-emulador-tests.js` (no `npm test`, sem Java) confere o workflow e a cobertura dos casos.
+
 ## Testar no emulador (local, sem tocar em produção)
 
 Pré-requisitos: Node 22, Java 21 ou mais novo, e a Firebase CLI (`npm i -g firebase-tools`).
