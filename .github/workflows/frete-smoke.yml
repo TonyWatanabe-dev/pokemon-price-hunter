@@ -11,8 +11,6 @@ on:
       max:
         description: Máximo de lojas
         default: '8'
-  push:
-    branches: [feat/frete-smoke]
 
 permissions:
   contents: read
