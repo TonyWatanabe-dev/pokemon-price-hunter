@@ -152,6 +152,31 @@ O proprietário declarou estar satisfeito com o nível atual de automação e au
 
 **Para fechar a Fase 5:** decisão do proprietário sobre as 12 referências do Instagram (PR #186) e a apresentação no site; integrar #734, #737 (R3: referência) e #741 com CI verde; rodar o relatório de integridade em produção só com autorização.
 
+## Fase 7 — agentes 1–5 (15/10/2026)
+
+Estado observado na `main` (`b445c6d`) e no Actions. "Ativo" só com execução real comprovada.
+
+| Agente | Estado | Evidência | Falta para ativo com segurança |
+|---|---|---|---|
+| 1. Planner / Backlog Steward | **não existe** | Nenhum código ou workflow. A ordem vem de `Ordem:`/`Depende de:` nas issues (lidos pelo Dispatcher) e de `tools/fila-relatorio.mjs` (só leitura) | Agente só leitura que proponha fatias, ordem e dependências por comentário/issue, sem aplicar `tarefa:aprovada`. Não iniciado: a fila está vazia e a aprovação continua humana |
+| 2. Dispatcher | **ativo** | Job `despacho` roda após cada Vigia (run [38759736656](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38759736656), 15/10 15:22 UTC, sucesso) ⇒ `DISPATCHER_ATIVO=true` já vigora desde 12/10 (#231). Despachos reais: #619 (13/10), #656–#668 (14/10, telemetria por execução). `DISPATCHER_ORCAMENTO_USD=100` confirmado no run #157. Janela vazia = 24 h por padrão (`budgetConfig`). Fila hoje: nenhuma issue `tarefa:aprovada` aberta | Teto por contagem independente do custo reportado: [PR #750](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/750). Idempotência (`dispatch:N:T`), quarentena, backoff, rate limit e pré-aprovação por operador (evento de label) já testados (`test/dispatcher-*.js`) |
+| 3. QA / PR Reviewer (`qa-review`) | **ativo** | `revisor.yml` roda em toda PR (runs de 15/10 com sucesso). `qa-review` é check obrigatório da `main` junto com `test`, `regression`, `golden` (API de proteção, 15/10) | — (métrica de precisão/retrabalho ainda não medida) |
+| 4. Release Governor + Executor Bridge | **existe, desligado** | `src/agents/release-governor.js`, `release-executor-bridge.js`, `tools/release-run.mjs` com testes. Nenhum workflow invoca a Ponte; merge e deploy não são automáticos | `RELEASE_AUDIT_*`, `VERCEL_TOKEN`, deploy da Vercel fora do merge. **Adiado por decisão do proprietário** (abaixo) |
+| 5. SRE / Operations (Vigia) | **ativo (avisos); diagnóstico em issue em PR** | `watchdog.yml` a cada 15 min por `workflow_dispatch` (ex.: run [38759689297](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/38759689297)). Já detecta: dados parados, robô sem disparo, rodadas falhando, sync do banco atrasado, banco inacessível, leitor oficial, fonte vigiada e motor parado. Avisa no Telegram/ntfy | Deploy de produção falho/preso, só leitura: [PR #751](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/751). Issue de incidente idempotente com diagnóstico, atrás de `VIGIA_ISSUES`: [PR #752](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/752). Fila travada do Dispatcher e falhas por loja além da fonte vigiada: não cobertos |
+
+**Decisão do proprietário (15/10/2026) — gate de publicação:** até o lançamento, o **merge humano na `main` é o gate de publicação**: a integração Git da Vercel publica cada merge. A Release Executor Bridge com `VERCEL_TOKEN` fica para depois do lançamento. Enquanto isso:
+- nenhum agente faz merge;
+- o Release Governor só avalia (`release-run.mjs --avaliar`);
+- o critério da Fase 8 "sem deploy automático baseado só no merge" fica aceito como risco conhecido até a Ponte entrar.
+
+**Ordem para o proprietário:**
+1. Revisar e integrar #750, #751 e #752 (R3: workflow), nesta ordem.
+2. Opcional: fixar `DISPATCHER_ORCAMENTO_JANELA_H=24`, que já é o efeito padrão, e `DISPATCHER_MAX_DESPACHOS_JANELA` se quiser outro teto que não 60.
+3. Depois da #752: `VIGIA_ISSUES=true`.
+4. Só então aprovar issues com `tarefa:aprovada`.
+
+`DISPATCHER_ATIVO` já está ligado.
+
 ## Regras de operação
 
 - Não fazer merge de PRs de produto, deploy, migration, nem alterar secrets/configuração de produção sem autorização explícita.
