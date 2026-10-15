@@ -6,6 +6,7 @@
 // Nada de estatística é recalculado aqui: preço médio / menor já visto vêm do Price Engine (product_stats).
 import { PRODUCT_FIELDS, OFFER_FIELDS } from './home.mjs';
 import { byComparableTotal, byComparable } from './offer-rank.mjs';
+import { normalizeLojas } from './lojas.mjs';
 
 export const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 export const refOf = (p) => (p.copagConfirmed ? { v: p.msrp, net: false } : p.copagReference ? { v: p.copagReference, net: true } : null);
@@ -152,3 +153,43 @@ export function siteProduct(st, id, { stats = null, minDay = null } = {}) {
     stats,
   };
 }
+
+// ---- Lote F: páginas que ainda baixavam o state.json inteiro (/precos, /pistas, /pre-vendas, /lojas).
+// Cada função devolve só o que o renderizador do site (renderCopag, renderTips, renderPre, renderLojas) lê, já na
+// ordem do estado: o navegador renderiza igual ao estado completo. Mesmas regras do index.html; mudou lá, muda aqui.
+const COPAG_P = ['id', 'collection', 'collectionName', 'type', 'typeLabel', 'group', 'boosters', 'variant', 'copagConfirmed', 'msrp', 'copagReference', 'copagReferenceUrl', 'offerCount'];
+const COPAG_SRC = ['source_url', 'manual', 'source_timestamp', 'msrp_updated_at'];
+/** /precos: todos os produtos (inclusive sem oferta), só os campos da tabela; offerCount mantém os endereços (slugs) do estado completo. */
+export function siteCopag(st) {
+  const col = new Map((st.collections || []).map((c) => [c.id, c.name])); const ty = new Map((st.types || []).map((t) => [t.id, t]));
+  return { products: (st.products || []).map((p) => {
+    const r = pick(p, COPAG_P); if (r.copagConfirmed && p.copag) r.copag = pick(p.copag, COPAG_SRC);   // a fonte só aparece no preço oficial
+    if (!r.copagConfirmed) delete r.copagConfirmed;
+    // nome da coleção, rótulo e grupo do tipo: o site completa pelas listas (hydP), como no resumo da Home
+    if (col.get(p.collection) === p.collectionName) delete r.collectionName;
+    const t = ty.get(p.type); if (t && t.label === p.typeLabel) delete r.typeLabel; if (t && t.group === p.group) delete r.group;
+    return r;
+  }) };
+}
+// campos que renderTips, tipCard e tipRow leem; o texto bruto do canal nunca sai (TIP_DROP)
+const TIP_F = ['id', 'productId', 'title', 'collectionName', 'label', 'source', 'store', 'url', 'price', 'discount', 'anomalous', 'expired', 'postedAt', 'firstSeen'];
+/** /pistas: todas as pistas, só com os campos da página, e os produtos que elas citam (foto e preço sugerido do cartão). */
+export function siteTips(st) {
+  const P = productMap(st); const n = liveCounts(st);
+  const tips = (st.tips || []).map((t) => { const r = pick(t, TIP_F); for (const k of ['anomalous', 'expired']) if (r[k] === false) delete r[k]; return r; });
+  const ids = [...new Set(tips.map((t) => t.productId).filter((id) => id && P.has(id)))];
+  return { tips, products: ids.map((id) => cardP(P.get(id), n)) };
+}
+/** /pre-vendas: por produto, a pré-venda de menor total (empate: a primeira na ordem do estado), como renderPre. */
+export function sitePre(st) {
+  const P = productMap(st); const by = {};
+  for (const o of st.offers || []) if (o.stock === 'PRE_ORDER' && P.has(o.productId) && (!by[o.productId] || o.total < by[o.productId].total)) by[o.productId] = o;
+  const offers = Object.values(by); const n = liveCounts(st);
+  return { products: offers.map((o) => cardP(P.get(o.productId), n)), offers: offers.map((o) => pick(o, OFFER_FIELDS)), ...sideOf(st, offers) };
+}
+const LOJA_F = ['id', 'name', 'platform', 'status', 'offersLive', 'lastReadAt', 'reason', 'searchUrl', 'searchKind'];
+/** /lojas: a lista já normalizada (mesma regra de lojasNormalize do site: fontes do estado + ofertas, sem config/stores.json). Nunca preço. */
+export function siteLojas(st, { now = Date.now() } = {}) {
+  return { lojas: normalizeLojas({ sources: st.sources || [], stores: [], offers: st.offers || [], now }).map((l) => pick(l, LOJA_F)) };
+}
+export const SITE_PAGES = { copag: siteCopag, pistas: siteTips, prevenda: sitePre, lojas: siteLojas };

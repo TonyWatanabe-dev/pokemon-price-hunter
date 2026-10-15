@@ -16,6 +16,7 @@
 //   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
 //   GET /api/v1/site/lojas                          → diretório de lojas: domínio, ofertas observadas, atualização (sem nota de reputação)
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
+//   GET /api/v1/site/pagina/copag|pistas|prevenda|lojas → dados de /precos, /pistas, /pre-vendas e /lojas (Lote F: sem o state.json no navegador)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 //   GET /api/v1/afiliados                           → links de afiliado validados (config/affiliates.json; não lê banco nem state.json)
 // Frete por CEP (issue #84), DESLIGADO por padrão: sem SHIPPING_CALC_ENABLED=1 as duas respondem 404 sem ler nada.
@@ -128,6 +129,7 @@ function route(segs, qs) {
       return { name: 'site-ofertas', kind: 'site', args: { ids: ids.length || (!col && !type) ? ids : null, col, type }, busca };
     }
     if (id === 'lojas' && segs.length === 2) return { name: 'site-lojas', kind: 'site' };
+    if (id === 'pagina' && segs.length === 3) { if (!Object.hasOwn(SITE.SITE_PAGES, sub)) throw new HttpError(404, 'rota não encontrada'); return { name: 'site-pagina', kind: 'site', page: sub }; }
     if (id === 'produto' && sub && segs.length === 3) { if (!SLUG_RE.test(sub)) throw new HttpError(400, 'identificador de produto inválido'); return { name: 'site-produto', kind: 'site', id: sub }; }
   }
   throw new HttpError(404, 'rota não encontrada');
@@ -145,6 +147,7 @@ async function run(rt, source) {
     case 'site-produtos': return { body: { v: 1, source, ...SITE.siteProducts(await catalogState(source), rt.F, { page: rt.page, limit: rt.limit }) } };
     case 'site-ofertas': { const st = await catalogState(source);
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
+    case 'site-pagina': return { body: { v: 1, source, ...SITE.SITE_PAGES[rt.page](await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {
       const st = await catalogState(source);
