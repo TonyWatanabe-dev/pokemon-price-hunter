@@ -8,7 +8,7 @@ https://www.americanas.com.br/
 https://www.carrefour.com.br/
 https://www.extra.com.br/
 https://www.pontofrio.com.br/
-https://www.kalunga.com.br/
+https://www.kalunga.com.br/  # ERROR "plataforma não reconhecida" desde a entrada: 216 rodadas, 0 ok (sources.json 15/10). /products.json (Shopify) e a API pública VTEX não respondem como tal e a home lida pelo robô não menciona Pokémon (ou a leitura falha sem status: o detector engole o erro). Varejo de papelaria; não ativar sem leitura manual que mostre a plataforma
 https://www.leitura.com.br/
 https://www.copag.com.br/
 https://supertcg.com.br/
@@ -21,7 +21,7 @@ https://mestracards.com.br/
 https://www.cardshall.com.br/
 https://www.playgroundgames.com.br/
 https://magicstorebrasil.com.br/
-https://ggtcg.online/
+https://ggtcg.online/  # ERROR "plataforma não reconhecida": 216 rodadas, 0 ok (sources.json 15/10), mesma assinatura da kalunga (~4,9 s, sem status HTTP, sem platformHint). Nem Shopify, nem VTEX, nem "pokémon" no HTML da home; provável loja montada em JavaScript. Não ativar sem leitura manual
 https://misustore.com.br/
 https://www.dalaran.com.br/
 https://www.bazardebagda.com.br/
