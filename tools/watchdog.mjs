@@ -46,6 +46,14 @@ export async function main({ env = process.env, fetchImpl = fetch, log = console
     delivered: d.notify ? sent.delivered : null, channels: sent.channels, notifiedStatus: next.notifiedStatus,
     warnings: ev.warnings.map((x) => x.code), warn: w.notify?.kind || null, warnDelivered: w.notify ? sentW.delivered : null };
   log(JSON.stringify(summary));
+  // Resumo para o job de incidente (VIGIA_RESUMO=arquivo): estado atual, o anterior (2 checagens saudáveis fecham o
+  // incidente) e os motivos com texto. Só dados derivados da checagem; nenhum segredo.
+  if (env.VIGIA_RESUMO) {
+    try {
+      writeJsonAtomic(env.VIGIA_RESUMO, { v: 1, now, status: ev.status, previousStatus: ledger.lastStatus || null,
+        reasonsDetail: ev.reasons.map((r) => ({ code: r.code, text: r.text })), facts: ev.facts });
+    } catch { /* opcional: sem resumo, o job de incidente não age */ }
+  }
   if (d.notify) log('\n' + d.notify.text);
   if (w.notify) log('\n' + w.notify.text);
   if (env.GITHUB_STEP_SUMMARY) {

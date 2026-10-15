@@ -49,6 +49,22 @@ O aviso imediato de falha do próprio robô (passo "Avisar falha no Telegram" do
 
 O livro do que já foi avisado (`wd/ledger.json`, no cache do Actions) só muda quando a mensagem chega a pelo menos um canal. Se todos falharem, o aviso é tentado de novo na checagem seguinte. Cada canal tem prazo de 10 s.
 
+## Issue de incidente (opcional, desligada por padrão)
+
+Job `incidente` do `watchdog.yml` (`tools/vigia-incidente.mjs` → `src/ops-incident.js`). Roda só com a variável do repositório `VIGIA_ISSUES=true`.
+
+- Lê o resumo da checagem: estado, estado anterior, motivos com texto e fatos.
+- Aplica **uma** ação idempotente sobre a própria issue (autor `github-actions[bot]` + marcador `<!-- vigia:incidente -->`, label `ops:incidente`):
+  - **cria** quando o estado fica `degradado`/`parado` e não há incidente aberto;
+  - **comenta** só quando o conjunto de problemas (status + códigos) muda;
+  - **fecha** depois de 2 checagens saudáveis seguidas.
+- `desconhecido` ou resumo inválido não geram ação.
+- O texto vindo dos dados passa por `redact`, sem marcador HTML e sem menção.
+- O job tem só `issues: write`; o job `check` continua só leitura.
+- O Vigia não reinicia, não altera dados nem faz deploy: a issue só registra o diagnóstico.
+
+Para validar depois de ligar: no próximo estado degradado, conferir uma única issue `ops:incidente` com o diagnóstico; checagens repetidas não comentam de novo.
+
 ## Configuração externa (cron-job.org), a ser feita pelo dono da conta
 
 Criar um job **igual ao do robô**, só que apontando para o vigia:

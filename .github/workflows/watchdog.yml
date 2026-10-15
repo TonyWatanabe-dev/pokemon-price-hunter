@@ -23,6 +23,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      vigia: ${{ steps.resumo.outputs.json }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -48,6 +50,7 @@ jobs:
           restore-keys: watchdog-ledger-
       - name: Avaliar e avisar
         env:
+          VIGIA_RESUMO: wd/vigia.json
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
@@ -61,3 +64,33 @@ jobs:
         with:
           path: wd/ledger.json
           key: watchdog-ledger-${{ github.run_id }}-${{ github.run_attempt }}
+      # Resumo da checagem (estado, anterior, motivos e fatos; nenhum segredo) para o job de incidente.
+      - name: Exportar resumo
+        id: resumo
+        if: always()
+        run: |
+          if [ -f wd/vigia.json ]; then echo "json=$(jq -c . wd/vigia.json)" >> "$GITHUB_OUTPUT"; fi
+
+  # Issue de incidente com diagnóstico (src/ops-incident.js): cria, comenta quando os problemas mudam e fecha depois
+  # de 2 checagens saudáveis. Idempotente e só sobre a própria issue (autor = bot + marcador). Desligado por padrão:
+  # roda só com a variável do repositório VIGIA_ISSUES == 'true'. Único job com escrita, e só em issues.
+  incidente:
+    needs: check
+    if: always() && vars.VIGIA_ISSUES == 'true' && needs.check.outputs.vigia != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - name: Registrar incidente
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VIGIA_JSON: ${{ needs.check.outputs.vigia }}
+        run: node tools/vigia-incidente.mjs
