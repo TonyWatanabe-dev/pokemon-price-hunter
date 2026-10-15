@@ -2395,7 +2395,7 @@ function amzRow(l){const when=amzWhen(l.capturedAt);const has=typeof l.price==="
     <a class="btn ghost" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener nofollow sponsored">Ver na Amazon<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`}
 function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);if(!ls.length)return"";
   return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
-  <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
+  <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p><p class="hnote" data-disclosure>Links de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, sem custo extra para você. Eles não entram na comparação, no ranking nem na nota.</p></section>`}
 
 /* Frete por CEP (issue #84). Só aparece quando a API diz que o recurso está ligado (GET /api/v1/frete/estado → 200;
    desligado = 404 e nada é desenhado). A página manda só oferta, CEP e quantidade: loja, item e vendedor são resolvidos
