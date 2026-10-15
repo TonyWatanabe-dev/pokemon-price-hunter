@@ -114,6 +114,26 @@ export function dedupe(hits, sent, settings, now = Date.now(), offersById = {}) 
   return out;
 }
 
+// Motivo e base de comparação (Fase 4): toda mensagem diz por que o alerta disparou e em que base o valor foi
+// comparado. Só usa dados do próprio hit (regra, oferta, valor anterior); nada é estimado.
+export function alertReason(h) {
+  const r = h.rule || {}; const o = h.offer; const name = r.label || r.id;
+  if (h.kind === 'drop') return `Motivo: novo menor preço do produto (queda de ${pct((h.from - o.total) / h.from)} sobre ${money(h.from)})`;
+  if (h.kind === 'restock') return `Motivo: voltou ao estoque${name ? ` (regra "${name}")` : ''}`;
+  const cond = [];
+  if (r.maxPrice != null) cond.push(`até ${money(r.maxPrice)}`);
+  if (r.maxPerBooster != null) cond.push(`até ${money(r.maxPerBooster)} por booster`);
+  if (r.minDiscount != null) cond.push(`${pct(r.minDiscount, 0)} ou mais abaixo da Copag`);
+  if (r.minOpportunityScore != null) cond.push(`nota oficial ${r.minOpportunityScore} ou mais`);
+  const head = h.kind === 'target' ? 'preço-alvo atingido' : 'regra atendida';
+  return `Motivo: ${head}${name ? ` · "${name}"` : ''}${cond.length ? ` (${cond.join(', ')})` : ''}`;
+}
+// Mesma regra de comparableDrop/bestByBasis/dedupe: total com frete conhecido só contra total com frete conhecido;
+// sem frete conhecido, só o preço, contra preços sem frete conhecido.
+export const comparisonBasis = (o) => (shipKnown(o)
+  ? 'Comparação: total com frete, só contra totais com frete conhecido'
+  : 'Comparação: só o preço (frete a calcular), só contra preços sem frete conhecido');
+
 export function compose(h) {
   const { offer: o, product: p, kind } = h;
   const head = { target: '🎯 PREÇO-ALVO ATINGIDO', deal: '🔥 POKÉMON DEAL', restock: '🟢 RESTOCK', drop: '📉 QUEDA DE PREÇO' }[kind];
@@ -121,6 +141,7 @@ export function compose(h) {
   // Sem frete conhecido o valor é só o preço: a mensagem diz "+ frete" (sem valor inventado).
   const plus = shipKnown(o) ? '' : ' + frete';
   if (kind === 'drop') lines.push('', `${money(h.from)} → ${money(o.total)}${plus}`); else lines.push('', money(o.total) + plus + ` (${o.priceKindLabel})`);
+  lines.push(alertReason(h), comparisonBasis(o));
   lines.push('', p.copagConfirmed ? `Copag: ${money(p.msrp)}` : 'Copag: sem preço oficial');
   if (o.discount != null) lines.push(`↓ ${pct(o.discount)}`);
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
