@@ -97,25 +97,40 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     const plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
     io.log(`## WhatsApp automático\n\nElegíveis agora: ${lista.length} · nesta rodada: ${plano.enviar.length} (${plano.motivo})`);
     if (!plano.enviar.length) return 0;                     // não conecta à toa
-    con = await conectar(dir, {});
-    const jid = acharGrupo(await con.sock().groupFetchAllParticipating(), o.titulo);
-    if (!jid) { io.error(`envio recusado: grupo "${o.titulo}" não encontrado (ou mais de um com esse nome)`); salvar(); return 2; }
-    const feitos = [];
+    // Prepara cards e fotos ANTES de conectar: o card pode levar mais de um minuto (modelo de recorte) e o WhatsApp
+    // derruba conexão ociosa ("Connection Closed"). Conectado, só confere o grupo e posta.
+    const prontos = [];
     for (const [i, c] of plano.enviar.entries()) {
       let img = o.cardDir ? await gerarCard(c.foto, path.join(o.cardDir, `wa-card-${i}.jpg`), fetchFn, undefined, c.oferta?.productId) : null;
       if (!img && c.foto) { try { const r = await fetchFn(c.foto, { signal: AbortSignal.timeout(15000) }); if (r.ok) img = new Uint8Array(await r.arrayBuffer()); } catch { /* sem foto */ } }
       const caption = legendaWhatsApp(c.item.texto);
-      const msg = img ? { image: Buffer.from(img), caption } : { text: caption };
-      const r = await con.sock().sendMessage(jid, msg);
+      prontos.push({ c, msg: img ? { image: Buffer.from(img), caption } : { text: caption } });
+    }
+    // Uma reconexão se a conexão cair logo depois de abrir (comum na 1ª conexão após o pareamento).
+    const tentar = async (fn) => {
+      try { return await fn(); } catch (e) {
+        if (!/connection closed|conexão fechada/i.test(String(e?.message))) throw e;
+        await con.fechar(); await esperar(3000); con = await conectar(dir, {});
+        return fn();
+      }
+    };
+    con = await conectar(dir, {});
+    await esperar(2000);
+    const jid = acharGrupo(await tentar(() => con.sock().groupFetchAllParticipating()), o.titulo);
+    if (!jid) { io.error(`envio recusado: grupo "${o.titulo}" não encontrado (ou mais de um com esse nome)`); salvar(); return 2; }
+    const feitos = [];
+    for (const { c, msg } of prontos) {
+      const r = await tentar(() => con.sock().sendMessage(jid, msg));
       feitos.push({ ofertaId: c.item.ofertaId, at: new Date(now()).toISOString(), messageId: r?.key?.id ?? null });
       fs.writeFileSync(o.diario, JSON.stringify(registrar(Array.isArray(diario) ? diario : [], feitos, { now: now(), regras: REGRAS_WHATSAPP })));
-      io.log(`- enviado \`${c.item.ofertaId}\`${img ? ' · com imagem' : ' · só texto'}`);
+      io.log(`- enviado \`${c.item.ofertaId}\`${msg.image ? ' · com imagem' : ' · só texto'}`);
     }
     await esperar(3000);
     salvar();
     return 0;
   } catch (e) {
     io.error(`WhatsApp: ${String(e?.message || e).slice(0, 300)}`);
+    io.log(`WhatsApp: ${String(e?.message || e).slice(0, 300)}`);
     try { if (o.modo === 'enviar' && fs.readdirSync(dir).length) salvar(); } catch { /* mantém a sessão anterior */ }
     return 1;
   } finally {
