@@ -1,0 +1,187 @@
+{
+ "fonte": "Meus cupons (conta do proprietário), exportação manual",
+ "exportadoEm": "2026-10-15",
+ "cupons": [
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 90,
+   "minimo": 700,
+   "limite": 4500,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 120,
+   "minimo": 1100,
+   "limite": 6000,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 250,
+   "minimo": 2000,
+   "limite": 12500,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 80,
+   "minimo": 400,
+   "limite": 4000,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 150,
+   "minimo": 1600,
+   "limite": 7500,
+   "validoAte": "2026-12-31"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 199,
+   "limite": 100,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 50,
+   "minimo": 580,
+   "limite": 50,
+   "validoAte": "2026-10-21"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 50,
+   "limite": 147,
+   "validoAte": "2026-10-31"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 29,
+   "limite": 50,
+   "validoAte": "2026-10-31"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 29,
+   "limite": 10,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 29,
+   "limite": 50,
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "vendedor",
+   "tipo": "pct",
+   "valor": 5,
+   "minimo": 50,
+   "limite": 100,
+   "vendedor": "Thunder_company",
+   "validoAte": "2026-10-16"
+  },
+  {
+   "escopo": "vendedor",
+   "tipo": "pct",
+   "valor": 5,
+   "minimo": 99,
+   "limite": 10,
+   "vendedor": "Newstation Sorocaba",
+   "validoAte": "2026-10-31"
+  },
+  {
+   "escopo": "vendedor",
+   "tipo": "pct",
+   "valor": 5,
+   "minimo": 50,
+   "limite": 3,
+   "vendedor": "Newstation Sorocaba",
+   "validoAte": "2026-10-31"
+  },
+  {
+   "escopo": "vendedor",
+   "tipo": "pct",
+   "valor": 5,
+   "minimo": 80,
+   "limite": 30,
+   "vendedor": "Rctcg",
+   "validoAte": "2026-10-17"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 12,
+   "minimo": 299,
+   "limite": 50,
+   "validoAte": "2026-12-31"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 199,
+   "limite": 30,
+   "validoAte": "2026-12-31"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 15,
+   "minimo": 399,
+   "limite": 100,
+   "validoAte": "2026-12-31"
+  },
+  {
+   "escopo": "categoria",
+   "tipo": "pct",
+   "valor": 15,
+   "minimo": 39,
+   "limite": 30,
+   "campanha": "BRINQUEDOS",
+   "validoAte": "2026-10-18"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 5,
+   "minimo": 99,
+   "limite": 10,
+   "validoAte": "2026-12-31"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 29,
+   "limite": 50,
+   "validoAte": "2026-11-01"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 29,
+   "limite": 10,
+   "validoAte": "2026-11-11"
+  }
+ ]
+}

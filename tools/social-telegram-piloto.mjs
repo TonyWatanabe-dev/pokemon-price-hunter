@@ -13,10 +13,11 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { dicaCupom } from '../src/agents/social/cupons.js';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { resolveOutbound, loadAffiliates } from '../api/_lib/affiliates.mjs';
-import { montarLegenda, precoAnterior } from '../src/agents/social/legenda.js';
+import { montarLegenda, precoAnterior, LEGENDA_MAX } from '../src/agents/social/legenda.js';
 import { gerarPrevia, STATE_PADRAO } from './social-preview.mjs';
 import { aprovar, validarFila } from '../src/agents/social/fila.js';
 import { publicarFoto, API_PADRAO } from '../src/agents/social/telegram.js';
@@ -45,12 +46,18 @@ export function linkDe(oferta, afiliados) {
 }
 
 /** Todas as ofertas elegíveis agora, já com legenda aprovada, foto e link. Ordem: afiliado primeiro, depois a da prévia. */
-export function candidatos(state, { now, env = {}, afiliados = {} } = {}) {
+const CUPONS = fileURLToPath(new URL('../config/social-cupons.json', import.meta.url));
+/** Cupons importados (config/social-cupons.json); sem arquivo ou ilegível: nenhum. */
+export function carregarCupons(f = CUPONS) { try { const d = JSON.parse(fs.readFileSync(f, 'utf8')); return Array.isArray(d?.cupons) ? d.cupons : []; } catch { return []; } }
+
+export function candidatos(state, { now, env = {}, afiliados = {}, cupons = carregarCupons() } = {}) {
   const p = gerarPrevia(state, { canais: ['telegram'], now, env, limite: 50 });
   const lista = p.itens.filter((i) => i.canal === 'telegram').map((it) => {
     const o = state.offers.find((x) => x.id === it.ofertaId);
     const { link, afiliado } = linkDe(o, afiliados);
-    const { texto, parseMode } = montarLegenda({ titulo: o.title, atual: o.price, anterior: precoAnterior(o), loja: o.storeName, link, afiliado });
+    const leg = montarLegenda({ titulo: o.title, atual: o.price, anterior: precoAnterior(o), loja: o.storeName, link, afiliado });
+    const dica = env.SOCIAL_CUPONS === '0' ? null : dicaCupom(o, cupons, now ?? Date.now());   // kill switch: SOCIAL_CUPONS=0
+    const { parseMode } = leg; const texto = dica && leg.texto.length + dica.length + 2 <= LEGENDA_MAX ? `${leg.texto}\n\n${dica.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}` : leg.texto;
     const fila = { ...p.fila, itens: p.fila.itens.map((x) => (x.id === it.id ? { ...x, texto } : x)) };
     return { item: { ...it, texto }, fila, oferta: o, foto: o.image ?? null, parseMode, afiliado };
   });

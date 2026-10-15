@@ -60,6 +60,7 @@ jobs:
       - name: Rodada de envio
         env:
           SOCIAL_ENABLED: '1'
+          SOCIAL_CUPONS: ${{ vars.SOCIAL_CUPONS }}
           SOCIAL_AUTO: ${{ vars.SOCIAL_AUTO }}
           TITULO: ${{ vars.SOCIAL_TELEGRAM_TITULO || 'TCG Price Hunter | 01' }}
           SOCIAL_TELEGRAM_BOT_TOKEN: ${{ secrets.SOCIAL_TELEGRAM_BOT_TOKEN }}
