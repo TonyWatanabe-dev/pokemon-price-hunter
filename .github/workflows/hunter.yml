@@ -32,14 +32,17 @@ jobs:
             git checkout FETCH_HEAD -- data
             git reset -q
           fi
-      # Intervalo mínimo entre rodadas (padrão 8 min desde a última gravação), mesmo que o gatilho
-      # externo chame mais vezes: evita visitar as lojas sem parar.
+      # Intervalo mínimo entre rodadas (padrão 8 min desde o INÍCIO da última rodada, data/meta.json → ops.runs),
+      # mesmo que o gatilho externo chame mais vezes: evita visitar as lojas sem parar. Medir pela gravação (fim da
+      # rodada, ~10 min depois do início) fazia o gatilho de 15 min pular uma vez sim, outra não (~48 rodadas/dia).
+      # Sem o registro, cai na hora do último commit do ramo data.
       - name: Intervalo entre rodadas
         id: gap
         env:
           GAP: ${{ vars.HUNTER_MIN_GAP_MIN || '8' }}
         run: |
-          last=$(git log -1 --format=%ct FETCH_HEAD 2>/dev/null || echo 0)
+          last=$(node -e 'try{const r=require("./data/meta.json").ops.runs;const t=Date.parse(r[r.length-1].startedAt);if(t>0)console.log(Math.floor(t/1000))}catch{}' 2>/dev/null)
+          [ -n "$last" ] || last=$(git log -1 --format=%ct FETCH_HEAD 2>/dev/null || echo 0)
           age=$(( ($(date +%s) - last) / 60 ))
           # A rodada diária e a descoberta forçada (workflow_dispatch com discovery=true) nunca pulam: precisam gravar config/ e data/.
           if [ "${{ github.event.schedule }}" != "17 9 * * *" ] && [ "${{ github.event.inputs.discovery }}" != "true" ] && [ "$age" -lt "$GAP" ]; then
