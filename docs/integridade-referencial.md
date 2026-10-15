@@ -33,3 +33,11 @@ O sync atual não produz 1, 2 nem 4 (usa `oid`/`pid` resolvidos e descarta linha
 3. Se houver órfãos: listar na fila de revisão (`review_item`), decidir caso a caso; nunca apagar em lote.
 4. Casos 5 e 6: índice único parcial em oferta viva só após dedupe revisado; ampliar `duplicate_product` para detectar o caso 6.
 5. Incluir as contagens de `DETECT` em `tools/db-validate.mjs` (a checagem `histórico sem oferta órfã` já cobre o caso 1).
+
+## Relatório somente leitura (Fase 5)
+`DATABASE_URL=... node tools/db-integrity-report.mjs [pasta-data] [saida.json] [--estrito]` roda as queries `DETECT`
+(fonte única em `src/core/integrity-report.js`) e reconcilia o banco com os arquivos publicados (`data/state.json` e
+`config/catalog.json`): produtos e ofertas vivas que faltam/sobram em cada lado, referência `COPAG_OFFICIAL_*` fora do domínio
+Copag e "Copag confirmada" no site com fonte fora da Copag (decisão pendente da PR #186, marcada como revisão).
+Transação `READ ONLY` + `ROLLBACK`: não corrige nada. Rodar contra produção é leitura de dados reais e segue a autorização de
+`docs/agentes.md`; correções continuam no plano acima. Testes: `test/integrity-report-tests.js`.
