@@ -54,6 +54,18 @@ export const staleCopy = (o, now = new Date()) => carryShipping({ ...o, stale: t
 // Base de comparação (reposição, queda, histórico): a última leitura válida, não a da falha. Oferta stale antiga, sem
 // lastValid, não tem base: não gera evento (melhor perder um evento que inventar reposição ou queda).
 export const lastValidOf = (p) => (!p ? null : p.stale ? p.lastValid || null : p);
+// Eventos de uma oferta na rodada (reposição e queda), sempre contra a última leitura VÁLIDA (lastValidOf): leitura
+// que falhou agora (stale) não gera evento, e "em estoque → falha → em estoque" não é reposição nem queda.
+// Pré-venda que virou estoque é lançamento (fica no histórico), não reposição. Frete que passou a ser desconhecido
+// (ou conhecido) muda o total sem mudar o preço: não é queda (comparableDrop).
+export function offerEvents(prevOffer, o) {
+  if (!o || o.stale) return [];
+  const p = lastValidOf(prevOffer); const out = [];
+  if (p && isRestock(p.stock, o.stock)) out.push({ offerId: o.id, event: 'restock' });
+  const drop = comparableDrop(p, o);
+  if (drop) out.push({ offerId: o.id, event: 'drop', from: drop.from, fromShippingKnown: drop.shippingKnown });
+  return out;
+}
 // Rodada pulada por prazo: só fica como está a leitura válida (não stale) das últimas 3 h. Horário ausente, inválido ou
 // no futuro além de 5 min (mesma folga de classify em api/_lib/freshness.mjs) não é recente: a oferta vira staleCopy.
 export const recentRead = (o, now = new Date()) => { const age = now.getTime() - Date.parse(o?.source_timestamp ?? ''); return !!o && !o.stale && age >= -5 * 60e3 && age < 3 * 3600e3; };
@@ -400,11 +412,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     // Sem base válida (oferta nova ou stale antiga): registra a leitura, sem evento.
     const p = lastValidOf(prev[o.id]);
     const changed = !p || p.total !== o.total || p.stock !== o.stock || p.shipping !== o.shipping || p.seller !== o.seller;
-    // Pré-venda que virou estoque é lançamento (fica no histórico), não reposição: não dispara alerta de restock.
-    if (p && isRestock(p.stock, o.stock)) events.push({ offerId: o.id, event: 'restock' });
-    // Frete que passou a ser desconhecido (ou conhecido) muda o total sem mudar o preço: não é queda (comparableDrop).
-    const drop = comparableDrop(p, o);
-    if (drop) events.push({ offerId: o.id, event: 'drop', from: drop.from, fromShippingKnown: drop.shippingKnown });
+    events.push(...offerEvents(prev[o.id], o));
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
