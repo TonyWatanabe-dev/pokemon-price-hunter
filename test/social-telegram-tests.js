@@ -16,7 +16,7 @@ const TOKEN = '123456789:AAFakeTokenSomenteParaTeste_xyz-0123';
 const ON = { SOCIAL_ENABLED: 'true' };
 const BASE = { env: ON, token: TOKEN, chatId: '@tcgpricehunter' };
 
-function item({ canal = 'telegram', texto = 'Booster X por R$ 29,90\nhttps://tcg-price-hunter.vercel.app/p/x', estado = 'aprovado' } = {}) {
+function item({ canal = 'telegram', texto = 'Booster X por R$ 29,90\nhttps://tcgpricehunter.com.br/p/x', estado = 'aprovado' } = {}) {
   const r = enfileirar(filaVazia(), { canal, chaveDedupe: 'oferta-1', texto }, { now: NOW });
   if (estado === 'rascunho') return r.item;
   return (estado === 'aprovado' ? aprovar : rejeitar)(r.fila, r.item.id, { now: NOW }).item;

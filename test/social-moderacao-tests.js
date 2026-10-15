@@ -120,6 +120,8 @@ test('link-desconhecido: positivos', () => {
 
 test('link-desconhecido: negativos (site, afiliados, lojas de config/stores.json, subdomínio)', () => {
   ok('https://tcg-price-hunter.vercel.app/produto/x');
+  ok('https://tcgpricehunter.com.br/produto/x');
+  ok('https://www.tcgpricehunter.com.br/produto/x');
   ok('https://produto.mercadolivre.com.br/MLB-1234567890-etb');
   ok('www.amazon.com.br/dp/B0HFNSM2T3?tag=tcgpricehunter-20');
   for (const s of stores.stores.filter((x) => x.url)) ok(`vi em ${s.url}/produto/etb`, LOJAS);

@@ -106,7 +106,7 @@ test('catálogo inteiro: dentro do limite, formato válido, sem marca e sem term
 });
 
 test('anexarHashtags: acrescenta linha, respeita limite do canal e nunca corta o rascunho', () => {
-  const rasc = gerarRascunho(oferta, { canal: 'telegram', siteUrl: 'https://tcg-price-hunter.vercel.app' });
+  const rasc = gerarRascunho(oferta, { canal: 'telegram', siteUrl: 'https://tcgpricehunter.com.br' });
   const { hashtags } = gerarHashtags(ETB, { canal: 'telegram' });
   const r = anexarHashtags(rasc, hashtags);
   assert.equal(r.texto, `${rasc.texto}\n#EquilibrioPerfeito #ETB #PokemonTCG`);

@@ -26,7 +26,8 @@ O risco real de uma chave sem restrição é outra API ativada no mesmo projeto 
 Google Cloud Console → projeto **tcg-price-hunter** → **APIs e serviços → Credenciais** → **Chaves de API** → a chave chamada "Browser key (auto created by Firebase)" (confira os 4 primeiros e os últimos caracteres com o valor de `tools/account.src.js`).
 
 1. **Restrições de aplicativo → Sites (referenciadores HTTP)**:
-   - `https://tcg-price-hunter.vercel.app/*`
+   - `https://tcgpricehunter.com.br/*` e `https://www.tcgpricehunter.com.br/*` (domínio canônico desde 15/10/2026; também em Firebase → Authentication → Domínios autorizados)
+   - `https://tcg-price-hunter.vercel.app/*` (domínio antigo, redireciona para o canônico)
    - `https://tcg-price-hunter-*-tonywatanabeart-1457s-projects.vercel.app/*` (Previews; só se forem usados para login)
    - `https://tcg-price-hunter.firebaseapp.com/*` e `https://tcg-price-hunter.web.app/*` (página de login do Firebase)
    - `http://localhost/*` e `http://127.0.0.1/*` apenas se você testa login localmente

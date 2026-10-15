@@ -10,7 +10,7 @@ import { gerarRascunho, LIMITES, CHAMADA_MAX } from '../src/agents/social/rascun
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
 function t(name, fn) { try { fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } }
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 const NOW = Date.parse('2026-10-13T18:00:00.000Z');
 const oferta = (o = {}) => ({
   produto: { nome: 'Booster Box Evoluções Prismáticas', slug: 'evolucoes-prismaticas-booster-box' },

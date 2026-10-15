@@ -152,7 +152,7 @@ if (SAMPLES) { fs.mkdirSync(SAMPLES, { recursive: true }); fs.writeFileSync(path
 await t('3. SSR /lojas: título, descrição ≤160, 1 h1, 4 seções (h2) na ordem, ItemList de Store/Organization, links nofollow em nova aba, sem preço, texto honesto', () => {
   const p = pg['t=lojas']; assert.equal(p.status, 200); assert.equal(p.noindex, false);
   assert.equal(p.title, 'Lojas de Pokémon TCG no Brasil: todas as lojas monitoradas | TCG Price Hunter');
-  assert.equal(p.canonical, 'https://tcg-price-hunter.vercel.app/lojas');
+  assert.equal(p.canonical, 'https://tcgpricehunter.com.br/lojas');
   assert.ok(p.desc.length > 60 && p.desc.length <= 160, p.desc.length); assert.match(p.desc, new RegExp(`6 monitoradas agora, 5 sem leitura automática e ${3 + K} marketplaces\\. Busca direta em cada uma\\.$`));
   assert.equal((p.ssr.match(/<h1[ >]/g) || []).length, 1);
   const h2 = [...p.ssr.matchAll(/<h2 id="([^"]*)">([^<]*)<\/h2>/g)].map((m) => [m[1], m[2]]);
@@ -204,7 +204,7 @@ await t('4. SSR do produto: "Procurar em outras lojas" abaixo de "Onde comprar",
 });
 
 await t('5. sitemap tem /lojas; vercel.json reescreve /lojas e leva config/stores.json na função; sem dados em dia a página sai sem conteúdo e noindex', () => {
-  assert.match(out.sitemap, /<loc>https:\/\/tcg-price-hunter.vercel.app\/lojas<\/loc>/);
+  assert.match(out.sitemap, /<loc>https:\/\/tcgpricehunter.com.br\/lojas<\/loc>/);
   const v = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
   assert.equal(Object.fromEntries(v.rewrites.map((r) => [r.source, r.destination]))['/lojas'], '/api/pagina?t=lojas');
   assert.match(v.functions['api/pagina.mjs'].includeFiles, /index\.html/); assert.match(v.functions['api/pagina.mjs'].includeFiles, /config\/stores\.json/, 'a função leva a config junto');

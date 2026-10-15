@@ -16,9 +16,13 @@ Conferido em 15/10/2026 (somente leitura: API do GitHub e MCP da Vercel; nenhuma
 Domínios do projeto Vercel (15/10/2026):
 
 - `tcgpricehunter.com.br` e `www.tcgpricehunter.com.br` — servem o site (sem redirecionamento).
-- `tcg-price-hunter.vercel.app` — **307 → `tcgpricehunter.com.br`**.
+- `tcg-price-hunter.vercel.app` — **307 → `tcgpricehunter.com.br`** (o proprietário vai trocar para 308, permanente, no painel da Vercel).
 
-O código ainda declara `https://tcg-price-hunter.vercel.app` como canônico (`SITE` em `api/_seo.mjs`, `robots.txt`, `<link rel="canonical">`, sitemap, JSON-LD). Ou seja: o canonical aponta para um host que redireciona temporariamente para outro. Os smokes usam o mesmo `SITE` e seguem o redirecionamento, então continuam válidos. **Decisão do proprietário:** adotar `tcgpricehunter.com.br` como canônico (trocar `SITE`, `robots.txt`, testes de SEO, e tornar o redirecionamento permanente 308 na Vercel) ou remover o redirecionamento. Não trocar sem essa decisão: mexe em SEO e indexação.
+**Decisão do proprietário (15/10/2026): o domínio canônico é `https://tcgpricehunter.com.br`.** O código declara esse domínio em todas as superfícies canônicas: `SITE` em `api/_seo.mjs` (canonical, `og:url`, `og:image` e JSON-LD do SSR em `api/pagina.mjs`; `<loc>` de `api/sitemap.mjs`), `index.html` (canonical, `og:url`, `og:image`), `robots.txt` (`Sitemap:`) e o `SITE` dos smokes (`tools/seo-public-smoke.mjs`, reusado por `tools/post-deploy-smoke.mjs`), que consultam o domínio oficial direto. `test/dominio-canonico-tests.js` impede que uma declaração canônica volte a usar `*.vercel.app`.
+
+Continuam em `*.vercel.app`, de propósito (não são declaração canônica): a allowlist de busca do `app.html` em `api/pagina.mjs` (`pickFetchHost`, hosts do próprio deploy informados pela Vercel), o host de Preview em `tools/account.src.js`, o callback OAuth do Mercado Livre em `src/mlauth.js` (precisa bater com o cadastrado no app do ML), o host antigo na lista de hosts conhecidos da moderação social (links já publicados) e o User-Agent do robô em `tools/social-acervo.py`. `tools/page.template.html` está defasado (CLAUDE.md) e não é editado.
+
+**Pendências do proprietário:** trocar o 307 por 308 na Vercel; incluir `https://tcgpricehunter.com.br/*` e `https://www.tcgpricehunter.com.br/*` nos referenciadores da chave do Firebase e nos domínios autorizados do Firebase Auth (ver `docs/firebase-chave.md`), senão o login falha no domínio canônico; reenviar o sitemap no Search Console com a propriedade do domínio novo.
 
 ## Pipeline de deploy (estado real)
 

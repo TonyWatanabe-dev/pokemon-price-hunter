@@ -67,7 +67,7 @@ t('ponta a ponta: elegível vira rascunho; stale, sem horário, velha e duplicad
   const a = tg.find((x) => x.ofertaId === 'elegivel');
   assert.equal(a.chaveDedupe, 'me02-blister4|lojaa|5035');
   assert.match(a.elegibilidade, /^elegível: .*frescor atual \(lida há 10 min\)/);
-  assert.equal(a.link, 'https://tcg-price-hunter.vercel.app/produto/fogo-fantasmagorico-blister-quadruplo');
+  assert.equal(a.link, 'https://tcgpricehunter.com.br/produto/fogo-fantasmagorico-blister-quadruplo');
   assert.match(a.texto, /total com frete R\$\s70,35/);
   assert.equal(a.disclosure, false);
   assert.doesNotMatch(a.texto, /afiliado/i);

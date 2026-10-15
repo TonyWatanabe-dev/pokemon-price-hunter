@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 
 function urlsFor(generatedAt) {
   const script = `

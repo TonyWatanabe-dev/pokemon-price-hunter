@@ -67,7 +67,7 @@ if (SAMPLES) { fs.mkdirSync(SAMPLES, { recursive: true }); for (const q of Q) fs
 
 await t('1. /como-funciona: guia completo com 6+ h2, FAQPage com 6+ perguntas (as mesmas do HTML), descrição ≤160, link para o glossário', () => {
   const p = pg['t=como-funciona']; assert.equal(p.status, 200); assert.equal(p.noindex, false);
-  assert.equal(p.canonical, 'https://tcg-price-hunter.vercel.app/como-funciona');
+  assert.equal(p.canonical, 'https://tcgpricehunter.com.br/como-funciona');
   assert.ok(p.desc.length > 60 && p.desc.length <= 160, p.desc.length);
   const h2 = [...p.ssr.matchAll(/<h2>([^<]*)<\/h2>/g)].map((m) => m[1]);
   assert.ok(h2.length >= 6, `h2: ${h2.length}`); assert.ok(h2.includes('Perguntas frequentes') && h2.includes('Opportunity Score (0 a 100)') && h2.includes('Preço sugerido Copag'));
@@ -85,7 +85,7 @@ await t('1. /como-funciona: guia completo com 6+ h2, FAQPage com 6+ perguntas (a
 await t('2. /tipo/blister: reúne produtos de 2+ formatos de blister, com melhor preço e links para cada formato; o formato real segue existindo', () => {
   const p = pg['t=tipo&slug=blister']; assert.equal(p.status, 200); assert.equal(p.noindex, false);
   assert.equal(p.title, 'Blister Pokémon TCG: preços e onde comprar mais barato | TCG Price Hunter');
-  assert.equal(p.canonical, 'https://tcg-price-hunter.vercel.app/tipo/blister');
+  assert.equal(p.canonical, 'https://tcgpricehunter.com.br/tipo/blister');
   assert.ok(p.desc.length <= 160 && /Blister Pokémon TCG lacrado/.test(p.desc) && /3 produtos/.test(p.desc) && /a partir de R\$ 25,00/.test(p.desc), p.desc);
   const s = text(p.ssr);
   assert.match(s, /Alfa · Blister Unitário — R\$ 25,00 em Loja a · Copag R\$ 30,00/);
@@ -102,21 +102,21 @@ await t('2. /tipo/blister: reúne produtos de 2+ formatos de blister, com melhor
 
 await t('3. /guia/glossario: DefinedTermSet com 15+ termos, iguais aos do HTML (dl/dt/dd), descrição ≤160, caminho e links', () => {
   const p = pg['t=glossario']; assert.equal(p.status, 200); assert.equal(p.noindex, false);
-  assert.equal(p.canonical, 'https://tcg-price-hunter.vercel.app/guia/glossario'); assert.ok(p.desc.length <= 160 && p.desc.length > 60);
+  assert.equal(p.canonical, 'https://tcgpricehunter.com.br/guia/glossario'); assert.ok(p.desc.length <= 160 && p.desc.length > 60);
   assert.match(p.title, /^Glossário de Pokémon TCG lacrado/);
   const set = p.ld.find((x) => x['@type'] === 'DefinedTermSet'); assert.ok(set, 'DefinedTermSet');
   assert.ok(set.hasDefinedTerm.length >= 15, set.hasDefinedTerm.length);
   const dts = [...p.ssr.matchAll(/<dt id="([^"]*)">([^<]*)<\/dt>/g)];
   assert.deepEqual(dts.map((m) => m[2]), set.hasDefinedTerm.map((x) => x.name));
-  for (const [i, x] of set.hasDefinedTerm.entries()) { assert.equal(x['@type'], 'DefinedTerm'); assert.equal(x.url, `https://tcg-price-hunter.vercel.app/guia/glossario#${dts[i][1]}`); assert.ok(x.description.length > 40); }
+  for (const [i, x] of set.hasDefinedTerm.entries()) { assert.equal(x['@type'], 'DefinedTerm'); assert.equal(x.url, `https://tcgpricehunter.com.br/guia/glossario#${dts[i][1]}`); assert.ok(x.description.length > 40); }
   assert.ok(links(p.ssr).includes('/como-funciona') && links(p.ssr).includes('/colecao/alfa') && links(p.ssr).includes('/tipo/blister-triplo'));
   assert.deepEqual(p.ld.find((x) => x['@type'] === 'BreadcrumbList').itemListElement.map((i) => i.name), ['Início', 'Glossário de Pokémon TCG lacrado']);
 });
 
 await t('4. sitemap com /tipo/blister (lastmod dos blisters) e /guia/glossario; vercel.json reescreve /guia/glossario', () => {
   const sm = out.sitemap;
-  assert.match(sm, /<loc>https:\/\/tcg-price-hunter.vercel.app\/tipo\/blister<\/loc><lastmod>2026-10-12<\/lastmod>/);
-  assert.match(sm, /<loc>https:\/\/tcg-price-hunter.vercel.app\/guia\/glossario<\/loc>/);
+  assert.match(sm, /<loc>https:\/\/tcgpricehunter.com.br\/tipo\/blister<\/loc><lastmod>2026-10-12<\/lastmod>/);
+  assert.match(sm, /<loc>https:\/\/tcgpricehunter.com.br\/guia\/glossario<\/loc>/);
   assert.match(sm, /\/tipo\/blister-triplo</); assert.doesNotMatch(sm, /\/tipo\/blister-duplo</);
   const v = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
   assert.equal(Object.fromEntries(v.rewrites.map((r) => [r.source, r.destination]))['/guia/glossario'], '/api/pagina?t=glossario');

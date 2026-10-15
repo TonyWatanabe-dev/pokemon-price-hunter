@@ -9,7 +9,7 @@ import { gerarRascunho, limpar, socialEnabled, SOCIAL_ENABLED_DEFAULT, DISCLOSUR
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
 function t(name, fn) { try { fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } }
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 const oferta = (o = {}) => ({
   produto: { nome: 'Booster Box Evoluções Prismáticas', slug: 'evolucoes-prismaticas-booster-box' },
   loja: { nome: 'Loja Exemplo' }, preco: 899.9, precoTotal: 925.4,
@@ -48,7 +48,7 @@ t('Instagram: mesmo conteúdo, sem link no corpo (link vai em `link`)', () => {
   assert.equal(r.canal, 'instagram');
   assert.equal(r.link, `${SITE}/produto/evolucoes-prismaticas-booster-box`);
   assert.ok(!URL_RE.test(r.texto), r.texto);
-  assert.ok(!r.texto.includes('tcg-price-hunter.vercel.app'));
+  assert.ok(!r.texto.includes('tcgpricehunter.com.br'));
   assert.match(r.texto, /na bio/);
   assert.match(nbsp(r.texto), /R\$ 899,90 em Loja Exemplo/);
   assert.ok(r.texto.length <= LIMITES.instagram);
@@ -124,7 +124,7 @@ t('recusas explícitas: sem preço, URL não https, canal desconhecido, slug/sit
   for (const url of [undefined, '', 'http://loja.com/p', 'javascript:alert(1)', 'loja.com/p', 'ftp://x.y']) recusa(() => tg({ url }), /sem URL https/);
   recusa(() => tg({ urlDestino: 'http://x.y' }), /urlDestino/);
   for (const canal of [undefined, '', 'whatsapp', 'Telegram', 'twitter']) recusa(() => gerarRascunho(oferta(), { canal, siteUrl: SITE }), /canal desconhecido/);
-  for (const siteUrl of [undefined, 'http://tcg-price-hunter.vercel.app', 'tcg']) recusa(() => tg({}, { siteUrl }), /siteUrl/);
+  for (const siteUrl of [undefined, 'http://tcgpricehunter.com.br', 'tcg']) recusa(() => tg({}, { siteUrl }), /siteUrl/);
   for (const slug of [undefined, '', '../admin', 'a b', 'A', 'x?y=1']) recusa(() => tg({ produto: { nome: 'Box', slug } }), /slug/);
   recusa(() => tg({ produto: { nome: '<b></b>', slug: 'x' } }), /sem nome/);
   recusa(() => tg({ loja: { nome: '@' } }), /loja sem nome/);

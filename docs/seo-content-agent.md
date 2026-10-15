@@ -54,7 +54,7 @@ Isolamento e falhas (issue #613): entrada malformada (`null`, array, string, `ve
 | Analytics legítimo/consentido com acesso autorizado | **bloqueado** | Instrumentação anônima existe (`index.html`), mas não há autorização documentada de acesso aos dados nem medição de volume; eventos personalizados não aparecem no plano gratuito |
 | Search Console verificado/autorizado | **bloqueado** | Nenhuma verificação ou autorização no repositório |
 | Política de conteúdo/editorial | **bloqueado** | Inexistente no repositório |
-| Fonte canônica de produção documentada | **bloqueado** | O código é consistente com `https://tcg-price-hunter.vercel.app` (`api/_seo.mjs`, `index.html`, `robots.txt`), mas a decisão Pages × Vercel segue pendente (Fase 8 do plano) |
+| Fonte canônica de produção documentada | **bloqueado** | O código é consistente com `https://tcgpricehunter.com.br` (`api/_seo.mjs`, `index.html`, `robots.txt`), mas a decisão Pages × Vercel segue pendente (Fase 8 do plano) |
 | Sitemap, canonical e metadados no servidor | comprovado no código/testes | `api/pagina.mjs`, `api/sitemap.mjs`, testes dos lotes C/E |
 | Conteúdo real com frescor verificável | comprovado no código/testes | `api/_lib/freshness.mjs`, `test/freshness-tests.js`, `test/sitemap-falha-tests.js` |
 | Testes de renderização/indexabilidade | comprovado | Testes offline no `npm test` |

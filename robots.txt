@@ -3,4 +3,4 @@ Allow: /
 # Rotas privadas enviam X-Robots-Tag: noindex; precisam ser rastreáveis para o buscador ler essa diretiva.
 Disallow: /api/
 
-Sitemap: https://tcg-price-hunter.vercel.app/sitemap.xml
+Sitemap: https://tcgpricehunter.com.br/sitemap.xml

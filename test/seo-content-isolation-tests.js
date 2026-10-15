@@ -21,7 +21,7 @@ import { LIMITS } from '../api/_lib/freshness.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
 const test = async (name, fn) => { try { await fn(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 const T0 = Date.parse('2026-10-13T12:00:00Z');
 const now = () => new Date(T0);
 const SEO_TIPOS = ['seo.audit', 'seo-content.audit', 'seo-content.report'];
