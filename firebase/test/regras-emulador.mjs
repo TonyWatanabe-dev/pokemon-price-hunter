@@ -53,7 +53,20 @@ for (const r of resultados) {
   g.total++; if (r.ok) g.ok++;
 }
 const grupos = Object.entries(porGrupo).map(([g, v]) => `${g} ${v.ok}/${v.total}`).join(', ');
-for (const f of falhas) console.log(`::error title=Regra Firestore divergente::${f.id}: ${f.quem} ${f.op} ${f.caminho} deveria ser ${f.esperado} (${f.erro})`);
+// CONTROLE_NEGATIVO=1: regras propositalmente afrouxadas; divergência é o esperado (vira notice, não error).
+const controle = process.env.CONTROLE_NEGATIVO === '1';
+const nivel = controle ? 'notice' : 'error';
+const titulo = controle ? 'Controle negativo: divergência esperada' : 'Regra Firestore divergente';
+for (const f of falhas) console.log(`::${nivel} title=${titulo}::${f.id}: ${f.quem} ${f.op} ${f.caminho} deveria ser ${f.esperado} (${f.erro})`);
+if (controle) {
+  // Sem a checagem de dono, TODO caso do grupo outro-usuario tem de divergir, e nenhum caso de outro grupo.
+  // Sucesso (código 0) só nessa condição: um erro de infraestrutura não passa por "regra reprovada".
+  const esperadas = resultados.filter((r) => r.grupo === 'outro-usuario').map((r) => r.id).sort();
+  const vistas = falhas.map((f) => f.id).sort();
+  const ok = JSON.stringify(esperadas) === JSON.stringify(vistas);
+  console.log(`::${ok ? 'notice' : 'error'} title=Controle negativo::regras sem checagem de dono ${ok ? 'reprovadas como esperado' : 'NÃO reprovadas como esperado'}: divergiram ${vistas.join(' ') || 'nenhum'} (esperado ${esperadas.join(' ')})`);
+  process.exit(ok ? 0 : 1);
+}
 console.log(`::notice title=Regras Firestore no emulador::${resultados.length - falhas.length}/${resultados.length} casos conforme esperado (${grupos})`);
 const permitidos = resultados.filter((r) => r.esperado === 'permitido').map((r) => r.id).join(' ');
 const negados = resultados.filter((r) => r.esperado === 'negado').map((r) => r.id).join(' ');

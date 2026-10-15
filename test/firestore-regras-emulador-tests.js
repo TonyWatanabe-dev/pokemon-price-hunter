@@ -65,6 +65,12 @@ t('5. roda o script no emulador só do Firestore, projeto demo-, com as regras v
   assert.match(script, /::notice title=Regras Firestore no emulador::/, 'resumo como anotação');
   assert.match(script, /process\.exit\(falhas\.length \? 1 : 0\)/, 'falha o job se algum caso divergir');
   assert.match(script, /clearFirestore\(\)/, 'cada caso em banco zerado');
+  // controle negativo: regras sem checagem de dono rodam no mesmo script e precisam ser reprovadas
+  assert.match(wf, /CONTROLE_NEGATIVO: '1'/);
+  assert.match(wf, /sed 's\/request\.auth != null \\&\\& request\.auth\.uid == uid\/request\.auth != null\/g' firestore\.rules/);
+  assert.match(wf, /regras-emulador\.mjs' '\$RUNNER_TEMP\/afrouxadas\.rules'/);
+  assert.ok(regras.includes('request.auth != null && request.auth.uid == uid'), 'o sed do controle negativo ainda encontra a checagem de dono');
+  assert.match(script, /r\.grupo === 'outro-usuario'/);
 });
 
 const tem = (f) => CASOS.some(f);

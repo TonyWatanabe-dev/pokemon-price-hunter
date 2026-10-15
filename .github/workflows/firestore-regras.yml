@@ -54,3 +54,13 @@ jobs:
         run: |
           "$FB/node_modules/.bin/firebase" emulators:exec --only firestore --project demo-tcgph \
             "node '$FB/regras-emulador.mjs' '$GITHUB_WORKSPACE/firebase/firestore.rules'"
+      # Prova de que os casos detectam regra errada: tira a checagem de dono (qualquer logado lê/grava qualquer
+      # users/{uid}). Com CONTROLE_NEGATIVO=1 o script só sai com 0 se exatamente os casos outro-usuario divergirem.
+      - name: Controle negativo (regras sem checagem de dono devem ser reprovadas)
+        working-directory: firebase
+        env: { CONTROLE_NEGATIVO: '1' }
+        run: |
+          sed 's/request.auth != null \&\& request.auth.uid == uid/request.auth != null/g' firestore.rules > "$RUNNER_TEMP/afrouxadas.rules"
+          if cmp -s firestore.rules "$RUNNER_TEMP/afrouxadas.rules"; then echo "::error::sed não alterou as regras"; exit 1; fi
+          "$FB/node_modules/.bin/firebase" emulators:exec --only firestore --project demo-tcgph \
+            "node '$FB/regras-emulador.mjs' '$RUNNER_TEMP/afrouxadas.rules'"
