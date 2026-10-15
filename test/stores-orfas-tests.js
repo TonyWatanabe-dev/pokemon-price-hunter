@@ -1,4 +1,5 @@
-// Lojas órfãs (em sources.json, fora de stores.json) não entram em coverage.found nem em state.sources; o registro permanece no arquivo.
+// Lojas órfãs (em sources.json, fora de stores.json) não entram em coverage.found nem em state.sources e saem do arquivo
+// na rodada (pruneSources; ver test/sources-limpeza-tests.js).
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 process.env.HUNTER_DOMAIN_DELAY_MS ??= '0';
@@ -23,7 +24,7 @@ const src = JSON.parse(fs.readFileSync(path.join(tmp, 'data/sources.json'), 'utf
 assert.equal(state.coverage.found, 1, 'só a loja da lista conta');
 assert.equal(state.coverage.active, state.sources.filter((s) => s.status === 'ACTIVE').length, 'cobertura coerente com state.sources');
 assert.deepEqual(state.sources.map((s) => s.id), ['viva']);
-assert.ok(src.orfa && src.orfa.listings === 5, 'registro da órfã continua em sources.json');
+assert.equal(src.orfa, undefined, 'órfã sai de sources.json');
 assert.ok(src.viva, 'loja da lista segue registrada');
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log('stores-orfas: OK');

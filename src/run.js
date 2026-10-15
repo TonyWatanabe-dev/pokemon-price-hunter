@@ -144,6 +144,15 @@ export function backoffMs(src) {
   return Math.min(360, 15 * 2 ** (fails - 1)) * 60e3;
 }
 
+/** Remove de sources (no lugar) as lojas que não estão mais na configuração (stores.json + config/lojas/*.txt +
+ * discovery-stores.txt). Ativas, bloqueadas, pausadas etc. que seguem configuradas ficam com status e motivo. */
+export function pruneSources(sources, stores) {
+  const ids = new Set(stores.map((s) => s.id));
+  const dropped = Object.keys(sources).filter((id) => !ids.has(id)).sort();
+  for (const id of dropped) delete sources[id];
+  return dropped;
+}
+
 export async function runOnce({ log = console.log, send = transports, now = new Date() } = {}) {
   const T = now.toISOString();
   const startedAt = new Date().toISOString();
@@ -182,6 +191,11 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const sources = readJson(dataPath('sources.json'), {});
   const lowest = readJson(dataPath('lowest.json'), {});
   const distrust = loadDistrust({ sources, prev, T });
+  // Loja fora da configuração (retirada para config/lojas/removidas.txt ou tirada de config/stores.json) sai do
+  // sources.json desta rodada. Depois do loadDistrust: a lista de desconfiança é calculada uma vez e guardada em
+  // meta.json. O histórico de preços (data/hist, history.jsonl, lowest.json) é por storeId e não é tocado.
+  const dropped = pruneSources(sources, stores);
+  if (dropped.length) log(`sources.json: ${dropped.length} lojas fora da configuração deixam o registro (${dropped.join(', ')})`);
   // Menor preço vindo de leitura antiga não confiável é descartado (o cache é refeito com as leituras novas).
   for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && !trustedPoint(distrust, l.storeId, l.at)) delete lowest[pid];
   // Na rodada da correção, essas lojas não geram eventos (o "antes" delas não era confiável).
@@ -502,7 +516,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Estado para painel e API
   const all = Object.values(offers);
   const ranked = rankBestDeals(all, opp);
-  // Lojas retiradas da lista continuam em sources.json (histórico), mas ficam fora da cobertura e do estado.
+  // Lojas fora da lista já saíram de sources no início da rodada (pruneSources); o filtro fica como garantia.
   const listed = Object.entries(sources).filter(([id]) => stores.some((s) => s.id === id));
   const cov = listed.map(([, s]) => s).reduce((a, s) => { a.found++; a[s.status] = (a[s.status] || 0) + 1; return a; }, { found: 0 });
   // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
