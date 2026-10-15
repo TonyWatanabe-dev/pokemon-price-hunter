@@ -15,6 +15,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { candidatos, gerarCard } from './social-telegram-piloto.mjs';
 import { loadAffiliates } from '../api/_lib/affiliates.mjs';
+import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
 import { legendaWhatsApp, cifrarSessao, decifrarSessao, acharGrupo } from '../src/agents/social/whatsapp.js';
 
@@ -93,8 +94,13 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     if (!state) { io.error('state.json ilegível'); return 1; }
     let afiliados = {}; try { afiliados = loadAffiliates(); } catch { /* links originais */ }
     const diario = lerJson(o.diario, []);
-    const lista = candidatos(state, { now: now(), env, afiliados });
-    const plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
+    let lista = candidatos(state, { now: now(), env, afiliados });
+    let plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
+    if (plano.enviar.length) {   // só resolve os links curtos de afiliado quando há o que postar (ordem: afiliado primeiro)
+      afiliados = await comLinksSociais(afiliados, fetchFn);
+      lista = candidatos(state, { now: now(), env, afiliados });
+      plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
+    }
     io.log(`## WhatsApp automático\n\nElegíveis agora: ${lista.length} · nesta rodada: ${plano.enviar.length} (${plano.motivo})`);
     if (!plano.enviar.length) return 0;                     // não conecta à toa
     // Prepara cards e fotos ANTES de conectar: o card pode levar mais de um minuto (modelo de recorte) e o WhatsApp

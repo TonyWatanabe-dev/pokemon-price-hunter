@@ -9,6 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { candidatos, gerarCard, getChat } from './social-telegram-piloto.mjs';
 import { loadAffiliates } from '../api/_lib/affiliates.mjs';
+import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
 import { aprovar, validarFila } from '../src/agents/social/fila.js';
 import { publicarFoto } from '../src/agents/social/telegram.js';
 import { planejar, registrar } from '../src/agents/social/auto.js';
@@ -38,8 +39,13 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     const state = JSON.parse(fs.readFileSync(o.state, 'utf8'));
     let afiliados = {}; try { afiliados = loadAffiliates(); } catch { /* sem config: links originais */ }
     const diario = lerDiario(o.diario);
-    const lista = candidatos(state, { now: now(), env, afiliados });
-    const plano = planejar(lista, diario, { now: now() });
+    let lista = candidatos(state, { now: now(), env, afiliados });
+    let plano = planejar(lista, diario, { now: now() });
+    if (plano.enviar.length) {   // só resolve os links curtos de afiliado quando há o que postar (ordem: afiliado primeiro)
+      afiliados = await comLinksSociais(afiliados, fetchFn);
+      lista = candidatos(state, { now: now(), env, afiliados });
+      plano = planejar(lista, diario, { now: now() });
+    }
     io.log(`## Telegram automático\n\nElegíveis agora: ${lista.length} · nesta rodada: ${plano.enviar.length} (${plano.motivo})`);
     if (!plano.enviar.length) return 0;
     const chat = await getChat(fetchFn, token, chatId);
