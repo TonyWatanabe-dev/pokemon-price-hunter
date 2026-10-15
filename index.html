@@ -1235,6 +1235,15 @@ tr.click{cursor:pointer}
 .tiplink{color:inherit;text-decoration:none;display:block}.tiplink span{color:var(--muted)}@media (hover:hover){.tiplink:hover b{text-decoration:underline}}
 .tipmeta{display:block;margin-top:4px;font-size:13px;color:var(--muted)}.tipprice{display:inline-block;margin-bottom:6px;white-space:nowrap}
 .foot{margin:40px 2px 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.foot p{margin:0 0 8px;max-width:80ch}.foot b{color:var(--ink)}.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px}.foot-links a{color:var(--ink);font-weight:600}
+/* Selo "Link de afiliado" (ML): pequeno e visível, ao lado do clique; o ⓘ tem 24px visíveis e 44px de toque (como .ra/.deal-fav) */
+.afil-selo{position:relative;z-index:3;display:flex;flex:1 1 100%;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 2px;margin-top:2px;font-size:12px;font-weight:600;line-height:1.3;color:var(--muted)}
+.afil-i{position:relative;display:inline-grid;place-items:center;width:24px;height:24px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink);font-size:15px;line-height:1;cursor:pointer}
+.afil-i::before{content:"";position:absolute;inset:-10px}
+.afil-i[aria-expanded="true"]{background:var(--sunk)}
+.afil-nota{flex:1 1 100%;margin-top:2px;font-weight:500;color:var(--ink);text-align:center;text-wrap:pretty}
+.so-mid{flex-wrap:wrap}.so-mid>.afil-selo{justify-content:flex-end;margin-top:-6px}.so-mid>.afil-selo .afil-nota{text-align:right}
+.btn.wide+.afil-selo{margin-top:6px}
+.foot-links:has(.afil-selo){align-items:center}.foot-links .afil-selo{display:inline-flex;flex:0 1 auto;max-width:100%;justify-content:flex-start;margin:0}.foot-links .afil-nota{text-align:left}
 .rule-del{margin-left:auto;font-size:14px;font-weight:600;color:var(--bad)}.rule-fix{margin-left:auto;color:var(--muted)}
 .alertbox{margin:16px 0 4px;padding:14px;border-radius:16px;background:var(--sunk)}.alertbox h2{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}.alrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.alertbox .btn.ghost{background:var(--surface);margin-top:8px;width:100%}.alertbox .note{margin:10px 0 0}.alertbox ul{margin:10px 0 0;padding:0;list-style:none;font-size:14px}.alertbox li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
 .rule{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line);font-size:15px}
@@ -1481,6 +1490,9 @@ const mlItem=(u)=>{try{const x=new URL(String(u??"").trim());if(!/^https?:$/.tes
 const outUrl=(u)=>{const id=mlItem(u),a=id&&Object.hasOwn(AFIL.anuncios,id)?AFIL.anuncios[id]:null;return typeof a==="string"&&AFIL_OK.test(a)?a:u};
 /* Igual aos links da Amazon: destino de afiliado sai marcado como patrocinado (rel sponsored + nofollow); URL original da loja segue só com noopener. */
 const outRel=(u)=>outUrl(u)!==u?" nofollow sponsored":"";
+/* Selo "Link de afiliado" ao lado de todo clique que sai por link de afiliado do ML (anúncio com link próprio, ou o link geral com geral=true). Decisão do dono, 15/10/2026.
+   O ⓘ é um botão de divulgação (aria-expanded/aria-controls) que mostra a nota: mesmo texto de DIVULGACAO em src/agents/social/legenda.js. Só exibição: não muda destino, ordem, melhor oferta nem nota. */
+const afilSelo=(u,geral)=>{if(!geral&&outUrl(u)===u)return"";const id="afn"+Math.random().toString(36).slice(2,10);return`<span class="afil-selo" data-afil-selo>Link de afiliado<button type="button" class="afil-i" aria-expanded="false" aria-controls="${id}" aria-label="O que é link de afiliado?"><span aria-hidden="true">ⓘ</span></button><span class="afil-nota" id="${id}" hidden>Podemos receber comissão, sem custo extra para você.</span></span>`};
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
@@ -1670,7 +1682,7 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${afilSelo(o.url)}</div>`
     :`<p class="deal-price"><span>${old?`${staleNote(old)}${r?` · Copag ${money(r.v)}`:""}`:r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
@@ -1846,7 +1858,7 @@ function podCardOpp(x,r){
       ${rc.available&&rc.position==="below"?`<div class="pod-off" title="${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)}"><b>−${pctPts(rc.percentage_below)}</b><span>abaixo ${rc.reference_kind==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido":"da referência"}</span></div>`:""}
       <p class="pod-ship">${oppShip(x)}</p>
       <div class="pod-foot"><span class="ring" style="--v:${sc??0}" title="Opportunity Score ${sc}/100: ${esc(bu[0])}"><span>${sc??"-"}</span></span><span class="pod-store">${esc(st.name||"")}<br>${ra}${x.confidence!=null&&CONF_UI[lv]?`<small class="pod-conf">${CONF_UI[lv]}</small>`:""}${ageHTML(x,"pod-age")}</span>
-        <a class="pod-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>${cmpLink(pr)}</div>
+        <a class="pod-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${afilSelo(of.url)}</div>${cmpLink(pr)}</div>
   </article>`;
 }
 function podiumOppHTML(){
@@ -2306,7 +2318,7 @@ function storeOffer(o,p){
     <div class="so-top"><b>${esc(o.storeName)}</b>${raBadge(o,true)}${thirdParty(o)?`<span class="so-seller">vendido por ${esc(o.seller)}</span>`:""}${o.anomalous?`<span class="chip bad">Preço anormal</span>`:stockChip(o)}${o.confirmed===false&&live(o)?`<span class="chip" title="Preço novo ou que mudou agora. Entra nas oportunidades quando a próxima varredura confirmar o mesmo valor.">Conferindo</span>`:""}</div>
     <div class="so-mid"><div><span class="so-price">${money(o.total)}</span>${pixTag(o)}${hasD&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:hasD&&d<=-.0005?`<span class="off sm up">+${pct(-d)}</span>`:""}
       <p class="so-ship">${shipNote(o)}${shipOk(o)?"":" · frete a calcular"}${o.priceKind==="pix"?" · no Pix":""}${o.perBooster?` · ${money(o.perBooster)}/booster`:""}</p></div>
-      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>
+      <a class="btn ${live(o)?"":"ghost"}" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${afilSelo(o.url)}</div>
     <div class="so-foot"><span>${ic("clock")}${readNote(o)}</span>${live(o)?scoreChip(o):""}${o.stale?`<span class="chip warn">Leitura antiga: preço pode ter mudado</span>`:""}</div>
   </article>`;
 }
@@ -2345,7 +2357,7 @@ function renderProduct(pid){
       <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
       ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
-      <a class="btn wide" href="${esc(safeUrl(outUrl(best.url)))}" target="_blank" rel="noopener${outRel(best.url)}" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
+      <a class="btn wide" href="${esc(safeUrl(outUrl(best.url)))}" target="_blank" rel="noopener${outRel(best.url)}" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${afilSelo(best.url)}
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":old?"Leitura antiga":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:old?`${staleNote(old)}, em ${esc(old.storeName)}. Preço e estoque podem ter mudado desde então. Crie um alerta para saber quando voltar com preço bom.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
     ${alertBox(pid)}
   </aside>
@@ -3074,7 +3086,7 @@ function oppCard(x,i,opt={}){const H=opt.h||"h3";
     <div class="rc-row"><p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p>${ageHTML(x)}</div>
     ${oppFlags(x,{mkOnly:!!opt.rail})}
     ${opt.rail?"":oppWhy(x)}
-    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${cmpLink(pr)}</div></div>
+    <div class="deal-foot"><span class="deal-store">${esc(st.name||"")}</span>${ra}<div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span><span class="sr"> na ${esc(st.name||"")} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${afilSelo(of.url)}${cmpLink(pr)}</div></div>
   </div>${rar?`<i class="tcg-frame" aria-hidden="true"></i>`:""}
 </article>`;
 }
@@ -3155,7 +3167,7 @@ function ppOppHTML(x,bestId){
     ${oppCmp(x.reference_comparison)}
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     ${ageHTML(x)}
-    <a class="btn wide" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
+    <a class="btn wide" href="${esc(safeUrl(outUrl(of.url)))}" target="_blank" rel="noopener${outRel(of.url)}" ${ctaData(x)}><span class="cta-l">${ctaTxt(x)}</span> na ${esc(st.name||"loja")}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>${afilSelo(of.url)}
     ${same?"":`<p class="hnote">O menor preço com estoque é outra oferta, logo abaixo. A oportunidade considera preço, referência e confiança, não só o menor valor.</p>`}
   </section>`;
 }
@@ -3390,7 +3402,7 @@ async function loadAfil(){try{const r=await fetch("/api/v1/afiliados");if(!r.ok)
   AFIL={anuncios:a,geral:g};if(g)footAfil();if(S&&Object.keys(a).length)render()}catch{}}
 /* Link geral do Mercado Livre: só no rodapé, rotulado, e só com destino confirmado pelo dono (config). Nunca no lugar de um anúncio. */
 function footAfil(){const f=document.querySelector(".foot-links");if(!f||!AFIL.geral||f.querySelector("[data-afil]"))return;
-  f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (link de afiliado, abre em nova aba)</span></a>`)}
+  f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (link de afiliado, abre em nova aba)</span></a>${afilSelo(AFIL.geral.url,true)}`)}
 loadAfil();   /* sem await: a página não espera a config */
 async function load(){
   loading();prefetchOpp();
@@ -3403,6 +3415,7 @@ async function load(){
 document.addEventListener("click",(e)=>{
   const t=e.target;
   if(!t.closest(".sbox"))acClose();
+  const afb=t.closest(".afil-i");afilFecha(afb);if(afb){e.preventDefault();e.stopPropagation();const ab=afb.getAttribute("aria-expanded")!=="true";afb.setAttribute("aria-expanded",String(ab));const nt=document.getElementById(afb.getAttribute("aria-controls"));if(nt)nt.hidden=!ab;return}
   const sbn=t.closest(".scorebtn");if(sbn){showScore(sbn);return}
   const acb=t.closest("[data-acc]");if(acb){e.preventDefault();if($("#more").open)$("#more").close();openAccount();return}
   const gtb=t.closest("[data-gate]");if(gtb){authGate({type:"page",tab:gtb.dataset.gate});return}
@@ -3450,6 +3463,9 @@ document.addEventListener("submit",(e)=>{const f=e.target;
 let acT=0;
 document.addEventListener("input",(e)=>{const i=e.target;if(i.closest?.(".sbox")){const x=i.closest(".sbox").querySelector(".sbox-x");if(x)x.hidden=!i.value;clearTimeout(acT);acT=setTimeout(()=>acRender(i),60)}});
 document.addEventListener("focusin",(e)=>{const i=e.target;if(i.closest?.(".sbox")&&i.value.trim().length>=2)acRender(i)});
+/* Selo de afiliado: abrir um fecha os outros; clique fora ou Esc fecha (Esc devolve o foco ao ⓘ). */
+function afilFecha(exceto){document.querySelectorAll('.afil-i[aria-expanded="true"]').forEach((b)=>{if(b===exceto)return;b.setAttribute("aria-expanded","false");const nt=document.getElementById(b.getAttribute("aria-controls"));if(nt)nt.hidden=true})}
+document.addEventListener("keydown",(e)=>{if(e.key!=="Escape")return;const b=document.querySelector('.afil-i[aria-expanded="true"]');if(!b)return;const foco=b.closest(".afil-selo")?.contains(document.activeElement);afilFecha();if(foco)b.focus()});
 document.addEventListener("keydown",(e)=>{
   const i=e.target;
   if(i.closest?.(".sbox")&&i.tagName==="INPUT"){const box=document.getElementById(i.id+"-ac");const items=box&&!box.hidden?[...box.querySelectorAll(".ac-i,.ac-all")]:[];

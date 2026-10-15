@@ -157,8 +157,8 @@ await t('página: só os botões de oferta passam por outUrl, sempre dentro de s
   const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best)\.url\)\)\)\}" target="_blank" rel="noopener\$\{outRel\(\1\.url\)\}"/g)].length;
   assert.equal(inHref, 6, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade), cada um com rel do mesmo destino');
   assert.equal([...html.matchAll(/\boutRel\(/g)].length, inHref, 'outRel só nos botões de oferta');
-  assert.equal(uses, inHref + 1, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel)');
-  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 2, 'mais a definição e o uso em outRel; nenhum outro uso');
+  assert.equal(uses, inHref + 2, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel e no selo afilSelo)');
+  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 3, 'mais a definição e os usos em outRel e afilSelo; nenhum outro uso');
   for (const m of html.matchAll(/<a [^>]*href="\$\{esc\(safeUrl\(outUrl\([^"]*"[\s\S]{0,400}?<\/a>/g)) assert.match(m[0], /<span class="sr">[^<]*abre em nova aba\)<\/span>/, m[0].slice(0, 120));
   // link geral: só no rodapé, rotulado como afiliado e só com destino confirmado (geral != null)
   assert.match(html, /function footAfil\(\)\{[^\n]*if\(!f\|\|!AFIL\.geral/);
