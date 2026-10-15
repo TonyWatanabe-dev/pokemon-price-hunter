@@ -33,11 +33,12 @@ await t('1. medição: no import da auditoria, só me04-box36 e me05-blister3 s�
 
 await t('1b. cadastros manuais c30-* do catálogo (Instagram) não são Copag oficial no motor: não entram na janela', () => {
   const cat = JSON.parse(fs.readFileSync(path.join(root, 'config/catalog.json'), 'utf8'));
-  const c30 = Object.entries(cat.copag || {}).filter(([k, c]) => k.startsWith('c30-') && c.confidence === 'OFICIAL');
-  assert.ok(c30.length > 0);
-  const rows = referenceRows(c30.map(([id, c]) => ({ id, copagConfirmed: true, msrp: c.msrp, copag: c })));
+  // desde 15/10/2026 (decisão do proprietário) são COMUNIDADE: viram referência pendente 'internet', nunca verificada
+  const c30 = Object.entries(cat.copag || {}).filter(([k, c]) => k.startsWith('c30-') && /instagram\.com/.test(c.source_url));
+  assert.equal(c30.length, 12);
+  const rows = referenceRows(c30.map(([id, c]) => ({ id, copagConfirmed: false, msrp: null, copagReference: c.msrp, copagReferenceUrl: c.source_url, copag: c })));
   assert.equal(rows.length, c30.length);
-  for (const r of rows) { assert.equal(r.reference_kind, 'COMMUNITY_REFERENCE', r.legacy_id); assert.equal(r.source, 'manual'); }
+  for (const r of rows) { assert.equal(r.reference_kind, 'COMMUNITY_REFERENCE', r.legacy_id); assert.equal(r.source, 'internet'); assert.equal(r.verification_status, 'pending'); }
   assert.deepEqual(copagExpiringSoon(rows.map((r) => ({ ...r, verified_at: '2026-10-07T00:00:00Z' })), '2026-11-05T00:00:00Z'), []);
 });
 
