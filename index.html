@@ -2415,7 +2415,7 @@ const fcExpired=(q,now)=>q?.status==="ok"&&!(Date.parse(q.expiresAt)>now);
 /* oferta + cotação: total só com frete confirmado e dentro da validade; senão o "total" é o preço (vai para o fim pela regra) */
 function fcApplied(o,q,m,now){
   const ok=q?.status==="ok"&&Array.isArray(q.options)&&q.options.length>0&&!fcExpired(q,now);
-  const opt=ok?(m!=null?q.options.find((x)=>x.method===m):q.options.reduce((a,b)=>(b.price<a.price?b:a))):null;
+  const opt=ok?(m!=null?q.options.find((x)=>x.method===m):((e)=>(e.length?e:q.options).reduce((a,b)=>(b.price<a.price?b:a)))(q.options.filter((x)=>x.kind!=="pickup"))):null;
   const known=!!opt&&Number.isFinite(opt.price)&&opt.price>=0;
   return{id:o.id,o,q,opt:known?opt:null,shippingKnown:known,total:known?Math.round((o.price+opt.price)*100)/100:o.price,expired:fcExpired(q,now)}}
 const fcHour=(t)=>new Date(t).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",timeZone:"America/Sao_Paulo"});
@@ -2428,8 +2428,8 @@ function fcWhy(q,now){const s=q?.status;
   return"Sem cotação da loja."}
 function fcRows(pid,now){return fcOffers(pid).filter((o)=>FC.res[o.id]).map((o)=>fcApplied(o,FC.res[o.id],FC.pick[o.id]??null,now)).sort(byComparableTotal)}
 function fcRow(r,now){const o=r.o,q=r.q;const ok=q?.status==="ok"&&!r.expired;
-  const opts=ok?`<fieldset class="fc-opts"><legend>Modalidade de entrega na ${esc(o.storeName)}</legend>${q.options.map((x)=>`<label class="fc-opt"><input type="radio" name="fcm-${esc(o.id)}" value="${esc(x.method)}" data-fcm="${esc(o.id)}"${r.opt&&r.opt.method===x.method?" checked":""}><span>${esc(x.method)} · ${x.price===0?"Frete grátis":money(x.price)}${fcEta(x.estimate)}</span></label>`).join("")}</fieldset>`:"";
-  const line=r.shippingKnown?`Produto ${money(o.price)} + ${r.opt.price===0?"frete grátis confirmado pela loja":`frete ${money(r.opt.price)}`} (${esc(r.opt.method)})`
+  const opts=ok?`<fieldset class="fc-opts"><legend>Modalidade de entrega na ${esc(o.storeName)}</legend>${q.options.map((x)=>`<label class="fc-opt"><input type="radio" name="fcm-${esc(o.id)}" value="${esc(x.method)}" data-fcm="${esc(o.id)}"${r.opt&&r.opt.method===x.method?" checked":""}><span>${x.kind==="pickup"?`Retirada${x.pickupPoint?` em ${esc(x.pickupPoint)}`:""} (${esc(x.method)}) · ${x.price===0?"sem custo":money(x.price)}`:`${esc(x.method)} · ${x.price===0?"Frete grátis":money(x.price)}`}${fcEta(x.estimate)}</span></label>`).join("")}</fieldset>`:"";
+  const line=r.shippingKnown?`Produto ${money(o.price)} + ${r.opt.kind==="pickup"?`retirada ${r.opt.price===0?"sem custo":money(r.opt.price)}`:r.opt.price===0?"frete grátis confirmado pela loja":`frete ${money(r.opt.price)}`} (${esc(r.opt.method)})`
     :`Preço antes do frete · frete a calcular. ${esc(fcWhy(q,now))}`;
   return`<li class="fc-row" data-fc="${esc(o.id)}"><div class="fc-head"><b>${esc(o.storeName)}</b><span class="fc-total${r.shippingKnown?"":" unk"}">${money(r.total)}</span></div><p class="so-ship">${line}</p>${opts}</li>`}
 /* texto do aviso (role=status): o que mudou, em uma frase. Lista e escolha ficam fora da região viva. */
@@ -2443,7 +2443,7 @@ function fcSay(pid,now){if(FC.pid!==pid)return"";
 function fcResultsHTML(pid,now=Date.now()){if(FC.pid!==pid||FC.phase!=="done")return"";
   const rows=fcRows(pid,now);if(!rows.length)return"";
   return`<h3 id="fc-res" tabindex="-1">Total com frete para o CEP ${fcCepFmt(FC.cep)}</h3><ol class="fc-list">${rows.map((r)=>fcRow(r,now)).join("")}</ol>
-  <p class="hnote">Cotado agora, direto na loja, para 1 unidade. Vale por 5 minutos. Frete que a loja não informou fica "a calcular" e vai para o fim da lista.</p>`}
+  <p class="hnote">Cotado agora, direto na loja, para 1 unidade. Vale por 5 minutos. Cada loja mostra todas as modalidades que oferece; o total usa a entrega mais barata, e você pode escolher outra. Retirada aparece à parte. Frete que a loja não informou fica "a calcular" e vai para o fim da lista.</p>`}
 function fcBlock(pid){const xs=fcOffers(pid);if(!xs.length)return"";
   const mine=FC.pid===pid;const err=mine?FC.err:"";const val=mine?(FC.raw||fcCepFmt(FC.cep)):"";
   const names=[...new Set(xs.map((o)=>o.storeName))];

@@ -68,13 +68,21 @@ export function parseVtexSimulation(json) {
     const method = typeof s.name === 'string' && s.name.trim() ? s.name.trim().slice(0, 80) : (typeof s.id === 'string' ? s.id.slice(0, 80) : null);
     if (!method) continue;
     const price = Math.round(s.price) / 100;
-    options.push({ method, price, free: price === 0, estimate: parseEstimate(s.shippingEstimate) });
+    // Retirada (pickup-in-point) é outra modalidade: entra na lista, mas não disputa o "menor frete" de entrega.
+    const pickup = s.deliveryChannel === 'pickup-in-point' || s.selectedDeliveryChannel === 'pickup-in-point';
+    const ponto = pickup && typeof s.pickupStoreInfo?.friendlyName === 'string' ? s.pickupStoreInfo.friendlyName.trim().slice(0, 80) : '';
+    options.push({ method, kind: pickup ? 'pickup' : 'delivery', ...(ponto ? { pickupPoint: ponto } : {}), price, free: price === 0, estimate: parseEstimate(s.shippingEstimate) });
   }
   if (!options.length) return { status: STATUS.UNAVAILABLE, reason: 'cotação da loja sem preço legível', options: [] };
   return { status: STATUS.OK, options };
 }
 
-export const cheapest = (options) => (options?.length ? options.reduce((a, b) => (b.price < a.price ? b : a)) : null);
+// Padrão = entrega mais barata; retirada só vira padrão quando a loja não oferece nenhuma entrega.
+export const cheapest = (options) => {
+  if (!options?.length) return null;
+  const entregas = options.filter((o) => o.kind !== 'pickup');
+  return (entregas.length ? entregas : options).reduce((a, b) => (b.price < a.price ? b : a));
+};
 // Modalidade usada no total: a escolhida pela pessoa (se existir na cotação); sem escolha, a mais barata.
 // Modalidade pedida que a loja não devolveu = sem total (não troca por outra em silêncio).
 const pickOption = (quote, method) => (method == null ? cheapest(quote?.options) : quote?.options?.find((o) => o.method === method) || null);
