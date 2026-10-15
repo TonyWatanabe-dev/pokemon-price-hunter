@@ -175,7 +175,9 @@ node tools/db-migrate.mjs                    # cria o esquema hunter (idempotent
 node tools/db-grants.mjs                     # leitura para hunter_api, se o usuário existir
 node tools/db-sync.mjs /tmp/rest/data        # produtos, lojas, ofertas e histórico do retrato (idempotente)
 node tools/db-import-references.mjs          # referências auditadas (db/reference-imports, no main)
+node tools/db-stats.mjs                      # Price Engine: product_stats e série diária (sem ele, a próxima linha avalia 0 produtos)
 node tools/db-opportunity.mjs                # recalcula as notas
+node tools/db-validate.mjs /tmp/rest/data /tmp/rest/validacao.json   # confere contagens e invariantes: "VALIDAÇÃO OK"
 ```
 
 Com um retrato mais velho que o banco:
@@ -185,6 +187,10 @@ Com um retrato mais velho que o banco:
 A rodada seguinte do robô volta a sincronizar normalmente.
 
 Teste automático desta volta completa: `test/backup-tests.js`. Ele restaura um retrato, roda o `db-sync` num banco descartável e confere se o número de ofertas é igual.
+
+A ordem acima é a mesma do passo de banco do robô (`.github/workflows/hunter.yml`); `test/backup-runbook-tests.js` falha se as duas divergirem.
+
+**Ensaio registrado:** 15/10/2026, seguindo só este documento, num ambiente de teste (remoto git local + PostgreSQL 16 descartável): `docs/smoke/restore-drill-2026-10-15.md`. O ensaio achou a falta do `db-stats` nesta lista (corrigida).
 
 ## Disparo pelo cron-job.org (a ser feito pelo dono da conta)
 
