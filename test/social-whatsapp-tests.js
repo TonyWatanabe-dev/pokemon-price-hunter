@@ -88,6 +88,17 @@ await t('7. enviar: posta imagem + legenda no grupo certo, grava diário e regra
   assert.equal(f2.env.length, 0, '30 min ainda não passaram: nem conecta');
 });
 
+await t('7b. enviar: conexão cai logo após abrir → reconecta uma vez e posta sem duplicar', async () => {
+  const sessao = path.join(tmp, 's3.bin'); fs.writeFileSync(sessao, cifrarSessao({ 'creds.json': '{}' }, CHAVE));
+  const env = []; let conexoes = 0;
+  const conectar = async () => { conexoes++; const n = conexoes; return {
+    sock: () => ({ groupFetchAllParticipating: async () => { if (n === 1) throw new Error('Connection Closed'); return { a: { id: '1@g.us', subject: 'TCG Price Hunter | 01' } }; },
+      sendMessage: async (jid, m) => { env.push(m); return { key: { id: 'M' } }; } }), fechar: async () => {} }; };
+  const a = ['enviar', '--sessao', sessao, '--state', stateFile, '--diario', path.join(tmp, 'd3.json'), '--titulo', 'TCG Price Hunter | 01'];
+  assert.equal(await main(a, ENV, io().io, { conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 0);
+  assert.equal(conexoes, 2); assert.equal(env.length, 1);
+});
+
 await t('8. enviar: grupo com outro nome não recebe nada', async () => {
   const sessao = path.join(tmp, 's2.bin'); fs.writeFileSync(sessao, cifrarSessao({ 'creds.json': '{}' }, CHAVE));
   const f = fakeCon({ a: { id: '9@g.us', subject: 'Grupo de teste' } });
