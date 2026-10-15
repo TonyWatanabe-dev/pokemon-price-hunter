@@ -20,7 +20,10 @@ export const confidenceLabel = (n) => (n == null ? null : n >= 85 ? 'alta' : n >
 const PARTIAL_DATE = /^\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?)?$/;   // AAAA, AAAA-MM ou AAAA-MM-DD: sem inventar dia
 export const isPartialDate = (s) => s == null || PARTIAL_DATE.test(String(s));
 const COPAG_HOST = /(^|\.)copag(loja)?\.com\.br$/i;
-export const isCopagUrl = (u) => { try { return COPAG_HOST.test(new URL(u).hostname); } catch { return false; } };
+// Mesma regra do banco (reference_price_copag_domain_check, migration 006): http(s), host Copag logo depois de "//" e "/" ou fim.
+// Sem ela, uma URL aceita aqui e recusada lá (ftp:, porta, usuário, "?" colado no host) abortaria o INSERT em lote do sync.
+const COPAG_URL_DB = /^https?:\/\/([a-z0-9-]+\.)*copag(loja)?\.com\.br(\/|$)/i;
+export const isCopagUrl = (u) => { if (typeof u !== 'string' || !COPAG_URL_DB.test(u)) return false; try { return COPAG_HOST.test(new URL(u).hostname); } catch { return false; } };
 
 /** tipo de uma referência vinda do robô (catalog.json): só é Copag oficial se a fonte for domínio da Copag */
 export function robotReferenceKind({ source_url }) {

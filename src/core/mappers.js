@@ -2,7 +2,7 @@
 // PRODUCT → OFFER → STORE → MARKETPLACE, + PRICE_HISTORY, STOCK, SHIPPING, REFERENCE_PRICE.
 // Funções puras (sem banco), para testar isoladas.
 import { categoryOf } from './taxonomy.js';
-import { robotReferenceKind } from './references.js';
+import { robotReferenceKind, isCopagUrl } from './references.js';
 import { slugs, label } from '../../api/_seo.mjs';
 
 export const TCG = 'pokemon';
@@ -41,7 +41,7 @@ export function referenceRows(products) {
   for (const p of products) {
     if (p.copagConfirmed && p.msrp && p.copag?.source_url) {
       const seen = ts(p.copag.source_timestamp || p.copag.msrp_updated_at);
-      out.push({ legacy_id: p.id, value: money(p.msrp), source: /copagloja/.test(p.copag.source_url) ? 'copag_loja' : 'manual',
+      out.push({ legacy_id: p.id, value: money(p.msrp), source: isCopagUrl(p.copag.source_url) && /copagloja/i.test(p.copag.source_url) ? 'copag_loja' : 'manual',   // domínio parecido não vira copag_loja
         // só é Copag oficial se a fonte for domínio da Copag; tabela divulgada por lojas (Instagram) é referência comunitária
         reference_kind: robotReferenceKind(p.copag), observed_at: seen,
         source_url: p.copag.source_url, verification_status: 'verified', verified_at: seen,
