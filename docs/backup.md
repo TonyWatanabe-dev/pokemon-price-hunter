@@ -4,32 +4,20 @@
 
 O ramo `data` é reescrito a cada rodada do robô (`tools/push-data.sh`: um commit só, `push -f`). Não há histórico: uma rodada ruim apaga a única cópia de `state.json`, `offers.json`, `history.jsonl`, `hist/`, `alerts-sent.json`, `meta.json`, `copag-msrp.json` etc.
 
-## Estado: desligado por padrão
+## Estado: ligado (agendamento diário)
 
-O workflow **Backup dos dados** chega à `main` **sem agendamento**: só roda quando alguém dispara (Actions → Backup dos dados → Run workflow) ou por `workflow_dispatch` externo. Nada acontece sozinho depois do merge.
+Decisão do proprietário de 15/10/2026: o workflow **Backup dos dados** roda sozinho **todo dia às 04:37 UTC** (01:37 em Brasília), pelo `schedule` de `.github/workflows/backup-data.yml`, longe da rodada diária das 09:17.
 
-### Como ativar o agendamento
-
-Escolha um dos dois (ou os dois; repetir no mesmo dia não faz mal):
-
-1. **cron-job.org (recomendado)**: criar o job descrito em "Disparo pelo cron-job.org", mais abaixo. Não exige mudar o repositório.
-2. **Agendador do GitHub (reserva)**: em `.github/workflows/backup-data.yml`, descomentar o bloco
-
-   ```yaml
-   on:
-     schedule:
-       - cron: '41 4 * * *'
-     workflow_dispatch:
-   ```
-
-   e publicar a mudança por PR. O agendador do GitHub atrasa e pula execuções neste repositório, por isso fica só como reserva.
-
-Antes de ativar, rodar uma vez à mão e conferir (ver "Como validar depois da publicação").
+- `workflow_dispatch` continua: dá para rodar à mão (Actions → Backup dos dados → Run workflow) ou pelo cron-job.org (ver "Disparo pelo cron-job.org"). Repetir no mesmo dia não faz mal (idempotente).
+- O job só roda a partir da `main` (`if: github.ref == 'refs/heads/main'`): um disparo manual escolhendo outro ramo é pulado e não marca nem apaga nada.
+- O agendador do GitHub pode atrasar ou pular execuções em horário de pico. Se aparecerem dias sem etiqueta, o cron-job.org vira a fonte principal e o `schedule` fica como reserva. Conferência rápida: `node tools/data-backup.mjs --check-age` (sai 1 se a etiqueta mais nova tiver mais de 2 dias).
+- O primeiro retrato só existe depois da primeira execução após o merge. Para tê-lo no mesmo dia, rodar uma vez à mão (ver "Como validar depois da publicação").
+- Para desligar: remover o bloco `schedule` por PR (ou Actions → Backup dos dados → … → Disable workflow).
 
 ## O que está coberto: a pasta data/, por etiquetas
 
 - **Workflow**: `.github/workflows/backup-data.yml` → `tools/data-backup.mjs`.
-- **O que faz**, a cada disparo (o planejado é uma vez por dia, depois de ativado):
+- **O que faz**, a cada disparo (uma vez por dia pelo agendamento, mais os disparos manuais):
   1. busca o ramo `data` e fixa o sha do commit;
   2. valida o retrato:
      - `state.json` legível, com `generatedAt` válido e com a lista `offers`;
@@ -49,7 +37,8 @@ Antes de ativar, rodar uma vez à mão e conferir (ver "Como validar depois da p
 ### Retenção
 
 - Padrão: **14 dias**. Para mudar, criar a variável do repositório `BACKUP_RETENTION_DAYS` (Settings → Secrets and variables → Actions → Variables). Aceita de 3 a 365; valor inválido volta para 14.
-- Só são apagadas as etiquetas no formato `data-backup/AAAA-MM-DD` mais velhas que a retenção.
+- Só são apagadas as etiquetas no formato exato `data-backup/AAAA-MM-DD` mais velhas que a retenção (`planPrune` em `tools/data-backup.mjs`). Ramos, outras etiquetas e qualquer outra ref nunca são apagados.
+- Com o agendamento diário e o padrão de 14 dias, ficam em torno de 15 etiquetas (≈ duas semanas de retratos).
 - **As 3 mais recentes nunca são apagadas**, mesmo velhas (ex.: robô parado há um mês).
 - Etiqueta com outro nome nunca é apagada. Exemplo: `data-backup/antes-da-restauracao`, para guardar um retrato à mão por tempo indeterminado.
 - Tamanho: cada retrato tem ~7,5 MB (out/2026). Arquivos que não mudam entre dias são guardados uma vez só pelo Git.
@@ -194,7 +183,7 @@ A ordem acima é a mesma do passo de banco do robô (`.github/workflows/hunter.y
 
 ## Disparo pelo cron-job.org (a ser feito pelo dono da conta)
 
-Mesmo padrão do vigia (`docs/vigia.md`). O `schedule` do workflow vem comentado (desligado); se for ativado, fica só como reserva, porque o agendador do GitHub pula execuções neste repositório.
+Mesmo padrão do vigia (`docs/vigia.md`). Opcional desde que o `schedule` foi ligado: serve de redundância, porque o agendador do GitHub pode pular execuções neste repositório.
 
 - **URL** (POST): `https://api.github.com/repos/TonyWatanabe-dev/pokemon-price-hunter/actions/workflows/backup-data.yml/dispatches`
 - **Cabeçalhos**:
@@ -203,7 +192,7 @@ Mesmo padrão do vigia (`docs/vigia.md`). O `schedule` do workflow vem comentado
   - `Content-Type: application/json`
   - `Authorization: Bearer <o mesmo token usado no job do robô>` (precisa de "Actions: read and write")
 - **Corpo**: `{"ref":"main"}`
-- **Horário**: uma vez por dia, ex.: 04:41 UTC (01:41 em Brasília), longe da rodada diária das 09:17.
+- **Horário**: uma vez por dia, ex.: 04:41 UTC (01:41 em Brasília), poucos minutos depois do `schedule` das 04:37 e longe da rodada diária das 09:17. Se o `schedule` já marcou o dia, o disparo só confirma "Retrato do dia já existia".
 
 Repetir no mesmo dia não faz mal (idempotente).
 
@@ -212,6 +201,7 @@ Repetir no mesmo dia não faz mal (idempotente).
 1. Rodar **Backup dos dados** à mão (Actions → Run workflow). O resumo deve mostrar "Retrato marcado" e a etiqueta deve aparecer em Tags.
 2. Rodar de novo: "Retrato do dia já existia".
 3. Na máquina local, conferir o retrato com `node tools/data-restore.mjs --list` e depois `--verify <data>`.
+4. No dia seguinte, conferir em Actions uma execução com evento `schedule` perto das 04:37 UTC e a etiqueta nova em Tags.
 
 ## Riscos e limites
 
