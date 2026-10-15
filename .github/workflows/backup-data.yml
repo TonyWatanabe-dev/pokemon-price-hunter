@@ -3,12 +3,12 @@ name: Backup dos dados
 # retenção (variável BACKUP_RETENTION_DAYS, padrão 14; as 3 mais recentes nunca são apagadas). Ver docs/backup.md.
 # O ramo data é reescrito a cada rodada (push -f, sem histórico): a etiqueta é o que mantém um retrato recuperável.
 #
-# DESLIGADO POR PADRÃO: só roda à mão (Actions → Run workflow) ou por workflow_dispatch externo (cron-job.org).
-# Não há agendamento ativo. Para ativar o agendamento do GitHub (reserva), descomentar o bloco schedule abaixo;
-# ver "Como ativar o agendamento" em docs/backup.md.
+# LIGADO (decisão do proprietário, 15/10/2026): agendamento diário às 04:37 UTC (01:37 em Brasília), longe da rodada
+# das 09:17. workflow_dispatch continua para rodar à mão ou pelo cron-job.org (repetir no mesmo dia não faz mal).
+# A poda só apaga etiquetas data-backup/AAAA-MM-DD (tools/data-backup.mjs → planPrune); nenhuma outra ref é tocada.
 on:
-  # schedule:
-  #   - cron: '41 4 * * *'
+  schedule:
+    - cron: '37 4 * * *'
   workflow_dispatch:
 # contents: write é necessário só para criar e apagar as etiquetas data-backup/*. Nenhum secret é usado.
 permissions:
@@ -20,6 +20,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   backup:
+    # Só a partir da main: um disparo manual escolhendo outro ramo não marca nem apaga nada.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
