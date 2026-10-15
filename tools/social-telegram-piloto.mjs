@@ -83,8 +83,15 @@ export function fotoAcervo(productId, dir = ACERVO) {
 
 /** Gera o card. Usa a foto do acervo quando houver; senão baixa a foto da loja. Devolve o JPEG (Uint8Array) ou
  *  null (usa a foto original). Nunca lança. */
+const SEM_RECORTE = fileURLToPath(new URL('../config/social-sem-recorte.json', import.meta.url));
+/** Produtos cujo recorte saiu ruim (config/social-sem-recorte.json): o post usa a foto original da loja. */
+export function semRecorte(productId, f = SEM_RECORTE) {
+  try { const d = JSON.parse(fs.readFileSync(f, 'utf8')); return Array.isArray(d?.produtos) && d.produtos.includes(productId); } catch { return false; }
+}
+
 export async function gerarCard(foto, saida, fetchFn, run = spawnSync, productId = null, dir = ACERVO) {
   try {
+    if (productId && semRecorte(productId)) return null;     // foto original da loja, sem card
     let tmp = fotoAcervo(productId, dir);
     if (!tmp) {
       const r = await fetchFn(foto, { signal: AbortSignal.timeout(15000) });
