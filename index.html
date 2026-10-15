@@ -1812,9 +1812,11 @@ function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMo
 /* Home (6B.2): pódio, sequência e destaques vêm do Opportunity Engine (GET /api/v1/oportunidades), a mesma fonte da
    /oportunidades. Pódio + sequência = as 15 primeiras na ordem do motor (ordem=score). Nada é calculado aqui. */
 const HOMEOPP={status:"idle",top:[],below:[],save:[],at:0,p:null,fr:null};const HOME_OPP_KEY="oportunidades?limite=15&pagina=1&ordem=score";
+/* as três listas da home: retryHomeOpp limpa exatamente as mesmas chaves que loadHomeOpp pede (#83) */
+const HOME_OPP_KEYS=[HOME_OPP_KEY,"oportunidades?limite=4&pagina=1&ordem=abaixo","oportunidades?limite=4&pagina=1&ordem=economia"];
 function loadHomeOpp(){
   if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
-  return HOMEOPP.p||=Promise.all([apiGet(HOME_OPP_KEY),apiGet("oportunidades?limite=4&pagina=1&ordem=abaixo"),apiGet("oportunidades?limite=4&pagina=1&ordem=economia")])
+  return HOMEOPP.p||=Promise.all(HOME_OPP_KEYS.map((k)=>apiGet(k)))
     .then(([a,b,c])=>{
       if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a||{},HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
       else if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
@@ -2195,7 +2197,8 @@ async function loadHist(pid){
   if(!(pid in HIST)){let h=null;try{h=(await histFromApi(pid))||await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`)}catch{}
     /* leituras antigas não confiáveis (antes da correção do leitor de páginas) não entram no gráfico */
     const D=S.distrust;if(h&&D&&D.stores)for(const[sid,x]of Object.entries(h.stores||{})){if(D.stores.includes(sid))x.pts=x.pts.filter((p)=>p[0]>D.until);if(!x.pts.length)delete h.stores[sid]}
-    HIST[pid]=h}
+    /* falha não fica guardada (#83): voltar ao produto ou "Tentar de novo" busca outra vez */
+    if(h)HIST[pid]=h;else delete HIST[pid]}
   if(view==="produto"&&curPid===pid)drawHist(pid);
 }
 function histSeries(h,period){
@@ -2220,7 +2223,7 @@ function drawHist(pid){
   const s=h?histSeries(h,HV.period):null;
   const tabs=`<div class="htabs" role="group" aria-label="Período">${PERIODS.map(([d,l])=>`<button type="button" data-hp="${d}" aria-pressed="${HV.period===d}">${l}</button>`).join("")}</div>`;
   const head=`<div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2>${tabs}</div>`;
-  if(!h){box.innerHTML=head+`<p class="hnote" role="status">Histórico indisponível agora</p>`;return}
+  if(!h){box.innerHTML=head+`<p class="hnote" role="status">Histórico indisponível agora. <button class="linkbtn" type="button" data-histretry>Tentar de novo</button></p>`;return}
   if(!s||!s.best.length){box.innerHTML=head+`<p class="hnote">Ainda não há histórico com estoque confirmado para este produto.</p>`;return}
   const vals=s.best.map((x)=>x.v);const bl=bestLive(pid);const cur=bl?bl.total:vals[vals.length-1];
   const min=s.best.reduce((a,b)=>b.v<a.v?b:a),max=s.best.reduce((a,b)=>b.v>a.v?b:a);
@@ -3132,7 +3135,7 @@ function pauseHTML(p,retry,H="h3"){
 }
 /* boot: as oportunidades da página aberta são pedidas junto com o /home (apiGet compartilha o pedido) */
 function prefetchOpp(){if(view==="deals")loadHomeOpp();else if(view==="oportunidades")apiGet(oppQuery(1))}
-const retryHomeOpp=()=>{HOMEOPP.status="idle";[HOME_OPP_KEY,"oportunidades?limite=1&pagina=1&ordem=abaixo","oportunidades?limite=1&pagina=1&ordem=economia"].forEach((k)=>APIC.delete(k));paintHomeOpp();return loadHomeOpp().then(paintHomeOpp)};
+const retryHomeOpp=()=>{HOMEOPP.status="idle";HOME_OPP_KEYS.forEach((k)=>APIC.delete(k));paintHomeOpp();return loadHomeOpp().then(paintHomeOpp)};
 const retryOpp=()=>{APIC.delete(OPP.key);OPP.key="";return renderOpp()};
 /* a cada 30 s: com as notas pausadas, tenta de novo a cada 5 min */
 function oppTick(now=Date.now()){
@@ -3409,6 +3412,7 @@ document.addEventListener("click",(e)=>{
   const bt=t.closest("[data-btipo]");if(bt){F.tipo=F.tipo===bt.dataset.btipo?"":bt.dataset.btipo;buscaNav();track("filter_used",{f:"busca_tipo",v:F.tipo});return}
   const qb=t.closest("[data-q]");if(qb){if(qb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();doSearch(qb.dataset.q);return}
   const pb=t.closest("[data-p]");if(pb){if(pb.tagName==="A"&&(e.metaKey||e.ctrlKey||e.shiftKey))return;e.preventDefault();acClose();PENDING_HASH=pb.dataset.hash||"";openProduct(pb.dataset.p);return}
+  const hrb=t.closest("[data-histretry]");if(hrb){if(hrb.disabled)return;hrb.disabled=true;if(curPid)loadHist(curPid);return}
   const hp=t.closest("[data-hp]");if(hp){HV.period=Number(hp.dataset.hp);drawHist(curPid);track("view_price_history",{id:curPid,period:HV.period});return}
   const hm=t.closest("[data-hm]");if(hm){HV.mode=hm.dataset.hm;drawHist(curPid);track("view_price_history",{id:curPid,mode:HV.mode});return}
   if(t.closest("[data-fsheet]")){openFilterSheet();return}
