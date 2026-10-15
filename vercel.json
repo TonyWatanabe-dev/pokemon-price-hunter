@@ -154,5 +154,10 @@
       "destination": "/oportunidades",
       "permanent": true
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "data": false
+    }
+  }
 }
