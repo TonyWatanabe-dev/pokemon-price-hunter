@@ -3,6 +3,7 @@
 // Mostra (1) o que o schema já impede, (2) o que ele NÃO impede (órfãos/duplicações possíveis) e (3) as queries de
 // detecção, somente leitura, que servem de base para o plano em docs/integridade-referencial.md.
 import assert from 'node:assert/strict';
+import { DETECT } from '../src/core/integrity-report.js';
 if (!process.env.TEST_DATABASE_URL) { console.log('— testes de integridade pulados (sem TEST_DATABASE_URL)'); process.exit(0); }
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
 const { pool, close } = await import('../src/db/pg.js');
@@ -13,15 +14,8 @@ execFileSync('node', ['tools/db-migrate.mjs'], { env: process.env, stdio: 'pipe'
 const q = async (sql, a = []) => (await p.query(sql, a)).rows;
 const n = async (sql, a = []) => Number((await q(sql, a))[0].n);
 
-// Queries de detecção (somente SELECT). Cada uma conta linhas problemáticas.
-const DETECT = {
-  historyWithoutOffer: 'SELECT count(*) n FROM hunter.price_history h WHERE NOT EXISTS (SELECT 1 FROM hunter.offer o WHERE o.id = h.offer_id)',
-  historyWithoutProduct: 'SELECT count(*) n FROM hunter.price_history h WHERE NOT EXISTS (SELECT 1 FROM hunter.product x WHERE x.id = h.product_id)',
-  historyProductMismatch: 'SELECT count(*) n FROM hunter.price_history h JOIN hunter.offer o ON o.id = h.offer_id WHERE o.product_id <> h.product_id',
-  clickWithoutOffer: 'SELECT count(*) n FROM hunter.affiliate_click c WHERE c.offer_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM hunter.offer o WHERE o.id = c.offer_id)',
-  duplicateLiveOffers: `SELECT count(*) n FROM (SELECT 1 FROM hunter.offer WHERE status <> 'removed' GROUP BY marketplace_id, store_id, url, coalesce(seller_id, 0) HAVING count(*) > 1) d`,
-  duplicateProducts: `SELECT count(*) n FROM (SELECT 1 FROM hunter.product GROUP BY collection_id, category_id, coalesce(variant, ''), language, condition HAVING count(*) > 1) d`,
-};
+// Queries de detecção (somente SELECT). Cada uma conta linhas problemáticas. Fonte única: src/core/integrity-report.js
+// (também usada pelo relatório somente leitura tools/db-integrity-report.mjs).
 const detect = async () => Object.fromEntries(await Promise.all(Object.entries(DETECT).map(async ([k, sql]) => [k, await n(sql)])));
 const zero = Object.fromEntries(Object.keys(DETECT).map((k) => [k, 0]));
 
