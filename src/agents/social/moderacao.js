@@ -21,7 +21,8 @@ export const REGRAS = Object.freeze({
 // domínio dos links Amazon Associados) e a loja oficial. As lojas de config/stores.json entram por opts.hostsConhecidos
 // (use hostsDeLojas); este módulo não lê arquivo. Subdomínio de host conhecido também é conhecido.
 export const HOSTS_CONHECIDOS_PADRAO = Object.freeze([
-  'tcg-price-hunter.vercel.app',
+  'tcgpricehunter.com.br', // domínio canônico (15/10/2026); www. entra como subdomínio
+  'tcg-price-hunter.vercel.app', // domínio antigo: redireciona para o canônico; links já publicados seguem válidos
   'meli.la', 'mercadolivre.com.br', 'mercadolibre.com',
   'amazon.com.br',
   'copagloja.com.br',

@@ -16,7 +16,7 @@ const { readiness, PREREQUISITOS, SEVERIDADES, auditPage, auditSitemap, auditRou
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
 function t(name, fn) { try { fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } }
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 const FRESH = { status: 'atual', ageMin: 5 };
 const html = ({ title = 'Produto X | TCG Price Hunter', desc = 'Produto X a partir de R$ 10,00.', canonical = `${SITE}/produto/x`, noindex = false, ssr = '<h1>Produto X</h1><p>R$ 10,00 em Loja A.</p>', ld = ['{"@type":"Product"}'] } = {}) =>
   `<html><head>${title != null ? `<title>${title}</title>` : ''}${desc != null ? `<meta name="description" content="${desc}">` : ''}${canonical ? `<link rel="canonical" href="${canonical}">` : ''}${ld.map((j) => `<script type="application/ld+json">${j}</script>`).join('')}${noindex ? '<meta name="robots" content="noindex">' : ''}</head>`
@@ -70,16 +70,16 @@ t('stale não vira achado onde não há dado indexável nem pune a casca vazia p
 
 // ---- Canonical ----
 t('canonical: esquema, barra final, query e âncora diferentes da própria URL', () => {
-  for (const c of [`http://tcg-price-hunter.vercel.app/produto/x`, `${SITE}/produto/x/`, `${SITE}/produto/x?ref=1`, `${SITE}/produto/X`]) {
+  for (const c of [`http://tcgpricehunter.com.br/produto/x`, `${SITE}/produto/x/`, `${SITE}/produto/x?ref=1`, `${SITE}/produto/X`]) {
     const r = audit({ canonical: c }); assert.deepEqual(rules(r), ['SEO-CANONICAL-URL'], c); assert.ok(r.findings[0].evidencia.includes(c)); rastreavel(r.findings[0]);
   }
   assert.deepEqual(rules(audit({ canonical: `${SITE}/busca?q=a&amp;b=1` }, { url: '/busca?q=a&b=1' })), [], 'entidade HTML decodificada = mesma URL');
   assert.deepEqual(rules(audit({ canonical: `${SITE}/produto/x` }, { url: `${SITE}/produto/x` })), [], 'URL absoluta auditada');
 });
 t('canonical: relativo, subdomínio e porta contam como host errado, com a evidência lida', () => {
-  for (const c of ['/produto/x', 'https://www.tcg-price-hunter.vercel.app/produto/x', 'https://tcg-price-hunter.vercel.app:8443/produto/x']) {
+  for (const c of ['/produto/x', 'https://www.tcgpricehunter.com.br/produto/x', 'https://tcgpricehunter.com.br:8443/produto/x']) {
     const r = audit({ canonical: c }); assert.deepEqual(rules(r), ['SEO-CANONICAL-HOST'], c);
-    assert.ok(r.findings[0].evidencia.startsWith(`canonical=${c} `)); assert.match(r.findings[0].evidencia, /host esperado tcg-price-hunter\.vercel\.app/); rastreavel(r.findings[0]);
+    assert.ok(r.findings[0].evidencia.startsWith(`canonical=${c} `)); assert.match(r.findings[0].evidencia, /host esperado tcgpricehunter\.com\.br/); rastreavel(r.findings[0]);
   }
 });
 t('canonical: site ausente ou inválido = abstenção, nunca achado contra host desconhecido', () => {

@@ -15,7 +15,7 @@ import { parseAffiliates } from '../api/_lib/affiliates.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
 function t(name, fn) { try { fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } }
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 const T0 = Date.parse('2026-10-13T17:10:00Z');
 const SEM_CFG = parseAffiliates(null);
 const CFG = parseAffiliates({ mercadolivre: { anuncios: { MLB1234567890: 'https://meli.la/abc' } } });
@@ -153,7 +153,7 @@ t('oferta inválida é ignorada com aviso; sem nenhuma válida, recusa explícit
   recusa(() => gerar([]), /nenhuma oferta/);
   recusa(() => gerar([null, 'x', api({ price: -1 })]), /nenhuma oferta/);
   for (const o of [null, undefined, 'x', {}]) recusa(() => gerar(o), /lista/);
-  for (const siteUrl of [undefined, 'http://tcg-price-hunter.vercel.app', 'tcg']) recusa(() => gerar([api()], { siteUrl }), /siteUrl/);
+  for (const siteUrl of [undefined, 'http://tcgpricehunter.com.br', 'tcg']) recusa(() => gerar([api()], { siteUrl }), /siteUrl/);
   for (const slug of [undefined, '', '../admin', 'a b', 'A']) recusa(() => gerar([api()], { produto: { nome: 'Box', slug } }), /slug/);
   recusa(() => gerar([api()], { produto: { nome: '<b></b>', slug: 'x' } }), /sem nome/);
   recusa(() => gerarCarrossel([api()], null), /siteUrl/);

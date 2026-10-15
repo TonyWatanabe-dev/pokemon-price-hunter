@@ -24,7 +24,7 @@
   "fonte-canonica": {
     "ok": false,
     "ref": ["api/_seo.mjs", "index.html", "robots.txt", "docs/PLANO-ENTREGA-TURBO.md"],
-    "nota": "O código é consistente (SITE=https://tcg-price-hunter.vercel.app em api/_seo.mjs, canonical do index.html e Sitemap do robots.txt), mas a decisão de fonte canônica de produção (GitHub Pages × Vercel) continua pendente na Fase 8 do plano."
+    "nota": "O código é consistente (SITE=https://tcgpricehunter.com.br em api/_seo.mjs, canonical do index.html e Sitemap do robots.txt), mas a decisão de fonte canônica de produção (GitHub Pages × Vercel) continua pendente na Fase 8 do plano."
   },
   "seo-tecnico-base": {
     "ok": true,

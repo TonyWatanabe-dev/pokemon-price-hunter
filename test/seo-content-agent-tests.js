@@ -13,7 +13,7 @@ import { toQuery } from '../tools/seo-audit.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let n = 0;
 function t(name, fn) { try { fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } }
-const SITE = 'https://tcg-price-hunter.vercel.app';
+const SITE = 'https://tcgpricehunter.com.br';
 const FRESH = { status: 'atual', ageMin: 5 }, STALE = { status: 'desatualizado', ageMin: 300 };
 const html = ({ title = 'Produto X | TCG Price Hunter', desc = 'Produto X a partir de R$ 10,00.', canonical = `${SITE}/produto/x`, noindex = false, ssr = '<h1>Produto X</h1><p>R$ 10,00 em Loja A.</p>', ld = ['{"@type":"Product"}'] } = {}) =>
   `<html><head>${title != null ? `<title>${title}</title>` : ''}${desc != null ? `<meta name="description" content="${desc}">` : ''}${canonical ? `<link rel="canonical" href="${canonical}">` : ''}${ld.map((j) => `<script type="application/ld+json">${j}</script>`).join('')}${noindex ? '<meta name="robots" content="noindex">' : ''}</head>`

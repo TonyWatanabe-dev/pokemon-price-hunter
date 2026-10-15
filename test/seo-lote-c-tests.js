@@ -103,7 +103,7 @@ await t('3. /precos: todo produto com preço sugerido, por coleção, "oficial" 
 await t('4. /termos e /privacidade: título, descrição e canonical próprios, indexáveis, com caminho (BreadcrumbList)', () => {
   for (const [q, h1, u] of [['t=termos', 'Termos de uso', '/termos'], ['t=privacidade', 'Política de privacidade', '/privacidade']]) {
     const p = pg[q]; assert.equal(p.status, 200, q); assert.equal(p.noindex, false, q);
-    assert.equal(p.title, `${h1} | TCG Price Hunter`); assert.equal(p.canonical, 'https://tcg-price-hunter.vercel.app' + u);
+    assert.equal(p.title, `${h1} | TCG Price Hunter`); assert.equal(p.canonical, 'https://tcgpricehunter.com.br' + u);
     assert.ok(p.desc.length > 60 && p.desc.length <= 160, q);
     assert.match(text(p.ssr), new RegExp('^' + h1 + ' '));
     assert.deepEqual(p.ld.find((x) => x['@type'] === 'BreadcrumbList').itemListElement.map((i) => i.name), ['Início', h1]);
@@ -121,7 +121,7 @@ await t('5. descrições de até 160 caracteres em todos os modelos, com as pala
 });
 
 await t('6. sitemap: lastmod por produto (última conferência da melhor oferta), coleção/formato = maior entre os seus; /termos e /privacidade presentes', () => {
-  const sm = out.sitemap; const lm = (u) => meta(sm, new RegExp(`<loc>https://tcg-price-hunter.vercel.app${u.replace(/\//g, '\\/')}</loc><lastmod>([^<]*)`));
+  const sm = out.sitemap; const lm = (u) => meta(sm, new RegExp(`<loc>https://tcgpricehunter.com.br${u.replace(/\//g, '\\/')}</loc><lastmod>([^<]*)`));
   assert.equal(lm('/produto/alfa-treinador-avancado-etb'), '2026-10-09', 'A (melhor oferta) conferida em D2');
   assert.equal(lm('/produto/alfa-booster-box-36'), '2026-10-08', 'C conferida em D1');
   assert.equal(lm('/produto/beta-treinador-avancado-etb'), '2026-10-08');

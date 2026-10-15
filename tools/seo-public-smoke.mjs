@@ -1,10 +1,12 @@
-// Public, read-only smoke test for the canonical Vercel deployment.
+// Public, read-only smoke test for the canonical production domain (SITE).
 // As checagens ficam em runSeoSmoke(get) para o teste offline (test/seo-public-smoke-tests.js) rodar o mesmo
 // contrato contra os handlers locais; executado direto (workflow seo-public-smoke.yml), consulta o site público.
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 
-export const SITE = 'https://tcg-price-hunter.vercel.app';
+export const SITE = 'https://tcgpricehunter.com.br';
+// Domínio oficial (decisão do proprietário, 15/10/2026); os padrões abaixo derivam dele.
+const SITE_RE = SITE.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 export const PRIVATE_ROUTES = Object.freeze(['/conta', '/favoritos', '/alertas', '/configuracoes']);
 
 // get(path) -> { response: { status, headers: { get(name) } }, body }
@@ -18,12 +20,12 @@ export async function runSeoSmoke(get = fetchPublic) {
   const home = await get('/');
   assert.equal(home.response.status, 200, 'Home precisa responder HTTP 200');
   assert.match(home.response.headers.get('content-type') || '', /text\/html/i, 'Home precisa responder HTML');
-  assert.match(home.body, /<link[^>]+rel=["']canonical["'][^>]+href=["']https:\/\/tcg-price-hunter\.vercel\.app\/?["']/i, 'Home precisa declarar canonical para o domínio principal');
+  assert.match(home.body, new RegExp(`<link[^>]+rel=["']canonical["'][^>]+href=["']${SITE_RE}\\/?["']`, 'i'), 'Home precisa declarar canonical para o domínio principal');
 
   const robots = await get('/robots.txt');
   assert.equal(robots.response.status, 200, 'robots.txt precisa responder HTTP 200');
   assert.match(robots.body, /^User-agent:\s*\*/im, 'robots.txt precisa declarar User-agent');
-  assert.match(robots.body, /^Sitemap:\s*https:\/\/tcg-price-hunter\.vercel\.app\/sitemap\.xml\s*$/im, 'robots.txt precisa anunciar sitemap canônico');
+  assert.match(robots.body, new RegExp(`^Sitemap:\\s*${SITE_RE}\\/sitemap\\.xml\\s*$`, 'im'), 'robots.txt precisa anunciar sitemap canônico');
   const disallowed = [...robots.body.matchAll(/^Disallow:\s*(\S+)\s*$/gim)].map((m) => m[1]);
   assert.deepEqual(disallowed, ['/api/'], 'somente /api/ deve ser bloqueada; páginas noindex precisam continuar rastreáveis');
 
@@ -31,7 +33,7 @@ export async function runSeoSmoke(get = fetchPublic) {
   assert.equal(sitemap.response.status, 200, 'sitemap.xml precisa responder HTTP 200');
   assert.match(sitemap.response.headers.get('content-type') || '', /xml/i, 'sitemap precisa responder XML');
   assert.match(sitemap.body, /<urlset\b/i, 'sitemap precisa conter urlset');
-  assert.match(sitemap.body, /<loc>https:\/\/tcg-price-hunter\.vercel\.app\/<\/loc>/, 'sitemap precisa incluir a Home canônica');
+  assert.match(sitemap.body, new RegExp(`<loc>${SITE_RE}\\/<\\/loc>`), 'sitemap precisa incluir a Home canônica');
   assert.doesNotMatch(sitemap.body, /\/(conta|favoritos|alertas|configuracoes)(?:<\/loc>|\/)/i, 'sitemap não pode listar rotas privadas');
 
   for (const route of PRIVATE_ROUTES) {

@@ -50,7 +50,7 @@ for (const o of elegiveis) {
     produto: { nome: P[o.productId]?.name, slug: slug[o.productId] }, loja: { nome: o.storeName },
     preco: o.price, precoTotal: o.shippingKnown ? o.total : null, url: o.url, disclosure: exigeDisclosure(o.url),
     lidaEm: o.source_timestamp,
-  }, { canal: 'telegram', siteUrl: 'https://tcg-price-hunter.vercel.app' });
+  }, { canal: 'telegram', siteUrl: 'https://tcgpricehunter.com.br' });
   console.log(`\n--- ${chaveDedupe(o)} · avisos: ${r.avisos.join('; ') || 'nenhum'}\n${r.texto}`);
 }
 ```

@@ -137,7 +137,7 @@ t('script de prévia do runbook roda e gera rascunho só de oferta atual', () =>
     assert.match(r.stdout, /^recusadas: 1 frescor não atual/m);
     assert.match(r.stdout, /--- me02-blister4\|lojaa\|5035/);
     assert.match(r.stdout, /total com frete R\$\s70,35/);
-    assert.match(r.stdout, /https:\/\/tcg-price-hunter\.vercel\.app\/produto\/fogo-fantasmagorico-blister-quadruplo/);
+    assert.match(r.stdout, /https:\/\/tcgpricehunter\.com\.br\/produto\/fogo-fantasmagorico-blister-quadruplo/);
     assert.match(r.stdout, /R\$\s11,90 em Loja lojab \(frete a calcular\)/);
     assert.match(r.stdout, /avisos: frete desconhecido/);
     assert.doesNotMatch(r.stdout, /lojac/);

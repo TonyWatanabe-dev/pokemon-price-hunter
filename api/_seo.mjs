@@ -2,7 +2,7 @@
 import { byComparableTotal } from './_lib/offer-rank.mjs';
 import { classify, usable, stateDataAt } from './_lib/freshness.mjs';
 export const RAW = 'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/data/data/state.json';
-export const SITE = 'https://tcg-price-hunter.vercel.app';
+export const SITE = 'https://tcgpricehunter.com.br';
 const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const slugify = (t) => norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 export const label = (p) => p.typeLabel + (p.boosters && (p.type === 'booster_box' || p.type === 'combo') ? ` ${p.boosters}` : '') + (p.variant ? ` ${p.variant}` : '');
