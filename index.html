@@ -3261,7 +3261,7 @@ async function fetchHome(){
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
    Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
-const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades"]);   /* 6B.1: /oportunidades só pela API */
+const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades","guia","glossario","termos","privacidade"]);   /* 6B.1: /oportunidades só pela API; Lote F: páginas de texto não baixam o state.json (~1,8 MB) */
 const APIC=new Map();const APITTL=60e3;
 /* API_LAST: status HTTP da última resposta de cada caminho (0 = sem resposta). 503 = dados sem atualização confiável, não é a conexão.
    APIP: o mesmo pedido em andamento é compartilhado (a Home e /oportunidades começam junto com o /home). */
