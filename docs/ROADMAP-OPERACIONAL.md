@@ -135,6 +135,26 @@ O proprietário declarou estar satisfeito com o nível atual de automação e au
 
 **Decisões do proprietário:** (1) política de deploy (desligar deploy da `main` na Vercel e usar a Ponte, ou formalizar o merge como gate); (2) domínio canônico (`tcgpricehunter.com.br` × `vercel.app`, e 307 → 308); (3) desativar o GitHub Pages; (4) ligar o backup diário de `data/` (cron-job.org ou `schedule`) e decidir backup do banco.
 
+
+
+## Fase 5 — matriz de saída (15/10/2026)
+
+**Fase 5 NÃO concluída** (critério 2 depende de decisão do proprietário). Critérios de `docs/PLANO-ENTREGA-TURBO.md` × evidência na `main` (`cc9d140`) e PRs abertas. Issues #44, #46 e #113 já estavam fechadas (13/10, via [#121](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/121), [#162](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/162), [#155](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/155), todas integradas).
+
+| Critério / item | Estado | Evidência |
+|---|---|---|
+| Score reproduzível para a mesma entrada | ✅ na `main`; matriz em PR | `src/core/opportunity-engine.js` puro (`now` injetado, `engine_version`); `test/opportunity-engine-tests.js` (cenário 12: empate por id e `deepEqual`), `test/price-engine-tests.js` (mesma entrada em qualquer ordem). Matriz de 840 combinações, entrada congelada, permutações e ponta a ponta: [PR #734](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/734) |
+| Score explicável por campos | ✅ na `main`; recomposição em PR | `*_signal`, `raw_score`, `coverage`, `caps`, `reference_kind/value/gap`, `total_cost/cost_basis`, `evidence`, `reasons/warnings` com código (#121 em `test/opportunity-engine-tests.js`; `test/opportunity-criteria-tests.js`, `test/opportunity-reference-tests.js`). Nota recomposta só pelos campos gravados e cada sinal ausente/trava com código: [PR #734](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/734) |
+| Fonte não oficial não aparece como Copag confirmada — banco e motores | ✅ na `main`; reforço em PR | CHECK `reference_price_copag_domain_check` (migration 006, `test/reference-evidence-db-tests.js`, `test/reference-db-tests.js`); robô/mapper → `COMMUNITY_REFERENCE` (`test/reference-tests.js`); política 6A (`test/reference-policy-tests.js`). [PR #737](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/737) alinha `isCopagUrl` à regra do banco (ftp:/javascript:, porta, usuário eram aceitos no JS e recusados no banco, abortando o INSERT em lote do sync) |
+| Fonte não oficial não aparece como Copag confirmada — site | ⛔ decisão do proprietário | 12 entradas `c30-*` em `config/catalog.json` (fonte Instagram, `OFICIAL`, `manual: true`) aparecem como "Copag confirmada" (`copagStatus`; `api/_lib/read-db.mjs` mantém paridade). No motor já são comunitárias e não entram no score. É a decisão da [PR #186](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/186) (fechada sem merge em 12/10, decisão não registrada) |
+| Migrations/lotes não executados por agente sem gates | ✅ comprovado | `db/migrations/**` e `config/catalog.json` são R3 (`test/agents-release-governor-tests.js`); `db.migrate.production` exige aprovação da própria ação (`test/agents-governance-tests.js`); `tarefas.yml` só tem banco descartável (`test/tarefas-workflow-tests.js`); `test/migrations-static-tests.js`. Migration só roda em produção após merge humano (`hunter.yml`) |
+| Integridade read-only banco × arquivos (#113) | ⏳ em PR | Detecção por fixtures na `main` (`test/integrity-db-tests.js`, `docs/integridade-referencial.md`). Relatório somente leitura (READ ONLY + ROLLBACK) com reconciliação: [PR #741](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/741). Não executado contra produção |
+| Histórico/referência oficial (#46) | ✅ na `main` | #162 (`test/history-quality-tests.js`), `test/copag-vencimento-tests.js` |
+| Price Intelligence Agent | ⏸ não iniciado | Ativação pertence à Fase 7 (item 8), com pré-requisito de histórico/comparabilidade confiáveis |
+| PR #20 (migration Copag) | — | Fechada sem merge em 12/10; permanece **não integrar** |
+
+**Para fechar a Fase 5:** decisão do proprietário sobre as 12 referências do Instagram (PR #186) e a apresentação no site; integrar #734, #737 (R3: referência) e #741 com CI verde; rodar o relatório de integridade em produção só com autorização.
+
 ## Regras de operação
 
 - Não fazer merge de PRs de produto, deploy, migration, nem alterar secrets/configuração de produção sem autorização explícita.
