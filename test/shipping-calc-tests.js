@@ -198,3 +198,22 @@ await t('estado de exibição: pago, grátis confirmado, expirada, indisponível
 });
 
 console.log(`shipping-calc-tests: ${n} ok`);
+
+// Retirada não disputa o menor frete de entrega (pedido do proprietário: considerar cada modalidade da loja).
+{
+  const assert = (await import('node:assert/strict')).default;
+  const m = await import('../api/_lib/shipping-calc.mjs');
+  const sim2 = (...slas) => ({ logisticsInfo: [{ slas }] });
+  const q = m.parseVtexSimulation(sim2(
+    { id: 'r', name: 'Retirada', price: 0, deliveryChannel: 'pickup-in-point', pickupStoreInfo: { friendlyName: 'Loja Centro' }, shippingEstimate: '1bd' },
+    { id: 'pac', name: 'PAC', price: 1990, deliveryChannel: 'delivery', shippingEstimate: '6bd' },
+    { id: 'exp', name: 'Expressa', price: 3490, deliveryChannel: 'delivery', shippingEstimate: '1bd' },
+  ));
+  assert.equal(q.options.length, 3);
+  assert.equal(q.options[0].kind, 'pickup');
+  assert.equal(q.options[0].pickupPoint, 'Loja Centro');
+  assert.equal(m.cheapest(q.options).method, 'PAC');
+  const so = m.parseVtexSimulation(sim2({ id: 'r', name: 'Retirada', price: 0, deliveryChannel: 'pickup-in-point' }));
+  assert.equal(m.cheapest(so.options).kind, 'pickup');
+  console.log('shipping-calc-tests: retirada separada ok');
+}
