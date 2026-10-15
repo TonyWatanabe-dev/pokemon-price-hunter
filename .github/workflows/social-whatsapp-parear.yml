@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: 22
       - name: Baileys (só neste job, sem alterar package.json)
-        run: npm install --no-save --no-audit --no-fund '@whiskeysockets/baileys@7.0.0-rc14'
+        run: npm install --no-save --no-audit --no-fund --ignore-scripts '@whiskeysockets/baileys@7.0.0-rc14'
       - name: Parear
         env:
           NUMERO: ${{ inputs.numero }}

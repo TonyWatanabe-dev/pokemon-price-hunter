@@ -50,7 +50,7 @@ jobs:
           echo "SOCIAL_PYTHON=$RUNNER_TEMP/venv/bin/python" >> "$GITHUB_ENV"
           echo "U2NET_HOME=$HOME/.u2net" >> "$GITHUB_ENV"
       - name: Baileys (só neste job, sem alterar package.json)
-        run: npm install --no-save --no-audit --no-fund '@whiskeysockets/baileys@7.0.0-rc14'
+        run: npm install --no-save --no-audit --no-fund --ignore-scripts '@whiskeysockets/baileys@7.0.0-rc14'
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: social/wa-diario.json
