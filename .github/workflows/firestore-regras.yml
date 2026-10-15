@@ -1,0 +1,56 @@
+# Regras do Firestore no emulador: teste de COMPORTAMENTO de firebase/firestore.rules (isolamento por usuário).
+# Sobe só o emulador do Firestore num projeto demo- (nada fala com o projeto real), roda firebase/test/regras-emulador.mjs
+# com os casos de firebase/test/casos.mjs e publica o resumo como anotação (::notice::). Não publica regras, não usa
+# secrets e só lê o repositório. As ferramentas ficam num diretório temporário (--no-save): nada entra no package.json.
+# test/firestore-regras-emulador-tests.js confere este arquivo e a cobertura dos casos dentro do `npm test`.
+name: 'Firestore: regras no emulador'
+
+on:
+  pull_request:
+    paths:
+      - 'firebase/**'
+      - '.github/workflows/firestore-regras.yml'
+      - 'test/firestore-regras-emulador-tests.js'
+  push:
+    paths:
+      - 'firebase/**'
+      - '.github/workflows/firestore-regras.yml'
+      - 'test/firestore-regras-emulador-tests.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firestore-regras-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  emulador:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FIREBASE_TOOLS: '15.32.1'
+      RULES_UNIT_TESTING: '5.0.2'
+      FIREBASE_SDK: '12.19.0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with: { distribution: temurin, java-version: '21' }
+      - name: Instalar firebase-tools e rules-unit-testing (versões fixas, diretório isolado)
+        run: |
+          FB="$RUNNER_TEMP/fb"; mkdir -p "$FB"; echo "FB=$FB" >> "$GITHUB_ENV"
+          echo '{"private":true,"type":"module"}' > "$FB/package.json"
+          npm install --prefix "$FB" --no-save --no-audit --no-fund --ignore-scripts \
+            "firebase-tools@$FIREBASE_TOOLS" "@firebase/rules-unit-testing@$RULES_UNIT_TESTING" "firebase@$FIREBASE_SDK"
+          cp firebase/test/regras-emulador.mjs firebase/test/casos.mjs "$FB/"
+          "$FB/node_modules/.bin/firebase" --version
+      - name: Rodar os casos no emulador (projeto demo-tcgph)
+        working-directory: firebase
+        run: |
+          "$FB/node_modules/.bin/firebase" emulators:exec --only firestore --project demo-tcgph \
+            "node '$FB/regras-emulador.mjs' '$GITHUB_WORKSPACE/firebase/firestore.rules'"
