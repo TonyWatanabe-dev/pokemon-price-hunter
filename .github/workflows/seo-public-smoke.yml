@@ -15,7 +15,7 @@ concurrency:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -25,3 +25,8 @@ jobs:
           node-version: 22
       - name: Check public SEO contract
         run: node tools/seo-public-smoke.mjs
+      # Fase 8: busca, detalhe de produto, /api/v1 (home e site/pagina/*), links internos e assets /assets/web imutáveis.
+      # Só GET no domínio canônico; não segue links para lojas. Roda mesmo se o passo de SEO falhar.
+      - name: Check post-deploy contract (search, product, API, links, assets)
+        if: ${{ !cancelled() }}
+        run: node tools/post-deploy-smoke.mjs
