@@ -11,6 +11,10 @@ on:
         description: 'IDs de produto separados por vírgula (vazio = todos)'
         type: string
         default: ''
+      casco:
+        description: 'Preencher mordidas (fecho convexo por bloco)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -37,10 +41,12 @@ jobs:
       - name: Gerar acervo
         env:
           SO: ${{ inputs.so }}
+          CASCO: ${{ inputs.casco }}
         run: |
           set -o pipefail
           set -- --state dados/data/state.json --saida "$RUNNER_TEMP/acervo"
           [ -n "$SO" ] && set -- "$@" --so "$SO"
+          [ "$CASCO" = "true" ] && set -- "$@" --casco
           "$RUNNER_TEMP/venv/bin/python" tools/social-acervo.py "$@" | tail -n 1 | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

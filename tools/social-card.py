@@ -82,6 +82,65 @@ def so_produto(alfa, fracao=0.5):
     return Image.composite(alfa, Image.new('L', (w, h), 0), sel)
 
 
+def _hull(pts):
+    """Fecho convexo (monotone chain) de pontos (x, y)."""
+    pts = sorted(set(pts))
+    if len(pts) < 3:
+        return pts
+    def cr(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+    lo, up = [], []
+    for p in pts:
+        while len(lo) >= 2 and cr(lo[-2], lo[-1], p) <= 0:
+            lo.pop()
+        lo.append(p)
+    for p in reversed(pts):
+        while len(up) >= 2 and cr(up[-2], up[-1], p) <= 0:
+            up.pop()
+        up.append(p)
+    return lo[:-1] + up[:-1]
+
+
+def casco(alfa):
+    """Preenche as "mordidas": cada bloco do produto vira o seu fecho convexo. Caixas e blisters são convexos, então
+    as partes brancas da embalagem que o recorte confundiu com o fundo voltam (com os pixels REAIS da foto). Blocos
+    separados (kits) ficam separados. Só para o acervo, que passa por revisão humana."""
+    w, h = alfa.size
+    k = max(1, max(w, h) // 240)
+    peq = alfa.resize((max(1, w // k), max(1, h // k)), Image.NEAREST).point(lambda v: 255 if v > 127 else 0)
+    peq = peq.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3))     # tira ruído solto
+    pw, ph = peq.size
+    px = peq.load()
+    rotulo = 1
+    for y in range(ph):
+        for x in range(pw):
+            if px[x, y] == 255:
+                if rotulo > 250:
+                    return alfa
+                ImageDraw.floodfill(peq, (x, y), rotulo)
+                rotulo += 1
+    pontos = {}
+    for y in range(ph):
+        for x in range(pw):
+            r = px[x, y]
+            if r:
+                pontos.setdefault(r, []).extend([(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)])
+    cheio = Image.new('L', (w, h), 0)
+    d = ImageDraw.Draw(cheio)
+    for pts in pontos.values():
+        if len(pts) < 12:
+            continue
+        casca = _hull(pts)
+        um = Image.new('L', (pw + 1, ph + 1), 0)
+        ImageDraw.Draw(um).polygon(casca, fill=255)
+        # casco muito maior que o bloco = dois itens encostados ou forma não convexa: não preenche (viraria fundo)
+        if um.histogram()[255] > 1.25 * (len(pts) / 4):
+            continue
+        d.polygon([(x * k, y * k) for x, y in casca], fill=255)
+    # borda exata onde a máscara original já existia; o casco só acrescenta por dentro
+    return ImageChops.lighter(alfa, cheio.filter(ImageFilter.MinFilter(2 * k + 1)))
+
+
 _sessao = None
 
 

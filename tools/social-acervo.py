@@ -59,7 +59,7 @@ def candidatos(prod, ofertas):
     return vistos[:4]
 
 
-def recortar(img, sessao, remove):
+def recortar(img, sessao, remove, casco=False):
     if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
         rgba = img.convert('RGBA')
         a = rgba.getchannel('A')
@@ -75,6 +75,8 @@ def recortar(img, sessao, remove):
     else:
         alfa = ImageChops.lighter(branco, ia)
     alfa = _card.so_produto(alfa)
+    if casco:
+        alfa = _card.casco(alfa)
     out = rgb.copy()
     out.putalpha(alfa)
     return out
@@ -111,6 +113,7 @@ def main(argv=None):
     a.add_argument('--saida', required=True)
     a.add_argument('--limite', type=int, default=0)
     a.add_argument('--so', default='')
+    a.add_argument('--casco', action='store_true', help='preenche mordidas pelo fecho convexo de cada bloco')
     o = a.parse_args(argv)
     from rembg import new_session, remove
     sessao = new_session('isnet-general-use')
@@ -127,7 +130,7 @@ def main(argv=None):
         reg = {'id': p['id'], 'nome': p.get('name'), 'fonte': None, 'erro': None}
         for url in candidatos(p, st.get('offers', [])):
             try:
-                rec = recortar(baixar(url), sessao, remove)
+                rec = recortar(baixar(url), sessao, remove, casco=o.casco)
                 caixa = rec.getchannel('A').point(lambda v: 255 if v > 20 else 0).getbbox()
                 if not caixa:
                     raise RuntimeError('recorte vazio')
