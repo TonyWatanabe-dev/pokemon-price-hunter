@@ -12,7 +12,7 @@ export const SCOPE = { COPAG_OFFICIAL_CURRENT: 'current', MARKET_CURRENT: 'curre
 export const CURRENT_PRIORITY = { COPAG_OFFICIAL_CURRENT: 1, MARKET_CURRENT: 2 };
 export const LABEL = {
   COPAG_OFFICIAL_CURRENT: 'Preço sugerido Copag', COPAG_OFFICIAL_HISTORICAL: 'Preço sugerido de lançamento',
-  MARKET_CURRENT: 'Referência de mercado', MARKET_HISTORICAL: 'Histórico de mercado', COMMUNITY_REFERENCE: 'Referência comunitária',
+  MARKET_CURRENT: 'Referência de mercado', MARKET_HISTORICAL: 'Histórico de mercado', COMMUNITY_REFERENCE: 'Referência da comunidade',
 };
 /** escala de confiança (0–100) usada na importação da auditoria; não é reajustada depois */
 export const CONFIDENCE = { alta: 90, 'média': 60, baixa: 30 };

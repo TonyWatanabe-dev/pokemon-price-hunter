@@ -112,6 +112,6 @@ assert.equal(a.stats.discount_vs_reference, null);
 const b = await DB.getProduct('me05-etb');
 assert.equal(b.current_reference.kind, 'COPAG_OFFICIAL_CURRENT'); assert.equal(b.current_reference.price, 400); assert.equal(b.current_reference.source, 'Copag'); assert.equal(b.stats.reference.kind, 'COPAG_OFFICIAL_CURRENT');
 const c3 = await DB.getProduct('c30-etb');
-assert.notEqual(c3.current_reference.kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.community_reference.kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.community_reference.label, 'Referência comunitária'); assert.equal(c3.community_reference.price, 399.99);
+assert.notEqual(c3.current_reference.kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.community_reference.kind, 'COMMUNITY_REFERENCE'); assert.equal(c3.community_reference.label, 'Referência da comunidade'); assert.equal(c3.community_reference.price, 399.99);
 await close();
 console.log('OK — Referências atual × histórico (PostgreSQL)');

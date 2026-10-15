@@ -37,7 +37,7 @@ const noRef = () => base({ opportunity_score: 65, opportunity_band: 'normal', co
   current_reference: { kind: 'NONE', label: null, price: null, source: null, confidence: null, reason: 'no_copag_insufficient_offers' },
   reference_comparison: { available: false, reference_kind: 'NONE', reference_value: null, percentage_below: null, amount_below: null, position: null, reason: 'no_current_reference' },
   historical_context: [{ kind: 'COPAG_OFFICIAL_HISTORICAL', label: 'Preço sugerido de lançamento', price: 29.9, published_at: '2024-01', status: 'verified' }],
-  community_reference: { kind: 'COMMUNITY_REFERENCE', label: 'Referência comunitária', price: 25 },
+  community_reference: { kind: 'COMMUNITY_REFERENCE', label: 'Referência da comunidade', price: 25 },
   reasons: [{ code: 'BELOW_MARKET', text: '19,1% abaixo da mediana de 2 ofertas com estoque', impact: '+' }], warnings: [{ code: 'NO_CURRENT_REFERENCE', text: 'Não há referência atual suficiente' }] });
 
 // ------------------------------------------------------------------ sandbox: helpers mínimos do site + API simulada
@@ -112,7 +112,7 @@ t('9–10. sem referência / sem confiança', () => {
   const s = sandbox(page([])); const h = text(s.oppCard(noRef(), 0));
   assert.match(h, /R\$ 1250,00 Sem referência atual Frete grátis/); assert.match(h, /Confiança não informada/); assert.match(h, /Comparação Sem comparação/);
   assert.ok(!/−\d|0,0%|abaixo do preço sugerido|abaixo da referência/.test(h), 'nenhum percentual inventado');
-  assert.match(h, /Histórico Preço sugerido de lançamento R\$ 29,90 \(2024-01\) Referência comunitária R\$ 25,00 \(não é preço Copag\) Contexto, não é preço atual\./);
+  assert.match(h, /Histórico Preço sugerido de lançamento R\$ 29,90 \(2024-01\) Referência da comunidade R\$ 25,00 \(preço divulgado fora do site da Copag; não confirmado\) Contexto, não é preço atual\./);
   const nulls = base({ opportunity_score: null, opportunity_band: null, confidence: null, current_reference: null, reference_comparison: null, warnings: null, reasons: null, historical_context: null });
   assert.doesNotThrow(() => s.oppCard(nulls, 0));
 });

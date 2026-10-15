@@ -90,7 +90,7 @@ await t('2. /pre-vendas: lista as pré-vendas e também traz os links de coleç�
 
 await t('3. /precos: todo produto com preço sugerido, por coleção, "oficial" × "referência", com fonte e data', () => {
   const p = pg['t=precos']; const s = text(p.ssr);
-  assert.match(s, /Alfa Produto Preço sugerido Tipo Fonte Data Treinador Avançado \(ETB\) R\$ 400,00 Preço sugerido Copag \(oficial\) copagloja.com.br 08\/10\/2026 Booster Box 36 R\$ 900,00 Referência \(não confirmada\) ref.example 09\/10\/2026/);
+  assert.match(s, /Alfa Produto Preço sugerido Tipo Fonte Data Treinador Avançado \(ETB\) R\$ 400,00 Preço sugerido Copag \(oficial\) copagloja.com.br 08\/10\/2026 Booster Box 36 R\$ 900,00 Referência da comunidade \(não confirmada\) ref.example 09\/10\/2026/);
   assert.match(s, /Beta Produto Preço sugerido Tipo Fonte Data Treinador Avançado \(ETB\) R\$ 300,00 Preço sugerido Copag \(oficial\) copagloja.com.br 08\/10\/2026/);
   assert.doesNotMatch(s, /Beta[\s\S]*Booster Box 36 R\$/, 'produto sem preço sugerido fica fora');
   const l = links(p.ssr);

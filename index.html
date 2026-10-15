@@ -643,7 +643,7 @@ a.navbtn{text-decoration:none}
 .tipc-n{font-size:14px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tipc-p{display:flex;align-items:center;gap:8px}.tipc-p b{font-size:18px;font-weight:800;letter-spacing:-.01em}
 .tipc small{font-size:11.5px;color:var(--muted)}
-/* Referência coletada na internet */
+/* Referência da comunidade (não oficial) */
 .off.ref{background:color-mix(in srgb,var(--e-water) 14%,var(--surface));color:var(--water-txt)}
 .refnet{font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--water-txt);cursor:help}
 .refline{display:flex;gap:6px;align-items:flex-start;margin:8px 0 0;font-size:12px;color:var(--muted);line-height:1.4}.refline .icon{width:14px;height:14px;flex:none;margin-top:1px}.refline a{color:var(--ink);font-weight:600}
@@ -1574,10 +1574,10 @@ function sortEntries(list){
   return list.sort((a,b)=>cmp(a,b)||String(a.p.id).localeCompare(String(b.p.id)));   /* desempate fixo (igual à API) */
 }
 
-/* Referência de preço: oficial (loja Copag) ou coletada na internet (não oficial, só para comparação) */
+/* Referência de preço: oficial (loja Copag) ou da comunidade (não oficial, só para comparação) */
 const refOf=(p)=>p.copagConfirmed?{v:p.msrp,net:false}:p.copagReference?{v:p.copagReference,net:true,url:p.copagReferenceUrl}:null;
 const discOf=(p,o)=>{if(!o||o.anomalous)return null;if(p.copagConfirmed)return o.discount;const r=refOf(p);return r?+(1-o.total/r.v).toFixed(4):null};
-const REFNOTE="Preço sugerido coletado na internet (imagens de lojas e perfis especializados), não confirmado na loja oficial da Copag. Serve só para comparação: não entra no Opportunity Score nem nos alertas.";
+const REFNOTE="Referência da comunidade: preço divulgado fora do site da Copag (lojas, blogs, perfis especializados); não confirmado. Serve só para comparação: não entra no Opportunity Score nem nos alertas.";
 
 /* Promoções do Telegram como cards: canal + loja onde está à venda (ícone do próprio site da loja) */
 const MK={"Shopee":"shopee.com.br","Amazon":"amazon.com.br","Mercado Livre":"mercadolivre.com.br","Magalu":"magazineluiza.com.br","AliExpress":"aliexpress.com","Americanas":"americanas.com.br","Casas Bahia":"casasbahia.com.br"};
@@ -1636,7 +1636,7 @@ function priceBlock(p,o,abrir){
   const r=refOf(p);const d=discOf(p,o);const hasD=!!(r&&d!=null);
   const off=hasD?(d>=.0005?`<span class="off${r.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:d<=-.0005?`<span class="off up">+${pct(-d)}</span>`:`<span class="off eq">Preço Copag</span>`):"";
   return`<div class="pblock"><span class="big" data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</span>${off}</div>
-  <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. internet</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
+  <p class="pref">${abrir?`por booster · total ${money(o.total)}`:p.copagConfirmed?`Copag <s>${money(p.msrp)}</s>${d>0?` · economia de ${money(p.msrp-o.total)}`:""}`:p.copagReference?`<span class="refnet" title="${esc(REFNOTE)}">Ref. da comunidade</span> <s>${money(p.copagReference)}</s>${d>0?` · economia de ${money(p.copagReference-o.total)}`:""}`:"Sem preço Copag oficial"}</p>`;
 }
 /* Última leitura da oferta: sem horário válido, diz que é desconhecida em vez de "Atualizado -". No futuro além de 5 min
    (relógio adiantado) também é desconhecida, como em freshState e na API (classify), nunca "Atualizado agora". */
@@ -1666,7 +1666,7 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
   <div class="deal-body">
     <p class="deal-col">${esc(p.collectionName)}</p>
     <${H} class="deal-name">${esc(label(p))}</${H}>
-    ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. internet":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. internet":"Copag"}</span></p>`:""}
+    ${o?`${save?`<p class="deal-save"><b>−${pct(d)}</b><span>${r.net?"vs ref. da comunidade":"vs Copag"}<br><em>economize ${money(r.v-o.total)}</em></span></p>`:hasD&&d<=-.0005&&!abrir?`<p class="deal-save up"><span>${pct(-d)} acima da ${r.net?"ref. da comunidade":"Copag"}</span></p>`:""}
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
@@ -2014,7 +2014,7 @@ function paintProdutos(d){
   ${filtersHTML(d.facets)}
   ${d.list.length?`<div class="deals">${d.list.map((e)=>dealCard(e,{h:"h2"})).join("")}</div>${d.next?moreSentinel(d.next):""}`:`<div class="empty" role="status"><h3>Nenhum produto com esses filtros</h3><p>Troque o tipo, a coleção ou a loja${F.stock?", ou mostre também ofertas sem estoque confirmado em Mais filtros":""}.</p><button class="btn ghost" type="button" id="clear-all">Limpar filtros</button></div>`}
   ${d.noCopagCount?`<details class="more"${d.noCopag?"":` data-semref="1"`}><summary>${ic("caret-down")}Sem preço sugerido conhecido (${d.noCopagCount})</summary><p>Sem preço sugerido não dá para medir desconto.</p><div class="deals">${d.noCopag?d.noCopag.map((e)=>dealCard(e)).join(""):""}</div></details>`:""}
-  ${d.refNet?`<p class="hnote">"Ref. internet": ${REFNOTE}</p>`:""}
+  ${d.refNet?`<p class="hnote">${REFNOTE}</p>`:""}
   </div>`;
   if(typeof revealInit==="function")revealInit();
   if(d.next)watchMore();
@@ -2033,19 +2033,19 @@ function renderCopag(){
   const srcLb=(c)=>/copagloja/.test(c.source_url||"")?"Loja oficial Copag":c.manual?"Tabela de preços Copag":"Fonte Copag";
   /* a fonte oficial repetida em todas as linhas da coleção vai uma vez só para o caption; na linha fica a data */
   const row=(p,cap)=>{const c=p.copag||{};const same=cap&&p.copagConfirmed&&srcLb(c)===cap.lb&&(c.source_url||"")===cap.url;
-    return`<tr class="click" data-p="${esc(p.id)}" tabindex="0"><td>${esc(label(p))}</td><td class="r">${p.copagConfirmed?`<b>${money(p.msrp)}</b>`:p.copagReference?`<span style="color:var(--muted)">${money(p.copagReference)}</span>`:`<span style="color:var(--muted)">-</span>`}</td><td>${p.copagConfirmed?`${same?"":`<a href="${esc(safeUrl(c.source_url))}" target="_blank" rel="noopener">${srcLb(c)}</a><br>`}<small style="color:var(--muted)">${same?"Conferido em ":""}${day(c.source_timestamp||c.msrp_updated_at)}</small>`:p.copagReference?`<span class="chip warn" title="${esc(REFNOTE)}">Ref. internet</span>${p.copagReferenceUrl?`<br><small><a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">fonte</a></small>`:""}`:`<span class="chip">Sem preço</span>`}</td></tr>`};
+    return`<tr class="click" data-p="${esc(p.id)}" tabindex="0"><td>${esc(label(p))}</td><td class="r">${p.copagConfirmed?`<b>${money(p.msrp)}</b>`:p.copagReference?`<span style="color:var(--muted)">${money(p.copagReference)}</span>`:`<span style="color:var(--muted)">-</span>`}</td><td>${p.copagConfirmed?`${same?"":`<a href="${esc(safeUrl(c.source_url))}" target="_blank" rel="noopener">${srcLb(c)}</a><br>`}<small style="color:var(--muted)">${same?"Conferido em ":""}${day(c.source_timestamp||c.msrp_updated_at)}</small>`:p.copagReference?`<span class="chip warn" title="${esc(REFNOTE)}">Ref. da comunidade</span>${p.copagReferenceUrl?`<br><small><a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">fonte</a></small>`:""}`:`<span class="chip">Sem preço</span>`}</td></tr>`};
   const order=(p)=>(p.copagConfirmed?0:p.copagReference?1:2);
   const meta=cols.map((c,i)=>({c,i,k:ps.filter((p)=>p.collection===c.id&&p.copagConfirmed).length,r:ps.filter((p)=>p.collection===c.id&&p.copagReference).length})).sort((x,y)=>y.k-x.k||y.r-x.r||y.i-x.i);
   const sec=({c})=>{const l=ps.filter((p)=>p.collection===c.id).sort((a,b)=>order(a)-order(b)||String(a.typeLabel).localeCompare(b.typeLabel));if(!l.length)return"";const k=l.filter((p)=>p.copagConfirmed).length;
     const srcs=new Set(l.filter((p)=>p.copagConfirmed).map((p)=>srcLb(p.copag||{})+"|"+((p.copag||{}).source_url||"")));
     const cap=k&&srcs.size===1?{lb:srcLb(l.find((p)=>p.copagConfirmed).copag||{}),url:(l.find((p)=>p.copagConfirmed).copag||{}).source_url||""}:null;
-    return`<details class="more cg"${k?" open":""}><summary>${ic("caret-down")}${esc(c.name)} <small>${k?`${k} com preço oficial`:l.some((p)=>p.copagReference)?"só referência":"sem preço oficial"}</small></summary><div class="tablewrap"><table>${cap?`<caption class="tcap">Fonte: <a href="${esc(safeUrl(cap.url))}" target="_blank" rel="noopener">${esc(cap.lb)}</a></caption>`:""}<thead><tr><th>Produto</th><th class="r">Preço sugerido</th><th>Fonte</th></tr></thead><tbody>${l.map((p)=>row(p,cap)).join("")}</tbody></table></div></details>`};
+    return`<details class="more cg"${k?" open":""}><summary>${ic("caret-down")}${esc(c.name)} <small>${k?`${k} com preço oficial`:l.some((p)=>p.copagReference)?"só ref. da comunidade":"sem preço oficial"}</small></summary><div class="tablewrap"><table>${cap?`<caption class="tcap">Fonte: <a href="${esc(safeUrl(cap.url))}" target="_blank" rel="noopener">${esc(cap.lb)}</a></caption>`:""}<thead><tr><th>Produto</th><th class="r">Preço sugerido</th><th>Fonte</th></tr></thead><tbody>${l.map((p)=>row(p,cap)).join("")}</tbody></table></div></details>`};
   const withP=meta.filter((m)=>m.k||m.r),noP=meta.filter((m)=>!m.k&&!m.r&&ps.some((p)=>p.collection===m.c.id));
   const sections=withP.map(sec).join("")+(noP.length?`<details class="more"><summary>${ic("caret-down")}Coleções sem nenhum preço oficial (${noP.length})</summary><p>A loja oficial da Copag não vende mais produtos dessas coleções, então não há preço para conferir.</p>${noP.map(sec).join("")}</details>`:"");
   const wrapEmpty=(html)=>html;
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px">
-  <section class="panel"><h1 class="panel-h1">Preços sugeridos Copag</h1><p>Só conta como oficial o preço publicado na loja oficial da Copag (copagloja.com.br), com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto nem nos alertas.</p>
-  <p class="summary" style="margin:0;padding:0 16px 16px"><span><b>${off}</b> oficiais</span><span><b>${ref}</b> só referência</span><span><b>${none}</b> sem preço</span></p></section>
+  <section class="panel"><h1 class="panel-h1">Preços sugeridos Copag</h1><p>Só conta como oficial o preço publicado na loja oficial da Copag (copagloja.com.br), com link e data. Preço divulgado fora do site da Copag (lojas, blogs, perfis especializados) aparece como referência da comunidade, não confirmada, e não entra no desconto nem nos alertas.</p>
+  <p class="summary" style="margin:0;padding:0 16px 16px"><span><b>${off}</b> oficiais</span><span><b>${ref}</b> só ref. da comunidade</span><span><b>${none}</b> sem preço</span></p></section>
   ${sections}</div>`;
 }
 /* Lote E: o texto do guia, as perguntas frequentes e o glossário vêm de api/_lib/guia.mjs (fonte única). A linha
@@ -2343,7 +2343,7 @@ function renderProduct(pid){
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
       ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
       <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
-      ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Sugerido (internet)</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
+      ${p.copagConfirmed?`<div class="cmp4"><div><span>Preço sugerido Copag</span><b><s>${money(p.msrp)}</s></b></div><div><span>Preço encontrado${pixTxt(best)}</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${save?"pos":""}">${save?money(save):"-"}</b></div><div><span>Desconto</span><b class="${save?"pos":""}">${best.discount>0?pct(best.discount):"-"}</b></div></div>`:(p.copagReference?(()=>{const rv=p.copagReference,sv=rv-best.total,dv=1-best.total/rv;return`<div class="cmp4"><div><span>Referência da comunidade</span><b><s>${money(rv)}</s></b></div><div><span>Preço encontrado</span><b>${money(best.total)}</b></div><div><span>Economia</span><b class="${sv>0?"pos":""}">${sv>0?money(sv):"-"}</b></div><div><span>Desconto</span><b class="${sv>0?"pos":""}">${dv>0?pct(dv):"-"}</b></div></div><p class="refline">${ic("info")}<span>${REFNOTE}${p.copagReferenceUrl?` <a href="${esc(safeUrl(p.copagReferenceUrl))}" target="_blank" rel="noopener">Fonte</a>`:""}</span></p>`})():`<p class="hnote">Sem preço sugerido conhecido para comparar.</p>`)}
       ${scoreBlock(best)}
       <a class="btn wide" href="${esc(safeUrl(outUrl(best.url)))}" target="_blank" rel="noopener${outRel(best.url)}" data-store="${esc(best.id)}">Ver oferta na ${esc(best.storeName)}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>
     </section>`:`<section class="card buy muted-hero"><p class="eyebrow">${pre?"Em pré-venda":old?"Leitura antiga":"Sem estoque confirmado agora"}</p><p class="hero-note">${pre?`Anunciado em ${esc(pre.storeName)} por ${money(pre.total)}${pre.releaseDate?`, lançamento em ${new Date(pre.releaseDate).toLocaleDateString("pt-BR")}`:""}. Pré-venda não entra no ranking.`:old?`${staleNote(old)}, em ${esc(old.storeName)}. Preço e estoque podem ter mudado desde então. Crie um alerta para saber quando voltar com preço bom.`:"Nenhuma loja confirma estoque neste momento. Crie um alerta para saber quando voltar com preço bom."}</p>${p.copagConfirmed?`<p class="hnote">Preço sugerido Copag: <b>${money(p.msrp)}</b></p>`:""}</section>`}
@@ -3041,7 +3041,7 @@ function oppWhyBody(x,{sum=true}={}){
   const cmpTxt=!rc.available?"Sem comparação":rc.position==="below"?`${pctPts(rc.percentage_below)} abaixo ${refOfName(rc.reference_kind)} (${money(rc.amount_below)} a menos)`:rc.position==="above"?`${pctPts(rc.percentage_below)} acima ${refOfName(rc.reference_kind)}`:refAtName(rc.reference_kind);
   const sec=(t,items)=>items?`<h4>${t}</h4><ul>${items}</ul>`:"";
   const hist=(x.historical_context||[]).map((h)=>`<li>${esc(h.label||"Histórico")} ${money(h.price)}${h.published_at?` (${esc(h.published_at)})`:""}</li>`).join("")
-    +(x.community_reference?`<li>Referência comunitária ${money(x.community_reference.price)} (não é preço Copag)</li>`:"");
+    +(x.community_reference?`<li>Referência da comunidade ${money(x.community_reference.price)} (preço divulgado fora do site da Copag; não confirmado)</li>`:"");
   return`
     ${sum&&x.opportunity_score!=null?`<div class="why-sum" style="--sc:${bu?.[1]||"var(--muted)"}"><b>${x.opportunity_score}</b><span>${esc(bu?.[0]||"Sem faixa")}<small>Opportunity Score</small></span></div>`:""}
     <dl class="why-kv"><dt>Preço</dt><dd>${money(x.price)}</dd><dt>Referência atual</dt><dd>${refTxt}</dd><dt>Comparação</dt><dd>${cmpTxt}</dd><dt>Confiança dos dados</dt><dd>${confTxt(x)}</dd></dl>
