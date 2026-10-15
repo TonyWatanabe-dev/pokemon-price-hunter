@@ -15,13 +15,16 @@
 //      rodadas, ficou bloqueada, com erro ou ativa com zero anúncios.
 //    - motor de oportunidades parado: nas últimas CONSEC rodadas o banco sincronizou, mas a batida do motor ficou
 //      para trás (engine.status 'parado', ver src/opstate.js). Sem batida ainda ('sem_heartbeat') nunca avisa.
+//    - deploy de produção degradado (deployIssues): o último deployment "Production" da API do GitHub (criado pela
+//      integração da Vercel) terminou em failure/error, ou ficou pendente por mais de DEPLOY_STUCK_MIN min.
+//      Leitura ausente ou ilegível não avisa (sem evidência não há alarme, e o Vigia não cai por isso).
 // Avisos: um na transição para falha (ou quando surge problema novo), um lembrete a cada REMIND_MIN min enquanto
 // continuar, e um de recuperação depois de 2 checagens saudáveis seguidas (evita aviso em vaivém).
 // O "livro" (ledger) guarda o que já foi avisado; só muda quando a mensagem chega a pelo menos um canal.
 // Aviso antecipado (não é falha, não muda o estado): copag_vencendo — referência Copag oficial que sai da nota em até
 // 7 dias (copagWarnings / decideWarning); avisa quando a lista muda e lembra a cada WARN_REMIND_MIN.
 
-export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440, UNKNOWN_CONSEC: 3 };
+export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440, UNKNOWN_CONSEC: 3, DEPLOY_STUCK_MIN: 30 };
 const BAD = new Set(['degradado', 'parado']);
 
 const min = (a, b) => (Number.isFinite(a) && Number.isFinite(b) ? Math.round((a - b) / 6e4) : null);
@@ -52,12 +55,33 @@ export function copagWarnings(meta, now) {
     text: `Referência Copag oficial vence em breve: ${items.join('; ')}. Sem nova auditoria na loja Copag, esses produtos passam a usar a referência de mercado (ou ficam sem referência). Ver docs/referencia-copag.md, "Validade e renovação".` }];
 }
 
-export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, meta, metaError = null, runs }) {
-  const ev = evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs });
+/**
+ * Deploy de produção (somente leitura): `deploy` = { deployment: { sha, created_at, environment }, statuses: [{ state,
+ * created_at }] } do último deployment "Production" (statuses em qualquer ordem; vale o mais recente).
+ * failure/error → deploy_falhou; pending/queued/in_progress há mais de DEPLOY_STUCK_MIN min → deploy_preso.
+ * Sem dado, dado inválido, success ou inactive: nenhum motivo.
+ */
+export function deployIssues(deploy, now) {
+  const N = Date.parse(now);
+  const d = deploy?.deployment;
+  if (!d || typeof d !== 'object' || !Number.isFinite(N)) return [];
+  const sts = (Array.isArray(deploy.statuses) ? deploy.statuses : []).filter((x) => x && typeof x.state === 'string' && Number.isFinite(Date.parse(x.created_at)))
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
+  const sha = /^[0-9a-f]{7,40}$/i.test(String(d.sha || '')) ? String(d.sha).slice(0, 7) : '?';
+  const st = sts[0]?.state?.toLowerCase() || null;
+  if (st === 'failure' || st === 'error') return [{ code: 'deploy_falhou', text: `O último deploy de produção (${sha}, ${hhmm(sts[0].created_at)}) terminou em ${st}: o site pode estar numa versão anterior.` }];
+  const created = Date.parse(d.created_at);
+  if ((st === null || ['pending', 'queued', 'in_progress'].includes(st)) && Number.isFinite(created) && min(N, created) > RULES.DEPLOY_STUCK_MIN)
+    return [{ code: 'deploy_preso', text: `O deploy de produção ${sha} está ${st || 'sem status'} desde ${hhmm(d.created_at)} (${dur(min(N, created))}).` }];
+  return [];
+}
+
+export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, meta, metaError = null, runs, deploy = null }) {
+  const ev = evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy });
   return { ...ev, warnings: copagWarnings(meta, now) };
 }
 
-function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs }) {
+function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy }) {
   const N = Date.parse(now);
   const reasons = [];
   const add = (code, text) => reasons.push({ code, text });
@@ -106,6 +130,7 @@ function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs }) {
     }
     if (all((r) => r.engine?.status === 'parado')) add('motor_parado', `Motor de oportunidades parado (última execução: ${hhmm(last.engine.runAt)}): as notas podem estar antigas.`);
   }
+  for (const x of deployIssues(deploy, now)) { const preso = x.code === 'deploy_preso'; add(preso ? 'deploy_preso' : 'deploy_falhou', x.text); }
   if (reasons.length) return { status: 'degradado', reasons, facts };
   if (!ops?.last) { add(metaError === 'ausente' || !meta ? 'meta_ausente' : 'ops_ausente', 'Ainda sem estado operacional registrado: banco e leitor não verificados.'); return { status: 'desconhecido', reasons, facts }; }
   return { status: 'saudavel', reasons, facts };
@@ -125,7 +150,7 @@ export const CODE_LABEL = {
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
   leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada',
-  motor_parado: 'motor de oportunidades parado',
+  motor_parado: 'motor de oportunidades parado', deploy_falhou: 'deploy de produção falhou', deploy_preso: 'deploy de produção preso',
 };
 
 /** Decide se avisa. Não altera o livro: use commitLedger depois de tentar enviar. */

@@ -1,6 +1,7 @@
 // Vigia do robô por estado. Lê o que o workflow baixou (dados publicados, meta.json, últimas rodadas do robô e o
 // livro do que já foi avisado), decide o estado e avisa só nas transições (ver src/ops-watch.js).
 // Uso: node tools/watchdog.mjs --state wd/state.json --meta wd/meta.json --runs wd/runs.json --ledger wd/ledger.json
+//      [--deploy wd/deploy.json] (último deployment "Production" + statuses; ausente/ilegível = sem verificação de deploy)
 //      [--dry-run] (não envia nem grava o livro) · [--test] (envia uma mensagem de teste; o livro não muda)
 //      [--now 2026-10-09T12:00:00Z] (testes)
 import fs from 'node:fs';
@@ -30,7 +31,8 @@ export async function main({ env = process.env, fetchImpl = fetch, log = console
 
   const meta = m.value && typeof m.value === 'object' && !Array.isArray(m.value) ? m.value : null;
   const metaError = m.error || (m.value != null && !meta ? 'ilegivel' : null);
-  const ev = evaluate({ now, stateGeneratedAt: st?.generatedAt, meta, metaError, runs });
+  const deploy = readJsonSafe(opt('deploy')).value;
+  const ev = evaluate({ now, stateGeneratedAt: st?.generatedAt, meta, metaError, runs, deploy });
   const d = decide(ev, ledger, now);
   let sent = { delivered: false, channels: [] };
   if (d.notify && !flag('dry-run')) sent = await sendAll(d.notify, { env, fetchImpl });

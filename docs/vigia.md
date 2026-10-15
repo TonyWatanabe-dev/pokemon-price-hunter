@@ -21,7 +21,7 @@
   - `sem_heartbeat`: nenhuma batida ainda (estado logo após a implantação; nunca avisa);
   - `desconhecido`: sem banco, sem rodada anterior ou sincronização atrasada (aí o problema é a sincronização).
 - **Vigia (`.github/workflows/watchdog.yml` → `tools/watchdog.mjs` → `src/ops-watch.js`)**:
-  - lê os dados publicados e o `meta.json` do mesmo commit do ramo `data`, além das últimas rodadas do robô na API do Actions;
+  - lê os dados publicados e o `meta.json` do mesmo commit do ramo `data`, as últimas rodadas do robô na API do Actions e o último deploy de produção (API de deployments, só leitura);
   - decide o estado e avisa só nas transições.
 
 ## Regras (constantes em `src/ops-watch.js`, objeto `RULES`)
@@ -35,6 +35,7 @@
 | | nas 2 últimas rodadas registradas: banco sem a rodada anterior, banco ilegível, robô sem `DATABASE_URL` ou leitor indisponível |
 | | **zero notas válidas**: leitor ok, pelo menos 10 linhas lidas e nenhuma válida, nas 2 últimas rodadas. Com menos de 10 lidas, só fica registrado |
 | | **motor parado** (`motor_parado`): `engine.status = parado` nas 2 últimas rodadas registradas |
+| | **deploy de produção** (`deploy_falhou` / `deploy_preso`): o último deployment `Production` da API do GitHub (criado pela integração da Vercel) terminou em `failure`/`error`, ou está pendente há mais de 30 min. Leitura só com `deployments: read`; sem dado (API fora, arquivo ilegível), o deploy não é verificado e nada muda |
 | `desconhecido` | sem dados publicados legíveis, ou ainda sem `ops` registrado. Nunca avisa e não muda o livro |
 | `saudavel` | nenhum dos casos acima |
 
