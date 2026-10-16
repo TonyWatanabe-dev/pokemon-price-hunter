@@ -1,7 +1,31 @@
+## Atualização executiva — 16/10/2026 (America/Sao_Paulo)
+
+> **Estado da fotografia consultada:** main em [35b95fd](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/commit/35b95fd31de1ae8d863ef0c53916ddab1214ce6d), última integração identificada em 15/10 à noite. Esta atualização separa código integrado de operação pública comprovada.
+
+### Resumo para decisão
+- **PRs:** a consulta atual não encontrou PRs abertas. As PRs #750–#755 foram integradas; tarefas locais mencionadas no registro de 15/10 ainda precisam ser confirmadas como PR/merge antes de considerá-las entregues.
+- **Produção:** **não comprovada como atualizada**. A Vercel atingiu o limite de builds/deploys (build-rate-limit). A #754 reduziu deploys redundantes do ramo `data`; é necessário novo deploy do SHA mais recente e smoke público verde. Não assumir que `main` já está refletida em produção.
+- **Smoke público:** a execução registrada em 15/10 falhou na validação do canonical. O domínio canônico escolhido continua sendo **https://tcgpricehunter.com.br/**; corrigir/verificar o redirect/canonical e repetir o smoke.
+- **Burn-in 24/7:** ainda não concluído. Registro de 15/10 verde (1º dia de 7); 16/10 estava parcial na última verificação. Só contar dias encerrados e verdes consecutivos; não declarar a Fase 1 concluída antes de 7/7.
+- **Fases:** Fase 2 está concluída. Fase 1 segue em burn-in; Fases 4, 6 e 8 têm critérios pendentes nas matrizes abaixo; Fase 5 está concluída no código, mas depende da publicação para validação pública; Fase 7 segue em evolução. Fase 3 (frete por CEP) está integrada com feature flag desligada e bloqueada por respostas 429 das lojas de nuvem.
+- **Social Media:** Telegram teve envio real e automação conforme os registros das PRs #693–#697. O WhatsApp também aparece como implementado em trabalho recente, mas há divergência entre documentação, estado de integração oficial e capacidade de publicar no grupo existente: não afirmar que publicação automática no grupo está comprovada sem evidência de execução recente. Instagram, TikTok e YouTube ainda não devem ser tratados como publishers implementados.
+- **Agente de alertas Telegram por usuário:** trabalho em branch local foi reportado para 16/10; só marcar integrado quando existir PR/merge e CI verificáveis.
+- **Orçamento:** o proprietário retirou o teto anterior de US$ 100 por 24 horas; não tratar esse teto removido como bloqueio ativo. Permanecem os limites técnicos de segurança, concorrência, retries e autorização de release.
+- **Governança:** até o lançamento, merge humano permanece o gate de publicação conforme decisão registrada na #753. Não fazer bypass nem declarar deploy concluído sem evidência.
+
+### Próximas prioridades
+1. Resolver a cota da Vercel, publicar o SHA atual da `main` e executar smoke público completo (canonical, Home, busca/produto, API/dados e links).
+2. Continuar registrando o burn-in diário e só fechar Fase 1 com sete dias encerrados consecutivos verdes.
+3. Reconciliar e testar o publisher de WhatsApp: documentar API/caminho oficial realmente usado, destino, opt-in e evidência de envio; manter pausa se a integração não for verificável.
+4. Confirmar se as branches locais mencionadas em 15/10 viraram PRs; priorizar alertas Telegram por usuário e critérios restantes das Fases 4/6/8.
+5. Atualizar o roadmap novamente após o primeiro deploy/smoke verde e após cada gate de fase realmente concluído.
+
+---
+
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 14/10/2026, 17:00 (America/Sao_Paulo, UTC−03:00) — Fase 1 aguardando burn-in; Social Media MVP com Telegram em operação e acervo de fotos em andamento.
-> **Base consultada para esta atualização:** `main` em `8ea86cb4166e5303f73a9684297c2525a82e51a9` (PRs #629 e #630 integradas; escopo atualizado em 13/10/2026).
+> **Atualizado em:** 16/10/2026, 10:14 (America/Sao_Paulo, UTC−03:00) — produção aguardando deploy/smoke; burn-in em curso.
+> **Base consultada para esta atualização:** main em `35b95fd31de1ae8d863ef0c53916ddab1214ce6d` (último commit identificado em 15/10 à noite).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -12,8 +36,8 @@ Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, g
 
 | Canal | Endereço | Estado / uso |
 |---|---|---|
-| Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Destino de publicação a validar pelo chat ID antes do primeiro envio. |
-| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; chat ID validado e envio comprovado pela Bot API em 14/10/2026 (#690). |
+| Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Validar novamente o chat ID antes de qualquer teste novo; há evidência histórica de publicação nas PRs #694–#697. |
+| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; o bot foi adicionado ao grupo; o envio real e a automação são documentados nas PRs #694–#697. Revalidar o destino e o último run antes de qualquer diagnóstico de falha. |
 | Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
 | TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
 | YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
@@ -24,7 +48,7 @@ Links de afiliados já informados:
 - Mercado Livre: https://meli.la/1BzQ4PU
 - Amazon: https://link.amazon/B0bVBmGRD
 
-**Estado operacional:** registrar um canal não significa que o publisher esteja implementado. Só o Telegram publica de verdade (abaixo); Instagram, TikTok, YouTube e WhatsApp seguem sem publicação automatizada. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
+**Estado operacional:** Telegram tem evidência histórica de publicação e automação nas PRs #694–#697. WhatsApp está em divergência documental e exige confirmação de implementação oficial e de publicação no grupo existente. Instagram, TikTok e YouTube não devem ser considerados publishers automáticos ativos sem PR e evidência. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
 
 ## Social Media — Telegram em operação automática (14/10/2026)
 
@@ -42,24 +66,26 @@ Etapa concluída. Issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price
 
 **Pendências não bloqueantes:** cadastrar links de afiliado por anúncio em `config/affiliates.json` (sem eles os posts usam a URL da loja); Instagram, TikTok e YouTube ainda não iniciados como publisher.
 
-## Onde estamos — 15/10/2026 (fim do dia)
+## Onde estamos — 15/10/2026 (noite)
+
+> **Publicação travada até ~16/10 à tarde.** A Vercel (plano gratuito) bateu o limite de 100 deploys/dia: cada gravação do robô no ramo `data` gerava um deploy com erro. [#754](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/754) desliga isso. Produção está no #734 (`4fb454f`); os merges #735–#754 entram na próxima publicação (Redeploy do commit mais novo da `main` quando a cota reiniciar). Smoke público de 15/10 (run 38767160422) falhou por isso — esperado até publicar.
 
 | Fase / frente | Estado | Evidência / o que falta |
 |---|---|---|
-| **Fase 1 — confiabilidade** | Código pronto; **burn-in em curso** | Cadência do robô corrigida ([#717](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/717)): rodadas a cada 15 min. [#271](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/271) fecha no 7º dia verde seguido (~23/10). [#231](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/231): configurações do proprietário pendentes (`DISPATCHER_ATIVO`, `DISPATCHER_ORCAMENTO_JANELA_H`, `RELEASE_AUDIT_*`, `VERCEL_TOKEN`). |
-| Fase 2 — fluxo do site | Concluída (13/10) | Issues antigas #53, #82 e #83 fechadas por [#723](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/723), [#728](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/728), [#725](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/725). |
-| **Fase 3 — frete por CEP** | Código integrado, flag desligada | [#710](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/710)/[#711](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/711)/[#712](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/712). Smoke real: lojas VTEX respondem 429 aos IPs de nuvem. Bloqueado até achar caminho de rede aceito; [#84](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/84) aberta. |
-| **Fase 4 — contas e alertas** | Quase concluída | Isolamento PostgreSQL e Firestore (emulador, 29/29 — [#733](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/733)), cooldown, retry sem duplicação, queda não dispara por falha de coleta ([#726](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/726)), alerta explicado ([#724](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/724)). Falta: **decisão de produto sobre alerta por usuário** (canal e consentimento). Matriz na seção "Fase 4". |
-| **Fase 5 — Opportunity Engine** | Quase concluída | Determinismo ([#734](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/734)), URL Copag estrita ([#737](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/737)), integridade read-only ([#741](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/741)). Falta: **decisão sobre 12 referências c30-* do Instagram exibidas como Copag confirmada**. Matriz na seção "Fase 5". |
-| **Fase 6 — afiliados e lojas** | Quase concluída | Disclosure nos posts ([#730](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/730)) e no bloco Amazon ([#736](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/736)), allowlist de destinos ([#732](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/732)), ranking neutro testado, cupons por "Meus cupons" ([#715](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/715)). Falta: rótulo visível antes de ativar afiliado ML no site; limpeza do `sources.json`. |
-| Fase 7 — agentes especialistas | Não iniciada | Ordem e pré-requisitos em `docs/PLANO-ENTREGA-TURBO.md`. |
-| **Fase 8 — hardening** | Parcial | Smoke pós-deploy ampliado ([#731](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/731)), restore ensaiado ([#738](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/738)), produção canônica documentada ([#735](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/735)), deps 0 vulnerabilidades ([#718](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/718)). Falta: burn-in de 7 dias; **política de deploy** (hoje todo merge publica na Vercel); **domínio canônico** (`tcgpricehunter.com.br` × `vercel.app`); desligar GitHub Pages; backup diário de `data/` agendado em PR (`ops/backup-diario`), primeira etiqueta só depois do merge; backup do banco. |
-| **Lote F — performance** | **Concluído** | HTML por página 509 KB → 29 KB ([#719](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/719), [#720](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/720)); páginas de texto ([#721](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/721)) e /precos, /pistas, /pre-vendas, /lojas ([#727](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/727)) sem o `state.json` de ~3 MB. |
-| **Social Media** | Em operação | Telegram e WhatsApp automáticos, afiliados, dica de cupom, disclosure. 34 produtos com recorte ruim usam a foto da loja ([#716](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/716)); refazer recorte aguarda revisão do proprietário (artefato do run 38719018907). |
+| **Fase 1 — confiabilidade** | Código pronto; **burn-in em curso** | Robô a cada 15 min ([#717](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/717)); 7º dia verde ~23/10. `DISPATCHER_ATIVO` já estava ligado desde 12/10. |
+| Fase 2 — fluxo do site | Concluída | #53, #82, #83 fechadas. |
+| **Fase 3 — frete por CEP** | Código integrado, desligado | Lojas VTEX respondem 429 aos IPs de nuvem; #84 aberta. |
+| **Fase 4 — contas e alertas** | **Quase concluída** | Isolamento, cooldown, retry, alerta explicado, regras Firestore no emulador 29/29 ([#733](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/733)). **Decidido: alerta por usuário via Telegram** — implementado em branch local `feat/alertas-telegram-usuario`, sobe em 16/10; ligar exige conta de serviço (`FIREBASE_SERVICE_ACCOUNT`), publicar regras e `ALERTAS_TELEGRAM_USUARIO=1`. |
+| **Fase 5 — Opportunity Engine** | **Concluída no código** | **Decidido:** 12 referências c30-* do Instagram viram referência da comunidade ([#747](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/747)); rótulo "Ref. da comunidade" no site ([#749](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/749)). Aguarda publicação. |
+| **Fase 6 — afiliados e lojas** | **Concluída no código** | Selo "Link de afiliado" com ⓘ ([#746](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/746)); limpeza do `sources.json` (139 → 122 lojas, [#748](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/748)). Candidatas Pirlimpimpim (Magazord, sem adapter/CNPJ) e Oitopeia (~4 SKUs, robots não confirmado) **não entraram**. |
+| **Fase 7 — agentes** | Em andamento | 1–5: Dispatcher, QA e Vigia ativos; teto de 60 despachos/24 h ([#750](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/750)), Vigia detecta deploy falho ([#751](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/751)) e abre issue de incidente com `VIGIA_ISSUES=true` ([#752](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/752)). 6–8 (catálogo, saúde das lojas, inteligência de preço, só relatório): branches locais, sobem em 16/10. |
+| **Fase 8 — hardening** | Parcial | **Decididos:** merge humano é o gate até o lançamento ([#753](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/753)); domínio canônico **tcgpricehunter.com.br** ([#745](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/745)); backup diário do ramo `data` 01:37 BRT, primeiro em 15/10 ([#744](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/744)). Falta: burn-in de 7 dias. |
+| Lote F — performance | Concluído | HTML 509 KB → 29 KB; nenhuma página baixa o `state.json` inteiro. |
+| Social Media | Em operação | Telegram e WhatsApp, afiliados, cupom, disclosure. 34 produtos com foto da loja; refazer recorte aguarda revisão do proprietário. |
 
-**Fase atual:** fechamento das Fases 1, 4, 5, 6 e 8 — o código está entregue; o que resta é o burn-in correr e decisões do proprietário.
+**Fase atual:** fechamento das Fases 1, 4 e 8 (burn-in e configurações) e Fase 7 em andamento.
 
-**Decisões do proprietário em aberto:** (1) 12 referências c30-* do Instagram como Copag confirmada; (2) política de deploy (Ponte com `VERCEL_TOKEN` ou merge como gate); (3) domínio canônico; (4) alerta por usuário; (5) rótulo do afiliado ML no site; (6) configurações da #231; (7) GitHub Pages e backup do banco (backup diário de `data/` decidido em 15/10).
+**Pendências do proprietário:** Redeploy quando a cota da Vercel reiniciar; redirect 307 → 308 na Vercel; `VIGIA_ISSUES=true`; Search Console com o domínio novo; desligar GitHub Pages; zip das fotos refeitas (run 38719018907). Feito em 15/10: Firebase com o domínio novo, primeiro backup manual.
 
 ## Fase 4 — matriz de saída (15/10/2026)
 
@@ -678,3 +704,7 @@ As quatro issues mantêm a etiqueta `tarefa:aprovada`. Não foram adicionadas ta
 6. Roadmap atualizado com PRs/commits, runs, checks, smoke, resultado de burn-in e bloqueios remanescentes. Até todos os critérios serem provados, **Fase 1 continua aberta**.
 
 **Concorrência:** o runtime reportou `TAREFAS_MAX=10`, mas isso representa capacidade, não garantia de dez workers simultâneos. A fila deve respeitar dependências e os limites de orçamento; nunca executar em paralelo duas tarefas que alterem os mesmos contratos/arquivos compartilhados sem isolamento demonstrado.
+
+## Base de cartas em português (16/10/2026)
+
+Decisão do proprietário: linha editorial no Instagram/TikTok (Aura/ilustradores, rankings, temáticos) em vez de posts automáticos de oferta. Para isso entrou a base `config/cartas/cartas-pt.json.gz` (14.360 cartas físicas com nome em português, 105 coleções de Preto & Branco à Celebração de 30 Anos) e `config/cartas/artistas-pt.json` (325 ilustradores), geradas por `tools/cartas-pt-gerar.py` a partir do [tcgdex/cards-database](https://github.com/tcgdex/cards-database) (MIT); consulta em `src/cartas-pt.js`. Imagens ficam no `assets.tcgdex.net` (© Pokémon/Nintendo/Creatures/GAME FREAK, sempre com crédito); o TCG Pocket (app) fica fora. Regenerar: `python3 tools/cartas-pt-gerar.py --clonar /tmp/tcgdex --saida config/cartas`.

@@ -9,7 +9,11 @@ cd "$D"
 git init -q -b data
 git config user.name "price-hunter-bot"
 git config user.email "bot@users.noreply.github.com"
-git add data
+# vercel.json mínimo no próprio commit do ramo data: a Vercel lê a configuração do commit que recebe, então o
+# git.deploymentEnabled da main (#754) não valia para este ramo órfão e cada push seguia gerando um deploy com erro,
+# consumindo a cota diária (16/10/2026: 75 dos 100 deploys em 24 h eram do ramo data).
+printf '%s\n' '{ "git": { "deploymentEnabled": { "data": false } } }' > vercel.json
+git add data vercel.json
 git commit -qm "dados $(date -u +%Y-%m-%dT%H:%MZ)"
 # PUSH_DATA_REMOTE (opcional) substitui o remoto; usado nos testes com repositório bare local.
 git push -q -f "${PUSH_DATA_REMOTE:-https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git}" data
