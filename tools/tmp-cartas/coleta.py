@@ -27,8 +27,14 @@ for sid, lang in pedido.get('sets_detalhe', []):
         s['cards'] = [{k: c.get(k) for k in ('id','localId','name','illustrator','rarity','image','category','hp','types','stage')} for c in cards]
         save(f'set-{lang}-{sid}.json', s)
     except Exception as e: save(f'set-{lang}-{sid}.erro.json', {'erro': str(e)})
-for nome, url in pedido.get('imagens', {}).items():
-    try:
-        b = get(url, binary=True)
-        open(os.path.join(OUT, nome), 'wb').write(b)
-    except Exception as e: save(nome + '.erro.json', {'url': url, 'erro': str(e)})
+def baixa(item):
+    nome, urls = item
+    if isinstance(urls, str): urls = [urls]
+    erros = []
+    for url in urls:
+        try:
+            b = get(url, binary=True)
+            open(os.path.join(OUT, nome), 'wb').write(b); return
+        except Exception as e: erros.append(f'{url}: {e}')
+    save(nome + '.erro.json', {'erros': erros})
+with cf.ThreadPoolExecutor(8) as ex: list(ex.map(baixa, pedido.get('imagens', {}).items()))
