@@ -717,4 +717,6 @@ Decisão do proprietário: IG/TikTok são linha editorial, sem post automático 
 - Link da bio `tcgpricehunter.com.br/grupos` → grupo do WhatsApp (307; #774). Verificado em produção em 16/10.
 - Imagens oficiais das cartas via `.github/workflows/cartas-imagens.yml` → ramo `cartas-imagens` (#769).
 - Semana 1 (19–25/10): 6 posts de arte (Instagram) + 5 vídeos (Instagram e TikTok) agendados. Semana 2 (26/10–01/11): 6 posts de arte agendados; 3 vídeos aguardam material.
-- Pendências do proprietário: bio apontando para `/grupos`; figurinha de link e enquetes nos stories pelo app; vídeos da semana 2.
+- Bio do Instagram e do TikTok apontando para `/grupos`: feito em 16/10.
+- GitHub Pages despublicado em 16/10 (fonte em GitHub Actions, sem workflow de Pages): o site vive só na Vercel.
+- Pendências do proprietário: figurinha de link e enquetes nos stories pelo app; vídeos da semana 2 (unboxing Miraidon e próxima abertura) no Drive "Cortes Rede Sociais" com acesso por link; depois preencher `drive` em `semana2.json` e agendar.
