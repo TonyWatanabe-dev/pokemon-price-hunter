@@ -1603,8 +1603,8 @@ function tipCard(t){
     <span class="tipc-b">
       <span class="tipc-src">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="16" height="16" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}<b>${esc(mkName(t))}</b><span>via ${esc(chan(t))}</span></span>
       <span class="tipc-n">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</span>
-      <span class="tipc-p"><b>${money(t.price)}</b>${t.anomalous?`<span class="chip bad">Barato demais</span>`:d!=null&&d>=.0005?`<span class="off sm${ref.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:""}</span>
-      <small>${ago(t.postedAt||t.firstSeen)} · não verificado</small>
+      <span class="tipc-p"><b>${money(t.price)}</b>${t.anomalous?`<span class="chip bad">Barato demais</span>`:d!=null&&d>=.0005?`<span class="off sm${ref.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:""}${t.virouOferta?`<span class="chip ok">✓ virou oferta</span>`:""}</span>
+      <small>${ago(t.postedAt||t.firstSeen)} · ${t.virouOferta?"anúncio conferido na API do Mercado Livre":"não verificado"}</small>
     </span></a>`;
 }
 const liveTips=()=>(S.tips||[]).filter((t)=>t.productId&&!t.expired&&t.price>0).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen)));
@@ -2172,11 +2172,25 @@ function tipHits(q){
   return(S.tips||[]).filter((x)=>!x.expired).filter((x)=>{const hay=norm([x.collectionName,x.label,x.title,x.text,x.store].join(" "));return ws.every((w)=>hay.includes(w))})
     .sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))).slice(0,8);
 }
+/* /pistas: só pistas com produto identificado, agrupadas por produto (cabeçalho com foto, nome e preço Copag; pistas por
+   desconto). Pista do ML conferida na API leva o selo "virou oferta" (tipCard); o cabeçalho liga à página do produto.
+   Post sem preço (ex.: lista de cupons) fica fora; não identificadas e encerradas ficam atrás de "Mostrar N…". */
+const tipSort=(a,b)=>(b.discount??-9)-(a.discount??-9)||String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen));
+function tipGroup({p,pid,l}){
+  const ref=p?refOf(p):null;const n=l.filter((x)=>x.virouOferta).length;
+  const name=p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc([l[0].collectionName,l[0].label||l[0].title].filter(Boolean).join(" · "));
+  const head=p?`<a class="ai-p" href="/produto/${SLUG[p.id]||encodeURIComponent(p.id)}" data-p="${esc(p.id)}" style="display:inline-flex;align-items:center;gap:10px">${photo(p,null,"photo dl-ph")}<span>${name}</span></a>`:`<span>${name}</span>`;
+  return`<section class="card" data-tipgroup="${esc(pid)}"><h2>${head}<small>${ref?`Copag ${money(ref.v)}${ref.net?" (ref.)":""}`:"Sem preço Copag"} · ${l.length} pista${l.length>1?"s":""}${n?` · ${n} virou oferta`:""}</small></h2><div class="tipgrid">${l.map(tipCard).join("")}</div></section>`;
+}
 function renderTips(){
-  const t=S.slim&&PG.pistas?PG.pistas:S.tips||[];const ok=t.filter((x)=>x.productId&&!x.expired).sort((a,b)=>String(b.postedAt||b.firstSeen).localeCompare(String(a.postedAt||a.firstSeen))),other=t.filter((x)=>!x.productId||x.expired);
-  $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram, com a loja onde estão à venda. O site não confirma estoque nem vendedor, então nada daqui entra no ranking. Confira antes de comprar.</p></header>
-  ${ok.length?`<div class="tipgrid">${ok.map(tipCard).join("")}</div>`:`<div class="empty" role="status"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
-  ${other.length?`<details class="more"><summary>${ic("caret-down")}Não identificadas ou encerradas (${other.length})</summary>${tipTable(other)}</details>`:""}</div>`;
+  const all=(S.slim&&PG.pistas?PG.pistas:S.tips||[]).filter((x)=>x.price>0);
+  const ok=all.filter((x)=>x.productId&&!x.expired),other=all.filter((x)=>!x.productId||x.expired);
+  const by=new Map();for(const x of ok){if(!by.has(x.productId))by.set(x.productId,[]);by.get(x.productId).push(x)}
+  const groups=[...by].map(([pid,l])=>({pid,p:P[pid]||null,l:l.sort(tipSort)})).sort((a,b)=>tipSort(a.l[0],b.l[0])||a.pid.localeCompare(b.pid));
+  const enc=other.some((x)=>x.expired),pl=other.length>1?"s":"";
+  $("#view").innerHTML=`<div class="opp"><header class="opp-head"><h1>${ic("lightbulb","icon tgi")}Pistas do Telegram</h1><p>Promoções postadas por pessoas em canais públicos do Telegram e no Pelando, agrupadas por produto. Pista do Mercado Livre é conferida na API oficial: anúncio ativo, novo e com estoque vira oferta normal e entra no ranking (selo "virou oferta"). As demais ninguém verificou: confira estoque e vendedor antes de comprar.</p></header>
+  ${groups.length?`<div class="stack">${groups.map(tipGroup).join("")}</div>`:`<div class="empty" role="status"><h3>Nenhuma pista com produto identificado agora</h3><p>Os canais são lidos a cada rodada do robô.</p></div>`}
+  ${other.length?`<details class="more"><summary>${ic("caret-down")}Mostrar ${other.length} não identificada${pl}${enc?` ou encerrada${pl}`:""}</summary><p>Posts em que o robô não reconheceu o produto${enc?", ou promoções já encerradas":""}.</p>${tipTable(other)}</details>`:""}</div>`;
 }
 
 /* Por que esta nota? Explicação oficial do Opportunity Engine (motivos, avisos, referência, confiança) da própria oferta,
@@ -3243,7 +3257,7 @@ function init(st,opt={}){
   CHANGED=new Set(prevBest?Object.keys(P).filter((id)=>prevBest[id]!=null&&bestLive(id)?.total!==prevBest[id]):[]);
   if(view==="produto"){const r=parseLoc();curPid=r.slug?pidFromSlug(r.slug):curPid;if(curPid&&location.pathname!=="/produto/"+SLUG[curPid])history.replaceState(null,"","/produto/"+SLUG[curPid])}
   const pre=S.slim?S.counts.pre:OFF.filter((o)=>o.stock==="PRE_ORDER").length;
-  const tp=S.slim?S.counts.tips:(S.tips||[]).filter((x)=>x.productId&&!x.expired&&x.discount>=.15&&!x.anomalous).length;
+  const tp=S.slim?S.counts.tips:(S.tips||[]).filter((x)=>x.productId&&!x.expired&&x.price>0).length;   /* só as identificadas (mesma lista de /pistas) */
   const setc=(cls,n)=>document.querySelectorAll(cls).forEach((el)=>{el.hidden=!n;el.textContent=n});
   setc(".c-tip",tp);setc(".c-pre",pre);
   fresh();if(!opt.silent)render();accSync(false);
@@ -3327,7 +3341,7 @@ async function loadPage(key){
     if(k==="lojas"){if(!Array.isArray(d.lojas))return false;PG.lojas=d.lojas;return true}
     if(!Array.isArray(d.products))return false;const n0=S.products.length;mergeProducts(d.products);
     if(k==="copag"){PG.copag=d.products.map((p)=>p.id);if(S.products.length>n0)buildSlugs()}   /* com todos os produtos, os endereços saem iguais aos do estado completo */
-    else if(k==="pistas")PG.pistas=d.tips||[];
+    else if(k==="pistas"){PG.pistas=d.tips||[];if(S.products.length>n0)buildSlugs()}   /* produto citado só em pista (sem oferta) precisa de endereço para o cabeçalho do grupo */
     else{mergeOffers(d.offers||[]);mergeSide({sources:d.sources,reputation:d.reputation});PG.prevenda=d.offers||[]}
     return true}
   return true;

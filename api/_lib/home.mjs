@@ -72,7 +72,7 @@ export function slimHome(st, { source = 'state', now = Date.now(), activityDays 
       liveOffers: liveAll.length,
       stores: new Set(liveAll.map((o) => o.storeId)).size,
       pre: offers.filter((o) => o.stock === 'PRE_ORDER').length,
-      tips: allTips.filter((x) => x.productId && !x.expired && x.discount >= 0.15 && !x.anomalous).length,
+      tips: liveTips.length,   // contador do menu: só as identificadas (a lista padrão de /pistas)
       offersIncluded: kept.length,
     },
     collections: (st.collections || []).map((c) => pick(c, ['id', 'name', 'series', 'aliases', 'logo', 'products'])),   // products: nº de produtos (atalhos da busca)

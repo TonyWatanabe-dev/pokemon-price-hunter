@@ -172,11 +172,12 @@ export function siteCopag(st) {
   }) };
 }
 // campos que renderTips, tipCard e tipRow leem; o texto bruto do canal nunca sai (TIP_DROP)
-const TIP_F = ['id', 'productId', 'title', 'collectionName', 'label', 'source', 'store', 'url', 'price', 'discount', 'anomalous', 'expired', 'postedAt', 'firstSeen'];
-/** /pistas: todas as pistas, só com os campos da página, e os produtos que elas citam (foto e preço sugerido do cartão). */
+const TIP_F = ['id', 'productId', 'title', 'collectionName', 'label', 'source', 'store', 'url', 'price', 'discount', 'anomalous', 'expired', 'postedAt', 'firstSeen', 'virouOferta'];
+/** /pistas: as pistas com preço (post sem preço, ex. lista de cupons, fica fora da página), só com os campos da página, e os
+ *  produtos que elas citam (foto e preço sugerido do cabeçalho do grupo). virouOferta = id da oferta do ML que a API confirmou. */
 export function siteTips(st) {
   const P = productMap(st); const n = liveCounts(st);
-  const tips = (st.tips || []).map((t) => { const r = pick(t, TIP_F); for (const k of ['anomalous', 'expired']) if (r[k] === false) delete r[k]; return r; });
+  const tips = (st.tips || []).filter((t) => t.price > 0).map((t) => { const r = pick(t, TIP_F); for (const k of ['anomalous', 'expired']) if (r[k] === false) delete r[k]; return r; });
   const ids = [...new Set(tips.map((t) => t.productId).filter((id) => id && P.has(id)))];
   return { tips, products: ids.map((id) => cardP(P.get(id), n)) };
 }
