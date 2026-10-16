@@ -1,0 +1,8 @@
+{"json": {
+  "sets-pt": "https://api.tcgdex.net/v2/pt/sets",
+  "serie-me-pt": "https://api.tcgdex.net/v2/pt/series/me",
+  "serie-me-en": "https://api.tcgdex.net/v2/en/series/me",
+  "morii-pt": "https://api.tcgdex.net/v2/pt/cards?illustrator=eq:Yuka%20Morii",
+  "morii-en": "https://api.tcgdex.net/v2/en/cards?illustrator=eq:Yuka%20Morii"
+ },
+ "sets_detalhe": [], "imagens": {}}
