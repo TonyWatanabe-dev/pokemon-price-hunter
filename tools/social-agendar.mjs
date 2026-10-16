@@ -14,7 +14,7 @@ const caminho = arg('agenda');
 const modo = arg('modo', 'simular');
 const so = (arg('so', '') || '').split(',').map((s) => s.trim()).filter(Boolean);
 if (!caminho) { console.error('informe --agenda'); process.exit(2); }
-if (!['simular', 'agendar'].includes(modo)) { console.error('--modo simular|agendar'); process.exit(2); }
+if (!['simular', 'agendar', 'cancelar'].includes(modo)) { console.error('--modo simular|agendar|cancelar'); process.exit(2); }
 
 const agenda = JSON.parse(readFileSync(caminho, 'utf8'));
 const itens = agenda.itens.filter((i) => !so.length || so.includes(i.id));
@@ -38,6 +38,21 @@ async function midias(it) {
     return [{ nome: `${it.id}.mp4`, bytes: new Uint8Array(await r.arrayBuffer()) }];
   }
   return it.arquivos.map((a) => ({ nome: basename(a), bytes: new Uint8Array(readFileSync(join(agenda.pasta, a))) }));
+}
+
+if (modo === 'cancelar') {
+  // Cancela posts agendados listados em agenda.cancelar ({ quando, plataforma }): casa pelo horário (UTC-3) e pela rede.
+  const alvos = Array.isArray(agenda.cancelar) ? agenda.cancelar : [];
+  const lista = await cli.agendados(perfil);
+  for (const c of alvos) {
+    const utc = new Date(`${c.quando}:00-03:00`).toISOString().slice(0, 16);
+    const achados = lista.filter((p) => String(p.scheduledFor ?? '').slice(0, 16) === utc
+      && (p.platforms ?? []).some((x) => x?.platform === c.plataforma));
+    if (achados.length !== 1) { falhas++; anota('error', `✗ cancelar ${c.quando} ${c.plataforma}: achei ${achados.length} post(s) agendado(s); nada cancelado`); continue; }
+    try { await cli.cancelar(achados[0]._id); anota('notice', `✓ cancelado ${c.quando} · ${c.plataforma} · ${c.motivo ?? ''}`); }
+    catch (e) { falhas++; anota('error', `✗ cancelar ${c.quando}: ${e.message}`); }
+  }
+  process.exit(falhas ? 1 : 0);
 }
 
 for (const it of itens) {
