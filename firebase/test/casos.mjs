@@ -7,18 +7,26 @@
 export const A = 'usuarioA';
 export const B = 'usuarioB';
 
-/** Documentos existentes antes de cada caso (perfil como a página grava). */
+// Alertas no Telegram (docs/alertas-telegram-usuario.md): A já está ligado (telegram gravado pelo robô); B tem um pedido
+// de vínculo antigo. criadoEm do pedido precisa estar a até 2 min da hora do servidor: AGORA é lido ao carregar os casos,
+// na mesma máquina do emulador.
+export const AGORA = Date.now();
+const H = (c) => c.repeat(64);
+export const TELEGRAM_A = Object.freeze({ chatId: 111, ligadoEm: '2026-10-15T12:00:00.000Z', hash: H('a'), envios: {}, dia: '', nDia: 0 });
+
+/** Documentos existentes antes de cada caso (perfil como a página grava, mais os campos do Telegram). */
 export const SEMENTE = Object.freeze({
-  [`users/${A}`]: { name: 'A', favorites: ['sv1-1'], alerts: [], termsAt: 1, createdAt: 1, updatedAt: 1 },
-  [`users/${B}`]: { name: 'B', favorites: ['sv1-2'], alerts: [], termsAt: 1, createdAt: 1, updatedAt: 1 },
+  [`users/${A}`]: { name: 'A', favorites: ['sv1-1'], alerts: [], termsAt: 1, createdAt: 1, updatedAt: 1, telegramPedido: null, telegram: TELEGRAM_A },
+  [`users/${B}`]: { name: 'B', favorites: ['sv1-2'], alerts: [], termsAt: 1, createdAt: 1, updatedAt: 1, telegramPedido: { hash: H('b'), criadoEm: 1 }, telegram: null },
   [`users/${A}/privado/1`]: { x: 1 },
   'outra/1': { x: 1 },
 });
 
 const lista = (n) => Array.from({ length: n }, (_, i) => `id-${i}`);
 const perfil = { name: 'Novo', favorites: [], alerts: [], termsAt: 2, createdAt: 2, updatedAt: 2 };
+const SEMENTE_A = () => ({ ...SEMENTE[`users/${A}`] });
 
-/** grupo: dono | outro-usuario | anonimo | campos | outros-caminhos. */
+/** grupo: dono | outro-usuario | anonimo | campos | telegram | outros-caminhos. */
 export const CASOS = Object.freeze([
   // Dono: lê, cria, grava (merge, como a página), atualiza e apaga o próprio documento.
   { id: 'dono-le', grupo: 'dono', quem: A, op: 'get', caminho: `users/${A}`, esperado: 'permitido' },
@@ -46,6 +54,19 @@ export const CASOS = Object.freeze([
   { id: 'favoritos-201', grupo: 'campos', quem: A, op: 'merge', caminho: `users/${A}`, dados: { favorites: lista(201) }, esperado: 'negado' },
   { id: 'alertas-50', grupo: 'campos', quem: A, op: 'merge', caminho: `users/${A}`, dados: { alerts: lista(50) }, esperado: 'permitido' },
   { id: 'alertas-51', grupo: 'campos', quem: A, op: 'merge', caminho: `users/${A}`, dados: { alerts: lista(51) }, esperado: 'negado' },
+  // Telegram: a conta pede vínculo (hash + criadoEm atual) e pode desligar (null); chat_id e registro de envios só o robô grava.
+  { id: 'tg-pedido-valido', grupo: 'telegram', quem: A, op: 'merge', caminho: `users/${A}`, dados: { telegramPedido: { hash: H('c'), criadoEm: AGORA } }, esperado: 'permitido' },
+  { id: 'tg-pedido-apaga', grupo: 'telegram', quem: B, op: 'merge', caminho: `users/${B}`, dados: { telegramPedido: null }, esperado: 'permitido' },
+  { id: 'tg-pedido-antigo-mantido', grupo: 'telegram', quem: B, op: 'merge', caminho: `users/${B}`, dados: { favorites: ['sv1-9'], updatedAt: 3 }, esperado: 'permitido' },
+  { id: 'tg-desliga', grupo: 'telegram', quem: A, op: 'merge', caminho: `users/${A}`, dados: { telegram: null }, esperado: 'permitido' },
+  { id: 'tg-pedido-velho', grupo: 'telegram', quem: A, op: 'merge', caminho: `users/${A}`, dados: { telegramPedido: { hash: H('c'), criadoEm: AGORA - 10 * 60e3 } }, esperado: 'negado' },
+  { id: 'tg-pedido-futuro', grupo: 'telegram', quem: A, op: 'merge', caminho: `users/${A}`, dados: { telegramPedido: { hash: H('c'), criadoEm: AGORA + 60 * 60e3 } }, esperado: 'negado' },
+  { id: 'tg-pedido-hash-ruim', grupo: 'telegram', quem: A, op: 'merge', caminho: `users/${A}`, dados: { telegramPedido: { hash: 'xyz', criadoEm: AGORA } }, esperado: 'negado' },
+  { id: 'tg-pedido-campo-extra', grupo: 'telegram', quem: A, op: 'set', caminho: `users/${A}`, dados: { ...SEMENTE_A(), telegramPedido: { hash: H('c'), criadoEm: AGORA, chatId: 5 } }, esperado: 'negado' },
+  { id: 'tg-forja-chat', grupo: 'telegram', quem: A, op: 'merge', caminho: `users/${A}`, dados: { telegram: { chatId: 999 } }, esperado: 'negado' },
+  { id: 'tg-zera-envios', grupo: 'telegram', quem: A, op: 'set', caminho: `users/${A}`, dados: { ...SEMENTE_A(), telegram: { ...TELEGRAM_A, nDia: 0, envios: { x: 1 } } }, esperado: 'negado' },
+  { id: 'tg-liga-sozinho', grupo: 'telegram', quem: B, op: 'merge', caminho: `users/${B}`, dados: { telegram: { chatId: 222, ligadoEm: 'x', hash: H('b'), envios: {}, dia: '', nDia: 0 } }, esperado: 'negado' },
+  { id: 'tg-cria-com-chat', grupo: 'telegram', quem: 'novo', op: 'set', caminho: 'users/novo', dados: { ...perfil, telegram: { chatId: 5 } }, esperado: 'negado' },
   // Qualquer outro caminho: negado, mesmo para o dono (subcoleção) e para usuário logado.
   { id: 'subcolecao-le', grupo: 'outros-caminhos', quem: A, op: 'get', caminho: `users/${A}/privado/1`, esperado: 'negado' },
   { id: 'subcolecao-grava', grupo: 'outros-caminhos', quem: A, op: 'set', caminho: `users/${A}/privado/2`, dados: { x: 1 }, esperado: 'negado' },

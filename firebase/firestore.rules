@@ -3,16 +3,33 @@ rules_version = '2';
 // Publicar substitui POR INTEIRO as regras do console: mude aqui primeiro e siga docs/firestore-regras.md.
 // O site só usa users/{uid} (tools/account.src.js: getDoc, setDoc com merge, deleteDoc), sempre com o uid
 // do próprio usuário logado. Campos gravados pela página: name, favorites (até 200), alerts (até 50),
-// termsAt, createdAt e updatedAt; test/workflow-security-tests.js confere que a lista bate com o código.
+// termsAt, createdAt, updatedAt, telegramPedido e telegram (só null, para desligar); test/workflow-security-tests.js
+// confere que a lista bate com o código. Alertas no Telegram: docs/alertas-telegram-usuario.md.
 service cloud.firestore {
   match /databases/{database}/documents {
     // Cada conta lê, apaga e grava só o próprio documento, e só com os campos conhecidos.
     match /users/{uid} {
       allow read, delete: if request.auth != null && request.auth.uid == uid;
       allow create, update: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['name','favorites','alerts','termsAt','createdAt','updatedAt'])
+        && request.resource.data.keys().hasOnly(['name','favorites','alerts','termsAt','createdAt','updatedAt','telegramPedido','telegram'])
         && (!('favorites' in request.resource.data) || request.resource.data.favorites.size() <= 200)
-        && (!('alerts' in request.resource.data) || request.resource.data.alerts.size() <= 50);
+        && (!('alerts' in request.resource.data) || request.resource.data.alerts.size() <= 50)
+        && telegramOk() && pedidoOk();
+
+      // telegram (chat ligado + registro de envios) só é gravado pelo robô, com conta de serviço (fora destas regras).
+      // A conta pode deixar como está ou desligar (null); nunca escrever um chat_id.
+      function telegramOk() {
+        return request.resource.data.get('telegram', null) == null
+          || (resource != null && request.resource.data.telegram == resource.data.get('telegram', null));
+      }
+      // Pedido de vínculo: { hash: SHA-256 hex do segredo, criadoEm: ms } com criadoEm a até 2 min da hora do servidor
+      // (a validade de 30 min conta daí). Pode ficar como está (gravações de outros campos) ou ser apagado (null).
+      function pedidoOk() {
+        let p = request.resource.data.get('telegramPedido', null);
+        return p == null || (resource != null && p == resource.data.get('telegramPedido', null))
+          || (p is map && p.size() == 2 && p.hash is string && p.hash.matches('^[0-9a-f]{64}$')
+              && p.criadoEm is int && math.abs(p.criadoEm - request.time.toMillis()) <= 120000);
+      }
     }
     // Todo o resto: negado (inclusive subcoleções de users/{uid}, que o site não usa).
     match /{document=**} {

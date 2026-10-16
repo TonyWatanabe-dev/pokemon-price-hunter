@@ -12,7 +12,9 @@ Só o documento `users/{uid}`, em `tools/account.src.js` (página da conta):
 | `setDoc(users/{uid}, ..., { merge: true })` | salvar as preferências |
 | `deleteDoc(users/{uid})` | excluir a conta |
 
-O `uid` é sempre o do próprio usuário logado (`auth.currentUser.uid`). `test/workflow-security-tests.js` falha se o site passar a usar outra coleção sem as regras mudarem junto.
+O `uid` é sempre o do próprio usuário logado (`auth.currentUser.uid`).
+
+Campos de alertas no Telegram (`docs/alertas-telegram-usuario.md`): a página grava `telegramPedido` (`{ hash, criadoEm }`, hash SHA-256 em hex e `criadoEm` a até 2 min da hora do servidor) e pode gravar `telegram: null` (desligar). O conteúdo de `telegram` (chat ligado e registro de envios) só é gravado pelo robô, com conta de serviço; a conta não consegue escrever um chat_id. Casos no emulador: grupo `telegram` de `firebase/test/casos.mjs`. `test/workflow-security-tests.js` falha se o site passar a usar outra coleção sem as regras mudarem junto.
 
 ## Regra proposta
 

@@ -96,6 +96,11 @@ jobs:
           ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
           ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
           HUNTER_CEP: ${{ vars.HUNTER_CEP }}
+          # Alertas por usuário no Telegram (docs/alertas-telegram-usuario.md): desligados sem a variável = 1 e sem a
+          # conta de serviço do Firebase. Só esta etapa recebe o Secret.
+          ALERTAS_TELEGRAM_USUARIO: ${{ vars.ALERTAS_TELEGRAM_USUARIO }}
+          ALERTAS_TELEGRAM_USUARIO_MAX_DIA: ${{ vars.ALERTAS_TELEGRAM_USUARIO_MAX_DIA }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       - name: Salvar dados (ramo data)
         if: steps.gap.outputs.skip != 'true'
         env:
