@@ -1,0 +1,3161 @@
+[
+  {
+    "t": "2026-10-09T09:15:18.913Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T09:45:18.836Z",
+    "productId": "me05-box36",
+    "offerId": "5766d5e4da6b",
+    "storeName": "Mercado Livre",
+    "to": 349.9,
+    "msrp": null,
+    "type": "lowest",
+    "from": 357.99
+  },
+  {
+    "t": "2026-10-09T10:45:21.809Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T12:30:24.609Z",
+    "productId": "sv8_5-blister4",
+    "offerId": "c00b4d7cd54f",
+    "storeName": "Mercado Livre",
+    "to": 115.41,
+    "msrp": null,
+    "type": "drop",
+    "from": 119.83
+  },
+  {
+    "t": "2026-10-09T13:00:29.923Z",
+    "productId": "me03-blister4",
+    "offerId": "cd33b7b54af5",
+    "storeName": "pbkids.com.br",
+    "to": 47.89,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 63.56
+  },
+  {
+    "t": "2026-10-09T13:15:20.913Z",
+    "productId": "c30-blister3",
+    "offerId": "4a0374cba056",
+    "storeName": "Mercado Livre",
+    "to": 162,
+    "msrp": 99.99,
+    "type": "drop",
+    "from": 169
+  },
+  {
+    "t": "2026-10-09T13:30:25.573Z",
+    "productId": "me04-combo18",
+    "offerId": "f76f9d51eda1",
+    "storeName": "gorupa.com.br",
+    "to": 236.55,
+    "msrp": null,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-09T13:30:25.573Z",
+    "productId": "me04-combo18",
+    "offerId": "f76f9d51eda1",
+    "storeName": "gorupa.com.br",
+    "to": 236.55,
+    "msrp": null,
+    "type": "lowest",
+    "from": 237.41
+  },
+  {
+    "t": "2026-10-09T13:30:25.573Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T14:00:32.731Z",
+    "productId": "me04-combo",
+    "offerId": "5b870d8605e1",
+    "storeName": "Mercado Livre",
+    "to": 249,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T14:30:30.430Z",
+    "productId": "me02-blister1",
+    "offerId": "7767e46eed0f",
+    "storeName": "rihappy.com.br",
+    "to": 15.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 25.84
+  },
+  {
+    "t": "2026-10-09T14:45:21.952Z",
+    "productId": "me03-blister4",
+    "offerId": "e96ab12134e7",
+    "storeName": "rihappy.com.br",
+    "to": 47.89,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 63.56
+  },
+  {
+    "t": "2026-10-09T14:45:21.952Z",
+    "productId": "me01-box36",
+    "offerId": "e2641aacdd2e",
+    "storeName": "pensanddolls.com.br",
+    "to": 474.99,
+    "msrp": null,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-09T14:45:21.952Z",
+    "productId": "me01-box36",
+    "offerId": "e2641aacdd2e",
+    "storeName": "pensanddolls.com.br",
+    "to": 474.99,
+    "msrp": null,
+    "type": "lowest",
+    "from": 499.99
+  },
+  {
+    "t": "2026-10-09T15:30:28.377Z",
+    "productId": "c30-blister3",
+    "offerId": "3e582f91f92d",
+    "storeName": "pbkids.com.br",
+    "to": 139.9,
+    "msrp": 99.99,
+    "type": "drop",
+    "from": 156.49
+  },
+  {
+    "t": "2026-10-09T15:45:24.351Z",
+    "productId": "me04-blister4",
+    "offerId": "a06653380e0b",
+    "storeName": "Mercado Livre",
+    "to": 37.98,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 41.2
+  },
+  {
+    "t": "2026-10-09T15:45:24.351Z",
+    "productId": "me04-blister4",
+    "offerId": "a06653380e0b",
+    "storeName": "Mercado Livre",
+    "to": 37.98,
+    "msrp": 55.99,
+    "type": "lowest",
+    "from": 39.9
+  },
+  {
+    "t": "2026-10-09T15:45:24.351Z",
+    "productId": "me05-blister3",
+    "offerId": "9d1d7dea29f3",
+    "storeName": "Mercado Livre",
+    "to": 29.84,
+    "msrp": null,
+    "type": "drop",
+    "from": 31.83
+  },
+  {
+    "t": "2026-10-09T15:45:24.351Z",
+    "productId": "me05-blister3",
+    "offerId": "9d1d7dea29f3",
+    "storeName": "Mercado Livre",
+    "to": 29.84,
+    "msrp": null,
+    "type": "lowest",
+    "from": 31.83
+  },
+  {
+    "t": "2026-10-09T16:45:25.999Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "0637f55c2c3f",
+    "storeName": "Mercado Livre",
+    "to": 379,
+    "msrp": 230.99,
+    "type": "drop",
+    "from": 399
+  },
+  {
+    "t": "2026-10-09T17:30:26.292Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T17:45:25.370Z",
+    "productId": "me02_5-blister3",
+    "offerId": "ac41f0a4acb4",
+    "storeName": "Mercado Livre",
+    "to": 129.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 132
+  },
+  {
+    "t": "2026-10-09T17:45:25.370Z",
+    "productId": "me03-blister4",
+    "offerId": "313fe23652d4",
+    "storeName": "pbkids.com.br",
+    "to": 49.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 60.17
+  },
+  {
+    "t": "2026-10-09T18:15:19.094Z",
+    "productId": "me05-box36",
+    "offerId": "2834758c5537",
+    "storeName": "rihappy.com.br",
+    "to": 492.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 503.5
+  },
+  {
+    "t": "2026-10-09T18:30:24.609Z",
+    "productId": "me04-combo",
+    "offerId": "248515000744",
+    "storeName": "mox.land",
+    "to": 239,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T18:30:24.609Z",
+    "productId": "me05-blister4",
+    "offerId": "cfad20b2f5e1",
+    "storeName": "mox.land",
+    "to": 49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T18:30:24.609Z",
+    "productId": "me04-blister3",
+    "offerId": "2b57bf9c8234",
+    "storeName": "mox.land",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T18:30:24.609Z",
+    "productId": "me03-blister4",
+    "offerId": "4427f4528cf1",
+    "storeName": "mox.land",
+    "to": 49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T18:30:24.609Z",
+    "productId": "me03-blister4",
+    "offerId": "20075d6e221f",
+    "storeName": "rihappy.com.br",
+    "to": 49.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 60.17
+  },
+  {
+    "t": "2026-10-09T18:30:24.609Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T18:45:21.464Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T19:15:18.850Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T20:00:27.198Z",
+    "productId": "me03-booster",
+    "offerId": "a691203eab8d",
+    "storeName": "rihappy.com.br",
+    "to": 13.99,
+    "msrp": null,
+    "type": "lowest",
+    "from": 14
+  },
+  {
+    "t": "2026-10-09T20:00:27.198Z",
+    "productId": "me04-blister1",
+    "offerId": "a0d8369af3d1",
+    "storeName": "pbkids.com.br",
+    "to": 13.99,
+    "msrp": 13.99,
+    "type": "drop",
+    "from": 24.35
+  },
+  {
+    "t": "2026-10-09T20:15:19.199Z",
+    "productId": "me04-box36",
+    "offerId": "43848a283954",
+    "storeName": "rihappy.com.br",
+    "to": 599.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 611.75
+  },
+  {
+    "t": "2026-10-09T20:15:19.199Z",
+    "productId": "me04-etb",
+    "offerId": "396adc4cc987",
+    "storeName": "rihappy.com.br",
+    "to": 599.99,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 611.75
+  },
+  {
+    "t": "2026-10-09T20:45:22.344Z",
+    "productId": "me03-blister4",
+    "offerId": "ccebc46afd67",
+    "storeName": "Loja Copag (oficial)",
+    "to": 55.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 66.57
+  },
+  {
+    "t": "2026-10-09T20:45:22.344Z",
+    "productId": "c30-colecao_ex-sylveon",
+    "offerId": "7a58b68454c9",
+    "storeName": "Mercado Livre",
+    "to": 260,
+    "msrp": 160.99,
+    "type": "drop",
+    "from": 277
+  },
+  {
+    "t": "2026-10-09T20:45:22.344Z",
+    "productId": "me04-box36",
+    "offerId": "5827c8d19aab",
+    "storeName": "pbkids.com.br",
+    "to": 599.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 611.75
+  },
+  {
+    "t": "2026-10-09T20:45:22.344Z",
+    "productId": "me04-combo18",
+    "offerId": "60945b925763",
+    "storeName": "pbkids.com.br",
+    "to": 299.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 311.75
+  },
+  {
+    "t": "2026-10-09T21:00:29.289Z",
+    "productId": "me05-desafio",
+    "offerId": "1abd393a862a",
+    "storeName": "Mercado Livre",
+    "to": 142.25,
+    "msrp": null,
+    "type": "drop",
+    "from": 143.9
+  },
+  {
+    "t": "2026-10-09T21:00:29.289Z",
+    "productId": "me05-box36",
+    "offerId": "7e4f1b706b6c",
+    "storeName": "pbkids.com.br",
+    "to": 492.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 503.5
+  },
+  {
+    "t": "2026-10-09T21:15:22.410Z",
+    "productId": "me04-desafio",
+    "offerId": "971f98e4315b",
+    "storeName": "Mercado Livre",
+    "to": 124,
+    "msrp": null,
+    "type": "drop",
+    "from": 141.25
+  },
+  {
+    "t": "2026-10-09T21:15:22.410Z",
+    "productId": "me04-desafio",
+    "offerId": "971f98e4315b",
+    "storeName": "Mercado Livre",
+    "to": 124,
+    "msrp": null,
+    "type": "lowest",
+    "from": 134
+  },
+  {
+    "t": "2026-10-09T21:15:22.410Z",
+    "productId": "me03-blister3",
+    "offerId": "1556667e23d3",
+    "storeName": "pbkids.com.br",
+    "to": 54.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 66.75
+  },
+  {
+    "t": "2026-10-09T21:15:22.410Z",
+    "productId": "me04-box36",
+    "offerId": "0b2a90b1360d",
+    "storeName": "pbkids.com.br",
+    "to": 549.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 567.08
+  },
+  {
+    "t": "2026-10-09T21:45:22.701Z",
+    "productId": "me04-blister1",
+    "offerId": "6af328e1dec6",
+    "storeName": "Loja Copag (oficial)",
+    "to": 13.99,
+    "msrp": 13.99,
+    "type": "drop",
+    "from": 24.35
+  },
+  {
+    "t": "2026-10-09T21:45:22.701Z",
+    "productId": "me04-blister4",
+    "offerId": "f98519314494",
+    "storeName": "Loja Copag (oficial)",
+    "to": 55.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 66.57
+  },
+  {
+    "t": "2026-10-09T21:45:22.701Z",
+    "productId": "me04-blister4",
+    "offerId": "62e0b39f5168",
+    "storeName": "pbkids.com.br",
+    "to": 69.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 81.75
+  },
+  {
+    "t": "2026-10-09T22:00:29.749Z",
+    "productId": "me03-blister3",
+    "offerId": "b15e03edfcfa",
+    "storeName": "rihappy.com.br",
+    "to": 54.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 66.75
+  },
+  {
+    "t": "2026-10-09T22:00:29.749Z",
+    "productId": "me04-blister4",
+    "offerId": "cf17f515129f",
+    "storeName": "pbkids.com.br",
+    "to": 61.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 72.46
+  },
+  {
+    "t": "2026-10-09T22:15:18.357Z",
+    "productId": "me03-desafio",
+    "offerId": "c85612501dd6",
+    "storeName": "Mercado Livre",
+    "to": 139.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 145.4
+  },
+  {
+    "t": "2026-10-09T22:15:18.357Z",
+    "productId": "me05-desafio",
+    "offerId": "1abd393a862a",
+    "storeName": "Mercado Livre",
+    "to": 141,
+    "msrp": null,
+    "type": "drop",
+    "from": 142.25
+  },
+  {
+    "t": "2026-10-09T22:15:18.357Z",
+    "productId": "me03-blister4",
+    "offerId": "8108fa9ee933",
+    "storeName": "rihappy.com.br",
+    "to": 55.99,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 66.57
+  },
+  {
+    "t": "2026-10-09T22:30:23.954Z",
+    "productId": "me02_5-combo18",
+    "offerId": "68a111a658f8",
+    "storeName": "Mercado Livre",
+    "to": 485,
+    "msrp": null,
+    "type": "drop",
+    "from": 489
+  },
+  {
+    "t": "2026-10-09T22:30:23.954Z",
+    "productId": "me01-blister3",
+    "offerId": "318aa05a1479",
+    "storeName": "pbkids.com.br",
+    "to": 55,
+    "msrp": null,
+    "type": "drop",
+    "from": 65.04
+  },
+  {
+    "t": "2026-10-09T22:30:23.954Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T22:30:23.954Z",
+    "productId": "c30-blister2",
+    "offerId": "d589986a1008",
+    "storeName": "pbkids.com.br",
+    "to": 99.99,
+    "msrp": 69.99,
+    "type": "drop",
+    "from": 119.83
+  },
+  {
+    "t": "2026-10-09T22:45:21.289Z",
+    "productId": "me03-etb",
+    "offerId": "e0a52c2c88c8",
+    "storeName": "pbkids.com.br",
+    "to": 599.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 611.75
+  },
+  {
+    "t": "2026-10-09T22:45:21.289Z",
+    "productId": "me03-desafio",
+    "offerId": "ec24ae3bd801",
+    "storeName": "pbkids.com.br",
+    "to": 114.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 125.82
+  },
+  {
+    "t": "2026-10-09T23:00:26.894Z",
+    "productId": "me02-blister3",
+    "offerId": "8d7b21267b5e",
+    "storeName": "rihappy.com.br",
+    "to": 54.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 65.41
+  },
+  {
+    "t": "2026-10-09T23:00:26.894Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:00:26.894Z",
+    "productId": "c30-blister2",
+    "offerId": "420d8d9baf80",
+    "storeName": "rihappy.com.br",
+    "to": 99.99,
+    "msrp": 69.99,
+    "type": "drop",
+    "from": 119.83
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-etb",
+    "offerId": "70fd08890837",
+    "storeName": "Toca do Tabuleiro",
+    "to": 370.41,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me03-blister4",
+    "offerId": "31c1150d1ee7",
+    "storeName": "Toca do Tabuleiro",
+    "to": 47.41,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-combo",
+    "offerId": "bd395a8e2c1d",
+    "storeName": "Toca do Tabuleiro",
+    "to": 238.44,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-blister4",
+    "offerId": "13fbb4f30654",
+    "storeName": "Toca do Tabuleiro",
+    "to": 53.2,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me05-blister4",
+    "offerId": "c358fd12a7b9",
+    "storeName": "Toca do Tabuleiro",
+    "to": 53.11,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-blister3",
+    "offerId": "eba3e755da6a",
+    "storeName": "Life Geek",
+    "to": 40.74,
+    "msrp": 42.99,
+    "type": "drop",
+    "from": 42
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-blister4",
+    "offerId": "9e29440ac1be",
+    "storeName": "Life Geek",
+    "to": 53.35,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 55
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-blister1",
+    "offerId": "a44b93c28506",
+    "storeName": "Life Geek",
+    "to": 13.58,
+    "msrp": 13.99,
+    "type": "drop",
+    "from": 14
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me05-etb",
+    "offerId": "002dd7d20175",
+    "storeName": "Life Geek",
+    "to": 387.03,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 399
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me05-blister3",
+    "offerId": "9aac8155fe03",
+    "storeName": "Life Geek",
+    "to": 40.74,
+    "msrp": null,
+    "type": "drop",
+    "from": 42
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me05-blister4",
+    "offerId": "edf295805501",
+    "storeName": "Life Geek",
+    "to": 53.35,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 55
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me03-blister4",
+    "offerId": "64991dbbe6f0",
+    "storeName": "Ludostation",
+    "to": 50.39,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me03-blister4",
+    "offerId": "baae4a2cf018",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:15:21.576Z",
+    "productId": "me04-blister4",
+    "offerId": "76f735b62972",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:30:23.308Z",
+    "productId": "me04-blister3",
+    "offerId": "c0a8c25d6e02",
+    "storeName": "Ludostation",
+    "to": 38.69,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:30:23.308Z",
+    "productId": "me04-blister4",
+    "offerId": "c773b12f5b9e",
+    "storeName": "Ludostation",
+    "to": 50.39,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:30:23.308Z",
+    "productId": "me04-blister1",
+    "offerId": "010e41c8df93",
+    "storeName": "Ludostation",
+    "to": 12.59,
+    "msrp": 13.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:45:20.225Z",
+    "productId": "me03-booster",
+    "offerId": "64297cd7c29e",
+    "storeName": "paladinsgames.com.br",
+    "to": 13.9,
+    "msrp": null,
+    "type": "lowest",
+    "from": 13.99
+  },
+  {
+    "t": "2026-10-09T23:45:20.225Z",
+    "productId": "me03-blister4",
+    "offerId": "46d1b52f560e",
+    "storeName": "paladinsgames.com.br",
+    "to": 55.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-09T23:45:20.225Z",
+    "productId": "me04-blister4",
+    "offerId": "32e5d394a4fa",
+    "storeName": "paladinsgames.com.br",
+    "to": 55.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T00:00:31.879Z",
+    "productId": "me05-blister4",
+    "offerId": "b9c9b10ffb06",
+    "storeName": "paladinsgames.com.br",
+    "to": 55.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T00:00:31.879Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T01:45:18.563Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T02:45:21.949Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T03:30:30.867Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T06:00:26.319Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T06:30:22.764Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T07:00:27.722Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T08:00:28.782Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T08:15:21.160Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T12:00:28.268Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T12:00:28.268Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T15:00:26.630Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T15:15:19.906Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T16:00:27.275Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T16:15:18.484Z",
+    "productId": "me03-blister4",
+    "offerId": "4427f4528cf1",
+    "storeName": "mox.land",
+    "to": 49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T17:00:28.313Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T17:30:24.100Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T20:00:26.635Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T20:30:24.051Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T21:00:28.588Z",
+    "productId": "me03-blister4",
+    "offerId": "4427f4528cf1",
+    "storeName": "mox.land",
+    "to": 49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T21:00:28.588Z",
+    "productId": "me04-blister3",
+    "offerId": "2b57bf9c8234",
+    "storeName": "mox.land",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T21:00:28.588Z",
+    "productId": "me04-combo",
+    "offerId": "248515000744",
+    "storeName": "mox.land",
+    "to": 239,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T21:00:28.588Z",
+    "productId": "me05-blister4",
+    "offerId": "cfad20b2f5e1",
+    "storeName": "mox.land",
+    "to": 49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T22:15:17.586Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-10T23:15:20.214Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T00:30:23.222Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T02:15:19.163Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T03:45:21.428Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T05:30:23.555Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T05:30:23.555Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T06:15:21.147Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T07:15:23.785Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T07:15:23.785Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T09:30:23.930Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T10:30:23.644Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T12:00:29.504Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T13:30:25.905Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T14:45:22.659Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T17:15:23.982Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T17:30:24.531Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T18:30:25.643Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T18:45:19.960Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T22:15:20.189Z",
+    "productId": "c30-etb",
+    "offerId": "a9e4e6bb2e9c",
+    "storeName": "facilshopping.com.br",
+    "to": 604.41,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 623.01
+  },
+  {
+    "t": "2026-10-11T23:00:27.427Z",
+    "productId": "me03-blister4",
+    "offerId": "baae4a2cf018",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-11T23:00:27.427Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T01:45:27.762Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T03:00:27.786Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T05:45:21.873Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T05:45:21.873Z",
+    "productId": "me04-blister4",
+    "offerId": "76f735b62972",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T05:45:21.873Z",
+    "productId": "c30-blister2",
+    "offerId": "61212ca4d7dc",
+    "storeName": "omniverse.com.br",
+    "to": 69.66,
+    "msrp": 69.99,
+    "type": "drop",
+    "from": 74.9
+  },
+  {
+    "t": "2026-10-12T05:45:21.873Z",
+    "productId": "c30-blister2",
+    "offerId": "61212ca4d7dc",
+    "storeName": "omniverse.com.br",
+    "to": 69.66,
+    "msrp": 69.99,
+    "type": "lowest",
+    "from": 69.99
+  },
+  {
+    "t": "2026-10-12T13:45:30.068Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T15:15:24.378Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T15:30:28.850Z",
+    "productId": "me04-combo18",
+    "offerId": "f76f9d51eda1",
+    "storeName": "gorupa.com.br",
+    "to": 236.55,
+    "msrp": null,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-12T16:15:22.649Z",
+    "productId": "sv8_5-blister4",
+    "offerId": "9d7a5c4bf055",
+    "storeName": "Mercado Livre",
+    "to": 113,
+    "msrp": null,
+    "type": "lowest",
+    "from": 115.41
+  },
+  {
+    "t": "2026-10-12T16:15:22.649Z",
+    "productId": "me02_5-colecao_ex-mega-lucario",
+    "offerId": "3d4a258a5129",
+    "storeName": "Mercado Livre",
+    "to": 549,
+    "msrp": null,
+    "type": "lowest",
+    "from": 549.9
+  },
+  {
+    "t": "2026-10-12T16:45:23.060Z",
+    "productId": "me05-etb",
+    "offerId": "7d1d061b5ddb",
+    "storeName": "matostcg.com.br",
+    "to": 299,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T16:45:23.060Z",
+    "productId": "me05-etb",
+    "offerId": "7d1d061b5ddb",
+    "storeName": "matostcg.com.br",
+    "to": 299,
+    "msrp": 399.99,
+    "type": "lowest",
+    "from": 359.9
+  },
+  {
+    "t": "2026-10-12T16:45:23.060Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T16:45:23.060Z",
+    "productId": "c30-combo",
+    "offerId": "1084ad99875c",
+    "storeName": "Mercado Livre",
+    "to": 349.9,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 359.9
+  },
+  {
+    "t": "2026-10-12T17:39:38.707Z",
+    "productId": "me04-etb",
+    "offerId": "551fb114b8ef",
+    "storeName": "Ludostation",
+    "to": 359.99,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:00:30.439Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-combo",
+    "offerId": "35c6bf93c325",
+    "storeName": "Mercado Livre",
+    "to": 249.9,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister1",
+    "offerId": "1293af158021",
+    "storeName": "Mercado Livre",
+    "to": 11.9,
+    "msrp": 13.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister3",
+    "offerId": "68b01ca1e665",
+    "storeName": "Mercado Livre",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister3",
+    "offerId": "164edf6be189",
+    "storeName": "Mercado Livre",
+    "to": 41.57,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister3",
+    "offerId": "d44f198b7f73",
+    "storeName": "Mercado Livre",
+    "to": 41.8,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister3",
+    "offerId": "08d646fb8877",
+    "storeName": "Mercado Livre",
+    "to": 42.09,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister3",
+    "offerId": "3e381ab19e7a",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me04-blister3",
+    "offerId": "f6bc66ef97f9",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me05-etb",
+    "offerId": "425a03e01236",
+    "storeName": "Mercado Livre",
+    "to": 399,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me05-etb",
+    "offerId": "0b9503302858",
+    "storeName": "Mercado Livre",
+    "to": 399,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T19:11:43.652Z",
+    "productId": "me05-etb",
+    "offerId": "7bf7dbaa36cf",
+    "storeName": "Mercado Livre",
+    "to": 399.98,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T20:30:31.391Z",
+    "productId": "me04-blister4",
+    "offerId": "a06653380e0b",
+    "storeName": "Mercado Livre",
+    "to": 37.98,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T21:00:29.232Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T21:30:27.887Z",
+    "productId": "me04-blister4",
+    "offerId": "82288baa4cf4",
+    "storeName": "Mercado Livre",
+    "to": 48.16,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T22:00:40.481Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-12T23:15:27.107Z",
+    "productId": "me05-etb",
+    "offerId": "94e03f5cc36b",
+    "storeName": "Life Geek",
+    "to": 387.03,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T00:15:23.588Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T01:15:21.659Z",
+    "productId": "me02_5-combo18",
+    "offerId": "9ae3026891a2",
+    "storeName": "Mercado Livre",
+    "to": 445,
+    "msrp": null,
+    "type": "drop",
+    "from": 469.9
+  },
+  {
+    "t": "2026-10-13T01:15:21.659Z",
+    "productId": "me02_5-combo18",
+    "offerId": "9ae3026891a2",
+    "storeName": "Mercado Livre",
+    "to": 445,
+    "msrp": null,
+    "type": "lowest",
+    "from": 449
+  },
+  {
+    "t": "2026-10-13T01:15:21.659Z",
+    "productId": "c30-combo",
+    "offerId": "9e6fb73a7fe4",
+    "storeName": "Mercado Livre",
+    "to": 328,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 349.9
+  },
+  {
+    "t": "2026-10-13T01:45:24.130Z",
+    "productId": "sv6_5-etb",
+    "offerId": "3261bb81eb95",
+    "storeName": "radiantetcg.com.br",
+    "to": 854.91,
+    "msrp": null,
+    "type": "lowest",
+    "from": 989
+  },
+  {
+    "t": "2026-10-13T01:45:24.130Z",
+    "productId": "sv9-blister3",
+    "offerId": "77c97120f37e",
+    "storeName": "radiantetcg.com.br",
+    "to": 94.91,
+    "msrp": null,
+    "type": "lowest",
+    "from": 116.15
+  },
+  {
+    "t": "2026-10-13T02:15:19.861Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T02:15:19.861Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T02:15:19.861Z",
+    "productId": "me02-blister3",
+    "offerId": "191754a97728",
+    "storeName": "pittasboardgames.com.br",
+    "to": 37.11,
+    "msrp": null,
+    "type": "lowest",
+    "from": 39
+  },
+  {
+    "t": "2026-10-13T02:15:19.861Z",
+    "productId": "me02-blister4",
+    "offerId": "b9029d8947e1",
+    "storeName": "pittasboardgames.com.br",
+    "to": 46.41,
+    "msrp": null,
+    "type": "lowest",
+    "from": 49
+  },
+  {
+    "t": "2026-10-13T02:15:19.861Z",
+    "productId": "sv8_5-blister3",
+    "offerId": "c58487b7e226",
+    "storeName": "radiantetcg.com.br",
+    "to": 52.16,
+    "msrp": null,
+    "type": "lowest",
+    "from": 60
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me02_5-blister3",
+    "offerId": "408435686759",
+    "storeName": "radiantetcg.com.br",
+    "to": 75.91,
+    "msrp": null,
+    "type": "lowest",
+    "from": 119
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me03-etb",
+    "offerId": "e79ef1480660",
+    "storeName": "radiantetcg.com.br",
+    "to": 349.89,
+    "msrp": null,
+    "type": "lowest",
+    "from": 350
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me04-etb",
+    "offerId": "9c973d776147",
+    "storeName": "radiantetcg.com.br",
+    "to": 349.89,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me04-blister3",
+    "offerId": "4ac090c87bb4",
+    "storeName": "radiantetcg.com.br",
+    "to": 29.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me04-blister3",
+    "offerId": "4ac090c87bb4",
+    "storeName": "radiantetcg.com.br",
+    "to": 29.9,
+    "msrp": 42.99,
+    "type": "lowest",
+    "from": 32.46
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me04-blister4",
+    "offerId": "58e0a536e956",
+    "storeName": "radiantetcg.com.br",
+    "to": 39.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me02-blister1",
+    "offerId": "bea5ef0a86f7",
+    "storeName": "pittasboardgames.com.br",
+    "to": 12,
+    "msrp": null,
+    "type": "lowest",
+    "from": 15.9
+  },
+  {
+    "t": "2026-10-13T02:45:24.286Z",
+    "productId": "me03-blister4",
+    "offerId": "aa4992ac2bde",
+    "storeName": "pittasboardgames.com.br",
+    "to": 52.07,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me04-blister1",
+    "offerId": "d027461d1e29",
+    "storeName": "pittasboardgames.com.br",
+    "to": 13.01,
+    "msrp": 13.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me04-blister4",
+    "offerId": "2ef4cd98f1d2",
+    "storeName": "pittasboardgames.com.br",
+    "to": 51.99,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me04-blister3",
+    "offerId": "60e24dce0aee",
+    "storeName": "pittasboardgames.com.br",
+    "to": 39.98,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me01-box36",
+    "offerId": "3e0c120c13ae",
+    "storeName": "shisuistore.com.br",
+    "to": 398.99,
+    "msrp": null,
+    "type": "lowest",
+    "from": 474.99
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me04-blister3",
+    "offerId": "ed55b128425a",
+    "storeName": "shisuistore.com.br",
+    "to": 37.99,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me04-blister4",
+    "offerId": "7f6fe2d49026",
+    "storeName": "shisuistore.com.br",
+    "to": 47.49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:15:23.765Z",
+    "productId": "me04-etb",
+    "offerId": "1b561923f715",
+    "storeName": "shisuistore.com.br",
+    "to": 341.99,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:45:22.737Z",
+    "productId": "me04-blister4",
+    "offerId": "967019a3499e",
+    "storeName": "Mercado Livre",
+    "to": 49.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T03:45:22.737Z",
+    "productId": "me04-desafio",
+    "offerId": "3f589e2d8598",
+    "storeName": "Mercado Livre",
+    "to": 171.12,
+    "msrp": null,
+    "type": "drop",
+    "from": 198.98
+  },
+  {
+    "t": "2026-10-13T03:45:22.737Z",
+    "productId": "me05-blister4",
+    "offerId": "d27e9ba76a69",
+    "storeName": "pittasboardgames.com.br",
+    "to": 48.36,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T04:15:22.528Z",
+    "productId": "me05-blister4",
+    "offerId": "2e9ecc1e16ed",
+    "storeName": "shisuistore.com.br",
+    "to": 47.49,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T04:15:22.528Z",
+    "productId": "me05-etb",
+    "offerId": "404b5cc29f7e",
+    "storeName": "shisuistore.com.br",
+    "to": 341.99,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T04:15:22.528Z",
+    "productId": "me05-booster",
+    "offerId": "41e6353a3d64",
+    "storeName": "shisuistore.com.br",
+    "to": 11.39,
+    "msrp": null,
+    "type": "lowest",
+    "from": 12
+  },
+  {
+    "t": "2026-10-13T04:45:23.148Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T05:45:20.721Z",
+    "productId": "me04-blister4",
+    "offerId": "5e6808f818e4",
+    "storeName": "Mercado Livre",
+    "to": 39.9,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 44.9
+  },
+  {
+    "t": "2026-10-13T05:45:20.721Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "7a3a93cb283f",
+    "storeName": "Canal 40",
+    "to": 378.29,
+    "msrp": 230.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-13T09:30:27.651Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T09:30:27.651Z",
+    "productId": "me04-blister4",
+    "offerId": "76f735b62972",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T12:30:31.548Z",
+    "productId": "me03-blister3",
+    "offerId": "73149d793551",
+    "storeName": "cardora.com.br",
+    "to": 29.1,
+    "msrp": null,
+    "type": "lowest",
+    "from": 37
+  },
+  {
+    "t": "2026-10-13T12:30:31.548Z",
+    "productId": "me05-blister4",
+    "offerId": "b35818dc43c8",
+    "storeName": "cardora.com.br",
+    "to": 43.65,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T12:30:31.548Z",
+    "productId": "me05-etb",
+    "offerId": "7d153f197d27",
+    "storeName": "cardora.com.br",
+    "to": 325.92,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T12:30:31.548Z",
+    "productId": "me03-etb",
+    "offerId": "64ac9b0a17b0",
+    "storeName": "cardora.com.br",
+    "to": 325.92,
+    "msrp": null,
+    "type": "lowest",
+    "from": 349.89
+  },
+  {
+    "t": "2026-10-13T12:30:31.548Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T12:30:31.548Z",
+    "productId": "me05-etb",
+    "offerId": "24164084778f",
+    "storeName": "gorupa.com.br",
+    "to": 379.99,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T13:30:27.667Z",
+    "productId": "c30-blister2",
+    "offerId": "6dedebd419f3",
+    "storeName": "geekstorebrasil.com.br",
+    "to": 89.9,
+    "msrp": 69.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-13T16:30:27.662Z",
+    "productId": "c30-blister3",
+    "offerId": "592f2a32cee6",
+    "storeName": "Mercado Livre",
+    "to": 156.17,
+    "msrp": 99.99,
+    "type": "drop",
+    "from": 161
+  },
+  {
+    "t": "2026-10-13T16:59:44.257Z",
+    "productId": "c30-combo",
+    "offerId": "c16a0f3894cf",
+    "storeName": "Mercado Livre",
+    "to": 342,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 349.9
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me05-etb",
+    "offerId": "163b5647d5e6",
+    "storeName": "Life Geek",
+    "to": 387.03,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me04-blister1",
+    "offerId": "0aa5e6dfea91",
+    "storeName": "boosternamesa.com",
+    "to": 12,
+    "msrp": 13.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me04-etb",
+    "offerId": "81e320f5734e",
+    "storeName": "boosternamesa.com",
+    "to": 369,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me05-etb",
+    "offerId": "99b937819ffc",
+    "storeName": "boosternamesa.com",
+    "to": 389,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me05-box36",
+    "offerId": "7dcd78c6111b",
+    "storeName": "facilshopping.com.br",
+    "to": 316.19,
+    "msrp": null,
+    "type": "lowest",
+    "from": 349.9
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me05-blister4",
+    "offerId": "446656b301da",
+    "storeName": "facilshopping.com.br",
+    "to": 37.01,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T17:30:27.381Z",
+    "productId": "me05-blister4",
+    "offerId": "446656b301da",
+    "storeName": "facilshopping.com.br",
+    "to": 37.01,
+    "msrp": 55.99,
+    "type": "lowest",
+    "from": 41.8
+  },
+  {
+    "t": "2026-10-13T18:00:32.931Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T18:30:27.438Z",
+    "productId": "me02_5-combo18",
+    "offerId": "9ae3026891a2",
+    "storeName": "Mercado Livre",
+    "to": 436,
+    "msrp": null,
+    "type": "drop",
+    "from": 445
+  },
+  {
+    "t": "2026-10-13T18:30:27.438Z",
+    "productId": "me02_5-combo18",
+    "offerId": "9ae3026891a2",
+    "storeName": "Mercado Livre",
+    "to": 436,
+    "msrp": null,
+    "type": "lowest",
+    "from": 445
+  },
+  {
+    "t": "2026-10-13T19:30:29.841Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T21:00:38.385Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "8f081289872f",
+    "storeName": "Mercado Livre",
+    "to": 361,
+    "msrp": 230.99,
+    "type": "drop",
+    "from": 367
+  },
+  {
+    "t": "2026-10-13T21:00:38.385Z",
+    "productId": "c30-blister3",
+    "offerId": "34ca5bc7e67c",
+    "storeName": "Mercado Livre",
+    "to": 156,
+    "msrp": 99.99,
+    "type": "drop",
+    "from": 160
+  },
+  {
+    "t": "2026-10-13T21:30:35.849Z",
+    "productId": "c30-combo",
+    "offerId": "c16a0f3894cf",
+    "storeName": "Mercado Livre",
+    "to": 329.9,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 342
+  },
+  {
+    "t": "2026-10-13T22:30:26.233Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "7a3a93cb283f",
+    "storeName": "Canal 40",
+    "to": 378.29,
+    "msrp": 230.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-13T23:00:32.066Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T23:30:28.475Z",
+    "productId": "sv1-booster",
+    "offerId": "44cc646ee6db",
+    "storeName": "Mercado Livre",
+    "to": 47.4,
+    "msrp": null,
+    "type": "drop",
+    "from": 49.9
+  },
+  {
+    "t": "2026-10-13T23:30:28.475Z",
+    "productId": "me04-blister3",
+    "offerId": "a01dc745097e",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-13T23:30:28.475Z",
+    "productId": "me03-blister4",
+    "offerId": "baae4a2cf018",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T00:30:26.933Z",
+    "productId": "me04-blister3",
+    "offerId": "f6bc66ef97f9",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T01:00:30.820Z",
+    "productId": "me05-box36",
+    "offerId": "7d043ce53245",
+    "storeName": "Mercado Livre",
+    "to": 359.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 395.99
+  },
+  {
+    "t": "2026-10-14T01:30:25.020Z",
+    "productId": "me04-blister3",
+    "offerId": "f7457b886645",
+    "storeName": "Mercado Livre",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T02:00:29.795Z",
+    "productId": "c30-blister2",
+    "offerId": "6dedebd419f3",
+    "storeName": "geekstorebrasil.com.br",
+    "to": 89.9,
+    "msrp": 69.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-14T04:00:27.943Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "7a3a93cb283f",
+    "storeName": "Canal 40",
+    "to": 378.29,
+    "msrp": 230.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-14T04:30:24.015Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "8f081289872f",
+    "storeName": "Mercado Livre",
+    "to": 318,
+    "msrp": 230.99,
+    "type": "drop",
+    "from": 361
+  },
+  {
+    "t": "2026-10-14T04:30:24.015Z",
+    "productId": "me04-etb",
+    "offerId": "fff86f07dbdb",
+    "storeName": "facilshopping.com.br",
+    "to": 305.97,
+    "msrp": 399.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-14T04:30:24.015Z",
+    "productId": "me04-etb",
+    "offerId": "fff86f07dbdb",
+    "storeName": "facilshopping.com.br",
+    "to": 305.97,
+    "msrp": 399.99,
+    "type": "lowest",
+    "from": 322.9
+  },
+  {
+    "t": "2026-10-14T07:30:27.771Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "8f081289872f",
+    "storeName": "Mercado Livre",
+    "to": 299.99,
+    "msrp": 230.99,
+    "type": "drop",
+    "from": 318
+  },
+  {
+    "t": "2026-10-14T09:00:32.170Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T10:30:27.652Z",
+    "productId": "sv3-etb",
+    "offerId": "6b238061e615",
+    "storeName": "Mercado Livre",
+    "to": 1849.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 1954
+  },
+  {
+    "t": "2026-10-14T10:30:27.652Z",
+    "productId": "sv3-etb",
+    "offerId": "6b238061e615",
+    "storeName": "Mercado Livre",
+    "to": 1849.9,
+    "msrp": null,
+    "type": "lowest",
+    "from": 1890
+  },
+  {
+    "t": "2026-10-14T12:30:25.680Z",
+    "productId": "me04-blister3",
+    "offerId": "f6bc66ef97f9",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister4",
+    "offerId": "5e6808f818e4",
+    "storeName": "Mercado Livre",
+    "to": 44.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister4",
+    "offerId": "a440ceda072c",
+    "storeName": "Mercado Livre",
+    "to": 47.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister4",
+    "offerId": "897f0ec9808b",
+    "storeName": "Mercado Livre",
+    "to": 48,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister4",
+    "offerId": "82288baa4cf4",
+    "storeName": "Mercado Livre",
+    "to": 48.16,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister4",
+    "offerId": "e5add3e94f9d",
+    "storeName": "Mercado Livre",
+    "to": 48.89,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-combo",
+    "offerId": "35c6bf93c325",
+    "storeName": "Mercado Livre",
+    "to": 249.9,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister1",
+    "offerId": "1293af158021",
+    "storeName": "Mercado Livre",
+    "to": 11.9,
+    "msrp": 13.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister3",
+    "offerId": "f7457b886645",
+    "storeName": "Mercado Livre",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister3",
+    "offerId": "68b01ca1e665",
+    "storeName": "Mercado Livre",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister3",
+    "offerId": "164edf6be189",
+    "storeName": "Mercado Livre",
+    "to": 41.57,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister3",
+    "offerId": "d44f198b7f73",
+    "storeName": "Mercado Livre",
+    "to": 41.8,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister3",
+    "offerId": "3e381ab19e7a",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me04-blister3",
+    "offerId": "f6bc66ef97f9",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me05-etb",
+    "offerId": "e86f4f758393",
+    "storeName": "Mercado Livre",
+    "to": 399,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:30:32.465Z",
+    "productId": "me05-etb",
+    "offerId": "7bf7dbaa36cf",
+    "storeName": "Mercado Livre",
+    "to": 399.98,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:43:04.611Z",
+    "productId": "me04-blister4",
+    "offerId": "498f94515e44",
+    "storeName": "Mercado Livre",
+    "to": 44.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T14:43:04.611Z",
+    "productId": "me05-blister4",
+    "offerId": "ee15e4d00442",
+    "storeName": "Mercado Livre",
+    "to": 55.22,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T15:10:33.045Z",
+    "productId": "me05-etb",
+    "offerId": "424776df4f63",
+    "storeName": "Life Geek",
+    "to": 387.03,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T15:10:33.045Z",
+    "productId": "sv8_5-colecao_ex-eevee",
+    "offerId": "56c52c843272",
+    "storeName": "madlabrpg.com",
+    "to": 290.03,
+    "msrp": null,
+    "type": "lowest",
+    "from": 429
+  },
+  {
+    "t": "2026-10-14T15:10:33.045Z",
+    "productId": "me05-blister4",
+    "offerId": "81d81b41b108",
+    "storeName": "madlabrpg.com",
+    "to": 40.74,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T15:30:29.780Z",
+    "productId": "c30-blister3",
+    "offerId": "a4a6190f40c4",
+    "storeName": "madlabrpg.com",
+    "to": 116.4,
+    "msrp": 99.99,
+    "type": "lowest",
+    "from": 139.9
+  },
+  {
+    "t": "2026-10-14T15:30:29.780Z",
+    "productId": "c30-colecao_ex-greninja",
+    "offerId": "9defc7f99517",
+    "storeName": "madlabrpg.com",
+    "to": 194,
+    "msrp": 160.99,
+    "type": "lowest",
+    "from": 199.99
+  },
+  {
+    "t": "2026-10-14T15:30:29.780Z",
+    "productId": "c30-colecao_ex-sylveon",
+    "offerId": "e555af8f84d8",
+    "storeName": "madlabrpg.com",
+    "to": 194,
+    "msrp": 160.99,
+    "type": "lowest",
+    "from": 199.99
+  },
+  {
+    "t": "2026-10-14T17:00:32.354Z",
+    "productId": "c30-colecao_ex-greninja",
+    "offerId": "813563da14fa",
+    "storeName": "Mercado Livre",
+    "to": 269.9,
+    "msrp": 160.99,
+    "type": "drop",
+    "from": 274.9
+  },
+  {
+    "t": "2026-10-14T17:00:32.354Z",
+    "productId": "c30-colecao_ex-sylveon",
+    "offerId": "2b2fe8c35edc",
+    "storeName": "Mercado Livre",
+    "to": 269.9,
+    "msrp": 160.99,
+    "type": "drop",
+    "from": 274.9
+  },
+  {
+    "t": "2026-10-14T17:30:31.209Z",
+    "productId": "me04-blister4",
+    "offerId": "652760b189a5",
+    "storeName": "Mercado Livre",
+    "to": 43.98,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T18:00:33.082Z",
+    "productId": "c30-colecao_ex-greninja",
+    "offerId": "cc553a008a12",
+    "storeName": "Mercado Livre",
+    "to": 267,
+    "msrp": 160.99,
+    "type": "drop",
+    "from": 271.11
+  },
+  {
+    "t": "2026-10-14T18:00:33.082Z",
+    "productId": "c30-blister3",
+    "offerId": "592f2a32cee6",
+    "storeName": "Mercado Livre",
+    "to": 153,
+    "msrp": 99.99,
+    "type": "drop",
+    "from": 161
+  },
+  {
+    "t": "2026-10-14T18:00:33.082Z",
+    "productId": "c30-combo",
+    "offerId": "c16a0f3894cf",
+    "storeName": "Mercado Livre",
+    "to": 309.9,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 329.9
+  },
+  {
+    "t": "2026-10-14T18:00:33.082Z",
+    "productId": "me01-combo",
+    "offerId": "e6551daa8516",
+    "storeName": "mox.land",
+    "to": 249,
+    "msrp": null,
+    "type": "lowest",
+    "from": 250.99
+  },
+  {
+    "t": "2026-10-14T18:30:30.003Z",
+    "productId": "me04-blister4",
+    "offerId": "a4521941d81e",
+    "storeName": "Mercado Livre",
+    "to": 44.41,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T19:00:32.663Z",
+    "productId": "me05-blister3",
+    "offerId": "7a3d004b7bd3",
+    "storeName": "Mercado Livre",
+    "to": 32.58,
+    "msrp": null,
+    "type": "drop",
+    "from": 35
+  },
+  {
+    "t": "2026-10-14T19:25:56.375Z",
+    "productId": "c30-blister3",
+    "offerId": "592f2a32cee6",
+    "storeName": "Mercado Livre",
+    "to": 149,
+    "msrp": 99.99,
+    "type": "drop",
+    "from": 153
+  },
+  {
+    "t": "2026-10-14T19:25:56.375Z",
+    "productId": "c30-combo",
+    "offerId": "6882492ad567",
+    "storeName": "Mercado Livre",
+    "to": 336,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 338
+  },
+  {
+    "t": "2026-10-14T19:25:56.375Z",
+    "productId": "c30-colecao_poster",
+    "offerId": "805d3a3f234a",
+    "storeName": "Mercado Livre",
+    "to": 168.19,
+    "msrp": 115.99,
+    "type": "drop",
+    "from": 177
+  },
+  {
+    "t": "2026-10-14T19:45:22.180Z",
+    "productId": "me02_5-combo18",
+    "offerId": "1f653db999ae",
+    "storeName": "Mercado Livre",
+    "to": 456,
+    "msrp": null,
+    "type": "drop",
+    "from": 470
+  },
+  {
+    "t": "2026-10-14T19:45:22.180Z",
+    "productId": "c30-combo",
+    "offerId": "5fffe4667e39",
+    "storeName": "Mercado Livre",
+    "to": 299,
+    "msrp": 199.99,
+    "type": "drop",
+    "from": 342
+  },
+  {
+    "t": "2026-10-14T20:15:28.486Z",
+    "productId": "me04-blister4",
+    "offerId": "6be0a4634328",
+    "storeName": "Mercado Livre",
+    "to": 48,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T21:15:20.478Z",
+    "productId": "me02_5-combo18",
+    "offerId": "6398f5c1ddd0",
+    "storeName": "rihappy.com.br",
+    "to": 549.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 589.9
+  },
+  {
+    "t": "2026-10-14T21:15:20.478Z",
+    "productId": "me02_5-combo18",
+    "offerId": "cab0f153b94f",
+    "storeName": "pbkids.com.br",
+    "to": 549.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 589.9
+  },
+  {
+    "t": "2026-10-14T21:15:20.478Z",
+    "productId": "me01-combo18",
+    "offerId": "1a848aa3d9e3",
+    "storeName": "Canal 40",
+    "to": 232.79,
+    "msrp": null,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-14T21:15:20.478Z",
+    "productId": "me01-combo18",
+    "offerId": "1a848aa3d9e3",
+    "storeName": "Canal 40",
+    "to": 232.79,
+    "msrp": null,
+    "type": "lowest",
+    "from": 236.55
+  },
+  {
+    "t": "2026-10-14T22:15:23.546Z",
+    "productId": "me04-blister4",
+    "offerId": "0a55b545fac9",
+    "storeName": "Mercado Livre",
+    "to": 49.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T22:15:23.546Z",
+    "productId": "me04-blister4",
+    "offerId": "50227ac4bd9a",
+    "storeName": "Mercado Livre",
+    "to": 53.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T22:15:23.546Z",
+    "productId": "me04-blister4",
+    "offerId": "07f7c5277d07",
+    "storeName": "Mercado Livre",
+    "to": 53.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T22:15:23.546Z",
+    "productId": "me04-blister4",
+    "offerId": "70a3c693f520",
+    "storeName": "Mercado Livre",
+    "to": 53.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T22:15:23.546Z",
+    "productId": "me04-blister4",
+    "offerId": "e4c50fea8fd8",
+    "storeName": "Mercado Livre",
+    "to": 53.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T23:15:21.459Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-14T23:15:21.459Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "7a3a93cb283f",
+    "storeName": "Canal 40",
+    "to": 378.29,
+    "msrp": 230.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-15T01:15:23.643Z",
+    "productId": "me05-blister4",
+    "offerId": "bc0c67f9cfc2",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T01:15:23.643Z",
+    "productId": "me01-booster",
+    "offerId": "991a6e61ccf4",
+    "storeName": "arenacwg.com",
+    "to": 15,
+    "msrp": null,
+    "type": "lowest",
+    "from": 16.9
+  },
+  {
+    "t": "2026-10-15T02:15:25.266Z",
+    "productId": "c30-colecao_poster",
+    "offerId": "f931e9ac8ea2",
+    "storeName": "Mercado Livre",
+    "to": 164.99,
+    "msrp": 115.99,
+    "type": "drop",
+    "from": 169.99
+  },
+  {
+    "t": "2026-10-15T03:00:40.266Z",
+    "productId": "me05-etb",
+    "offerId": "49aa3cc48ac9",
+    "storeName": "Life Geek",
+    "to": 387.03,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T04:30:25.207Z",
+    "productId": "me04-blister4",
+    "offerId": "652760b189a5",
+    "storeName": "Mercado Livre",
+    "to": 43.98,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T04:30:25.207Z",
+    "productId": "me04-blister4",
+    "offerId": "a4521941d81e",
+    "storeName": "Mercado Livre",
+    "to": 44.41,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T04:30:25.207Z",
+    "productId": "me04-blister4",
+    "offerId": "498f94515e44",
+    "storeName": "Mercado Livre",
+    "to": 44.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T04:30:25.207Z",
+    "productId": "me04-blister4",
+    "offerId": "a440ceda072c",
+    "storeName": "Mercado Livre",
+    "to": 47.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T04:30:25.207Z",
+    "productId": "me04-blister4",
+    "offerId": "6be0a4634328",
+    "storeName": "Mercado Livre",
+    "to": 48,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T06:30:25.441Z",
+    "productId": "me03-blister4",
+    "offerId": "1d35eaf9a64f",
+    "storeName": "pbkids.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T08:30:27.536Z",
+    "productId": "c30-colecao_fichario",
+    "offerId": "7a3a93cb283f",
+    "storeName": "Canal 40",
+    "to": 378.29,
+    "msrp": 230.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-15T09:30:30.411Z",
+    "productId": "me04-blister4",
+    "offerId": "76f735b62972",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T09:30:30.411Z",
+    "productId": "me03-blister4",
+    "offerId": "baae4a2cf018",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T12:15:24.646Z",
+    "productId": "c30-colecao_poster",
+    "offerId": "805d3a3f234a",
+    "storeName": "Mercado Livre",
+    "to": 155,
+    "msrp": 115.99,
+    "type": "drop",
+    "from": 168.19
+  },
+  {
+    "t": "2026-10-15T12:30:27.814Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T13:00:33.510Z",
+    "productId": "me04-box36",
+    "offerId": "6899177dda3e",
+    "storeName": "facilshopping.com.br",
+    "to": 288.3,
+    "msrp": null,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-15T13:00:33.510Z",
+    "productId": "me04-box36",
+    "offerId": "6899177dda3e",
+    "storeName": "facilshopping.com.br",
+    "to": 288.3,
+    "msrp": null,
+    "type": "lowest",
+    "from": 379.05
+  },
+  {
+    "t": "2026-10-15T13:30:29.630Z",
+    "productId": "me03-desafio",
+    "offerId": "c85612501dd6",
+    "storeName": "Mercado Livre",
+    "to": 144.65,
+    "msrp": null,
+    "type": "drop",
+    "from": 145.4
+  },
+  {
+    "t": "2026-10-15T13:30:29.630Z",
+    "productId": "me05-desafio",
+    "offerId": "1abd393a862a",
+    "storeName": "Mercado Livre",
+    "to": 144.15,
+    "msrp": null,
+    "type": "drop",
+    "from": 144.53
+  },
+  {
+    "t": "2026-10-15T13:45:35.854Z",
+    "productId": "me04-blister3",
+    "offerId": "a01dc745097e",
+    "storeName": "Mercado Livre",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T14:13:10.602Z",
+    "productId": "me02-colecao_ex-mega-venusaur",
+    "offerId": "4d3b050751d3",
+    "storeName": "Mercado Livre",
+    "to": 135,
+    "msrp": null,
+    "type": "drop",
+    "from": 249.9
+  },
+  {
+    "t": "2026-10-15T14:13:10.602Z",
+    "productId": "me03-desafio",
+    "offerId": "c85612501dd6",
+    "storeName": "Mercado Livre",
+    "to": 138.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 144.65
+  },
+  {
+    "t": "2026-10-15T14:24:03.033Z",
+    "productId": "me05-desafio",
+    "offerId": "1abd393a862a",
+    "storeName": "Mercado Livre",
+    "to": 138.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 144.15
+  },
+  {
+    "t": "2026-10-15T14:24:03.033Z",
+    "productId": "me05-etb",
+    "offerId": "a0c9bb7b6064",
+    "storeName": "Mercado Livre",
+    "to": 379.99,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 399.99
+  },
+  {
+    "t": "2026-10-15T14:24:03.033Z",
+    "productId": "me05-etb",
+    "offerId": "0aa466ea3acd",
+    "storeName": "Life Geek",
+    "to": 387.03,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T14:45:31.707Z",
+    "productId": "me03-box36",
+    "offerId": "d2c14f39f3aa",
+    "storeName": "Mercado Livre",
+    "to": 455.88,
+    "msrp": null,
+    "type": "drop",
+    "from": 469.98
+  },
+  {
+    "t": "2026-10-15T15:00:34.162Z",
+    "productId": "me02_5-combo18",
+    "offerId": "bcb31e987b57",
+    "storeName": "Mercado Livre",
+    "to": 484.01,
+    "msrp": null,
+    "type": "drop",
+    "from": 498.98
+  },
+  {
+    "t": "2026-10-15T15:00:34.162Z",
+    "productId": "c30-colecao_ex-greninja",
+    "offerId": "70a8e909ad0b",
+    "storeName": "Mercado Livre",
+    "to": 271.69,
+    "msrp": 160.99,
+    "type": "drop",
+    "from": 285.99
+  },
+  {
+    "t": "2026-10-15T15:15:23.644Z",
+    "productId": "me05-booster",
+    "offerId": "cbbf943b79a0",
+    "storeName": "Mercado Livre",
+    "to": 13.85,
+    "msrp": null,
+    "type": "drop",
+    "from": 15.22
+  },
+  {
+    "t": "2026-10-15T15:37:03.868Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T17:00:31.690Z",
+    "productId": "me04-combo",
+    "offerId": "a595ee4b8506",
+    "storeName": "Mercado Livre",
+    "to": 239.8,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T17:00:31.690Z",
+    "productId": "me05-blister4",
+    "offerId": "ee15e4d00442",
+    "storeName": "Mercado Livre",
+    "to": 50.12,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 55.22
+  },
+  {
+    "t": "2026-10-15T17:15:24.907Z",
+    "productId": "me04-desafio",
+    "offerId": "971f98e4315b",
+    "storeName": "Mercado Livre",
+    "to": 139,
+    "msrp": null,
+    "type": "drop",
+    "from": 141.25
+  },
+  {
+    "t": "2026-10-15T18:00:37.241Z",
+    "productId": "c30-etb",
+    "offerId": "1bd7e760d859",
+    "storeName": "Mercado Livre",
+    "to": 789.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 809.99
+  },
+  {
+    "t": "2026-10-15T18:00:37.241Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T18:30:40.327Z",
+    "productId": "me02-blister4",
+    "offerId": "e96a64603cef",
+    "storeName": "Mercado Livre",
+    "to": 52,
+    "msrp": null,
+    "type": "drop",
+    "from": 64
+  },
+  {
+    "t": "2026-10-15T18:30:40.327Z",
+    "productId": "me04-desafio",
+    "offerId": "971f98e4315b",
+    "storeName": "Mercado Livre",
+    "to": 137.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 139
+  },
+  {
+    "t": "2026-10-15T20:45:23.927Z",
+    "productId": "c30-combo",
+    "offerId": "f166ec0dbeb6",
+    "storeName": "Mercado Livre",
+    "to": 359,
+    "msrp": null,
+    "type": "drop",
+    "from": 379
+  },
+  {
+    "t": "2026-10-15T20:45:23.927Z",
+    "productId": "me05-blister1",
+    "offerId": "9837a31d8f0a",
+    "storeName": "Life Geek",
+    "to": 13.58,
+    "msrp": 13.99,
+    "type": "restock"
+  },
+  {
+    "t": "2026-10-15T21:00:33.708Z",
+    "productId": "me05-etb",
+    "offerId": "09e4afa248ee",
+    "storeName": "Mercado Livre",
+    "to": 349,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T21:00:33.708Z",
+    "productId": "me05-etb",
+    "offerId": "d884289c73ff",
+    "storeName": "Mercado Livre",
+    "to": 398.99,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T21:00:33.708Z",
+    "productId": "me05-etb",
+    "offerId": "ebccef56fea2",
+    "storeName": "Mercado Livre",
+    "to": 399.9,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T21:15:25.341Z",
+    "productId": "me03-blister4",
+    "offerId": "525f2eb5efcc",
+    "storeName": "rihappy.com.br",
+    "to": 55.76,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-15T23:45:23.373Z",
+    "productId": "me05-etb",
+    "offerId": "7bf7dbaa36cf",
+    "storeName": "Mercado Livre",
+    "to": 399.98,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-16T01:07:46.076Z",
+    "productId": "me05-blister4",
+    "offerId": "bc0c67f9cfc2",
+    "storeName": "arenacwg.com",
+    "to": 55,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-16T03:30:30.167Z",
+    "productId": "me04-etb",
+    "offerId": "02df8f4cf7e1",
+    "storeName": "rihappy.com.br",
+    "to": 395,
+    "msrp": 399.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-10-16T04:00:31.217Z",
+    "productId": "me04-etb",
+    "offerId": "f650cc261a9f",
+    "storeName": "Mercado Livre",
+    "to": 519.9,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 539.9
+  }
+]

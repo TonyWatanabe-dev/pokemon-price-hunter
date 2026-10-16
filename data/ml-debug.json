@@ -1,0 +1,255 @@
+{
+  "picked": 455,
+  "sample": "[{\"code\":403,\"body\":{\"id\":\"MLB7765245354\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":null}},{\"code\":403,\"body\":{\"id\":\"MLB4465350905\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":null}},{\"code\":403,\"body\":{\"id\":\"MLB4705586715\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":null}},{\"code\":403,\"body\":{\"id\":\"MLB4180420744\",\"message\":\"Access to the requested resource is forbidden\",\"error\":\"access_denied\",\"status\":403,\"cause\":nu",
+  "drop": {},
+  "searchApi": false,
+  "searchError": {
+    "status": 403,
+    "error": "blocked",
+    "message": "Acesso bloqueado (403) em api.mercadolibre.com",
+    "cause": null
+  },
+  "catalogFields": [
+    "accepts_mercadopago",
+    "category_id",
+    "condition",
+    "currency_id",
+    "deal_ids",
+    "international_delivery_mode",
+    "inventory_id",
+    "item_id",
+    "listing_type_id",
+    "min_purchase_unit",
+    "official_store_id",
+    "original_price",
+    "price",
+    "sale_terms",
+    "seller_address",
+    "seller_id",
+    "shipping",
+    "site_id",
+    "tags",
+    "tier",
+    "user_product_id",
+    "warranty"
+  ],
+  "catalogSample": {
+    "item_id": "MLB7513705746",
+    "condition": "new",
+    "listing_type_id": "gold_special",
+    "price": 47.4,
+    "original_price": 49.9,
+    "official_store_id": 485526,
+    "free_shipping": false
+  },
+  "catalogStock": {
+    "IN_STOCK": 1590
+  },
+  "officialStores": {
+    "846": {
+      "name": null,
+      "sellerId": 222533718,
+      "listings": 3
+    },
+    "1785": {
+      "name": null,
+      "sellerId": 284451178,
+      "listings": 3
+    },
+    "1925": {
+      "name": null,
+      "sellerId": 446988463,
+      "listings": 1
+    },
+    "3152": {
+      "name": null,
+      "sellerId": 1827372997,
+      "listings": 15
+    },
+    "3429": {
+      "name": null,
+      "sellerId": 2139791940,
+      "listings": 1
+    },
+    "3975": {
+      "name": null,
+      "sellerId": 694929293,
+      "listings": 10
+    },
+    "4658": {
+      "name": null,
+      "sellerId": 645168274,
+      "listings": 3
+    },
+    "5224": {
+      "name": null,
+      "sellerId": 1751870503,
+      "listings": 2
+    },
+    "5588": {
+      "name": null,
+      "sellerId": 1018141594,
+      "listings": 16
+    },
+    "50787": {
+      "name": null,
+      "sellerId": 749102064,
+      "listings": 3
+    },
+    "99954": {
+      "name": null,
+      "sellerId": 85858636,
+      "listings": 2
+    },
+    "103782": {
+      "name": null,
+      "sellerId": 345793063,
+      "listings": 4
+    },
+    "133506": {
+      "name": null,
+      "sellerId": 222910313,
+      "listings": 3
+    },
+    "133584": {
+      "name": null,
+      "sellerId": 207612316,
+      "listings": 6
+    },
+    "143706": {
+      "name": null,
+      "sellerId": 101040064,
+      "listings": 1
+    },
+    "144066": {
+      "name": null,
+      "sellerId": 150249630,
+      "listings": 1
+    },
+    "171942": {
+      "name": null,
+      "sellerId": 254771928,
+      "listings": 2
+    },
+    "190922": {
+      "name": null,
+      "sellerId": 803163896,
+      "listings": 1
+    },
+    "236642": {
+      "name": null,
+      "sellerId": 768826009,
+      "listings": 5
+    },
+    "238302": {
+      "name": null,
+      "sellerId": 733233200,
+      "listings": 1
+    },
+    "242562": {
+      "name": null,
+      "sellerId": 1459507520,
+      "listings": 22
+    },
+    "284910": {
+      "name": null,
+      "sellerId": 27884201,
+      "listings": 2
+    },
+    "291882": {
+      "name": null,
+      "sellerId": 262455890,
+      "listings": 3
+    },
+    "336666": {
+      "name": null,
+      "sellerId": 2323057123,
+      "listings": 4
+    },
+    "346708": {
+      "name": null,
+      "sellerId": 357944073,
+      "listings": 1
+    },
+    "346964": {
+      "name": null,
+      "sellerId": 127833055,
+      "listings": 2
+    },
+    "349728": {
+      "name": null,
+      "sellerId": 2210214527,
+      "listings": 5
+    },
+    "360782": {
+      "name": null,
+      "sellerId": 305645535,
+      "listings": 13
+    },
+    "371062": {
+      "name": null,
+      "sellerId": 92572238,
+      "listings": 4
+    },
+    "378902": {
+      "name": null,
+      "sellerId": 48862155,
+      "listings": 6
+    },
+    "396884": {
+      "name": null,
+      "sellerId": 154294304,
+      "listings": 1
+    },
+    "401622": {
+      "name": null,
+      "sellerId": 135404948,
+      "listings": 4
+    },
+    "409462": {
+      "name": null,
+      "sellerId": 470991887,
+      "listings": 4
+    },
+    "410788": {
+      "name": null,
+      "sellerId": 436836109,
+      "listings": 1
+    },
+    "443342": {
+      "name": null,
+      "sellerId": 229907221,
+      "listings": 3
+    },
+    "447522": {
+      "name": null,
+      "sellerId": 669889700,
+      "listings": 2
+    },
+    "450862": {
+      "name": null,
+      "sellerId": 3243645350,
+      "listings": 1
+    },
+    "485526": {
+      "name": null,
+      "sellerId": 576961506,
+      "listings": 1
+    }
+  },
+  "itemsError": {
+    "httpStatus": 200,
+    "perItemCode": 403,
+    "status": 403,
+    "error": "access_denied",
+    "message": "Access to the requested resource is forbidden",
+    "cause": null
+  },
+  "scope": "offline_access read urn:global:admin:info:/read-only urn:global:admin:info:/read-write urn:global:admin:oauth:/read-only urn:global:admin:oauth:/read-write urn:global:admin:users:/read-only urn:global:admin:users:/read-write urn:ml:all:publish-sync:/read-only urn:ml:mktp:publish-sync:/read-only write",
+  "itemsApi": false,
+  "published": 285,
+  "at": "2026-10-16T08:46:12.670Z",
+  "publishedStock": {
+    "IN_STOCK": 285
+  }
+}
