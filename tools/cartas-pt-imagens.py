@@ -10,7 +10,7 @@ Uso:
   python3 tools/cartas-pt-imagens.py --artista "Mitsuhiro Arita" --desde 2024  # todas de um ilustrador
   python3 tools/cartas-pt-imagens.py --colecao 30th --raridade "Pikachu Rare"
   python3 tools/cartas-pt-imagens.py --lista pauta.txt --saida assets/social/cartas
-Opções: --saida (padrão assets/social/cartas), --so-urls (imprime as URLs e não baixa), --base <json.gz>.
+Opções: --saida (padrão assets/social/cartas), --formato png|webp (png = fundo transparente), --so-urls (imprime as URLs e não baixa), --base <json.gz>.
 """
 import argparse
 import gzip
@@ -31,9 +31,9 @@ def carregar(caminho):
         return json.load(f)['cartas']
 
 
-def nome_arquivo(c):
+def nome_arquivo(c, ext='webp'):
     nome = re.sub(r'[^a-z0-9]+', '-', (c['nome'] or c['nomeEn'] or 'carta').lower()).strip('-')
-    return f"{c['colecao']}-{c['numero']}-{nome}.webp"
+    return f"{c['colecao']}-{c['numero']}-{nome}.{ext}"
 
 
 def selecionar(cartas, o):
@@ -75,6 +75,7 @@ def main(argv=None):
     a.add_argument('--desde', type=int, help='ano mínimo de lançamento')
     a.add_argument('--saida', default='assets/social/cartas')
     a.add_argument('--base', default=BASE)
+    a.add_argument('--formato', choices=['webp', 'png'], default='webp')
     a.add_argument('--so-urls', action='store_true')
     o = a.parse_args(argv)
     cartas = carregar(o.base)
@@ -90,15 +91,16 @@ def main(argv=None):
     ok = falhas = 0
     creditos = []
     for c in sel:
-        destino = os.path.join(o.saida, nome_arquivo(c))
+        arq = nome_arquivo(c, o.formato)
+        destino = os.path.join(o.saida, arq)
         if os.path.exists(destino):
             ok += 1
             continue
-        for url in (c['imagem'], c['imagemEn']):
+        for url in (u.replace('high.webp', f'high.{o.formato}') for u in (c['imagem'], c['imagemEn'])):
             try:
                 baixar(url, destino)
                 ok += 1
-                creditos.append(f"{nome_arquivo(c)}\t{c['nome']} · {c['colecaoNome']} {c['numero']} · ilustração: {c['ilustrador'] or '?'} · © Pokémon/Nintendo/Creatures/GAME FREAK · fonte: {url}")
+                creditos.append(f"{arq}\t{c['nome']} · {c['colecaoNome']} {c['numero']} · ilustração: {c['ilustrador'] or '?'} · © Pokémon/Nintendo/Creatures/GAME FREAK · fonte: {url}")
                 break
             except urllib.error.HTTPError as e:
                 if e.code != 404:
