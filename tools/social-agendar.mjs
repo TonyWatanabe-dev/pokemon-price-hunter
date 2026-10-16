@@ -48,6 +48,7 @@ for (const it of itens) {
     for (const m of await midias(it)) urls.push(await cli.enviar(m.bytes, m.nome));
     for (const plataforma of it.plataformas) {
       contas[plataforma] ??= await cli.conta(plataforma, perfil);
+      if (modo === 'simular' && plataforma !== 'tiktok') { anota('notice', `✓ ${it.id} · ${plataforma} · mídia enviada (a Zernio só simula TikTok; post não validado)`); continue; }
       const corpo = montarPost(it, { accountId: contas[plataforma], plataforma, urls, simular: modo === 'simular' });
       const idem = createHash('sha256').update(`${it.id}|${plataforma}|${it.quando}`).digest('hex').slice(0, 32);
       const r = await cli.postar(corpo, modo === 'agendar' ? idem : undefined);
