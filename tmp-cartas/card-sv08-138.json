@@ -1,0 +1,194 @@
+{
+ "category": "Pokémon",
+ "id": "sv08-138",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sv/sv08/138",
+ "localId": "138",
+ "name": "Applin",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 191,
+   "total": 252
+  },
+  "id": "sv08",
+  "name": "Fagulhas Impetuosas"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": true,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 794511,
+    "tcgplayer": 589866
+   },
+   "variantId": "endfynwn4n10gzq",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.735Z",
+     "unit": "EUR",
+     "idProduct": 794511,
+     "avg": 0.05,
+     "low": 0.02,
+     "trend": 0.07,
+     "avg1": 0.03,
+     "avg7": 0.06,
+     "avg30": 0.06,
+     "avg-holo": 0.12,
+     "low-holo": 0.02,
+     "trend-holo": 0.13,
+     "avg1-holo": 0.1,
+     "avg7-holo": 0.12,
+     "avg30-holo": 0.13
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:11.368Z",
+     "normal": {
+      "productId": 589866,
+      "lowPrice": 0.01,
+      "midPrice": 0.22,
+      "highPrice": 1.99,
+      "marketPrice": 0.23,
+      "directLowPrice": 0.05
+     },
+     "reverse-holofoil": {
+      "productId": 589866,
+      "lowPrice": 0.05,
+      "midPrice": 0.29,
+      "highPrice": 19.8,
+      "marketPrice": 0.3,
+      "directLowPrice": 0.2
+     }
+    }
+   }
+  },
+  {
+   "type": "Reverse",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 794511,
+    "tcgplayer": 589866
+   },
+   "variantId": "cm4kqul3x1bwlz1f",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.735Z",
+     "unit": "EUR",
+     "idProduct": 794511,
+     "avg": 0.05,
+     "low": 0.02,
+     "trend": 0.07,
+     "avg1": 0.03,
+     "avg7": 0.06,
+     "avg30": 0.06,
+     "avg-holo": 0.12,
+     "low-holo": 0.02,
+     "trend-holo": 0.13,
+     "avg1-holo": 0.1,
+     "avg7-holo": 0.12,
+     "avg30-holo": 0.13
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:11.368Z",
+     "normal": {
+      "productId": 589866,
+      "lowPrice": 0.01,
+      "midPrice": 0.22,
+      "highPrice": 1.99,
+      "marketPrice": 0.23,
+      "directLowPrice": 0.05
+     },
+     "reverse-holofoil": {
+      "productId": 589866,
+      "lowPrice": 0.05,
+      "midPrice": 0.29,
+      "highPrice": 19.8,
+      "marketPrice": 0.3,
+      "directLowPrice": 0.2
+     }
+    }
+   }
+  }
+ ],
+ "dexId": [
+  840
+ ],
+ "hp": 40,
+ "types": [
+  "Dragão"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Incolor"
+   ],
+   "name": "Nutrientes",
+   "effect": "Cure 30 pontos de dano de 1 dos seus Pokémon."
+  },
+  {
+   "cost": [
+    "Planta",
+    "Fogo"
+   ],
+   "name": "Tropeção",
+   "effect": "Jogue uma moeda. Se sair cara, este ataque causará 30 pontos de dano a mais.",
+   "damage": "20+"
+  }
+ ],
+ "retreat": 1,
+ "regulationMark": "H",
+ "legal": {
+  "standard": true,
+  "expanded": true
+ },
+ "updated": "2026-04-28T20:18:34+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.735Z",
+   "unit": "EUR",
+   "idProduct": 794511,
+   "avg": 0.05,
+   "low": 0.02,
+   "trend": 0.07,
+   "avg1": 0.03,
+   "avg7": 0.06,
+   "avg30": 0.06,
+   "avg-holo": 0.12,
+   "low-holo": 0.02,
+   "trend-holo": 0.13,
+   "avg1-holo": 0.1,
+   "avg7-holo": 0.12,
+   "avg30-holo": 0.13
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:11.368Z",
+   "normal": {
+    "productId": 589866,
+    "lowPrice": 0.01,
+    "midPrice": 0.22,
+    "highPrice": 1.99,
+    "marketPrice": 0.23,
+    "directLowPrice": 0.05
+   },
+   "reverse-holofoil": {
+    "productId": 589866,
+    "lowPrice": 0.05,
+    "midPrice": 0.29,
+    "highPrice": 19.8,
+    "marketPrice": 0.3,
+    "directLowPrice": 0.2
+   }
+  }
+ }
+}

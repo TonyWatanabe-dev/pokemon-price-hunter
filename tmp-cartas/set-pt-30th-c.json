@@ -1,0 +1,442 @@
+{
+ "cardCount": {
+  "firstEd": 0,
+  "holo": 0,
+  "normal": 0,
+  "official": 0,
+  "reverse": 0,
+  "total": 30
+ },
+ "cards": [
+  {
+   "id": "30th-c-001",
+   "localId": "001",
+   "name": "Charizard",
+   "illustrator": "Mitsuhiro Arita",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 120,
+   "types": [
+    "Fogo"
+   ],
+   "stage": "Estágio 2"
+  },
+  {
+   "id": "30th-c-002",
+   "localId": "002",
+   "name": "Delcatty",
+   "illustrator": "Atsuko Nishida",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 70,
+   "types": [
+    "Incolor"
+   ],
+   "stage": "Estágio 1"
+  },
+  {
+   "id": "30th-c-003",
+   "localId": "003",
+   "name": "Metagross",
+   "illustrator": "Masakazu Fukuda",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 100,
+   "types": [
+    "Elétrico"
+   ],
+   "stage": "Estágio 2"
+  },
+  {
+   "id": "30th-c-004",
+   "localId": "004",
+   "name": "Genesect EX",
+   "illustrator": "Eske Yoshinob",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 170,
+   "types": [
+    "Planta"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-005",
+   "localId": "005",
+   "name": "Misty",
+   "illustrator": "Ken Sugimori",
+   "rarity": "None",
+   "image": null,
+   "category": "Treinador",
+   "hp": null,
+   "types": null,
+   "stage": null
+  },
+  {
+   "id": "30th-c-006",
+   "localId": "006",
+   "name": "Tyranitar Sombrio",
+   "illustrator": "Nakaoka",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 120,
+   "types": [
+    "Sombrio"
+   ],
+   "stage": "Estágio 2"
+  },
+  {
+   "id": "30th-c-007",
+   "localId": "007",
+   "name": "Sneasel",
+   "illustrator": "Ken Sugimori",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 60,
+   "types": [
+    "Sombrio"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-008",
+   "localId": "008",
+   "name": "Pikachu e Zekrom GX",
+   "illustrator": "Mitsuhiro Arita",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 240,
+   "types": [
+    "Elétrico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-009",
+   "localId": "009",
+   "name": "Greninja TURBO",
+   "illustrator": "5ban Graphics",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 170,
+   "types": [
+    "Água"
+   ],
+   "stage": "TURBO"
+  },
+  {
+   "id": "30th-c-010",
+   "localId": "010",
+   "name": "Uxie",
+   "illustrator": "Ken Sugimori",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 70,
+   "types": [
+    "Psíquico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-011",
+   "localId": "011",
+   "name": "Crobat G",
+   "illustrator": "Makoto Imai",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 80,
+   "types": [
+    "Psíquico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-012",
+   "localId": "012",
+   "name": "Raikou",
+   "illustrator": "Hideki Ishikawa",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 110,
+   "types": [
+    "Elétrico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-013",
+   "localId": "013",
+   "name": "Buzzwole GX",
+   "illustrator": "5ban Graphics",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 190,
+   "types": [
+    "Lutador"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-014",
+   "localId": "014",
+   "name": "Pikachu",
+   "illustrator": "Mitsuhiro Arita",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 40,
+   "types": [
+    "Elétrico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-015",
+   "localId": "015",
+   "name": "Jigglypuff da Érica",
+   "illustrator": "Ken Sugimori",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 50,
+   "types": [
+    "Incolor"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-016",
+   "localId": "016",
+   "name": "Rayquaza EX",
+   "illustrator": "Eske Yoshinob",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 170,
+   "types": [
+    "Dragão"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-017",
+   "localId": "017",
+   "name": "Solgaleo GX",
+   "illustrator": "PLANETA",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 250,
+   "types": [
+    "Metal"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-018",
+   "localId": "018",
+   "name": "Gengar",
+   "illustrator": "Takashi Yamaguchi",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 130,
+   "types": [
+    "Psíquico"
+   ],
+   "stage": "Estágio 2"
+  },
+  {
+   "id": "30th-c-019",
+   "localId": "019",
+   "name": "Darkrai & Cresselia LENDA",
+   "illustrator": "Shinji Higuchi + Noriko Takaya 樋口 真嗣 + 高屋 法子",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 150,
+   "types": [
+    "Psíquico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-020",
+   "localId": "020",
+   "name": "Darkrai & Cresselia LENDA",
+   "illustrator": "Shinji Higuchi",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 150,
+   "types": [
+    "Psíquico"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-021",
+   "localId": "021",
+   "name": "N",
+   "illustrator": "Ken Sugimori",
+   "rarity": "None",
+   "image": null,
+   "category": "Treinador",
+   "hp": null,
+   "types": null,
+   "stage": null
+  },
+  {
+   "id": "30th-c-022",
+   "localId": "022",
+   "name": "Palkia",
+   "illustrator": "Ryo Ueda",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 120,
+   "types": [
+    "Água"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-023",
+   "localId": "023",
+   "name": "M Gardevoir EX",
+   "illustrator": "5ban Graphics",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 210,
+   "types": [
+    "Fada"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-024",
+   "localId": "024",
+   "name": "Celebi Luminescente",
+   "illustrator": "Hironobu Yoshida",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 50,
+   "types": [
+    "Planta"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-025",
+   "localId": "025",
+   "name": "Scizor ex",
+   "illustrator": "Mitsuhiro Arita",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 120,
+   "types": [
+    "Metal"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-026",
+   "localId": "026",
+   "name": "Mew VMAX",
+   "illustrator": "5ban Graphics",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 310,
+   "types": [
+    "Psíquico"
+   ],
+   "stage": "VMAX"
+  },
+  {
+   "id": "30th-c-027",
+   "localId": "027",
+   "name": "Arceus V-ASTRO",
+   "illustrator": "5ban Graphics",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 280,
+   "types": [
+    "Incolor"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-028",
+   "localId": "028",
+   "name": "Zacian V",
+   "illustrator": "5ban Graphics",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 220,
+   "types": [
+    "Metal"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-029",
+   "localId": "029",
+   "name": "Lugia",
+   "illustrator": "Naoyo Kimura",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 80,
+   "types": [
+    "Incolor"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-c-030",
+   "localId": "030",
+   "name": "Magikarp",
+   "illustrator": "Shinji Kanda",
+   "rarity": "None",
+   "image": null,
+   "category": "Pokémon",
+   "hp": 30,
+   "types": [
+    "Água"
+   ],
+   "stage": "Básico"
+  }
+ ],
+ "id": "30th-c",
+ "legal": {
+  "expanded": true,
+  "standard": false
+ },
+ "name": "Coleção Clássica de 30 Anos",
+ "releaseDate": "2026-09-16",
+ "serie": {
+  "id": "me",
+  "name": "Megaevolução"
+ },
+ "abbreviation": {
+  "official": "30C"
+ }
+}

@@ -1,0 +1,54 @@
+{
+ "cardCount": {
+  "firstEd": 0,
+  "holo": 0,
+  "normal": 0,
+  "official": 128,
+  "reverse": 0,
+  "total": 128
+ },
+ "cards": [
+  {
+   "id": "30th-001",
+   "localId": "001",
+   "name": "Exeggcute",
+   "illustrator": "Nelnal",
+   "rarity": "Comum",
+   "image": "https://assets.tcgdex.net/pt/me/30th/001",
+   "category": "Pokémon",
+   "hp": 60,
+   "types": [
+    "Planta"
+   ],
+   "stage": "Básico"
+  },
+  {
+   "id": "30th-002",
+   "localId": "002",
+   "name": "Exeggutor de Alola",
+   "illustrator": "Oswaldo KATO",
+   "rarity": "Comum",
+   "image": "https://assets.tcgdex.net/pt/me/30th/002",
+   "category": "Pokémon",
+   "hp": 150,
+   "types": [
+    "Planta"
+   ],
+   "stage": "Estágio 1"
+  }
+ ],
+ "id": "30th",
+ "legal": {
+  "expanded": true,
+  "standard": false
+ },
+ "name": "Celebração de 30 Anos",
+ "releaseDate": "2026-09-16",
+ "serie": {
+  "id": "me",
+  "name": "Megaevolução"
+ },
+ "abbreviation": {
+  "official": "30C"
+ }
+}

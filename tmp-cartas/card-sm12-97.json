@@ -1,0 +1,107 @@
+{
+ "category": "Pokémon",
+ "id": "sm12-97",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sm/sm12/97",
+ "localId": "97",
+ "name": "Mimikyu",
+ "rarity": "Rara",
+ "set": {
+  "cardCount": {
+   "official": 236,
+   "total": 271
+  },
+  "id": "sm12",
+  "name": "Eclipse Cósmico",
+  "symbol": "https://assets.tcgdex.net/univ/sm/sm12/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "normal",
+   "size": "Padrão",
+   "variantId": "generated"
+  }
+ ],
+ "dexId": [
+  778
+ ],
+ "hp": 70,
+ "types": [
+  "Psíquico"
+ ],
+ "stage": "Básico",
+ "abilities": [
+  {
+   "type": "Habilidade",
+   "name": "Caixa Sombria",
+   "effect": "Os Pokémon-GX que tiverem algum contador de dano neles (seus e do seu oponente) não têm Habilidades."
+  }
+ ],
+ "attacks": [
+  {
+   "cost": [
+    "Incolor",
+    "Incolor"
+   ],
+   "name": "Truques de Cauda",
+   "effect": "Jogue 1 moeda. Se sair cara, o Pokémon Ativo do seu oponente será Confundido.",
+   "damage": 20
+  }
+ ],
+ "retreat": 1,
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-16T22:11:28+01:00",
+ "thirdParty": {
+  "cardmarket": 408124,
+  "tcgplayer": 201272
+ },
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.738Z",
+   "unit": "EUR",
+   "idProduct": 408124,
+   "avg": 1.71,
+   "low": 0.1,
+   "trend": 1.72,
+   "avg1": 3,
+   "avg7": 1.88,
+   "avg30": 1.63,
+   "avg-holo": 17.68,
+   "low-holo": 7.9,
+   "trend-holo": 19.93,
+   "avg1-holo": 21,
+   "avg7-holo": 19.3,
+   "avg30-holo": 13.42
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:03.769Z",
+   "normal": {
+    "productId": 201272,
+    "lowPrice": 10.4,
+    "midPrice": 14.36,
+    "highPrice": 79.47,
+    "marketPrice": 14.04,
+    "directLowPrice": 17.44
+   },
+   "reverse-holofoil": {
+    "productId": 201272,
+    "lowPrice": 24.12,
+    "midPrice": 31.07,
+    "highPrice": 154.92,
+    "marketPrice": 28.78,
+    "directLowPrice": 36.86
+   }
+  }
+ }
+}

@@ -1,0 +1,118 @@
+{
+ "category": "Pokémon",
+ "id": "sm8-139",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sm/sm8/139",
+ "localId": "139",
+ "name": "Ralts",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 214,
+   "total": 236
+  },
+  "id": "sm8",
+  "name": "Trovões Perdidos",
+  "symbol": "https://assets.tcgdex.net/univ/sm/sm8/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "normal",
+   "size": "Padrão",
+   "variantId": "generated"
+  }
+ ],
+ "dexId": [
+  280
+ ],
+ "hp": 50,
+ "types": [
+  "Fada"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Fada"
+   ],
+   "name": "Aceno",
+   "effect": "Coloque 1 carta de Apoiador da sua pilha de descarte na sua mão."
+  },
+  {
+   "cost": [
+    "Incolor",
+    "Incolor"
+   ],
+   "name": "Pulso",
+   "damage": 20
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Metal",
+   "value": "×2"
+  }
+ ],
+ "resistances": [
+  {
+   "type": "Sombrio",
+   "value": "-20"
+  }
+ ],
+ "retreat": 1,
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-19T19:10:03Z",
+ "thirdParty": {
+  "cardmarket": 365776,
+  "tcgplayer": 178958
+ },
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.761Z",
+   "unit": "EUR",
+   "idProduct": 365776,
+   "avg": 1.3,
+   "low": 0.02,
+   "trend": 1.14,
+   "avg1": 1.47,
+   "avg7": 1.25,
+   "avg30": 1.43,
+   "avg-holo": 7,
+   "low-holo": 0.1,
+   "trend-holo": 7.9,
+   "avg1-holo": 6.25,
+   "avg7-holo": 8.1,
+   "avg30-holo": 4.57
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:01.882Z",
+   "normal": {
+    "productId": 178958,
+    "lowPrice": 2.39,
+    "midPrice": 3.42,
+    "highPrice": 19.8,
+    "marketPrice": 2.98,
+    "directLowPrice": null
+   },
+   "reverse-holofoil": {
+    "productId": 178958,
+    "lowPrice": 8.68,
+    "midPrice": 12.01,
+    "highPrice": 48.28,
+    "marketPrice": 11.83,
+    "directLowPrice": null
+   }
+  }
+ }
+}

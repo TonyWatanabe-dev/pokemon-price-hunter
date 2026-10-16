@@ -1,0 +1,202 @@
+{
+ "category": "Pokémon",
+ "id": "sv03-097",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sv/sv03/097",
+ "localId": "097",
+ "name": "Sinistea",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 197,
+   "total": 230
+  },
+  "id": "sv03",
+  "logo": "https://assets.tcgdex.net/pt/sv/sv03/logo",
+  "name": "Obsidiana em Chamas",
+  "symbol": "https://assets.tcgdex.net/univ/sv/sv03/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": true,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 725177,
+    "tcgplayer": 509930,
+    "cardtrader": 255782
+   },
+   "variantId": "endfynwn4n10gzq",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 725177,
+     "avg": 0.07,
+     "low": 0.02,
+     "trend": 0.07,
+     "avg1": 0.08,
+     "avg7": 0.08,
+     "avg30": 0.07,
+     "avg-holo": 0.15,
+     "low-holo": 0.02,
+     "trend-holo": 0.16,
+     "avg1-holo": 0.15,
+     "avg7-holo": 0.16,
+     "avg30-holo": 0.15
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:09.414Z",
+     "reverse-holofoil": {
+      "productId": 509930,
+      "lowPrice": 0.13,
+      "midPrice": 0.4,
+      "highPrice": 19.8,
+      "marketPrice": 0.37,
+      "directLowPrice": null
+     },
+     "normal": {
+      "productId": 509930,
+      "lowPrice": 0.05,
+      "midPrice": 0.3,
+      "highPrice": 20,
+      "marketPrice": 0.29,
+      "directLowPrice": 0.1
+     }
+    }
+   }
+  },
+  {
+   "type": "Reverse",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 725177,
+    "tcgplayer": 509930,
+    "cardtrader": 255782
+   },
+   "variantId": "cm4kqul3x1bwlz1f",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 725177,
+     "avg": 0.07,
+     "low": 0.02,
+     "trend": 0.07,
+     "avg1": 0.08,
+     "avg7": 0.08,
+     "avg30": 0.07,
+     "avg-holo": 0.15,
+     "low-holo": 0.02,
+     "trend-holo": 0.16,
+     "avg1-holo": 0.15,
+     "avg7-holo": 0.16,
+     "avg30-holo": 0.15
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:09.414Z",
+     "reverse-holofoil": {
+      "productId": 509930,
+      "lowPrice": 0.13,
+      "midPrice": 0.4,
+      "highPrice": 19.8,
+      "marketPrice": 0.37,
+      "directLowPrice": null
+     },
+     "normal": {
+      "productId": 509930,
+      "lowPrice": 0.05,
+      "midPrice": 0.3,
+      "highPrice": 20,
+      "marketPrice": 0.29,
+      "directLowPrice": 0.1
+     }
+    }
+   }
+  }
+ ],
+ "dexId": [
+  854
+ ],
+ "hp": 30,
+ "types": [
+  "Psíquico"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Psíquico"
+   ],
+   "name": "Chá Frio",
+   "effect": "Jogue uma moeda. Se sair cara, o Pokémon Ativo do seu oponente agora estará Paralisado.",
+   "damage": 10
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Sombrio",
+   "value": "×2"
+  }
+ ],
+ "resistances": [
+  {
+   "type": "Lutador",
+   "value": "-30"
+  }
+ ],
+ "retreat": 1,
+ "regulationMark": "G",
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-20T08:26:31+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.761Z",
+   "unit": "EUR",
+   "idProduct": 725177,
+   "avg": 0.07,
+   "low": 0.02,
+   "trend": 0.07,
+   "avg1": 0.08,
+   "avg7": 0.08,
+   "avg30": 0.07,
+   "avg-holo": 0.15,
+   "low-holo": 0.02,
+   "trend-holo": 0.16,
+   "avg1-holo": 0.15,
+   "avg7-holo": 0.16,
+   "avg30-holo": 0.15
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:09.414Z",
+   "reverse-holofoil": {
+    "productId": 509930,
+    "lowPrice": 0.13,
+    "midPrice": 0.4,
+    "highPrice": 19.8,
+    "marketPrice": 0.37,
+    "directLowPrice": null
+   },
+   "normal": {
+    "productId": 509930,
+    "lowPrice": 0.05,
+    "midPrice": 0.3,
+    "highPrice": 20,
+    "marketPrice": 0.29,
+    "directLowPrice": 0.1
+   }
+  }
+ }
+}

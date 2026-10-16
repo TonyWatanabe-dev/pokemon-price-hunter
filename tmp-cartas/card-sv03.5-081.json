@@ -1,0 +1,204 @@
+{
+ "category": "Pokémon",
+ "id": "sv03.5-081",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sv/sv03.5/081",
+ "localId": "081",
+ "name": "Magnemite",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 165,
+   "total": 207
+  },
+  "id": "sv03.5",
+  "logo": "https://assets.tcgdex.net/pt/sv/sv03.5/logo",
+  "name": "151",
+  "symbol": "https://assets.tcgdex.net/univ/sv/sv03.5/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": true,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 733676,
+    "tcgplayer": 516648,
+    "cardtrader": 261193
+   },
+   "variantId": "endfynwn4n10gzq",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 733676,
+     "avg": 0.06,
+     "low": 0.02,
+     "trend": 0.06,
+     "avg1": 0.04,
+     "avg7": 0.05,
+     "avg30": 0.06,
+     "avg-holo": 0.21,
+     "low-holo": 0.02,
+     "trend-holo": 0.24,
+     "avg1-holo": 0.23,
+     "avg7-holo": 0.25,
+     "avg30-holo": 0.21
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:09.651Z",
+     "normal": {
+      "productId": 516648,
+      "lowPrice": 0.01,
+      "midPrice": 0.2,
+      "highPrice": 18.82,
+      "marketPrice": 0.14,
+      "directLowPrice": 0.1
+     },
+     "reverse-holofoil": {
+      "productId": 516648,
+      "lowPrice": 0.05,
+      "midPrice": 0.39,
+      "highPrice": 25,
+      "marketPrice": 0.38,
+      "directLowPrice": 0.2
+     }
+    }
+   }
+  },
+  {
+   "type": "Reverse",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 733676,
+    "tcgplayer": 516648,
+    "cardtrader": 261193
+   },
+   "variantId": "cm4kqul3x1bwlz1f",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 733676,
+     "avg": 0.06,
+     "low": 0.02,
+     "trend": 0.06,
+     "avg1": 0.04,
+     "avg7": 0.05,
+     "avg30": 0.06,
+     "avg-holo": 0.21,
+     "low-holo": 0.02,
+     "trend-holo": 0.24,
+     "avg1-holo": 0.23,
+     "avg7-holo": 0.25,
+     "avg30-holo": 0.21
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:09.651Z",
+     "normal": {
+      "productId": 516648,
+      "lowPrice": 0.01,
+      "midPrice": 0.2,
+      "highPrice": 18.82,
+      "marketPrice": 0.14,
+      "directLowPrice": 0.1
+     },
+     "reverse-holofoil": {
+      "productId": 516648,
+      "lowPrice": 0.05,
+      "midPrice": 0.39,
+      "highPrice": 25,
+      "marketPrice": 0.38,
+      "directLowPrice": 0.2
+     }
+    }
+   }
+  }
+ ],
+ "dexId": [
+  81
+ ],
+ "hp": 60,
+ "types": [
+  "Elétrico"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Elétrico"
+   ],
+   "name": "Carga Pequenina",
+   "damage": 10
+  },
+  {
+   "cost": [
+    "Elétrico",
+    "Incolor"
+   ],
+   "name": "Grande Explosão",
+   "effect": "Este Pokémon também causa 60 pontos de dano a si mesmo.",
+   "damage": 60
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Lutador",
+   "value": "×2"
+  }
+ ],
+ "retreat": 1,
+ "regulationMark": "G",
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-14T19:11:56+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.761Z",
+   "unit": "EUR",
+   "idProduct": 733676,
+   "avg": 0.06,
+   "low": 0.02,
+   "trend": 0.06,
+   "avg1": 0.04,
+   "avg7": 0.05,
+   "avg30": 0.06,
+   "avg-holo": 0.21,
+   "low-holo": 0.02,
+   "trend-holo": 0.24,
+   "avg1-holo": 0.23,
+   "avg7-holo": 0.25,
+   "avg30-holo": 0.21
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:09.651Z",
+   "normal": {
+    "productId": 516648,
+    "lowPrice": 0.01,
+    "midPrice": 0.2,
+    "highPrice": 18.82,
+    "marketPrice": 0.14,
+    "directLowPrice": 0.1
+   },
+   "reverse-holofoil": {
+    "productId": 516648,
+    "lowPrice": 0.05,
+    "midPrice": 0.39,
+    "highPrice": 25,
+    "marketPrice": 0.38,
+    "directLowPrice": 0.2
+   }
+  }
+ }
+}

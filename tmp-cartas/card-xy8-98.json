@@ -1,0 +1,119 @@
+{
+ "category": "Pokémon",
+ "id": "xy8-98",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/xy/xy8/98",
+ "localId": "98",
+ "name": "Snubbull",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 162,
+   "total": 165
+  },
+  "id": "xy8",
+  "name": "Turbo Revolução",
+  "symbol": "https://assets.tcgdex.net/univ/xy/xy8/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "normal",
+   "size": "Padrão",
+   "variantId": "generated"
+  }
+ ],
+ "dexId": [
+  209
+ ],
+ "hp": 70,
+ "types": [
+  "Fada"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Incolor"
+   ],
+   "name": "Rugido",
+   "effect": "Seu oponente troca o Pokémon Ativo por 1 dos próprios Pokémon no Banco."
+  },
+  {
+   "cost": [
+    "Fada",
+    "Incolor",
+    "Incolor"
+   ],
+   "name": "Mordida",
+   "damage": 40
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Metal",
+   "value": "×2"
+  }
+ ],
+ "resistances": [
+  {
+   "type": "Sombrio",
+   "value": "-20"
+  }
+ ],
+ "retreat": 2,
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-20T17:18:13+01:00",
+ "thirdParty": {
+  "cardmarket": 286344,
+  "tcgplayer": 107217
+ },
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.761Z",
+   "unit": "EUR",
+   "idProduct": 286344,
+   "avg": 0.46,
+   "low": 0.02,
+   "trend": 0.9,
+   "avg1": 0.87,
+   "avg7": 0.83,
+   "avg30": 0.59,
+   "avg-holo": 5.95,
+   "low-holo": 1,
+   "trend-holo": 5.84,
+   "avg1-holo": 2,
+   "avg7-holo": 5.51,
+   "avg30-holo": 3.45
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:54:56.512Z",
+   "normal": {
+    "productId": 107217,
+    "lowPrice": 0.4,
+    "midPrice": 1.4,
+    "highPrice": 19.8,
+    "marketPrice": 1.39,
+    "directLowPrice": null
+   },
+   "reverse-holofoil": {
+    "productId": 107217,
+    "lowPrice": 3.1,
+    "midPrice": 7.6,
+    "highPrice": 29.22,
+    "marketPrice": 7.13,
+    "directLowPrice": null
+   }
+  }
+ }
+}

@@ -1,0 +1,106 @@
+{
+ "category": "Pokémon",
+ "id": "sm9-81",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sm/sm9/81",
+ "localId": "81",
+ "name": "Pancham",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 181,
+   "total": 196
+  },
+  "id": "sm9",
+  "name": "União de Aliados",
+  "symbol": "https://assets.tcgdex.net/univ/sm/sm9/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": false,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "normal",
+   "size": "Padrão",
+   "variantId": "generated"
+  }
+ ],
+ "dexId": [
+  674
+ ],
+ "hp": 60,
+ "types": [
+  "Lutador"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Incolor",
+    "Incolor"
+   ],
+   "name": "Golpe de Braço",
+   "effect": "Jogue 1 moeda. Se sair cara, descarte 1 Energia do Pokémon Ativo do seu oponente. Se sair coroa, este ataque não fará nada.",
+   "damage": 40
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Psíquico",
+   "value": "×2"
+  }
+ ],
+ "retreat": 2,
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-20T15:46:02+01:00",
+ "thirdParty": {
+  "cardmarket": 369011,
+  "tcgplayer": 183859
+ },
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.738Z",
+   "unit": "EUR",
+   "idProduct": 369011,
+   "avg": 0.21,
+   "low": 0.02,
+   "trend": 0.28,
+   "avg1": 0.1,
+   "avg7": 0.22,
+   "avg30": 0.21,
+   "avg-holo": 0.77,
+   "low-holo": 0.05,
+   "trend-holo": 1.49,
+   "avg1-holo": 5,
+   "avg7-holo": 1.37,
+   "avg30-holo": 0.93
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:02.145Z",
+   "normal": {
+    "productId": 183859,
+    "lowPrice": 0.22,
+    "midPrice": 0.7,
+    "highPrice": 19.8,
+    "marketPrice": 0.6,
+    "directLowPrice": null
+   },
+   "reverse-holofoil": {
+    "productId": 183859,
+    "lowPrice": 3.63,
+    "midPrice": 8.06,
+    "highPrice": 96.95,
+    "marketPrice": 7.13,
+    "directLowPrice": 8.12
+   }
+  }
+ }
+}

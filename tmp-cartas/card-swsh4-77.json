@@ -1,0 +1,194 @@
+{
+ "category": "Pokémon",
+ "id": "swsh4-77",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/swsh/swsh4/77",
+ "localId": "77",
+ "name": "Dedenne",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 185,
+   "total": 203
+  },
+  "id": "swsh4",
+  "logo": "https://assets.tcgdex.net/pt/swsh/swsh4/logo",
+  "name": "Voltagem Vívida",
+  "symbol": "https://assets.tcgdex.net/univ/swsh/swsh4/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": true,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 511805,
+    "tcgplayer": 226485
+   },
+   "variantId": "endfynwn4n10gzq",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 511805,
+     "avg": 0.08,
+     "low": 0.02,
+     "trend": 0.17,
+     "avg1": 0.16,
+     "avg7": 0.15,
+     "avg30": 0.09,
+     "avg-holo": 0.32,
+     "low-holo": 0.04,
+     "trend-holo": 0.36,
+     "avg1-holo": 0.11,
+     "avg7-holo": 0.22,
+     "avg30-holo": 0.35
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:05.614Z",
+     "reverse-holofoil": {
+      "productId": 226485,
+      "lowPrice": 0.3,
+      "midPrice": 0.66,
+      "highPrice": 19.8,
+      "marketPrice": 0.61,
+      "directLowPrice": null
+     },
+     "normal": {
+      "productId": 226485,
+      "lowPrice": 0.1,
+      "midPrice": 0.34,
+      "highPrice": 25.36,
+      "marketPrice": 0.29,
+      "directLowPrice": null
+     }
+    }
+   }
+  },
+  {
+   "type": "Reverse",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 511805,
+    "tcgplayer": 226485
+   },
+   "variantId": "cm4kqul3x1bwlz1f",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 511805,
+     "avg": 0.08,
+     "low": 0.02,
+     "trend": 0.17,
+     "avg1": 0.16,
+     "avg7": 0.15,
+     "avg30": 0.09,
+     "avg-holo": 0.32,
+     "low-holo": 0.04,
+     "trend-holo": 0.36,
+     "avg1-holo": 0.11,
+     "avg7-holo": 0.22,
+     "avg30-holo": 0.35
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:05.614Z",
+     "reverse-holofoil": {
+      "productId": 226485,
+      "lowPrice": 0.3,
+      "midPrice": 0.66,
+      "highPrice": 19.8,
+      "marketPrice": 0.61,
+      "directLowPrice": null
+     },
+     "normal": {
+      "productId": 226485,
+      "lowPrice": 0.1,
+      "midPrice": 0.34,
+      "highPrice": 25.36,
+      "marketPrice": 0.29,
+      "directLowPrice": null
+     }
+    }
+   }
+  }
+ ],
+ "dexId": [
+  702
+ ],
+ "hp": 70,
+ "types": [
+  "Psíquico"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Psíquico"
+   ],
+   "name": "Truques de Cauda",
+   "effect": "O Pokémon Ativo do seu oponente agora está Confuso.",
+   "damage": 10
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Metal",
+   "value": "×2"
+  }
+ ],
+ "retreat": 1,
+ "regulationMark": "D",
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-07-01T21:23:03+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.761Z",
+   "unit": "EUR",
+   "idProduct": 511805,
+   "avg": 0.08,
+   "low": 0.02,
+   "trend": 0.17,
+   "avg1": 0.16,
+   "avg7": 0.15,
+   "avg30": 0.09,
+   "avg-holo": 0.32,
+   "low-holo": 0.04,
+   "trend-holo": 0.36,
+   "avg1-holo": 0.11,
+   "avg7-holo": 0.22,
+   "avg30-holo": 0.35
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:05.614Z",
+   "reverse-holofoil": {
+    "productId": 226485,
+    "lowPrice": 0.3,
+    "midPrice": 0.66,
+    "highPrice": 19.8,
+    "marketPrice": 0.61,
+    "directLowPrice": null
+   },
+   "normal": {
+    "productId": 226485,
+    "lowPrice": 0.1,
+    "midPrice": 0.34,
+    "highPrice": 25.36,
+    "marketPrice": 0.29,
+    "directLowPrice": null
+   }
+  }
+ }
+}

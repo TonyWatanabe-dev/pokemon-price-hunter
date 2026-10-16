@@ -1,0 +1,224 @@
+{
+ "category": "Pokémon",
+ "id": "swsh8-84",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/swsh/swsh8/84",
+ "localId": "84",
+ "name": "Snom",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 264,
+   "total": 284
+  },
+  "id": "swsh8",
+  "logo": "https://assets.tcgdex.net/pt/swsh/swsh8/logo",
+  "name": "Golpe Fusão",
+  "symbol": "https://assets.tcgdex.net/univ/swsh/swsh8/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": true,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 582218,
+    "tcgplayer": 253238
+   },
+   "variantId": "endfynwn4n10gzq",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.738Z",
+     "unit": "EUR",
+     "idProduct": 582218,
+     "avg": 0.06,
+     "low": 0.02,
+     "trend": 0.06,
+     "avg1": 0.09,
+     "avg7": 0.06,
+     "avg30": 0.05,
+     "avg-holo": 0.26,
+     "low-holo": 0.02,
+     "trend-holo": 0.29,
+     "avg1-holo": 0.23,
+     "avg7-holo": 0.25,
+     "avg30-holo": 0.24
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:07.101Z",
+     "normal": {
+      "productId": 253238,
+      "lowPrice": 0.03,
+      "midPrice": 0.29,
+      "highPrice": 14.27,
+      "marketPrice": 0.27,
+      "directLowPrice": 0.23
+     },
+     "reverse-holofoil": {
+      "productId": 253238,
+      "lowPrice": 0.14,
+      "midPrice": 0.6,
+      "highPrice": 18.1,
+      "marketPrice": 0.64,
+      "directLowPrice": 0.5
+     }
+    }
+   }
+  },
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "stamp": [
+    "snowflake"
+   ],
+   "thirdParty": {
+    "cardmarket": 740470
+   },
+   "variantId": "3a83wf50tz03efzvidn9umu5s",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.738Z",
+     "unit": "EUR",
+     "idProduct": 740470,
+     "avg": 0.34,
+     "low": 0.02,
+     "trend": 0.51,
+     "avg1": 0.99,
+     "avg7": 0.51,
+     "avg30": 0.4,
+     "avg-holo": null,
+     "low-holo": null,
+     "trend-holo": 0,
+     "avg1-holo": null,
+     "avg7-holo": null,
+     "avg30-holo": null
+    },
+    "tcgplayer": null
+   }
+  },
+  {
+   "type": "Reverse",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 582218,
+    "tcgplayer": 253238
+   },
+   "variantId": "cm4kqul3x1bwlz1f",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.738Z",
+     "unit": "EUR",
+     "idProduct": 582218,
+     "avg": 0.06,
+     "low": 0.02,
+     "trend": 0.06,
+     "avg1": 0.09,
+     "avg7": 0.06,
+     "avg30": 0.05,
+     "avg-holo": 0.26,
+     "low-holo": 0.02,
+     "trend-holo": 0.29,
+     "avg1-holo": 0.23,
+     "avg7-holo": 0.25,
+     "avg30-holo": 0.24
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:07.101Z",
+     "normal": {
+      "productId": 253238,
+      "lowPrice": 0.03,
+      "midPrice": 0.29,
+      "highPrice": 14.27,
+      "marketPrice": 0.27,
+      "directLowPrice": 0.23
+     },
+     "reverse-holofoil": {
+      "productId": 253238,
+      "lowPrice": 0.14,
+      "midPrice": 0.6,
+      "highPrice": 18.1,
+      "marketPrice": 0.64,
+      "directLowPrice": 0.5
+     }
+    }
+   }
+  }
+ ],
+ "dexId": [
+  872
+ ],
+ "hp": 40,
+ "types": [
+  "Água"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Água"
+   ],
+   "name": "Encontrar Gelo",
+   "effect": "Procure por até 2 cartas de Energia {W} no seu baralho, revele-as e coloque-as na sua mão. Em seguida, embaralhe o seu baralho."
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Metal",
+   "value": "×2"
+  }
+ ],
+ "retreat": 1,
+ "regulationMark": "E",
+ "legal": {
+  "standard": false,
+  "expanded": true
+ },
+ "updated": "2026-08-20T01:39:23+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.738Z",
+   "unit": "EUR",
+   "idProduct": 582218,
+   "avg": 0.06,
+   "low": 0.02,
+   "trend": 0.06,
+   "avg1": 0.09,
+   "avg7": 0.06,
+   "avg30": 0.05,
+   "avg-holo": 0.26,
+   "low-holo": 0.02,
+   "trend-holo": 0.29,
+   "avg1-holo": 0.23,
+   "avg7-holo": 0.25,
+   "avg30-holo": 0.24
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:07.101Z",
+   "normal": {
+    "productId": 253238,
+    "lowPrice": 0.03,
+    "midPrice": 0.29,
+    "highPrice": 14.27,
+    "marketPrice": 0.27,
+    "directLowPrice": 0.23
+   },
+   "reverse-holofoil": {
+    "productId": 253238,
+    "lowPrice": 0.14,
+    "midPrice": 0.6,
+    "highPrice": 18.1,
+    "marketPrice": 0.64,
+    "directLowPrice": 0.5
+   }
+  }
+ }
+}

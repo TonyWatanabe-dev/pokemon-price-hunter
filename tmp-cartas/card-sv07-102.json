@@ -1,0 +1,238 @@
+{
+ "category": "Pokémon",
+ "id": "sv07-102",
+ "illustrator": "Yuka Morii",
+ "image": "https://assets.tcgdex.net/pt/sv/sv07/102",
+ "localId": "102",
+ "name": "Meltan",
+ "rarity": "Comum",
+ "set": {
+  "cardCount": {
+   "official": 142,
+   "total": 175
+  },
+  "id": "sv07",
+  "logo": "https://assets.tcgdex.net/pt/sv/sv07/logo",
+  "name": "Coroa Estelar"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": false,
+  "normal": true,
+  "reverse": true,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 785956,
+    "tcgplayer": 567328
+   },
+   "variantId": "endfynwn4n10gzq",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 785956,
+     "avg": 0.08,
+     "low": 0.02,
+     "trend": 0.05,
+     "avg1": 0.1,
+     "avg7": 0.05,
+     "avg30": 0.07,
+     "avg-holo": 0.14,
+     "low-holo": 0.02,
+     "trend-holo": 0.17,
+     "avg1-holo": 0.15,
+     "avg7-holo": 0.16,
+     "avg30-holo": 0.15
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:11.134Z",
+     "normal": {
+      "productId": 567328,
+      "lowPrice": 0.05,
+      "midPrice": 0.28,
+      "highPrice": 19.8,
+      "marketPrice": 0.27,
+      "directLowPrice": 0.08
+     },
+     "reverse-holofoil": {
+      "productId": 567328,
+      "lowPrice": 0.1,
+      "midPrice": 0.36,
+      "highPrice": 3,
+      "marketPrice": 0.35,
+      "directLowPrice": 0.17
+     }
+    }
+   }
+  },
+  {
+   "type": "Reverse",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 785956,
+    "tcgplayer": 567328
+   },
+   "variantId": "cm4kqul3x1bwlz1f",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 785956,
+     "avg": 0.08,
+     "low": 0.02,
+     "trend": 0.05,
+     "avg1": 0.1,
+     "avg7": 0.05,
+     "avg30": 0.07,
+     "avg-holo": 0.14,
+     "low-holo": 0.02,
+     "trend-holo": 0.17,
+     "avg1-holo": 0.15,
+     "avg7-holo": 0.16,
+     "avg30-holo": 0.15
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:11.134Z",
+     "normal": {
+      "productId": 567328,
+      "lowPrice": 0.05,
+      "midPrice": 0.28,
+      "highPrice": 19.8,
+      "marketPrice": 0.27,
+      "directLowPrice": 0.08
+     },
+     "reverse-holofoil": {
+      "productId": 567328,
+      "lowPrice": 0.1,
+      "midPrice": 0.36,
+      "highPrice": 3,
+      "marketPrice": 0.35,
+      "directLowPrice": 0.17
+     }
+    }
+   }
+  },
+  {
+   "type": "Normal",
+   "size": "Padrão",
+   "stamp": [
+    "Logo da coleção"
+   ],
+   "thirdParty": {
+    "cardmarket": 841265
+   },
+   "variantId": "3takscxpcqodqyjzqnsbuwq6",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.761Z",
+     "unit": "EUR",
+     "idProduct": 841265,
+     "avg": 1.76,
+     "low": 0.1,
+     "trend": 1.94,
+     "avg1": 0.15,
+     "avg7": 0.91,
+     "avg30": 1.4,
+     "avg-holo": null,
+     "low-holo": null,
+     "trend-holo": 0,
+     "avg1-holo": null,
+     "avg7-holo": null,
+     "avg30-holo": null
+    },
+    "tcgplayer": null
+   }
+  }
+ ],
+ "dexId": [
+  808
+ ],
+ "hp": 60,
+ "types": [
+  "Metal"
+ ],
+ "stage": "Básico",
+ "attacks": [
+  {
+   "cost": [
+    "Metal"
+   ],
+   "name": "Estouro",
+   "damage": 10
+  },
+  {
+   "cost": [
+    "Metal",
+    "Incolor",
+    "Incolor"
+   ],
+   "name": "Feixe",
+   "damage": 40
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Fogo",
+   "value": "×2"
+  }
+ ],
+ "resistances": [
+  {
+   "type": "Planta",
+   "value": "-30"
+  }
+ ],
+ "retreat": 1,
+ "regulationMark": "H",
+ "legal": {
+  "standard": true,
+  "expanded": true
+ },
+ "updated": "2026-06-08T13:31:03+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.761Z",
+   "unit": "EUR",
+   "idProduct": 785956,
+   "avg": 0.08,
+   "low": 0.02,
+   "trend": 0.05,
+   "avg1": 0.1,
+   "avg7": 0.05,
+   "avg30": 0.07,
+   "avg-holo": 0.14,
+   "low-holo": 0.02,
+   "trend-holo": 0.17,
+   "avg1-holo": 0.15,
+   "avg7-holo": 0.16,
+   "avg30-holo": 0.15
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:11.134Z",
+   "normal": {
+    "productId": 567328,
+    "lowPrice": 0.05,
+    "midPrice": 0.28,
+    "highPrice": 19.8,
+    "marketPrice": 0.27,
+    "directLowPrice": 0.08
+   },
+   "reverse-holofoil": {
+    "productId": 567328,
+    "lowPrice": 0.1,
+    "midPrice": 0.36,
+    "highPrice": 3,
+    "marketPrice": 0.35,
+    "directLowPrice": 0.17
+   }
+  }
+ }
+}
