@@ -90,8 +90,10 @@ export function cupomPara(oferta, cupons, now = Date.now()) {
 /** Linha da dica (texto puro, sem HTML) ou null. */
 export function dicaCupom(oferta, cupons, now = Date.now()) {
   const c = cupomPara(oferta, cupons, now); if (!c) return null;
-  const quanto = c.tipo === 'pct' ? `${c.valor}% OFF${c.limite ? ` (até ${fmt(c.limite)})` : ''}` : `${fmt(c.valor)} OFF`;
+  // Curto (pedido do proprietário em 16/10/2026): valor, limite, mínimo e onde achar; "varia por conta" fica implícito
+  // em "Meus cupons" (é a lista da própria conta).
+  const quanto = c.tipo === 'pct' ? `${c.valor}%${c.limite ? ` até ${fmt(c.limite)}` : ''}` : `${fmt(c.valor)} OFF`;
   const onde = c.escopo === 'vendedor' ? ' da loja' : c.escopo === 'categoria' ? ' de Brinquedos' : '';
-  const min = c.minimo > 0 ? ` acima de ${fmt(c.minimo)}` : '';
-  return `🎟️ Cupom${onde}: ${quanto}${min}. Confira em "Meus cupons" no app do ML (varia por conta).`;
+  const min = c.minimo > 0 ? ` (mín. ${fmt(c.minimo)})` : '';
+  return `🎟️ Cupom${onde}: ${quanto}${min} · veja em "Meus cupons" no ML`;
 }
