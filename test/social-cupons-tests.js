@@ -33,7 +33,8 @@ assert.equal(cupomPara(ml(400), cs, now).escopo, 'ml', '12% de 400 = 48 > teto 3
 assert.equal(descontoEm(cs.find((c) => c.escopo === 'categoria'), 1000), 30, 'teto respeitado');
 assert.equal(cupomPara(ml(100), cs, Date.parse('2026-10-20T15:00:00Z'))?.escopo ?? null, null, 'vencidos somem');
 const d = dicaCupom(ml(100), cs, now);
-assert.match(d, /^🎟️ Cupom de Brinquedos: 15% OFF \(até R\$ 30\) acima de R\$ 39\. Confira em "Meus cupons"/);
+assert.match(d, /^🎟️ Cupom de Brinquedos: 15% até R\$ 30 \(mín\. R\$ 39\) · veja em "Meus cupons" no ML$/);
+assert.ok(d.length <= 85, 'dica curta: ' + d.length);   // antes: 105
 assert.equal(dicaCupom(ml(10), cs, now), null);
 
 // integração: a dica entra na legenda do candidato do ML; SOCIAL_CUPONS=0 desliga; outras lojas ficam sem
@@ -47,7 +48,7 @@ const cup = [{ escopo: 'ml', tipo: 'pct', valor: 15, minimo: 399, limite: 100, v
 const lista = candidatos(st, { now: NOW, env: {}, afiliados: {}, cupons: cup });
 const doMl = lista.find((c) => c.oferta.storeId === 'mercadolivre'); const outra = lista.find((c) => c.oferta.storeId === 'loja1');
 assert.ok(doMl && outra, 'as duas ofertas elegíveis');
-assert.match(doMl.item.texto, /🎟️ Cupom: 15% OFF \(até R\$ 100\) acima de R\$ 399\./);
+assert.match(doMl.item.texto, /🎟️ Cupom: 15% até R\$ 100 \(mín\. R\$ 399\) · veja em "Meus cupons" no ML/);
 assert.equal(doMl.fila.itens.find((x) => x.id === doMl.item.id).texto, doMl.item.texto, 'fila e item com o mesmo texto');
 assert.doesNotMatch(outra.item.texto, /🎟️/);
 const off = candidatos(st, { now: NOW, env: { SOCIAL_CUPONS: '0' }, afiliados: {}, cupons: cup });
