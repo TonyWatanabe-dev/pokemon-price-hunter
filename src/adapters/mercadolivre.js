@@ -39,6 +39,8 @@ export function mlReject(name, productId, catalog) {
 const PER_PRODUCT = Number(process.env.ML_PER_PRODUCT || 6); // ofertas mais baratas por produto nosso
 const OFFICIAL_MARGIN = Number(process.env.ML_OFFICIAL_MARGIN || 0.25); // loja oficial garante vaga até 25% acima do menor preço
 const MIN_SALES = Number(process.env.ML_MIN_SALES || 50); // vendas concluídas mínimas do vendedor
+// Vendedor com reputação no ML (termômetro verde/amarelo e vendas concluídas). Também usado por src/pistas-ofertas.js.
+export const trustedSeller = (v, minSales = MIN_SALES) => /^(3_yellow|4_light_green|5_green)$/.test(v?.level || '') && (v?.sales ?? 0) >= minSales;
 
 // Estoque a partir do que /products/{id}/items já devolve por vendedor. Pela documentação do ML ("List of publications
 // for a product page"), cada item traz item_id, seller_id, price, original_price, available_quantity, sold_quantity,
@@ -140,7 +142,7 @@ export async function search(store, catalog, { log = () => {} } = {}) {
     } catch { v = { name: `Vendedor ${sid}`, level: null, sales: 0, at: new Date().toISOString() }; }
     cache.sellers[sid] = v; return v;
   };
-  const trusted = (v) => /^(3_yellow|4_light_green|5_green)$/.test(v.level || '') && v.sales >= MIN_SALES;
+  const trusted = trustedSeller;
 
   const byProduct = {}; let asked = 0; let itemFails = 0;
   for (const [pid, p] of Object.entries(cache.products)) {

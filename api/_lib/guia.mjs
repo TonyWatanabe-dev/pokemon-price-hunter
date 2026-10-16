@@ -29,7 +29,7 @@ export const GUIA = {
     { h: 'Preço sugerido Copag', blocks: [
       { p: 'Só vale o preço publicado na loja oficial da Copag, com link e data. Preço divulgado por terceiros aparece como referência e não entra no desconto.' } ] },
     { h: 'O que nunca entra no ranking', blocks: [
-      { ul: ['Preço mais de 45% abaixo da Copag ou da média das lojas (pode ser erro, usado ou golpe).', 'Estoque não confirmado pela loja.', 'Produto usado, aberto, importado ou em outro idioma.', 'Pistas do Telegram, que ninguém verificou.'] } ] },
+      { ul: ['Preço mais de 45% abaixo da Copag ou da média das lojas (pode ser erro, usado ou golpe).', 'Estoque não confirmado pela loja.', 'Produto usado, aberto, importado ou em outro idioma.', 'Pistas do Telegram e do Pelando sem verificação. A exceção é a pista do Mercado Livre que a API oficial confirmou (anúncio ativo, novo, com estoque e preço): essa vira oferta normal e entra no ranking como qualquer oferta do Mercado Livre.'] } ] },
     { h: 'Antes de comprar', blocks: [
       { ul: ['Simule o frete: ele muda a conta.', 'Confira CNPJ, avaliações e política de troca de lojas que você não conhece.', 'Prefira Pix ou cartão com proteção. Desconfie de pagamento por fora.', 'Veja o menor preço já visto na ficha do produto antes de decidir.'] } ] },
   ],

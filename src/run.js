@@ -27,6 +27,8 @@ import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
 import { redact } from './redact.js';
+import { verificarPistas, ofertaDuplicada, registroDeOferta, SOURCE_TYPE as PISTA_SOURCE } from './pistas-ofertas.js';
+import { accessToken as mlAccessToken } from './mlauth.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -215,6 +217,25 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const copagSeen = readJson(dataPath('copag-msrp.json'), {}); // preço capturado na loja oficial Copag
   const cep = process.env.HUNTER_CEP || watch.settings?.cep;
 
+  // Pistas do Mercado Livre viram oferta (src/pistas-ofertas.js): conferidas na API oficial a partir do tips.json da
+  // RODADA ANTERIOR (a coleta das pistas desta rodada fica mais abaixo, depois da pontuação; uma rodada de atraso é
+  // aceitável). Acontece antes da montagem das ofertas para entrar no dedupe, na confirmação e na pontuação como
+  // qualquer oferta do ML. PISTAS_OFERTAS=0 desliga; PISTAS_VERIFICAR_MAX limita as consultas por rodada (padrão 10);
+  // sem token do ML (ML_ACCESS_TOKEN ou o OAuth de src/mlauth.js) não consulta. Falha de rede nunca derruba a rodada.
+  const tipsCfg = readJson(configPath('pistas.json'), null);
+  const tipStore = readJson(dataPath('tips.json'), {});
+  const mlStore = stores.find((s) => s.id === 'mercadolivre') || null;
+  let pistasOk = [];
+  if (process.env.PISTAS_OFERTAS !== '0' && process.env.HUNTER_TIPS !== '0' && tipsCfg && mlStore) {
+    try {
+      let token = null;
+      try { token = (await mlAccessToken()).token || null; } catch (e) { log(`[pistas] token do ML indisponível: ${redact(e.message, { max: 120 })}`); }
+      if (!token) log('[pistas] sem token do Mercado Livre: pistas do ML não conferidas nesta rodada');
+      else pistasOk = await verificarPistas(tipStore, { token, catalog, now, max: positiveEnv('PISTAS_VERIFICAR_MAX', 10), log });
+      if (pistasOk.length) log(`[pistas] ${pistasOk.length} pista(s) do ML conferida(s) na API: viram oferta`);
+    } catch (e) { log(`[pistas] verificação: ${redact(e?.message || e, { max: 160 })}`); }
+  }
+
   const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set();
   // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio: mais lojas ao mesmo tempo, nunca mais pressa numa loja), prazo por rodada
   // e rodízio — quem ficou para trás numa rodada vai primeiro na seguinte.
@@ -364,7 +385,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       // Só quando a loja respondeu normalmente (nenhuma página falhou): com falha parcial, cada página já tem seu destino.
       let reason = null;
       if (matched === 0 && !failedUrls.size) {
-        const kept = Object.entries(prev).filter(([id, o]) => o.storeId === store.id && !offers[id]);
+        const kept = Object.entries(prev).filter(([id, o]) => o.storeId === store.id && o.sourceType !== PISTA_SOURCE && !offers[id]); // oferta de pista tem destino próprio (bloco das pistas)
         if (kept.length) {
           for (const [id, o] of kept) offers[id] = staleCopy(o, now);
           reason = `zero casados após ${Number.isInteger(src.matched) && src.matched > 0 ? src.matched : kept.length} (${raw.length} anúncios lidos): ${kept.length} oferta(s) mantida(s) como não confirmadas, sem remoção`;
@@ -391,9 +412,34 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Grava já o resultado da coleta: se a pós-coleta (nota oficial, alertas, estado) cair, checks/lastCheck/backoff não se perdem.
   writeJson(dataPath('sources.json'), sources);
   writeJson(dataPath('url-cache.json'), urlCache);
-  // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
+  // Pistas do ML conferidas entram em offers como oferta normal do Mercado Livre (mesmo id que o adaptador daria ao
+  // anúncio: loja|link|vendedor). Dedupe: anúncio que o adaptador já publicou (mesmo link ou mesmo MLB) não é duplicado,
+  // a pista só ganha virouOferta. Oferta de pista de rodadas anteriores segue publicada sem nova leitura (frete pela
+  // validade, source_timestamp envelhece) enquanto a pista existir, continuar conferida com sucesso e não tiver virado
+  // duplicata; fora disso sai e vira "removed" no histórico. A pista guarda verificada { at, ok, motivo, mlb, ofertaId }.
+  const pistaNova = new Set();
+  for (const { tip, oferta, produto, mlb } of pistasOk) {
+    const dup = ofertaDuplicada(oferta, offers, mlb);
+    if (dup) { tip.virouOferta = dup; tip.verificada.ofertaId = dup; continue; }
+    const v = validateListing(oferta, mlStore, { now });
+    if (!v.ok) { tip.verificada = { ...tip.verificada, ok: false, motivo: 'fora do contrato: ' + v.reasons.join('; ') }; delete tip.virouOferta; log(`[pistas] ${tip.id}: ${tip.verificada.motivo}`); continue; }
+    const id = hash(mlStore.id + '|' + oferta.url + '|' + (oferta.sellerId || ''));
+    const pid = produto?.id || oferta.productId;
+    if (produto) registry[pid] = { ...registry[pid], ...produto, image: registry[pid]?.image || oferta.image || null, firstSeen: registry[pid]?.firstSeen || T, lastSeen: T };
+    offers[id] = registroDeOferta({ ...oferta, boosters: produto?.boosters || null }, { id, T, prev: prev[id] });
+    tip.virouOferta = id; tip.verificada.ofertaId = id; pistaNova.add(id);
+  }
   for (const [id, o] of Object.entries(prev)) {
-    if (offers[id] || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
+    if (o.sourceType !== PISTA_SOURCE || offers[id]) continue;
+    const t = o.pista ? tipStore[o.pista] : null;
+    const viva = !!t && !t.expired && t.verificada?.ok === true && t.virouOferta === id && !ofertaDuplicada(o, offers) && !!registry[o.productId];
+    if (viva) offers[id] = carryShipping({ ...o }, now);
+    else if (t && t.virouOferta === id) delete t.virouOferta;
+  }
+  // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
+  // Oferta vinda de pista não passa por aqui: o bloco acima decide se ela fica ou sai.
+  for (const [id, o] of Object.entries(prev)) {
+    if (offers[id] || o.sourceType === PISTA_SOURCE || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
     const recent = skipped.has(o.storeId) && recentRead(o, now);
     offers[id] = recent ? carryShipping({ ...o }, now) : staleCopy(o, now);
   }
@@ -404,6 +450,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const o of Object.values(offers)) {
     if (o.stale) continue;
     if (bootstrap) { o.confirmed = true; o.pendingFrom = null; continue; }
+    // Pista conferida nesta rodada: a API do ML e o preço postado no canal são duas leituras que já concordam.
+    if (pistaNova.has(o.id)) { delete o.justConfirmed; delete o.dropFrom; o.confirmed = true; o.pendingFrom = null; continue; }
     const old = prev[o.id];
     const same = !!(old && old.productId === o.productId && old.total > 0 && o.total > 0);
     delete o.justConfirmed; delete o.dropFrom;
@@ -429,7 +477,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     events.push(...offerEvents(prev[o.id], o));
     if (changed) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, seller: o.seller, price: o.price, priceKind: o.priceKind, shipping: o.shipping, total: o.total, stock: o.stock, quantity: o.quantity });
   }
-  for (const o of Object.values(prev)) if (!offers[o.id] && touched.has(o.storeId)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
+  for (const o of Object.values(prev)) if (!offers[o.id] && (touched.has(o.storeId) || o.sourceType === PISTA_SOURCE)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
 
   // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
   const products = {}; const newLowest = new Map();
@@ -460,10 +508,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     o.confidence_score = Math.round(100 * o.matchConfidence * (o.stale ? 0.5 : 1) * (o.stock === 'IN_STOCK' ? 1 : 0.8));
   }
 
-  // Pistas (Pelando e canais do Telegram): separadas das ofertas, sem estoque confirmado, fora do ranking.
+  // Pistas (Pelando e canais do Telegram): sem estoque confirmado, fora do ranking — exceto a pista do ML que a API
+  // oficial confirmou (bloco "Pistas do Mercado Livre viram oferta", acima: tipsCfg e tipStore já foram lidos lá).
   const copagOf = (p) => { const cs = copagStatus({ ...p, copag: resolveCopag(p, catalog, copagSeen) }); return cs.confirmed ? { msrp: cs.msrp } : null; };
-  const tipsCfg = readJson(configPath('pistas.json'), null);
-  const tipStore = readJson(dataPath('tips.json'), {});
   let tipStatus = [];
   if (tipsCfg && process.env.HUNTER_TIPS !== '0') {
     try {
@@ -472,7 +519,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const old = tipStore[t.id]; const p = t.product; const c = p ? copagOf(p) : null;
         const discount = c && t.price ? +(1 - t.price / c.msrp).toFixed(4) : null;
         const { product, ...rest } = t;
-        tipStore[t.id] = { ...rest, firstSeen: old?.firstSeen || T, lastSeen: T, isNew: !old,
+        // verificada/virouOferta (pista do ML conferida na API) sobrevivem à releitura do canal.
+        tipStore[t.id] = { ...rest, firstSeen: old?.firstSeen || T, lastSeen: T, isNew: !old, ...(old?.verificada ? { verificada: old.verificada } : {}), ...(old?.virouOferta ? { virouOferta: old.virouOferta } : {}),
           collectionName: p?.collectionName || null, label: p ? p.typeLabel + (p.boosters && /box|combo/.test(p.type) ? ` com ${p.boosters} boosters` : '') + (p.variant ? ' ' + p.variant : '') : null,
           msrp: c?.msrp ?? null, discount, perBooster: p?.boosters && t.price ? round2(t.price / p.boosters) : null, anomalous: !!(c && t.price && t.price < c.msrp * 0.55) };
       }

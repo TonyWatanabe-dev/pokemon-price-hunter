@@ -9,8 +9,8 @@
 
 /** Estoque: o que os adaptadores escrevem (jsonld inclui UNAVAILABLE) e o site sabe mostrar. */
 export const STOCK_VALUES = Object.freeze(['IN_STOCK', 'OUT_OF_STOCK', 'PRE_ORDER', 'UNKNOWN', 'UNAVAILABLE']);
-/** Proveniência (sourceType) de cada adaptador. */
-export const SOURCE_TYPES = Object.freeze(['store_json', 'store_api', 'json_ld', 'store_page', 'microdata', 'open_graph', 'official_api']);
+/** Proveniência (sourceType) de cada adaptador. 'pista_verificada': pista do Telegram/Pelando conferida na API oficial do ML (src/pistas-ofertas.js). */
+export const SOURCE_TYPES = Object.freeze(['store_json', 'store_api', 'json_ld', 'store_page', 'microdata', 'open_graph', 'official_api', 'pista_verificada']);
 /** Chaves de preço aceitas (mesmas de pickPrice). */
 export const PRICE_KEYS = Object.freeze(['pix', 'avista', 'cartao', 'base']);
 /** Plataforma cujo link publicado não fica no host da API configurada em store.url (ML: api.mercadolibre.com). */
