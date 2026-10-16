@@ -3007,6 +3007,10 @@ function oppTips(){
   for(const t of OPP_TIPS.l){if(!t||t.expired||t.virouOferta||!(t.price>0)||!t.url)continue;
     const p=t.productId?P[t.productId]:null;if(OF.cat&&!(p&&catMatch(p,OF.cat)))continue;if(OF.col&&!(p&&p.collection===OF.col))continue;
     if(hasMax&&t.price>mx)continue;if(ab&&!((t.discount??0)*100>=ab))continue;out.push(t)}
+  /* a mesma promoção postada em mais de uma fonte (Pelando e canais): produto (ou link), preço e loja iguais → fica a 1ª postada */
+  const when=(t)=>String(t.postedAt||t.firstSeen||"9");const one=new Map();
+  for(const t of out){const k=[t.productId||t.url,t.price,String(t.store||"").toLowerCase()].join("|");const o=one.get(k);if(!o||when(t)<when(o))one.set(k,t)}
+  out.length=0;out.push(...one.values());
   const rec=(a,b)=>String(b.postedAt||b.firstSeen||"").localeCompare(String(a.postedAt||a.firstSeen||""));
   return out.sort(OF.sort==="preco"?(a,b)=>a.price-b.price||rec(a,b):(a,b)=>(b.discount??-9)-(a.discount??-9)||rec(a,b));
 }
