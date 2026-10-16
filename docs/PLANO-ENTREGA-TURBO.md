@@ -1,6 +1,6 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 14/10/2026
+> **Atualizado em:** 16/10/2026
 > **Base consultada:** \`main\` em \`8ea86cb4166e5303f73a9684297c2525a82e51a9\`.  
 > **Objetivo:** levar o produto existente até uma operação comercial útil, confiável e sustentável, com coleta, agentes de engenharia e monitoramento trabalhando 24/7, sem depender de alguém distribuindo cada tarefa manualmente.
 
@@ -20,7 +20,7 @@ Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, g
 | Canal | Endereço | Estado / uso |
 |---|---|---|
 | Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Destino de publicação a validar pelo chat ID antes do primeiro envio. |
-| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; ainda é necessário validar o chat ID do grupo público e comprovar o primeiro envio pela Bot API. |
+| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; o envio real e a automação estão documentados nas PRs #694–#697; revalidar o destino e o último run antes de diagnosticar falhas. |
 | Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
 | TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
 | YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
@@ -31,7 +31,22 @@ Links de afiliados já informados:
 - Mercado Livre: https://meli.la/1BzQ4PU
 - Amazon: https://link.amazon/B0bVBmGRD
 
-**Estado operacional:** registrar um canal não significa que o publisher esteja implementado ou que uma mensagem tenha sido enviada. Telegram segue em implementação/piloto controlado pela issue [#690](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/issues/690). Até existir evidência de sucesso da Bot API, não declarar publicação real concluída. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
+**Estado operacional:** Telegram tem evidência histórica de envio e automação nas PRs #694–#697. WhatsApp permanece em reconciliação documental e exige evidência de integração oficial e envio ao grupo existente. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
+
+## Estado executivo — 16/10/2026
+
+- **Fase 1:** código de confiabilidade integrado; burn-in 24/7 continua pendente até completar 7 dias encerrados consecutivos verdes.
+- **Fase 2:** concluída.
+- **Fase 3 (frete por CEP):** código integrado, feature flag desligada; bloqueada por respostas 429 de lojas a partir de IPs de nuvem.
+- **Fase 4 (contas/alertas):** parcial; alertas por usuário via Telegram estão em desenvolvimento e só contam como entregues após PR/merge, CI e configuração Firebase verificados.
+- **Fase 5 (Opportunity Engine):** concluída no código; validação pública depende do deploy atualizado.
+- **Fase 6 (afiliados/lojas):** código principal integrado, mas critérios de destino/allowlist, disclosure e validação pública ainda têm pendências descritas no roadmap operacional.
+- **Fase 7 (agentes):** em andamento; PRs #750–#755 integradas, novas branches/implementações só contam quando convertidas em PRs integradas com checks.
+- **Fase 8 (hardening/publicação):** não concluída; deploy Vercel bloqueado por cota no registro de 15/10 e smoke público falhou no canonical. Precisa de deploy do SHA atual + smoke verde.
+- **Social Media:** Telegram tem publicação automatizada documentada (#693–#697). WhatsApp precisa de reconciliação e evidência recente da integração/destino; Instagram, TikTok e YouTube seguem pendentes como publishers.
+- **Release:** merge humano continua sendo gate de publicação até lançamento. O antigo teto financeiro de US$ 100/24 h foi removido pelo proprietário e não deve ser reportado como bloqueio ativo.
+
+**Regra de atualização:** código integrado, deploy publicado e comportamento real são três estados distintos. Não fechar fase nem declarar operação pública concluída sem a evidência exigida no `docs/ROADMAP-OPERACIONAL.md`.
 
 ## 1. Resultado final esperado
 
