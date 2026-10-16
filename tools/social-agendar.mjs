@@ -27,6 +27,8 @@ const perfil = process.env.SOCIAL_ZERNIO_PROFILE_ID;
 const cli = criarCliente({ chave, fetch: globalThis.fetch });
 const contas = {};
 let falhas = 0;
+// Anotações do Actions: o resultado de cada item fica legível pela API (check-runs/annotations) sem baixar o log.
+const anota = (nivel, msg) => { console.log(msg); if (process.env.GITHUB_ACTIONS) console.log(`::${nivel}::${msg.replace(/\r?\n/g, ' ')}`); };
 
 async function midias(it) {
   if (it.tipo === 'video' && !it.arquivos?.length) {
@@ -39,8 +41,8 @@ async function midias(it) {
 }
 
 for (const it of itens) {
-  if (it.tipo === 'video' && !it.arquivos?.length && !it.drive) { console.log(`⏸ ${it.id}: vídeo pendente (sem arquivo/drive)`); continue; }
-  if (it.quando <= agora) { console.log(`⏭ ${it.id}: horário ${it.quando} já passou`); continue; }
+  if (it.tipo === 'video' && !it.arquivos?.length && !it.drive) { anota('notice', `⏸ ${it.id}: vídeo pendente (sem arquivo/drive)`); continue; }
+  if (it.quando <= agora) { anota('notice', `⏭ ${it.id}: horário ${it.quando} já passou`); continue; }
   try {
     const urls = [];
     for (const m of await midias(it)) urls.push(await cli.enviar(m.bytes, m.nome));
@@ -49,9 +51,9 @@ for (const it of itens) {
       const corpo = montarPost(it, { accountId: contas[plataforma], plataforma, urls, simular: modo === 'simular' });
       const idem = createHash('sha256').update(`${it.id}|${plataforma}|${it.quando}`).digest('hex').slice(0, 32);
       const r = await cli.postar(corpo, modo === 'agendar' ? idem : undefined);
-      console.log(`${r.status === 'invalido' ? '✗' : '✓'} ${it.id} · ${plataforma} · ${it.quando} · ${r.status}${r.detalhe ? ' · ' + r.detalhe : ''}`);
+      anota(r.status === 'invalido' ? 'error' : 'notice', `${r.status === 'invalido' ? '✗' : '✓'} ${it.id} · ${plataforma} · ${it.quando} · ${r.status}${r.detalhe ? ' · ' + r.detalhe : ''}`);
       if (r.status === 'invalido') falhas++;
     }
-  } catch (e) { falhas++; console.log(`✗ ${it.id}: ${e.message}`); }
+  } catch (e) { falhas++; anota('error', `✗ ${it.id}: ${e.message}`); }
 }
 process.exit(falhas ? 1 : 0);
