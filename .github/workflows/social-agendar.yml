@@ -9,7 +9,7 @@ on:
         description: "Arquivo da agenda"
         default: "config/social/agenda/semana1.json"
       modo:
-        description: "simular (valida) ou agendar (de verdade)"
+        description: "simular (valida), agendar (de verdade) ou cancelar (itens em agenda.cancelar)"
         default: "simular"
       so:
         description: "Só estes ids (separados por vírgula). Vazio = todos"

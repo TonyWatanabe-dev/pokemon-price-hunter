@@ -40,14 +40,14 @@
       "legenda": "esse pack farmou aura ou foi brick? 👀\n\n#pokemontcg #pokemon #packopening #fyp #pokemontcgbrasil"
     },
     {
-      "id": "s1-ter-garimpo-etb-me05",
+      "id": "s1-ter-como-funciona-story",
       "quando": "2026-10-20T12:00",
       "tipo": "story",
       "plataformas": [
         "instagram"
       ],
       "arquivos": [
-        "S1_Ter.jpg"
+        "S1_Ter_v2.jpg"
       ]
     },
     {
@@ -88,20 +88,19 @@
       "legenda": "rasguei mais um… espera o final\n\n#pokemontcg #pokemon #packopening #fyp #pokemontcgbrasil"
     },
     {
-      "id": "s1-qui-garimpo-100-reais",
+      "id": "s1-qui-por-que-e-diferente",
       "quando": "2026-10-22T12:00",
       "tipo": "carrossel",
       "plataformas": [
         "instagram"
       ],
       "arquivos": [
-        "S1_Qui_1.jpg",
-        "S1_Qui_2.jpg",
-        "S1_Qui_3.jpg",
-        "S1_Qui_4.jpg"
+        "S1_Qui_1_v2.jpg",
+        "S1_Qui_2_v2.jpg",
+        "S1_Qui_3_v2.jpg",
+        "S1_Qui_4_v2.jpg"
       ],
-      "legenda": "R$ 100 no bolso, o que levar? Três compras reais com preço de 16/10 em lojas que a gente confere:\n\n• 9 boosters por R$ 84,25\n• Deck pronto (Desafio Estratégico) por R$ 79,90\n• 7 boosters por R$ 66,91\n\nPreço muda todo dia e frete não está incluso. Os links estão no grupo, que recebe as quedas primeiro: link na bio.\n\nLinks de afiliado: podemos receber comissão, sem custo extra pra você.\n\n#pokemontcg #pokemontcgbrasil #booster #tapago #garimpo",
-      "afiliado": true
+      "legenda": "Grupo de oferta não é grupo de link.\n\nA maioria dos grupos manda o link de quem paga comissão. O TCG Price Hunter varre dezenas de lojas, de especializadas a marketplaces, e manda a melhor oferta do momento, com comissão ou sem.\n\nA régua é o preço sugerido da Copag: só chega no grupo o que vale a pena.\n\nEntra no grupo: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #ofertas"
     },
     {
       "id": "s1-sex-ta-na-epoca-halloween",
@@ -155,14 +154,14 @@
       "legenda": "paguei R$ 114,99 nisso. farmou aura ou brick?\n\n#pokemontcg #pokemon #packopening #fyp #pokemontcgbrasil"
     },
     {
-      "id": "s1-dom-caiu",
+      "id": "s1-dom-papo-de-binder-pikachus",
       "quando": "2026-10-25T10:00",
       "tipo": "story",
       "plataformas": [
         "instagram"
       ],
       "arquivos": [
-        "S1_Dom.jpg"
+        "S1_Dom_v2.jpg"
       ]
     },
     {
@@ -184,6 +183,23 @@
       ],
       "drive": "1Q62tLbuE85kyym0PwFQ2Fbnm_sxB77c_",
       "legenda": "8 packs, R$ 114,99. deu lucro? 😭 ou 🤑\n\n#pokemontcg #pokemon #packopening #fyp #pokemontcgbrasil"
+    }
+  ],
+  "cancelar": [
+    {
+      "motivo": "post com preço (16/10: proprietário não quer valores nos posts)",
+      "quando": "2026-10-20T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "post com preço (16/10: proprietário não quer valores nos posts)",
+      "quando": "2026-10-22T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "post com preço (16/10: proprietário não quer valores nos posts)",
+      "quando": "2026-10-25T10:00",
+      "plataforma": "instagram"
     }
   ]
 }
