@@ -205,7 +205,7 @@ Estado observado na `main` (`b445c6d`) e no Actions. "Ativo" só com execução 
 
 ## Fase 7 — agentes 6–8 (15/10/2026)
 
-Os três em modo **só proposta/relatório**: módulo puro + CLI (Markdown/JSON) + testes sintéticos + workflow manual opcional (`workflow_dispatch`, `contents: read`, sem secrets, job desligado por variável). Nenhum grava dados, catálogo, fila, ranking, preço ou score. **Não integrados:** só commits locais, sem push/PR (cota diária de deploy da Vercel esgotada). Números abaixo: CLI rodada localmente sobre o ramo `data` em `8e89693` (rodada de 15/10 16:30 UTC); não é execução em produção.
+Os três em modo **só proposta/relatório**: módulo puro + CLI (Markdown/JSON) + testes sintéticos + workflow manual opcional (`workflow_dispatch`, `contents: read`, sem secrets, job desligado por variável). Nenhum grava dados, catálogo, fila, ranking, preço ou score. **Integrados em 16/10/2026:** #765, #766 e #767 mesclados na `main`; os workflows seguem desligados por variável. Números abaixo: CLI rodada localmente sobre o ramo `data` em `8e89693` (rodada de 15/10 16:30 UTC); não é execução em produção.
 
 | Agente | Branch / commit | Produz | Reusa | Variável (desligada) |
 |---|---|---|---|---|
@@ -708,3 +708,13 @@ As quatro issues mantêm a etiqueta `tarefa:aprovada`. Não foram adicionadas ta
 ## Base de cartas em português (16/10/2026)
 
 Decisão do proprietário: linha editorial no Instagram/TikTok (Aura/ilustradores, rankings, temáticos) em vez de posts automáticos de oferta. Para isso entrou a base `config/cartas/cartas-pt.json.gz` (14.360 cartas físicas com nome em português, 105 coleções de Preto & Branco à Celebração de 30 Anos) e `config/cartas/artistas-pt.json` (325 ilustradores), geradas por `tools/cartas-pt-gerar.py` a partir do [tcgdex/cards-database](https://github.com/tcgdex/cards-database) (MIT); consulta em `src/cartas-pt.js`. Imagens ficam no `assets.tcgdex.net` (© Pokémon/Nintendo/Creatures/GAME FREAK, sempre com crédito); o TCG Pocket (app) fica fora. Regenerar: `python3 tools/cartas-pt-gerar.py --clonar /tmp/tcgdex --saida config/cartas`.
+
+## Social editorial — Instagram e TikTok (16/10/2026)
+
+Decisão do proprietário: IG/TikTok são linha editorial, sem post automático de oferta; nenhum post mostra preço de oferta (o único valor é o que o proprietário pagou nos packs, formato Deu Lucro?); todo CTA leva ao grupo do WhatsApp pelo link da bio.
+
+- Agendamento pela Zernio: `.github/workflows/social-agendar.yml` (manual; modos simular, agendar, cancelar) lendo `config/social/agenda/semana*.json` (#770, #771, #772, #773, #775).
+- Link da bio `tcgpricehunter.com.br/grupos` → grupo do WhatsApp (307; #774). Verificado em produção em 16/10.
+- Imagens oficiais das cartas via `.github/workflows/cartas-imagens.yml` → ramo `cartas-imagens` (#769).
+- Semana 1 (19–25/10): 6 posts de arte (Instagram) + 5 vídeos (Instagram e TikTok) agendados. Semana 2 (26/10–01/11): 6 posts de arte agendados; 3 vídeos aguardam material.
+- Pendências do proprietário: bio apontando para `/grupos`; figurinha de link e enquetes nos stories pelo app; vídeos da semana 2.
