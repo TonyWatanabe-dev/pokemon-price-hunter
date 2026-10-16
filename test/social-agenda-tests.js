@@ -5,6 +5,14 @@ import { join } from 'node:path';
 import { validarItem, montarPost, criarCliente, FUSO } from '../src/agents/social/zernio.js';
 
 const ag = JSON.parse(readFileSync('config/social/agenda/semana1.json', 'utf8'));
+for (const sem of ['semana1', 'semana2']) {
+  const g = JSON.parse(readFileSync(`config/social/agenda/${sem}.json`, 'utf8'));
+  for (const it of g.itens) {
+    assert.deepEqual(validarItem(it), [], `${it.id}: ${validarItem(it).join('; ')}`);
+    for (const a of it.arquivos ?? []) assert.ok(existsSync(join(g.pasta, a)), `${it.id}: falta ${a}`);
+    if (it.legenda && !it.plataformas.includes('tiktok')) assert.match(it.legenda, /grupo do WhatsApp/, `${it.id}: CTA do Zap`);
+  }
+}
 for (const it of ag.itens) {
   assert.deepEqual(validarItem(it), [], `${it.id}: ${validarItem(it).join('; ')}`);
   for (const a of it.arquivos ?? []) assert.ok(existsSync(join(ag.pasta, a)), `${it.id}: falta ${a}`);
