@@ -62,7 +62,7 @@ const page = (items, meta = {}) => ({ data: items, meta: { page: 1, limit: 24, t
 
 // 1. a página recebe os dados do endpoint de oportunidades
 { const s = sandbox(page([base(), copag()])); await s.renderOpp();
-  assert.deepEqual(s.calls, ['oportunidades/lojas', 'oportunidades?limite=24&pagina=1&ordem=score'], 'lojas do filtro (uma vez) + a lista'); assert.match(s.view.innerHTML, /Fenda Paradoxal/); assert.match(text(s.view.innerHTML), /2 ofertas/); n++; }
+  assert.deepEqual(s.calls, ['oportunidades/lojas', 'site/pagina/pistas', 'oportunidades?limite=24&pagina=1&ordem=score'], 'lojas do filtro (uma vez) + pistas (uma vez) + a lista'); assert.match(s.view.innerHTML, /Fenda Paradoxal/); assert.match(text(s.view.innerHTML), /2 ofertas/); n++; }
 // 1b. filtros da página: Loja (lista da API), preço máximo e preço por booster; limpar volta tudo
 { const lojas = { data: [{ id: 'moxland', name: 'Moxland', products: 40 }, { id: 'rihappycombr', name: 'Ri Happy', products: 12 }] };
   const s = sandbox((path) => (path === 'oportunidades/lojas' ? lojas : page([base()]))); await s.renderOpp();
