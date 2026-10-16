@@ -2992,35 +2992,36 @@ function buscaNav(){const u=buscaURL();if(location.pathname+location.search!==u)
 /* Categorias do site (tipo ou grupo do produto). Home e /oportunidades leem as oportunidades da API (6B.2: sem oppPool). */
 const CATS=[["","Todos"],["Boosters","Todos os boosters"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
 const catMatch=(p,c)=>!c||p.type===c||p.group===c;
-/* Pistas misturadas nas oportunidades (decisão do proprietário, 16/10/2026): a pista identificada, viva, com preço, que não
-   virou oferta e não está barata demais entra entre as ofertas, uma a cada TIP_EVERY cartões, com o selo "Pista não verificada".
-   Não tem nota, faixa nem confiança: os filtros de nota, confiança, referência e loja escondem as pistas. Uma por produto
-   (a de menor preço), maior desconto sobre a Copag primeiro ("Menor preço": a mais barata primeiro). Fonte: GET /api/v1/site/pagina/pistas. */
+/* Pistas misturadas nas oportunidades (decisão do proprietário, 16/10/2026: "integrar todas as pistas em ofertas"): toda pista
+   viva e com preço entra entre as ofertas, uma a cada TIP_EVERY cartões, com o selo "Pista não verificada" — inclusive a sem
+   produto identificado e a barata demais (com aviso). Fora só a encerrada e a que virou oferta (essa já está na lista como oferta).
+   Não tem nota, faixa nem confiança: os filtros de nota, confiança, referência e loja escondem as pistas. Maior desconto sobre
+   a Copag primeiro ("Menor preço": a mais barata primeiro). Fonte: GET /api/v1/site/pagina/pistas. */
 const OPP_TIPS={st:"idle",l:[]};const TIP_EVERY=4;
 async function loadOppTips(){if(OPP_TIPS.st!=="idle")return false;OPP_TIPS.st="loading";const d=await apiGet("site/pagina/pistas");
   if(d&&Array.isArray(d.tips)){if(Array.isArray(d.products)&&typeof mergeProducts==="function")mergeProducts(d.products);OPP_TIPS.l=d.tips;OPP_TIPS.st="ok";return true}
   OPP_TIPS.st="error";return false}   /* sem pistas: a página segue só com as ofertas (não tenta de novo a cada filtro) */
 function oppTips(){
   if(OPP_TIPS.st!=="ok"||OF.faixa||OF.conf||OF.ref||OF.loja)return[];
-  const mx=Number(OF.max),hasMax=OF.max!==""&&Number.isFinite(mx)&&mx>=0,ab=Number(OF.abaixo)||0;const by=new Map();
-  for(const t of OPP_TIPS.l){if(!t||!t.productId||t.expired||t.anomalous||t.virouOferta||!(t.price>0))continue;
-    const p=P[t.productId];if(OF.cat&&!(p&&catMatch(p,OF.cat)))continue;if(OF.col&&!(p&&p.collection===OF.col))continue;
-    if(hasMax&&t.price>mx)continue;if(ab&&!((t.discount??0)*100>=ab))continue;
-    const b=by.get(t.productId);if(!b||t.price<b.price)by.set(t.productId,t)}
+  const mx=Number(OF.max),hasMax=OF.max!==""&&Number.isFinite(mx)&&mx>=0,ab=Number(OF.abaixo)||0;const out=[];
+  for(const t of OPP_TIPS.l){if(!t||t.expired||t.virouOferta||!(t.price>0)||!t.url)continue;
+    const p=t.productId?P[t.productId]:null;if(OF.cat&&!(p&&catMatch(p,OF.cat)))continue;if(OF.col&&!(p&&p.collection===OF.col))continue;
+    if(hasMax&&t.price>mx)continue;if(ab&&!((t.discount??0)*100>=ab))continue;out.push(t)}
   const rec=(a,b)=>String(b.postedAt||b.firstSeen||"").localeCompare(String(a.postedAt||a.firstSeen||""));
-  return[...by.values()].sort(OF.sort==="preco"?(a,b)=>a.price-b.price||rec(a,b):(a,b)=>(b.discount??-9)-(a.discount??-9)||rec(a,b));
+  return out.sort(OF.sort==="preco"?(a,b)=>a.price-b.price||rec(a,b):(a,b)=>(b.discount??-9)-(a.discount??-9)||rec(a,b));
 }
 function pistaCard(t){
-  const p=P[t.productId]||{};const href="/produto/"+(SLUG[t.productId]||encodeURIComponent(t.productId));const d=t.discount;
+  const p=(t.productId&&P[t.productId])||{};const d=t.discount;
+  const hit=t.productId?`<a class="deal-hit" href="/produto/${SLUG[t.productId]||encodeURIComponent(t.productId)}" data-p="${esc(t.productId)}"`:`<a class="deal-hit" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener"`;
   const src=/^Pelando$/i.test(t.source||"")?"Pelando":"@"+String(t.source||"").replace(/^Telegram\s+@?/,"");const loja=t.store||"loja";
   const nome=p.typeLabel||t.label||t.title||"";const when=t.postedAt||t.firstSeen;
   return`<article class="deal opp-card tip-card" data-tip="${esc(t.id)}" data-cat="${catOf(p)}" style="--ec:${g(p).c}">
-  <a class="deal-hit" href="${href}" data-p="${esc(t.productId)}" aria-label="${esc([p.collectionName||t.collectionName,nome].filter(Boolean).join(" · "))}"></a>
+  ${hit} aria-label="${esc([p.collectionName||t.collectionName,nome].filter(Boolean).join(" · "))}"></a>
   <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,null,"photo deal-ph")}<span class="deal-badge tip-badge" title="Promoção postada por pessoas; ninguém conferiu estoque nem vendedor"><i></i>Pista não verificada</span>${catChip(p)}</div>
   <div class="deal-body">
     <p class="deal-col">${esc(p.collectionName||t.collectionName||"")}</p>
     <h2 class="deal-name">${esc(nome)}</h2>
-    <div class="opp-pv"><p class="deal-price opp-price"><b>${money(t.price)}</b></p>${d!=null&&d>=.0005?`<p class="opp-cmp"><b>−${pctPts(d*100)}</b> <span class="opp-cmp-w">abaixo</span> <span class="opp-cmp-r">do preço Copag</span></p>`:`<p class="opp-ref none">Sem comparação com a Copag</p>`}<p class="opp-ship">${when?`Postada ${ago(when)} · `:""}via ${esc(src)}</p></div>
+    <div class="opp-pv"><p class="deal-price opp-price"><b>${money(t.price)}</b>${t.anomalous?` <span class="chip bad">Barato demais</span>`:""}</p>${d!=null&&d>=.0005?`<p class="opp-cmp"><b>−${pctPts(d*100)}</b> <span class="opp-cmp-w">abaixo</span> <span class="opp-cmp-r">do preço Copag</span></p>`:`<p class="opp-ref none">Sem comparação com a Copag</p>`}<p class="opp-ship">${when?`Postada ${ago(when)} · `:""}via ${esc(src)}</p></div>
     <p class="tip-note">${ic("lightbulb")}<span>Pista: estoque e vendedor não conferidos. Fica fora do Opportunity Score.</span></p>
     <div class="deal-foot"><span class="deal-store">${esc(t.store||"")}</span><div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener"><span class="cta-l">Ver pista</span><span class="sr"> na ${esc(loja)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div></div>
   </div>

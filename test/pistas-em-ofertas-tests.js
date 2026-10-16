@@ -1,6 +1,6 @@
 // Pistas misturadas na página /oportunidades (decisão do proprietário, 16/10/2026). Roda o código real do index.html num
 // sandbox: a pista entra entre as ofertas com o selo "Pista não verificada", sem nota; pista que virou oferta, encerrada,
-// barata demais ou sem produto fica fora; filtros de nota/confiança/referência/loja escondem as pistas; menu sem "Pistas".
+// sem produto e barata demais (com aviso) entram; encerrada e a que virou oferta ficam fora; filtros de nota/confiança/referência/loja escondem as pistas; menu sem "Pistas".
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -50,24 +50,26 @@ const settle = () => new Promise((r) => setTimeout(r, 0));
 
 await t('pistas entram entre as ofertas, uma a cada 4, maior desconto primeiro; sobras no fim da última página', async () => {
   const s = sandbox(5); await s.renderOpp(); await settle();
-  assert.equal(order(s.view.innerHTML).join(), ['o0', 'o1', 'o2', 'o3', 'T:b', 'o4', 'T:a'].join());
+  assert.equal(order(s.view.innerHTML).join(), ['o0', 'o1', 'o2', 'o3', 'T:b', 'o4', 'T:a', 'T:a2', 'T:bar', 'T:sem'].join());
+  assert.match(s.view.innerHTML, /data-tip="bar"[\s\S]*?Barato demais/);
+  assert.match(s.view.innerHTML, /<a class="deal-hit" href="https:\/\/x\/3" target="_blank"/, 'sem produto: o cartão leva à pista');
   assert.match(s.view.innerHTML, /Pista não verificada/);
-  assert.match(s.view.innerHTML, /5 ofertas · 2 pistas/);
+  assert.match(s.view.innerHTML, /5 ofertas · 5 pistas/);
   assert.match(s.view.innerHTML, /−40,0%[\s\S]*?do preço Copag/);
   assert.match(s.view.innerHTML, /href="https:\/\/amzn\.to\/2" target="_blank" rel="noopener"/);
 });
-await t('fica fora: virou oferta, encerrada, barata demais, sem produto, e a mais cara do mesmo produto', async () => {
+await t('todas entram; fora só a encerrada e a que virou oferta', async () => {
   const s = sandbox(1); await s.renderOpp(); await settle();
-  assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['b', 'a'].join());
-  assert.doesNotMatch(s.view.innerHTML, /data-tip="(ml|enc|bar|sem|a2)"/);
+  assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['b', 'a', 'a2', 'bar', 'sem'].join());
+  assert.doesNotMatch(s.view.innerHTML, /data-tip="(ml|enc)"/);
   assert.doesNotMatch(s.view.innerHTML, /data-tip="[^"]+"[\s\S]{0,400}Opportunity Score<\/span>/, 'pista sem medidor de nota');
 });
 await t('filtros: nota/confiança/referência/loja escondem; categoria, preço máximo e % abaixo filtram', async () => {
   for (const k of ['faixa', 'conf', 'ref', 'loja']) { const s = sandbox(2, { [k]: 'x' }); await s.renderOpp(); await settle(); assert.equal(s.oppTips().length, 0, k); }
-  let s = sandbox(2, { cat: 'ETB' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['a'].join());
-  s = sandbox(2, { max: '100' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['b'].join());
+  let s = sandbox(2, { cat: 'ETB' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['a', 'a2', 'bar'].join());
+  s = sandbox(2, { max: '100' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['b', 'bar', 'sem'].join());
   s = sandbox(2, { abaixo: '30' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['b'].join());
-  s = sandbox(2, { sort: 'preco' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['b', 'a'].join());
+  s = sandbox(2, { sort: 'preco' }); await s.renderOpp(); await settle(); assert.deepEqual(s.oppTips().map((x) => x.id).join(), ['sem', 'bar', 'b', 'a', 'a2'].join());
 });
 await t('menu sem "Pistas"; /pistas leva às oportunidades', () => {
   assert.doesNotMatch(html, /data-go="pistas"|href="\/pistas"/);
