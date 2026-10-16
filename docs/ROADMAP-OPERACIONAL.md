@@ -1,7 +1,31 @@
+## Atualização executiva — 16/10/2026 (America/Sao_Paulo)
+
+> **Estado da fotografia consultada:** main em [35b95fd](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/commit/35b95fd31de1ae8d863ef0c53916ddab1214ce6d), última integração identificada em 15/10 à noite. Esta atualização separa código integrado de operação pública comprovada.
+
+### Resumo para decisão
+- **PRs:** a consulta atual não encontrou PRs abertas. As PRs #750–#755 foram integradas; tarefas locais mencionadas no registro de 15/10 ainda precisam ser confirmadas como PR/merge antes de considerá-las entregues.
+- **Produção:** **não comprovada como atualizada**. A Vercel atingiu o limite de builds/deploys (build-rate-limit). A #754 reduziu deploys redundantes do ramo `data`; é necessário novo deploy do SHA mais recente e smoke público verde. Não assumir que `main` já está refletida em produção.
+- **Smoke público:** a execução registrada em 15/10 falhou na validação do canonical. O domínio canônico escolhido continua sendo **https://tcgpricehunter.com.br/**; corrigir/verificar o redirect/canonical e repetir o smoke.
+- **Burn-in 24/7:** ainda não concluído. Registro de 15/10 verde (1º dia de 7); 16/10 estava parcial na última verificação. Só contar dias encerrados e verdes consecutivos; não declarar a Fase 1 concluída antes de 7/7.
+- **Fases:** Fase 2 está concluída. Fase 1 segue em burn-in; Fases 4, 6 e 8 têm critérios pendentes nas matrizes abaixo; Fase 5 está concluída no código, mas depende da publicação para validação pública; Fase 7 segue em evolução. Fase 3 (frete por CEP) está integrada com feature flag desligada e bloqueada por respostas 429 das lojas de nuvem.
+- **Social Media:** Telegram teve envio real e automação conforme os registros das PRs #693–#697. O WhatsApp também aparece como implementado em trabalho recente, mas há divergência entre documentação, estado de integração oficial e capacidade de publicar no grupo existente: não afirmar que publicação automática no grupo está comprovada sem evidência de execução recente. Instagram, TikTok e YouTube ainda não devem ser tratados como publishers implementados.
+- **Agente de alertas Telegram por usuário:** trabalho em branch local foi reportado para 16/10; só marcar integrado quando existir PR/merge e CI verificáveis.
+- **Orçamento:** o proprietário retirou o teto anterior de US$ 100 por 24 horas; não tratar esse teto removido como bloqueio ativo. Permanecem os limites técnicos de segurança, concorrência, retries e autorização de release.
+- **Governança:** até o lançamento, merge humano permanece o gate de publicação conforme decisão registrada na #753. Não fazer bypass nem declarar deploy concluído sem evidência.
+
+### Próximas prioridades
+1. Resolver a cota da Vercel, publicar o SHA atual da `main` e executar smoke público completo (canonical, Home, busca/produto, API/dados e links).
+2. Continuar registrando o burn-in diário e só fechar Fase 1 com sete dias encerrados consecutivos verdes.
+3. Reconciliar e testar o publisher de WhatsApp: documentar API/caminho oficial realmente usado, destino, opt-in e evidência de envio; manter pausa se a integração não for verificável.
+4. Confirmar se as branches locais mencionadas em 15/10 viraram PRs; priorizar alertas Telegram por usuário e critérios restantes das Fases 4/6/8.
+5. Atualizar o roadmap novamente após o primeiro deploy/smoke verde e após cada gate de fase realmente concluído.
+
+---
+
 # Roadmap operacional — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 14/10/2026, 17:00 (America/Sao_Paulo, UTC−03:00) — Fase 1 aguardando burn-in; Social Media MVP com Telegram em operação e acervo de fotos em andamento.
-> **Base consultada para esta atualização:** `main` em `8ea86cb4166e5303f73a9684297c2525a82e51a9` (PRs #629 e #630 integradas; escopo atualizado em 13/10/2026).
+> **Atualizado em:** 16/10/2026, 10:14 (America/Sao_Paulo, UTC−03:00) — produção aguardando deploy/smoke; burn-in em curso.
+> **Base consultada para esta atualização:** main em `35b95fd31de1ae8d863ef0c53916ddab1214ce6d` (último commit identificado em 15/10 à noite).
 > **Base consultada:** `main` em `5a70b1c1a008890082f21890c8f73c2bda985d19` (PR #335 integrada). Deploy Vercel iniciado após #335; verificar run #38279377618 antes de declarar produção atualizada.  
 > **Propósito:** fonte de contexto para Claude Code/agentes e para acompanhamento humano. Este arquivo documenta o estado observado; issue/PR/CI e execução real continuam sendo a fonte de verdade para cada entrega.
 > **Plano até a entrega:** [docs/PLANO-ENTREGA-TURBO.md](./PLANO-ENTREGA-TURBO.md) — fases de produto, ciclo 24/7, agentes futuros, critérios de conclusão e política de notificação.
@@ -13,7 +37,7 @@ Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, g
 | Canal | Endereço | Estado / uso |
 |---|---|---|
 | Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Destino de publicação a validar pelo chat ID antes do primeiro envio. |
-| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; chat ID validado e envio comprovado pela Bot API em 14/10/2026 (#690). |
+| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; o bot foi adicionado ao grupo; o envio real e a automação são documentados nas PRs #694–#697. Revalidar o destino e o último run antes de qualquer diagnóstico de falha. |
 | Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
 | TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
 | YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
@@ -24,7 +48,7 @@ Links de afiliados já informados:
 - Mercado Livre: https://meli.la/1BzQ4PU
 - Amazon: https://link.amazon/B0bVBmGRD
 
-**Estado operacional:** registrar um canal não significa que o publisher esteja implementado. Só o Telegram publica de verdade (abaixo); Instagram, TikTok, YouTube e WhatsApp seguem sem publicação automatizada. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
+**Estado operacional:** Telegram tem evidência histórica de publicação e automação nas PRs #694–#697. WhatsApp está em divergência documental e exige confirmação de implementação oficial e de publicação no grupo existente. Instagram, TikTok e YouTube não devem ser considerados publishers automáticos ativos sem PR e evidência. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
 
 ## Social Media — Telegram em operação automática (14/10/2026)
 
