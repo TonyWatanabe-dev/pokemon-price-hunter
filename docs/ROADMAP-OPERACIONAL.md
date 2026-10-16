@@ -203,6 +203,34 @@ Estado observado na `main` (`b445c6d`) e no Actions. "Ativo" só com execução 
 
 `DISPATCHER_ATIVO` já está ligado.
 
+## Fase 7 — agentes 6–8 (15/10/2026)
+
+Os três em modo **só proposta/relatório**: módulo puro + CLI (Markdown/JSON) + testes sintéticos + workflow manual opcional (`workflow_dispatch`, `contents: read`, sem secrets, job desligado por variável). Nenhum grava dados, catálogo, fila, ranking, preço ou score. **Não integrados:** só commits locais, sem push/PR (cota diária de deploy da Vercel esgotada). Números abaixo: CLI rodada localmente sobre o ramo `data` em `8e89693` (rodada de 15/10 16:30 UTC); não é execução em produção.
+
+| Agente | Branch / commit | Produz | Reusa | Variável (desligada) |
+|---|---|---|---|---|
+| 6. Catalog | `fase7/catalog-agent` `d20ad64` | `tools/agente-catalogo.mjs`: duplicata de produto, coleção fora do catálogo, EAN observado em anúncios, EAN divergente, mesmo EAN em produtos diferentes, contagem de boosters divergente, oferta duplicada, mesma URL em produtos diferentes, revisão de matching. Tudo `needs_review`, conflito nunca resolvido. Amostra: 102 propostas (7 duplicatas `ev09`×`sv9`, 48 EAN, 8 EAN em 2 produtos — ex.: Copag com o mesmo EAN em ETB ME04 e ME05) | `duplicates.js`, `offer-key.js`, `matching-review.js`, `golden-eval.js` | `AGENTE_CATALOGO` |
+| 7. Marketplace Health | `fase7/marketplace-health-agent` `4917c16` | `tools/agente-saude-lojas.mjs`: saúde por plataforma e motivo de falha, frescor, cobertura, tendência de `ops.runs` e propostas de uma lista fechada de ações. Nunca propõe UA/proxy/CAPTCHA/ignorar robots/contornar login/reativar. Amostra: 122 lojas, 61 ativas frescas; 62 propostas (21 Cloudflare → pausar/pedir liberação, 26 timeout persistente, 6 lojas JSON-LD com adaptador VTEX/Shopify disponível, 3 lentas em ≥ 90% das rodadas) | `tools/coleta-relatorio.mjs` (waf), `ops.runs` de `opstate.js` | `AGENTE_SAUDE_LOJAS` |
+| 8. Price Intelligence | `fase7/price-intel-agent` `490cac7` | `tools/agente-preco.mjs`: menor preço do dia × mediana de 7 dias, causa provável (preço na loja × composição), persistente × pontual, anomalia (MAD), ressalvas Pix/frete/estoque e incerteza; abstém-se com amostra curta/defasada. Não define preço oficial, referência, score, oportunidade nem alerta. Amostra: 142 produtos, 30 abstenções, 30 variações ≥ 5% (18 por composição), 3 anomalias | `history.js` (`cleanPoints`), `distrust.js`, `price-engine.js` | `AGENTE_INTELIGENCIA_PRECO` |
+
+**Pré-requisitos do plano (medidos pelos próprios relatórios):**
+
+| Agente | Pré-requisito | Estado |
+|---|---|---|
+| Catalog | matching/golden estáveis | **parcial**: golden 31/31 ok, mas só sintético; precisão real não medida |
+| Catalog | contrato de evidência / fila de revisão | atendido / parcial (sem tela própria) |
+| Catalog | autorização de IA | não atendido (o agente é determinístico) |
+| Marketplace | contratos de adaptadores | atendido (`adapter-contract-tests`) |
+| Marketplace | rate limits estáveis | **parcial**: backoff e Retry-After no código; VTEX 429 a IP de nuvem no frete (#84) |
+| Marketplace | telemetria por loja / histórico de rodadas | atendido (49/49 falhas com classe; 96 rodadas) |
+| Price Intel | histórico suficiente | **parcial**: mediana de 6 dias por produto (30 para variação de 30 dias) |
+| Price Intel | histórico confiável / comparabilidade | parcial / **não atendido**: ponto do histórico é só `[dia, total]`, sem Pix × normal nem com/sem frete |
+| Price Intel | golden temporais | não atendido (nenhum caso temporal em `test/golden/cases.json`) |
+
+**Limitações:** EAN "de 2 lojas" pode vir do mesmo grupo (Ri Happy/PB Kids); `lenta_recorrente` usa só o top 3 por rodada; causa de preço é inferência sobre o menor total diário. Nenhum agente vira ativo sem: integrar as PRs, ligar a variável, rodar o workflow e registrar o run.
+
+**Ordem para o proprietário:** subir as três branches (R3 por trazerem workflow) → revisar → ligar uma variável por vez e rodar manualmente. Promover qualquer um a gravar na fila (`review_item`) é outra PR, com autorização.
+
 ## Regras de operação
 
 - Não fazer merge de PRs de produto, deploy, migration, nem alterar secrets/configuração de produção sem autorização explícita.
