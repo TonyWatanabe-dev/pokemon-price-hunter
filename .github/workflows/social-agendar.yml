@@ -1,0 +1,38 @@
+name: Social · agendar editorial (Zernio)
+# Agenda posts editoriais (artes e vídeos) no Instagram/TikTok via Zernio a partir de config/social/agenda/*.json.
+# Só manual. Modo padrão "simular" (a Zernio valida sem agendar). Autorizado pelo proprietário em 16/10/2026:
+# IG/TikTok = linha editorial, sem post automático de oferta.
+on:
+  workflow_dispatch:
+    inputs:
+      agenda:
+        description: "Arquivo da agenda"
+        default: "config/social/agenda/semana1.json"
+      modo:
+        description: "simular (valida) ou agendar (de verdade)"
+        default: "simular"
+      so:
+        description: "Só estes ids (separados por vírgula). Vazio = todos"
+        default: ""
+permissions:
+  contents: read
+concurrency:
+  group: social-agendar
+  cancel-in-progress: false
+jobs:
+  agendar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Agendar
+        env:
+          SOCIAL_ZERNIO_API_KEY: ${{ secrets.SOCIAL_ZERNIO_API_KEY }}
+          SOCIAL_ZERNIO_PROFILE_ID: ${{ secrets.SOCIAL_ZERNIO_PROFILE_ID }}
+          AGENDA: ${{ inputs.agenda }}
+          MODO: ${{ inputs.modo }}
+          SO: ${{ inputs.so }}
+        run: node tools/social-agendar.mjs --agenda "$AGENDA" --modo "$MODO" --so "$SO"
