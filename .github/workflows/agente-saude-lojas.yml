@@ -1,0 +1,29 @@
+name: Agente de saúde das lojas (relatório)
+# Fase 7, item 7 — Marketplace Health Agent em modo SOMENTE PROPOSTA (tools/agente-saude-lojas.mjs): lê sources.json,
+# meta.json (ops.runs) e state.json do ramo data e escreve no resumo do job a saúde por loja/plataforma, frescor,
+# cobertura e propostas de ajuste. Nunca propõe contornar bloqueio/robots. Não grava nada; não usa secrets.
+# Desligado por padrão: só roda com a variável de repositório AGENTE_SAUDE_LOJAS=true e por acionamento manual.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: agente-saude-lojas
+  cancel-in-progress: true
+jobs:
+  relatorio:
+    if: vars.AGENTE_SAUDE_LOJAS == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      # Os três arquivos do MESMO commit do ramo data.
+      - name: Ler dados publicados (ramo data)
+        run: |
+          mkdir -p rel
+          git fetch -q --depth 1 origin data
+          for f in sources meta state; do git show "FETCH_HEAD:data/$f.json" > "rel/$f.json" || rm -f "rel/$f.json"; done
+      - name: Relatório no resumo do job
+        run: node tools/agente-saude-lojas.mjs rel >> "$GITHUB_STEP_SUMMARY"
