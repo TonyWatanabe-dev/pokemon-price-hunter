@@ -1,0 +1,68 @@
+{
+  "semana": "19 a 25/10/2026",
+  "pasta": "assets/social/agenda/semana1",
+  "itens": [
+    {
+      "id": "s1-seg-olha-o-traco-arita",
+      "quando": "2026-10-19T12:00",
+      "tipo": "carrossel",
+      "plataformas": ["instagram"],
+      "arquivos": ["S1_Seg_1.jpg", "S1_Seg_2.jpg", "S1_Seg_3.jpg", "S1_Seg_4.jpg", "S1_Seg_5.jpg", "S1_Seg_6.jpg"],
+      "legenda": "Se você abriu pack nos anos 2000, já viu o traço dele: Mitsuhiro Arita desenhou o Charizard do Base Set em 1999 e segue ilustrando em 2026.\n\nSão 249 cartas dele em português. Separamos 5, da Mega Absol ex SIR ao Charizard que você conhece.\n\nQual dessas farmou mais aura no seu binder? 👇\n\nOferta de Pokémon TCG abaixo do preço Copag cai no grupo primeiro: link na bio.\n\n#pokemontcg #pokemontcgbrasil #mitsuhiroarita #charizard #colecionador"
+    },
+    {
+      "id": "s1-ter-garimpo-etb-me05",
+      "quando": "2026-10-20T12:00",
+      "tipo": "story",
+      "plataformas": ["instagram"],
+      "arquivos": ["S1_Ter.jpg"]
+    },
+    {
+      "id": "s1-qua-sobe-e-desce-chases-me01",
+      "quando": "2026-10-21T12:00",
+      "tipo": "carrossel",
+      "plataformas": ["instagram"],
+      "arquivos": ["S1_Qua_1.jpg", "S1_Qua_2.jpg", "S1_Qua_3.jpg", "S1_Qua_4.jpg", "S1_Qua_5.jpg", "S1_Qua_6.jpg"],
+      "legenda": "As 5 chase da Megaevolução (ME01): os dois Mega Hyper Rare dourados e as SIR de Lucario, Gardevoir e Absol, esta última pelo traço do Arita.\n\nQual você puxou ou ainda tá caçando? 👇\n\nQuer abrir a ME01 pagando menos? Os preços abaixo da Copag caem no grupo na hora: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megaevolucao #megalucario #megagardevoir"
+    },
+    {
+      "id": "s1-qui-garimpo-100-reais",
+      "quando": "2026-10-22T12:00",
+      "tipo": "carrossel",
+      "plataformas": ["instagram"],
+      "arquivos": ["S1_Qui_1.jpg", "S1_Qui_2.jpg", "S1_Qui_3.jpg", "S1_Qui_4.jpg"],
+      "legenda": "R$ 100 no bolso, o que levar? Três compras reais com preço de 16/10 em lojas que a gente confere:\n\n• 9 boosters por R$ 84,25\n• Deck pronto (Desafio Estratégico) por R$ 79,90\n• 7 boosters por R$ 66,91\n\nPreço muda todo dia e frete não está incluso. Os links estão no grupo, que recebe as quedas primeiro: link na bio.\n\nLinks de afiliado: podemos receber comissão, sem custo extra pra você.\n\n#pokemontcg #pokemontcgbrasil #booster #tapago #garimpo",
+      "afiliado": true
+    },
+    {
+      "id": "s1-sex-ta-na-epoca-halloween",
+      "quando": "2026-10-23T12:00",
+      "tipo": "story",
+      "plataformas": ["instagram"],
+      "arquivos": ["S1_Sex.jpg"]
+    },
+    {
+      "id": "s1-sab-rasga-o-pack-1",
+      "quando": "2026-10-24T10:00",
+      "tipo": "video",
+      "plataformas": ["instagram", "tiktok"],
+      "drive": "",
+      "legenda": "Rasga o pack #1: Desafio Estratégico. Paguei R$ 114,99. Farmou aura ou brick? Resultado completo no Deu Lucro? de domingo.\n\nOferta abaixo da Copag cai no grupo primeiro: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #abrindopack #desafioestrategico"
+    },
+    {
+      "id": "s1-dom-caiu",
+      "quando": "2026-10-25T10:00",
+      "tipo": "story",
+      "plataformas": ["instagram"],
+      "arquivos": ["S1_Dom.jpg"]
+    },
+    {
+      "id": "s1-dom-deu-lucro",
+      "quando": "2026-10-25T18:00",
+      "tipo": "video",
+      "plataformas": ["instagram", "tiktok"],
+      "drive": "",
+      "legenda": "Deu Lucro? Abri os 8 packs do Desafio Estratégico. Paguei R$ 114,99: o placar tá no vídeo.\n\nPra pagar menos no próximo, o grupo avisa quando o preço cai: link na bio.\n\n#pokemontcg #pokemontcgbrasil #deulucro #packopening #abrindopack"
+    }
+  ]
+}
