@@ -19,7 +19,7 @@ Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, g
 
 | Canal | Endereço | Estado / uso |
 |---|---|---|
-| Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Destino de publicação a validar pelo chat ID antes do primeiro envio. |
+| Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Validar novamente o chat ID antes de qualquer teste novo; há evidência histórica de publicação nas PRs #694–#697. |
 | Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; o envio real e a automação estão documentados nas PRs #694–#697; revalidar o destino e o último run antes de diagnosticar falhas. |
 | Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
 | TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
