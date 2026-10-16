@@ -1,8 +1,31 @@
-{"json": {
-  "sets-pt": "https://api.tcgdex.net/v2/pt/sets",
-  "serie-me-pt": "https://api.tcgdex.net/v2/pt/series/me",
-  "serie-me-en": "https://api.tcgdex.net/v2/en/series/me",
-  "morii-pt": "https://api.tcgdex.net/v2/pt/cards?illustrator=eq:Yuka%20Morii",
-  "morii-en": "https://api.tcgdex.net/v2/en/cards?illustrator=eq:Yuka%20Morii"
+{
+ "json": {
+  "card-sm12-97": "https://api.tcgdex.net/v2/pt/cards/sm12-97",
+  "card-sv03-081": "https://api.tcgdex.net/v2/pt/cards/sv03-081",
+  "card-sv03-097": "https://api.tcgdex.net/v2/pt/cards/sv03-097",
+  "card-sm8-139": "https://api.tcgdex.net/v2/pt/cards/sm8-139",
+  "card-sv03.5-081": "https://api.tcgdex.net/v2/pt/cards/sv03.5-081",
+  "card-sv08-138": "https://api.tcgdex.net/v2/pt/cards/sv08-138",
+  "card-sv05-136": "https://api.tcgdex.net/v2/pt/cards/sv05-136",
+  "card-swsh4-77": "https://api.tcgdex.net/v2/pt/cards/swsh4-77",
+  "card-sm9-81": "https://api.tcgdex.net/v2/pt/cards/sm9-81",
+  "card-xy8-98": "https://api.tcgdex.net/v2/pt/cards/xy8-98",
+  "card-sv07-102": "https://api.tcgdex.net/v2/pt/cards/sv07-102",
+  "card-swsh8-84": "https://api.tcgdex.net/v2/pt/cards/swsh8-84"
  },
- "sets_detalhe": [], "imagens": {}}
+ "sets_detalhe": [
+  [
+   "30th",
+   "pt"
+  ],
+  [
+   "me01",
+   "pt"
+  ],
+  [
+   "30th-c",
+   "pt"
+  ]
+ ],
+ "imagens": {}
+}
