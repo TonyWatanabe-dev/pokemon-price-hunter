@@ -1,0 +1,58 @@
+name: Imagens de cartas (TCGdex)
+# Baixa imagens oficiais das cartas de uma pauta (config/cartas/pautas/*.txt) ou de um filtro e publica
+# no ramo órfão "cartas-imagens" (acumulativo, sem force). Só manual. Autorizado pelo proprietário em 16/10/2026.
+on:
+  workflow_dispatch:
+    inputs:
+      lista:
+        description: "Pauta (ex.: config/cartas/pautas/semana1.txt). Vazio = usar os filtros abaixo"
+        default: "config/cartas/pautas/semana1.txt"
+      filtros:
+        description: "Filtros extras do script (ex.: --colecao 30th --raridade \"Pikachu Rare\")"
+        default: ""
+      formato:
+        description: "png (fundo transparente) ou webp"
+        default: "png"
+permissions:
+  contents: write
+concurrency:
+  group: cartas-imagens
+  cancel-in-progress: false
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Baixar imagens
+        env:
+          LISTA: ${{ inputs.lista }}
+          FILTROS: ${{ inputs.filtros }}
+          FORMATO: ${{ inputs.formato }}
+        run: |
+          ARGS=(--saida "$RUNNER_TEMP/cartas" --formato "$FORMATO")
+          [ -n "$LISTA" ] && ARGS+=(--lista "$LISTA")
+          eval "EXTRA=($FILTROS)"
+          python3 -I tools/cartas-pt-imagens.py "${ARGS[@]}" "${EXTRA[@]}"
+      - name: Publicar no ramo cartas-imagens
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          D=$(mktemp -d)
+          REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --heads "$REMOTE" cartas-imagens >/dev/null; then
+            git clone -q --depth 1 -b cartas-imagens "$REMOTE" "$D"
+          else
+            git -C "$D" init -q -b cartas-imagens && git -C "$D" remote add origin "$REMOTE"
+          fi
+          cd "$D"
+          # a Vercel lê a config do commit recebido: sem isto cada push vira deploy com erro (ver tools/push-data.sh)
+          printf '%s\n' '{ "git": { "deploymentEnabled": { "cartas-imagens": false } } }' > vercel.json
+          mkdir -p cartas && cp -n "$RUNNER_TEMP"/cartas/* cartas/ 2>/dev/null || true
+          [ -f "$RUNNER_TEMP/cartas/CREDITOS.tsv" ] && sort -u "$RUNNER_TEMP/cartas/CREDITOS.tsv" cartas/CREDITOS.tsv -o cartas/CREDITOS.tsv 2>/dev/null || true
+          git config user.name "price-hunter-bot"; git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && { echo "nada novo"; exit 0; }
+          git commit -qm "cartas: ${{ inputs.lista }} ${{ inputs.filtros }} ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git push -q origin cartas-imagens
+          ls cartas | wc -l
