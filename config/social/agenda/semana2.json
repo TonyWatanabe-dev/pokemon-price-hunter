@@ -1,0 +1,117 @@
+{
+  "semana": "26/10 a 01/11/2026",
+  "pasta": "assets/social/agenda/semana2",
+  "itens": [
+    {
+      "id": "s2-seg-olha-o-traco-yoshirotten",
+      "quando": "2026-10-26T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S2_Seg_1.jpg",
+        "S2_Seg_2.jpg",
+        "S2_Seg_3.jpg",
+        "S2_Seg_4.jpg"
+      ],
+      "legenda": "YOSHIROTTEN transformou Mewtwo e Mew em capa de disco futurista. São as duas únicas Futuristic Rare da Celebração de 30 Anos.\n\nQual das duas farmou mais aura? 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #yoshirotten #mewtwo"
+    },
+    {
+      "id": "s2-ter-grupo-do-zap",
+      "quando": "2026-10-27T12:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S2_Ter.jpg"
+      ]
+    },
+    {
+      "id": "s2-qua-deu-lucro",
+      "quando": "2026-10-28T12:00",
+      "tipo": "imagem",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S2_Qua.jpg"
+      ],
+      "legenda": "Paguei R$ 114,99 em 8 packs do Desafio Estratégico. Deu lucro ou prejuízo?\n\nChuta nos comentários antes de ver o vídeo: 🤑 ou 😭\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #deulucro #packopening"
+    },
+    {
+      "id": "s2-qui-halloween",
+      "quando": "2026-10-29T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S2_Qui_1.jpg",
+        "S2_Qui_2.jpg",
+        "S2_Qui_3.jpg",
+        "S2_Qui_4.jpg",
+        "S2_Qui_5.jpg",
+        "S2_Qui_6.jpg",
+        "S2_Qui_7.jpg"
+      ],
+      "legenda": "6 cartas pra assombrar o binder neste Halloween: Mega Gengar ex, Mimikyu da Equipe Rocket, Banette, Chandelure, Drifloon e Gourgeist ex.\n\nQual delas mora no seu? 👻\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #halloween #gengar"
+    },
+    {
+      "id": "s2-sex-miraidon",
+      "quando": "2026-10-30T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram",
+        "tiktok"
+      ],
+      "drive": "",
+      "legenda": "Unboxing da caixa Miraidon. A melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #unboxing #miraidon"
+    },
+    {
+      "id": "s2-sab-rasga-o-pack",
+      "quando": "2026-10-31T10:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram",
+        "tiktok"
+      ],
+      "drive": "",
+      "legenda": "Rasga o pack: farmou aura ou brick? A melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #packopening"
+    },
+    {
+      "id": "s2-sab-feliz-halloween",
+      "quando": "2026-10-31T18:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S2_Sab.jpg"
+      ]
+    },
+    {
+      "id": "s2-dom-so-pode-levar-uma",
+      "quando": "2026-11-01T10:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S2_Dom.jpg"
+      ]
+    },
+    {
+      "id": "s2-dom-deu-lucro",
+      "quando": "2026-11-01T18:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram",
+        "tiktok"
+      ],
+      "drive": "",
+      "legenda": "Deu Lucro? O placar da abertura de sábado. A melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #deulucro"
+    }
+  ]
+}

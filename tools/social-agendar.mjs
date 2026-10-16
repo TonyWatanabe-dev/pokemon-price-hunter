@@ -65,7 +65,7 @@ for (const it of itens) {
       contas[plataforma] ??= await cli.conta(plataforma, perfil);
       if (modo === 'simular' && plataforma !== 'tiktok') { anota('notice', `✓ ${it.id} · ${plataforma} · mídia enviada (a Zernio só simula TikTok; post não validado)`); continue; }
       const corpo = montarPost(it, { accountId: contas[plataforma], plataforma, urls, simular: modo === 'simular' });
-      const idem = createHash('sha256').update(`${it.id}|${plataforma}|${it.quando}`).digest('hex').slice(0, 32);
+      const idem = createHash('sha256').update(`${it.id}|${plataforma}|${it.quando}|${it.legenda ?? ''}|${urls.join(',')}`).digest('hex').slice(0, 32);
       const r = await cli.postar(corpo, modo === 'agendar' ? idem : undefined);
       anota(r.status === 'invalido' ? 'error' : 'notice', `${r.status === 'invalido' ? '✗' : '✓'} ${it.id} · ${plataforma} · ${it.quando} · ${r.status}${r.detalhe ? ' · ' + r.detalhe : ''}`);
       if (r.status === 'invalido') falhas++;
