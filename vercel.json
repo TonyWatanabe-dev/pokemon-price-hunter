@@ -155,6 +155,11 @@
       "permanent": true
     },
     {
+      "source": "/pistas",
+      "destination": "/oportunidades",
+      "permanent": false
+    },
+    {
       "source": "/grupos",
       "destination": "https://chat.whatsapp.com/LM089Fa3pdz8UPA8uP7rz8",
       "permanent": false

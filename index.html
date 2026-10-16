@@ -636,6 +636,8 @@ a.navbtn{text-decoration:none}
 .tipc:active{transform:scale(.985)}
 @media (hover:hover) and (pointer:fine){.tipc:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}}
 .tipc-ph{width:76px;height:76px;border-radius:12px}
+.tip-card{border-style:dashed}.tip-card .tip-badge{--sc:var(--warn)}
+.tip-note{display:flex;gap:6px;align-items:flex-start;margin:6px 0 0;font-size:12.5px;line-height:1.4;color:var(--muted)}.tip-note .icon{flex:none;margin-top:1px}
 .tipc-b{display:flex;flex-direction:column;gap:3px;min-width:0}
 .tipc-src{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);min-width:0;white-space:nowrap}
 .tipc-src img{width:16px;height:16px;border-radius:4px;flex:none;background:#fff}
@@ -1402,7 +1404,6 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
     <nav class="topnav" aria-label="Seções">
       <a class="navbtn" data-go="" href="/"><span class="lbl">Início</span><svg class="icon nav-ico"><use href="#i-house"/></svg></a>
       <a class="navbtn" data-go="oportunidades" href="/oportunidades"><span class="lbl">Oportunidades</span><svg class="icon nav-ico"><use href="#i-flame-f"/></svg></a>
-      <a class="navbtn" data-go="pistas" href="/pistas"><span class="lbl">Pistas</span><svg class="icon nav-ico"><use href="#i-lightbulb"/></svg><span class="count c-tip" hidden></span></a>
       <a class="navbtn" data-go="copag" href="/precos"><span class="lbl">Preços Copag</span><svg class="icon nav-ico"><use href="#i-tag"/></svg></a>
       <a class="navbtn" data-go="prevenda" href="/pre-vendas"><span class="lbl">Pré-vendas</span><svg class="icon nav-ico"><use href="#i-calendar-blank"/></svg><span class="count c-pre" hidden></span></a>
       <span class="navsep" aria-hidden="true"></span>
@@ -1424,7 +1425,7 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/pistas" data-go="pistas">Pistas</a><a href="/lojas" data-go="lojas">Lojas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Os links "Ver na Amazon" são de afiliado: como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas, e isso não muda a comparação de preços. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/lojas" data-go="lojas">Lojas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -1446,7 +1447,6 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 <nav class="tabbar" aria-label="Seções">
   <button type="button" data-go=""><svg class="icon"><use href="#i-house"/></svg><span>Início</span></button>
   <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-flame-f"/></svg><span>Ofertas</span></button>
-  <button type="button" data-go="pistas"><svg class="icon"><use href="#i-lightbulb"/></svg><span>Pistas</span><span class="count c-tip" hidden></span></button>
   <button type="button" data-go="copag"><svg class="icon"><use href="#i-tag"/></svg><span>Preços</span></button>
   <button type="button" data-more><svg class="icon"><use href="#i-dots-three"/></svg><span>Mais</span><span class="count c-hit" hidden></span></button>
 </nav>
@@ -1496,7 +1496,7 @@ const afilSelo=(u,geral)=>{if(!geral&&outUrl(u)===u)return"";const id="afn"+Math
 const CONTATO="contato.tcgpricehunter@gmail.com";
 const norm=(t)=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 /* Rotas: endereços reais em português (o Vercel manda todos para esta página) */
-const ROUTES={"":"deals",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"pistas",lojas:"lojas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
+const ROUTES={"":"deals",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",precos:"copag","pre-vendas":"prevenda",pistas:"oportunidades",lojas:"lojas","como-funciona":"guia",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PATHS={deals:"",busca:"busca",produtos:"oportunidades",oportunidades:"oportunidades",copag:"precos",prevenda:"pre-vendas",pistas:"pistas",lojas:"lojas",guia:"como-funciona",glossario:"guia/glossario",termos:"termos",privacidade:"privacidade",conta:"conta",favoritos:"favoritos",alertas:"alertas",configuracoes:"configuracoes"};
 const PRIVATE=["conta","favoritos","alertas","configuracoes"];
 const OLDHASH={pistas:"pistas",copag:"precos",prevenda:"pre-vendas",lojas:"lojas",guia:"como-funciona",termos:"termos",privacidade:"privacidade",favoritos:"favoritos"};
@@ -1781,7 +1781,7 @@ function feedHTML(){
   const ev=dedupeAct(activity()).slice(0,10).map((e)=>({t:e.t,html:actItem(e)}));
   const tp=liveTips().slice(0,6).map((t)=>({t:t.postedAt||t.firstSeen,html:tipItem(t)}));
   const all=[...ev,...tp].sort((a,b)=>String(b.t).localeCompare(String(a.t))).slice(0,9);
-  return`<section class="feed">${sectionHead("","Pistas recentes","O Hunter está sempre procurando. Isto foi o que ele encontrou por último.",seeAll("pistas","Telegram"))}
+  return`<section class="feed">${sectionHead("","Pistas recentes","O Hunter está sempre procurando. Isto foi o que ele encontrou por último.",seeAll("oportunidades","Ver nas ofertas"))}
   ${all.length?`<ol class="ai-list">${all.map((x)=>x.html).join("")}</ol>`:`<p class="soft-empty">Ainda não temos dados suficientes para mostrar movimentos recentes.</p>`}</section>`;
 }
 function dropsHTML(){
@@ -2992,6 +2992,44 @@ function buscaNav(){const u=buscaURL();if(location.pathname+location.search!==u)
 /* Categorias do site (tipo ou grupo do produto). Home e /oportunidades leem as oportunidades da API (6B.2: sem oppPool). */
 const CATS=[["","Todos"],["Boosters","Todos os boosters"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
 const catMatch=(p,c)=>!c||p.type===c||p.group===c;
+/* Pistas misturadas nas oportunidades (decisão do proprietário, 16/10/2026): a pista identificada, viva, com preço, que não
+   virou oferta e não está barata demais entra entre as ofertas, uma a cada TIP_EVERY cartões, com o selo "Pista não verificada".
+   Não tem nota, faixa nem confiança: os filtros de nota, confiança, referência e loja escondem as pistas. Uma por produto
+   (a de menor preço), maior desconto sobre a Copag primeiro ("Menor preço": a mais barata primeiro). Fonte: GET /api/v1/site/pagina/pistas. */
+const OPP_TIPS={st:"idle",l:[]};const TIP_EVERY=4;
+async function loadOppTips(){if(OPP_TIPS.st!=="idle")return false;OPP_TIPS.st="loading";const d=await apiGet("site/pagina/pistas");
+  if(d&&Array.isArray(d.tips)){if(Array.isArray(d.products)&&typeof mergeProducts==="function")mergeProducts(d.products);OPP_TIPS.l=d.tips;OPP_TIPS.st="ok";return true}
+  OPP_TIPS.st="error";return false}   /* sem pistas: a página segue só com as ofertas (não tenta de novo a cada filtro) */
+function oppTips(){
+  if(OPP_TIPS.st!=="ok"||OF.faixa||OF.conf||OF.ref||OF.loja)return[];
+  const mx=Number(OF.max),hasMax=OF.max!==""&&Number.isFinite(mx)&&mx>=0,ab=Number(OF.abaixo)||0;const by=new Map();
+  for(const t of OPP_TIPS.l){if(!t||!t.productId||t.expired||t.anomalous||t.virouOferta||!(t.price>0))continue;
+    const p=P[t.productId];if(OF.cat&&!(p&&catMatch(p,OF.cat)))continue;if(OF.col&&!(p&&p.collection===OF.col))continue;
+    if(hasMax&&t.price>mx)continue;if(ab&&!((t.discount??0)*100>=ab))continue;
+    const b=by.get(t.productId);if(!b||t.price<b.price)by.set(t.productId,t)}
+  const rec=(a,b)=>String(b.postedAt||b.firstSeen||"").localeCompare(String(a.postedAt||a.firstSeen||""));
+  return[...by.values()].sort(OF.sort==="preco"?(a,b)=>a.price-b.price||rec(a,b):(a,b)=>(b.discount??-9)-(a.discount??-9)||rec(a,b));
+}
+function pistaCard(t){
+  const p=P[t.productId]||{};const href="/produto/"+(SLUG[t.productId]||encodeURIComponent(t.productId));const d=t.discount;
+  const src=/^Pelando$/i.test(t.source||"")?"Pelando":"@"+String(t.source||"").replace(/^Telegram\s+@?/,"");const loja=t.store||"loja";
+  const nome=p.typeLabel||t.label||t.title||"";const when=t.postedAt||t.firstSeen;
+  return`<article class="deal opp-card tip-card" data-tip="${esc(t.id)}" data-cat="${catOf(p)}" style="--ec:${g(p).c}">
+  <a class="deal-hit" href="${href}" data-p="${esc(t.productId)}" aria-label="${esc([p.collectionName||t.collectionName,nome].filter(Boolean).join(" · "))}"></a>
+  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,null,"photo deal-ph")}<span class="deal-badge tip-badge" title="Promoção postada por pessoas; ninguém conferiu estoque nem vendedor"><i></i>Pista não verificada</span>${catChip(p)}</div>
+  <div class="deal-body">
+    <p class="deal-col">${esc(p.collectionName||t.collectionName||"")}</p>
+    <h2 class="deal-name">${esc(nome)}</h2>
+    <div class="opp-pv"><p class="deal-price opp-price"><b>${money(t.price)}</b></p>${d!=null&&d>=.0005?`<p class="opp-cmp"><b>−${pctPts(d*100)}</b> <span class="opp-cmp-w">abaixo</span> <span class="opp-cmp-r">do preço Copag</span></p>`:`<p class="opp-ref none">Sem comparação com a Copag</p>`}<p class="opp-ship">${when?`Postada ${ago(when)} · `:""}via ${esc(src)}</p></div>
+    <p class="tip-note">${ic("lightbulb")}<span>Pista: estoque e vendedor não conferidos. Fica fora do Opportunity Score.</span></p>
+    <div class="deal-foot"><span class="deal-store">${esc(t.store||"")}</span><div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener"><span class="cta-l">Ver pista</span><span class="sr"> na ${esc(loja)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div></div>
+  </div>
+</article>`;
+}
+/* cartões de items[from…] com as pistas nos encaixes (depois do 4º, 8º, …); na última página, as pistas que sobraram vão no fim */
+function oppMix(items,from,tips,last,opt={}){let h="";
+  for(let i=from;i<items.length;i++){h+=oppCard(items[i],i,opt);if((i+1)%TIP_EVERY===0){const t=tips[(i+1)/TIP_EVERY-1];if(t)h+=pistaCard(t)}}
+  if(last)h+=tips.slice(Math.floor(items.length/TIP_EVERY)).map(pistaCard).join("");return h}
 /* Oportunidades (6B.1): 100% pela API do Opportunity Engine (GET /api/v1/oportunidades).
    Nada de regra de negócio aqui: score, faixa, confiança, referência atual, % abaixo da referência, filtros e ordem
    chegam prontos do servidor. O navegador só monta a URL e desenha. */
@@ -3148,7 +3186,7 @@ function oppCard(x,i,opt={}){const H=opt.h||"h3";
 }
 const oppSkel=()=>`<div class="deals">${'<div class="skel" style="height:440px;border-radius:20px"></div>'.repeat(4)}</div>`;
 function oppBar(){const n=oppActive();const t=OPP.total;
-  return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}</span>${n?`<button class="linkbtn" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
+  return`<div class="fbar2 opp-bar"><div class="fbar2-row">${filterControls()}</div><button class="ftoggle fbar2-btn" type="button" data-fsheet>${ic("funnel")}Filtros${n?`<span class="count">${n}</span>`:""}</button><div class="opp-sort-m">${ofSel("sort","Ordenar",OSORTS,OF.sort,"om")}</div><span class="fbar2-n">${t==null?"":`${t} ${t===1?"oferta":"ofertas"}`}${t!=null&&OPP.status==="ok"&&oppTips().length?` · ${oppTips().length} ${oppTips().length===1?"pista":"pistas"}`:""}</span>${n?`<button class="linkbtn" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`}
 function oppBody(){
   if(OPP.status==="loading"&&!OPP.items.length)return oppSkel();
   if(OPP.status==="error")return`<div class="empty err-state" role="alert">${ic("warning")}<h2>Não conseguimos carregar as oportunidades agora</h2><p>Pode ser a conexão ou uma instabilidade rápida.</p><button class="btn" type="button" data-oppretry>${ic("arrow-clockwise")}Tentar de novo</button></div>`;
@@ -3156,16 +3194,16 @@ function oppBody(){
   if(OPP.status==="nodb")return`<div class="empty"><h2>Oportunidades indisponíveis no momento</h2><p>As oportunidades vêm do Opportunity Engine e não estão disponíveis agora. Nenhuma nota é estimada no lugar.</p></div>`;
   if(!OPP.items.length)return`<div class="empty" role="status"><h2>Nenhuma oportunidade encontrada</h2><p>${oppActive()?"Nenhuma oferta atende a esses filtros agora.":"O Opportunity Engine ainda não avaliou ofertas com estoque."}</p>${oppActive()?`<button class="btn ghost" type="button" data-ofclear>Limpar filtros</button>`:""}</div>`;
   const drop=OF.sort==="queda"&&!OPP.items.some((x)=>x.product_variation_7d!=null);
-  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${OPP.items.map((x,i)=>oppCard(x,i,{h:"h2"})).join("")}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
+  return`${drop?`<p class="hnote">"Maior queda" compara com 7 dias atrás. Ainda não há 7 dias de histórico, então a lista segue a ordem do Opportunity Score.</p>`:""}<div class="deals">${oppMix(OPP.items,0,oppTips(),OPP.page>=OPP.pages,{h:"h2"})}</div>${OPP.page<OPP.pages&&OPP.status==="ok"?`<div id="opp-more" class="prod-more" data-page="${OPP.page+1}" style="height:1px"></div>`:""}`;
 }
 function paintOpp(){
   $("#view").innerHTML=`<div class="opp">
-  <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>A melhor oferta com estoque de cada produto, avaliada pelo Opportunity Engine e ordenada pelo Opportunity Score (atratividade da oportunidade). A confiança mostra quão completos são os dados usados na avaliação; ela não altera a nota.</p></header>
+  <header class="opp-head"><h1>${ic("flame-f","icon fire")}Oportunidades</h1><p>A melhor oferta com estoque de cada produto, avaliada pelo Opportunity Engine e ordenada pelo Opportunity Score (atratividade da oportunidade). A confiança mostra quão completos são os dados usados na avaliação; ela não altera a nota. No meio das ofertas aparecem pistas: promoções postadas por pessoas no Telegram e no Pelando, com o selo "Pista não verificada", fora da nota.</p></header>
   ${oppBar()}<div class="opp-list${OPP.status==="loading"&&OPP.items.length?" is-loading":""}" aria-busy="${OPP.status==="loading"}">${oppBody()}</div></div>`;
   watchOppMore();if(typeof revealInit==="function")revealInit();
 }
 async function renderOpp(){
-  loadOppStores();
+  loadOppStores();loadOppTips().then((ok)=>{if(ok&&view==="oportunidades"&&OPP.status==="ok")paintOpp()});
   const key=oppQuery(1);
   if(OPP.key===key&&OPP.status==="ok"){paintOpp();return}
   /* troca de filtro: a lista atual continua na tela (esmaecida) até a nova chegar; sem lista, esqueleto */
@@ -3182,7 +3220,7 @@ async function moreOpp(page){
   const key=OPP.key;const d=await apiGet(oppQuery(page));if(OPP.key!==key||view!=="oportunidades")return;
   if(!d||!Array.isArray(d.data)){const s=$("#opp-more");if(s){s.removeAttribute("style");s.innerHTML=`<p class="soft-empty" role="alert">Não conseguimos carregar mais oportunidades agora. A lista acima continua válida. <button class="linkbtn" type="button" data-oppmoreretry="${page}">Tentar de novo</button></p>`}return}
   const box=$("#view .opp .deals");if(!box)return;const base=OPP.items.length;OPP.items=OPP.items.concat(d.data);OPP.page=page;
-  box.insertAdjacentHTML("beforeend",d.data.map((x,i)=>oppCard(x,base+i)).join(""));
+  box.insertAdjacentHTML("beforeend",oppMix(OPP.items,base,oppTips(),page>=OPP.pages));
   $("#opp-more")?.remove();if(page<OPP.pages)box.insertAdjacentHTML("afterend",`<div id="opp-more" class="prod-more" data-page="${page+1}" style="height:1px"></div>`);watchOppMore();if(typeof revealInit==="function")revealInit();
 }
 /* UX — pausa das notas (stale_db ou 503 em /oportunidades). Motivo e horário vêm da API (meta.message, meta.freshness);
