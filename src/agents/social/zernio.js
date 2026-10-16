@@ -99,6 +99,16 @@ export function criarCliente({ chave, fetch: fetchFn, apiBase = API_PADRAO, time
       await chamar(up.href, { metodo: 'PUT', corpo: bytes, cab: { 'content-type': contentType }, bruto: true, tempo: Math.max(timeoutMs, 300000) });
       return pub.href;
     },
+    /** Posts agendados do perfil (GET /posts?status=scheduled). */
+    async agendados(profileId) {
+      const q = new URLSearchParams({ status: 'scheduled', limit: '200', ...(profileId ? { profileId } : {}) });
+      const { dado } = await chamar(`${base}/posts?${q}`);
+      return Array.isArray(dado.posts) ? dado.posts : [];
+    },
+    async cancelar(postId) {
+      if (!/^[a-f0-9]{24}$/i.test(String(postId))) throw new Error('postId inválido');
+      await chamar(`${base}/posts/${postId}`, { metodo: 'DELETE' });
+    },
     async postar(corpo, idempotencia) {
       const { status, dado } = await chamar(`${base}/posts`, { metodo: 'POST', corpo, cab: idempotencia ? { 'idempotency-key': idempotencia } : {} });
       const post = obj(dado.post);
