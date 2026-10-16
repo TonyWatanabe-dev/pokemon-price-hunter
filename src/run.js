@@ -21,7 +21,7 @@ import { tlsModeFor } from './db/ssl.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
 import { contexto as telegramUsuario } from './telegram-usuario.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent, capJsonlLines } from './alerts.js';
-import { collectTips, firstPrice } from './tips.js';
+import { collectTips, firstPrice, tipVencida } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
 import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
@@ -528,7 +528,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     } catch (e) { log(`[pistas] ${e.message}`); }
   }
   const maxAge = (tipsCfg?.horasMaximas || 72) * 3600e3;
-  for (const [id, t] of Object.entries(tipStore)) { if (t.lastSeen !== T) t.isNew = false; if (now.getTime() - Date.parse(t.postedAt || t.firstSeen) > maxAge) delete tipStore[id]; }
+  // Data do post vem do HTML externo: ilegível ou no futuro (mais de 1 h) é descartada e vale a 1ª leitura (firstSeen).
+  // Sem data válida nenhuma, a pista expira já: antes, NaN nunca expirava e a pista ficava para sempre no topo.
+  for (const [id, t] of Object.entries(tipStore)) {
+    if (t.lastSeen !== T) t.isNew = false;
+    if (tipVencida(t, now.getTime(), maxAge)) delete tipStore[id];
+  }
   // Pistas antigas: relê o preço do texto com a regra atual (ignora parcela e preço condicionado a cartão).
   for (const t of Object.values(tipStore)) {
     if (t.lastSeen === T || !t.text) continue;
