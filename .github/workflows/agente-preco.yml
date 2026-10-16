@@ -1,0 +1,31 @@
+name: Agente de inteligência de preço (relatório)
+# Fase 7, item 8 — Price Intelligence Agent em modo SOMENTE EXPLICAÇÃO (tools/agente-preco.mjs): lê data/hist/,
+# state.json e meta.json (janela de desconfiança) do ramo data e escreve no resumo do job as variações do menor preço,
+# a causa provável, persistência, possíveis anomalias e a incerteza. Não define preço oficial, referência, score nem
+# alerta; não grava nada; não usa secrets. Desligado por padrão: só roda com a variável de repositório
+# AGENTE_INTELIGENCIA_PRECO=true e por acionamento manual.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: agente-preco
+  cancel-in-progress: true
+jobs:
+  relatorio:
+    if: vars.AGENTE_INTELIGENCIA_PRECO == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      # Histórico, ofertas e janela de desconfiança do MESMO commit do ramo data.
+      - name: Ler dados publicados (ramo data)
+        run: |
+          mkdir -p rel
+          git fetch -q --depth 1 origin data
+          git archive FETCH_HEAD data/hist | tar -x -C rel --strip-components=1
+          for f in state meta; do git show "FETCH_HEAD:data/$f.json" > "rel/$f.json" || rm -f "rel/$f.json"; done
+      - name: Relatório no resumo do job
+        run: node tools/agente-preco.mjs rel >> "$GITHUB_STEP_SUMMARY"
