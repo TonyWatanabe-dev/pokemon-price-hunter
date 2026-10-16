@@ -1,0 +1,545 @@
+[
+ {
+  "id": "sm6-1",
+  "localId": "1",
+  "name": "Exeggcute",
+  "image": "https://assets.tcgdex.net/pt/sm/sm6/1"
+ },
+ {
+  "id": "sm1-2",
+  "localId": "2",
+  "name": "Metapod",
+  "image": "https://assets.tcgdex.net/pt/sm/sm1/2"
+ },
+ {
+  "id": "swsh3.5-2",
+  "localId": "2",
+  "name": "Weedle",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh3.5/2"
+ },
+ {
+  "id": "sm9-4",
+  "localId": "4",
+  "name": "Kakuna",
+  "image": "https://assets.tcgdex.net/pt/sm/sm9/4"
+ },
+ {
+  "id": "xy8-4",
+  "localId": "4",
+  "name": "Cacnea",
+  "image": "https://assets.tcgdex.net/pt/xy/xy8/4"
+ },
+ {
+  "id": "swsh10.5-006",
+  "localId": "006",
+  "name": "Spinarak",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh10.5/006"
+ },
+ {
+  "id": "me02-009",
+  "localId": "009",
+  "name": "Nymble",
+  "image": "https://assets.tcgdex.net/pt/me/me02/009"
+ },
+ {
+  "id": "sv09-009",
+  "localId": "009",
+  "name": "Karrablast",
+  "image": "https://assets.tcgdex.net/pt/sv/sv09/009"
+ },
+ {
+  "id": "sm10-10",
+  "localId": "10",
+  "name": "Venonat",
+  "image": "https://assets.tcgdex.net/pt/sm/sm10/10"
+ },
+ {
+  "id": "swsh9-010",
+  "localId": "010",
+  "name": "Wormadam",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh9/010"
+ },
+ {
+  "id": "swsh11-011",
+  "localId": "011",
+  "name": "Seedot",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh11/011"
+ },
+ {
+  "id": "xy11-12",
+  "localId": "12",
+  "name": "Foongus",
+  "image": "https://assets.tcgdex.net/pt/xy/xy11/12"
+ },
+ {
+  "id": "swsh3-14",
+  "localId": "14",
+  "name": "Bounsweet",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh3/14"
+ },
+ {
+  "id": "sm11-15",
+  "localId": "15",
+  "name": "Fomantis",
+  "image": "https://assets.tcgdex.net/pt/sm/sm11/15"
+ },
+ {
+  "id": "sm4-16",
+  "localId": "16",
+  "name": "Starmie",
+  "image": "https://assets.tcgdex.net/pt/sm/sm4/16"
+ },
+ {
+  "id": "sm12-17",
+  "localId": "17",
+  "name": "Rowlet",
+  "image": "https://assets.tcgdex.net/pt/sm/sm12/17"
+ },
+ {
+  "id": "sm10-18",
+  "localId": "18",
+  "name": "Grubbin",
+  "image": "https://assets.tcgdex.net/pt/sm/sm10/18"
+ },
+ {
+  "id": "sm6-18",
+  "localId": "18",
+  "name": "Litleo",
+  "image": "https://assets.tcgdex.net/pt/sm/sm6/18"
+ },
+ {
+  "id": "sv10-021",
+  "localId": "021",
+  "name": "Smoliv",
+  "image": "https://assets.tcgdex.net/pt/sv/sv10/021"
+ },
+ {
+  "id": "swsh3-22",
+  "localId": "22",
+  "name": "Torchic",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh3/22"
+ },
+ {
+  "id": "swsh6-22",
+  "localId": "22",
+  "name": "Castform Forma Ensolarada",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh6/22"
+ },
+ {
+  "id": "sm10-23",
+  "localId": "23",
+  "name": "Darumaka",
+  "image": "https://assets.tcgdex.net/pt/sm/sm10/23"
+ },
+ {
+  "id": "swsh11-024",
+  "localId": "024",
+  "name": "Litwick",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh11/024"
+ },
+ {
+  "id": "swsh5-27",
+  "localId": "27",
+  "name": "Salandit",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh5/27"
+ },
+ {
+  "id": "swsh5-29",
+  "localId": "29",
+  "name": "Sizzlipede",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh5/29"
+ },
+ {
+  "id": "swsh9-030",
+  "localId": "030",
+  "name": "Staryu",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh9/030"
+ },
+ {
+  "id": "sv04-034",
+  "localId": "034",
+  "name": "Octillery",
+  "image": "https://assets.tcgdex.net/pt/sv/sv04/034"
+ },
+ {
+  "id": "sm9-35",
+  "localId": "35",
+  "name": "Geodude de Alola",
+  "image": "https://assets.tcgdex.net/pt/sm/sm9/35"
+ },
+ {
+  "id": "sv03-040",
+  "localId": "040",
+  "name": "Larvesta",
+  "image": "https://assets.tcgdex.net/pt/sv/sv03/040"
+ },
+ {
+  "id": "me05-042",
+  "localId": "042",
+  "name": "Mankey",
+  "image": "https://assets.tcgdex.net/pt/me/me05/042"
+ },
+ {
+  "id": "sm7.5-43",
+  "localId": "43",
+  "name": "Shelgon"
+ },
+ {
+  "id": "sv07-043",
+  "localId": "043",
+  "name": "Chewtle",
+  "image": "https://assets.tcgdex.net/pt/sv/sv07/043"
+ },
+ {
+  "id": "swsh11-046",
+  "localId": "046",
+  "name": "Ducklett",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh11/046"
+ },
+ {
+  "id": "sm9-47",
+  "localId": "47",
+  "name": "Joltik",
+  "image": "https://assets.tcgdex.net/pt/sm/sm9/47"
+ },
+ {
+  "id": "xy7-47",
+  "localId": "47",
+  "name": "Beldum",
+  "image": "https://assets.tcgdex.net/pt/xy/xy7/47"
+ },
+ {
+  "id": "xy10-49",
+  "localId": "49",
+  "name": "Carbink",
+  "image": "https://assets.tcgdex.net/pt/xy/xy10/49"
+ },
+ {
+  "id": "sm2-50",
+  "localId": "50",
+  "name": "Trubbish",
+  "image": "https://assets.tcgdex.net/pt/sm/sm2/50"
+ },
+ {
+  "id": "sm4-51",
+  "localId": "51",
+  "name": "Primeape",
+  "image": "https://assets.tcgdex.net/pt/sm/sm4/51"
+ },
+ {
+  "id": "sm2-52",
+  "localId": "52",
+  "name": "Gothita",
+  "image": "https://assets.tcgdex.net/pt/sm/sm2/52"
+ },
+ {
+  "id": "me01-052",
+  "localId": "052",
+  "name": "Helioptile",
+  "image": "https://assets.tcgdex.net/pt/me/me01/052"
+ },
+ {
+  "id": "sv06-056",
+  "localId": "056",
+  "name": "Froakie",
+  "image": "https://assets.tcgdex.net/pt/sv/sv06/056"
+ },
+ {
+  "id": "sm7-57",
+  "localId": "57",
+  "name": "Gulpin",
+  "image": "https://assets.tcgdex.net/pt/sm/sm7/57"
+ },
+ {
+  "id": "sm7-58",
+  "localId": "58",
+  "name": "Swalot",
+  "image": "https://assets.tcgdex.net/pt/sm/sm7/58"
+ },
+ {
+  "id": "sm6-66",
+  "localId": "66",
+  "name": "Binacle",
+  "image": "https://assets.tcgdex.net/pt/sm/sm6/66"
+ },
+ {
+  "id": "xy6-68",
+  "localId": "68",
+  "name": "Dunsparce",
+  "image": "https://assets.tcgdex.net/pt/xy/xy6/68"
+ },
+ {
+  "id": "swsh7-68",
+  "localId": "68",
+  "name": "Woobat",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh7/68"
+ },
+ {
+  "id": "sv04-069",
+  "localId": "069",
+  "name": "Toxel",
+  "image": "https://assets.tcgdex.net/pt/sv/sv04/069"
+ },
+ {
+  "id": "sv10.5w-070",
+  "localId": "070",
+  "name": "Durant",
+  "image": "https://assets.tcgdex.net/pt/sv/sv10.5w/070"
+ },
+ {
+  "id": "xy9-72",
+  "localId": "72",
+  "name": "Nuzleaf",
+  "image": "https://assets.tcgdex.net/pt/xy/xy9/72"
+ },
+ {
+  "id": "sv02-072",
+  "localId": "072",
+  "name": "Pincurchin",
+  "image": "https://assets.tcgdex.net/pt/sv/sv02/072"
+ },
+ {
+  "id": "swsh7-76",
+  "localId": "76",
+  "name": "Pumpkaboo",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh7/76"
+ },
+ {
+  "id": "swsh4-77",
+  "localId": "77",
+  "name": "Dedenne",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh4/77"
+ },
+ {
+  "id": "sm8-80",
+  "localId": "80",
+  "name": "Pachirisu",
+  "image": "https://assets.tcgdex.net/pt/sm/sm8/80"
+ },
+ {
+  "id": "sm9-81",
+  "localId": "81",
+  "name": "Pancham",
+  "image": "https://assets.tcgdex.net/pt/sm/sm9/81"
+ },
+ {
+  "id": "swsh2-81",
+  "localId": "81",
+  "name": "Sandygast",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh2/81"
+ },
+ {
+  "id": "sv03-081",
+  "localId": "081",
+  "name": "Clefairy",
+  "image": "https://assets.tcgdex.net/pt/sv/sv03/081"
+ },
+ {
+  "id": "sv03.5-081",
+  "localId": "081",
+  "name": "Magnemite",
+  "image": "https://assets.tcgdex.net/pt/sv/sv03.5/081"
+ },
+ {
+  "id": "sv03.5-082",
+  "localId": "082",
+  "name": "Magneton",
+  "image": "https://assets.tcgdex.net/pt/sv/sv03.5/082"
+ },
+ {
+  "id": "swsh8-84",
+  "localId": "84",
+  "name": "Snom",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh8/84"
+ },
+ {
+  "id": "swsh11-086",
+  "localId": "086",
+  "name": "Machop",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh11/086"
+ },
+ {
+  "id": "xy5-87",
+  "localId": "87",
+  "name": "Hippopotas",
+  "image": "https://assets.tcgdex.net/pt/xy/xy5/87"
+ },
+ {
+  "id": "swsh6-91",
+  "localId": "91",
+  "name": "Clobbopus",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh6/91"
+ },
+ {
+  "id": "swsh4-91",
+  "localId": "91",
+  "name": "Drilbur",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh4/91"
+ },
+ {
+  "id": "swsh12.5-092",
+  "localId": "092",
+  "name": "Pawniard",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh12.5/092"
+ },
+ {
+  "id": "swsh12-093",
+  "localId": "093",
+  "name": "Baltoy",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh12/093"
+ },
+ {
+  "id": "swsh8-95",
+  "localId": "95",
+  "name": "Tynamo",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh8/95"
+ },
+ {
+  "id": "sm12-97",
+  "localId": "97",
+  "name": "Mimikyu",
+  "image": "https://assets.tcgdex.net/pt/sm/sm12/97"
+ },
+ {
+  "id": "sv03-097",
+  "localId": "097",
+  "name": "Sinistea",
+  "image": "https://assets.tcgdex.net/pt/sv/sv03/097"
+ },
+ {
+  "id": "xy8-98",
+  "localId": "98",
+  "name": "Snubbull",
+  "image": "https://assets.tcgdex.net/pt/xy/xy8/98"
+ },
+ {
+  "id": "sv07-102",
+  "localId": "102",
+  "name": "Meltan",
+  "image": "https://assets.tcgdex.net/pt/sv/sv07/102"
+ },
+ {
+  "id": "swsh10-109",
+  "localId": "109",
+  "name": "Shieldon",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh10/109"
+ },
+ {
+  "id": "sm11-111",
+  "localId": "111",
+  "name": "Relicanth",
+  "image": "https://assets.tcgdex.net/pt/sm/sm11/111"
+ },
+ {
+  "id": "sm10-113",
+  "localId": "113",
+  "name": "Sandile",
+  "image": "https://assets.tcgdex.net/pt/sm/sm10/113"
+ },
+ {
+  "id": "xy5-113",
+  "localId": "113",
+  "name": "Skitty",
+  "image": "https://assets.tcgdex.net/pt/xy/xy5/113"
+ },
+ {
+  "id": "swsh11-114",
+  "localId": "114",
+  "name": "Murkrow",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh11/114"
+ },
+ {
+  "id": "sm8-116",
+  "localId": "116",
+  "name": "Pupitar",
+  "image": "https://assets.tcgdex.net/pt/sm/sm8/116"
+ },
+ {
+  "id": "sv01-121",
+  "localId": "121",
+  "name": "Stonjourner",
+  "image": "https://assets.tcgdex.net/pt/sv/sv01/121"
+ },
+ {
+  "id": "sm8-123",
+  "localId": "123",
+  "name": "Dugtrio de Alola",
+  "image": "https://assets.tcgdex.net/pt/sm/sm8/123"
+ },
+ {
+  "id": "swsh1-130",
+  "localId": "130",
+  "name": "Ferroseed",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh1/130"
+ },
+ {
+  "id": "swsh8-131",
+  "localId": "131",
+  "name": "Sandshrew",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh8/131"
+ },
+ {
+  "id": "swsh4-133",
+  "localId": "133",
+  "name": "Taillow",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh4/133"
+ },
+ {
+  "id": "sv05-136",
+  "localId": "136",
+  "name": "Minccino",
+  "image": "https://assets.tcgdex.net/pt/sv/sv05/136"
+ },
+ {
+  "id": "sv08-138",
+  "localId": "138",
+  "name": "Applin",
+  "image": "https://assets.tcgdex.net/pt/sv/sv08/138"
+ },
+ {
+  "id": "sm8-139",
+  "localId": "139",
+  "name": "Ralts",
+  "image": "https://assets.tcgdex.net/pt/sm/sm8/139"
+ },
+ {
+  "id": "sv10.5b-141",
+  "localId": "141",
+  "name": "Klinklang",
+  "image": "https://assets.tcgdex.net/pt/sv/sv10.5b/141"
+ },
+ {
+  "id": "swsh2-146",
+  "localId": "146",
+  "name": "Bunnelby",
+  "image": "https://assets.tcgdex.net/pt/swsh/swsh2/146"
+ },
+ {
+  "id": "sv01-148",
+  "localId": "148",
+  "name": "Starly",
+  "image": "https://assets.tcgdex.net/pt/sv/sv01/148"
+ },
+ {
+  "id": "sv03-170",
+  "localId": "170",
+  "name": "Lillipup",
+  "image": "https://assets.tcgdex.net/pt/sv/sv03/170"
+ },
+ {
+  "id": "sv04-211",
+  "localId": "211",
+  "name": "Aipom",
+  "image": "https://assets.tcgdex.net/pt/sv/sv04/211"
+ },
+ {
+  "id": "swsh12.5gg-GG49",
+  "localId": "GG49",
+  "name": "Drapion V"
+ },
+ {
+  "id": "smp-SM229",
+  "localId": "SM229",
+  "name": "Venusaur e Snivy GX"
+ }
+]

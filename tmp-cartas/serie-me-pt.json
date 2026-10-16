@@ -1,0 +1,115 @@
+{
+ "id": "me",
+ "logo": "https://assets.tcgdex.net/pt/me/me01/logo",
+ "name": "Megaevolução",
+ "firstSet": {
+  "cardCount": {
+   "official": 8,
+   "total": 8
+  },
+  "id": "mee",
+  "name": "Megaevolução Energia"
+ },
+ "lastSet": {
+  "cardCount": {
+   "official": 128,
+   "total": 128
+  },
+  "id": "30th",
+  "name": "Celebração de 30 Anos"
+ },
+ "releaseDate": "2025-09-25",
+ "sets": [
+  {
+   "cardCount": {
+    "official": 8,
+    "total": 8
+   },
+   "id": "mee",
+   "name": "Megaevolução Energia"
+  },
+  {
+   "cardCount": {
+    "official": 0,
+    "total": 88
+   },
+   "id": "mep",
+   "name": "MEP Black Star Promos"
+  },
+  {
+   "cardCount": {
+    "official": 132,
+    "total": 188
+   },
+   "id": "me01",
+   "logo": "https://assets.tcgdex.net/pt/me/me01/logo",
+   "name": "Megaevolução",
+   "symbol": "https://assets.tcgdex.net/univ/me/me01/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 94,
+    "total": 130
+   },
+   "id": "me02",
+   "logo": "https://assets.tcgdex.net/pt/me/me02/logo",
+   "name": "Fogo Fantasmagórico"
+  },
+  {
+   "cardCount": {
+    "official": 217,
+    "total": 295
+   },
+   "id": "me02.5",
+   "logo": "https://assets.tcgdex.net/pt/me/me02.5/logo",
+   "name": "Heróis Excelsos",
+   "symbol": "https://assets.tcgdex.net/univ/me/me02.5/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 88,
+    "total": 124
+   },
+   "id": "me03",
+   "logo": "https://assets.tcgdex.net/pt/me/me03/logo",
+   "name": "Equilíbrio Perfeito",
+   "symbol": "https://assets.tcgdex.net/univ/me/me03/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 86,
+    "total": 122
+   },
+   "id": "me04",
+   "logo": "https://assets.tcgdex.net/pt/me/me04/logo",
+   "name": "Caos Ascendente",
+   "symbol": "https://assets.tcgdex.net/univ/me/me04/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 84,
+    "total": 120
+   },
+   "id": "me05",
+   "logo": "https://assets.tcgdex.net/pt/me/me05/logo",
+   "name": "Escuridão Absoluta",
+   "symbol": "https://assets.tcgdex.net/univ/me/me05/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 0,
+    "total": 30
+   },
+   "id": "30th-c",
+   "name": "Coleção Clássica de 30 Anos"
+  },
+  {
+   "cardCount": {
+    "official": 128,
+    "total": 128
+   },
+   "id": "30th",
+   "name": "Celebração de 30 Anos"
+  }
+ ]
+}

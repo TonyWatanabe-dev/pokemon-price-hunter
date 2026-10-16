@@ -1,0 +1,115 @@
+{
+ "id": "me",
+ "logo": "https://assets.tcgdex.net/en/me/me01/logo",
+ "name": "Mega Evolution",
+ "firstSet": {
+  "cardCount": {
+   "official": 8,
+   "total": 8
+  },
+  "id": "mee",
+  "name": "Mega Evolution Energy"
+ },
+ "lastSet": {
+  "cardCount": {
+   "official": 128,
+   "total": 158
+  },
+  "id": "30th",
+  "name": "30th Celebration"
+ },
+ "releaseDate": "2025-09-25",
+ "sets": [
+  {
+   "cardCount": {
+    "official": 8,
+    "total": 8
+   },
+   "id": "mee",
+   "name": "Mega Evolution Energy"
+  },
+  {
+   "cardCount": {
+    "official": 0,
+    "total": 89
+   },
+   "id": "mep",
+   "name": "MEP Black Star Promos"
+  },
+  {
+   "cardCount": {
+    "official": 132,
+    "total": 188
+   },
+   "id": "me01",
+   "logo": "https://assets.tcgdex.net/en/me/me01/logo",
+   "name": "Mega Evolution",
+   "symbol": "https://assets.tcgdex.net/univ/me/me01/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 94,
+    "total": 130
+   },
+   "id": "me02",
+   "logo": "https://assets.tcgdex.net/en/me/me02/logo",
+   "name": "Phantasmal Flames"
+  },
+  {
+   "cardCount": {
+    "official": 217,
+    "total": 295
+   },
+   "id": "me02.5",
+   "logo": "https://assets.tcgdex.net/en/me/me02.5/logo",
+   "name": "Ascended Heroes",
+   "symbol": "https://assets.tcgdex.net/univ/me/me02.5/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 88,
+    "total": 124
+   },
+   "id": "me03",
+   "logo": "https://assets.tcgdex.net/en/me/me03/logo",
+   "name": "Perfect Order",
+   "symbol": "https://assets.tcgdex.net/univ/me/me03/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 86,
+    "total": 122
+   },
+   "id": "me04",
+   "logo": "https://assets.tcgdex.net/en/me/me04/logo",
+   "name": "Chaos Rising",
+   "symbol": "https://assets.tcgdex.net/univ/me/me04/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 84,
+    "total": 120
+   },
+   "id": "me05",
+   "logo": "https://assets.tcgdex.net/en/me/me05/logo",
+   "name": "Pitch Black",
+   "symbol": "https://assets.tcgdex.net/univ/me/me05/symbol"
+  },
+  {
+   "cardCount": {
+    "official": 0,
+    "total": 30
+   },
+   "id": "30th-c",
+   "name": "30th Classic Collection"
+  },
+  {
+   "cardCount": {
+    "official": 128,
+    "total": 158
+   },
+   "id": "30th",
+   "name": "30th Celebration"
+  }
+ ]
+}
