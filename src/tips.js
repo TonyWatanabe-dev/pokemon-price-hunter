@@ -100,3 +100,12 @@ export async function collectTips(cfg, catalog, log = () => {}, deadline = null)
 }
 
 export { channelOf };
+
+/** Pista vencida? Data do post (HTML externo) ilegível ou mais de 1 h no futuro é apagada da pista e vale firstSeen;
+ *  sem data válida nenhuma, vence já (antes, Date.parse → NaN nunca vencia e a pista ficava no topo para sempre). */
+export function tipVencida(t, nowMs, maxAgeMs) {
+  const p = Date.parse(t.postedAt);
+  if (t.postedAt && !(Number.isFinite(p) && p <= nowMs + 3600e3)) delete t.postedAt;
+  const at = t.postedAt ? Date.parse(t.postedAt) : Date.parse(t.firstSeen);
+  return !Number.isFinite(at) || nowMs - at > maxAgeMs;
+}
