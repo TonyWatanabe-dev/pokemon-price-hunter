@@ -4,3 +4,11 @@ export const GRUPOS = Object.freeze({
   whatsapp: 'https://chat.whatsapp.com/LM089Fa3pdz8UPA8uP7rz8',
   telegram: 'https://t.me/+LzS_Jp1Wvas2NDhh',
 });
+
+// Perfis públicos do TCG Price Hunter (informados pelo dono; docs/ROADMAP-OPERACIONAL.md, canais de Social Media).
+// Mesma regra: index.html carrega cópia literal (const REDES) e test/redes-sociais-tests.js confere.
+export const REDES = Object.freeze({
+  instagram: 'https://www.instagram.com/tcgpricehunter151/',
+  tiktok: 'https://www.tiktok.com/@tcgpricehunter',
+  youtube: 'https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg',
+});

@@ -1236,7 +1236,7 @@ tr.click{cursor:pointer}
 .addstore .msg{grid-column:1/-1;font-size:13.5px;color:var(--muted);margin:0}
 .tiplink{color:inherit;text-decoration:none;display:block}.tiplink span{color:var(--muted)}@media (hover:hover){.tiplink:hover b{text-decoration:underline}}
 .tipmeta{display:block;margin-top:4px;font-size:13px;color:var(--muted)}.tipprice{display:inline-block;margin-bottom:6px;white-space:nowrap}
-.foot{margin:40px 2px 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.foot p{margin:0 0 8px;max-width:80ch}.foot b{color:var(--ink)}.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px}.foot-links a{color:var(--ink);font-weight:600}
+.foot{margin:40px 2px 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.foot p{margin:0 0 8px;max-width:80ch}.foot b{color:var(--ink)}.foot-links{display:flex;flex-wrap:wrap;gap:6px 18px}.foot-links a{color:var(--ink);font-weight:600}.foot-social{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:4px}.foot-social a{color:var(--ink);font-weight:600}
 .rule-del{margin-left:auto;font-size:14px;font-weight:600;color:var(--bad)}.rule-fix{margin-left:auto;color:var(--muted)}
 .alertbox{margin:16px 0 4px;padding:14px;border-radius:16px;background:var(--sunk)}.alertbox h2{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}.alrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.alertbox .btn.ghost{background:var(--surface);margin-top:8px;width:100%}.alertbox .note{margin:10px 0 0}.alertbox ul{margin:10px 0 0;padding:0;list-style:none;font-size:14px}.alertbox li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
 .rule{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line);font-size:15px}
@@ -1445,7 +1445,7 @@ body.has-dock .wrap{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))
 
 <main class="wrap" id="main">
   <div id="view"></div>
-  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas. Alguns links para Mercado Livre e Shopee também são de afiliado, sem custo extra para você: é isso que paga o site. Em empate de preço, a oferta com o nosso link aparece primeiro; ela nunca passa na frente de uma oferta mais barata. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/lojas" data-go="lojas">Lojas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p></footer>
+  <footer class="foot"><p><b>TCG Price Hunter</b> compara preços de lojas brasileiras com o preço sugerido oficial da Copag. Não é afiliado à Nintendo, The Pokémon Company, Creatures, Game Freak ou Copag. Pokémon e os nomes dos produtos são marcas de seus donos. Confira preço, frete e estoque na loja antes de comprar. Como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas. Alguns links para Mercado Livre e Shopee também são de afiliado, sem custo extra para você: é isso que paga o site. Em empate de preço, a oferta com o nosso link aparece primeiro; ela nunca passa na frente de uma oferta mais barata. Lojista: se não quiser que sua loja faça parte da busca, envie um e-mail para <a href="mailto:contato.tcgpricehunter@gmail.com">contato.tcgpricehunter@gmail.com</a> e ela é retirada.</p><p class="foot-links"><a href="/lojas" data-go="lojas">Lojas</a><a href="/como-funciona" data-go="guia">Como funciona</a><a href="/guia/glossario" data-go="glossario">Glossário</a><a href="/termos" data-go="termos">Termos de uso</a><a href="/privacidade" data-go="privacidade">Privacidade</a><a href="mailto:contato.tcgpricehunter@gmail.com">Contato</a></p><p class="foot-social" id="foot-social"></p></footer>
 </main>
 
 <dialog class="sheet" id="sheet" aria-labelledby="sh-title"></dialog>
@@ -2875,6 +2875,9 @@ const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag 
 const TITLES={grupos:"Grupos de ofertas de Pokémon TCG no WhatsApp e Telegram",busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",lojas:"Lojas de Pokémon TCG no Brasil",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
 /* Grupos de ofertas: convites oficiais (cópia literal de api/_lib/grupos.mjs; test/grupos-page-tests.js confere). */
 const GRUPOS={"whatsapp":"https://chat.whatsapp.com/LM089Fa3pdz8UPA8uP7rz8","telegram":"https://t.me/+LzS_Jp1Wvas2NDhh"};
+const REDES={"instagram":"https://www.instagram.com/tcgpricehunter151/","tiktok":"https://www.tiktok.com/@tcgpricehunter","youtube":"https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg"};
+const redesLinks=()=>`<a href="${esc(safeUrl(REDES.instagram))}" target="_blank" rel="noopener" data-rede="instagram">Instagram<span class="sr"> (abre em nova aba)</span></a><a href="${esc(safeUrl(REDES.tiktok))}" target="_blank" rel="noopener" data-rede="tiktok">TikTok<span class="sr"> (abre em nova aba)</span></a><a href="${esc(safeUrl(REDES.youtube))}" target="_blank" rel="noopener" data-rede="youtube">YouTube<span class="sr"> (abre em nova aba)</span></a>`;
+function footRedes(){const f=$("#foot-social");if(!f||f.childElementCount)return;f.innerHTML=`<span>Siga o TCG Price Hunter:</span>${redesLinks()}<a href="/comunidade" data-go="grupos">Grupos WhatsApp e Telegram</a>`}
 const GRP_FECHA_DIAS=7;
 const grpLinks=(orig)=>`<a class="grp-go wa" href="${esc(safeUrl(GRUPOS.whatsapp))}" target="_blank" rel="noopener" data-grupo="whatsapp" data-orig="${orig}">WhatsApp<small>grupo de ofertas</small><span class="sr"> (abre em nova aba)</span></a><a class="grp-go tg" href="${esc(safeUrl(GRUPOS.telegram))}" target="_blank" rel="noopener" data-grupo="telegram" data-orig="${orig}">Telegram<small>grupo de ofertas</small><span class="sr"> (abre em nova aba)</span></a>`;
 function grpFechado(){const t=store.get("grp-fechado",0);return typeof t==="number"&&Date.now()-t<GRP_FECHA_DIAS*864e5}
@@ -2899,6 +2902,7 @@ function renderGrupos(){
   <div class="grp-opts"><div class="grp-opt"><h2>WhatsApp</h2><ul><li>Até 20 ofertas por dia, espaçadas</li><li>Só administradores postam</li></ul><a class="grp-go wa" href="${esc(safeUrl(GRUPOS.whatsapp))}" target="_blank" rel="noopener" data-grupo="whatsapp" data-orig="pagina">Entrar no grupo do WhatsApp<span class="sr"> (abre em nova aba)</span></a></div>
   <div class="grp-opt"><h2>Telegram</h2><ul><li>Oferta nova sai na hora</li><li>Dá para silenciar e ver quando quiser</li></ul><a class="grp-go tg" href="${esc(safeUrl(GRUPOS.telegram))}" target="_blank" rel="noopener" data-grupo="telegram" data-orig="pagina">Entrar no grupo do Telegram<span class="sr"> (abre em nova aba)</span></a></div></div>
   <div class="grp-how"><div><b>Preço conferido</b>Comparado com o preço sugerido Copag.</div><div><b>Todas as lojas</b>O grupo mostra a melhor oferta, não só os links de uma loja.</div><div><b>Sem spam</b>Nada de corrente nem venda de terceiros.</div></div>
+  <h2>Siga também</h2><p class="foot-social">${redesLinks()}</p>
 </section></div>`;
 }
 function render(){
@@ -3567,6 +3571,7 @@ function footAfil(){const f=document.querySelector(".foot-links");if(!f||!AFIL.g
   f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (abre em nova aba)</span></a>`)}
 loadAfil();   /* sem await: a página não espera a config */
 async function load(){
+  footRedes();   /* redes sociais no rodapé, mesmo sem preços */
   grpUI();   /* botão/barra dos grupos aparecem mesmo se os preços não carregarem; a página /comunidade também (abaixo) */
   loading();prefetchOpp();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
@@ -3579,6 +3584,7 @@ document.addEventListener("click",(e)=>{
   const t=e.target;
   if(!t.closest(".sbox"))acClose();
   const gl=t.closest("[data-grupo]");if(gl){track("group_click",{canal:gl.dataset.grupo,origem:gl.dataset.orig||""});return}
+  const rl=t.closest("[data-rede]");if(rl){track("social_click",{rede:rl.dataset.rede});return}
   if(t.closest("[data-grp-pop]")){grpPop($("#grp-pop")?.hidden!==false);return}
   if(t.closest("[data-grp-fecha]")){store.set("grp-fechado",Date.now());grpUI();return}
   if(!t.closest("#grp-fab"))grpPop(false);
