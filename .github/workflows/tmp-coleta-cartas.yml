@@ -2,7 +2,7 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py]
 permissions:
   contents: write
 jobs:
@@ -17,7 +17,9 @@ jobs:
         if: contains(github.event.head_commit.message, 'videos')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/valores.py
         if: contains(github.event.head_commit.message, 'valores')
+      - run: python3 tools/tmp-cartas/precos.py
+        if: contains(github.event.head_commit.message, 'precos')
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A tmp-cartas tmp-videos tmp-valores 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
+          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
