@@ -181,7 +181,9 @@
   ],
   "git": {
     "deploymentEnabled": {
-      "data": false
+      "main": true,
+      "data": false,
+      "**": false
     }
   }
 }
