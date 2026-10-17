@@ -2,17 +2,20 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json]
 permissions:
   contents: write
 jobs:
   coleta:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: python3 tools/tmp-cartas/coleta.py
+        if: contains(github.event.head_commit.message, 'pedido')
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/videos.py
+        if: contains(github.event.head_commit.message, 'videos')
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add tmp-cartas && git commit -m "tmp: dados e imagens do TCGdex" && git push
+          git add -A tmp-cartas tmp-videos 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
