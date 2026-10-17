@@ -195,7 +195,10 @@ export function parseProductPage(html, url) {
 }
 
 export async function detect(base) {
-  try { await guard(base + '/'); const html = (await get(base + '/')).text; return /pok[eé]mon/i.test(html); } catch (e) { if (e.blocked) throw e; return false; }
+  try { await guard(base + '/'); const html = (await get(base + '/')).text; if (/pok[eé]mon/i.test(html)) return true; } catch (e) { if (e.blocked) throw e; return false; }
+  // Home sem "Pokémon" (varejo grande, loja de brinquedos com vitrine de outras marcas): vale se o sitemap tiver página de
+  // produto Pokémon lacrado. Varejo de 17/10 (Havan, Tray, Loja Integrada, Magazord) caía em "plataforma não reconhecida".
+  try { return (await productUrls(base, 5)).length > 0; } catch (e) { if (e.blocked) throw e; return false; }
 }
 
 // Falha de leitura (tentar de novo depois) × resposta definitiva (a página não serve). Transitório: timeout (status 0),
