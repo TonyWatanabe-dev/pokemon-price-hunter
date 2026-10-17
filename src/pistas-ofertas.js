@@ -35,6 +35,17 @@ export function mlbDeUrl(url) {
 /** Id de catálogo do ML (/p/MLB…), quando o link leva à página do produto e não a um anúncio. */
 export function catalogoDeUrl(url) { const m = String(url || '').match(/\/p\/(MLB-?\d{6,})/i); return m ? m[1].replace('-', '').toUpperCase() : null; }
 
+const SOCIAL_MAX = 800_000;
+/** Página de perfil de afiliado do ML (destino dos meli.la de divulgadores). */
+export const ehPaginaSocial = (url) => { try { const u = new URL(url); return /(^|\.)mercadolivre\.com\.br$/.test(u.hostname) && /^\/social\//.test(u.pathname); } catch { return false; } };
+/** Produto em destaque da página /social/: o 1º link de produto do HTML (catálogo /p/MLB…, com item_id se houver, ou anúncio MLB-…). */
+export function destaqueSocial(html) {
+  const m = String(html || '').match(/https:\/\/(?:www|produto)\.mercadolivre\.com\.br\/[^"'\s<>]*?(?:\/p\/MLB\d{6,}[^"'\s<>]*|MLB-\d{6,})/);
+  if (!m) return { mlb: null, catalogo: null };
+  const u = m[0].replace(/&amp;/g, '&');
+  return { mlb: mlbDeUrl(u), catalogo: catalogoDeUrl(u) };
+}
+
 /** Resolve meli.la/… seguindo só os cabeçalhos Location (GET com redirect manual, no máximo 3 saltos, 10 s por salto,
  * sem ler o HTML do anúncio). Devolve { mlb, erro }: erro é falha de rede/timeout (vale tentar de novo); sem erro e sem
  * mlb, o link não leva a um anúncio. Aceita URL que já traz o MLB (sem ir à rede). */
@@ -47,7 +58,11 @@ export async function resolverLink(url, { fetch = globalThis.fetch, timeoutMs = 
       assertSafeUrl(cur);
       const res = await fetch(cur, { method: 'GET', redirect: 'manual', headers: { 'user-agent': UA, accept: 'text/html' }, signal: AbortSignal.timeout(timeoutMs) });
       const loc = res && res.status >= 300 && res.status < 400 ? res.headers?.get?.('location') : null;
-      if (!loc) { try { await res?.body?.cancel?.(); } catch { /* corpo já fechado */ } return { mlb: mlbDeUrl(res?.url || cur), catalogo: catalogo || catalogoDeUrl(res?.url || ''), erro: null }; }
+      if (!loc) {
+        // Link de afiliado (meli.la → /social/<perfil>?…): a página do perfil abre com o produto divulgado em
+        // destaque, que é o 1º link de produto do HTML. Lê só essa página (sem seguir links) e pega esse produto.
+        if (ehPaginaSocial(res?.url || cur)) { let html = ''; try { html = String(await res.text()).slice(0, SOCIAL_MAX); } catch { /* sem corpo */ } const d = destaqueSocial(html); if (d.mlb || d.catalogo) return { ...d, erro: null }; }
+        try { await res?.body?.cancel?.(); } catch { /* corpo já fechado */ } return { mlb: mlbDeUrl(res?.url || cur), catalogo: catalogo || catalogoDeUrl(res?.url || ''), erro: null }; }
       cur = new URL(loc, cur).href;
       const achou = mlbDeUrl(cur); if (achou) return { mlb: achou, catalogo: null, erro: null }; // não precisa baixar a página do anúncio
       catalogo ||= catalogoDeUrl(cur);
@@ -63,9 +78,9 @@ export const mlbDeLink = async (url, opts) => (await resolverLink(url, opts)).ml
 
 // Motivos de recusa que não mudam com o tempo: a pista não é conferida de novo.
 export const MOTIVOS_DEFINITIVOS = new Set(['link sem MLB', 'anúncio não encontrado', 'usado', 'outro produto', 'produto não identificado']);
-/** Versão da conferência: recusas definitivas de versões anteriores (sem leitura de catálogo /p/ e sem identificar o
- *  produto pela API) são conferidas de novo uma vez. */
-export const VERSAO = 2;
+/** Versão da conferência: recusas definitivas de versões anteriores (v1 sem catálogo /p/ nem produto pela API; v2 sem a página /social/ dos divulgadores)
+ *  são conferidas de novo uma vez. */
+export const VERSAO = 3;
 
 /** Anúncio vencedor (buy box) de um produto de catálogo do ML; sem vencedor, o 1º anúncio listado. null se não houver. */
 export async function anuncioDoCatalogo(cat, { fetch, H }) {
