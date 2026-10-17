@@ -2036,12 +2036,13 @@ function renderDeals(){
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
   const nLive=S.slim?S.counts.liveOffers:OFF.filter(live).length,nStores=S.slim?S.counts.stores:new Set(OFF.filter(live).map((o)=>o.storeId)).size;
+  const nBelow=S.slim?(S.counts.belowCopag||0):OFF.filter((o)=>live(o)&&!o.anomalous&&o.discount>=.005&&P[o.productId]?.copagConfirmed).length;   /* mesma regra de api/_lib/home.mjs */
   const intro=!renderDeals.done;renderDeals.done=true;document.body.classList.toggle("intro",intro);
   $("#view").innerHTML=`<section class="stage"><div class="stage-in">
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><span id="live-t">${freshTxt(freshState(S))[0]}</span> · ${nStores} lojas · ${nLive} ofertas com estoque</span></div>
+      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><span id="live-t">${freshTxt(freshState(S))[0]}</span> · ${nStores} lojas · ${nLive} ofertas com estoque${nBelow?` · <b class="live-below">${nBelow} abaixo do preço Copag</b>`:""}</span></div>
       ${tickerHTML()}
     </div>
     <header class="stage-h" style="--d:600"><h2 id="pod-h">Melhores oportunidades agora</h2><p>As três primeiras na ordem do Opportunity Score. <a href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></p></header>
@@ -2810,9 +2811,9 @@ async function submitAlert(f){
 /* Compartilhar (17/10): leva o link da página do produto, que já tem prévia com foto, preço e desconto. No celular abre o
    menu do sistema; sem ele, abre o WhatsApp com o texto pronto. O link é do site (não da loja). */
 function shareBtn(pid){return`<button class="btn ghost" type="button" data-share="${esc(pid)}">${ic("share-network")}Compartilhar</button>`}
-function shareText(pid){const p=P[pid];if(!p)return"";const b=bestOffer(OFF.filter((o)=>o.productId===pid));
-  const d=b&&p.copagConfirmed&&!b.anomalous&&b.discount>=.005?b.discount:0;
-  return`${label(p)} ${p.collectionName}${b?` por ${money(b.total)}${pixTxt(b)} em ${b.storeName}`:""}${d?` (${Math.round(d*100)}% abaixo do preço Copag)`:""}. Achei no TCG Price Hunter:`}
+function shareText(pid){const p=P[pid];if(!p)return"";const b=bestOffer(OFF.filter((o)=>o.productId===pid&&!o.anomalous));   /* oferta "barata demais" nunca vai no texto */
+  const d=b&&p.copagConfirmed&&b.discount>=.005?b.discount:0;
+  return`${label(p)} ${p.collectionName}${b?` por ${money(b.total)}${pixTxt(b)} em ${b.storeName}`:""}${d?` (${Math.round(d*100)}% abaixo do preço Copag)`:""}. Achei no TCG Price Hunter.`}
 async function sharePid(pid){if(!P[pid])return;const url=location.origin+"/produto/"+(SLUG[pid]||encodeURIComponent(pid));const text=shareText(pid);
   track("share_click",{via:navigator.share?"sistema":"whatsapp"});
   if(navigator.share){try{await navigator.share({title:document.title,text,url});return}catch(e){if(e?.name==="AbortError")return}}

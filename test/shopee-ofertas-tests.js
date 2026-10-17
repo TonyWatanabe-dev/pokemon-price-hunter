@@ -35,3 +35,5 @@ assert.match(JSON.parse(read('package.json')).scripts.build, /cp config\/afiliad
 for (const f of ['src/core/price-engine.js', 'src/core/opportunity-engine.js', 'api/v1.mjs', 'api/pagina.mjs', 'api/_lib/affiliates.mjs'])
   assert.doesNotMatch(read(f), /shopee-ofertas/, `${f} não pode ler a lista`);
 console.log(`✓ Também na Shopee: ${doc.ofertas.length} anúncios do dono, fora do ranking`);
+for (const f of ['config/afiliados/shopee-ofertas.json', 'config/afiliados/amazon.json'])
+  assert.doesNotMatch(read(f), /\b1 unidades?\b/, `${f}: estoque de 1 vira "última unidade"`);
