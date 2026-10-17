@@ -1,0 +1,362 @@
+{
+ "SITE_filme_principal": {
+  "id": "1nhPa11D_fgjjqZh7nJBGyJRgID9DwpKm",
+  "dur": 40.1,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.0 dB",
+   "-1.3 dB"
+  ]
+ },
+ "SITE_15s_score": {
+  "id": "1MgGFefS5HNnTlHBh0rL67QjGLHUyXz6H",
+  "dur": 15.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.4 dB",
+   "-1.2 dB"
+  ]
+ },
+ "SITE_15s_comunidade": {
+  "id": "1fMEIC2MEczGALjkpV9M186akfzTOG8i6",
+  "dur": 15.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.4 dB",
+   "-1.4 dB"
+  ]
+ },
+ "SITE_15s_busca": {
+  "id": "1zrk8sN9U0AjIArYt35qkMWYrJE3TaHS9",
+  "dur": 15.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.5 dB",
+   "-1.2 dB"
+  ]
+ },
+ "SITE_15s_alertas": {
+  "id": "1gasvW_1k--cPMbVgzFdSVGIjeDw5XPhD",
+  "dur": 15.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.4 dB",
+   "-1.3 dB"
+  ]
+ },
+ "DE_caixa_8packs": {
+  "id": "1EPxLYY7N5duttTyN2tOhVfYZRQl8F1TD",
+  "dur": 169.7,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.0 dB",
+   "-2.5 dB"
+  ]
+ },
+ "DE_video01": {
+  "id": "1iR_heRCzg0PEvREu0FJF-3VwhTr-sAdB",
+  "dur": 47.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.7 dB",
+   "-2.5 dB"
+  ]
+ },
+ "DE_video02": {
+  "id": "1OMlQu6VGi2XRmft4nZMTMZI5kEaB_ARK",
+  "dur": 41.5,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.8 dB",
+   "-2.6 dB"
+  ]
+ },
+ "DE_video03": {
+  "id": "1P_Q0SRDo8jAuXckxG9h3uSJcm40sPrwj",
+  "dur": 42.9,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.9 dB",
+   "-2.6 dB"
+  ]
+ },
+ "DE_video04": {
+  "id": "1jcAxo-Fzv8fX75Wefw7ol2pqCwm2nnX2",
+  "dur": 38.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.9 dB",
+   "-3.0 dB"
+  ]
+ },
+ "MIR_unboxing": {
+  "id": "1aEcSNI1Uf3IEung8sr2VUxxbK2lqPPkA",
+  "dur": 54.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.9 dB",
+   "-3.4 dB"
+  ]
+ },
+ "30A_ranking": {
+  "id": "1h_7XSJvDG3nQvRe-VdeoKF4Tl-v5p_Je",
+  "dur": 15.8,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-18.2 dB",
+   "-3.1 dB"
+  ]
+ },
+ "30A_poster_abertura": {
+  "id": "1ZLvLNMJE7gkbGAjM9au38B2pw8a4sJRl",
+  "dur": 67.1,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.8 dB",
+   "-2.1 dB"
+  ]
+ },
+ "30A_hit_uxie": {
+  "id": "1hJuUAuT-TH5_U8xls2LGulUh2BhCLOs8",
+  "dur": 18.0,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.3 dB",
+   "-2.6 dB"
+  ]
+ },
+ "30A_hit_zapdos": {
+  "id": "1m4gqBO5176yUVEm06X_99URh4l6oj-mu",
+  "dur": 18.9,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.1 dB",
+   "-3.2 dB"
+  ]
+ },
+ "30A_deulucro": {
+  "id": "1Qogr9IS8GGqX4o7hTkAep2UD-0h0WM7V",
+  "dur": 37.2,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.5 dB",
+   "-2.5 dB"
+  ]
+ },
+ "30A_hit_sylveon": {
+  "id": "1T1ouiV1jCUpJ6BCgyFRg19qOvoecFRrg",
+  "dur": 14.9,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.7 dB",
+   "-3.4 dB"
+  ]
+ },
+ "30A_hit_pkclassico": {
+  "id": "1l6rTfjQDANQZTJ50Pisv96pD8HtNh0so",
+  "dur": 22.5,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.0 dB",
+   "-3.5 dB"
+  ]
+ },
+ "30A_hit_moltres": {
+  "id": "1yMcrChxPfoVfocZtknPqpltJ9VlYlQMB",
+  "dur": 14.7,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-18.0 dB",
+   "-3.8 dB"
+  ]
+ },
+ "30A_hit_gholdengo": {
+  "id": "1vqSDjK3EXdRhVcxpuYLwQfqoJt5p-6ib",
+  "dur": 17.5,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.8 dB",
+   "-3.1 dB"
+  ]
+ },
+ "30A_blister_abertura": {
+  "id": "1twqA6SqDJtes42GemVuGTSjNU_-67omF",
+  "dur": 45.1,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.1 dB",
+   "-3.0 dB"
+  ]
+ },
+ "30A_etb_abertura_v2": {
+  "id": "1OqyWoLOB3kR5tdXVgAZnklviLeG5ThUu",
+  "dur": 152.7,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.2 dB",
+   "-2.3 dB"
+  ]
+ },
+ "30A_etb_abertura": {
+  "id": "1qm7EZutipkMm9yKJrjCECfr9Hc_6Aain",
+  "dur": 175.1,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-16.7 dB",
+   "-3.1 dB"
+  ]
+ },
+ "30A_hit_pikachu_v2": {
+  "id": "1Q7JZlmZB1x33UcNIe5PosDlg66nQzF4q",
+  "dur": 18.5,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.0 dB",
+   "-3.0 dB"
+  ]
+ },
+ "30A_hit_pikachu": {
+  "id": "1c1plFxVaxZwMd8sOXJBvn7symXvpMyNA",
+  "dur": 21.9,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.1 dB",
+   "-2.9 dB"
+  ]
+ },
+ "OLD_s1_pack2": {
+  "id": "1v4gSi_fIvMKN1IUq5umqLa2rL11tqpPj",
+  "dur": 44.6,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.4 dB",
+   "-2.8 dB"
+  ]
+ },
+ "OLD_s1_pack3": {
+  "id": "1ND_A8l-CgGCYYrNCbZHJs9zBlSicr-S3",
+  "dur": 47.5,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-18.1 dB",
+   "-1.5 dB"
+  ]
+ },
+ "OLD_s1_pack4": {
+  "id": "1E8m9l67B1hHPU29dZM-rSarhpCJj52GE",
+  "dur": 43.3,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.7 dB",
+   "-2.3 dB"
+  ]
+ },
+ "OLD_s1_pack1": {
+  "id": "1OED1mqkg4YCqyekCy1CHadf609YizFMn",
+  "dur": 52.6,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.9 dB",
+   "-2.7 dB"
+  ]
+ },
+ "OLD_s1_deulucro": {
+  "id": "1Q62tLbuE85kyym0PwFQ2Fbnm_sxB77c_",
+  "dur": 151.1,
+  "w": 1080,
+  "h": 1920,
+  "fps": "30/1",
+  "audio": true,
+  "volume": [
+   "-17.2 dB",
+   "-2.5 dB"
+  ]
+ }
+}
