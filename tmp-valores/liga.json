@@ -1,0 +1,8 @@
+{
+ "https://www.ligapokemon.com.br/?view=cards/card&card=Pikachu%20ex%20(150/128)&ed=30CP&num=150": {
+  "erro": "HTTP Error 403: Forbidden"
+ },
+ "https://www.ligapokemon.com.br/": {
+  "erro": "HTTP Error 403: Forbidden"
+ }
+}
