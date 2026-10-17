@@ -261,7 +261,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       const base = store.url.replace(/\/$/, '');
       // Loja Woo lida pelo JSON-LD antes do adaptador WooCommerce existir: tenta a Store API uma vez (e de novo a cada 7 dias).
       if (store.platform === 'auto' && src.platform === 'jsonld' && src.platformHint === 'woocommerce' && !(Date.now() - Date.parse(src.wooCheckedAt || 0) < 7 * 864e5)) {
-        src.wooCheckedAt = T; try { if (await adapters.woocommerce.detect(base)) src.platform = 'woocommerce'; } catch { /* segue no JSON-LD */ }
+        src.wooCheckedAt = T; try { if (await adapters.woocommerce.detect(base) && (await adapters.woocommerce.search(store, catalog)).length) src.platform = 'woocommerce'; } catch { /* segue no JSON-LD */ }   // sonda 17/10: cavernatcg tem a API mas a busca volta vazia; só troca se a API trouxer anúncios
       }
       const platform = store.platform !== 'auto' ? store.platform : (src.platform || await detectPlatform(base));
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });

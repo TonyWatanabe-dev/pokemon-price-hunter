@@ -8,7 +8,7 @@ export const adapters = { shopify, vtex, woocommerce, jsonld, mercadolivre };
 export async function detectPlatform(base) {
   if (await shopify.detect(base)) return 'shopify';
   if (await vtex.detect(base)) return 'vtex';
-  if (await woocommerce.detect(base)) return 'woocommerce';
+  if (await woocommerce.detect(base) && (await woocommerce.search({ url: base }).catch(() => [])).length) return 'woocommerce'; // API sem resultado de busca: segue para o JSON-LD
   if (await jsonld.detect(base)) return 'jsonld';
   return null;
 }
