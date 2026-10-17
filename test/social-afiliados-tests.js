@@ -16,6 +16,7 @@ let n = 0;
 const test = (name, fn) => { try { fn(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const ML = 'https://meli.la/1BzQ4PU';
 const AMZ = 'https://link.amazon/B0bVBmGRD';
+const SHP = 'https://s.shopee.com.br/8fTCnyee7e';
 const OFERTA_ML = 'https://produto.mercadolivre.com.br/MLB-1234567890-booster-box-_JM';
 const OFERTA_AMZ = 'https://www.amazon.com.br/dp/B0HFNSM2T3';
 const entrada = (o = {}) => ({ marketplace: 'mercadolivre', url: ML, tipo: 'geral', origem: '#560', validado: false, ...o });
@@ -25,12 +26,13 @@ test('config do repositório: links gerais da #560, intactos, sem Shopee', () =>
   assert.deepEqual(raw.links, [
     { marketplace: 'mercadolivre', url: ML, tipo: 'geral', origem: '#560', validado: false },
     { marketplace: 'amazon', url: AMZ, tipo: 'geral', origem: '#560', validado: false },
+    { marketplace: 'shopee', url: SHP, tipo: 'geral', origem: '#560', validado: false },
   ]);
   const cfg = loadConfig();
-  assert.deepEqual(Object.keys(cfg.links).sort(), ['amazon', 'mercadolivre']);
+  assert.deepEqual(Object.keys(cfg.links).sort(), ['amazon', 'mercadolivre', 'shopee']);
   assert.equal(cfg.links.mercadolivre.url, ML);
   assert.equal(cfg.links.amazon.url, AMZ);
-  assert.equal(Object.hasOwn(cfg.links, 'shopee'), false, 'Shopee pendente: sem link');
+  assert.equal(cfg.links.shopee.url, SHP);
   assert.equal(JSON.parse(read('config/affiliates.json')).mercadolivre.geral.url, ML, 'mesmo link geral do site');
 });
 
@@ -64,11 +66,14 @@ test('validarLink: http recusado', () => {
   assert.throws(() => parseConfig({ links: [entrada({ url: 'http://meli.la/1BzQ4PU' })] }), /url recusada/);
 });
 
-test('marketplace sem link: Shopee pendente não tem host nem link do canal', () => {
+test('Shopee: só o link curto do Portal de Afiliados; URL comum da Shopee não vira link do canal nem substitui a oferta', () => {
+  assert.deepEqual([...HOSTS.shopee], ['s.shopee.com.br']);
+  assert.equal(validarLink(SHP, 'shopee'), SHP);
+  assert.equal(validarLink(SHP, 'mercadolivre'), null, 'link da Shopee não serve para outro marketplace');
   assert.equal(validarLink('https://shopee.com.br/x', 'shopee'), null);
   assert.throws(() => parseConfig({ links: [entrada({ marketplace: 'shopee', url: 'https://shopee.com.br/x' })] }), /url recusada/);
   const url = 'https://shopee.com.br/Booster-Box-i.1.2';
-  assert.deepEqual(linkParaPost({ marketplace: 'shopee', urlOferta: url }), { marketplace: 'shopee', urlOferta: url, linkCanal: null });
+  assert.deepEqual(linkParaPost({ marketplace: 'shopee', urlOferta: url }), { marketplace: 'shopee', urlOferta: url, linkCanal: { marketplace: 'shopee', url: SHP, tipo: 'geral', origem: '#560', validado: false } }, 'URL da oferta intacta; link geral separado');
   assert.equal(linkParaPost({ marketplace: 'outra', urlOferta: url }).linkCanal, null);
   assert.equal(linkParaPost({ marketplace: 'mercadolivre', urlOferta: OFERTA_ML }, parseConfig({ links: [] })).linkCanal, null);
 });
