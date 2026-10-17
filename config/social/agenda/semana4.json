@@ -1,0 +1,117 @@
+{
+  "semana": "09 a 15/11/2026",
+  "pasta": "assets/social/agenda/semana4",
+  "itens": [
+    {
+      "id": "s4-seg-quiz-artista",
+      "quando": "2026-11-09T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Seg_1.jpg",
+        "S4_Seg_2.jpg",
+        "S4_Seg_3.jpg",
+        "S4_Seg_4.jpg",
+        "S4_Seg_5.jpg",
+        "S4_Seg_6.jpg",
+        "S4_Seg_7.jpg"
+      ],
+      "legenda": "Quiz: adivinha o artista pelo traço. 5 cartas, 3 opções cada.\n\nComenta suas letras antes de ver a resposta (sem colar 👀)\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #quiz #ilustracao #colecionador"
+    },
+    {
+      "id": "s4-ter-black-friday-27",
+      "quando": "2026-11-10T12:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Ter.jpg"
+      ]
+    },
+    {
+      "id": "s4-qua-chases-30-anos",
+      "quando": "2026-11-11T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Qua_1.jpg",
+        "S4_Qua_2.jpg",
+        "S4_Qua_3.jpg",
+        "S4_Qua_4.jpg",
+        "S4_Qua_5.jpg",
+        "S4_Qua_6.jpg"
+      ],
+      "legenda": "As 5 cartas mais raras da Celebração de 30 Anos: as duas Futuristic Rare do YOSHIROTTEN e as Ilustrações Raras Especiais de Pikachu ex, Gengar ex e Sylveon ex.\n\nQual falta no seu binder? 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #mewtwo #colecionador"
+    },
+    {
+      "id": "s4-qui-alerta-de-golpe",
+      "quando": "2026-11-12T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Qui_1.jpg",
+        "S4_Qui_2.jpg",
+        "S4_Qui_3.jpg",
+        "S4_Qui_4.jpg",
+        "S4_Qui_5.jpg",
+        "S4_Qui_6.jpg",
+        "S4_Qui_7.jpg"
+      ],
+      "legenda": "Black Friday chegando e com ela os anúncios bons demais pra ser verdade. 5 sinais pra checar antes de pagar.\n\nSalva e manda pra quem vai comprar 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #golpe #colecionador"
+    },
+    {
+      "id": "s4-sex-esquenta-black-friday",
+      "quando": "2026-11-13T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Sex_1.jpg",
+        "S4_Sex_2.jpg",
+        "S4_Sex_3.jpg",
+        "S4_Sex_4.jpg",
+        "S4_Sex_5.jpg"
+      ],
+      "legenda": "Black Friday é 27/11. 3 regras pra não cair no desconto de mentira: compare com a Copag, não espera em lançamento e faz a lista agora.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #reinadodelta #ofertas"
+    },
+    {
+      "id": "s4-sab-abertura-ig",
+      "quando": "2026-11-14T10:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "drive": "",
+      "legenda": "Rasga o pack: farmou aura ou brick? 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #abrindopack #reinadodelta"
+    },
+    {
+      "id": "s4-sab-abertura-tt",
+      "quando": "2026-11-14T10:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "drive": "",
+      "legenda": "esse pack farmou aura ou foi brick? 👀\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #packopening #fyp #pokemontcgbrasil"
+    },
+    {
+      "id": "s4-dom-faltam-12-dias",
+      "quando": "2026-11-15T10:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Dom.jpg"
+      ]
+    }
+  ]
+}
