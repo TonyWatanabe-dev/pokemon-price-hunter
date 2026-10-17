@@ -4,17 +4,26 @@ O site usa links de afiliado do Mercado Livre em **220 anúncios** (mapa de 17/1
 
 Para renovar o mapa: listar os anúncios do ML em `data/offers.json` (branch `data`), gerar os links no painel, pedir a tabela "URL original ; link gerado" e trocar `anuncios`. Link repetido em mais de um anúncio é descartado (o teste `test/affiliate-links-tests.js` recusa).
 
+## Regra do dono (17/10/2026)
+
+Decisão do proprietário, que paga a operação do site com as comissões:
+
+- **Desempate a favor do link do dono.** Quando duas ofertas do mesmo produto têm o **mesmo total comparável** (mesma situação de frete), a que tem link de afiliado do dono aparece primeiro e vira a melhor oferta. Ela **nunca** passa na frente de uma oferta mais barata, nem de uma com frete conhecido quando a dela é desconhecido. Nenhum outro link perde visibilidade.
+- **Sem etiqueta no site.** O link de afiliado é tratado como link normal: não há selo "Link de afiliado", ⓘ nem aviso junto do botão ou do bloco "Também na Amazon". A divulgação fica **geral**: rodapé (com a frase do Programa de Associados da Amazon e a regra do desempate) e Termos (seção 4). O atributo invisível `rel="nofollow sponsored"` continua nos links pagos (pedido do Google).
+- **Grupos (Telegram/WhatsApp):** ofertas sem link do dono saem uma vez; as com link do dono são postadas e repostadas (regra dos bots, em `src/agents/social/auto.js`).
+
 ## Regras que o código garante
 
-1. **O afiliado nunca muda o resultado.** Ranking, melhor oferta, preço, frete, estoque e nota (Opportunity Engine, `api/_lib/offer-rank.mjs`, `src/core/*`) não leem a configuração de afiliados. O teste `test/affiliate-links-tests.js` compara os resultados com e sem afiliado configurado e confere que são idênticos. Ele também confere que esses arquivos não citam o módulo.
+
+1. **O afiliado só desempata.** Preço, frete, estoque e nota não mudam, e os módulos de ranking (`api/_lib/offer-rank.mjs`, `api/_lib/site.mjs`, `src/core/*`) continuam sem ler a configuração. O `offer-rank` tem um desempate registrável (`setTiePreference`), consultado só quando o total comparável empata, antes do id; as rotas que mostram ofertas (`api/v1.mjs`, `api/pagina.mjs`) registram `afiliadoPreferido` de `api/_lib/affiliates.mjs`. Na página, `byTot` e a ordem por preço usam `afPref` (mesma regra, com o mapa de `/api/v1/afiliados`). O Opportunity Engine (banco) não foi alterado: empate lá segue por id. Testes: `test/afiliado-desempate-tests.js` (só em empate, nunca acima de mais barata) e `test/affiliate-links-tests.js` (sem empate, resultados idênticos com e sem afiliado).
 2. **A URL original continua sendo o dado.** `o.url` não é alterada em lugar nenhum: nem no robô, nem no banco, nem na API. Só o `href` do botão "Ver oferta" passa por `outUrl()` (em `index.html`), que devolve:
    - o link de afiliado **daquele anúncio**, quando ele está no mapa e passa na validação;
    - a própria URL original, intacta, em qualquer outro caso: outra loja, anúncio do ML fora do mapa, página de catálogo sem vendedor, destino inválido ou config ausente.
 3. **Link de outra loja nunca vira link do ML.** A troca só acontece quando a URL da oferta é um anúncio do Mercado Livre (`MLB…` no caminho, ou `pdp_filters=item_id:MLB…`).
-4. **O link geral nunca vai para um anúncio.** Ele só pode aparecer no rodapé, com o rótulo "Ver mais no Mercado Livre" e o aviso "link de afiliado" para leitor de tela. Isso exige duas marcações na config: `ativo: true` e `destinoConfirmado: true`.
+4. **O link geral nunca vai para um anúncio.** Ele só pode aparecer no rodapé, com o rótulo "Ver mais no Mercado Livre", sem etiqueta de afiliado (regra de 17/10). Isso exige duas marcações na config: `ativo: true` e `destinoConfirmado: true`.
 5. **Nada é anexado à URL.** O link é usado inteiro, exatamente como o painel do ML gerou. Não montamos parâmetro de tracking e não inventamos parâmetro de afiliado. Isso mantém válido o teste `test/outbound-links-tests.js` (#116: "links de saída sem tracking"). A única forma de `href` nova que ele aceita é `${esc(safeUrl(outUrl(<url>)))}`, sempre dentro de `safeUrl`.
 6. **Destino validado duas vezes**, no servidor e no navegador. Só é aceito link `https://` em `meli.la`, `mercadolivre.com.br`, `www.mercadolivre.com.br` ou `produto.mercadolivre.com.br`, sem credenciais, sem porta, sem espaço e sem aspas. Se o link for inválido, vale a URL original. Não existe redirecionador interno, então não há risco de open redirect.
-7. **Layout igual.** Os botões mantêm `target="_blank"`, `rel="noopener"` e o texto `.sr` "(abre em nova aba)" da #181. Quando o destino é de afiliado, o `rel` ganha `nofollow sponsored` (`outRel` em `index.html`), igual aos links "Ver na Amazon" da #194. O link geral do rodapé sai sempre com `rel="noopener nofollow sponsored"`.
+7. **Layout igual, sem etiqueta.** Os botões mantêm `target="_blank"`, `rel="noopener"` e o texto `.sr` "(abre em nova aba)" da #181, e não ganham selo nem texto de afiliado (regra de 17/10; `test/affiliate-disclosure-site-tests.js` confere a ausência). Quando o destino é de afiliado, o `rel` ganha `nofollow sponsored` (`outRel` em `index.html`), igual aos links "Ver na Amazon" da #194; é um atributo invisível. O link geral do rodapé sai sempre com `rel="noopener nofollow sponsored"`. A divulgação é o aviso geral do rodapé e dos Termos.
 8. **Cliques.** O evento agregado `click_store` que já existe (Vercel Analytics: loja, produto e preço, sem dados pessoais) não mudou. Não foi criado nenhum analytics novo.
 
 ## Onde configurar
@@ -34,8 +43,8 @@ Tudo fica num lugar só: **`config/affiliates.json`**. Quem lê esse arquivo é 
 
 - **`anuncios`**: mapa do id do anúncio para o link de afiliado gerado para **esse** anúncio. O id é `MLB` seguido dos números. Ele aparece na URL da oferta (`produto.mercadolivre.com.br/MLB-1234567890-...` vira `MLB1234567890`; em `.../p/MLB19876543?pdp_filters=item_id%3AMLB4455667788`, o id é o do `item_id`: `MLB4455667788`). Uma entrada inválida é ignorada e não derruba o site.
 - **`geral`**: o link geral do dono. Ele só é publicado (no rodapé) com `ativo: true` **e** `destinoConfirmado: true`.
-- Os **Termos de uso** (seção 4) mostram automaticamente um aviso de afiliado quando existe pelo menos um link ativo.
-- Mudar a config exige um novo deploy da função `api/v1.mjs`. O `vercel.json` inclui o arquivo nela com `includeFiles`.
+- Os **Termos de uso** (seção 4) e o rodapé trazem sempre o aviso geral de afiliado (Mercado Livre, Amazon e Shopee) e a regra do desempate.
+- Mudar a config exige um novo deploy das funções `api/v1.mjs` e `api/pagina.mjs`. O `vercel.json` inclui o arquivo nas duas com `includeFiles`.
 
 ## O que as regras oficiais do Mercado Livre dizem
 

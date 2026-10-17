@@ -142,7 +142,7 @@
   "trailingSlash": false,
   "functions": {
     "api/pagina.mjs": {
-      "includeFiles": "{index.html,config/stores.json}"
+      "includeFiles": "{index.html,config/stores.json,config/affiliates.json}"
     },
     "api/v1.mjs": {
       "maxDuration": 15,

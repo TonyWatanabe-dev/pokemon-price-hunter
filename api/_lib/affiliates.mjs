@@ -4,6 +4,7 @@
 // (3) só anúncio do Mercado Livre com link gerado para ELE no painel troca de destino — link geral nunca vai para anúncio;
 // (4) o link é usado inteiro, como veio do painel: nada é anexado, montado ou reescrito.
 import fs from 'node:fs';
+import { setTiePreference } from './offer-rank.mjs';
 
 // Onde ficam os anúncios (URL original da oferta) e para onde um link de afiliado pode levar.
 const ML_HOST = /^(?:[a-z0-9-]+\.)*mercadoli(?:vre\.com\.br|bre\.com)$/;
@@ -63,3 +64,11 @@ export function resolveOutbound(url, cfg = loadAffiliates()) {
 export function publicAffiliates(cfg = loadAffiliates()) {
   return { v: 1, anuncios: { ...cfg.anuncios }, geral: cfg.geral ? { ...cfg.geral } : null };
 }
+
+// Desempate do dono (17/10/2026, docs/afiliados.md): com o MESMO total comparável, a oferta cujo anúncio do ML tem link
+// de afiliado no mapa fica antes. Nunca passa uma oferta mais barata (o offer-rank só consulta isto em empate).
+export function afiliadoPreferido(cfg = null) {
+  return (o) => { const id = mlListingId(o?.url); return !!(id && (cfg || loadAffiliates()).anuncios?.[id]); };
+}
+/** Registra o desempate no offer-rank. Chamado pelas rotas que mostram ofertas (api/v1.mjs, api/pagina.mjs). */
+export function registrarDesempate(cfg = null) { setTiePreference(afiliadoPreferido(cfg)); }

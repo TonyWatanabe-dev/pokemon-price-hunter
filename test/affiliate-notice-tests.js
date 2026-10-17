@@ -1,6 +1,6 @@
-// Aviso de afiliado: sempre que config/afiliados/amazon.json tem links, o texto de Termos do index.html
-// diz que os links "Ver na Amazon" são de afiliado. O Mercado Livre só é citado de forma condicional
-// ("Alguns links ... quando ativados"), dentro de uma expressão que depende de AFIL. Sem rede e sem banco.
+// Aviso de afiliado nos Termos (regra do dono de 17/10/2026, docs/afiliados.md): o aviso é GERAL e incondicional
+// (não depende de o mapa do ML ter carregado), cita Mercado Livre, Amazon e Shopee, traz a frase do Programa de
+// Associados da Amazon e explica o único efeito na ordem: o desempate. Sem rede e sem banco.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,21 +16,16 @@ const termos = html.split('\n').find((l) => l.includes('4. Compras são feitas c
 
 t('termos existem no index.html', () => assert.ok(termos, 'seção 4 dos Termos não encontrada'));
 
-t('amazon.json com links => aviso de afiliado da Amazon nos Termos, incondicional', () => {
+t('amazon.json com links => frase do Associado da Amazon nos Termos, incondicional', () => {
   if (!Array.isArray(doc.links) || !doc.links.length) return;
-  const m = termos.match(/<p>Os links "Ver na Amazon" são de afiliado[^<]*<\/p>/);
-  assert.ok(m, 'aviso da Amazon ausente');
-  assert.match(m[0], /Associado da Amazon/);
-  assert.ok(!m[0].includes('${'), 'o aviso da Amazon não pode depender de condição');
+  assert.match(termos, /Como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
 });
 
-t('Mercado Livre só aparece como afiliado de forma condicional', () => {
-  const ml = [...termos.matchAll(/Mercado Livre são links de afiliado/g)];
-  assert.equal(ml.length, 1);
-  const antes = termos.slice(0, ml[0].index);
-  const cond = antes.lastIndexOf('${AFIL.geral||Object.keys(AFIL.anuncios).length?"');
-  assert.ok(cond > -1 && !antes.slice(cond).includes('"":'), 'menção ao ML deve ficar dentro da condição AFIL');
-  const fora = termos.replace(/\$\{AFIL[\s\S]*?:""\}/, '');
-  assert.ok(!/Mercado Livre são links de afiliado/.test(fora), 'ML citado fora da condição');
+t('aviso geral: Mercado Livre, Amazon e Shopee, sem condição, com a regra do desempate', () => {
+  const m = termos.match(/<p>Alguns links para Mercado Livre, Amazon e Shopee são links de afiliado[^<]*<\/p>/);
+  assert.ok(m, 'aviso geral ausente');
+  assert.ok(!m[0].includes('${'), 'o aviso não pode depender de condição');
+  assert.match(m[0], /Em empate de preço total, a oferta com o nosso link aparece primeiro; ela nunca passa na frente de uma oferta mais barata/);
+  assert.ok(!termos.includes('${AFIL'), 'Termos não dependem do mapa carregado');
 });
 console.log('affiliate-notice-tests ok');
