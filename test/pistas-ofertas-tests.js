@@ -44,7 +44,7 @@ await t('mlbDeUrl: id do anúncio em várias formas; /p/MLB… (catálogo) só v
   assert.equal(mlbDeUrl('https://www.mercadolivre.com.br/p/MLB19887654'), null, 'id de catálogo não é anúncio');
   assert.equal(mlbDeUrl('https://meli.la/1WWyH25'), null);
   assert.equal(ehLinkML('https://meli.la/1WWyH25'), true); assert.equal(ehLinkML(PERMALINK), true);
-  assert.equal(ehLinkML('https://s.shopee.com.br/abc'), false); assert.equal(ehLinkML('https://www.mercadolivre.com.br/p/MLB19887654'), false);
+  assert.equal(ehLinkML('https://s.shopee.com.br/abc'), false); assert.equal(ehLinkML('https://www.mercadolivre.com.br/p/MLB19887654'), true, 'catálogo /p/ agora é conferido pelo buy box');
 });
 
 await t('mlbDeLink: segue só o cabeçalho Location (redirect manual) e para assim que a URL traz o MLB', async () => {
@@ -106,7 +106,7 @@ await t('verificarPista: recusas com motivo (usado, pausado, sem estoque, preço
   r = await verificarPista(tip, { fetch: async () => { throw Object.assign(new Error('x'), { code: 'ECONNRESET' }); }, token: 'T', catalog, now }); assert.equal(r.ok, false); assert.match(r.motivo, /falha de rede/);
 });
 
-await t('pistasParaVerificar: só ML identificadas e vivas, maior desconto primeiro, com teto e revalidação', () => {
+await t('pistasParaVerificar: só ML vivas (identificadas primeiro), maior desconto primeiro, com teto e revalidação', () => {
   const T = (minAgo) => new Date(now.getTime() - minAgo * 60e3).toISOString();
   const store = {
     a: { ...tip, id: 'a', discount: 0.10 },
@@ -119,12 +119,13 @@ await t('pistasParaVerificar: só ML identificadas e vivas, maior desconto prime
     semPreco: { ...tip, id: 'semPreco', price: null },
     recente: { ...tip, id: 'recente', discount: 0.5, verificada: { at: T(10), ok: true } },
     antiga: { ...tip, id: 'antiga', discount: 0.4, verificada: { at: T(90), ok: true } },
-    definitiva: { ...tip, id: 'definitiva', discount: 0.9, verificada: { at: T(500), ok: false, motivo: 'usado' } },
+    definitiva: { ...tip, id: 'definitiva', discount: 0.9, verificada: { at: T(500), ok: false, motivo: 'usado', versao: 2 } },
+    definitivaV1: { ...tip, id: 'definitivaV1', discount: 0.01, verificada: { at: T(500), ok: false, motivo: 'link sem MLB' } },
     recusaTemporaria: { ...tip, id: 'recusaTemporaria', discount: 0.35, verificada: { at: T(120), ok: false, motivo: 'sem estoque' } },
   };
-  assert.deepEqual(pistasParaVerificar(store, { now }).map((x) => x.id), ['antiga', 'recusaTemporaria', 'b', 'c', 'a']);
+  assert.deepEqual(pistasParaVerificar(store, { now }).map((x) => x.id), ['antiga', 'recusaTemporaria', 'b', 'c', 'a', 'definitivaV1', 'semProduto']);
   assert.deepEqual(pistasParaVerificar(store, { now, max: 2 }).map((x) => x.id), ['antiga', 'recusaTemporaria']);
-  assert.deepEqual(pistasParaVerificar(store, { now, revalidarMin: 5 }).map((x) => x.id), ['recente', 'antiga', 'recusaTemporaria', 'b', 'c', 'a']);
+  assert.deepEqual(pistasParaVerificar(store, { now, revalidarMin: 5 }).map((x) => x.id), ['recente', 'antiga', 'recusaTemporaria', 'b', 'c', 'a', 'definitivaV1', 'semProduto']);
   assert.deepEqual(pistasParaVerificar({}, { now }), []); assert.deepEqual(pistasParaVerificar(null, { now }), []);
 });
 
@@ -143,7 +144,7 @@ await t('verificarPistas: anota verificada { at, ok, motivo, mlb } em cada pista
   const fetch = async (url, o) => { if (url === 'https://meli.la/quebrado') throw new Error('rede'); return base(url, o); };
   const logs = []; const out = await verificarPistas(store, { fetch, token: 'T', catalog, now, max: 2, log: (m) => logs.push(m) });
   assert.deepEqual(out.map((x) => x.tip.id), ['a']); assert.equal(out[0].oferta.productId, 'me04-box36');
-  assert.deepEqual(store.a.verificada, { at: now.toISOString(), ok: true, motivo: null, mlb: 'MLB4012345678', ofertaId: null });
+  assert.deepEqual(store.a.verificada, { at: now.toISOString(), ok: true, motivo: null, mlb: 'MLB4012345678', ofertaId: null, versao: 2 });
   assert.equal(store.b.verificada.ok, false); assert.equal(store.b.verificada.motivo, 'falha de rede (rede)', 'encurtador fora do ar não é "link sem MLB": tenta de novo depois'); assert.ok(logs.some((l) => /\[pistas\] b/.test(l)));
   assert.equal(store.c.verificada, undefined, 'fora do teto: fica para a próxima rodada');
 });
