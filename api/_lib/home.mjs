@@ -70,6 +70,7 @@ export function slimHome(st, { source = 'state', now = Date.now(), activityDays 
       products: products.length,
       productsWithOffers: byP.size,
       liveOffers: liveAll.length,
+      belowCopag: liveAll.filter((o) => !o.anomalous && o.discount >= 0.005 && P.get(o.productId)?.copagConfirmed).length,   // linha do topo da Home
       stores: new Set(liveAll.map((o) => o.storeId)).size,
       pre: offers.filter((o) => o.stock === 'PRE_ORDER').length,
       tips: liveTips.length,   // contador do menu: só as identificadas (a lista padrão de /pistas)

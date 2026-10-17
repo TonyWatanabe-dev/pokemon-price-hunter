@@ -50,7 +50,7 @@ assert.deepEqual(ids, ['od', 'of']);
 assert.ok(h.offers.every((o) => !('dealScore' in o) && !('scoreParts' in o)), 'Deal Score não vai ao navegador');
 assert.deepEqual(h.offerKinds, { oa: 'pix' }, 'oferta citada só na atividade: viaja apenas o selo "no Pix"');
 assert.equal(h.activity.length, 1, 'atividade só dos últimos 7 dias');
-assert.deepEqual(h.counts, { products: 3, productsWithOffers: 2, liveOffers: 4, stores: 3, pre: 0, tips: 1, offersIncluded: h.offers.length });
+assert.deepEqual(h.counts, { products: 3, productsWithOffers: 2, liveOffers: 4, belowCopag: 3, stores: 3, pre: 0, tips: 1, offersIncluded: h.offers.length });
 // o que a Home mostra é igual com o resumo e com o estado completo
 const vFull = homeView({ ...st, products: st.products, offers: st.offers, counts: h.counts }); const vSlim = homeView(h);
 assert.deepEqual(Object.fromEntries(Object.entries(vSlim.best).map(([k, o]) => [k, o.id])), Object.fromEntries(Object.entries(vFull.best).filter(([k]) => vSlim.P.has(k)).map(([k, o]) => [k, o.id])));
