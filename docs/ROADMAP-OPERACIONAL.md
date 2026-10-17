@@ -1,3 +1,33 @@
+## Atualização executiva — 17/10/2026 (America/Sao_Paulo)
+
+> Fotografia: main com #779–#800 integradas; produção na Vercel acompanhando cada merge; smoke público verde em 16/10 (run 38982057641). Ramo `data` de 17/10: **176 lojas** nas fontes, **108 ativas**, **80 casando produtos**, **2.517 ofertas** e **352 produtos** no estado.
+
+### Entregue em 16–17/10
+| Frente | O que mudou | PRs |
+|---|---|---|
+| Pistas | Pistas viraram parte da página de ofertas (selo "Pista não verificada", sem nota); data ilegível não segura pista; mesma promoção de duas fontes aparece uma vez; menu sem "Pistas" (/pistas → /oportunidades) | #779, #780 |
+| Pistas do ML | Link de catálogo (/p/MLB…) conferido pelo buy box da API; pista sem produto no post identificada pelo título oficial; meli.la de divulgador (/social/) lido pelo produto em destaque | #784, #786 |
+| Alertas por usuário (Fase 4) | **Ligado em 17/10**: conta de serviço, regras Firestore publicadas, bot @PokemonTCGHunterBR_bot publicado no site; log explica chave inválida sem expor conteúdo | #783 |
+| Coleta | Adaptador WooCommerce (Store API) só quando a API traz anúncios; detecção pelo sitemap quando a home não cita Pokémon; lastmod do sitemap; GET condicional (ETag/Last-Modified); frequência adaptativa (30→120 min sem mudança; 6 h para quem lê e casa 0; ML e Copag sempre) | #787, #789, #791, #792, #793, #796 |
+| Casamento | Código de referência Copag (config/refs-copag.json); box/baralho com Pokémon em destaque sem coleção no título (coleção conhecida ou "Box Pokémon"); padrão de varejo "(216 Cartas) (36 Boosters)", "(6 Cartas) (01 Blister)". Na amostra de 200 não casados: 45 passam a casar; golden 31/31, 0 falso positivo | #790, #797 |
+| Lojas | +46 (varredura TCG, brinquedos, papelarias, varejo regional), +5 (Maps/comunidade/CNPJ), +4 (conferência no Chrome). Na 1ª leitura das 46: 19 casando ~270 produtos (MP Brinquedos 70, Taverna do Rei 57, Ciatoy 31) | #788, #799, #800 |
+| Descoberta | Consultas por código Copag, varejo de brinquedos/papelaria e +6 cidades; tarefa agendada **"Pesquisa semanal de lojas"** (segundas 8h49) abre PR com lojas novas confirmadas | #794 |
+| Sondas (só leitura) | Sonda de adaptadores e de feeds no Actions. Resultados: VTEX dedicado proibido por robots nas 5 lojas JSON-LD; Metacards sem /products.json; **0 de 69** lojas JSON-LD com feed público | #782, #795 |
+| Infra/SEO | GitHub Pages despublicado; redirect vercel.app → domínio em 308 (painel); bio IG/TikTok com /grupos | — |
+
+### Achados que orientam a próxima etapa
+- **Lojas do sistema da Liga** (`?view=ecom`): ~45 lojas físicas de TCG vendem Pokémon lacrado por essa plataforma (conferido no Chrome), mas o robots.txt não abre para o robô (teste no Actions). Ficam fora sem contorno; só entram com autorização da plataforma/lojas.
+- Não casados (amostra de 200): 153 "coleção não identificada", 20 tipo, 14 idioma; parte resolvida pelo #797. Caixa de 18 boosters segue sem formato no catálogo (decisão pendente, revisão caso 5).
+- Havan segue em "plataforma não reconhecida" (sem Pokémon no sitemap).
+
+### Pendências
+- **Proprietário:** Search Console com o domínio novo; política de deploy (#231); backup do banco Supabase (#231); rótulo do afiliado ML no site; vídeos da semana 2 no Drive; decidir se pede liberação de leitura ao sistema da Liga.
+- **Burn-in (Fases 1 e 8):** 7 dias verdes seguidos, previsão ~23/10 (#271).
+- **Fase 3 (frete por CEP):** bloqueada por 429 das lojas VTEX a IPs de nuvem (#84).
+- Issues abertas reduzidas a 3 (#271, #231, #84); #560 e #592 fechadas em 17/10.
+
+---
+
 ## Atualização executiva — 16/10/2026 (America/Sao_Paulo)
 
 > **Estado da fotografia consultada:** main em [35b95fd](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/commit/35b95fd31de1ae8d863ef0c53916ddab1214ce6d), última integração identificada em 15/10 à noite. Esta atualização separa código integrado de operação pública comprovada.
