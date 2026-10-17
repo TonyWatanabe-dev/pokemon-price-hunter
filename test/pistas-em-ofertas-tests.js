@@ -33,7 +33,7 @@ function sandbox(nOffers, of = {}) {
     store: { get: (k, d) => ({ ...d, ...of }), set() {} }, S: { collections: [], reputation: { lojas: {} } }, SLUG: {}, P: {},
     esc: (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
     money: (v) => 'R$ ' + Number(v).toFixed(2).replace('.', ','), ic: (id) => `<i data-ic="${id}"></i>`, photo: () => '<div class="photo"></div>',
-    catOf: () => 'x', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '',
+    catOf: () => 'x', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', tipDest: (t) => t.url,   // destino real: test/pistas-destino-tests.js
     afilSelo: () => '', pixTag: () => '', ago: () => 'há 1 h', live: () => true, document: { addEventListener() {}, querySelectorAll: () => [] },
     view: 'oportunidades', $: (s) => (s === '#view' ? view : null),
     mergeProducts: (l) => { for (const p of l) ctx.P[p.id] = p; },

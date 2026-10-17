@@ -1506,10 +1506,16 @@ const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"
 /* Afiliados (docs/afiliados.md): muda o destino do clique em "Ver oferta" e, só em EMPATE de total, põe a oferta com nosso link primeiro (afPref,
    regra do dono de 17/10/2026; nunca acima de oferta mais barata). O dado da oferta (o.url), o preço e a nota não mudam. Sem etiqueta visível no link.
    Só anúncio do Mercado Livre com link próprio (gerado no painel para ESSE anúncio) troca; o resto abre na URL original. AFIL vem de /api/v1/afiliados. */
-let AFIL={anuncios:{},geral:null};
+let AFIL={anuncios:{},geral:null,shopee:{},amazon:{}};
 const AFIL_OK=/^https:\/\/(?:meli\.la|(?:www\.|produto\.)?mercadolivre\.com\.br)\/[^\s"'<>\\]*$/i;
 const mlItem=(u)=>{try{const x=new URL(String(u??"").trim());if(!/^https?:$/.test(x.protocol)||!/^(?:[a-z0-9-]+\.)*mercadoli(?:vre\.com\.br|bre\.com)$/.test(x.hostname))return null;const f=(x.searchParams.get("pdp_filters")||"").match(/item_id:(MLB\d{6,15})\b/i);if(f)return f[1].toUpperCase();const p=x.pathname.match(/^\/MLB-?(\d{6,15})(?:[-_/]|$)/i);return p?"MLB"+p[1]:null}catch{return null}};
 const outUrl=(u)=>{const id=mlItem(u),a=id&&Object.hasOwn(AFIL.anuncios,id)?AFIL.anuncios[id]:null;return typeof a==="string"&&AFIL_OK.test(a)?a:u};
+/* Pistas (17/10/2026): o botão nunca leva ao afiliado de quem postou no canal. O robô guarda o anúncio de destino limpo
+   (t.destino); aqui vira o link do dono quando existe (ML: mapa de anúncios; Shopee: mapa loja/item; Amazon: tag do dono
+   no formato oficial /dp/ASIN) e, senão, o anúncio limpo. Sem destino resolvido ainda: o post do canal. */
+const tipDest=(t)=>{const d=t?.destino;if(d&&d.loja&&typeof d.url==="string"&&/^https:\/\//.test(d.url)){const m=d.loja==="mercadolivre"?AFIL.anuncios:d.loja==="shopee"?AFIL.shopee:d.loja==="amazon"?AFIL.amazon:null;
+  const a=m&&Object.hasOwn(m,d.id)?m[d.id]:null;if(typeof a==="string"&&(AFIL_OK.test(a)||/^https:\/\/(?:s\.shopee\.com\.br|link\.amazon)\/[A-Za-z0-9]+$/.test(a)))return a;
+  return d.url}return t?.postUrl||t?.url||""};
 /* Igual aos links da Amazon: destino de afiliado sai marcado como patrocinado (rel sponsored + nofollow); URL original da loja segue só com noopener. */
 const outRel=(u)=>outUrl(u)!==u?" nofollow sponsored":"";
 /* Desempate do dono: 1 = anúncio do ML com link de afiliado no mapa (mesma regra de afiliadoPreferido no servidor). */
@@ -1618,8 +1624,8 @@ const mkDomain=(t)=>{const s=t.store||"";if(MK[s])return MK[s];if(/^[a-z0-9.-]+\
 const mkName=(t)=>t.store&&MK[t.store]?t.store:(t.store||mkDomain(t)||"Loja");
 const chan=(t)=>"@"+String(t.source||"").replace(/^Telegram\s+@?/,"").replace(/^Pelando$/,"pelando");
 function tipCard(t){
-  const p=P[t.productId];const dom=mkDomain(t);const ref=p?refOf(p):null;const d=ref&&t.price?1-t.price/ref.v:null;
-  return`<a class="tipc" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">
+  const tu=tipDest(t);const p=P[t.productId];const dom=mkDomain(t);const ref=p?refOf(p):null;const d=ref&&t.price?1-t.price/ref.v:null;
+  return`<a class="tipc" href="${esc(safeUrl(tu))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">
     ${p?photo(p,null,"photo tipc-ph"):`<span class="photo tipc-ph fallback" style="--ec:var(--e-water)">${ic("lightbulb")}</span>`}
     <span class="tipc-b">
       <span class="tipc-src">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="16" height="16" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}<b>${esc(mkName(t))}</b><span>via ${esc(chan(t))}</span></span>
@@ -1793,9 +1799,9 @@ function actItem(e){
     <span class="ai-d">${detail}${d!=null&&d>=.0005?`<span class="off sm">${ic("trend-down")}${pct(d)}</span>`:""}<small>${esc(e.storeName||"")}</small></span></li>`;
 }
 function tipItem(t){
-  const p=P[t.productId];const dom=mkDomain(t);
+  const tu=tipDest(t);const p=P[t.productId];const dom=mkDomain(t);
   return`<li class="ai"><time datetime="${esc(t.postedAt||t.firstSeen)}">${dayLabel(t.postedAt||t.firstSeen)}</time><span class="ai-tag info">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:ic("lightbulb")}${esc(mkName(t))} · Telegram</span>
-    <a class="ai-p" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</a>
+    <a class="ai-p" href="${esc(safeUrl(tu))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</a>
     <span class="ai-d"><b>${money(t.price)}</b><small>via ${esc(chan(t))} · não verificado</small></span></li>`;
 }
 function feedHTML(){
@@ -3066,8 +3072,8 @@ function oppTips(){
   return out.sort(OF.sort==="preco"?(a,b)=>a.price-b.price||rec(a,b):(a,b)=>(b.discount??-9)-(a.discount??-9)||rec(a,b));
 }
 function pistaCard(t){
-  const p=(t.productId&&P[t.productId])||{};const d=t.discount;
-  const hit=t.productId?`<a class="deal-hit" href="/produto/${SLUG[t.productId]||encodeURIComponent(t.productId)}" data-p="${esc(t.productId)}"`:`<a class="deal-hit" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener"`;
+  const tu=tipDest(t);const p=(t.productId&&P[t.productId])||{};const d=t.discount;
+  const hit=t.productId?`<a class="deal-hit" href="/produto/${SLUG[t.productId]||encodeURIComponent(t.productId)}" data-p="${esc(t.productId)}"`:`<a class="deal-hit" href="${esc(safeUrl(tu))}" target="_blank" rel="noopener"`;
   const src=/^Pelando$/i.test(t.source||"")?"Pelando":"@"+String(t.source||"").replace(/^Telegram\s+@?/,"");const loja=t.store||"loja";
   const nome=p.typeLabel||t.label||t.title||"";const when=t.postedAt||t.firstSeen;
   return`<article class="deal opp-card tip-card" data-tip="${esc(t.id)}" data-cat="${catOf(p)}" style="--ec:${g(p).c}">
@@ -3078,7 +3084,7 @@ function pistaCard(t){
     <h2 class="deal-name">${esc(nome)}</h2>
     <div class="opp-pv"><p class="deal-price opp-price"><b>${money(t.price)}</b>${t.anomalous?` <span class="chip bad">Barato demais</span>`:""}</p>${d!=null&&d>=.0005?`<p class="opp-cmp"><b>−${pctPts(d*100)}</b> <span class="opp-cmp-w">abaixo</span> <span class="opp-cmp-r">do preço Copag</span></p>`:`<p class="opp-ref none">Sem comparação com a Copag</p>`}<p class="opp-ship">${when?`Postada ${ago(when)} · `:""}via ${esc(src)}</p></div>
     <p class="tip-note">${ic("lightbulb")}<span>Pista: estoque e vendedor não conferidos. Fica fora do Opportunity Score.</span></p>
-    <div class="deal-foot"><span class="deal-store">${esc(t.store||"")}</span><div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(t.url))}" target="_blank" rel="noopener"><span class="cta-l">Ver pista</span><span class="sr"> na ${esc(loja)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div></div>
+    <div class="deal-foot"><span class="deal-store">${esc(t.store||"")}</span><div class="opp-act"><a class="deal-cta" href="${esc(safeUrl(tu))}" target="_blank" rel="noopener"><span class="cta-l">Ver pista</span><span class="sr"> na ${esc(loja)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div></div>
   </div>
 </article>`;
 }
@@ -3549,7 +3555,9 @@ async function refresh(opt={}){
 async function loadAfil(){try{const r=await fetch("/api/v1/afiliados");if(!r.ok)return;const j=await r.json();
   const a={};for(const [k,v] of Object.entries(j&&typeof j.anuncios==="object"&&j.anuncios?j.anuncios:{}))if(/^MLB\d{6,15}$/.test(k)&&typeof v==="string"&&AFIL_OK.test(v))a[k]=v;
   const g=j?.geral&&typeof j.geral.url==="string"&&AFIL_OK.test(j.geral.url)?{url:j.geral.url,rotulo:String(j.geral.rotulo||"Ver mais no Mercado Livre").slice(0,60)}:null;
-  AFIL={anuncios:a,geral:g};if(g)footAfil();if(S&&Object.keys(a).length)render()}catch{}}
+  const sh={};for(const [k,v] of Object.entries(j&&typeof j.shopee==="object"&&j.shopee?j.shopee:{}))if(/^\d{3,15}\/\d{3,20}$/.test(k)&&typeof v==="string"&&/^https:\/\/s\.shopee\.com\.br\/[A-Za-z0-9]+$/.test(v))sh[k]=v;
+  const am={};for(const [k,v] of Object.entries(j&&typeof j.amazon==="object"&&j.amazon?j.amazon:{}))if(/^[A-Z0-9]{10}$/.test(k)&&typeof v==="string"&&/^https:\/\/link\.amazon\/[A-Za-z0-9]+$/.test(v))am[k]=v;
+  AFIL={anuncios:a,geral:g,shopee:sh,amazon:am};if(g)footAfil();if(S&&(Object.keys(a).length||Object.keys(sh).length||Object.keys(am).length))render()}catch{}}
 /* Link geral do Mercado Livre: só no rodapé e só com destino confirmado pelo dono (config). Nunca no lugar de um anúncio. */
 function footAfil(){const f=document.querySelector(".foot-links");if(!f||!AFIL.geral||f.querySelector("[data-afil]"))return;
   f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (abre em nova aba)</span></a>`)}

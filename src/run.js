@@ -30,6 +30,7 @@ import { loadDistrust, trustedPoint } from './distrust.js';
 import { processInbox } from './inbox.js';
 import { redact } from './redact.js';
 import { verificarPistas, ofertaDuplicada, registroDeOferta, SOURCE_TYPE as PISTA_SOURCE } from './pistas-ofertas.js';
+import { destinosPistas } from './pistas-destino.js';
 import { accessToken as mlAccessToken } from './mlauth.js';
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
@@ -537,7 +538,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         const discount = c && t.price ? +(1 - t.price / c.msrp).toFixed(4) : null;
         const { product, ...rest } = t;
         // verificada/virouOferta (pista do ML conferida na API) sobrevivem à releitura do canal.
-        tipStore[t.id] = { ...rest, firstSeen: old?.firstSeen || T, lastSeen: T, isNew: !old, ...(old?.verificada ? { verificada: old.verificada } : {}), ...(old?.virouOferta ? { virouOferta: old.virouOferta } : {}),
+        tipStore[t.id] = { ...rest, firstSeen: old?.firstSeen || T, lastSeen: T, isNew: !old, ...(old?.verificada ? { verificada: old.verificada } : {}), ...(old?.virouOferta ? { virouOferta: old.virouOferta } : {}), ...(old?.destino && old.url === rest.url ? { destino: old.destino } : {}),
           collectionName: p?.collectionName || null, label: p ? p.typeLabel + (p.boosters && /box|combo/.test(p.type) ? ` com ${p.boosters} boosters` : '') + (p.variant ? ' ' + p.variant : '') : null,
           msrp: c?.msrp ?? null, discount, perBooster: p?.boosters && t.price ? round2(t.price / p.boosters) : null, anomalous: !!(c && t.price && t.price < c.msrp * 0.55) };
       }
@@ -557,6 +558,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (t.perBooster && t.price) t.perBooster = round2(t.perBooster * v / t.price);
     t.price = v; t.discount = t.msrp ? +(1 - v / t.msrp).toFixed(4) : null; t.anomalous = !!(t.msrp && v < t.msrp * 0.55);
   }
+  // Destino limpo (17/10/2026): o botão da pista não leva ao afiliado de quem postou; o site usa o link do dono ou o anúncio limpo.
+  if (process.env.PISTAS_DESTINO !== '0') { try { await destinosPistas(tipStore, { now, max: positiveEnv('PISTAS_DESTINO_MAX', 30), log }); } catch (e) { log(`[pistas] destino: ${e.message}`); } }
   const tips = Object.values(tipStore).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
 
   // Bot: analisa links/promoções que você encaminhar para ele no Telegram.

@@ -146,7 +146,7 @@
     },
     "api/v1.mjs": {
       "maxDuration": 15,
-      "includeFiles": "config/affiliates.json"
+      "includeFiles": "{config/affiliates.json,config/afiliados/shopee.json,config/afiliados/amazon.json}"
     }
   },
   "regions": [

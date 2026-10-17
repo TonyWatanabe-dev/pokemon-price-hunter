@@ -59,7 +59,8 @@ t('preço, ranking, Opportunity Score e API nunca leem a lista da Amazon', () =>
   });
   const files = [...walk('src'), ...walk('api')];
   assert.ok(files.includes('src/core/price-engine.js') && files.includes('src/core/opportunity-engine.js'));
-  const hits = files.filter((f) => /afiliados[/-]amazon|config\/afiliados/.test(read(f)));
+  // api/_lib/affiliates.mjs é o leitor único das configs de afiliado: lê o shortUrl da lista só para o destino das pistas (17/10/2026).
+  const hits = files.filter((f) => f !== 'api/_lib/affiliates.mjs' && /afiliados[/-]amazon|config\/afiliados/.test(read(f)));
   assert.deepEqual(hits, [], `arquivo de afiliado lido por: ${hits.join(', ')}`);
 });
 

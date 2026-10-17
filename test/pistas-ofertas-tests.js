@@ -172,6 +172,7 @@ const http = await import('../src/http.js');
 let mlListings = []; const origMl = adapters.mercadolivre;
 adapters.mercadolivre = { ...origMl, search: async () => mlListings };   // adaptador do ML falso (sem rede)
 const { runOnce } = await import('../src/run.js');
+process.env.PISTAS_DESTINO = '0';   // destino limpo das pistas tem teste próprio (pistas-destino-tests.js); aqui só a verificação na API
 const quiet = () => {}; const send = { telegram: async () => {}, email: async () => {}, push: async () => {} };
 const realFetch = globalThis.fetch;
 const offersFile = () => JSON.parse(fs.readFileSync(path.join(dataDir, 'offers.json'), 'utf8'));
