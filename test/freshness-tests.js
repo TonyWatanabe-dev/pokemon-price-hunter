@@ -96,25 +96,28 @@ function siteFresh(S, now = NOW) {
   return { cls: el.className, status: el.dataset.freshness, mini: slots['#mini-t'].innerHTML, full: slots['#fresh-t'].innerHTML, st: ctx.st };
 }
 
-await t('4. site: indicador usa os mesmos limites e textos claros (nunca "Ao vivo" com dado antigo ou sem horário)', () => {
-  let s = siteFresh({ generatedAt: ago(10) }); assert.equal(s.status, 'atual'); assert.equal(s.cls, 'fresh'); assert.match(s.full, /Ao vivo/);
-  s = siteFresh({ generatedAt: ago(45) }); assert.equal(s.status, 'atrasado'); assert.equal(s.cls, 'fresh warn'); assert.match(s.full, /Atualizado há 45 min/); assert.doesNotMatch(s.full, /Ao vivo/);
-  s = siteFresh({ generatedAt: ago(200) }); assert.equal(s.status, 'desatualizado'); assert.equal(s.cls, 'fresh bad'); assert.match(s.full, /Preços desatualizados.*Última atualização: 09\/10/);
-  for (const g of [undefined, null, 'lixo']) { s = siteFresh({ generatedAt: g }); assert.equal(s.status, 'indisponivel'); assert.equal(s.cls, 'fresh bad'); assert.doesNotMatch(s.full + s.mini, /Ao vivo/); }
+// Decisão do dono (17/10/2026): o site não informa há quanto tempo foi a última atualização nem diz "desatualizado";
+// vale o último valor registrado até a próxima rodada. O status continua calculado (data-freshness) para a API e o monitoramento.
+await t('4. site: barra neutra em qualquer frescor (sem idade, sem "desatualizado"); status segue calculado', () => {
+  let s;
+  for (const [g, st] of [[ago(10), 'atual'], [ago(45), 'atrasado'], [ago(200), 'desatualizado'], [undefined, 'indisponivel'], [null, 'indisponivel'], ['lixo', 'indisponivel']]) {
+    const s = siteFresh({ generatedAt: g }); assert.equal(s.status, st); assert.equal(s.cls, 'fresh'); assert.equal(s.mini, '<b>Ao vivo</b>');
+    assert.doesNotMatch(s.full + s.mini, /há \d|min\b|desatualiz|Última atualização|Sem confirmação/i, `sem idade nem alerta (${st})`);
+  }
   // freshness da API tem prioridade sobre generatedAt; e o tempo passando é recalculado (o site atualiza a cada 30 s)
   s = siteFresh({ generatedAt: ago(1), freshness: { dataAt: ago(100) } }); assert.equal(s.status, 'desatualizado');
   assert.equal(siteFresh({ generatedAt: ago(25) }, NOW + 20 * 6e4).status, 'atrasado');
   for (const m of [0, 30, 31, 90, 91, 1440, 1441]) assert.equal(siteFresh({ generatedAt: ago(m) }).status, classify(ago(m), NOW).status, `site = API em ${m} min`);
 });
 
-await t('5. site: oportunidades pausadas (stale_db) na Home e em /oportunidades, sem nota antiga', () => {
-  // UX: a pausa (stale_db ou 503) leva motivo e horário da API; o texto fica em pauseHTML (testes em ux-confianca-tests.js)
-  assert.match(html, /const isPause=\(d,path\)=>d\?\.meta\?\.status==="stale_db"/);
+await t('5. site: stale_db com notas mostra a lista; só sem nota nenhuma (ou 503) aparece o bloco de espera', () => {
+  // 17/10: com o banco sem sincronizar a API manda as últimas notas (stale_db com dados) e o site as mostra normalmente
+  assert.match(html, /const isPause=\(d,path\)=>\(d\?\.meta\?\.status==="stale_db"&&!d\?\.data\?\.length\)/);
   assert.match(html, /if\(isPause\(a,HOME_OPP_KEY\)\)\{Object\.assign\(HOMEOPP,\{status:"stale",top:\[\]\}\)/);
   assert.match(html, /if\(isPause\(d,key\)\)\{Object\.assign\(OPP,\{status:"stale",items:\[\],total:0\}\)/);
   assert.match(html, /HOMEOPP\.status==="stale"\)return`<div class="stage-empty pause">\$\{pauseHTML\(/);
   assert.match(html, /OPP\.status==="stale"\)return`<div class="empty pause">\$\{pauseHTML\(/);
-  assert.match(html, /return`<\$\{H\}>Oportunidades pausadas<\/\$\{H\}>/);   // nível do título por página (h2 em /oportunidades, h3 na Home)
+  assert.match(html, /return`<\$\{H\}>Oportunidades em atualização<\/\$\{H\}>/);   // nível do título por página (h2 em /oportunidades, h3 na Home)
 });
 
 // ------------------------------------------------------------------ 4) banco (PostgreSQL descartável)
@@ -148,7 +151,7 @@ if (DB) {
       const o = await call('/api/v1/oportunidades'); assert.ok(o.json.data.length > 0, 'oportunidades servidas');
     });
 
-    await t('7. banco sem sincronizar há 3 h e robô em dia: serve o state.json (mais novo), marcado; oportunidades pausadas', async () => {
+    await t('7. banco sem sincronizar há 3 h e robô em dia: serve o state.json (mais novo), marcado; oportunidades com as últimas notas', async () => {
       setFreshnessClock(() => NOW + 170 * 6e4); const N2 = NOW + 170 * 6e4;    // banco com 180 min
       setLegacyLoader(async () => fx(new Date(N2 - 5 * 6e4).toISOString())); reset();
       for (const e of ENDPOINTS.filter((x) => !x.includes('oportunidades'))) {
@@ -157,14 +160,14 @@ if (DB) {
         assert.equal(f.fallback.reason, 'banco-desatualizado'); assert.equal(f.fallback.dbAgeMin, 180); assert.equal(f.fallback.dbDataAt, ago(10)); assert.equal(r.h['Cache-Control'], 'no-store', e);
       }
       const o = await call('/api/v1/oportunidades');
-      assert.equal(o.status, 200); assert.equal(o.json.meta.status, 'stale_db'); assert.deepEqual(o.json.data, [], 'nenhuma nota antiga'); assert.match(o.json.meta.message, /180 min/);
+      assert.equal(o.status, 200); assert.equal(o.json.meta.status, 'stale_db'); assert.ok(Array.isArray(o.json.data), 'últimas notas registradas'); assert.match(o.json.meta.message, /Últimos valores registrados/); assert.doesNotMatch(o.json.meta.message, /\d+ min/);
       assert.equal(o.json.meta.freshness.status, 'desatualizado'); assert.equal(o.h['Cache-Control'], 'no-store');
     });
 
-    await t('8. banco e state.json parados há 3 h: serve o banco marcado "desatualizado" (sem cache); site mostra "Preços desatualizados"', async () => {
+    await t('8. banco e state.json parados há 3 h: serve o banco marcado "desatualizado" (sem cache); site segue neutro', async () => {
       const N2 = NOW + 170 * 6e4; setLegacyLoader(async () => fx(ago(15))); reset();      // state.json ainda mais velho que o banco
       const r = await call('/api/v1/home'); assert.equal(r.status, 200); assert.equal(fr(r).source, 'db'); assert.equal(fr(r).status, 'desatualizado'); assert.equal(r.h['Cache-Control'], 'no-store');
-      const s = siteFresh(r.json, N2); assert.equal(s.status, 'desatualizado'); assert.match(s.full, /Preços desatualizados/);
+      const s = siteFresh(r.json, N2); assert.equal(s.status, 'desatualizado'); assert.match(s.full, /Ao vivo/); assert.doesNotMatch(s.full, /desatualiz/);
       // mais de 24 h: indisponível → 503 em tudo que tem preço; oportunidades seguem pausadas (sem dado)
       setFreshnessClock(() => NOW + 1500 * 6e4); reset();
       for (const e of ENDPOINTS.filter((x) => !x.includes('oportunidades'))) { const x = await call(e); assert.equal(x.status, 503, e); assert.equal(fr(x).status, 'indisponivel', e); }

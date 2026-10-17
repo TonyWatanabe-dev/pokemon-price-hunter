@@ -3351,7 +3351,7 @@ async function moreOpp(page){
 /* UX — pausa das notas (stale_db ou 503 em /oportunidades). Motivo e horário vêm da API (meta.message, meta.freshness);
    nada antigo é mostrado como atual. Nova tentativa pelo botão e sozinha a cada 5 min (oppTick). */
 let OPP_PAUSE=null;   /* {at,ageMin,why,checked}: /oportunidades respondeu stale_db ou 503 (Home ou página) */
-const isPause=(d,path)=>d?.meta?.status==="stale_db"||(!d&&typeof API_LAST!=="undefined"&&API_LAST.get(path)===503);
+const isPause=(d,path)=>(d?.meta?.status==="stale_db"&&!d?.data?.length)||(!d&&typeof API_LAST!=="undefined"&&API_LAST.get(path)===503);   /* 17/10: com notas da última rodada (stale_db com dados), mostra a lista; a barra do topo já diz "Preços desatualizados" */
 function setPause(d,path){
   const rf=()=>{if(typeof fresh==="function")fresh()};
   if(d===null){if(OPP_PAUSE){OPP_PAUSE=null;rf()}return}
@@ -3360,8 +3360,7 @@ function setPause(d,path){
 }
 function pauseHTML(p,retry,H="h3"){
   p=p||{};
-  return`<${H}>Oportunidades pausadas</${H}><p>${esc(p.why||"Os preços do banco estão atrasados.")}${p.at?` Últimos preços recebidos em ${freshAt(p.at)}.`:""}</p>
-  <p>Nenhuma nota antiga é mostrada como atual; elas voltam sozinhas na próxima atualização dos preços.</p>
+  return`<${H}>Oportunidades em atualização</${H}><p>As notas voltam sozinhas na próxima rodada dos preços.</p>
   <p class="pause-act"><button class="btn ghost sm" type="button" ${retry}>${ic("arrow-clockwise")}Tentar de novo</button><a class="btn ghost sm" href="/precos" data-go="copag">${ic("tag")}Ver preços sugeridos Copag</a></p>`;
 }
 /* boot: as oportunidades da página aberta são pedidas junto com o /home (apiGet compartilha o pedido) */
@@ -3439,16 +3438,14 @@ const freshAt=(iso)=>new Date(iso).toLocaleString("pt-BR",{day:"2-digit",month:"
 /* UX-B: o texto sempre traz a idade real dos preços (nunca "ao vivo" sem idade). Preços e notas têm fontes separadas:
    /home pode estar em dia (state.json) enquanto /oportunidades está pausado (stale_db); a barra diz as duas coisas. */
 const ageTxt=(m)=>m<1?"agora":`há ${m} min`;
+/* Decisão do dono (17/10/2026): o site não informa há quanto tempo foi a última atualização nem mostra "desatualizado";
+   vale sempre o último valor registrado até a próxima rodada. Cada oferta segue com a própria data de leitura. */
 function freshTxt(f){
-  const pz=typeof OPP_PAUSE!=="undefined"&&!!OPP_PAUSE&&(f.status==="atual"||f.status==="atrasado");const pzS=pz?" · notas pausadas":"",pzL=pz?" As notas de oportunidade estão pausadas.":"";
-  return{atual:[`<b>Ao vivo</b> · atualizado ${ageTxt(f.ageMin)}${pzS}`,`<b>Ao vivo</b> · preços atualizados ${ageTxt(f.ageMin)}.${pzL}`],
-    atrasado:[`<b>Atualizado há ${f.ageMin} min</b>${pzS}`,`<b>Atualizado há ${f.ageMin} min.</b> A próxima leitura dos preços está atrasada.${pzL}`],
-    desatualizado:[`<b>Preços desatualizados</b>`,`<b>Preços desatualizados.</b> Última atualização: ${f.dataAt?freshAt(f.dataAt):"?"}. Os preços e o estoque podem ter mudado.`],
-    indisponivel:[`<b>Sem confirmação de atualização</b>`,`<b>Não conseguimos confirmar quando estes preços foram atualizados.</b> Eles podem estar desatualizados.`]}[f.status];
+  return[`<b>Ao vivo</b>`,`<b>Ao vivo</b> · preços das lojas acompanhadas. Confira preço, frete e estoque na loja antes de comprar.`];
 }
 function fresh(){
   const el=$("#fresh");if(!S||!el)return;
-  const f=freshState(S);el.className="fresh"+(f.status==="atrasado"?" warn":f.status==="atual"?"":" bad");el.dataset.freshness=f.status;
+  const f=freshState(S);el.className="fresh";el.dataset.freshness=f.status;
   const T=freshTxt(f);$("#mini-t").innerHTML=T[0];$("#fresh-t").innerHTML=T[1];
   const lv=$("#live-t");if(lv)lv.innerHTML=T[0];const b=$("body");if(b)b.dataset.fresh=f.status;
 }
