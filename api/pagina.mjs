@@ -9,6 +9,8 @@ import { apiDbEnabled } from './_lib/db.mjs';
 import { listOpportunities } from './_lib/read-db.mjs';
 import { classify, usable, dbDataAt, stateDataAt } from './_lib/freshness.mjs';
 import { byComparableTotal, shipKnown } from './_lib/offer-rank.mjs';
+import { registrarDesempate } from './_lib/affiliates.mjs';
+registrarDesempate();   // empate de total: oferta com link de afiliado primeiro (docs/afiliados.md)
 // Lote E: guia, perguntas frequentes e glossário como dados (fonte única com o site).
 import { GUIA, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from './_lib/guia.mjs';
 // Frente 7: /lojas (todas as lojas conhecidas, com busca direta) e "Procurar em outras lojas" no produto.
@@ -213,7 +215,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   // Lote E: guia completo (uma seção por h2) + perguntas frequentes (FAQPage); glossário (DefinedTermSet).
   if (t === 'como-funciona') main = `<p>${esc(GUIA.intro)}</p>${guiaHTML(GUIA)}${faqHTML(GUIA)}<p>Termos do hobby explicados: <a href="/guia/glossario">glossário de Pokémon TCG lacrado</a>.</p>`;
   if (t === 'glossario') main = `<p>Os termos que aparecem nas ofertas e no guia <a href="/como-funciona">Como funciona</a>, em ordem de uso.</p>${glossarioHTML(GUIA)}`;
-  if (t === 'grupos') main = `<p>O robô varre as lojas o dia inteiro e manda no grupo quando aparece preço bom em Pokémon TCG lacrado.</p><ul class="ssr-links"><li>${extA(GRUPOS.whatsapp, 'Entrar no grupo do WhatsApp')}</li><li>${extA(GRUPOS.telegram, 'Entrar no grupo do Telegram')}</li></ul><p>Alguns links das ofertas são de afiliado: podemos receber comissão, sem custo extra para você. Isso não muda a comparação de preços.</p>`;
+  if (t === 'grupos') main = `<p>O robô varre as lojas o dia inteiro e manda no grupo quando aparece preço bom em Pokémon TCG lacrado.</p><ul class="ssr-links"><li>${extA(GRUPOS.whatsapp, 'Entrar no grupo do WhatsApp')}</li><li>${extA(GRUPOS.telegram, 'Entrar no grupo do Telegram')}</li></ul>`;
   if (t === 'privacidade') main = '<p>Esta política segue a Lei Geral de Proteção de Dados (Lei 13.709/2018). Sem conta, o site não guarda dados pessoais; com conta, guarda e-mail, nome, favoritos e alertas no Firebase, e a exclusão da conta apaga tudo na hora. O texto completo aparece ao carregar a página.</p>';
   const extraLd = t === 'como-funciona' ? [faqLD(GUIA)] : t === 'glossario' ? [glossarioLD(GUIA, SITE)] : [];
   const json = t === 'home' ? [{ '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'Comparador de preços de Pokémon TCG', url: SITE + '/', inLanguage: 'pt-BR' }, { '@context': 'https://schema.org', '@type': 'Organization', name: NAME, url: SITE + '/', logo: SITE + '/icon-512.png', email: 'contato.tcgpricehunter@gmail.com' }] : [...extraLd, crumbs([['Início', '/'], [h1, url]])];

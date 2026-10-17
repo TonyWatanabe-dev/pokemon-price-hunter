@@ -37,7 +37,9 @@ import * as STORES from './_lib/stores.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
-import { publicAffiliates } from './_lib/affiliates.mjs';
+import { publicAffiliates, registrarDesempate } from './_lib/affiliates.mjs';
+// Desempate do dono (docs/afiliados.md): em empate de total, oferta com link de afiliado primeiro. Nunca acima de mais barata.
+registrarDesempate();
 
 export const config = { maxDuration: 15 };
 const TTL = { home: 60_000, site: 60_000, default: 120_000 };

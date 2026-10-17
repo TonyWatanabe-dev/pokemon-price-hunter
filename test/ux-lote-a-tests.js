@@ -42,7 +42,7 @@ await t('1. raShort e raBadge: prefixo RA e aria-label com "Reclame Aqui"', () =
 const flowCode = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
     'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=',
-    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const afilSelo=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),
+    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const afPref=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),
   cut('const readKnown=', 'const shipNote='),
   cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
@@ -98,7 +98,7 @@ function oppSandbox(items, liveCount = 3) {
     console, URLSearchParams, Math, String, Number, Array, JSON, Object, Promise, setTimeout, Date,
     store: { get: (k, d) => d, set() {} }, S: { collections: [{ id: 'sv4', name: 'Fenda Paradoxal' }], reputation: { lojas: {} } }, SLUG: {},
     esc, money, ic, photo: () => '<div class="photo"></div>', catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '',
-    safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', afilSelo: () => '', pixTag: () => '', ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: Object.fromEntries(items.map((x) => [x.product.id, { liveCount }])), live: () => true,
+    safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', afPref: () => 0, pixTag: () => '', ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: Object.fromEntries(items.map((x) => [x.product.id, { liveCount }])), live: () => true,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: (sel) => (sel === '#view' ? view : null), IntersectionObserver: undefined,
     apiGet: async (path) => (path === 'oportunidades/lojas' ? { data: [] } : { data: items, meta: { page: 1, limit: 24, total: items.length, pages: 1, engine: 'opportunity-v2.2' } }),
   };

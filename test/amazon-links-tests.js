@@ -73,7 +73,7 @@ t('front: a lista só é usada no bloco "Também na Amazon", com rel sponsored; 
   assert.match(block, /Preço e disponibilidade na data e hora indicadas/, 'aviso de data e hora junto do preço');
   assert.match(row, /money\(l\.price\)\}<\/b> <small>em \$\{esc\(when\)\}/, 'preço da Amazon sempre com a data e hora da leitura');
   assert.equal(src.match(/AMZ\?\.links|AMZ\.links/g)?.length, 1, 'os links da Amazon só podem ser lidos pelo amzBlock');
-  assert.match(src, /como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
+  assert.match(src, /[Cc]omo Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
 });
 
 t('build publica a lista em /data/ (e o buildCommand da Vercel cabe no limite de 256 caracteres)', () => {
