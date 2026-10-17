@@ -79,7 +79,7 @@ export const mlbDeLink = async (url, opts) => (await resolverLink(url, opts)).ml
 // Motivos de recusa que não mudam com o tempo: a pista não é conferida de novo.
 export const MOTIVOS_DEFINITIVOS = new Set(['link sem MLB', 'anúncio não encontrado', 'usado', 'outro produto', 'produto não identificado']);
 /** Versão da conferência: recusas definitivas de versões anteriores (v1 sem catálogo /p/ nem produto pela API; v2 sem a página /social/ dos divulgadores)
- *  produto pela API) são conferidas de novo uma vez. */
+ *  são conferidas de novo uma vez. */
 export const VERSAO = 3;
 
 /** Anúncio vencedor (buy box) de um produto de catálogo do ML; sem vencedor, o 1º anúncio listado. null se não houver. */
