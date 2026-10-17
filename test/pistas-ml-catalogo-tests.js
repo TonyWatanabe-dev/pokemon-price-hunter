@@ -41,5 +41,5 @@ assert.equal(r.ok, true, 'sem produto no post: título oficial identifica'); ass
 
 r = await verificarPista({ ...tip, productId: null }, { fetch: fake(), token: 'T', catalog, matchProduct: () => ({ productId: null }), now });
 assert.equal(r.motivo, 'produto não identificado');
-assert.equal(VERSAO, 2);
+assert.equal(VERSAO, 3);
 console.log('pistas-ml-catalogo-tests: ok');

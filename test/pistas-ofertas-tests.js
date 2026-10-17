@@ -119,7 +119,7 @@ await t('pistasParaVerificar: só ML vivas (identificadas primeiro), maior desco
     semPreco: { ...tip, id: 'semPreco', price: null },
     recente: { ...tip, id: 'recente', discount: 0.5, verificada: { at: T(10), ok: true } },
     antiga: { ...tip, id: 'antiga', discount: 0.4, verificada: { at: T(90), ok: true } },
-    definitiva: { ...tip, id: 'definitiva', discount: 0.9, verificada: { at: T(500), ok: false, motivo: 'usado', versao: 2 } },
+    definitiva: { ...tip, id: 'definitiva', discount: 0.9, verificada: { at: T(500), ok: false, motivo: 'usado', versao: 3 } },
     definitivaV1: { ...tip, id: 'definitivaV1', discount: 0.01, verificada: { at: T(500), ok: false, motivo: 'link sem MLB' } },
     recusaTemporaria: { ...tip, id: 'recusaTemporaria', discount: 0.35, verificada: { at: T(120), ok: false, motivo: 'sem estoque' } },
   };
@@ -144,7 +144,7 @@ await t('verificarPistas: anota verificada { at, ok, motivo, mlb } em cada pista
   const fetch = async (url, o) => { if (url === 'https://meli.la/quebrado') throw new Error('rede'); return base(url, o); };
   const logs = []; const out = await verificarPistas(store, { fetch, token: 'T', catalog, now, max: 2, log: (m) => logs.push(m) });
   assert.deepEqual(out.map((x) => x.tip.id), ['a']); assert.equal(out[0].oferta.productId, 'me04-box36');
-  assert.deepEqual(store.a.verificada, { at: now.toISOString(), ok: true, motivo: null, mlb: 'MLB4012345678', ofertaId: null, versao: 2 });
+  assert.deepEqual(store.a.verificada, { at: now.toISOString(), ok: true, motivo: null, mlb: 'MLB4012345678', ofertaId: null, versao: 3 });
   assert.equal(store.b.verificada.ok, false); assert.equal(store.b.verificada.motivo, 'falha de rede (rede)', 'encurtador fora do ar não é "link sem MLB": tenta de novo depois'); assert.ok(logs.some((l) => /\[pistas\] b/.test(l)));
   assert.equal(store.c.verificada, undefined, 'fora do teto: fica para a próxima rodada');
 });
