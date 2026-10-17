@@ -2,13 +2,13 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json]
 permissions:
   contents: write
 jobs:
   coleta:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: python3 tools/tmp-cartas/coleta.py
@@ -21,7 +21,9 @@ jobs:
         if: contains(github.event.head_commit.message, 'precos')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/quadros.py
         if: contains(github.event.head_commit.message, 'quadros')
+      - run: sudo apt-get install -y -qq ffmpeg tesseract-ocr python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/render.py ${{ contains(github.event.head_commit.message, 'render-teste') && '30A_deulucro 30A_hit_pikachu_v2' || '' }}
+        if: contains(github.event.head_commit.message, 'render')
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
+          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
