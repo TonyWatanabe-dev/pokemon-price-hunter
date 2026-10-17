@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import { parseLojas, veredito } from '../tools/sonda-adaptadores.mjs';
 
 assert.deepEqual(parseLojas('lifegeek:vtex, metacardscombr:shopify'), [{ id: 'lifegeek', plataforma: 'vtex' }, { id: 'metacardscombr', plataforma: 'shopify' }]);
-assert.deepEqual(parseLojas('x:jsonld,../etc:vtex,ok:mercadolivre'), [], 'só vtex/shopify e id simples');
+assert.deepEqual(parseLojas('x:jsonld,../etc:vtex,ok:mercadolivre'), [], 'só vtex/shopify/woocommerce e id simples');
+assert.equal(parseLojas('lojaw:woocommerce').length, 1);
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 27 } }), 'passa');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 20 } }), 'pior');
 assert.equal(veredito({ atual: { casados: null }, sonda: { validos: 0, casados: 0 } }), 'sem_anuncios');
