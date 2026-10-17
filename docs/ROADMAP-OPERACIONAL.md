@@ -1,3 +1,49 @@
+## Atualização executiva — 17/10/2026 (America/Sao_Paulo) — revisão de pendências
+
+> Esta seção é a leitura operacional mais recente. A documentação e os dados do ramo `data` são snapshots; não equivalem a uma nova inspeção visual de todas as rotas em produção. PRs abertas: nenhuma na consulta de 17/10. Issues abertas: #271, #231 e #84.
+
+### Estado atual por fase
+
+| Fase | Estado | O que falta para fechar |
+|---|---|---|
+| **1 — Confiabilidade / operação 24/7** | Código integrado; burn-in em andamento | Completar **7 dias consecutivos encerrados e verdes** em #271, com evidência dos runs. Dia vermelho reinicia a contagem. |
+| **2 — Fluxo principal do site** | **Concluída** | Nenhum bloqueio de fase registrado. Regressões futuras continuam cobertas por CI e smoke. |
+| **3 — Frete por CEP** | Bloqueada; feature flag deve permanecer desligada | #84: obter cotação real por API oficial/autorizada. VTEX responde 429 a IPs de nuvem. Não contornar bloqueios, não raspar checkout protegido, não estimar frete nem exibir desconhecido como R$ 0. |
+| **4 — Contas e alertas** | Avançou: alertas Telegram por usuário ligados em 17/10 (#783) | Fazer validação ponta a ponta com usuário real e opt-in/out, isolamento, deduplicação, retries, falha de credencial e evidência do envio; reconciliar critérios antigos da matriz de Fase 4 com o que foi integrado. Não declarar fase fechada só pela configuração. |
+| **5 — Opportunity Engine / pistas** | Código integrado e pistas incorporadas às ofertas | Verificar em produção a apresentação, deduplicação e links das pistas após deploy; manter pista não verificada fora do score. |
+| **6 — Lojas, coleta e afiliados** | Cobertura expandida; snapshot do ramo `data` em 17/10: 176 lojas nas fontes, 108 ativas, 80 com casamento de produtos, 2.517 ofertas e 352 produtos | Auditar frescor, estoque e falsos positivos por loja; adicionar rótulo visível de afiliado ML se ainda ausente; completar links afiliados por anúncio onde disponíveis; confirmar política de deploy e backup Supabase em #231. Não tratar contagens como métrica de qualidade por si só. |
+| **7 — Agentes / fábrica de PRs** | Ciclo autônomo parcialmente comprovado; sem PRs abertas na consulta | #231: comprovar configuração e runtime do Governor/worker, checks obrigatórios, auditoria append-only, scheduler recorrente, concorrência real e fluxo CI → revisão independente → decisão → merge elegível → registro. Não presumir 10 workers ativos sem evidência. |
+| **8 — Hardening / lançamento** | Parcial; depende do burn-in e de controles operacionais | Fechar #231: confirmar proteção da main, sink de auditoria, VERCEL_TOKEN no secret store, política de deploy, backup Supabase e monitor horário. Revalidar smoke público no domínio canônico `https://tcgpricehunter.com.br/` com SHA publicado. |
+
+### Próxima ordem de execução
+
+1. **P0 — #271:** registrar diariamente o burn-in e só concluir a Fase 1 com 7/7 dias fechados verdes.
+2. **P0 — #231:** reconciliar configurações e evidências de autonomia, release, auditoria e backup. O teto financeiro anterior de **US$ 100/24 h foi removido pelo proprietário**: não reintroduzir como requisito nem como bloqueio. Permanecem controles técnicos, telemetria, limites de concorrência, idempotência, retries e gates de release.
+3. **P0 — smoke de produção:** confirmar o SHA publicado e validar canonical/redirect, home, busca, página de produto, APIs/dados, links e estados vazios/erro. O último smoke documentado foi verde em 16/10; isso não prova sozinho que todas as mudanças posteriores foram verificadas visualmente.
+4. **P1 — Fase 4:** testar alertas Telegram por usuário de ponta a ponta e atualizar a matriz de critérios com evidência atual.
+5. **P1 — dados/UX:** medir frescor por loja, cobertura real de ofertas, correspondência errada e cliques; tratar os 153 casos de “coleção não identificada” da amostra antiga por prioridade e manter caixa de 18 boosters como decisão pendente.
+6. **P1 — afiliados:** confirmar o rótulo visível do Mercado Livre e mapear links de afiliado por anúncio sem influenciar ranking. Shopee continua pendente de aprovação/link.
+7. **P2 — Social Media:** Telegram tem automação documentada; manter como pendente a prova recente de publicação WhatsApp por via oficial e os publishers automáticos de Instagram/TikTok/YouTube. Gerar rascunhos e ativos pode avançar sem prometer publicação não comprovada.
+8. **P2 — descoberta de lojas:** solicitar autorização para a plataforma Liga antes de qualquer leitura automatizada; não contornar robots.txt. Havan segue sem adaptador reconhecido. Pesquisa semanal de lojas abre PRs para confirmação.
+
+### Pendências que dependem do proprietário
+
+- Configurar/verificar Search Console para o domínio novo.
+- Confirmar política de deploy e credenciais no ambiente seguro (não compartilhar segredos em chat).
+- Confirmar backup automático do banco Supabase, além do backup do ramo `data`.
+- Decidir se solicita autorização à plataforma Liga para leitura das lojas.
+- Colocar vídeos da semana 2 no Drive e fornecer link de afiliado Shopee quando aprovado.
+- Confirmar decisão de produto para caixa de 18 boosters; não inferir formato silenciosamente.
+
+### Regras de conclusão
+
+- **Código integrado ≠ deploy publicado ≠ comportamento real validado.** Cada status precisa de SHA, CI/run e, quando aplicável, smoke ou evidência de envio.
+- Não declarar projeto completo enquanto #271 e #231 não cumprirem os critérios operacionais. A Fase 3 pode permanecer explicitamente bloqueada se não existir fonte de frete autorizada.
+- Nenhum teto financeiro removido deve ser restaurado por documentação antiga. Não alterar gates, secrets, proteções ou política comercial para acelerar.
+- Manter issue #271 aberta até 7 dias verdes consecutivos; manter #84 desligada até haver cotação autorizada e fiel.
+
+---
+
 ## Atualização executiva — 17/10/2026 (America/Sao_Paulo)
 
 > Fotografia: main com #779–#800 integradas; produção na Vercel acompanhando cada merge; smoke público verde em 16/10 (run 38982057641). Ramo `data` de 17/10: **176 lojas** nas fontes, **108 ativas**, **80 casando produtos**, **2.517 ofertas** e **352 produtos** no estado.
