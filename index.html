@@ -1390,17 +1390,35 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
 .grp-fab .grp-ic{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--sticker);color:var(--sticker-ink)}
 .grp-fab small{display:block;font-weight:400;font-size:12px;color:var(--cover-muted)}
 .grp-pop{position:absolute;right:0;bottom:calc(100% + 10px);width:280px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow-lift);padding:14px;display:grid;gap:8px}
-.grp-pop p{margin:0;padding-right:24px;font-size:13px;color:var(--muted)}
+.grp-pop p{margin:0;font-size:13px;color:var(--muted)}
+.grp-head{display:grid;gap:4px;padding-right:24px;cursor:grab;user-select:none;touch-action:none}.grp-fab.arrastando .grp-head,.grp-fab.arrastando>button{cursor:grabbing}
+.grp-t{font-size:16px;line-height:1.25;color:var(--ink)}
+.grp-t mark,.grp-lbl mark{color:inherit;background:linear-gradient(transparent 58%,color-mix(in srgb,var(--sticker) 70%,transparent) 58%) no-repeat 0 0/100% 100%;padding:0 1px}
+.grp-fab>button{touch-action:none}
+.grp-fab.pop-left .grp-pop{right:auto;left:0}.grp-fab.pop-below .grp-pop{bottom:auto;top:calc(100% + 10px)}
+.grp-go{position:relative;overflow:hidden}
+@media (prefers-reduced-motion:no-preference){
+  .grp-fab{animation:grpBob 3.6s ease-in-out infinite}.grp-fab:hover,.grp-fab:focus-within,.grp-fab.arrastando{animation-play-state:paused}
+  .grp-pop:not([hidden]),.grp-dock:not([hidden]){animation:grpIn 420ms var(--ease-out) both}
+  .grp-pop .grp-go,.grp-dock .grp-go{animation:grpIn 420ms var(--ease-out) both}.grp-pop .grp-go.wa,.grp-dock .grp-go.wa{animation-delay:120ms}.grp-pop .grp-go.tg,.grp-dock .grp-go.tg{animation-delay:200ms}
+  .grp-t mark,.grp-lbl mark{animation:grpMark 700ms var(--ease-out) 300ms both}
+  .grp-go::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgb(255 255 255 / .3) 50%,transparent 65%);transform:translateX(-120%);animation:grpShine 5s ease-in-out 1.4s infinite;pointer-events:none}
+  @keyframes grpBob{50%{transform:translateY(-5px)}}
+  @keyframes grpIn{from{opacity:0;transform:translateY(10px)}}
+  @keyframes grpMark{from{background-size:0 100%}}
+  @keyframes grpShine{0%{transform:translateX(-120%)}25%,100%{transform:translateX(120%)}}
+}
 .grp-pop .grp-x{position:absolute;top:6px;right:6px;background:none;border:0;color:var(--muted);padding:6px;cursor:pointer;border-radius:50%}
 .grp-go{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--r-input);font-weight:600;text-decoration:none;color:#fff}
 .grp-go.wa{background:#1F8F52}.grp-go.tg{background:#2481CC}
 .grp-go:hover{filter:brightness(1.06)}
 .grp-go small{margin-left:auto;font-weight:400;font-size:12px;opacity:.9}
-.grp-dock{position:fixed;left:calc(10px + env(safe-area-inset-left,0px));right:calc(10px + env(safe-area-inset-right,0px));bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:19;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:8px;box-shadow:var(--shadow-lift)}
+.grp-dock{flex-wrap:wrap;position:fixed;left:calc(10px + env(safe-area-inset-left,0px));right:calc(10px + env(safe-area-inset-right,0px));bottom:calc(66px + env(safe-area-inset-bottom,0px));z-index:19;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:8px;box-shadow:var(--shadow-lift)}
 @media (min-width:860px){.grp-dock{display:none!important}}
+.grp-dock .grp-lbl{flex:1 0 100%;padding:2px 6px 0;font-weight:700;font-size:14px;color:var(--ink)}
 .grp-dock .grp-go{flex:1;justify-content:center;padding:10px 8px;font-size:14px}
 .grp-dock .grp-x{background:none;border:0;color:var(--muted);padding:8px;cursor:pointer;border-radius:50%;display:grid;place-items:center}
-body.has-dock .wrap{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+body.has-dock .wrap{padding-bottom:calc(180px + env(safe-area-inset-bottom,0px))}
 .grp-page h1{margin-bottom:6px}
 .grp-page .grp-opts,.grp-page .grp-how{margin-inline:16px}
 .grp-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:16px 0}
@@ -2887,17 +2905,24 @@ function grpFechado(){const t=store.get("grp-fechado",0);return typeof t==="numb
 function grpUI(){
   let fab=$("#grp-fab");
   if(!fab){fab=document.createElement("div");fab.id="grp-fab";fab.className="grp-fab";
-    fab.innerHTML=`<div class="grp-pop" id="grp-pop" hidden><button type="button" class="grp-x" data-grp-popx aria-label="Fechar por 7 dias">${ic("x")}</button><p>Ofertas de Pokémon TCG no seu celular, todo dia. Grátis.</p>${grpLinks("botao")}</div><button type="button" data-grp-pop aria-expanded="false" aria-controls="grp-pop"><span class="grp-ic">${ic("chat")}</span><span>Grupos de ofertas<small>WhatsApp e Telegram</small></span></button>`;
+    fab.innerHTML=`<div class="grp-pop" id="grp-pop" hidden><button type="button" class="grp-x" data-grp-popx aria-label="Fechar por 7 dias">${ic("x")}</button><div class="grp-head" data-grp-drag title="Arraste para mover (dois cliques volta ao canto)"><b class="grp-t">Entre no <mark>grupo de ofertas</mark></b><p>O robô acha Pokémon TCG abaixo da Copag e avisa no seu celular. Grátis.</p></div>${grpLinks("botao")}</div><button type="button" data-grp-pop aria-expanded="false" aria-controls="grp-pop"><span class="grp-ic">${ic("chat")}</span><span>Grupos de ofertas<small>WhatsApp e Telegram</small></span></button>`;
     document.body.appendChild(fab)}
   let dock=$("#grp-dock");
   if(!dock){dock=document.createElement("div");dock.id="grp-dock";dock.className="grp-dock";dock.setAttribute("role","region");dock.setAttribute("aria-label","Grupos de ofertas");
-    dock.innerHTML=`${grpLinks("barra").replace(/<small>grupo de ofertas<\/small>/g,"")}<button type="button" class="grp-x" data-grp-fecha aria-label="Fechar por 7 dias">${ic("x")}</button>`;
+    dock.innerHTML=`<span class="grp-lbl">Entre no <mark>grupo de ofertas</mark>:</span>${grpLinks("barra").replace(/<small>grupo de ofertas<\/small>/g,"")}<button type="button" class="grp-x" data-grp-fecha aria-label="Fechar por 7 dias">${ic("x")}</button>`;
     document.body.appendChild(dock)}
   fab.hidden=view==="grupos";
   if(!grpPopMexeu)grpPop(view!=="produto"&&!grpPopFechado());   /* computador: convites já abertos; na página do produto, só o botão */
   dock.hidden=view==="grupos"||view==="produto"||grpFechado();
   document.body.classList.toggle("has-dock",!dock.hidden);
 }
+function grpPosAplica(p){const f=$("#grp-fab");if(!f)return;
+  if(!p||typeof p.x!=="number"||typeof p.y!=="number"){f.style.left=f.style.top=f.style.right=f.style.bottom="";f.classList.remove("pop-left","pop-below");return}
+  const r=f.getBoundingClientRect();if(!r.width)return;   /* celular: botão escondido, nada a posicionar */
+  const x=Math.min(Math.max(8,p.x),innerWidth-r.width-8),y=Math.min(Math.max(8,p.y),innerHeight-r.height-8);
+  f.style.left=x+"px";f.style.top=y+"px";f.style.right="auto";f.style.bottom="auto";
+  f.classList.toggle("pop-left",x+r.width<300);f.classList.toggle("pop-below",y<250)}
+let grpDrag=null,grpArrastou=false,grpPos=null;   /* computador: o botão e o topo do balão podem ser arrastados; a posição vale só nesta visita: ao abrir o site, ele sempre começa no canto */
 function grpPop(open){const p=$("#grp-pop"),b=$("#grp-fab>button");if(!p)return;p.hidden=!open;b?.setAttribute("aria-expanded",String(open))}
 function renderGrupos(){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide grp-page"><h1 class="panel-h1">Receba as melhores ofertas no celular</h1>
@@ -3583,11 +3608,20 @@ async function load(){
 }
 
 /* Eventos */
+document.addEventListener("pointerdown",(e)=>{grpArrastou=false;const h=e.button===0&&e.target.closest("#grp-fab [data-grp-drag],#grp-fab>button");if(!h)return;
+  const r=$("#grp-fab").getBoundingClientRect();grpDrag={dx:e.clientX-r.left,dy:e.clientY-r.top,sx:e.clientX,sy:e.clientY,on:false}});
+document.addEventListener("pointermove",(e)=>{if(!grpDrag)return;if(!grpDrag.on&&Math.hypot(e.clientX-grpDrag.sx,e.clientY-grpDrag.sy)<6)return;
+  if(!grpDrag.on){grpDrag.on=true;$("#grp-fab").classList.add("arrastando")}e.preventDefault();grpPosAplica({x:e.clientX-grpDrag.dx,y:e.clientY-grpDrag.dy})});
+document.addEventListener("pointerup",()=>{if(!grpDrag)return;const f=$("#grp-fab");
+  if(grpDrag.on){grpArrastou=true;f.classList.remove("arrastando");grpPos={x:parseFloat(f.style.left),y:parseFloat(f.style.top)}}grpDrag=null});
+document.addEventListener("dblclick",(e)=>{if(e.target.closest("#grp-fab [data-grp-drag]")){grpPos=null;grpPosAplica(null)}});
+addEventListener("resize",()=>{if(grpPos)grpPosAplica(grpPos)});
 document.addEventListener("click",(e)=>{
   const t=e.target;
   if(!t.closest(".sbox"))acClose();
   const gl=t.closest("[data-grupo]");if(gl){track("group_click",{canal:gl.dataset.grupo,origem:gl.dataset.orig||""});return}
   const rl=t.closest("[data-rede]");if(rl){track("social_click",{rede:rl.dataset.rede});return}
+  if(grpArrastou&&t.closest("#grp-fab")){grpArrastou=false;return}   /* soltar depois de arrastar não conta como clique */
   if(t.closest("[data-grp-popx]")){grpPopMexeu=true;store.set("grp-pop-fechado",Date.now());grpPop(false);return}
   if(t.closest("[data-grp-pop]")){grpPopMexeu=true;grpPop($("#grp-pop")?.hidden!==false);return}
   if(t.closest("[data-grp-fecha]")){store.set("grp-fechado",Date.now());grpUI();return}
