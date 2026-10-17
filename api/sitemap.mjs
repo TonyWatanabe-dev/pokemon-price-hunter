@@ -2,7 +2,7 @@
 import { state, slugs, SITE, colSlug, typeSlug, bestBy } from './_seo.mjs';
 import { classify, usable, stateDataAt } from './_lib/freshness.mjs';
 export default async function handler(req, res) {
-  const fixed = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
+  const fixed = [['', 'hourly', '1.0'], ['oportunidades', 'hourly', '0.9'], ['precos', 'daily', '0.8'], ['pre-vendas', 'daily', '0.7'], ['lojas', 'daily', '0.6'], ['comunidade', 'monthly', '0.5'], ['como-funciona', 'monthly', '0.4'], ['guia/glossario', 'monthly', '0.4'], ['termos', 'monthly', '0.3'], ['privacidade', 'monthly', '0.3']].map(([p, f, pr]) => [`${SITE}/${p}`, f, pr]);
   // Sem dados utilizáveis, a Home mantém canonical/indexabilidade; as demais páginas ficam noindex em pagina.mjs.
   // Não liste no sitemap URLs que a própria página pede para remover do índice.
   let urls = [fixed[0]];
