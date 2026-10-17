@@ -1477,6 +1477,10 @@ body.has-dock .wrap{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))
 <script>
 "use strict";
 const $=(s,r=document)=>r.querySelector(s);
+/* Imagem que falhou (CSP sem script inline, 17/10/2026): no lugar de atributo de evento no HTML, data-err diz o que fazer.
+   fb = troca a .photo pelo substituto guardado em data-fb; rm = some com o ícone; w = vira o texto de data-w. */
+document.addEventListener("error",(e)=>{const t=e.target;if(!(t instanceof HTMLImageElement)||!t.dataset.err)return;const k=t.dataset.err;
+  if(k==="fb"){const ph=t.closest(".photo");if(ph&&ph.dataset.fb!=null)ph.outerHTML=ph.dataset.fb}else if(k==="rm")t.remove();else if(k==="w")t.outerHTML=t.dataset.w||""},true);
 const esc=(s)=>String(s??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=(v)=>typeof v!=="number"||!Number.isFinite(v)?"-":v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const pct=(v)=>v==null?"-":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";
@@ -1562,7 +1566,7 @@ function photo(p,o,cls="photo",eager=false){
   if(!src)return fb;
   /* width/height na proporção do CSS (.cat-media 4/3; .photo 1/1) evitam salto de layout; lazy em tudo menos no pódio (eager). alt descritivo: coleção · formato. */
   const r43=eager||/deal-ph/.test(cls);const alt=[p?.collectionName,p?.typeLabel?label(p):""].filter(Boolean).join(" · ");
-  return`<div class="${cls}"><img src="${esc(src)}" alt="${esc(alt)}" width="${r43?800:600}" height="600" loading="${eager?"eager":"lazy"}"${eager?' fetchpriority="high"':""} decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.photo').outerHTML=this.closest('.photo').dataset.fb" ></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
+  return`<div class="${cls}"><img src="${esc(src)}" alt="${esc(alt)}" width="${r43?800:600}" height="600" loading="${eager?"eager":"lazy"}"${eager?' fetchpriority="high"':""} decoding="async" referrerpolicy="no-referrer" data-err="fb"></div>`.replace('<div class="'+cls+'">',`<div class="${cls}" data-fb="${esc(fb)}">`);
 }
 const live=(o)=>o.stock==="IN_STOCK"&&!o.stale&&!o.anomalous&&o.total>0;
 /* Quem vende: em marketplace (Ri Happy, PBKIDS...) o preço é do vendedor parceiro, não da loja. Nunca atribuir à loja o preço de outro. */
@@ -1582,7 +1586,7 @@ function raBadge(o,full){
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
   const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
   const vis=full?lb:raShort(lb,nota);const al=full?tip:`${vis} · ${tip}`;
-  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(al)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(vis)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
+  return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(al)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" data-err="rm">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(vis)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
@@ -1628,7 +1632,7 @@ function tipCard(t){
   return`<a class="tipc" href="${esc(safeUrl(tu))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">
     ${p?photo(p,null,"photo tipc-ph"):`<span class="photo tipc-ph fallback" style="--ec:var(--e-water)">${ic("lightbulb")}</span>`}
     <span class="tipc-b">
-      <span class="tipc-src">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="16" height="16" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}<b>${esc(mkName(t))}</b><span>via ${esc(chan(t))}</span></span>
+      <span class="tipc-src">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="16" height="16" loading="lazy" referrerpolicy="no-referrer" data-err="rm">`:""}<b>${esc(mkName(t))}</b><span>via ${esc(chan(t))}</span></span>
       <span class="tipc-n">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</span>
       <span class="tipc-p"><b>${money(t.price)}</b>${t.anomalous?`<span class="chip bad">Barato demais</span>`:d!=null&&d>=.0005?`<span class="off sm${ref.net?" ref":""}">${ic("trend-down")}${pct(d)}</span>`:""}${t.virouOferta?`<span class="chip ok">✓ virou oferta</span>`:""}</span>
       <small>${ago(t.postedAt||t.firstSeen)} · ${t.virouOferta?"anúncio conferido na API do Mercado Livre":"não verificado"}</small>
@@ -1800,7 +1804,7 @@ function actItem(e){
 }
 function tipItem(t){
   const tu=tipDest(t);const p=P[t.productId];const dom=mkDomain(t);
-  return`<li class="ai"><time datetime="${esc(t.postedAt||t.firstSeen)}">${dayLabel(t.postedAt||t.firstSeen)}</time><span class="ai-tag info">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:ic("lightbulb")}${esc(mkName(t))} · Telegram</span>
+  return`<li class="ai"><time datetime="${esc(t.postedAt||t.firstSeen)}">${dayLabel(t.postedAt||t.firstSeen)}</time><span class="ai-tag info">${dom?`<img src="https://icons.duckduckgo.com/ip3/${esc(dom)}.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" data-err="rm">`:ic("lightbulb")}${esc(mkName(t))} · Telegram</span>
     <a class="ai-p" href="${esc(safeUrl(tu))}" target="_blank" rel="noopener" data-tip="${esc(t.id)}">${p?`${esc(p.collectionName)} · ${esc(label(p))}`:esc(t.title)}</a>
     <span class="ai-d"><b>${money(t.price)}</b><small>via ${esc(chan(t))} · não verificado</small></span></li>`;
 }
@@ -1957,7 +1961,7 @@ const seriesKey=(c)=>/mega/i.test(c.series||"")?"mega":/escarlate/i.test(c.serie
 function colMark(c){
   const f=COL_LOGOS[c.id];
   const word=`<span class="colc-word" data-s="${seriesKey(c)}" style="--a:${(124/Math.max(...c.name.split(/\s+/).map((w)=>w.length))).toFixed(1)};--b:${(290/c.name.length).toFixed(1)}">${esc(c.name)}</span>`;
-  const img=(file,alt)=>`<img class="colc-logo" src="/logos/colecoes/${esc(file)}" alt="${esc(alt)}" loading="lazy" decoding="async" onerror="this.outerHTML=this.dataset.w" data-w="${esc(word)}">`;
+  const img=(file,alt)=>`<img class="colc-logo" src="/logos/colecoes/${esc(file)}" alt="${esc(alt)}" loading="lazy" decoding="async" data-err="w" data-w="${esc(word)}">`;
   // Fogo Branco e Raio Preto (produtos com as duas): mostra os dois logos lado a lado
   if(!f&&c.id==="sv10_5"&&COL_LOGOS.sv10_5w&&COL_LOGOS.sv10_5r)return`<span class="colc-duo">${img(COL_LOGOS.sv10_5w,"Fogo Branco")}${img(COL_LOGOS.sv10_5r,"Raio Preto")}</span>`;
   if(!f)return word;
