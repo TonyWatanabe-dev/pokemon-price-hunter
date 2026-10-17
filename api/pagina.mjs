@@ -15,7 +15,7 @@ registrarDesempate();   // empate de total: oferta com link de afiliado primeiro
 import { GUIA, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from './_lib/guia.mjs';
 // Frente 7: /lojas (todas as lojas conhecidas, com busca direta) e "Procurar em outras lojas" no produto.
 import { lojasFromState, sections as lojaSections, outrasLojas, LOJAS_CFG } from './_lib/lojas.mjs';
-import { GRUPOS } from './_lib/grupos.mjs';
+import { GRUPOS, REDES } from './_lib/grupos.mjs';
 
 let page = { t: 0, html: null };
 const isShell = (h) => typeof h === 'string' && h.includes('<div id="view"></div>') && h.includes('id="main"') && h.includes('TCG Price Hunter');
@@ -215,10 +215,10 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   // Lote E: guia completo (uma seção por h2) + perguntas frequentes (FAQPage); glossário (DefinedTermSet).
   if (t === 'como-funciona') main = `<p>${esc(GUIA.intro)}</p>${guiaHTML(GUIA)}${faqHTML(GUIA)}<p>Termos do hobby explicados: <a href="/guia/glossario">glossário de Pokémon TCG lacrado</a>.</p>`;
   if (t === 'glossario') main = `<p>Os termos que aparecem nas ofertas e no guia <a href="/como-funciona">Como funciona</a>, em ordem de uso.</p>${glossarioHTML(GUIA)}`;
-  if (t === 'grupos') main = `<p>O robô varre as lojas o dia inteiro e manda no grupo quando aparece preço bom em Pokémon TCG lacrado.</p><ul class="ssr-links"><li>${extA(GRUPOS.whatsapp, 'Entrar no grupo do WhatsApp')}</li><li>${extA(GRUPOS.telegram, 'Entrar no grupo do Telegram')}</li></ul>`;
+  if (t === 'grupos') main = `<p>O robô varre as lojas o dia inteiro e manda no grupo quando aparece preço bom em Pokémon TCG lacrado.</p><ul class="ssr-links"><li>${extA(GRUPOS.whatsapp, 'Entrar no grupo do WhatsApp')}</li><li>${extA(GRUPOS.telegram, 'Entrar no grupo do Telegram')}</li></ul><h2>Siga também</h2><ul class="ssr-links"><li>${extA(REDES.instagram, 'Instagram')}</li><li>${extA(REDES.tiktok, 'TikTok')}</li><li>${extA(REDES.youtube, 'YouTube')}</li></ul>`;
   if (t === 'privacidade') main = '<p>Esta política segue a Lei Geral de Proteção de Dados (Lei 13.709/2018). Sem conta, o site não guarda dados pessoais; com conta, guarda e-mail, nome, favoritos e alertas no Firebase, e a exclusão da conta apaga tudo na hora. O texto completo aparece ao carregar a página.</p>';
   const extraLd = t === 'como-funciona' ? [faqLD(GUIA)] : t === 'glossario' ? [glossarioLD(GUIA, SITE)] : [];
-  const json = t === 'home' ? [{ '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'Comparador de preços de Pokémon TCG', url: SITE + '/', inLanguage: 'pt-BR' }, { '@context': 'https://schema.org', '@type': 'Organization', name: NAME, url: SITE + '/', logo: SITE + '/icon-512.png', email: 'contato.tcgpricehunter@gmail.com' }] : [...extraLd, crumbs([['Início', '/'], [h1, url]])];
+  const json = t === 'home' ? [{ '@context': 'https://schema.org', '@type': 'WebSite', name: NAME, alternateName: 'Comparador de preços de Pokémon TCG', url: SITE + '/', inLanguage: 'pt-BR' }, { '@context': 'https://schema.org', '@type': 'Organization', name: NAME, url: SITE + '/', logo: SITE + '/icon-512.png', email: 'contato.tcgpricehunter@gmail.com', sameAs: Object.values(REDES) }] : [...extraLd, crumbs([['Início', '/'], [h1, url]])];
   // Links internos para coleções e formatos: Home, /precos, /oportunidades e /pre-vendas (página sem lista ainda tem caminho a seguir).
   return { title, desc, url, json, body: `<h1>${esc(h1)}</h1><p>${esc(desc)}</p>${main}${['home', 'precos', 'oportunidades', 'pre-vendas', 'glossario'].includes(t) ? `<p>Navegue por coleção ou formato:</p>${navLinks}` : ''}` };
 }
