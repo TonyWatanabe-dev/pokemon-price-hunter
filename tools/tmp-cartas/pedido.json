@@ -1,44 +1,24 @@
 {
- "json": {},
+ "json": {
+  "card-me025-284": "https://api.tcgdex.net/v2/pt/cards/me02.5-284"
+ },
  "sets_detalhe": [],
  "imagens": {
-  "rd-etb.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/38574d0f876204321825a62cf27af6a0-774ffa0639573a4ae117919361578335-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/38574d0f876204321825a62cf27af6a0-774ffa0639573a4ae117919361578335-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/38574d0f876204321825a62cf27af6a0-774ffa0639573a4ae117919361578335-640-0.webp"
+  "me02.5-284.png": [
+   "https://assets.tcgdex.net/pt/me/me02.5/284/high.png",
+   "https://assets.tcgdex.net/en/me/me02.5/284/high.png"
   ],
-  "rd-box36.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/c80d635a420a9f185addfc569780ccdf-a3f62117c687206c6617919361473564-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/c80d635a420a9f185addfc569780ccdf-a3f62117c687206c6617919361473564-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/c80d635a420a9f185addfc569780ccdf-a3f62117c687206c6617919361473564-640-0.webp"
+  "30th-136.png": [
+   "https://assets.tcgdex.net/pt/me/30th/136/high.png",
+   "https://assets.tcgdex.net/en/me/30th/136/high.png"
   ],
-  "rd-combo.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/57366422c8ba3fedb788be5c4bdd3a62-e5c9286b529cb16d0917919361552918-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/57366422c8ba3fedb788be5c4bdd3a62-e5c9286b529cb16d0917919361552918-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/57366422c8ba3fedb788be5c4bdd3a62-e5c9286b529cb16d0917919361552918-640-0.webp"
+  "30th-137.png": [
+   "https://assets.tcgdex.net/pt/me/30th/137/high.png",
+   "https://assets.tcgdex.net/en/me/30th/137/high.png"
   ],
-  "rd-blister1.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/2401799f60711f972c36ce64bb9a5b3b-5eae35fede48db820017919361498883-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/2401799f60711f972c36ce64bb9a5b3b-5eae35fede48db820017919361498883-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/2401799f60711f972c36ce64bb9a5b3b-5eae35fede48db820017919361498883-640-0.webp"
-  ],
-  "rd-blister3.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b657f5b10e85680702b06e3052602ca5-0f910f556a59a7dc8a17919361514433-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b657f5b10e85680702b06e3052602ca5-0f910f556a59a7dc8a17919361514433-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/b657f5b10e85680702b06e3052602ca5-0f910f556a59a7dc8a17919361514433-640-0.webp"
-  ],
-  "rd-blister4.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b4aa69c882f5896c23a9bc6f0d3c3662-ef2ad1b8bdb24f69e517919361533536-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b4aa69c882f5896c23a9bc6f0d3c3662-ef2ad1b8bdb24f69e517919361533536-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/b4aa69c882f5896c23a9bc6f0d3c3662-ef2ad1b8bdb24f69e517919361533536-640-0.webp"
-  ],
-  "rd-gorupa.webp": [
-   "https://dcdn-us.mitiendanube.com/stores/007/944/849/products/combo-de-booster-reinado-delta-me06-pokemon-coleaao-megaevoucao-copag-pt-br-gorupa-28dabbb0e3e4842d4517920821174990-1024-1024.webp",
-   "https://dcdn-us.mitiendanube.com/stores/007/944/849/products/combo-de-booster-reinado-delta-me06-pokemon-coleaao-megaevoucao-copag-pt-br-gorupa-28dabbb0e3e4842d4517920821174990-640-0.webp",
-   "http://dcdn-us.mitiendanube.com/stores/007/944/849/products/combo-de-booster-reinado-delta-me06-pokemon-coleaao-megaevoucao-copag-pt-br-gorupa-28dabbb0e3e4842d4517920821174990-640-0.webp"
-  ],
-  "rd-combo-mox.png": [
-   "https://cdn.shopify.com/s/files/1/1515/2596/files/CombodeBoosters-MegaevolucaoReinadoDelta_0109b954-25f8-4548-ab20-35c931657ce0.png?v=1791998061"
+  "30th-090.png": [
+   "https://assets.tcgdex.net/pt/me/30th/090/high.png",
+   "https://assets.tcgdex.net/en/me/30th/090/high.png"
   ]
  }
 }
