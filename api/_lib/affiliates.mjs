@@ -4,6 +4,7 @@
 // (3) só anúncio do Mercado Livre com link gerado para ELE no painel troca de destino — link geral nunca vai para anúncio;
 // (4) o link é usado inteiro, como veio do painel: nada é anexado, montado ou reescrito.
 import fs from 'node:fs';
+import { byComparableTotal } from './offer-rank.mjs';
 
 // Onde ficam os anúncios (URL original da oferta) e para onde um link de afiliado pode levar.
 const ML_HOST = /^(?:[a-z0-9-]+\.)*mercadoli(?:vre\.com\.br|bre\.com)$/;
@@ -62,4 +63,24 @@ export function resolveOutbound(url, cfg = loadAffiliates()) {
 // O que o navegador recebe (GET /api/v1/afiliados): só entradas validadas.
 export function publicAffiliates(cfg = loadAffiliates()) {
   return { v: 1, anuncios: { ...cfg.anuncios }, geral: cfg.geral ? { ...cfg.geral } : null };
+}
+
+// Vitrine "Com link do TCG Price Hunter" (home): ofertas com estoque cujo anúncio do ML tem link do dono no mapa.
+// Só EXIBE à parte, marcada como afiliado: não mexe no ranking, na melhor oferta nem em preço/nota (esses módulos
+// não leem este arquivo). Uma oferta por produto (a mais barata pelo total comparável); `melhor` diz se ela é também a
+// melhor oferta do produto entre TODAS as lojas, pela mesma regra do site (offer-rank).
+const VITRINE_FIELDS = ['id', 'productId', 'storeId', 'storeName', 'seller', 'title', 'url', 'image', 'price', 'priceKind', 'priceKindLabel', 'listPrice', 'total', 'shipping', 'shippingKnown', 'stock', 'discount', 'firstSeen', 'confirmed'];
+const vivo = (o) => o && o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && Number(o.total) > 0;
+export function vitrineAfiliados(st, cfg = loadAffiliates(), { limit = 12 } = {}) {
+  const produtos = new Set((st?.products || []).map((p) => p.id));
+  const vivas = (st?.offers || []).filter((o) => vivo(o) && produtos.has(o.productId));
+  const melhor = new Map(); const afil = new Map();
+  for (const o of vivas) {
+    const b = melhor.get(o.productId); if (!b || byComparableTotal(o, b) < 0) melhor.set(o.productId, o);
+    const id = mlListingId(o.url); if (!id || !cfg?.anuncios?.[id]) continue;
+    const a = afil.get(o.productId); if (!a || byComparableTotal(o, a) < 0) afil.set(o.productId, o);
+  }
+  const itens = [...afil.values()].map((o) => ({ offer: Object.fromEntries(VITRINE_FIELDS.filter((k) => o[k] !== undefined).map((k) => [k, o[k]])), melhor: melhor.get(o.productId)?.id === o.id }))
+    .sort((a, b) => Number(b.melhor) - Number(a.melhor) || (Number(b.offer.discount) || -9) - (Number(a.offer.discount) || -9) || byComparableTotal(a.offer, b.offer));
+  return { total: itens.length, items: itens.slice(0, limit) };
 }

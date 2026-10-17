@@ -204,7 +204,7 @@ await t('7. cada rota desenha um único H1 em #view', async () => {
     const ctx = { entries: () => [], sortEntries: (l) => l, refOf: () => null, F: { mode: 'guardar' }, S: { slim: true, counts: { liveOffers: 10, stores: 3 } }, OFF: [], live: () => true, Set, Date, Object, Math, ic, esc,
       freshState: () => ({}), freshTxt: () => ['agora'], tickerHTML: () => '', podiumOppHTML: () => '<div class="pod-skel"></div>', railOppHTML: () => '', colWallHTML: () => '<section><h2>Coleções</h2></section>',
       radarHTML: () => '', feedHTML: () => '<section><h2>Feed</h2></section>', dropsHTML: () => '<section><h2>Quedas</h2></section>', highlightsOppHTML: () => '', homeMotion() {}, startTicker() {}, stageInit() {}, revealInit() {},
-      HOMEOPP: { status: 'ok', at: Date.now() }, APITTL: 60e3, loadHomeOpp: () => Promise.resolve(), paintHomeOpp() {}, $: () => slot, document: { body: { classList: { toggle: (c, v) => (v ? cls.add(c) : cls.delete(c)) } } } };
+      HOMEOPP: { status: 'ok', at: Date.now() }, afilVitrineHTML: () => '', AFILV: { status: 'ok', at: Date.now() }, loadAfilVitrine() {}, APITTL: 60e3, loadHomeOpp: () => Promise.resolve(), paintHomeOpp() {}, $: () => slot, document: { body: { classList: { toggle: (c, v) => (v ? cls.add(c) : cls.delete(c)) } } } };
     run(cut('function renderDeals(){', '/* Produtos: todos os produtos com oferta'), ctx, 'renderDeals').renderDeals(); got.home = slot.innerHTML; }
   // /precos
   { const slot = { innerHTML: '' }; run(cutFn('function renderCopag'), { S: { products: [PA], collections: [col] }, esc, money, ic, safeUrl: (u) => u, REFNOTE: 'ref', label: (p) => p.typeLabel, Date, $: () => slot }, 'renderCopag').renderCopag(); got.precos = slot.innerHTML; }

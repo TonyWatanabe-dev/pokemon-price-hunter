@@ -19,6 +19,7 @@
 //   GET /api/v1/site/pagina/copag|pistas|prevenda|lojas → dados de /precos, /pistas, /pre-vendas e /lojas (Lote F: sem o state.json no navegador)
 //   GET /api/v1/produtos/:id/historico?dias&lojas=1 → série diária do produto e de cada loja (gráfico)
 //   GET /api/v1/afiliados                           → links de afiliado validados (config/affiliates.json; não lê banco nem state.json)
+//   GET /api/v1/site/afiliados                      → vitrine da home: ofertas com estoque e link de afiliado (à parte do ranking)
 // Frete por CEP (issue #84), DESLIGADO por padrão: sem SHIPPING_CALC_ENABLED=1 as duas respondem 404 sem ler nada.
 //   GET /api/v1/frete/estado                        → { enabled, stores } (lojas VTEX com cálculo; a página só mostra o recurso com 200)
 //   GET /api/v1/frete?oferta&cep&quantidade         → cotação da loja (só VTEX). Loja/item/vendedor vêm do servidor (state.json);
@@ -37,7 +38,7 @@ import * as STORES from './_lib/stores.mjs';
 import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
-import { publicAffiliates } from './_lib/affiliates.mjs';
+import { publicAffiliates, vitrineAfiliados } from './_lib/affiliates.mjs';
 
 export const config = { maxDuration: 15 };
 const TTL = { home: 60_000, site: 60_000, default: 120_000 };
@@ -129,6 +130,7 @@ function route(segs, qs) {
       return { name: 'site-ofertas', kind: 'site', args: { ids: ids.length || (!col && !type) ? ids : null, col, type }, busca };
     }
     if (id === 'lojas' && segs.length === 2) return { name: 'site-lojas', kind: 'site' };
+    if (id === 'afiliados' && segs.length === 2) return { name: 'site-afiliados', kind: 'site' };   // vitrine da home, à parte do ranking
     if (id === 'pagina' && segs.length === 3) { if (!Object.hasOwn(SITE.SITE_PAGES, sub)) throw new HttpError(404, 'rota não encontrada'); return { name: 'site-pagina', kind: 'site', page: sub }; }
     if (id === 'produto' && sub && segs.length === 3) { if (!SLUG_RE.test(sub)) throw new HttpError(400, 'identificador de produto inválido'); return { name: 'site-produto', kind: 'site', id: sub }; }
   }
@@ -148,6 +150,7 @@ async function run(rt, source) {
     case 'site-ofertas': { const st = await catalogState(source);
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
     case 'site-pagina': return { body: { v: 1, source, ...SITE.SITE_PAGES[rt.page](await catalogState(source), { now: FR.nowMs() }) } };
+    case 'site-afiliados': return { body: { v: 1, source, ...vitrineAfiliados(await catalogState(source)) } };
     case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {
       const st = await catalogState(source);

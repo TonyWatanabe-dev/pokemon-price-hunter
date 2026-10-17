@@ -1391,6 +1391,9 @@ dialog.sheet::backdrop{background:rgb(9 13 35 / .55);transition:opacity 320ms ea
   .pod:not([data-r="1"]) .pod-ref,.deal-save span,.ai time,.ai-d small,.dl-pct,.dl-sc,.hl-s,.htip,.sp-row small,.fchip small,.field label,.pk-sub,th,.fact span,.colc-txt em,
   .prow-main small,.prow-price small,.msum dt,.opp-age,.pod-ship,.opp-tag,.refline,.dl-b small,.dl-v s,.hchart .ax,.htip b,.sp-legal,.xf .chip,.pk-col,.pk-store,.fact small{font-size:13px}
 }
+.afilv-c{position:relative;display:grid}
+.afilv-b{position:absolute;z-index:4;top:10px;left:10px;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--ok-bg);color:var(--ok)}
+.afilv-b .icon{width:14px;height:14px}
 </style>
 </head>
 <body>
@@ -1870,6 +1873,18 @@ function podiumOppHTML(){
   if(!top.length)return`<p class="stage-empty">Nenhuma oportunidade avaliada agora. O Opportunity Engine avalia as ofertas com estoque a cada varredura.</p>`;
   return`<div class="podium" aria-label="As 3 melhores oportunidades agora">${top.map((x,i)=>podCardOpp(x,i+1)).join("")}</div>`;
 }
+/* Vitrine "Com link do TCG Price Hunter": ofertas com estoque cujo anúncio tem link de afiliado do dono (/api/v1/site/afiliados).
+   Só exibe à parte e marcada: a ordem das oportunidades, a melhor oferta e as notas não mudam. "Melhor preço" = é também a
+   melhor oferta do produto entre todas as lojas. Sem resposta ou sem itens: a seção não aparece. */
+let AFILV={status:"idle",at:0,items:[]};
+async function loadAfilVitrine(){if(AFILV.status==="loading")return;AFILV.status="loading";
+  try{const r=await fetch("/api/v1/site/afiliados");const j=r.ok?await r.json():null;AFILV={status:"ok",at:Date.now(),items:Array.isArray(j?.items)?j.items:[]}}catch{AFILV={status:"err",at:Date.now(),items:[]}}
+  const el=$("#home-afil");if(el&&view==="deals"){el.innerHTML=afilVitrineHTML();if(typeof revealInit==="function")revealInit()}}
+function afilVitrineHTML(){
+  const xs=(AFILV.items||[]).filter((x)=>x?.offer&&P[x.offer.productId]&&Object.hasOwn(AFIL.anuncios,mlItem(x.offer.url)??""));if(!xs.length)return"";
+  return`<section class="seq afilv">${sectionHead("tag","Com link do TCG Price Hunter","Ofertas com estoque em que o link é nosso: podemos receber comissão, sem custo extra para você. Não muda a ordem nem a melhor oferta do site.","")}
+    <div class="rail" tabindex="0" aria-label="Ofertas com link de afiliado">${xs.map((x)=>`<div class="afilv-c">${x.melhor?`<span class="afilv-b">${ic("seal-check-f")} Melhor preço do produto</span>`:""}${dealCard({p:P[x.offer.productId],o:x.offer,n:1},{plain:true})}</div>`).join("")}</div></section>`;
+}
 function railOppHTML(){
   if(HOMEOPP.status!=="ok")return"";
   const list=HOMEOPP.top.slice(3,15);if(!list.length)return HOMEOPP.top.length?`<p class="opp-all">${seeAll("oportunidades","Ver todas as oportunidades com filtros")}</p>`:"";
@@ -1999,11 +2014,13 @@ function renderDeals(){
     <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
   </div></section>
   <div class="home-slot" id="home-rail">${railOppHTML()}</div>
+  <div class="home-slot" id="home-afil">${afilVitrineHTML()}</div>
   ${colWallHTML()}
   ${radarHTML()}
   <div class="duo">${feedHTML()}${dropsHTML()}</div>
   <div class="home-slot" id="home-hl">${highlightsOppHTML()}</div>`;
   homeMotion();startTicker();stageInit();revealInit();
+  if(AFILV.status!=="ok"||Date.now()-AFILV.at>=APITTL)loadAfilVitrine();
   if(HOMEOPP.status!=="ok"||Date.now()-HOMEOPP.at>=APITTL){const pr=loadHomeOpp();if(HOMEOPP.status!=="ok")paintHomeOpp();pr.then(paintHomeOpp)}
 }
 
