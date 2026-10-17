@@ -1,7 +1,7 @@
 name: Social Telegram automático
 
-# Envio automático ao grupo do Telegram (#690). Regras do proprietário em src/agents/social/auto.js:
-# 5 min entre mensagens (oferta nova no radar sai na hora), mesma oferta no máximo 1× a cada 24 h, afiliado primeiro.
+# Envio automático ao grupo do Telegram (#690).
+# Regra do proprietário (17/10/2026) em src/agents/social/auto.js: oferta nova no radar sai na hora; oferta sem link de afiliado do dono sai UMA vez; com link dele, volta a cada 48 h, espaçada.
 # KILL SWITCH: só roda com a variável do repositório SOCIAL_AUTO = 1 (Settings → Secrets and variables → Actions →
 # Variables). Apagar ou mudar a variável desliga na próxima rodada. O diário de envios fica no cache do Actions.
 

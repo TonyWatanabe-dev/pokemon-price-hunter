@@ -57,7 +57,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       const aprovado = validarFila(aprovar(c.fila, c.item.id, { now: now() }).fila).itens.find((x) => x.id === c.item.id);
       const r = await publicarFoto(aprovado, { env, token, chatId, foto: c.foto, arquivo: card, parseMode: c.parseMode, fetch: fetchFn, simular: false });
       if (!r.ok) { io.error(`- ${c.item.ofertaId}: ${r.status} ${mascarar(r.motivo)}`); falhou = true; break; }
-      feitos.push({ ofertaId: c.item.ofertaId, at: new Date(now()).toISOString(), messageId: r.messageId });
+      feitos.push({ ofertaId: c.item.ofertaId, afiliado: c.afiliado === true, at: new Date(now()).toISOString(), messageId: r.messageId });
       fs.writeFileSync(o.diario, JSON.stringify(registrar(diario, feitos, { now: now() })));   // grava a cada envio
       io.log(`- enviado \`${c.item.ofertaId}\` · message_id ${r.messageId}${c.afiliado ? ' · afiliado' : ''}${card ? ' · card' : ''}`);
     }
