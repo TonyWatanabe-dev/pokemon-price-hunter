@@ -29,7 +29,7 @@ const stale = urlsFor('2020-01-01T00:00:00.000Z');
 assert.deepEqual(stale, [SITE + '/'], 'com dados stale, somente a Home indexável deve permanecer no sitemap');
 
 const fresh = urlsFor(new Date().toISOString());
-assert.equal(fresh.length, 9, 'com dados atuais, as nove páginas fixas devem estar no sitemap');
+assert.equal(fresh.length, 10, 'com dados atuais, as dez páginas fixas (com /comunidade) devem estar no sitemap');
 for (const p of ['/', '/oportunidades', '/precos', '/pre-vendas', '/lojas', '/como-funciona', '/guia/glossario', '/termos', '/privacidade']) {
   assert.ok(fresh.includes(SITE + p), 'página fixa ausente: ' + p);
 }

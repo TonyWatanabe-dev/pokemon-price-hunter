@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import vm from 'node:vm'; import { fileURLToPath } from 'node:url';
 process.env.HUNTER_DOMAIN_DELAY_MS = '0';
 process.env.HUNTER_TIPS = '0';
+process.env.FREQ_ADAPTATIVA = '0'; // este teste mede frescor rodada a rodada; a frequência adaptativa tem teste próprio (frequencia-tests.js)
 for (const k of ['GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT', 'GITHUB_SHA', 'GITHUB_EVENT_NAME', 'HUNTER_CEP', 'HUNTER_BUDGET_MIN']) delete process.env[k];
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'hunter-sync-'));
 process.env.HUNTER_CONFIG_DIR = path.join(tmp, 'config'); process.env.HUNTER_DATA_DIR = path.join(tmp, 'data');

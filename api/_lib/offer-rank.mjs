@@ -13,11 +13,19 @@ export const shipKnown = (o) => o?.shippingKnown === true;
 /** frete conhecido antes de desconhecido; 0 quando os dois estão no mesmo caso. */
 export const shipCmp = (a, b) => shipKnown(b) - shipKnown(a);
 const idCmp = (a, b) => String(a.id).localeCompare(String(b.id));
+// Desempate do dono (17/10/2026, docs/afiliados.md): com o MESMO total comparável (mesma situação de frete), a oferta
+// preferida fica antes. Nunca passa uma oferta mais barata. Este módulo não lê configuração: quem mostra ofertas registra a
+// preferência na entrada da rota (api/v1.mjs, api/pagina.mjs). Sem registro, nenhum desempate além do id.
+let tiePref = null;
+/** Registra (ou remove, com null) a função de preferência de desempate: (oferta) => boolean. */
+export function setTiePreference(fn) { tiePref = typeof fn === 'function' ? fn : null; }
+const prefCmp = (a, b) => { if (!tiePref) return 0; let pa = false; let pb = false; try { pa = !!tiePref(a); pb = !!tiePref(b); } catch { return 0; } return pb - pa; };
 const num = (v) => (Number.isFinite(v) ? v : 1e12);
 
-/** Comparador do "menor total" comparável: frete conhecido primeiro, depois total (= preço sem frete), depois id. */
-export const byComparableTotal = (a, b) => shipCmp(a, b) || num(a.total) - num(b.total) || idCmp(a, b);
+/** Comparador do "menor total" comparável: frete conhecido primeiro, depois total (= preço sem frete), depois a preferência
+ *  de desempate registrada, depois id. */
+export const byComparableTotal = (a, b) => shipCmp(a, b) || num(a.total) - num(b.total) || prefCmp(a, b) || idCmp(a, b);
 /** Mesmo critério para uma chave derivada do total (ex.: preço por booster no modo "Para abrir"). */
-export const byComparable = (key) => (a, b) => shipCmp(a, b) || num(key(a)) - num(key(b)) || idCmp(a, b);
+export const byComparable = (key) => (a, b) => shipCmp(a, b) || num(key(a)) - num(key(b)) || prefCmp(a, b) || idCmp(a, b);
 /** A melhor oferta de uma lista pelo critério acima (null se vazia). Não altera a lista. */
 export const bestComparable = (list, cmp = byComparableTotal) => (list && list.length ? [...list].sort(cmp)[0] : null);

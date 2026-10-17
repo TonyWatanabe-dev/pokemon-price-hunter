@@ -11,7 +11,8 @@ const PERMITIDOS = {
   'api/pagina.mjs': { n: 1, motivo: 'app.html do próprio host da requisição' },
   'api/_lib/lojas.mjs': { n: 1, motivo: 'fontes de lojas bruto no GitHub (RAW_SOURCES fixa)' },
   'api/_lib/legacy.mjs': { n: 1, motivo: 'fetchJson de URLs derivadas de config' },
-  'src/pistas-ofertas.js': { n: 3, motivo: 'fetch injetado (testável): meli.la com assertSafeUrl a cada salto e redirect manual; API do Mercado Livre (host fixo)' },
+  'src/pistas-destino.js': { n: 1, motivo: 'fetch injetado (testável): segue só os redirecionamentos do link curto de uma pista (GET redirect manual, assertSafeUrl a cada salto) até o anúncio de destino; não lê página' },
+  'src/pistas-ofertas.js': { n: 5, motivo: 'fetch injetado (testável): meli.la com assertSafeUrl a cada salto e redirect manual; API do Mercado Livre (host fixo: items, users e products/{id} + products/{id}/items do catálogo)' },
 };
 
 function arquivos(dir) {

@@ -15,7 +15,7 @@ const text = (h) => h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 const code = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const safeUrl=', 'const norm=', 'function stockChip', 'const live=', 'const nrm=', 'const thirdParty=',
     'const storeTxt=', 'const pixTag=', 'const pixTxt=', 'const label=', 'const shipNote=', 'const byTot=', 'const bestLive=',
-    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const afilSelo=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),   // destino do clique (afiliado; sem config = URL original)
+    'let AFIL=', 'const AFIL_OK=', 'const mlItem=', 'const outUrl=', 'const outRel=', 'const afPref=', 'const BTIPOS=', 'const btipoOf=', 'const BORDS='].map(line),   // destino do clique (afiliado; sem config = URL original)
   cut('const readKnown=', 'const shipNote='),
   cut('function scoreChip', 'function storeOffer'),
   cut('const BAND_UI=', 'const RARITY='),
@@ -51,7 +51,7 @@ function sandbox({ loaded = true } = {}) {
     $: (sel) => slots[sel] || null, ic: (id) => `<i data-ic="${id}"></i>`, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'blister', catChip: () => '',
     isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: (p, o) => (p.copagConfirmed && o ? 1 - o.total / p.msrp : null),
-    colHref: () => '', typeHref: () => '', favBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
+    colHref: () => '', typeHref: () => '', favBtn: () => '', shareBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
     document: { title: '', getElementById: (id) => boxes[id] || null, querySelectorAll: () => [] },
   };
   vm.createContext(ctx);

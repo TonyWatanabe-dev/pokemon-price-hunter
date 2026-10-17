@@ -1,52 +1,24 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 16/10/2026
-> **Base consultada:** \`main\` em \`8ea86cb4166e5303f73a9684297c2525a82e51a9\`.  
-> **Objetivo:** levar o produto existente até uma operação comercial útil, confiável e sustentável, com coleta, agentes de engenharia e monitoramento trabalhando 24/7, sem depender de alguém distribuindo cada tarefa manualmente.
+> **Atualizado em:** 17/10/2026 (America/Sao_Paulo)
+> **Fonte de estado:** `docs/ROADMAP-OPERACIONAL.md` — seção executiva de 17/10. O roadmap operacional é a fonte de verdade para fases, issues e evidências; este documento descreve execução e critérios.
 
-Este documento é o plano de execução de ponta a ponta. Use \`docs/ROADMAP-OPERACIONAL.md\` para evidências e estado operacional detalhado, \`docs/MAPA-DE-AGENTES.md\` para contratos dos agentes e \`docs/agentes.md\` para governança de merge/deploy.
+## Estado executivo — 17/10/2026
 
-
-> **Atualização de execução — 13/10/2026:** o fluxo Vigia → Dispatcher → worker → PR de agente → revisão independente foi documentado como comprovado em runtime no [roadmap operacional](./ROADMAP-OPERACIONAL.md). Isso não comprova sete dias verdes de burn-in nem autoriza autopublicação irrestrita. As PRs #597–#600 de SEO foram integradas; consulte o roadmap para o estado atualizado dos smoke tests. Use checks, runs e burn-in atuais como fonte de verdade; não reutilize estados antigos deste plano como evidência atual.
-
-
-
-> **Decisão de escopo — 13/10/2026 (prioridade atual):** o proprietário está satisfeito com a automação já construída e autorizou uma última rodada curta para as correções de integridade #626/#627. Não prolongar a estabilização por melhorias marginais: se houver bloqueio de permissões/infra, necessidade de migration ou retrabalho além de uma rodada focada, documentar e estacionar. As verificações #612 (smoke público), #231 (configuração operacional) e #271 (sete dias verdes) continuam em paralelo e não impedem construir o MVP Social Media em modo de rascunho. **O MVP Social Media está autorizado em paralelo agora**: ofertas validadas → deduplicação/frescor → calendário/fila → geração de conteúdo e prévia → aprovação humana → piloto controlado. Autopublicação só após validação de contas/APIs oficiais, links de afiliado, controles de frequência, kill switch, logs e dados atuais. Telegram primeiro; Instagram após elegibilidade/API; WhatsApp somente com integração oficial confirmada. Não enfraquecer nem falsificar os gates de operação 24/7.
-
-## Canais e destinos do Social Media — atualizado em 14/10/2026
-
-Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, grupo e bot; não tratar o bot como grupo.
-
-| Canal | Endereço | Estado / uso |
-|---|---|---|
-| Telegram — comunidade/grupo | https://t.me/+LzS_Jp1Wvas2NDhh | Convite público fornecido pelo proprietário. Validar novamente o chat ID antes de qualquer teste novo; há evidência histórica de publicação nas PRs #694–#697. |
-| Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; o envio real e a automação estão documentados nas PRs #694–#697; revalidar o destino e o último run antes de diagnosticar falhas. |
-| Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
-| TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
-| YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
-| WhatsApp | Sem link de convite confirmado nesta atualização | Não alterar o grupo existente nem presumir acesso à API de grupos. Integração somente por caminho oficial confirmado. |
-| Shopee Afiliados | Link de afiliado pendente | Não inventar nem substituir link. |
-
-Links de afiliados já informados:
-- Mercado Livre: https://meli.la/1BzQ4PU
-- Amazon: https://link.amazon/B0bVBmGRD
-
-**Estado operacional:** Telegram tem evidência histórica de envio e automação nas PRs #694–#697. WhatsApp permanece em reconciliação documental e exige evidência de integração oficial e envio ao grupo existente. Não guardar tokens, códigos de autenticação ou segredos nestes documentos.
-
-## Estado executivo — 16/10/2026
-
-- **Fase 1:** código de confiabilidade integrado; burn-in 24/7 continua pendente até completar 7 dias encerrados consecutivos verdes.
+- **Fase 1:** código integrado; burn-in pendente até 7 dias consecutivos encerrados verdes (#271).
 - **Fase 2:** concluída.
-- **Fase 3 (frete por CEP):** código integrado, feature flag desligada; bloqueada por respostas 429 de lojas a partir de IPs de nuvem.
-- **Fase 4 (contas/alertas):** parcial; alertas por usuário via Telegram estão em desenvolvimento e só contam como entregues após PR/merge, CI e configuração Firebase verificados.
-- **Fase 5 (Opportunity Engine):** concluída no código; validação pública depende do deploy atualizado.
-- **Fase 6 (afiliados/lojas):** código principal integrado, mas critérios de destino/allowlist, disclosure e validação pública ainda têm pendências descritas no roadmap operacional.
-- **Fase 7 (agentes):** em andamento; PRs #750–#755 integradas, novas branches/implementações só contam quando convertidas em PRs integradas com checks.
-- **Fase 8 (hardening/publicação):** não concluída; deploy Vercel bloqueado por cota no registro de 15/10 e smoke público falhou no canonical. Precisa de deploy do SHA atual + smoke verde.
-- **Social Media:** Telegram tem publicação automatizada documentada (#693–#697). WhatsApp precisa de reconciliação e evidência recente da integração/destino; Instagram, TikTok e YouTube seguem pendentes como publishers.
-- **Release:** merge humano continua sendo gate de publicação até lançamento. O antigo teto financeiro de US$ 100/24 h foi removido pelo proprietário e não deve ser reportado como bloqueio ativo.
+- **Fase 3:** frete por CEP bloqueado por 429 de lojas VTEX; feature flag fica desligada (#84).
+- **Fase 4:** alertas Telegram por usuário ligados em 17/10 (#783); falta validação ponta a ponta e reconciliação da matriz de aceite.
+- **Fase 5:** pistas e Opportunity Engine integrados; falta smoke de produção para confirmar comportamento público de ponta a ponta.
+- **Fase 6:** coleta/lojas ampliadas; snapshot de 17/10 registra 176 lojas nas fontes, 108 ativas, 80 com casamento, 2.517 ofertas e 352 produtos. Falta auditoria de frescor/qualidade e confirmar disclosure de afiliado.
+- **Fase 7:** ciclo de agentes parcialmente comprovado; falta evidência operacional completa de scheduler, Governor, auditoria e release (#231).
+- **Fase 8:** hardening e lançamento pendentes de controles operacionais, smoke do SHA publicado e burn-in.
+- **Issues abertas verificadas em 17/10:** #271, #231 e #84. Nenhuma PR aberta na consulta.
+- **Orçamento:** o proprietário removeu o teto de US$ 100/24 h; não o restaurar como bloqueio. Segurança, idempotência, observabilidade e gates de release permanecem obrigatórios.
 
-**Regra de atualização:** código integrado, deploy publicado e comportamento real são três estados distintos. Não fechar fase nem declarar operação pública concluída sem a evidência exigida no `docs/ROADMAP-OPERACIONAL.md`.
+**Próxima ordem:** #271 burn-in → #231 configurações e evidência de autonomia → smoke público completo → validação ponta a ponta dos alertas Telegram por usuário → frescor/qualidade de dados e disclosure de afiliado. A Fase 3 só avança com fonte de cotação oficial/autorizada; não contornar 429, robots.txt ou checkout protegido.
+
+**Social Media:** Telegram tem automação documentada. WhatsApp exige comprovação recente de caminho oficial e destino; Instagram/TikTok/YouTube não devem ser considerados publishers ativos sem integração e execução verificadas. A produção de rascunhos pode avançar separadamente.
 
 ## 1. Resultado final esperado
 

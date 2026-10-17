@@ -10,11 +10,12 @@ export const SOCIAL_ENABLED_DEFAULT = false;
 // SOCIAL_ENABLED ausente (ou qualquer valor diferente de "1"/"true") = desligado.
 export const socialEnabled = (env = process.env) => SOCIAL_ENABLED_DEFAULT || ['1', 'true'].includes(String(env?.SOCIAL_ENABLED ?? '').trim().toLowerCase());
 
-// Hosts aceitos por marketplace. Mercado Livre: os mesmos de api/_lib/affiliates.mjs. Shopee: pendente (sem host = sem link).
+// Hosts aceitos por marketplace. Mercado Livre: os mesmos de api/_lib/affiliates.mjs. Shopee: só o link curto do
+// Portal de Afiliados (s.shopee.com.br); uma URL comum da Shopee não é link de afiliado.
 export const HOSTS = Object.freeze({
   mercadolivre: Object.freeze([...DESTINATION_HOSTS]),
   amazon: Object.freeze(['link.amazon', 'amzn.to', 'amazon.com.br']),
-  shopee: Object.freeze([]),
+  shopee: Object.freeze(['s.shopee.com.br']),
 });
 export const MARKETPLACES = Object.freeze(Object.keys(HOSTS));
 export const TIPOS = Object.freeze(['geral']);
@@ -58,7 +59,7 @@ export function loadConfig({ file = FILE } = {}) {
 }
 
 /** Links de um post. urlOferta é devolvida intacta (é o link do anúncio). linkCanal é o link geral do marketplace,
- *  separado, ou null quando não existe (ex.: Shopee). O link geral NUNCA substitui a URL da oferta. */
+ *  separado, ou null quando não existe para o marketplace. O link geral NUNCA substitui a URL da oferta. */
 export function linkParaPost({ marketplace, urlOferta } = {}, cfg = loadConfig()) {
   let u; try { u = new URL(String(urlOferta ?? '')); } catch { u = null; }
   if (typeof urlOferta !== 'string' || urlOferta !== urlOferta.trim() || !u || (u.protocol !== 'https:' && u.protocol !== 'http:')) {
