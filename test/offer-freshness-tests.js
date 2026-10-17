@@ -85,7 +85,7 @@ function ui(OFF, prod = PROD) {
     $: (sel) => slots[sel] || null, ic: (id) => `<i data-ic="${id}"></i>`, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'caixa', catChip: () => '',
     isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: () => null,
-    colHref: () => '', typeHref: () => '', favBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
+    colHref: () => '', typeHref: () => '', favBtn: () => '', shareBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
     document: { title: '', getElementById: () => null },
   };
   vm.createContext(ctx);

@@ -73,7 +73,7 @@ function flowSandbox() {
     $: (sel) => slots[sel] || null, ic, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'blister', catChip: () => '',
     isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: (p, o) => (p.copagConfirmed && o ? 1 - o.total / p.msrp : null),
-    colHref: () => '', typeHref: () => '', favBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
+    colHref: () => '', typeHref: () => '', favBtn: () => '', shareBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
     document: { title: '', getElementById: () => null, querySelectorAll: () => [] },
   };
   const x = run(flowCode, ctx, 'buildIndex,renderSearch,renderProduct,dealCard,bestOfferFor,nLiveOf');
