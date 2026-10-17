@@ -1,8 +1,8 @@
 {
   "_nota": "Links gerais de afiliado usados só nos RASCUNHOS de Social Media (issue #642, origem #560). Lido apenas por src/agents/social/afiliados.js. Link geral é o 'link do canal': nunca substitui o link de um anúncio específico e nunca entra em ranking, preço, melhor oferta ou nota (docs/afiliados.md).",
-  "_pendentes": "Shopee: link geral ainda não informado na #560 (pendente). Sem entrada = post sem link do canal.",
   "links": [
     { "marketplace": "mercadolivre", "url": "https://meli.la/1BzQ4PU", "tipo": "geral", "origem": "#560", "validado": false },
-    { "marketplace": "amazon", "url": "https://link.amazon/B0bVBmGRD", "tipo": "geral", "origem": "#560", "validado": false }
+    { "marketplace": "amazon", "url": "https://link.amazon/B0bVBmGRD", "tipo": "geral", "origem": "#560", "validado": false },
+    { "marketplace": "shopee", "url": "https://s.shopee.com.br/8fTCnyee7e", "tipo": "geral", "origem": "#560", "validado": false }
   ]
 }

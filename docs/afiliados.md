@@ -70,3 +70,14 @@ As páginas do Programa de Afiliados e Criadores responderam 403 para leitura au
 - O destino do link curto não é verificado em tempo real, porque o site não faz rede para o ML.
 - As pistas (Telegram) e o arquivo `tools/page.template.html` (que diverge do `index.html`, issue #98) não usam o resolvedor. Os links deles continuam sendo a URL original.
 - Se a config ainda não carregou (ou falhou), os botões usam a URL original. Quando ela chega com anúncios, a tela é redesenhada uma vez.
+
+## Shopee
+
+O site não coleta anúncios da Shopee, então não existe mapa por anúncio. Links gerados pelo dono no Portal de Afiliados em 17/10/2026 (ordem do pedido; o destino do link curto não pôde ser conferido daqui):
+
+| Página | Link de afiliado | Onde é usado |
+|---|---|---|
+| `https://shopee.com.br` | `https://s.shopee.com.br/8fTCnyee7e` | "Link do canal" dos rascunhos de Social Media (`config/social-afiliados.json`) |
+| `https://shopee.com.br/search?keyword=pokemon%20tcg` | `https://s.shopee.com.br/8pmd0He0mh` | Ainda não usado (candidato: botão da Shopee em /lojas) |
+| `https://shopee.com.br/lvftcg` | `https://s.shopee.com.br/8KqMPMfunc` | Ainda não usado (candidato: LVF TCG em /lojas) |
+| `https://shopee.com.br/asuamaneirafestas` | `https://s.shopee.com.br/8V9mbffHSf` | Ainda não usado (candidato: A Sua Maneira Festas em /lojas) |
