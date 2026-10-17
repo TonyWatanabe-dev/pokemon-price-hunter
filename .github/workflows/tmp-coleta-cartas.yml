@@ -2,7 +2,7 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py]
 permissions:
   contents: write
 jobs:
