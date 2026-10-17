@@ -1,0 +1,140 @@
+{
+ "category": "Pokémon",
+ "id": "me02.5-284",
+ "illustrator": "danciao",
+ "image": "https://assets.tcgdex.net/pt/me/me02.5/284",
+ "localId": "284",
+ "name": "Mega Gengar ex",
+ "rarity": "Ilustração Rara Especial",
+ "set": {
+  "cardCount": {
+   "official": 217,
+   "total": 295
+  },
+  "id": "me02.5",
+  "logo": "https://assets.tcgdex.net/pt/me/me02.5/logo",
+  "name": "Heróis Excelsos",
+  "symbol": "https://assets.tcgdex.net/univ/me/me02.5/symbol"
+ },
+ "variants": {
+  "firstEdition": false,
+  "holo": true,
+  "normal": false,
+  "reverse": false,
+  "wPromo": false
+ },
+ "variants_detailed": [
+  {
+   "type": "Holo",
+   "size": "Padrão",
+   "thirdParty": {
+    "cardmarket": 869895,
+    "tcgplayer": 676096
+   },
+   "variantId": "jr7oetx1mqug9",
+   "pricing": {
+    "cardmarket": {
+     "updated": "2026-10-16T22:54:32.753Z",
+     "unit": "EUR",
+     "idProduct": 869895,
+     "avg": 943.49,
+     "low": 360,
+     "trend": 966.36,
+     "avg1": 707.5,
+     "avg7": 1045.37,
+     "avg30": 894.63,
+     "avg-holo": null,
+     "low-holo": null,
+     "trend-holo": 0,
+     "avg1-holo": null,
+     "avg7-holo": null,
+     "avg30-holo": null
+    },
+    "tcgplayer": {
+     "unit": "USD",
+     "updated": "2026-10-14T22:55:13.436Z",
+     "holofoil": {
+      "productId": 676096,
+      "lowPrice": 736.01,
+      "midPrice": 851.4,
+      "highPrice": 17263.61,
+      "marketPrice": 816.38,
+      "directLowPrice": null
+     }
+    }
+   }
+  }
+ ],
+ "dexId": [
+  94
+ ],
+ "hp": 350,
+ "types": [
+  "Sombrio"
+ ],
+ "evolveFrom": "Haunter",
+ "stage": "Estágio 2",
+ "suffix": "ex",
+ "abilities": [
+  {
+   "type": "Habilidade",
+   "name": "Ocultação Sombria",
+   "effect": "Se 1 dos seus Pokémon {D} for Nocauteado pelo dano de um ataque dos Pokémon ex do seu oponente, aquele jogador pegará 1 carta de Prêmio a menos. O efeito de Ocultação Sombria não acumula."
+  }
+ ],
+ "attacks": [
+  {
+   "cost": [
+    "Sombrio",
+    "Sombrio"
+   ],
+   "name": "Vendaval Abissal",
+   "effect": "Mova uma Energia deste Pokémon para 1 dos seus Pokémon no Banco.",
+   "damage": 230
+  }
+ ],
+ "weaknesses": [
+  {
+   "type": "Lutador",
+   "value": "×2"
+  }
+ ],
+ "retreat": 2,
+ "regulationMark": "I",
+ "legal": {
+  "standard": true,
+  "expanded": true
+ },
+ "updated": "2026-07-11T09:59:41+01:00",
+ "pricing": {
+  "cardmarket": {
+   "updated": "2026-10-16T22:54:32.753Z",
+   "unit": "EUR",
+   "idProduct": 869895,
+   "avg": 943.49,
+   "low": 360,
+   "trend": 966.36,
+   "avg1": 707.5,
+   "avg7": 1045.37,
+   "avg30": 894.63,
+   "avg-holo": null,
+   "low-holo": null,
+   "trend-holo": 0,
+   "avg1-holo": null,
+   "avg7-holo": null,
+   "avg30-holo": null
+  },
+  "tcgplayer": {
+   "unit": "USD",
+   "updated": "2026-10-14T22:55:13.436Z",
+   "holofoil": {
+    "productId": 676096,
+    "lowPrice": 736.01,
+    "midPrice": 851.4,
+    "highPrice": 17263.61,
+    "marketPrice": 816.38,
+    "directLowPrice": null
+   }
+  }
+ }
+}
