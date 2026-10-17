@@ -3564,7 +3564,8 @@ function footAfil(){const f=document.querySelector(".foot-links");if(!f||!AFIL.g
   f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (link de afiliado, abre em nova aba)</span></a>${afilSelo(AFIL.geral.url,true)}`)}
 loadAfil();   /* sem await: a página não espera a config */
 async function load(){
-  loading();prefetchOpp();grpUI();if(view==="grupos")renderGrupos();   /* a página dos grupos não depende dos preços */
+  grpUI();   /* botão/barra dos grupos aparecem mesmo se os preços não carregarem; a página /comunidade também (abaixo) */
+  loading();prefetchOpp();
   const st=API_VIEWS.has(view)?(await fetchHome())||await fetchState():await fetchState();if(st)return init(st);
   if(PRIVATE.includes(view)||view==="grupos"){render();return}
   $("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
