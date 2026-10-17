@@ -2880,18 +2880,21 @@ const redesLinks=()=>`<a class="rede" href="${esc(safeUrl(REDES.instagram))}" ta
 function footRedes(){const f=$("#foot-social");if(!f||f.childElementCount)return;f.innerHTML=`<span>Siga o TCG Price Hunter:</span>${redesLinks()}<a class="rede" href="/comunidade" data-go="grupos">${ic("chat")}<span>Grupos WhatsApp e Telegram</span></a>`}
 const GRP_FECHA_DIAS=7;
 const grpLinks=(orig)=>`<a class="grp-go wa" href="${esc(safeUrl(GRUPOS.whatsapp))}" target="_blank" rel="noopener" data-grupo="whatsapp" data-orig="${orig}">WhatsApp<small>grupo de ofertas</small><span class="sr"> (abre em nova aba)</span></a><a class="grp-go tg" href="${esc(safeUrl(GRUPOS.telegram))}" target="_blank" rel="noopener" data-grupo="telegram" data-orig="${orig}">Telegram<small>grupo de ofertas</small><span class="sr"> (abre em nova aba)</span></a>`;
+function grpPopFechado(){const t=store.get("grp-pop-fechado",0);return typeof t==="number"&&Date.now()-t<GRP_FECHA_DIAS*864e5}
+let grpPopMexeu=false;   /* depois que a pessoa abre/fecha nesta visita, o site não muda mais sozinho */
 function grpFechado(){const t=store.get("grp-fechado",0);return typeof t==="number"&&Date.now()-t<GRP_FECHA_DIAS*864e5}
 /* Botão flutuante (computador) e barra (celular). Some na página /grupos; a barra também some no produto (não briga com "Ver oferta") e depois do × por 7 dias. */
 function grpUI(){
   let fab=$("#grp-fab");
   if(!fab){fab=document.createElement("div");fab.id="grp-fab";fab.className="grp-fab";
-    fab.innerHTML=`<div class="grp-pop" id="grp-pop" hidden><button type="button" class="grp-x" data-grp-pop aria-label="Fechar">${ic("x")}</button><p>Ofertas de Pokémon TCG no seu celular, todo dia. Grátis.</p>${grpLinks("botao")}</div><button type="button" data-grp-pop aria-expanded="false" aria-controls="grp-pop"><span class="grp-ic">${ic("chat")}</span><span>Grupos de ofertas<small>WhatsApp e Telegram</small></span></button>`;
+    fab.innerHTML=`<div class="grp-pop" id="grp-pop" hidden><button type="button" class="grp-x" data-grp-popx aria-label="Fechar por 7 dias">${ic("x")}</button><p>Ofertas de Pokémon TCG no seu celular, todo dia. Grátis.</p>${grpLinks("botao")}</div><button type="button" data-grp-pop aria-expanded="false" aria-controls="grp-pop"><span class="grp-ic">${ic("chat")}</span><span>Grupos de ofertas<small>WhatsApp e Telegram</small></span></button>`;
     document.body.appendChild(fab)}
   let dock=$("#grp-dock");
   if(!dock){dock=document.createElement("div");dock.id="grp-dock";dock.className="grp-dock";dock.setAttribute("role","region");dock.setAttribute("aria-label","Grupos de ofertas");
     dock.innerHTML=`${grpLinks("barra").replace(/<small>grupo de ofertas<\/small>/g,"")}<button type="button" class="grp-x" data-grp-fecha aria-label="Fechar por 7 dias">${ic("x")}</button>`;
     document.body.appendChild(dock)}
   fab.hidden=view==="grupos";
+  if(!grpPopMexeu)grpPop(view!=="produto"&&!grpPopFechado());   /* computador: convites já abertos; na página do produto, só o botão */
   dock.hidden=view==="grupos"||view==="produto"||grpFechado();
   document.body.classList.toggle("has-dock",!dock.hidden);
 }
@@ -3585,7 +3588,8 @@ document.addEventListener("click",(e)=>{
   if(!t.closest(".sbox"))acClose();
   const gl=t.closest("[data-grupo]");if(gl){track("group_click",{canal:gl.dataset.grupo,origem:gl.dataset.orig||""});return}
   const rl=t.closest("[data-rede]");if(rl){track("social_click",{rede:rl.dataset.rede});return}
-  if(t.closest("[data-grp-pop]")){grpPop($("#grp-pop")?.hidden!==false);return}
+  if(t.closest("[data-grp-popx]")){grpPopMexeu=true;store.set("grp-pop-fechado",Date.now());grpPop(false);return}
+  if(t.closest("[data-grp-pop]")){grpPopMexeu=true;grpPop($("#grp-pop")?.hidden!==false);return}
   if(t.closest("[data-grp-fecha]")){store.set("grp-fechado",Date.now());grpUI();return}
   if(!t.closest("#grp-fab"))grpPop(false);
   const sbn=t.closest(".scorebtn");if(sbn){showScore(sbn);return}
