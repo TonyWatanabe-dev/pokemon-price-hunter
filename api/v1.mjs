@@ -137,9 +137,11 @@ function route(segs, qs) {
   throw new HttpError(404, 'rota não encontrada');
 }
 
-// /oportunidades com o banco sem sincronizar: nenhuma nota antiga é mostrada como atual (mesmo formato de requires_db).
-const staleOpportunities = (rt, fr) => ({ data: [], meta: { page: rt.page, limit: rt.limit, total: 0, pages: 1, status: 'stale_db',
-  message: `O banco não recebe preços novos há ${fr.ageMin != null ? fr.ageMin + ' min' : 'tempo indeterminado'}: as oportunidades ficam pausadas até a próxima sincronização.` } });
+// /oportunidades com o banco sem sincronizar (decisão do dono, 17/10/2026): mostra as últimas notas registradas até a
+// próxima rodada, marcadas com status 'stale_db' (frescor real em meta.freshness e nos headers; o site não mostra a idade).
+// Antes a lista ficava vazia ("pausadas"). Política: vale também acima de 24 h, sem 503 (o meta.status pula esse corte).
+const staleNote = (body) => { if (body?.meta) Object.assign(body.meta, { status: 'stale_db',
+  message: 'Últimos valores registrados. Atualiza sozinho na próxima rodada.' }); return body; };
 const paged = (r, page, limit) => ({ data: r.items, meta: { page, limit, total: r.total, pages: Math.max(1, Math.ceil(r.total / limit)) } });
 
 async function run(rt, source) {
@@ -228,14 +230,13 @@ async function handle(req, res, { now }) {
   if (preferred === 'db') {
     try { dbFr = FR.classify(await FR.dbDataAt({ now }), now, 'db'); } catch (e) { dbErr = e; }
     if (dbFr && !FR.usable(dbFr)) {
-      if (rt.name === 'oportunidades') out = { body: staleOpportunities(rt, dbFr) };
-      else {
+      if (rt.name !== 'oportunidades') {
         const L = await legacyState({ now }).catch(() => null); const stFr = L ? FR.classify(FR.stateDataAt(L.st), now, 'state') : null;
         if (FR.usable(stFr) && Date.parse(stFr.dataAt) > Date.parse(dbFr.dataAt || 0)) { source = 'state'; fallback = 'banco-desatualizado'; reason = dbFr.ageMin != null ? `banco-${dbFr.ageMin}min` : 'banco-sem-horario'; }
       }
     }
   }
-  try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); } }
+  try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); if (rt.name === 'oportunidades' && dbFr && !FR.usable(dbFr) && !out.status) staleNote(out.body); } }
   catch (e) {
     if (e instanceof HttpError) { out = { status: e.status, body: { error: e.message } }; }   // só mensagens nossas; erro de biblioteca/banco nunca vai ao usuário
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json

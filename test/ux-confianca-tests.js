@@ -63,14 +63,12 @@ function siteFresh(S, pause = null, now = NOW) {
   vm.runInNewContext(freshCode + '\nfresh();', ctx);
   return { mini: slots['#mini-t'].innerHTML, full: slots['#fresh-t'].innerHTML, live: slots['#live-t'].innerHTML, body: body.dataset.fresh };
 }
-await t('B2. barra, mini e topo da Home com a idade real; preços em dia + notas pausadas aparecem juntos', () => {
-  let s = siteFresh({ generatedAt: minAgo(12) });
-  assert.match(s.full, /<b>Ao vivo<\/b> · preços atualizados há 12 min\./); assert.equal(s.live, s.mini); assert.match(s.live, /atualizado há 12 min/); assert.equal(s.body, 'atual');
-  assert.doesNotMatch(s.full + s.mini, /pausad/);
-  s = siteFresh({ generatedAt: minAgo(12) }, { why: 'x' });   // /home em dia (state.json) e /oportunidades em stale_db
-  assert.match(s.mini, /notas pausadas/); assert.match(s.full, /As notas de oportunidade estão pausadas/); assert.match(s.live, /notas pausadas/);
-  s = siteFresh({ generatedAt: minAgo(45) }, { why: 'x' }); assert.match(s.full, /Atualizado há 45 min.*notas de oportunidade estão pausadas/); assert.equal(s.body, 'atrasado');
-  s = siteFresh({ generatedAt: minAgo(200) }, { why: 'x' }); assert.match(s.full, /Preços desatualizados/); assert.doesNotMatch(s.full, /Ao vivo/);
+await t('B2. barra, mini e topo da Home neutros (17/10: sem idade, sem "desatualizado", sem "pausadas"); status segue no body', () => {
+  for (const [m, st] of [[12, 'atual'], [45, 'atrasado'], [200, 'desatualizado']]) for (const pz of [null, { why: 'x' }]) {
+    const s = siteFresh({ generatedAt: minAgo(m) }, pz);
+    assert.equal(s.mini, '<b>Ao vivo</b>'); assert.equal(s.live, s.mini); assert.equal(s.body, st);
+    assert.doesNotMatch(s.full + s.mini, /há \d|desatualiz|pausad/i);
+  }
 });
 await t('B3. 503 da API é registrado (≠ falha de rede) e pedidos iguais em andamento são um só', async () => {
   let fetches = 0; let status = 503;
@@ -149,14 +147,18 @@ await t('C3. ao voltar para a aba, notas com mais de 30 min são buscadas de nov
 // ================================================================== pausa (stale_db / 503) e troca de filtro
 await t('P1. /oportunidades pausada: motivo e horário da API, nova tentativa e caminho alternativo (/precos; /produtos virou /oportunidades)', async () => {
   const s = sandbox(STALE); await s.t.renderOpp(); const h = s.slots['#view'].innerHTML;
-  assert.match(h, /<h2>Oportunidades pausadas<\/h2>/, 'em /oportunidades o estado vem logo depois do H1: título H2'); assert.match(text(h), /há 130 min: as oportunidades ficam pausadas/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
+  assert.match(h, /<h2>Oportunidades em atualização<\/h2>/, 'em /oportunidades o estado vem logo depois do H1: título H2'); assert.doesNotMatch(text(h), /\d+ min|Últimos preços|14:05/, 'sem idade nem horário');
   assert.match(h, /<button[^>]*data-oppretry>/); assert.match(h, /href="\/precos" data-go="copag"/); assert.equal(s.t.OPP_PAUSE.ageMin, 130);
   assert.doesNotMatch(h, /opp-card|class="meter"/, 'nenhuma nota antiga');
   // 503 (dados sem horário confiável): pausa, não "Pode ser a conexão"
   const s2 = sandbox(null); s2.ctx.API_LAST.set(s2.t.oppQuery(1), 503); await s2.t.renderOpp(); const h2 = s2.slots['#view'].innerHTML;
-  assert.match(h2, /Oportunidades pausadas/); assert.doesNotMatch(h2, /conexão/); assert.match(text(h2), /sem atualização confiável/);
+  assert.match(h2, /Oportunidades em atualização/); assert.doesNotMatch(h2, /conexão/);
   // falha de rede continua sendo erro com nova tentativa
   const s3 = sandbox(null); await s3.t.renderOpp(); assert.match(s3.slots['#view'].innerHTML, /Não conseguimos carregar as oportunidades agora/);
+});
+await t('P0. banco sem sincronizar com notas (stale_db + dados): a lista aparece normalmente, sem bloco de espera', async () => {
+  const s = sandbox(page([item()], { status: 'stale_db', message: 'Últimos valores registrados. Atualiza sozinho na próxima rodada.' })); await s.t.renderOpp();
+  assert.equal(s.t.OPP.status, 'ok'); assert.equal(s.t.OPP_PAUSE, null); assert.match(s.slots['#view'].innerHTML, /Caos Ascendente/); assert.doesNotMatch(s.slots['#view'].innerHTML, /em atualização/);
 });
 await t('P2. pausa: nova tentativa sozinha a cada 5 min; volta ao normal limpa a pausa', async () => {
   let r = STALE; const s = sandbox(() => r); await s.t.renderOpp(); const c0 = s.calls.length;
@@ -166,7 +168,7 @@ await t('P2. pausa: nova tentativa sozinha a cada 5 min; volta ao normal limpa a
 });
 await t('P3. Home pausada: mesmo bloco (motivo, horário, tentar de novo, /precos)', async () => {
   const s = sandbox(STALE); s.ctx.view = 'deals'; await s.t.loadHomeOpp(); const h = s.t.podiumOppHTML();
-  assert.match(h, /<div class="stage-empty pause"><h3>Oportunidades pausadas<\/h3>/); assert.match(h, /data-homeretry/); assert.match(h, /href="\/precos"/); assert.match(text(h), /Últimos preços recebidos em 14:05/);
+  assert.match(h, /<div class="stage-empty pause"><h3>Oportunidades em atualização<\/h3>/); assert.match(h, /data-homeretry/); assert.match(h, /href="\/precos"/); assert.doesNotMatch(text(h), /14:05/);
 });
 await t('F. troca de filtro: a lista atual fica na tela (esmaecida) até a nova chegar', async () => {
   let release; const pending = new Promise((r) => { release = r; });
