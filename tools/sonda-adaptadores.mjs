@@ -15,7 +15,7 @@ const loadCatalog = () => { const c = readJson(configPath('catalog.json')); c.pr
 const args = process.argv.slice(2);
 const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 const dir = args.find((a, i) => !a.startsWith('--') && !['--lojas', '--json'].includes(args[i - 1])) || 'data';
-const PLAT = new Set(['vtex', 'shopify']);
+const PLAT = new Set(['vtex', 'shopify', 'woocommerce']);
 export const parseLojas = (s) => String(s || '').split(',').map((x) => x.trim()).filter(Boolean).map((x) => { const [id, p] = x.split(':'); return { id, plataforma: p }; })
   .filter((x) => /^[a-z0-9]{2,60}$/.test(x.id) && PLAT.has(x.plataforma));
 
