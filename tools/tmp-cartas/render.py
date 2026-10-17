@@ -70,46 +70,113 @@ def valor(txt, sinal, ref, lo, hi):
     return None
 
 def linha_do_tempo(arq, caixa, pago, hi):
+    """Lê o placar em todos os quadros (10 qps) e suaviza pela moda numa janela de 0,5 s (erro isolado de OCR some)."""
     x0, y0, x1, y1 = caixa
     tmp = tempfile.mkdtemp()
     subprocess.run(['ffmpeg', '-v', 'quiet', '-i', arq, '-vf', f'fps={FPS_OV},crop={x1-x0}:{y1-y0}:{x0}:{y0}', f'{tmp}/%05d.png'], check=True)
-    fs = sorted(os.listdir(tmp)); tl = []; prev = None; last = None
-    for i, f in enumerate(fs):
+    fs = sorted(os.listdir(tmp)); bruto = []; last = None
+    for f in fs:
         a = np.asarray(Image.open(f'{tmp}/{f}').convert('RGB'))
-        pres = presente(a) > 400
-        if not pres: tl.append(None); prev = None; continue
-        small = a[::2, ::2].astype(int)
-        if prev is not None and np.abs(small - prev).mean() < 5 and last is not None:
-            tl.append(last); continue
-        prev = small
+        if presente(a) <= 400: bruto.append(None); continue
         v = valor(ocr(a), cor_txt(a), last if last is not None else -pago, -pago, hi)
         if v is not None: last = v
-        tl.append(last if last is not None else 'x')
+        bruto.append(v if v is not None else 'x')
     shutil.rmtree(tmp)
+    tl = []
+    for i, v in enumerate(bruto):
+        if v is None: tl.append(None); continue
+        jan = [w for w in bruto[max(0, i - 2): i + 3] if isinstance(w, float)]
+        if jan:
+            cont = {w: jan.count(w) for w in jan}; m = max(cont.values())
+            v = v if isinstance(v, float) and cont.get(v) == m else max(cont, key=lambda w: (cont[w], -abs(jan.index(w) - len(jan) // 2)))
+        tl.append(v)
+    # placar presente mas ilegível: herda o valor anterior (ou o custo inicial, antes do 1º valor lido)
+    ant = -pago
+    for i, v in enumerate(tl):
+        if v == 'x' or (v is not None and not isinstance(v, float)): tl[i] = ant
+        elif isinstance(v, float): ant = v
     return tl
 
-# ---------- cartão final ----------
-def cartao_final(fundo, cfg, final):
-    im = fundo.convert('RGB').filter(ImageFilter.GaussianBlur(28))
-    im = Image.blend(im, Image.new('RGB', im.size, (0, 0, 0)), 0.55).convert('RGBA')
-    d = ImageDraw.Draw(im)
+# ---------- motion: abertura e cartão final ----------
+FPS_M = 30
+ease = lambda x: 1 - (1 - max(0.0, min(1.0, x))) ** 3
+
+def camada(w, h): return Image.new('RGBA', (w, h), (0, 0, 0, 0))
+
+def faixa_abertura():
+    """Faixa de baixo nos primeiros segundos: pergunta + site + grupo."""
+    fw, fh = 1000, 300; c = camada(fw, fh); d = ImageDraw.Draw(c)
+    d.rounded_rectangle((0, 0, fw - 1, fh - 1), 36, fill=AMARELO)
+    d.rounded_rectangle((7, 7, fw - 8, fh - 8), 30, fill=(12, 12, 12, 235))
+    def lc(y, s, f, cor):
+        tw = d.textlength(s, font=f); d.text(((fw - tw) / 2, y), s, font=f, fill=cor)
+    lc(34, 'QUER PAGAR MENOS NO SEU TCG?', F(900, 54), AMARELO)
+    lc(118, 'O site compara as lojas e acha o menor preço', F(700, 40), BRANCO)
+    lc(194, 'tcgpricehunter.com.br · grupo no link', F(800, 42), BRANCO)
+    return c
+
+def anim_abertura(pasta, t_in=0.3, t_out=3.6):
+    """Quadros (30 qps) da região da faixa: sobe com fade, segura, desce com fade."""
+    base = faixa_abertura(); rw, rh = 1000, 420; n = int((t_out + 0.45) * FPS_M)
+    for i in range(n):
+        t = i / FPS_M; c = camada(rw, rh)
+        if t >= t_in:
+            e = ease((t - t_in) / 0.4) if t < t_out else 1 - ease((t - t_out) / 0.4)
+            if e > 0.01:
+                lay = base.copy(); lay.putalpha(lay.getchannel('A').point(lambda v: int(v * e)))
+                c.alpha_composite(lay, (0, int(60 + (1 - e) * 110)))
+        c.save(f'{pasta}/a{i:04d}.png')
+    return (40, 1150)
+
+def camadas_final(cfg, final):
+    """Peças do cartão final, cada uma com o instante em que entra (s) e o tipo de entrada."""
+    out = []
+    def txt(y, s, f, cor, t0, tipo='sobe'):
+        c = camada(W, H); d = ImageDraw.Draw(c); texto_c(d, y, s, f, cor); out.append((c, t0, tipo))
     lucro = final > 0
-    texto_c(d, 300, 'DEU LUCRO!' if lucro else 'PREJUÍZO...', F(900, 128), AMARELO if lucro else VERM)
-    texto_c(d, 470, 'MENOR PREÇO JÁ VISTO NO SITE', F(800, 42), AMARELO)
-    texto_c(d, 525, brl(cfg['site'], sinal=False), F(900, 80), BRANCO)
-    texto_c(d, 622, cfg['produto'], F(700, 36), BRANCO)
-    texto_c(d, 700, 'RESULTADO', F(800, 42), AMARELO)
-    b = badge(brl(final), VERDE if final >= 0 else VERM, 760, 160, F(900, 104), borda=9)
-    im.alpha_composite(b, ((W - 760) // 2, 752))
-    texto_c(d, 975, 'NÃO RASGUE DINHEIRO', F(900, 70), AMARELO)
-    texto_c(d, 1065, 'Entre no grupo e pague', F(700, 50), BRANCO)
-    texto_c(d, 1125, 'sempre o menor preço', F(700, 50), BRANCO)
-    texto_c(d, 1210, 'tcgpricehunter.com.br', F(900, 56), BRANCO)
-    logo = Image.open(os.path.join(AQUI, 'logo.png')).convert('RGBA'); lw = 520
-    logo = logo.resize((lw, int(logo.height * lw / logo.width)))
-    im.alpha_composite(logo, ((W - lw) // 2, 1330))
-    texto_c(d, 1330 + logo.height + 30, '@tcgpricehunter', F(700, 44), BRANCO)
+    txt(300, 'DEU LUCRO!' if lucro else 'PREJUÍZO...', F(900, 128), AMARELO if lucro else VERM, 0.15, 'pop')
+    txt(470, 'MENOR PREÇO JÁ VISTO NO SITE', F(800, 42), AMARELO, 0.35)
+    txt(525, brl(cfg['site'], sinal=False), F(900, 80), BRANCO, 0.42)
+    txt(622, cfg['produto'], F(700, 36), BRANCO, 0.49)
+    txt(700, 'RESULTADO', F(800, 42), AMARELO, 0.6)
+    c = camada(W, H); c.alpha_composite(badge(brl(final), VERDE if final >= 0 else VERM, 760, 160, F(900, 104), borda=9), ((W - 760) // 2, 752)); out.append((c, 0.68, 'pop'))
+    txt(975, 'NÃO RASGUE DINHEIRO', F(900, 70), AMARELO, 0.95, 'pop')
+    txt(1065, 'Entre no grupo e pague', F(700, 50), BRANCO, 1.1)
+    txt(1125, 'sempre o menor preço', F(700, 50), BRANCO, 1.15)
+    txt(1210, 'tcgpricehunter.com.br', F(900, 56), BRANCO, 1.25)
+    c = camada(W, H); logo = Image.open(os.path.join(AQUI, 'logo.png')).convert('RGBA'); lw = 520
+    logo = logo.resize((lw, int(logo.height * lw / logo.width))); c.alpha_composite(logo, ((W - lw) // 2, 1330))
+    d = ImageDraw.Draw(c); texto_c(d, 1330 + logo.height + 30, '@tcgpricehunter', F(700, 44), BRANCO); out.append((c, 1.35, 'sobe'))
+    return out
+
+def quadro_final(fundo, pecas, t):
+    im = fundo.copy()
+    for c, t0, tipo in pecas:
+        x = (t - t0) / 0.35
+        if x <= 0: continue
+        e = ease(x); lay = c
+        if tipo == 'pop':
+            esc = 1.25 - 0.25 * e
+            if abs(esc - 1) > 0.002:
+                bb = c.getbbox(); cx, cy = (bb[0] + bb[2]) / 2, (bb[1] + bb[3]) / 2
+                lay = c.transform(c.size, Image.AFFINE, (1 / esc, 0, cx - cx / esc, 0, 1 / esc, cy - cy / esc), resample=Image.BILINEAR)
+            dy = 0
+        else: dy = int((1 - e) * 50)
+        if e < 0.999: lay = lay.copy(); lay.putalpha(lay.getchannel('A').point(lambda v: int(v * e)))
+        im.alpha_composite(lay, (0, dy))
     return im
+
+def anim_final(quadro, cfg, final, pasta):
+    """Cartão final animado (30 qps): fundo desfocado entra em fade, peças entram em sequência; o último quadro fica."""
+    bg = quadro.convert('RGB').filter(ImageFilter.GaussianBlur(28))
+    bg = Image.blend(bg, Image.new('RGB', bg.size, (0, 0, 0)), 0.55).convert('RGBA')
+    pecas = camadas_final(cfg, final); n = int(1.8 * FPS_M)
+    for i in range(n):
+        t = i / FPS_M; a = ease(t / 0.25)
+        f = bg.copy(); f.putalpha(int(255 * a)); f = quadro_final(f, pecas, t) if a > 0.99 else f
+        if a <= 0.99:
+            base = camada(W, H); base.alpha_composite(f); f = quadro_final(base, pecas, t)
+        f.save(f'{pasta}/f{i:04d}.png')
 
 # ---------- um vídeo ----------
 def processa(nome, cfg, fid):
@@ -139,7 +206,7 @@ def processa(nome, cfg, fid):
     for i, v in enumerate(tl):
         if i / FPS_OV >= t_fim or not isinstance(v, float): img = vazio
         else:
-            nv = round(v + delta, 2); rot = primeiro is not None and i - primeiro < 45
+            nv = round(v + delta, 2); rot = False   # placar só com o valor
             k = (nv, rot)
             if k not in cache:
                 c = Image.new('RGBA', (ow, oh), (0, 0, 0, 0))
@@ -159,21 +226,22 @@ def processa(nome, cfg, fid):
         c = Image.blend(c, Image.new('RGB', c.size, (0, 0, 0)), 0.45).convert('RGBA'); d = ImageDraw.Draw(c)
         texto_c(d, 610, 'DEU LUCRO?', F(900, 150), AMARELO)
         c.alpha_composite(badge(brl(-cfg['site']), VERM, 920, 236, F(900, 150), borda=9), (80, 800))
-        p = pilula('MENOR PREÇO JÁ VISTO NO SITE', F(700, 38)); c.alpha_composite(p, ((W - p.width) // 2, 1070))
         c.convert('RGB').save(f'{tmp}/ab.png')
         entradas += ['-loop', '1', '-i', f'{tmp}/ab.png']
     # cartão final sobre um quadro congelado e desfocado de antes da tela final
     q = f'{tmp}/q.png'
     subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', f'{max(t_fim - 0.4, 0):.2f}', '-i', arq, '-frames:v', '1', q], check=True)
-    cartao_final(Image.open(q), cfg, final).convert('RGB').save(f'{tmp}/fim.png')
-    entradas += ['-loop', '1', '-i', f'{tmp}/fim.png']
+    anim_final(Image.open(q), cfg, final, tmp)
+    fx, fy = anim_abertura(tmp, t_in=cfg.get('faixa', [0.3, 3.6])[0], t_out=cfg.get('faixa', [0.3, 3.6])[1])
+    entradas += ['-framerate', str(FPS_M), '-i', f'{tmp}/a%04d.png', '-framerate', str(FPS_M), '-i', f'{tmp}/f%04d.png']
     extra = 1.5
     g = f'[0:v]tpad=stop_mode=clone:stop_duration={extra}[v0];[v0][1:v]overlay={ox}:{oy}:eof_action=pass[v1]'
     n = 2; ult = 'v1'
     if grande:
         a0, a1 = cfg['abertura']
         g += f";[{ult}][{n}:v]overlay=0:0:enable='between(t,{a0},{a1})':shortest=0[v2]"; ult = 'v2'; n += 1
-    g += f";[{ult}][{n}:v]overlay=0:0:enable='gte(t,{t_fim:.2f})':shortest=0[vf]"
+    g += f";[{ult}][{n}:v]overlay={fx}:{fy}:eof_action=pass[va]"; n += 1
+    g += f";[{n}:v]setpts=PTS-STARTPTS+{t_fim:.3f}/TB[fe];[va][fe]overlay=0:0:eof_action=repeat[vf]"
     saida = f'{OUT}/{nome}.mp4'
     cmd = ['ffmpeg', '-v', 'error', '-y', *entradas, '-filter_complex', g, '-map', '[vf]']
     if tem_audio: cmd += ['-map', '0:a', '-af', f'apad=pad_dur={extra}', '-c:a', 'aac', '-b:a', '192k']
