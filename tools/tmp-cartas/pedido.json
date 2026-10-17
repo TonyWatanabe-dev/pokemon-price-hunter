@@ -2,209 +2,43 @@
  "json": {},
  "sets_detalhe": [],
  "imagens": {
-  "30th-023.png": [
-   "https://assets.tcgdex.net/pt/me/30th/023/high.png",
-   "https://assets.tcgdex.net/en/me/30th/023/high.png"
+  "rd-etb.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/38574d0f876204321825a62cf27af6a0-774ffa0639573a4ae117919361578335-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/38574d0f876204321825a62cf27af6a0-774ffa0639573a4ae117919361578335-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/38574d0f876204321825a62cf27af6a0-774ffa0639573a4ae117919361578335-640-0.webp"
   ],
-  "30th-024.png": [
-   "https://assets.tcgdex.net/pt/me/30th/024/high.png",
-   "https://assets.tcgdex.net/en/me/30th/024/high.png"
+  "rd-box36.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/c80d635a420a9f185addfc569780ccdf-a3f62117c687206c6617919361473564-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/c80d635a420a9f185addfc569780ccdf-a3f62117c687206c6617919361473564-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/c80d635a420a9f185addfc569780ccdf-a3f62117c687206c6617919361473564-640-0.webp"
   ],
-  "30th-025.png": [
-   "https://assets.tcgdex.net/pt/me/30th/025/high.png",
-   "https://assets.tcgdex.net/en/me/30th/025/high.png"
+  "rd-combo.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/57366422c8ba3fedb788be5c4bdd3a62-e5c9286b529cb16d0917919361552918-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/57366422c8ba3fedb788be5c4bdd3a62-e5c9286b529cb16d0917919361552918-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/57366422c8ba3fedb788be5c4bdd3a62-e5c9286b529cb16d0917919361552918-640-0.webp"
   ],
-  "30th-026.png": [
-   "https://assets.tcgdex.net/pt/me/30th/026/high.png",
-   "https://assets.tcgdex.net/en/me/30th/026/high.png"
+  "rd-blister1.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/2401799f60711f972c36ce64bb9a5b3b-5eae35fede48db820017919361498883-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/2401799f60711f972c36ce64bb9a5b3b-5eae35fede48db820017919361498883-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/2401799f60711f972c36ce64bb9a5b3b-5eae35fede48db820017919361498883-640-0.webp"
   ],
-  "30th-027.png": [
-   "https://assets.tcgdex.net/pt/me/30th/027/high.png",
-   "https://assets.tcgdex.net/en/me/30th/027/high.png"
+  "rd-blister3.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b657f5b10e85680702b06e3052602ca5-0f910f556a59a7dc8a17919361514433-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b657f5b10e85680702b06e3052602ca5-0f910f556a59a7dc8a17919361514433-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/b657f5b10e85680702b06e3052602ca5-0f910f556a59a7dc8a17919361514433-640-0.webp"
   ],
-  "30th-028.png": [
-   "https://assets.tcgdex.net/pt/me/30th/028/high.png",
-   "https://assets.tcgdex.net/en/me/30th/028/high.png"
+  "rd-blister4.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b4aa69c882f5896c23a9bc6f0d3c3662-ef2ad1b8bdb24f69e517919361533536-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/952/304/products/b4aa69c882f5896c23a9bc6f0d3c3662-ef2ad1b8bdb24f69e517919361533536-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/952/304/products/b4aa69c882f5896c23a9bc6f0d3c3662-ef2ad1b8bdb24f69e517919361533536-640-0.webp"
   ],
-  "30th-029.png": [
-   "https://assets.tcgdex.net/pt/me/30th/029/high.png",
-   "https://assets.tcgdex.net/en/me/30th/029/high.png"
+  "rd-gorupa.webp": [
+   "https://dcdn-us.mitiendanube.com/stores/007/944/849/products/combo-de-booster-reinado-delta-me06-pokemon-coleaao-megaevoucao-copag-pt-br-gorupa-28dabbb0e3e4842d4517920821174990-1024-1024.webp",
+   "https://dcdn-us.mitiendanube.com/stores/007/944/849/products/combo-de-booster-reinado-delta-me06-pokemon-coleaao-megaevoucao-copag-pt-br-gorupa-28dabbb0e3e4842d4517920821174990-640-0.webp",
+   "http://dcdn-us.mitiendanube.com/stores/007/944/849/products/combo-de-booster-reinado-delta-me06-pokemon-coleaao-megaevoucao-copag-pt-br-gorupa-28dabbb0e3e4842d4517920821174990-640-0.webp"
   ],
-  "30th-030.png": [
-   "https://assets.tcgdex.net/pt/me/30th/030/high.png",
-   "https://assets.tcgdex.net/en/me/30th/030/high.png"
-  ],
-  "30th-031.png": [
-   "https://assets.tcgdex.net/pt/me/30th/031/high.png",
-   "https://assets.tcgdex.net/en/me/30th/031/high.png"
-  ],
-  "30th-032.png": [
-   "https://assets.tcgdex.net/pt/me/30th/032/high.png",
-   "https://assets.tcgdex.net/en/me/30th/032/high.png"
-  ],
-  "30th-033.png": [
-   "https://assets.tcgdex.net/pt/me/30th/033/high.png",
-   "https://assets.tcgdex.net/en/me/30th/033/high.png"
-  ],
-  "30th-034.png": [
-   "https://assets.tcgdex.net/pt/me/30th/034/high.png",
-   "https://assets.tcgdex.net/en/me/30th/034/high.png"
-  ],
-  "30th-035.png": [
-   "https://assets.tcgdex.net/pt/me/30th/035/high.png",
-   "https://assets.tcgdex.net/en/me/30th/035/high.png"
-  ],
-  "30th-036.png": [
-   "https://assets.tcgdex.net/pt/me/30th/036/high.png",
-   "https://assets.tcgdex.net/en/me/30th/036/high.png"
-  ],
-  "30th-037.png": [
-   "https://assets.tcgdex.net/pt/me/30th/037/high.png",
-   "https://assets.tcgdex.net/en/me/30th/037/high.png"
-  ],
-  "30th-038.png": [
-   "https://assets.tcgdex.net/pt/me/30th/038/high.png",
-   "https://assets.tcgdex.net/en/me/30th/038/high.png"
-  ],
-  "30th-039.png": [
-   "https://assets.tcgdex.net/pt/me/30th/039/high.png",
-   "https://assets.tcgdex.net/en/me/30th/039/high.png"
-  ],
-  "30th-040.png": [
-   "https://assets.tcgdex.net/pt/me/30th/040/high.png",
-   "https://assets.tcgdex.net/en/me/30th/040/high.png"
-  ],
-  "30th-041.png": [
-   "https://assets.tcgdex.net/pt/me/30th/041/high.png",
-   "https://assets.tcgdex.net/en/me/30th/041/high.png"
-  ],
-  "30th-042.png": [
-   "https://assets.tcgdex.net/pt/me/30th/042/high.png",
-   "https://assets.tcgdex.net/en/me/30th/042/high.png"
-  ],
-  "30th-043.png": [
-   "https://assets.tcgdex.net/pt/me/30th/043/high.png",
-   "https://assets.tcgdex.net/en/me/30th/043/high.png"
-  ],
-  "30th-044.png": [
-   "https://assets.tcgdex.net/pt/me/30th/044/high.png",
-   "https://assets.tcgdex.net/en/me/30th/044/high.png"
-  ],
-  "30th-045.png": [
-   "https://assets.tcgdex.net/pt/me/30th/045/high.png",
-   "https://assets.tcgdex.net/en/me/30th/045/high.png"
-  ],
-  "30th-046.png": [
-   "https://assets.tcgdex.net/pt/me/30th/046/high.png",
-   "https://assets.tcgdex.net/en/me/30th/046/high.png"
-  ],
-  "30th-047.png": [
-   "https://assets.tcgdex.net/pt/me/30th/047/high.png",
-   "https://assets.tcgdex.net/en/me/30th/047/high.png"
-  ],
-  "30th-048.png": [
-   "https://assets.tcgdex.net/pt/me/30th/048/high.png",
-   "https://assets.tcgdex.net/en/me/30th/048/high.png"
-  ],
-  "30th-049.png": [
-   "https://assets.tcgdex.net/pt/me/30th/049/high.png",
-   "https://assets.tcgdex.net/en/me/30th/049/high.png"
-  ],
-  "30th-050.png": [
-   "https://assets.tcgdex.net/pt/me/30th/050/high.png",
-   "https://assets.tcgdex.net/en/me/30th/050/high.png"
-  ],
-  "30th-051.png": [
-   "https://assets.tcgdex.net/pt/me/30th/051/high.png",
-   "https://assets.tcgdex.net/en/me/30th/051/high.png"
-  ],
-  "30th-052.png": [
-   "https://assets.tcgdex.net/pt/me/30th/052/high.png",
-   "https://assets.tcgdex.net/en/me/30th/052/high.png"
-  ],
-  "30th-086.png": [
-   "https://assets.tcgdex.net/pt/me/30th/086/high.png",
-   "https://assets.tcgdex.net/en/me/30th/086/high.png"
-  ],
-  "30th-128.png": [
-   "https://assets.tcgdex.net/pt/me/30th/128/high.png",
-   "https://assets.tcgdex.net/en/me/30th/128/high.png"
-  ],
-  "30th-157.png": [
-   "https://assets.tcgdex.net/pt/me/30th/157/high.png",
-   "https://assets.tcgdex.net/en/me/30th/157/high.png"
-  ],
-  "30th-158.png": [
-   "https://assets.tcgdex.net/pt/me/30th/158/high.png",
-   "https://assets.tcgdex.net/en/me/30th/158/high.png"
-  ],
-  "30th-149.png": [
-   "https://assets.tcgdex.net/pt/me/30th/149/high.png",
-   "https://assets.tcgdex.net/en/me/30th/149/high.png"
-  ],
-  "30th-150.png": [
-   "https://assets.tcgdex.net/pt/me/30th/150/high.png",
-   "https://assets.tcgdex.net/en/me/30th/150/high.png"
-  ],
-  "30th-154.png": [
-   "https://assets.tcgdex.net/pt/me/30th/154/high.png",
-   "https://assets.tcgdex.net/en/me/30th/154/high.png"
-  ],
-  "30th-153.png": [
-   "https://assets.tcgdex.net/pt/me/30th/153/high.png",
-   "https://assets.tcgdex.net/en/me/30th/153/high.png"
-  ],
-  "30th-121.png": [
-   "https://assets.tcgdex.net/pt/me/30th/121/high.png",
-   "https://assets.tcgdex.net/en/me/30th/121/high.png"
-  ],
-  "me01-177.png": [
-   "https://assets.tcgdex.net/pt/me/me01/177/high.png",
-   "https://assets.tcgdex.net/en/me/me01/177/high.png"
-  ],
-  "me01-178.png": [
-   "https://assets.tcgdex.net/pt/me/me01/178/high.png",
-   "https://assets.tcgdex.net/en/me/me01/178/high.png"
-  ],
-  "me01-179.png": [
-   "https://assets.tcgdex.net/pt/me/me01/179/high.png",
-   "https://assets.tcgdex.net/en/me/me01/179/high.png"
-  ],
-  "me01-180.png": [
-   "https://assets.tcgdex.net/pt/me/me01/180/high.png",
-   "https://assets.tcgdex.net/en/me/me01/180/high.png"
-  ],
-  "me01-187.png": [
-   "https://assets.tcgdex.net/pt/me/me01/187/high.png",
-   "https://assets.tcgdex.net/en/me/me01/187/high.png"
-  ],
-  "me01-188.png": [
-   "https://assets.tcgdex.net/pt/me/me01/188/high.png",
-   "https://assets.tcgdex.net/en/me/me01/188/high.png"
-  ],
-  "sm12-97.png": [
-   "https://assets.tcgdex.net/pt/sm/sm12/97/high.png",
-   "https://assets.tcgdex.net/en/sm/sm12/97/high.png"
-  ],
-  "sv03-081.png": [
-   "https://assets.tcgdex.net/pt/sv/sv03/081/high.png",
-   "https://assets.tcgdex.net/en/sv/sv03/081/high.png"
-  ],
-  "sv03-097.png": [
-   "https://assets.tcgdex.net/pt/sv/sv03/097/high.png",
-   "https://assets.tcgdex.net/en/sv/sv03/097/high.png"
-  ],
-  "sv08-138.png": [
-   "https://assets.tcgdex.net/pt/sv/sv08/138/high.png",
-   "https://assets.tcgdex.net/en/sv/sv08/138/high.png"
-  ],
-  "sm8-139.png": [
-   "https://assets.tcgdex.net/pt/sm/sm8/139/high.png",
-   "https://assets.tcgdex.net/en/sm/sm8/139/high.png"
-  ],
-  "sv07-102.png": [
-   "https://assets.tcgdex.net/pt/sv/sv07/102/high.png",
-   "https://assets.tcgdex.net/en/sv/sv07/102/high.png"
+  "rd-combo-mox.png": [
+   "https://cdn.shopify.com/s/files/1/1515/2596/files/CombodeBoosters-MegaevolucaoReinadoDelta_0109b954-25f8-4548-ab20-35c931657ce0.png?v=1791998061"
   ]
  }
 }
