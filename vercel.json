@@ -82,6 +82,10 @@
       "destination": "/api/pagina?t=lojas"
     },
     {
+      "source": "/comunidade",
+      "destination": "/api/pagina?t=grupos"
+    },
+    {
       "source": "/como-funciona",
       "destination": "/api/pagina?t=como-funciona"
     },

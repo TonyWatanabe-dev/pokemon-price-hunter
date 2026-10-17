@@ -78,7 +78,7 @@ for (const file of ['../index.html', '../tools/page.template.html']) {
   const loadCode = cut('async function load(){', '/* Eventos */');
   const loadCtx = (over = {}) => { const v = el(), calls = { init: [], render: 0, loading: 0, prefetch: 0 };
     const ctx = run(loadCode, { view: 'deals', API_VIEWS: new Set(['deals']), PRIVATE: ['conta'], fetchHome: async () => null, fetchState: async () => null,
-      init: (st) => calls.init.push(st), render: () => { calls.render++; }, loading: () => { calls.loading++; }, prefetchOpp: () => { calls.prefetch++; },
+      init: (st) => calls.init.push(st), render: () => { calls.render++; }, loading: () => { calls.loading++; }, prefetchOpp: () => { calls.prefetch++; }, grpUI: () => {},
       ic: (n) => `<i data-ic="${n}"></i>`, $: (q) => (q === '#view' ? v : null), ...over }); return { ctx, v, calls }; };
   await t(`${file}: load() com fetchHome e fetchState falhando mostra .err-state com #retry`, async () => {
     const { ctx, v, calls } = loadCtx();
