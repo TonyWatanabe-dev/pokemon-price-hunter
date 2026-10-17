@@ -212,9 +212,20 @@ export function transientPageError(e) {
 export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
-  const out = []; const failed = []; const reasons = {};
+  const out = []; const failed = []; const reasons = {}; const cond = store.cond || null; let naoMudou = 0;
   for (const u of urls) {
-    try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
+    try {
+      await guard(u);
+      // GET condicional: com ETag/Last-Modified da leitura anterior, a loja pode responder 304 (não mudou) sem mandar a
+      // página; aí vale o anúncio lido antes. Sem validador, leitura normal. store.cond = { url: { etag, lm, listing } }.
+      const c = cond?.[u]; const headers = {};
+      if (c?.listing && c.etag) headers['if-none-match'] = c.etag;
+      if (c?.listing && c.lm) headers['if-modified-since'] = c.lm;
+      const r = await get(u, Object.keys(headers).length ? { headers } : undefined);
+      if (r.notModified && c?.listing) { out.push({ ...c.listing }); naoMudou++; continue; }
+      const l = parseProductPage(r.text, r.url); if (l) out.push(l);
+      if (cond) { if (l && (r.etag || r.lastModified)) cond[u] = { etag: r.etag || null, lm: r.lastModified || null, listing: l }; else delete cond[u]; }
+    }
     catch (e) {
       if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e;
       // 404/410 (produto não existe mais), outro 4xx definitivo ou robots.txt: a página não serve, não é falha.
@@ -223,6 +234,7 @@ export async function search(store) {
     }
   }
   out.failed = failed; // páginas que não abriram nesta rodada (src/run.js preserva as ofertas delas)
+  out.notModified = naoMudou; // páginas que a loja disse não ter mudado (304)
   out.failReasons = reasons;
   return out;
 }
