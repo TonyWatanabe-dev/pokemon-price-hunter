@@ -16,3 +16,12 @@ assert.equal(matchProduct({ title: 'Top Loader Magnético Pokemon' }, cat).produ
 assert.equal(matchProduct({ title: 'Pokémon Box Mega Gengar ex japonês' }, cat).productId, null, 'idioma continua recusando');
 assert.equal(matchProduct({ title: 'Box Pokémon Coleção Mega Zygarde ex Equilíbrio Perfeito' }, cat).via, undefined, 'título com coleção: caminho normal');
 console.log('box-avulsos-tests: ok');
+// Padrão de varejo com contagem de cartas e boosters entre parênteses.
+const t2 = (title) => matchProduct({ title }, cat).productId;
+assert.equal(t2('Trading Card Game Pokemon - Pokémon Booster Escuridão Absoluta (216 Cartas) (36 Boosters) (Novo)'), 'me05-box36');
+assert.equal(t2('Trading Card Game Pokemon - Pokémon Mini Display Booster Megaevolução (108 Cartas) (18 Boosters)'), null, '18 boosters: formato pendente no catálogo');
+assert.equal(t2('Trading Card Game Pokemon - Blister Caos Ascendente (6 Cartas) (01 Blister Sortido) (Novo)'), 'me04-blister1');
+assert.equal(t2('Trading Card Game Pokemon - Pokémon Booster Equilibrio Perfeito (6 Cartas) (01 Booster) (Novo)'), 'me03-booster');
+assert.equal(t2('Pokémon Booster Escuridão Absoluta (100 Cartas) (36 Boosters)'), null, 'cartas não fecham com boosters: não chuta');
+assert.equal(t2('Blister Triplo Caos Ascendente (19 Cartas)'), 'me04-blister3', 'triplo continua triplo');
+console.log('box-avulsos-tests: varejo ok');

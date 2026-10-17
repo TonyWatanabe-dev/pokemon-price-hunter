@@ -123,6 +123,12 @@ export function detectType(t) {
   if (has(t, /\b(blister|pacote) (duplo|dupla)\b|\b2 ?pack\b|\bdouble pack\b/)) return r('blister_2', 2);
   if (has(t, /\b(blister|pacote) (triplo|tripla)\b|\btriple blister\b|\b3 ?pack\b/)) return r('blister_3', 3);
   if (has(t, /\b(blister|pacote) (quadruplo|quadrupla)\b|\b4 ?pack\b/)) return r('blister_4', 4);
+  // Padrão de varejo (Arena Games e outras): "Booster Escuridão Absoluta (216 Cartas) (36 Boosters)", "Blister … (6 Cartas)
+  // (01 Blister Sortido)", "Booster … (6 Cartas) (01 Booster)". Contagem de cartas fecha com a de boosters (6 por pacote).
+  // Só 36: caixa de 18 boosters ainda não tem formato no catálogo (decisão pendente da revisão humana).
+  if (has(t, /\bbooster/) && b.count === 36 && !b.inferred && has(t, new RegExp(`\\b${b.count * 6} (cartas|cards)\\b`)) && !has(t, /\b(combo|kit|blister|treinador|etb)\b/)) return r('booster_box', b.count);
+  if (has(t, /\bblister\b/) && has(t, /\b(6 (cartas|cards)|0?1 blister)\b/) && !has(t, /\b(duplo|dupla|triplo|tripla|quadruplo|quadrupla|\d{2} (cartas|cards))\b/)) return r('blister_1', 1);
+  if (has(t, /\bbooster\b/) && has(t, /\b(6 (cartas|cards)|0?1 booster)\b/) && !has(t, /\b(box|display|caixa|combo|kit|blister|\d+ boosters)\b/)) return r('booster_pack', 1);
   if (has(t, /\bmini ?latas?\b/)) return r('minilata');
   if (has(t, /\blatas?\b/)) return r('lata');
   if (has(t, /\b(baralho|deck) (de )?batalha\b|\bbaralho batalha\b/)) return r('deck', null, false, detectVariant(t));
