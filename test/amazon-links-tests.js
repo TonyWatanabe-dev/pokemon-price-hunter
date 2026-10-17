@@ -29,7 +29,7 @@ t('cada link: ASIN válido, URL oficial exata com a tag do arquivo, preço só c
     assert.match(l.asin, /^[A-Z0-9]{10}$/, l.asin);
     assert.ok(!seen.has(l.asin), `ASIN repetido: ${l.asin}`); seen.add(l.asin);
     assert.equal(l.url, `https://www.amazon.com.br/dp/${l.asin}?tag=${doc.tag}`, l.asin);
-    assert.deepEqual(Object.keys(l).filter((k) => k !== 'matchTitle').sort(), ['asin', 'capturedAt', 'fulfilledBy', 'price', 'productId', 'seller', 'stockNote', 'title', 'url'], `${l.asin}: campos`);
+    assert.deepEqual(Object.keys(l).filter((k) => k !== 'matchTitle' && k !== 'shortUrl').sort(), ['asin', 'capturedAt', 'fulfilledBy', 'price', 'productId', 'seller', 'stockNote', 'title', 'url'], `${l.asin}: campos`);
     assert.ok(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$/.test(l.capturedAt) && Date.parse(l.capturedAt) <= Date.now(), `${l.asin}: capturedAt inválido`);
     if (l.price === null) { assert.equal(l.seller, null, `${l.asin}: vendedor sem preço`); continue; }
     assert.ok(typeof l.price === 'number' && l.price > 0, `${l.asin}: preço`);

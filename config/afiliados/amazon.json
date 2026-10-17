@@ -14,7 +14,8 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0894sCU8"
   },
   {
    "productId": "c30-blister3",
@@ -25,7 +26,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0iYOoP2N"
   },
   {
    "productId": "c30-blister3",
@@ -36,7 +38,8 @@
    "seller": "Old Future",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 6 em estoque.",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B033z8VLZ"
   },
   {
    "productId": "c30-colecao_ex-greninja",
@@ -47,7 +50,8 @@
    "seller": "PokecardsBrasil",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 6 em estoque.",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B05vJd7JC"
   },
   {
    "productId": "c30-colecao_ex-sylveon",
@@ -58,7 +62,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0b4DIn9b"
   },
   {
    "productId": "c30-colecao_poster",
@@ -69,7 +74,8 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0gYGgCec"
   },
   {
    "productId": "me01-blister3",
@@ -80,7 +86,8 @@
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0hUZNmvI"
   },
   {
    "productId": "me01-blister4",
@@ -91,7 +98,8 @@
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B04zZGaP6"
   },
   {
    "productId": "me02-blister4",
@@ -102,7 +110,8 @@
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0fITQ1Wn"
   },
   {
    "productId": "me02-combo",
@@ -113,7 +122,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B01KKQWSZ"
   },
   {
    "productId": "me02-desafio",
@@ -124,7 +134,8 @@
    "seller": "NewStation",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B03OB3fE1"
   },
   {
    "productId": "me02-etb",
@@ -135,7 +146,8 @@
    "seller": "LOJA DO TOGURO",
    "fulfilledBy": "seller",
    "stockNote": "Somente 6 em estoque.",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0iIPQ31N"
   },
   {
    "productId": "me03-blister3",
@@ -147,7 +159,8 @@
    "seller": "PokecardsBrasil",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:40:00Z"
+   "capturedAt": "2026-10-10T20:40:00Z",
+   "shortUrl": "https://link.amazon/B05e5uEOE"
   },
   {
    "productId": "me03-blister4",
@@ -159,7 +172,8 @@
    "seller": "Cerulean TCG Shop",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-10-10T20:40:00Z"
+   "capturedAt": "2026-10-10T20:40:00Z",
+   "shortUrl": "https://link.amazon/B0cZ17dQr"
   },
   {
    "productId": "me03-box36",
@@ -170,7 +184,8 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0ettN7YI"
   },
   {
    "productId": "me03-etb",
@@ -181,7 +196,8 @@
    "seller": "MIRAGEMHOBBYSTORE",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B03ea4Un2"
   },
   {
    "productId": "me04-blister4",
@@ -193,7 +209,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:40:00Z"
+   "capturedAt": "2026-10-10T20:40:00Z",
+   "shortUrl": "https://link.amazon/B08D9Or3M"
   },
   {
    "productId": "me04-box36",
@@ -204,7 +221,8 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0afukFjz"
   },
   {
    "productId": "me04-combo",
@@ -215,7 +233,8 @@
    "seller": "PlaymatLindoia",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B09u7Xdxj"
   },
   {
    "productId": "me04-etb",
@@ -226,7 +245,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B02B8iU4T"
   },
   {
    "productId": "me05-blister3",
@@ -238,7 +258,8 @@
    "seller": "Mão na Roda 4x4 / Escala Miniaturas",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:40:00Z"
+   "capturedAt": "2026-10-10T20:40:00Z",
+   "shortUrl": "https://link.amazon/B0goTfnvw"
   },
   {
    "productId": "me05-blister4",
@@ -250,7 +271,8 @@
    "seller": "REINO ENCANTADO DA CRIANÇA",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:40:00Z"
+   "capturedAt": "2026-10-10T20:40:00Z",
+   "shortUrl": "https://link.amazon/B0gVboSdt"
   },
   {
    "productId": "me05-etb",
@@ -262,7 +284,8 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:40:00Z"
+   "capturedAt": "2026-10-10T20:40:00Z",
+   "shortUrl": "https://link.amazon/B0gkCjrRR"
   },
   {
    "productId": "sv10-combo",
@@ -273,7 +296,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0bvI7S72"
   },
   {
    "productId": "sv10_5r-combo",
@@ -284,7 +308,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B04ucpD8i"
   },
   {
    "productId": "sv8_5-combo",
@@ -295,7 +320,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0dOfe4KR"
   },
   {
    "productId": "sv9-blister1",
@@ -306,7 +332,8 @@
    "seller": "STORE BBCARDS",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 10 em estoque.",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0eDIJLps"
   },
   {
    "productId": "sv9-blister3",
@@ -317,7 +344,8 @@
    "seller": "Two Head Games",
    "fulfilledBy": "amazon",
    "stockNote": "Em estoque",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B00Klzwjh"
   },
   {
    "productId": "sv9-blister3",
@@ -328,7 +356,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B093qg8JC"
   },
   {
    "productId": "sv9-blister4",
@@ -339,7 +368,8 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B06nq65qD"
   },
   {
    "productId": "sv9-box36",
@@ -350,8 +380,10 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque na Amazon",
-   "capturedAt": "2026-10-10T20:31:00Z"
+   "capturedAt": "2026-10-10T20:31:00Z",
+   "shortUrl": "https://link.amazon/B0iCvRlnK"
   }
  ],
- "capturadoEm": "2026-10-10T20:31:00Z"
+ "capturadoEm": "2026-10-10T20:31:00Z",
+ "shortUrlNota": "shortUrl: link curto gerado pelo dono na SiteStripe (17/10/2026, identificação tcgpricehunter-20) para os bots de Telegram/WhatsApp. O site continua usando url (www.amazon.com.br/dp/<ASIN>?tag=...), que mostra o produto e a tag."
 }
