@@ -172,7 +172,7 @@ export function siteCopag(st) {
   }) };
 }
 // campos que renderTips, tipCard e tipRow leem; o texto bruto do canal nunca sai (TIP_DROP)
-const TIP_F = ['id', 'productId', 'title', 'collectionName', 'label', 'source', 'store', 'url', 'price', 'discount', 'anomalous', 'expired', 'postedAt', 'firstSeen', 'virouOferta'];
+const TIP_F = ['id', 'productId', 'title', 'collectionName', 'label', 'source', 'store', 'url', 'price', 'discount', 'anomalous', 'expired', 'postedAt', 'firstSeen', 'virouOferta', 'destino'];
 /** /pistas: as pistas com preço (post sem preço, ex. lista de cupons, fica fora da página), só com os campos da página, e os
  *  produtos que elas citam (foto e preço sugerido do cabeçalho do grupo). virouOferta = id da oferta do ML que a API confirmou. */
 export function siteTips(st) {

@@ -1,0 +1,53 @@
+{
+  "semana": "19 a 25/10/2026 (ajuste de 17/10)",
+  "pasta": "assets/social/agenda/semana1",
+  "itens": [
+    {
+      "id": "s1-qua-chases-me01-v2",
+      "quando": "2026-10-21T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S1_Qua_1_v2.jpg",
+        "S1_Qua_2_v2.jpg",
+        "S1_Qua_3_v2.jpg",
+        "S1_Qua_4_v2.jpg",
+        "S1_Qua_5_v2.jpg",
+        "S1_Qua_6_v2.jpg"
+      ],
+      "legenda": "As 5 chase da Megaevolução (ME01): os dois Mega Hiper Raros dourados e as Ilustrações Raras Especiais de Lucario, Gardevoir e Absol, esta última pelo traço do Arita.\n\nQuantas você já puxou? 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megaevolucao #megalucario #megagardevoir"
+    },
+    {
+      "id": "s1-dom-30-pikachus",
+      "quando": "2026-10-25T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S1_Dom_1_v3.jpg",
+        "S1_Dom_2_v3.jpg",
+        "S1_Dom_3_v3.jpg",
+        "S1_Dom_4_v3.jpg",
+        "S1_Dom_5_v3.jpg",
+        "S1_Dom_6_v3.jpg",
+        "S1_Dom_7_v3.jpg"
+      ],
+      "legenda": "A Celebração de 30 Anos tem 30 Pikachus, cada um de um ilustrador diferente. Juntamos os 30 aqui, do 023 de Ken Sugimori ao 052 de Kazuki Minami.\n\nArrasta e comenta o número do seu favorito 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pikachu #pokemon30anos #colecionador"
+    }
+  ],
+  "cancelar": [
+    {
+      "motivo": "capa refeita: sai \"Sobe e desce\", entram as 5 cartas (17/10)",
+      "quando": "2026-10-21T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "30 Pikachus vira carrossel de feed às 12h (17/10)",
+      "quando": "2026-10-25T10:00",
+      "plataforma": "instagram"
+    }
+  ]
+}

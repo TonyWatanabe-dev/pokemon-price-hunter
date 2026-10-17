@@ -35,6 +35,7 @@ await test('override ligado leva cada anúncio aprovado ao produto certo; deslig
     if (c.suggestion.decision !== 'approve') { assert.deepEqual(m, base, `#${c.n} sem aprovação não muda`); continue; }
     assert.equal(m.productId, resolutionProduct(c.suggestion.resolution), `#${c.n} ${c.title}`);
     if (c.kind === 'baixa_confianca') assert.deepEqual(m, base, `#${c.n} confirmação não altera a oferta nem a confiança`);
+    else if (base.productId === m.productId && !m.override) assert.equal(base.productId, resolutionProduct(c.suggestion.resolution), `#${c.n}: o casamento automático já chega no produto aprovado`);
     else { assert.equal(m.confidence, 0.8); assert.equal(m.override, String(c.n)); }
     assert.deepEqual(applyOverride(l, 'outra-loja', base, catalog, on), base, 'override vale só para a loja e a página revisadas');
   }

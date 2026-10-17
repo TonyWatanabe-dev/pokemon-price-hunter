@@ -21,8 +21,18 @@ export function isProductCandidate(loc) {
   return words.some((w) => SLUG_WORDS.has(w)) || SLUG_PAIRS.some((x) => joined.includes(x));
 }
 
+/** <url><loc>…</loc><lastmod>…</lastmod></url> → { loc: ISO }. Data inválida ou no futuro (mais de 1 dia) é ignorada. */
+export function lastmodDe(xml, now = Date.now()) {
+  const out = {};
+  for (const [, bloco] of String(xml || '').matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const loc = bloco.match(/<loc>\s*([^<\s]+)\s*<\/loc>/)?.[1]; const lm = bloco.match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/)?.[1];
+    const t = Date.parse(lm || ''); if (loc && Number.isFinite(t) && t <= now + 864e5) out[loc] = new Date(t).toISOString();
+  }
+  return out;
+}
+
 export async function productUrls(base, max = 60) {
-  const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = [];
+  const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = []; const lastmod = {};
   while (queue.length && seen.size < 15 && urls.length < max) {
     const sm = queue.shift(); if (seen.has(sm)) continue; seen.add(sm);
     try { await guard(sm); } catch { continue; }
@@ -31,8 +41,12 @@ export async function productUrls(base, max = 60) {
       if (/\.xml(\.gz)?$/i.test(loc)) { if (/product|produto|sitemap/i.test(loc)) queue.push(loc); }
       else if (isProductCandidate(loc)) urls.push(loc);
     }
+    Object.assign(lastmod, lastmodDe(xml));
   }
-  return [...new Set(urls)].slice(0, max);
+  const out = [...new Set(urls)].slice(0, max);
+  // data de alteração declarada no sitemap; não enumerável: a lista continua sendo só a lista de URLs
+  Object.defineProperty(out, 'lastmod', { value: Object.fromEntries(out.filter((u) => lastmod[u]).map((u) => [u, lastmod[u]])), enumerable: false });
+  return out;
 }
 
 const AVAIL = { instock: 'IN_STOCK', outofstock: 'OUT_OF_STOCK', soldout: 'OUT_OF_STOCK', preorder: 'PRE_ORDER', presale: 'PRE_ORDER', backorder: 'PRE_ORDER', discontinued: 'UNAVAILABLE', limitedavailability: 'IN_STOCK', instoreonly: 'UNAVAILABLE' };
@@ -181,7 +195,10 @@ export function parseProductPage(html, url) {
 }
 
 export async function detect(base) {
-  try { await guard(base + '/'); const html = (await get(base + '/')).text; return /pok[eé]mon/i.test(html); } catch (e) { if (e.blocked) throw e; return false; }
+  try { await guard(base + '/'); const html = (await get(base + '/')).text; if (/pok[eé]mon/i.test(html)) return true; } catch (e) { if (e.blocked) throw e; return false; }
+  // Home sem "Pokémon" (varejo grande, loja de brinquedos com vitrine de outras marcas): vale se o sitemap tiver página de
+  // produto Pokémon lacrado. Varejo de 17/10 (Havan, Tray, Loja Integrada, Magazord) caía em "plataforma não reconhecida".
+  try { return (await productUrls(base, 5)).length > 0; } catch (e) { if (e.blocked) throw e; return false; }
 }
 
 // Falha de leitura (tentar de novo depois) × resposta definitiva (a página não serve). Transitório: timeout (status 0),
@@ -195,9 +212,20 @@ export function transientPageError(e) {
 export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
-  const out = []; const failed = []; const reasons = {};
+  const out = []; const failed = []; const reasons = {}; const cond = store.cond || null; let naoMudou = 0;
   for (const u of urls) {
-    try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url); if (l) out.push(l); }
+    try {
+      await guard(u);
+      // GET condicional: com ETag/Last-Modified da leitura anterior, a loja pode responder 304 (não mudou) sem mandar a
+      // página; aí vale o anúncio lido antes. Sem validador, leitura normal. store.cond = { url: { etag, lm, listing } }.
+      const c = cond?.[u]; const headers = {};
+      if (c?.listing && c.etag) headers['if-none-match'] = c.etag;
+      if (c?.listing && c.lm) headers['if-modified-since'] = c.lm;
+      const r = await get(u, Object.keys(headers).length ? { headers } : undefined);
+      if (r.notModified && c?.listing) { out.push({ ...c.listing }); naoMudou++; continue; }
+      const l = parseProductPage(r.text, r.url); if (l) out.push(l);
+      if (cond) { if (l && (r.etag || r.lastModified)) cond[u] = { etag: r.etag || null, lm: r.lastModified || null, listing: l }; else delete cond[u]; }
+    }
     catch (e) {
       if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e;
       // 404/410 (produto não existe mais), outro 4xx definitivo ou robots.txt: a página não serve, não é falha.
@@ -206,6 +234,7 @@ export async function search(store) {
     }
   }
   out.failed = failed; // páginas que não abriram nesta rodada (src/run.js preserva as ofertas delas)
+  out.notModified = naoMudou; // páginas que a loja disse não ter mudado (304)
   out.failReasons = reasons;
   return out;
 }

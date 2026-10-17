@@ -127,6 +127,8 @@ async function requestOnce(url, { method = 'GET', accept = 'text/html', body, he
       if (![307, 308].includes(res.status)) { m = 'GET'; b = undefined; }
     }
     if (cur !== url && !res.url) Object.defineProperty(res, 'url', { value: cur });
+    // GET condicional (If-None-Match / If-Modified-Since): 304 = a página não mudou; quem pediu reaproveita a leitura anterior.
+    if (res.status === 304 && (hdrs['if-none-match'] || hdrs['if-modified-since'])) { try { await res.body?.cancel?.(); } catch { /* sem corpo */ } return { status: 304, notModified: true, url: res.url || url, text: '', json: () => null }; }
     if (Number(res.headers?.get?.('content-length')) > MAX_BYTES) { const e = new Error(`Resposta grande demais em ${host}`); e.status = 0; throw e; }
     const text = await decodeBody(res);
     if (text.length > MAX_BYTES) { const e = new Error(`Resposta grande demais em ${host}`); e.status = 0; throw e; }
@@ -146,7 +148,8 @@ async function requestOnce(url, { method = 'GET', accept = 'text/html', body, he
     { const hint = platformHintOf({ headers: res.headers, body: /json/.test(accept) ? '' : text, url: finalUrl }); if (hint) notePlatform(host, hint); }
     // JSON malformado: SyntaxError (falha de leitura, não bloqueio; classifyError → 'parse'), sem repetir o conteúdo recebido.
     const json = () => { try { return JSON.parse(text); } catch { const e = new SyntaxError(`Resposta não é JSON válido em ${host}`); e.status = res.status; e.malformed = true; throw e; } };
-    return { status: res.status, url: finalUrl, text, json };
+    const etag = res.headers?.get?.('etag') || null; const lastModified = res.headers?.get?.('last-modified') || null;
+    return { status: res.status, url: finalUrl, text, json, etag, lastModified };
   } catch (e) {
     if (e.name === 'AbortError') { const t = new Error(`Timeout em ${host}`); t.status = 0; t.code = 'TIMEOUT'; t.forensics = forensics(null, '', 'TIMEOUT'); throw t; }
     // Erro de rede do fetch ("fetch failed"): o motivo real (DNS, conexão recusada, TLS) fica no código.

@@ -28,7 +28,7 @@ async function run(resposta, { ok = true, comS = true } = {}) {
     S: comS ? {} : null,
   };
   vm.createContext(ctx);
-  vm.runInContext(`${line('esc')}\n${line('safeUrl')}\n${line('AFIL')}\n${line('AFIL_OK')}\n${line('mlItem')}\n${line('outUrl')}\n${line('afilSelo')}\n${footSrc}\n${loadSrc}\n;globalThis.__t={loadAfil,get AFIL(){return AFIL}};`, ctx);
+  vm.runInContext(`${line('esc')}\n${line('safeUrl')}\n${line('AFIL')}\n${line('AFIL_OK')}\n${line('mlItem')}\n${line('outUrl')}\n${footSrc}\n${loadSrc}\n;globalThis.__t={loadAfil,get AFIL(){return AFIL}};`, ctx);
   await ctx.__t.loadAfil();
   return { inseridos, AFIL: JSON.parse(JSON.stringify(ctx.__t.AFIL)), renders: ctx.renders };
 }
@@ -44,11 +44,12 @@ await t('geral:null não renderiza link no rodapé', async () => {
   assert.deepEqual((await run({ geral: GERAL }, { ok: false })).inseridos, [], 'resposta !ok: nada muda');
 });
 
-await t('geral válido renderiza um link marcado, rotulado e com rel seguro', async () => {
+await t('geral válido renderiza um link com rel seguro (sponsored invisível), sem etiqueta', async () => {
   const out = await run({ geral: GERAL });
   assert.equal(out.inseridos.length, 1);
   assert.match(out.inseridos[0], /^<a href="https:\/\/meli\.la\/1BzQ4PU" target="_blank" rel="noopener nofollow sponsored" data-afil>Ver mais no Mercado Livre<span class="sr">/);
-  assert.match(out.inseridos[0], /<\/a><span class="afil-selo" data-afil-selo>Link de afiliado<button type="button" class="afil-i" aria-expanded="false"/, 'selo "Link de afiliado" logo depois do link geral');
+  assert.match(out.inseridos[0], /<span class="sr"> \(abre em nova aba\)<\/span><\/a>$/, 'regra 17/10: link normal, sem etiqueta de afiliado');
+  assert.doesNotMatch(out.inseridos[0], /afiliad/i);
   assert.equal((await run({ geral: { url: GERAL.url } })).AFIL.geral.rotulo, 'Ver mais no Mercado Livre', 'rótulo padrão');
   assert.equal((await run({ geral: { ...GERAL, rotulo: 'x'.repeat(100) } })).AFIL.geral.rotulo.length, 60);
 });

@@ -1,0 +1,60 @@
+{
+  "semana": "02 a 08/11/2026 (ajuste de 17/10: fotos de Reinado Delta)",
+  "pasta": "assets/social/agenda/semana3",
+  "itens": [
+    {
+      "id": "s3-ter-reinado-delta-chega-v2",
+      "quando": "2026-11-03T12:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S3_Ter_v2.jpg"
+      ]
+    },
+    {
+      "id": "s3-qui-reinado-delta-v2",
+      "quando": "2026-11-05T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S3_Qui_1_v2.jpg",
+        "S3_Qui_2_v2.jpg",
+        "S3_Qui_3_v2.jpg",
+        "S3_Qui_4_v2.jpg"
+      ],
+      "legenda": "Reinado Delta chega sexta, 6/11: a última expansão principal da era Megaevolução, com Mega Rayquaza ex como estrela.\n\nNa semana de lançamento o preço muda toda hora. Compare com o sugerido da Copag e deixa o grupo te avisar.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao"
+    },
+    {
+      "id": "s3-sex-reinado-delta-saiu-v2",
+      "quando": "2026-11-06T12:00",
+      "tipo": "story",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S3_Sex_v2.jpg"
+      ]
+    }
+  ],
+  "cancelar": [
+    {
+      "motivo": "arte refeita com foto do produto (17/10)",
+      "quando": "2026-11-03T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "arte refeita com foto do produto (17/10)",
+      "quando": "2026-11-05T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "arte refeita com foto do produto (17/10)",
+      "quando": "2026-11-06T12:00",
+      "plataforma": "instagram"
+    }
+  ]
+}

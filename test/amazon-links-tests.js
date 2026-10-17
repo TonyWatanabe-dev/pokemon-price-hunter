@@ -29,7 +29,7 @@ t('cada link: ASIN válido, URL oficial exata com a tag do arquivo, preço só c
     assert.match(l.asin, /^[A-Z0-9]{10}$/, l.asin);
     assert.ok(!seen.has(l.asin), `ASIN repetido: ${l.asin}`); seen.add(l.asin);
     assert.equal(l.url, `https://www.amazon.com.br/dp/${l.asin}?tag=${doc.tag}`, l.asin);
-    assert.deepEqual(Object.keys(l).filter((k) => k !== 'matchTitle').sort(), ['asin', 'capturedAt', 'fulfilledBy', 'price', 'productId', 'seller', 'stockNote', 'title', 'url'], `${l.asin}: campos`);
+    assert.deepEqual(Object.keys(l).filter((k) => k !== 'matchTitle' && k !== 'shortUrl').sort(), ['asin', 'capturedAt', 'fulfilledBy', 'price', 'productId', 'seller', 'stockNote', 'title', 'url'], `${l.asin}: campos`);
     assert.ok(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$/.test(l.capturedAt) && Date.parse(l.capturedAt) <= Date.now(), `${l.asin}: capturedAt inválido`);
     if (l.price === null) { assert.equal(l.seller, null, `${l.asin}: vendedor sem preço`); continue; }
     assert.ok(typeof l.price === 'number' && l.price > 0, `${l.asin}: preço`);
@@ -59,7 +59,8 @@ t('preço, ranking, Opportunity Score e API nunca leem a lista da Amazon', () =>
   });
   const files = [...walk('src'), ...walk('api')];
   assert.ok(files.includes('src/core/price-engine.js') && files.includes('src/core/opportunity-engine.js'));
-  const hits = files.filter((f) => /afiliados[/-]amazon|config\/afiliados/.test(read(f)));
+  // api/_lib/affiliates.mjs é o leitor único das configs de afiliado: lê o shortUrl da lista só para o destino das pistas (17/10/2026).
+  const hits = files.filter((f) => f !== 'api/_lib/affiliates.mjs' && /afiliados[/-]amazon|config\/afiliados/.test(read(f)));
   assert.deepEqual(hits, [], `arquivo de afiliado lido por: ${hits.join(', ')}`);
 });
 
@@ -73,7 +74,7 @@ t('front: a lista só é usada no bloco "Também na Amazon", com rel sponsored; 
   assert.match(block, /Preço e disponibilidade na data e hora indicadas/, 'aviso de data e hora junto do preço');
   assert.match(row, /money\(l\.price\)\}<\/b> <small>em \$\{esc\(when\)\}/, 'preço da Amazon sempre com a data e hora da leitura');
   assert.equal(src.match(/AMZ\?\.links|AMZ\.links/g)?.length, 1, 'os links da Amazon só podem ser lidos pelo amzBlock');
-  assert.match(src, /como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
+  assert.match(src, /[Cc]omo Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
 });
 
 t('build publica a lista em /data/ (e o buildCommand da Vercel cabe no limite de 256 caracteres)', () => {

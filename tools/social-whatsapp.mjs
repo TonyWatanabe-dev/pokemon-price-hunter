@@ -127,7 +127,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     const feitos = [];
     for (const { c, msg } of prontos) {
       const r = await tentar(() => con.sock().sendMessage(jid, msg));
-      feitos.push({ ofertaId: c.item.ofertaId, at: new Date(now()).toISOString(), messageId: r?.key?.id ?? null });
+      feitos.push({ ofertaId: c.item.ofertaId, afiliado: c.afiliado === true, at: new Date(now()).toISOString(), messageId: r?.key?.id ?? null });
       fs.writeFileSync(o.diario, JSON.stringify(registrar(Array.isArray(diario) ? diario : [], feitos, { now: now(), regras: REGRAS_WHATSAPP })));
       io.log(`- enviado \`${c.item.ofertaId}\`${msg.image ? ' · com imagem' : ' · só texto'}`);
     }

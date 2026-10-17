@@ -1,0 +1,9 @@
+# Varredura de 17/10/2026 pelo Claude no Chrome (lojas do Google Maps): site próprio com Pokémon lacrado e preço.
+https://kamikards.com.br                          # Kami Kards · Sorocaba/SP · Nuvemshop
+https://brecholudico.com.br                       # Brechó Lúdico · Belo Horizonte/MG · WooCommerce
+https://loja.gameofboards.com.br                  # Game Of Boards · Rio de Janeiro/RJ · Tray
+https://coffeecatstore.lojavirtualnuvem.com.br    # Coffee Cat Store · Guarulhos/SP · Nuvemshop
+# Fora: ~45 lojas confirmadas no sistema de e-commerce da Liga (?view=ecom) — Junior Cards, Nuki, Vespa, tcgBR,
+# Chuck, Kooper, Dominaria, Akagami, Mega Geek, Collect & Play, Universal, Cards of Paradise (já monitorada fora da
+# Liga), Vault of Cards, UG, Kinoene, Dragon's House, Taberna Geek, Epic Vale/Santos, Freitas, Nerdz Cards e outras.
+# O robots.txt dessas lojas não abre para o robô (teste no Actions em 17/10): sem contorno.

@@ -4,6 +4,7 @@
 // (3) só anúncio do Mercado Livre com link gerado para ELE no painel troca de destino — link geral nunca vai para anúncio;
 // (4) o link é usado inteiro, como veio do painel: nada é anexado, montado ou reescrito.
 import fs from 'node:fs';
+import { setTiePreference } from './offer-rank.mjs';
 
 // Onde ficam os anúncios (URL original da oferta) e para onde um link de afiliado pode levar.
 const ML_HOST = /^(?:[a-z0-9-]+\.)*mercadoli(?:vre\.com\.br|bre\.com)$/;
@@ -60,6 +61,37 @@ export function resolveOutbound(url, cfg = loadAffiliates()) {
 }
 
 // O que o navegador recebe (GET /api/v1/afiliados): só entradas validadas.
-export function publicAffiliates(cfg = loadAffiliates()) {
-  return { v: 1, anuncios: { ...cfg.anuncios }, geral: cfg.geral ? { ...cfg.geral } : null };
+export function publicAffiliates(cfg = loadAffiliates(), extra = loadOutrasLojas()) {
+  return { v: 1, anuncios: { ...cfg.anuncios }, geral: cfg.geral ? { ...cfg.geral } : null, shopee: { ...extra.shopee }, amazon: { ...extra.amazon } };
 }
+
+// Shopee e Amazon (17/10/2026): só para o destino de PISTAS (posts de canais do Telegram), que nunca podem levar ao
+// afiliado de quem postou. Shopee: mapa loja/item → link gerado pelo dono (config/afiliados/shopee.json). Amazon:
+// ASIN → link curto gerado pelo dono na SiteStripe (shortUrl da lista curada). Nada é montado; produto fora dos mapas
+// vai para o anúncio limpo. Entrada inválida fica de fora; arquivo ausente = nada.
+const SHOPEE_LINK = /^https:\/\/s\.shopee\.com\.br\/[A-Za-z0-9]+$/;
+const SHOPEE_ID = /^\d{3,15}\/\d{3,20}$/;
+const AMAZON_CURTO = /^https:\/\/link\.amazon\/[A-Za-z0-9]+$/;
+export function parseOutrasLojas(shopeeRaw, amazonRaw) {
+  const shopee = {}; const amazon = {};
+  for (const [k, v] of Object.entries(shopeeRaw?.links && typeof shopeeRaw.links === 'object' ? shopeeRaw.links : {})) if (SHOPEE_ID.test(k) && typeof v === 'string' && SHOPEE_LINK.test(v)) shopee[k] = v;
+  for (const l of Array.isArray(amazonRaw?.links) ? amazonRaw.links : []) if (/^[A-Z0-9]{10}$/.test(l?.asin || '') && AMAZON_CURTO.test(l?.shortUrl || '')) amazon[l.asin] = l.shortUrl;
+  return { shopee, amazon };
+}
+const SHOPEE_FILE = new URL('../../config/afiliados/shopee.json', import.meta.url);
+const AMAZON_FILE = new URL('../../config/afiliados/amazon.json', import.meta.url);
+let outras = null;
+export function loadOutrasLojas({ fresh = false } = {}) {
+  if (outras && !fresh) return outras;
+  const ler = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return null; } };
+  outras = parseOutrasLojas(ler(SHOPEE_FILE), ler(AMAZON_FILE));
+  return outras;
+}
+
+// Desempate do dono (17/10/2026, docs/afiliados.md): com o MESMO total comparável, a oferta cujo anúncio do ML tem link
+// de afiliado no mapa fica antes. Nunca passa uma oferta mais barata (o offer-rank só consulta isto em empate).
+export function afiliadoPreferido(cfg = null) {
+  return (o) => { const id = mlListingId(o?.url); return !!(id && (cfg || loadAffiliates()).anuncios?.[id]); };
+}
+/** Registra o desempate no offer-rank. Chamado pelas rotas que mostram ofertas (api/v1.mjs, api/pagina.mjs). */
+export function registrarDesempate(cfg = null) { setTiePreference(afiliadoPreferido(cfg)); }

@@ -36,7 +36,7 @@ export async function runDiscovery({ log = console.log, env = process.env, now =
   try {
     const ledger = loadLedger();
     const catalog = readJson(configPath('catalog.json'), { collections: [], products: [] });
-    const all = generateQueries(catalog);
+    const all = generateQueries(catalog, readJson(configPath('refs-copag.json'), {})?.refs || {}); // + códigos Copag (tools/refs-copag.mjs)
     const picked = selectQueries(ledger, all, budgetOf(env), now.getTime());
     const inv = inventory();
     const baseline = snapshot(inv);

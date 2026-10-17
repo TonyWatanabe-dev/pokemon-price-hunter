@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "mkdir -p public/data && cp account.js robots.txt favicon.png apple-touch-icon.png og.jpg icon-512.png public/ && node api/_lib/build-slim.mjs && mkdir -p public/logos && cp -r logos/colecoes public/logos/ && cp data/state.json public/data/ && cp config/afiliados/amazon.json public/data/afiliados-amazon.json && mkdir -p public/assets/web && cp assets/web/* public/assets/web/",
+    "build": "mkdir -p public/data && cp account.js robots.txt favicon.png apple-touch-icon.png og.jpg icon-512.png public/ && node api/_lib/build-slim.mjs && mkdir -p public/logos && cp -r logos/colecoes public/logos/ && cp data/state.json public/data/ && cp config/afiliados/amazon.json public/data/afiliados-amazon.json && cp config/afiliados/shopee-ofertas.json public/data/afiliados-shopee.json && mkdir -p public/assets/web && cp assets/web/* public/assets/web/",
     "hunt": "node src/run.js",
     "loop": "node src/run.js --loop",
     "discover": "node src/discover.js",

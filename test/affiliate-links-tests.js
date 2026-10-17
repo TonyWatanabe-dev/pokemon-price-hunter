@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
-import { mlListingId, validDestination, parseAffiliates, loadAffiliates, resolveOutbound, publicAffiliates, DESTINATION_HOSTS } from '../api/_lib/affiliates.mjs';
+import { mlListingId, validDestination, parseAffiliates, loadAffiliates, resolveOutbound, publicAffiliates, loadOutrasLojas, DESTINATION_HOSTS } from '../api/_lib/affiliates.mjs';
 import { productOpportunity, calculateOpportunity, oppOrder } from '../src/core/opportunity-engine.js';
 import { byComparableTotal, bestComparable } from '../api/_lib/offer-rank.mjs';
 
@@ -69,14 +69,25 @@ await t('config ausente, vazia ou quebrada: tudo como hoje (URL original)', () =
   loadAffiliates({ fresh: true });   // volta ao arquivo real
 });
 
-await t('config do repositório: mapa vazio, link geral guardado mas desligado (destino não confirmado)', () => {
+await t('config do repositório: só links gerados pelo dono, um por anúncio; link geral guardado mas desligado', () => {
   const raw = JSON.parse(read('config/affiliates.json'));
-  assert.deepEqual(raw.mercadolivre.anuncios, {}, 'nenhum anúncio recebe link sem link gerado para ele');
+  const mapa = raw.mercadolivre.anuncios;
+  const c = loadAffiliates({ fresh: true });
+  assert.deepEqual(c.rejeitados, [], 'toda entrada do mapa passa na validação (id MLB + destino permitido)');
+  for (const [id, link] of Object.entries(mapa)) {
+    assert.match(id, /^MLB\d{6,15}$/, 'chave é o id do anúncio');
+    assert.match(link, /^https:\/\/meli\.la\/[A-Za-z0-9]+$/, 'link curto inteiro, como o gerador do painel entrega');
+  }
+  const vistos = new Map();
+  for (const [id, link] of Object.entries(mapa)) { assert.ok(!vistos.has(link), `link ${link} repetido em ${vistos.get(link)} e ${id}: não dá para garantir que leva a cada anúncio`); vistos.set(link, id); }
   assert.equal(raw.mercadolivre.geral.url, 'https://meli.la/1BzQ4PU', 'link do dono guardado sem alteração');
   assert.equal(raw.mercadolivre.geral.ativo, false); assert.equal(raw.mercadolivre.geral.destinoConfirmado, false);
-  const c = loadAffiliates({ fresh: true });
-  assert.deepEqual(publicAffiliates(c), { v: 1, anuncios: {}, geral: null });
-  for (const u of [ML_PDP, ML_ITEM, OUTRA]) assert.equal(resolveOutbound(u), u, 'sem associação: URL original');
+  const outras = loadOutrasLojas({ fresh: true });
+  assert.deepEqual(publicAffiliates(c), { v: 1, anuncios: { ...mapa }, geral: null, shopee: { ...outras.shopee }, amazon: { ...outras.amazon } });
+  assert.equal(resolveOutbound(OUTRA), OUTRA, 'outra loja nunca vira link do ML');
+  for (const u of [ML_PDP, ML_ITEM]) assert.equal(resolveOutbound(u), mapa[mlListingId(u)] || u, 'anúncio fora do mapa: URL original');
+  const [id1] = Object.keys(mapa);
+  if (id1) assert.equal(resolveOutbound(`https://www.mercadolivre.com.br/p/MLB1?pdp_filters=item_id%3A${id1}`), mapa[id1], 'anúncio do mapa: link dele');
 });
 
 await t('resolvedor: ML com link próprio -> afiliado; ML sem link, outra loja e destino inválido -> URL original intacta', () => {
@@ -101,7 +112,8 @@ await t('GET /api/v1/afiliados devolve só a config validada, sem banco nem stat
   const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } };
   await api({ url: '/api/v1/afiliados', method: 'GET' }, res);
   assert.equal(res.statusCode, 200);
-  assert.deepEqual(JSON.parse(res.body), { v: 1, anuncios: {}, geral: null });
+  assert.deepEqual(JSON.parse(res.body), publicAffiliates(loadAffiliates({ fresh: true })), 'exatamente o mapa validado da config, link geral desligado');
+  assert.equal(JSON.parse(res.body).geral, null);
   assert.match(res.headers['Cache-Control'], /s-maxage/);
   assert.equal(res.headers['X-Data-Source'], undefined, 'não passa pela leitura de dados');
   const vj = JSON.parse(read('vercel.json'));
@@ -119,7 +131,7 @@ const page = (anuncios = {}) => {
 
 await t('página: sem config (padrão), todo link de oferta sai exatamente igual', () => {
   const { outUrl, esc, safeUrl, AFIL } = page();
-  assert.deepEqual(JSON.parse(JSON.stringify(AFIL)), { anuncios: {}, geral: null });
+  assert.deepEqual(JSON.parse(JSON.stringify(AFIL)), { anuncios: {}, geral: null, shopee: {}, amazon: {} });
   for (const u of [ML_PDP, ML_ITEM, ML_SEM_MAPA, OUTRA, 'javascript:alert(1)', '', null, undefined]) {
     assert.equal(outUrl(u), u);
     assert.equal(esc(safeUrl(outUrl(u))), esc(safeUrl(u)), 'o href final é o mesmo de antes');
@@ -157,24 +169,26 @@ await t('página: só os botões de oferta passam por outUrl, sempre dentro de s
   const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best)\.url\)\)\)\}" target="_blank" rel="noopener\$\{outRel\(\1\.url\)\}"/g)].length;
   assert.equal(inHref, 6, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade), cada um com rel do mesmo destino');
   assert.equal([...html.matchAll(/\boutRel\(/g)].length, inHref, 'outRel só nos botões de oferta');
-  assert.equal(uses, inHref + 2, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel e no selo afilSelo)');
-  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 3, 'mais a definição e os usos em outRel e afilSelo; nenhum outro uso');
+  assert.equal(uses, inHref + 1, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel; sem selo desde 17/10)');
+  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 2, 'mais a definição e o uso em outRel; nenhum outro uso');
   for (const m of html.matchAll(/<a [^>]*href="\$\{esc\(safeUrl\(outUrl\([^"]*"[\s\S]{0,400}?<\/a>/g)) assert.match(m[0], /<span class="sr">[^<]*abre em nova aba\)<\/span>/, m[0].slice(0, 120));
-  // link geral: só no rodapé, rotulado como afiliado e só com destino confirmado (geral != null)
+  // link geral: só no rodapé, sem etiqueta (regra 17/10) e só com destino confirmado (geral != null)
   assert.match(html, /function footAfil\(\)\{[^\n]*if\(!f\|\|!AFIL\.geral/);
-  assert.match(html, /href="\$\{esc\(safeUrl\(AFIL\.geral\.url\)\)\}" target="_blank" rel="noopener nofollow sponsored" data-afil>\$\{esc\(AFIL\.geral\.rotulo\)\}<span class="sr"> \(link de afiliado, abre em nova aba\)<\/span>/);
-  assert.match(html, /Alguns links do Mercado Livre são links de afiliado/, 'aviso nos Termos quando houver link ativo');
+  assert.match(html, /href="\$\{esc\(safeUrl\(AFIL\.geral\.url\)\)\}" target="_blank" rel="noopener nofollow sponsored" data-afil>\$\{esc\(AFIL\.geral\.rotulo\)\}<span class="sr"> \(abre em nova aba\)<\/span>/);
+  assert.match(html, /Alguns links para Mercado Livre, Amazon e Shopee são links de afiliado/, 'aviso geral nos Termos');
 });
 
 await t('página: o carregador aceita só entradas válidas e não bloqueia a página', () => {
-  const fn = html.match(/async function loadAfil\(\)\{[\s\S]*?\n {2}AFIL=\{anuncios:a,geral:g\};[^\n]*\}catch\{\}\}/);
+  const fn = html.match(/async function loadAfil\(\)\{[\s\S]*?\n {2}AFIL=\{anuncios:a,geral:g,shopee:sh,amazon:am\};[^\n]*\}catch\{\}\}/);
   assert.ok(fn, 'loadAfil não encontrado');
   assert.match(fn[0], /fetch\("\/api\/v1\/afiliados"\)/); assert.match(fn[0], /AFIL_OK\.test\(v\)/); assert.match(fn[0], /AFIL_OK\.test\(j\.geral\.url\)/);
+  assert.match(fn[0], /s\\\.shopee\\\.com\\\.br/); assert.match(fn[0], /link\\\.amazon/);   // Shopee/Amazon (pistas): só links do painel
   assert.match(html, /\nloadAfil\(\);/, 'chamado sem await: a página não espera a config');
 });
 
-// ------------------------------------------------------------------ 4. ranking, melhor oferta e score idênticos
-await t('afiliado nunca entra em ranking, melhor oferta, preço, frete, estoque ou score', () => {
+// ------------------------------------------------------------------ 4. ranking, melhor oferta e score idênticos SEM empate
+// Regra do dono (17/10/2026): em empate de total o afiliado vem antes (test/afiliado-desempate-tests.js). Sem empate, nada muda.
+await t('sem empate de total, afiliado não muda ranking, melhor oferta, preço, frete, estoque ou score', () => {
   const now = new Date('2026-10-10T12:00:00Z');
   const S = { reference_price: 400, reference_status: 'verified', reference_kind: 'COPAG_OFFICIAL_CURRENT', history_status: 'ok', history_days: 20, historical_min: 330, historical_average: 380,
     variation_7d: -0.05, variation_30d: null, number_of_in_stock_offers: 4, median_price: 390, lowest_current_price: 330, quality: { anchor: 380 } };
@@ -206,7 +220,7 @@ await t('motores e ranking não conhecem afiliado (nem importam o módulo)', () 
   for (const f of files) assert.doesNotMatch(read(f), /affiliates\.(?:mjs|json)|resolveOutbound|publicAffiliates|parseAffiliates|outUrl|\bAFIL\b/, f);
   const importers = [...fs.readdirSync(path.join(ROOT, 'api')), ...fs.readdirSync(path.join(ROOT, 'api/_lib')).map((f) => `_lib/${f}`)]
     .filter((f) => /\.mjs$/.test(f) && /affiliates\.mjs/.test(read(`api/${f}`)));
-  assert.deepEqual(importers, ['v1.mjs'], 'só a rota /api/v1/afiliados lê a config');
+  assert.deepEqual(importers, ['pagina.mjs', 'v1.mjs'], 'só as rotas que mostram ofertas leem a config (destino do clique e desempate)');
   // na página, as funções de ordem/melhor oferta/nota não tocam em AFIL/outUrl
   for (const name of ['bestLive', 'oppOrder', 'oppTotal']) {
     const m = html.match(new RegExp(`(?:function ${name}\\(|const ${name}=)[^\\n]*`)); if (m) assert.doesNotMatch(m[0], /outUrl|AFIL/, name);

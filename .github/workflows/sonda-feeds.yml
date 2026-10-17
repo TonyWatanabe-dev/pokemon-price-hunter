@@ -1,0 +1,30 @@
+name: Sonda de feeds de produto (só leitura)
+# Procura feed público de produtos (Google Shopping) nas lojas lidas pelo JSON-LD.
+# Não grava nada: sem push, sem banco, sem secrets. Resultado nas anotações da execução e no artefato sonda-feeds.json.
+on:
+  workflow_dispatch:
+    inputs:
+      lojas:
+        description: 'ids separados por vírgula (vazio = todas as lojas JSON-LD ativas)'
+        required: false
+        default: ''
+permissions:
+  contents: read
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - run: npm ci --omit=dev --no-audit --no-fund --silent --ignore-scripts
+      - name: Dados atuais (ramo data, só leitura)
+        run: |
+          git fetch --depth 1 origin data && git checkout FETCH_HEAD -- data
+      - name: Sonda
+        env: { LOJAS: '${{ inputs.lojas }}' }
+        run: node tools/sonda-feeds.mjs data --lojas "$LOJAS" --json sonda-feeds.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with: { name: sonda-feeds, path: sonda-feeds.json, if-no-files-found: ignore }
