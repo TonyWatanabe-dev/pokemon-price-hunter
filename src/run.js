@@ -20,6 +20,7 @@ import { readDbHealth, syncStatus } from './db-health.js';
 import { tlsModeFor } from './db/ssl.js';
 import { buildRunRecord, readerSummary, storesSummary, watchedSummary, collectorsSummary, classifyError, recordRun, copagSummary } from './opstate.js';
 import { contexto as telegramUsuario } from './telegram-usuario.js';
+import { ligada as freqLigada, aposLeitura, adiar, assinatura } from './frequencia.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent, capJsonlLines } from './alerts.js';
 import { collectTips, firstPrice, tipVencida } from './tips.js';
 import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
@@ -238,7 +239,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     } catch (e) { log(`[pistas] verificação: ${redact(e?.message || e, { max: 160 })}`); }
   }
 
-  const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set();
+  const offers = {}; const unmatched = []; const touched = new Set(); const skipped = new Set(); const adiadas = new Set(); const FREQ = freqLigada();
   // Volume: lojas em paralelo (o intervalo de 1,5 s continua valendo por domínio: mais lojas ao mesmo tempo, nunca mais pressa numa loja), prazo por rodada
   // e rodízio — quem ficou para trás numa rodada vai primeiro na seguinte.
   const deadline = Date.now() + positiveEnv('HUNTER_BUDGET_MIN', 7) * 60e3;
@@ -252,6 +253,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (store.enabled === false) { Object.assign(src, { status: 'PAUSED', reason: 'pausada manualmente' }); return; }
     if (BIG_MARKETPLACES.test(new URL(store.url).host) && store.platform !== 'mercadolivre') { Object.assign(src, { status: 'UNAVAILABLE', reason: 'Marketplace grande: bloqueia robôs e não tem API pública de busca' }); return; }
     if (Date.now() > deadline) { skipped.add(store.id); return; }
+    // Frequência adaptativa (src/frequencia.js): loja que não mudou espera; a oferta segue publicada como leitura recente.
+    if (FREQ && adiar(src, store)) { skipped.add(store.id); adiadas.add(store.id); return; }
     // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (backoffMs: 429 tem curva própria).
     if (['BLOCKED', 'ERROR'].includes(src.status) && src.fails > 0 && src.lastCheck) {
       if (Date.now() - Date.parse(src.lastCheck) < backoffMs(src)) return;
@@ -339,7 +342,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         src.rejected = { total: rejected.length, reasons: why };
         log(`[${store.id}] ${rejected.length} anúncio(s) fora do contrato: ${Object.entries(why).map(([k, c]) => `${k} ×${c}`).join('; ')}`);
       } else delete src.rejected;
-      let matched = 0;
+      let matched = 0; const sigItens = [];
       let shipHalt = null; // depois de um 429 na simulação de frete, não insiste na mesma loja nesta rodada
       for (const l of listings) {
         const m = applyOverride(l, store.id, matchProduct(l, catalog), catalog, overrides);
@@ -366,7 +369,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
             if (reuse) { ship = reuse.shipping; shipAt = reuse.shippingAt; shipSource = 'anterior'; }
           }
         }
-        const pp = pickPrice(l.price);
+        const pp = pickPrice(l.price); sigItens.push(`${l.url}|${pp.value}|${stock}`);
         // Loja oficial Copag = fonte nº 1 do preço sugerido (regra 4). Preço "de" vence o promocional.
         if (store.copagSource && l.price?.base > 0) {
           const msrp = l.listPrice > l.price.base ? l.listPrice : l.price.base;
@@ -402,6 +405,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         }
       }
       // Voltou a funcionar: limpa o status HTTP, o código de rede e o Retry-After da última falha.
+      if (FREQ) aposLeitura(src, store, { sig: assinatura(sigItens), matched, listings: raw.length });
       Object.assign(src, { status: 'ACTIVE', reason, fails: 0, ok: src.ok + 1, listings: raw.length, matched, lastSuccess: T, lastNonEmpty: raw.length ? T : src.lastNonEmpty ?? null, lastDurationMs: Date.now() - t0, errorClass: null });
       delete src.httpStatus; delete src.netCode; delete src.retryAfterSec; delete src.lastFailure;
       src.platformHint = platformHintFor(base) ?? src.platformHint ?? null; // plataforma vista na resposta (diagnostico.js)
@@ -417,7 +421,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       log(`[${store.id}] ${src.status} (${src.errorClass}): ${src.reason}`);
     }
   });
-  if (skipped.size) log(`${skipped.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
+  if (adiadas.size) log(`${adiadas.size} lojas sem mudança esperaram nesta rodada (frequência adaptativa).`);
+  if (skipped.size > adiadas.size) log(`${skipped.size - adiadas.size} lojas ficaram para a próxima rodada (prazo da rodada).`);
   // Grava já o resultado da coleta: se a pós-coleta (nota oficial, alertas, estado) cair, checks/lastCheck/backoff não se perdem.
   writeJson(dataPath('sources.json'), sources);
   writeJson(dataPath('url-cache.json'), urlCache);
@@ -647,7 +652,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length,
+      stores: storesSummary(sources, skipped.size - adiadas.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length,
       tls: tlsModeFor(process.env.DATABASE_URL),      // modo TLS do banco (só o modo; ver docs/tls.md)
       copag: copagSummary(dbHealth?.copagRefs, T) });  // Copag oficial vencendo em até 7 dias (aviso copag_vencendo do vigia)
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)
