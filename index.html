@@ -3591,7 +3591,7 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-grp-popx]")){grpPopMexeu=true;store.set("grp-pop-fechado",Date.now());grpPop(false);return}
   if(t.closest("[data-grp-pop]")){grpPopMexeu=true;grpPop($("#grp-pop")?.hidden!==false);return}
   if(t.closest("[data-grp-fecha]")){store.set("grp-fechado",Date.now());grpUI();return}
-  if(!t.closest("#grp-fab"))grpPop(false);
+  if(!t.closest("#grp-fab")&&grpPopMexeu)grpPop(false);   /* aberto por padrão: clique fora não fecha; só o X (7 dias) ou o botão */
   const sbn=t.closest(".scorebtn");if(sbn){showScore(sbn);return}
   const acb=t.closest("[data-acc]");if(acb){e.preventDefault();if($("#more").open)$("#more").close();openAccount();return}
   const gtb=t.closest("[data-gate]");if(gtb){authGate({type:"page",tab:gtb.dataset.gate});return}

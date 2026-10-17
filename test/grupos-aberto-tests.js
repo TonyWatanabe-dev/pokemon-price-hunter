@@ -11,4 +11,5 @@ assert.match(html, /function grpPopFechado\(\)\{const t=store\.get\("grp-pop-fec
 assert.match(html, /\[data-grp-popx\]"\)\)\{grpPopMexeu=true;store\.set\("grp-pop-fechado",Date\.now\(\)\);grpPop\(false\);return\}/, 'fechar grava a data');
 assert.match(html, /\[data-grp-pop\]"\)\)\{grpPopMexeu=true;grpPop\(/, 'botão continua abrindo e fechando');
 assert.ok(html.indexOf('[data-grp-popx]') < html.indexOf('[data-grp-pop]"'), 'X tratado antes do botão');
+assert.match(html, /if\(!t\.closest\("#grp-fab"\)&&grpPopMexeu\)grpPop\(false\);/, 'clique fora não fecha o balão aberto por padrão (só depois que a pessoa mexeu)');
 console.log('✓ Grupos: balão aberto no computador, X fecha por 7 dias');
