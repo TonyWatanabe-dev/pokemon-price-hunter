@@ -13,7 +13,7 @@ const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazin
 // Variável numérica positiva; ausente, 0, negativa ou não numérica usa o padrão.
 export const positiveEnv = (name, def) => { const v = Number(process.env[name]); return Number.isFinite(v) && v > 0 ? v : def; };
 export async function pool(items, n, fn) { n = Number.isInteger(n) && n > 0 ? n : 1; let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
-import { matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
+import { variantesDe, matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
@@ -101,6 +101,7 @@ export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
   cat.products ||= []; cat.copag ||= {};
   cat.refs = readJson(configPath('refs-copag.json'), {})?.refs || {}; // código Copag → produto (tools/refs-copag.mjs)
+  cat.variantes = variantesDe(Object.keys(readJson(dataPath('products.json'), {}))); // caixa com Pokémon em destaque → coleção conhecida
   return cat;
 }
 

@@ -106,9 +106,9 @@ const VARIANT_STOP = new Set(['box', 'colecao', 'pokemon', 'de', 'da', 'do', 'co
 function detectVariant(t) {
   if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
   const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
-  let m = t.match(/\b(?:mega )?([a-z]{3,}) ex\b/);
-  if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
-  m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
+  // Todo "<nome> ex" do título, o primeiro que não é palavra genérica ("Coleção EX Lendas Azuis - Xerneas EX" → xerneas).
+  for (const x of t.matchAll(/\b(?:mega )?([a-z]{3,}) ex\b/g)) if (!VARIANT_STOP.has(x[1])) return mega + x[1];
+  let m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
   if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
   return null;
 }
@@ -212,7 +212,7 @@ export function describeProduct(catalog, collection, type, boosters, variant) {
   const fixed = (catalog.products || []).find((p) => p.id === id) || {};
   const vName = variant ? variant.replace('mega-', 'Mega ').replace(/^./, (c) => c.toUpperCase()).replace(/ (.)/, (m) => m.toUpperCase()) + ' ex' : null;
   return {
-    id, collection, collectionName: col?.name || collection, series: col?.series || null, type, typeLabel: TYPE_LABEL[type] || type, group: groupOf(type),
+    id, collection, collectionName: col?.name || (collection === 'avulsos' ? 'Box Pokémon' : collection), series: col?.series || null, type, typeLabel: TYPE_LABEL[type] || type, group: groupOf(type),
     boosters: boosters ?? fixed.boosters ?? null, variant: vName,
     name: `${col?.name || collection} - ${TYPE_LABEL[type] || type}${boosters && (type === 'booster_box' || type === 'combo') ? ` ${boosters}` : ''}${vName ? ` ${vName}` : ''}`,
     ean: fixed.ean || null,
@@ -234,6 +234,16 @@ function porRef(listing, catalog, p) {
   return { productId: prod.id, product: prod, confidence: 0.75, parsed: p, why: [], via: 'ref-copag' };
 }
 
+export const AVULSOS = 'avulsos';
+const AVULSO_TYPES = new Set(['colecao_ex', 'colecao_premium', 'colecao_ilustracao', 'colecao_miniatura', 'deck']);
+/** Mapa "tipo|variante" → coleção, a partir dos ids do catálogo automático (data/products.json): só quando é única. */
+export function variantesDe(ids = []) {
+  const by = new Map();
+  for (const id of ids) { const m = String(id).match(/^([a-z0-9_]+)-(colecao_ex|colecao_premium|colecao_ilustracao|colecao_miniatura|deck)-([a-z-]+)$/); if (!m || m[1] === AVULSOS) continue;
+    const k = `${m[2]}|${m[3]}`; const s = by.get(k) || new Set(); s.add(m[1]); by.set(k, s); }
+  return Object.fromEntries([...by].filter(([, s]) => s.size === 1).map(([k, s]) => [k, [...s][0]]));
+}
+
 export function matchProduct(listing, catalog) {
   const p = parseListing(listing.title, catalog);
   // EAN cadastrado vence o título.
@@ -246,6 +256,14 @@ export function matchProduct(listing, catalog) {
   // Código de referência da Copag (config/refs-copag.json) quando o título não basta: só completa o que falta, nunca
   // contradiz coleção ou tipo lidos no título, e só com um produto possível.
   if (!p.collection || !p.type || (p.type === 'booster_box' && !p.boosters)) { const r = porRef(listing, catalog, p); if (r) return r; }
+  // Box/coleção com Pokémon em destaque ("Box Mega Zygarde ex") sem coleção no título: produto avulso da Copag. Se a
+  // mesma caixa já existe numa coleção (catalog.variantes, montado do catálogo automático), vai para ela; senão, para a
+  // pseudo-coleção "avulsos". Antes, 153 de 200 anúncios não casados (17/10) eram "coleção não identificada", muitos assim.
+  if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
+    const conhecida = catalog?.variantes?.[`${p.type}|${p.variant}`] || null;
+    const prod = describeProduct(catalog, conhecida || AVULSOS, p.type, p.boosters, p.variant);
+    return { productId: prod.id, product: prod, confidence: conhecida ? 0.7 : 0.65, parsed: p, why: [], via: conhecida ? 'variante-conhecida' : 'avulso' };
+  }
   if (!p.collection) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
   if (!p.type) return { productId: null, confidence: 0, parsed: p, why: ['tipo de produto não identificado'] };
   if (p.type === 'booster_box' && !p.boosters) return { productId: null, confidence: 0, parsed: p, why: ['quantidade de boosters não informada'] };
