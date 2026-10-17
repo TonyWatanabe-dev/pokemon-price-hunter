@@ -14,7 +14,7 @@ const caminho = arg('agenda');
 const modo = arg('modo', 'simular');
 const so = (arg('so', '') || '').split(',').map((s) => s.trim()).filter(Boolean);
 if (!caminho) { console.error('informe --agenda'); process.exit(2); }
-if (!['simular', 'agendar', 'cancelar'].includes(modo)) { console.error('--modo simular|agendar|cancelar'); process.exit(2); }
+if (!['simular', 'agendar', 'cancelar', 'contas'].includes(modo)) { console.error('--modo simular|agendar|cancelar|contas'); process.exit(2); }
 
 const agenda = JSON.parse(readFileSync(caminho, 'utf8'));
 const itens = agenda.itens.filter((i) => !so.length || so.includes(i.id));
@@ -38,6 +38,12 @@ async function midias(it) {
     return [{ nome: `${it.id}.mp4`, bytes: new Uint8Array(await r.arrayBuffer()) }];
   }
   return it.arquivos.map((a) => ({ nome: basename(a), bytes: new Uint8Array(readFileSync(join(agenda.pasta, a))) }));
+}
+
+if (modo === 'contas') {
+  // Diagnóstico: quais redes estão conectadas no perfil (rede e @, nunca ids ou tokens).
+  for (const c of await cli.contas(perfil)) anota('notice', `conta: ${c.rede} · ${c.usuario || '(sem nome)'} · ${c.ativa ? 'ativa' : 'inativa'}`);
+  process.exit(0);
 }
 
 if (modo === 'cancelar') {

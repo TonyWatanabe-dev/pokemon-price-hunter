@@ -6,7 +6,8 @@ import { redact } from '../../redact.js';
 
 export const API_PADRAO = 'https://zernio.com/api/v1';
 export const FUSO = 'America/Sao_Paulo';
-export const PLATAFORMAS = Object.freeze(['instagram', 'tiktok']);
+export const PLATAFORMAS = Object.freeze(['instagram', 'tiktok', 'youtube']);
+export const TITULO_YT_MAX = 100;
 export const TIPOS = Object.freeze(['carrossel', 'imagem', 'story', 'video']);
 export const LEGENDA_MAX = 2200;
 export const CARROSSEL_MAX = 10;
@@ -33,6 +34,11 @@ export function validarItem(it) {
   const plats = Array.isArray(i.plataformas) ? i.plataformas : [];
   if (!plats.length || plats.some((x) => !PLATAFORMAS.includes(x))) p.push('plataformas inválidas');
   if (plats.includes('tiktok') && i.tipo !== 'video') p.push('TikTok só recebe vídeo nesta agenda');
+  if (plats.includes('youtube')) {
+    if (i.tipo !== 'video') p.push('YouTube só recebe vídeo (Shorts) nesta agenda');
+    if (typeof i.titulo !== 'string' || !i.titulo.trim()) p.push('YouTube precisa de titulo');
+    else if (i.titulo.length > TITULO_YT_MAX) p.push('titulo do YouTube acima de 100 caracteres');
+  }
   const arqs = Array.isArray(i.arquivos) ? i.arquivos : [];
   if (i.tipo === 'carrossel' && (arqs.length < 2 || arqs.length > CARROSSEL_MAX)) p.push(`carrossel precisa de 2 a ${CARROSSEL_MAX} imagens`);
   if (['imagem', 'story'].includes(i.tipo) && arqs.length !== 1) p.push('imagem/story precisa de exatamente 1 arquivo');
@@ -52,6 +58,11 @@ export function montarPost(it, { accountId, plataforma, urls, simular = false })
   const entrada = { platform: plataforma, accountId };
   if (plataforma === 'instagram') {
     entrada.platformSpecificData = it.tipo === 'story' ? { contentType: 'story' } : { shareToFeed: true, isAiGenerated: false, commentsEnabled: true };
+    if (it.tipo === 'video' && Number.isFinite(it.capaMs)) entrada.platformSpecificData.thumbOffset = it.capaMs;
+  }
+  if (plataforma === 'youtube') {
+    // Shorts: vídeo vertical de até 3 min; sem flag de tipo. Sem miniatura via API.
+    entrada.platformSpecificData = { title: it.titulo, visibility: 'public', madeForKids: false, containsSyntheticMedia: false, categoryId: '20' };
   }
   return {
     content: it.tipo === 'story' ? '' : it.legenda,
@@ -59,6 +70,7 @@ export function montarPost(it, { accountId, plataforma, urls, simular = false })
     platforms: [entrada],
     scheduledFor: it.quando.length === 16 ? `${it.quando}:00` : it.quando,
     timezone: FUSO,
+    ...(plataforma === 'youtube' && Array.isArray(it.tags) && it.tags.length ? { tags: it.tags.slice(0, 15) } : {}),
     ...(plataforma === 'tiktok' ? { tiktokSettings: { ...TIKTOK_SETTINGS, media_type: 'video', commercialContentType: it.afiliado ? 'brand_content' : 'none' } } : {}),
     ...(simular ? { dryRun: true } : {}),
   };
@@ -84,6 +96,12 @@ export function criarCliente({ chave, fetch: fetchFn, apiBase = API_PADRAO, time
   }
 
   return {
+    /** Contas conectadas ao perfil: só rede e nome de usuário (sem ids nem tokens). */
+    async contas(profileId) {
+      const q = profileId ? `?profileId=${encodeURIComponent(profileId)}` : '';
+      const { dado } = await chamar(`${base}/accounts${q}`);
+      return (Array.isArray(dado.accounts) ? dado.accounts : []).map((a) => ({ rede: a?.platform, usuario: a?.username ?? a?.displayName ?? '', ativa: a?.isActive !== false }));
+    },
     async conta(plataforma, profileId) {
       const q = profileId ? `?profileId=${encodeURIComponent(profileId)}` : '';
       const { dado } = await chamar(`${base}/accounts${q}`);
