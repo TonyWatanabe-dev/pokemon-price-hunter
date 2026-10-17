@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
-import { mlListingId, validDestination, parseAffiliates, loadAffiliates, resolveOutbound, publicAffiliates, DESTINATION_HOSTS } from '../api/_lib/affiliates.mjs';
+import { mlListingId, validDestination, parseAffiliates, loadAffiliates, resolveOutbound, publicAffiliates, loadOutrasLojas, DESTINATION_HOSTS } from '../api/_lib/affiliates.mjs';
 import { productOpportunity, calculateOpportunity, oppOrder } from '../src/core/opportunity-engine.js';
 import { byComparableTotal, bestComparable } from '../api/_lib/offer-rank.mjs';
 
@@ -82,7 +82,8 @@ await t('config do repositório: só links gerados pelo dono, um por anúncio; l
   for (const [id, link] of Object.entries(mapa)) { assert.ok(!vistos.has(link), `link ${link} repetido em ${vistos.get(link)} e ${id}: não dá para garantir que leva a cada anúncio`); vistos.set(link, id); }
   assert.equal(raw.mercadolivre.geral.url, 'https://meli.la/1BzQ4PU', 'link do dono guardado sem alteração');
   assert.equal(raw.mercadolivre.geral.ativo, false); assert.equal(raw.mercadolivre.geral.destinoConfirmado, false);
-  assert.deepEqual(publicAffiliates(c), { v: 1, anuncios: { ...mapa }, geral: null });
+  const outras = loadOutrasLojas({ fresh: true });
+  assert.deepEqual(publicAffiliates(c), { v: 1, anuncios: { ...mapa }, geral: null, shopee: { ...outras.shopee }, amazon: { ...outras.amazon } });
   assert.equal(resolveOutbound(OUTRA), OUTRA, 'outra loja nunca vira link do ML');
   for (const u of [ML_PDP, ML_ITEM]) assert.equal(resolveOutbound(u), mapa[mlListingId(u)] || u, 'anúncio fora do mapa: URL original');
   const [id1] = Object.keys(mapa);
@@ -130,7 +131,7 @@ const page = (anuncios = {}) => {
 
 await t('página: sem config (padrão), todo link de oferta sai exatamente igual', () => {
   const { outUrl, esc, safeUrl, AFIL } = page();
-  assert.deepEqual(JSON.parse(JSON.stringify(AFIL)), { anuncios: {}, geral: null });
+  assert.deepEqual(JSON.parse(JSON.stringify(AFIL)), { anuncios: {}, geral: null, shopee: {}, amazon: {} });
   for (const u of [ML_PDP, ML_ITEM, ML_SEM_MAPA, OUTRA, 'javascript:alert(1)', '', null, undefined]) {
     assert.equal(outUrl(u), u);
     assert.equal(esc(safeUrl(outUrl(u))), esc(safeUrl(u)), 'o href final é o mesmo de antes');
@@ -178,9 +179,10 @@ await t('página: só os botões de oferta passam por outUrl, sempre dentro de s
 });
 
 await t('página: o carregador aceita só entradas válidas e não bloqueia a página', () => {
-  const fn = html.match(/async function loadAfil\(\)\{[\s\S]*?\n {2}AFIL=\{anuncios:a,geral:g\};[^\n]*\}catch\{\}\}/);
+  const fn = html.match(/async function loadAfil\(\)\{[\s\S]*?\n {2}AFIL=\{anuncios:a,geral:g,shopee:sh,amazon:am\};[^\n]*\}catch\{\}\}/);
   assert.ok(fn, 'loadAfil não encontrado');
   assert.match(fn[0], /fetch\("\/api\/v1\/afiliados"\)/); assert.match(fn[0], /AFIL_OK\.test\(v\)/); assert.match(fn[0], /AFIL_OK\.test\(j\.geral\.url\)/);
+  assert.match(fn[0], /s\\\.shopee\\\.com\\\.br/); assert.match(fn[0], /link\\\.amazon/);   // Shopee/Amazon (pistas): só links do painel
   assert.match(html, /\nloadAfil\(\);/, 'chamado sem await: a página não espera a config');
 });
 

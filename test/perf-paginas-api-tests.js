@@ -118,7 +118,7 @@ function sandbox(st, { slim }) {
   const view0 = { innerHTML: '' }; const n = { state: 0, render: 0, init: 0 };
   const ctx = {
     console, Date, Math, JSON, Number, String, Object, Array, Set, Map, Promise, URL, encodeURIComponent, Intl, AbortController, setTimeout, clearTimeout,
-    S: null, P: {}, OFF: [], SLUG: {}, BYSLUG: {}, HIST: {}, F: { q: '' }, view: 'deals', curPid: null, curGroup: '',
+    S: null, P: {}, OFF: [], SLUG: {}, BYSLUG: {}, HIST: {}, F: { q: '' }, view: 'deals', curPid: null, curGroup: '', tipDest: (t) => t.url,   // destino da pista: test/pistas-destino-tests.js
     $: (s) => (s === '#view' ? view0 : null), photo: (p, o, cls) => `<i class="${cls}" data-src="${o?.image || p?.image || ''}"></i>`,
     dealCard: (e, opt) => `<article data-p="${e.p.id}" data-o="${e.o.id}" data-n="${e.n}" data-h="${opt.h}">${e.p.collectionName} ${ctx.__label(e.p)} ${e.o.total} ${e.o.releaseDate || ''} ${JSON.stringify(ctx.S.reputation?.lojas?.[e.o.storeId] || null)}</article>`,
     loading() {}, render() { n.render++; }, init(s2) { n.init++; ctx.S = s2; }, parseLoc: () => ({}),

@@ -52,7 +52,7 @@ const code = [
 ].join('\n');
 function render(state) {
   const view0 = { innerHTML: '' };
-  const ctx = { console, Date, Math, JSON, Number, String, Object, Array, Set, Map, URL, encodeURIComponent, Intl, S: state, P: {}, OFF: [], SLUG: {}, BYSLUG: {}, PG: {}, $: (s) => (s === '#view' ? view0 : null),
+  const ctx = { console, Date, Math, JSON, Number, String, Object, Array, Set, Map, URL, encodeURIComponent, Intl, S: state, P: {}, OFF: [], SLUG: {}, BYSLUG: {}, PG: {}, tipDest: (t) => t.url, $: (s) => (s === '#view' ? view0 : null),
     photo: (p, o, cls) => `<i class="${cls}" data-src="${p?.image || ''}"></i>` };
   vm.createContext(ctx);
   vm.runInContext(code + '\n;P=Object.fromEntries(S.products.map((p)=>[p.id,p]));buildSlugs();renderTips();', ctx);
