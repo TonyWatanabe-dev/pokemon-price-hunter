@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { planejar, registrar, REGRAS } from '../src/agents/social/auto.js';
+import { planejar, registrar, REGRAS, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
 import { main } from '../tools/social-telegram-auto.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -28,16 +28,28 @@ await t('2. oferta nova no radar fura o intervalo (até 3 por rodada), só uma v
   assert.deepEqual(planejar([c('n1', { firstSeen: iso(10) })], [{ ofertaId: 'n1', at: iso(1) }], { now: NOW }).enviar, [], 'já postada: não é mais "nova"');
 });
 
-await t('3. mesma oferta no máximo 1× a cada 24 h', () => {
+await t('3. oferta sem link de afiliado sai uma vez só (regra de 17/10/2026)', () => {
   assert.equal(planejar([c('a'), c('b')], [{ ofertaId: 'a', at: iso(60) }], { now: NOW }).enviar[0].item.ofertaId, 'b');
   assert.deepEqual(planejar([c('a')], [{ ofertaId: 'a', at: iso(23 * 60) }], { now: NOW }).enviar, []);
-  assert.equal(planejar([c('a')], [{ ofertaId: 'a', at: iso(24 * 60 + 1) }], { now: NOW }).enviar.length, 1);
+  assert.deepEqual(planejar([c('a')], [{ ofertaId: 'a', at: iso(29 * 24 * 60) }], { now: NOW }).enviar, [], 'nem depois de dias');
 });
 
-await t('4. diário: limpa entradas antigas e ignora lixo', () => {
-  const d = registrar([{ ofertaId: 'v', at: iso(49 * 60) }, { ofertaId: 'r', at: iso(10) }, null], [{ ofertaId: 'z', at: iso(0) }], { now: NOW });
-  assert.deepEqual(d.map((x) => x.ofertaId), ['r', 'z']);
-  assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.repetirHoras, 24);
+await t('3b. oferta com link de afiliado volta a cada 48 h, espaçada, e as outras saem entre elas', () => {
+  const af = (id, x = {}) => ({ ...c(id, x), afiliado: true });
+  assert.equal(planejar([af('A'), c('b')], [], { now: NOW }).enviar[0].item.ofertaId, 'A', 'afiliada primeiro');
+  assert.deepEqual(planejar([af('A')], [{ ofertaId: 'A', at: iso(47 * 60), afiliado: true }], { now: NOW }).enviar, [], 'antes de 48 h não volta');
+  assert.equal(planejar([af('A')], [{ ofertaId: 'A', at: iso(48 * 60 + 1), afiliado: true }], { now: NOW }).enviar[0].item.ofertaId, 'A', 'depois de 48 h volta');
+  const d = [{ ofertaId: 'X', at: iso(10), afiliado: true }];   // afiliada há 10 min: espaçamento de 20 min
+  assert.equal(planejar([af('A'), c('b')], d, { now: NOW }).enviar[0].item.ofertaId, 'b', 'no intervalo entre afiliadas sai outra oferta');
+  assert.equal(planejar([af('A'), c('b')], [{ ofertaId: 'X', at: iso(21), afiliado: true }], { now: NOW }).enviar[0].item.ofertaId, 'A');
+  assert.match(planejar([af('A')], d, { now: NOW }).motivo, /espaçamento/);
+  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 60); assert.equal(REGRAS.afiliadoIntervaloMin, 20); assert.equal(REGRAS.repetirHorasAfiliado, 48);
+});
+
+await t('4. diário: guarda 30 dias (o que saiu uma vez não volta) e ignora lixo', () => {
+  const d = registrar([{ ofertaId: 'v', at: iso(31 * 24 * 60) }, { ofertaId: 'w', at: iso(29 * 24 * 60) }, { ofertaId: 'r', at: iso(10) }, null], [{ ofertaId: 'z', at: iso(0) }], { now: NOW });
+  assert.deepEqual(d.map((x) => x.ofertaId), ['w', 'r', 'z']);
+  assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.memoriaDias, 30);
 });
 
 await t('4b. madrugada (0h–7h BRT): só oferta nova sai', () => {
