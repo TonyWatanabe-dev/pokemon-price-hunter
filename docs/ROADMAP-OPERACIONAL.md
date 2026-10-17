@@ -116,6 +116,7 @@ Canais informados/confirmados pelo proprietário. Distinguir perfis públicos, g
 | Telegram — bot | https://t.me/PokemonTCGHunterBR_bot | Bot separado da comunidade. O proprietário confirmou que o adicionou como administrador em “TCG Price Hunter \| 01”; o bot foi adicionado ao grupo; o envio real e a automação são documentados nas PRs #694–#697. Revalidar o destino e o último run antes de qualquer diagnóstico de falha. |
 | Instagram | https://www.instagram.com/tcgpricehunter151/ (@tcgpricehunter151) | Perfil informado; publicação automatizada depende de elegibilidade e configuração da API oficial. |
 | TikTok | https://www.tiktok.com/@tcgpricehunter | Perfil informado; não presumir integração de publicação automatizada implementada. |
+| Facebook | https://www.facebook.com/profile.php?id=61595339254811 | Página informada pelo proprietário em 17/10/2026; link no rodapé do site e em /comunidade. |
 | YouTube | https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg | Canal informado; não presumir integração de publicação automatizada implementada. |
 | WhatsApp | Sem link de convite confirmado nesta atualização | Não alterar o grupo existente nem presumir acesso à API de grupos. Integração somente por caminho oficial confirmado. |
 | Shopee Afiliados | Link de afiliado pendente | Não inventar nem substituir link. |
