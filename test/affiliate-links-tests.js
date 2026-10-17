@@ -69,14 +69,24 @@ await t('config ausente, vazia ou quebrada: tudo como hoje (URL original)', () =
   loadAffiliates({ fresh: true });   // volta ao arquivo real
 });
 
-await t('config do repositório: mapa vazio, link geral guardado mas desligado (destino não confirmado)', () => {
+await t('config do repositório: só links gerados pelo dono, um por anúncio; link geral guardado mas desligado', () => {
   const raw = JSON.parse(read('config/affiliates.json'));
-  assert.deepEqual(raw.mercadolivre.anuncios, {}, 'nenhum anúncio recebe link sem link gerado para ele');
+  const mapa = raw.mercadolivre.anuncios;
+  const c = loadAffiliates({ fresh: true });
+  assert.deepEqual(c.rejeitados, [], 'toda entrada do mapa passa na validação (id MLB + destino permitido)');
+  for (const [id, link] of Object.entries(mapa)) {
+    assert.match(id, /^MLB\d{6,15}$/, 'chave é o id do anúncio');
+    assert.match(link, /^https:\/\/meli\.la\/[A-Za-z0-9]+$/, 'link curto inteiro, como o gerador do painel entrega');
+  }
+  const vistos = new Map();
+  for (const [id, link] of Object.entries(mapa)) { assert.ok(!vistos.has(link), `link ${link} repetido em ${vistos.get(link)} e ${id}: não dá para garantir que leva a cada anúncio`); vistos.set(link, id); }
   assert.equal(raw.mercadolivre.geral.url, 'https://meli.la/1BzQ4PU', 'link do dono guardado sem alteração');
   assert.equal(raw.mercadolivre.geral.ativo, false); assert.equal(raw.mercadolivre.geral.destinoConfirmado, false);
-  const c = loadAffiliates({ fresh: true });
-  assert.deepEqual(publicAffiliates(c), { v: 1, anuncios: {}, geral: null });
-  for (const u of [ML_PDP, ML_ITEM, OUTRA]) assert.equal(resolveOutbound(u), u, 'sem associação: URL original');
+  assert.deepEqual(publicAffiliates(c), { v: 1, anuncios: { ...mapa }, geral: null });
+  assert.equal(resolveOutbound(OUTRA), OUTRA, 'outra loja nunca vira link do ML');
+  for (const u of [ML_PDP, ML_ITEM]) assert.equal(resolveOutbound(u), mapa[mlListingId(u)] || u, 'anúncio fora do mapa: URL original');
+  const [id1] = Object.keys(mapa);
+  if (id1) assert.equal(resolveOutbound(`https://www.mercadolivre.com.br/p/MLB1?pdp_filters=item_id%3A${id1}`), mapa[id1], 'anúncio do mapa: link dele');
 });
 
 await t('resolvedor: ML com link próprio -> afiliado; ML sem link, outra loja e destino inválido -> URL original intacta', () => {
@@ -101,7 +111,8 @@ await t('GET /api/v1/afiliados devolve só a config validada, sem banco nem stat
   const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } };
   await api({ url: '/api/v1/afiliados', method: 'GET' }, res);
   assert.equal(res.statusCode, 200);
-  assert.deepEqual(JSON.parse(res.body), { v: 1, anuncios: {}, geral: null });
+  assert.deepEqual(JSON.parse(res.body), publicAffiliates(loadAffiliates({ fresh: true })), 'exatamente o mapa validado da config, link geral desligado');
+  assert.equal(JSON.parse(res.body).geral, null);
   assert.match(res.headers['Cache-Control'], /s-maxage/);
   assert.equal(res.headers['X-Data-Source'], undefined, 'não passa pela leitura de dados');
   const vj = JSON.parse(read('vercel.json'));

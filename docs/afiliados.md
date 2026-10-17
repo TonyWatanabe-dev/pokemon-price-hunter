@@ -1,6 +1,8 @@
 # Links de afiliado (Mercado Livre)
 
-O site tem suporte a links de afiliado do Mercado Livre, mas **hoje nenhum anúncio usa link de afiliado**. O mapa de anúncios está vazio e o link geral do dono (`https://meli.la/1BzQ4PU`) está guardado, mas desligado. Assim, todo "Ver oferta" continua abrindo a URL original da oferta, como antes.
+O site usa links de afiliado do Mercado Livre em **220 anúncios** (mapa de 17/10/2026, gerado pelo dono no Gerador de links do painel a partir das URLs que o site mostrava). Ficaram de fora 46 anúncios cujo link gerado se repetia em mais de um anúncio: não dá para garantir que ele leva a cada um. O link geral do dono (`https://meli.la/1BzQ4PU`) continua guardado e desligado. Anúncio fora do mapa abre na URL original da oferta, como antes.
+
+Para renovar o mapa: listar os anúncios do ML em `data/offers.json` (branch `data`), gerar os links no painel, pedir a tabela "URL original ; link gerado" e trocar `anuncios`. Link repetido em mais de um anúncio é descartado (o teste `test/affiliate-links-tests.js` recusa).
 
 ## Regras que o código garante
 
