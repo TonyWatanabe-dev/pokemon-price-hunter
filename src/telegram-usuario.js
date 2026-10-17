@@ -15,7 +15,7 @@
 // condição mesmo se a rodada cair no meio) e a reserva de um envio que falhou é desfeita (a próxima rodada tenta de novo).
 import crypto from 'node:crypto';
 import { evaluate, dedupe, compose, capPerUser, pruneSent, telegramBody, CHANNEL_DOWN_AFTER } from './alerts.js';
-import { parseServiceAccount, firestoreClient } from './firestore-rest.js';
+import { parseServiceAccount, motivoServiceAccount, firestoreClient } from './firestore-rest.js';
 import { shipKnown } from '../api/_lib/offer-rank.mjs';
 
 export const FLAG = 'ALERTAS_TELEGRAM_USUARIO';
@@ -175,7 +175,7 @@ export function contexto(env = {}, { fetch: f = globalThis.fetch, fs, log = () =
   if (!token) { log('[alertas-usuario] ligado, mas sem TELEGRAM_BOT_TOKEN: desligado'); return null; }
   if (!fs) {
     const sa = parseServiceAccount(env.FIREBASE_SERVICE_ACCOUNT);
-    if (!sa) { log('[alertas-usuario] ligado, mas sem FIREBASE_SERVICE_ACCOUNT válido: desligado'); return null; }
+    if (!sa) { log(`[alertas-usuario] ligado, mas sem FIREBASE_SERVICE_ACCOUNT válido (${motivoServiceAccount(env.FIREBASE_SERVICE_ACCOUNT)}): desligado`); return null; }
     fs = firestoreClient({ serviceAccount: sa, fetch: f });
   }
   const maxDia = Math.max(1, Math.min(50, Math.floor(Number(env.ALERTAS_TELEGRAM_USUARIO_MAX_DIA) || MAX_DIA_PADRAO)));

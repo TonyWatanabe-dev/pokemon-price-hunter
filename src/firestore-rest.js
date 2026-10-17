@@ -14,9 +14,25 @@ export class FirestoreError extends Error {
 }
 
 /** Lê e valida o JSON da conta de serviço. null = ausente ou inválido (falha fechada: o recurso fica desligado). */
+/** JSON da conta de serviço como veio do secret: tira BOM, espaços e aspas externas (colagem comum no GitHub). */
+const limparSA = (raw) => { let s = String(raw).replace(/^\uFEFF/, '').trim(); if (/^(['"`]).*\1$/s.test(s) && s.length > 2 && s[1] === '{') s = s.slice(1, -1).trim(); return s; };
+
+/** Por que a conta de serviço não vale, sem expor conteúdo: só o motivo e o tamanho (para o log da Action). */
+export function motivoServiceAccount(raw) {
+  if (!raw || typeof raw !== 'string' || !raw.trim()) return 'vazio (secret ausente, com outro nome ou num Environment)';
+  const s = limparSA(raw); const tam = `${s.length} caracteres`;
+  if (s[0] !== '{') return `não começa com "{" (${tam}): cole o arquivo JSON inteiro`;
+  let j; try { j = JSON.parse(s); } catch { return `JSON incompleto ou quebrado (${tam}): cole do "{" ao "}" final`; }
+  if (j?.type && j.type !== 'service_account') return `tipo "${String(j.type).slice(0, 30)}": não é chave de conta de serviço`;
+  if (!(typeof j?.client_email === 'string' && /@/.test(j.client_email))) return 'sem client_email';
+  if (!(typeof j?.private_key === 'string' && /BEGIN (RSA )?PRIVATE KEY/.test(j.private_key))) return 'sem private_key';
+  if (!(typeof j?.project_id === 'string' && /^[a-z0-9-]{4,40}$/.test(j.project_id))) return 'project_id inválido';
+  return null;
+}
+
 export function parseServiceAccount(raw) {
   if (!raw || typeof raw !== 'string') return null;
-  let j; try { j = JSON.parse(raw); } catch { return null; }
+  let j; try { j = JSON.parse(limparSA(raw)); } catch { return null; }
   if (!j || typeof j !== 'object') return null;
   const ok = typeof j.client_email === 'string' && /@/.test(j.client_email) && typeof j.private_key === 'string'
     && /BEGIN (RSA )?PRIVATE KEY/.test(j.private_key) && typeof j.project_id === 'string' && /^[a-z0-9-]{4,40}$/.test(j.project_id);
