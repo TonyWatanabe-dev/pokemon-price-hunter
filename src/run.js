@@ -291,7 +291,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
           .sort((a, b) => (at[a] || '').localeCompare(at[b] || '')).slice(0, Math.max(0, 25 - fresh.length));
         cache.visited.push(...fresh);
         planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
-        store = { ...store, plannedUrls: planned };
+        // Validadores (ETag/Last-Modified) para o GET condicional, só das páginas que ainda estão no sitemap.
+        cache.cond ||= {}; for (const u of Object.keys(cache.cond)) if (!cache.candidates.includes(u)) delete cache.cond[u];
+        store = { ...store, plannedUrls: planned, cond: cache.cond };
       }
       const raw = await adapters[platform].search(store, catalog);
       handoff.seen(store.id, raw); // URL descoberta que virou anúncio sai da fila; as outras têm até 3 tentativas
