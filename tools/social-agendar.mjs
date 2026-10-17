@@ -62,9 +62,12 @@ if (modo === 'cancelar') {
     const utc = new Date(`${c.quando}:00-03:00`).toISOString().slice(0, 16);
     const achados = lista.filter((p) => String(p.scheduledFor ?? '').slice(0, 16) === utc
       && (p.platforms ?? []).some((x) => x?.platform === c.plataforma));
-    if (achados.length !== 1) { falhas++; anota('error', `✗ cancelar ${c.quando} ${c.plataforma}: achei ${achados.length} post(s) agendado(s); nada cancelado`); continue; }
-    try { await cli.cancelar(achados[0]._id); anota('notice', `✓ cancelado ${c.quando} · ${c.plataforma} · ${c.motivo ?? ''}`); }
-    catch (e) { falhas++; anota('error', `✗ cancelar ${c.quando}: ${e.message}`); }
+    // manterUm: o horário tem cópias duplicadas; cancela todas menos a primeira (mesmo conteúdo).
+    if (c.manterUm ? achados.length < 2 : achados.length !== 1) { falhas++; anota('error', `✗ cancelar ${c.quando} ${c.plataforma}: achei ${achados.length} post(s) agendado(s); nada cancelado`); continue; }
+    for (const alvo of c.manterUm ? achados.slice(1) : achados) {
+      try { await cli.cancelar(alvo._id); anota('notice', `✓ cancelado ${c.quando} · ${c.plataforma} · ${c.motivo ?? ''}`); }
+      catch (e) { falhas++; anota('error', `✗ cancelar ${c.quando}: ${e.message}`); }
+    }
   }
   process.exit(falhas ? 1 : 0);
 }
