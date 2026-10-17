@@ -1,0 +1,71 @@
+{
+  "semana": "ajuste de 17/10: linguagem mais simples",
+  "pasta": "assets/social/agenda/semana3",
+  "itens": [
+    {
+      "id": "s3-seg-olha-o-traco-yuka-morii-v3",
+      "quando": "2026-11-02T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S3_Seg_1_v3.jpg",
+        "S3_Seg_2_v3.jpg",
+        "S3_Seg_3_v3.jpg",
+        "S3_Seg_4_v3.jpg",
+        "S3_Seg_5_v3.jpg",
+        "S3_Seg_6_v3.jpg"
+      ],
+      "legenda": "Yuka Morii não desenha: ela esculpe os Pokémon em argila, monta o cenário e fotografa. Cada carta dela é uma foto de verdade.\n\nArrasta e aprende a reconhecer a massinha dela no próximo pull. Qual farmou mais aura? 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #yukamorii #ilustracao #colecionador"
+    },
+    {
+      "id": "s3-qua-rodape-da-carta-v3",
+      "quando": "2026-11-04T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S3_Qua_1_v3.jpg",
+        "S3_Qua_2_v3.jpg",
+        "S3_Qua_3_v3.jpg",
+        "S3_Qua_4_v3.jpg",
+        "S3_Qua_5_v3.jpg"
+      ],
+      "legenda": "O rodapé da carta conta a coleção, o idioma, a raridade e quem desenhou. Número maior que o total da coleção? É carta secreta.\n\nSalva pra conferir no próximo pull 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #curiosidade #colecionador #tcg"
+    },
+    {
+      "id": "s3-qui-reinado-delta-v3",
+      "quando": "2026-11-05T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S3_Qui_1_v3.jpg",
+        "S3_Qui_2_v3.jpg",
+        "S3_Qui_3_v3.jpg",
+        "S3_Qui_4_v3.jpg"
+      ],
+      "legenda": "Reinado Delta chega sexta, 6/11: a última coleção grande da fase Megaevolução, com Mega Rayquaza ex como a carta mais esperada.\n\nNo lançamento o preço muda toda hora. Compara com o preço da Copag e deixa o grupo te avisar quando aparecer barato.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao"
+    }
+  ],
+  "cancelar": [
+    {
+      "motivo": "texto simplificado (17/10)",
+      "quando": "2026-11-02T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "texto simplificado (17/10)",
+      "quando": "2026-11-04T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "texto simplificado (17/10)",
+      "quando": "2026-11-05T12:00",
+      "plataforma": "instagram"
+    }
+  ]
+}

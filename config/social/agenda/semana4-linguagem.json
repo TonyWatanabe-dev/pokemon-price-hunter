@@ -1,0 +1,52 @@
+{
+  "semana": "ajuste de 17/10: linguagem mais simples",
+  "pasta": "assets/social/agenda/semana4",
+  "itens": [
+    {
+      "id": "s4-qui-alerta-de-golpe-v3",
+      "quando": "2026-11-12T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Qui_1_v3.jpg",
+        "S4_Qui_2_v3.jpg",
+        "S4_Qui_3_v3.jpg",
+        "S4_Qui_4_v3.jpg",
+        "S4_Qui_5_v3.jpg",
+        "S4_Qui_6_v3.jpg",
+        "S4_Qui_7_v3.jpg"
+      ],
+      "legenda": "Black Friday chegando e com ela os anúncios bons demais pra ser verdade. 5 sinais pra checar antes de pagar.\n\nSalva e manda pra quem vai comprar 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #golpe #colecionador"
+    },
+    {
+      "id": "s4-sex-esquenta-black-friday-v3",
+      "quando": "2026-11-13T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S4_Sex_1_v3.jpg",
+        "S4_Sex_2_v3.jpg",
+        "S4_Sex_3_v3.jpg",
+        "S4_Sex_4_v3.jpg",
+        "S4_Sex_5_v3.jpg"
+      ],
+      "legenda": "Black Friday é 27/11. 3 dicas pra não cair em desconto falso: compara com o preço da Copag, não espera quando for lançamento e já faz sua lista.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #reinadodelta #ofertas"
+    }
+  ],
+  "cancelar": [
+    {
+      "motivo": "texto simplificado (17/10)",
+      "quando": "2026-11-12T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "texto simplificado (17/10)",
+      "quando": "2026-11-13T12:00",
+      "plataforma": "instagram"
+    }
+  ]
+}
