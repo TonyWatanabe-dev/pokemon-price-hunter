@@ -272,15 +272,18 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
         const at = (cache.visitedAt ||= {}); // url -> quando foi lida com sucesso pela última vez
         if (!cache.at || Date.now() - Date.parse(cache.at) > 864e5) {
-          cache.candidates = await jsonldUrls(base, 3000); cache.at = T; cache.visited = cache.visited.filter((u) => cache.candidates.includes(u));
+          cache.candidates = await jsonldUrls(base, 3000); cache.lastmod = cache.candidates.lastmod || {}; cache.at = T; cache.visited = cache.visited.filter((u) => cache.candidates.includes(u));
           for (const u of Object.keys(at)) if (!cache.candidates.includes(u)) delete at[u];
         }
-        const fresh = cache.candidates.filter((u) => !cache.visited.includes(u)).slice(0, 25);
+        // lastmod do sitemap: páginas novas mais recentes primeiro (lançamentos entram antes); irrelevante só volta se a
+        // loja declarou alteração depois da última leitura. Sem lastmod, vale a regra de antes (ordem do sitemap, 24 h).
+        const lm = cache.lastmod || {};
+        const fresh = cache.candidates.filter((u) => !cache.visited.includes(u)).sort((a, b) => (lm[b] || '').localeCompare(lm[a] || '')).slice(0, 25);
         // Página já lida e julgada irrelevante volta à fila depois de HUNTER_JSONLD_RETRY_H horas (padrão 24): pode ter
         // virado produto. Divide as 25 vagas da rodada com as novas (as mais antigas primeiro).
         const RETRY = Number(process.env.HUNTER_JSONLD_RETRY_H || 24) * 3600e3;
         const rel = new Set(cache.relevant);
-        const retry = cache.candidates.filter((u) => cache.visited.includes(u) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY))
+        const retry = cache.candidates.filter((u) => cache.visited.includes(u) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY) && !(lm[u] && at[u] && lm[u] <= at[u]))
           .sort((a, b) => (at[a] || '').localeCompare(at[b] || '')).slice(0, Math.max(0, 25 - fresh.length));
         cache.visited.push(...fresh);
         planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];

@@ -21,8 +21,18 @@ export function isProductCandidate(loc) {
   return words.some((w) => SLUG_WORDS.has(w)) || SLUG_PAIRS.some((x) => joined.includes(x));
 }
 
+/** <url><loc>…</loc><lastmod>…</lastmod></url> → { loc: ISO }. Data inválida ou no futuro (mais de 1 dia) é ignorada. */
+export function lastmodDe(xml, now = Date.now()) {
+  const out = {};
+  for (const [, bloco] of String(xml || '').matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const loc = bloco.match(/<loc>\s*([^<\s]+)\s*<\/loc>/)?.[1]; const lm = bloco.match(/<lastmod>\s*([^<\s]+)\s*<\/lastmod>/)?.[1];
+    const t = Date.parse(lm || ''); if (loc && Number.isFinite(t) && t <= now + 864e5) out[loc] = new Date(t).toISOString();
+  }
+  return out;
+}
+
 export async function productUrls(base, max = 60) {
-  const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = [];
+  const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = []; const lastmod = {};
   while (queue.length && seen.size < 15 && urls.length < max) {
     const sm = queue.shift(); if (seen.has(sm)) continue; seen.add(sm);
     try { await guard(sm); } catch { continue; }
@@ -31,8 +41,12 @@ export async function productUrls(base, max = 60) {
       if (/\.xml(\.gz)?$/i.test(loc)) { if (/product|produto|sitemap/i.test(loc)) queue.push(loc); }
       else if (isProductCandidate(loc)) urls.push(loc);
     }
+    Object.assign(lastmod, lastmodDe(xml));
   }
-  return [...new Set(urls)].slice(0, max);
+  const out = [...new Set(urls)].slice(0, max);
+  // data de alteração declarada no sitemap; não enumerável: a lista continua sendo só a lista de URLs
+  Object.defineProperty(out, 'lastmod', { value: Object.fromEntries(out.filter((u) => lastmod[u]).map((u) => [u, lastmod[u]])), enumerable: false });
+  return out;
 }
 
 const AVAIL = { instock: 'IN_STOCK', outofstock: 'OUT_OF_STOCK', soldout: 'OUT_OF_STOCK', preorder: 'PRE_ORDER', presale: 'PRE_ORDER', backorder: 'PRE_ORDER', discontinued: 'UNAVAILABLE', limitedavailability: 'IN_STOCK', instoreonly: 'UNAVAILABLE' };
