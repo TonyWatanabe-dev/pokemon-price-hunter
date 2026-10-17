@@ -14,7 +14,7 @@ const caminho = arg('agenda');
 const modo = arg('modo', 'simular');
 const so = (arg('so', '') || '').split(',').map((s) => s.trim()).filter(Boolean);
 if (!caminho) { console.error('informe --agenda'); process.exit(2); }
-if (!['simular', 'agendar', 'cancelar', 'contas'].includes(modo)) { console.error('--modo simular|agendar|cancelar|contas'); process.exit(2); }
+if (!['simular', 'agendar', 'cancelar', 'contas', 'agendados'].includes(modo)) { console.error('--modo simular|agendar|cancelar|contas|agendados'); process.exit(2); }
 
 const agenda = JSON.parse(readFileSync(caminho, 'utf8'));
 const itens = agenda.itens.filter((i) => !so.length || so.includes(i.id));
@@ -43,6 +43,14 @@ async function midias(it) {
 if (modo === 'contas') {
   // Diagnóstico: quais redes estão conectadas no perfil (rede e @, nunca ids ou tokens).
   for (const c of await cli.contas(perfil)) anota('notice', `conta: ${c.rede} · ${c.usuario || '(sem nome)'} · ${c.ativa ? 'ativa' : 'inativa'}`);
+  process.exit(0);
+}
+
+if (modo === 'agendados') {
+  // Resumo do que está agendado no perfil, numa anotação só (o Actions mostra no máximo 10 avisos por passo).
+  const lista = await cli.agendados(perfil);
+  const linhas = lista.map((p) => `${new Date(new Date(p.scheduledFor).getTime() - 3 * 3600e3).toISOString().slice(0, 16)} ${(p.platforms ?? []).map((x) => x?.platform).join('+')} ${(p.mediaItems ?? []).map((m) => m?.type?.[0] ?? '?').join('')}`).sort();
+  anota('notice', `agendados (${linhas.length}): ${linhas.join(' | ')}`);
   process.exit(0);
 }
 
