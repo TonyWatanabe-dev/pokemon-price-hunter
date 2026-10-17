@@ -1,0 +1,53 @@
+# Varredura de 17/10/2026 (3): lojas brasileiras com Pokémon TCG lacrado Copag, conferidas página a página
+# (página de produto Pokémon lacrado com preço ou carrinho). Lojas de TCG, brinquedos, papelarias e varejo regional.
+# A coleta respeita o robots.txt de cada uma: loja que barrar robôs fica BLOCKED sozinha, sem contorno.
+# Lojas de TCG e geek
+https://tavernadorei.com.br          # Taverna do Rei · São Paulo/SP · Shopify
+https://www.tavolageek.com.br        # Távola Geek · Loja Integrada
+https://tabkaramello.com.br          # Tab Karamello · Birigui/SP · WooCommerce
+https://pontotcgstore.com.br         # Ponto TCG Card Store · MG · Nuvemshop
+https://www.collectatcg.com.br       # Collecta TCG · Goiânia/GO
+https://tiocharles.com.br            # Tio Charles Card Games · ES · Nuvemshop
+https://www.grutabsb.com.br          # Gruta BSB · Brasília/DF · Nuvemshop
+https://www.preech.com.br            # Preech Nerd · Maringá/PR · Tray
+https://loja.balaiodejogos.com.br    # Balaio de Jogos · SP · OpenCart
+https://tavernadoturno.com.br        # Taverna do Turno · SP · Nuvemshop
+https://rarecandystore.com.br        # Rare Candy Store · Foz do Iguaçu/PR · Nuvemshop
+https://www.universalgeek.com.br     # Universal Geek · Belém/PA · Tray
+https://www.colecionadoresdefigurinhas.com.br  # Colecionadores de Figurinhas · Blumenau/SC · Tray
+https://www.theoriginals.com.br      # The Originals · SP · Loja Integrada
+https://www.dsgamesatibaia.com.br    # DS Games Atibaia · Atibaia/SP · Loja Integrada
+https://www.fngames.com.br           # FN Games · São Paulo/SP · Tray
+# Redes e lojas de brinquedos
+https://www.ciatoy.com.br            # Ciatoy · Brasília/DF · VTEX
+https://www.mpbrinquedos.com.br      # MP Brinquedos · VTEX
+https://www.kidverte.com.br          # Kidverte · Belo Horizonte/MG · VTEX
+https://www.realbrinquedos.com.br    # Real Brinquedos · Loja Integrada
+https://www.happilybrinquedos.com.br # Happily Brinquedos · Loja Integrada
+https://helpkids.com.br              # Help Kids · Curitiba/PR · Nuvemshop
+https://www.pirlimpimpimbrinquedos.com.br  # Pirlimpimpim · Magazord (conferir leitura)
+https://www.parlendabrinquedos.com.br      # Parlenda · Magazord (conferir leitura)
+https://4bestplay.com.br             # 4Best Play · Nuvemshop
+https://www.bqd.com.br               # BQD Brinquedos · Nuvemshop
+https://www.doremibrinquedos.com.br  # Do Ré Mi Brinquedos · Nuvemshop
+https://www.fabricadaalegria.com     # Fábrica da Alegria · Londrina/PR · Tray
+https://www.paranaplasticos.com.br   # Paraná Plásticos · Pato Branco/PR · Tray
+https://www.blanctoys.com.br         # Blanc Toys · SP · Loja Integrada
+https://www.trendsbrinquedos.com.br  # Trends Brinquedos · São Paulo/SP · Loja Integrada
+https://www.bumerangbrinquedos.com.br  # Bumerang Brinquedos · VTEX
+# Papelarias e livrarias
+https://www.vitrola.com.br           # Vitrola · RS · Tray
+https://www.mcpapeis.com.br          # MC Papéis
+https://www.peixinhodourado.com      # Peixinho Dourado · Loja Integrada
+https://www.casadopapel.com.br       # Casa do Papel · RS
+https://www.sodine.com.br            # Sodine · Fortaleza/CE · Tray
+https://www.xoponline.com.br         # XOP · Natal/RN · Tray
+https://www.virtualgift.com.br       # Virtual Gift · São Paulo/SP · Tray
+# Varejo regional e departamento
+https://www.havan.com.br             # Havan · Magento
+https://www.lojasmel.com             # Lojas Mel · VTEX
+https://www.formosa.com.br           # Formosa · Belém/PA · VTEX
+https://www.lidershopping.com.br     # Líder Shopping · Belém/PA · VTEX
+https://www.maiscoimbra.com.br       # Mais Coimbra · RO · VTEX (entrega só RO/AC)
+https://www.bemol.com.br             # Bemol · Manaus/AM · VTEX
+https://www.lojashardt.com.br        # Lojas Hardt · SC · Tray
