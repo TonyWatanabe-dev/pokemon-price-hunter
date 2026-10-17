@@ -26,3 +26,8 @@ assert.ok(idx.indexOf("'vtex'") < idx.indexOf("'woocommerce'") && idx.indexOf("'
 const src = fs.readFileSync(new URL('../src/adapters/woocommerce.js', import.meta.url), 'utf8');
 assert.match(src, /await guard\(url\)/, 'respeita robots.txt');
 console.log('adaptador-woocommerce-tests: ok');
+// Sonda 17/10: loja com Store API mas busca vazia (cavernatcg) não pode trocar o JSON-LD que funciona.
+const runSrc = fs.readFileSync(new URL('../src/run.js', import.meta.url), 'utf8');
+assert.match(runSrc, /adapters\.woocommerce\.detect\(base\) && \(await adapters\.woocommerce\.search\(store, catalog\)\)\.length\) src\.platform = 'woocommerce'/);
+assert.match(idx, /woocommerce\.detect\(base\) && \(await woocommerce\.search\(\{ url: base \}\)/);
+console.log('adaptador-woocommerce-tests: troca só com anúncios ok');
