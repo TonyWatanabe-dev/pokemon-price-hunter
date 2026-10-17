@@ -160,7 +160,7 @@ if (DB) {
         assert.equal(f.fallback.reason, 'banco-desatualizado'); assert.equal(f.fallback.dbAgeMin, 180); assert.equal(f.fallback.dbDataAt, ago(10)); assert.equal(r.h['Cache-Control'], 'no-store', e);
       }
       const o = await call('/api/v1/oportunidades');
-      assert.equal(o.status, 200); assert.equal(o.json.meta.status, 'stale_db'); assert.ok(Array.isArray(o.json.data), 'últimas notas registradas'); assert.match(o.json.meta.message, /Últimos valores registrados/); assert.doesNotMatch(o.json.meta.message, /\d+ min/);
+      assert.equal(o.status, 200); assert.equal(o.json.meta.status, 'stale_db'); assert.ok(o.json.data.length > 0, 'últimas notas registradas, não lista vazia'); assert.match(o.json.meta.message, /Últimos valores registrados/); assert.doesNotMatch(o.json.meta.message, /\d+ min/);
       assert.equal(o.json.meta.freshness.status, 'desatualizado'); assert.equal(o.h['Cache-Control'], 'no-store');
     });
 
@@ -171,7 +171,8 @@ if (DB) {
       // mais de 24 h: indisponível → 503 em tudo que tem preço; oportunidades seguem pausadas (sem dado)
       setFreshnessClock(() => NOW + 1500 * 6e4); reset();
       for (const e of ENDPOINTS.filter((x) => !x.includes('oportunidades'))) { const x = await call(e); assert.equal(x.status, 503, e); assert.equal(fr(x).status, 'indisponivel', e); }
-      const o = await call('/api/v1/oportunidades'); assert.equal(o.status, 200); assert.equal(o.json.meta.status, 'stale_db');
+      // política 17/10: mesmo acima de 24 h as oportunidades saem com as últimas notas (200), nunca 503 nem lista vazia
+      const o = await call('/api/v1/oportunidades'); assert.equal(o.status, 200); assert.equal(o.json.meta.status, 'stale_db'); assert.ok(o.json.data.length > 0, 'últimas notas acima de 24 h');
       setFreshnessClock(() => NOW);
     });
 

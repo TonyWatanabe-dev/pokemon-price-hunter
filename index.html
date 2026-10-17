@@ -3348,10 +3348,10 @@ async function moreOpp(page){
   box.insertAdjacentHTML("beforeend",oppMix(OPP.items,base,oppTips(),page>=OPP.pages));
   $("#opp-more")?.remove();if(page<OPP.pages)box.insertAdjacentHTML("afterend",`<div id="opp-more" class="prod-more" data-page="${page+1}" style="height:1px"></div>`);watchOppMore();if(typeof revealInit==="function")revealInit();
 }
-/* UX — pausa das notas (stale_db ou 503 em /oportunidades). Motivo e horário vêm da API (meta.message, meta.freshness);
-   nada antigo é mostrado como atual. Nova tentativa pelo botão e sozinha a cada 5 min (oppTick). */
+/* UX — espera das notas (stale_db sem nenhuma nota, ou 503 em /oportunidades). O bloco não mostra idade nem horário (17/10);
+   Nova tentativa pelo botão e sozinha a cada 5 min (oppTick). */
 let OPP_PAUSE=null;   /* {at,ageMin,why,checked}: /oportunidades respondeu stale_db ou 503 (Home ou página) */
-const isPause=(d,path)=>(d?.meta?.status==="stale_db"&&!d?.data?.length)||(!d&&typeof API_LAST!=="undefined"&&API_LAST.get(path)===503);   /* 17/10: com notas da última rodada (stale_db com dados), mostra a lista; a barra do topo já diz "Preços desatualizados" */
+const isPause=(d,path)=>(d?.meta?.status==="stale_db"&&!d?.data?.length)||(!d&&typeof API_LAST!=="undefined"&&API_LAST.get(path)===503);   /* 17/10: com notas da última rodada (stale_db com dados), mostra a lista normalmente; a barra do topo fica neutra */
 function setPause(d,path){
   const rf=()=>{if(typeof fresh==="function")fresh()};
   if(d===null){if(OPP_PAUSE){OPP_PAUSE=null;rf()}return}

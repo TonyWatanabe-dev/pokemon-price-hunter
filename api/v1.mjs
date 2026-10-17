@@ -138,8 +138,9 @@ function route(segs, qs) {
 }
 
 // /oportunidades com o banco sem sincronizar (decisão do dono, 17/10/2026): mostra as últimas notas registradas até a
-// próxima rodada, marcadas com status 'stale_db', a idade e o horário (meta.freshness). Antes a lista ficava vazia ("pausadas").
-const staleNote = (body, fr) => { if (body?.meta) Object.assign(body.meta, { status: 'stale_db',
+// próxima rodada, marcadas com status 'stale_db' (frescor real em meta.freshness e nos headers; o site não mostra a idade).
+// Antes a lista ficava vazia ("pausadas"). Política: vale também acima de 24 h, sem 503 (o meta.status pula esse corte).
+const staleNote = (body) => { if (body?.meta) Object.assign(body.meta, { status: 'stale_db',
   message: 'Últimos valores registrados. Atualiza sozinho na próxima rodada.' }); return body; };
 const paged = (r, page, limit) => ({ data: r.items, meta: { page, limit, total: r.total, pages: Math.max(1, Math.ceil(r.total / limit)) } });
 
@@ -235,7 +236,7 @@ async function handle(req, res, { now }) {
       }
     }
   }
-  try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); if (rt.name === 'oportunidades' && dbFr && !FR.usable(dbFr) && !out.status) staleNote(out.body, dbFr); } }
+  try { if (!out) { if (dbErr) throw dbErr; out = await run(rt, source); if (rt.name === 'oportunidades' && dbFr && !FR.usable(dbFr) && !out.status) staleNote(out.body); } }
   catch (e) {
     if (e instanceof HttpError) { out = { status: e.status, body: { error: e.message } }; }   // só mensagens nossas; erro de biblioteca/banco nunca vai ao usuário
     else if (preferred === 'db') {                        // banco fora do ar: mesmo pedido pelo state.json
