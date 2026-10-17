@@ -1,0 +1,10 @@
+# Varredura de 17/10/2026 (4): Google Maps (87 cidades), comunidade/imprensa e CNPJ/diretórios.
+# Confirmadas com página de produto Pokémon lacrado e preço:
+https://lojanerdz.com.br             # Loja Nerdz · Porto Alegre/RS · Nuvemshop
+https://www.boardtopia.com.br        # Boardtopia · Chapecó/SC · Wix
+https://papelariapigmeu.com.br       # Papelaria Pigmeu · Bom Jardim/RJ
+# Indicadas em diretórios, site não abriu na pesquisa (a coleta confere sozinha; sem Pokémon, cai para 6 h):
+https://mestrepokemon.com.br         # Mestre Pokémon TCG · Brasília/DF
+https://muitocolecionaveis.com.br    # Muito Colecionáveis · Campinas/SP
+# Fora: lojas no sistema de e-commerce da Liga (?view=ecom). Teste no Actions em 17/10 com o próprio robô: nenhuma das
+# 5 testadas (Gladiators, Akagami, Vault of Cards, Mega Geek, Flow Store) abriu dentro do robots.txt. Sem contorno.
