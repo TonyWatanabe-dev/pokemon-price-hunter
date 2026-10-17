@@ -2906,7 +2906,7 @@ function grpUI(){
   let fab=$("#grp-fab");
   if(!fab){fab=document.createElement("div");fab.id="grp-fab";fab.className="grp-fab";
     fab.innerHTML=`<div class="grp-pop" id="grp-pop" hidden><button type="button" class="grp-x" data-grp-popx aria-label="Fechar por 7 dias">${ic("x")}</button><div class="grp-head" data-grp-drag title="Arraste para mover (dois cliques volta ao canto)"><b class="grp-t">Entre no <mark>grupo de ofertas</mark></b><p>O robô acha Pokémon TCG abaixo da Copag e avisa no seu celular. Grátis.</p></div>${grpLinks("botao")}</div><button type="button" data-grp-pop aria-expanded="false" aria-controls="grp-pop"><span class="grp-ic">${ic("chat")}</span><span>Grupos de ofertas<small>WhatsApp e Telegram</small></span></button>`;
-    document.body.appendChild(fab);grpPosAplica(store.get("grp-pos",null))}
+    document.body.appendChild(fab)}
   let dock=$("#grp-dock");
   if(!dock){dock=document.createElement("div");dock.id="grp-dock";dock.className="grp-dock";dock.setAttribute("role","region");dock.setAttribute("aria-label","Grupos de ofertas");
     dock.innerHTML=`<span class="grp-lbl">Entre no <mark>grupo de ofertas</mark>:</span>${grpLinks("barra").replace(/<small>grupo de ofertas<\/small>/g,"")}<button type="button" class="grp-x" data-grp-fecha aria-label="Fechar por 7 dias">${ic("x")}</button>`;
@@ -2922,7 +2922,7 @@ function grpPosAplica(p){const f=$("#grp-fab");if(!f)return;
   const x=Math.min(Math.max(8,p.x),innerWidth-r.width-8),y=Math.min(Math.max(8,p.y),innerHeight-r.height-8);
   f.style.left=x+"px";f.style.top=y+"px";f.style.right="auto";f.style.bottom="auto";
   f.classList.toggle("pop-left",x+r.width<300);f.classList.toggle("pop-below",y<250)}
-let grpDrag=null,grpArrastou=false;   /* computador: o botão e o topo do balão podem ser arrastados; posição fica salva */
+let grpDrag=null,grpArrastou=false,grpPos=null;   /* computador: o botão e o topo do balão podem ser arrastados; a posição vale só nesta visita: ao abrir o site, ele sempre começa no canto */
 function grpPop(open){const p=$("#grp-pop"),b=$("#grp-fab>button");if(!p)return;p.hidden=!open;b?.setAttribute("aria-expanded",String(open))}
 function renderGrupos(){
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel guide grp-page"><h1 class="panel-h1">Receba as melhores ofertas no celular</h1>
@@ -3613,9 +3613,9 @@ document.addEventListener("pointerdown",(e)=>{grpArrastou=false;const h=e.button
 document.addEventListener("pointermove",(e)=>{if(!grpDrag)return;if(!grpDrag.on&&Math.hypot(e.clientX-grpDrag.sx,e.clientY-grpDrag.sy)<6)return;
   if(!grpDrag.on){grpDrag.on=true;$("#grp-fab").classList.add("arrastando")}e.preventDefault();grpPosAplica({x:e.clientX-grpDrag.dx,y:e.clientY-grpDrag.dy})});
 document.addEventListener("pointerup",()=>{if(!grpDrag)return;const f=$("#grp-fab");
-  if(grpDrag.on){grpArrastou=true;f.classList.remove("arrastando");store.set("grp-pos",{x:parseFloat(f.style.left),y:parseFloat(f.style.top)})}grpDrag=null});
-document.addEventListener("dblclick",(e)=>{if(e.target.closest("#grp-fab [data-grp-drag]")){store.set("grp-pos",null);grpPosAplica(null)}});
-addEventListener("resize",()=>{const p=store.get("grp-pos",null);if(p)grpPosAplica(p)});
+  if(grpDrag.on){grpArrastou=true;f.classList.remove("arrastando");grpPos={x:parseFloat(f.style.left),y:parseFloat(f.style.top)}}grpDrag=null});
+document.addEventListener("dblclick",(e)=>{if(e.target.closest("#grp-fab [data-grp-drag]")){grpPos=null;grpPosAplica(null)}});
+addEventListener("resize",()=>{if(grpPos)grpPosAplica(grpPos)});
 document.addEventListener("click",(e)=>{
   const t=e.target;
   if(!t.closest(".sbox"))acClose();
