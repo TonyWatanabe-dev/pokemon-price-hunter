@@ -165,17 +165,17 @@
     },
     {
       "source": "/grupos",
-      "destination": "https://chat.whatsapp.com/LM089Fa3pdz8UPA8uP7rz8",
+      "destination": "https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv",
       "permanent": false
     },
     {
       "source": "/grupo",
-      "destination": "https://chat.whatsapp.com/LM089Fa3pdz8UPA8uP7rz8",
+      "destination": "https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv",
       "permanent": false
     },
     {
       "source": "/zap",
-      "destination": "https://chat.whatsapp.com/LM089Fa3pdz8UPA8uP7rz8",
+      "destination": "https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv",
       "permanent": false
     }
   ],
