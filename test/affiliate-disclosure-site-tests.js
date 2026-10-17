@@ -1,8 +1,8 @@
 // Divulgação de afiliado no site. Regra do dono (17/10/2026, docs/afiliados.md): no site o link de afiliado é tratado
 // como link normal, SEM etiqueta junto do link (nada de selo "Link de afiliado", ⓘ ou aviso dentro do bloco da Amazon).
 // A divulgação fica GERAL: rodapé (com a frase exigida do Programa de Associados da Amazon) e Termos. Continua valendo
-// o inventário: todo link marcado "sponsored" (atributo invisível, exigido para link pago) é uma das três superfícies
-// conhecidas. Roda o código real do index.html em sandbox (vm). Sem rede e sem banco.
+// o inventário: todo link marcado "sponsored" (atributo invisível, exigido para link pago) é uma das superfícies
+// conhecidas (ML anúncio, ML geral, Amazon e, desde 17/10, Shopee). Roda o código real do index.html em sandbox (vm). Sem rede e sem banco.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -15,10 +15,10 @@ const block = (re) => { const m = html.match(re); assert.ok(m, `index.html: ${re
 const semSr = (s) => s.replace(/<span class="sr">[\s\S]*?<\/span>/g, '');
 const texto = (s) => semSr(s).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
-t('1. inventário: "sponsored" só nas três superfícies conhecidas', () => {
+t('1. inventário: "sponsored" só nas superfícies conhecidas', () => {
   const codigo = html.split('\n').filter((l) => /sponsored/.test(l) && !/^\s*\/\*/.test(l));
-  const onde = codigo.map((l) => (/^const outRel=/.test(l) ? 'ml-anuncio' : /Ver na Amazon/.test(l) ? 'amazon' : /data-afil/.test(l) ? 'ml-geral' : `desconhecida: ${l.slice(0, 80)}`));
-  assert.deepEqual(onde.sort(), ['amazon', 'ml-anuncio', 'ml-geral'], 'superfície de afiliado nova precisa de entrada neste teste');
+  const onde = codigo.map((l) => (/^const outRel=/.test(l) ? 'ml-anuncio' : /Ver na Amazon/.test(l) ? 'amazon' : /Ver na Shopee/.test(l) ? 'shopee' : /data-afil/.test(l) ? 'ml-geral' : `desconhecida: ${l.slice(0, 80)}`));
+  assert.deepEqual(onde.sort(), ['amazon', 'ml-anuncio', 'ml-geral', 'shopee'], 'superfície de afiliado nova precisa de entrada neste teste');
 });
 
 const amz = block(/^const amzWhen=[\s\S]*?^function amzBlock\(pid\)\{[\s\S]*?<\/section>`\}/m);
@@ -40,6 +40,18 @@ t('3. sem link da Amazon para o produto: nada de bloco', () => {
   assert.equal(ctx.__t.amzBlock('p1'), '');
   ctx.__t.set({ links: [] });
   assert.equal(ctx.__t.amzBlock('p1'), '');
+});
+
+t('3b. bloco da Shopee: sponsored, sem etiqueta de afiliado visível', () => {
+  const shp = block(/^function shpRow\(l\)\{[\s\S]*?^function shpBlock\(pid\)\{[\s\S]*?<\/section>`\}/m);
+  vm.runInContext(`let SHP=null;\n${shp}\n;globalThis.__s={shpBlock,set(v){SHP=v}};`, ctx);
+  const o = (pid, i, price) => ({ productId: pid, title: `Blister ${i}`, url: `https://s.shopee.com.br/Ab${i}`, price, priceCupom: price - 5, seller: 'Loja', selo: null, stockNote: null, capturedAt: '2026-10-17T21:45:00Z' });
+  ctx.__s.set({ ofertas: [o('p1', 1, 60), o('p1', 2, 50), o('p2', 3, 40)] });
+  const out = ctx.__s.shpBlock('p1');
+  assert.equal((out.match(/rel="noopener nofollow sponsored"/g) || []).length, 2, 'só os anúncios do produto');
+  assert.ok(out.indexOf('Blister 2') < out.indexOf('Blister 1'), 'mais barato primeiro');
+  assert.doesNotMatch(texto(out), /afiliad/i, 'nenhuma etiqueta de afiliado no bloco');
+  ctx.__s.set({ ofertas: [o('p2', 3, 40)] }); assert.equal(ctx.__s.shpBlock('p1'), '');
 });
 
 t('4. ML: destino com afiliado sai como sponsored (invisível); rodapé geral sem rótulo de afiliado', () => {
