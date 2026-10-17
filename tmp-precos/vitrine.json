@@ -1,0 +1,1052 @@
+{
+ "meta_abrir": {
+  "v": 1,
+  "source": "db",
+  "reputation": {
+   "consultadoEm": "2026-10-08",
+   "lojas": {
+    "radiantetcgcombr": {
+     "status": "SEM_INDICE",
+     "nota": null,
+     "periodo": "01/04/2026 a 30/09/2026",
+     "respondidas": 100,
+     "url": "https://www.reclameaqui.com.br/empresa/radiante-tcg/",
+     "nome": "RADIANTE TCG"
+    },
+    "geekstorebrasilcombr": {
+     "status": "SEM_INDICE",
+     "nota": null,
+     "periodo": "01/04/2026 a 30/09/2026",
+     "respondidas": null,
+     "url": "https://www.reclameaqui.com.br/empresa/geek-store-brasil/",
+     "nome": "Geek Store Brasil"
+    },
+    "pittasboardgamescombr": {
+     "status": "SEM_INDICE",
+     "nota": null,
+     "periodo": "01/04/2026 a 30/09/2026",
+     "respondidas": null,
+     "url": "https://www.reclameaqui.com.br/empresa/pittas-board-games/",
+     "nome": "Pittas Board Games"
+    },
+    "copagloja": {
+     "status": "NAO_RECOMENDADA",
+     "nota": 2.5,
+     "periodo": "01/04/2026 a 30/09/2026",
+     "respondidas": 37.2,
+     "url": "https://www.reclameaqui.com.br/empresa/copag/",
+     "nome": "Copag"
+    },
+    "tocadotabuleiro": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "pbkidscombr": {
+     "status": "OTIMO",
+     "nota": 9,
+     "periodo": "01/03/2026 a 31/08/2026",
+     "respondidas": 98.4,
+     "url": "https://www.reclameaqui.com.br/empresa/pbkids-brinquedos/",
+     "nome": "PBKIDS Brinquedos"
+    },
+    "lojaarenagamescombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "gorupacombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "ilusoeslindoiacombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "lojabrmetaversocombr": {
+     "status": "OTIMO",
+     "nota": 8.6,
+     "periodo": "01/03/2026 a 31/08/2026",
+     "respondidas": 100,
+     "url": "https://www.reclameaqui.com.br/empresa/br-metaverso/",
+     "nome": "BR METAVERSO"
+    },
+    "dalarancombr": {
+     "status": "SEM_INDICE",
+     "nota": null,
+     "periodo": "01/02/2026 a 31/07/2026",
+     "respondidas": null,
+     "url": "https://www.reclameaqui.com.br/empresa/dalaran-games/",
+     "nome": "Dalaran Games"
+    },
+    "cardoracombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "shisuistorecombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "pokebolacombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    }
+   }
+  },
+  "total": 66,
+  "page": 1,
+  "limit": 60,
+  "pages": 2,
+  "allCount": 66,
+  "facets": {
+   "groups": [
+    [
+     "Boosters",
+     29
+    ],
+    [
+     "Blisters",
+     33
+    ],
+    [
+     "Coleções",
+     4
+    ]
+   ],
+   "cols": [
+    {
+     "id": "sv1",
+     "name": "Escarlate e Violeta",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv2",
+     "name": "Evoluções em Paldea",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv3",
+     "name": "Obsidiana em Chamas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv3_5",
+     "name": "Coleção Especial 151",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv4",
+     "name": "Fenda Paradoxal",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv4_5",
+     "name": "Destinos de Paldea",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv5",
+     "name": "Forças Temporais",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv6",
+     "name": "Máscaras do Crepúsculo",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv7",
+     "name": "Coroa Estelar",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv8",
+     "name": "Fagulhas Impetuosas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv8_5",
+     "name": "Evoluções Prismáticas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv9",
+     "name": "Amigos de Jornada",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv10",
+     "name": "Rivais Predestinados",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv10_5r",
+     "name": "Raio Preto",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "me01",
+     "name": "Megaevolução",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me02",
+     "name": "Fogo Fantasmagórico",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me02_5",
+     "name": "Heróis Excelsos",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me03",
+     "name": "Equilíbrio Perfeito",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me04",
+     "name": "Caos Ascendente",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me05",
+     "name": "Escuridão Absoluta",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "c30",
+     "name": "Celebração de 30 Anos",
+     "series": "Especial"
+    }
+   ],
+   "stores": [
+    [
+     "blanctoyscombr",
+     "blanctoys.com.br"
+    ],
+    [
+     "cardoracombr",
+     "cardora.com.br"
+    ],
+    [
+     "coffeecatstorelojavirtualnuvemcombr",
+     "coffeecatstore.lojavirtualnuvem.com.br"
+    ],
+    [
+     "dalarancombr",
+     "dalaran.com.br"
+    ],
+    [
+     "geekstorebrasilcombr",
+     "geekstorebrasil.com.br"
+    ],
+    [
+     "gorupacombr",
+     "gorupa.com.br"
+    ],
+    [
+     "ilusoeslindoiacombr",
+     "ilusoeslindoia.com.br"
+    ],
+    [
+     "kamikardscombr",
+     "kamikards.com.br"
+    ],
+    [
+     "copagloja",
+     "Loja Copag (oficial)"
+    ],
+    [
+     "lojaarenagamescombr",
+     "lojaarenagames.com.br"
+    ],
+    [
+     "lojabrmetaversocombr",
+     "lojabrmetaverso.com.br"
+    ],
+    [
+     "lojasmelcom",
+     "lojasmel.com"
+    ],
+    [
+     "madlabrpgcom",
+     "madlabrpg.com"
+    ],
+    [
+     "mercadolivre",
+     "Mercado Livre"
+    ],
+    [
+     "pbkidscombr",
+     "pbkids.com.br"
+    ],
+    [
+     "pittasboardgamescombr",
+     "pittasboardgames.com.br"
+    ],
+    [
+     "pokebolacombr",
+     "pokebola.com.br"
+    ],
+    [
+     "radiantetcgcombr",
+     "radiantetcg.com.br"
+    ],
+    [
+     "rarecandystorecombr",
+     "rarecandystore.com.br"
+    ],
+    [
+     "shisuistorecombr",
+     "shisuistore.com.br"
+    ],
+    [
+     "tavernadoreicombr",
+     "tavernadorei.com.br"
+    ],
+    [
+     "tavolageekcombr",
+     "tavolageek.com.br"
+    ],
+    [
+     "tocadotabuleiro",
+     "Toca do Tabuleiro"
+    ]
+   ],
+   "types": [
+    [
+     "blister_2",
+     "Blister Duplo"
+    ],
+    [
+     "blister_4",
+     "Blister Quádruplo"
+    ],
+    [
+     "blister_3",
+     "Blister Triplo"
+    ],
+    [
+     "blister_1",
+     "Blister Unitário"
+    ],
+    [
+     "booster_box",
+     "Booster Box"
+    ],
+    [
+     "booster_pack",
+     "Booster unitário"
+    ],
+    [
+     "colecao_ex",
+     "Box Pokémon ex"
+    ],
+    [
+     "combo",
+     "Combo de Booster"
+    ]
+   ]
+  },
+  "noCopagCount": 0,
+  "refNet": true,
+  "freshness": {
+   "status": "desatualizado",
+   "source": "db",
+   "dataAt": "2026-10-17T21:15:22.409Z",
+   "ageMin": 95
+  }
+ },
+ "abrir": [
+  {
+   "id": "tocadotabuleiro",
+   "name": "Toca do Tabuleiro",
+   "score": {
+    "evidence": [
+     "contato",
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "mercadolivre",
+   "name": "Mercado Livre",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "copagloja",
+   "name": "Loja Copag (oficial)",
+   "score": {
+    "evidence": [
+     "CNPJ",
+     "política de troca",
+     "contato",
+     "loja oficial",
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "pbkidscombr",
+   "name": "pbkids.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "dalarancombr",
+   "name": "dalaran.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "lojaarenagamescombr",
+   "name": "lojaarenagames.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "cardoracombr",
+   "name": "cardora.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "gorupacombr",
+   "name": "gorupa.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "ilusoeslindoiacombr",
+   "name": "ilusoeslindoia.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "lojabrmetaversocombr",
+   "name": "lojabrmetaverso.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "shisuistorecombr",
+   "name": "shisuistore.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "radiantetcgcombr",
+   "name": "radiantetcg.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "geekstorebrasilcombr",
+   "name": "geekstorebrasil.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "pittasboardgamescombr",
+   "name": "pittasboardgames.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "pokebolacombr",
+   "name": "pokebola.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "madlabrpgcom",
+   "name": "madlabrpg.com",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "tavernadoreicombr",
+   "name": "tavernadorei.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "tavolageekcombr",
+   "name": "tavolageek.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "rarecandystorecombr",
+   "name": "rarecandystore.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "blanctoyscombr",
+   "name": "blanctoys.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "lojasmelcom",
+   "name": "lojasmel.com",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "kamikardscombr",
+   "name": "kamikards.com.br",
+   "score": {
+    "evidence": []
+   }
+  },
+  {
+   "id": "coffeecatstorelojavirtualnuvemcombr",
+   "name": "coffeecatstore.lojavirtualnuvem.com.br",
+   "score": {
+    "evidence": []
+   }
+  },
+  {
+   "id": "mercadolivre",
+   "name": "Mercado Livre",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "pbkidscombr",
+   "name": "pbkids.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  }
+ ],
+ "meta_guardar": {
+  "v": 1,
+  "source": "db",
+  "reputation": {
+   "consultadoEm": "2026-10-08",
+   "lojas": {
+    "copagloja": {
+     "status": "NAO_RECOMENDADA",
+     "nota": 2.5,
+     "periodo": "01/04/2026 a 30/09/2026",
+     "respondidas": 37.2,
+     "url": "https://www.reclameaqui.com.br/empresa/copag/",
+     "nome": "Copag"
+    },
+    "gorupacombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    },
+    "ilusoeslindoiacombr": {
+     "status": "NAO_ENCONTRADA",
+     "nota": null,
+     "periodo": null,
+     "respondidas": null,
+     "url": null,
+     "nome": null
+    }
+   }
+  },
+  "total": 20,
+  "page": 1,
+  "limit": 60,
+  "pages": 1,
+  "allCount": 117,
+  "facets": {
+   "groups": [
+    [
+     "Boosters",
+     38
+    ],
+    [
+     "ETB",
+     12
+    ],
+    [
+     "Blisters",
+     33
+    ],
+    [
+     "Coleções",
+     23
+    ],
+    [
+     "Baralhos",
+     11
+    ]
+   ],
+   "cols": [
+    {
+     "id": "sv1",
+     "name": "Escarlate e Violeta",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv2",
+     "name": "Evoluções em Paldea",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv3",
+     "name": "Obsidiana em Chamas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv3_5",
+     "name": "Coleção Especial 151",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv4",
+     "name": "Fenda Paradoxal",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv4_5",
+     "name": "Destinos de Paldea",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv5",
+     "name": "Forças Temporais",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv6",
+     "name": "Máscaras do Crepúsculo",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv6_5",
+     "name": "Fábulas Nebulosas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv7",
+     "name": "Coroa Estelar",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv8",
+     "name": "Fagulhas Impetuosas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv8_5",
+     "name": "Evoluções Prismáticas",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv9",
+     "name": "Amigos de Jornada",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv10",
+     "name": "Rivais Predestinados",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv10_5r",
+     "name": "Raio Preto",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "sv10_5w",
+     "name": "Fogo Branco",
+     "series": "Escarlate e Violeta"
+    },
+    {
+     "id": "me01",
+     "name": "Megaevolução",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me02",
+     "name": "Fogo Fantasmagórico",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me02_5",
+     "name": "Heróis Excelsos",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me03",
+     "name": "Equilíbrio Perfeito",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me04",
+     "name": "Caos Ascendente",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "me05",
+     "name": "Escuridão Absoluta",
+     "series": "Megaevolução"
+    },
+    {
+     "id": "c30",
+     "name": "Celebração de 30 Anos",
+     "series": "Especial"
+    }
+   ],
+   "stores": [
+    [
+     "blanctoyscombr",
+     "blanctoys.com.br"
+    ],
+    [
+     "cardoracombr",
+     "cardora.com.br"
+    ],
+    [
+     "ciatoycombr",
+     "ciatoy.com.br"
+    ],
+    [
+     "dalarancombr",
+     "dalaran.com.br"
+    ],
+    [
+     "demapapelariacombr",
+     "demapapelaria.com.br"
+    ],
+    [
+     "facilshoppingcombr",
+     "facilshopping.com.br"
+    ],
+    [
+     "geekstorebrasilcombr",
+     "geekstorebrasil.com.br"
+    ],
+    [
+     "gorupacombr",
+     "gorupa.com.br"
+    ],
+    [
+     "ilusoeslindoiacombr",
+     "ilusoeslindoia.com.br"
+    ],
+    [
+     "kamikardscombr",
+     "kamikards.com.br"
+    ],
+    [
+     "lifegeek",
+     "Life Geek"
+    ],
+    [
+     "copagloja",
+     "Loja Copag (oficial)"
+    ],
+    [
+     "lojaarenagamescombr",
+     "lojaarenagames.com.br"
+    ],
+    [
+     "lojabrmetaversocombr",
+     "lojabrmetaverso.com.br"
+    ],
+    [
+     "lojasmelcom",
+     "lojasmel.com"
+    ],
+    [
+     "madlabrpgcom",
+     "madlabrpg.com"
+    ],
+    [
+     "mercadolivre",
+     "Mercado Livre"
+    ],
+    [
+     "moxland",
+     "mox.land"
+    ],
+    [
+     "pbkidscombr",
+     "pbkids.com.br"
+    ],
+    [
+     "pittasboardgamescombr",
+     "pittasboardgames.com.br"
+    ],
+    [
+     "pokebolacombr",
+     "pokebola.com.br"
+    ],
+    [
+     "pontotcgstorecombr",
+     "pontotcgstore.com.br"
+    ],
+    [
+     "radiantetcgcombr",
+     "radiantetcg.com.br"
+    ],
+    [
+     "rarecandystorecombr",
+     "rarecandystore.com.br"
+    ],
+    [
+     "shisuistorecombr",
+     "shisuistore.com.br"
+    ],
+    [
+     "tavernadoreicombr",
+     "tavernadorei.com.br"
+    ],
+    [
+     "tavolageekcombr",
+     "tavolageek.com.br"
+    ],
+    [
+     "tocadotabuleiro",
+     "Toca do Tabuleiro"
+    ]
+   ],
+   "types": [
+    [
+     "deck",
+     "Baralho de Batalha"
+    ],
+    [
+     "blister_2",
+     "Blister Duplo"
+    ],
+    [
+     "blister_4",
+     "Blister Quádruplo"
+    ],
+    [
+     "blister_3",
+     "Blister Triplo"
+    ],
+    [
+     "blister_1",
+     "Blister Unitário"
+    ],
+    [
+     "booster_box",
+     "Booster Box"
+    ],
+    [
+     "booster_pack",
+     "Booster unitário"
+    ],
+    [
+     "colecao_ex",
+     "Box Pokémon ex"
+    ],
+    [
+     "colecao_fichario",
+     "Coleção com Fichário"
+    ],
+    [
+     "colecao_poster",
+     "Coleção com Pôster"
+    ],
+    [
+     "colecao_ilustracao",
+     "Coleção Ilustração"
+    ],
+    [
+     "colecao_premium",
+     "Coleção Premium"
+    ],
+    [
+     "combo",
+     "Combo de Booster"
+    ],
+    [
+     "desafio",
+     "Desafio Estratégico"
+    ],
+    [
+     "etb",
+     "Treinador Avançado (ETB)"
+    ]
+   ]
+  },
+  "noCopagCount": 97,
+  "refNet": true,
+  "freshness": {
+   "status": "desatualizado",
+   "source": "db",
+   "dataAt": "2026-10-17T21:15:22.409Z",
+   "ageMin": 95
+  }
+ },
+ "guardar": [
+  {
+   "id": "mercadolivre",
+   "name": "Mercado Livre",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "copagloja",
+   "name": "Loja Copag (oficial)",
+   "score": {
+    "evidence": [
+     "CNPJ",
+     "política de troca",
+     "contato",
+     "loja oficial",
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "gorupacombr",
+   "name": "gorupa.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "ilusoeslindoiacombr",
+   "name": "ilusoeslindoia.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "madlabrpgcom",
+   "name": "madlabrpg.com",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "ciatoycombr",
+   "name": "ciatoy.com.br",
+   "score": {
+    "evidence": [
+     "histórico de coleta"
+    ]
+   }
+  },
+  {
+   "id": "demapapelariacombr",
+   "name": "demapapelaria.com.br",
+   "score": {
+    "evidence": []
+   }
+  },
+  {
+   "id": "kamikardscombr",
+   "name": "kamikards.com.br",
+   "score": {
+    "evidence": []
+   }
+  }
+ ]
+}
