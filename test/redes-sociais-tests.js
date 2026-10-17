@@ -17,8 +17,12 @@ assert.match(REDES.youtube, /^https:\/\/www\.youtube\.com\/channel\/UC[\w-]{22}$
 // Links externos passam por safeUrl (test/outbound-links-tests.js), então o rodapé recebe os links pelo script.
 assert.match(html.match(/<footer class="foot">[\s\S]*?<\/footer>/)[0], /<p class="foot-social" id="foot-social"><\/p>/, 'rodapé com o espaço das redes');
 const rl = html.match(/^const redesLinks=.*$/m)?.[0] || '';
-for (const k of Object.keys(REDES)) assert.ok(rl.includes(`<a href="\${esc(safeUrl(REDES.${k}))}" target="_blank" rel="noopener" data-rede="${k}">`), `link ${k} com safeUrl e noopener`);
-assert.match(html, /function footRedes\(\)\{[^\n]*redesLinks\(\)[^\n]*href="\/comunidade" data-go="grupos"/, 'rodapé: redes + grupos');
+const ARROBA = { instagram: '@tcgpricehunter151', tiktok: '@tcgpricehunter', youtube: 'TCG Price Hunter' };
+for (const k of Object.keys(REDES)) {
+  assert.ok(rl.includes(`<a class="rede" href="\${esc(safeUrl(REDES.${k}))}" target="_blank" rel="noopener" data-rede="${k}">\${ic("${k}-logo")}<span>${ARROBA[k]}</span>`), `link ${k}: ícone + @, safeUrl e noopener`);
+  assert.match(html, new RegExp(`<symbol id="i-${k}-logo" viewBox="0 0 256 256">`), `ícone ${k} no sprite`);
+}
+assert.match(html, /function footRedes\(\)\{[^\n]*redesLinks\(\)[^\n]*<a class="rede" href="\/comunidade" data-go="grupos">/, 'rodapé: redes + grupos');
 assert.match(html, /async function load\(\)\{\n  footRedes\(\);/, 'rodapé preenchido no início, mesmo sem preços');
 assert.match(html.match(/function renderGrupos\(\)\{[\s\S]*?\n\}/)[0], /Siga também[\s\S]*redesLinks\(\)/, '/comunidade lista as redes');
 assert.match(html, /track\("social_click",\{rede:rl\.dataset\.rede\}\)/, 'clique em rede contado no Analytics');
