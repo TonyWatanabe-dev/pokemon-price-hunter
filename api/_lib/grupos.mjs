@@ -11,4 +11,5 @@ export const REDES = Object.freeze({
   instagram: 'https://www.instagram.com/tcgpricehunter151/',
   tiktok: 'https://www.tiktok.com/@tcgpricehunter',
   youtube: 'https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg',
+  facebook: 'https://www.facebook.com/profile.php?id=61595339254811',
 });
