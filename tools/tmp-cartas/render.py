@@ -97,26 +97,65 @@ def linha_do_tempo(arq, caixa, pago, hi):
         elif isinstance(v, float): ant = v
     return tl
 
-# ---------- motion: abertura e cartão final ----------
+# ---------- motion: abertura e cartão final (design system dos posts) ----------
 FPS_M = 30
 ease = lambda x: 1 - (1 - max(0.0, min(1.0, x))) ** 3
+NAVY, MUTED, Y, ESC = (14, 19, 48), (195, 204, 235), (255, 207, 51), (43, 34, 0)
+COR_LUCRO, COR_PREJ = (47, 154, 85), (201, 61, 37)
+VERDE_TXT, VERM_TXT = (88, 214, 120), (255, 92, 70)
+M = 72   # margem lateral
 
 def camada(w, h): return Image.new('RGBA', (w, h), (0, 0, 0, 0))
 
+def tw_(d, s, f, track=0): return sum(d.textlength(ch, font=f) for ch in s) + track * max(len(s) - 1, 0)
+
+def escreve(d, x, y, partes, f, track=0):
+    """Texto com tracking (o h1 do DS usa -4) e trechos de cores diferentes: partes = [(texto, cor), ...]."""
+    for s, cor in partes:
+        for ch in s:
+            d.text((x, y), ch, font=f, fill=cor); x += d.textlength(ch, font=f) + track
+    return x
+
+def eyebrow(c, y, cor, texto):
+    d = ImageDraw.Draw(c); d.rounded_rectangle((M, y + 2, M + 26, y + 28), 7, fill=cor)
+    escreve(d, M + 40, y, [(texto.upper(), BRANCO)], F(700, 26), track=3)
+
+def logo_ds(c, y, lw=190):
+    lg = Image.open(os.path.join(AQUI, 'logo.png')).convert('RGBA'); lg = lg.resize((lw, int(lg.height * lw / lg.width)))
+    c.alpha_composite(lg, (W - M - lw, y))
+
+def brilho(c, cor, cx, cy, r, op=.35):
+    g = camada(W, H); d = ImageDraw.Draw(g)
+    for k in range(40, 0, -1):
+        rr = r * k / 40; a = int(255 * op * (1 - k / 40) ** 1.5)
+        d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), fill=cor + (a,))
+    c.alpha_composite(g.filter(ImageFilter.GaussianBlur(30)))
+
+def cta(c, y, texto, f=None, x=None):
+    f = f or F(800, 34); d = ImageDraw.Draw(c); w = d.textlength(texto, font=f) + 2 * 40; h = 92
+    x = (W - w) / 2 if x == 'centro' else (M if x is None else x)
+    d.rounded_rectangle((x, y, x + w, y + h), h // 2, fill=Y)
+    bb = d.textbbox((0, 0), texto, font=f); d.text((x + 40, y + (h - (bb[3] - bb[1])) / 2 - bb[1]), texto, font=f, fill=ESC)
+
+def fundo_ds(quadro, cor_barra, glow_cor):
+    bg = quadro.convert('RGB').filter(ImageFilter.GaussianBlur(30)).convert('RGBA')
+    bg.alpha_composite(Image.new('RGBA', (W, H), NAVY + (232,)))
+    brilho(bg, glow_cor, W // 2, 760, 620, .30)
+    ImageDraw.Draw(bg).rectangle((0, 0, W, 18), fill=cor_barra)
+    return bg
+
 def faixa_abertura():
-    """Faixa de baixo nos primeiros segundos: pergunta + site + grupo."""
     fw, fh = 1000, 300; c = camada(fw, fh); d = ImageDraw.Draw(c)
-    d.rounded_rectangle((0, 0, fw - 1, fh - 1), 36, fill=AMARELO)
-    d.rounded_rectangle((7, 7, fw - 8, fh - 8), 30, fill=(12, 12, 12, 235))
-    def lc(y, s, f, cor):
-        tw = d.textlength(s, font=f); d.text(((fw - tw) / 2, y), s, font=f, fill=cor)
-    lc(34, 'QUER PAGAR MENOS NO SEU TCG?', F(900, 54), AMARELO)
-    lc(118, 'O site compara as lojas e acha o menor preço', F(700, 40), BRANCO)
-    lc(194, 'tcgpricehunter.com.br · grupo no link', F(800, 42), BRANCO)
+    d.rounded_rectangle((0, 0, fw - 1, fh - 1), 28, fill=NAVY + (242,))
+    d.rounded_rectangle((0, 0, fw - 1, 40), 28, fill=Y); d.rectangle((0, 12, fw - 1, 40), fill=NAVY + (242,))
+    d.rounded_rectangle((36, 50, 58, 72), 6, fill=Y); escreve(d, 70, 48, [('MENOR PREÇO DO BRASIL'.replace(' DO BRASIL', ''), BRANCO)], F(700, 24), track=3)
+    escreve(d, 36, 92, [('Quer pagar ', BRANCO), ('menos', Y), (' no seu TCG?', BRANCO)], F(900, 60), track=-2)
+    f = F(800, 30); txt = 'tcgpricehunter.com.br · grupo no link'; w = d.textlength(txt, font=f) + 64
+    xp = (fw - w) / 2; d.rounded_rectangle((xp, 196, xp + w, 268), 36, fill=Y); d.text((xp + 32, 214), txt, font=f, fill=ESC)
     return c
 
 def anim_abertura(pasta, t_in=0.3, t_out=3.6):
-    """Quadros (30 qps) da região da faixa: sobe com fade, segura, desce com fade."""
+    """Faixa (30 qps): sobe com fade, segura, desce com fade."""
     base = faixa_abertura(); rw, rh = 1000, 420; n = int((t_out + 0.45) * FPS_M)
     for i in range(n):
         t = i / FPS_M; c = camada(rw, rh)
@@ -128,25 +167,35 @@ def anim_abertura(pasta, t_in=0.3, t_out=3.6):
         c.save(f'{pasta}/a{i:04d}.png')
     return (40, 1150)
 
+def abertura_deulucro(quadro, cfg):
+    c = fundo_ds(quadro, Y, (142, 75, 214)); d = ImageDraw.Draw(c)
+    eyebrow(c, 254, Y, 'Deu lucro? · 30 Anos'); logo_ds(c, 238)
+    escreve(d, M, 640, [('Deu lucro?', BRANCO)], F(900, 150), track=-5)
+    escreve(d, M, 810, [(brl(-cfg['site']), VERM_TXT)], F(900, 150), track=-5)
+    escreve(d, M, 1000, [('Menor preço já visto no site', MUTED)], F(700, 40))
+    return c
+
 def camadas_final(cfg, final):
-    """Peças do cartão final, cada uma com o instante em que entra (s) e o tipo de entrada."""
+    """Cartela final no design system: eyebrow + logo, h1 com o resultado, preços por produto, chamada e CTA."""
     out = []
-    def txt(y, s, f, cor, t0, tipo='sobe'):
-        c = camada(W, H); d = ImageDraw.Draw(c); texto_c(d, y, s, f, cor); out.append((c, t0, tipo))
+    def lay(fn, t0, tipo='sobe'):
+        c = camada(W, H); fn(c, ImageDraw.Draw(c)); out.append((c, t0, tipo))
     lucro = final > 0
-    txt(300, 'DEU LUCRO!' if lucro else 'PREJUÍZO...', F(900, 128), AMARELO if lucro else VERM, 0.15, 'pop')
-    txt(470, 'MENOR PREÇO JÁ VISTO NO SITE', F(800, 42), AMARELO, 0.35)
-    txt(525, brl(cfg['site'], sinal=False), F(900, 80), BRANCO, 0.42)
-    txt(622, cfg['produto'], F(700, 36), BRANCO, 0.49)
-    txt(700, 'RESULTADO', F(800, 42), AMARELO, 0.6)
-    c = camada(W, H); c.alpha_composite(badge(brl(final), VERDE if final >= 0 else VERM, 760, 160, F(900, 104), borda=9), ((W - 760) // 2, 752)); out.append((c, 0.68, 'pop'))
-    txt(975, 'NÃO RASGUE DINHEIRO', F(900, 70), AMARELO, 0.95, 'pop')
-    txt(1065, 'Entre no grupo e pague', F(700, 50), BRANCO, 1.1)
-    txt(1125, 'sempre o menor preço', F(700, 50), BRANCO, 1.15)
-    txt(1210, 'tcgpricehunter.com.br', F(900, 56), BRANCO, 1.25)
-    c = camada(W, H); logo = Image.open(os.path.join(AQUI, 'logo.png')).convert('RGBA'); lw = 520
-    logo = logo.resize((lw, int(logo.height * lw / logo.width))); c.alpha_composite(logo, ((W - lw) // 2, 1330))
-    d = ImageDraw.Draw(c); texto_c(d, 1330 + logo.height + 30, '@tcgpricehunter', F(700, 44), BRANCO); out.append((c, 1.35, 'sobe'))
+    lay(lambda c, d: (eyebrow(c, 254, COR_LUCRO if lucro else COR_PREJ, 'Resultado · ' + cfg.get('serie', '30 Anos')), logo_ds(c, 238)), 0.1)
+    lay(lambda c, d: escreve(d, M, 470, [('Deu lucro!' if lucro else 'Prejuízo...', BRANCO)], F(900, 120), track=-4), 0.18)
+    lay(lambda c, d: escreve(d, M, 610, [(brl(final), VERDE_TXT if lucro else VERM_TXT)], F(900, 132), track=-4), 0.3, 'pop')
+    lay(lambda c, d: escreve(d, M, 820, [('Menor preço já visto no site', MUTED)], F(700, 36)), 0.5)
+    itens = cfg.get('itens') or [[cfg['produto'], cfg['site']]]
+    for k, (nome, v) in enumerate(itens):
+        def linha(c, d, k=k, nome=nome, v=v):
+            y = 888 + k * 78; f = F(800, 42); pv = brl(v, sinal=False)
+            d.text((M, y), nome, font=f, fill=BRANCO); d.text((W - M - d.textlength(pv, font=f), y), pv, font=f, fill=Y)
+            d.line((M, y + 64, W - M, y + 64), fill=(255, 255, 255, 40), width=2)
+        lay(linha, 0.58 + k * 0.07)
+    y = 888 + len(itens) * 78 + 90
+    lay(lambda c, d: escreve(d, M, y, [('Não rasgue ', BRANCO), ('dinheiro.', Y)], F(900, 84), track=-3), 0.95)
+    lay(lambda c, d: escreve(d, M, y + 110, [('O grupo avisa quando o preço cai.', MUTED)], F(700, 36)), 1.05)
+    lay(lambda c, d: cta(c, y + 190, 'Entra no grupo · tcgpricehunter.com.br', F(800, 32), x='centro'), 1.2, 'pop')
     return out
 
 def quadro_final(fundo, pecas, t):
@@ -168,8 +217,7 @@ def quadro_final(fundo, pecas, t):
 
 def anim_final(quadro, cfg, final, pasta):
     """Cartão final animado (30 qps): fundo desfocado entra em fade, peças entram em sequência; o último quadro fica."""
-    bg = quadro.convert('RGB').filter(ImageFilter.GaussianBlur(28))
-    bg = Image.blend(bg, Image.new('RGB', bg.size, (0, 0, 0)), 0.55).convert('RGBA')
+    bg = fundo_ds(quadro, COR_LUCRO if final > 0 else COR_PREJ, (47, 154, 85) if final > 0 else (201, 61, 37))
     pecas = camadas_final(cfg, final); n = int(1.8 * FPS_M)
     for i in range(n):
         t = i / FPS_M; a = ease(t / 0.25)
@@ -222,10 +270,7 @@ def processa(nome, cfg, fid):
     if grande:
         q0 = f'{tmp}/q0.png'
         subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', f"{cfg['abertura'][0] + 0.4:.2f}", '-i', arq, '-frames:v', '1', q0], check=True)
-        c = Image.open(q0).convert('RGB').filter(ImageFilter.GaussianBlur(40))
-        c = Image.blend(c, Image.new('RGB', c.size, (0, 0, 0)), 0.45).convert('RGBA'); d = ImageDraw.Draw(c)
-        texto_c(d, 610, 'DEU LUCRO?', F(900, 150), AMARELO)
-        c.alpha_composite(badge(brl(-cfg['site']), VERM, 920, 236, F(900, 150), borda=9), (80, 800))
+        c = abertura_deulucro(Image.open(q0), cfg)
         c.convert('RGB').save(f'{tmp}/ab.png')
         entradas += ['-loop', '1', '-i', f'{tmp}/ab.png']
     # cartão final sobre um quadro congelado e desfocado de antes da tela final

@@ -15,96 +15,130 @@
       20,
       33.5,
       36
-    ]
+    ],
+    "itens": [
+      [
+        "ETB",
+        519.9
+      ],
+      [
+        "Coleção com Pôster",
+        109.03
+      ],
+      [
+        "Blister Duplo",
+        69.66
+      ]
+    ],
+    "faixa": [
+      3.6,
+      6.8
+    ],
+    "serie": "30 Anos"
   },
   "30A_hit_pikachu_v2": {
     "pago": 60.89,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_hit_sylveon": {
     "pago": 45.27,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_hit_pkclassico": {
     "pago": 60.89,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_hit_moltres": {
     "pago": 41.23,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_hit_uxie": {
     "pago": 60.89,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_hit_gholdengo": {
     "pago": 60.89,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_hit_zapdos": {
     "pago": 60.89,
     "site": 47.4,
-    "produto": "booster unitário da 30 Anos",
-    "teto": 650
+    "produto": "Booster",
+    "teto": 650,
+    "serie": "30 Anos"
   },
   "30A_etb_abertura_v2": {
     "pago": 548.0,
     "site": 519.9,
-    "produto": "Coleção Treinador Avançado (ETB)",
-    "teto": 700
+    "produto": "ETB",
+    "teto": 700,
+    "serie": "30 Anos"
   },
   "30A_poster_abertura": {
     "pago": 135.8,
     "site": 109.03,
     "produto": "Coleção com Pôster",
-    "teto": 500
+    "teto": 500,
+    "serie": "30 Anos"
   },
   "30A_blister_abertura": {
     "pago": 82.45,
     "site": 69.66,
     "produto": "Blister Duplo",
-    "teto": 100
+    "teto": 100,
+    "serie": "30 Anos"
   },
   "DE_video01": {
     "pago": 114.99,
     "site": 114.99,
-    "produto": "Desafio Estratégico (8 boosters)",
-    "teto": 300
+    "produto": "Desafio Estratégico",
+    "teto": 300,
+    "serie": "Desafio Estratégico"
   },
   "DE_video02": {
     "pago": 114.99,
     "site": 114.99,
-    "produto": "Desafio Estratégico (8 boosters)",
-    "teto": 300
+    "produto": "Desafio Estratégico",
+    "teto": 300,
+    "serie": "Desafio Estratégico"
   },
   "DE_video03": {
     "pago": 114.99,
     "site": 114.99,
-    "produto": "Desafio Estratégico (8 boosters)",
-    "teto": 300
+    "produto": "Desafio Estratégico",
+    "teto": 300,
+    "serie": "Desafio Estratégico"
   },
   "DE_video04": {
     "pago": 114.99,
     "site": 114.99,
-    "produto": "Desafio Estratégico (8 boosters)",
-    "teto": 300
+    "produto": "Desafio Estratégico",
+    "teto": 300,
+    "serie": "Desafio Estratégico"
   },
   "DE_caixa_8packs": {
     "pago": 114.99,
     "site": 114.99,
-    "produto": "Desafio Estratégico (8 boosters)",
-    "teto": 300
+    "produto": "Desafio Estratégico",
+    "teto": 300,
+    "serie": "Desafio Estratégico"
   }
 }
