@@ -99,6 +99,7 @@ export function carryShipping(o, now = new Date()) {
 export function loadCatalog() {
   const cat = readJson(configPath('catalog.json'));
   cat.products ||= []; cat.copag ||= {};
+  cat.refs = readJson(configPath('refs-copag.json'), {})?.refs || {}; // código Copag → produto (tools/refs-copag.mjs)
   return cat;
 }
 

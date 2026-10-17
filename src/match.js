@@ -221,6 +221,19 @@ export function describeProduct(catalog, collection, type, boosters, variant) {
 
 export const normEan = (v) => String(v || '').replace(/\D/g, '').replace(/^0+/, '');
 
+const REF_COPAG = /(?<!\d)(3\d{4})(?!\d)/g;
+function porRef(listing, catalog, p) {
+  const refs = catalog?.refs; if (!refs) return null;
+  const achados = [...new Set(String(`${listing.title || ''} ${listing.sku || ''}`).match(REF_COPAG) || [])].map((c) => refs[c]).filter(Boolean);
+  const ids = [...new Set(achados.map((r) => r.productId))]; if (ids.length !== 1) return null;
+  const r = achados[0];
+  if ((p.collection && p.collection !== r.collection) || (p.type && p.type !== r.type)) return null;
+  if (!catalog.collections?.some((c) => c.id === r.collection)) return null;
+  const prod = describeProduct(catalog, r.collection, r.type, r.boosters ?? null, null);
+  if (prod.id !== r.productId) return null;
+  return { productId: prod.id, product: prod, confidence: 0.75, parsed: p, why: [], via: 'ref-copag' };
+}
+
 export function matchProduct(listing, catalog) {
   const p = parseListing(listing.title, catalog);
   // EAN cadastrado vence o título.
@@ -230,6 +243,9 @@ export function matchProduct(listing, catalog) {
     const prod = describeProduct(catalog, byEan.collection, byEan.type, byEan.boosters, null);
     return { productId: byEan.id, product: { ...prod, id: byEan.id }, confidence: 0.99, parsed: p, why: [] };
   }
+  // Código de referência da Copag (config/refs-copag.json) quando o título não basta: só completa o que falta, nunca
+  // contradiz coleção ou tipo lidos no título, e só com um produto possível.
+  if (!p.collection || !p.type || (p.type === 'booster_box' && !p.boosters)) { const r = porRef(listing, catalog, p); if (r) return r; }
   if (!p.collection) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
   if (!p.type) return { productId: null, confidence: 0, parsed: p, why: ['tipo de produto não identificado'] };
   if (p.type === 'booster_box' && !p.boosters) return { productId: null, confidence: 0, parsed: p, why: ['quantidade de boosters não informada'] };

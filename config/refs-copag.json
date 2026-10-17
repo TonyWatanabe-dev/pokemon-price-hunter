@@ -1,0 +1,131 @@
+{
+  "_nota": "Gerado por tools/refs-copag.mjs a partir das ofertas casadas pelo título. Código de referência da Copag → produto. Usado só quando o título não identifica o produto (src/match.js).",
+  "refs": {
+    "33487": {
+      "productId": "sv3-blister1",
+      "collection": "sv3",
+      "type": "blister_1",
+      "boosters": 1,
+      "ofertas": 2
+    },
+    "34667": {
+      "productId": "sv7-blister3",
+      "collection": "sv7",
+      "type": "blister_3",
+      "boosters": 3,
+      "ofertas": 2
+    },
+    "34669": {
+      "productId": "sv7-blister4",
+      "collection": "sv7",
+      "type": "blister_4",
+      "boosters": 4,
+      "ofertas": 2
+    },
+    "35026": {
+      "productId": "sv8-blister3",
+      "collection": "sv8",
+      "type": "blister_3",
+      "boosters": 3,
+      "ofertas": 2
+    },
+    "35260": {
+      "productId": "sv8_5-colecao_premium",
+      "collection": "sv8_5",
+      "type": "colecao_premium",
+      "boosters": null,
+      "ofertas": 2
+    },
+    "35271": {
+      "productId": "sv8_5-blister3",
+      "collection": "sv8_5",
+      "type": "blister_3",
+      "boosters": 3,
+      "ofertas": 3
+    },
+    "35274": {
+      "productId": "sv8_5-blister4",
+      "collection": "sv8_5",
+      "type": "blister_4",
+      "boosters": 4,
+      "ofertas": 2
+    },
+    "35560": {
+      "productId": "sv10-blister3",
+      "collection": "sv10",
+      "type": "blister_3",
+      "boosters": 3,
+      "ofertas": 2
+    },
+    "35657": {
+      "productId": "me01-blister3",
+      "collection": "me01",
+      "type": "blister_3",
+      "boosters": 3,
+      "ofertas": 2
+    },
+    "35659": {
+      "productId": "me01-blister4",
+      "collection": "me01",
+      "type": "blister_4",
+      "boosters": 4,
+      "ofertas": 3
+    },
+    "35671": {
+      "productId": "me02-booster",
+      "collection": "me02",
+      "type": "booster_pack",
+      "boosters": 1,
+      "ofertas": 2
+    },
+    "35899": {
+      "productId": "sv10_5-blister4",
+      "collection": "sv10_5",
+      "type": "blister_4",
+      "boosters": 4,
+      "ofertas": 2
+    },
+    "35909": {
+      "productId": "sv10_5-colecao_ilustracao",
+      "collection": "sv10_5",
+      "type": "colecao_ilustracao",
+      "boosters": null,
+      "ofertas": 2
+    },
+    "36439": {
+      "productId": "me02_5-blister4",
+      "collection": "me02_5",
+      "type": "blister_4",
+      "boosters": 4,
+      "ofertas": 2
+    },
+    "36859": {
+      "productId": "me03-blister3",
+      "collection": "me03",
+      "type": "blister_3",
+      "boosters": 3,
+      "ofertas": 5
+    },
+    "36862": {
+      "productId": "me03-blister4",
+      "collection": "me03",
+      "type": "blister_4",
+      "boosters": 4,
+      "ofertas": 3
+    },
+    "36936": {
+      "productId": "me04-desafio",
+      "collection": "me04",
+      "type": "desafio",
+      "boosters": null,
+      "ofertas": 6
+    },
+    "37139": {
+      "productId": "c30-colecao_fichario",
+      "collection": "c30",
+      "type": "colecao_fichario",
+      "boosters": null,
+      "ofertas": 2
+    }
+  }
+}
