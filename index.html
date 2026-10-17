@@ -2446,12 +2446,14 @@ function renderProduct(pid){
     <div id="pp-frete">${fcBlock(pid)}</div>
     ${outrasLojasBlock(p)}
     <div id="pp-amz">${amzBlock(pid)}</div>
+    <div id="pp-shp">${shpBlock(pid)}</div>
     ${(()=>{const tt=liveTips().filter((t)=>t.productId===pid).slice(0,6);return tt.length?`<section class="card"><h2>${ic("lightbulb","icon tgi")}Visto no Telegram <small>${tt.length}</small></h2><div class="tipgrid one">${tt.map(tipCard).join("")}</div><p class="hnote">Não verificado: confira estoque e vendedor antes de comprar.</p></section>`:""})()}
     <section class="card hist" id="hist" aria-label="Histórico de preço"><div class="hhead"><h2>${ic("trend-down")}Histórico de preço</h2></div><div class="skel" style="height:200px;border-radius:12px"></div></section>
   </div>
 </div>`;
   if(pid in HIST)drawHist(pid);else loadHist(pid);
   hashScroll();loadPpOpp(pid,best?.id||null);
+  if(!SHP)loadShp().then(()=>{const el=$("#pp-shp");if(el&&view==="produto"&&curPid===pid)el.innerHTML=shpBlock(pid)});
   if(!AMZ)loadAmz().then(()=>{const el=$("#pp-amz");if(el&&view==="produto"&&curPid===pid)el.innerHTML=amzBlock(pid)});
   if(!FCCFG)loadShipCalc().then(()=>{const el=$("#pp-frete");if(el&&view==="produto"&&curPid===pid)el.innerHTML=fcBlock(pid)}).catch(()=>{});
   else if(FC.pid===pid)fcArm(pid);
@@ -2471,6 +2473,21 @@ function amzRow(l){const when=amzWhen(l.capturedAt);const has=typeof l.price==="
 function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);if(!ls.length)return"";
   return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
   <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
+
+/* "Também na Shopee" (17/10): anúncios com o link de afiliado do dono, lidos pelo dono no Chrome, em config/afiliados/shopee-ofertas.json,
+   publicado em /data/afiliados-shopee.json. Mesmas regras da Amazon: camada à parte (não vira oferta, ranking, Score nem alerta), preço
+   sempre com a data e a hora da leitura. Preço principal = sem cupom; o valor com cupom da Shopee aparece ao lado, marcado. */
+let SHP=null,shpP=null;
+function loadShp(){if(SHP)return Promise.resolve(SHP);
+  return shpP||=Promise.resolve().then(()=>fetch("/data/afiliados-shopee.json")).then((r)=>r.ok?r.json():null).catch(()=>null).then((j)=>SHP={ofertas:Array.isArray(j?.ofertas)?j.ofertas:[]})}
+function shpRow(l){const when=amzWhen(l.capturedAt);const ok=typeof l.price==="number"&&l.price>0;if(!ok)return"";
+  const cup=typeof l.priceCupom==="number"&&l.priceCupom>0&&l.priceCupom<l.price?` · ${money(l.priceCupom)} com cupom da Shopee`:"";
+  return`<div class="amz-row"><div class="amz-t"><span>${esc(l.title)}</span>
+    <p class="amz-p"><b>${money(l.price)}</b> <small>em ${esc(when)}</small></p><p class="amz-s">vendido por ${esc(l.seller)}${l.selo?` (${esc(l.selo)})`:""}${cup}${l.stockNote?` · ${esc(l.stockNote)}`:""}</p></div>
+    <a class="btn ghost" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener nofollow sponsored">Ver na Shopee<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`}
+function shpBlock(pid){const ls=(SHP?.ofertas||[]).filter((l)=>l.productId===pid&&typeof l.price==="number").sort((a,b)=>a.price-b.price);if(!ls.length)return"";
+  return`<section class="card amz"><h2>${ic("storefront")}Também na Shopee <small>${ls.length}</small></h2><div class="amz-list">${ls.map(shpRow).join("")}</div>
+  <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado. Frete e cupom conferidos na Shopee.</p></section>`}
 
 /* Frete por CEP (issue #84). Só aparece quando a API diz que o recurso está ligado (GET /api/v1/frete/estado → 200;
    desligado = 404 e nada é desenhado). A página manda só oferta, CEP e quantidade: loja, item e vendedor são resolvidos
