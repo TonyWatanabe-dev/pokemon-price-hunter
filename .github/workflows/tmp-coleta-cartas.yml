@@ -25,7 +25,7 @@ jobs:
         if: contains(github.event.head_commit.message, 'render')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && pip install -q --break-system-packages faster-whisper && python3 tools/tmp-cartas/blister.py
         if: contains(github.event.head_commit.message, 'blister-analise')
-      - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/blister_edita.py
+      - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/blister_edita.py > tmp-render/BD_log.txt 2>&1 || (tail -40 tmp-render/BD_log.txt; echo falhou >> tmp-render/BD_log.txt)
         if: contains(github.event.head_commit.message, 'blister-edita')
       - run: |
           git config user.name "github-actions[bot]"

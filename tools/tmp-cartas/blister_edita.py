@@ -126,3 +126,4 @@ subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{T}/base.mp4', '-framerat
 for tt in (1.0, t_gancho + 0.8, t_placar + 1.5, t_esp + 0.8, DUR + 2.5):
     subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', f'{tt:.2f}', '-i', saida, '-frames:v', '1', '-vf', 'scale=540:-2', f'{OUT}/BD_prova_{tt:05.1f}.jpg'])
 json.dump({'dur': round(DUR + EXTRA, 1), 'inicio_clipes': [round(x, 2) for x in inicio], 't_espeon': round(t_esp, 2), 'palavras': len(pal)}, open(f'{OUT}/BD_relatorio.json', 'w'), indent=1)
+# log
