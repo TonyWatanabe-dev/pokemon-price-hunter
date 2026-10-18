@@ -89,7 +89,7 @@ open(f'{T}/leg.ass', 'w').write('\n'.join(ass))
 # 3) camadas: título do gancho, placar, selo do Espeon ex, faixa de abertura
 t_gancho = inicio[1]; t_placar = inicio[3]; t_esp = mapa(*ESPEON_SRC); t_fim = DUR
 cam = f'{T}/cam'; os.makedirs(cam, exist_ok=True)
-tit = camada(W, 260); p = pilula('O PEDRO TIROU ISSO 👀'.replace(' 👀', ''), F(900, 52), pad=(34, 18)); tit.alpha_composite(p, ((W - p.width) // 2, 120))
+tit = camada(W, 260); p = pilula('OLHA O QUE SAIU NO ÚLTIMO PACK', F(900, 48), pad=(34, 18)); tit.alpha_composite(p, ((W - p.width) // 2, 120))
 faixa = faixa_abertura()
 def placar(v):
     c = camada(440, 110); c.alpha_composite(badge(brl(v), VERDE if v > 0 else VERM, 420, 100, F(900, 50), borda=5), (10, 0)); return c
