@@ -97,6 +97,21 @@ def linha_do_tempo(arq, caixa, pago, hi):
         elif isinstance(v, float): ant = v
     return tl
 
+def prende(tl, pago, cartas):
+    """Prende cada leitura ao placar possível (custo + soma das cartas na ordem do vídeo): só avança, e só depois de
+    2 leituras seguidas confirmarem o passo. Elimina leitura errada do OCR (ex.: 114,99 lido como 14,99)."""
+    T = [round(-pago + sum(cartas[:k]), 2) for k in range(len(cartas) + 1)]
+    k, cand, out = 0, None, []
+    for v in tl:
+        if not isinstance(v, float): out.append(v); continue
+        j = min(range(len(T)), key=lambda i: abs(T[i] - v))
+        if j > k:
+            if cand == j: k = j; cand = None
+            else: cand = j
+        else: cand = None
+        out.append(T[k])
+    return out
+
 # ---------- motion: abertura e cartão final (design system dos posts) ----------
 FPS_M = 30
 ease = lambda x: 1 - (1 - max(0.0, min(1.0, x))) ** 3
@@ -220,7 +235,7 @@ def anim_final(quadro, cfg, final, pasta):
     bg = fundo_ds(quadro, COR_LUCRO if final > 0 else COR_PREJ, (47, 154, 85) if final > 0 else (201, 61, 37))
     pecas = camadas_final(cfg, final); n = int(1.8 * FPS_M)
     for i in range(n):
-        t = i / FPS_M; a = ease(t / 0.25)
+        t = i / FPS_M; a = ease(t / 0.1)
         f = bg.copy(); f.putalpha(int(255 * a)); f = quadro_final(f, pecas, t) if a > 0.99 else f
         if a <= 0.99:
             base = camada(W, H); base.alpha_composite(f); f = quadro_final(base, pecas, t)
@@ -237,7 +252,7 @@ def processa(nome, cfg, fid):
     grande = cfg.get('layout') == 'deulucro'
     cx = (300, 140, 780, 262) if grande else (340, 98, 740, 196)        # onde mora o placar de cima
     pago = cfg['pago']
-    tl = linha_do_tempo(arq, cx, pago, cfg.get('teto', 1500))
+    tl = prende(linha_do_tempo(arq, cx, pago, cfg.get('teto', 1500)), pago, cfg.get('cartas', []))
     vals = [v for v in tl if isinstance(v, float)]
     delta = round(pago - cfg['site'], 2)
     # fim: o placar some de vez (tela final original) ou, se não sumir, 3 s antes do fim

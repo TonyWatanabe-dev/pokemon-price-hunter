@@ -34,111 +34,176 @@
       3.6,
       6.8
     ],
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      5.78,
+      5.68,
+      5.68,
+      19.42,
+      11.58,
+      22.61,
+      13.71,
+      24.23,
+      71.21,
+      76.96,
+      76.96,
+      418.15,
+      52.87,
+      602.33,
+      216.34,
+      45.44
+    ]
   },
   "30A_hit_pikachu_v2": {
     "pago": 60.89,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      602.33
+    ]
   },
   "30A_hit_sylveon": {
     "pago": 45.27,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      76.96,
+      418.15
+    ]
   },
   "30A_hit_pkclassico": {
     "pago": 60.89,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      216.34
+    ]
   },
   "30A_hit_moltres": {
     "pago": 41.23,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      76.96
+    ]
   },
   "30A_hit_uxie": {
     "pago": 60.89,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      45.44
+    ]
   },
   "30A_hit_gholdengo": {
     "pago": 60.89,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      24.23
+    ]
   },
   "30A_hit_zapdos": {
     "pago": 60.89,
     "site": 47.4,
     "produto": "Booster",
     "teto": 650,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      71.21
+    ]
   },
   "30A_etb_abertura_v2": {
     "pago": 548.0,
     "site": 519.9,
     "produto": "ETB",
     "teto": 700,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      52.87,
+      11.58,
+      24.23,
+      71.21,
+      216.34,
+      602.33,
+      19.42,
+      45.44
+    ]
   },
   "30A_poster_abertura": {
     "pago": 135.8,
     "site": 109.03,
     "produto": "Coleção com Pôster",
     "teto": 500,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      17.14,
+      22.61,
+      76.96,
+      418.15
+    ]
   },
   "30A_blister_abertura": {
     "pago": 82.45,
     "site": 69.66,
     "produto": "Blister Duplo",
     "teto": 100,
-    "serie": "30 Anos"
+    "serie": "30 Anos",
+    "cartas": [
+      13.71,
+      76.96
+    ]
   },
   "DE_video01": {
     "pago": 114.99,
     "site": 114.99,
     "produto": "Desafio Estratégico",
     "teto": 300,
-    "serie": "Desafio Estratégico"
+    "serie": "Desafio Estratégico",
+    "cartas": []
   },
   "DE_video02": {
     "pago": 114.99,
     "site": 114.99,
     "produto": "Desafio Estratégico",
     "teto": 300,
-    "serie": "Desafio Estratégico"
+    "serie": "Desafio Estratégico",
+    "cartas": []
   },
   "DE_video03": {
     "pago": 114.99,
     "site": 114.99,
     "produto": "Desafio Estratégico",
     "teto": 300,
-    "serie": "Desafio Estratégico"
+    "serie": "Desafio Estratégico",
+    "cartas": []
   },
   "DE_video04": {
     "pago": 114.99,
     "site": 114.99,
     "produto": "Desafio Estratégico",
     "teto": 300,
-    "serie": "Desafio Estratégico"
+    "serie": "Desafio Estratégico",
+    "cartas": []
   },
   "DE_caixa_8packs": {
     "pago": 114.99,
     "site": 114.99,
     "produto": "Desafio Estratégico",
     "teto": 300,
-    "serie": "Desafio Estratégico"
+    "serie": "Desafio Estratégico",
+    "cartas": []
   }
 }
