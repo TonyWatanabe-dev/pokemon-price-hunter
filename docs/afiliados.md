@@ -10,7 +10,7 @@ Decisão do proprietário, que paga a operação do site com as comissões:
 
 - **Desempate a favor do link do dono.** Quando duas ofertas do mesmo produto têm o **mesmo total comparável** (mesma situação de frete), a que tem link de afiliado do dono aparece primeiro e vira a melhor oferta. Ela **nunca** passa na frente de uma oferta mais barata, nem de uma com frete conhecido quando a dela é desconhecido. Nenhum outro link perde visibilidade.
 - **Sem etiqueta no site.** O link de afiliado é tratado como link normal: não há selo "Link de afiliado", ⓘ nem aviso junto do botão ou do bloco "Também na Amazon". A divulgação fica **geral**: rodapé (com a frase do Programa de Associados da Amazon e a regra do desempate) e Termos (seção 4). O atributo invisível `rel="nofollow sponsored"` continua nos links pagos (pedido do Google).
-- **Grupos (Telegram/WhatsApp):** ofertas sem link do dono saem uma vez; as com link do dono são postadas e repostadas (regra dos bots, em `src/agents/social/auto.js`).
+- **Grupos (Telegram/WhatsApp):** ofertas sem link do dono saem uma vez; as com link do dono são postadas e repostadas todo dia, a cada 24 h, espaçadas (regra dos bots, em `src/agents/social/auto.js`).
 
 ## Regras que o código garante
 

@@ -3,12 +3,12 @@
 //   1. Intervalo mínimo entre mensagens (Telegram 5 min, WhatsApp 30 min), para não floodar o grupo.
 //   2. Oferta que acabou de entrar no radar (firstSeen recente) e nunca foi postada sai na hora.
 //   3. Oferta SEM link de afiliado do dono: postada normalmente, mas UMA VEZ só (nunca repostada).
-//   4. Oferta COM link de afiliado do dono: postada e repostada a cada 48 h, espaçada (no máximo 1 afiliada a cada
+//   4. Oferta COM link de afiliado do dono: postada e repostada a cada 24 h (decisão do dono 18/10; antes 48 h), espaçada (no máximo 1 afiliada a cada
 //      20 min no Telegram e 60 min no WhatsApp); entre uma e outra saem as demais ofertas.
 //   5. Madrugada (0h–7h, horário de Brasília): só ofertas novas; o resto fica para o dia.
 // Diário = lista { ofertaId, at (ISO), messageId, afiliado } dos envios feitos; só entra o que a API do canal confirmou.
 // Ele guarda 30 dias, para lembrar o que já saiu uma vez.
-export const REGRAS = Object.freeze({ intervaloMin: 5, repetirHoras: 24, repetirHorasAfiliado: 48, afiliadoIntervaloMin: 20, naoAfiliadoUmaVez: true, memoriaDias: 30,
+export const REGRAS = Object.freeze({ intervaloMin: 5, repetirHoras: 24, repetirHorasAfiliado: 24, afiliadoIntervaloMin: 20, naoAfiliadoUmaVez: true, memoriaDias: 30,
   novaMin: 60, novasPorRodada: 3, diarioMax: 20000, silencio: [0, 7] });
 
 const ms = (iso) => { const t = Date.parse(iso); return Number.isFinite(t) ? t : null; };
@@ -43,10 +43,10 @@ export function planejar(candidatos, diario, { now = Date.now(), regras = REGRAS
   if (ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: `intervalo de ${regras.intervaloMin} min ainda não passou` };
   const afilPronto = ultimoAfil == null || now - ultimoAfil >= (regras.afiliadoIntervaloMin ?? 0) * 60e3;
   const afil = afilPronto ? unicos.find((c) => c.afiliado && livre(c)) : null;
-  if (afil) return { enviar: [afil], motivo: 'link de afiliado (ciclo de 48 h)' };
+  if (afil) return { enviar: [afil], motivo: 'link de afiliado (ciclo de 24 h)' };
   const outra = unicos.find((c) => !c.afiliado && livre(c));
   if (outra) return { enviar: [outra], motivo: 'próxima da fila (sai uma vez só)' };
-  return { enviar: [], motivo: afilPronto ? 'nada novo: afiliadas já postadas nas últimas 48 h e as demais já saíram' : `espaçamento entre afiliadas (${regras.afiliadoIntervaloMin} min)` };
+  return { enviar: [], motivo: afilPronto ? 'nada novo: afiliadas já postadas nas últimas 24 h e as demais já saíram' : `espaçamento entre afiliadas (${regras.afiliadoIntervaloMin} min)` };
 }
 
 /** Diário + novos envios, guardando `memoriaDias` (o que já saiu uma vez não volta) e limitado em tamanho. */

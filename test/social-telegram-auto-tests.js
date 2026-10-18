@@ -34,16 +34,16 @@ await t('3. oferta sem link de afiliado sai uma vez só (regra de 17/10/2026)', 
   assert.deepEqual(planejar([c('a')], [{ ofertaId: 'a', at: iso(29 * 24 * 60) }], { now: NOW }).enviar, [], 'nem depois de dias');
 });
 
-await t('3b. oferta com link de afiliado volta a cada 48 h, espaçada, e as outras saem entre elas', () => {
+await t('3b. oferta com link de afiliado volta a cada 24 h, espaçada, e as outras saem entre elas', () => {
   const af = (id, x = {}) => ({ ...c(id, x), afiliado: true });
   assert.equal(planejar([af('A'), c('b')], [], { now: NOW }).enviar[0].item.ofertaId, 'A', 'afiliada primeiro');
-  assert.deepEqual(planejar([af('A')], [{ ofertaId: 'A', at: iso(47 * 60), afiliado: true }], { now: NOW }).enviar, [], 'antes de 48 h não volta');
-  assert.equal(planejar([af('A')], [{ ofertaId: 'A', at: iso(48 * 60 + 1), afiliado: true }], { now: NOW }).enviar[0].item.ofertaId, 'A', 'depois de 48 h volta');
+  assert.deepEqual(planejar([af('A')], [{ ofertaId: 'A', at: iso(23 * 60), afiliado: true }], { now: NOW }).enviar, [], 'antes de 24 h não volta');
+  assert.equal(planejar([af('A')], [{ ofertaId: 'A', at: iso(24 * 60 + 1), afiliado: true }], { now: NOW }).enviar[0].item.ofertaId, 'A', 'depois de 24 h volta');
   const d = [{ ofertaId: 'X', at: iso(10), afiliado: true }];   // afiliada há 10 min: espaçamento de 20 min
   assert.equal(planejar([af('A'), c('b')], d, { now: NOW }).enviar[0].item.ofertaId, 'b', 'no intervalo entre afiliadas sai outra oferta');
   assert.equal(planejar([af('A'), c('b')], [{ ofertaId: 'X', at: iso(21), afiliado: true }], { now: NOW }).enviar[0].item.ofertaId, 'A');
   assert.match(planejar([af('A')], d, { now: NOW }).motivo, /espaçamento/);
-  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 60); assert.equal(REGRAS.afiliadoIntervaloMin, 20); assert.equal(REGRAS.repetirHorasAfiliado, 48);
+  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 60); assert.equal(REGRAS.afiliadoIntervaloMin, 20); assert.equal(REGRAS.repetirHorasAfiliado, 24);
 });
 
 await t('4. diário: guarda 30 dias (o que saiu uma vez não volta) e ignora lixo', () => {
