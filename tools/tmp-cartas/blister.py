@@ -17,7 +17,9 @@ for nome, fid in V.items():
         info = {'dur': round(dur, 1), 'w': v['width'], 'h': v['height'], 'rot': (v.get('side_data_list') or [{}])[0].get('rotation'), 'fps': v.get('r_frame_rate'), 'tamanho_mb': round(os.path.getsize(arq) / 1e6)}
         # áudio -> transcrição com tempos por palavra
         wav = f'/tmp/{nome}.wav'; subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-i', arq, '-ac', '1', '-ar', '16000', wav], check=True)
-        segs, _ = modelo.transcribe(wav, language='pt', word_timestamps=True, vad_filter=True)
+        import wave, numpy as np
+        with wave.open(wav) as w: audio = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32) / 32768.0
+        segs, _ = modelo.transcribe(audio, language='pt', word_timestamps=True, vad_filter=True)
         info['fala'] = [{'i': round(s.start, 2), 'f': round(s.end, 2), 't': s.text.strip(), 'p': [[round(w.start, 2), round(w.end, 2), w.word] for w in (s.words or [])]} for s in segs]
         sd = subprocess.run(['ffmpeg', '-i', wav, '-af', 'silencedetect=noise=-35dB:d=0.6', '-f', 'null', '-'], capture_output=True, text=True).stderr
         info['silencios'] = [l.split('silence_')[1].strip() for l in sd.splitlines() if 'silence_start' in l or 'silence_end' in l]
