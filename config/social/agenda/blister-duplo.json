@@ -1,0 +1,23 @@
+{
+  "semana": "Blister Duplo da Celebração de 30 Anos — abertura com placar no menor preço do site (11/11)",
+  "pasta": "assets/social/agenda/videos",
+  "itens": [
+    {
+      "quando": "2026-11-11T19:00",
+      "tipo": "video",
+      "plataformas": ["instagram"],
+      "capaMs": 1800,
+      "id": "v-11-11-blister-duplo-ig",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/BD_blister_duplo_pedro.mp4",
+      "legenda": "Abri 2 Blisters Duplos da Celebração de 30 Anos e o Espeon ex veio no último pack 🍀\n\nNo menor preço que o site já viu, cada blister sai por R$ 69,66. Deu lucro? Só olhando o placar 👀\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "quando": "2026-11-11T19:00",
+      "tipo": "video",
+      "plataformas": ["tiktok"],
+      "id": "v-11-11-blister-duplo-tt",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/BD_blister_duplo_pedro.mp4",
+      "legenda": "2 blisters duplos da 30 anos… o Espeon ex veio no último pack 😳\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp"
+    }
+  ]
+}
