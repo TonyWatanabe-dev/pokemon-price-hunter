@@ -97,11 +97,17 @@ def linha_do_tempo(arq, caixa, pago, hi):
         elif isinstance(v, float): ant = v
     return tl
 
-def prende(tl, pago, cartas, forcar=()):
+def prende(tl, pago, cartas, forcar=(), degraus=()):
     """Prende cada leitura ao placar possível (custo + soma das cartas na ordem do vídeo): só avança, e só depois de
     2 leituras seguidas confirmarem o passo. Elimina leitura errada do OCR (ex.: 114,99 lido como 14,99)."""
     T = [round(-pago + sum(cartas[:k]), 2) for k in range(len(cartas) + 1)]
     k, cand, out = 0, None, []
+    if degraus:   # linha do tempo conferida quadro a quadro: o OCR só diz se o placar está na tela
+        out = []
+        for i_, v in enumerate(tl):
+            kk = max([0] + [d for t, d in degraus if i_ / FPS_OV >= t])
+            out.append(T[kk] if isinstance(v, float) else v)
+        return out
     forcar = dict((round(t * FPS_OV), kk) for t, kk in forcar)
     for i_, v in enumerate(tl):
         if i_ in forcar and forcar[i_] > k: k = forcar[i_]; cand = None
@@ -254,7 +260,7 @@ def processa(nome, cfg, fid):
     grande = cfg.get('layout') == 'deulucro'
     cx = (300, 140, 780, 262) if grande else (340, 98, 740, 196)        # onde mora o placar de cima
     pago = cfg['pago']
-    tl = prende(linha_do_tempo(arq, cx, pago, cfg.get('teto', 1500)), pago, cfg.get('cartas', []), cfg.get('forcar', []))
+    tl = prende(linha_do_tempo(arq, cx, pago, cfg.get('teto', 1500)), pago, cfg.get('cartas', []), cfg.get('forcar', []), cfg.get('degraus', []))
     vals = [v for v in tl if isinstance(v, float)]
     delta = round(pago - cfg['site'], 2)
     # fim: o placar some de vez (tela final original) ou, se não sumir, 3 s antes do fim
