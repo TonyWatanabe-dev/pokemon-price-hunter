@@ -1,0 +1,17 @@
+{
+ "BD_1_162930": {
+  "erro": "TypeError(\"open() got an unexpected keyword argument 'metadata_errors'\")"
+ },
+ "BD_2_163118": {
+  "erro": "TypeError(\"open() got an unexpected keyword argument 'metadata_errors'\")"
+ },
+ "BD_3_163331": {
+  "erro": "TypeError(\"open() got an unexpected keyword argument 'metadata_errors'\")"
+ },
+ "BD_4_163408": {
+  "erro": "TypeError(\"open() got an unexpected keyword argument 'metadata_errors'\")"
+ },
+ "BD_5_163557": {
+  "erro": "TypeError(\"open() got an unexpected keyword argument 'metadata_errors'\")"
+ }
+}
