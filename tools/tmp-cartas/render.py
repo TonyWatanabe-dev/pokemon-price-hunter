@@ -290,7 +290,7 @@ def processa(nome, cfg, fid):
     saida = f'{OUT}/{nome}.mp4'
     cmd = ['ffmpeg', '-v', 'error', '-y', *entradas, '-filter_complex', g, '-map', '[vf]']
     if tem_audio: cmd += ['-map', '0:a', '-af', f'apad=pad_dur={extra}', '-c:a', 'aac', '-b:a', '192k']
-    cmd += ['-t', f'{dur + extra:.2f}', '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', saida]
+    cmd += ['-t', f'{dur + extra:.2f}', '-c:v', 'libx264', '-preset', 'medium', '-crf', '21', '-maxrate', '4M', '-bufsize', '8M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', saida]
     subprocess.run(cmd, check=True)
     for t in cfg.get('provas', [1, t_fim - 1, t_fim + 1]):
         subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', f'{t:.2f}', '-i', saida, '-frames:v', '1', '-vf', 'scale=540:-2', f'{OUT}/{nome}_prova_{t:05.1f}.jpg'])
