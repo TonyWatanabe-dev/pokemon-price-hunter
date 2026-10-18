@@ -2,7 +2,7 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py]
 permissions:
   contents: write
 jobs:
@@ -25,6 +25,8 @@ jobs:
         if: contains(github.event.head_commit.message, 'render')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && pip install -q --break-system-packages faster-whisper && python3 tools/tmp-cartas/blister.py
         if: contains(github.event.head_commit.message, 'blister-analise')
+      - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/blister_edita.py
+        if: contains(github.event.head_commit.message, 'blister-edita')
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
