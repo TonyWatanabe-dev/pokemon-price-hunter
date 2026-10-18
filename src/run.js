@@ -295,7 +295,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
         // Validadores (ETag/Last-Modified) para o GET condicional, só das páginas que ainda estão no sitemap.
         cache.cond ||= {}; for (const u of Object.keys(cache.cond)) if (!cache.candidates.includes(u)) delete cache.cond[u];
-        store = { ...store, plannedUrls: planned, cond: cache.cond };
+        store = { ...store, plannedUrls: planned, cond: cache.cond, deadline: deadline + positiveEnv('HUNTER_STORE_GRACE_MIN', 3) * 60e3 };
       }
       const raw = await adapters[platform].search(store, catalog);
       handoff.seen(store.id, raw); // URL descoberta que virou anúncio sai da fila; as outras têm até 3 tentativas

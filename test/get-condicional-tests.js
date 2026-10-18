@@ -29,5 +29,5 @@ modo = 'sem-validador'; r = await jsonld.search(store);
 assert.equal(r[0].price.base, 39.9, 'mudou: lê de novo'); assert.equal(store.cond[U], undefined, 'sem validador: sai do cache');
 const s2 = { id: 'x', url: 'https://cond.test', plannedUrls: [U] }; modo = 'ok'; r = await jsonld.search(s2); assert.equal(r.length, 1, 'sem store.cond: leitura normal');
 const run = fs.readFileSync(new URL('../src/run.js', import.meta.url), 'utf8');
-assert.match(run, /store = \{ \.\.\.store, plannedUrls: planned, cond: cache\.cond \};/);
+assert.match(run, /store = \{ \.\.\.store, plannedUrls: planned, cond: cache\.cond[,}]/);
 console.log('get-condicional-tests: ok');
