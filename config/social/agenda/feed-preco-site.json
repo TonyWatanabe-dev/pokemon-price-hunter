@@ -1,0 +1,109 @@
+{
+  "semana": "posts de feed sobre preço/site com a chamada nova (18/10)",
+  "pasta": "assets/social/agenda",
+  "cancelar": [
+    {
+      "motivo": "legenda reescrita: menor preço do site + chamada para o grupo (18/10)",
+      "quando": "2026-10-22T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda reescrita: menor preço do site + chamada para o grupo (18/10)",
+      "quando": "2026-10-28T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda reescrita: menor preço do site + chamada para o grupo (18/10)",
+      "quando": "2026-11-05T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda reescrita: menor preço do site + chamada para o grupo (18/10)",
+      "quando": "2026-11-12T12:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda reescrita: menor preço do site + chamada para o grupo (18/10)",
+      "quando": "2026-11-13T12:00",
+      "plataforma": "instagram"
+    }
+  ],
+  "itens": [
+    {
+      "id": "s1-qui-por-que-e-diferente-site",
+      "quando": "2026-10-22T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "semana1/S1_Qui_1_v2.jpg",
+        "semana1/S1_Qui_2_v2.jpg",
+        "semana1/S1_Qui_3_v2.jpg",
+        "semana1/S1_Qui_4_v2.jpg"
+      ],
+      "legenda": "Grupo de oferta não é grupo de link.\n\nA maioria dos grupos manda o link de quem paga comissão. O TCG Price Hunter compara dezenas de lojas, de especializadas a marketplaces, e guarda o histórico de preço de cada produto. Só chega no grupo o que está no menor preço, com comissão ou sem.\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #ofertas"
+    },
+    {
+      "id": "s2-qua-deu-lucro-site",
+      "quando": "2026-10-28T12:00",
+      "tipo": "imagem",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "semana2/S2_Qua_v2.jpg"
+      ],
+      "legenda": "Desafio Estratégico Equilíbrio Perfeito: 8 boosters por R$ 114,99, o menor preço que o site já registrou. Deu lucro ou prejuízo?\n\nChuta nos comentários antes de ver o vídeo: 🤑 ou 😭\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #tcg #deulucro #packopening"
+    },
+    {
+      "id": "s3-qui-reinado-delta-v3-site",
+      "quando": "2026-11-05T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "semana3/S3_Qui_1_v3.jpg",
+        "semana3/S3_Qui_2_v3.jpg",
+        "semana3/S3_Qui_3_v3.jpg",
+        "semana3/S3_Qui_4_v3.jpg"
+      ],
+      "legenda": "Reinado Delta chega sexta, 6/11: a última coleção grande da fase Megaevolução, com Mega Rayquaza ex como a carta mais esperada.\n\nNo lançamento o preço muda toda hora. O site acompanha as lojas e mostra o menor preço já visto de cada produto, e o grupo avisa na hora quando aparece barato.\n\nNão rasgue dinheiro na pré-venda: entra no grupo do WhatsApp pelo link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao"
+    },
+    {
+      "id": "s4-qui-alerta-de-golpe-v3-site",
+      "quando": "2026-11-12T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "semana4/S4_Qui_1_v3.jpg",
+        "semana4/S4_Qui_2_v3.jpg",
+        "semana4/S4_Qui_3_v3.jpg",
+        "semana4/S4_Qui_4_v3.jpg",
+        "semana4/S4_Qui_5_v3.jpg",
+        "semana4/S4_Qui_6_v3.jpg",
+        "semana4/S4_Qui_7_v3.jpg"
+      ],
+      "legenda": "Black Friday chegando e com ela os anúncios bons demais pra ser verdade. 5 sinais pra checar antes de pagar.\n\nDica: confere no site o menor preço já visto daquele produto. Se o anúncio está muito abaixo disso, desconfia.\n\nSalva e manda pra quem vai comprar 👇 Ofertas checadas no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #golpe #colecionador"
+    },
+    {
+      "id": "s4-sex-esquenta-black-friday-v3-site",
+      "quando": "2026-11-13T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "semana4/S4_Sex_1_v3.jpg",
+        "semana4/S4_Sex_2_v3.jpg",
+        "semana4/S4_Sex_3_v3.jpg",
+        "semana4/S4_Sex_4_v3.jpg",
+        "semana4/S4_Sex_5_v3.jpg"
+      ],
+      "legenda": "Black Friday é 27/11. 3 dicas pra não cair em desconto falso: compara com o preço da Copag e com o menor preço já visto no site, não espera quando for lançamento e já faz sua lista.\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #reinadodelta #ofertas"
+    }
+  ]
+}

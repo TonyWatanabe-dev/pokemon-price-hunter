@@ -7,7 +7,7 @@
 import { readFileSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { createHash } from 'node:crypto';
-import { criarCliente, validarItem, montarPost } from '../src/agents/social/zernio.js';
+import { criarCliente, validarItem, montarPost, urlDeVideo } from '../src/agents/social/zernio.js';
 
 const arg = (n, d) => { const i = process.argv.indexOf(`--${n}`); return i > 0 ? process.argv[i + 1] : d; };
 const caminho = arg('agenda');
@@ -31,6 +31,12 @@ let falhas = 0;
 const anota = (nivel, msg) => { console.log(msg); if (process.env.GITHUB_ACTIONS) console.log(`::${nivel}::${msg.replace(/\r?\n/g, ' ')}`); };
 
 async function midias(it) {
+  if (it.tipo === 'video' && !it.arquivos?.length && it.url) {
+    // vídeo renderizado e publicado no próprio repositório (raw.githubusercontent.com), só https desse host
+    const r = await fetch(urlDeVideo(it.url), { redirect: 'follow' });
+    if (!r.ok) throw new Error(`URL do vídeo não respondeu (HTTP ${r.status})`);
+    return [{ nome: `${it.id}.mp4`, bytes: new Uint8Array(await r.arrayBuffer()) }];
+  }
   if (it.tipo === 'video' && !it.arquivos?.length) {
     const r = await fetch(`https://drive.usercontent.google.com/download?id=${encodeURIComponent(it.drive)}&export=download&confirm=t`, { redirect: 'follow' });
     const tipo = r.headers.get('content-type') || '';
@@ -73,7 +79,7 @@ if (modo === 'cancelar') {
 }
 
 for (const it of itens) {
-  if (it.tipo === 'video' && !it.arquivos?.length && !it.drive) { anota('notice', `⏸ ${it.id}: vídeo pendente (sem arquivo/drive)`); continue; }
+  if (it.tipo === 'video' && !it.arquivos?.length && !it.drive && !it.url) { anota('notice', `⏸ ${it.id}: vídeo pendente (sem arquivo/drive)`); continue; }
   if (it.quando <= agora) { anota('notice', `⏭ ${it.id}: horário ${it.quando} já passou`); continue; }
   try {
     const urls = [];

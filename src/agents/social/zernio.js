@@ -6,6 +6,13 @@ import { redact } from '../../redact.js';
 
 export const API_PADRAO = 'https://zernio.com/api/v1';
 export const FUSO = 'America/Sao_Paulo';
+/** URL de vídeo aceita na agenda: só https em raw.githubusercontent.com (arquivo renderizado e versionado no repositório). */
+export function urlDeVideo(u) {
+  let x; try { x = new URL(u); } catch { throw new Error('url do vídeo inválida'); }
+  if (x.protocol !== 'https:' || x.hostname !== 'raw.githubusercontent.com' || !/\.mp4$/i.test(x.pathname)) throw new Error('url do vídeo precisa ser https://raw.githubusercontent.com/.../*.mp4');
+  return x.href;
+}
+
 export const PLATAFORMAS = Object.freeze(['instagram', 'tiktok', 'youtube']);
 export const TITULO_YT_MAX = 100;
 export const TIPOS = Object.freeze(['carrossel', 'imagem', 'story', 'video']);
@@ -42,7 +49,8 @@ export function validarItem(it) {
   const arqs = Array.isArray(i.arquivos) ? i.arquivos : [];
   if (i.tipo === 'carrossel' && (arqs.length < 2 || arqs.length > CARROSSEL_MAX)) p.push(`carrossel precisa de 2 a ${CARROSSEL_MAX} imagens`);
   if (['imagem', 'story'].includes(i.tipo) && arqs.length !== 1) p.push('imagem/story precisa de exatamente 1 arquivo');
-  if (i.tipo === 'video' && arqs.length !== 1 && typeof i.drive !== 'string') p.push('vídeo precisa de 1 arquivo ou do campo drive (vazio = pendente)');
+  if (i.tipo === 'video' && arqs.length !== 1 && typeof i.drive !== 'string' && typeof i.url !== 'string') p.push('vídeo precisa de 1 arquivo, do campo drive ou de url (vazio = pendente)');
+  if (i.url !== undefined) { try { urlDeVideo(i.url); } catch (e) { p.push(e.message); } }
   for (const a of arqs) if (!mimeDe(a)) p.push(`formato não suportado: ${a}`);
   if (i.tipo !== 'story') {
     if (typeof i.legenda !== 'string' || !i.legenda.trim()) p.push('legenda vazia');

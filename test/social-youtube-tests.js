@@ -27,3 +27,17 @@ const cli = criarCliente({ chave: 'zk_teste_1234567890abcdef', fetch: async () =
 const cs = await cli.contas('perfil1');
 assert.deepEqual(cs, [{ rede: 'youtube', usuario: 'tcgpricehunter', ativa: true }]);
 console.log('social-youtube-tests: ok');
+
+// url de vídeo renderizado (raw.githubusercontent.com)
+{
+  const { urlDeVideo, validarItem: vi } = await import('../src/agents/social/zernio.js');
+  const assert = (await import('node:assert/strict')).default;
+  const ok = 'https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/x.mp4';
+  assert.equal(urlDeVideo(ok), ok);
+  for (const ruim of ['http://raw.githubusercontent.com/a/b.mp4', 'https://evil.com/a.mp4', 'https://raw.githubusercontent.com/a/b.txt', 'lixo'])
+    assert.throws(() => urlDeVideo(ruim));
+  const base = { id: 'v', tipo: 'video', plataformas: ['instagram'], quando: '2026-10-18T18:00', legenda: 'oi' };
+  assert.ok(!vi({ ...base, url: ok }).some((m) => /vídeo precisa|url do vídeo/.test(m)));
+  assert.ok(vi({ ...base, url: 'https://evil.com/a.mp4' }).some((m) => /url do vídeo/.test(m)));
+  console.log('ok social: url de vídeo');
+}
