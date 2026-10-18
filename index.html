@@ -705,6 +705,12 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .stage-sub{margin:20px auto 0;max-width:52ch;font-size:clamp(16px,1.7vw,20px);line-height:1.5;color:rgb(228 233 255 / .78)}
 .stage .live{justify-content:center;color:rgb(228 233 255 / .7);text-align:center}
 @media (max-width:760px){.stage .live{display:block}.stage .live-dot{display:inline-block;margin-right:8px;vertical-align:1px}.stage .tk{justify-content:flex-start}}.stage .live b{color:#fff}
+/* 18/10: linha do topo com destaque (dono) */
+.stage .live-big{margin-top:28px;font-size:clamp(20px,2.3vw,28px);font-weight:700;line-height:1.3;color:#fff;letter-spacing:-.01em}
+.stage .live-big b{font-weight:800;color:var(--sticker,#FFCF33)}
+.stage .live-big .lv-head{display:inline-flex;align-items:center;gap:10px}.stage .live-big .live-dot{width:11px;height:11px;display:inline-block}
+.stage .live-below{margin:10px 0 0;text-align:center;font-size:15px;color:rgb(228 233 255 / .75)}.stage .live-below b{color:#fff;font-weight:700}
+@media (max-width:760px){.stage .live-big{font-size:21px}.stage .live-big .lv-head{display:flex;justify-content:center;margin-bottom:2px}.stage .live-big .s1{display:none}}
 /* 6C.0: título visível do pódio (antes só havia o aria-label) */
 .stage-h{max-width:640px;margin:56px auto 0;text-align:center}
 .stage-h h2{margin:0;font-size:clamp(20px,2.4vw,28px);font-weight:800;line-height:1.15;letter-spacing:-.02em;color:#fff;text-wrap:balance}
@@ -2042,7 +2048,8 @@ function renderDeals(){
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-      <div class="live" style="--d:520"><span class="live-dot" aria-hidden="true"></span><span><span id="live-t">${freshTxt(freshState(S))[0]}</span> · ${nStores} lojas · ${nLive} ofertas com estoque${nBelow?` · <b class="live-below">${nBelow} abaixo do preço Copag</b>`:""}</span></div>
+      <div class="live live-big" style="--d:520"><span><span class="lv-head"><span class="live-dot lv-dot2" aria-hidden="true"></span><span id="live-t">${freshTxt(freshState(S))[0]}</span></span><span class="lv-sep s1"> · </span><span class="lv-n"><b>${nStores}</b> lojas</span><span class="lv-sep"> · </span><span class="lv-n"><b>${nLive}</b> ofertas com estoque</span></span></div>
+      ${nBelow?`<p class="live-below" style="--d:560"><b>${nBelow}</b> abaixo do preço Copag</p>`:""}
       ${tickerHTML()}
     </div>
     <header class="stage-h" style="--d:600"><h2 id="pod-h">Melhores oportunidades agora</h2><p>As três primeiras na ordem do Opportunity Score. <a href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></p></header>
