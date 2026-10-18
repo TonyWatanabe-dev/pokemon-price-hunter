@@ -21,7 +21,7 @@ jobs:
         if: contains(github.event.head_commit.message, 'precos')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/quadros.py
         if: contains(github.event.head_commit.message, 'quadros')
-      - run: sudo apt-get install -y -qq ffmpeg tesseract-ocr python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/render.py ${{ contains(github.event.head_commit.message, 'render-teste') && '30A_deulucro 30A_hit_pikachu_v2' || '' }}
+      - run: sudo apt-get install -y -qq ffmpeg tesseract-ocr python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/render.py ${{ contains(github.event.head_commit.message, 'render-so:') && '30A_deulucro 30A_poster_abertura' || '' }}
         if: contains(github.event.head_commit.message, 'render')
       - run: |
           git config user.name "github-actions[bot]"
