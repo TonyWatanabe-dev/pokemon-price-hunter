@@ -1,0 +1,23 @@
+{
+  "semana": "Reinado Delta — motion de lançamento no lugar do vídeo de abertura (6/11 19h)",
+  "pasta": "assets/social/agenda/videos",
+  "itens": [
+    {
+      "quando": "2026-11-06T19:00",
+      "tipo": "video",
+      "plataformas": ["instagram"],
+      "capaMs": 1500,
+      "id": "s3-sex-reinado-delta-motion-ig",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/RD_lancamento_motion.mp4",
+      "legenda": "Saiu hoje: Reinado Delta, a última coleção grande da fase Megaevolução, com Mega Rayquaza ex como estrela.\n\nSemana de lançamento é quando o preço mais sobe. Compare com o sugerido da Copag e não pague qualquer valor.\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao"
+    },
+    {
+      "quando": "2026-11-06T19:00",
+      "tipo": "video",
+      "plataformas": ["tiktok"],
+      "id": "s3-sex-reinado-delta-motion-tt",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/RD_lancamento_motion.mp4",
+      "legenda": "Reinado Delta saiu hoje. lançamento sobe de preço, não paga qualquer valor 👀\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #reinadodelta #megarayquaza #fyp"
+    }
+  ]
+}
