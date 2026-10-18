@@ -213,7 +213,14 @@ export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
   const out = []; const failed = []; const reasons = {}; const cond = store.cond || null; let naoMudou = 0;
-  for (const u of urls) {
+  for (const [i, u] of urls.entries()) {
+    // Prazo da rodada (18/10): loja com centenas de páginas relevantes (1,5 s por página) passava do tempo do job e a
+    // rodada inteira era cancelada sem salvar. Passado o prazo, as páginas restantes ficam para a próxima rodada como
+    // "não lidas" (a oferta delas é preservada, como numa falha passageira).
+    if (store.deadline && Date.now() > store.deadline) {
+      for (const r of urls.slice(i)) { failed.push(r); reasons[r] = 'prazo da rodada'; }
+      break;
+    }
     try {
       await guard(u);
       // GET condicional: com ETag/Last-Modified da leitura anterior, a loja pode responder 304 (não mudou) sem mandar a
