@@ -1,4 +1,660 @@
 {
+ "me03-blister3": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 29.1,
+  "loja": "cardora.com.br"
+ },
+ "me04-blister3": {
+  "col": "Caos Ascendente",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": 42.99,
+  "preco": 29.9,
+  "loja": "radiantetcg.com.br"
+ },
+ "me04-blister4": {
+  "col": "Caos Ascendente",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": 55.99,
+  "preco": 39.9,
+  "loja": "Mercado Livre"
+ },
+ "me05-blister4": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": 55.99,
+  "preco": 40.74,
+  "loja": "madlabrpg.com"
+ },
+ "me05-box36": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 367,
+  "loja": "Mercado Livre"
+ },
+ "me03-blister4": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": 55.99,
+  "preco": 41.8,
+  "loja": "gorupa.com.br"
+ },
+ "me04-booster": {
+  "col": "Caos Ascendente",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 10.9,
+  "loja": "rihappy.com.br"
+ },
+ "me04-box36": {
+  "col": "Caos Ascendente",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 395.99,
+  "loja": "Mercado Livre"
+ },
+ "me01-box36": {
+  "col": "Megaevolução",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 398.99,
+  "loja": "shisuistore.com.br"
+ },
+ "me05-booster": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 11.39,
+  "loja": "shisuistore.com.br"
+ },
+ "me04-combo18": {
+  "col": "Caos Ascendente",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 209.9,
+  "loja": "rarecandystore.com.br"
+ },
+ "me04-blister1": {
+  "col": "Caos Ascendente",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": 13.99,
+  "preco": 11.9,
+  "loja": "Mercado Livre"
+ },
+ "me02-blister3": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 35.9,
+  "loja": "pokebola.com.br"
+ },
+ "me05-combo36": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 439.9,
+  "loja": "pbkids.com.br"
+ },
+ "me03-box24": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 299.99,
+  "loja": "rihappy.com.br"
+ },
+ "me03-box36": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 449.9,
+  "loja": "Mercado Livre"
+ },
+ "me05-blister1": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": 13.99,
+  "preco": 12.51,
+  "loja": "kamikards.com.br"
+ },
+ "me03-combo18": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 229.9,
+  "loja": "rihappy.com.br"
+ },
+ "me03-blister1": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 12.97,
+  "loja": "lojabrmetaverso.com.br"
+ },
+ "me05-blister3": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 39,
+  "loja": "Mercado Livre"
+ },
+ "me01-combo18": {
+  "col": "Megaevolução",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 236.55,
+  "loja": "gorupa.com.br"
+ },
+ "me05-combo18": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 237.41,
+  "loja": "ilusoeslindoia.com.br"
+ },
+ "sv9-box36": {
+  "col": "Amigos de Jornada",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 474.91,
+  "loja": "radiantetcg.com.br"
+ },
+ "me03-booster": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 13.21,
+  "loja": "Toca do Tabuleiro"
+ },
+ "sv10_5-blister4": {
+  "col": "Fogo Branco e Raio Preto",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 54.99,
+  "loja": "rihappy.com.br"
+ },
+ "me01-booster": {
+  "col": "Megaevolução",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 13.9,
+  "loja": "lojashardt.com.br"
+ },
+ "me02-booster": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 13.99,
+  "loja": "tavernadorei.com.br"
+ },
+ "sv9-booster": {
+  "col": "Amigos de Jornada",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 14.24,
+  "loja": "blanctoys.com.br"
+ },
+ "me02-box36": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 549.99,
+  "loja": "rihappy.com.br"
+ },
+ "me02-blister4": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 62.4,
+  "loja": "Mercado Livre"
+ },
+ "me01-blister3": {
+  "col": "Megaevolução",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 49.9,
+  "loja": "Mercado Livre"
+ },
+ "me01-blister1": {
+  "col": "Megaevolução",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 16.9,
+  "loja": "lojaarenagames.com.br"
+ },
+ "sv10-colecao_ex-koraidon": {
+  "col": "Rivais Predestinados",
+  "tipo": "Box Pokémon ex",
+  "var": "Koraidon ex",
+  "msrp": null,
+  "preco": 106.95,
+  "loja": "facilshopping.com.br"
+ },
+ "sv9-colecao_ex-zacian": {
+  "col": "Amigos de Jornada",
+  "tipo": "Box Pokémon ex",
+  "var": "Zacian ex",
+  "msrp": null,
+  "preco": 179.99,
+  "loja": "Mercado Livre"
+ },
+ "me01-blister4": {
+  "col": "Megaevolução",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 93.99,
+  "loja": "Mercado Livre"
+ },
+ "me02_5-blister4": {
+  "col": "Heróis Excelsos",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 94.91,
+  "loja": "ilusoeslindoia.com.br"
+ },
+ "sv8_5-combo18": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 427.5,
+  "loja": "gorupa.com.br"
+ },
+ "me02_5-booster": {
+  "col": "Heróis Excelsos",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 24.9,
+  "loja": "geekstorebrasil.com.br"
+ },
+ "me02-blister1": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 14.99,
+  "loja": "kidverte.com.br"
+ },
+ "me02_5-combo18": {
+  "col": "Heróis Excelsos",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 485,
+  "loja": "Mercado Livre"
+ },
+ "sv3-blister3": {
+  "col": "Obsidiana em Chamas",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 85.41,
+  "loja": "radiantetcg.com.br"
+ },
+ "sv9-blister4": {
+  "col": "Amigos de Jornada",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 113.91,
+  "loja": "radiantetcg.com.br"
+ },
+ "sv8_5-blister4": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 115.41,
+  "loja": "Mercado Livre"
+ },
+ "sv8_5-blister3": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 93.99,
+  "loja": "Mercado Livre"
+ },
+ "sv8_5-combo4": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 132.99,
+  "loja": "Mercado Livre"
+ },
+ "sv10-blister4": {
+  "col": "Rivais Predestinados",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 139.9,
+  "loja": "Mercado Livre"
+ },
+ "sv8-box36": {
+  "col": "Fagulhas Impetuosas",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 1295,
+  "loja": "Mercado Livre"
+ },
+ "sv6-box36": {
+  "col": "Máscaras do Crepúsculo",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 1299.97,
+  "loja": "Mercado Livre"
+ },
+ "sv3-box36": {
+  "col": "Obsidiana em Chamas",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 1389.97,
+  "loja": "Mercado Livre"
+ },
+ "c30-blister2": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Blister Duplo",
+  "var": null,
+  "msrp": 69.99,
+  "preco": 82.45,
+  "loja": "madlabrpg.com"
+ },
+ "sv10_5r-box18": {
+  "col": "Raio Preto",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 759,
+  "loja": "Mercado Livre"
+ },
+ "sv9-blister3": {
+  "col": "Amigos de Jornada",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 129.8,
+  "loja": "Mercado Livre"
+ },
+ "me02_5-blister3": {
+  "col": "Heróis Excelsos",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 129.9,
+  "loja": "Mercado Livre"
+ },
+ "c30-booster": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 47.4,
+  "loja": "dalaran.com.br"
+ },
+ "c30-blister3": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": 99.99,
+  "preco": 147.81,
+  "loja": "Mercado Livre"
+ },
+ "sv4-box36": {
+  "col": "Fenda Paradoxal",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 1799.9,
+  "loja": "Mercado Livre"
+ },
+ "swsh11-box36": {
+  "col": "Origem Perdida",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 1815,
+  "loja": "Mercado Livre"
+ },
+ "sv10-blister3": {
+  "col": "Rivais Predestinados",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 159.99,
+  "loja": "Mercado Livre"
+ },
+ "swsh2-blister4": {
+  "col": "Rixa Rebelde",
+  "tipo": "Blister Quádruplo",
+  "var": null,
+  "msrp": null,
+  "preco": 216.69,
+  "loja": "Mercado Livre"
+ },
+ "sv7-blister1": {
+  "col": "Coroa Estelar",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 54.9,
+  "loja": "Mercado Livre"
+ },
+ "c30-colecao_ex-greninja": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Box Pokémon ex",
+  "var": "Greninja ex",
+  "msrp": 160.99,
+  "preco": 260,
+  "loja": "Mercado Livre"
+ },
+ "c30-colecao_ex-sylveon": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Box Pokémon ex",
+  "var": "Sylveon ex",
+  "msrp": 160.99,
+  "preco": 257,
+  "loja": "Mercado Livre"
+ },
+ "sv10_5r-blister3": {
+  "col": "Raio Preto",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 179.9,
+  "loja": "Mercado Livre"
+ },
+ "swsh10-box36": {
+  "col": "Estrelas Radiantes",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 2290,
+  "loja": "Mercado Livre"
+ },
+ "sv5-blister3": {
+  "col": "Forças Temporais",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 199.99,
+  "loja": "Mercado Livre"
+ },
+ "c30-box6": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 399.99,
+  "loja": "pbkids.com.br"
+ },
+ "sv4_5-blister3": {
+  "col": "Destinos de Paldea",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 202,
+  "loja": "Mercado Livre"
+ },
+ "sv3-blister1": {
+  "col": "Obsidiana em Chamas",
+  "tipo": "Blister Unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 67.39,
+  "loja": "Mercado Livre"
+ },
+ "swsh5-box36": {
+  "col": "Estilos de Batalha",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 2499,
+  "loja": "Mercado Livre"
+ },
+ "swsh2-box24": {
+  "col": "Rixa Rebelde",
+  "tipo": "Booster Box",
+  "var": null,
+  "msrp": null,
+  "preco": 1787.71,
+  "loja": "Mercado Livre"
+ },
+ "sv3-booster": {
+  "col": "Obsidiana em Chamas",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 75.97,
+  "loja": "rihappy.com.br"
+ },
+ "swsh11-blister3": {
+  "col": "Origem Perdida",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 228.9,
+  "loja": "Mercado Livre"
+ },
+ "swsh12-blister3": {
+  "col": "Tempestade Prateada",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 229.99,
+  "loja": "Mercado Livre"
+ },
+ "sv2-blister3": {
+  "col": "Evoluções em Paldea",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 245,
+  "loja": "Mercado Livre"
+ },
+ "swsh10-blister3": {
+  "col": "Estrelas Radiantes",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 280.06,
+  "loja": "Mercado Livre"
+ },
+ "swsh12_5-blister3": {
+  "col": "Realeza Absoluta",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 285,
+  "loja": "Mercado Livre"
+ },
+ "sv4-blister3": {
+  "col": "Fenda Paradoxal",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 306.99,
+  "loja": "Mercado Livre"
+ },
+ "swsh3-booster": {
+  "col": "Escuridão Incandescente",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 103.4,
+  "loja": "Mercado Livre"
+ },
+ "sv1-booster": {
+  "col": "Escarlate e Violeta",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 115.1,
+  "loja": "Mercado Livre"
+ },
+ "swsh12-booster": {
+  "col": "Tempestade Prateada",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 132.7,
+  "loja": "Mercado Livre"
+ },
+ "swsh4-blister3": {
+  "col": "Voltagem Vívida",
+  "tipo": "Blister Triplo",
+  "var": null,
+  "msrp": null,
+  "preco": 399.9,
+  "loja": "Mercado Livre"
+ },
+ "sv3_5-booster": {
+  "col": "Coleção Especial 151",
+  "tipo": "Booster unitário",
+  "var": null,
+  "msrp": null,
+  "preco": 148.99,
+  "loja": "Mercado Livre"
+ },
  "_debug": [
   {
    "url": "abrir3",
@@ -16,5 +672,493 @@
    "url": "guardar&semref=14",
    "resp": "{\"v\": 1, \"source\": \"db\", \"sources\": [], \"reputation\": {\"consultadoEm\": \"2026-10-08\", \"lojas\": {}}, \"total\": 124, \"page\": 4, \"limit\": 60, \"pages\": 3, \"items\": [], \"allCount\": 143, \"facets\": null, \"noCopagCount\": 124, \"refNet\": true, \"freshness\": {\"status\": \"atual\", \"source\": \"db\", \"dataAt\": \"2026-10-"
   }
- ]
+ ],
+ "me05-colecao_ex-mega-greninja": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Greninja ex",
+  "msrp": 179.99,
+  "preco": 142.49,
+  "loja": "demapapelaria.com.br"
+ },
+ "c30-combo": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": 199.99,
+  "preco": 299,
+  "loja": "Mercado Livre"
+ },
+ "me04-combo": {
+  "col": "Caos Ascendente",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": 250.99,
+  "preco": 249.9,
+  "loja": "Mercado Livre"
+ },
+ "c30-colecao_fichario": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Coleção com Fichário",
+  "var": null,
+  "msrp": 230.99,
+  "preco": 349.9,
+  "loja": "Mercado Livre"
+ },
+ "c30-etb": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": 399.99,
+  "preco": 699,
+  "loja": "ciatoy.com.br"
+ },
+ "me05-etb": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": 399.99,
+  "preco": 399,
+  "loja": "Mercado Livre"
+ },
+ "me05-combo": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": 250.99,
+  "preco": 299,
+  "loja": "ciatoy.com.br"
+ },
+ "me04-etb": {
+  "col": "Caos Ascendente",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": 399.99,
+  "preco": 449,
+  "loja": "Mercado Livre"
+ },
+ "c30-colecao_poster": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Coleção com Pôster",
+  "var": null,
+  "msrp": 115.99,
+  "preco": 169.99,
+  "loja": "Mercado Livre"
+ },
+ "me01-colecao_ex-mega-gengar": {
+  "col": "Megaevolução",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Gengar ex",
+  "msrp": null,
+  "preco": 160.04,
+  "loja": "Mercado Livre"
+ },
+ "sv3-etb": {
+  "col": "Obsidiana em Chamas",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1849.9,
+  "loja": "Mercado Livre"
+ },
+ "me04-desafio": {
+  "col": "Caos Ascendente",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 127,
+  "loja": "Mercado Livre"
+ },
+ "me02-desafio": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 270.65,
+  "loja": "Mercado Livre"
+ },
+ "sv10_5w-combo": {
+  "col": "Fogo Branco",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 729,
+  "loja": "Mercado Livre"
+ },
+ "sv6_5-deck": {
+  "col": "Fábulas Nebulosas",
+  "tipo": "Baralho de Batalha",
+  "var": null,
+  "msrp": null,
+  "preco": 129.9,
+  "loja": "Mercado Livre"
+ },
+ "me05-desafio": {
+  "col": "Escuridão Absoluta",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 133.25,
+  "loja": "Mercado Livre"
+ },
+ "me01-colecao_ex-mega-lucario": {
+  "col": "Megaevolução",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Lucario ex",
+  "msrp": null,
+  "preco": 199.9,
+  "loja": "Mercado Livre"
+ },
+ "me02_5-colecao_ex-mega-emboar": {
+  "col": "Heróis Excelsos",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Emboar ex",
+  "msrp": null,
+  "preco": 229.99,
+  "loja": "rihappy.com.br"
+ },
+ "me02_5-colecao_ex-mega-feraligatr": {
+  "col": "Heróis Excelsos",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Feraligatr ex",
+  "msrp": null,
+  "preco": 229.99,
+  "loja": "rihappy.com.br"
+ },
+ "me02_5-colecao_ex-mega-meganium": {
+  "col": "Heróis Excelsos",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Meganium ex",
+  "msrp": null,
+  "preco": 139.99,
+  "loja": "rihappy.com.br"
+ },
+ "me02_5-combo": {
+  "col": "Heróis Excelsos",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 299.89,
+  "loja": "rihappy.com.br"
+ },
+ "sv10_5-colecao_ilustracao": {
+  "col": "Fogo Branco e Raio Preto",
+  "tipo": "Coleção Ilustração",
+  "var": null,
+  "msrp": null,
+  "preco": 149.99,
+  "loja": "rihappy.com.br"
+ },
+ "sv4_5-colecao_ex-grande": {
+  "col": "Destinos de Paldea",
+  "tipo": "Box Pokémon ex",
+  "var": "Grande ex",
+  "msrp": null,
+  "preco": 1299.99,
+  "loja": "Mercado Livre"
+ },
+ "sv7-colecao_ex-lupo": {
+  "col": "Coroa Estelar",
+  "tipo": "Box Pokémon ex",
+  "var": "Lupo ex",
+  "msrp": null,
+  "preco": 299.9,
+  "loja": "Mercado Livre"
+ },
+ "me02_5-etb": {
+  "col": "Heróis Excelsos",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1090,
+  "loja": "Mercado Livre"
+ },
+ "sv10-etb": {
+  "col": "Rivais Predestinados",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1503.5,
+  "loja": "Mercado Livre"
+ },
+ "sv6_5-colecao_premium": {
+  "col": "Fábulas Nebulosas",
+  "tipo": "Coleção Premium",
+  "var": null,
+  "msrp": null,
+  "preco": 999.9,
+  "loja": "Mercado Livre"
+ },
+ "swsh12-etb": {
+  "col": "Tempestade Prateada",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 2500,
+  "loja": "Mercado Livre"
+ },
+ "swsh9-etb": {
+  "col": "Astros Cintilantes",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 2813,
+  "loja": "Mercado Livre"
+ },
+ "sv6_5-colecao_ilustracao": {
+  "col": "Fábulas Nebulosas",
+  "tipo": "Coleção Ilustração",
+  "var": null,
+  "msrp": null,
+  "preco": 237.41,
+  "loja": "radiantetcg.com.br"
+ },
+ "sv8_5-colecao_premium": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Coleção Premium",
+  "var": null,
+  "msrp": null,
+  "preco": 379.91,
+  "loja": "radiantetcg.com.br"
+ },
+ "swsh12_5-etb": {
+  "col": "Realeza Absoluta",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1899.99,
+  "loja": "Mercado Livre"
+ },
+ "me01-combo": {
+  "col": "Megaevolução",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 249,
+  "loja": "mox.land"
+ },
+ "me04-colecao_ex-mega-zygarde": {
+  "col": "Caos Ascendente",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Zygarde ex",
+  "msrp": null,
+  "preco": 229.99,
+  "loja": "pbkids.com.br"
+ },
+ "sv6_5-colecao_ex-kingdra": {
+  "col": "Fábulas Nebulosas",
+  "tipo": "Box Pokémon ex",
+  "var": "Kingdra ex",
+  "msrp": null,
+  "preco": 229.99,
+  "loja": "rihappy.com.br"
+ },
+ "sv8_5-colecao_ex-eevee": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Box Pokémon ex",
+  "var": "Eevee ex",
+  "msrp": null,
+  "preco": 290.03,
+  "loja": "madlabrpg.com"
+ },
+ "sv8_5-combo": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 499,
+  "loja": "mox.land"
+ },
+ "sv8_5-etb": {
+  "col": "Evoluções Prismáticas",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1464.7,
+  "loja": "cardora.com.br"
+ },
+ "sv8-deck-koraidon": {
+  "col": "Fagulhas Impetuosas",
+  "tipo": "Baralho de Batalha",
+  "var": "Koraidon ex",
+  "msrp": null,
+  "preco": 129.9,
+  "loja": "lojaarenagames.com.br"
+ },
+ "sv8-deck-miraidon": {
+  "col": "Fagulhas Impetuosas",
+  "tipo": "Baralho de Batalha",
+  "var": "Miraidon ex",
+  "msrp": null,
+  "preco": 129.9,
+  "loja": "lojaarenagames.com.br"
+ },
+ "sv9-colecao_ex-clefairy": {
+  "col": "Amigos de Jornada",
+  "tipo": "Box Pokémon ex",
+  "var": "Clefairy ex",
+  "msrp": null,
+  "preco": 249.9,
+  "loja": "lojaarenagames.com.br"
+ },
+ "me01-desafio": {
+  "col": "Megaevolução",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 179.9,
+  "loja": "Mercado Livre"
+ },
+ "me02-colecao_ex-mega-venusaur": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Venusaur ex",
+  "msrp": null,
+  "preco": 217,
+  "loja": "Mercado Livre"
+ },
+ "sv4_5-colecao_ex-charizard": {
+  "col": "Destinos de Paldea",
+  "tipo": "Box Pokémon ex",
+  "var": "Charizard ex",
+  "msrp": null,
+  "preco": 1399,
+  "loja": "Mercado Livre"
+ },
+ "sv10_5r-combo": {
+  "col": "Raio Preto",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 749,
+  "loja": "Mercado Livre"
+ },
+ "sv10_5r-etb": {
+  "col": "Raio Preto",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1690,
+  "loja": "Mercado Livre"
+ },
+ "sv6_5-etb": {
+  "col": "Fábulas Nebulosas",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 989,
+  "loja": "Mercado Livre"
+ },
+ "sv10-desafio": {
+  "col": "Rivais Predestinados",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 499.99,
+  "loja": "Mercado Livre"
+ },
+ "swsh1-colecao_premium": {
+  "col": "Espada e Escudo",
+  "tipo": "Coleção Premium",
+  "var": null,
+  "msrp": null,
+  "preco": 4999.99,
+  "loja": "Mercado Livre"
+ },
+ "swsh11-etb": {
+  "col": "Origem Perdida",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 3699.99,
+  "loja": "Mercado Livre"
+ },
+ "me02-combo": {
+  "col": "Fogo Fantasmagórico",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 499.99,
+  "loja": "Mercado Livre"
+ },
+ "me03-desafio": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 135.7,
+  "loja": "Mercado Livre"
+ },
+ "sv8-etb": {
+  "col": "Fagulhas Impetuosas",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1890,
+  "loja": "Mercado Livre"
+ },
+ "c30-colecao_ilustracao": {
+  "col": "Celebração de 30 Anos",
+  "tipo": "Coleção Ilustração",
+  "var": null,
+  "msrp": null,
+  "preco": 132.91,
+  "loja": "ilusoeslindoia.com.br"
+ },
+ "sv4-etb": {
+  "col": "Fenda Paradoxal",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 1299,
+  "loja": "Mercado Livre"
+ },
+ "sv5-desafio": {
+  "col": "Forças Temporais",
+  "tipo": "Desafio Estratégico",
+  "var": null,
+  "msrp": null,
+  "preco": 619.99,
+  "loja": "Mercado Livre"
+ },
+ "me01-colecao_ex-mega-latias": {
+  "col": "Megaevolução",
+  "tipo": "Box Pokémon ex",
+  "var": "Mega Latias ex",
+  "msrp": null,
+  "preco": 147.9,
+  "loja": "Mercado Livre"
+ },
+ "sv10-colecao_ex-mewtwo": {
+  "col": "Rivais Predestinados",
+  "tipo": "Box Pokémon ex",
+  "var": "Mewtwo ex",
+  "msrp": null,
+  "preco": 244.46,
+  "loja": "Mercado Livre"
+ },
+ "me03-etb": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Treinador Avançado (ETB)",
+  "var": null,
+  "msrp": null,
+  "preco": 395.1,
+  "loja": "Mercado Livre"
+ },
+ "sv6_5-deck-batalha": {
+  "col": "Fábulas Nebulosas",
+  "tipo": "Baralho de Batalha",
+  "var": "Batalha ex",
+  "msrp": null,
+  "preco": 95,
+  "loja": "Mercado Livre"
+ },
+ "me03-combo": {
+  "col": "Equilíbrio Perfeito",
+  "tipo": "Combo de Booster",
+  "var": null,
+  "msrp": null,
+  "preco": 299.75,
+  "loja": "Mercado Livre"
+ }
 }
