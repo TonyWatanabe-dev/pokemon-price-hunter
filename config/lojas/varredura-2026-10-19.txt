@@ -1,0 +1,7 @@
+# Varredura semanal de 19/10/2026: busca web (refs Copag, lançamentos ME02/ME04, regiões, plataformas).
+# Confirmadas com página de produto Pokémon lacrado e preço:
+https://www.saojoaofarmacias.com.br   # Farmácias São João · Passo Fundo/RS · VTEX
+https://mercadaodascartas.com.br      # Mercadão das Cartas · cidade não informada · WooCommerce
+# Fora: brofistloja.com.br (robots.txt bloqueia; sem contorno), distribuidorapokemon.com (só atacado, mín. R$ 2.500),
+# estreladolar.com.br (Pokémon sem preço/fora de estoque), lebiscuit.com.br e milium.com.br (sem preço visível na página),
+# bigfesta.com.br (página não abriu).
