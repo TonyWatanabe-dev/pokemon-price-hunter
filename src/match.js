@@ -172,12 +172,18 @@ export function detectStock(t) {
 
 const SHORT = { booster_box: (n) => `box${n}`, combo: (n) => (n ? `combo${n}` : 'combo'), etb: () => 'etb', booster_pack: () => 'booster',
   blister_1: () => 'blister1', blister_2: () => 'blister2', blister_3: () => 'blister3', blister_4: () => 'blister4' };
-export function productIdOf(collection, type, boosters, variant) {
+/** Idiomas importados aceitos: código → rótulo. Produto importado = id do produto PT + "-<código>". */
+export const IMPORT_LANGS = { en: 'Inglês', ja: 'Japonês', zh: 'Chinês', ko: 'Coreano' };
+export const LANG_LABEL = { pt: 'Português', ...IMPORT_LANGS };
+/** Idioma de um id de produto: o sufixo de importado, ou 'pt'. */
+export const langOfId = (id) => { const m = String(id || '').match(/-(en|ja|zh|ko)$/); return m ? m[1] : 'pt'; };
+export function productIdOf(collection, type, boosters, variant, lang = null) {
   const base = SHORT[type] ? SHORT[type](boosters) : type;
-  return `${collection}-${base}${variant ? '-' + variant : ''}`;
+  return `${collection}-${base}${variant ? '-' + variant : ''}${lang && IMPORT_LANGS[lang] ? '-' + lang : ''}`;
 }
 /** Chaves para herdar o preço Copag: a variante (Sylveon ex / Greninja ex) e o combo sem contagem custam o mesmo. */
-export const msrpKeys = (p) => [...new Set([p.id, productIdOf(p.collection, p.type, p.boosters, null), p.type === 'combo' && !p.boosters ? productIdOf(p.collection, 'combo', null, null) : p.id])];
+// Importado não herda preço Copag (não existe preço sugerido no Brasil para ele).
+export const msrpKeys = (p) => langOfId(p.id) !== 'pt' ? [] : [...new Set([p.id, productIdOf(p.collection, p.type, p.boosters, null), p.type === 'combo' && !p.boosters ? productIdOf(p.collection, 'combo', null, null) : p.id])];
 
 export function parseListing(title, catalog) {
   const t = normalize(title);
@@ -185,7 +191,10 @@ export function parseListing(title, catalog) {
   for (const [re, why] of REJECT) if (re.test(t)) reasons.push(why);
   // Qualquer idioma que não seja PT (ou idiomas em conflito) nunca casa com o produto em português.
   const language = detectLanguage(t);
-  if (language.conflict || (language.code && language.code !== 'pt')) reasons.push('idioma diferente de PT');
+  // Importados (inglês, japonês, chinês, coreano) viram produto próprio, com sufixo de idioma e sem referência Copag.
+  // Os demais idiomas e títulos com dois idiomas continuam recusados.
+  if (language.conflict || (language.code && language.code !== 'pt' && !IMPORT_LANGS[language.code])) reasons.push('idioma diferente de PT');
+  const lang = language.code && IMPORT_LANGS[language.code] ? language.code : null;
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
   if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
@@ -209,19 +218,20 @@ export function parseListing(title, catalog) {
     reasons.push('kit montado pela loja ou caixa com várias unidades');
   // "Booster Box ... + Box Treinador Avançado": dois produtos no mesmo anúncio ("+" some na normalização, por isso o título original).
   if (String(title).split('+').slice(1).some((s) => { const n = normalize(s); return detectType(n).type && !OWN_ACCESSORY[d.type]?.test(n); })) reasons.push('mais de um produto no mesmo anúncio');
-  return { normalized: t, collection: col.id, collectionFallback: !!col.fallback, type: d.type, boosters: d.boosters, boostersInferred: d.inferred, variant: d.variant, language, preorder: detectStock(t) === 'PRE_ORDER', rejects: reasons };
+  return { normalized: t, collection: col.id, collectionFallback: !!col.fallback, type: d.type, boosters: d.boosters, boostersInferred: d.inferred, variant: d.variant, language, lang, preorder: detectStock(t) === 'PRE_ORDER', rejects: reasons };
 }
 
-export function describeProduct(catalog, collection, type, boosters, variant) {
+export function describeProduct(catalog, collection, type, boosters, variant, lang = null) {
   const col = catalog.collections.find((c) => c.id === collection);
-  const id = productIdOf(collection, type, boosters, variant);
+  const language = lang && IMPORT_LANGS[lang] ? lang : 'pt';
+  const id = productIdOf(collection, type, boosters, variant, language === 'pt' ? null : language);
   const fixed = (catalog.products || []).find((p) => p.id === id) || {};
   const vName = variant ? variant.replace('mega-', 'Mega ').replace(/^./, (c) => c.toUpperCase()).replace(/ (.)/, (m) => m.toUpperCase()) + ' ex' : null;
   return {
     id, collection, collectionName: col?.name || (collection === 'avulsos' ? 'Box Pokémon' : collection), series: col?.series || null, type, typeLabel: TYPE_LABEL[type] || type, group: groupOf(type),
     boosters: boosters ?? fixed.boosters ?? null, variant: vName,
-    name: `${col?.name || collection} - ${TYPE_LABEL[type] || type}${boosters && (type === 'booster_box' || type === 'combo') ? ` ${boosters}` : ''}${vName ? ` ${vName}` : ''}`,
-    ean: fixed.ean || null,
+    name: `${col?.name || collection} - ${TYPE_LABEL[type] || type}${boosters && (type === 'booster_box' || type === 'combo') ? ` ${boosters}` : ''}${vName ? ` ${vName}` : ''}${language !== 'pt' ? ` (${IMPORT_LANGS[language]})` : ''}`,
+    ean: fixed.ean || null, language,
   };
 }
 
@@ -253,7 +263,7 @@ export function variantesDe(ids = []) {
 export function matchProduct(listing, catalog) {
   const p = parseListing(listing.title, catalog);
   // EAN cadastrado vence o título.
-  const byEan = listing.ean && (catalog.products || []).find((x) => x.ean && normEan(x.ean) === normEan(listing.ean));
+  const byEan = !p.lang && listing.ean && (catalog.products || []).find((x) => x.ean && normEan(x.ean) === normEan(listing.ean));
   if (p.rejects.length) return { productId: null, confidence: 0, parsed: p, why: p.rejects };
   if (byEan) {
     const prod = describeProduct(catalog, byEan.collection, byEan.type, byEan.boosters, null);
@@ -261,19 +271,19 @@ export function matchProduct(listing, catalog) {
   }
   // Código de referência da Copag (config/refs-copag.json) quando o título não basta: só completa o que falta, nunca
   // contradiz coleção ou tipo lidos no título, e só com um produto possível.
-  if (!p.collection || !p.type || (p.type === 'booster_box' && !p.boosters)) { const r = porRef(listing, catalog, p); if (r) return r; }
+  if (!p.lang && (!p.collection || !p.type || (p.type === 'booster_box' && !p.boosters))) { const r = porRef(listing, catalog, p); if (r) return r; }
   // Box/coleção com Pokémon em destaque ("Box Mega Zygarde ex") sem coleção no título: produto avulso da Copag. Se a
   // mesma caixa já existe numa coleção (catalog.variantes, montado do catálogo automático), vai para ela; senão, para a
   // pseudo-coleção "avulsos". Antes, 153 de 200 anúncios não casados (17/10) eram "coleção não identificada", muitos assim.
   if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
     const conhecida = catalog?.variantes?.[`${p.type}|${p.variant}`] || null;
-    const prod = describeProduct(catalog, conhecida || AVULSOS, p.type, p.boosters, p.variant);
+    const prod = describeProduct(catalog, conhecida || AVULSOS, p.type, p.boosters, p.variant, p.lang);
     return { productId: prod.id, product: prod, confidence: conhecida ? 0.7 : 0.65, parsed: p, why: [], via: conhecida ? 'variante-conhecida' : 'avulso' };
   }
   if (!p.collection) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
   if (!p.type) return { productId: null, confidence: 0, parsed: p, why: ['tipo de produto não identificado'] };
   if (p.type === 'booster_box' && !p.boosters) return { productId: null, confidence: 0, parsed: p, why: ['quantidade de boosters não informada'] };
-  const prod = describeProduct(catalog, p.collection, p.type, p.boosters, p.variant);
+  const prod = describeProduct(catalog, p.collection, p.type, p.boosters, p.variant, p.lang);
   const fixed = (catalog.products || []).find((x) => x.id === prod.id);
   if (fixed?.ean && listing.ean && normEan(fixed.ean) !== normEan(listing.ean)) return { productId: null, confidence: 0, parsed: p, why: ['EAN diverge do catálogo'] };
   let confidence = 0.8;
@@ -307,6 +317,8 @@ export function applyOverride(listing, storeId, m, catalog, idx) {
   if (!ov || m.productId === ov.productId) return m;
   if (!m.productId && !(m.why?.length === 1 && OVERRIDABLE.test(m.why[0]))) return m;
   if (m.parsed?.collection && m.parsed.collection !== ov.collection) return m;
+  // Override é cadastro de produto PT: anúncio importado nunca vira o produto PT por override.
+  if (m.parsed?.lang || langOfId(m.productId) !== 'pt') return m;
   if (!catalog.collections.some((c) => c.id === ov.collection)) return m;
   const prod = describeProduct(catalog, ov.collection, ov.type, ov.boosters ?? null, ov.variant ?? null);
   if (prod.id !== ov.productId) return m;

@@ -7,12 +7,18 @@
 import { PRODUCT_FIELDS, OFFER_FIELDS } from './home.mjs';
 import { byComparableTotal, byComparable } from './offer-rank.mjs';
 import { normalizeLojas } from './lojas.mjs';
+import { langOf } from '../_seo.mjs';
 
 export const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 export const refOf = (p) => (p.copagConfirmed ? { v: p.msrp, net: false } : p.copagReference ? { v: p.copagReference, net: true } : null);
 export const discOf = (p, o) => { if (!o || o.anomalous) return null; if (p.copagConfirmed) return o.discount; const r = refOf(p); return r ? +(1 - o.total / r.v).toFixed(4) : null; };
 export const GROUP_ORDER = ['Boosters', 'ETB', 'Blisters', 'Coleções', 'Latas', 'Baralhos'];
-export const DEFAULT_F = { mode: 'guardar', group: '', col: '', store: '', sort: '', stock: true, type: '', max: '', below: false };
+// lang: 'pt' (padrão), 'en' | 'ja' | 'zh' | 'ko' (importados) ou 'todos'. Importado não tem preço Copag: não vai
+// para o bloco "sem preço sugerido", aparece na lista normal (com o idioma no card).
+export const LANGS = ['pt', 'en', 'ja', 'zh', 'ko', 'todos'];
+export const DEFAULT_F = { mode: 'guardar', group: '', col: '', store: '', sort: '', stock: true, type: '', max: '', below: false, lang: 'pt' };
+const langOk = (F, p) => !F.lang || F.lang === 'todos' || langOf(p) === F.lang;
+const listed = (p) => refOf(p) || langOf(p) !== 'pt';
 const idCmp = (a, b) => String(a).localeCompare(String(b));
 /** menor total comparável, depois id. Nota de oportunidade não desempata preço. Frete desconhecido não vence frete
  *  conhecido (issue #84, mesma regra da página do produto — ver offer-rank.mjs); entre iguais, como o byTot do site. */
@@ -29,6 +35,7 @@ export function entries(st, F) {
     const p = P.get(o.productId); if (!p) continue;
     if (F.group && p.group !== F.group) continue;
     if (F.col && p.collection !== F.col) continue;
+    if (!langOk(F, p)) continue;
     if (F.store && o.storeId !== F.store) continue;
     if (F.type && p.type !== F.type) continue;
     if (F.max && !(o.total <= Number(F.max))) continue;
@@ -55,8 +62,9 @@ export function facetsOf(all, st, F) {
   const groups = GROUP_ORDER.filter((gr) => all.some((e) => e.p.group === gr)).map((gr) => [gr, all.filter((e) => e.p.group === gr).length]);
   const cols = (st.collections || []).filter((c) => all.some((e) => e.p.collection === c.id)).map((c) => ({ id: c.id, name: c.name, series: c.series || 'Outras' }));
   const stores = [...new Map(all.map((e) => [e.o.storeId, e.o.storeName])).entries()].sort((a, b) => String(a[1]).localeCompare(String(b[1])));
+  const langs = ['pt', 'en', 'ja', 'zh', 'ko'].map((l) => [l, entries(st, { ...F, group: '', col: '', store: '', lang: l }).length]).filter(([, n]) => n);
   const types = [...new Map(all.filter((e) => !F.group || e.p.group === F.group).map((e) => [e.p.type, e.p.typeLabel])).entries()].sort((a, b) => String(a[1]).localeCompare(String(b[1])));
-  return { groups, cols, stores, types };
+  return { groups, cols, stores, types, langs };
 }
 
 /** reputação (Reclame Aqui) e evidências só das lojas presentes nas ofertas devolvidas */
@@ -76,8 +84,8 @@ const cardP = (p, n) => ({ ...pick(p, CARD_P), liveCount: n[p.id] || 0 });
 export function siteProducts(st, F0, { page = 1, limit = 48 } = {}) {
   const F = { ...DEFAULT_F, ...F0 };
   const raw = entries(st, F);
-  const base = F.mode === 'guardar' ? raw.filter((e) => refOf(e.p)) : raw;
-  const noCopag = F.mode === 'guardar' ? raw.filter((e) => !refOf(e.p)) : [];
+  const base = F.mode === 'guardar' ? raw.filter((e) => listed(e.p)) : raw;
+  const noCopag = F.mode === 'guardar' ? raw.filter((e) => !listed(e.p)) : [];
   const list = sortEntries(base.slice(), F);
   const all = entries(st, { ...F, group: '', col: '', store: '' });
   const n = liveCounts(st);

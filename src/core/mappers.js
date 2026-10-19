@@ -3,7 +3,7 @@
 // Funções puras (sem banco), para testar isoladas.
 import { categoryOf } from './taxonomy.js';
 import { robotReferenceKind, isCopagUrl } from './references.js';
-import { slugs, label } from '../../api/_seo.mjs';
+import { slugs, label, langOf, LANG_TAG } from '../../api/_seo.mjs';
 
 export const TCG = 'pokemon';
 export const collectionId = (code) => `${TCG}:${code}`;
@@ -30,7 +30,7 @@ export function productsRows(products) {
   return products.map((p) => ({
     legacy_id: p.id, slug: of[p.id], tcg_id: TCG, collection_id: collectionId(p.collection),
     category_id: categoryOf(p.type), brand: 'Copag', canonical_name: `${p.collectionName} - ${label(p)}`,
-    language: 'pt-BR', units: p.boosters || null, variant: p.variant || null, image_url: p.image || null,
+    language: LANG_TAG[langOf(p)], units: p.boosters || null, variant: p.variant || null, image_url: p.image || null,
     status: 'active', attrs: { type: p.type, typeLabel: p.typeLabel, group: p.group },
     ean: p.ean || null,
   }));

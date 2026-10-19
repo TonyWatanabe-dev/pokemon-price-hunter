@@ -5,7 +5,12 @@ export const RAW = 'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-p
 export const SITE = 'https://tcgpricehunter.com.br';
 const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const slugify = (t) => norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-export const label = (p) => p.typeLabel + (p.boosters && (p.type === 'booster_box' || p.type === 'combo') ? ` ${p.boosters}` : '') + (p.variant ? ` ${p.variant}` : '');
+// Importado (id terminado em -en/-ja/-zh/-ko, ver src/match.js): o idioma entra no rótulo e no slug, para nunca
+// disputar o slug do produto em português.
+export const LANG_NAME = { en: 'Inglês', ja: 'Japonês', zh: 'Chinês', ko: 'Coreano' };
+export const LANG_TAG = { pt: 'pt-BR', en: 'en', ja: 'ja', zh: 'zh', ko: 'ko' };
+export const langOf = (p) => (String(p?.id || '').match(/-(en|ja|zh|ko)$/) || [])[1] || 'pt';
+export const label = (p) => p.typeLabel + (p.boosters && (p.type === 'booster_box' || p.type === 'combo') ? ` ${p.boosters}` : '') + (p.variant ? ` ${p.variant}` : '') + (langOf(p) !== 'pt' ? ` ${LANG_NAME[langOf(p)]}` : '');
 export function slugs(products) {
   const by = {}, of = {};
   for (const p of [...products].sort((a, b) => (b.offerCount || 0) - (a.offerCount || 0) || a.id.localeCompare(b.id))) {

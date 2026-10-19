@@ -13,7 +13,8 @@ assert.equal(r.productId, `${AVULSOS}-deck-melmetal`); assert.equal(r.product.co
 assert.equal(matchProduct({ title: 'Pokémon Coleção EX Lendas Azuis - Xerneas EX' }, cat).productId, 'avulsos-colecao_ex-xerneas', '"<nome> ex" certo, não "lendas"');
 assert.equal(matchProduct({ title: 'Box Pokémon Zacian ex ou Koraidon ex Copag' }, cat).productId, null, 'loja escolhe qual vem: não casa');
 assert.equal(matchProduct({ title: 'Top Loader Magnético Pokemon' }, cat).productId, null);
-assert.equal(matchProduct({ title: 'Pokémon Box Mega Gengar ex japonês' }, cat).productId, null, 'idioma continua recusando');
+assert.equal(matchProduct({ title: 'Pokémon Box Mega Gengar ex japonês' }, cat).productId, 'avulsos-colecao_ex-mega-gengar-ja', 'importado vira produto próprio');
+assert.equal(matchProduct({ title: 'Pokémon Box Mega Gengar ex francês' }, cat).productId, null, 'outros idiomas continuam recusando');
 assert.equal(matchProduct({ title: 'Box Pokémon Coleção Mega Zygarde ex Equilíbrio Perfeito' }, cat).via, undefined, 'título com coleção: caminho normal');
 console.log('box-avulsos-tests: ok');
 // Padrão de varejo com contagem de cartas e boosters entre parênteses.

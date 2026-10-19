@@ -2,7 +2,7 @@
 // Usado quando o banco não está configurado na Vercel ou não responde. Mesmo formato das leituras do banco,
 // com a marcação source: 'state' na resposta. O que só existe no banco (histórico diário, estatísticas históricas)
 // volta vazio/nulo, nunca inventado.
-import { slugs, label } from '../_seo.mjs';
+import { slugs, label, langOf, LANG_TAG } from '../_seo.mjs';
 import { robotReferenceKind, SCOPE, LABEL, currentReferenceView } from './references.mjs';
 import { normalizeSearch } from './search.mjs';
 import { offerFreshness } from './freshness.mjs';
@@ -58,7 +58,7 @@ export function stateGetProduct(st, key) {
   const { of, byP } = index(st); const list = byP.get(p.id) || []; const m = marketOf(list); const r = refOf(p);
   return { id: p.id, slug: of[p.id], name: nameOf(p), tcg: 'pokemon', category: null, type: p.type, type_label: p.typeLabel,
     collection: { code: p.collection, name: p.collectionName, series: p.series ?? null }, boosters: p.boosters ?? null, variant: p.variant ?? null,
-    language: 'pt-BR', condition: 'new', image: p.image ?? null, status: 'active',
+    language: LANG_TAG[langOf(p)], condition: 'new', image: p.image ?? null, status: 'active',
     identifiers: p.ean ? [{ kind: 'ean', value: String(p.ean) }] : [],
     ...stateRefs(p, r), stats: stateStatsOf(p, list, m, curRefOf(p)) };
 }

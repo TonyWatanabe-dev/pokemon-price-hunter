@@ -6,13 +6,13 @@
 //   GET /api/v1/produtos/:id/historico?dias          → série diária do Price Engine (sem histórico bruto)
 //   GET /api/v1/produtos/:id/estatisticas
 //   GET /api/v1/referencias?pagina&limite&status
-//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&produto&ordem&ofertas=todas&loja&max
+//   GET /api/v1/oportunidades?pagina&limite&faixa&colecao&categoria&referencia&minimo&abaixo&confianca_minima&produto&ordem&ofertas=todas&loja&max&idioma
 //   GET /api/v1/oportunidades/lojas                 → lojas com oferta avaliada com estoque (filtro Loja)
 //       → resultado do Opportunity Engine (melhor oferta comprável por produto; referência atual, contexto histórico e
 //       comunitária separados; reference_comparison = distância até a referência atual que o motor usou)
 //       ordem: score | preco | confianca | abaixo | economia | queda | recentes
 // FASE 4 — formato do site (mesmas regras de lista do tools/page.template.html, aplicadas no servidor):
-//   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&ordem&pagina&limite → página de /produtos
+//   GET /api/v1/site/produtos?modo&grupo&colecao&loja&tipo&max&abaixo&estoque&idioma&ordem&pagina&limite → página de /produtos
 //   GET /api/v1/site/ofertas?produtos=a,b | colecao= | tipo=   → ofertas candidatas (coleção, tipo, busca)
 //   GET /api/v1/site/lojas                          → diretório de lojas: domínio, ofertas observadas, atualização (sem nota de reputação)
 //   GET /api/v1/site/produto/:id                    → página do produto (ofertas, Price Engine, Copag, frete, pistas)
@@ -59,7 +59,7 @@ const str = (v, max = 80) => (typeof v === 'string' && v.trim() ? v.trim().slice
 const bool = (v) => v === '1' || v === 'true' || v === 'sim';
 // Só parâmetros que a rota lê entram na chave do cache: "?x=1", "?x=2"... não enchem o cache nem forçam consultas repetidas.
 const KEY_PARAMS = new Set(['pagina', 'limite', 'colecao', 'tipo', 'categoria', 'estoque', 'busca', 'ordem', 'todas', 'dias', 'lojas', 'status', 'faixa',
-  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos']);
+  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos', 'idioma']);
 const SLUG_RE = /^[a-z0-9][a-z0-9_.-]{0,120}$/i;
 
 class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -106,8 +106,11 @@ function route(segs, qs) {
     // loja: id da loja (filtro da página); max: preço até R$ (total quando o frete é conhecido, senão o preço do produto)
     const loja = str(qs.get('loja'), 60) || null; if (loja && !SLUG_RE.test(loja)) throw new HttpError(400, 'loja inválida');
     const maxS = maxPrice(qs.get('max'));
+    // idioma do produto: pt (português) ou importado en/ja/zh/ko; "todos" = todos. Ausente: português, exceto com
+    // produto (a página do produto mostra as ofertas dele, seja qual for o idioma).
+    const idioma = str(qs.get('idioma'), 6) || null; if (idioma && !SITE.LANGS.includes(idioma)) throw new HttpError(400, `idioma inválido (use: ${SITE.LANGS.join(', ')})`);
     return capOffset({ name: 'oportunidades', page, limit, args: { page, limit, faixa, colecao, minimo, ordem, todas: ofertas === 'todas', categoria, referencia, abaixo, confiancaMinima, produto,
-      loja, max: maxS ? Number(maxS) : null } });
+      loja, max: maxS ? Number(maxS) : null, idioma: idioma === 'todos' ? null : idioma || (produto ? null : 'pt') } });
   }
   // lojas com oferta avaliada com estoque (opções do filtro "Loja" da página de oportunidades)
   if (a === 'oportunidades' && segs.length === 2 && segs[1] === 'lojas') return { name: 'oportunidades-lojas' };
@@ -120,7 +123,7 @@ function route(segs, qs) {
       const max = maxPrice(qs.get('max'));
       const sp = intIn(qs.get('pagina'), 1, 1, 1000); const sl = intIn(qs.get('limite'), 48, 1, 60);
       return { name: 'site-produtos', kind: 'site', page: sp, limit: sl, F: { mode: modo, sort: ordem, group: grupo, col: str(qs.get('colecao'), 40) || '', store: str(qs.get('loja'), 60) || '',
-        type: str(qs.get('tipo'), 40) || '', max, below: bool(qs.get('abaixo')), stock: qs.get('estoque') !== '0', semref: bool(qs.get('semref')) } };
+        type: str(qs.get('tipo'), 40) || '', max, below: bool(qs.get('abaixo')), stock: qs.get('estoque') !== '0', semref: bool(qs.get('semref')), lang: SITE.LANGS.includes(qs.get('idioma')) ? qs.get('idioma') : 'pt' } };
     }
     if (id === 'ofertas' && segs.length === 2) {
       const ids = (str(qs.get('produtos'), 4000) || '').split(',').map((x) => x.trim()).filter(Boolean);

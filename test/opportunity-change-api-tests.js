@@ -91,7 +91,7 @@ await t('retrocompatível: campos antigos, valores e parâmetros da consulta pri
   const db = fakeDb([row(11, 'p1', { shipping_status: 'unknown', total_price: null })], [chg(11)]);
   const args = { page: 2, limit: 5, faixa: 'boa', colecao: 'me05', minimo: 50, ordem: 'preco', categoria: 'ETB', referencia: 'copag', abaixo: 10, confiancaMinima: 60, produto: 'p1' };
   const r = await listOpportunities({ ...args, query: db.query, now: NOW });
-  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null], 'mesmos filtros e paginação (loja e max novos, no fim, nulos)');
+  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null, null], 'mesmos filtros e paginação (loja, max e idioma novos, no fim, nulos)');
   assert.match(db.calls[0].sql, /FROM hunter\.product_opportunity o/, 'sem loja e sem preço máximo: mesma view de antes');
   assert.match(db.calls[0].sql, /ORDER BY o\.price ASC, o\.opportunity_score DESC, o\.offer_id\s+LIMIT \$4 OFFSET \$5/, 'mesma ordenação');
   const x = r.items[0];
