@@ -7,7 +7,7 @@ import { normalize } from '../src/match.js';
 
 let n = 0; const t = (name, fn) => { fn(); n++; };
 
-const ALLOWED_KEYS = new Set(['id', 'name', 'series', 'aliases', 'fallbackAliases', 'combines', 'releaseDate']);
+const ALLOWED_KEYS = new Set(['id', 'name', 'series', 'aliases', 'fallbackAliases', 'combines', 'releaseDate', 'langAliases']);
 // Coleções costumam ser anunciadas com até ~1 ano de antecedência; uma data além disso é quase certamente erro de digitação.
 const MAX_FUTURE_DAYS = 366;
 const PLACEHOLDER = /^(-+|\?+|n\/?a|null|undefined|tbd|tba|todo|xxx+|0000-00-00|indefinid[oa]|desconhecid[oa]|a definir)$/i;
@@ -71,7 +71,8 @@ export function auditCollections(catalog, { now = new Date() } = {}) {
     if (!Array.isArray(c?.aliases)) errs.push(`${where}: aliases ausente (use [] quando não houver)`);
     const lists = [['alias', c?.aliases || []], ['fallbackAlias', c?.fallbackAliases ?? []]];
     if (c && 'fallbackAliases' in c && (!Array.isArray(c.fallbackAliases) || !c.fallbackAliases.length)) errs.push(`${where}: fallbackAliases vazio ou inválido`);
-    if (Array.isArray(c?.aliases) && !c.aliases.length && !c.combines) errs.push(`${where}: sem aliases (só coleção combinada pode não ter)`);
+    if (Array.isArray(c?.aliases) && !c.aliases.length && !c.combines && !Object.values(c?.langAliases || {}).flat().length) errs.push(`${where}: sem aliases (só coleção combinada ou só com nome em outro idioma pode não ter)`);
+    for (const [l, v] of Object.entries(c?.langAliases || {})) if (!['en', 'ja', 'zh', 'ko'].includes(l) || !Array.isArray(v) || !v.length || v.some((a) => typeof a !== 'string' || !a.trim())) errs.push(`${where}: langAliases inválido em "${l}"`);
     const seen = new Set();
     for (const [what, list] of lists) for (const a of Array.isArray(list) ? list : []) {
       if (isBlank(a)) { errs.push(`${where}: ${what} vazio ou inválido ${JSON.stringify(a)}`); continue; }

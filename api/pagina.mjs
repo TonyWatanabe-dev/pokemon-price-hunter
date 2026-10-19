@@ -251,7 +251,7 @@ export default async function handler(req, res) {
     let opp = null;
     // Lote 2: oportunidades só com o banco em dia; preços no HTML só com o state.json em dia (até 90 min).
     // Fora disso, vai a página sem o conteúdo pré-renderizado: o site carrega e mostra o aviso de dados desatualizados.
-    if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { if (usable(classify(await dbDataAt()))) opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20 })).items; } catch { opp = null; } }
+    if ((t === 'oportunidades' || t === 'home') && apiDbEnabled()) { try { if (usable(classify(await dbDataAt()))) opp = (await listOpportunities({ page: 1, limit: t === 'home' ? 15 : 20, idioma: 'pt' })).items; } catch { opp = null; } }
     const s = await state();
     if (!usable(classify(stateDataAt(s)))) throw new Error('dados desatualizados');
     // Frente 7: lojas conhecidas (sources do state.json; sem ele, sources.json) só para /lojas e para o bloco do produto.

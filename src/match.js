@@ -72,8 +72,12 @@ export const TYPE_GROUP = {
 export const groupOf = (type) => TYPE_GROUP[type] || 'Coleções';
 
 export function detectCollection(t, collections) {
-  const hits = collections.filter((c) => c.aliases.some((a) => wordRe(a).test(t)));
-  if (hits.length === 1) return { id: hits[0].id };
+  // langAliases: nome da coleção em outro idioma ({ en: ['surging sparks'], ja: [...] }). Casar só por ele dá a pista
+  // do idioma (langHint), usada quando o título não diz o idioma.
+  const viaPt = (c) => (c.aliases || []).some((a) => wordRe(a).test(t));
+  const viaLang = (c) => Object.entries(c.langAliases || {}).find(([, v]) => v.some((a) => wordRe(a).test(t)))?.[0] || null;
+  const hits = collections.filter((c) => viaPt(c) || viaLang(c));
+  if (hits.length === 1) return viaPt(hits[0]) ? { id: hits[0].id } : { id: hits[0].id, langHint: viaLang(hits[0]) };
   if (hits.length > 1) {
     // Produto conjunto (ex.: "Fogo Branco e Raio Preto"): só quando o título cita exatamente as coleções combinadas.
     const ids = hits.map((h) => h.id).sort().join('|');
@@ -194,7 +198,7 @@ export function parseListing(title, catalog) {
   // Importados (inglês, japonês, chinês, coreano) viram produto próprio, com sufixo de idioma e sem referência Copag.
   // Os demais idiomas e títulos com dois idiomas continuam recusados.
   if (language.conflict || (language.code && language.code !== 'pt' && !IMPORT_LANGS[language.code])) reasons.push('idioma diferente de PT');
-  const lang = language.code && IMPORT_LANGS[language.code] ? language.code : null;
+  let lang = language.code && IMPORT_LANGS[language.code] ? language.code : null;
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
   if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
@@ -203,11 +207,14 @@ export function parseListing(title, catalog) {
   else if (/\bcase\b(?! vazi[oa]\b)|\b(caixa|box) master\b|\bmaster (case|box)\b|\b([2-9]|1\d) ?x? (booster box(es)?|box(es)? display|displays?|treinadore?s? avancados?|etbs?)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
   if (/\b(dados?|moedas?|marcadores?|contadores? de dano)\b/.test(t) && !/\b(boosters?|pacotes?|blister|colecao|box|treinador avancado com|etb com)\b/.test(t.replace(/\btreinador avancado\b/, ''))) reasons.push('acessório avulso (dados, moeda, marcador)');
   const col = detectCollection(t, catalog.collections);
+  // Nome da coleção em outro idioma sem idioma no título ("Surging Sparks Booster Box"): vale o idioma do nome.
+  // Título que diz português com nome em outro idioma é contraditório: recusa.
+  if (col.langHint && !language.conflict) { if (language.code === 'pt') reasons.push('idioma diferente de PT'); else if (!language.code) lang = col.langHint; }
   if (!/\bpokemon\b/.test(t) && !/\bcopag\b/.test(t) && !col.id) reasons.push('não menciona Pokémon');
   if (col.ambiguous) reasons.push('mais de uma coleção no título: ' + col.ambiguous.join(', '));
   const colDef = catalog.collections.find((c) => c.id === col.id);
   let tt = t;
-  for (const a of [...(colDef?.aliases || []), ...(colDef?.fallbackAliases || [])].sort((x, y) => y.length - x.length)) tt = tt.replace(new RegExp(wordRe(a).source, 'g'), ' ');
+  for (const a of [...(colDef?.aliases || []), ...(colDef?.fallbackAliases || []), ...Object.values(colDef?.langAliases || {}).flat()].sort((x, y) => y.length - x.length)) tt = tt.replace(new RegExp(wordRe(a).source, 'g'), ' ');
   tt = tt.replace(/\s+/g, ' ').trim();
   const d = detectType(tt);
   if (LOOSE_BINDER(t)) reasons.push('acessório ou item não-TCG');

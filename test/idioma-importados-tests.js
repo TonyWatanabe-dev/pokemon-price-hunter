@@ -49,3 +49,28 @@ assert.match(html, /id="f-lang" data-f="lang"/);
 assert.match(html, /q\.set\("idioma",F\.lang\)/);
 assert.equal((html.match(/class="lang-chip"/g) || []).length, 3, 'etiqueta de idioma nos cards');
 console.log('idioma-importados-tests ok');
+
+// nomes da coleção em outro idioma (langAliases): sem idioma no título, vale o idioma do nome
+{
+  const t = (s) => matchProduct({ title: s }, catalog).productId;
+  assert.equal(t('Pokemon TCG Surging Sparks Booster Box 36 packs'), 'sv8-box36-en');
+  assert.equal(t('Pokémon Elite Trainer Box Prismatic Evolutions'), 'sv8_5-etb-en');
+  assert.equal(t('Booster Box Surging Sparks 36 Boosters Português'), null, 'português com nome em inglês: contraditório');
+  assert.equal(t('Booster Box Pokémon Card 151 japonês 20 boosters'), 'sv3_5-box20-ja');
+  assert.match(t('Pokémon Booster Box Mega Brave 30 boosters'), /^jp\d+-box30-ja$/, 'coleção só do Japão');
+  assert.match(t('Booster Box Mega Brave Coreano 30 boosters'), /-box30-ko$/, 'idioma do título vence o do nome');
+  assert.match(t('Booster Box Pokemon CSV9 Stellar Crystal 30 boosters'), /^cn\d+-box30-zh$/);
+  assert.equal(t('Pokémon TCG Booster Box Fagulhas Impetuosas 36 boosters'), 'sv8-box36', 'nome em português continua PT');
+}
+
+// banco: listOpportunities aplica o idioma ($13, com pt → pt-BR); a página pré-renderizada pede só português
+{
+  const { listOpportunities } = await import('../api/_lib/read-db.mjs');
+  const calls = []; const query = async (sql, params) => { calls.push({ sql, params }); return []; };
+  for (const idioma of ['pt', 'en', null]) await listOpportunities({ page: 1, limit: 5, idioma, query });
+  assert.deepEqual(calls.map((c) => c.params[12]), ['pt-BR', 'en', null]);
+  assert.match(calls[0].sql, /\$13::text IS NULL OR p\.language = \$13/);
+  const pagina = readFileSync(new URL('../api/pagina.mjs', import.meta.url), 'utf8');
+  assert.match(pagina, /listOpportunities\(\{ page: 1, limit: t === 'home' \? 15 : 20, idioma: 'pt' \}\)/, 'SSR da Home e de /oportunidades só com português');
+}
+console.log('idioma-importados-tests: nomes, banco e SSR ok');
