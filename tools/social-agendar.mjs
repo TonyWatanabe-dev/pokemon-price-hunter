@@ -14,7 +14,7 @@ const caminho = arg('agenda');
 const modo = arg('modo', 'simular');
 const so = (arg('so', '') || '').split(',').map((s) => s.trim()).filter(Boolean);
 if (!caminho) { console.error('informe --agenda'); process.exit(2); }
-if (!['simular', 'agendar', 'cancelar', 'contas', 'agendados'].includes(modo)) { console.error('--modo simular|agendar|cancelar|contas|agendados'); process.exit(2); }
+if (!['simular', 'agendar', 'cancelar', 'contas', 'agendados', 'metricas'].includes(modo)) { console.error('--modo simular|agendar|cancelar|contas|agendados|metricas'); process.exit(2); }
 
 const agenda = JSON.parse(readFileSync(caminho, 'utf8'));
 const itens = agenda.itens.filter((i) => !so.length || so.includes(i.id));
@@ -49,6 +49,19 @@ async function midias(it) {
 if (modo === 'contas') {
   // Diagnóstico: quais redes estão conectadas no perfil (rede e @, nunca ids ou tokens).
   for (const c of await cli.contas(perfil)) anota('notice', `conta: ${c.rede} · ${c.usuario || '(sem nome)'} · ${c.ativa ? 'ativa' : 'inativa'}`);
+  process.exit(0);
+}
+
+if (modo === 'metricas') {
+  // Desempenho dos posts publicados nos últimos 30 dias, uma anotação por rede (sem ids).
+  const de = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10), ate = new Date().toISOString().slice(0, 10);
+  for (const rede of ['instagram', 'tiktok']) {
+    try {
+      const ps = await cli.metricas(perfil, rede, de, ate);
+      const l = ps.map((p) => `${String(p.publicado ?? '').slice(0, 16)} v${p.views} c${p.curtidas} m${p.comentarios} s${p.compart}${p.alcance != null ? ' a' + p.alcance : ''}${p.salvos != null ? ' sv' + p.salvos : ''} «${p.texto}»`).sort();
+      anota('notice', `métricas ${rede} (${l.length}): ${l.join(' | ')}`);
+    } catch (e) { anota('warning', `métricas ${rede}: ${e.message}`); }
+  }
   process.exit(0);
 }
 

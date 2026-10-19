@@ -131,6 +131,18 @@ export function criarCliente({ chave, fetch: fetchFn, apiBase = API_PADRAO, time
       const { dado } = await chamar(`${base}/posts?${q}`);
       return Array.isArray(dado.posts) ? dado.posts : [];
     },
+    /** Métricas dos posts publicados (GET /analytics): views, curtidas, comentários, compartilhamentos. */
+    async metricas(profileId, plataforma, de, ate) {
+      if (!PLATAFORMAS.includes(plataforma)) throw new Error('plataforma inválida');
+      const q = new URLSearchParams({ platform: plataforma, limit: '100', ...(de ? { fromDate: de } : {}), ...(ate ? { toDate: ate } : {}), ...(profileId ? { profileId } : {}) });
+      const { dado } = await chamar(`${base}/analytics?${q}`);
+      return (Array.isArray(dado.posts) ? dado.posts : []).map((p) => ({
+        publicado: p.publishedAt ?? null, texto: String(p.content ?? '').slice(0, 60).replace(/\s+/g, ' '),
+        views: Number(p.analytics?.views ?? 0), curtidas: Number(p.analytics?.likes ?? 0),
+        comentarios: Number(p.analytics?.comments ?? 0), compart: Number(p.analytics?.shares ?? 0),
+        alcance: p.analytics?.reach ?? null, salvos: p.analytics?.saves ?? p.analytics?.saved ?? null,
+      }));
+    },
     async cancelar(postId) {
       if (!/^[a-f0-9]{24}$/i.test(String(postId))) throw new Error('postId inválido');
       await chamar(`${base}/posts/${postId}`, { metodo: 'DELETE' });

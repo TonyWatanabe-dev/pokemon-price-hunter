@@ -50,3 +50,15 @@ console.log('social-youtube-tests: ok');
   assert.ok(!('video_cover_timestamp_ms' in sem.tiktokSettings));
   console.log('ok social: capa do TikTok');
 }
+
+{ // métricas: GET /analytics por rede, sem ids no resultado
+  let pedido = '';
+  const fake = async (u) => { pedido = String(u); return { ok: true, status: 200, json: async () => ({ posts: [{ _id: 'x', publishedAt: '2026-10-18T21:00:00Z', content: 'gastei R$ 766\nem pokémon', analytics: { views: 3, likes: 1, comments: 0, shares: 0 } }] }) }; };
+  const cli = criarCliente({ chave: 'k'.repeat(20), fetch: fake });
+  const [m] = await cli.metricas('perfil1', 'tiktok', '2026-09-19', '2026-10-19');
+  assert.ok(/\/analytics\?/.test(pedido) && pedido.includes('platform=tiktok') && pedido.includes('fromDate=2026-09-19'));
+  assert.deepEqual([m.views, m.curtidas, m.texto], [3, 1, 'gastei R$ 766 em pokémon']);
+  assert.ok(!('id' in m) && !('_id' in m));
+  await assert.rejects(() => cli.metricas('p', 'orkut'));
+  console.log('ok social: métricas');
+}
