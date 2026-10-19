@@ -1,313 +1,1689 @@
 {
- "_nota": "Produto do site → página do mesmo produto na Liga Pokémon (só o link, sem preço). Gerado da lista do dono (18/10/2026): só pares 1:1, sem coleção por aproximação.",
+ "_nota": "Produto do site → mesmo produto na Liga Pokémon. Preço = menor preço (\"a partir de\") mostrado na Liga em capturedAt, publicado com autorização da Liga informada pelo dono (19/10/2026). Camada à parte: não vira oferta, ranking, Score, alerta nem post. Só pares 1:1, sem coleção por aproximação.",
+ "capturedAt": "2026-10-19T22:00:00-03:00",
  "links": {
-  "c30-blister2": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136991",
-  "c30-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136985",
-  "c30-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136961",
-  "c30-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137637",
-  "c30-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137625",
-  "c30-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137638",
-  "c30-box36-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137624",
-  "c30-colecao_ex-greninja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136992",
-  "c30-colecao_ex-greninja-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136969",
-  "c30-colecao_ex-sylveon": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136993",
-  "c30-colecao_ex-sylveon-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136968",
-  "c30-colecao_poster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136990",
-  "c30-colecao_poster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136967",
-  "c30-colecao_premium-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136984",
-  "c30-deck-espeon": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137470",
-  "c30-deck-espeon-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136982",
-  "c30-deck-umbreon": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137469",
-  "c30-deck-umbreon-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136983",
-  "c30-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136986",
-  "c30-minilata": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136981",
-  "cel25-colecao_especial": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109747",
-  "cel25-colecao_premium-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130306",
-  "cel25-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133712",
-  "cn1-box36-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136930",
-  "cn2-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136050",
-  "cn3-box36-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137615",
-  "cn4-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136648",
-  "cn4-box36-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136649",
-  "cn5-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137101",
-  "cn6-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137117",
-  "cn6-box36-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137116",
-  "cn7-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137102",
-  "jp1-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124463",
-  "jp1-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124462",
-  "jp10-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125093",
-  "jp11-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126147",
-  "jp12-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126149",
-  "jp12-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126148",
-  "jp13-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135814",
-  "jp14-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127701",
-  "jp14-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127700",
-  "jp15-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127703",
-  "jp15-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127702",
-  "jp16-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128304",
-  "jp16-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135815",
-  "jp16-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128303",
-  "jp18-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128786",
-  "jp18-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128787",
-  "jp19-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128788",
-  "jp19-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128789",
-  "jp2-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124982",
-  "jp2-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124981",
-  "jp20-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128803",
-  "jp21-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135811",
-  "jp22-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129443",
-  "jp23-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135808",
-  "jp24-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130935",
-  "jp24-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135807",
-  "jp24-box36-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135806",
-  "jp25-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130936",
-  "jp25-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135804",
-  "jp25-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130934",
-  "jp25-box36-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135805",
-  "jp26-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131341",
-  "jp26-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135803",
-  "jp26-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131342",
-  "jp27-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131345",
-  "jp27-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135800",
-  "jp28-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132121",
-  "jp28-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135799",
-  "jp28-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132122",
-  "jp28-box36-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135798",
-  "jp29-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132370",
-  "jp29-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135796",
-  "jp29-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132369",
-  "jp29-box36-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135797",
-  "jp3-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125091",
-  "jp3-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125092",
-  "jp30-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132919",
-  "jp30-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132918",
-  "jp31-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133371",
-  "jp32-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133630",
-  "jp32-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133629",
-  "jp33-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133883",
-  "jp33-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135778",
-  "jp33-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133884",
-  "jp33-box36-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135777",
-  "jp34-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133882",
-  "jp34-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135776",
-  "jp34-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133881",
-  "jp35-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134385",
-  "jp35-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135783",
-  "jp35-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134386",
-  "jp36-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134847",
-  "jp36-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134848",
-  "jp37-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135431",
-  "jp37-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135430",
-  "jp38-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135705",
-  "jp38-booster-zh": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135757",
-  "jp38-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135706",
-  "jp39-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136682",
-  "jp39-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136681",
-  "jp4-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124980",
-  "jp40-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137463",
-  "jp40-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137462",
-  "jp5-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124438",
-  "jp6-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124348",
-  "jp7-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125858",
-  "jp7-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125859",
-  "jp8-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126217",
-  "jp9-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126499",
-  "me01-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133950",
-  "me01-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133946",
-  "me01-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133956",
-  "me01-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133955",
-  "me01-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133948",
-  "me01-desafio-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133958",
-  "me02-blister1-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134683",
-  "me02-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134377",
-  "me02-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134382",
-  "me02-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134381",
-  "me02-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134368",
-  "me02-desafio-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134378",
-  "me02-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134370",
-  "me02-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134380",
-  "me02_5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135106",
-  "me02_5-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135113",
-  "me02_5-colecao_ex-mega-emboar-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135157",
-  "me02_5-colecao_ex-mega-feraligatr-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135158",
-  "me02_5-colecao_ex-mega-meganium-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135156",
-  "me02_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135108",
-  "me02_5-minilata": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135282",
-  "me03-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135523",
-  "me03-blister1-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135533",
-  "me03-blister3-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135532",
-  "me03-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135524",
-  "me03-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135531",
-  "me03-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135530",
-  "me03-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135519",
-  "me03-desafio-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135527",
-  "me03-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135521",
-  "me04-blister3-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135869",
-  "me04-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135975",
-  "me04-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135868",
-  "me04-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135867",
-  "me04-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136253",
-  "me04-desafio-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135864",
-  "me04-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135972",
-  "me05-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136635",
-  "me05-blister3-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136620",
-  "me05-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136636",
-  "me05-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136619",
-  "me05-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136618",
-  "me05-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136639",
-  "me05-desafio-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136615",
-  "me05-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136633",
-  "sv1-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127555",
-  "sv1-blister4": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127553",
-  "sv1-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127023",
-  "sv1-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132332",
-  "sv1-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127022",
-  "sv1-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127026",
-  "sv1-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127025",
-  "sv10-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133461",
-  "sv10-blister1-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133448",
-  "sv10-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133460",
-  "sv10-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133443",
-  "sv10-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133444",
-  "sv10-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133454",
-  "sv10-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133457",
-  "sv10_5-colecao_ilustracao": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134081",
-  "sv10_5-colecao_ilustracao-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133785",
-  "sv10_5-colecao_poster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133786",
-  "sv10_5r-blister3": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133848",
-  "sv10_5r-blister3-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133779",
-  "sv10_5r-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133792",
-  "sv10_5r-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133783",
-  "sv10_5r-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133684",
-  "sv10_5r-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133682",
-  "sv10_5r-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133793",
-  "sv10_5w-blister3": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133849",
-  "sv10_5w-blister3-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133778",
-  "sv10_5w-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133790",
-  "sv10_5w-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133774",
-  "sv10_5w-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133683",
-  "sv10_5w-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133681",
-  "sv10_5w-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133791",
-  "sv2-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127842",
-  "sv2-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127843",
-  "sv2-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127844",
-  "sv2-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127850",
-  "sv2-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127849",
-  "sv2-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130376",
-  "sv3-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128429",
-  "sv3-blister3": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128308",
-  "sv3-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128223",
-  "sv3-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131785",
-  "sv3-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128222",
-  "sv3-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128306",
-  "sv3-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128224",
-  "sv3_5-booster-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128392",
-  "sv3_5-booster-ko": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135774",
-  "sv3_5-box36-ja": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128000",
-  "sv4-blister4": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128752",
-  "sv4-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128755",
-  "sv4-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131784",
-  "sv4-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128754",
-  "sv4-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128759",
-  "sv4_5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128933",
-  "sv4_5-colecao_ex-charizard": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128935",
-  "sv4_5-colecao_ex-ferreo": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129432",
-  "sv4_5-colecao_ex-grande": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129433",
-  "sv4_5-colecao_ex-meowscarada": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128937",
-  "sv4_5-colecao_ex-quaquaval": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128938",
-  "sv4_5-colecao_ex-skeledirge": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128939",
-  "sv4_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128934",
-  "sv5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129394",
-  "sv5-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135754",
-  "sv5-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129819",
-  "sv5-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129820",
-  "sv5-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133507",
-  "sv6-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129878",
-  "sv6-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135755",
-  "sv6-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130258",
-  "sv6-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130286",
-  "sv6-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129879",
-  "sv6-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130726",
-  "sv6_5-blister3": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130430",
-  "sv6_5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130426",
-  "sv6_5-colecao_ilustracao": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130428",
-  "sv6_5-colecao_ilustracao-kingdra": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131130",
-  "sv6_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130427",
-  "sv7-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130982",
-  "sv7-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130984",
-  "sv7-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131745",
-  "sv7-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130983",
-  "sv7-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133733",
-  "sv8-blister4": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132226",
-  "sv8-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131657",
-  "sv8-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132780",
-  "sv8-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131658",
-  "sv8-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132358",
-  "sv8-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131656",
-  "sv8_5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132360",
-  "sv8_5-colecao_especial-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133485",
-  "sv8_5-colecao_premium": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134151",
-  "sv8_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132361",
-  "sv9-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133130",
-  "sv9-blister1-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133279",
-  "sv9-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132835",
-  "sv9-booster-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133171",
-  "sv9-box36-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133175",
-  "sv9-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133125",
-  "sv9-desafio-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133179",
-  "sv9-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133128",
-  "swsh1-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108115",
-  "swsh10-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=122099",
-  "swsh10-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=122101",
-  "swsh10-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=122098",
-  "swsh10-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130379",
-  "swsh11-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125906",
-  "swsh11-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124485",
-  "swsh11-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124484",
-  "swsh11-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124487",
-  "swsh11-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130378",
-  "swsh12-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126270",
-  "swsh12-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126055",
-  "swsh12-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126061",
-  "swsh12-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126273",
-  "swsh12-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126056",
-  "swsh12_5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126717",
-  "swsh12_5-colecao_especial": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127546",
-  "swsh12_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126718",
-  "swsh12_5-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130377",
-  "swsh2-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=119152",
-  "swsh2-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108117",
-  "swsh2-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108118",
-  "swsh3-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108668",
-  "swsh3-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108667",
-  "swsh3-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108804",
-  "swsh3_5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108960",
-  "swsh3_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108806",
-  "swsh4-blister4": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108938",
-  "swsh4-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108933",
-  "swsh4-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108934",
-  "swsh4-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124560",
-  "swsh4_5-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109122",
-  "swsh4_5-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131189",
-  "swsh5-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109164",
-  "swsh5-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109165",
-  "swsh5-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109166",
-  "swsh5-lata": "https://www.ligapokemon.com.br/?view=prod/view&pcode=121198",
-  "swsh6-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109263",
-  "swsh6-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109345",
-  "swsh6-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109407",
-  "swsh6-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109275",
-  "swsh7-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118059",
-  "swsh7-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109477",
-  "swsh7-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109478",
-  "swsh8-blister1": "https://www.ligapokemon.com.br/?view=prod/view&pcode=117633",
-  "swsh8-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=117630",
-  "swsh8-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=117631",
-  "swsh8-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118550",
-  "swsh9-booster": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118043",
-  "swsh9-box36": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118060",
-  "swsh9-desafio": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118062",
-  "swsh9-etb": "https://www.ligapokemon.com.br/?view=prod/view&pcode=121210",
-  "swsh9-etb-en": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130373"
+  "c30-blister2": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136991",
+   "price": 82,
+   "title": "(PT-BR) Blister Duplo - Celebração de 30 Anos - Eevee"
+  },
+  "c30-blister2-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136966",
+   "price": null,
+   "title": "(ING) Blister Duplo - Celebração de 30 Anos - Eevee"
+  },
+  "c30-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136985",
+   "price": 43,
+   "title": "(PT-BR) Booster Avulso - Celebração de 30 Anos"
+  },
+  "c30-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136961",
+   "price": 98.9,
+   "title": "(ING) Booster Avulso - Celebração de 30 Anos"
+  },
+  "c30-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137637",
+   "price": 70,
+   "title": "(JAP) Booster Avulso - Celebração de 30 Anos"
+  },
+  "c30-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137625",
+   "price": 69.88,
+   "title": "(CHN) Booster Avulso - Celebração de 30 Anos"
+  },
+  "c30-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137638",
+   "price": 1449.5,
+   "title": "(JAP) Caixa de Booster - Celebração de 30 Anos"
+  },
+  "c30-box36-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137624",
+   "price": 848,
+   "title": "(CHN) Caixa de Booster - Celebração de 30 Anos"
+  },
+  "c30-colecao_ex-greninja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136992",
+   "price": 198.99,
+   "title": "(PT-BR) Caixa - Celebração de 30 Anos - Coleção Greninja ex"
+  },
+  "c30-colecao_ex-greninja-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136969",
+   "price": 359.99,
+   "title": "(ING) Caixa - Celebração de 30 Anos - Greninja ex Box"
+  },
+  "c30-colecao_ex-sylveon": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136993",
+   "price": 195,
+   "title": "(PT-BR) Caixa - Celebração de 30 Anos - Coleção Sylveon ex"
+  },
+  "c30-colecao_ex-sylveon-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136968",
+   "price": 399.9,
+   "title": "(ING) Caixa - Celebração de 30 Anos - Sylveon ex Box"
+  },
+  "c30-colecao_poster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136990",
+   "price": 126.5,
+   "title": "(PT-BR) Caixa - Celebração de 30 Anos - Coleção com Pôster"
+  },
+  "c30-colecao_poster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136967",
+   "price": 262.64,
+   "title": "(ING) Caixa - Celebração de 30 Anos - Coleção Pôster"
+  },
+  "c30-colecao_premium-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136984",
+   "price": 749.9,
+   "title": "(ING) Box Coleção Premium - Celebração de 30 Anos - Ditto"
+  },
+  "c30-deck-espeon": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137470",
+   "price": 159,
+   "title": "(PT-BR) Baralho Pré Construído - Baralho Batalha de Celebração de 30 Anos - Espeon ex"
+  },
+  "c30-deck-espeon-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136982",
+   "price": 449,
+   "title": "(ING) Baralho Pré Construído - Baralho Batalha de Celebração de 30 Anos - Espeon ex"
+  },
+  "c30-deck-umbreon": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137469",
+   "price": 159,
+   "title": "(PT-BR) Baralho Pré Construído - Baralho Batalha de Celebração de 30 Anos - Umbreon ex"
+  },
+  "c30-deck-umbreon-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136983",
+   "price": 479,
+   "title": "(ING) Baralho Pré Construído - Baralho Batalha de Celebração de 30 Anos - Umbreon ex"
+  },
+  "c30-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136986",
+   "price": 573.9,
+   "title": "(PT-BR) Coleção Treinador Avançado - Celebração de 30 Anos"
+  },
+  "c30-minilata": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136981",
+   "price": 1992.62,
+   "title": "Display Mini Lata - Celebração de 30 Anos - (Kit com 10)"
+  },
+  "cel25-colecao_especial": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109747",
+   "price": null
+  },
+  "cel25-colecao_especial-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130143",
+   "price": null,
+   "title": "(ING) Box Coleção Especial - Celebrações - Pikachu-V-União (Target)"
+  },
+  "cel25-colecao_premium-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130306",
+   "price": 3750,
+   "title": "(ING) Box Coleção Premium - Celebrações - Pikachu-VMAX (com Figura)"
+  },
+  "cel25-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133712",
+   "price": 4999.95,
+   "title": "(ING) Coleção Treinador Avançado - Espada e Escudo - Celebrações"
+  },
+  "cn1-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134279",
+   "price": null,
+   "title": "(CHN) Booster Avulso - CSV3 Fearless Terastal"
+  },
+  "cn1-box36-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136930",
+   "price": 1999.95,
+   "title": "(CHN) Caixa de Booster Jumbo - CSV3 Fearless Terastal"
+  },
+  "cn2-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136050",
+   "price": 34.99,
+   "title": "(CHN) Booster Avulso - CSV5 Ardent Obsidian"
+  },
+  "cn3-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137613",
+   "price": null,
+   "title": "(CHN) Booster Avulso - CSV7 Blade Awakening"
+  },
+  "cn3-box36-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137615",
+   "price": 949.99,
+   "title": "(CHN) Caixa de Booster Jumbo - CSV7 Blade Awakening"
+  },
+  "cn4-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136648",
+   "price": 29.9,
+   "title": "(CHN) Booster Avulso - CSV8 Sparkling Fable"
+  },
+  "cn4-box36-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136649",
+   "price": 499,
+   "title": "(CHN) Caixa de Booster - CSV8 Sparkling Fable"
+  },
+  "cn5-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137101",
+   "price": 39.99,
+   "title": "(CHN) Booster Avulso - CSV9 Stellar Crystal"
+  },
+  "cn6-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137117",
+   "price": 79.9,
+   "title": "(CHN) Booster Avulso - CSV9.5 Terastal Gathering"
+  },
+  "cn6-box36-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137116",
+   "price": 588,
+   "title": "(CHN) Caixa de Booster - CSV9.5 Terastal Gathering"
+  },
+  "cn7-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137102",
+   "price": 39.9,
+   "title": "(CHN) Booster Avulso - CSV10 Together in Pursuit of Glory"
+  },
+  "jp1-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124463",
+   "price": 170,
+   "title": "Booster Avulso - Espada e Escudo - VMAX Clímax"
+  },
+  "jp1-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124462",
+   "price": null
+  },
+  "jp10-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125093",
+   "price": 119.99,
+   "title": "Booster Avulso - Espada e Escudo - Eevee Heroes"
+  },
+  "jp10-colecao_especial-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124494",
+   "price": null,
+   "title": "Box Coleção Especial - Eevee Heroes - VMAX Special Set"
+  },
+  "jp11-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126147",
+   "price": 78.3,
+   "title": "Booster Avulso - Espada e Escudo - Fusion Arts"
+  },
+  "jp12-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126149",
+   "price": 99.99,
+   "title": "Booster Avulso - Espada e Escudo - Shiny Star V"
+  },
+  "jp12-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126148",
+   "price": null
+  },
+  "jp13-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127581",
+   "price": null,
+   "title": "(JAP) Booster Avulso - Espada e Escudo - Triplet Beat"
+  },
+  "jp13-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135814",
+   "price": 39.99,
+   "title": "(KOR) Booster Avulso - Espada e Escudo - Triplet Beat"
+  },
+  "jp14-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127701",
+   "price": 39.99,
+   "title": "Booster Avulso - Escarlate e Violeta - Snow Hazard"
+  },
+  "jp14-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127700",
+   "price": null
+  },
+  "jp15-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127703",
+   "price": 28.99,
+   "title": "Booster Avulso - Escarlate e Violeta - Clay Burst"
+  },
+  "jp15-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127702",
+   "price": null
+  },
+  "jp16-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128304",
+   "price": 44.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Ruler of the Black Flame"
+  },
+  "jp16-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135815",
+   "price": 39.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Ruler of the Black Flame"
+  },
+  "jp16-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128303",
+   "price": null
+  },
+  "jp17-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128592",
+   "price": null,
+   "title": "Booster Avulso - Escarlate e Violeta - Raging Surf"
+  },
+  "jp18-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128786",
+   "price": 34.9,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Ancient Roar"
+  },
+  "jp18-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128787",
+   "price": 899.99,
+   "title": "(JAP) Caixa de Booster - Escarlate e Violeta - Ancient Roar"
+  },
+  "jp19-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128788",
+   "price": 32.9,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Future Flash"
+  },
+  "jp19-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128789",
+   "price": 999.99,
+   "title": "(JAP) Caixa de Booster - Escarlate e Violeta - Future Flash"
+  },
+  "jp2-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124982",
+   "price": 49.9,
+   "title": "Booster Avulso - Espada e Escudo - Star Birth"
+  },
+  "jp2-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124981",
+   "price": null
+  },
+  "jp20-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128802",
+   "price": null,
+   "title": "Booster Avulso - Escarlate e Violeta - Shiny Treasure ex"
+  },
+  "jp20-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128803",
+   "price": null
+  },
+  "jp21-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129442",
+   "price": null,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Wild Force"
+  },
+  "jp21-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135811",
+   "price": 49.9,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Wild Force"
+  },
+  "jp22-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129443",
+   "price": 29.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Cyber Judge"
+  },
+  "jp23-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130160",
+   "price": null,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Crimson Haze"
+  },
+  "jp23-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135808",
+   "price": 24.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Crimson Haze"
+  },
+  "jp24-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130935",
+   "price": 39.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Transformation Mask"
+  },
+  "jp24-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135807",
+   "price": 34.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Transformation Mask"
+  },
+  "jp24-box36-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135806",
+   "price": null
+  },
+  "jp25-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130936",
+   "price": 24.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Night Wanderer"
+  },
+  "jp25-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135804",
+   "price": 49.9,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Night Wanderer"
+  },
+  "jp25-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130934",
+   "price": null
+  },
+  "jp25-box36-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135805",
+   "price": null
+  },
+  "jp26-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131341",
+   "price": 40,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Stellar Miracle"
+  },
+  "jp26-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135803",
+   "price": 49.9,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Stellar Miracle"
+  },
+  "jp26-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131342",
+   "price": null
+  },
+  "jp27-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131345",
+   "price": 40,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Paradise Dragona"
+  },
+  "jp27-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135800",
+   "price": 34.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Paradise Dragona"
+  },
+  "jp28-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132121",
+   "price": 59.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Super Electric Breaker"
+  },
+  "jp28-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135799",
+   "price": 33.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Super Electric Breaker"
+  },
+  "jp28-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132122",
+   "price": null
+  },
+  "jp28-box36-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135798",
+   "price": null
+  },
+  "jp29-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132370",
+   "price": 99.9,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - High Class Pack Terastal Festival Ex"
+  },
+  "jp29-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135796",
+   "price": 119.9,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - High Class Pack Terastal Festival Ex"
+  },
+  "jp29-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132369",
+   "price": 990,
+   "title": "(JAP) Caixa de Booster - Escarlate e Violeta - High Class Pack Terastal Festival Ex"
+  },
+  "jp29-box36-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135797",
+   "price": null
+  },
+  "jp3-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125091",
+   "price": 31.99,
+   "title": "Booster Avulso - Espada e Escudo - Space Juggler"
+  },
+  "jp3-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125092",
+   "price": null
+  },
+  "jp30-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132919",
+   "price": 32.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Battle Partners"
+  },
+  "jp30-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132918",
+   "price": 850,
+   "title": "(JAP) Caixa de Booster - Escarlate e Violeta - Battle Partners"
+  },
+  "jp31-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133371",
+   "price": 31.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Hot Air Arena"
+  },
+  "jp32-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133630",
+   "price": 49.99,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Glory of the Rocket Gang"
+  },
+  "jp32-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133629",
+   "price": 1499.8,
+   "title": "(JAP) Caixa de Booster - Escarlate e Violeta - Glory of the Rocket Gang"
+  },
+  "jp33-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133883",
+   "price": 25,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Mega Brave"
+  },
+  "jp33-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135778",
+   "price": 29.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Mega Brave"
+  },
+  "jp33-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133884",
+   "price": null
+  },
+  "jp33-box36-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135777",
+   "price": 649.99,
+   "title": "(KOR) Caixa de Booster - Escarlate e Violeta - Mega Brave"
+  },
+  "jp34-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133882",
+   "price": 25,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Mega Symphonia"
+  },
+  "jp34-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135776",
+   "price": 29.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Mega Symphonia"
+  },
+  "jp34-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133881",
+   "price": null
+  },
+  "jp34-box36-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135775",
+   "price": null,
+   "title": "(KOR) Caixa de Booster - Escarlate e Violeta - Mega Symphonia"
+  },
+  "jp35-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134385",
+   "price": 33,
+   "title": "(JAP) Booster Avulso - Inferno X"
+  },
+  "jp35-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135783",
+   "price": 50,
+   "title": "(HK-TW) Booster Avulso - Inferno X"
+  },
+  "jp35-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134386",
+   "price": null
+  },
+  "jp36-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134847",
+   "price": 67.9,
+   "title": "(JAP) Booster Avulso - Mega Dream ex"
+  },
+  "jp36-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135782",
+   "price": null,
+   "title": "(HK-TW) Booster Avulso - Mega Dream ex"
+  },
+  "jp36-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134848",
+   "price": 698.9,
+   "title": "(JAP) Caixa de Booster - Mega Dream ex"
+  },
+  "jp37-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135431",
+   "price": 24.95,
+   "title": "(JAP) Booster Avulso - Nihil Zero"
+  },
+  "jp37-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135779",
+   "price": null,
+   "title": "(HK-TW) Booster Avulso - Nihil Zero"
+  },
+  "jp37-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135430",
+   "price": null
+  },
+  "jp38-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135705",
+   "price": 27.99,
+   "title": "(JAP) Booster Avulso - Ninja Spinner"
+  },
+  "jp38-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135757",
+   "price": 35,
+   "title": "(HK-TW) Booster Avulso - Ninja Spinner"
+  },
+  "jp38-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135706",
+   "price": null
+  },
+  "jp39-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136682",
+   "price": 24.9,
+   "title": "(JAP) Booster Avulso - Abyss Eye"
+  },
+  "jp39-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136681",
+   "price": 699,
+   "title": "(JAP) Caixa de Booster - Abyss Eye"
+  },
+  "jp4-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124980",
+   "price": 31.99,
+   "title": "Booster Avulso - Espada e Escudo - Time Gazer"
+  },
+  "jp40-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137463",
+   "price": 29.9,
+   "title": "(JAP) Booster Avulso - Storm Emeralda"
+  },
+  "jp40-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=137462",
+   "price": null
+  },
+  "jp5-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124438",
+   "price": 34.99,
+   "title": "Booster Avulso - Espada e Escudo - Dark Phantasma"
+  },
+  "jp6-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124348",
+   "price": 52.9,
+   "title": "Booster Avulso - Espada e Escudo - Lost Abyss"
+  },
+  "jp6-colecao_especial-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124440",
+   "price": null,
+   "title": "Box Coleção Especial - Lost Abyss - VSTAR Promo Pack"
+  },
+  "jp7-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125858",
+   "price": 149.99,
+   "title": "Booster Avulso - Espada e Escudo - Incandescent Arcana"
+  },
+  "jp7-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125859",
+   "price": null
+  },
+  "jp8-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126217",
+   "price": null
+  },
+  "jp9-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126499",
+   "price": 300,
+   "title": "Booster Avulso - Espada e Escudo - VSTAR Universe"
+  },
+  "jp9-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136245",
+   "price": null,
+   "title": "(KOR) Booster Avulso - VSTAR Universe"
+  },
+  "me01-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133950",
+   "price": 11.89,
+   "title": "(PT-BR) Blister Unitário - Megaevolução 1 - Megaevolução"
+  },
+  "me01-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133946",
+   "price": 10.89,
+   "title": "(PT-BR) Booster Avulso - Megaevolução 1 - Megaevolução"
+  },
+  "me01-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133956",
+   "price": 32.99,
+   "title": "(ING) Booster Avulso - Megaevolução 1 - Megaevolução"
+  },
+  "me01-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133949",
+   "price": 399,
+   "title": "(PT-BR) Caixa de Booster - Megaevolução 1 - Megaevolução"
+  },
+  "me01-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133955",
+   "price": 1444.99,
+   "title": "(ING) Caixa de Booster - Megaevolução 1 - Megaevolução"
+  },
+  "me01-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133948",
+   "price": null
+  },
+  "me01-desafio-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133958",
+   "price": null
+  },
+  "me02-blister1-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134683",
+   "price": 49.95,
+   "title": "(ING) Blister Unitário - Megaevolução 2 - Fogo Fantasmagórico"
+  },
+  "me02-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134377",
+   "price": null
+  },
+  "me02-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134382",
+   "price": 49.89,
+   "title": "(ING) Booster Avulso - Megaevolução 2 - Fogo Fantasmagórico"
+  },
+  "me02-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134371",
+   "price": 479.99,
+   "title": "(PT-BR) Caixa de Booster - Megaevolução 2 - Fogo Fantasmagórico"
+  },
+  "me02-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134381",
+   "price": 2499.99,
+   "title": "(ING) Caixa de Booster - Megaevolução 2 - Fogo Fantasmagórico"
+  },
+  "me02-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134368",
+   "price": null
+  },
+  "me02-desafio-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134378",
+   "price": null
+  },
+  "me02-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134370",
+   "price": 729.5,
+   "title": "(PT-BR) Coleção Treinador Avançado - Megaevolução 2 - Fogo Fantasmagórico"
+  },
+  "me02-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134380",
+   "price": null
+  },
+  "me02_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135106",
+   "price": 19.5,
+   "title": "(PT-BR) Booster Avulso - Megaevolução 2.5 - Heróis Excelsos"
+  },
+  "me02_5-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135113",
+   "price": 74.99,
+   "title": "(ING) Booster Avulso - Megaevolução 2.5 - Heróis Excelsos"
+  },
+  "me02_5-colecao_ex-mega-emboar-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135157",
+   "price": 348.89,
+   "title": "(ING) Caixa - Megaevolução - Heróis Excelsos - Mega Emboar ex Box"
+  },
+  "me02_5-colecao_ex-mega-feraligatr-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135158",
+   "price": 299.98,
+   "title": "(ING) Caixa - Megaevolução - Heróis Excelsos - Mega Feraligatr ex Box"
+  },
+  "me02_5-colecao_ex-mega-meganium-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135156",
+   "price": 299.98,
+   "title": "(ING) Caixa - Megaevolução - Heróis Excelsos - Mega Meganium ex Box"
+  },
+  "me02_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135108",
+   "price": 829.59,
+   "title": "(PT-BR) Coleção Treinador Avançado - Megaevolução 2.5 - Herois Excelsos"
+  },
+  "me02_5-minilata": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135282",
+   "price": 2450.9,
+   "title": "Display Mini Lata - Heróis Excelsos - (Kit com 10)"
+  },
+  "me03-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135523",
+   "price": 7.5,
+   "title": "(PT-BR) Blister Unitário - Megaevolução 3 - Equilíbrio Perfeito"
+  },
+  "me03-blister1-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135533",
+   "price": 24.5,
+   "title": "(ING) Blister Unitário - Megaevolução 3 - Equilíbrio Perfeito"
+  },
+  "me03-blister3-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135532",
+   "price": 88,
+   "title": "(ING) Blister Triplo Megaevolução 3 - Equilíbrio Perfeito - Chikorita"
+  },
+  "me03-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135524",
+   "price": 8.45,
+   "title": "(PT-BR) Booster Avulso - Megaevolução 3 - Equilíbrio Perfeito"
+  },
+  "me03-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135531",
+   "price": 29.9,
+   "title": "(ING) Booster Avulso - Megaevolução 3 - Equilíbrio Perfeito"
+  },
+  "me03-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135530",
+   "price": 899.99,
+   "title": "(ING) Caixa de Booster - Megaevolução 3 - Equilíbrio Perfeito"
+  },
+  "me03-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135519",
+   "price": null
+  },
+  "me03-desafio-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135527",
+   "price": null
+  },
+  "me03-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135521",
+   "price": 287.9,
+   "title": "(PT-BR) Coleção Treinador Avançado - Megaevolução 3 - Equilíbrio Perfeito"
+  },
+  "me04-blister3-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135869",
+   "price": 79.9,
+   "title": "(ING) Blister Triplo Megaevolução 4 - Caos Ascendente - Charmeleon"
+  },
+  "me04-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135975",
+   "price": 8.45,
+   "title": "(PT-BR) Booster Avulso - Megaevolução 4 - Caos Ascendente"
+  },
+  "me04-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135868",
+   "price": 29.9,
+   "title": "(ING) Booster Avulso - Megaevolução 4 - Caos Ascendente"
+  },
+  "me04-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135973",
+   "price": 315,
+   "title": "(PT-BR) Caixa de Booster - Megaevolução 4 - Caos Ascendente"
+  },
+  "me04-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135867",
+   "price": 939.9,
+   "title": "(ING) Caixa de Booster - Megaevolução 4 - Caos Ascendente"
+  },
+  "me04-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136253",
+   "price": null
+  },
+  "me04-desafio-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135864",
+   "price": null
+  },
+  "me04-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135972",
+   "price": 298.83,
+   "title": "(PT-BR) Coleção Treinador Avançado - Megaevolução 4 - Caos Ascendente"
+  },
+  "me05-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136635",
+   "price": 8.54,
+   "title": "(PT-BR) Blister Unitário - Megaevolução 5 - Escuridão Absoluta"
+  },
+  "me05-blister3-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136620",
+   "price": 87.89,
+   "title": "(ING) Blister Triplo Megaevolução 5 - Escuridão Absoluta - Binacle"
+  },
+  "me05-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136636",
+   "price": 8.45,
+   "title": "(PT-BR) Booster Avulso - Megaevolução 5 - Escuridão Absoluta"
+  },
+  "me05-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136619",
+   "price": 29.9,
+   "title": "(ING) Booster Avulso - Megaevolução 5 - Escuridão Absoluta"
+  },
+  "me05-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136634",
+   "price": 313.9,
+   "title": "(PT-BR) Caixa de Booster - Megaevolução 5 - Escuridão Absoluta"
+  },
+  "me05-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136618",
+   "price": 989.9,
+   "title": "(ING) Caixa de Booster - Megaevolução 5 - Escuridão Absoluta"
+  },
+  "me05-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136639",
+   "price": null
+  },
+  "me05-desafio-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136615",
+   "price": null
+  },
+  "me05-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136633",
+   "price": 295,
+   "title": "(PT-BR) Coleção Treinador Avançado - Megaevolução 5 - Escuridão Absoluta"
+  },
+  "sv1-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127555",
+   "price": 34.9,
+   "title": "Blister Unitário - Escarlate e Violeta 1 - Escarlate e Violeta"
+  },
+  "sv1-blister4": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127553",
+   "price": null
+  },
+  "sv1-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127023",
+   "price": 35,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 1 - Escarlate e Violeta"
+  },
+  "sv1-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132332",
+   "price": 89.99,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 1 - Escarlate e Violeta"
+  },
+  "sv1-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127022",
+   "price": null
+  },
+  "sv1-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127026",
+   "price": null
+  },
+  "sv1-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127025",
+   "price": null
+  },
+  "sv10-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133461",
+   "price": null
+  },
+  "sv10-blister1-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133448",
+   "price": null
+  },
+  "sv10-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133460",
+   "price": 19.9,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 10 - Rivais Predestinados"
+  },
+  "sv10-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133443",
+   "price": 42.07,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 10 - Rivais Predestinados"
+  },
+  "sv10-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133444",
+   "price": 2600,
+   "title": "(ING) Caixa de Booster - Escarlate e Violeta 10 - Rivais Predestinados"
+  },
+  "sv10-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133454",
+   "price": null
+  },
+  "sv10-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133457",
+   "price": 1350,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 10 - Rivais Predestinados"
+  },
+  "sv10_5-colecao_ilustracao": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134081",
+   "price": 249,
+   "title": "(PT-BR) Coleção Ilustração - Escarlate e Violeta 10.5 - Fogo Branco e Raio Preto - Victini"
+  },
+  "sv10_5-colecao_ilustracao-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133785",
+   "price": 399.8,
+   "title": "(ING) Coleção Ilustração - Escarlate e Violeta 10.5 - Fogo Branco e Raio Preto - Victini"
+  },
+  "sv10_5-colecao_poster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133786",
+   "price": 279.9,
+   "title": "(ING) Caixa - Escarlate e Violeta 10.5 - Fogo Branco e Raio Preto - Coleção Pôster"
+  },
+  "sv10_5r-blister3": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133848",
+   "price": 99.9,
+   "title": "(PT-BR) Blister Triplo Escarlate e Violeta 10.5 - Raio Preto - Reuniclus"
+  },
+  "sv10_5r-blister3-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133779",
+   "price": 198.89,
+   "title": "(ING) Blister Triplo Tech Sticker Escarlate e Violeta 10.5 - Raio Preto - Reuniclus"
+  },
+  "sv10_5r-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133792",
+   "price": 33.3,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 10.5 - Raio Preto"
+  },
+  "sv10_5r-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133783",
+   "price": 150,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 10.5 - Raio Preto"
+  },
+  "sv10_5r-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133684",
+   "price": null
+  },
+  "sv10_5r-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133682",
+   "price": 1500,
+   "title": "(JAP) Caixa de Booster - Escarlate e Violeta - Black Bolt"
+  },
+  "sv10_5r-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133793",
+   "price": 1290,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 10.5 - Raio Preto"
+  },
+  "sv10_5w-blister3": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133849",
+   "price": 134.9,
+   "title": "(PT-BR) Blister Triplo Escarlate e Violeta 10.5 - Fogo Branco - Gothitelle"
+  },
+  "sv10_5w-blister3-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133778",
+   "price": 199.89,
+   "title": "(ING) Blister Triplo Tech Sticker Escarlate e Violeta 10.5 - Fogo Branco - Gothitelle"
+  },
+  "sv10_5w-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133790",
+   "price": 59.89,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 10.5 - Fogo Branco"
+  },
+  "sv10_5w-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133774",
+   "price": 150,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 10.5 - Fogo Branco"
+  },
+  "sv10_5w-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133683",
+   "price": null
+  },
+  "sv10_5w-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135794",
+   "price": null,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - White Flare"
+  },
+  "sv10_5w-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133681",
+   "price": null
+  },
+  "sv10_5w-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133791",
+   "price": 1049.99,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 10.5 - Fogo Branco"
+  },
+  "sv2-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127842",
+   "price": 50,
+   "title": "Blister Unitário - Escarlate e Violeta 2 - Evoluções em Paldea"
+  },
+  "sv2-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127843",
+   "price": 30,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 2 - Evoluções em Paldea"
+  },
+  "sv2-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132933",
+   "price": null,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 2 - Evoluções em Paldea"
+  },
+  "sv2-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127844",
+   "price": 999.9,
+   "title": "(PT-BR) Caixa de Booster - Escarlate e Violeta 2 - Evoluções em Paldea"
+  },
+  "sv2-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127850",
+   "price": null
+  },
+  "sv2-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127849",
+   "price": 1759,
+   "title": "Coleção Treinador Avançado - Escarlate e Violeta 2 - Evoluções em Paldea"
+  },
+  "sv2-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130376",
+   "price": null
+  },
+  "sv3-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128429",
+   "price": 54.89,
+   "title": "(PT-BR) Blister Unitário - Escarlate e Violeta 3 - Obsidiana em Chamas"
+  },
+  "sv3-blister3": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128308",
+   "price": null
+  },
+  "sv3-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128223",
+   "price": 30,
+   "title": "Booster Avulso - Escarlate e Violeta 3 - Obsidiana em Chamas"
+  },
+  "sv3-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131785",
+   "price": 99.95,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 3 - Obsidiana em Chamas"
+  },
+  "sv3-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128222",
+   "price": null
+  },
+  "sv3-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128306",
+   "price": null
+  },
+  "sv3-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128224",
+   "price": 1499,
+   "title": "Coleção Treinador Avançado - Escarlate e Violeta 3 - Obsidiana em Chamas"
+  },
+  "sv3_5-booster-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128392",
+   "price": 169,
+   "title": "(JAP) Booster Avulso - Escarlate e Violeta - Pokémon Card 151"
+  },
+  "sv3_5-booster-ko": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135774",
+   "price": 109.99,
+   "title": "(KOR) Booster Avulso - Escarlate e Violeta - Pokémon Card 151"
+  },
+  "sv3_5-booster-zh": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135786",
+   "price": null,
+   "title": "(HK-TW) Booster Avulso - Pokémon Card 151"
+  },
+  "sv3_5-box36-ja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128000",
+   "price": null
+  },
+  "sv4-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128758",
+   "price": null,
+   "title": "(PT-BR) Blister Unitário - Escarlate e Violeta 4 - Fenda Paradoxal"
+  },
+  "sv4-blister4": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128752",
+   "price": null
+  },
+  "sv4-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128755",
+   "price": 38.9,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 4 - Fenda Paradoxal"
+  },
+  "sv4-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131784",
+   "price": 39.9,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 4 - Fenda Paradoxal"
+  },
+  "sv4-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128754",
+   "price": null
+  },
+  "sv4-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128759",
+   "price": null
+  },
+  "sv4-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129088",
+   "price": null,
+   "title": "(ING) Coleção Treinador Avançado - Escarlate e Violeta 4 - Fenda Paradoxal - Lua Estrondo - Pokémon Center"
+  },
+  "sv4_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128933",
+   "price": 79.89,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 4.5 - Destinos de Paldea"
+  },
+  "sv4_5-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132020",
+   "price": null,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 4.5 - Destinos de Paldea"
+  },
+  "sv4_5-colecao_ex-charizard": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128935",
+   "price": 1399.9,
+   "title": "(PT-BR) Box Coleção - Destinos de Paldea - Charizard ex Brilhante"
+  },
+  "sv4_5-colecao_ex-ferreo": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129432",
+   "price": 599,
+   "title": "(PT-BR) Box Coleção - Destinos de Paldea - Trilho Férreo ex Brilhante"
+  },
+  "sv4_5-colecao_ex-grande": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129433",
+   "price": 649,
+   "title": "(PT-BR) Box Coleção - Destinos de Paldea - Presa Grande ex Brilhante"
+  },
+  "sv4_5-colecao_ex-meowscarada": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128937",
+   "price": 749.9,
+   "title": "(PT-BR) Box Coleção - Destinos de Paldea - Meowscarada ex"
+  },
+  "sv4_5-colecao_ex-quaquaval": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128938",
+   "price": 739.9,
+   "title": "(PT-BR) Box Coleção - Destinos de Paldea - Quaquaval ex"
+  },
+  "sv4_5-colecao_ex-skeledirge": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128939",
+   "price": 759,
+   "title": "(PT-BR) Box Coleção - Destinos de Paldea - Skeledirge ex"
+  },
+  "sv4_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=128934",
+   "price": 2156,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta - Destinos de Paldea"
+  },
+  "sv4_5-lata-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135263",
+   "price": null,
+   "title": "(ING) Lata Destinos de Paldea - Charizard Shiny ex"
+  },
+  "sv5-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129822",
+   "price": null,
+   "title": "(PT-BR) Blister Unitário - Escarlate e Violeta 5 - Forças Temporais"
+  },
+  "sv5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129394",
+   "price": 29.9,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 5 - Forças Temporais"
+  },
+  "sv5-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135754",
+   "price": 49.95,
+   "title": "(ING) Booster Avulso - Forças Temporais"
+  },
+  "sv5-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129819",
+   "price": null
+  },
+  "sv5-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129820",
+   "price": null
+  },
+  "sv5-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133507",
+   "price": null
+  },
+  "sv6-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130285",
+   "price": null,
+   "title": "(PT-BR) Blister Unitário - Escarlate e Violeta 6 - Máscaras do Crepúsculo"
+  },
+  "sv6-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129878",
+   "price": 23.9,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 6 - Máscaras do Crepúsculo"
+  },
+  "sv6-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135755",
+   "price": 49.95,
+   "title": "(ING) Booster Avulso - Máscaras do Crepúsculo"
+  },
+  "sv6-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130258",
+   "price": null
+  },
+  "sv6-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130286",
+   "price": null
+  },
+  "sv6-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=129879",
+   "price": 1399.9,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 6 - Máscaras do Crepúsculo"
+  },
+  "sv6-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130726",
+   "price": 1498.99,
+   "title": "(ING) Coleção Treinador Avançado - Escarlate e Violeta - Máscaras do Crepúsculo"
+  },
+  "sv6_5-blister3": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130430",
+   "price": 109.9,
+   "title": "(PT-BR) Blister Triplo - Escarlate e Violeta 6.5 - Fábulas Nebulosas - Pecharunt"
+  },
+  "sv6_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130426",
+   "price": 30,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 6.5 - Fábulas Nebulosas"
+  },
+  "sv6_5-colecao_ilustracao": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130428",
+   "price": 299,
+   "title": "(PT-BR) Coleção Ilustração - Escarlate e Violeta 6.5 - Fábulas Nebulosas - Kingambit"
+  },
+  "sv6_5-colecao_ilustracao-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132808",
+   "price": null,
+   "title": "(ING) Coleção Ilustração - Escarlate e Violeta 6.5 - Fábulas Nebulosas - Kingambit"
+  },
+  "sv6_5-colecao_ilustracao-greninja": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130429",
+   "price": null,
+   "title": "(PT-BR) Box Coleção Ilustração Especial - Escarlate e Violeta 6.5 - Fábulas Nebulosas - Greninja ex"
+  },
+  "sv6_5-colecao_ilustracao-kingdra": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131130",
+   "price": 899.89,
+   "title": "(PT-BR) Box Coleção Ilustração Especial - Escarlate e Violeta 6.5 - Fábulas Nebulosas - Kingdra ex"
+  },
+  "sv6_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130427",
+   "price": 880,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 6.5 - Fábulas Nebulosas"
+  },
+  "sv7-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130982",
+   "price": 15.9,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 7 - Coroa Estelar"
+  },
+  "sv7-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132781",
+   "price": null,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 7 - Coroa Estelar"
+  },
+  "sv7-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130984",
+   "price": null
+  },
+  "sv7-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131745",
+   "price": null
+  },
+  "sv7-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130983",
+   "price": 839.9,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 7 - Coroa Estelar"
+  },
+  "sv7-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133733",
+   "price": null
+  },
+  "sv8-blister1-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132934",
+   "price": null,
+   "title": "(ING) Blister Unitário - Escarlate e Violeta 8 - Fagulhas Impetuosas"
+  },
+  "sv8-blister4": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132226",
+   "price": null
+  },
+  "sv8-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131657",
+   "price": 48.84,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 8 - Fagulhas Impetuosas"
+  },
+  "sv8-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132780",
+   "price": 38.24,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 8 - Fagulhas Impetuosas"
+  },
+  "sv8-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131658",
+   "price": 797.9,
+   "title": "(PT-BR) Caixa de Booster - Escarlate e Violeta 8 - Fagulhas Impetuosas"
+  },
+  "sv8-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132358",
+   "price": null
+  },
+  "sv8-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131656",
+   "price": 1385,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 8 - Fagulhas Impetuosas"
+  },
+  "sv8_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132360",
+   "price": 18.95,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 8.5 - Evoluções Prismáticas"
+  },
+  "sv8_5-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133396",
+   "price": null,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 8.5 - Evoluções Prismáticas"
+  },
+  "sv8_5-colecao_especial-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133485",
+   "price": 559,
+   "title": "(ING) Box Coleção Especial - Accessory Pouch Evoluções Prismáticas"
+  },
+  "sv8_5-colecao_poster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133349",
+   "price": null,
+   "title": "(ING) Caixa - Escarlate e Violeta - Evoluções Prismáticas - Coleção Pôster"
+  },
+  "sv8_5-colecao_premium": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134151",
+   "price": 297.49,
+   "title": "(PT-BR) Box Coleção Premium - Evolucoes Prismáticas"
+  },
+  "sv8_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132361",
+   "price": 1324.9,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 8.5 - Evoluções Prismáticas"
+  },
+  "sv9-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133130",
+   "price": null
+  },
+  "sv9-blister1-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133279",
+   "price": 24.9,
+   "title": "(ING) Blister Unitário - Escarlate e Violeta 9 - Amigos de Jornada"
+  },
+  "sv9-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132835",
+   "price": 14.9,
+   "title": "(PT-BR) Booster Avulso - Escarlate e Violeta 9 - Amigos de Jornada"
+  },
+  "sv9-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133171",
+   "price": 25.95,
+   "title": "(ING) Booster Avulso - Escarlate e Violeta 9 - Amigos de Jornada"
+  },
+  "sv9-box36-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133175",
+   "price": 1195.5,
+   "title": "(ING) Caixa de Booster - Escarlate e Violeta 9 - Amigos de Jornada"
+  },
+  "sv9-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133125",
+   "price": null
+  },
+  "sv9-desafio-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133179",
+   "price": null
+  },
+  "sv9-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133128",
+   "price": 1199.9,
+   "title": "(PT-BR) Coleção Treinador Avançado - Escarlate e Violeta 9 - Amigos de Jornada"
+  },
+  "swsh1-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=120098",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 1"
+  },
+  "swsh1-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108115",
+   "price": 99.89,
+   "title": "Booster Avulso - Espada e Escudo 1"
+  },
+  "swsh10-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=123950",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 10 - Estrelas Radiantes"
+  },
+  "swsh10-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=122099",
+   "price": 46.99,
+   "title": "(PT-BR) Booster Avulso - Espada e Escudo 10 - Estrelas Radiantes"
+  },
+  "swsh10-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132316",
+   "price": null,
+   "title": "(ING) Booster Avulso - Espada e Escudo 10 - Estrelas Radiantes"
+  },
+  "swsh10-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=122101",
+   "price": null
+  },
+  "swsh10-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=122098",
+   "price": null
+  },
+  "swsh10-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130379",
+   "price": 1999.99,
+   "title": "(ING) Coleção Treinador Avançado - Espada e Escudo - Estrelas Radiantes"
+  },
+  "swsh11-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=125906",
+   "price": 390,
+   "title": "Blister Unitário - Espada e Escudo 11 - Origem Perdida"
+  },
+  "swsh11-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124485",
+   "price": 79,
+   "title": "Booster Avulso - Espada e Escudo 11 - Origem Perdida"
+  },
+  "swsh11-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124484",
+   "price": null
+  },
+  "swsh11-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124487",
+   "price": null
+  },
+  "swsh11-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130378",
+   "price": 2650,
+   "title": "(ING) Coleção Treinador Avançado - Espada e Escudo - Origem Perdida"
+  },
+  "swsh12-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126270",
+   "price": 550,
+   "title": "Blister Unitário - Espada e Escudo 12 - Tempestade Prateada"
+  },
+  "swsh12-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126055",
+   "price": 69.89,
+   "title": "(PT-BR) Booster Avulso - Espada e Escudo 12 - Tempestade Prateada"
+  },
+  "swsh12-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132782",
+   "price": null,
+   "title": "(ING) Booster Avulso - Espada e Escudo 12 - Tempestade Prateada"
+  },
+  "swsh12-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126061",
+   "price": null
+  },
+  "swsh12-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126273",
+   "price": null
+  },
+  "swsh12-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126056",
+   "price": 1449.9,
+   "title": "Coleção Treinador Avançado - Espada e Escudo 12 - Tempestade Prateada"
+  },
+  "swsh12_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126717",
+   "price": 79.89,
+   "title": "Booster Avulso - Espada e Escudo 13 - Realeza Absoluta"
+  },
+  "swsh12_5-colecao_especial": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=127546",
+   "price": null
+  },
+  "swsh12_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=126718",
+   "price": null
+  },
+  "swsh12_5-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130377",
+   "price": 4000,
+   "title": "(ING) Coleção Treinador Avançado - Espada e Escudo - Realeza Absoluta"
+  },
+  "swsh2-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=119152",
+   "price": 59.9,
+   "title": "Blister Unitário - Espada e Escudo 2 - Rixa Rebelde"
+  },
+  "swsh2-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108117",
+   "price": 49.99,
+   "title": "Booster Avulso - Espada e Escudo 2 - Rixa Rebelde"
+  },
+  "swsh2-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108118",
+   "price": null
+  },
+  "swsh2-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108805",
+   "price": null,
+   "title": "Coleção Treinador Avançado - Rixa Rebelde - Copperajah"
+  },
+  "swsh3-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=120651",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 3 - Escuridão Incandescente"
+  },
+  "swsh3-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108668",
+   "price": 79.9,
+   "title": "Booster Avulso - Espada e Escudo 3 - Escuridão Incandescente"
+  },
+  "swsh3-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108667",
+   "price": null
+  },
+  "swsh3-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108804",
+   "price": 1999.99,
+   "title": "Coleção Treinador Avançado - Escuridão Incandescente - Eternatus"
+  },
+  "swsh3_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108960",
+   "price": 95,
+   "title": "Booster Avulso - Espada e Escudo 3.5 - Caminho do Campeão"
+  },
+  "swsh3_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108806",
+   "price": 5999.9,
+   "title": "Coleção Treinador avançado - Caminho do Campeão - Charizard-V"
+  },
+  "swsh4-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=119134",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 4 - Voltagem Vivida"
+  },
+  "swsh4-blister4": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108938",
+   "price": null
+  },
+  "swsh4-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108933",
+   "price": 99.89,
+   "title": "Booster Avulso - Espada e Escudo 4 - Voltagem Vívida"
+  },
+  "swsh4-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=108934",
+   "price": null
+  },
+  "swsh4-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=124560",
+   "price": 2500,
+   "title": "Coleção Treinador Avançado - Voltagem Vívida - Pikachu Gigantamax"
+  },
+  "swsh4_5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109111",
+   "price": null,
+   "title": "Booster Avulso - Destinos Brilhantes"
+  },
+  "swsh4_5-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109122",
+   "price": 2900,
+   "title": "Coleção Treinador Avançado - Destinos Brilhantes - Eevee Gigantamax"
+  },
+  "swsh4_5-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=131189",
+   "price": 1900,
+   "title": "(ING) Coleção Treinador Avançado - Destinos Brilhantes"
+  },
+  "swsh5-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109521",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 5 - Estilos de Batalha"
+  },
+  "swsh5-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109164",
+   "price": 69.99,
+   "title": "Booster Avulso - Espada e Escudo 5 - Estilos de Batalha"
+  },
+  "swsh5-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109165",
+   "price": null
+  },
+  "swsh5-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109166",
+   "price": null
+  },
+  "swsh5-lata": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=121198",
+   "price": null
+  },
+  "swsh6-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109428",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 6 - Reinado Arrepiante"
+  },
+  "swsh6-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109263",
+   "price": 89.89,
+   "title": "Booster Avulso - Espada e Escudo 6 - Reinado Arrepiante"
+  },
+  "swsh6-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109345",
+   "price": null
+  },
+  "swsh6-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109407",
+   "price": null
+  },
+  "swsh6-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109275",
+   "price": null
+  },
+  "swsh7-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118059",
+   "price": 400,
+   "title": "Blister Unitário - Espada e Escudo 7 - Céus em Evolução"
+  },
+  "swsh7-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109477",
+   "price": 315,
+   "title": "Booster Avulso - Espada e Escudo 7 - Céus em Evolução"
+  },
+  "swsh7-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=109478",
+   "price": null
+  },
+  "swsh8-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=117633",
+   "price": 330,
+   "title": "Blister Unitário - Espada e Escudo 8 - Golpe Fusão"
+  },
+  "swsh8-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=117630",
+   "price": 99.89,
+   "title": "(PT-BR) Booster Avulso - Espada e Escudo 8 - Golpe Fusão"
+  },
+  "swsh8-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132879",
+   "price": null,
+   "title": "(ING) Booster Avulso - Espada e Escudo 8 - Golpe Fusão"
+  },
+  "swsh8-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=117631",
+   "price": null
+  },
+  "swsh8-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118550",
+   "price": null
+  },
+  "swsh9-blister1": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118061",
+   "price": null,
+   "title": "Blister Unitário - Espada e Escudo 9 - Astros Cintilantes"
+  },
+  "swsh9-booster": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118043",
+   "price": 80,
+   "title": "Booster Avulso - Espada e Escudo 9 - Astros Cintilantes"
+  },
+  "swsh9-booster-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=132783",
+   "price": null,
+   "title": "(ING) Booster Avulso - Espada e Escudo 9 - Astros Cintilantes"
+  },
+  "swsh9-box36": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118060",
+   "price": null
+  },
+  "swsh9-desafio": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=118062",
+   "price": null
+  },
+  "swsh9-etb": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=121210",
+   "price": null
+  },
+  "swsh9-etb-en": {
+   "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=130373",
+   "price": 2499.99,
+   "title": "(ING) Coleção Treinador Avançado - Espada e Escudo - Astros Cintilantes"
+  }
  }
 }
