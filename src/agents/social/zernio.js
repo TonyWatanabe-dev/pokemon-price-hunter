@@ -137,7 +137,8 @@ export function criarCliente({ chave, fetch: fetchFn, apiBase = API_PADRAO, time
       const q = new URLSearchParams({ platform: plataforma, limit: '100', ...(de ? { fromDate: de } : {}), ...(ate ? { toDate: ate } : {}), ...(profileId ? { profileId } : {}) });
       const { dado } = await chamar(`${base}/analytics?${q}`);
       const lista = Array.isArray(dado.posts) ? dado.posts : Array.isArray(dado.data) ? dado.data : [];
-      if (!lista.length && Object.keys(dado).length) throw new Error(`sem posts; resposta: ${Object.keys(dado).join(',')} ${JSON.stringify(dado).slice(0, 200)}`);
+      if (dado.hasAnalyticsAccess === false) throw new Error('plano da Zernio sem acesso a analytics (hasAnalyticsAccess=false)');
+      if (!lista.length && Object.keys(dado).length) throw new Error(`sem posts; contas: ${JSON.stringify(dado.accounts ?? []).replace(/"(_id|accountId|id)":"[^"]*",?/g, '').slice(0, 300)}`);
       return lista.map((p) => ({
         publicado: p.publishedAt ?? null, texto: String(p.content ?? '').slice(0, 60).replace(/\s+/g, ' '),
         views: Number(p.analytics?.views ?? 0), curtidas: Number(p.analytics?.likes ?? 0),
