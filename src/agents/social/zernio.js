@@ -79,7 +79,7 @@ export function montarPost(it, { accountId, plataforma, urls, simular = false })
     scheduledFor: it.quando.length === 16 ? `${it.quando}:00` : it.quando,
     timezone: FUSO,
     ...(plataforma === 'youtube' && Array.isArray(it.tags) && it.tags.length ? { tags: it.tags.slice(0, 15) } : {}),
-    ...(plataforma === 'tiktok' ? { tiktokSettings: { ...TIKTOK_SETTINGS, media_type: 'video', commercialContentType: it.afiliado ? 'brand_content' : 'none' } } : {}),
+    ...(plataforma === 'tiktok' ? { tiktokSettings: { ...TIKTOK_SETTINGS, media_type: 'video', commercialContentType: it.afiliado ? 'brand_content' : 'none', ...(Number.isFinite(it.capaMs) ? { video_cover_timestamp_ms: it.capaMs } : {}) } } : {}),
     ...(simular ? { dryRun: true } : {}),
   };
 }

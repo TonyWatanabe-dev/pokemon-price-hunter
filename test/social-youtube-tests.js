@@ -41,3 +41,12 @@ console.log('social-youtube-tests: ok');
   assert.ok(vi({ ...base, url: 'https://evil.com/a.mp4' }).some((m) => /url do vídeo/.test(m)));
   console.log('ok social: url de vídeo');
 }
+
+{ // capa do TikTok: capaMs vira video_cover_timestamp_ms
+  const v = { id: 't', quando: '2026-10-20T19:00', tipo: 'video', plataformas: ['tiktok'], arquivos: ['v.mp4'], legenda: 'oi' };
+  const com = montarPost({ ...v, capaMs: 15000 }, { accountId: 'acc123456', plataforma: 'tiktok', urls: ['https://cdn/x/v.mp4'] });
+  assert.equal(com.tiktokSettings.video_cover_timestamp_ms, 15000);
+  const sem = montarPost(v, { accountId: 'acc123456', plataforma: 'tiktok', urls: ['https://cdn/x/v.mp4'] });
+  assert.ok(!('video_cover_timestamp_ms' in sem.tiktokSettings));
+  console.log('ok social: capa do TikTok');
+}

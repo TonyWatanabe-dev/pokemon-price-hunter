@@ -5,7 +5,9 @@
     {
       "quando": "2026-11-06T19:00",
       "tipo": "video",
-      "plataformas": ["instagram"],
+      "plataformas": [
+        "instagram"
+      ],
       "capaMs": 1500,
       "id": "s3-sex-reinado-delta-motion-ig",
       "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/RD_lancamento_motion.mp4",
@@ -14,10 +16,13 @@
     {
       "quando": "2026-11-06T19:00",
       "tipo": "video",
-      "plataformas": ["tiktok"],
+      "plataformas": [
+        "tiktok"
+      ],
       "id": "s3-sex-reinado-delta-motion-tt",
       "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/RD_lancamento_motion.mp4",
-      "legenda": "Reinado Delta saiu hoje. lançamento sobe de preço, não paga qualquer valor 👀\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #reinadodelta #megarayquaza #fyp"
+      "legenda": "Reinado Delta saiu hoje. lançamento sobe de preço, não paga qualquer valor 👀\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #reinadodelta #megarayquaza #fyp",
+      "capaMs": 1500
     }
   ]
 }

@@ -5,7 +5,9 @@
     {
       "quando": "2026-11-11T19:00",
       "tipo": "video",
-      "plataformas": ["instagram"],
+      "plataformas": [
+        "instagram"
+      ],
       "capaMs": 1800,
       "id": "v-11-11-blister-duplo-ig",
       "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/BD_blister_duplo_pedro.mp4",
@@ -14,10 +16,13 @@
     {
       "quando": "2026-11-11T19:00",
       "tipo": "video",
-      "plataformas": ["tiktok"],
+      "plataformas": [
+        "tiktok"
+      ],
       "id": "v-11-11-blister-duplo-tt",
       "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/BD_blister_duplo_pedro.mp4",
-      "legenda": "2 blisters duplos da 30 anos… o Espeon ex veio no último pack 😳\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp"
+      "legenda": "2 blisters duplos da 30 anos… o Espeon ex veio no último pack 😳\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 1800
     }
   ]
 }
