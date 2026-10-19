@@ -2493,13 +2493,18 @@ function amzBlock(pid){const ls=(AMZ?.links||[]).filter((l)=>l.productId===pid);
   return`<section class="card amz"><h2>${ic("storefront")}Também na Amazon <small>${ls.length}</small></h2><div class="amz-list">${ls.map(amzRow).join("")}</div>
   <p class="hnote">Preço e disponibilidade na data e hora indicadas. Podem ter mudado.</p></section>`}
 
-/* "Ver também na Liga Pokémon" (19/10): só o link para a página do mesmo produto na Liga (config/links-liga.json, publicado em
-   /data/links-liga.json). Nenhum preço da Liga entra no site; não vira oferta, ranking, Score nem alerta. Só URL da Liga passa. */
+/* "Compare também na Liga Pokémon" (19/10): link para o mesmo produto na Liga e, quando houver, o menor preço ("a partir de")
+   que a Liga mostrava na data da leitura (config/links-liga.json → /data/links-liga.json; preço publicado com autorização da
+   Liga informada pelo dono). Camada à parte, como Amazon e Shopee: não vira oferta e não entra em preço, ranking, Score nem
+   alerta. O preço aparece sempre com a data da leitura. Só URL de produto da Liga passa. */
 let LIGA=null,ligaP=null;
 function loadLiga(){if(LIGA)return Promise.resolve(LIGA);
-  return ligaP||=Promise.resolve().then(()=>fetch("/data/links-liga.json")).then((r)=>r.ok?r.json():null).catch(()=>null).then((j)=>LIGA={links:j&&typeof j.links==="object"&&j.links?j.links:{}})}
-function ligaBlock(pid){const u=LIGA?.links?.[pid];if(typeof u!=="string"||!/^https:\/\/www\.ligapokemon\.com\.br\/\?view=prod\/view&pcode=\d+$/.test(u))return"";
-  return`<section class="card liga"><h2>${ic("storefront")}Compare também na Liga Pokémon</h2><p class="hnote">O marketplace da Liga reúne várias lojas. Os preços de lá não passam pelo TCG Price Hunter.</p>
+  return ligaP||=Promise.resolve().then(()=>fetch("/data/links-liga.json")).then((r)=>r.ok?r.json():null).catch(()=>null).then((j)=>LIGA={at:j?.capturedAt||null,links:j&&typeof j.links==="object"&&j.links?j.links:{}})}
+function ligaBlock(pid){const l=LIGA?.links?.[pid];const u=typeof l==="string"?l:l?.url;if(typeof u!=="string"||!/^https:\/\/www\.ligapokemon\.com\.br\/\?view=prod\/view&pcode=\d+$/.test(u))return"";
+  const has=typeof l?.price==="number"&&l.price>0;const when=LIGA.at?new Date(LIGA.at).toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",timeZone:"America/Sao_Paulo"}):"";
+  return`<section class="card liga"><h2>${ic("storefront")}Compare também na Liga Pokémon</h2>
+  ${has?`<p class="amz-p">A partir de <b>${money(l.price)}</b> <small>na Liga em ${esc(when)}</small></p>`:`<p class="amz-s">Sem estoque na Liga em ${esc(when)}</p>`}
+  <p class="hnote">O marketplace da Liga reúne várias lojas. Preço e estoque na data indicada: podem ter mudado.</p>
   <a class="btn ghost" href="${esc(safeUrl(u))}" target="_blank" rel="noopener nofollow" data-liga="${esc(pid)}">Ver na Liga Pokémon<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a></section>`}
 
 /* "Também na Shopee" (17/10): anúncios com o link de afiliado do dono, lidos pelo dono no Chrome, em config/afiliados/shopee-ofertas.json,
