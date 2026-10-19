@@ -2,6 +2,201 @@
   "_nota": "Catálogo automático: os produtos são montados a partir dos anúncios (coleção + tipo + boosters + variante). Aqui ficam as coleções conhecidas, produtos com EAN oficial e preços Copag cadastrados. Confiança OFICIAL (cadastro manual com fonte Copag) vence a loja oficial; a loja oficial vence CATALOGO_COPAG.",
   "collections": [
     {
+      "id": "swsh1",
+      "name": "Espada e Escudo",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "swsh1",
+        "swsh 1",
+        "ee1",
+        "ee 1",
+        "espada e escudo 1"
+      ],
+      "fallbackAliases": [
+        "espada e escudo"
+      ]
+    },
+    {
+      "id": "swsh2",
+      "name": "Rixa Rebelde",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "rixa rebelde",
+        "swsh2",
+        "swsh 2",
+        "ee2",
+        "ee 2",
+        "espada e escudo 2"
+      ]
+    },
+    {
+      "id": "swsh3",
+      "name": "Escuridão Incandescente",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "escuridao incandescente",
+        "swsh3",
+        "swsh 3",
+        "ee3",
+        "ee 3",
+        "espada e escudo 3"
+      ]
+    },
+    {
+      "id": "swsh3_5",
+      "name": "Caminho do Campeão",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "caminho do campeao",
+        "swsh3.5"
+      ]
+    },
+    {
+      "id": "swsh4",
+      "name": "Voltagem Vívida",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "voltagem vivida",
+        "swsh4",
+        "swsh 4",
+        "ee4",
+        "ee 4",
+        "espada e escudo 4"
+      ]
+    },
+    {
+      "id": "swsh4_5",
+      "name": "Destinos Brilhantes",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "destinos brilhantes",
+        "swsh4.5"
+      ]
+    },
+    {
+      "id": "swsh5",
+      "name": "Estilos de Batalha",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "estilos de batalha",
+        "swsh5",
+        "swsh 5",
+        "ee5",
+        "ee 5",
+        "espada e escudo 5"
+      ]
+    },
+    {
+      "id": "swsh6",
+      "name": "Reinado Arrepiante",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "reinado arrepiante",
+        "swsh6",
+        "swsh 6",
+        "ee6",
+        "ee 6",
+        "espada e escudo 6"
+      ]
+    },
+    {
+      "id": "swsh7",
+      "name": "Céus em Evolução",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "ceus em evolucao",
+        "swsh7",
+        "swsh 7",
+        "ee7",
+        "ee 7",
+        "espada e escudo 7"
+      ]
+    },
+    {
+      "id": "cel25",
+      "name": "Celebrações",
+      "series": "Especial",
+      "aliases": [
+        "celebracoes 25 anos",
+        "celebracoes pokemon 25",
+        "celebracoes"
+      ]
+    },
+    {
+      "id": "swsh8",
+      "name": "Golpe Fusão",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "golpe fusao",
+        "swsh8",
+        "swsh 8",
+        "ee8",
+        "ee 8",
+        "espada e escudo 8"
+      ]
+    },
+    {
+      "id": "swsh9",
+      "name": "Astros Cintilantes",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "astros cintilantes",
+        "swsh9",
+        "swsh 9",
+        "ee9",
+        "ee 9",
+        "espada e escudo 9"
+      ]
+    },
+    {
+      "id": "swsh10",
+      "name": "Estrelas Radiantes",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "estrelas radiantes",
+        "swsh10",
+        "swsh 10",
+        "ee10",
+        "ee 10",
+        "espada e escudo 10"
+      ]
+    },
+    {
+      "id": "swsh11",
+      "name": "Origem Perdida",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "origem perdida",
+        "swsh11",
+        "swsh 11",
+        "ee11",
+        "ee 11",
+        "espada e escudo 11"
+      ]
+    },
+    {
+      "id": "swsh12",
+      "name": "Tempestade Prateada",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "tempestade prateada",
+        "swsh12",
+        "swsh 12",
+        "ee12",
+        "ee 12",
+        "espada e escudo 12"
+      ]
+    },
+    {
+      "id": "swsh12_5",
+      "name": "Realeza Absoluta",
+      "series": "Espada e Escudo",
+      "aliases": [
+        "realeza absoluta",
+        "swsh12.5"
+      ]
+    },
+    {
       "id": "sv1",
       "name": "Escarlate e Violeta",
       "series": "Escarlate e Violeta",
