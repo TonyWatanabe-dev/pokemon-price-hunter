@@ -1,1 +1,20 @@
-{}
+{
+ "_debug": [
+  {
+   "url": "abrir3",
+   "resp": "{\"v\": 1, \"source\": \"db\", \"sources\": [], \"reputation\": {\"consultadoEm\": \"2026-10-08\", \"lojas\": {}}, \"total\": 82, \"page\": 3, \"limit\": 60, \"pages\": 2, \"items\": [], \"allCount\": 82, \"facets\": {\"groups\": [[\"Boosters\", 38], [\"Blisters\", 40], [\"Coleções\", 4]], \"cols\": [{\"id\": \"swsh2\", \"name\": \"Rixa Rebelde\""
+  },
+  {
+   "url": "abrir&semref=11",
+   "resp": "{\"v\": 1, \"source\": \"db\", \"sources\": [], \"reputation\": {\"consultadoEm\": \"2026-10-08\", \"lojas\": {}}, \"total\": 0, \"page\": 1, \"limit\": 60, \"pages\": 1, \"items\": [], \"allCount\": 82, \"facets\": null, \"noCopagCount\": 0, \"refNet\": true, \"freshness\": {\"status\": \"atual\", \"source\": \"db\", \"dataAt\": \"2026-10-19T19"
+  },
+  {
+   "url": "guardar2",
+   "resp": "{\"v\": 1, \"source\": \"db\", \"sources\": [], \"reputation\": {\"consultadoEm\": \"2026-10-08\", \"lojas\": {}}, \"total\": 19, \"page\": 2, \"limit\": 60, \"pages\": 1, \"items\": [], \"allCount\": 143, \"facets\": {\"groups\": [[\"Boosters\", 48], [\"ETB\", 16], [\"Blisters\", 40], [\"Coleções\", 28], [\"Baralhos\", 11]], \"cols\": [{\"id\""
+  },
+  {
+   "url": "guardar&semref=14",
+   "resp": "{\"v\": 1, \"source\": \"db\", \"sources\": [], \"reputation\": {\"consultadoEm\": \"2026-10-08\", \"lojas\": {}}, \"total\": 124, \"page\": 4, \"limit\": 60, \"pages\": 3, \"items\": [], \"allCount\": 143, \"facets\": null, \"noCopagCount\": 124, \"refNet\": true, \"freshness\": {\"status\": \"atual\", \"source\": \"db\", \"dataAt\": \"2026-10-"
+  }
+ ]
+}
