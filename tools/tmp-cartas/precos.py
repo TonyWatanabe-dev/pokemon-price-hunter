@@ -13,7 +13,7 @@ for modo in ('abrir', 'guardar'):
     for semref in ('', '&semref=1'):
         for p in range(1, 15):
             d = get(f'/api/v1/site/produtos?modo={modo}&limite=60&pagina={p}{semref}')
-            itens = next((v for v in (d.values() if isinstance(d, dict) else []) if isinstance(v, list)), d if isinstance(d, list) else [])
+            itens = d.get('items') or []
             if not itens:
                 cat.setdefault('_debug', []).append({'url': f'{modo}{semref}{p}', 'resp': json.dumps(d, ensure_ascii=False)[:300]}); break
             for it in itens:
