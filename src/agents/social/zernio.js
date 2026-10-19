@@ -134,7 +134,7 @@ export function criarCliente({ chave, fetch: fetchFn, apiBase = API_PADRAO, time
     /** Métricas dos posts publicados (GET /analytics): views, curtidas, comentários, compartilhamentos. */
     async metricas(profileId, plataforma, de, ate) {
       if (!PLATAFORMAS.includes(plataforma)) throw new Error('plataforma inválida');
-      const q = new URLSearchParams({ platform: plataforma, limit: '100', ...(de ? { fromDate: de } : {}), ...(ate ? { toDate: ate } : {}), ...(profileId ? { profileId } : {}) });
+      const q = new URLSearchParams({ platform: plataforma, limit: '100', ...(de ? { fromDate: de } : {}), ...(ate ? { toDate: ate } : {}) }); // sem profileId: a conta já é única e o filtro devolvia 0 posts
       const { dado } = await chamar(`${base}/analytics?${q}`);
       const lista = Array.isArray(dado.posts) ? dado.posts : Array.isArray(dado.data) ? dado.data : [];
       if (dado.hasAnalyticsAccess === false) throw new Error('plano da Zernio sem acesso a analytics (hasAnalyticsAccess=false)');
