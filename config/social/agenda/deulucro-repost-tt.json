@@ -1,0 +1,17 @@
+{
+  "semana": "repost do Deu Lucro (hits da 30 Anos) no TikTok com capa (19/10) — o de 18/10 teve 3 visualizações",
+  "pasta": "assets/social/agenda/videos",
+  "itens": [
+    {
+      "id": "v-10-19-30a-deulucro-repost-tt",
+      "quando": "2026-10-19T12:30",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_deulucro.mp4",
+      "legenda": "ETB R$ 519 + pôster R$ 109 + blister R$ 69 no menor preço do site. deu lucro? 🤑\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 34500
+    }
+  ]
+}
