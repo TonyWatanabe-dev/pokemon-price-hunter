@@ -93,7 +93,7 @@ await t('8. instruções fixas: seguir CLAUDE.md; sem deploy/produção/workflow
 });
 
 await t('9. ação do Claude fixada por SHA verificado, permission-mode auto e timeout abaixo de 60 min', () => {
-  assert.match(code, /uses: anthropics\/claude-code-action@1d6de8cb0c237e7c15e9e1bdf973826ebae490cc # v1\.0\.248/);
+  assert.match(code, /uses: anthropics\/claude-code-action@f27be6b65a4652f08a2ba3cff79114829b588967 # v1\.0\.252/);
   assert.match(code, /--permission-mode auto/);
   const mins = Number(job('tarefa').match(/timeout-minutes: (\d+)/)[1]); assert.ok(mins > 0 && mins < 60, `${mins}`);
   assert.match(job('vaga'), /timeout-minutes: \d+/);
