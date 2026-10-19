@@ -1,0 +1,520 @@
+{
+  "semana": "legendas com pergunta para puxar comentário (19/10) — refaz IG e TikTok dos vídeos agendados",
+  "pasta": "assets/social/agenda/videos",
+  "itens": [
+    {
+      "id": "v-10-19-de-video01-ig-site-q",
+      "quando": "2026-10-19T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 44000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video01.mp4",
+      "legenda": "Desafio Estratégico com 8 boosters, R$ 114,99, o menor preço que o site já viu. Pack 1: hit ou brick? Assiste até o fim 💀\n\nVocê abriria a caixa ou compraria a carta avulsa? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-21-30a-hit-sylveon-ig-site-q",
+      "quando": "2026-10-21T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 11000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_sylveon.mp4",
+      "legenda": "Booster da Celebração de 30 Anos: o menor preço que o site já registrou foi R$ 47,40. A última carta mudou tudo ✨ Você guardava ou vendia?\n\nSylveon entra no seu top 3 da coleção? Comenta 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-23-30a-hit-pkclassico-ig-site-q",
+      "quando": "2026-10-23T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 13000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_pkclassico.mp4",
+      "legenda": "O Pikachu clássico da Celebração de 30 Anos saiu aqui 💛 Booster no menor preço que o site já registrou: R$ 47,40. Quem lembra dessa arte de 1999?\n\nQual Pokémon de 1999 você mais queria ver de volta? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-24-30a-poster-abertura-ig-site-q",
+      "quando": "2026-10-24T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 60000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_poster_abertura.mp4",
+      "legenda": "Coleção com Pôster da Celebração de 30 Anos: menor preço já visto no site, R$ 109,03. Placar no topo, acompanha até o fim 👀\n\nPôster: vale pela coleção ou só pelas cartas? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-25-30a-hit-moltres-ig-site-q",
+      "quando": "2026-10-25T18:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 11000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_moltres.mp4",
+      "legenda": "Booster da Celebração de 30 Anos no menor preço que o site já registrou: R$ 47,40. Hit ou brick? 🔥\n\nMoltres, Zapdos ou Articuno: qual é o seu? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-27-30a-hit-uxie-ig-site-q",
+      "quando": "2026-10-27T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 11000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_uxie.mp4",
+      "legenda": "Nem todo booster é hit 😭 Mesmo no menor preço do site (R$ 47,40)… Qual foi seu pior brick?\n\nQual foi o pior brick que você já tirou? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-28-de-caixa-8packs-ig-site-q",
+      "quando": "2026-10-28T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 160000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_caixa_8packs.mp4",
+      "legenda": "8 boosters do Desafio Estratégico por R$ 114,99, o menor preço que o site já viu. Abri todos. O resultado tá no final 💀\n\nChuta antes do final: lucro ou prejuízo? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+    },
+    {
+      "id": "v-10-31-30a-hit-gholdengo-ig-site-q",
+      "quando": "2026-10-31T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 15000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_gholdengo.mp4",
+      "legenda": "Feliz Halloween 🎃 O maior susto do dia: abrir um booster, mesmo no menor preço do site (R$ 47,40), e… Comenta 👻 se já passou por isso.\n\nQual carta já te deu o maior susto, bom ou ruim? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-11-01-30a-etb-abertura-v2-ig-site-q",
+      "quando": "2026-11-01T18:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 140000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_etb_abertura_v2.mp4",
+      "legenda": "ETB da Celebração de 30 Anos aberta inteira. Menor preço que o site já registrou: R$ 519,90. O placar sobe a cada carta 👀\n\nChuta o valor final antes de ver o placar 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-11-03-30a-hit-zapdos-ig-site-q",
+      "quando": "2026-11-03T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 11000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_zapdos.mp4",
+      "legenda": "Booster da Celebração de 30 Anos no menor preço que o site já registrou: R$ 47,40. Valeu ou não valeu? ⚡\n\nZapdos ou Moltres: qual hit é melhor? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-11-04-de-video02-ig-site-q",
+      "quando": "2026-11-04T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 38000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video02.mp4",
+      "legenda": "Desafio Estratégico de novo: 8 boosters por R$ 114,99, o menor preço que o site já viu. Será que agora vem? 🙏\n\nQual carta você quer que saia no próximo pack? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+    },
+    {
+      "id": "v-11-07-30a-blister-abertura-ig-site-q",
+      "quando": "2026-11-07T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 40000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_blister_abertura.mp4",
+      "legenda": "Blister Duplo da Celebração de 30 Anos: R$ 69,66, o menor preço que o site já registrou. Placar no topo. Lucro ou prejuízo? 👇\n\nBlister ou booster avulso: qual você prefere? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "id": "v-11-09-de-video03-ig-site-q",
+      "quando": "2026-11-09T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 38000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video03.mp4",
+      "legenda": "Mais um Desafio Estratégico (R$ 114,99, menor preço que o site já viu). A essa altura é questão de honra 😤\n\nContinuo a série ou paro por aqui? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+    },
+    {
+      "id": "v-11-10-de-video04-ig-site-q",
+      "quando": "2026-11-10T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 34000,
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video04.mp4",
+      "legenda": "Último pack do Desafio Estratégico (R$ 114,99, menor preço que o site já viu). Fecha a série comigo 👇\n\nQual foi o melhor pack da série? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+    },
+    {
+      "quando": "2026-11-11T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 1800,
+      "id": "v-11-11-blister-duplo-ig-q",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/BD_blister_duplo_pedro.mp4",
+      "legenda": "Abri 2 Blisters Duplos da Celebração de 30 Anos e o Espeon ex veio no último pack 🍀\n\nEspeon ex: guarda na coleção ou vende? 👇\n\nNo menor preço que o site já viu, cada blister sai por R$ 69,66. Deu lucro? Só olhando o placar 👀\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+    },
+    {
+      "quando": "2026-11-06T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "instagram"
+      ],
+      "capaMs": 1500,
+      "id": "s3-sex-reinado-delta-motion-ig-q",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/RD_lancamento_motion.mp4",
+      "legenda": "Saiu hoje: Reinado Delta, a última coleção grande da fase Megaevolução, com Mega Rayquaza ex como estrela.\n\nVai comprar Reinado Delta no lançamento ou esperar baixar? 👇\n\nSemana de lançamento é quando o preço mais sobe. Compare com o sugerido da Copag e não pague qualquer valor.\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao"
+    },
+    {
+      "id": "v-10-19-de-video01-tt-site-q",
+      "quando": "2026-10-19T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video01.mp4",
+      "legenda": "8 boosters por R$ 114,99. hit ou brick? 💀\n\nVocê abriria a caixa ou compraria a carta avulsa? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+      "capaMs": 44000
+    },
+    {
+      "id": "v-10-21-30a-hit-sylveon-tt-site-q",
+      "quando": "2026-10-21T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_sylveon.mp4",
+      "legenda": "booster de R$ 47 da 30 anos… espera a última carta 😳\n\nSylveon entra no seu top 3 da coleção? Comenta 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 11000
+    },
+    {
+      "id": "v-10-23-30a-hit-pkclassico-tt-site-q",
+      "quando": "2026-10-23T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_pkclassico.mp4",
+      "legenda": "o pikachu clássico de 1999 saiu num booster de R$ 47 💛\n\nQual Pokémon de 1999 você mais queria ver de volta? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 13000
+    },
+    {
+      "id": "v-10-24-30a-poster-abertura-tt-site-q",
+      "quando": "2026-10-24T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_poster_abertura.mp4",
+      "legenda": "coleção com pôster por R$ 109. lucro ou prejuízo? 👀\n\nPôster: vale pela coleção ou só pelas cartas? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 60000
+    },
+    {
+      "id": "v-10-25-30a-hit-moltres-tt-site-q",
+      "quando": "2026-10-25T18:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_moltres.mp4",
+      "legenda": "hit ou brick? booster de R$ 47 🔥\n\nMoltres, Zapdos ou Articuno: qual é o seu? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 11000
+    },
+    {
+      "id": "v-10-27-30a-hit-uxie-tt-site-q",
+      "quando": "2026-10-27T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_uxie.mp4",
+      "legenda": "nem todo booster é hit 😭\n\nQual foi o pior brick que você já tirou? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 11000
+    },
+    {
+      "id": "v-10-28-de-caixa-8packs-tt-site-q",
+      "quando": "2026-10-28T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_caixa_8packs.mp4",
+      "legenda": "abri 8 boosters de R$ 114,99 e… 💀\n\nChuta antes do final: lucro ou prejuízo? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+      "capaMs": 160000
+    },
+    {
+      "id": "v-10-31-30a-hit-gholdengo-tt-site-q",
+      "quando": "2026-10-31T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_gholdengo.mp4",
+      "legenda": "o maior susto do halloween 🎃💀\n\nQual carta já te deu o maior susto, bom ou ruim? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 15000
+    },
+    {
+      "id": "v-11-01-30a-etb-abertura-v2-tt-site-q",
+      "quando": "2026-11-01T18:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_etb_abertura_v2.mp4",
+      "legenda": "ETB 30 anos por R$ 519 no menor preço do site. deu lucro? 👀\n\nChuta o valor final antes de ver o placar 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 140000
+    },
+    {
+      "id": "v-11-03-30a-hit-zapdos-tt-site-q",
+      "quando": "2026-11-03T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_hit_zapdos.mp4",
+      "legenda": "booster de R$ 47. valeu ou não valeu? ⚡\n\nZapdos ou Moltres: qual hit é melhor? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 11000
+    },
+    {
+      "id": "v-11-04-de-video02-tt-site-q",
+      "quando": "2026-11-04T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video02.mp4",
+      "legenda": "será que agora vem? 🙏\n\nQual carta você quer que saia no próximo pack? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+      "capaMs": 38000
+    },
+    {
+      "id": "v-11-07-30a-blister-abertura-tt-site-q",
+      "quando": "2026-11-07T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/30A_blister_abertura.mp4",
+      "legenda": "blister de R$ 69. vale a pena? 👇\n\nBlister ou booster avulso: qual você prefere? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 40000
+    },
+    {
+      "id": "v-11-09-de-video03-tt-site-q",
+      "quando": "2026-11-09T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video03.mp4",
+      "legenda": "a essa altura é questão de honra 😤\n\nContinuo a série ou paro por aqui? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+      "capaMs": 38000
+    },
+    {
+      "id": "v-11-10-de-video04-tt-site-q",
+      "quando": "2026-11-10T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/DE_video04.mp4",
+      "legenda": "último pack da série. vem? 👇\n\nQual foi o melhor pack da série? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+      "capaMs": 34000
+    },
+    {
+      "quando": "2026-11-11T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "id": "v-11-11-blister-duplo-tt-q",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/BD_blister_duplo_pedro.mp4",
+      "legenda": "2 blisters duplos da 30 anos… o Espeon ex veio no último pack 😳\n\nEspeon ex: guarda na coleção ou vende? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+      "capaMs": 1800
+    },
+    {
+      "quando": "2026-11-06T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "id": "s3-sex-reinado-delta-motion-tt-q",
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/RD_lancamento_motion.mp4",
+      "legenda": "Reinado Delta saiu hoje. lançamento sobe de preço, não paga qualquer valor 👀\n\nVai comprar Reinado Delta no lançamento ou esperar baixar? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #reinadodelta #megarayquaza #fyp",
+      "capaMs": 1500
+    }
+  ],
+  "cancelar": [
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-19T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-21T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-23T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-24T11:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-25T18:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-27T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-28T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-31T11:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-01T18:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-03T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-04T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-07T11:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-09T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-10T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-11T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-06T19:00",
+      "plataforma": "instagram"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-19T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-21T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-23T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-24T11:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-25T18:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-27T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-28T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-10-31T11:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-01T18:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-03T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-04T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-07T11:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-09T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-10T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-11T19:00",
+      "plataforma": "tiktok"
+    },
+    {
+      "motivo": "legenda com pergunta (19/10)",
+      "quando": "2026-11-06T19:00",
+      "plataforma": "tiktok"
+    }
+  ]
+}
