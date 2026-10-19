@@ -1,0 +1,16 @@
+# Lojas encontradas pelo Discovery Intelligence Engine (docs/discovery-engine.md). Linha ativa = entra na coleta
+# (src/run.js lê qualquer config/lojas/*.txt). "# candidata" = sinais parciais, conferir à mão antes de ativar.
+https://ironstudios.com.br  # DIE serper store:blister-pokemon-equilibrio-perfeito 2026-10-13
+https://boosternamesa.com  # DIE serper store:elite-trainer-box-caos-ascendente-comprar 2026-10-13
+https://galeriadelavander.com.br  # DIE serper store:elite-trainer-box-fogo-fantasmagorico-comprar 2026-10-13
+https://deckcerto.com  # DIE serper store:blister-pokemon-equilibrio-perfeito 2026-10-14
+https://odisseiajogos.com.br  # DIE serper store:elite-trainer-box-fogo-fantasmagorico-comprar 2026-10-14
+https://madlabrpg.com  # DIE serper store:elite-trainer-box-coroa-estelar-comprar 2026-10-14
+# candidata https://pirlimpimpimbrinquedos.com.br  # sem preço em R$ na página inicial (DIE serper store:elite-trainer-box-equilibrio-perfeito-comprar 2026-10-15)
+# candidata https://oitopeia.com.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper store:blister-pokemon-destinos-de-paldea 2026-10-15)
+https://pompsgeek.com.br  # DIE serper store:pokemon-tcg-fogo-fantasmagorico-booster-box 2026-10-17
+https://demapapelaria.com.br  # DIE serper store:papelaria-cartas-pokemon-blister 2026-10-17
+https://pandagamesbr.commercesuite.com.br  # DIE serper product:pokemon-tcg-caos-ascendente-blister-duplo 2026-10-17
+# candidata https://vamojogar.com.br  # sem preço em R$ na página inicial (DIE serper store:loja-de-card-game-belem 2026-10-17)
+# candidata https://solosagrado.com.br  # sem preço em R$ na página inicial (DIE serper store:loja-de-card-game-goiania 2026-10-17)
+# candidata https://stormcardgames.com.br  # sem preço em R$ na página inicial (DIE serper store:loja-de-card-game-florianopolis 2026-10-17)
