@@ -14,7 +14,8 @@ for modo in ('abrir', 'guardar'):
         for p in range(1, 15):
             d = get(f'/api/v1/site/produtos?modo={modo}&limite=60&pagina={p}{semref}')
             itens = next((v for v in (d.values() if isinstance(d, dict) else []) if isinstance(v, list)), d if isinstance(d, list) else [])
-            if not itens: break
+            if not itens:
+                cat.setdefault('_debug', []).append({'url': f'{modo}{semref}{p}', 'resp': json.dumps(d, ensure_ascii=False)[:300]}); break
             for it in itens:
                 pp, oo = it.get('p', {}), it.get('o', {}) or {}
                 if pp.get('id'): cat[pp['id']] = {'col': pp.get('collectionName'), 'tipo': pp.get('typeLabel'), 'var': pp.get('variant'), 'msrp': pp.get('msrp') or pp.get('copagReference'), 'preco': oo.get('price'), 'loja': oo.get('storeName')}
