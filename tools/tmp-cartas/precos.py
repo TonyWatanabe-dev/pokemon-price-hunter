@@ -13,13 +13,13 @@ for modo in ('abrir', 'guardar'):
     for semref in ('', '&semref=1'):
         for p in range(1, 15):
             d = get(f'/api/v1/site/produtos?modo={modo}&limite=60&pagina={p}{semref}')
-            itens = d.get('produtos') or d.get('itens') or d.get('data') or (d if isinstance(d, list) else [])
+            itens = next((v for v in (d.values() if isinstance(d, dict) else []) if isinstance(v, list)), d if isinstance(d, list) else [])
             if not itens: break
             for it in itens:
-                pid = it.get('id') or it.get('slug')
-                if pid: cat[pid] = {k: it.get(k) for k in ('nome', 'name', 'titulo', 'preco', 'menorPreco', 'precoAtual', 'sugerido', 'precoSugerido', 'colecao', 'tipo')}
+                pp, oo = it.get('p', {}), it.get('o', {}) or {}
+                if pp.get('id'): cat[pp['id']] = {'col': pp.get('collectionName'), 'tipo': pp.get('typeLabel'), 'var': pp.get('variant'), 'msrp': pp.get('msrp') or pp.get('copagReference'), 'preco': oo.get('price'), 'loja': oo.get('storeName')}
 json.dump(cat, open(f'{OUT}/catalogo.json', 'w'), indent=1, ensure_ascii=False)
-alvo = re.compile(r'lata|tin|lucario|liga|league|treinador avan|elite|caos|chaos|me04|me03|me02', re.I)
+alvo = re.compile(r'^c30-|lucario|me04-etb|baralho|deck|lata|tin', re.I)
 res = {}
 for pid, v in cat.items():
     if alvo.search(pid + ' ' + json.dumps(v, ensure_ascii=False)):
