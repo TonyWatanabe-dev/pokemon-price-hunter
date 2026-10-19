@@ -57,9 +57,9 @@ const { default: api, _cache } = await import('../api/v1.mjs');
 const { setFreshnessClock } = await import('../api/_lib/freshness.mjs'); setFreshnessClock(() => now.getTime());
 const call = async (url) => { const res = { headers: {}, setHeader(k, v) { this.headers[k] = v; }, end(b) { this.body = b; } }; await api({ url, method: 'GET' }, res); return { status: res.statusCode, headers: res.headers, json: JSON.parse(res.body) }; };
 const savedDb = process.env.API_DATABASE_URL; delete process.env.API_DATABASE_URL;
-for (const bad of ['categoria=x-1', 'categoria=Outros', 'referencia=historica', 'referencia=comunitaria', 'ordem=desconto', 'ordem=drop', 'produto=..%2Fx', 'produto=a%20b', 'produto=a%27b'])
+for (const bad of ['categoria=x-1', 'categoria=Outros', 'referencia=historica', 'referencia=comunitaria', 'ordem=desconto', 'ordem=drop', 'produto=..%2Fx', 'produto=a%20b', 'produto=a%27b', 'idioma=fr', 'idioma=xx'])
   assert.equal((await call(`/api/v1/oportunidades?${bad}`)).status, 400, bad);
-for (const ok of ['categoria=etb', 'categoria=Blisters', 'categoria=Cole%C3%A7%C3%B5es', 'referencia=copag', 'abaixo=10', 'confianca_minima=50', 'produto=me05-etb', 'produto=me05-etb&ofertas=todas',
+for (const ok of ['categoria=etb', 'categoria=Blisters', 'categoria=Cole%C3%A7%C3%B5es', 'referencia=copag', 'abaixo=10', 'confianca_minima=50', 'produto=me05-etb', 'produto=me05-etb&ofertas=todas', 'idioma=pt', 'idioma=en', 'idioma=todos',
   ...['score', 'preco', 'confianca', 'abaixo', 'economia', 'queda', 'recentes'].map((o) => `ordem=${o}`)])
   assert.equal((await call(`/api/v1/oportunidades?${ok}`)).status, 200, ok);
 n++;

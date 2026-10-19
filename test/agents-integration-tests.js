@@ -20,7 +20,7 @@ const unmatched = [
   U('loja', 'Pokémon Box Megaevolução Escuridão Absoluta', 'mais de uma coleção no título: me01, me05'),
   U('loja', 'Pokémon ETB Escuridão Absoluta', 'EAN diverge do catálogo'),
   U('ruido', 'Pelúcia Pikachu Pokémon', 'coleção não identificada'),                    // ruído: fora
-  U('ruido', 'Pokémon Deck em inglês', 'idioma diferente de PT'),                        // recusa legítima: fora
+  U('ruido', 'Pokémon Deck em francês', 'idioma diferente de PT'),                        // recusa legítima: fora
   { store: 'dois', title: 'Kit Pokémon', url: 'https://dois.com.br/k', why: ['acessório ou item não-TCG', 'tipo de produto não identificado'] }, // dois motivos: fora
   { store: 'semurl', title: 'Pokémon Box', url: null, why: ['tipo de produto não identificado'] },                                              // sem URL: fora
 ];

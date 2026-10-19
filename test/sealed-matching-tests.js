@@ -67,17 +67,17 @@ test('quantidade de boosters separa produtos e, sem contagem, booster box não c
   assert.notEqual(m('Pokémon TCG Combo Fogo Fantasmagórico').productId, m('Pokémon TCG Combo Fogo Fantasmagórico 6 Boosters').productId);
 });
 
-test('idioma diferente de PT nunca casa, nem com EAN cadastrado', () => {
-  for (const t of [
-    'Pokémon TCG Elite Trainer Box Fogo Fantasmagórico Inglês',
-    'Pokémon TCG Elite Trainer Box Fogo Fantasmagórico (EN)',
-    'Pokémon TCG Booster Box Caos Ascendente 36 Boosters English',
-    'Pokémon TCG Booster Box Caos Ascendente 36 Boosters Japonês',
-    'Pokémon TCG Booster Box Fogo Fantasmagórico Japonesa 30 Boosters',
-    'Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Inglês Português', // conflito: na dúvida, não casa
-  ]) recusa(t, /idioma diferente de PT/);
+test('importado (inglês/japonês) vira produto próprio, nunca o PT, nem com EAN cadastrado', () => {
+  for (const [t, id] of [
+    ['Pokémon TCG Elite Trainer Box Fogo Fantasmagórico Inglês', 'me02-etb-en'],
+    ['Pokémon TCG Elite Trainer Box Fogo Fantasmagórico (EN)', 'me02-etb-en'],
+    ['Pokémon TCG Booster Box Caos Ascendente 36 Boosters English', 'me04-box36-en'],
+    ['Pokémon TCG Booster Box Caos Ascendente 36 Boosters Japonês', 'me04-box36-ja'],
+    ['Pokémon TCG Booster Box Fogo Fantasmagórico Japonesa 30 Boosters', 'me02-box30-ja'],
+  ]) casa(t, id);
+  recusa('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Inglês Português', /idioma diferente de PT/); // conflito: na dúvida, não casa
   const ean = m('Pokémon TCG Booster Box Caos Ascendente 36 Boosters Inglês', '196214156098');
-  assert.equal(ean.productId, null); assert.ok(ean.why.includes('idioma diferente de PT'));
+  assert.equal(ean.productId, 'me04-box36-en'); assert.equal(ean.product.language, 'en'); assert.match(ean.product.name, /\(Inglês\)$/);
   casa('Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters Português', 'me02-box36');
 });
 

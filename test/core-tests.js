@@ -60,8 +60,11 @@ assert.equal(lang('Booster Box Mega Evolução').code, null); // "en" dentro de 
 assert.equal(lang('Deck Entei Pokemon').code, null);
 const emptyCat = { collections: [], products: [] };
 const rej = (s) => parseListing(s, emptyCat).rejects.includes('idioma diferente de PT');
-assert.ok(rej('Pokémon Booster Box 36 boosters Inglês'));
-assert.ok(rej('Pokémon Booster Box 36 boosters JP'));
+// Importados (inglês, japonês, chinês, coreano) não são recusados: viram produto próprio com sufixo de idioma.
+assert.ok(!rej('Pokémon Booster Box 36 boosters Inglês'));
+assert.ok(!rej('Pokémon Booster Box 36 boosters JP'));
+assert.equal(parseListing('Pokémon Booster Box 36 boosters Inglês', emptyCat).lang, 'en');
+assert.ok(rej('Pokémon Booster Box 36 boosters Francês'));
 assert.ok(rej('Pokémon Booster Box 36 boosters PT-BR japonês'));
 assert.ok(!rej('Pokémon Booster Box 36 boosters PT-BR'));
 assert.ok(!rej('Pokémon Booster Box 36 boosters'));
@@ -75,10 +78,10 @@ assert.equal(lang('Box Treinador Avançado Japonês-JP').code, 'ja');
 assert.equal(lang('Booster Box 36 boosters PT-BR').code, 'pt');
 assert.equal(lang('Booster Box 36 boosters pt-br').code, 'pt');
 assert.equal(lang('Booster Box 36 boosters ptbr').code, 'pt');
-assert.ok(rej('Pokémon Booster Box 36 boosters EN-US'));
-assert.ok(rej('Pokémon Booster Box 36 boosters JP-JA'));
-assert.ok(rej('Pokémon Booster Box 36 boosters Inglês-EN'));
-assert.ok(rej('Pokémon Booster Box 36 boosters Japonês-JP'));
+assert.ok(!rej('Pokémon Booster Box 36 boosters EN-US'));
+assert.ok(!rej('Pokémon Booster Box 36 boosters JP-JA'));
+assert.equal(parseListing('Pokémon Booster Box 36 boosters Inglês-EN', emptyCat).lang, 'en');
+assert.equal(parseListing('Pokémon Booster Box 36 boosters Japonês-JP', emptyCat).lang, 'ja');
 assert.ok(!rej('Pokémon Booster Box 36 boosters pt-br'));
 // palavras hifenizadas sem token de idioma não viram idioma
 for (const t of ['Pokémon Mega-Evolução Booster Box', 'Pokémon Sun-Moon Booster', 'Pokémon X-Y Booster Box', 'Booster Box pré-venda', 'Booster Box SV-04 Fenda-Paradoxal', 'Booster Box Escarlate-Violeta 151']) {
@@ -90,6 +93,7 @@ for (const t of ['Pokémon Mega-Evolução Booster Box', 'Pokémon Sun-Moon Boos
   assert.equal(matchProduct({ title: 'Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters' }, catalog).productId, 'me02-box36');
   for (const t of ['Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters EN-US', 'Pokémon TCG Booster Box Fogo Fantasmagórico 36 Boosters JP-JA']) {
     assert.notEqual(matchProduct({ title: t }, catalog).productId, 'me02-box36', t);
+    assert.match(matchProduct({ title: t }, catalog).productId, /^me02-box36-(en|ja)$/, t);
   }
   for (const t of ['Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico JP-JA', 'Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico (Inglês-EN)', 'Pokémon TCG Box Treinador Avançado Fogo Fantasmagórico Versão EN-US']) {
     assert.notEqual(matchProduct({ title: t }, catalog).productId, 'me02-etb', t);

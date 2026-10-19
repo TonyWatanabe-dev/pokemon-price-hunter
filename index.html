@@ -892,6 +892,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 [data-cat="deck"] .cat-deco::before{transform:translate(-62%,-50%) rotate(-9deg)}[data-cat="deck"] .cat-deco::after{transform:translate(-38%,-50%) rotate(8deg)}
 .cat-chip{position:absolute;left:12px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:5px 10px 5px 7px;border-radius:999px;background:color-mix(in srgb,var(--c1) 76%,#000);color:#fff;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 12px color-mix(in srgb,var(--c1) 40%,transparent)}
 .cat-chip .icon{width:13px;height:13px}
+.lang-chip{position:absolute;right:12px;bottom:12px;z-index:3;padding:4px 9px;border-radius:999px;background:#10131A;color:#FFD84D;border:1px solid #FFD84D;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
 .deal[data-cat] .deal-col{color:color-mix(in srgb,var(--c1) 70%,var(--ink))}
 @media (hover:hover) and (pointer:fine){.deal:hover .cat-media .photo img{transform:scale(1.04) translateY(-2px)}}
 .pixk{font-style:normal;display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#0A7A6A;background:#DDF6EF;padding:2px 7px;border-radius:999px;vertical-align:middle}
@@ -1525,7 +1526,7 @@ const STOCK={IN_STOCK:["ok","Em estoque"],OUT_OF_STOCK:["","Sem estoque"],PRE_OR
 const SRC={ACTIVE:["ok","Ativa"],BLOCKED:["bad","Bloqueia robôs"],ERROR:["bad","Com erro"],PENDING:["warn","Sem endereço"],UNAVAILABLE:["","Sem integração"],PAUSED:["","Pausada"]};
 
 let S=null,P={},OFF=[];
-const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:true,q:"",type:"",max:"",below:false,tipo:"",ord:""},store.get("f",{}));
+const F=Object.assign({mode:"guardar",group:"",col:"",store:"",sort:"",stock:true,q:"",type:"",max:"",below:false,tipo:"",ord:"",lang:"pt"},store.get("f",{}));
 /* Lote B — /busca: chips de tipo (taxonomia dos produtos) e ordenação; definidos aqui porque a URL é lida antes do resto do script */
 const BTIPOS=[["booster_box","Booster Box",(t)=>t==="booster_box"],["etb","ETB",(t)=>t==="etb"],["blister","Blister",(t)=>/^blister/.test(t)],["booster_pack","Booster avulso",(t)=>t==="booster_pack"],["combo","Combo",(t)=>t==="combo"],["lata","Lata",(t)=>t==="lata"||t==="minilata"],["deck","Deck",(t)=>t==="deck"||t==="desafio"],["colecao","Coleção",(t)=>/^colecao/.test(t)]];
 const btipoOf=(p)=>(BTIPOS.find(([,,f])=>f(String(p?.type||"")))||[""])[0];
@@ -1614,7 +1615,7 @@ function raBadge(o,full){
 }
 const pixOf=(id)=>pixTag(OFF.find((x)=>x.id===id)||(S?.offerKinds?.[id]?{priceKind:S.offerKinds[id]}:null));
 const pixTxt=(o)=>o?.priceKind==="pix"?" no Pix":"";
-const label=(p)=>p.typeLabel+(p.boosters&&(p.type==="booster_box"||p.type==="combo")?` ${p.boosters}`:"")+(p.variant?` ${p.variant}`:"");
+const label=(p)=>p.typeLabel+(p.boosters&&(p.type==="booster_box"||p.type==="combo")?` ${p.boosters}`:"")+(p.variant?` ${p.variant}`:"")+((m)=>m?` ${{en:"Inglês",ja:"Japonês",zh:"Chinês",ko:"Coreano"}[m[1]]}`:"")(String(p.id||"").match(/-(en|ja|zh|ko)$/));   /* importado: idioma no nome (api/_seo.mjs) */
 
 /* Agrupa ofertas por produto e escolhe a melhor de cada um conforme o objetivo */
 function entries(){
@@ -1625,6 +1626,7 @@ function entries(){
     const p=P[o.productId];if(!p)continue;
     if(F.group&&p.group!==F.group)continue;
     if(F.col&&p.collection!==F.col)continue;
+    if(!langOk(p))continue;
     if(F.store&&o.storeId!==F.store)continue;
     if(F.type&&p.type!==F.type)continue;
     if(F.max&&!(o.total<=Number(F.max)))continue;
@@ -1635,6 +1637,11 @@ function entries(){
   const key=F.mode==="abrir"?(o)=>o.perBooster:(o)=>o.total;
   return Object.entries(by).map(([id,list])=>{list.sort((a,b)=>key(a)-key(b)||String(a.id).localeCompare(String(b.id)));return{p:P[id],o:list[0],n:list.length}});
 }
+/* Importado: id termina em -en/-ja/-zh/-ko (src/match.js). Idioma entra no nome e vira etiqueta no card (api/_seo.mjs). */
+const LANG_NAME={pt:"Português",en:"Inglês",ja:"Japonês",zh:"Chinês",ko:"Coreano"};
+const langOf=(p)=>(String(p?.id||"").match(/-(en|ja|zh|ko)$/)||[])[1]||"pt";
+const langOk=(p)=>!F.lang||F.lang==="todos"||langOf(p)===F.lang;
+const listed=(p)=>refOf(p)||langOf(p)!=="pt";
 function sortEntries(list){
   const s=F.sort||(F.mode==="abrir"?"ppb":"score");
   const cmp={score:(a,b)=>(oppScore(b.o)??-1)-(oppScore(a.o)??-1)||(b.o.discount??-9)-(a.o.discount??-9),disc:(a,b)=>(discOf(b.p,b.o)??-9)-(discOf(a.p,a.o)??-9),price:(a,b)=>a.o.total-b.o.total,ppb:(a,b)=>(a.o.perBooster??1e9)-(b.o.perBooster??1e9),new:(a,b)=>String(b.p.firstSeen||"").localeCompare(String(a.p.firstSeen||""))||(a.o.total-b.o.total)}[s]||(()=>0);
@@ -1728,7 +1735,7 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
   const save=hasD&&d>=.0005&&!abrir;
   return`<article class="deal${state?" "+state:""}${foil?" foil":""}${CHANGED.has(p.id)?" upd":""}" data-cat="${catOf(p)}" style="--ec:${gg.c}${opt.i!=null?`;--i:${opt.i}`:""}">${opt.i!=null?`<span class="deal-back" aria-hidden="true"></span>`:""}
   <a class="deal-hit" href="${href}" data-p="${esc(p.id)}" aria-label="${esc(p.collectionName+" "+label(p))}"></a>
-  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rank!=null&&opt.rail?`<span class="deal-rank">#${opt.rank+1}</span>`:""}${photo(p,o,"photo deal-ph")}${badge}${catChip(p)}${foil?`<span class="foil-tag">${ic("sparkle-f")}${opt.rank===0?"Melhor oferta":"Oferta foil"}</span>`:""}
+  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rank!=null&&opt.rail?`<span class="deal-rank">#${opt.rank+1}</span>`:""}${photo(p,o,"photo deal-ph")}${badge}${catChip(p)}${(l=>l?`<span class="lang-chip">${l}</span>`:"")({en:"Inglês",ja:"Japonês",zh:"Chinês",ko:"Coreano"}[(String(p.id).match(/-(en|ja|zh|ko)$/)||[])[1]])}${foil?`<span class="foil-tag">${ic("sparkle-f")}${opt.rank===0?"Melhor oferta":"Oferta foil"}</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(p.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(p.collectionName)}</p>
@@ -1750,7 +1757,8 @@ function facetsOf(all){
   return{groups:GROUP_ORDER.filter((gr)=>all.some((e)=>e.p.group===gr)).map((gr)=>[gr,all.filter((e)=>e.p.group===gr).length]),
     cols:(S.collections||[]).filter((c)=>all.some((e)=>e.p.collection===c.id)).map((c)=>({id:c.id,name:c.name,series:c.series||"Outras"})),
     stores:[...new Map(all.map((e)=>[e.o.storeId,e.o.storeName])).entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1]))),
-    types:[...new Map(all.filter((e)=>!F.group||e.p.group===F.group).map((e)=>[e.p.type,e.p.typeLabel])).entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1])))};
+    types:[...new Map(all.filter((e)=>!F.group||e.p.group===F.group).map((e)=>[e.p.type,e.p.typeLabel])).entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1]))),
+    langs:["pt","en","ja","zh","ko"].map((l)=>{const keep={...F};Object.assign(F,{group:"",col:"",store:"",lang:l});const n=entries().length;Object.assign(F,keep);return[l,n]}).filter(([,n])=>n)};
 }
 function filtersHTML(all){
   const fc=Array.isArray(all)?facetsOf(all):all;
@@ -1762,11 +1770,12 @@ function filtersHTML(all){
   const chip=(v,l,icon,c,count)=>`<button class="fchip" type="button" data-g="${v}" aria-pressed="${F.group===v}" ${c?`style="--ec:${c}"`:""}>${icon?ic(icon):""}${l}${count!=null?` <small>${count}</small>`:""}</button>`;
   const types=fc.types;
   const extra=[F.type,F.store,F.max,F.below,!F.stock].filter(Boolean).length;
-  const any=extra||F.group||F.col;
+  const any=extra||F.group||F.col||(F.lang&&F.lang!=="pt");
   return`<div class="filters">
   <div class="chips" role="group" aria-label="Tipo de produto">${chip("","Todos",null,null,null)}${groups.map((gr)=>chip(gr,gr,GROUP[gr].icon,GROUP[gr].c,gcount[gr])).join("")}</div>
   <div class="selects">
     <div class="field"><label for="f-col">Coleção</label><select id="f-col" data-f="col"><option value="">Todas as coleções</option>${series.map((sr)=>`<optgroup label="${esc(sr)}">${cols.filter((c)=>(c.series||"Outras")===sr).map((c)=>`<option value="${esc(c.id)}"${F.col===c.id?" selected":""}>${esc(c.name)}</option>`).join("")}</optgroup>`).join("")}</select></div>
+    <div class="field"><label for="f-lang">Idioma</label><select id="f-lang" data-f="lang">${[...(fc.langs||[]).map(([l,n])=>[l,`${LANG_NAME[l]} (${n})`]),["todos","Todos os idiomas"]].map(([v,l])=>`<option value="${v}"${(F.lang||"pt")===v?" selected":""}>${esc(l)}</option>`).join("")}</select></div>
     <div class="field"><label for="f-sort">Ordenar por</label><select id="f-sort" data-f="sort">${sorts.map(([v,l])=>`<option value="${v}"${(F.sort||sorts[0][0])===v?" selected":""}>${l}</option>`).join("")}</select></div>
   </div>
   <details class="xf" id="xf"${extra||xfOpen?" open":""}><summary>${ic("funnel")}Mais filtros${extra?` <span class="chip warn">${extra} ${extra>1?"ativos":"ativo"}</span>`:""}</summary>
@@ -1905,7 +1914,7 @@ function podCardOpp(x,r){
   return`<article class="pod"${ol?" data-old":""} data-r="${r}"${hk?` data-hl="${hk}"`:""}${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""} data-cat="${catOf(p)}" style="--sc:${bu[1]};--int:${confInt(lv)}">
     ${hl?`<span class="pod-rank"><i aria-hidden="true"></i>${hl}</span>`:""}
     <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${r}º lugar: ${esc((pr.collection?.name||"")+" "+name)}, ${money(oppTotal(x))} em ${esc(st.name||"")}"></a>
-    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo",true)}${catChip(p)}
+    <div class="cat-media"><i class="cat-deco" aria-hidden="true"></i>${photo(p,{image:of.image},"photo",true)}${catChip(p)}${(l=>l?`<span class="lang-chip">${l}</span>`:"")({en:"Inglês",ja:"Japonês",zh:"Chinês",ko:"Coreano"}[(String(p.id).match(/-(en|ja|zh|ko)$/)||[])[1]])}
       <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
     <span class="pod-sheen" aria-hidden="true"></span>
     <div class="pod-body"><p class="pod-col">${esc(pr.collection?.name||"")}</p><h3 class="pod-name">${esc(name)}</h3>
@@ -2037,8 +2046,8 @@ function renderGroup(kind,slug){
 }
 function renderDeals(){
   const raw=entries();
-  const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
-  const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
+  const base=F.mode==="guardar"?raw.filter((e)=>listed(e.p)):raw;
+  const noCopag=F.mode==="guardar"?raw.filter((e)=>!listed(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
   const nLive=S.slim?S.counts.liveOffers:OFF.filter(live).length,nStores=S.slim?S.counts.stores:new Set(OFF.filter(live).map((o)=>o.storeId)).size;
@@ -2069,8 +2078,8 @@ function rerenderList(){if(view==="produtos")renderProdutos();else renderDeals()
 function renderProdutos(){
   if(S.slim)return renderProdutosApi();   /* FASE 4: lista vem pronta da API */
   const raw=entries();
-  const base=F.mode==="guardar"?raw.filter((e)=>refOf(e.p)):raw;
-  const noCopag=F.mode==="guardar"?raw.filter((e)=>!refOf(e.p)):[];
+  const base=F.mode==="guardar"?raw.filter((e)=>listed(e.p)):raw;
+  const noCopag=F.mode==="guardar"?raw.filter((e)=>!listed(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
   paintProdutos({list,total:list.length,facets:facetsOf(all),noCopag:sortEntries(noCopag),noCopagCount:noCopag.length,refNet:base.some((e)=>!e.p.copagConfirmed),next:null});
@@ -3166,9 +3175,9 @@ function oppMix(items,from,tips,last,opt={}){let h="";
 /* Oportunidades (6B.1): 100% pela API do Opportunity Engine (GET /api/v1/oportunidades).
    Nada de regra de negócio aqui: score, faixa, confiança, referência atual, % abaixo da referência, filtros e ordem
    chegam prontos do servidor. O navegador só monta a URL e desenha. */
-const OF=Object.assign({cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",loja:"",max:"",sort:"score"},store.get("opp2",{}));
+const OF=Object.assign({cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",loja:"",max:"",sort:"score",lang:"pt"},store.get("opp2",{}));
 /* filtros da página (ofReset: começa do zero com um filtro só, usado pelos atalhos da Home) */
-const OF_EMPTY={cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",loja:"",max:""};
+const OF_EMPTY={cat:"",col:"",faixa:"",abaixo:"",ref:"",conf:"",loja:"",max:"",lang:"pt"};
 function ofReset(o){Object.assign(OF,OF_EMPTY,o||{});store.set("opp2",OF)}
 /* lojas do filtro: GET /api/v1/oportunidades/lojas (lojas com oferta avaliada com estoque), pedido uma vez */
 let OPP_STORES=null;
@@ -3179,6 +3188,8 @@ const OSORTS=[["score","Melhor oportunidade"],["abaixo","Mais abaixo da referên
 const OFAIXAS=[["","Todas"],["excelente","Excelente"],["boa","Boa"],["normal","Normal"],["baixa","Baixa"]];
 const OABAIXO=[["","Qualquer"],["10","10% ou mais"],["20","20% ou mais"],["30","30% ou mais"],["40","40% ou mais"]];
 const OREFS=[["","Qualquer"],["copag","Preço sugerido Copag"],["mercado","Mercado"],["nenhuma","Sem referência atual"]];
+/* idioma do produto: abre em Português; importados (sem preço Copag) com etiqueta EN/JP/CN/KR no card */
+const OLANGS=[["pt","Português"],["en","Inglês"],["ja","Japonês"],["zh","Chinês"],["ko","Coreano"],["todos","Todos os idiomas"]];
 const OCONF=[["","Qualquer"],["40","40% ou mais"],["60","60% ou mais"],["75","75% ou mais"]];
 const OPP_LIMIT=24;
 /* faixa do Opportunity Engine → rótulo e cor (só apresentação) */
@@ -3199,10 +3210,11 @@ const rarityOf=(s)=>typeof s==="number"&&Number.isFinite(s)?RARITY.find((t)=>s>=
 const CONF_INT={alta:1,"média":.65,baixa:.35};const confInt=(lv)=>CONF_INT[lv]??1;
 /* destaques da Home: rótulo editorial por posição (as chaves alimentam o visual do pódio; o texto é só a posição) */
 const HIGHLIGHT=[["foil","1º LUGAR"],["ultra","2º LUGAR"],["rara","3º LUGAR"]];
-const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf,OF.loja,OF.max].filter(Boolean).length;
+const oppActive=()=>[OF.cat,OF.col,OF.faixa,OF.abaixo,OF.ref,OF.conf,OF.loja,OF.max,OF.lang&&OF.lang!=="pt"].filter(Boolean).length;
 function oppQuery(page){const q=new URLSearchParams({limite:String(OPP_LIMIT),pagina:String(page),ordem:OF.sort||"score"});
   if(OF.cat)q.set("categoria",OF.cat);if(OF.col)q.set("colecao",OF.col);if(OF.faixa)q.set("faixa",OF.faixa);
   if(OF.abaixo)q.set("abaixo",OF.abaixo);if(OF.ref)q.set("referencia",OF.ref);if(OF.conf)q.set("confianca_minima",OF.conf);
+  if(OF.lang&&OF.lang!=="pt")q.set("idioma",OF.lang);   /* sem idioma = português (padrão da API) */
   if(OF.loja)q.set("loja",OF.loja);const mx=Number(OF.max);if(OF.max!==""&&Number.isFinite(mx)&&mx>=0)q.set("max",String(mx));return"oportunidades?"+q}
 const OPP={key:"",total:null,status:"idle",items:[],pages:1};
 /* campos de filtro (um só componente: barra no desktop e gaveta no celular; ids distintos por lugar) */
@@ -3210,7 +3222,7 @@ function ofSel(k,label,opts,val,pre="of"){return`<div class="field"><label for="
 const ofCols=()=>[["","Todas"],...(S?.collections||[]).map((c)=>[c.id,c.name])];
 function filterControls(){
   const more=[OF.abaixo,OF.ref,OF.conf,OF.max].filter(Boolean).length;
-  return ofSel("cat","Categoria",CATS,OF.cat)+ofSel("col","Coleção",ofCols(),OF.col)+ofSel("loja","Loja",ofStores(),OF.loja)+ofSel("faixa","Oportunidade",OFAIXAS,OF.faixa)
+  return ofSel("cat","Categoria",CATS,OF.cat)+ofSel("col","Coleção",ofCols(),OF.col)+ofSel("lang","Idioma",OLANGS,OF.lang||"pt")+ofSel("loja","Loja",ofStores(),OF.loja)+ofSel("faixa","Oportunidade",OFAIXAS,OF.faixa)
     +`<details class="opp-more"><summary>Mais filtros${more?`<span class="count">${more}</span>`:""}</summary><div class="opp-more-pop">${ofMax()}${ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo)}${ofSel("ref","Referência",OREFS,OF.ref)}${ofSel("conf","Confiança",OCONF,OF.conf)}</div></details>`
     +ofSel("sort","Ordenar",OSORTS,OF.sort);
 }
@@ -3218,7 +3230,7 @@ function filterControls(){
 function sheetControls(){
   const chips=OFAIXAS.map(([v,l])=>`<button class="fchip" type="button" data-ofchip="${v}" aria-pressed="${OF.faixa===v}">${l}</button>`).join("");
   return`<div class="field"><span class="flbl" id="fs-faixa">Oportunidade</span><div class="opp-chips" role="group" aria-labelledby="fs-faixa">${chips}</div></div>`
-    +ofSel("cat","Categoria",CATS,OF.cat,"fs")+ofSel("col","Coleção",ofCols(),OF.col,"fs")+ofSel("loja","Loja",ofStores(),OF.loja,"fs")+ofMax("fs")+ofSel("ref","Referência",OREFS,OF.ref,"fs")+ofSel("conf","Confiança",OCONF,OF.conf,"fs")+ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo,"fs");
+    +ofSel("cat","Categoria",CATS,OF.cat,"fs")+ofSel("col","Coleção",ofCols(),OF.col,"fs")+ofSel("lang","Idioma",OLANGS,OF.lang||"pt","fs")+ofSel("loja","Loja",ofStores(),OF.loja,"fs")+ofMax("fs")+ofSel("ref","Referência",OREFS,OF.ref,"fs")+ofSel("conf","Confiança",OCONF,OF.conf,"fs")+ofSel("abaixo","Abaixo da referência",OABAIXO,OF.abaixo,"fs");
 }
 const pctPts=(v)=>Math.abs(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+"%";   /* formata o % que a API mandou */
 const refOfName=(k)=>k==="COPAG_OFFICIAL_CURRENT"?"do preço sugerido Copag":"da referência de mercado";
@@ -3303,7 +3315,7 @@ function oppCard(x,i,opt={}){const H=opt.h||"h3";
   const ol=ageLine(x.updated_at)?.old;
   return`<article class="deal opp-card"${rar?` data-rar="${rar.id}"`:""}${x.updated_at?` data-at="${esc(x.updated_at)}"`:""}${ol?" data-old":""} data-cat="${catOf(p)}" style="--ec:${g(p).c};--int:${confInt(lv)}">
   <a class="deal-hit" href="${href}" data-p="${esc(pr.id)}" aria-label="${esc(pr.name||"")}"></a>
-  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rail?`<span class="deal-rank">#${i+1}</span>`:""}${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}" title="${bu[0]}"><i></i>${opt.rail?bu[2]:bu[0]}</span>`:""}${catChip(p)}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
+  <div class="deal-media cat-media"><i class="cat-deco" aria-hidden="true"></i>${opt.rail?`<span class="deal-rank">#${i+1}</span>`:""}${photo(p,{image:of.image},"photo deal-ph")}${sc!=null?`<span class="deal-badge" style="--sc:${bu[1]}" title="${bu[0]}"><i></i>${opt.rail?bu[2]:bu[0]}</span>`:""}${catChip(p)}${(l=>l?`<span class="lang-chip">${l}</span>`:"")({en:"Inglês",ja:"Japonês",zh:"Chinês",ko:"Coreano"}[(String(p.id).match(/-(en|ja|zh|ko)$/)||[])[1]])}${best?`<span class="foil-tag">${ic("sparkle-f")}Melhor oferta</span>`:""}
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
@@ -3566,7 +3578,7 @@ async function histFromApi(pid){
 /* /produtos pela API: lista filtrada/ordenada/paginada no servidor (mesmas regras), carrega mais ao rolar */
 function prodQuery(page,semref){const q=new URLSearchParams({modo:F.mode,pagina:String(page),limite:"48"});if(semref)q.set("semref","1");
   if(F.sort)q.set("ordem",F.sort);if(F.group)q.set("grupo",F.group);if(F.col)q.set("colecao",F.col);if(F.store)q.set("loja",F.store);if(F.type)q.set("tipo",F.type);
-  if(F.max)q.set("max",F.max);if(F.below)q.set("abaixo","1");if(!F.stock)q.set("estoque","0");return"site/produtos?"+q}
+  if(F.max)q.set("max",F.max);if(F.below)q.set("abaixo","1");if(!F.stock)q.set("estoque","0");if(F.lang&&F.lang!=="pt")q.set("idioma",F.lang);return"site/produtos?"+q}
 const cardE=(e)=>({p:hydP({...(P[e.p.id]||{}),...e.p}),o:e.o,n:e.n});
 let prodReq="";
 async function renderProdutosApi(){
@@ -3697,7 +3709,7 @@ document.addEventListener("click",(e)=>{
   if(t.closest("[data-home]")){e.preventDefault();go("");return}
   if(t.closest("[data-more]")){$("#more").showModal();return}
   if(t.closest("[data-refresh]")){refresh();return}
-  if(t.closest("#clear-all")){Object.assign(F,{group:"",col:"",store:"",type:"",max:"",below:false,stock:true});store.set("f",F);rerenderList();return}
+  if(t.closest("#clear-all")){Object.assign(F,{group:"",col:"",store:"",type:"",max:"",below:false,stock:true,lang:"pt"});store.set("f",F);rerenderList();return}
   if(t.closest("[data-close]"))$("#sheet").close();
 });
 document.addEventListener("submit",(e)=>{const f=e.target;

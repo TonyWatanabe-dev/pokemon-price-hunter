@@ -308,7 +308,7 @@ export const OPP_REFERENCES = { copag: 'COPAG_OFFICIAL_CURRENT', mercado: 'MARKE
 // Categoria = a mesma do site: tipo do produto (etb, booster_box...) ou grupo (Blisters, Coleções...), de product.attrs
 // query/now: só para teste (cliente falso e relógio fixo); a rota monta os argumentos a partir de uma lista fechada.
 export async function listOpportunities({ page, limit, faixa = null, colecao = null, minimo = null, todas = false, ordem = 'score',
-  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null, loja = null, max = null, query = q, now = Date.now() }) {
+  categoria = null, referencia = null, abaixo = null, confiancaMinima = null, produto = null, loja = null, max = null, idioma = null, query = q, now = Date.now() }) {
   // Loja e preço máximo valem ANTES de escolher a melhor oferta de cada produto: com loja X, cada produto mostra a melhor
   // oferta de X (não some porque outra loja tem nota maior); com preço até R$ N, a melhor oferta dentro do limite.
   // Mesmas regras da view product_opportunity (com estoque, sem anomalia, mesma ordem de desempate).
@@ -346,9 +346,10 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
        AND ($10::text IS NULL OR p.legacy_id = $10 OR p.slug = $10)
        AND ($11::text IS NULL OR f.store_id = $11)
        AND ($12::numeric IS NULL OR (CASE WHEN f.shipping_status IN ('known', 'free') AND f.total_price IS NOT NULL THEN f.total_price ELSE o.price END) <= $12)
+       AND ($13::text IS NULL OR p.language = $13)
      ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
      LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
-    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto, loja, max]);
+    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto, loja, max, idioma ? (idioma === 'pt' ? 'pt-BR' : idioma) : null]);
   const changes = await offerChanges(rows.map((r) => r.offer_id), { query, now });
   // change e criteria são ADITIVOS (#53): campos, ordem, nota e paginação continuam os mesmos
   return { items: rows.map((r) => ({ ...opportunityOut(r), change: changes.get(String(r.offer_id)) ?? noChange('sem dados da oferta'), criteria: opportunityCriteria(r, now) })),

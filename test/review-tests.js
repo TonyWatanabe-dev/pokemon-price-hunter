@@ -46,7 +46,7 @@ await test('override nunca passa por cima de idioma, acessório, EAN ou coleçã
   const idx = overridesIndex({ enabled: true, overrides: [{ store: 's', url: 'loja.com.br/p', ...res, productId: resolutionProduct(res), reviewId: '1' }] });
   const at = (title, extra = {}) => applyOverride({ title, url: 'https://www.loja.com.br/p?x=1', ...extra }, 's', matchProduct({ title, ...extra }, catalog), catalog, idx);
   assert.equal(at(c.title).productId, 'me05-box36', 'mesma página com query e www');
-  assert.equal(at('Pokémon TCG Pack 36 Booster Escuridão Absoluta - Inglês').productId, null, 'idioma');
+  assert.notEqual(at('Pokémon TCG Pack 36 Booster Escuridão Absoluta - Inglês').productId, 'me05-box36', 'idioma: importado nunca vira o PT');
   assert.equal(at('Pokémon TCG PACK 36 BOOSTER Amigos de Jornada').productId, null, 'outra coleção no título');
   const ean = catalog.products.find((p) => p.ean);
   const idxE = overridesIndex({ enabled: true, overrides: [{ store: 's', url: 'loja.com.br/e', collection: ean.collection, type: ean.type, boosters: ean.boosters, productId: ean.id, reviewId: '2' }] });

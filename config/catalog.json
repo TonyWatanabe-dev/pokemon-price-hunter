@@ -2,6 +2,611 @@
   "_nota": "Catálogo automático: os produtos são montados a partir dos anúncios (coleção + tipo + boosters + variante). Aqui ficam as coleções conhecidas, produtos com EAN oficial e preços Copag cadastrados. Confiança OFICIAL (cadastro manual com fonte Copag) vence a loja oficial; a loja oficial vence CATALOGO_COPAG.",
   "collections": [
     {
+      "id": "jp1",
+      "name": "VMAX Climax",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "vmax climax"
+        ]
+      }
+    },
+    {
+      "id": "jp2",
+      "name": "Star Birth",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "star birth"
+        ]
+      }
+    },
+    {
+      "id": "jp3",
+      "name": "Space Juggler",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "space juggler"
+        ]
+      }
+    },
+    {
+      "id": "jp4",
+      "name": "Time Gazer",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "time gazer"
+        ]
+      }
+    },
+    {
+      "id": "jp5",
+      "name": "Dark Phantasma",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "dark phantasma"
+        ]
+      }
+    },
+    {
+      "id": "jp6",
+      "name": "Lost Abyss",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "lost abyss"
+        ]
+      }
+    },
+    {
+      "id": "jp7",
+      "name": "Incandescent Arcana",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "incandescent arcana"
+        ]
+      }
+    },
+    {
+      "id": "jp8",
+      "name": "Paradigm Trigger",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "paradigm trigger"
+        ]
+      }
+    },
+    {
+      "id": "jp9",
+      "name": "VSTAR Universe",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "vstar universe"
+        ]
+      }
+    },
+    {
+      "id": "jp10",
+      "name": "Eevee Heroes",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "eevee heroes"
+        ]
+      }
+    },
+    {
+      "id": "jp11",
+      "name": "Fusion Arts",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "fusion arts"
+        ]
+      }
+    },
+    {
+      "id": "jp12",
+      "name": "Shiny Star V",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "shiny star v"
+        ]
+      }
+    },
+    {
+      "id": "jp13",
+      "name": "Triplet Beat",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "triplet beat"
+        ]
+      }
+    },
+    {
+      "id": "jp14",
+      "name": "Snow Hazard",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "snow hazard"
+        ]
+      }
+    },
+    {
+      "id": "jp15",
+      "name": "Clay Burst",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "clay burst"
+        ]
+      }
+    },
+    {
+      "id": "jp16",
+      "name": "Ruler of the Black Flame",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "ruler of the black flame"
+        ]
+      }
+    },
+    {
+      "id": "jp17",
+      "name": "Raging Surf",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "raging surf"
+        ]
+      }
+    },
+    {
+      "id": "jp18",
+      "name": "Ancient Roar",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "ancient roar"
+        ]
+      }
+    },
+    {
+      "id": "jp19",
+      "name": "Future Flash",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "future flash"
+        ]
+      }
+    },
+    {
+      "id": "jp20",
+      "name": "Shiny Treasure ex",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "shiny treasure"
+        ]
+      }
+    },
+    {
+      "id": "jp21",
+      "name": "Wild Force",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "wild force"
+        ]
+      }
+    },
+    {
+      "id": "jp22",
+      "name": "Cyber Judge",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "cyber judge"
+        ]
+      }
+    },
+    {
+      "id": "jp23",
+      "name": "Crimson Haze",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "crimson haze"
+        ]
+      }
+    },
+    {
+      "id": "jp24",
+      "name": "Mask of Change",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "mask of change",
+          "transformation mask"
+        ]
+      }
+    },
+    {
+      "id": "jp25",
+      "name": "Night Wanderer",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "night wanderer"
+        ]
+      }
+    },
+    {
+      "id": "jp26",
+      "name": "Stellar Miracle",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "stellar miracle"
+        ]
+      }
+    },
+    {
+      "id": "jp27",
+      "name": "Paradise Dragona",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "paradise dragona"
+        ]
+      }
+    },
+    {
+      "id": "jp28",
+      "name": "Super Electric Breaker",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "super electric breaker"
+        ]
+      }
+    },
+    {
+      "id": "jp29",
+      "name": "Terastal Festival",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "terastal festival"
+        ]
+      }
+    },
+    {
+      "id": "jp30",
+      "name": "Battle Partners",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "battle partners"
+        ]
+      }
+    },
+    {
+      "id": "jp31",
+      "name": "Hot Air Arena",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "hot air arena",
+          "heat wave arena"
+        ]
+      }
+    },
+    {
+      "id": "jp32",
+      "name": "Glory of the Rocket Gang",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "glory of the rocket gang"
+        ]
+      }
+    },
+    {
+      "id": "jp33",
+      "name": "Mega Brave",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "mega brave"
+        ]
+      }
+    },
+    {
+      "id": "jp34",
+      "name": "Mega Symphonia",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "mega symphonia"
+        ]
+      }
+    },
+    {
+      "id": "jp35",
+      "name": "Inferno X",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "inferno x"
+        ]
+      }
+    },
+    {
+      "id": "jp36",
+      "name": "Mega Dream ex",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "mega dream"
+        ]
+      }
+    },
+    {
+      "id": "jp37",
+      "name": "Nihil Zero",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "nihil zero"
+        ]
+      }
+    },
+    {
+      "id": "jp38",
+      "name": "Ninja Spinner",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "ninja spinner"
+        ]
+      }
+    },
+    {
+      "id": "jp39",
+      "name": "Abyss Eye",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "abyss eye"
+        ]
+      }
+    },
+    {
+      "id": "jp40",
+      "name": "Storm Emeralda",
+      "series": "Japão",
+      "aliases": [],
+      "langAliases": {
+        "ja": [
+          "storm emeralda"
+        ]
+      }
+    },
+    {
+      "id": "cn1",
+      "name": "CSV3 Fearless Terastal",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv3",
+          "fearless terastal"
+        ]
+      }
+    },
+    {
+      "id": "cn2",
+      "name": "CSV5 Ardent Obsidian",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv5",
+          "ardent obsidian"
+        ]
+      }
+    },
+    {
+      "id": "cn3",
+      "name": "CSV7 Blade Awakening",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv7",
+          "blade awakening"
+        ]
+      }
+    },
+    {
+      "id": "cn4",
+      "name": "CSV8 Sparkling Fable",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv8",
+          "sparkling fable"
+        ]
+      }
+    },
+    {
+      "id": "cn5",
+      "name": "CSV9 Stellar Crystal",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv9",
+          "stellar crystal"
+        ]
+      }
+    },
+    {
+      "id": "cn6",
+      "name": "CSV9.5 Terastal Gathering",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv9 5",
+          "csv9.5",
+          "terastal gathering"
+        ]
+      }
+    },
+    {
+      "id": "cn7",
+      "name": "CSV10 Together in Pursuit of Glory",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "csv10",
+          "together in pursuit of glory"
+        ]
+      }
+    },
+    {
+      "id": "cn8",
+      "name": "GEM Pack Vol. 1",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "gem pack vol 1",
+          "gem pack vol1",
+          "gem pack volume 1"
+        ]
+      }
+    },
+    {
+      "id": "cn9",
+      "name": "GEM Pack Vol. 2",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "gem pack vol 2",
+          "gem pack vol2",
+          "gem pack volume 2"
+        ]
+      }
+    },
+    {
+      "id": "cn10",
+      "name": "GEM Pack Vol. 3",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "gem pack vol 3",
+          "gem pack vol3",
+          "gem pack volume 3"
+        ]
+      }
+    },
+    {
+      "id": "cn11",
+      "name": "GEM Pack Vol. 4",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "gem pack vol 4",
+          "gem pack vol4",
+          "gem pack volume 4"
+        ]
+      }
+    },
+    {
+      "id": "cn12",
+      "name": "GEM Pack Vol. 5",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "gem pack vol 5",
+          "gem pack vol5",
+          "gem pack volume 5"
+        ]
+      }
+    },
+    {
+      "id": "cn13",
+      "name": "GEM Pack Vol. 6",
+      "series": "China",
+      "aliases": [],
+      "langAliases": {
+        "zh": [
+          "gem pack vol 6",
+          "gem pack vol6",
+          "gem pack volume 6"
+        ]
+      }
+    },
+    {
       "id": "swsh1",
       "name": "Espada e Escudo",
       "series": "Espada e Escudo",
@@ -14,7 +619,13 @@
       ],
       "fallbackAliases": [
         "espada e escudo"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "sword shield base set",
+          "sword and shield base set"
+        ]
+      }
     },
     {
       "id": "swsh2",
@@ -27,7 +638,12 @@
         "ee2",
         "ee 2",
         "espada e escudo 2"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "rebel clash"
+        ]
+      }
     },
     {
       "id": "swsh3",
@@ -40,7 +656,12 @@
         "ee3",
         "ee 3",
         "espada e escudo 3"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "darkness ablaze"
+        ]
+      }
     },
     {
       "id": "swsh3_5",
@@ -49,7 +670,13 @@
       "aliases": [
         "caminho do campeao",
         "swsh3.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "champions path",
+          "champion s path"
+        ]
+      }
     },
     {
       "id": "swsh4",
@@ -62,7 +689,12 @@
         "ee4",
         "ee 4",
         "espada e escudo 4"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "vivid voltage"
+        ]
+      }
     },
     {
       "id": "swsh4_5",
@@ -71,7 +703,12 @@
       "aliases": [
         "destinos brilhantes",
         "swsh4.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "shining fates"
+        ]
+      }
     },
     {
       "id": "swsh5",
@@ -84,7 +721,12 @@
         "ee5",
         "ee 5",
         "espada e escudo 5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "battle styles"
+        ]
+      }
     },
     {
       "id": "swsh6",
@@ -97,7 +739,12 @@
         "ee6",
         "ee 6",
         "espada e escudo 6"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "chilling reign"
+        ]
+      }
     },
     {
       "id": "swsh7",
@@ -110,7 +757,12 @@
         "ee7",
         "ee 7",
         "espada e escudo 7"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "evolving skies"
+        ]
+      }
     },
     {
       "id": "cel25",
@@ -120,7 +772,12 @@
         "celebracoes 25 anos",
         "celebracoes pokemon 25",
         "celebracoes"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "celebrations"
+        ]
+      }
     },
     {
       "id": "swsh8",
@@ -133,7 +790,12 @@
         "ee8",
         "ee 8",
         "espada e escudo 8"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "fusion strike"
+        ]
+      }
     },
     {
       "id": "swsh9",
@@ -146,7 +808,12 @@
         "ee9",
         "ee 9",
         "espada e escudo 9"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "brilliant stars"
+        ]
+      }
     },
     {
       "id": "swsh10",
@@ -159,7 +826,12 @@
         "ee10",
         "ee 10",
         "espada e escudo 10"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "astral radiance"
+        ]
+      }
     },
     {
       "id": "swsh11",
@@ -172,7 +844,12 @@
         "ee11",
         "ee 11",
         "espada e escudo 11"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "lost origin"
+        ]
+      }
     },
     {
       "id": "swsh12",
@@ -185,7 +862,12 @@
         "ee12",
         "ee 12",
         "espada e escudo 12"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "silver tempest"
+        ]
+      }
     },
     {
       "id": "swsh12_5",
@@ -194,7 +876,12 @@
       "aliases": [
         "realeza absoluta",
         "swsh12.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "crown zenith"
+        ]
+      }
     },
     {
       "id": "sv1",
@@ -211,7 +898,13 @@
       ],
       "fallbackAliases": [
         "escarlate e violeta"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "scarlet violet base set",
+          "scarlet and violet base set"
+        ]
+      }
     },
     {
       "id": "sv2",
@@ -226,7 +919,12 @@
         "sv2",
         "sv 2",
         "sv02"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "paldea evolved"
+        ]
+      }
     },
     {
       "id": "sv3",
@@ -241,7 +939,12 @@
         "sv3",
         "sv 3",
         "sv03"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "obsidian flames"
+        ]
+      }
     },
     {
       "id": "sv3_5",
@@ -256,7 +959,16 @@
         "ev 3.5",
         "sv3.5",
         "sv 3.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "scarlet violet 151",
+          "scarlet and violet 151"
+        ],
+        "ja": [
+          "pokemon card 151"
+        ]
+      }
     },
     {
       "id": "sv4",
@@ -271,7 +983,12 @@
         "sv4",
         "sv 4",
         "sv04"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "paradox rift"
+        ]
+      }
     },
     {
       "id": "sv4_5",
@@ -284,7 +1001,12 @@
         "ev 4.5",
         "sv4.5",
         "sv 4.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "paldean fates"
+        ]
+      }
     },
     {
       "id": "sv5",
@@ -299,7 +1021,12 @@
         "sv5",
         "sv 5",
         "sv05"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "temporal forces"
+        ]
+      }
     },
     {
       "id": "sv6",
@@ -315,7 +1042,12 @@
         "sv6",
         "sv 6",
         "sv06"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "twilight masquerade"
+        ]
+      }
     },
     {
       "id": "sv6_5",
@@ -328,7 +1060,12 @@
         "ev 6.5",
         "sv6.5",
         "sv 6.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "shrouded fable"
+        ]
+      }
     },
     {
       "id": "sv7",
@@ -343,7 +1080,12 @@
         "sv7",
         "sv 7",
         "sv07"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "stellar crown"
+        ]
+      }
     },
     {
       "id": "sv8",
@@ -358,7 +1100,12 @@
         "sv8",
         "sv 8",
         "sv08"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "surging sparks"
+        ]
+      }
     },
     {
       "id": "sv8_5",
@@ -372,7 +1119,12 @@
         "ev 8.5",
         "sv8.5",
         "sv 8.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "prismatic evolutions"
+        ]
+      }
     },
     {
       "id": "sv9",
@@ -387,7 +1139,12 @@
         "sv9",
         "sv 9",
         "sv09"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "journey together"
+        ]
+      }
     },
     {
       "id": "sv10",
@@ -400,7 +1157,12 @@
         "ev 10",
         "sv10",
         "sv 10"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "destined rivals"
+        ]
+      }
     },
     {
       "id": "sv10_5r",
@@ -409,7 +1171,12 @@
       "aliases": [
         "raio preto",
         "raio negro"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "black bolt"
+        ]
+      }
     },
     {
       "id": "sv10_5w",
@@ -418,7 +1185,12 @@
       "aliases": [
         "fogo branco",
         "chama branca"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "white flare"
+        ]
+      }
     },
     {
       "id": "sv10_5",
@@ -444,7 +1216,12 @@
       "fallbackAliases": [
         "megaevolucao",
         "mega evolucao"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "mega evolution base set"
+        ]
+      }
     },
     {
       "id": "me02",
@@ -457,7 +1234,12 @@
         "me2",
         "mega evolucao 2",
         "megaevolucao 2"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "phantasmal flames"
+        ]
+      }
     },
     {
       "id": "me02_5",
@@ -469,7 +1251,12 @@
         "me2.5",
         "me 2.5",
         "me02.5"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "ascended heroes"
+        ]
+      }
     },
     {
       "id": "me03",
@@ -482,7 +1269,12 @@
         "me3",
         "mega evolucao 3",
         "megaevolucao 3"
-      ]
+      ],
+      "langAliases": {
+        "en": [
+          "perfect order"
+        ]
+      }
     },
     {
       "id": "me04",

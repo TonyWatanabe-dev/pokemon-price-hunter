@@ -142,7 +142,7 @@ await t('productUrls: sitemap com links de produto sem "pokemon" agora entra; te
   assert.equal((await productUrls('https://sm.test', 2)).length, 2);
 });
 
-// ---------- 5) catálogo estilo tcgculture.com: Shopify lê, o matching recusa (produto em inglês / singles com condição)
+// ---------- 5) catálogo estilo tcgculture.com: Shopify lê; singles com condição não casam, selado em inglês vira importado
 await t('tcgculture-style: Shopify lê os anúncios Pokémon; nenhum casa com o catálogo Copag (é o comportamento certo, não falha de coleta)', async () => {
   const P = (id, title, price) => ({ id, title, handle: `p-${id}`, product_type: 'Pokemon', tags: ['Pokemon'], vendor: 'Pokemon', variants: [{ id: id * 10, title: 'Default Title', price, available: true }] });
   const items = [
@@ -157,9 +157,10 @@ await t('tcgculture-style: Shopify lê os anúncios Pokémon; nenhum casa com o 
   const L = await shopify.search({ id: 'tc', url: 'https://tc.test' }, catalog);
   assert.equal(L.length, 6, 'todos passam pelo filtro pokemonish');
   const matched = L.filter((l) => matchProduct(l, catalog).productId);
-  assert.deepEqual(matched.map((l) => l.title), ['Pokémon Booster Box Caos Ascendente 36 boosters Copag']);
+  // selado em inglês com nome da coleção em inglês vira o importado (sv3-box36-en); singles e genéricos seguem fora
+  assert.deepEqual(matched.map((l) => [l.title, matchProduct(l, catalog).productId]), [['Pokémon Scarlet & Violet: Obsidian Flames Box (36 Packs)', 'sv3-box36-en'], ['Pokémon Booster Box Caos Ascendente 36 boosters Copag', 'me04-box36']]);
   const why = L.filter((l) => !matchProduct(l, catalog).productId).map((l) => matchProduct(l, catalog).why.join(';'));
-  assert.ok(why.every((w) => /coleção não identificada|acessório|kit/.test(w)), why.join(' | '));
+  assert.ok(why.every((w) => /coleção não identificada|tipo de produto não identificado|acessório|kit/.test(w)), why.join(' | '));
 });
 
 // ---------- 6) relatório
