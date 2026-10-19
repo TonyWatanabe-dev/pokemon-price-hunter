@@ -136,7 +136,9 @@ export function criarCliente({ chave, fetch: fetchFn, apiBase = API_PADRAO, time
       if (!PLATAFORMAS.includes(plataforma)) throw new Error('plataforma inválida');
       const q = new URLSearchParams({ platform: plataforma, limit: '100', ...(de ? { fromDate: de } : {}), ...(ate ? { toDate: ate } : {}), ...(profileId ? { profileId } : {}) });
       const { dado } = await chamar(`${base}/analytics?${q}`);
-      return (Array.isArray(dado.posts) ? dado.posts : []).map((p) => ({
+      const lista = Array.isArray(dado.posts) ? dado.posts : Array.isArray(dado.data) ? dado.data : [];
+      if (!lista.length && Object.keys(dado).length) throw new Error(`sem posts; resposta: ${Object.keys(dado).join(',')} ${JSON.stringify(dado).slice(0, 200)}`);
+      return lista.map((p) => ({
         publicado: p.publishedAt ?? null, texto: String(p.content ?? '').slice(0, 60).replace(/\s+/g, ' '),
         views: Number(p.analytics?.views ?? 0), curtidas: Number(p.analytics?.likes ?? 0),
         comentarios: Number(p.analytics?.comments ?? 0), compart: Number(p.analytics?.shares ?? 0),
