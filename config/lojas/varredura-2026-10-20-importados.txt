@@ -1,0 +1,13 @@
+# Lojas de importados (20/10/2026): vendedoras do ETB Celebração de 30 Anos (inglês) que aparecem num print da Liga Pokémon
+# enviado pelo dono. O domínio de cada uma veio de busca web; a Liga em si não é lida. O robô testa cada site sozinho
+# e respeita o robots.txt de quem bloquear. As que estão na plataforma da Liga (?view=ecom) devem sair como bloqueadas.
+https://www.bannercardstore.com.br   # Banner Card Store · confiança alta
+https://www.baraogeekhouse.com.br    # Barão Geek House · alta · plataforma da Liga (?view=ecom)
+https://www.reidotcg.com.br          # Rei do TCG · alta · plataforma da Liga (?view=ecom)
+https://www.rota151tcg.com.br        # Rota 151 TCG · média-alta · CNPJ em SP com o mesmo nome
+https://www.polarjogos.com.br        # Polar Jogos · média · Pokémon não confirmado
+https://www.birdgames.com.br         # Bird Games · média · site "Em Manutenção" na busca
+https://www.blasttcg.com.br          # Blast TCG · média
+https://www.graddcards.com.br        # Gradd · média
+# Sem site encontrado: Card Center TCG, CardLab, CCG, Freak Games TCG, BAS Game Store, Fanshop Cards, Oráculo, A Banca,
+# Royal Shop TCG, Cartas & Dados. Honorato Store (honoratostore.com) ficou de fora por confiança baixa.
