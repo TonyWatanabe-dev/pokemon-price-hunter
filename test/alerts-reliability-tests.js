@@ -15,7 +15,7 @@ const hitsFor = (o, events = []) => evaluate(rules, [o], events, prod);
 await t('mensagem leva produto, loja, preço, horário da leitura e link', () => {
   const m = compose(hitsFor(offer())[0]);
   assert.match(m.text, /CAOS ASCENDENTE/); assert.match(m.text, /Loja: Loja X/); assert.match(m.text, /39,90/);
-  assert.match(m.text, /Lido em: 2026-10-09 11:55 UTC/); assert.equal(m.url, 'https://loja/o1');
+  assert.match(m.text, /Lido às 08:55 de 09\/10/); assert.equal(m.url, 'https://loja/o1');
   assert.doesNotMatch(compose(hitsFor(offer({ source_timestamp: undefined }))[0]).text, /Lido em/, 'sem horário: a linha não aparece');
   assert.doesNotMatch(compose(hitsFor(offer({ source_timestamp: 'lixo' }))[0]).text, /Lido em/);
 });
