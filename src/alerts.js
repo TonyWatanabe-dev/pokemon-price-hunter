@@ -131,8 +131,12 @@ export function alertReason(h) {
 // Mesma regra de comparableDrop/bestByBasis/dedupe: total com frete conhecido só contra total com frete conhecido;
 // sem frete conhecido, só o preço, contra preços sem frete conhecido.
 export const comparisonBasis = (o) => (shipKnown(o)
-  ? 'Comparação: total com frete, só contra totais com frete conhecido'
-  : 'Comparação: só o preço (frete a calcular), só contra preços sem frete conhecido');
+  ? 'Comparado pelo total com frete'
+  : 'Comparado só pelo preço (frete à parte)');
+// Horário da leitura no fuso de Brasília, como o usuário lê: "Lido às 08:45 de 20/10".
+export const lidoEm = (iso) => { const d = new Date(iso); if (!Number.isFinite(d.getTime())) return null;
+  const f = (o) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', ...o }).format(d);
+  return `Lido às ${f({ hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })} de ${f({ day: '2-digit', month: '2-digit' })}`; };
 
 export function compose(h) {
   const { offer: o, product: p, kind } = h;
@@ -147,7 +151,7 @@ export function compose(h) {
   if (o.perBooster) lines.push(`${money(o.perBooster)} / booster`);
   lines.push('', `Estoque: ${o.quantity ? o.quantity + ' unidades' : 'confirmado'}`, `Loja: ${o.storeName}${o.seller ? ' · ' + o.seller : ''}`);
   lines.push(`Frete: ${shipKnown(o) && o.shipping === 0 ? 'grátis' : shipKnown(o) && o.shipping > 0 ? money(o.shipping) : 'a calcular'}`);
-  if (o.source_timestamp && Number.isFinite(Date.parse(o.source_timestamp))) lines.push(`Lido em: ${new Date(o.source_timestamp).toISOString().replace('T', ' ').slice(0, 16)} UTC`);
+  const lido = o.source_timestamp ? lidoEm(o.source_timestamp) : null; if (lido) lines.push(lido);
   const sl = officialLine(h.opp); if (sl) lines.push(sl);   // nota oficial; sem nota válida, a linha não aparece
   return { title: head, text: lines.join('\n'), url: o.url };
 }

@@ -30,9 +30,9 @@ for (const [kind, mk] of Object.entries(cases)) {
     assert.match(m, /CAOS ASCENDENTE/); assert.match(m, /Booster Box com 36 boosters/, 'produto');
     assert.match(m, /Loja: Loja X/, 'loja');
     assert.match(m, kind === 'drop' ? /R\$\s400,00 → R\$\s300,00/ : /R\$\s300,00 \(Pix\)/, 'mudança/valor');
-    assert.match(m, /Lido em: 2026-10-15 11:50 UTC/, 'horário da leitura');
+    assert.match(m, /Lido às 08:50 de 15\/10/, 'horário da leitura');
     assert.match(m, /^Motivo: .+/m, 'motivo');
-    assert.match(m, /^Comparação: total com frete, só contra totais com frete conhecido$/m, 'base de comparação');
+    assert.match(m, /^Comparado pelo total com frete$/m, 'base de comparação');
     assert.equal(calls[0].url, 'https://loja-x/p1');
   });
 }
@@ -49,12 +49,12 @@ await t('motivo de cada tipo diz a condição que disparou, sem inventar dado', 
 
 await t('frete desconhecido: a base de comparação diz que só o preço foi comparado, sem total inventado', async () => {
   const o = offer({ shipping: null, shippingKnown: false });
-  assert.equal(comparisonBasis(o), 'Comparação: só o preço (frete a calcular), só contra preços sem frete conhecido');
+  assert.equal(comparisonBasis(o), 'Comparado só pelo preço (frete à parte)');
   const drop = evaluate([{ id: 'w', filter: { productId: 'p1' } }], [o], [{ offerId: 'o1', event: 'drop', from: 400, fromShippingKnown: false }], prod).filter((h) => h.kind === 'drop');
   assert.equal(drop.length, 1);
   const m = compose(drop[0]).text;
   assert.match(m, /R\$\s400,00 → R\$\s300,00 \+ frete/); assert.match(m, /Frete: a calcular/);
-  assert.match(m, /^Comparação: só o preço \(frete a calcular\)/m);
+  assert.match(m, /^Comparado só pelo preço \(frete à parte\)$/m);
   assert.doesNotMatch(m, /total com frete/);
 });
 
@@ -65,7 +65,7 @@ await t('reenvio de pendente leva a mesma explicação da rodada original', asyn
   const { calls, send } = sendOk();
   const d = await dispatch([], sent, { send, now: new Date(NOW.getTime() + 600e3) });
   assert.equal(d.length, 1); assert.equal(d[0].retried, true);
-  assert.match(calls[0].text, /^Motivo: novo menor preço/m); assert.match(calls[0].text, /^Comparação: /m);
+  assert.match(calls[0].text, /^Motivo: novo menor preço/m); assert.match(calls[0].text, /^Comparado /m);
 });
 
 console.log(`✓ Explicação dos alertas (Fase 4): ${n} grupos passaram (somente mocks)`);
