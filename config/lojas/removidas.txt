@@ -27,3 +27,33 @@
 # store.pokemontcgpocket.com | 2026-10-12 | loja do jogo digital Pokémon TCG Pocket, não vende produto lacrado
 # empresas.devir.com.br | 2026-10-12 | portal B2B/atacado da Devir, não é varejo
 # droper.app | 2026-10-12 | revenda entre pessoas (itens de terceiros), fora do escopo de loja
+#
+# --- 2026-10-20 — auditoria das lojas (aprovada pelo dono) ---
+# Sem resposta em nenhuma tentativa ("fora do ar ou lento": robots.txt com tempo esgotado), 0 ofertas; cada uma gastava
+# tempo de espera em toda rodada. Reativar: mover a linha (sem "#") de volta para a lista de origem.
+# actionnew.com.br            | 2026-10-20 | sem resposta (TIMEOUT) | 153 tentativas, 0 ok (lista varredura-outubro.txt)
+# chqjogos.com.br             | 2026-10-20 | sem resposta (TIMEOUT) | 153 tentativas, 0 ok (lista varredura-outubro.txt)
+# bricks4fun.com.br           | 2026-10-20 | sem resposta (TIMEOUT) | 153 tentativas, 0 ok (lista varredura-outubro.txt)
+# fantastictoys.com.br        | 2026-10-20 | sem resposta (TIMEOUT) | 153 tentativas, 0 ok (lista varredura-outubro.txt)
+# superlegalbrinquedos.com.br | 2026-10-20 | sem resposta (TIMEOUT) | 153 tentativas, 0 ok (lista varredura-outubro.txt)
+# cademeujogo.com.br          | 2026-10-20 | sem resposta (TIMEOUT) | 153 tentativas, 0 ok (lista varredura-outubro.txt)
+# lojacaramelo.com.br         | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# papelariarainha.com.br      | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# tiogera.com.br              | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# shopdg.com.br               | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# placegames.com.br           | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# lojagameup.com.br           | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# hillers.com.br              | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# tngeek.com.br               | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# meupoa.com.br               | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# underdogames.com.br         | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# fenixgz.com.br              | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# lojakatanajogos.com.br      | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# mercattogames.com           | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# lojasfranca.com.br          | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# criacoesemeva.com.br        | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# mais1game.com.br            | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# bigjogos.com.br             | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# reinodoheroi.com.br         | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# javalijogos.com.br          | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
+# twoheadgames.com.br         | 2026-10-20 | sem resposta (TIMEOUT) | 106 tentativas, 0 ok (lista varredura-outubro-2.txt)
