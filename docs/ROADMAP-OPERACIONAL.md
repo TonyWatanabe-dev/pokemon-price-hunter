@@ -1,3 +1,38 @@
+## Atualização executiva — 20/10/2026 (America/Sao_Paulo)
+
+> Leitura mais recente. Issues abertas: #271, #231 e #84. Sem PRs abertas depois do #841.
+
+### Entregue em 18–20/10
+
+| PR | O que mudou |
+|---|---|
+| [#829](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/829) | 16 coleções Espada e Escudo (PT-BR) no catálogo. Os produtos aparecem quando há oferta numa loja acompanhada (76 na primeira rodada). |
+| [#831](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/831) | Importados EN/JA/ZH/KO viram produto próprio (`<id>-<idioma>`) e não herdam preço Copag. A Home e o "abaixo da Copag" contam só PT. Oportunidades ganhou filtro de idioma (padrão Português), e o card ganhou etiqueta do idioma. Entraram nomes em inglês das coleções (`langAliases`), 40 coleções do Japão (`jp*`) e 13 da China (`cn*`). |
+| [#832](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/832) | **Incidente:** sync com o banco parado de 19/10 02:00 UTC até a correção (cerca de 10 h), por `tipo sem categoria: colecao_especial` depois da #829. Corrigido na taxonomia, com teste que exige categoria para todo `TYPE_LABEL`. O passo de sync tem `continue-on-error`. O vigia tem a regra `sync_falhando`, mas a entrega do aviso precisa ser confirmada pelo dono. |
+| [#835](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/835), [#838](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/838), [#840](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/840) | Bloco "Compare também na Liga Pokémon" publicado (link e depois preço com data) e **retirado** a pedido do dono. Nada da Liga no site (`test/sem-liga-tests.js`). A Liga continua sem leitura automática. |
+| [#839](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/839) | Testes de workflow alinhados ao SHA da `claude-code-action` v1.0.252 (#834). A `main` estava vermelha. Merge feito pelo dono. |
+| [#841](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/pull/841) | Grupos: importados saem nos mesmos grupos, com bandeira e linha "🌐 Idioma", sem comparação Copag. O avulso importado passa a se chamar "Box Pokémon - …". |
+
+### Estado
+
+- **Fase 1 / #271:** sequência reiniciada para **0/7** (19/10 vermelho por causa do sync). Em 20/10 está parcial e verde até a consulta.
+- **Analytics (Vercel), 7 dias até 18/10:** 177 visitantes, 1.042 visualizações, rejeição de 50%. O tráfego depende da divulgação.
+- **Histórico de preço na página do produto:** já existe (gráfico de 7D, 30D, 90D e 1A, com atual, menor, maior e média). Sai da lista de funcionalidades novas.
+
+### Próxima ordem de execução
+
+1. **P0, #271:** acompanhar até 7/7 verdes. Confirmar com o dono se o aviso `sync_falhando` chegou em 19/10. Se não chegou, verificar o canal do vigia.
+2. **P0, smoke de produção:** passar pelas rotas com o SHA publicado, incluindo o filtro de idioma e os importados.
+3. **P1, Fase 4:** teste ponta a ponta dos alertas pessoais no Telegram (opt-in/out, deduplicação, falha de credencial, evidência de envio).
+4. **P1, dados:** auditar frescor, estoque e falsos positivos por loja. Cadastrar lojas de importados quando o dono enviar a lista.
+5. **P2:** página por coleção (SEO e compartilhamento) e painel de métricas de cliques para o dono.
+
+### Pendências do proprietário
+
+- Search Console. Backup do Supabase. Confirmar a entrega do aviso do vigia. Decidir sobre a caixa de 18 boosters. Desativar o convite antigo do WhatsApp.
+
+---
+
 ## Atualização executiva — 17/10/2026 (America/Sao_Paulo) — revisão de pendências
 
 > Esta seção é a leitura operacional mais recente. A documentação e os dados do ramo `data` são snapshots; não equivalem a uma nova inspeção visual de todas as rotas em produção. PRs abertas: nenhuma na consulta de 17/10. Issues abertas: #271, #231 e #84.
