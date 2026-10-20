@@ -15,6 +15,7 @@
 
 ### Estado
 
+- **Fase 4, alertas pessoais no Telegram: teste ponta a ponta feito em 20/10 com usuário real (o dono).** Passos: vínculo pelo site às 08:27 BRT, confirmação "✅ Alertas ligados" às 08:34; `/start` repetido respondeu "já estão ligados" (idempotente); alvo de R$ 35 no Blister Triplo de Caos Ascendente, com o site marcando "Chegou no seu preço" às 08:36; mensagem "PREÇO-ALVO ATINGIDO" no Telegram às 08:55 (rodada das 08:45, botão COMPRAR); `/status` respondeu "ligados, 2 alertas"; `/parar` respondeu "Alertas desligados"; `/parar` repetido respondeu "nenhuma conta ligada". Evidência: prints enviados pelo dono na sessão. Ainda falta testar falha de credencial e bloqueio do bot (HTTP 403). Melhorias de texto pendentes: "Lido em" em UTC, que deve ir para o horário de Brasília, e a linha "Comparação", que está técnica.
 - **Fase 1 / #271:** sequência reiniciada para **0/7** (19/10 vermelho por causa do sync). Em 20/10 está parcial e verde até a consulta.
 - **Analytics (Vercel), 7 dias até 18/10:** 177 visitantes, 1.042 visualizações, rejeição de 50%. O tráfego depende da divulgação.
 - **Histórico de preço na página do produto:** já existe (gráfico de 7D, 30D, 90D e 1A, com atual, menor, maior e média). Sai da lista de funcionalidades novas.
@@ -23,7 +24,7 @@
 
 1. **P0, #271:** acompanhar até 7/7 verdes. Confirmar com o dono se o aviso `sync_falhando` chegou em 19/10. Se não chegou, verificar o canal do vigia.
 2. **P0, smoke de produção:** passar pelas rotas com o SHA publicado, incluindo o filtro de idioma e os importados.
-3. **P1, Fase 4:** teste ponta a ponta dos alertas pessoais no Telegram (opt-in/out, deduplicação, falha de credencial, evidência de envio).
+3. **P1, Fase 4:** fluxo feliz comprovado em 20/10. Falta testar falha de credencial e bloqueio (403) e melhorar o texto do alerta (horário de Brasília e linha "Comparação").
 4. **P1, dados:** auditar frescor, estoque e falsos positivos por loja. Cadastrar lojas de importados quando o dono enviar a lista.
 5. **P2:** página por coleção (SEO e compartilhamento) e painel de métricas de cliques para o dono.
 
