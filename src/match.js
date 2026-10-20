@@ -237,7 +237,7 @@ export function describeProduct(catalog, collection, type, boosters, variant, la
   return {
     id, collection, collectionName: col?.name || (collection === 'avulsos' ? 'Box Pokémon' : collection), series: col?.series || null, type, typeLabel: TYPE_LABEL[type] || type, group: groupOf(type),
     boosters: boosters ?? fixed.boosters ?? null, variant: vName,
-    name: `${col?.name || collection} - ${TYPE_LABEL[type] || type}${boosters && (type === 'booster_box' || type === 'combo') ? ` ${boosters}` : ''}${vName ? ` ${vName}` : ''}${language !== 'pt' ? ` (${IMPORT_LANGS[language]})` : ''}`,
+    name: `${col?.name || (collection === 'avulsos' ? 'Box Pokémon' : collection)} - ${TYPE_LABEL[type] || type}${boosters && (type === 'booster_box' || type === 'combo') ? ` ${boosters}` : ''}${vName ? ` ${vName}` : ''}${language !== 'pt' ? ` (${IMPORT_LANGS[language]})` : ''}`,
     ean: fixed.ean || null, language,
   };
 }
