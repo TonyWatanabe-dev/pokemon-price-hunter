@@ -1,6 +1,7 @@
 // Social Media — legenda do card no formato aprovado pelo proprietário (#690). Puro: sem rede, banco ou secrets.
 //
-//   🇧🇷 <b>título</b>
+//   🇧🇷 <b>título</b>               ← importado: bandeira do idioma (🇺🇸 🇯🇵 🇨🇳 🇰🇷)
+//   🌐 Idioma: Inglês             ← só no importado (produto com sufixo -en/-ja/-zh/-ko); nunca compara com a Copag
 //
 //   De <b>R$ anterior</b> ❌        ← só com preço anterior confiável (listPrice da própria loja, maior que o atual)
 //   Por <b>R$ atual</b> ✅
@@ -38,8 +39,12 @@ export function precoAnterior(oferta) {
   return atual != null && de != null && de > atual + 0.009 ? de : null;
 }
 
-/** { titulo, atual, anterior?, loja, link, afiliado? } → { texto, parseMode }. Lança se faltar dado essencial. */
-export function montarLegenda({ titulo, atual, anterior = null, loja, link, afiliado = false }) {
+// Idioma do produto pelo id (src/match.js): sufixo -en/-ja/-zh/-ko = importado.
+export const IDIOMAS = { en: ['🇺🇸', 'Inglês'], ja: ['🇯🇵', 'Japonês'], zh: ['🇨🇳', 'Chinês'], ko: ['🇰🇷', 'Coreano'] };
+export const idiomaDe = (produtoId) => (String(produtoId ?? '').match(/-(en|ja|zh|ko)$/) || [])[1] || null;
+
+/** { titulo, atual, anterior?, loja, link, afiliado?, produtoId? } → { texto, parseMode }. Lança se faltar dado essencial. */
+export function montarLegenda({ titulo, atual, anterior = null, loja, link, afiliado = false, produtoId = null }) {
   const t = limpar(titulo); const l = limpar(loja); const a = valor(atual); const url = https(link);
   if (!t) throw new Error('legenda: título vazio');
   if (!l) throw new Error('legenda: loja vazia');
@@ -48,8 +53,10 @@ export function montarLegenda({ titulo, atual, anterior = null, loja, link, afil
   const de = valor(anterior) != null && anterior > a ? anterior : null;
   const precos = [de != null && `De <b>${esc(reais(de))}</b> ❌`, `Por <b>${esc(reais(a))}</b> ✅`].filter(Boolean).join('\n');
   const rodape = `\n\n${precos}\n\n${esc(l)}\n${esc(url)}${afiliado || linkDeAfiliado(url) ? '\n\n' + esc(DIVULGACAO) : ''}`;
-  const espaco = LEGENDA_MAX - rodape.length - '🇧🇷 <b></b>'.length;
+  const lang = IDIOMAS[idiomaDe(produtoId)] || null;
+  const bandeira = lang ? lang[0] : '🇧🇷'; const linhaIdioma = lang ? `\n🌐 Idioma: ${lang[1]}` : '';
+  const espaco = LEGENDA_MAX - rodape.length - linhaIdioma.length - `${bandeira} <b></b>`.length;
   if (espaco < 10) throw new Error('legenda: texto fixo excede o limite');
-  const texto = `🇧🇷 <b>${esc(cortar(t, Math.floor(espaco / 5)))}</b>${rodape}`;   // /5: pior caso do escape (&amp;)
+  const texto = `${bandeira} <b>${esc(cortar(t, Math.floor(espaco / 5)))}</b>${linhaIdioma}${rodape}`;   // /5: pior caso do escape (&amp;)
   return { texto, parseMode: PARSE_MODE };
 }
