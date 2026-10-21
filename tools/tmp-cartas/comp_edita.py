@@ -106,19 +106,31 @@ def legenda(fr, palavras, t):
 P = FALA['precos']
 SEG = []  # (fonte_voz, ini, fim, video, vini, zoom, tipo)
 def seg(vf, vi, vfim, video, vini, zoom=1.0, tipo=None, info=None): SEG.append(dict(vf=vf, vi=vi, vfim=vfim, video=video, vini=vini, zoom=zoom, tipo=tipo, info=info))
-seg('C2', 3.30, 7.00, 'C2', 3.30, 1.0, 'caro', P['etb'])
-seg('C2', 8.90, 12.00, 'C2', 8.90, 1.0, 'barato', P['etb'])
-seg('C2', 13.05, 14.60, 'C2', 13.05, 1.0, 'dif', P['etb'])
-seg(None, 0, 2.2, 'poster', 2.30, 1.14, 'mont', P['poster'])
-seg(None, 0, 2.2, 'desafio', 9.20, 1.14, 'mont', P['desafio'])
-seg('C2', 15.75, 19.25, 'blister', 3.00, 1.14, 'broll')
-seg('C2', 19.25, 23.55, 'alertas', 3.60, 1.0, 'broll')
-seg('C2', 24.30, 30.30, None, 0, 1.0, 'final')
+CLIPS = []
+for k, c in enumerate(FALA['ia']):
+    mp = f'/tmp/ia{k}.mp3'
+    with urllib.request.urlopen(urllib.request.Request(c['url'], headers={'User-Agent': 'Mozilla/5.0'}), timeout=300) as r, open(mp, 'wb') as f: shutil.copyfileobj(r, f)
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', mp, '-ac', '1', '-ar', '44100', '-af', 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse', '-f', 's16le', '-'], capture_output=True, check=True).stdout
+    a = np.frombuffer(raw, np.int16).astype(np.float32) / 32768
+    dur = len(a) / 44100; pal = c['texto'].split(); tot = sum(len(w) + 1 for w in pal); acc = 0; ws = []
+    for w in pal:
+        ini = .05 + (dur - .1) * acc / tot; acc += len(w) + 1; ws.append([ini, .05 + (dur - .1) * acc / tot, ' ' + w])
+    CLIPS.append(dict(a=a, dur=dur, ws=ws))
+def seg(clip, dur, video, vini, zoom=1.0, tipo=None, info=None, woff=0.0, coloca=True, t0=None):
+    SEG.append(dict(clip=clip, dur=dur, video=video, vini=vini, zoom=zoom, tipo=tipo, info=info, woff=woff, coloca=coloca, t0=t0))
+L = [c['dur'] for c in CLIPS]
+seg(0, L[0] + .9, 'C2', 3.30, 1.0, 'caro', P['etb'], t0=L[0] - .1)
+seg(1, L[1] + .7, 'C2', 8.90, 1.0, 'barato', P['etb'], t0=L[1] * .7)
+seg(2, L[2] + .9, 'C2', 13.05, 1.0, 'dif', P['etb'])
+seg(None, 2.2, 'poster', 2.30, 1.14, 'mont', P['poster'])
+seg(None, 2.2, 'desafio', 9.20, 1.14, 'mont', P['desafio'])
+seg(3, L[3] / 2, 'blister', 3.00, 1.14, 'broll')
+seg(3, L[3] / 2 + .4, 'alertas', 3.60, 1.0, 'broll', woff=L[3] / 2, coloca=False)
+seg(4, max(L[4] + 1.8, 5.5), None, 0, 1.0, 'final')
 
 def palavras_de(s):
-    if not s['vf']: return []
-    ws = [w for w in FALA[s['vf']] if s['vi'] - .05 <= w[0] < s['vfim']]
-    return [[w[0] - s['vi'], w[1] - s['vi'], w[2]] for w in ws]
+    if s['clip'] is None: return []
+    return [[w[0] - s['woff'], w[1] - s['woff'], w[2]] for w in CLIPS[s['clip']]['ws'] if w[0] >= s['woff'] - .01]
 
 def fundo_final(t):
     fr = Image.new('RGBA', (W, H), NAVY + (255,)); d = ImageDraw.Draw(fr); d.rectangle((0, 0, W, 17), fill=Y)
@@ -132,14 +144,15 @@ GRATIS = pilula('Grátis', F[900](40), GREEN, WHITE, 36, 20)
 eventos = []  # (tempo, som)
 video_out = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS), '-i', '-',
                               '-c:v', 'libx264', '-crf', '21', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '/tmp/comp_v.mp4'], stdin=subprocess.PIPE)
-audio_voz = []; T = 0.0
+TT = sum(x['dur'] for x in SEG); vbuf = np.zeros(int((TT + 1) * 44100), np.float32); T = 0.0
 for s in SEG:
-    dur = s['vfim'] - s['vi']; n = int(round(dur * FPS)); pal = palavras_de(s)
-    audio_voz.append(voz(s['vf'], s['vi'], s['vfim']) if s['vf'] else np.zeros(int(dur * 44100), np.float32))
+    dur = s['dur']; n = int(round(dur * FPS)); pal = palavras_de(s)
+    if s['clip'] is not None and s['coloca']:
+        a = CLIPS[s['clip']]['a']; i0 = int(T * 44100); vbuf[i0:i0 + len(a)] += a
     frs = quadros(s['video'], s['vini'], dur, s['zoom']) if s['video'] else None
     info = s['info']
-    if s['tipo'] == 'caro': eventos.append((T + min(1.4, dur - .8), 'erro'))
-    if s['tipo'] == 'barato': eventos.append((T + 1.0, 'ching'))
+    if s['tipo'] == 'caro': eventos.append((T + s['t0'], 'erro'))
+    if s['tipo'] == 'barato': eventos.append((T + s['t0'], 'ching'))
     if s['tipo'] in ('dif',): eventos.append((T + .2, 'pop'))
     if s['tipo'] == 'final': eventos.append((T, 'whoosh'))
     if s['tipo'] == 'mont': eventos += [(T, 'whoosh'), (T + .9, 'ching')]
@@ -158,13 +171,13 @@ for s in SEG:
             fr = fundo_final(t)
         tp = s['tipo']
         if tp == 'caro':
-            t0 = min(1.4, dur - .8); e = back((t - t0) / .45)
+            t0 = s['t0']; e = back((t - t0) / .45)
             if t >= t0:
                 lt = t - t0; sh = 16 * math.exp(-lt * 8) * math.sin(lt * 70)
                 if lt < .1: fr.alpha_composite(Image.new('RGBA', (W, H), RED + (90,)))
                 cola(fr, preco_card(info['rot_caro'], info['caro'], RED, 'x'), (540 + sh, 1380), min(1, ease(lt / .15)), max(.01, e))
         elif tp == 'barato':
-            t0 = 1.0; e = back((t - t0) / .45)
+            t0 = s['t0']; e = back((t - t0) / .45)
             cola(fr, preco_card(info['rot_caro'], info['caro'], (120, 30, 30), 'x'), (540, 1380), 1 - ease((t - .2) / .4), .7)
             if t >= t0: cola(fr, preco_card(info['rot_barato'], info['barato'], (30, 150, 80), 'v'), (540, 1380), min(1, ease((t - t0) / .15)), max(.01, e))
         elif tp == 'dif':
@@ -188,7 +201,7 @@ for s in SEG:
 video_out.stdin.close(); video_out.wait()
 
 # ---------- áudio: voz tratada + trilha com ducking + efeitos suaves (mix no ffmpeg)
-sr = 44100; vz = np.concatenate(audio_voz); n = len(vz); rng = np.random.default_rng(5)
+sr = 44100; vz = vbuf[:int(T * sr)]; n = len(vz); rng = np.random.default_rng(5)
 def grava(path, a):
     with wave.open(path, 'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((np.clip(a, -1, 1) * 32767).astype(np.int16).tobytes())
@@ -213,9 +226,8 @@ for k in range(int(T / b)):
 mus *= np.minimum(1, (T - np.arange(n) / sr) / 1.5)
 grava('/tmp/mus.wav', mus / (np.abs(mus).max() + 1e-6) * .8)
 if FALA.get('trilha'):
-    req = urllib.request.Request(FALA['trilha'], headers={'User-Agent': 'Mozilla/5.0'})
-    with urllib.request.urlopen(req, timeout=300) as r, open('/tmp/trilha.mp3', 'wb') as f: shutil.copyfileobj(r, f)
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/trilha.mp3', '-ac', '1', '-ar', '44100', '-af', f'atrim=0:{T:.2f},afade=t=out:st={T-1.5:.2f}:d=1.5,loudnorm=I=-16', '/tmp/mus.wav'], check=True)
+    with urllib.request.urlopen(urllib.request.Request(FALA['trilha'], headers={'User-Agent': 'Mozilla/5.0'}), timeout=300) as r, open('/tmp/trilha.mp3', 'wb') as f: shutil.copyfileobj(r, f)
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-stream_loop', '-1', '-i', '/tmp/trilha.mp3', '-ac', '1', '-ar', '44100', '-af', f'atrim=0:{T:.2f},afade=t=out:st={T-1.5:.2f}:d=1.5,loudnorm=I=-16', '/tmp/mus.wav'], check=True)
 # efeitos suaves
 sfx = np.zeros(n)
 for t0, som in eventos:
@@ -232,7 +244,7 @@ for t0, som in eventos:
         L = int(.4 * sr); x = np.arange(L) / sr
         at(sfx, t0, np.convolve(rng.standard_normal(L) * np.sin(np.pi * x / .4) ** 2, np.ones(30) / 30, 'same') * .25)
 grava('/tmp/sfx.wav', sfx)
-fc = ('[0]highpass=f=90,lowpass=f=11000,afftdn=nr=14:nf=-32:tn=1,equalizer=f=250:t=q:w=1.2:g=-3,equalizer=f=3200:t=q:w=1:g=3,'
+fc = ('[0]highpass=f=80,equalizer=f=3200:t=q:w=1:g=2,'
       'acompressor=threshold=-22dB:ratio=3:attack=5:release=90:makeup=3,loudnorm=I=-19:TP=-2:LRA=7,asplit[v1][v2];'
       '[1]volume=0.7[m];[m][v2]sidechaincompress=threshold=0.05:ratio=2.5:attack=40:release=400[md];'
       '[2]volume=0.8[s];[v1][md][s]amix=inputs=3:normalize=0,alimiter=limit=0.93[a]')
