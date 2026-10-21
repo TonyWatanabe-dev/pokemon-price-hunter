@@ -226,8 +226,8 @@ for k in range(int(T / b)):
 mus *= np.minimum(1, (T - np.arange(n) / sr) / 1.5)
 grava('/tmp/mus.wav', mus / (np.abs(mus).max() + 1e-6) * .8)
 if FALA.get('trilha'):
-    with urllib.request.urlopen(urllib.request.Request(FALA['trilha'], headers={'User-Agent': 'Mozilla/5.0'}), timeout=300) as r, open('/tmp/trilha.mp3', 'wb') as f: shutil.copyfileobj(r, f)
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-stream_loop', '-1', '-i', '/tmp/trilha.mp3', '-ac', '1', '-ar', '44100', '-af', f'atrim=0:{T:.2f},afade=t=out:st={T-1.5:.2f}:d=1.5,loudnorm=I=-16', '/tmp/mus.wav'], check=True)
+    with urllib.request.urlopen(urllib.request.Request(FALA['trilha'], headers={'User-Agent': 'Mozilla/5.0'}), timeout=300) as r, open('/tmp/trilha.bin', 'wb') as f: shutil.copyfileobj(r, f)
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-stream_loop', '-1', '-i', '/tmp/trilha.bin', '-ac', '1', '-ar', '44100', '-af', f'atrim=0:{T:.2f},afade=t=out:st={T-1.5:.2f}:d=1.5,loudnorm=I=-16', '/tmp/mus.wav'], check=True)
 # efeitos suaves
 sfx = np.zeros(n)
 for t0, som in eventos:
