@@ -90,6 +90,14 @@
       "destination": "/entrar.html"
     },
     {
+      "source": "/entrar/:origem",
+      "destination": "/entrar.html"
+    },
+    {
+      "source": "/ir/:destino/:origem",
+      "destination": "/ir.html"
+    },
+    {
       "source": "/como-funciona",
       "destination": "/api/pagina?t=como-funciona"
     },
