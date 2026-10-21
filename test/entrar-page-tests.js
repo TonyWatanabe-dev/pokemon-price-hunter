@@ -6,7 +6,7 @@ import { GRUPOS } from '../api/_lib/grupos.mjs';
 
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const html = read('entrar.html');
-const js = read('assets/web/entrar-v1.js');
+const js = read('assets/web/entrar-v2.js');
 
 const vj = JSON.parse(read('vercel.json'));
 assert.ok(vj.rewrites.some((r) => r.source === '/entrar' && r.destination === '/entrar.html'), '/entrar abre entrar.html');
@@ -20,7 +20,7 @@ for (const m of html.matchAll(/<a [^>]*target="_blank"[^>]*>/g)) assert.match(m[
 
 // CSP do site só aceita script do próprio domínio (sem inline); o JS da página é arquivo versionado.
 assert.doesNotMatch(html.replace(/<script[^>]*\ssrc="[^"]+"[^>]*><\/script>/g, ''), /<script/i, 'sem script inline');
-assert.match(html, /src="\/assets\/web\/entrar-v1\.js"/);
+assert.match(html, /src="\/assets\/web\/entrar-v2\.js"/);
 assert.match(html, /<meta name="robots" content="noindex, follow">/, 'página de anúncio fora do índice');
 
 // Honestidade: nada de escassez ou contagem inventada; a prova vem da API e some se não houver dado.
@@ -35,3 +35,7 @@ assert.match(js, /track\('entrar_view'/);
 assert.match(js, /track\('group_click', \{ canal: a\.dataset\.canal, origem: 'entrar:' \+ origem/);
 for (const pos of ['topo', 'fim', 'fixa']) assert.match(html, new RegExp(`data-pos="${pos}"`));
 console.log('✓ Página /entrar: rota, convites, CSP, honestidade e medição');
+// Ícone do WhatsApp único (symbol) reutilizado em todos os botões; imagem do topo versionada.
+assert.match(html, /<symbol id="wa"/);
+assert.equal((html.match(/<use href="#wa"\/>/g) || []).length, 3, 'mesmo ícone nos 3 botões do WhatsApp');
+assert.ok(fs.existsSync(new URL('../assets/web/entrar-cartas-v1.webp', import.meta.url)));
