@@ -110,7 +110,7 @@ seg('C2', 3.30, 7.00, 'C2', 3.30, 1.0, 'caro', P['etb'])
 seg('C2', 8.90, 12.00, 'C2', 8.90, 1.0, 'barato', P['etb'])
 seg('C2', 13.05, 14.60, 'C2', 13.05, 1.0, 'dif', P['etb'])
 seg(None, 0, 2.2, 'poster', 2.30, 1.14, 'mont', P['poster'])
-seg(None, 0, 2.2, 'desafio', 8.00, 1.14, 'mont', P['desafio'])
+seg(None, 0, 2.2, 'desafio', 7.40, 1.14, 'mont', P['desafio'])
 seg('C2', 15.75, 19.25, 'blister', 3.00, 1.14, 'broll')
 seg('C2', 19.25, 23.55, 'alertas', 3.60, 1.0, 'broll')
 seg('C2', 24.30, 30.30, None, 0, 1.0, 'final')
@@ -234,6 +234,6 @@ fc = ('[0]highpass=f=90,lowpass=f=11000,afftdn=nr=14:nf=-32:tn=1,equalizer=f=250
       '[2]volume=0.8[s];[v1][md][s]amix=inputs=3:normalize=0,alimiter=limit=0.93[a]')
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/voz.wav', '-i', '/tmp/mus.wav', '-i', '/tmp/sfx.wav', '-filter_complex', fc, '-map', '[a]', '-ar', '44100', '/tmp/comp_a.wav'], check=True)
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/comp_v.mp4', '-i', '/tmp/comp_a.wav', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', f'{OUT}/COMP_anuncio.mp4'], check=True)
-for s in (1.5, 4.5, 6.0, 12.0, 20.0, T - 2):
+for s in (11.0, 11.8, 12.5):
     subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', str(s), '-i', f'{OUT}/COMP_anuncio.mp4', '-frames:v', '1', '-vf', 'scale=360:-2', f'{OUT}/COMP_q{s:05.1f}.jpg'])
 print('ok', T)
