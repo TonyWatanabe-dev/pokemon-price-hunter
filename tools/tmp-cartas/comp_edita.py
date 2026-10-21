@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Temporário: anúncio comparativo (voz do Tony + brutos + preços em motion). Saída tmp-render/COMP_anuncio.mp4"""
-import json, math, os, shutil, subprocess, urllib.request, wave
+import json, math, os, shutil, subprocess, sys, urllib.request, wave
+sys.path.insert(0, 'tools/tmp-cartas'); import final_cta
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -115,10 +116,14 @@ for k, c in enumerate(FALA['ia']):
     dur = len(a) / 44100; pal = c['texto'].split(); tot = sum(len(w) + 1 for w in pal); acc = 0; ws = []
     for w in pal:
         ini = .05 + (dur - .1) * acc / tot; acc += len(w) + 1; ws.append([ini, .05 + (dur - .1) * acc / tot, ' ' + w])
+    PW = json.load(open('tmp-render/PALAVRAS.json')).get(f'ia{k}')
+    if PW: ws = [[w[0], w[1], ' ' + w[2]] for w in PW]
     CLIPS.append(dict(a=a, dur=dur, ws=ws))
 def seg(clip, dur, video, vini, zoom=1.0, tipo=None, info=None, woff=0.0, coloca=True, t0=None):
     SEG.append(dict(clip=clip, dur=dur, video=video, vini=vini, zoom=zoom, tipo=tipo, info=info, woff=woff, coloca=coloca, t0=t0))
 L = [c['dur'] for c in CLIPS]
+_p = {w[2].strip('.,!?').lower(): w[0] for w in CLIPS[4]['ws']}
+MARCAS = (_p.get('toca', 1.2), _p.get('é', L[4] - .6))
 seg(0, L[0] + .9, 'C2', 3.30, 1.0, 'caro', P['etb'], t0=L[0] - .1)
 seg(1, L[1] + .7, 'C2', 8.90, 1.0, 'barato', P['etb'], t0=L[1] * .7)
 seg(2, L[2] + .9, 'C2', 13.05, 1.0, 'dif', P['etb'])
@@ -126,7 +131,7 @@ seg(None, 2.2, 'poster', 2.30, 1.14, 'mont', P['poster'])
 seg(None, 2.2, 'desafio', 9.20, 1.14, 'mont', P['desafio'])
 seg(3, L[3] / 2, 'blister', 3.00, 1.14, 'broll')
 seg(3, L[3] / 2 + .4, 'alertas', 3.60, 1.0, 'broll', woff=L[3] / 2, coloca=False)
-seg(4, L[4] + 1.0, 'C2', 24.30, 1.0, 'cta')
+seg(4, L[4] + 1.7, None, 0, 1.0, 'cta')
 
 def palavras_de(s):
     if s['clip'] is None: return []
@@ -156,7 +161,7 @@ for s in SEG:
     if s['tipo'] == 'barato': eventos.append((T + s['t0'], 'ching'))
     if s['tipo'] in ('dif',): eventos.append((T + .2, 'pop'))
     if s['tipo'] == 'final': eventos.append((T, 'whoosh'))
-    if s['tipo'] == 'cta': eventos.append((T + 1.4, 'pop'))
+    if s['tipo'] == 'cta': eventos += final_cta.eventos(T, MARCAS)
     if s['tipo'] == 'mont': eventos += [(T, 'whoosh'), (T + .9, 'ching')]
     for i in range(n):
         t = i / FPS
@@ -192,17 +197,14 @@ for s in SEG:
             if t >= .8: cola(fr, preco_card(info['rot_barato'], info['barato'], (30, 150, 80), 'v'), (540, 1420), min(1, ease((t - .8) / .15)), max(.01, e))
             cola(fr, pilula(info['nome'], F[800](40), WHITE, NAVY, 34, 20), (540, 330), 1)
         elif tp == 'cta':
-            if t > 1.4:
-                for k in range(3):
-                    y = 1470 + k * 62 + 18 * math.sin(t * 7 - k)
-                    cola(fr, SETA, (540, y), max(0, min(1, ease((t - 1.4 - .12 * k) / .25))) * (1 - .25 * k))
+            final_cta.desenha(fr, t, dict(F=F, texto=lambda l, f, track=0, lh=None: texto(l, f, track=track, lh=lh), pilula=pilula, cola=cola, ease=ease, back=back, marcas=MARCAS))
         elif tp == 'final':
             e, dy = ease(t / .4), (1 - ease(t / .4)) * 60; cola(fr, F1, (540, 470 + dy + F1.height / 2), e)
             e, dy = ease((t - .3) / .4), (1 - ease((t - .3) / .4)) * 60; cola(fr, F2, (540, 830 + dy), e)
             e = back((t - 1.6) / .6); cola(fr, CTA, (540, 1000), min(1, ease((t - 1.6) / .3)), max(.01, e) * (1 + .03 * math.sin(max(0, t - 2.2) * 5)))
             e = back((t - 3.0) / .5); cola(fr, GRATIS, (540, 1150), min(1, ease((t - 3.0) / .2)), max(.01, e), -4)
             cola(fr, LOGO, (540, 1500), ease((t - .6) / .5), 1.6)
-        if tp != 'final': legenda(fr, pal, t)
+        if tp not in ('final', 'cta'): legenda(fr, pal, t)
         video_out.stdin.write(fr.convert('RGB').tobytes())
     T += dur
 video_out.stdin.close(); video_out.wait()
@@ -247,6 +249,9 @@ for t0, som in eventos:
     if som == 'ching':
         L = int(.9 * sr); x = np.arange(L) / sr
         at(sfx, t0, sum(np.sin(2 * np.pi * f * x) * np.exp(-x * d) for f, d in [(1568, 5), (2093, 6), (2637, 7)]) * .12)
+    if som == 'impacto':
+        x = np.arange(int(.8 * sr)) / sr
+        at(sfx, t0, np.sin(2 * np.pi * (40 + 70 * np.exp(-x * 20)) * x) * np.exp(-x * 5) + rng.standard_normal(len(x)) * np.exp(-x * 30) * .3, .5)
     if som in ('pop', 'whoosh'):
         L = int(.4 * sr); x = np.arange(L) / sr
         at(sfx, t0, np.convolve(rng.standard_normal(L) * np.sin(np.pi * x / .4) ** 2, np.ones(30) / 30, 'same') * .25)
