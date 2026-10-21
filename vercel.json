@@ -86,6 +86,10 @@
       "destination": "/api/pagina?t=grupos"
     },
     {
+      "source": "/entrar",
+      "destination": "/entrar.html"
+    },
+    {
       "source": "/como-funciona",
       "destination": "/api/pagina?t=como-funciona"
     },
