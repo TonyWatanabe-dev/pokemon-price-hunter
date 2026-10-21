@@ -99,7 +99,7 @@ def legenda(fr, palavras, t):
                 cor = Y if (a <= t < z + .05) else (Y if pal.lower().strip('.,?') in CHAVE else WHITE)
                 ln.append((pal + ' ', cor))
             im = texto([ln], F[900](78), track=-1, borda=7)
-            cola(fr, im, (540, 520), 1, .9 + .1 * ease((t - ini) / .12))
+            cola(fr, im, (540, 1700), 1, .9 + .1 * ease((t - ini) / .12))
             return
 
 # ---------- linha do tempo
@@ -212,6 +212,10 @@ for k in range(int(T / b)):
     at(mus, k * b, kick, .35); at(mus, k * b + b / 2, hat)
 mus *= np.minimum(1, (T - np.arange(n) / sr) / 1.5)
 grava('/tmp/mus.wav', mus / (np.abs(mus).max() + 1e-6) * .8)
+if FALA.get('trilha'):
+    req = urllib.request.Request(FALA['trilha'], headers={'User-Agent': 'Mozilla/5.0'})
+    with urllib.request.urlopen(req, timeout=300) as r, open('/tmp/trilha.mp3', 'wb') as f: shutil.copyfileobj(r, f)
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/trilha.mp3', '-ac', '1', '-ar', '44100', '-af', f'atrim=0:{T:.2f},afade=t=out:st={T-1.5:.2f}:d=1.5,loudnorm=I=-16', '/tmp/mus.wav'], check=True)
 # efeitos suaves
 sfx = np.zeros(n)
 for t0, som in eventos:
@@ -229,11 +233,11 @@ for t0, som in eventos:
         at(sfx, t0, np.convolve(rng.standard_normal(L) * np.sin(np.pi * x / .4) ** 2, np.ones(30) / 30, 'same') * .25)
 grava('/tmp/sfx.wav', sfx)
 fc = ('[0]highpass=f=90,lowpass=f=11000,afftdn=nr=14:nf=-32:tn=1,equalizer=f=250:t=q:w=1.2:g=-3,equalizer=f=3200:t=q:w=1:g=3,'
-      'acompressor=threshold=-22dB:ratio=3:attack=5:release=90:makeup=3,loudnorm=I=-16:TP=-2:LRA=7,asplit[v1][v2];'
-      '[1]volume=0.32[m];[m][v2]sidechaincompress=threshold=0.04:ratio=5:attack=30:release=350[md];'
+      'acompressor=threshold=-22dB:ratio=3:attack=5:release=90:makeup=3,loudnorm=I=-19:TP=-2:LRA=7,asplit[v1][v2];'
+      '[1]volume=0.7[m];[m][v2]sidechaincompress=threshold=0.05:ratio=2.5:attack=40:release=400[md];'
       '[2]volume=0.8[s];[v1][md][s]amix=inputs=3:normalize=0,alimiter=limit=0.93[a]')
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/voz.wav', '-i', '/tmp/mus.wav', '-i', '/tmp/sfx.wav', '-filter_complex', fc, '-map', '[a]', '-ar', '44100', '/tmp/comp_a.wav'], check=True)
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/comp_v.mp4', '-i', '/tmp/comp_a.wav', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', f'{OUT}/COMP_anuncio.mp4'], check=True)
-for s in (11.0, 11.8, 12.5):
+for s in (2.0, 6.0, 16.0):
     subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', str(s), '-i', f'{OUT}/COMP_anuncio.mp4', '-frames:v', '1', '-vf', 'scale=360:-2', f'{OUT}/COMP_q{s:05.1f}.jpg'])
 print('ok', T)
