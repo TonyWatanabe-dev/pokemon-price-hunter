@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Temporário: brutos do Blister Duplo (18/10) — metadados, transcrição (faster-whisper), silêncios e mosaicos."""
 import json, os, subprocess, shutil, urllib.request
-OUT = 'tmp-blister'; os.makedirs(OUT, exist_ok=True)
-V = json.load(open('tools/tmp-cartas/blister.json'))
+OUT = os.environ.get('SAIDA', 'tmp-blister'); os.makedirs(OUT, exist_ok=True)
+V = json.load(open(os.environ.get('ENTRADA', 'tools/tmp-cartas/blister.json')))
 from faster_whisper import WhisperModel
 modelo = WhisperModel('small', device='cpu', compute_type='int8')
 rel = {}
