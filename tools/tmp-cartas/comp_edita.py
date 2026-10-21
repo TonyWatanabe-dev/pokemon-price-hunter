@@ -126,7 +126,7 @@ seg(None, 2.2, 'poster', 2.30, 1.14, 'mont', P['poster'])
 seg(None, 2.2, 'desafio', 9.20, 1.14, 'mont', P['desafio'])
 seg(3, L[3] / 2, 'blister', 3.00, 1.14, 'broll')
 seg(3, L[3] / 2 + .4, 'alertas', 3.60, 1.0, 'broll', woff=L[3] / 2, coloca=False)
-seg(4, max(L[4] + 1.8, 5.5), None, 0, 1.0, 'final')
+seg(4, L[4] + 1.0, 'C2', 24.30, 1.0, 'cta')
 
 def palavras_de(s):
     if s['clip'] is None: return []
@@ -139,6 +139,7 @@ F1 = texto([[('Não rasgue', WHITE)], [('dinheiro.', Y)]], F[900](150), track=-5
 F2 = texto([[('O grupo avisa quando o preço cai.', MUTED)]], F[700](44))
 CTA = pilula('Entra no grupo · tcgpricehunter.com.br', F[800](38), Y, (43, 34, 0), 46, 30)
 MAIS = pilula('E não é só a ETB', F[900](56), Y, (43, 34, 0), 40, 24)
+SETA = Image.new('RGBA', (120, 70), (0, 0, 0, 0)); ImageDraw.Draw(SETA).polygon([(0, 0), (120, 0), (60, 66)], fill=Y)
 GRATIS = pilula('Grátis', F[900](40), GREEN, WHITE, 36, 20)
 
 eventos = []  # (tempo, som)
@@ -155,6 +156,7 @@ for s in SEG:
     if s['tipo'] == 'barato': eventos.append((T + s['t0'], 'ching'))
     if s['tipo'] in ('dif',): eventos.append((T + .2, 'pop'))
     if s['tipo'] == 'final': eventos.append((T, 'whoosh'))
+    if s['tipo'] == 'cta': eventos.append((T + 1.4, 'pop'))
     if s['tipo'] == 'mont': eventos += [(T, 'whoosh'), (T + .9, 'ching')]
     for i in range(n):
         t = i / FPS
@@ -189,6 +191,11 @@ for s in SEG:
             e = back((t - .8) / .4)
             if t >= .8: cola(fr, preco_card(info['rot_barato'], info['barato'], (30, 150, 80), 'v'), (540, 1420), min(1, ease((t - .8) / .15)), max(.01, e))
             cola(fr, pilula(info['nome'], F[800](40), WHITE, NAVY, 34, 20), (540, 330), 1)
+        elif tp == 'cta':
+            if t > 1.4:
+                for k in range(3):
+                    y = 1470 + k * 62 + 18 * math.sin(t * 7 - k)
+                    cola(fr, SETA, (540, y), max(0, min(1, ease((t - 1.4 - .12 * k) / .25))) * (1 - .25 * k))
         elif tp == 'final':
             e, dy = ease(t / .4), (1 - ease(t / .4)) * 60; cola(fr, F1, (540, 470 + dy + F1.height / 2), e)
             e, dy = ease((t - .3) / .4), (1 - ease((t - .3) / .4)) * 60; cola(fr, F2, (540, 830 + dy), e)
