@@ -179,31 +179,53 @@ for s in SEG:
     T += dur
 video_out.stdin.close(); video_out.wait()
 
-# ---------- áudio: voz + trilha baixa + efeitos
-sr = 44100; vz = np.concatenate(audio_voz); vz = vz / (np.abs(vz).max() + 1e-6) * .9
-n = len(vz); tt = np.arange(n) / sr; out = vz.copy(); rng = np.random.default_rng(5)
-def at(t0, sig, g=1.0):
-    i = int(t0 * sr); j = min(n, i + len(sig)); out[i:j] += g * sig[:j - i]
-b = 60 / 118; kt = np.arange(int(.3 * sr)) / sr; kick = np.sin(2 * np.pi * (50 + 80 * np.exp(-kt * 30)) * kt) * np.exp(-kt * 10)
-ht = np.arange(int(.05 * sr)) / sr; hat = np.diff(rng.standard_normal(len(ht)) * np.exp(-ht * 80), prepend=0)
+# ---------- áudio: voz tratada + trilha com ducking + efeitos suaves (mix no ffmpeg)
+sr = 44100; vz = np.concatenate(audio_voz); n = len(vz); rng = np.random.default_rng(5)
+def grava(path, a):
+    with wave.open(path, 'wb') as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((np.clip(a, -1, 1) * 32767).astype(np.int16).tobytes())
+grava('/tmp/voz.wav', vz / (np.abs(vz).max() + 1e-6) * .9)
+# trilha: pad + baixo + bateria leve, 100 bpm
+mus = np.zeros(n)
+def at(buf, t0, sig, g=1.0):
+    i = int(t0 * sr); j = min(len(buf), i + len(sig))
+    if j > i: buf[i:j] += g * sig[:j - i]
+b = 60 / 100; bar = 4 * b
+acordes = [[220, 261.6, 329.6], [174.6, 220, 261.6], [130.8, 196, 261.6], [196, 246.9, 293.7]]
+for k in range(int(T / bar) + 1):
+    f = acordes[k % 4]; L = int(bar * sr); x = np.arange(L) / sr
+    env = np.minimum(1, x / .25) * np.minimum(1, (bar - x) / .3)
+    pad = sum(np.sin(2 * np.pi * fr * x) + .35 * np.sin(2 * np.pi * 2 * fr * x + .3) + .15 * np.sin(2 * np.pi * 3 * fr * x) for fr in f) * env * .05
+    bas = np.sin(2 * np.pi * f[0] / 2 * x) * env * .16
+    at(mus, k * bar, pad + bas)
+kt = np.arange(int(.25 * sr)) / sr; kick = np.sin(2 * np.pi * (48 + 60 * np.exp(-kt * 35)) * kt) * np.exp(-kt * 12)
+ht = np.arange(int(.04 * sr)) / sr; hat = np.convolve(rng.standard_normal(len(ht)), [1, -1], 'same') * np.exp(-ht * 90) * .05
 for k in range(int(T / b)):
-    at(k * b, kick, .16); at(k * b + b / 2, hat, .03)
+    at(mus, k * b, kick, .35); at(mus, k * b + b / 2, hat)
+mus *= np.minimum(1, (T - np.arange(n) / sr) / 1.5)
+grava('/tmp/mus.wav', mus / (np.abs(mus).max() + 1e-6) * .8)
+# efeitos suaves
+sfx = np.zeros(n)
 for t0, som in eventos:
-    if som == 'erro':
+    if som == 'erro':  # "uón uón" grave e curto, sem distorção
         o = 0
-        for f0, d0 in [(233, .2), (220, .2), (196, .5)]:
-            L = int(d0 * sr); x = np.arange(L) / sr
-            at(t0 + o, np.sign(np.sin(2 * np.pi * f0 * x)) * .16 * np.minimum(1, (d0 - x) / .04)); o += d0
+        for f0, d0 in [(311, .18), (277, .18), (233, .42)]:
+            L = int(d0 * sr); x = np.arange(L) / sr; fq = f0 * (1 - .05 * x / d0)
+            sig = (np.sin(2 * np.pi * np.cumsum(fq) / sr) + .3 * np.sin(4 * np.pi * np.cumsum(fq) / sr)) * np.minimum(1, x / .01) * np.exp(-x * 3)
+            at(sfx, t0 + o, sig, .22); o += d0
     if som == 'ching':
         L = int(.9 * sr); x = np.arange(L) / sr
-        at(t0, sum(np.sin(2 * np.pi * f * x) * np.exp(-x * d) for f, d in [(2093, 4), (2637, 5), (3136, 6), (4186, 7)]) * .1)
+        at(sfx, t0, sum(np.sin(2 * np.pi * f * x) * np.exp(-x * d) for f, d in [(1568, 5), (2093, 6), (2637, 7)]) * .12)
     if som in ('pop', 'whoosh'):
-        L = int(.35 * sr); x = np.arange(L) / sr
-        at(t0, np.convolve(rng.standard_normal(L) * np.sin(np.pi * x / .35) ** 2, np.ones(8) / 8, 'same') * .12)
-out = np.tanh(out * 1.1) * .95
-with wave.open('/tmp/comp_a.wav', 'wb') as w:
-    w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes((out * 32767).astype(np.int16).tobytes())
-subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/comp_v.mp4', '-i', '/tmp/comp_a.wav', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', f'{OUT}/COMP_anuncio.mp4'], check=True)
+        L = int(.4 * sr); x = np.arange(L) / sr
+        at(sfx, t0, np.convolve(rng.standard_normal(L) * np.sin(np.pi * x / .4) ** 2, np.ones(30) / 30, 'same') * .25)
+grava('/tmp/sfx.wav', sfx)
+fc = ('[0]highpass=f=90,lowpass=f=11000,afftdn=nr=14:nf=-32:tn=1,equalizer=f=250:t=q:w=1.2:g=-3,equalizer=f=3200:t=q:w=1:g=3,'
+      'acompressor=threshold=-22dB:ratio=3:attack=5:release=90:makeup=3,loudnorm=I=-16:TP=-2:LRA=7,asplit[v1][v2];'
+      '[1]volume=0.32[m];[m][v2]sidechaincompress=threshold=0.04:ratio=5:attack=30:release=350[md];'
+      '[2]volume=0.8[s];[v1][md][s]amix=inputs=3:normalize=0,alimiter=limit=0.93[a]')
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/voz.wav', '-i', '/tmp/mus.wav', '-i', '/tmp/sfx.wav', '-filter_complex', fc, '-map', '[a]', '-ar', '44100', '/tmp/comp_a.wav'], check=True)
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/comp_v.mp4', '-i', '/tmp/comp_a.wav', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', f'{OUT}/COMP_anuncio.mp4'], check=True)
 for s in (1.5, 4.5, 6.0, 12.0, 20.0, T - 2):
     subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', str(s), '-i', f'{OUT}/COMP_anuncio.mp4', '-frames:v', '1', '-vf', 'scale=360:-2', f'{OUT}/COMP_q{s:05.1f}.jpg'])
 print('ok', T)
