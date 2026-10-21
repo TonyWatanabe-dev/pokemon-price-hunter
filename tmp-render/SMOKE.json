@@ -1,0 +1,22 @@
+{
+ "/entrar": {
+  "status": 200,
+  "tamanho": 8920,
+  "trecho": [
+   "h1{margin:0;font-weight:900;font-size:clamp(40px,11vw,58px);line-height:.98;letter-spacing:-.03em}",
+   "h1 span{color:var(--y)}",
+   "  <h1>Pare de pagar <span>caro</span> em Pokémon TCG.</h1>",
+   "  <a id=\"cta1\" class=\"cta\" href=\"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\" target=\"_blank\" rel=\"noopener\" data-canal=\"whatsapp\" data-pos=\"topo\">"
+  ]
+ },
+ "/assets/web/entrar-v1.js": {
+  "status": 200,
+  "tamanho": 3200,
+  "trecho": "/* Página /entrar (anúncios → grupo): conta cliques por origem (Vercel Analytics) e mostra comparações reais de preço.\n   Sem dados inventados: se a API não responder, a seção de prova fica oculta. Arquivo versionado (cache imutável em /assets/web). */\n(function () {\n  'use strict';\n  window.va = wi"
+ },
+ "/api/v1/produtos/c30-etb/estatisticas": {
+  "status": 200,
+  "tamanho": 998,
+  "trecho": "{\"data\":{\"product\":{\"id\":\"c30-etb\",\"slug\":\"celebracao-de-30-anos-treinador-avancado-etb\",\"name\":\"Celebração de 30 Anos - Treinador Avançado (ETB)\"},\"stats\":{\"as_of_day\":\"2026-10-21\",\"status\":\"ok\",\"market\":{\"current_price\":599.99,\"current_total_price\":734,\"lowest\":599.99,\"highest\":997,\"average\":733.8"
+ }
+}
