@@ -109,14 +109,14 @@ def seg(vf, vi, vfim, video, vini, zoom=1.0, tipo=None, info=None): SEG.append(d
 seg('C2', 3.30, 7.00, 'C2', 3.30, 1.0, 'caro', P['etb'])
 seg('C2', 8.90, 12.00, 'C2', 8.90, 1.0, 'barato', P['etb'])
 seg('C2', 13.05, 14.60, 'C2', 13.05, 1.0, 'dif', P['etb'])
-seg('C1', 0.70, 4.30, 'poster', 2.30, 1.14, 'caro', P['poster'])
-seg('C1', 4.30, 7.40, 'poster', 6.00, 1.14, 'barato', P['poster'])
-seg('C1', 7.40, 9.70, 'poster', 9.10, 1.14, 'dif', P['poster'])
+seg(None, 0, 2.2, 'poster', 2.30, 1.14, 'mont', P['poster'])
+seg(None, 0, 2.2, 'desafio', 8.00, 1.14, 'mont', P['desafio'])
 seg('C2', 15.75, 19.25, 'blister', 3.00, 1.14, 'broll')
 seg('C2', 19.25, 23.55, 'alertas', 3.60, 1.0, 'broll')
 seg('C2', 24.30, 30.30, None, 0, 1.0, 'final')
 
 def palavras_de(s):
+    if not s['vf']: return []
     ws = [w for w in FALA[s['vf']] if s['vi'] - .05 <= w[0] < s['vfim']]
     return [[w[0] - s['vi'], w[1] - s['vi'], w[2]] for w in ws]
 
@@ -126,6 +126,7 @@ def fundo_final(t):
 F1 = texto([[('Não rasgue', WHITE)], [('dinheiro.', Y)]], F[900](150), track=-5, lh=150)
 F2 = texto([[('O grupo avisa quando o preço cai.', MUTED)]], F[700](44))
 CTA = pilula('Entra no grupo · tcgpricehunter.com.br', F[800](38), Y, (43, 34, 0), 46, 30)
+MAIS = pilula('E não é só a ETB', F[900](56), Y, (43, 34, 0), 40, 24)
 GRATIS = pilula('Grátis', F[900](40), GREEN, WHITE, 36, 20)
 
 eventos = []  # (tempo, som)
@@ -134,13 +135,14 @@ video_out = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '
 audio_voz = []; T = 0.0
 for s in SEG:
     dur = s['vfim'] - s['vi']; n = int(round(dur * FPS)); pal = palavras_de(s)
-    audio_voz.append(voz(s['vf'], s['vi'], s['vfim']))
+    audio_voz.append(voz(s['vf'], s['vi'], s['vfim']) if s['vf'] else np.zeros(int(dur * 44100), np.float32))
     frs = quadros(s['video'], s['vini'], dur, s['zoom']) if s['video'] else None
     info = s['info']
     if s['tipo'] == 'caro': eventos.append((T + min(1.4, dur - .8), 'erro'))
     if s['tipo'] == 'barato': eventos.append((T + 1.0, 'ching'))
     if s['tipo'] in ('dif',): eventos.append((T + .2, 'pop'))
     if s['tipo'] == 'final': eventos.append((T, 'whoosh'))
+    if s['tipo'] == 'mont': eventos += [(T, 'whoosh'), (T + .9, 'ching')]
     for i in range(n):
         t = i / FPS
         if frs is not None:
@@ -168,6 +170,12 @@ for s in SEG:
         elif tp == 'dif':
             sel = pilula(f"{brl(info['caro'] - info['barato'])} a menos", F[900](74), Y, (43, 34, 0), 50, 34)
             cola(fr, sel, (540, 1380), min(1, ease(t / .15)), max(.01, back(t / .45)) * (1 + .03 * math.sin(max(0, t - .5) * 6)), -3)
+        elif tp == 'mont':
+            cola(fr, MAIS, (540, 470), 1 if s is not SEG[3] else ease(t / .2), 1)
+            cola(fr, preco_card(info['rot_caro'], info['caro'], RED, 'x'), (540, 1180), 1 - .5 * ease((t - .8) / .3), .62)
+            e = back((t - .8) / .4)
+            if t >= .8: cola(fr, preco_card(info['rot_barato'], info['barato'], (30, 150, 80), 'v'), (540, 1420), min(1, ease((t - .8) / .15)), max(.01, e))
+            cola(fr, pilula(info['nome'], F[800](40), WHITE, NAVY, 34, 20), (540, 330), 1)
         elif tp == 'final':
             e, dy = ease(t / .4), (1 - ease(t / .4)) * 60; cola(fr, F1, (540, 470 + dy + F1.height / 2), e)
             e, dy = ease((t - .3) / .4), (1 - ease((t - .3) / .4)) * 60; cola(fr, F2, (540, 830 + dy), e)
