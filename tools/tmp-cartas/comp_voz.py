@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Temporário: extrai o áudio da gravação extra (C4) para clonar a voz do Tony no Artlist."""
-import shutil, subprocess, urllib.request
-req = urllib.request.Request('https://drive.usercontent.google.com/download?id=1cF4IdwEn8BDURUePgsdEvfJZ2kOFqJaY&export=download&confirm=t', headers={'User-Agent': 'Mozilla/5.0'})
-with urllib.request.urlopen(req, timeout=900) as r, open('/tmp/C4.mp4', 'wb') as f: shutil.copyfileobj(r, f, 1 << 22)
-subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', '/tmp/C4.mp4', '-vn', '-ac', '1', '-ar', '44100', '-af', 'highpass=f=80,afftdn=nr=12:nf=-32,loudnorm=I=-16', '-b:a', '192k', 'tmp-render/C4_voz.mp3'], check=True)
-# C4
+"""Temporário: baixa áudios gerados no Artlist (vozes/trilha) para tmp-render/VOZ_*."""
+import json, shutil, urllib.request
+for n, u in json.load(open('tools/tmp-cartas/vozes.json')).items():
+    ext = 'wav' if '.wav' in u.split('?')[0] else 'mp3'
+    with urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0'}), timeout=300) as r, open(f'tmp-render/VOZ_{n}.{ext}', 'wb') as f: shutil.copyfileobj(r, f)
