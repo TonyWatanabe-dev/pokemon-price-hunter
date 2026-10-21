@@ -2,7 +2,7 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py, tools/tmp-cartas/comp.json, tools/tmp-cartas/comp_edita.py, tools/tmp-cartas/comp_fala.json]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py, tools/tmp-cartas/comp.json, tools/tmp-cartas/comp_edita.py, tools/tmp-cartas/comp_fala.json, tools/tmp-cartas/comp_voz.py]
 permissions:
   contents: write
 jobs:
@@ -31,6 +31,8 @@ jobs:
         if: contains(github.event.head_commit.message, 'comp-analise')
       - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/comp_edita.py > tmp-render/COMP_log.txt 2>&1 || (tail -40 tmp-render/COMP_log.txt; echo falhou >> tmp-render/COMP_log.txt)
         if: contains(github.event.head_commit.message, 'comp-edita')
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/comp_voz.py
+        if: contains(github.event.head_commit.message, 'comp-voz')
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
