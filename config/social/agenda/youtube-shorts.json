@@ -465,5 +465,157 @@
         "abrindo booster"
       ]
     }
+  ],
+  "cancelar": [
+    {
+      "quando": "2026-10-22T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-23T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-24T11:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-24T12:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-25T12:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-25T18:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-26T12:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-26T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-27T12:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-27T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-28T12:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-28T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-29T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-30T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-10-31T11:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-01T18:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-02T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-03T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-04T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-05T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-06T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-07T11:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-09T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-10T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    },
+    {
+      "quando": "2026-11-11T19:00",
+      "plataforma": "youtube",
+      "manterUm": true,
+      "motivo": "cópia duplicada"
+    }
   ]
 }
