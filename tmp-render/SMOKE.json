@@ -1,28 +1,28 @@
 {
- "/entrar": {
+ "/entrar/ig-comparativo": {
   "status": 200,
   "tamanho": 8962,
   "trecho": [
    "<h1>Pare de pagar <span>caro</span> em Pokémon TCG.</h1>",
-   "<a id=\"cta1\" class=\"cta\" href=\"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\" target=\"_blank\" rel=\"noopener\" data-canal=\"whatsapp\" data-pos=\"topo\"><svg aria-",
-   "<a class=\"cta\" href=\"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\" target=\"_blank\" rel=\"noopener\" data-canal=\"whatsapp\" data-pos=\"fim\"><svg aria-hidden=\"tru",
-   "<a class=\"cta\" href=\"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\" target=\"_blank\" rel=\"noopener\" data-canal=\"whatsapp\" data-pos=\"fixa\"><svg aria-hidden=\"tr",
-   "<script defer src=\"/assets/web/entrar-v2.js\"></script>"
+   "<script defer src=\"/assets/web/entrar-v3.js\"></script>"
   ]
  },
- "/assets/web/entrar-v2.js": {
+ "/ir/whatsapp/ig-comparativo": {
   "status": 200,
-  "tamanho": 3200,
+  "tamanho": 1093,
+  "trecho": [
+   "<meta http-equiv=\"refresh\" content=\"2;url=https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\">",
+   "<p>Abrindo o grupo…<br><a id=\"ir\" href=\"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\" data-wa=\"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv\" data-tg=\"ht"
+  ]
+ },
+ "/assets/web/ir-v1.js": {
+  "status": 200,
+  "tamanho": 424,
+  "trecho": "/* /ir/<canal>/<origem>: a página vista é a contagem (Vercel Analytics, sem cookies); depois segue para o convite oficial. */\n(function () {\n  'use strict';\n  var a = document.getElementById('ir');\n  var canal = (location.pathname.split('/')[2] || '').toLowerCase();\n  var destino = canal === 'telegr"
+ },
+ "/assets/web/entrar-v3.js": {
+  "status": 200,
+  "tamanho": 3793,
   "trecho": "/* Página /entrar (anúncios → grupo): conta cliques por origem (Vercel Analytics) e mostra comparações reais de preço.\n   Sem dados inventados: se a API não responder, a seção de prova fica oculta. Arquivo versionado (cache imutável em /assets/web). */\n(function () {\n  'use strict';\n  window.va = wi"
- },
- "/assets/web/entrar-cartas-v1.webp": {
-  "status": 200,
-  "tamanho": 124569,
-  "trecho": "RIFF\\\u0001\u0002\u0000WEBPVP8X\n\u0000\u0000\u0000\u0010\u0000\u0000\u0000�\u0003\u0000�\u0002\u0000ALPH:T\u0000\u0000\r�Šm\u001bA���y?�����Aʝ\u0006�\u0015iw�,ۛ��)I��0\f��\r\u0010���3��\u0003\"b\u0002��XU��$_����v�B�+��f\u0003V\u001b\u000b{g\u0014j+&�U�<\"\u000e\t�K���/\u0010Uō�\u0006�6[��\u001c(I�Ov\t\u0007@�3Ec�LlK\u001a��6M/�I���)ض�H��bffL.�\u001e�v1Djo��\u001c\u0019�\u0018��s\u001c�X�d�m6�C�\u001f.&\u0012�1�=B�\u001f:��(�����3φ�bfo���޺��\u001f�ՕRX\u0011��F�V\u0016۶m9Q\u0011\u001b\u0004F�Ѩ\r����\u000fڶ�&�$����\u0010�_;���̡�н��lk\u001e#�/�����"
- },
- "/api/v1/produtos/c30-etb/estatisticas": {
-  "status": 200,
-  "tamanho": 998,
-  "trecho": "{\"data\":{\"product\":{\"id\":\"c30-etb\",\"slug\":\"celebracao-de-30-anos-treinador-avancado-etb\",\"name\":\"Celebração de 30 Anos - Treinador Avançado (ETB)\"},\"stats\":{\"as_of_day\":\"2026-10-21\",\"status\":\"ok\",\"market\":{\"current_price\":599.99,\"current_total_price\":734,\"lowest\":599.99,\"highest\":997,\"average\":733.8"
  }
 }
