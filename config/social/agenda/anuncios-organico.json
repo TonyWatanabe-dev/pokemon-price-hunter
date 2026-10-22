@@ -1,0 +1,14 @@
+{
+  "semana": "anúncios comparativo e grupos-do-mesmo-link no orgânico (22 e 23/10, 13h)",
+  "pasta": "assets/social/agenda/videos",
+  "itens": [
+    {"quando": "2026-10-22T13:00", "tipo": "video", "plataformas": ["instagram"], "capaMs": 4000, "id": "v-10-22-anuncio-comparativo-ig", "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/COMP_anuncio_final.mp4",
+     "legenda": "Já teve loja cobrando quase mil reais nessa ETB. O menor preço que o nosso site já viu: R$ 519,90 💸\n\nQual produto você quer ver comparado no próximo? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #etb #ofertas"},
+    {"quando": "2026-10-22T13:00", "tipo": "video", "plataformas": ["tiktok"], "capaMs": 4000, "id": "v-10-22-anuncio-comparativo-tt", "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/COMP_anuncio_final.mp4",
+     "legenda": "loja cobrando quase R$ 1.000 nessa ETB 💀 o site achou por R$ 519\n\nqual produto eu comparo agora? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #etb #fyp"},
+    {"quando": "2026-10-23T13:00", "tipo": "video", "plataformas": ["instagram"], "capaMs": 6500, "id": "v-10-23-anuncio-grupos-ig", "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/GRUPOS_anuncio.mp4",
+     "legenda": "Você tá em vários grupos de oferta e mesmo assim paga caro? É o mesmo link o dia inteiro, e nem sempre é o mais barato 😮‍💨\n\nQuantos grupos de oferta você tem aí? 👇\n\nO nosso compara dezenas de lojas do Brasil e só avisa quando o preço cai de verdade. Não rasgue dinheiro: link na bio.\n\n#pokemontcg #pokemontcgbrasil #ofertas #tcg #colecionador"},
+    {"quando": "2026-10-23T13:00", "tipo": "video", "plataformas": ["tiktok"], "capaMs": 6500, "id": "v-10-23-anuncio-grupos-tt", "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/GRUPOS_anuncio.mp4",
+     "legenda": "grupo de oferta que manda o mesmo link 50x por dia 💀\n\nquantos grupos de oferta você tem? 👇\n\no nosso só avisa quando o preço cai de verdade · link da bio\n\n#pokemontcg #pokemon #ofertas #tcg #fyp"}
+  ]
+}
