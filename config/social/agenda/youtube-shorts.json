@@ -3,23 +3,6 @@
   "pasta": "assets/social/agenda/videos",
   "itens": [
     {
-      "quando": "2026-10-22T15:00",
-      "tipo": "video",
-      "plataformas": [
-        "youtube"
-      ],
-      "id": "v-10-22-anuncio-comparativo-yt",
-      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/COMP_anuncio_final.mp4",
-      "legenda": "Já teve loja cobrando quase mil reais nessa ETB. O menor preço que o nosso site já viu: R$ 519,90 💸\n\nQual produto você quer ver comparado no próximo? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #etb #ofertas",
-      "titulo": "Não pague caro em Pokémon TCG: compare o preço antes",
-      "tags": [
-        "pokemon tcg",
-        "pokemon tcg brasil",
-        "preço pokemon tcg",
-        "ofertas pokemon"
-      ]
-    },
-    {
       "id": "v-10-22-30a-ranking-yt",
       "quando": "2026-10-22T19:00",
       "tipo": "video",
@@ -37,23 +20,6 @@
         "celebracao 30 anos"
       ],
       "legenda": "Top 5 hits que eu puxei na Celebração de 30 Anos, com o valor de cada carta na Liga Pokémon 🏆\n\nQual é a sua chase dessa coleção?\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
-    },
-    {
-      "quando": "2026-10-23T13:00",
-      "tipo": "video",
-      "plataformas": [
-        "youtube"
-      ],
-      "id": "v-10-23-anuncio-grupos-yt",
-      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/GRUPOS_anuncio.mp4",
-      "legenda": "Você tá em vários grupos de oferta e mesmo assim paga caro? É o mesmo link o dia inteiro, e nem sempre é o mais barato 😮‍💨\n\nQuantos grupos de oferta você tem aí? 👇\n\nO nosso compara dezenas de lojas do Brasil e só avisa quando o preço cai de verdade. Não rasgue dinheiro: link na bio.\n\n#pokemontcg #pokemontcgbrasil #ofertas #tcg #colecionador",
-      "titulo": "Grupo de oferta que só manda o mesmo link? Olha isso",
-      "tags": [
-        "pokemon tcg",
-        "pokemon tcg brasil",
-        "preço pokemon tcg",
-        "ofertas pokemon"
-      ]
     },
     {
       "id": "v-10-23-30a-hit-pkclassico-yt",
