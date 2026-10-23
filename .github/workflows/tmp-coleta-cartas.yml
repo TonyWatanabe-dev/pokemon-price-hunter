@@ -45,7 +45,7 @@ jobs:
           path: /tmp/ub
           key: brutos-${{ github.run_id }}
           restore-keys: brutos-
-      - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && mkdir -p tmp-render && (python3 tools/tmp-cartas/fino.py || true) && PECAS=${{ contains(github.event.head_commit.message, 'unbox-so:') && 'combo30' || '' }} python3 tools/tmp-cartas/unbox.py > tmp-render/U_log.txt 2>&1 || (tail -40 tmp-render/U_log.txt; echo falhou >> tmp-render/U_log.txt)
+      - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && mkdir -p tmp-render && (python3 tools/tmp-cartas/fino.py || true) && ( [ -f tmp-dragonite-d/relatorio.json ] || (pip install -q --break-system-packages faster-whisper && ENTRADA=tools/tmp-cartas/d.json SAIDA=tmp-dragonite-d python3 tools/tmp-cartas/blister.py) ) && PECAS=${{ contains(github.event.head_commit.message, 'unbox-so:') && 'combo30' || '' }} python3 tools/tmp-cartas/unbox.py > tmp-render/U_log.txt 2>&1 || (tail -40 tmp-render/U_log.txt; echo falhou >> tmp-render/U_log.txt)
         if: contains(github.event.head_commit.message, 'unbox')
       - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/quadros_hd.py
         if: contains(github.event.head_commit.message, 'hd-quadros')
@@ -54,4 +54,4 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render tmp-blister tmp-comp tmp-dragonite 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
+          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render tmp-blister tmp-comp tmp-dragonite tmp-dragonite-d 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push

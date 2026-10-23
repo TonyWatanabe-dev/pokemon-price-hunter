@@ -1,1 +1,1 @@
-combo30,hit_pikachu,hit_umbreon,hit_buzzwole
+box_dragonite,hit_thievul,hit_dragalge,brick_dragonite

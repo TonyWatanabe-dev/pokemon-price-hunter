@@ -377,5 +377,350 @@
     2.8
    ]
   }
+ },
+ "box_dragonite": {
+  "saida": "U_box_dragonite",
+  "cor": "#a8801a",
+  "gancho": [
+   "ABRI A BOX",
+   "MEGA DRAGONITE"
+  ],
+  "t_gancho": 3.2,
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "edl": [
+   [
+    "D1_132319",
+    3.3,
+    13.2,
+    1.2
+   ],
+   [
+    "D1_132319",
+    18.6,
+    28.0,
+    1.2
+   ],
+   [
+    "E06_132833",
+    5.0,
+    23.5,
+    1.4
+   ],
+   [
+    "E07_132930",
+    1.4,
+    15.0,
+    3.4
+   ],
+   [
+    "E08_133005",
+    2.6,
+    16.0,
+    3.4
+   ],
+   [
+    "E09_133043",
+    3.0,
+    17.0,
+    3.5
+   ],
+   [
+    "E10_133117",
+    3.5,
+    17.0,
+    3.4
+   ],
+   [
+    "D2_133152",
+    1.8,
+    8.0,
+    1.3
+   ],
+   [
+    "D2_133152",
+    14.0,
+    25.0,
+    1.0
+   ],
+   [
+    "E11_133307",
+    0.7,
+    18.0,
+    3.5
+   ],
+   [
+    "D3_133335",
+    2.8,
+    10.0,
+    1.3
+   ],
+   [
+    "D3_133335",
+    15.0,
+    26.0,
+    1.0
+   ],
+   [
+    "D4_133439",
+    2.4,
+    14.0,
+    1.3
+   ],
+   [
+    "D5_133550",
+    5.4,
+    17.0,
+    1.1
+   ]
+  ],
+  "packs": [
+   [
+    "E07_132930",
+    1.4
+   ],
+   [
+    "E08_133005",
+    2.6
+   ],
+   [
+    "E09_133043",
+    3.0
+   ],
+   [
+    "E10_133117",
+    3.5
+   ],
+   [
+    "D2_133152",
+    1.8
+   ],
+   [
+    "E11_133307",
+    0.7
+   ],
+   [
+    "D3_133335",
+    2.8
+   ],
+   [
+    "D4_133439",
+    2.4
+   ]
+  ],
+  "whips": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   9,
+   10,
+   12,
+   13
+  ],
+  "preco": {
+   "src": "D1_132319",
+   "t": 18.7,
+   "pago": 90,
+   "outras": 220,
+   "dur": 5.5
+  },
+  "placar": {
+   "pago": 90,
+   "desde": [
+    "E06_132833",
+    5.0
+   ]
+  },
+  "hits": [
+   {
+    "src": "E06_132833",
+    "t": 5.6,
+    "nome": "MEGA DRAGONITE ex",
+    "valor": 41.8
+   },
+   {
+    "src": "D2_133152",
+    "t": 22.3,
+    "nome": "THIEVUL",
+    "valor": 18.51
+   },
+   {
+    "src": "D3_133335",
+    "t": 22.5,
+    "nome": "MEGA DRAGALGE ex",
+    "valor": 7.86
+   }
+  ],
+  "bricks": [
+   {
+    "src": "D4_133439",
+    "t": 11.0,
+    "dur": 2.2
+   }
+  ],
+  "final": {
+   "foto": "F4_135011",
+   "titulo": [
+    "VALEU",
+    "A PENA?"
+   ],
+   "linha": "Paguei R$ 90 · Cartas R$ 68,17 (Liga)",
+   "cor_final": "#a8801a",
+   "dur": 3.8
+  }
+ },
+ "hit_thievul": {
+  "saida": "U_hit_thievul",
+  "cor": "#a8801a",
+  "gancho": [
+   "5º PACK DA BOX",
+   "MEGA DRAGONITE"
+  ],
+  "t_gancho": 2.8,
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "edl": [
+   [
+    "D2_133152",
+    1.8,
+    8.0,
+    1.3
+   ],
+   [
+    "D2_133152",
+    14.0,
+    25.0,
+    1.0
+   ]
+  ],
+  "hits": [
+   {
+    "src": "D2_133152",
+    "t": 22.3,
+    "nome": "THIEVUL",
+    "valor": 18.51
+   }
+  ],
+  "placar": {
+   "pago": 11.25,
+   "desde": [
+    "D2_133152",
+    1.8
+   ]
+  },
+  "final": {
+   "foto": "F4_135011",
+   "titulo": [
+    "DEU",
+    "LUCRO!"
+   ],
+   "linha": "1 pack da box · R$ 11,25",
+   "cor_final": "#a8801a",
+   "dur": 3.2
+  }
+ },
+ "hit_dragalge": {
+  "saida": "U_hit_dragalge",
+  "cor": "#a8801a",
+  "gancho": [
+   "CAOS ASCENDENTE",
+   "DA BOX DRAGONITE"
+  ],
+  "t_gancho": 2.8,
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "edl": [
+   [
+    "D3_133335",
+    2.8,
+    10.0,
+    1.3
+   ],
+   [
+    "D3_133335",
+    15.0,
+    26.0,
+    1.0
+   ]
+  ],
+  "hits": [
+   {
+    "src": "D3_133335",
+    "t": 22.5,
+    "nome": "MEGA DRAGALGE ex",
+    "valor": 7.86
+   }
+  ],
+  "placar": {
+   "pago": 11.25,
+   "desde": [
+    "D3_133335",
+    2.8
+   ]
+  },
+  "final": {
+   "foto": "F4_135011",
+   "titulo": [
+    "MEGA",
+    "DRAGALGE ex!"
+   ],
+   "linha": "1 pack da box · R$ 11,25",
+   "cor_final": "#a8801a",
+   "dur": 3.2
+  }
+ },
+ "brick_dragonite": {
+  "saida": "U_brick_dragonite",
+  "cor": "#a8801a",
+  "gancho": [
+   "ÚLTIMO PACK",
+   "DA BOX..."
+  ],
+  "t_gancho": 2.8,
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "edl": [
+   [
+    "D4_133439",
+    2.4,
+    14.0,
+    1.0
+   ]
+  ],
+  "bricks": [
+   {
+    "src": "D4_133439",
+    "t": 11.0,
+    "dur": 2.4
+   }
+  ],
+  "final": {
+   "foto": "F4_135011",
+   "titulo": [
+    "NEM TODO",
+    "PACK É HIT"
+   ],
+   "linha": "Box Mega Dragonite · paguei R$ 90",
+   "cor_final": "#c93d25",
+   "dur": 3.2
+  }
  }
 }

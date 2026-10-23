@@ -14,6 +14,7 @@ OUT = 'tmp-render'; os.makedirs(OUT, exist_ok=True)
 IDS = json.load(open(os.path.join(AQUI, 'ids.json')))
 CFG = json.load(open(os.path.join(AQUI, 'unbox.json')))
 FALA = json.load(open('tmp-dragonite/relatorio.json'))
+if os.path.exists('tmp-dragonite-d/relatorio.json'): FALA.update(json.load(open('tmp-dragonite-d/relatorio.json')))
 TRILHA = json.load(open(os.path.join(AQUI, 'comp_fala.json')))['trilha']
 T = '/tmp/ub'; os.makedirs(T, exist_ok=True)
 FPS = 30
