@@ -39,6 +39,8 @@ jobs:
         if: contains(github.event.head_commit.message, 'drago-analise')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/fino.py
         if: contains(github.event.head_commit.message, 'fino')
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/fino.py
+        if: contains(github.event.head_commit.message, 'fino')
       - run: python3 tools/tmp-cartas/smoke.py
         if: contains(github.event.head_commit.message, 'smoke')
       - run: |
