@@ -272,10 +272,10 @@ def processa(nome, cfg):
             lt = tt - th
             if 0 <= lt < 2.4:
                 out = 1 - ease(max(0, (lt - 2.1) / 0.3))
-                cola(c, valor_img(h['valor']), W / 2, 560, out, max(0.01, back(lt / 0.35)), -3)
+                cola(c, valor_img(h['valor']), W - 72 - 200, 452, out, max(0.01, back(lt / 0.35)) * 0.72, -2)
                 for kk in range(4):
                     ang = kk * 1.6 + 0.4; rr = 230
-                    cola(c, brilho4(24 + 8 * (kk % 2)), W / 2 + math.cos(ang) * rr * 1.5, 560 + math.sin(ang) * rr * 0.5, out * min(1, lt / 0.2))
+                    cola(c, brilho4(18 + 6 * (kk % 2)), W - 272 + math.cos(ang) * 150, 452 + math.sin(ang) * 60, out * min(1, lt / 0.2))
         for tb, b in bricks: mf.brick(gq, tt - tb, dur=b.get('dur', 2.2), canvas=c)
         for tw in whips: mf.transition_whip(tt - (tw - 0.18), canvas=c)
         c.save(f'{cam}/{i:05d}.png', compress_level=1)
