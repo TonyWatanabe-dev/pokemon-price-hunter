@@ -114,6 +114,14 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   const untimedSet = new Set(untimed);
   stats.offersNoTimestamp = untimed.filter((id) => !prev.has(id)).length;
   const rows = offers.filter((o) => o.last_seen_at || prev.has(o.legacy_id)).map((o) => ({ ...o, product_id: pid.get(o.product_legacy_id), seller_id: o.seller ? sid.get(o.marketplace_id + '|' + o.seller.external_id) : null }));
+  // O mesmo anúncio do marketplace (marketplace + id externo + vendedor) pode voltar com outro legacy_id, por exemplo
+  // quando o robô passa a casá-lo com outro produto. A linha antiga perde o id externo e fica só no histórico; senão
+  // offer_external_uq derruba a sincronização inteira (incidente de 22/10/2026).
+  await c.query(`UPDATE offer o SET external_offer_id = NULL
+      FROM jsonb_to_recordset($1::jsonb) AS x(legacy_id text, marketplace_id text, seller_id bigint, external_offer_id text)
+     WHERE x.external_offer_id IS NOT NULL AND o.external_offer_id = x.external_offer_id AND o.marketplace_id = x.marketplace_id
+       AND coalesce(o.seller_id, 0) = coalesce(x.seller_id, 0) AND o.legacy_id IS DISTINCT FROM x.legacy_id`,
+    [J(rows.map((r) => ({ legacy_id: r.legacy_id, marketplace_id: r.marketplace_id, seller_id: r.seller_id ?? null, external_offer_id: r.external_offer_id ?? null })))]);
   const up = await c.query(`INSERT INTO offer (legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
       shipping_status, shipping_price, total_price, stock_status, quantity, match_confidence, confirmed, anomalous, status, source_type, first_seen_at, last_seen_at)
     SELECT legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
