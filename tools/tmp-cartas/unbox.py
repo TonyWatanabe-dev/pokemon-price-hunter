@@ -183,12 +183,7 @@ def placar_img(v, flash=0.0):
     return im
 
 def valor_img(v):
-    f1, f2 = F(800, 30), F(900, 70)
-    a = pilula('VALOR NA LIGA', f1, BRANCO, NAVY, pad=(24, 10))
-    b = pilula(brl2(v), f2, (11, 113, 72), BRANCO, pad=(36, 14))
-    im = camada(max(a.width, b.width), a.height + b.height - 8)
-    im.alpha_composite(b, ((im.width - b.width) // 2, a.height - 18)); im.alpha_composite(a, ((im.width - a.width) // 2, 0))
-    return im
+    return pilula(brl2(v), F(900, 70), (11, 113, 72), BRANCO, pad=(36, 14))
 
 # ---------- montagem ----------
 def processa(nome, cfg):
