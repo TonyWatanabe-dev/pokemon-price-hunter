@@ -246,11 +246,12 @@ def processa(nome, cfg):
     whips = [inicio[k] for k in cfg.get('whips', []) if 0 < k < len(inicio)]
     gq = mf.sticker_frames() if bricks else []
     pl = cfg.get('placar'); t_pl = (mapa(*pl['desde']) if pl and pl.get('desde') else 0.0) if pl else None
-    lg = LOGO.copy(); lw = 170; lg = lg.resize((lw, int(lg.height * lw / lg.width)), Image.LANCZOS)
+    lgi = LOGO.copy(); lw = 520; lgi = lgi.resize((lw, int(lgi.height * lw / lgi.width)), Image.LANCZOS)
     cam = f'{T}/{nome}_cam'; shutil.rmtree(cam, ignore_errors=True); os.makedirs(cam)
     for i in range(int(DUR * FPS) + 1):
         tt = i / FPS; c = camada(W, H)
-        c.alpha_composite(lg, (W - 60 - lw, 1640))
+        if tt < 1.8:
+            cola(c, lgi, W / 2, 900, 1 - ease(max(0, (tt - 1.5) / 0.3)), max(0.01, back(tt / 0.45)))
         if packs:
             k = max([j for j, p in enumerate(packs) if p <= tt], default=None)
             if k is not None: mf.counter_badge(k + 1, len(packs), tt - packs[k], canvas=c)
