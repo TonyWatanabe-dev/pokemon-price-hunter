@@ -2,7 +2,7 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py, tools/tmp-cartas/comp.json, tools/tmp-cartas/comp_edita.py, tools/tmp-cartas/comp_fala.json, tools/tmp-cartas/comp_voz.py, tools/tmp-cartas/palavras.py, tools/tmp-cartas/smoke.py, tools/tmp-cartas/dragonite.json, tools/tmp-cartas/fotos.py, tools/tmp-cartas/fino.json, tools/tmp-cartas/unbox.json, tools/tmp-cartas/unbox.py, tools/tmp-cartas/motion_fx.py]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py, tools/tmp-cartas/comp.json, tools/tmp-cartas/comp_edita.py, tools/tmp-cartas/comp_fala.json, tools/tmp-cartas/comp_voz.py, tools/tmp-cartas/palavras.py, tools/tmp-cartas/smoke.py, tools/tmp-cartas/dragonite.json, tools/tmp-cartas/fotos.py, tools/tmp-cartas/fino.json, tools/tmp-cartas/unbox.json, tools/tmp-cartas/unbox.py, tools/tmp-cartas/motion_fx.py, tools/tmp-cartas/quadros_hd.json]
 permissions:
   contents: write
 jobs:
@@ -40,13 +40,15 @@ jobs:
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/fino.py
         if: contains(github.event.head_commit.message, 'fino')
       - uses: actions/cache@v4
-        if: contains(github.event.head_commit.message, 'unbox')
+        if: contains(github.event.head_commit.message, 'unbox') || contains(github.event.head_commit.message, 'hd-quadros')
         with:
           path: /tmp/ub
           key: brutos-${{ github.run_id }}
           restore-keys: brutos-
       - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && mkdir -p tmp-render && (python3 tools/tmp-cartas/fino.py || true) && PECAS=${{ contains(github.event.head_commit.message, 'unbox-so:') && 'combo30' || '' }} python3 tools/tmp-cartas/unbox.py > tmp-render/U_log.txt 2>&1 || (tail -40 tmp-render/U_log.txt; echo falhou >> tmp-render/U_log.txt)
         if: contains(github.event.head_commit.message, 'unbox')
+      - run: sudo apt-get install -y -qq ffmpeg python3-numpy python3-pil >/dev/null && python3 tools/tmp-cartas/quadros_hd.py
+        if: contains(github.event.head_commit.message, 'hd-quadros')
       - run: python3 tools/tmp-cartas/smoke.py
         if: contains(github.event.head_commit.message, 'smoke')
       - run: |
