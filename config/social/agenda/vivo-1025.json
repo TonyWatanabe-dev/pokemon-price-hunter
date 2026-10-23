@@ -1,0 +1,31 @@
+{
+  "semana": "Grade nova (cor cheia) — 25/10",
+  "pasta": "assets/social/agenda/semana1",
+  "itens": [
+    {
+      "id": "s1-dom-30-pikachus-v4",
+      "quando": "2026-10-25T12:00",
+      "tipo": "carrossel",
+      "plataformas": [
+        "instagram"
+      ],
+      "arquivos": [
+        "S1_Dom_1_v4.jpg",
+        "S1_Dom_2_v4.jpg",
+        "S1_Dom_3_v4.jpg",
+        "S1_Dom_4_v4.jpg",
+        "S1_Dom_5_v4.jpg",
+        "S1_Dom_6_v4.jpg",
+        "S1_Dom_7_v4.jpg"
+      ],
+      "legenda": "A Celebração de 30 Anos tem 30 Pikachus, cada um de um ilustrador diferente. Juntamos os 30 aqui, do 023 de Ken Sugimori ao 052 de Kazuki Minami.\n\nArrasta e comenta o número do seu favorito 👇\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pikachu #pokemon30anos #colecionador"
+    }
+  ],
+  "cancelar": [
+    {
+      "quando": "2026-10-25T12:00",
+      "plataforma": "instagram",
+      "motivo": "troca pelo carrossel v4 em cor cheia"
+    }
+  ]
+}
