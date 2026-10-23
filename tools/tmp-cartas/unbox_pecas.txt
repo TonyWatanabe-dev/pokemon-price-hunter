@@ -1,0 +1,1 @@
+hit_pikachu,hit_umbreon,hit_buzzwole

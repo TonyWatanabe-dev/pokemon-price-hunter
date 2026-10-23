@@ -268,7 +268,8 @@ def processa(nome, cfg):
     return {'dur': round(DUR + EXTRA, 1), 'inicio': [round(x, 2) for x in inicio], 'hits': [round(x[0], 2) for x in hits], 'bricks': [round(x[0], 2) for x in bricks], 'preco': t_pre}
 
 rel = {}
-for nome in [p for p in os.environ.get('PECAS', '').split(',') if p] or list(CFG):
+_sel = os.environ.get('PECAS', '') or (open(os.path.join(AQUI, 'unbox_pecas.txt')).read().strip() if os.path.exists(os.path.join(AQUI, 'unbox_pecas.txt')) else '')
+for nome in [p for p in _sel.replace('\n', ',').split(',') if p.strip()] or list(CFG):
     try: rel[nome] = processa(nome, CFG[nome])
     except Exception as e:
         import traceback; rel[nome] = {'erro': traceback.format_exc()[-1500:]}

@@ -181,5 +181,155 @@
    "Pô,": "Pô,",
    "busterzinhos": "boosterzinhos"
   }
+ },
+ "hit_pikachu": {
+  "saida": "U_hit_pikachu_ex",
+  "cor": "#e2a500",
+  "gancho": [
+   "SEGUNDO PACK",
+   "DO COMBO 30 ANOS"
+  ],
+  "t_gancho": 2.8,
+  "edl": [
+   [
+    "E15_134138",
+    3.0,
+    11.0,
+    1.3
+   ],
+   [
+    "E15_134138",
+    15.0,
+    22.0,
+    1.0
+   ]
+  ],
+  "hits": [
+   {
+    "src": "E15_134138",
+    "t": 18.8,
+    "nome": "PIKACHU ex",
+    "tipo": "TIPO ELÉTRICO",
+    "cor": "#e2a500"
+   }
+  ],
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "final": {
+   "foto": "F2_134928",
+   "titulo": [
+    "PIKACHU",
+    "ex!"
+   ],
+   "linha": "Combo 30 Anos · paguei R$ 240",
+   "cor_final": "#e2a500",
+   "dur": 3.2
+  }
+ },
+ "hit_umbreon": {
+  "saida": "U_hit_umbreon_ex",
+  "cor": "#2b2d42",
+  "gancho": [
+   "ESPERA A",
+   "ÚLTIMA CARTA"
+  ],
+  "t_gancho": 2.8,
+  "edl": [
+   [
+    "E18_134311",
+    4.0,
+    12.0,
+    1.6
+   ],
+   [
+    "E18_134311",
+    15.0,
+    24.0,
+    1.0
+   ]
+  ],
+  "hits": [
+   {
+    "src": "E18_134311",
+    "t": 21.8,
+    "nome": "UMBREON ex",
+    "tipo": "TIPO ESCURIDÃO",
+    "cor": "#2b2d42"
+   }
+  ],
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "final": {
+   "foto": "F2_134928",
+   "titulo": [
+    "UMBREON",
+    "ex!"
+   ],
+   "linha": "Combo 30 Anos · paguei R$ 240",
+   "cor_final": "#2b2d42",
+   "dur": 3.2
+  }
+ },
+ "hit_buzzwole": {
+  "saida": "U_hit_buzzwole_gx",
+  "cor": "#c25a1c",
+  "gancho": [
+   "ÚLTIMO PACK",
+   "DO COMBO 30 ANOS"
+  ],
+  "t_gancho": 2.8,
+  "edl": [
+   [
+    "E19_134425",
+    2.8,
+    6.0,
+    1.0
+   ],
+   [
+    "E19_134425",
+    8.0,
+    14.0,
+    1.8
+   ],
+   [
+    "E19_134425",
+    15.5,
+    23.5,
+    1.0
+   ]
+  ],
+  "hits": [
+   {
+    "src": "E19_134425",
+    "t": 18.5,
+    "nome": "BUZZWOLE GX",
+    "tipo": "TIPO LUTADOR",
+    "cor": "#c25a1c"
+   }
+  ],
+  "corrige": {
+   "preciu": "preço",
+   "Preciu": "preço",
+   "Pô,": "Pô,",
+   "busterzinhos": "boosterzinhos"
+  },
+  "final": {
+   "foto": "F2_134928",
+   "titulo": [
+    "BUZZWOLE",
+    "GX!"
+   ],
+   "linha": "Combo 30 Anos · paguei R$ 240",
+   "cor_final": "#c25a1c",
+   "dur": 3.2
+  }
  }
 }
