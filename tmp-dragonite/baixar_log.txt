@@ -1,5 +1,1 @@
-x me06-084_pt https://assets.tcgdex.net/pt/me/me06/084/high.png HTTP Error 404: Not Found
-x me06-084_pt https://assets.tcgdex.net/pt-br/me/me06/084/high.png HTTP Error 404: Not Found
-x me06-084_en https://assets.tcgdex.net/en/me/me06/084/high.png HTTP Error 404: Not Found
-x me06-138_en https://assets.tcgdex.net/en/me/me06/138/high.png HTTP Error 404: Not Found
-x me06-141_en https://assets.tcgdex.net/en/me/me06/141/high.png HTTP Error 404: Not Found
+ok rayquaza_sar_jp https://www.cardrush-pokemon.jp/data/cardrushpokemon/product/CRM6_034.jpg 288474
