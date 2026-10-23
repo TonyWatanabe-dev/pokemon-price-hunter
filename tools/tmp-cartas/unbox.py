@@ -165,6 +165,31 @@ def desenha_final(bg, pecas, t, brilhos):
         k = 0.6 + 0.4 * math.sin(t * 5 + fase); cola(fr, brilho4(r * k), x, y, min(1, t / 0.4))
     return fr
 
+
+def brl2(v, sinal=True):
+    s = f'{abs(v):,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+    return (('+' if v > 0 else '-') if sinal and abs(v) >= 0.005 else '') + 'R$ ' + s
+
+def placar_img(v, flash=0.0):
+    f = F(900, 58); txt = brl2(v)
+    d0 = ImageDraw.Draw(Image.new('RGBA', (1, 1))); tw = d0.textlength(txt, font=f)
+    w, h = int(tw + 70), 104
+    im = camada(w + 14, h + 14); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((10, 12, w + 10, h + 12), 30, fill=(0, 0, 0, 150))
+    d.rounded_rectangle((0, 0, w, h), 30, fill=NAVY, outline=Y, width=6)
+    cor = (60, 220, 88) if v > 0 else (255, 92, 80)
+    if flash > 0: cor = tuple(int(c + (255 - c) * flash) for c in cor)
+    d.text((35, 18), txt, font=f, fill=cor)
+    return im
+
+def valor_img(v):
+    f1, f2 = F(800, 30), F(900, 70)
+    a = pilula('VALOR NA LIGA', f1, BRANCO, NAVY, pad=(24, 10))
+    b = pilula(brl2(v), f2, (11, 113, 72), BRANCO, pad=(36, 14))
+    im = camada(max(a.width, b.width), a.height + b.height - 8)
+    im.alpha_composite(b, ((im.width - b.width) // 2, a.height - 18)); im.alpha_composite(a, ((im.width - a.width) // 2, 0))
+    return im
+
 # ---------- montagem ----------
 def processa(nome, cfg):
     edl = cfg['edl']
@@ -225,6 +250,7 @@ def processa(nome, cfg):
     packs = [mapa(p[0], p[1]) for p in cfg.get('packs', [])]; packs = [p for p in packs if p is not None]
     whips = [inicio[k] for k in cfg.get('whips', []) if 0 < k < len(inicio)]
     gq = mf.sticker_frames() if bricks else []
+    pl = cfg.get('placar'); t_pl = (mapa(*pl['desde']) if pl and pl.get('desde') else 0.0) if pl else None
     lg = LOGO.copy(); lw = 170; lg = lg.resize((lw, int(lg.height * lw / lg.width)), Image.LANCZOS)
     cam = f'{T}/{nome}_cam'; shutil.rmtree(cam, ignore_errors=True); os.makedirs(cam)
     for i in range(int(DUR * FPS) + 1):
@@ -232,10 +258,24 @@ def processa(nome, cfg):
         c.alpha_composite(lg, (W - 60 - lw, 1640))
         if packs:
             k = max([j for j, p in enumerate(packs) if p <= tt], default=None)
-            if k is not None and not any(0 <= tt - th < 3.0 for th, _ in hits): mf.counter_badge(k + 1, len(packs), tt - packs[k], canvas=c)
+            if k is not None: mf.counter_badge(k + 1, len(packs), tt - packs[k], canvas=c)
         if tt < tg: mf.hook(cfg['gancho'], cfg['cor'], tt, dur=tg, canvas=c)
         if t_pre is not None: mf.price_slam(pre['pago'], pre['outras'], tt - t_pre, dur=pre.get('dur', 5.0), cy=pre.get('cy', 1120), canvas=c)
-        for th, h in hits: mf.hit_reveal(h['nome'], h['tipo'], h['cor'], tt - th, dur=h.get('dur', 2.8), canvas=c)
+        if pl is not None and tt >= t_pl:
+            tot = -pl['pago']; fl = 0.0
+            for th, h in hits:
+                if tt >= th:
+                    k2 = min(1, (tt - th) / 0.6); tot += h['valor'] * ease(k2); fl = max(fl, 1 - min(1, (tt - th) / 0.5))
+            sc = 1 + 0.12 * fl
+            cola(c, placar_img(round(tot, 2), fl), W - 72 - 200, 330, 1, sc)
+        for th, h in hits:
+            lt = tt - th
+            if 0 <= lt < 2.4:
+                out = 1 - ease(max(0, (lt - 2.1) / 0.3))
+                cola(c, valor_img(h['valor']), W / 2, 560, out, max(0.01, back(lt / 0.35)), -3)
+                for kk in range(4):
+                    ang = kk * 1.6 + 0.4; rr = 230
+                    cola(c, brilho4(24 + 8 * (kk % 2)), W / 2 + math.cos(ang) * rr * 1.5, 560 + math.sin(ang) * rr * 0.5, out * min(1, lt / 0.2))
         for tb, b in bricks: mf.brick(gq, tt - tb, dur=b.get('dur', 2.2), canvas=c)
         for tw in whips: mf.transition_whip(tt - (tw - 0.18), canvas=c)
         c.save(f'{cam}/{i:05d}.png', compress_level=1)
@@ -247,7 +287,7 @@ def processa(nome, cfg):
     for i in range(int(EXTRA * FPS)):
         mf.end_card(fim, i / FPS).save(f'{fimd}/f{i:04d}.png', compress_level=1)
     # zoom-punch no vídeo nos hits
-    Z = '+'.join(f'0.07*exp(-((t-{th + 0.1:.3f})*(t-{th + 0.1:.3f}))/0.05)' for th, _ in hits) or '0'
+    Z = '+'.join(f'0.04*exp(-((t-{th + 0.1:.3f})*(t-{th + 0.1:.3f}))/0.05)' for th, _ in hits) or '0'
     zoom = f"scale=w='2*trunc(540*(1+{Z}))':h='2*trunc(960*(1+{Z}))':eval=frame,crop=1080:1920"
 
     # áudio: original realçado (ASMR) + trilha baixa com ducking pela fala; whoosh simples na troca para o final

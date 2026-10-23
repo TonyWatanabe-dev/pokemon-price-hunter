@@ -141,21 +141,30 @@
     "t": 18.8,
     "nome": "PIKACHU ex",
     "tipo": "TIPO ELÉTRICO",
-    "cor": "#e2a500"
+    "cor": "#e2a500",
+    "valor": 23.02
+   },
+   {
+    "src": "E18_134311",
+    "t": 17.6,
+    "nome": "MEOWTH DE ALOLA",
+    "valor": 57.8
    },
    {
     "src": "E18_134311",
     "t": 21.8,
     "nome": "UMBREON ex",
     "tipo": "TIPO ESCURIDÃO",
-    "cor": "#2b2d42"
+    "cor": "#2b2d42",
+    "valor": 21.69
    },
    {
     "src": "E19_134425",
     "t": 18.5,
     "nome": "BUZZWOLE GX",
     "tipo": "TIPO LUTADOR",
-    "cor": "#c25a1c"
+    "cor": "#c25a1c",
+    "valor": 41.44
    }
   ],
   "bricks": [
@@ -171,7 +180,7 @@
     "VALEU",
     "A PENA?"
    ],
-   "linha": "Paguei R$ 240 · Outras lojas R$ 350",
+   "linha": "Paguei R$ 240 · Cartas R$ 143,95 (Liga)",
    "cor_final": "#e2a500",
    "dur": 3.8
   },
@@ -180,6 +189,13 @@
    "Preciu": "preço",
    "Pô,": "Pô,",
    "busterzinhos": "boosterzinhos"
+  },
+  "placar": {
+   "pago": 240,
+   "desde": [
+    "E14_134106",
+    10.0
+   ]
   }
  },
  "hit_pikachu": {
@@ -210,7 +226,8 @@
     "t": 18.8,
     "nome": "PIKACHU ex",
     "tipo": "TIPO ELÉTRICO",
-    "cor": "#e2a500"
+    "cor": "#e2a500",
+    "valor": 23.02
    }
   ],
   "corrige": {
@@ -225,9 +242,16 @@
     "PIKACHU",
     "ex!"
    ],
-   "linha": "Combo 30 Anos · paguei R$ 240",
+   "linha": "1 pack do Combo 30 Anos · R$ 40",
    "cor_final": "#e2a500",
    "dur": 3.2
+  },
+  "placar": {
+   "pago": 40,
+   "desde": [
+    "E15_134138",
+    3.0
+   ]
   }
  },
  "hit_umbreon": {
@@ -255,10 +279,17 @@
   "hits": [
    {
     "src": "E18_134311",
+    "t": 17.6,
+    "nome": "MEOWTH DE ALOLA",
+    "valor": 57.8
+   },
+   {
+    "src": "E18_134311",
     "t": 21.8,
     "nome": "UMBREON ex",
     "tipo": "TIPO ESCURIDÃO",
-    "cor": "#2b2d42"
+    "cor": "#2b2d42",
+    "valor": 21.69
    }
   ],
   "corrige": {
@@ -270,12 +301,19 @@
   "final": {
    "foto": "F2_134928",
    "titulo": [
-    "UMBREON",
-    "ex!"
+    "DEU",
+    "LUCRO!"
    ],
-   "linha": "Combo 30 Anos · paguei R$ 240",
+   "linha": "1 pack do Combo 30 Anos · R$ 40",
    "cor_final": "#2b2d42",
    "dur": 3.2
+  },
+  "placar": {
+   "pago": 40,
+   "desde": [
+    "E18_134311",
+    4.0
+   ]
   }
  },
  "hit_buzzwole": {
@@ -312,7 +350,8 @@
     "t": 18.5,
     "nome": "BUZZWOLE GX",
     "tipo": "TIPO LUTADOR",
-    "cor": "#c25a1c"
+    "cor": "#c25a1c",
+    "valor": 41.44
    }
   ],
   "corrige": {
@@ -327,9 +366,16 @@
     "BUZZWOLE",
     "GX!"
    ],
-   "linha": "Combo 30 Anos · paguei R$ 240",
+   "linha": "1 pack do Combo 30 Anos · R$ 40",
    "cor_final": "#c25a1c",
    "dur": 3.2
+  },
+  "placar": {
+   "pago": 40,
+   "desde": [
+    "E19_134425",
+    2.8
+   ]
   }
  }
 }
