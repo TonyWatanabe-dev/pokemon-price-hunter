@@ -1,0 +1,249 @@
+{
+  "semana": "Slideshows TT/YT dos carrosséis + temáticos (31/10 a 13/11)",
+  "pasta": "assets/social/agenda/videos",
+  "itens": [
+    {
+      "id": "ss-halloween-tt",
+      "quando": "2026-10-31T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_halloween.mp4",
+      "capaMs": 4500,
+      "legenda": "6 cartas pra assombrar o binder neste Halloween 🎃 Qual delas vai pro seu?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #halloween"
+    },
+    {
+      "id": "ss-halloween-yt",
+      "quando": "2026-10-31T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_halloween.mp4",
+      "legenda": "6 cartas pra assombrar o binder neste Halloween 🎃 Qual delas vai pro seu?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #halloween",
+      "titulo": "6 cartas pra assombrar o binder neste Halloween",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-yuka-tt",
+      "quando": "2026-11-02T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_yuka.mp4",
+      "capaMs": 4500,
+      "legenda": "Yuka Morii não desenha: ela esculpe os Pokémon em argila. Você já tem alguma carta dela?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador"
+    },
+    {
+      "id": "ss-yuka-yt",
+      "quando": "2026-11-02T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_yuka.mp4",
+      "legenda": "Yuka Morii não desenha: ela esculpe os Pokémon em argila. Você já tem alguma carta dela?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador",
+      "titulo": "Olha o traço: Yuka Morii, a artista das esculturas",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-delta3-tt",
+      "quando": "2026-11-03T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_delta3.mp4",
+      "capaMs": 4500,
+      "legenda": "Faltam 3 dias para Reinado Delta chegar ao Brasil (6/11). O que você quer puxar?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta"
+    },
+    {
+      "id": "ss-delta3-yt",
+      "quando": "2026-11-03T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_delta3.mp4",
+      "legenda": "Faltam 3 dias para Reinado Delta chegar ao Brasil (6/11). O que você quer puxar?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta",
+      "titulo": "Faltam 3 dias para Reinado Delta",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-delta2-tt",
+      "quando": "2026-11-04T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_delta2.mp4",
+      "capaMs": 4500,
+      "legenda": "Faltam 2 dias para Reinado Delta. Já sabe o que vai comprar? Não paga qualquer preço no lançamento.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta"
+    },
+    {
+      "id": "ss-delta2-yt",
+      "quando": "2026-11-04T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_delta2.mp4",
+      "legenda": "Faltam 2 dias para Reinado Delta. Já sabe o que vai comprar? Não paga qualquer preço no lançamento.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta",
+      "titulo": "Faltam 2 dias para Reinado Delta",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-delta1-tt",
+      "quando": "2026-11-05T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_delta1.mp4",
+      "capaMs": 4500,
+      "legenda": "É amanhã: Reinado Delta chega em 6/11. Compara o preço antes de comprar.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta"
+    },
+    {
+      "id": "ss-delta1-yt",
+      "quando": "2026-11-05T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_delta1.mp4",
+      "legenda": "É amanhã: Reinado Delta chega em 6/11. Compara o preço antes de comprar.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta",
+      "titulo": "Reinado Delta é amanhã!",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-quiz-tt",
+      "quando": "2026-11-09T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_quiz.mp4",
+      "capaMs": 4500,
+      "legenda": "Quiz: adivinha o artista pelo traço. Comenta quantas você acertou!\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador"
+    },
+    {
+      "id": "ss-quiz-yt",
+      "quando": "2026-11-09T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_quiz.mp4",
+      "legenda": "Quiz: adivinha o artista pelo traço. Comenta quantas você acertou!\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador",
+      "titulo": "Quiz: quem desenhou essa carta?",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-chase30-tt",
+      "quando": "2026-11-11T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_chase30.mp4",
+      "capaMs": 4500,
+      "legenda": "As 5 chase da Celebração de 30 Anos. Quantas você já puxou?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #pokemon30anos"
+    },
+    {
+      "id": "ss-chase30-yt",
+      "quando": "2026-11-11T12:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_chase30.mp4",
+      "legenda": "As 5 chase da Celebração de 30 Anos. Quantas você já puxou?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #pokemon30anos",
+      "titulo": "Top 5 chase da Celebração de 30 Anos",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-golpe-tt",
+      "quando": "2026-11-12T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_golpe.mp4",
+      "capaMs": 4500,
+      "legenda": "Alerta de golpe: 5 sinais de que a oferta de Pokémon TCG é furada. Compartilha com quem coleciona.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador"
+    },
+    {
+      "id": "ss-golpe-yt",
+      "quando": "2026-11-12T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_golpe.mp4",
+      "legenda": "Alerta de golpe: 5 sinais de que a oferta de Pokémon TCG é furada. Compartilha com quem coleciona.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador",
+      "titulo": "Alerta de golpe em Pokémon TCG",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    },
+    {
+      "id": "ss-bf-tt",
+      "quando": "2026-11-13T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_bf.mp4",
+      "capaMs": 4500,
+      "legenda": "Esquenta Black Friday: como não cair em promoção falsa de Pokémon TCG.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #blackfriday"
+    },
+    {
+      "id": "ss-bf-yt",
+      "quando": "2026-11-13T19:00",
+      "tipo": "video",
+      "plataformas": [
+        "youtube"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/SS_bf.mp4",
+      "legenda": "Esquenta Black Friday: como não cair em promoção falsa de Pokémon TCG.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #blackfriday",
+      "titulo": "Esquenta Black Friday Pokémon TCG",
+      "tags": [
+        "pokemon tcg",
+        "pokemon tcg brasil",
+        "pokemon"
+      ]
+    }
+  ]
+}
