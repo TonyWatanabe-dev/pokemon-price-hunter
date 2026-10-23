@@ -232,9 +232,9 @@ def processa(nome, cfg):
         c.alpha_composite(lg, (W - 60 - lw, 1640))
         if packs:
             k = max([j for j, p in enumerate(packs) if p <= tt], default=None)
-            if k is not None: mf.counter_badge(k + 1, len(packs), tt - packs[k], canvas=c)
+            if k is not None and not any(0 <= tt - th < 3.0 for th, _ in hits): mf.counter_badge(k + 1, len(packs), tt - packs[k], canvas=c)
         if tt < tg: mf.hook(cfg['gancho'], cfg['cor'], tt, dur=tg, canvas=c)
-        if t_pre is not None: mf.price_slam(pre['pago'], pre['outras'], tt - t_pre, dur=pre.get('dur', 5.0), canvas=c)
+        if t_pre is not None: mf.price_slam(pre['pago'], pre['outras'], tt - t_pre, dur=pre.get('dur', 5.0), cy=pre.get('cy', 1120), canvas=c)
         for th, h in hits: mf.hit_reveal(h['nome'], h['tipo'], h['cor'], tt - th, dur=h.get('dur', 2.8), canvas=c)
         for tb, b in bricks: mf.brick(gq, tt - tb, dur=b.get('dur', 2.2), canvas=c)
         for tw in whips: mf.transition_whip(tt - (tw - 0.18), canvas=c)
