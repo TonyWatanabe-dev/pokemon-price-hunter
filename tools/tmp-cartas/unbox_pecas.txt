@@ -1,1 +1,1 @@
-combo30,hit_pikachu,hit_umbreon,hit_buzzwole
+hit_pikachu,hit_umbreon,hit_buzzwole

@@ -261,7 +261,7 @@ def processa(nome, cfg):
             if k is not None: mf.counter_badge(k + 1, len(packs), tt - packs[k], canvas=c)
         if tt < tg: mf.hook(cfg['gancho'], cfg['cor'], tt, dur=tg, canvas=c)
         if t_pre is not None: mf.price_slam(pre['pago'], pre['outras'], tt - t_pre, dur=pre.get('dur', 5.0), cy=pre.get('cy', 1120), canvas=c)
-        if pl is not None and tt >= t_pl:
+        if pl is not None and tt >= max(t_pl, tg if cfg.get('placar_apos_gancho', True) else 0):
             tot = -pl['pago']; fl = 0.0
             for th, h in hits:
                 if tt >= th:
