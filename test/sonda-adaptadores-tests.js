@@ -7,6 +7,7 @@ assert.deepEqual(parseLojas('lifegeek:vtex, metacardscombr:shopify'), [{ id: 'li
 assert.deepEqual(parseLojas('x:jsonld,../etc:vtex,ok:mercadolivre'), [], 'só vtex/shopify/woocommerce e id simples');
 assert.equal(parseLojas('lojaw:woocommerce').length, 1);
 assert.equal(parseLojas('kalungacombr:busca').length, 1, 'prova de conceito do leitor pela busca');
+assert.equal(parseLojas('fngamescombr:tray').length, 1, 'prova de conceito do leitor Tray');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 27 } }), 'passa');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 20 } }), 'pior');
 assert.equal(veredito({ atual: { casados: null }, sonda: { validos: 0, casados: 0 } }), 'sem_anuncios');

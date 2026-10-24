@@ -18,7 +18,8 @@ const args = process.argv.slice(2);
 const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 const dir = args.find((a, i) => !a.startsWith('--') && !['--lojas', '--json'].includes(args[i - 1])) || 'data';
 // 'busca': prova de conceito do leitor pela página de busca da loja (src/adapters/busca.js), fora do robô diário.
-const PLAT = new Set(['vtex', 'shopify', 'woocommerce', 'jsonld', 'busca']);
+// 'tray': prova de conceito do leitor Tray (src/adapters/tray-poc.js), também fora do robô.
+const PLAT = new Set(['vtex', 'shopify', 'woocommerce', 'jsonld', 'busca', 'tray']);
 export const parseLojas = (s) => String(s || '').split(',').map((x) => x.trim()).filter(Boolean).map((x) => { const [id, p] = x.split(':'); return { id, plataforma: p }; })
   .filter((x) => /^[a-z0-9]{2,60}$/.test(x.id) && PLAT.has(x.plataforma));
 
@@ -126,6 +127,10 @@ async function main() {
         const buscaTpl = LOJAS_CFG.buscaPorHost[hostOf(url)] || LOJAS_CFG.busca[src.platformHint] || LOJAS_CFG.busca[LOJAS_CFG.plataformaPorHost[hostOf(url)]]; if (!buscaTpl) throw new Error('loja sem modelo de busca confirmado');
         raw = await search({ ...store, buscaTpl }, { termos: ['pokemon', 'pokemon tcg', 'booster pokemon'] }); sonda.busca = raw.diag; sonda.falhas = raw.failed.length; if (!raw.length && raw.diag.urls?.length) sonda.paginas = await diagnosticoPaginas(raw.diag.urls.slice(0, 3));
         sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.pix ?? l.price.base} · ${l.stock} · sku ${l.sku ?? '?'}`);
+      } else if (plataforma === 'tray') {
+        const { search } = await import('../src/adapters/tray-poc.js');
+        raw = await search(store, { max: 20 }); sonda.tray = { paginas: raw.paginas, motivos: raw.motivos, falhas: raw.failed.length };
+        sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.base} · ${l.stock} · id ${l.sku ?? '?'}`);
       } else raw = await adapters[plataforma].search(store, catalog);
       sonda.anuncios = raw.length;
       const ok = raw.filter((l) => validateListing(l, store, { now: new Date() }).ok);
@@ -135,7 +140,7 @@ async function main() {
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}${sonda.paginasOfertas ? ' · páginas das ofertas atuais ' + JSON.stringify(sonda.paginasOfertas) : ''}${sonda.resumoOfertas ? ' · resumo das ofertas atuais ' + JSON.stringify(sonda.resumoOfertas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}${sonda.paginasOfertas ? ' · páginas das ofertas atuais ' + JSON.stringify(sonda.paginasOfertas) : ''}${sonda.resumoOfertas ? ' · resumo das ofertas atuais ' + JSON.stringify(sonda.resumoOfertas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.tray ? ` · tray ${JSON.stringify(sonda.tray)} · lidos: ${sonda.lidos.join(' | ')}` : ''}${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
