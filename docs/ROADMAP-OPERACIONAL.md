@@ -70,6 +70,12 @@ Nenhum produto é recuperado nem publicado, e o histórico de preço fica intact
 
 **Triagem:** a busca da Livraria Colecionador (Magento) não trouxe nenhum produto Pokémon (sonda 40126604916, 3 termos, 0 links). A loja passa de inconclusiva a **sem catálogo relevante (pela busca)**.
 
+**Primeira rodada real com a #897 e a #898** (Hunter 40127830952, SHA 722f5bf, das 20:00 às 20:11 UTC):
+- **Resultado:** success. Sincronização com o banco ok, leitor oficial ok, motor ok.
+- **#897:** ainda sem nenhuma remoção (`pagesGone` = 0, nenhum contador). As páginas da BQD só são relidas no ciclo de 24 h.
+- **#898:** a loja desse anúncio ainda não foi relida.
+- **Ofertas com estoque:** caíram de 1.231 para 877 por causa do **Mercado Livre**, que ficou BLOCKED com HTTP 429 (limite de requisições em api.mercadolibre.com). As 357 ofertas dele ficaram guardadas como não confirmadas. Isso não tem relação com a #897 e a #898, porque o Mercado Livre usa um leitor próprio, pela API. É o terceiro bloqueio do dia (18:00, 18:15 e 20:00); o robô respeita o Retry-After. Acompanhar.
+
 **Burn-in #271 — quadro oficial** (comentários do bot; só dia encerrado conta):
 
 | Dia | Veredito | Falha |
