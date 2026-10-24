@@ -41,6 +41,39 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Cobertura, matching e K5 — 24/10/2026, noite, 2ª rodada (America/Sao_Paulo)
+
+**P0:**
+- **#271:** 0/7 dias encerrados. Os dias 22 e 23 fecharam vermelhos pela sincronização, já corrigida na #856. O dia 24 está **parcial verde** (comentário do bot às 16:52 UTC: Hunter 61/61 concluídas e 98,4% de sucesso; Vigia 59/59; Dispatcher 0 falha; sincronização 1,0; motor parado 0). O 7/7 só pode sair no fechamento de 30/10.
+- **#231:** Dispatcher ativo e com sucesso em todas as rodadas do dia. O worker está sem tarefas porque a fila está vazia. Os checks obrigatórios da `main` são `test`, `regression`, `golden` e `qa-review`; a revisão independente bloqueou e depois aprovou a #884.
+- **Limite da verificação:** daqui não dá para ler as variáveis do Actions (bloqueadas pelo proxy). A ausência de teto de orçamento no Dispatcher não foi confirmada por elas; o código só aplica teto quando `DISPATCHER_ORCAMENTO_USD` está definida.
+
+| Item | Resultado | PR | Estado |
+|---|---|---|---|
+| Diagnóstico da sonda | Amostra de títulos inválidos e não casados por loja; diagnóstico das 3 primeiras páginas de produto | #884 (1ed4cdc) | integrado (só ferramenta) |
+| Matching "Batalha de Liga" | Linha de baralho de 60 cartas. 4 dos 3.072 títulos saem de `colecao_ex` (Box Pokémon ex, outro produto) para `deck` do mesmo Pokémon; a Mais Coimbra passa a casar. IDs preservados | #885 (d528ca8) | integrado; vale a partir da próxima rodada do robô (validar em runtime) |
+| Triagem das lojas lidas sem produto | 29 lojas (eram 31) classificadas com evidência de sonda; relatório em `docs/triagem-lojas-sem-produto-2026-10-24.md`. Nenhuma pausada | — | documentado |
+| Kalunga | Prova de conceito do leitor pela busca, **fora do robô**. Robots permite; 3 buscas acham 20 produtos Pokémon. A página de produto não tem JSON-LD nem meta de preço, e o estoque não aparece. **Não integrar** (dados não verificáveis) | #887 (94892e0) | integrado só na sonda; fora do robô |
+| K5 | Deck box não casa com lacrado (0 títulos atuais mudam); 17 acessórios testados contra o casamento; auditoria dos 15 candidatos com o que falta confirmar; seleção por perfil (toploader em "cartas especiais"); sem produto publicado | #886 (fec34f6) | integrado; kit oculto |
+| K4 | Sem mudança: nenhum problema reproduzido nesta rodada | — | publicado (oculto) |
+
+**Testes:** cada PR rodou `npm test` local (304 a 305 arquivos, ok) e os 4 checks obrigatórios (`test`, `regression`, `golden`, `qa-review`) verdes antes do merge. A #884 foi bloqueada uma vez pela revisão independente (escopo não declarado e artefato de teste); corrigida, passou.
+
+**Achados que pedem decisão do dono (R3/config):**
+- apelido em inglês "pitch black" para Escuridão Absoluta (`me05`);
+- coleção Pokémon GO no catálogo;
+- marcar a Loja Pokémon Super (espelho da Super TCG) como duplicata;
+- lista curada de acessórios (decisões 1 a 3).
+
+**Próximo:**
+1. BQD: 29 ofertas reais presas como não confirmadas; as páginas trazem só vitrine.
+2. Prova de conceito de leitor Tray fora do robô (~100 páginas: Virtual Gift, FN Games, Universal Geek).
+3. TCG Pro: 20 páginas sem dados estruturados.
+
+A K6 continua bloqueada até o burn-in fechar 7/7.
+
+---
+
 ## Qualidade dos dados — 24/10/2026, noite (America/Sao_Paulo)
 
 | Item | Resultado | PR | Estado |
