@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 process.env.HUNTER_DOMAIN_DELAY_MS = '0';
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'copag-check-'));
-process.env.HUNTER_CONFIG_DIR = tmp;
+process.env.HUNTER_CONFIG_DIR = tmp; process.env.HUNTER_DATA_DIR = path.join(tmp, 'data'); fs.mkdirSync(process.env.HUNTER_DATA_DIR);
 const http = await import('../src/http.js');
 const { copagCheck } = await import('../src/copag-check.js');
 
@@ -28,11 +28,12 @@ const copag = {
   cat: { msrp: 199.9, source_url: U('cat'), confidence: 'CATALOGO_COPAG' },
   semfonte: { msrp: 100, confidence: 'OFICIAL' },
 };
-fs.writeFileSync(file, JSON.stringify({ copag }));
+const original = JSON.stringify({ copag }); fs.writeFileSync(file, original);
 const logs = [];
 const report = await copagCheck({ log: (l) => logs.push(l) });
 const by = Object.fromEntries(report.map((r) => [r.id, r]));
-const saved = JSON.parse(fs.readFileSync(file, 'utf8')).copag;
+const checks = JSON.parse(fs.readFileSync(path.join(tmp, 'data/copag-check.json'), 'utf8'));
+const saved = Object.fromEntries(Object.keys(copag).map((k) => [k, { ...copag[k], last_check: checks[k] }]));
 
 await t('1. página igual ao cadastro: OK e last_check com matches', () => {
   assert.deepEqual([by.ok.status, by.ok.msrp, by.ok.pagePrice], ['OK', 399.99, 399.99]);
@@ -64,8 +65,10 @@ await t('7. log: linha por status (sem NÃO CONFIRMADO) e contagem final', () =>
   assert.ok(!logs.some((l) => l.startsWith('cat:')));
   assert.equal(logs.at(-1), '2 produtos sem preço Copag confirmado.');
 });
-await t('8. relatório cobre todos os produtos e catalog.json é regravado', () => {
+await t('8. relatório cobre todos os produtos; config/catalog.json não muda (a main é protegida), resultado em data/copag-check.json', () => {
   assert.equal(report.length, 7); assert.equal(saved.man.manual, true);
+  assert.equal(fs.readFileSync(file, 'utf8'), original, 'catalog.json intacto');
+  assert.equal(checks.ok.source_url, U('ok'));
 });
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log(`copag-check-tests: ${n} ok`);
