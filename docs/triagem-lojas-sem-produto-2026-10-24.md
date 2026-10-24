@@ -24,9 +24,9 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
 | Loja | Leitor | Classificação | Evidência | Impacto | Próxima ação |
 |---|---|---|---|---|---|
 | bqd.com.br | JSON-LD (Nuvemshop) | **sem catálogo relevante (produtos removidos)** | atualizado na 2ª rodada: as 29 páginas das ofertas abrem a página de erro da loja ("Erro - 404", com HTTP 200); a última leitura válida das 29 foi às 13h UTC de 24/10, **esgotadas**; o robots.txt veta a busca da loja. Detalhe na seção BQD | 0 hoje (29 ofertas preservadas como não confirmadas) | nenhuma; reavaliar se a loja republicar no mapa do site |
-| virtualgift.com.br | JSON-LD (Tray) | falha de coleta | prova Tray (sonda 40119481265): 20 páginas, 5 lidas; preço do dataLayer = GA4 (ex.: 44,99), sem JSON-LD; estoque só pelo dataLayer, que não é confiável (ver Universal Geek); 15 páginas com nome que não bate; produtos de 2020 (EE2, Galar) | baixo | nenhuma até haver fonte de estoque verificável |
-| fngames.com.br | JSON-LD (Tray) | falha de coleta | prova Tray: 20 páginas; o JSON-LD traz sempre 97% do `priceSell` do dataLayer (58,10 × 59,90; 67,80 × 69,90; provável Pix com 3% de desconto) e não há GA4. Preço sem confirmação independente; a página não escreve o preço | 26 páginas | conferência manual de 2 ou 3 produtos (preço exibido e no Pix) antes de qualquer integração |
-| universalgeek.com.br | JSON-LD (Tray) | falha de coleta | prova Tray: 12 páginas, 11 lidas (9 casam); preço do dataLayer = GA4 (ex.: 159,90; o JSON-LD traz 0,00); **estoque contraditório**: dataLayer "YES" × JSON-LD esgotado nas 8 amostradas, e a página diz esgotado | 0 com estoque hoje | nenhuma; os produtos estão esgotados |
+| virtualgift.com.br | JSON-LD (Tray) | falha de coleta | prova Tray final (#895, sonda 40120795280): 20 páginas, 0 lidas. Preço normal só no dataLayer (ex.: 44,99, id 4121); o GA4 é **cópia** do mesmo script e não confirma; não há JSON-LD. Estoque só pelo dataLayer, que não é confiável. 15 de 20 páginas com nome que não bate. Produtos de 2020 (EE2) | baixo | **preço e estoque não verificáveis**: prova de conceito mantida isolada |
+| fngames.com.br | JSON-LD (Tray) | falha de coleta | prova Tray final: 20 páginas, 0 lidas. `priceSell` 69,90 × JSON-LD 67,80 (Blister Triplo Fogo Fantasmagórico, id 2621). O JSON-LD fica 3% abaixo nas 20 páginas e é tratado só como "Pix provável"; sem GA4. Estoque: dataLayer "YES" e JSON-LD InStock concordam | 26 páginas | **preço não verificável**: só uma conferência manual do preço exibido liberaria |
+| universalgeek.com.br | JSON-LD (Tray) | falha de coleta | prova Tray final: 12 páginas, 0 lidas. `priceSell` 14,90 (Booster Fogo Fantasmagórico, id 3095); GA4 igual (cópia); JSON-LD 0,00. Estoque: dataLayer "YES" × JSON-LD **OutOfStock** | 0 com estoque | **preço e estoque não verificáveis** |
 | tcgpro.com.br | JSON-LD | inconclusiva | 20 páginas atuais (ME04, ME05, Celebração 30 anos) **sem nenhum preço**: nem texto, nem JSON-LD, nem meta, nem dataLayer (sonda 40117461673). O título da página diz "TCGPro - Distribui…" (provável distribuidora, venda a lojistas). A API WooCommerce responde 403 (não contornada) | desconhecido | confirmar se há venda ao consumidor; sem preço público, não entra |
 | parlendabrinquedos.com.br | JSON-LD | falha de coleta | 1 página (Box Ferramentas de Treinador Fezandipiti ex); JSON-LD 287,12 × 296,00 em outro script (mesmo padrão de Pix); não é Tray; preço não escrito na página | 1 | nenhuma (impacto mínimo) |
 | fatimacrianca.com.br | JSON-LD | inconclusiva | o mapa declarado é `sitemap_index.xml.gz` e a leitura volta com 0 links: pode ser mapa vazio ou mapa comprimido não lido (não verificado) | desconhecido | conferir a leitura de mapa `.gz` |
@@ -110,6 +110,25 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
   - #889: apelido "pitch black" na `me05`;
   - #890: a Loja Pokémon Super ficou registrada como espelho da Super TCG.
 - **Pokémon GO:** verificado e não criado. O anúncio não diz a equipe nem o idioma.
+
+## Prova de conceito Tray — fechamento (#895, 24/10/2026, 18:28–18:29 UTC)
+**Regra do dono:** duas cópias do mesmo dado não são duas fontes.
+
+| Valor | Origem técnica | Conta como fonte independente? |
+|---|---|---|
+| `priceSell` / `price` | dataLayer (script de análise da Tray) | é a fonte primária do preço normal |
+| `view_item` value / `items[].price` | GA4 (mesmo script; sempre o mesmo valor do dataLayer) | **não**: é cópia |
+| `offers.price` | JSON-LD (marcação de busca, calculada à parte) | sim, mas na Tray traz o preço do **Pix** (3% a 5% abaixo) ou **0,00** quando o produto está esgotado |
+| `availability` | dataLayer | não afirma estoque sozinho: diz "YES" em produto esgotado |
+
+**Resultado individual:**
+- FN Games: preço não verificável.
+- Universal Geek: preço e estoque não verificáveis.
+- Virtual Gift: preço e estoque não verificáveis.
+- Parlenda, Happy Nerd e Game of Boards: inconclusivas.
+- **Nenhuma** loja ficou validada ou validada parcialmente.
+
+**Decisão: C, manter isolada.** O leitor não está registrado no robô e nenhuma oferta destas lojas entra em produção.
 
 ## Prioridade sugerida (atualizada na 2ª rodada)
 1. **BQD:** concluída. Os produtos foram removidos e as ofertas continuam não confirmadas. A melhoria proposta é tratar página de erro com HTTP 200 como "página não serve" (PR própria, muda o robô).

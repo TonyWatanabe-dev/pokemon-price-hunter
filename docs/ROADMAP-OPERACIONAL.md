@@ -41,6 +41,37 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Fechamento: fontes independentes na Tray e Lendas Implacáveis — 24/10/2026, noite, 4ª rodada (America/Sao_Paulo)
+
+**P0:**
+- **#271:** 0/7 dias encerrados. O dia 24 continua **parcial verde** (último relatório às 18:22 UTC, sem falhas). O 7/7 só pode sair no fechamento de 30/10.
+- **#231:** o Dispatcher roda a cada ciclo sem falha. A fila `tarefa:aprovada` está vazia: o worker está parado por falta de tarefa, não por falha. A revisão independente (`qa-review`) aprovou as duas PRs desta rodada.
+- **Vigia #893** (aberto às 18:22 UTC, "degradado"):
+  - **Causa vista nos dados:** o Mercado Livre ficou **bloqueado** nas rodadas das 18:00 e das 18:15 (`ops.runs.watched`; leitor oficial com 664 notas em vez de ~1.010). Voltou na das 18:30, com 362 anúncios e 1.013 notas.
+  - **Defeito à parte:** a issue saiu "(sem detalhe)", sem o código do motivo. O `parseResumo` lê o código corretamente quando ele vem (testado localmente), então o motivo se perdeu antes, no resumo da checagem. Os logs do Actions não abrem daqui. **Pendência.**
+  - **Burn-in não afetado:** as rodadas do robô e do Vigia terminaram com sucesso.
+
+| PR | Mudança | Testes locais | CI (4 checks + revisão) | Integrada | Publicada | Validada em runtime |
+|---|---|---|---|---|---|---|
+| #894 (6e103e2) | "Lendas Implacáveis" não vira nome de Pokémon. Em 3.262 títulos mudam 4, todos saindo de `avulsos-colecao_ex-lendas` (Zacian e Koraidon juntos). Com o catálogo automático do robô, vão para `sv9-colecao_ex-zacian` e `sv10-colecao_ex-koraidon`, que já existiam. IDs preservados | `npm test` com 311 arquivos, EXIT 0; testes de matching vizinhos ok | test, regression, golden e qa-review verdes | sim | deploy de produção 6e103e2: success; o robô roda a `main` desde a rodada seguinte ao merge | **pendente**: aguarda a próxima leitura das lojas desses 4 anúncios |
+| #895 (b867750) | Prova Tray: o GA4 deixa de ser fonte independente (cópia do dataLayer); o JSON-LD menor fica só como "Pix provável"; detalhe por página na sonda | `npm test` com 310 arquivos, EXIT 0; o teste cobre "duas fontes da mesma origem não confirmam" | test, regression, golden, qa-review e sonda verdes | sim (só ferramenta) | não se aplica: fora do robô | não se aplica |
+
+**Prova Tray, decisão final: manter isolada** (sonda 40120795280, 6 lojas). Nenhuma loja tem preço normal confirmado por fonte de fato independente:
+- **GA4:** é cópia do dataLayer.
+- **JSON-LD:** traz o preço do Pix ou zero.
+- **Estoque:** o dataLayer diz "YES" em produto esgotado.
+
+Classificação individual: FN Games, preço não verificável; Universal Geek e Virtual Gift, preço e estoque não verificáveis; Parlenda, Happy Nerd e Game of Boards, inconclusivas. Detalhe em `docs/triagem-lojas-sem-produto-2026-10-24.md`.
+
+**Próximo, desbloqueado:**
+1. Validar a #894 em runtime quando as lojas forem relidas.
+2. Tratar página de erro com HTTP 200 como "página não serve" (BQD). Muda o robô, então pede PR própria com teste.
+3. Investigar por que o resumo do Vigia perdeu o motivo da #893.
+
+A K6 continua oculta até o burn-in fechar 7/7.
+
+---
+
 ## BQD, prova de conceito Tray e catálogo — 24/10/2026, noite, 3ª rodada (America/Sao_Paulo)
 
 **P0:**
