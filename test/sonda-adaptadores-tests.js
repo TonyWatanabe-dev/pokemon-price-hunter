@@ -64,3 +64,13 @@ console.log('sonda-adaptadores-tests: ok');
   assert.doesNotMatch(JSON.stringify(marcadores('<script>var p = "R$ 9,99"</script>').precos), /9,99/, 'preço dentro de script não conta como escrito');
   console.log('sonda-adaptadores-tests (marcadores): ok');
 }
+
+// Resumo das páginas das ofertas atuais (BQD: página de erro com HTTP 200) e trecho do dataLayer (Tray).
+{
+  const { resumoOfertas, marcadores } = await import('../tools/sonda-adaptadores.mjs');
+  assert.deepEqual(resumoOfertas([{ publica: true }, { publica: false, m: { h1: 'Erro - 404', naoEncontrado: true } }, { erro: '503' }, { publica: false, m: { h1: 'Booster', naoEncontrado: false } }]),
+    { paginas: 4, publica: 1, erro404: 1, falha: 1, semDados: 1 });
+  assert.match(marcadores('<script>dataLayer = [{"idProduct":"9","price":"67.80"}];</script>').dataLayerTrecho, /"price":"67\.80"/);
+  assert.equal(marcadores('<p>sem nada</p>').dataLayerTrecho, null);
+  console.log('sonda-adaptadores-tests (resumo e dataLayer): ok');
+}
