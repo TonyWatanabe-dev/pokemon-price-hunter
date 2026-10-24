@@ -111,7 +111,8 @@ export function detectBoosters(t) {
   return { count: null, inferred: false };
 }
 
-const VARIANT_STOP = new Set(['box', 'colecao', 'pokemon', 'de', 'da', 'do', 'com', 'e', 'tcg', 'mega', 'cartas', 'copag', 'booster', 'premium', 'especial', 'estampas', 'ilustradas', 'sortidas', 'sortidos', 'sortida', 'sortido', 'modelos', 'variados', 'brilhante', 'brilhantes', 'jumbo']);
+// 'lendas' (24/10/2026): "Coleção Ex Lendas Azuis" sem o Pokémon virava avulsos-colecao_ex-lendas (linha, não Pokémon).
+const VARIANT_STOP = new Set(['lendas', 'box', 'colecao', 'pokemon', 'de', 'da', 'do', 'com', 'e', 'tcg', 'mega', 'cartas', 'copag', 'booster', 'premium', 'especial', 'estampas', 'ilustradas', 'sortidas', 'sortidos', 'sortida', 'sortido', 'modelos', 'variados', 'brilhante', 'brilhantes', 'jumbo']);
 // Baralho/Deck de Batalha (24/10/2026): "Baralho de Batalha ex Melmetal" pegava "batalha" como Pokémon (padrão "<nome> ex")
 // e juntava baralhos diferentes num produto só (…-deck-batalha). Só para esses títulos: o nome vem depois de "ex" (com ou sem
 // hífen) ou no fim depois de " - "; kit com dois baralhos ("Melmetal e
