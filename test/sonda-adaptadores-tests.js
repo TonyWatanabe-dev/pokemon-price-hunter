@@ -7,6 +7,7 @@ assert.deepEqual(parseLojas('lifegeek:vtex, metacardscombr:shopify'), [{ id: 'li
 assert.deepEqual(parseLojas('x:jsonld,../etc:vtex,ok:mercadolivre'), [], 'só vtex/shopify/woocommerce e id simples');
 assert.equal(parseLojas('lojaw:woocommerce').length, 1);
 assert.equal(parseLojas('kalungacombr:busca').length, 1, 'prova de conceito do leitor pela busca');
+assert.equal(parseLojas('fngamescombr:tray').length, 1, 'prova de conceito do leitor Tray');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 27 } }), 'passa');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 20 } }), 'pior');
 assert.equal(veredito({ atual: { casados: null }, sonda: { validos: 0, casados: 0 } }), 'sem_anuncios');
@@ -51,4 +52,26 @@ console.log('sonda-adaptadores-tests: ok');
   assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => ({ title: 'x' })).publica, true);
   assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => null).ld, 0);
   console.log('sonda-adaptadores-tests (página): ok');
+}
+
+// Marcadores de página: plataforma (Nuvemshop/Tray), título, h1, microdata, esgotado/não encontrado e trechos de preço.
+{
+  const { marcadores } = await import('../tools/sonda-adaptadores.mjs');
+  const m = marcadores('<html><head><title>Booster X | Loja</title><script>LS.product = {id: 1}; LS.variants = [];</script></head><body><h1>Booster <b>X</b></h1><img src="/loja/arquivos/1/a.png"><span itemprop="price" content="10">R$ 24,90</span><p>Produto esgotado</p></body></html>');
+  assert.equal(m.tituloTag, 'Booster X | Loja'); assert.equal(m.h1, 'Booster X');
+  assert.equal(m.nuvemshop, true); assert.equal(m.variantes, true); assert.equal(m.tray, true); assert.equal(m.microdata, 1);
+  assert.equal(m.esgotado, true); assert.equal(m.naoEncontrado, false);
+  assert.equal(m.precos.length, 1); assert.match(m.precos[0], /R\$ 24,90/);
+  assert.doesNotMatch(JSON.stringify(marcadores('<script>var p = "R$ 9,99"</script>').precos), /9,99/, 'preço dentro de script não conta como escrito');
+  console.log('sonda-adaptadores-tests (marcadores): ok');
+}
+
+// Resumo das páginas das ofertas atuais (BQD: página de erro com HTTP 200) e trecho do dataLayer (Tray).
+{
+  const { resumoOfertas, marcadores } = await import('../tools/sonda-adaptadores.mjs');
+  assert.deepEqual(resumoOfertas([{ publica: true }, { publica: false, m: { h1: 'Erro - 404', naoEncontrado: true } }, { erro: '503' }, { publica: false, m: { h1: 'Booster', naoEncontrado: false } }]),
+    { paginas: 4, publica: 1, erro404: 1, falha: 1, semDados: 1 });
+  assert.match(marcadores('<script>dataLayer = [{"idProduct":"9","price":"67.80"}];</script>').dataLayerTrecho, /"price":"67\.80"/);
+  assert.equal(marcadores('<p>sem nada</p>').dataLayerTrecho, null);
+  console.log('sonda-adaptadores-tests (resumo e dataLayer): ok');
 }

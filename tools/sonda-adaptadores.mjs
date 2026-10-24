@@ -18,7 +18,8 @@ const args = process.argv.slice(2);
 const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 const dir = args.find((a, i) => !a.startsWith('--') && !['--lojas', '--json'].includes(args[i - 1])) || 'data';
 // 'busca': prova de conceito do leitor pela página de busca da loja (src/adapters/busca.js), fora do robô diário.
-const PLAT = new Set(['vtex', 'shopify', 'woocommerce', 'jsonld', 'busca']);
+// 'tray': prova de conceito do leitor Tray (src/adapters/tray-poc.js), também fora do robô.
+const PLAT = new Set(['vtex', 'shopify', 'woocommerce', 'jsonld', 'busca', 'tray']);
 export const parseLojas = (s) => String(s || '').split(',').map((x) => x.trim()).filter(Boolean).map((x) => { const [id, p] = x.split(':'); return { id, plataforma: p }; })
   .filter((x) => /^[a-z0-9]{2,60}$/.test(x.id) && PLAT.has(x.plataforma));
 
@@ -56,10 +57,33 @@ export function resumoPagina(html, url, parse) {
   const escrito = preco != null && Number.isFinite(Number(preco)) ? html.includes(Number(preco).toFixed(2).replace('.', ',')) : null;
   return { caminho, ld, og, publica: !!parse(html, url), ...(prod ? { nome: String(prod.name || '').slice(0, 60), titulo, preco, escrito } : {}) };
 }
+/** Marcadores de plataforma e de estado da página (só leitura, sem guardar a página): explica recusa sem JSON-LD útil. */
+export function marcadores(html) {
+  const h = String(html || ''); const txt = h.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+  const precos = [...txt.matchAll(/R\$\s?[\d.]+,\d{2}/g)].slice(0, 3).map((m) => txt.slice(Math.max(0, m.index - 40), m.index + m[0].length + 25).trim());
+  return {
+    tamanho: h.length,
+    tituloTag: (h.match(/<title\b[^>]*>([^<]*)<\/title>/i)?.[1] || '').replace(/\s+/g, ' ').trim().slice(0, 60),
+    h1: (h.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60),
+    nuvemshop: /LS\.product\s*=/.test(h), variantes: /LS\.variants\s*=/.test(h),
+    tray: /\/loja\/arquivos\/|tray\.com\.br|traycorp/i.test(h), microdata: (h.match(/itemprop=["']price["']/gi) || []).length,
+    dataLayer: /dataLayer/.test(h), esgotado: /esgotad|indispon[ií]vel|avise-?me/i.test(txt), naoEncontrado: /n[aã]o encontrad|p[aá]gina n[aã]o existe|404/i.test(txt),
+    precos,
+    // trecho do dataLayer com preço/produto (Tray põe o preço só no código): 240 caracteres, sem guardar a página
+    dataLayerTrecho: (() => { const i = h.search(/dataLayer[\s\S]{0,400}?(price|preco|valor)/i); return i < 0 ? null : h.slice(i, i + 700).replace(/\s+/g, ' '); })(),
+    viewItem: (() => { const i = h.search(/gtag\(\s*['"]event['"]\s*,\s*['"]view_item['"]/); return i < 0 ? null : h.slice(i, i + 400).replace(/\s+/g, ' '); })(),
+  };
+}
+/** Contagem das páginas diagnosticadas: publicadas, página de erro (404 com HTTP 200 ou h1 de erro), sem dados, falha de rede. */
+export function resumoOfertas(ps) {
+  const r = { paginas: ps.length, publica: 0, erro404: 0, falha: 0, semDados: 0 };
+  for (const p of ps) { if (p.erro) r.falha++; else if (p.publica) r.publica++; else if (p.m?.naoEncontrado || /\b404\b|erro/i.test(p.m?.h1 || '')) r.erro404++; else r.semDados++; }
+  return r;
+}
 async function diagnosticoPaginas(urls) {
   const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); const { parseProductPage } = await import('../src/adapters/jsonld.js');
   const out = [];
-  for (const u of urls) { try { await guard(u); const r = await get(u); out.push(resumoPagina(r.text, r.url || u, parseProductPage)); } catch (e) { out.push({ caminho: u.replace(/^https?:\/\/[^/]+/, '').slice(0, 70), erro: String(e?.status || e?.code || e?.message).slice(0, 40) }); } }
+  for (const u of urls) { try { await guard(u); const r = await get(u); out.push({ ...resumoPagina(r.text, r.url || u, parseProductPage), m: marcadores(r.text) }); } catch (e) { out.push({ caminho: u.replace(/^https?:\/\/[^/]+/, '').slice(0, 70), erro: String(e?.status || e?.code || e?.message).slice(0, 40) }); } }
   return out;
 }
 
@@ -88,7 +112,9 @@ async function main() {
         const mapas = await sitemapsOf(url.replace(/\/$/, '') + '/').catch(() => []); sonda.mapas = mapas.length; const pu = await productUrls(url.replace(/\/$/, ''), 60).catch(() => []); sonda.urlsProduto = pu.length; sonda.paginas = await diagnosticoPaginas(pu.slice(0, 3));
         // páginas das ofertas que a loja já teve (data/offers.json): explica loja que lia produto e passou a ler 0
         const ofertas = (() => { try { const o = JSON.parse(fs.readFileSync(path.join(dir, 'offers.json'), 'utf8')); return (Array.isArray(o) ? o : Object.values(o.offers || o)).filter((x) => x?.storeId === id).map((x) => x.url); } catch { return []; } })();
-        if (ofertas.length) sonda.paginasOfertas = await diagnosticoPaginas([...new Set(ofertas)].slice(0, 3));
+        if (ofertas.length) { const us = [...new Set(ofertas)]; sonda.paginasOfertas = await diagnosticoPaginas(us.slice(0, 3));
+          // resumo de até 30 páginas das ofertas atuais: quantas viraram página de erro, quantas ainda mostram o produto
+          if (us.length > 3) sonda.resumoOfertas = resumoOfertas(await diagnosticoPaginas(us.slice(0, 30))); }
         // diagnóstico do 1º mapa declarado: quantos <loc>, quantos mapas filhos e os nomes de 3 (só leitura, com o guard)
         if (mapas[0]) { try { const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); await guard(mapas[0]);
           const xml = (await get(mapas[0], { accept: 'application/xml' })).text; const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
@@ -97,9 +123,14 @@ async function main() {
       let raw;
       if (plataforma === 'busca') {
         const { LOJAS_CFG, hostOf } = await import('../api/_lib/lojas.mjs'); const { search } = await import('../src/adapters/busca.js');
-        const buscaTpl = LOJAS_CFG.buscaPorHost[hostOf(url)]; if (!buscaTpl) throw new Error('loja sem modelo de busca confirmado');
+        // modelo confirmado por loja; senão, o da plataforma identificada (sources.platformHint, ex.: nuvemshop)
+        const buscaTpl = LOJAS_CFG.buscaPorHost[hostOf(url)] || LOJAS_CFG.busca[src.platformHint] || LOJAS_CFG.busca[LOJAS_CFG.plataformaPorHost[hostOf(url)]]; if (!buscaTpl) throw new Error('loja sem modelo de busca confirmado');
         raw = await search({ ...store, buscaTpl }, { termos: ['pokemon', 'pokemon tcg', 'booster pokemon'] }); sonda.busca = raw.diag; sonda.falhas = raw.failed.length; if (!raw.length && raw.diag.urls?.length) sonda.paginas = await diagnosticoPaginas(raw.diag.urls.slice(0, 3));
         sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.pix ?? l.price.base} · ${l.stock} · sku ${l.sku ?? '?'}`);
+      } else if (plataforma === 'tray') {
+        const { search } = await import('../src/adapters/tray-poc.js');
+        raw = await search(store, { max: 20 }); sonda.tray = { paginas: raw.paginas, motivos: raw.motivos, falhas: raw.failed.length };
+        sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.base} · ${l.stock} · id ${l.sku ?? '?'}${l.fontes ? ' · fontes ' + JSON.stringify(l.fontes) : ''}`);
       } else raw = await adapters[plataforma].search(store, catalog);
       sonda.anuncios = raw.length;
       const ok = raw.filter((l) => validateListing(l, store, { now: new Date() }).ok);
@@ -109,7 +140,7 @@ async function main() {
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}${sonda.paginasOfertas ? ' · páginas das ofertas atuais ' + JSON.stringify(sonda.paginasOfertas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}${sonda.paginasOfertas ? ' · páginas das ofertas atuais ' + JSON.stringify(sonda.paginasOfertas) : ''}${sonda.resumoOfertas ? ' · resumo das ofertas atuais ' + JSON.stringify(sonda.resumoOfertas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.tray ? ` · tray ${JSON.stringify(sonda.tray)} · lidos: ${sonda.lidos.join(' | ')}` : ''}${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
