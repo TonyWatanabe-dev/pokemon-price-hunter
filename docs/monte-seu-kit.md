@@ -31,7 +31,7 @@ O kit é uma **cesta virtual**: lista de ids de produto + quantidade. Toda infor
 | B. Lista curada (recomendada para começar) | `config/kit-acessorios.json`: poucos itens oficiais (Copag/licenciados), cada um com ids/termos de casamento estritos | Controle de qualidade; pouco risco | Cobertura menor; manutenção manual |
 | C. Só link de busca | "Procure sleeves nestas lojas" (padrão de `/lojas`) | Zero risco | Sem preço, sem total |
 
-Proposta: **B agora, A depois** com dados medidos. Acessório nunca entra no ranking de lacrados nem na nota de oportunidade; categoria separada (`accessory.*` em `src/core/taxonomy.js`) para o banco não misturar. Enquanto B não existir, o kit mostra C para acessórios e deixa claro que o preço não está incluído.
+Proposta: **B agora, A depois** com dados medidos. Classificação pronta e testada em `api/_lib/acessorios.mjs` (categorias do banco `protection.*`, `organization.*`, `gameplay.*`; lacrado nunca vira acessório; 0 falso positivo nas 3.402 ofertas de 24/10), ainda **não ligada** ao robô. Candidatos para a lista curada: `docs/kit-acessorios-candidatos.md` (a Copag não vende acessórios avulsos; linha licenciada encontrada = Ultra PRO). Acessório nunca entra no ranking de lacrados nem na nota de oportunidade; categoria separada (`accessory.*` em `src/core/taxonomy.js`) para o banco não misturar. Enquanto B não existir, o kit mostra C para acessórios e deixa claro que o preço não está incluído.
 
 ## 4. Questionário e regras de recomendação
 
