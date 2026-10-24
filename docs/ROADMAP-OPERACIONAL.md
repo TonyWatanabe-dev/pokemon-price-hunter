@@ -41,6 +41,115 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Produto removido com HTTP 200 e validações em runtime — 24/10/2026, noite, 5ª rodada (America/Sao_Paulo)
+
+**P0:**
+- **#271:** 0/7 dias encerrados. O dia 24 está **parcial verde** (19:37 UTC, sem falhas). O fechamento do dia sai às 03:07 UTC de 25/10, e uma conferência está agendada para 03:20 UTC.
+- **#231:** o Dispatcher roda sem falha. A fila `tarefa:aprovada` está vazia, então o worker está parado por falta de tarefa, não por falha. O proprietário confirmou (24/10) que a variável `DISPATCHER_ORCAMENTO_USD` foi **apagada**: não há teto de orçamento, e o item antigo do checklist está obsoleto.
+- **Vigia #893:** o próprio Vigia **fechou** o incidente às 18:52 UTC, depois de duas checagens saudáveis seguidas.
+  - A causa vista nos dados foi o Mercado Livre bloqueado nas rodadas das 18:00 e das 18:15.
+  - **Continua pendente** o defeito da issue sem motivo ("sem detalhe"): os logs do Actions seguem bloqueados daqui (download de logs: 403). Próxima fonte de diagnóstico: o resumo da checagem (`wd/vigia.json`) num artefato ou no *step summary*, quando acessível.
+
+| PR | Mudança | Testes locais | CI (4 checks) e revisão | Integrada | Publicada | Validada em runtime |
+|---|---|---|---|---|---|---|
+| #897 (4ecbcc6) | Produto removido com evidência explícita (HTTP 404/410, ou página de erro com HTTP 200 e sinal no h1/título, sem produto próprio na página) sai pelo caminho normal de remoção depois de **2 rodadas seguidas**. Falha de leitura, 403/429, esgotado e falta de preço nunca contam | `npm test` com 312 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | deploy 4ecbcc6: success | **pendente**: as páginas da BQD só são relidas no ciclo de 24 h (~15:15 UTC de 25/10); conferência agendada para 17:30 UTC de 25/10 |
+| #898 (722f5bf) | "Lendas" sem o Pokémon não vira produto ("Coleção Ex Lendas Azuis" saía como `avulsos-colecao_ex-lendas`). 1 título muda | `npm test` com 312 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | sim | pendente (próxima leitura da mpbrinquedos) |
+| #899 (f0585fe) | Home e /oportunidades (servidas pelo servidor) dizem "no Pix" e o frete ("a calcular", "grátis" ou "R$ X com frete"), como a página de produto. Achado da auditoria de produção | `npm test` com 314 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | deploy da `main` | pendente: conferir o HTML da Home publicada |
+| #900 (1f694bd) | Só testes do Monte seu kit: catálogo vazio, oferta stale e esgotada fora, mudança de quantidade, troca de item com soma coerente, estados de erro e vazio, viewport móvel. Nenhum defeito | `npm test` com 314 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | não se aplica | não se aplica |
+
+**Impacto previsto da #897:** até 35 ofertas.
+- **BQD (29):** página de erro confirmada.
+- **Gato Gingado (1):** HTTP 404, se a página ainda estiver no mapa do site.
+- **Taverna do Turno (5):** continua **protegida**, porque o redirecionamento para `/password/` não é sinal de remoção.
+
+Nenhum produto é recuperado nem publicado, e o histórico de preço fica intacto.
+
+**Validações em runtime desta rodada (ramo data, 19:15 e 19:30 UTC):**
+- **#885, Batalha de Liga:** **validada**. Mega Lucario, Charizard e Miraidon estão em `avulsos-deck-*`.
+- **#894, Lendas Implacáveis:** **validada**. Os títulos de Zacian e Koraidon estão em `sv9-colecao_ex-zacian` e `sv10-colecao_ex-koraidon`. Só sobrou em `avulsos-colecao_ex-lendas` o título sem nome, que a #898 corrige.
+
+**Triagem:** a busca da Livraria Colecionador (Magento) não trouxe nenhum produto Pokémon (sonda 40126604916, 3 termos, 0 links). A loja passa de inconclusiva a **sem catálogo relevante (pela busca)**.
+
+**Primeira rodada real com a #897 e a #898** (Hunter 40127830952, SHA 722f5bf, das 20:00 às 20:11 UTC):
+- **Resultado:** success. Sincronização com o banco ok, leitor oficial ok, motor ok.
+- **#897:** ainda sem nenhuma remoção (`pagesGone` = 0, nenhum contador). As páginas da BQD só são relidas no ciclo de 24 h.
+- **#898:** a loja desse anúncio ainda não foi relida.
+- **Ofertas com estoque:** caíram de 1.231 para 877 por causa do **Mercado Livre**, que ficou BLOCKED com HTTP 429 (limite de requisições em api.mercadolibre.com). As 357 ofertas dele ficaram guardadas como não confirmadas. Isso não tem relação com a #897 e a #898, porque o Mercado Livre usa um leitor próprio, pela API. É o terceiro bloqueio do dia (18:00, 18:15 e 20:00); o robô respeita o Retry-After. Acompanhar.
+
+**Burn-in #271 — quadro oficial** (comentários do bot; só dia encerrado conta):
+
+| Dia | Veredito | Falha |
+|---|---|---|
+| 11/10 | verde | — |
+| 12/10 | vermelho | dispatcher_falhas |
+| 13/10 | vermelho | dispatcher_falhas, coleta_amostra |
+| 14/10 | vermelho | coleta_amostra |
+| 15/10 | verde | — |
+| 16/10 | verde | — |
+| 17/10 | vermelho | hunter_sucesso |
+| 18/10 | verde | — |
+| 19/10 | vermelho | sync |
+| 20/10 | verde | — |
+| 21/10 | verde | — |
+| 22/10 | vermelho | sync (causa corrigida na #856) |
+| 23/10 | vermelho | sync |
+| 24/10 | **parcial** (verde até 19:37 UTC) | — |
+
+- **Maior sequência verde até hoje:** 2 dias (15–16/10 e 20–21/10).
+- **Previsão:** se 24/10 a 30/10 fecharem verdes, o 7/7 sai no relatório de 31/10 (~03:07 UTC). Qualquer dia vermelho reinicia a contagem.
+
+**Métricas de cobertura** (ramo data, 24/10, 19:35 UTC; selo da página /lojas):
+- **Lojas:** 76 com ofertas, 18 lidas sem estoque agora, 28 lidas sem produto Pokémon, 44 sem leitura automática, 3 indisponíveis (sem API), 7 marketplaces e 3 pausadas.
+- **Ofertas:** 3.866 no total; 1.231 com estoque confirmado, cobrindo 223 produtos em 76 lojas. O frete é conhecido em 291 das 1.231.
+- **Cadastro não é cobertura:** só as 76 lojas com oferta viva entram no ranking.
+
+**Monte seu kit, auditoria funcional** (página oculta):
+- **O que já estava coberto:**
+  - preço e quantidade por produto;
+  - comparação uma loja × dividir;
+  - frete desconhecido nunca vira zero;
+  - frete grátis pela regra da loja;
+  - sem estoque e anomalia fora;
+  - afiliado só desempata;
+  - validação 400 na API;
+  - página com noindex, fora do menu e do sitemap.
+- **Casos-limite adicionados em teste:** catálogo vazio, oferta stale e esgotada fora, mudança de quantidade, troca de item com soma coerente, estados de erro e vazio e viewport móvel.
+- **Resultado:** nenhum defeito encontrado.
+
+**Auditoria do site em produção** (só leitura, ~19:55 UTC; matriz completa no relatório da rodada):
+- **Cabeçalhos de segurança:** CSP restrita, frame-ancestors, HSTS, nosniff, Referrer-Policy. OK.
+- **Validação da API:** 400 para entrada inválida, nunca 500. OK.
+- **Sitemap e robots:** 306 URLs válidas. OK.
+- **Estoque e frete na página de produto:** OK.
+- **Dependências:** `npm audit` sem vulnerabilidades.
+- **Média, corrigida (#899):** a Home servida mostrava o preço sem "no Pix" e sem o frete.
+- **Média, pendente e R3 (`vercel.json`), decisão do dono:** URL inventada fora de /produto, /colecao e /tipo devolve **200** com a casca do app (soft 404), com o canonical apontando para `/` e sem noindex.
+- **Baixas, registradas:**
+  - `oferta.total` igual ao preço na API do kit quando o frete é desconhecido; a página não usa esse campo;
+  - imagem `og:image` em http;
+  - `<h2>` dentro de `<summary>`;
+  - uma oferta InStock com "pre-venda" no slug (Omniverse), a conferir.
+
+**Release Governor — go/no-go (24/10, 20h UTC): NO-GO para a K6** (expor o kit no menu e na Home):
+- **Burn-in:** 0/7, e é o gate obrigatório.
+- **Monitoramento:** o defeito da issue do Vigia sem motivo continua aberto.
+
+O resto dos gates verificáveis está ok:
+- suíte completa e os 4 checks em todas as PRs;
+- revisão independente;
+- frete desconhecido tratado como desconhecido;
+- ofertas sem preço ou estoque verificáveis fora do ranking (prova Tray isolada);
+- rollback pelo Vercel (deploy anterior) e pelo `git revert` das PRs.
+
+**Próximo:**
+1. Validar a #897 em runtime às 17:30 UTC de 25/10.
+2. Fechar o dia 24 do burn-in.
+3. K5: ligar o classificador de acessórios só quando o dono decidir a lista curada.
+
+A K6 continua oculta.
+
+---
+
 ## Fechamento: fontes independentes na Tray e Lendas Implacáveis — 24/10/2026, noite, 4ª rodada (America/Sao_Paulo)
 
 **P0:**
