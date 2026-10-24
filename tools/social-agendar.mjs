@@ -70,7 +70,8 @@ if (modo === 'agendados') {
   const lista = await cli.agendados(perfil);
   // trecho do texto (sem quebra de linha) para casar o post com o item da agenda; o id curto ajuda a conferir cancelamentos
   const linhas = lista.map((p) => `${new Date(new Date(p.scheduledFor).getTime() - 3 * 3600e3).toISOString().slice(0, 16)} ${(p.platforms ?? []).map((x) => x?.platform).join('+')} ${(p.mediaItems ?? []).map((m) => m?.type?.[0] ?? '?').join('')} «${String(p.content ?? p.title ?? '').replace(/\s+/g, ' ').slice(0, 48)}»`).sort();
-  anota('notice', `agendados (${linhas.length}): ${linhas.join(' | ')}`);
+  // o Actions corta anotação longa: em blocos de 30 linhas (até 10 avisos por passo)
+  for (let i = 0; i < linhas.length; i += 30) anota('notice', `agendados ${i + 1}-${Math.min(i + 30, linhas.length)} de ${linhas.length}: ${linhas.slice(i, i + 30).join(' | ')}`);
   process.exit(0);
 }
 
