@@ -1,3 +1,46 @@
+# Atualização estratégica — 24/10/2026 (America/Sao_Paulo)
+
+## Nova prioridade de produto: infraestrutura antes dos combos
+
+A expansão **“Monte seu kit”** foi aprovada como direção de produto, mas não deve competir com a estabilização e a qualidade da plataforma. A sequência obrigatória é: **confiabilidade operacional → qualidade e taxonomia de dados → motor de ofertas/preços/frete → experiência guiada e combos → medição e expansão**.
+
+### Trabalho prioritário de infraestrutura
+1. **P0 — Operação confiável:** manter #271 até haver evidência de 7 dias consecutivos encerrados e verdes; validar smoke de produção no SHA publicado. Acompanhar #231 para evidências reais de Governor, auditoria e fluxo operacional. Não declarar concluído por documentação ou CI isolados.
+2. **P1 — Qualidade do catálogo e matching:** melhorar identificação de produto, coleção, idioma, EAN, quantidade, categoria e estoque; reduzir falsos positivos, duplicatas e produtos não casados. Distinguir cartas, produtos lacrados, decks, acessórios, brinquedos e mercadorias não equivalentes.
+3. **P1 — Frescor e cobertura de ofertas:** medir atualização por loja, idade dos dados, disponibilidade real, falhas e taxa de matching. Priorizar problemas por impacto na experiência, não apenas pelo número bruto de lojas/ofertas.
+4. **P1 — Preço e custo total:** preservar ranking independente de comissão; separar preço do produto, frete e total. A cotação real por CEP permanece desligada até existir fonte oficial/autorizada e evidência confiável (#84). Nunca tratar frete desconhecido como zero.
+5. **P1 — API, banco e observabilidade:** avaliar latência, consultas, cache, sincronização, recuperação de falhas, alertas e integridade dos snapshots. Corrigir gargalos comprovados antes de aumentar carga.
+6. **P2 — Combos:** iniciar a funcionalidade de consumidor depois que os contratos de catálogo/ofertas necessários estiverem confiáveis. Design, taxonomia, protótipo e questionário podem avançar em paralelo sem publicar recomendações falsas nem alterar a produção.
+
+### Nova iniciativa: “Monte seu kit”
+- Página separada, rota sugerida `/monte-seu-kit/`, item próprio no menu desktop/mobile e chamada na Home com CTA **“Descobrir meu kit ideal”**.
+- Público prioritário: iniciantes que não sabem qual coleção ou produto comprar.
+- Questionário curto: objetivo (colecionar, jogar, presentear, abrir boosters ou proteger cartas), orçamento, preferências, idioma e acessórios opcionais.
+- Recomendações explicáveis e baseadas somente em catálogo/ofertas reais. Diferenciar boosters, ETBs, decks prontos e acessórios; nunca prometer cartas aleatórias ou raridades.
+- Combos virtuais: “Minha primeira coleção”, “Colecionador organizado”, “Quero aprender a jogar” e “Quero cartas especiais”, com itens configuráveis e sem estoque/logística próprios.
+- Configurador de cesta: adicionar/remover itens, quantidades, alternativas e comparação entre uma loja e várias lojas, considerando frete apenas quando sustentado por dados reais.
+- Usar a mesma fonte de catálogo, Offer Engine, ranking, histórico, disponibilidade e links do site. Não criar catálogo, preços, ranking ou sistema de frete paralelos.
+- Instrumentar funil: visita, início/conclusão do questionário, combo visualizado, itens alterados, clique para loja e conversão afiliada quando disponível.
+- A monetização afiliada nunca altera a ordem das recomendações. Mostrar limitações e disclosure aplicável.
+
+### Critério para liberar recomendações reais
+A experiência pode ser desenhada e testada com fixtures claramente sintéticas, mas só deve recomendar produtos reais quando houver testes comprovando: matching correto; dados atuais/estado de estoque; preço rastreável; orçamento respeitado; cálculo honesto do total; ausência de mistura entre idiomas/variantes/categorias; e links de destino corretos. Se não houver dados suficientes, mostrar a limitação ou oferecer alternativas verificadas.
+
+### Instruções para Claude Code
+1. Ler `CLAUDE.md`, este documento, `docs/PLANO-ENTREGA-TURBO.md`, `docs/agentes.md` e o mapa de agentes antes de iniciar.
+2. Conferir estado atual da `main`, issues, PRs, diffs, CI, deploy e logs recentes; reconciliar este plano com evidência atual para evitar duplicar tarefas ou tratar snapshots antigos como estado vivo.
+3. Trabalhar por branch/worktree e PR; não escrever diretamente na `main`. Não reescrever a arquitetura nem duplicar funcionalidades existentes.
+4. Primeiro entregar auditoria técnica e tarefas pequenas com dependências, critérios de aceite, riscos e testes. Paralelizar apenas tarefas independentes; evitar concorrência em arquivos ou subsistemas conflitantes.
+5. Priorizar #271, #231, qualidade de dados e custo total conforme estado real. O trabalho visual de “Monte seu kit” pode avançar em paralelo como protótipo, sem habilitar dados ou flags não validados.
+6. Para cada tarefa, declarar claramente: **feito no código**, **integrado**, **publicado** e **validado em runtime** são estados diferentes. Anexar SHA, CI, PR, smoke e métricas quando aplicáveis.
+7. Executar `npm test` e os testes de domínio relevantes. Adicionar golden/regressão para regras de matching, ranking, preço, frete e combos; não enfraquecer nem pular testes.
+8. Preservar gates do Release Governor e revisão independente. R3, R-STOP persistente, riscos de dados/segurança/impacto financeiro e decisões comerciais críticas seguem escalonamento humano. Autonomia rotineira não autoriza contornar proteções.
+9. Não habilitar cotação por CEP, recomendação em produção, novas permissões, secrets ou flags por inferência. Frete real exige fonte autorizada; nunca contornar robots.txt, CAPTCHA, WAF ou checkout protegido.
+10. Atualizar os dois documentos de roadmap após cada mudança de fase e ao concluir entregas relevantes, citando PRs, SHA, testes, deploy/smoke, métricas, limitações e próxima prioridade. Não marcar fase concluída sem critérios de saída comprovados.
+11. Não reintroduzir o teto financeiro de US$ 100/24 h removido pelo proprietário. Manter os controles técnicos, de telemetria, idempotência, concorrência e release já exigidos.
+
+---
+
 ## Atualização executiva — 24/10/2026 (America/Sao_Paulo)
 
 ### Entregue em 24/10
