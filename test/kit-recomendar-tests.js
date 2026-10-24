@@ -3,6 +3,8 @@
 // limitação explícita quando falta dado.
 import assert from 'node:assert/strict';
 import { recomendar, freteDaCesta, idiomaDe, melhoresOfertas } from '../src/kit/recomendar.js';
+import { nomeProduto } from '../api/_lib/kit.mjs';
+import { label } from '../api/_seo.mjs';
 import { MODELOS, OBJETIVO_MODELO } from '../src/kit/modelos.js';
 
 const P = (id, type, name) => ({ id, type, name });
@@ -41,6 +43,7 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
   const pr = [P('f1-b3', 'blister_3', 'F - Blister Triplo')]; pr[0].image = 'https://cat.test/f1.png';
   assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20, { image: 'https://a.test/foto.jpg' })]).itens[0].imagem, 'https://a.test/foto.jpg');
   assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20)]).itens[0].imagem, 'https://cat.test/f1.png');
+  assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20, { image: 'http://cdn.test/f.webp' })]).itens[0].imagem, 'https://cdn.test/f.webp', 'foto do anúncio em http vira https');
 }
 // 2. idioma inglês: só produto -en
 { const r = recomendar({ objetivo: 'abrir', orcamento: 60, idioma: 'en' }, produtos, ofertas); assert.deepEqual(r.itens.map((i) => [i.productId, i.quantidade]), [['xx1-blister3-en', 3]]); }
@@ -68,4 +71,12 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
 }
 // 9. sem orçamento
 { assert.match(recomendar({ objetivo: 'jogar' }, produtos, ofertas).limitacoes[0], /orçamento/); }
+// 10. nome na fonte do banco (sem `name`): mapa do robô; sem ele, rótulo "Coleção - Tipo" do SEO
+{
+  const db = { id: 'me03-blister3', collectionName: 'Equilíbrio Perfeito', type: 'blister_3', typeLabel: 'Blister Triplo' };
+  assert.equal(nomeProduto(db, new Map([['me03-blister3', 'Equilíbrio Perfeito - Blister Triplo (robô)']]), label), 'Equilíbrio Perfeito - Blister Triplo (robô)');
+  assert.equal(nomeProduto(db, new Map(), label), 'Equilíbrio Perfeito - Blister Triplo');
+  assert.equal(nomeProduto({ ...db, name: 'Nome próprio' }, new Map(), label), 'Nome próprio');
+  assert.equal(nomeProduto({ id: 'x-en', type: 'etb', typeLabel: 'Treinador Avançado (ETB)' }, new Map(), label), 'Pokémon TCG - Treinador Avançado (ETB) Inglês');
+}
 console.log('✓ kit-recomendar: estoque, idioma, orçamento, frete por loja, limitações (fixtures sintéticas)');

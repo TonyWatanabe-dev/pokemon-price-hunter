@@ -32,6 +32,14 @@ let r = await call('/api/v1/site/kit?objetivo=colecionar&orcamento=100&idioma=pt
 assert.equal(r.status, 200, JSON.stringify(r.json)); assert.equal(r.json.prototipo, true);
 assert.deepEqual(r.json.itens.map((i) => [i.productId, i.quantidade]), [['xx1-blister3', 3]]); assert.equal(r.json.total, null);
 r = await call('/api/v1/site/kit?objetivo=jogar&orcamento=100&idioma=pt&fonte=state'); assert.equal(r.json.total, 95);
+assert.ok(r.json.itens.every((i) => typeof i.nome === 'string' && i.nome.length > 3), 'todo item tem nome');
+// produto sem `name` (como na fonte do banco) e state do robô indisponível: rótulo, nunca erro
+{ const semNome = structuredClone(st); semNome.products.forEach((p) => { delete p.name; p.collectionName = 'X'; p.typeLabel = p.type === 'deck' ? 'Baralho de Batalha' : 'Blister Triplo'; });
+  let n = 0; setLegacyLoader(async () => { if (n++) throw new Error('indisponível'); return semNome; });
+  const { _cache } = await import('../api/v1.mjs'); _cache?.clear?.();
+  const { clearCatalogCache } = await import('../api/_lib/catalog.mjs'); clearCatalogCache();
+  const rr = await call('/api/v1/site/kit?objetivo=jogar&orcamento=100&idioma=pt&fonte=state&x=1');
+  assert.equal(rr.status, 200, JSON.stringify(rr.json)); assert.equal(rr.json.itens[0].nome, 'X - Baralho de Batalha'); }
 assert.equal((await call('/api/v1/site/kit?objetivo=voar&orcamento=10')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=0')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=50&idioma=xx')).status, 400);
