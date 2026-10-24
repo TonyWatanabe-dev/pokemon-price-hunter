@@ -37,3 +37,13 @@ console.log('sonda-adaptadores-tests: ok');
   assert.match(textoAmostra(a), /inválidos: Booster Avulso.*não casaram: /);
   console.log('sonda-adaptadores-tests (amostra): ok');
 }
+
+// Diagnóstico de página: conta Product no JSON-LD, preço em meta e se o leitor publica (parse injetado).
+{
+  const { resumoPagina } = await import('../tools/sonda-adaptadores.mjs');
+  const html = '<html><head><meta property="product:price:amount" content="49.90"><script type="application/ld+json">{"@type":"Product","name":"Booster"}</script></head></html>';
+  assert.deepEqual(resumoPagina(html, 'https://lojax.com.br/produto/booster-pokemon', () => null), { caminho: '/produto/booster-pokemon', ld: 1, og: true, publica: false });
+  assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => ({ title: 'x' })).publica, true);
+  assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => null).ld, 0);
+  console.log('sonda-adaptadores-tests (página): ok');
+}

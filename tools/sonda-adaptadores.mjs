@@ -10,6 +10,7 @@ import { adapters } from '../src/adapters/index.js';
 import { validateListing } from '../src/adapters/contract.js';
 import { matchProduct } from '../src/match.js';
 import { readJson, configPath } from '../src/db.js';
+import { jsonLdNodes } from '../src/adapters/parse-limits.js';
 
 const loadCatalog = () => { const c = readJson(configPath('catalog.json')); c.products ||= []; c.copag ||= {}; return c; };
 
@@ -40,6 +41,21 @@ export function amostra(raw, store, catalog, { now = new Date(), max = 6 } = {})
   return { invalidos, naoCasados };
 }
 
+/** Resumo de uma página de produto (só leitura): quantos Product no JSON-LD, se tem preço em meta og/product e se o leitor publica. */
+export function resumoPagina(html, url, parse) {
+  const { nodes } = jsonLdNodes(html);
+  const ld = nodes.filter((n) => [].concat(n['@type']).some((t) => /^product$/i.test(String(t)))).length;
+  const og = /<meta[^>]+(?:product|og):price:amount/i.test(html);
+  let caminho = url; try { caminho = decodeURIComponent(new URL(url).pathname).slice(0, 70); } catch { /* fica a URL */ }
+  return { caminho, ld, og, publica: !!parse(html, url) };
+}
+async function diagnosticoPaginas(urls) {
+  const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); const { parseProductPage } = await import('../src/adapters/jsonld.js');
+  const out = [];
+  for (const u of urls) { try { await guard(u); const r = await get(u); out.push(resumoPagina(r.text, r.url || u, parseProductPage)); } catch (e) { out.push({ caminho: u.replace(/^https?:\/\/[^/]+/, '').slice(0, 70), erro: String(e?.status || e?.code || e?.message).slice(0, 40) }); } }
+  return out;
+}
+
 // Uma anotação por loja (o GitHub limita anotações por passo): a amostra vai na mesma linha.
 export const textoAmostra = (a) => (!a ? '' : (a.invalidos.length ? ` · inválidos: ${a.invalidos.join(' | ')}` : '') + (a.naoCasados.length ? ` · não casaram: ${a.naoCasados.join(' | ')}` : ''));
 
@@ -62,7 +78,7 @@ async function main() {
       const store = { ...c, id, name: c.name || src.name || id, url, platform: plataforma };
       // JSON-LD: também conta as páginas de produto Pokémon que o mapa do site expõe (diagnóstico de "plataforma não reconhecida").
       if (plataforma === 'jsonld') { const { productUrls } = await import('../src/adapters/jsonld.js'); const { sitemapsOf } = await import('../src/robots.js');
-        const mapas = await sitemapsOf(url.replace(/\/$/, '') + '/').catch(() => []); sonda.mapas = mapas.length; sonda.urlsProduto = (await productUrls(url.replace(/\/$/, ''), 60).catch(() => [])).length;
+        const mapas = await sitemapsOf(url.replace(/\/$/, '') + '/').catch(() => []); sonda.mapas = mapas.length; const pu = await productUrls(url.replace(/\/$/, ''), 60).catch(() => []); sonda.urlsProduto = pu.length; sonda.paginas = await diagnosticoPaginas(pu.slice(0, 3));
         // diagnóstico do 1º mapa declarado: quantos <loc>, quantos mapas filhos e os nomes de 3 (só leitura, com o guard)
         if (mapas[0]) { try { const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); await guard(mapas[0]);
           const xml = (await get(mapas[0], { accept: 'application/xml' })).text; const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
@@ -77,7 +93,7 @@ async function main() {
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${textoAmostra(sonda.amostra)}`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${textoAmostra(sonda.amostra)}`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
