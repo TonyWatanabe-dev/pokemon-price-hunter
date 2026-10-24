@@ -53,7 +53,7 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 | Diagnóstico da sonda | Amostra de títulos inválidos e não casados por loja; diagnóstico das 3 primeiras páginas de produto | #884 (1ed4cdc) | integrado (só ferramenta) |
 | Matching "Batalha de Liga" | Linha de baralho de 60 cartas. 4 dos 3.072 títulos saem de `colecao_ex` (Box Pokémon ex, outro produto) para `deck` do mesmo Pokémon; a Mais Coimbra passa a casar. IDs preservados | #885 (d528ca8) | integrado; vale a partir da próxima rodada do robô (validar em runtime) |
 | Triagem das lojas lidas sem produto | 29 lojas (eram 31) classificadas com evidência de sonda; relatório em `docs/triagem-lojas-sem-produto-2026-10-24.md`. Nenhuma pausada | — | documentado |
-| Kalunga | Prova de conceito do leitor pela busca, **fora do robô**. Robots permite; 3 buscas acham 20 produtos Pokémon. A página de produto não tem JSON-LD nem meta de preço, e o estoque não aparece. **Não integrar** (dados não verificáveis) | #887 | integrado só na sonda (se aprovado) |
+| Kalunga | Prova de conceito do leitor pela busca, **fora do robô**. Robots permite; 3 buscas acham 20 produtos Pokémon. A página de produto não tem JSON-LD nem meta de preço, e o estoque não aparece. **Não integrar** (dados não verificáveis) | #887 (94892e0) | integrado só na sonda; fora do robô |
 | K5 | Deck box não casa com lacrado (0 títulos atuais mudam); 17 acessórios testados contra o casamento; auditoria dos 15 candidatos com o que falta confirmar; seleção por perfil (toploader em "cartas especiais"); sem produto publicado | #886 (fec34f6) | integrado; kit oculto |
 | K4 | Sem mudança: nenhum problema reproduzido nesta rodada | — | publicado (oculto) |
 
