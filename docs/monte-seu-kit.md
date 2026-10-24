@@ -42,7 +42,7 @@ Perguntas (uma por etapa, com voltar/avançar, respostas na sessão — `session
 4. Idioma: português · inglês · japonês · sem preferência (padrão português).
 5. Opcional: Pokémon favorito (texto livre, só filtra por nome), o que já tem, acessórios desejados.
 
-Combos (modelos em `config/kit-modelos.json`, não no código):
+Combos (modelos em `src/kit/modelos.js`, dados puros separados da lógica; `config/` é R3):
 - **Minha primeira coleção:** blister/booster + (opcional) sleeve e fichário.
 - **Colecionador organizado:** ETB ou coleção com boosters + fichário + sleeves.
 - **Quero aprender a jogar:** `deck`/`kit_treinador` + sleeves + deck box (+ playmat opcional).
@@ -74,7 +74,7 @@ O Vercel Analytics gratuito conta páginas, não eventos. Mesmo truque do `/entr
 | # | Tarefa | Depende de | Aceite |
 |---|---|---|---|
 | K1 | Este documento | — | merge |
-| K2 | `config/kit-modelos.json` + `src/kit/recomendar.js` (puro: produtos + ofertas + respostas → cesta) com golden de §6 usando fixtures sintéticas | K1 | testes verdes |
+| K2 | `src/kit/modelos.js` + `src/kit/recomendar.js` (puro: produtos + ofertas + respostas → cesta) com golden de §6 usando fixtures sintéticas | K1 | testes verdes |
 | K3 | Rota `/monte-seu-kit/*` oculta (`noindex`, fora do menu), questionário e resultado chamando `/api/v1/site/ofertas` | K2 | smoke da rota; aviso de protótipo |
 | K4 | Cesta e comparação uma × várias lojas | K3 | golden de frete por loja |
 | K5 | Acessórios opção B (`config/kit-acessorios.json`, categoria `accessory.*`) | K2, decisão do dono sobre itens | casamento estrito com golden; fora do ranking de lacrados |
