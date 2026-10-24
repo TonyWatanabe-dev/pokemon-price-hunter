@@ -31,6 +31,11 @@
 4. **API, banco e observabilidade:** corrigir gargalos comprovados de latência, consultas, cache, sincronização, falhas e recuperação. Medir antes de escalar carga.
 5. **“Monte seu kit”:** entregar página guiada e combos virtuais em cima dos contratos e dados existentes; ativar recomendação real de forma gradual após testes.
 
+### Estado da implementação (24/10/2026)
+- K1 arquitetura (#871), K2 recomendação (#872), K3 página oculta + `/api/v1/site/kit` (#874, #875), K4 cesta e comparação (#877, #878): **publicados ocultos** (noindex, fora do menu/Home/sitemap), validados em runtime.
+- K5: taxonomia de acessórios pronta (#882), sem ingestão; depende da lista curada do dono.
+- K6 (menu, Home, sitemap): bloqueada até o critério de liberação e burn-in 7/7.
+
 ### Especificação resumida de “Monte seu kit”
 - Página independente, rota sugerida `/monte-seu-kit/`, item no menu e CTA na Home: “Sua jornada Pokémon começa aqui” / “Descobrir meu kit ideal”.
 - Questionário curto: objetivo (colecionar, jogar, presente, abrir boosters, proteger cartas), orçamento, preferência de produtos, idioma e acessórios opcionais.
