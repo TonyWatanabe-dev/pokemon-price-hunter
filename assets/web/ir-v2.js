@@ -7,7 +7,7 @@
   var canal = (location.pathname.split('/')[2] || '').toLowerCase();
   var destino = canal === 'telegram' ? a.dataset.tg : a.dataset.wa;
   var ua = navigator.userAgent || '';
-  var appInterno = /Instagram|FBAN|FBAV|FB_IAB|TikTok|musical_ly|Bytedance|BytedanceWebview|trill/i.test(ua);
+  var appInterno = /Instagram|FBAN|FBAV|FB_IAB|TikTok|musical_ly|Bytedance/i.test(ua);
   var android = /Android/i.test(ua);
   var codigo = (destino.match(/^https:\/\/chat\.whatsapp\.com\/([A-Za-z0-9]{10,40})$/) || [])[1];
   var app = destino;
@@ -21,7 +21,6 @@
     setTimeout(function () { location.replace(destino); }, 700);
     return;
   }
-  document.documentElement.classList.add('app-interno');
   var botao = document.getElementById('abrir');
   botao.href = app;
   botao.textContent = canal === 'telegram' ? 'Abrir o Telegram' : 'Abrir o WhatsApp';
@@ -32,6 +31,12 @@
   var copiar = document.getElementById('copiar');
   copiar.addEventListener('click', function () {
     var ok = function () { copiar.textContent = 'Link copiado! Cole no WhatsApp ou no navegador'; };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(destino).then(ok, function () {});
+    var seleciona = function () {
+      var r = document.createRange(); r.selectNodeContents(link);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      copiar.textContent = 'Segure no link abaixo e toque em Copiar';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(destino).then(ok, seleciona);
+    else seleciona();
   });
 })();
