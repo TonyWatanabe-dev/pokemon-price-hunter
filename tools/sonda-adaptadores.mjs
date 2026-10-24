@@ -86,6 +86,9 @@ async function main() {
       // JSON-LD: também conta as páginas de produto Pokémon que o mapa do site expõe (diagnóstico de "plataforma não reconhecida").
       if (plataforma === 'jsonld') { const { productUrls } = await import('../src/adapters/jsonld.js'); const { sitemapsOf } = await import('../src/robots.js');
         const mapas = await sitemapsOf(url.replace(/\/$/, '') + '/').catch(() => []); sonda.mapas = mapas.length; const pu = await productUrls(url.replace(/\/$/, ''), 60).catch(() => []); sonda.urlsProduto = pu.length; sonda.paginas = await diagnosticoPaginas(pu.slice(0, 3));
+        // páginas das ofertas que a loja já teve (data/offers.json): explica loja que lia produto e passou a ler 0
+        const ofertas = (() => { try { const o = JSON.parse(fs.readFileSync(path.join(dir, 'offers.json'), 'utf8')); return (Array.isArray(o) ? o : Object.values(o.offers || o)).filter((x) => x?.storeId === id).map((x) => x.url); } catch { return []; } })();
+        if (ofertas.length) sonda.paginasOfertas = await diagnosticoPaginas([...new Set(ofertas)].slice(0, 3));
         // diagnóstico do 1º mapa declarado: quantos <loc>, quantos mapas filhos e os nomes de 3 (só leitura, com o guard)
         if (mapas[0]) { try { const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); await guard(mapas[0]);
           const xml = (await get(mapas[0], { accept: 'application/xml' })).text; const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
@@ -106,7 +109,7 @@ async function main() {
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}${sonda.paginasOfertas ? ' · páginas das ofertas atuais ' + JSON.stringify(sonda.paginasOfertas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
