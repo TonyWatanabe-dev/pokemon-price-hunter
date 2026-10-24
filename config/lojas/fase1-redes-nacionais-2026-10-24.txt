@@ -1,0 +1,18 @@
+# Fase 1 da expansão de lojas (24/10/2026): redes com várias unidades/estados que vendem Pokémon TCG na loja virtual
+# própria. Levantamento por busca web, com URL de produto Pokémon no domínio da rede como evidência (conferida em 24/10).
+# Rede nacional tem um site só: entra uma vez, não por estado. O robô testa cada site sozinho e respeita robots.txt e
+# bloqueio; quem não puder ser lido aparece em /lojas como "sem leitura automática". Já conhecidas ficaram de fora
+# (Ri Happy, PBKids, MP Brinquedos, Copag, Kalunga, Leitura, Havan, Bemol, São João, Pichau, Epic Game, Meruru, Bazar de
+# Bagdá); KaBuM! é marketplace grande (fora da leitura). Piticas ficou de fora (sem Pokémon TCG atual).
+https://www.toymania.com.br             # ToyMania · brinquedos · online nacional (SP)
+https://www.livrariadavila.com.br       # Livraria da Vila · livraria · SP, PR
+https://www.livrariascuritiba.com.br    # Livrarias Curitiba · livraria · PR, SC, SP
+https://www.lebiscuit.com.br            # Le Biscuit · departamento · vários estados (forte no NE)
+https://www.riachuelo.com.br            # Riachuelo · departamento · nacional · parte via vendedores do marketplace
+https://www.casaevideo.com.br           # Casa&Video · departamento · RJ, ES
+https://www.samsclub.com.br             # Sam's Club · atacarejo · nacional
+https://www.drogasil.com.br             # Drogasil · farmácia · nacional · parte via vendedores parceiros
+https://www.araujo.com.br               # Drogaria Araujo · farmácia · MG
+https://www.farmaciasnissei.com.br      # Farmácias Nissei · farmácia · PR, SC, SP
+https://site.fastshop.com.br            # Fast Shop · eletro · vários estados (produtos no subdomínio site.)
+https://www.brunopokecartas.com.br      # Bruno PokeCartas · card game · RJ (várias unidades) · plataforma da Liga (?view=ecom)
