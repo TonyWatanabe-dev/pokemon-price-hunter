@@ -1,0 +1,1551 @@
+{
+ "descricao": "24/10: Content ID bloqueou um Short pela música do áudio original. Todos os vídeos agendados (menos os slideshows, que já usam só a nossa trilha) voltam com uma trilha só, a nossa. cancelar → agendar.",
+ "cancelar": [
+  {
+   "quando": "2026-10-25T11:00",
+   "plataforma": "instagram",
+   "trecho": "Abri o Combo de Pacotes da Cel",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-25T11:00",
+   "plataforma": "tiktok",
+   "trecho": "Abri o Combo de Pacotes da Cel",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-25T11:00",
+   "plataforma": "youtube",
+   "trecho": "Abri o Combo de Pacotes da Cel",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-25T12:00",
+   "plataforma": "youtube",
+   "trecho": "Gastei R$ 766,25 em produtos d",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "instagram",
+   "trecho": "Booster da Celebração de 30 An",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "tiktok",
+   "trecho": "hit ou brick? booster de R$ 47",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 41,23 da Celebra",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-26T12:00",
+   "plataforma": "tiktok",
+   "trecho": "Segundo pack do Combo de 30 An",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-26T12:00",
+   "plataforma": "youtube",
+   "trecho": "R$ 114,99 no Desafio Estratégi",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-26T12:00",
+   "plataforma": "youtube",
+   "trecho": "Segundo pack do Combo de 30 An",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-26T19:00",
+   "plataforma": "instagram",
+   "trecho": "Um pack de R$ 40 do Combo de 3",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-26T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Um pack de R$ 40 do Combo de 3",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-26T19:00",
+   "plataforma": "youtube",
+   "trecho": "Um pack de R$ 40 do Combo de 3",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-27T12:00",
+   "plataforma": "tiktok",
+   "trecho": "nem todo booster é hit 😭 Qual ",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-27T12:00",
+   "plataforma": "youtube",
+   "trecho": "Nem todo booster é hit 😭 R$ 60",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-27T12:00",
+   "plataforma": "youtube",
+   "trecho": "Quanto custa o mesmo produto e",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-27T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack do Combo de 30 Ano",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-27T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Último pack do Combo de 30 Ano",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-27T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack do Combo de 30 Ano",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-28T12:00",
+   "plataforma": "tiktok",
+   "trecho": "abri 8 boosters de R$ 114,99 e",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-28T12:00",
+   "plataforma": "youtube",
+   "trecho": "8 packs do Desafio Estratégico",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-28T12:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 45,27 da Celebra",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-28T19:00",
+   "plataforma": "instagram",
+   "trecho": "Abri a Coleção Mega Forças Meg",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-28T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Abri a Coleção Mega Forças Meg",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-28T19:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção Mega Forças Meg",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-29T12:00",
+   "plataforma": "tiktok",
+   "trecho": "não procure preço. procure opo",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-29T12:00",
+   "plataforma": "youtube",
+   "trecho": "Não procure preço. Procure opo",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-29T19:00",
+   "plataforma": "instagram",
+   "trecho": "Pack de Caos Ascendente da box",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-29T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Pack de Caos Ascendente da box",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-29T19:00",
+   "plataforma": "youtube",
+   "trecho": "Pack de Caos Ascendente da box",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-30T12:00",
+   "plataforma": "tiktok",
+   "trecho": "unboxing baralho batalha de li",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-30T12:00",
+   "plataforma": "youtube",
+   "trecho": "Unboxing do Baralho Batalha de",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "instagram",
+   "trecho": "Quinto pack da box Mega Dragon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Quinto pack da box Mega Dragon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "youtube",
+   "trecho": "Quinto pack da box Mega Dragon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-31T11:00",
+   "plataforma": "instagram",
+   "trecho": "Feliz Halloween 🎃 O maior sust",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-31T11:00",
+   "plataforma": "tiktok",
+   "trecho": "o maior susto do halloween 🎃💀 ",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-31T11:00",
+   "plataforma": "youtube",
+   "trecho": "Feliz Halloween 🎃 O maior sust",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack da box Mega Dragon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Último pack da box Mega Dragon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack da box Mega Dragon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-01T11:00",
+   "plataforma": "instagram",
+   "trecho": "Segundo pack do Combo de 30 An",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "instagram",
+   "trecho": "ETB da Celebração de 30 Anos a",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "tiktok",
+   "trecho": "ETB 30 anos por R$ 519 no meno",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção Treinador Avanç",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-02T19:00",
+   "plataforma": "instagram",
+   "trecho": "Promoção boa some rápido. No T",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-02T19:00",
+   "plataforma": "tiktok",
+   "trecho": "promoção boa some rápido ⚡ gru",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-02T19:00",
+   "plataforma": "youtube",
+   "trecho": "Promoção boa some rápido. No T",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "instagram",
+   "trecho": "Booster da Celebração de 30 An",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "tiktok",
+   "trecho": "booster de R$ 47. valeu ou não",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 60,89 da Celebra",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "instagram",
+   "trecho": "Desafio Estratégico de novo: 8",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "tiktok",
+   "trecho": "será que agora vem? 🙏 Qual car",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "youtube",
+   "trecho": "Desafio Estratégico de novo. S",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "instagram",
+   "trecho": "Essa oferta vale a pena? O TCG",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "tiktok",
+   "trecho": "essa oferta vale a pena? nota ",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "youtube",
+   "trecho": "Essa oferta vale a pena? O TCG",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "plataforma": "instagram",
+   "trecho": "Saiu hoje: Reinado Delta, a úl",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Reinado Delta saiu hoje. lança",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "plataforma": "youtube",
+   "trecho": "Saiu hoje: Reinado Delta, a úl",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "instagram",
+   "trecho": "Blister Duplo da Celebração de",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "tiktok",
+   "trecho": "blister de R$ 69. vale a pena?",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "youtube",
+   "trecho": "Blister da Celebração de 30 An",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-08T11:00",
+   "plataforma": "instagram",
+   "trecho": "Nem todo booster é hit 😭 Mesmo",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-08T19:00",
+   "plataforma": "instagram",
+   "trecho": "8 boosters do Desafio Estratég",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "instagram",
+   "trecho": "Mais um Desafio Estratégico (R",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "tiktok",
+   "trecho": "a essa altura é questão de hon",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "youtube",
+   "trecho": "Mais um Desafio Estratégico. A",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack do Desafio Estraté",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "tiktok",
+   "trecho": "último pack da série. vem? 👇 Q",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack do Desafio Estraté",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "instagram",
+   "trecho": "Abri 2 Blisters Duplos da Cele",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "tiktok",
+   "trecho": "2 blisters duplos da 30 anos… ",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "youtube",
+   "trecho": "Abri 2 Blisters Duplos da Cele",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "instagram",
+   "trecho": "Cansou de ficar de olho no pre",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "tiktok",
+   "trecho": "cansou de ficar de olho no pre",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "youtube",
+   "trecho": "Cansou de ficar de olho no pre",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  },
+  {
+   "quando": "2026-11-15T11:00",
+   "plataforma": "instagram",
+   "trecho": "Unboxing do Baralho Batalha de",
+   "motivo": "trilha nova (Content ID no áudio original)"
+  }
+ ],
+ "itens": [
+  {
+   "id": "m-u-combo30-ig-00",
+   "quando": "2026-10-25T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_combo30.mp4",
+   "legenda": "Abri o Combo de Pacotes da Celebração de 30 Anos. Paguei R$ 240, e em outras lojas ele está R$ 350.\n\nSaiu Pikachu ex, Meowth de Alola IR, Umbreon ex e Buzzwole GX. Somando o valor das cartas na Liga Pokémon (preço médio, 23/10), deu R$ 143,95.\n\nValeu a pena ou não? Comenta 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador"
+  },
+  {
+   "id": "m-u-combo30-tt-01",
+   "quando": "2026-10-25T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_combo30.mp4",
+   "legenda": "Abri o Combo de Pacotes da Celebração de 30 Anos. Paguei R$ 240, e em outras lojas ele está R$ 350.\n\nSaiu Pikachu ex, Meowth de Alola IR, Umbreon ex e Buzzwole GX. Somando o valor das cartas na Liga Pokémon (preço médio, 23/10), deu R$ 143,95.\n\nValeu a pena ou não? Comenta 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capaMs": 51000
+  },
+  {
+   "id": "m-u-combo30-yt-02",
+   "quando": "2026-10-25T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_combo30.mp4",
+   "legenda": "Abri o Combo de Pacotes da Celebração de 30 Anos. Paguei R$ 240, e em outras lojas ele está R$ 350.\n\nSaiu Pikachu ex, Meowth de Alola IR, Umbreon ex e Buzzwole GX. Somando o valor das cartas na Liga Pokémon (preço médio, 23/10), deu R$ 143,95.\n\nValeu a pena ou não? Comenta 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "titulo": "Abri o Combo de 30 Anos: paguei R$ 240, deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos"
+   ]
+  },
+  {
+   "id": "m-v-10-18-30a-deulucro-yt-03",
+   "quando": "2026-10-25T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Gastei R$ 766 em Pokémon 30 Anos: deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Gastei R$ 766,25 em produtos da Celebração de 30 Anos. Somei o valor de cada carta que saiu. Deu lucro?\n\nO placar sobe a cada hit. Chuta antes de ver o final 👇\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1Qogr9IS.mp4"
+  },
+  {
+   "id": "m-v-10-25-30a-hit-moltres-ig-site-q-04",
+   "quando": "2026-10-25T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 11000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_moltres.mp4",
+   "legenda": "Booster da Celebração de 30 Anos no menor preço que o site já registrou: R$ 47,40. Hit ou brick? 🔥\n\nMoltres, Zapdos ou Articuno: qual é o seu? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-10-25-30a-hit-moltres-tt-site-q-05",
+   "quando": "2026-10-25T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_moltres.mp4",
+   "legenda": "hit ou brick? booster de R$ 47 🔥\n\nMoltres, Zapdos ou Articuno: qual é o seu? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 11000
+  },
+  {
+   "id": "m-v-10-25-30a-hit-moltres-yt-06",
+   "quando": "2026-10-25T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Booster de R$ 41 da 30 Anos: hit ou brick?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Booster de R$ 41,23 da Celebração de 30 Anos. Hit ou brick? 🔥\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1yMcrChx.mp4"
+  },
+  {
+   "id": "m-u-hit-pikachu-tt-07",
+   "quando": "2026-10-26T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_pikachu_ex.mp4",
+   "legenda": "Segundo pack do Combo de 30 Anos e veio Pikachu ex 💛 R$ 23,02 na Liga (preço médio, 23/10). O pack saiu por R$ 40.\n\nVocê guardaria ou venderia?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capaMs": 10500
+  },
+  {
+   "id": "m-v-10-19-de-video01-yt-08",
+   "quando": "2026-10-26T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Paguei R$ 114,99 e veio isso (pack brick)",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "R$ 114,99 no Desafio Estratégico e… bom, assiste até o fim 💀\n\nQuem nunca abriu um pack brick que atire a primeira carta.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1iRyheRC.mp4"
+  },
+  {
+   "id": "m-u-hit-pikachu-yt-09",
+   "quando": "2026-10-26T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_pikachu_ex.mp4",
+   "legenda": "Segundo pack do Combo de 30 Anos e veio Pikachu ex 💛 R$ 23,02 na Liga (preço médio, 23/10). O pack saiu por R$ 40.\n\nVocê guardaria ou venderia?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "titulo": "Pikachu ex no Combo 30 Anos: deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos"
+   ]
+  },
+  {
+   "id": "m-u-hit-umbreon-ig-10",
+   "quando": "2026-10-26T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_umbreon_ex.mp4",
+   "legenda": "Um pack de R$ 40 do Combo de 30 Anos com Meowth de Alola IR e Umbreon ex 😳 R$ 79,49 nas duas cartas pela Liga (preço médio, 23/10). Deu lucro!\n\nQual das duas vai pro seu binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador"
+  },
+  {
+   "id": "m-u-hit-umbreon-tt-11",
+   "quando": "2026-10-26T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_umbreon_ex.mp4",
+   "legenda": "Um pack de R$ 40 do Combo de 30 Anos com Meowth de Alola IR e Umbreon ex 😳 R$ 79,49 nas duas cartas pela Liga (preço médio, 23/10). Deu lucro!\n\nQual das duas vai pro seu binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capaMs": 12300
+  },
+  {
+   "id": "m-u-hit-umbreon-yt-12",
+   "quando": "2026-10-26T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_umbreon_ex.mp4",
+   "legenda": "Um pack de R$ 40 do Combo de 30 Anos com Meowth de Alola IR e Umbreon ex 😳 R$ 79,49 nas duas cartas pela Liga (preço médio, 23/10). Deu lucro!\n\nQual das duas vai pro seu binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "titulo": "Meowth IR + Umbreon ex no mesmo pack: deu lucro!",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos"
+   ]
+  },
+  {
+   "id": "m-v-10-27-30a-hit-uxie-tt-site-q-g2-13",
+   "quando": "2026-10-27T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_uxie.mp4",
+   "legenda": "nem todo booster é hit 😭\n\nQual foi o pior brick que você já tirou? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 11000
+  },
+  {
+   "id": "m-v-10-27-30a-hit-uxie-yt-g2-14",
+   "quando": "2026-10-27T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Nem todo booster é hit: prejuízo na 30 Anos",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Nem todo booster é hit 😭 R$ 60,89 na Celebração de 30 Anos e… prejuízo.\n\nQual foi seu pior brick?\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/grupos\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1hJuUAuT.mp4"
+  },
+  {
+   "id": "m-v-10-20-site-15s-busca-yt-15",
+   "quando": "2026-10-27T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Quanto custa Pokémon TCG em 57 lojas?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Quanto custa o mesmo produto em 57 lojas? O TCG Price Hunter compara em segundos e mostra onde está mais barato.\n\nGrátis, sem cadastro.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1zrk8sN9.mp4"
+  },
+  {
+   "id": "m-u-hit-buzzwole-ig-16",
+   "quando": "2026-10-27T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_buzzwole_gx.mp4",
+   "legenda": "Último pack do Combo de 30 Anos: Buzzwole GX das Cartas Clássicas, R$ 41,44 na Liga (preço médio, 23/10). O pack saiu por R$ 40.\n\nVocê lembrava dessa carta?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador"
+  },
+  {
+   "id": "m-u-hit-buzzwole-tt-17",
+   "quando": "2026-10-27T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_buzzwole_gx.mp4",
+   "legenda": "Último pack do Combo de 30 Anos: Buzzwole GX das Cartas Clássicas, R$ 41,44 na Liga (preço médio, 23/10). O pack saiu por R$ 40.\n\nVocê lembrava dessa carta?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capaMs": 10100
+  },
+  {
+   "id": "m-u-hit-buzzwole-yt-18",
+   "quando": "2026-10-27T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_buzzwole_gx.mp4",
+   "legenda": "Último pack do Combo de 30 Anos: Buzzwole GX das Cartas Clássicas, R$ 41,44 na Liga (preço médio, 23/10). O pack saiu por R$ 40.\n\nVocê lembrava dessa carta?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "titulo": "Buzzwole GX no último pack do Combo 30 Anos",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos"
+   ]
+  },
+  {
+   "id": "m-v-10-28-de-caixa-8packs-tt-site-q-g2-19",
+   "quando": "2026-10-28T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_caixa_8packs.mp4",
+   "legenda": "abri 8 boosters de R$ 114,99 e… 💀\n\nChuta antes do final: lucro ou prejuízo? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capaMs": 160000
+  },
+  {
+   "id": "m-v-10-28-de-caixa-8packs-yt-g2-20",
+   "quando": "2026-10-28T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Abri 8 packs do Desafio Estratégico (resultado no final)",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "8 packs do Desafio Estratégico. R$ 114,99. Abri todos. O resultado tá no final 💀\n\nChutou certo no post de hoje?\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/grupos\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1EPxLYY7.mp4"
+  },
+  {
+   "id": "m-v-10-21-30a-hit-sylveon-yt-21",
+   "quando": "2026-10-28T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Booster de R$ 45 da coleção 30 Anos: olha o final",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Booster de R$ 45,27 da Celebração de 30 Anos. A última carta mudou tudo ✨\n\nVocê guardava ou vendia?\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1T1ouiV1.mp4"
+  },
+  {
+   "id": "m-u-box-dragonite-ig-22",
+   "quando": "2026-10-28T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_box_dragonite.mp4",
+   "legenda": "Abri a Coleção Mega Forças Mega Dragonite ex. Paguei R$ 90, e em outras lojas ela está R$ 220.\n\nSaíram Mega Dragonite ex, Thievul IR e Mega Dragalge ex. Somando na Liga Pokémon (preço médio, 23/10), deu R$ 68,17 em cartas.\n\nValeu a pena? Comenta 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador"
+  },
+  {
+   "id": "m-u-box-dragonite-tt-23",
+   "quando": "2026-10-28T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_box_dragonite.mp4",
+   "legenda": "Abri a Coleção Mega Forças Mega Dragonite ex. Paguei R$ 90, e em outras lojas ela está R$ 220.\n\nSaíram Mega Dragonite ex, Thievul IR e Mega Dragalge ex. Somando na Liga Pokémon (preço médio, 23/10), deu R$ 68,17 em cartas.\n\nValeu a pena? Comenta 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "capaMs": 17200
+  },
+  {
+   "id": "m-u-box-dragonite-yt-24",
+   "quando": "2026-10-28T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_box_dragonite.mp4",
+   "legenda": "Abri a Coleção Mega Forças Mega Dragonite ex. Paguei R$ 90, e em outras lojas ela está R$ 220.\n\nSaíram Mega Dragonite ex, Thievul IR e Mega Dragalge ex. Somando na Liga Pokémon (preço médio, 23/10), deu R$ 68,17 em cartas.\n\nValeu a pena? Comenta 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "titulo": "Box Mega Dragonite: paguei R$ 90, valeu a pena?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "mega dragonite"
+   ]
+  },
+  {
+   "id": "m-v-10-29-site-filme-principal-tt-g2-25",
+   "quando": "2026-10-29T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "não procure preço. procure oportunidade 🔎\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1nhPa11D.mp4"
+  },
+  {
+   "id": "m-v-10-29-site-filme-principal-yt-g2-26",
+   "quando": "2026-10-29T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "TCG Price Hunter: compare Pokémon TCG em 57 lojas",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Não procure preço. Procure oportunidade.\n\nBusca, comparação entre 57 lojas, nota de 0 a 100 pra cada oferta e aviso de preço. Tudo grátis no TCG Price Hunter.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/grupos\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1nhPa11D.mp4"
+  },
+  {
+   "id": "m-u-hit-dragalge-ig-27",
+   "quando": "2026-10-29T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_dragalge.mp4",
+   "legenda": "Pack de Caos Ascendente da box Mega Dragonite e veio Mega Dragalge ex. R$ 7,86 na Liga (preço médio, 23/10).\n\nHit ou brick?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador"
+  },
+  {
+   "id": "m-u-hit-dragalge-tt-28",
+   "quando": "2026-10-29T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_dragalge.mp4",
+   "legenda": "Pack de Caos Ascendente da box Mega Dragonite e veio Mega Dragalge ex. R$ 7,86 na Liga (preço médio, 23/10).\n\nHit ou brick?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "capaMs": 13600
+  },
+  {
+   "id": "m-u-hit-dragalge-yt-29",
+   "quando": "2026-10-29T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_dragalge.mp4",
+   "legenda": "Pack de Caos Ascendente da box Mega Dragonite e veio Mega Dragalge ex. R$ 7,86 na Liga (preço médio, 23/10).\n\nHit ou brick?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "titulo": "Mega Dragalge ex no pack de Caos Ascendente",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "mega dragonite"
+   ]
+  },
+  {
+   "id": "m-v-10-30-mir-unboxing-tt-g2-30",
+   "quando": "2026-10-30T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "unboxing baralho batalha de liga miraidon ex ⚡\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #miraidon #unboxing #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1aEcSNI1.mp4"
+  },
+  {
+   "id": "m-v-10-30-mir-unboxing-yt-g2-31",
+   "quando": "2026-10-30T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Unboxing Baralho Batalha de Liga Miraidon ex",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Unboxing do Baralho Batalha de Liga Miraidon ex ⚡ Deck pronto pra jogar: o que vem dentro?\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/grupos\n\n#pokemontcg #pokemontcgbrasil #miraidon #batalhadeliga #unboxing",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1aEcSNI1.mp4"
+  },
+  {
+   "id": "m-u-hit-thievul-ig-32",
+   "quando": "2026-10-30T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_thievul.mp4",
+   "legenda": "Quinto pack da box Mega Dragonite: Thievul ilustração rara, R$ 18,51 na Liga (preço médio, 23/10). O pack saiu por R$ 11,25. Deu lucro!\n\nVocê já puxou essa?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador"
+  },
+  {
+   "id": "m-u-hit-thievul-tt-33",
+   "quando": "2026-10-30T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_thievul.mp4",
+   "legenda": "Quinto pack da box Mega Dragonite: Thievul ilustração rara, R$ 18,51 na Liga (preço médio, 23/10). O pack saiu por R$ 11,25. Deu lucro!\n\nVocê já puxou essa?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "capaMs": 13600
+  },
+  {
+   "id": "m-u-hit-thievul-yt-34",
+   "quando": "2026-10-30T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_thievul.mp4",
+   "legenda": "Quinto pack da box Mega Dragonite: Thievul ilustração rara, R$ 18,51 na Liga (preço médio, 23/10). O pack saiu por R$ 11,25. Deu lucro!\n\nVocê já puxou essa?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "titulo": "Thievul IR: pack de R$ 11 que deu lucro",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "mega dragonite"
+   ]
+  },
+  {
+   "id": "m-v-10-31-30a-hit-gholdengo-ig-site-q-35",
+   "quando": "2026-10-31T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 15000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_gholdengo.mp4",
+   "legenda": "Feliz Halloween 🎃 O maior susto do dia: abrir um booster, mesmo no menor preço do site (R$ 47,40), e… Comenta 👻 se já passou por isso.\n\nQual carta já te deu o maior susto, bom ou ruim? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-10-31-30a-hit-gholdengo-tt-site-q-36",
+   "quando": "2026-10-31T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_gholdengo.mp4",
+   "legenda": "o maior susto do halloween 🎃💀\n\nQual carta já te deu o maior susto, bom ou ruim? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 15000
+  },
+  {
+   "id": "m-v-10-31-30a-hit-gholdengo-yt-37",
+   "quando": "2026-10-31T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "O susto de Halloween de todo colecionador",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Feliz Halloween 🎃 O maior susto do dia: abrir um booster de R$ 60,89 e…\n\nComenta 👻 se já passou por isso.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1vqSDjK3.mp4"
+  },
+  {
+   "id": "m-u-brick-dragonite-ig-40",
+   "quando": "2026-10-31T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_brick_dragonite.mp4",
+   "legenda": "Último pack da box Mega Dragonite… e nada 😭 Nem todo pack é hit.\n\nQual foi o seu pior pack?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador"
+  },
+  {
+   "id": "m-u-brick-dragonite-tt-41",
+   "quando": "2026-10-31T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_brick_dragonite.mp4",
+   "legenda": "Último pack da box Mega Dragonite… e nada 😭 Nem todo pack é hit.\n\nQual foi o seu pior pack?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "capaMs": 9600
+  },
+  {
+   "id": "m-u-brick-dragonite-yt-42",
+   "quando": "2026-10-31T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_brick_dragonite.mp4",
+   "legenda": "Último pack da box Mega Dragonite… e nada 😭 Nem todo pack é hit.\n\nQual foi o seu pior pack?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #megadragonite #packopening #colecionador",
+   "titulo": "Nem todo pack é hit 😭",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "mega dragonite"
+   ]
+  },
+  {
+   "id": "m-u-hit-pikachu-ig-43",
+   "quando": "2026-11-01T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_U_hit_pikachu_ex.mp4",
+   "legenda": "Segundo pack do Combo de 30 Anos e veio Pikachu ex 💛 R$ 23,02 na Liga (preço médio, 23/10). O pack saiu por R$ 40.\n\nVocê guardaria ou venderia?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador"
+  },
+  {
+   "id": "m-v-11-01-30a-etb-abertura-v2-ig-site-q-44",
+   "quando": "2026-11-01T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 140000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_etb_abertura_v2.mp4",
+   "legenda": "ETB da Celebração de 30 Anos aberta inteira. Menor preço que o site já registrou: R$ 519,90. O placar sobe a cada carta 👀\n\nChuta o valor final antes de ver o placar 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-01-30a-etb-abertura-v2-tt-site-q-45",
+   "quando": "2026-11-01T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_etb_abertura_v2.mp4",
+   "legenda": "ETB 30 anos por R$ 519 no menor preço do site. deu lucro? 👀\n\nChuta o valor final antes de ver o placar 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 140000
+  },
+  {
+   "id": "m-v-11-01-30a-etb-abertura-v2-yt-46",
+   "quando": "2026-11-01T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "ETB 30 Anos completo: paguei R$ 548, deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Abri a Coleção Treinador Avançado (ETB) da Celebração de 30 Anos inteira. Paguei R$ 548. O placar sobe a cada carta 👀\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1OqyWoLO.mp4"
+  },
+  {
+   "id": "m-v-11-02-site-15s-comunidade-ig-49",
+   "quando": "2026-11-02T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 8000,
+   "legenda": "Promoção boa some rápido. No TCG Price Hunter a comunidade avisa em tempo real, e no grupo do WhatsApp você recebe primeiro.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1fMEIC2M.mp4"
+  },
+  {
+   "id": "m-v-11-02-site-15s-comunidade-tt-50",
+   "quando": "2026-11-02T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "promoção boa some rápido ⚡\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1fMEIC2M.mp4"
+  },
+  {
+   "id": "m-v-11-02-site-15s-comunidade-yt-51",
+   "quando": "2026-11-02T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Promoção de Pokémon TCG some rápido",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Promoção boa some rápido. No TCG Price Hunter a comunidade avisa em tempo real, e no grupo do WhatsApp você recebe primeiro.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1fMEIC2M.mp4"
+  },
+  {
+   "id": "m-v-11-03-30a-hit-zapdos-ig-site-q-54",
+   "quando": "2026-11-03T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 11000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_zapdos.mp4",
+   "legenda": "Booster da Celebração de 30 Anos no menor preço que o site já registrou: R$ 47,40. Valeu ou não valeu? ⚡\n\nZapdos ou Moltres: qual hit é melhor? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-03-30a-hit-zapdos-tt-site-q-55",
+   "quando": "2026-11-03T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_zapdos.mp4",
+   "legenda": "booster de R$ 47. valeu ou não valeu? ⚡\n\nZapdos ou Moltres: qual hit é melhor? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 11000
+  },
+  {
+   "id": "m-v-11-03-30a-hit-zapdos-yt-56",
+   "quando": "2026-11-03T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Booster da 30 Anos: valeu ou não?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Booster de R$ 60,89 da Celebração de 30 Anos. Valeu ou não valeu? ⚡\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1m4gqBO5.mp4"
+  },
+  {
+   "id": "m-v-11-04-de-video02-ig-site-q-59",
+   "quando": "2026-11-04T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 38000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video02.mp4",
+   "legenda": "Desafio Estratégico de novo: 8 boosters por R$ 114,99, o menor preço que o site já viu. Será que agora vem? 🙏\n\nQual carta você quer que saia no próximo pack? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-04-de-video02-tt-site-q-60",
+   "quando": "2026-11-04T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video02.mp4",
+   "legenda": "será que agora vem? 🙏\n\nQual carta você quer que saia no próximo pack? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capaMs": 38000
+  },
+  {
+   "id": "m-v-11-04-de-video02-yt-61",
+   "quando": "2026-11-04T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Desafio Estratégico de novo: será que agora vem?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "Desafio Estratégico de novo. Será que agora vem? 🙏\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1OMlQu6V.mp4"
+  },
+  {
+   "id": "m-v-11-05-site-15s-score-ig-64",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 9000,
+   "legenda": "Essa oferta vale a pena? O TCG Price Hunter dá uma nota de 0 a 100 pra cada oferta. Reinado Delta chega amanhã: usa antes de comprar.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1MgGFefS.mp4"
+  },
+  {
+   "id": "m-v-11-05-site-15s-score-tt-65",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "essa oferta vale a pena? nota de 0 a 100\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1MgGFefS.mp4"
+  },
+  {
+   "id": "m-v-11-05-site-15s-score-yt-66",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Essa oferta de Pokémon TCG vale a pena?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Essa oferta vale a pena? O TCG Price Hunter dá uma nota de 0 a 100 pra cada oferta. Reinado Delta chega amanhã: usa antes de comprar.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1MgGFefS.mp4"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 1500,
+   "id": "m-s3-sex-reinado-delta-motion-ig-q-67",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_RD_lancamento_motion.mp4",
+   "legenda": "Saiu hoje: Reinado Delta, a última coleção grande da fase Megaevolução, com Mega Rayquaza ex como estrela.\n\nVai comprar Reinado Delta no lançamento ou esperar baixar? 👇\n\nSemana de lançamento é quando o preço mais sobe. Compare com o sugerido da Copag e não pague qualquer valor.\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "id": "m-s3-sex-reinado-delta-motion-tt-q-68",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_RD_lancamento_motion.mp4",
+   "legenda": "Reinado Delta saiu hoje. lançamento sobe de preço, não paga qualquer valor 👀\n\nVai comprar Reinado Delta no lançamento ou esperar baixar? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #reinadodelta #megarayquaza #fyp",
+   "capaMs": 1500
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "id": "m-s3-sex-reinado-delta-motion-yt-69",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_RD_lancamento_motion.mp4",
+   "legenda": "Saiu hoje: Reinado Delta, a última coleção grande da fase Megaevolução, com Mega Rayquaza ex como estrela.\n\nSemana de lançamento é quando o preço mais sobe. Compare com o sugerido da Copag e não pague qualquer valor.\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #reinadodelta #megarayquaza #megaevolucao",
+   "titulo": "Reinado Delta chegou: a nova coleção de Pokémon TCG",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "preço pokemon tcg",
+    "ofertas pokemon",
+    "reinado delta"
+   ]
+  },
+  {
+   "id": "m-v-11-07-30a-blister-abertura-ig-site-q-70",
+   "quando": "2026-11-07T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 40000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_blister_abertura.mp4",
+   "legenda": "Blister Duplo da Celebração de 30 Anos: R$ 69,66, o menor preço que o site já registrou. Placar no topo. Lucro ou prejuízo? 👇\n\nBlister ou booster avulso: qual você prefere? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-07-30a-blister-abertura-tt-site-q-71",
+   "quando": "2026-11-07T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_blister_abertura.mp4",
+   "legenda": "blister de R$ 69. vale a pena? 👇\n\nBlister ou booster avulso: qual você prefere? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 40000
+  },
+  {
+   "id": "m-v-11-07-30a-blister-abertura-yt-72",
+   "quando": "2026-11-07T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Blister da 30 Anos: lucro ou prejuízo?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Blister da Celebração de 30 Anos, R$ 82,45. Placar no topo. Lucro ou prejuízo? 👇\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1twqA6Sq.mp4"
+  },
+  {
+   "id": "m-v-10-27-30a-hit-uxie-ig-site-q-g2-73",
+   "quando": "2026-11-08T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 11000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_uxie.mp4",
+   "legenda": "Nem todo booster é hit 😭 Mesmo no menor preço do site (R$ 47,40)… Qual foi seu pior brick?\n\nQual foi o pior brick que você já tirou? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-10-28-de-caixa-8packs-ig-site-q-g2-74",
+   "quando": "2026-11-08T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 160000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_caixa_8packs.mp4",
+   "legenda": "8 boosters do Desafio Estratégico por R$ 114,99, o menor preço que o site já viu. Abri todos. O resultado tá no final 💀\n\nChuta antes do final: lucro ou prejuízo? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-09-de-video03-ig-site-q-77",
+   "quando": "2026-11-09T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 38000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video03.mp4",
+   "legenda": "Mais um Desafio Estratégico (R$ 114,99, menor preço que o site já viu). A essa altura é questão de honra 😤\n\nContinuo a série ou paro por aqui? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-09-de-video03-tt-site-q-78",
+   "quando": "2026-11-09T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video03.mp4",
+   "legenda": "a essa altura é questão de honra 😤\n\nContinuo a série ou paro por aqui? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capaMs": 38000
+  },
+  {
+   "id": "m-v-11-09-de-video03-yt-79",
+   "quando": "2026-11-09T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Desafio Estratégico: questão de honra",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "Mais um Desafio Estratégico. A essa altura é questão de honra 😤\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1PyQ0SRD.mp4"
+  },
+  {
+   "id": "m-v-11-10-de-video04-ig-site-q-80",
+   "quando": "2026-11-10T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 34000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video04.mp4",
+   "legenda": "Último pack do Desafio Estratégico (R$ 114,99, menor preço que o site já viu). Fecha a série comigo 👇\n\nQual foi o melhor pack da série? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-11-10-de-video04-tt-site-q-81",
+   "quando": "2026-11-10T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video04.mp4",
+   "legenda": "último pack da série. vem? 👇\n\nQual foi o melhor pack da série? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capaMs": 34000
+  },
+  {
+   "id": "m-v-11-10-de-video04-yt-82",
+   "quando": "2026-11-10T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Último pack do Desafio Estratégico",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "Último pack do Desafio Estratégico. Fecha a série comigo 👇\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1jcAxoxF.mp4"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 1800,
+   "id": "m-v-11-11-blister-duplo-ig-q-85",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_BD_blister_duplo_pedro.mp4",
+   "legenda": "Abri 2 Blisters Duplos da Celebração de 30 Anos e o Espeon ex veio no último pack 🍀\n\nEspeon ex: guarda na coleção ou vende? 👇\n\nNo menor preço que o site já viu, cada blister sai por R$ 69,66. Deu lucro? Só olhando o placar 👀\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "id": "m-v-11-11-blister-duplo-tt-q-86",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_BD_blister_duplo_pedro.mp4",
+   "legenda": "2 blisters duplos da 30 anos… o Espeon ex veio no último pack 😳\n\nEspeon ex: guarda na coleção ou vende? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 1800
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "id": "m-v-11-11-blister-duplo-yt-87",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_BD_blister_duplo_pedro.mp4",
+   "legenda": "Abri 2 Blisters Duplos da Celebração de 30 Anos e o Espeon ex veio no último pack 🍀\n\nNo menor preço que o site já viu, cada blister sai por R$ 69,66. Deu lucro? Só olhando o placar 👀\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "titulo": "Abrindo o Blister Duplo da Celebração de 30 Anos",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "preço pokemon tcg",
+    "ofertas pokemon",
+    "pokemon 30 anos",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "m-v-10-26-site-15s-alertas-ig-g2-92",
+   "quando": "2026-11-14T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 8000,
+   "legenda": "Cansou de ficar de olho no preço? Diz quanto quer pagar e o Hunter te avisa quando baixar 🔔\n\nGrátis.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1gasvWy1.mp4"
+  },
+  {
+   "id": "m-v-10-26-site-15s-alertas-tt-g2-93",
+   "quando": "2026-11-14T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "cansou de ficar de olho no preço? 🔔\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1gasvWy1.mp4"
+  },
+  {
+   "id": "m-v-10-26-site-15s-alertas-yt-g2-94",
+   "quando": "2026-11-14T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Aviso de preço para Pokémon TCG grátis",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Cansou de ficar de olho no preço? Diz quanto quer pagar e o Hunter te avisa quando baixar 🔔\n\nGrátis.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/grupos\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1gasvWy1.mp4"
+  },
+  {
+   "id": "m-v-10-30-mir-unboxing-ig-g2-95",
+   "quando": "2026-11-15T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 22000,
+   "legenda": "Unboxing do Baralho Batalha de Liga Miraidon ex ⚡ Deck pronto pra jogar: o que vem dentro?\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #miraidon #batalhadeliga #unboxing",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1aEcSNI1.mp4"
+  },
+  {
+   "id": "m-poster30-yt-repost",
+   "quando": "2026-10-25T15:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Coleção com Pôster 30 Anos: deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Abri a Coleção com Pôster da Celebração de 30 Anos. Paguei R$ 135,80. O placar tá no topo da tela, acompanha até o fim 👀\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_poster30.mp4"
+  }
+ ]
+}
