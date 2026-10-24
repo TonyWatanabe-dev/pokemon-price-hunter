@@ -1,3 +1,38 @@
+## Atualização executiva — 24/10/2026 (America/Sao_Paulo)
+
+### Entregue em 24/10
+
+| Área | Entrega | PR |
+|---|---|---|
+| Banco | Quarentena no sync: lote com SAVEPOINT; linha recusada fica de fora sem parar a rodada (oferta continua viva); tipo sem categoria isolado; erro sistêmico (>10% ou >50) ainda para. Validado em PostgreSQL 16 com o ramo data real | #862 |
+| Vigia | `whatsapp_parado`: 4 rodadas concluídas seguidas do envio ao WhatsApp com falha → degradado | #862 |
+| Frete | Selo "Frete grátis acima de R$ X na loja" pela regra pública de 5 lojas (config/frete-gratis.json, fonte e data); 51 ofertas sem frete ganham o selo. Total, nota e ordem não mudam | #863 |
+| Dono | Search Console verificado e sitemap enviado; convite antigo do WhatsApp redefinido; caixa de 18 boosters = Combo de Booster 18 | #861 |
+
+### Estado por fase (docs/PLANO-ENTREGA-TURBO.md)
+
+| Fase | Estado | O que falta |
+|---|---|---|
+| 0 — Fábrica e governança | Operando (CI com 4 checks, revisão, merge por PR) | Evidência formal do Governor/auditoria em #231 |
+| 1 — Integridade e operação 24/7 | Código pronto; burn-in reiniciado em 22/10 | 7/7 dias verdes (previsão ~30/10). Quarentena (#862) reduz o risco de novo reinício |
+| 2 — Fluxo principal e confiança | **Concluída** | — |
+| 3 — Frete e custo total | Parcial | Mercado Livre 283/356 com frete; VTEX 429 a IP de nuvem; Nuvemshop/Woo/Shopify sem consulta pública. Selo de frete grátis por loja (#863). Cotação real só com acesso autorizado |
+| 4 — Contas e alertas | Fluxo feliz comprovado em 20/10; texto ajustado (#844) | Testar falha de credencial e bloqueio (403) |
+| 5 — Opportunity Engine | Concluída no código e em produção | Acompanhar falsos positivos |
+| 6 — Lojas e afiliados | 165 fontes: 115 ativas, 33 bloqueadas, 10 indisponíveis, 5 com erro; 3.304 ofertas (1.121 com estoque), 510 produtos | Links de afiliado novos (dono, computador); não casados: 163 de 200 por "coleção não identificada" |
+| 7 — Agentes especialistas | Parcial | Social Media em operação (Telegram/WhatsApp); demais agentes dependem de pré-requisitos |
+| 8 — Hardening e lançamento | Parcial | Burn-in, smoke público com SHA publicado; backup do Supabase (recomendação: adiar o Pro até haver receita) |
+| 9 — Manutenção contínua | Não iniciada (começa após a 8) | — |
+
+### Próxima ordem de execução
+
+1. **P0:** burn-in 7/7 e smoke de produção.
+2. **P1, conversão:** medir /entrar antes × depois da #858 (26/10).
+3. **P1, robô de busca:** casamento de "coleção não identificada"; revisar as 33 lojas bloqueadas (pausar as que bloqueiam sempre).
+4. **P2, após o burn-in:** Supabase como fonte única.
+
+---
+
 ## Atualização executiva — 23/10/2026 (America/Sao_Paulo)
 
 ### Entregue em 20–23/10
