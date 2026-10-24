@@ -26,7 +26,7 @@ permissions:
 jobs:
   arte:
     if: github.event_name == 'workflow_dispatch' || vars.SOCIAL_TOP == '1'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # o instalador do Playwright 1.56 ainda não reconhece o Ubuntu 26 do ubuntu-latest
     timeout-minutes: 10
     outputs:
       tipos: ${{ steps.tipos.outputs.tipos }}
