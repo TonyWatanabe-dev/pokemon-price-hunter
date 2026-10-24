@@ -42,6 +42,8 @@ assert.equal(ler({ extraLd: '<script type="application/ld+json">{"@type":"Produc
 // estoque: dataLayer "NO" vale; dataLayer × JSON-LD em conflito vira desconhecido
 assert.equal(ler({ dl: { availability: 'NO' }, ld: { price: '69.90', availability: 'OutOfStock' } }).stock, 'OUT_OF_STOCK');
 assert.equal(ler({ dl: { availability: 'YES' }, ld: { price: '69.90', availability: 'OutOfStock' } }).stock, 'UNKNOWN');
+// dataLayer sozinho (sem JSON-LD, Virtual Gift) não afirma estoque
+assert.equal(ler({ ld: null, ga4: { currency: 'BRL', value: 69.9, items: [{ price: 69.9 }] } }).stock, 'UNKNOWN');
 // leitores das fontes
 assert.equal(tray.dataLayerTray('<script>dataLayer = [{"pageCategory":"Produto","priceSell":"1.00"}];</script>').priceSell, '1.00');
 assert.equal(tray.dataLayerTray('<script>dataLayer = [{quebrado: 1}];</script>'), null);

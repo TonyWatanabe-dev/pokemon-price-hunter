@@ -65,8 +65,11 @@ export function lerPaginaTray(html, url) {
   const ga4 = precosGa4(h);
   if (!ga4.some((v) => igual(v, base)) && !igual(ld.preco, base)) return { motivo: `preço não confirmado (dataLayer ${base} × JSON-LD ${ld.preco ?? '—'} × GA4 ${ga4.join('/') || '—'})` };
   const doDl = /^(yes|sim|true|1)$/i.test(String(dl.availability)) ? 'IN_STOCK' : /^(no|nao|não|false|0)$/i.test(String(dl.availability)) ? 'OUT_OF_STOCK' : null;
-  let stock = doDl || ld.stock || 'UNKNOWN';
-  if (doDl && ld.stock && ld.stock !== doDl) stock = 'UNKNOWN'; // dataLayer e JSON-LD discordam: não afirma estoque
+  // Sonda 40119264932: o dataLayer diz availability "YES" até em produto que o JSON-LD e a página dão como esgotado
+  // (Universal Geek, 8 de 8). Então o dataLayer sozinho não afirma estoque: só vale quando o JSON-LD concorda.
+  let stock = 'UNKNOWN';
+  if (ld.stock && doDl && ld.stock === doDl) stock = ld.stock;
+  else if (ld.stock && !doDl) stock = ld.stock;
   let image = dl.urlImage || [].concat(ld.p?.image || [])[0] || null; if (image && typeof image === 'object') image = image.url || null;
   try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }
   const l = { title: nome, url, image, price: { pix: null, base }, listPrice: null, stock, availableFrom: null, quantity: null,
