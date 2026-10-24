@@ -6,6 +6,7 @@ import { parseLojas, veredito } from '../tools/sonda-adaptadores.mjs';
 assert.deepEqual(parseLojas('lifegeek:vtex, metacardscombr:shopify'), [{ id: 'lifegeek', plataforma: 'vtex' }, { id: 'metacardscombr', plataforma: 'shopify' }]);
 assert.deepEqual(parseLojas('x:jsonld,../etc:vtex,ok:mercadolivre'), [], 'só vtex/shopify/woocommerce e id simples');
 assert.equal(parseLojas('lojaw:woocommerce').length, 1);
+assert.equal(parseLojas('kalungacombr:busca').length, 1, 'prova de conceito do leitor pela busca');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 27 } }), 'passa');
 assert.equal(veredito({ atual: { casados: 27 }, sonda: { validos: 40, casados: 20 } }), 'pior');
 assert.equal(veredito({ atual: { casados: null }, sonda: { validos: 0, casados: 0 } }), 'sem_anuncios');
@@ -42,7 +43,11 @@ console.log('sonda-adaptadores-tests: ok');
 {
   const { resumoPagina } = await import('../tools/sonda-adaptadores.mjs');
   const html = '<html><head><meta property="product:price:amount" content="49.90"><script type="application/ld+json">{"@type":"Product","name":"Booster"}</script></head></html>';
-  assert.deepEqual(resumoPagina(html, 'https://lojax.com.br/produto/booster-pokemon', () => null), { caminho: '/produto/booster-pokemon', ld: 1, og: true, publica: false });
+  assert.deepEqual(resumoPagina(html, 'https://lojax.com.br/produto/booster-pokemon', () => null), { caminho: '/produto/booster-pokemon', ld: 1, og: true, publica: false, nome: 'Booster', titulo: '', preco: null, escrito: null });
+  // motivo da recusa: nome × título, preço do JSON-LD e se ele está escrito na página
+  const comPreco = '<title>Booster Fogo - Loja</title><script type="application/ld+json">{"@type":"Product","name":"Booster Fogo","offers":{"price":"24.90"}}</script><p>R$ 24,90</p>';
+  assert.deepEqual(resumoPagina(comPreco, 'https://lojax.com.br/p/b', () => null), { caminho: '/p/b', ld: 1, og: false, publica: false, nome: 'Booster Fogo', titulo: 'Booster Fogo - Loja', preco: '24.90', escrito: true });
+  assert.equal(resumoPagina(comPreco.replace('R$ 24,90', 'Consulte'), 'https://lojax.com.br/p/b', () => null).escrito, false);
   assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => ({ title: 'x' })).publica, true);
   assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => null).ld, 0);
   console.log('sonda-adaptadores-tests (página): ok');
