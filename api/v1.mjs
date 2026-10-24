@@ -38,6 +38,10 @@ import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
 import { publicAffiliates, registrarDesempate } from './_lib/affiliates.mjs';
+import { recomendar, OBJETIVO_MODELO } from './_lib/kit.mjs';
+import { readFileSync } from 'node:fs';
+// Frete grátis pela regra pública da loja (config/frete-gratis.json): usado pelo kit para o frete da cesta.
+let FG = null; const freteGratis = () => { if (FG) return FG; try { FG = JSON.parse(readFileSync(new URL('../config/frete-gratis.json', import.meta.url), 'utf8')).lojas || {}; } catch { FG = {}; } return FG; };
 // Desempate do dono (docs/afiliados.md): em empate de total, oferta com link de afiliado primeiro. Nunca acima de mais barata.
 registrarDesempate();
 
@@ -59,7 +63,7 @@ const str = (v, max = 80) => (typeof v === 'string' && v.trim() ? v.trim().slice
 const bool = (v) => v === '1' || v === 'true' || v === 'sim';
 // Só parâmetros que a rota lê entram na chave do cache: "?x=1", "?x=2"... não enchem o cache nem forçam consultas repetidas.
 const KEY_PARAMS = new Set(['pagina', 'limite', 'colecao', 'tipo', 'categoria', 'estoque', 'busca', 'ordem', 'todas', 'dias', 'lojas', 'status', 'faixa',
-  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos', 'idioma']);
+  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos', 'idioma', 'objetivo', 'orcamento', 'favorito']);
 const SLUG_RE = /^[a-z0-9][a-z0-9_.-]{0,120}$/i;
 
 class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -134,6 +138,13 @@ function route(segs, qs) {
       return { name: 'site-ofertas', kind: 'site', args: { ids: ids.length || (!col && !type) ? ids : null, col, type }, busca };
     }
     if (id === 'lojas' && segs.length === 2) return { name: 'site-lojas', kind: 'site' };
+    // Monte seu kit (docs/monte-seu-kit.md, K3): protótipo; respostas do questionário → cesta com produtos e ofertas reais.
+    if (id === 'kit' && segs.length === 2) {
+      const objetivo = str(qs.get('objetivo'), 20) || ''; if (!Object.hasOwn(OBJETIVO_MODELO, objetivo)) throw new HttpError(400, `objetivo inválido (use: ${Object.keys(OBJETIVO_MODELO).join(', ')})`);
+      const orcamento = Number(qs.get('orcamento')); if (objetivo !== 'proteger' && !(Number.isFinite(orcamento) && orcamento >= 1 && orcamento <= 100000)) throw new HttpError(400, 'orcamento inválido (1 a 100000)');
+      const idioma = str(qs.get('idioma'), 10) || 'pt'; if (!['pt', 'en', 'ja', 'zh', 'ko', 'qualquer'].includes(idioma)) throw new HttpError(400, 'idioma inválido');
+      return { name: 'site-kit', kind: 'site', resp: { objetivo, orcamento, idioma, favorito: str(qs.get('favorito'), 40) || '' } };
+    }
     if (id === 'pagina' && segs.length === 3) { if (!Object.hasOwn(SITE.SITE_PAGES, sub)) throw new HttpError(404, 'rota não encontrada'); return { name: 'site-pagina', kind: 'site', page: sub }; }
     if (id === 'produto' && sub && segs.length === 3) { if (!SLUG_RE.test(sub)) throw new HttpError(400, 'identificador de produto inválido'); return { name: 'site-produto', kind: 'site', id: sub }; }
   }
@@ -155,6 +166,10 @@ async function run(rt, source) {
     case 'site-ofertas': { const st = await catalogState(source);
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
     case 'site-pagina': return { body: { v: 1, source, ...SITE.SITE_PAGES[rt.page](await catalogState(source), { now: FR.nowMs() }) } };
+    case 'site-kit': { const st = await catalogState(source);
+      const produtos = (st.products || []).map((p) => ({ id: p.id, type: p.type, name: p.name, image: p.image || null }));
+      const ofertas = (st.offers || []).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
+      return { body: { v: 1, source, prototipo: true, ...recomendar(rt.resp, produtos, ofertas, { fg: freteGratis() }) } }; }
     case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {
       const st = await catalogState(source);

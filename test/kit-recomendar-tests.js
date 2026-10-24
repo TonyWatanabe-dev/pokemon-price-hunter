@@ -21,6 +21,7 @@ const ofertas = [
 
 assert.equal(idiomaDe('xx1-blister3-en'), 'en'); assert.equal(idiomaDe('xx1-blister3'), 'pt');
 assert.equal(melhoresOfertas(ofertas).get('xx1-blister3').storeId, 'a', 'sem estoque nunca é a melhor oferta');
+assert.equal(melhoresOfertas([O('p', 'a', 10, { anomalous: true }), O('p', 'b', 20, { stale: true }), O('p', 'c', 30)]).get('p').storeId, 'c', 'preço anômalo e leitura desatualizada ficam de fora');
 for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
 
 // 1. primeira coleção, R$ 100, português: blister triplo PT (nunca o inglês mais barato), até 3 unidades no orçamento
@@ -30,9 +31,16 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
   assert.deepEqual([it.productId, it.quantidade, it.oferta.storeId, it.idioma], ['xx1-blister3', 3, 'a', 'pt']);
   assert.equal(r.subtotal, 90); assert.ok(r.cabeNoOrcamento);
   assert.equal(it.oferta.url, 'https://a.test/xx1-blister3', 'link da oferta real'); assert.ok(it.oferta.source_timestamp, 'oferta rastreável');
+  assert.equal(it.imagem, null, 'sem foto https: nenhuma imagem inventada');
   assert.equal(r.total, null, 'frete desconhecido: sem total'); assert.equal(r.fretes[0].frete, null);
   assert.ok(r.limitacoes.some((l) => /acessórios/.test(l)), 'acessórios avisados, fora do valor');
   assert.ok(!JSON.stringify(r).match(/rara|chance|garantid|probabilidade/i), 'nunca promete carta');
+}
+// 1b. foto: a do anúncio; sem ela, a do produto
+{
+  const pr = [P('f1-b3', 'blister_3', 'F - Blister Triplo')]; pr[0].image = 'https://cat.test/f1.png';
+  assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20, { image: 'https://a.test/foto.jpg' })]).itens[0].imagem, 'https://a.test/foto.jpg');
+  assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20)]).itens[0].imagem, 'https://cat.test/f1.png');
 }
 // 2. idioma inglês: só produto -en
 { const r = recomendar({ objetivo: 'abrir', orcamento: 60, idioma: 'en' }, produtos, ofertas); assert.deepEqual(r.itens.map((i) => [i.productId, i.quantidade]), [['xx1-blister3-en', 3]]); }

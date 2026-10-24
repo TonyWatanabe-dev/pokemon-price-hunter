@@ -94,6 +94,14 @@
       "destination": "/entrar.html"
     },
     {
+      "source": "/monte-seu-kit",
+      "destination": "/kit.html"
+    },
+    {
+      "source": "/monte-seu-kit/:passo*",
+      "destination": "/kit.html"
+    },
+    {
       "source": "/ir/:destino/:origem",
       "destination": "/ir.html"
     },
@@ -158,7 +166,7 @@
     },
     "api/v1.mjs": {
       "maxDuration": 15,
-      "includeFiles": "{config/affiliates.json,config/afiliados/shopee.json,config/afiliados/amazon.json}"
+      "includeFiles": "{config/affiliates.json,config/afiliados/shopee.json,config/afiliados/amazon.json,config/frete-gratis.json}"
     }
   },
   "regions": [
