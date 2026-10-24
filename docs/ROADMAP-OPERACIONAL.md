@@ -28,7 +28,9 @@
 
 ### Pendências do proprietário
 
-- Search Console. Backup do Supabase. Caixa de 18 boosters. Desativar o convite antigo do WhatsApp. Links de afiliado novos (ML, Amazon, Shopee) pelo computador.
+- **Feito em 23/10:** Search Console verificado (TXT na zona DNS da HostGator; não remover) e sitemap `https://tcgpricehunter.com.br/sitemap.xml` enviado; convite antigo do WhatsApp redefinido; caixa de 18 boosters confirmada como o formato "Combo de Booster 18" já cadastrado.
+- **Backup do Supabase:** plano gratuito sem backup do banco. O dado essencial é reconstruível pelas etiquetas diárias `data-backup/*` (docs/backup.md). Recomendação: adiar o Pro (~US$ 25/mês) até haver receita; decisão do dono.
+- **Pendente:** links de afiliado novos (ML, Amazon, Shopee) pelo computador.
 
 ---
 
