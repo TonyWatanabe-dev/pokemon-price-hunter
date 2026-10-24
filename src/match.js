@@ -9,6 +9,9 @@ const has = (t, re) => re.test(t);
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const wordRe = (alias) => new RegExp('(^|[^a-z0-9.])' + esc(alias).replace(/ /g, '\\s?') + '($|[^a-z0-9.]|\\.(?!\\d))');
 
+// Brinquedo licenciado (figura, Funko, Pokébola de brinquedo, LEGO...): não é carta. Lata Pokébola/box seguem como TCG.
+const TOY = /\b(funko|figuras?|bonecos?|lego|monopoly|playset|squish|pokedex|arena de combate|pops open|pikachu de combate|guia de personagens|meu parceiro pikachu|game ataque surpresa)\b|\b(clipe|cinto com) pokebola\b/;
+const TOY_BALL = (t) => /\b(pokebola|poke ball)\b/.test(t) && !/\b(lata|box|colecao|boosters?|cartas|cards|tcg)\b/.test(t);
 const REJECT = [
   [/\b(usad[oa]s?|aberto|aberta|sem lacre|violad[oa]|avariad[oa]|caixa amassada|embalagem danificada)\b/, 'condição: não lacrado/usado'],
   [/\b(avulsas?|lote de cartas|cartas? aleatorias|sem repetidas|brilhantes? garantid|proxy|replica|nao original|similar|cartas? unitarias?)\b/, 'não é produto lacrado oficial'],
@@ -193,6 +196,7 @@ export function parseListing(title, catalog) {
   const t = normalize(title);
   const reasons = [];
   for (const [re, why] of REJECT) if (re.test(t)) reasons.push(why);
+  if ((TOY.test(t) || TOY_BALL(t)) && !reasons.includes('acessório ou item não-TCG')) reasons.push('brinquedo, não é carta');
   // Qualquer idioma que não seja PT (ou idiomas em conflito) nunca casa com o produto em português.
   const language = detectLanguage(t);
   // Importados (inglês, japonês, chinês, coreano) viram produto próprio, com sufixo de idioma e sem referência Copag.
@@ -258,7 +262,20 @@ function porRef(listing, catalog, p) {
 }
 
 export const AVULSOS = 'avulsos';
-const AVULSO_TYPES = new Set(['colecao_ex', 'colecao_premium', 'colecao_ilustracao', 'colecao_miniatura', 'deck']);
+const AVULSO_TYPES = new Set(['colecao_ex', 'colecao_premium', 'colecao_ilustracao', 'colecao_miniatura', 'deck', 'colecao_especial']);
+// Produtos especiais da Copag sem coleção no título (24/10/2026): nome próprio → tipo + variante. Só com o nome que
+// separa uma edição da outra (Ferramentas de Treinador precisa do Pokémon ex; Parceiro Inicial precisa da série).
+const NOME = '([a-z]{3,})';
+const ESPECIAIS = [
+  [/\b(ferramentas de treinador|trainer'?s? toolkit)\b/, (t) => { const v = detectVariant(t); return v && { type: 'colecao_especial', variant: 'ferramentas-de-treinador-' + v.replace(/^mega-/, '') }; }],
+  [/\b(parceiro inicial|first partner)\b/, (t) => { const m = t.match(/\b(serie|series) (\d)\b/); return m && { type: 'colecao_ilustracao', variant: 'parceiro-inicial-serie-' + m[2] }; }],
+  [/\bcolecao de torneios?\b/, (t) => { const m = t.match(new RegExp('\\bcolecao de torneios? ' + NOME + '\\b')); return m && { type: 'colecao_especial', variant: 'torneio-' + m[1] }; }],
+  [/\bmega luar\b/, (t) => { const m = t.match(new RegExp('\\bmega luar (?:- )?(?:mega )?' + NOME + '\\b')); return m && { type: 'colecao_especial', variant: 'mega-luar-' + m[1] }; }],
+  [/\bdia de pokemon\b/, (t) => { const m = t.match(/\bdia de pokemon (20\d\d)\b/); return m && { type: 'colecao_especial', variant: 'dia-de-pokemon-' + m[1] }; }],
+  [/\bdeck de batalha\b.*\bdeluxe\b|\bdeluxe\b.*\bdeck de batalha\b/, (t) => { const m = t.match(new RegExp('\\bdeluxe ' + NOME + '\\b')); return m && { type: 'deck', variant: 'deluxe-' + m[1] }; }],
+  [/\b(colecao|box) (de |pokemon )?ilustracao\b/, (t) => { const m = t.match(new RegExp('\\bilustracao (?:- )?' + NOME + '\\b')); return m && !VARIANT_STOP.has(m[1]) && { type: 'colecao_ilustracao', variant: m[1] }; }],
+];
+export function especial(t) { for (const [re, f] of ESPECIAIS) if (re.test(t)) { const r = f(t); if (r) return r; } return null; }
 /** Mapa "tipo|variante" → coleção, a partir dos ids do catálogo automático (data/products.json): só quando é única. */
 export function variantesDe(ids = []) {
   const by = new Map();
@@ -287,7 +304,11 @@ export function matchProduct(listing, catalog) {
     const prod = describeProduct(catalog, conhecida || AVULSOS, p.type, p.boosters, p.variant, p.lang);
     return { productId: prod.id, product: prod, confidence: conhecida ? 0.7 : 0.65, parsed: p, why: [], via: conhecida ? 'variante-conhecida' : 'avulso' };
   }
-  if (!p.collection) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
+  if (!p.collection) {
+    const e = especial(p.normalized);
+    if (e) { const prod = describeProduct(catalog, AVULSOS, e.type, p.boosters, e.variant, p.lang); return { productId: prod.id, product: prod, confidence: 0.65, parsed: { ...p, type: e.type, variant: e.variant }, why: [], via: 'especial' }; }
+    return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
+  }
   if (!p.type) return { productId: null, confidence: 0, parsed: p, why: ['tipo de produto não identificado'] };
   if (p.type === 'booster_box' && !p.boosters) return { productId: null, confidence: 0, parsed: p, why: ['quantidade de boosters não informada'] };
   const prod = describeProduct(catalog, p.collection, p.type, p.boosters, p.variant, p.lang);
