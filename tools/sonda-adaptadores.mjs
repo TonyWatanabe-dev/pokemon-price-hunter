@@ -17,7 +17,8 @@ const loadCatalog = () => { const c = readJson(configPath('catalog.json')); c.pr
 const args = process.argv.slice(2);
 const opt = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : null; };
 const dir = args.find((a, i) => !a.startsWith('--') && !['--lojas', '--json'].includes(args[i - 1])) || 'data';
-const PLAT = new Set(['vtex', 'shopify', 'woocommerce', 'jsonld']);
+// 'busca': prova de conceito do leitor pela página de busca da loja (src/adapters/busca.js), fora do robô diário.
+const PLAT = new Set(['vtex', 'shopify', 'woocommerce', 'jsonld', 'busca']);
 export const parseLojas = (s) => String(s || '').split(',').map((x) => x.trim()).filter(Boolean).map((x) => { const [id, p] = x.split(':'); return { id, plataforma: p }; })
   .filter((x) => /^[a-z0-9]{2,60}$/.test(x.id) && PLAT.has(x.plataforma));
 
@@ -47,7 +48,13 @@ export function resumoPagina(html, url, parse) {
   const ld = nodes.filter((n) => [].concat(n['@type']).some((t) => /^product$/i.test(String(t)))).length;
   const og = /<meta[^>]+(?:product|og):price:amount/i.test(html);
   let caminho = url; try { caminho = decodeURIComponent(new URL(url).pathname).slice(0, 70); } catch { /* fica a URL */ }
-  return { caminho, ld, og, publica: !!parse(html, url) };
+  // Para achar o motivo da recusa: nome do Product × título da página, preço do JSON-LD e se esse preço aparece escrito.
+  const prod = nodes.find((n) => [].concat(n['@type']).some((t) => /^product$/i.test(String(t))));
+  const titulo = (html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)/i)?.[1] || html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1] || '').trim().slice(0, 60);
+  const oferta = prod ? [].concat(prod.offers || [])[0] : null;
+  const preco = oferta ? (oferta.price ?? oferta.lowPrice ?? oferta.priceSpecification?.price ?? null) : null;
+  const escrito = preco != null && Number.isFinite(Number(preco)) ? html.includes(Number(preco).toFixed(2).replace('.', ',')) : null;
+  return { caminho, ld, og, publica: !!parse(html, url), ...(prod ? { nome: String(prod.name || '').slice(0, 60), titulo, preco, escrito } : {}) };
 }
 async function diagnosticoPaginas(urls) {
   const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); const { parseProductPage } = await import('../src/adapters/jsonld.js');
@@ -84,7 +91,13 @@ async function main() {
           const xml = (await get(mapas[0], { accept: 'application/xml' })).text; const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
           const filhos = locs.filter((l) => /\.xml(\.gz)?$/i.test(l)); sonda.mapa = { url: mapas[0], locs: locs.length, filhos: filhos.length, exemplos: filhos.slice(0, 3).map((l) => l.replace(/^https?:\/\/[^/]+/, '')), pokemon: locs.filter((l) => /pokemon/i.test(l)).length };
         } catch (e) { sonda.mapa = { url: mapas[0], erro: String(e?.status || e?.code || e?.message).slice(0, 60) }; } } }
-      const raw = await adapters[plataforma].search(store, catalog);
+      let raw;
+      if (plataforma === 'busca') {
+        const { LOJAS_CFG, hostOf } = await import('../api/_lib/lojas.mjs'); const { search } = await import('../src/adapters/busca.js');
+        const buscaTpl = LOJAS_CFG.buscaPorHost[hostOf(url)]; if (!buscaTpl) throw new Error('loja sem modelo de busca confirmado');
+        raw = await search({ ...store, buscaTpl }, { termos: ['pokemon', 'pokemon tcg', 'booster pokemon'] }); sonda.busca = raw.diag; sonda.falhas = raw.failed.length;
+        sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.pix ?? l.price.base} · ${l.stock} · sku ${l.sku ?? '?'}`);
+      } else raw = await adapters[plataforma].search(store, catalog);
       sonda.anuncios = raw.length;
       const ok = raw.filter((l) => validateListing(l, store, { now: new Date() }).ok);
       sonda.validos = ok.length;
@@ -93,7 +106,7 @@ async function main() {
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${textoAmostra(sonda.amostra)}`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}${sonda.paginas?.length ? ' · páginas ' + JSON.stringify(sonda.paginas) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${sonda.busca ? ` · busca ${JSON.stringify(sonda.busca)} · falhas ${sonda.falhas} · lidos: ${sonda.lidos.join(' | ')}` : ''}${textoAmostra(sonda.amostra)}`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
