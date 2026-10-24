@@ -1722,7 +1722,7 @@ const staleOnly=(xs)=>{xs=xs.filter((o)=>!o.anomalous);return xs.length&&xs.ever
 const staleNote=(o)=>readKnown(o)?`Última leitura ${ago(o.source_timestamp)}`:"Última leitura em data desconhecida";
 /* Frete grátis pela regra pública da loja (config/frete-gratis.json, gerado em FG pelo teste de sincronia): só lojas com
    frete grátis para todo o Brasil acima de um valor, conferido na página da loja. Não muda total, nota nem ordem. */
-const FG={};
+const FG={rihappycombr:{min:199.99},preechcombr:{min:299},pittasboardgamescombr:{min:400},moxland:{min:500},geekstorebrasilcombr:{min:999.9}};
 const fgMin=(sid,price)=>{const r=(typeof FG!=="undefined"?FG:{})[sid];return r&&price!=null&&price>=r.min?r.min:null;};
 const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":fgMin(o.storeId,o.price)?`Frete grátis acima de ${money(fgMin(o.storeId,o.price))} na loja`:"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */

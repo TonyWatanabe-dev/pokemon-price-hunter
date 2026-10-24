@@ -1,0 +1,10 @@
+{
+  "_doc": "Frete grátis pela regra PÚBLICA da loja, para todo o Brasil acima de um valor, sem condição extra relevante. Conferido em 24/10/2026 na página da loja. Só mostra selo no site (index.html: FG); não muda total, nota nem ordem. Regional ou sem valor confirmado não entra. Atualizar FG no index.html junto (test/frete-gratis-tests.js confere).",
+  "lojas": {
+    "rihappycombr": { "min": 199.99, "fonte": "https://www.rihappy.com.br/politicas-de-frete", "obs": "entrega econômica; itens vendidos e entregues pela Ri Happy", "conferido": "2026-10-24" },
+    "preechcombr": { "min": 299, "fonte": "https://www.preech.com.br/jujutsukaisen", "conferido": "2026-10-24" },
+    "pittasboardgamescombr": { "min": 400, "fonte": "https://www.pittasboardgames.com.br/", "obs": "SP a partir de R$ 300; demais regiões R$ 400", "conferido": "2026-10-24" },
+    "moxland": { "min": 500, "fonte": "https://mox.land/pages/ajuda", "conferido": "2026-10-24" },
+    "geekstorebrasilcombr": { "min": 999.9, "fonte": "https://www.geekstorebrasil.com.br/politica-de-envio/", "conferido": "2026-10-24" }
+  }
+}
