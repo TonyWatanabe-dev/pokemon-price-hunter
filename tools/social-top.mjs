@@ -4,7 +4,7 @@
 //              (HTML → JPG com Playwright, instalado só no workflow). Falha fechada: dado velho ou incompleto não vira post.
 //   telegram — envia arte + legenda ao grupo do Telegram (sendPhoto), conferindo o título do chat antes.
 //   whatsapp — envia ao grupo do WhatsApp (Baileys, mesma sessão cifrada do envio automático) e registra no diário,
-//              para o intervalo de 30 min entre mensagens valer também para estes posts.
+//              para o teto de mensagens em 24 h valer também para estes posts.
 // Uso: node tools/social-top.mjs arte --tipo top3|top10 --dir pasta [--json resposta.json]
 //      node tools/social-top.mjs telegram --tipo top3 --dir pasta --titulo "..."
 //      node tools/social-top.mjs whatsapp --tipo top3 --dir pasta --sessao arq --diario arq --titulo "..."
@@ -16,7 +16,7 @@ import { itensDaApi, legenda, legendaTelegram, arteHtml, TIPOS } from '../src/ag
 import { cifrarSessao, decifrarSessao, acharGrupo } from '../src/agents/social/whatsapp.js';
 import { registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
 
-/** Diário do WhatsApp → pode enviar agora? Mesmo post na mesma hora não repete; teto de 24 h vale; devolve a espera para o intervalo de 30 min. */
+/** Diário do WhatsApp → pode enviar agora? Mesmo post na mesma hora não repete; teto de 24 h vale; devolve a espera do intervalo mínimo (hoje 0). */
 export function vez(diario, id, now, regras = REGRAS_WHATSAPP) {
   const ts = (Array.isArray(diario) ? diario : []).map((d) => ({ id: d?.ofertaId, t: Date.parse(d?.at) })).filter((d) => Number.isFinite(d.t));
   if (ts.some((d) => d.id === id)) return { pode: false, motivo: `${id} já enviado` };

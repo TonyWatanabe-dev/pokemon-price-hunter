@@ -90,7 +90,7 @@ jobs:
     needs: arte
     if: vars.SOCIAL_WHATSAPP_AUTO == '1'
     runs-on: ubuntu-latest
-    timeout-minutes: 45     # pode esperar o intervalo de 30 min entre mensagens do WhatsApp
+    timeout-minutes: 15
     concurrency:            # mesma fila do envio automático: uma sessão do WhatsApp por vez
       group: social-whatsapp
       cancel-in-progress: false
