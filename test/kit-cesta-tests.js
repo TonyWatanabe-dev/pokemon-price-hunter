@@ -37,5 +37,12 @@ const O = (productId, storeId, price, extra = {}) => ({ productId, storeId, stor
 }
 // 5. entrada inválida/limites
 { const r = compararLojas([{ productId: 'p1', quantidade: 0 }, { productId: 'p2', quantidade: 99 }], [O('p2', 'a', 1)]); assert.deepEqual(r.itens, [{ productId: 'p2', quantidade: 20 }]); }
+// 6. caso real de 24/10: frete informado não pode tornar "dividir" mais caro que "uma loja"
+{
+  const of = [O('b3', 'vila', 49.9, { total: 59.43, shipping: 9.53, shippingKnown: true }), O('b3', 'rihappy', 37.89), O('bo', 'rihappy', 10.9), O('b3', 'gorupa', 37.91), O('bo', 'gorupa', 11.39)];
+  const r = compararLojas([{ productId: 'b3', quantidade: 3 }, { productId: 'bo', quantidade: 1 }], of);
+  assert.equal(r.dividir.itens[0].oferta.storeId, 'rihappy'); assert.ok(r.dividir.subtotal <= r.umaLoja[0].subtotal, 'dividir nunca mais caro nos produtos');
+  assert.equal(r.umaLoja[0].subtotal, 124.57);
+}
 function r2(v) { return Math.round(v * 100) / 100; }
 console.log('✓ kit-cesta: uma loja × dividir, frete por loja, frete desconhecido, sem estoque/anomalia');

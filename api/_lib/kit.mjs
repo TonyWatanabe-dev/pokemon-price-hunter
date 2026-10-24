@@ -21,7 +21,7 @@ export const ORCAMENTOS = Object.freeze([50, 100, 200, 400]);
 //  • orçamento pelo preço dos produtos; total com frete só quando todo frete for conhecido; frete é por loja (um pedido),
 //    nunca por item; frete desconhecido nunca vira zero; frete grátis da regra pública da loja vale acima do mínimo;
 //  • sem dado suficiente: cesta vazia com o motivo, nunca um item inventado; nunca prometer carta, raridade ou chance.
-import { bestComparable } from './offer-rank.mjs';
+import { bestComparable, byComparableTotal } from './offer-rank.mjs';
 
 const LANGS = ['en', 'ja', 'zh', 'ko'];
 /** Nome do produto para o kit: o do produto; senão o do robô (mapa id → nome); senão "Coleção - <rótulo>". */
@@ -103,7 +103,11 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
 export function compararLojas(itens, ofertas, { fg = {}, nomes = new Map() } = {}) {
   const want = (itens || []).filter((i) => i && i.productId && Number(i.quantidade) > 0).map((i) => ({ productId: i.productId, quantidade: Math.min(20, Math.floor(Number(i.quantidade))) }));
   const ok = (ofertas || []).filter((o) => o && o.stock === 'IN_STOCK' && !o.anomalous && !o.stale && Number.isFinite(o.price) && o.price > 0 && o.url);
-  const best = melhoresOfertas(ok);
+  // Na cesta, cada item vai pelo MENOR PREÇO (a comparação diz se é por total ou só por produtos). O critério do site
+  // (frete conhecido antes) escolheria uma oferta R$ 12 mais cara só por ter frete informado e faria "dividir" sair mais
+  // caro que "uma loja" (visto em produção em 24/10). Empate de preço: o critério do site decide.
+  const porPreco = (a, b) => a.price - b.price || byComparableTotal(a, b);
+  const best = new Map(); for (const o of ok) { const b = best.get(o.productId); if (!b || porPreco(o, b) < 0) best.set(o.productId, o); }
   const faltam = want.filter((i) => !best.has(i.productId)).map((i) => i.productId);
   const linha = (i, of) => ({ productId: i.productId, nome: nomes.get(i.productId) || i.productId, quantidade: i.quantidade, oferta: of });
   const resumo = (ls) => { const fretes = freteDaCesta(ls, fg); const subtotal = r2(ls.reduce((s, x) => s + x.oferta.price * x.quantidade, 0)); const conhecido = fretes.length > 0 && fretes.every((f) => f.frete != null);
@@ -116,7 +120,7 @@ export function compararLojas(itens, ofertas, { fg = {}, nomes = new Map() } = {
   const umaLoja = [];
   for (const [, m] of porLoja) {
     if (!disp.length || !disp.every((i) => m.has(i.productId))) continue;
-    umaLoja.push(resumo(disp.map((i) => linha(i, bestComparable(m.get(i.productId))))));
+    umaLoja.push(resumo(disp.map((i) => linha(i, [...m.get(i.productId)].sort(porPreco)[0]))));
   }
   umaLoja.sort((a, b) => (a.total != null && b.total != null ? a.total - b.total : 0) || a.subtotal - b.subtotal);
   const limitacoes = [];
