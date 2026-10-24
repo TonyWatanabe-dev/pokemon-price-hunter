@@ -131,7 +131,12 @@ function deckVariant(t) {
   const fim = t.match(/ - (?:mega )?([a-z]+)(?: [a-z]+)?(?: ex)?\s*$/); if (fim && pega(fim[1])) return mega + fim[1];
   return null;
 }
-function detectVariant(t) {
+// Grafias erradas de nome de Pokémon vistas em anúncios reais (24/10/2026: "Xarneas EX" na tavernadorei criava o produto
+// avulsos-colecao_ex-xarneas, duplicado do Xerneas). A variante vai para a grafia certa; o produto antigo guarda o histórico.
+const GRAFIA = Object.freeze({ xarneas: 'xerneas' });
+const grafia = (v) => (v ? v.replace(/(^|-)([a-z]+)$/, (m, p, w) => p + (GRAFIA[w] || w)) : v);
+function detectVariant(t) { return grafia(detectVariant0(t)); }
+function detectVariant0(t) {
   if (DECK_BATALHA.test(t)) return deckVariant(t);
   if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
   const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
