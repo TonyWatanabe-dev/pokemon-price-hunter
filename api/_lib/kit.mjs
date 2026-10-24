@@ -67,7 +67,7 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
   const idioma = ['pt', 'en', 'ja', 'zh', 'ko'].includes(respostas.idioma) ? respostas.idioma : 'qualquer';
   const best = melhoresOfertas(ofertas);
   const fav = norm(respostas.favorito).trim();
-  const itens = []; let resta = orcamento;
+  const itens = []; const alternativas = []; let resta = orcamento;
   for (const papel of modelo.papeis) {
     let cands = (produtos || []).filter((p) => papel.tipos.includes(p.type) && best.has(p.id) && (idioma === 'qualquer' || idiomaDe(p.id) === idioma));
     if (fav) { const f = cands.filter((p) => norm(p.name).includes(fav)); if (f.length) cands = f; else limitacoes.push(`Nenhum produto com "${respostas.favorito}" no nome dentro deste kit agora; mostramos as outras opções.`); }
@@ -83,11 +83,50 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
     const https = (u) => (typeof u === 'string' && /^http:\/\//.test(u) ? 'https://' + u.slice(7) : u);
     const imagem = [https(of.image), escolha.image].find((u) => /^https:\/\//.test(u || '')) || null;
     itens.push({ productId: escolha.id, nome: escolha.name, tipo: escolha.type, idioma: idiomaDe(escolha.id), quantidade, porque: papel.porque, imagem, oferta: of });
+    // Outras opções do mesmo papel (para a cesta, K4): até 4, mesma regra de idioma/estoque, mais baratas primeiro.
+    for (const p of cands.filter((c) => c.id !== escolha.id).sort((a, b) => best.get(a.id).price - best.get(b.id).price).slice(0, 4)) {
+      const o2 = best.get(p.id);
+      alternativas.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), porque: papel.porque, imagem: [https(o2.image), p.image].find((u) => /^https:\/\//.test(u || '')) || null, oferta: o2 });
+    }
   }
   if (modelo.acessorios.length) limitacoes.push(`Sugerimos também ${modelo.acessorios.map((a) => ACESSORIO_NOME[a]).join(', ')}, mas ainda não comparamos o preço de acessórios: não estão no valor do kit.`);
   const subtotal = r2(itens.reduce((s, it) => s + it.oferta.price * it.quantidade, 0));
   const fretes = freteDaCesta(itens, fg);
   const freteConhecido = fretes.length > 0 && fretes.every((f) => f.frete != null);
   const total = freteConhecido ? r2(subtotal + fretes.reduce((s, f) => s + f.frete, 0)) : null;
-  return { modelo: modeloId, nomeModelo: modelo.nome, orcamento, itens, subtotal, fretes, total, cabeNoOrcamento: subtotal <= orcamento, limitacoes };
+  return { modelo: modeloId, nomeModelo: modelo.nome, orcamento, itens, alternativas, subtotal, fretes, total, cabeNoOrcamento: subtotal <= orcamento, limitacoes };
+}
+
+/** K4 — cesta: itens [{ productId, quantidade }] + ofertas reais → comparação "tudo numa loja" × "dividir entre lojas".
+ *  Mesmas regras: só estoque/sem anomalia/sem leitura velha; frete por loja (freteDaCesta), desconhecido ≠ 0; "mais barato"
+ *  só entre totais com frete conhecido, senão a comparação é só dos produtos (e a resposta diz isso). */
+export function compararLojas(itens, ofertas, { fg = {}, nomes = new Map() } = {}) {
+  const want = (itens || []).filter((i) => i && i.productId && Number(i.quantidade) > 0).map((i) => ({ productId: i.productId, quantidade: Math.min(20, Math.floor(Number(i.quantidade))) }));
+  const ok = (ofertas || []).filter((o) => o && o.stock === 'IN_STOCK' && !o.anomalous && !o.stale && Number.isFinite(o.price) && o.price > 0 && o.url);
+  const best = melhoresOfertas(ok);
+  const faltam = want.filter((i) => !best.has(i.productId)).map((i) => i.productId);
+  const linha = (i, of) => ({ productId: i.productId, nome: nomes.get(i.productId) || i.productId, quantidade: i.quantidade, oferta: of });
+  const resumo = (ls) => { const fretes = freteDaCesta(ls, fg); const subtotal = r2(ls.reduce((s, x) => s + x.oferta.price * x.quantidade, 0)); const conhecido = fretes.length > 0 && fretes.every((f) => f.frete != null);
+    return { itens: ls, fretes, subtotal, pedidos: fretes.length, total: conhecido ? r2(subtotal + fretes.reduce((s, f) => s + f.frete, 0)) : null }; };
+  const disp = want.filter((i) => best.has(i.productId));
+  const dividir = disp.length ? resumo(disp.map((i) => linha(i, best.get(i.productId)))) : null;
+  // tudo numa loja: só lojas que têm TODOS os itens disponíveis em estoque
+  const porLoja = new Map();
+  for (const o of ok) { const m = porLoja.get(o.storeId) || new Map(); const l = m.get(o.productId) || []; l.push(o); m.set(o.productId, l); porLoja.set(o.storeId, m); }
+  const umaLoja = [];
+  for (const [, m] of porLoja) {
+    if (!disp.length || !disp.every((i) => m.has(i.productId))) continue;
+    umaLoja.push(resumo(disp.map((i) => linha(i, bestComparable(m.get(i.productId))))));
+  }
+  umaLoja.sort((a, b) => (a.total != null && b.total != null ? a.total - b.total : 0) || a.subtotal - b.subtotal);
+  const limitacoes = [];
+  if (faltam.length) limitacoes.push(`${faltam.length} item(ns) sem oferta com estoque agora ficaram de fora da conta.`);
+  if (!umaLoja.length && disp.length > 1) limitacoes.push('Nenhuma loja tem todos os itens agora: só dá para dividir a compra.');
+  let comparacao = null;
+  const u = umaLoja[0];
+  if (u && dividir && disp.length > 1) {
+    if (u.total != null && dividir.total != null) comparacao = { base: 'total', umaLoja: u.total, dividir: dividir.total, economia: r2(u.total - dividir.total) };
+    else { comparacao = { base: 'produtos', umaLoja: u.subtotal, dividir: dividir.subtotal, economia: r2(u.subtotal - dividir.subtotal) }; limitacoes.push('Algum frete não foi informado pelas lojas: a comparação considera só os produtos; dividir pode custar mais fretes.'); }
+  }
+  return { itens: want, faltam, dividir, umaLoja: umaLoja.slice(0, 5), comparacao, limitacoes };
 }
