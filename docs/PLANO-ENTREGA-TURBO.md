@@ -1,24 +1,54 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
-> **Atualizado em:** 17/10/2026 (America/Sao_Paulo)
-> **Fonte de estado:** `docs/ROADMAP-OPERACIONAL.md` — seção executiva de 17/10. O roadmap operacional é a fonte de verdade para fases, issues e evidências; este documento descreve execução e critérios.
+> **Atualizado em:** 24/10/2026 (America/Sao_Paulo)
+> **Fonte de estado:** `docs/ROADMAP-OPERACIONAL.md`. O roadmap operacional é a fonte de verdade para fases, issues e evidências; este documento descreve execução, dependências e critérios.
 
-## Estado executivo — 17/10/2026
+## Estado executivo — 24/10/2026
 
-- **Fase 1:** código integrado; burn-in pendente até 7 dias consecutivos encerrados verdes (#271).
-- **Fase 2:** concluída.
-- **Fase 3:** frete por CEP bloqueado por 429 de lojas VTEX; feature flag fica desligada (#84).
-- **Fase 4:** alertas Telegram por usuário ligados em 17/10 (#783); falta validação ponta a ponta e reconciliação da matriz de aceite.
-- **Fase 5:** pistas e Opportunity Engine integrados; falta smoke de produção para confirmar comportamento público de ponta a ponta.
-- **Fase 6:** coleta/lojas ampliadas; snapshot de 17/10 registra 176 lojas nas fontes, 108 ativas, 80 com casamento, 2.517 ofertas e 352 produtos. Falta auditoria de frescor/qualidade e confirmar disclosure de afiliado.
-- **Fase 7:** ciclo de agentes parcialmente comprovado; falta evidência operacional completa de scheduler, Governor, auditoria e release (#231).
-- **Fase 8:** hardening e lançamento pendentes de controles operacionais, smoke do SHA publicado e burn-in.
-- **Issues abertas verificadas em 17/10:** #271, #231 e #84. Nenhuma PR aberta na consulta.
-- **Orçamento:** o proprietário removeu o teto de US$ 100/24 h; não o restaurar como bloqueio. Segurança, idempotência, observabilidade e gates de release permanecem obrigatórios.
+- **Fase 0 — Fábrica e governança:** CI com 4 checks e fluxo por PR operando; evidência formal do Governor/auditoria ainda pendente em #231.
+- **Fase 1 — Integridade e operação 24/7:** burn-in reiniciado em 22/10; exige 7 dias consecutivos encerrados e verdes em #271. Não declarar concluída antes da evidência.
+- **Fase 2 — Fluxo principal e confiança:** concluída.
+- **Fase 3 — Frete e custo total:** parcial; regras públicas de frete grátis foram adicionadas para 5 lojas (#863), mas cotação real por CEP só com fonte oficial/autorizada. Flag permanece desligada (#84).
+- **Fase 4 — Contas e alertas:** fluxo feliz do Telegram validado em 20/10; ainda testar falha de credencial e bloqueio HTTP 403.
+- **Fase 5 — Opportunity Engine:** concluída no código e em produção; acompanhar falsos positivos.
+- **Fase 6 — Lojas, dados e afiliados:** snapshot operacional de 24/10: 165 fontes, 115 ativas, 33 bloqueadas, 10 indisponíveis, 5 com erro; 3.304 ofertas, 1.121 com estoque e 510 produtos. Melhorar matching e completar links de afiliado.
+- **Fase 7 — Agentes especialistas:** parcial; comprovar runtime e entrega real de cada canal antes de afirmar que publicadores estão ativos.
+- **Fase 8 — Hardening e lançamento:** parcial; depende do burn-in, smoke no SHA publicado e decisão/estratégia de backup do Supabase.
+- **Fase 9 — Manutenção contínua:** começa após os critérios de lançamento da Fase 8.
 
-**Próxima ordem:** #271 burn-in → #231 configurações e evidência de autonomia → smoke público completo → validação ponta a ponta dos alertas Telegram por usuário → frescor/qualidade de dados e disclosure de afiliado. A Fase 3 só avança com fonte de cotação oficial/autorizada; não contornar 429, robots.txt ou checkout protegido.
+**Ordem de prioridade:** (1) confiabilidade e evidências de operação (#271, #231); (2) frescor, matching e taxonomia; (3) motor de ofertas e custo total, sem cotação não autorizada (#84); (4) medição de conversão e afiliados; (5) preparação e lançamento gradual de “Monte seu kit”.
 
-**Social Media:** Telegram tem automação documentada. WhatsApp exige comprovação recente de caminho oficial e destino; Instagram/TikTok/YouTube não devem ser considerados publishers ativos sem integração e execução verificadas. A produção de rascunhos pode avançar separadamente.
+**Regra de dependência:** “Monte seu kit” é uma nova experiência de produto, não uma nova fonte de dados. Seu questionário, combos e comparação devem reutilizar o catálogo, Offer Engine, ranking, links e regras de preço/frete existentes. Design e protótipos podem avançar em paralelo; recomendações reais não são ativadas até que a qualidade dos dados e os critérios de custo total estejam comprovados.
+
+**Orçamento:** o proprietário removeu o teto de US$ 100/24 h; não o restaurar como bloqueio. Permanecem obrigatórios segurança, idempotência, observabilidade, limites técnicos e gates de release.
+
+## 1A. Prioridade de infraestrutura e iniciativa “Monte seu kit”
+
+### Sequência obrigatória
+1. **Confiabilidade operacional:** cumprir burn-in de 7/7 dias verdes (#271), smoke do SHA publicado e evidências reais de governança/auditoria (#231).
+2. **Qualidade de dados:** melhorar matching de produto/variante/idioma/EAN, taxonomia de acessórios e produtos lacrados, deduplicação, estoque e frescor por loja.
+3. **Motor de oferta e custo total:** garantir origem rastreável, preço atual, ranking independente de comissão e tratamento honesto de frete. A feature de cotação real por CEP continua desligada até fonte autorizada e testes verificáveis (#84).
+4. **API, banco e observabilidade:** corrigir gargalos comprovados de latência, consultas, cache, sincronização, falhas e recuperação. Medir antes de escalar carga.
+5. **“Monte seu kit”:** entregar página guiada e combos virtuais em cima dos contratos e dados existentes; ativar recomendação real de forma gradual após testes.
+
+### Especificação resumida de “Monte seu kit”
+- Página independente, rota sugerida `/monte-seu-kit/`, item no menu e CTA na Home: “Sua jornada Pokémon começa aqui” / “Descobrir meu kit ideal”.
+- Questionário curto: objetivo (colecionar, jogar, presente, abrir boosters, proteger cartas), orçamento, preferência de produtos, idioma e acessórios opcionais.
+- Combos virtuais iniciais: primeira coleção; colecionador organizado; aprender a jogar; cartas especiais. Usar produtos reais e conteúdo verificado.
+- Permitir adicionar/remover itens, quantidades e alternativas; comparar cesta em uma loja versus múltiplas lojas.
+- Calcular custo total apenas com frete confirmado ou sinalizar claramente valor parcial/desconhecido. Nunca assumir frete zero.
+- Categorias iniciais: boosters, caixas/coleções, ETBs, decks prontos, promoções, fichários, sleeves, deck boxes, playmats, top loaders, cases, armazenamento e acessórios.
+- Explicar as recomendações; não prometer raridades ou cartas específicas de boosters aleatórios.
+- Usar catálogo, Offer Engine, preço, estoque, histórico, ranking e links existentes. Comissão de afiliado nunca altera a recomendação.
+- Métricas: funil do questionário, kits visualizados, itens alterados, cliques de saída e conversão afiliada quando disponível.
+- Protótipo pode usar dados sintéticos identificados como tal; a produção só usa catálogo/ofertas reais com matching, frescor e custo total validados.
+
+### Critérios de saída desta iniciativa
+- Questionário acessível e responsivo; estados de erro/vazio/carregamento cobertos.
+- Recomendações rastreáveis até produto e oferta corretos.
+- Testes de orçamento, idioma, categoria, estoque, duplicatas, ranking, frete desconhecido e custo total.
+- Smoke ponta a ponta com SHA publicado, analytics funcionando e rollback/flag documentados.
+- Roadmap atualizado com evidências; não confundir implementação com deploy e validação de runtime.
 
 ## 1. Resultado final esperado
 
