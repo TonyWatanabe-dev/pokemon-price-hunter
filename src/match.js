@@ -159,7 +159,8 @@ export function detectType(t) {
   if (has(t, /\bbooster\b/) && has(t, /\b(6 (cartas|cards)|0?1 booster)\b/) && !has(t, /\b(box|display|caixa|combo|kit|blister|\d+ boosters)\b/)) return r('booster_pack', 1);
   if (has(t, /\bmini ?latas?\b/)) return r('minilata');
   if (has(t, /\blatas?\b/)) return r('lata');
-  if (has(t, /\b(baralho|deck) (de )?batalha\b|\bbaralho batalha\b/)) return r('deck', null, false, detectVariant(t));
+  // "Batalha de Liga" é linha de baralho (League Battle Deck): "Jogo de Cartas Copag Pokémon Batalha de Liga Mewtwo ex" não diz "baralho".
+  if (has(t, /\b(baralho|deck) (de )?batalha\b|\bbaralho batalha\b|\bbatalha de liga\b/)) return r('deck', null, false, detectVariant(t));
   if (has(t, /\bdesafio estrategico\b/)) return r('desafio');
   if (has(t, /\bkit (do |de )?treinador\b/)) return r('kit_treinador');
   if (has(t, /\bcombo\b/)) return r('combo', b.count, b.inferred);
