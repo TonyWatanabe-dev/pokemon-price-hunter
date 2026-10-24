@@ -6,7 +6,7 @@ import { GRUPOS } from '../api/_lib/grupos.mjs';
 
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const html = read('entrar.html');
-const js = read('assets/web/entrar-v3.js');
+const js = read('assets/web/entrar-v4.js');
 
 const vj = JSON.parse(read('vercel.json'));
 assert.ok(vj.rewrites.some((r) => r.source === '/entrar' && r.destination === '/entrar.html'), '/entrar abre entrar.html');
@@ -20,7 +20,7 @@ for (const m of html.matchAll(/<a [^>]*target="_blank"[^>]*>/g)) assert.match(m[
 
 // CSP do site só aceita script do próprio domínio (sem inline); o JS da página é arquivo versionado.
 assert.doesNotMatch(html.replace(/<script[^>]*\ssrc="[^"]+"[^>]*><\/script>/g, ''), /<script/i, 'sem script inline');
-assert.match(html, /src="\/assets\/web\/entrar-v3\.js"/);
+assert.match(html, /src="\/assets\/web\/entrar-v4\.js"/);
 assert.match(html, /<meta name="robots" content="noindex, follow">/, 'página de anúncio fora do índice');
 
 // Honestidade: nada de escassez ou contagem inventada; a prova vem da API e some se não houver dado.
@@ -39,3 +39,10 @@ console.log('✓ Página /entrar: rota, convites, CSP, honestidade e medição')
 assert.match(html, /<symbol id="wa"/);
 assert.equal((html.match(/<use href="#wa"\/>/g) || []).length, 3, 'mesmo ícone nos 3 botões do WhatsApp');
 assert.ok(fs.existsSync(new URL('../assets/web/entrar-cartas-v1.webp', import.meta.url)));
+// 23/10: botão antes da imagem (aparece sem rolar no celular), Telegram no topo e ofertas de hoje vindas da API.
+assert.ok(html.indexOf('id="cta1"') < html.indexOf('class="hero"'), 'botão do topo vem antes da imagem');
+assert.match(html, /data-canal="telegram" data-pos="topo"/, 'Telegram também no topo');
+assert.match(html, /<section id="hoje" class="hoje" hidden>/, 'ofertas de hoje começam ocultas');
+assert.match(js, /\/api\/v1\/oportunidades\?limite=6&ordem=score/, 'ofertas de hoje vêm da API');
+assert.match(js, /getElementById\('hoje'\)\.hidden = false/);
+console.log('✓ Página /entrar: botão no topo, Telegram e ofertas de hoje');

@@ -23,15 +23,18 @@ main{max-width:480px;margin:0 auto;padding:24px 20px calc(120px + env(safe-area-
 .eyebrow{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--txt)}
 .eyebrow i{width:16px;height:16px;border-radius:5px;background:var(--y);flex:none}
 .top img{height:40px;width:auto}
-h1{margin:30px 0 0;font-weight:900;font-size:clamp(44px,12.5vw,60px);line-height:.96;letter-spacing:-.045em}
+h1{margin:22px 0 14px;font-weight:900;font-size:clamp(44px,12.5vw,60px);line-height:.96;letter-spacing:-.045em}
 h1 span{color:var(--y)}
-.hero{display:block;width:100%;height:auto;margin:6px 0 -6px}
+.hero{display:block;width:100%;height:auto;margin:18px 0 -6px}
 .lead{margin:0 0 22px;font-size:18px;line-height:1.45;color:var(--mut)}
 .lead b{color:var(--txt);font-weight:700}
 .cta{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;min-height:76px;padding:14px 22px;border-radius:999px;background:var(--y);color:var(--ink);text-decoration:none;font-weight:900;font-size:21px;letter-spacing:-.01em;box-shadow:0 10px 24px rgba(0,0,0,.35);transition:transform .15s}
 .cta:active{transform:scale(.98)}
 .cta svg{flex:none;width:40px;height:40px}
 .sub{margin:10px 0 0;text-align:center;font-size:14px;color:var(--mut)}
+.sub a{color:var(--txt);font-weight:700}
+.h-hoje{margin:28px 0 12px;font-size:22px}
+.item .loja{font-size:12px;color:var(--mut);margin-top:4px}
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 0;padding:0;list-style:none}
 .chips li{display:flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:700}
 .chips li::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--y)}
@@ -74,11 +77,15 @@ footer a{color:var(--mut)}
   <div class="top"><div class="eyebrow"><i></i>Grupo de ofertas</div><img src="/assets/web/logo-v1.webp" alt="TCG Price Hunter" width="146" height="40"></div>
 
   <h1>Pare de pagar <span>caro</span> em Pokémon TCG.</h1>
-  <img class="hero" src="/assets/web/entrar-cartas-v1.webp" alt="Cartas da coleção de 30 anos de Pokémon TCG" width="980" height="760">
-  <p class="lead">O nosso site compara o preço de <b>dezenas de lojas do Brasil todo dia</b>. Quando um produto baixa de verdade, o grupo avisa na hora.</p>
+  <p class="lead">Comparamos <b>dezenas de lojas do Brasil todo dia</b>. Quando o preço cai de verdade, o grupo avisa.</p>
 
   <a id="cta1" class="cta" href="https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv" target="_blank" rel="noopener" data-canal="whatsapp" data-pos="topo"><svg aria-hidden="true"><use href="#wa"/></svg>Entrar no grupo grátis<span class="sr"> (abre o WhatsApp)</span></a>
-  <p class="sub">Abre o WhatsApp · sem cadastro</p>
+  <p class="sub">Abre o WhatsApp · sem cadastro · <a href="https://t.me/+LzS_Jp1Wvas2NDhh" target="_blank" rel="noopener" data-canal="telegram" data-pos="topo">prefiro Telegram</a></p>
+  <section id="hoje" class="hoje" hidden>
+    <h2 class="h-hoje">Ofertas de <span>hoje</span> no grupo</h2>
+    <div class="prova" id="hoje-itens"></div>
+  </section>
+  <img class="hero" src="/assets/web/entrar-cartas-v1.webp" alt="Cartas da coleção de 30 anos de Pokémon TCG" width="980" height="760">
   <ul class="chips"><li>100% grátis</li><li>Sem spam</li><li>Todas as lojas</li><li>Preço conferido com a Copag</li></ul>
 
   <section id="prova" hidden>
@@ -107,7 +114,7 @@ footer a{color:var(--mut)}
 <div class="fixa" id="fixa">
   <a class="cta" href="https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv" target="_blank" rel="noopener" data-canal="whatsapp" data-pos="fixa"><svg aria-hidden="true"><use href="#wa"/></svg>Entrar no grupo grátis<span class="sr"> (abre o WhatsApp)</span></a>
 </div>
-<script defer src="/assets/web/entrar-v3.js"></script>
+<script defer src="/assets/web/entrar-v4.js"></script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
