@@ -1828,7 +1828,7 @@ store.set("seenBefore",true);
 function activity(){return(S.activity||[]).filter((e)=>P[e.productId])}
 function dedupeAct(list){const seen=new Set();return list.filter((e)=>{const k=e.type+e.productId;if(seen.has(k))return false;seen.add(k);return true})}
 /* Monte seu kit (K6 parcial, decisão do dono em 24/10): chamada na Home logo abaixo do pódio. A página segue fora do índice até o burn-in. */
-function kitCtaHTML(){return`<a class="kit-cta" href="/monte-seu-kit" data-kit="home"><span class="kit-ic" aria-hidden="true">${ic("package-f")}</span><span class="kit-tx"><small>Monte seu kit</small><b>Sua jornada Pokémon começa aqui</b><span>Não sabe qual coleção comprar? Responda 4 perguntas rápidas e veja um kit dentro do seu orçamento, com preços reais das lojas.</span></span><span class="kit-go">Descobrir meu kit ideal${ic("caret-down","icon kit-chev")}</span></a>`}
+function kitCtaHTML(){return`<a class="kit-cta" href="/monte-seu-kit" data-kit="home"><span class="kit-ic" aria-hidden="true">${ic("package-f")}</span><span class="kit-tx"><small>Monte seu kit</small><b>Sua jornada Pokémon começa aqui</b><span>Não sabe qual coleção comprar? Responda poucas perguntas e veja um kit dentro do seu orçamento, com preços reais das lojas.</span></span><span class="kit-go">Descobrir meu kit ideal${ic("caret-down","icon kit-chev")}</span></a>`}
 function sectionHead(icon,title,sub,action){return`<header class="sh2"><div><h2>${icon?ic(icon,"icon sh2-i"):""}${title}</h2>${sub?`<p>${sub}</p>`:""}</div>${action||""}</header>`}
 const seeAll=(go,label="Ver todas")=>`<a class="seeall" href="/${PATHS[go]??""}" data-go="${go}">${label} ${ic("caret-down","icon chev")}</a>`;
 
