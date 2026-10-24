@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monte seu kit Pokémon TCG | TCG Price Hunter</title>
+<meta name="description" content="Não sabe qual coleção comprar? Descubra por onde começar e monte seu kit dentro do seu orçamento, com preços reais das lojas.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0e1330">
+<link rel="icon" href="/favicon.png">
+<style>
+@font-face{font-family:Rubik;src:url(/assets/web/rubik-v1.woff2) format("woff2");font-weight:300 900;font-display:swap}
+:root{--navy:#0e1330;--card:rgba(255,255,255,.07);--line:rgba(255,255,255,.12);--y:#ffcf33;--ink:#2b2200;--txt:#fff;--mut:#c3cceb;--green:#52c47b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--navy);color:var(--txt);font-family:Rubik,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;background:radial-gradient(700px 520px at 50% 260px,rgba(70,90,220,.32),rgba(14,19,48,0) 70%),var(--navy)}
+.bar{height:10px;background:var(--y)}
+main{max-width:560px;margin:0 auto;padding:22px 18px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top a{color:var(--mut);font-size:14px;text-decoration:none}
+.top img{height:36px;width:auto}
+.proto{margin:16px 0 0;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;font-size:13px;color:var(--mut)}
+h1{margin:22px 0 8px;font-weight:900;font-size:clamp(32px,9vw,44px);line-height:1;letter-spacing:-.04em}
+h1 span{color:var(--y)}
+.lead{margin:0 0 20px;color:var(--mut);font-size:17px;line-height:1.45}
+.steps{display:flex;gap:6px;margin:0 0 14px}
+.steps i{flex:1;height:5px;border-radius:9px;background:var(--line)}
+.steps i.on{background:var(--y)}
+h2{margin:0 0 4px;font-size:24px;font-weight:900;letter-spacing:-.02em}
+.sub{margin:0 0 14px;color:var(--mut);font-size:15px}
+.opts{display:grid;gap:10px}
+.opt{display:block;width:100%;padding:16px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--txt);font:inherit;font-size:17px;font-weight:700;text-align:left;cursor:pointer}
+.opt small{display:block;font-weight:400;font-size:14px;color:var(--mut);margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--y);box-shadow:0 0 0 2px var(--y) inset}
+.opt:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.row{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;display:grid;place-items:center;min-height:54px;padding:8px 14px;border-radius:999px;border:0;font:inherit;font-weight:900;font-size:17px;line-height:1.15;text-align:center;text-decoration:none;cursor:pointer}
+h2:focus{outline:none}
+.btn.pri{background:var(--y);color:var(--ink)}
+.btn.sec{background:transparent;color:var(--txt);border:1px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:default}
+label.f{display:block;margin-top:12px;font-weight:700}
+input[type=text],input[type=number]{width:100%;margin-top:6px;padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--txt);font:inherit;font-size:17px}
+.res h2{margin-top:6px}
+.item{display:flex;gap:12px;align-items:center;margin-top:12px;padding:14px;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+.item img,.item .noimg{width:88px;height:88px;object-fit:contain;border-radius:12px;background:#fff;flex:none;padding:4px}
+.item .noimg{background:rgba(255,255,255,.08)}
+.item .n{font-weight:800;line-height:1.25}
+.item .w{font-size:13px;color:var(--mut);margin-top:3px}
+.item .p{margin-top:6px;font-weight:900;color:var(--y);font-size:20px}
+.item a{display:inline-block;margin-top:8px;color:var(--txt);font-weight:700}
+.sum{margin-top:16px;padding:14px;border-radius:18px;background:rgba(255,207,51,.1);border:1px solid rgba(255,207,51,.35)}
+.sum b{color:var(--y)}
+.lim{margin:14px 0 0;padding:0 0 0 18px;color:var(--mut);font-size:14px;line-height:1.5}
+.err{color:#ff8a80}
+footer{margin-top:40px;font-size:12px;color:var(--mut);text-align:center;line-height:1.55}
+footer a{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<main>
+  <div class="top"><a href="/">← Voltar ao site</a><img src="/assets/web/logo-v1.webp" alt="TCG Price Hunter" width="146" height="40"></div>
+  <p class="proto">Protótipo em teste. Os preços são reais e vêm das mesmas lojas do site.</p>
+  <h1>Sua jornada <span>Pokémon</span> começa aqui</h1>
+  <p class="lead">Não sabe qual coleção comprar? Descubra por onde começar e monte seu kit ideal dentro do seu orçamento.</p>
+  <div id="app" aria-live="polite"><noscript>Ative o JavaScript para montar o kit.</noscript></div>
+  <footer>Preços lidos nas lojas; confira valor, frete e estoque antes de comprar. Alguns links podem gerar comissão para o site, sem custo extra para você, e isso nunca muda a ordem das sugestões. · <a href="/privacidade">Privacidade</a></footer>
+</main>
+<script defer src="/assets/web/kit-v1.js"></script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
