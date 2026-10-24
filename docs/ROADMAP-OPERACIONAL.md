@@ -68,6 +68,57 @@ Nenhum produto é recuperado nem publicado, e o histórico de preço fica intact
 
 **Triagem:** a busca da Livraria Colecionador (Magento) não trouxe nenhum produto Pokémon (sonda 40126604916, 3 termos, 0 links). A loja passa de inconclusiva a **sem catálogo relevante (pela busca)**.
 
+**Burn-in #271 — quadro oficial** (comentários do bot; só dia encerrado conta):
+
+| Dia | Veredito | Falha |
+|---|---|---|
+| 11/10 | verde | — |
+| 12/10 | vermelho | dispatcher_falhas |
+| 13/10 | vermelho | dispatcher_falhas, coleta_amostra |
+| 14/10 | vermelho | coleta_amostra |
+| 15/10 | verde | — |
+| 16/10 | verde | — |
+| 17/10 | vermelho | hunter_sucesso |
+| 18/10 | verde | — |
+| 19/10 | vermelho | sync |
+| 20/10 | verde | — |
+| 21/10 | verde | — |
+| 22/10 | vermelho | sync (causa corrigida na #856) |
+| 23/10 | vermelho | sync |
+| 24/10 | **parcial** (verde até 19:37 UTC) | — |
+
+- **Maior sequência verde até hoje:** 2 dias (15–16/10 e 20–21/10).
+- **Previsão:** se 24/10 a 30/10 fecharem verdes, o 7/7 sai no relatório de 31/10 (~03:07 UTC). Qualquer dia vermelho reinicia a contagem.
+
+**Métricas de cobertura** (ramo data, 24/10, 19:35 UTC; selo da página /lojas):
+- **Lojas:** 76 com ofertas, 18 lidas sem estoque agora, 28 lidas sem produto Pokémon, 44 sem leitura automática, 3 indisponíveis (sem API), 7 marketplaces e 3 pausadas.
+- **Ofertas:** 3.866 no total; 1.231 com estoque confirmado, cobrindo 223 produtos em 76 lojas. O frete é conhecido em 291 das 1.231.
+- **Cadastro não é cobertura:** só as 76 lojas com oferta viva entram no ranking.
+
+**Monte seu kit, auditoria funcional** (página oculta):
+- **O que já estava coberto:**
+  - preço e quantidade por produto;
+  - comparação uma loja × dividir;
+  - frete desconhecido nunca vira zero;
+  - frete grátis pela regra da loja;
+  - sem estoque e anomalia fora;
+  - afiliado só desempata;
+  - validação 400 na API;
+  - página com noindex, fora do menu e do sitemap.
+- **Casos-limite adicionados em teste:** catálogo vazio, oferta stale e esgotada fora, mudança de quantidade, troca de item com soma coerente, estados de erro e vazio e viewport móvel.
+- **Resultado:** nenhum defeito encontrado.
+
+**Release Governor — go/no-go (24/10, 20h UTC): NO-GO para a K6** (expor o kit no menu e na Home):
+- **Burn-in:** 0/7, e é o gate obrigatório.
+- **Monitoramento:** o defeito da issue do Vigia sem motivo continua aberto.
+
+O resto dos gates verificáveis está ok:
+- suíte completa e os 4 checks em todas as PRs;
+- revisão independente;
+- frete desconhecido tratado como desconhecido;
+- ofertas sem preço ou estoque verificáveis fora do ranking (prova Tray isolada);
+- rollback pelo Vercel (deploy anterior) e pelo `git revert` das PRs.
+
 **Próximo:**
 1. Validar a #897 em runtime às 17:30 UTC de 25/10.
 2. Fechar o dia 24 do burn-in.
