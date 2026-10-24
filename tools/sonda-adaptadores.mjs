@@ -45,7 +45,12 @@ async function main() {
       const store = { ...c, id, name: c.name || src.name || id, url, platform: plataforma };
       // JSON-LD: também conta as páginas de produto Pokémon que o mapa do site expõe (diagnóstico de "plataforma não reconhecida").
       if (plataforma === 'jsonld') { const { productUrls } = await import('../src/adapters/jsonld.js'); const { sitemapsOf } = await import('../src/robots.js');
-        sonda.mapas = (await sitemapsOf(url.replace(/\/$/, '') + '/').catch(() => [])).length; sonda.urlsProduto = (await productUrls(url.replace(/\/$/, ''), 60).catch(() => [])).length; }
+        const mapas = await sitemapsOf(url.replace(/\/$/, '') + '/').catch(() => []); sonda.mapas = mapas.length; sonda.urlsProduto = (await productUrls(url.replace(/\/$/, ''), 60).catch(() => [])).length;
+        // diagnóstico do 1º mapa declarado: quantos <loc>, quantos mapas filhos e os nomes de 3 (só leitura, com o guard)
+        if (mapas[0]) { try { const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); await guard(mapas[0]);
+          const xml = (await get(mapas[0], { accept: 'application/xml' })).text; const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
+          const filhos = locs.filter((l) => /\.xml(\.gz)?$/i.test(l)); sonda.mapa = { url: mapas[0], locs: locs.length, filhos: filhos.length, exemplos: filhos.slice(0, 3).map((l) => l.replace(/^https?:\/\/[^/]+/, '')), pokemon: locs.filter((l) => /pokemon/i.test(l)).length };
+        } catch (e) { sonda.mapa = { url: mapas[0], erro: String(e?.status || e?.code || e?.message).slice(0, 60) }; } } }
       const raw = await adapters[plataforma].search(store, catalog);
       sonda.anuncios = raw.length;
       const ok = raw.filter((l) => validateListing(l, store, { now: new Date() }).ok);
@@ -54,7 +59,7 @@ async function main() {
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
