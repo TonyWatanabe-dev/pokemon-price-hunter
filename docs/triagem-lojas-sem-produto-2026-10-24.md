@@ -14,26 +14,26 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
 ## Resumo
 | Classificação | Lojas | Impacto potencial |
 |---|---|---|
-| matching pendente | 3 | baixo: 1 a 2 ofertas cada; 1 corrigida (#885) e 2 dependem do catálogo (R3) |
-| sem catálogo relevante | 7 | nenhum |
-| falha de coleta | 5 | **alto no grupo Tray + TCG Pro: ~120 páginas de produto Pokémon** |
+| matching pendente | 3 | baixo: 1 a 2 ofertas cada; 2 corrigidas (#885 Mais Coimbra, #889 Bynx) e 1 sem validação (Maximux, Pokémon GO) |
+| sem catálogo relevante | 8 | nenhum; inclui a **BQD**: 29 ofertas de produtos removidos, preservadas como não confirmadas |
+| falha de coleta | 4 | grupo Tray: o preço não aparece escrito na página e o estoque não é verificável (prova de conceito #891, não integrada) |
 | fonte bloqueada ou indisponível | 1 | nenhum enquanto a loja estiver fechada |
-| inconclusiva | 13 | **BQD: 29 ofertas** presas como não confirmadas; o resto sem mapa do site ou com mapa sem página candidata |
+| inconclusiva | 13 | sem mapa do site, mapa sem página candidata ou página sem nenhum preço (TCG Pro) |
 
 ## Lojas
 | Loja | Leitor | Classificação | Evidência | Impacto | Próxima ação |
 |---|---|---|---|---|---|
 | bqd.com.br | JSON-LD (Nuvemshop) | **sem catálogo relevante (produtos removidos)** | atualizado na 2ª rodada: as 29 páginas das ofertas abrem a página de erro da loja ("Erro - 404", com HTTP 200); a última leitura válida das 29 foi às 13h UTC de 24/10, **esgotadas**; o robots.txt veta a busca da loja. Detalhe na seção BQD | 0 hoje (29 ofertas preservadas como não confirmadas) | nenhuma; reavaliar se a loja republicar no mapa do site |
-| virtualgift.com.br | JSON-LD (Tray) | falha de coleta | 60 páginas Pokémon no mapa ("pacote cartas pokemon", blisters); sem JSON-LD Product e sem meta de preço | 60 páginas | prova de conceito de leitor Tray (fora do robô) |
-| fngames.com.br | JSON-LD (Tray) | falha de coleta | 26 páginas; o JSON-LD tem preço (ex.: 67,80 no Blister Triplo Fogo Fantasmagórico), mas ele **não está escrito** na página. A regra de segurança recusa | 26 páginas | idem |
-| universalgeek.com.br | JSON-LD (Tray) | falha de coleta | 12 páginas reais (Booster Fogo Fantasmagórico, Amigos de Jornada); o JSON-LD traz preço **0,00** | 12 páginas | idem |
-| tcgpro.com.br | JSON-LD | falha de coleta | 20 páginas atuais (ME04, ME05, Celebração 30 anos); sem JSON-LD e sem meta de preço. A API WooCommerce responde 403 (não contornada) | 20 páginas | investigar a plataforma (link `/produtos/…-id`) |
-| parlendabrinquedos.com.br | JSON-LD | falha de coleta | 1 página (Box Ferramentas de Treinador Fezandipiti ex); preço 287,12 no JSON-LD, não escrito na página | 1 | junto do leitor Tray, se servir |
+| virtualgift.com.br | JSON-LD (Tray) | falha de coleta | prova Tray (sonda 40119481265): 20 páginas, 5 lidas; preço do dataLayer = GA4 (ex.: 44,99), sem JSON-LD; estoque só pelo dataLayer, que não é confiável (ver Universal Geek); 15 páginas com nome que não bate; produtos de 2020 (EE2, Galar) | baixo | nenhuma até haver fonte de estoque verificável |
+| fngames.com.br | JSON-LD (Tray) | falha de coleta | prova Tray: 20 páginas; o JSON-LD traz sempre 97% do `priceSell` do dataLayer (58,10 × 59,90; 67,80 × 69,90; provável Pix com 3% de desconto) e não há GA4. Preço sem confirmação independente; a página não escreve o preço | 26 páginas | conferência manual de 2 ou 3 produtos (preço exibido e no Pix) antes de qualquer integração |
+| universalgeek.com.br | JSON-LD (Tray) | falha de coleta | prova Tray: 12 páginas, 11 lidas (9 casam); preço do dataLayer = GA4 (ex.: 159,90; o JSON-LD traz 0,00); **estoque contraditório**: dataLayer "YES" × JSON-LD esgotado nas 8 amostradas, e a página diz esgotado | 0 com estoque hoje | nenhuma; os produtos estão esgotados |
+| tcgpro.com.br | JSON-LD | inconclusiva | 20 páginas atuais (ME04, ME05, Celebração 30 anos) **sem nenhum preço**: nem texto, nem JSON-LD, nem meta, nem dataLayer (sonda 40117461673). O título da página diz "TCGPro - Distribui…" (provável distribuidora, venda a lojistas). A API WooCommerce responde 403 (não contornada) | desconhecido | confirmar se há venda ao consumidor; sem preço público, não entra |
+| parlendabrinquedos.com.br | JSON-LD | falha de coleta | 1 página (Box Ferramentas de Treinador Fezandipiti ex); JSON-LD 287,12 × 296,00 em outro script (mesmo padrão de Pix); não é Tray; preço não escrito na página | 1 | nenhuma (impacto mínimo) |
 | fatimacrianca.com.br | JSON-LD | inconclusiva | o mapa declarado é `sitemap_index.xml.gz` e a leitura volta com 0 links: pode ser mapa vazio ou mapa comprimido não lido (não verificado) | desconhecido | conferir a leitura de mapa `.gz` |
 | maiscoimbra.com.br | VTEX | matching pendente | supermercado; 2 anúncios, 1 Pokémon: "Jogo de Cartas Copag Pokémon Batalha de Liga Mewtwo ex" | 1 oferta | **corrigido na #885**; validar na próxima rodada |
-| bynx.gg | JSON-LD | matching pendente | quase só cartas avulsas (fora do escopo); 1 "Elite Trainer Box - Pitch Black". Pitch Black é o nome em inglês de Escuridão Absoluta (`me05`), e o catálogo não tem esse apelido em inglês | 1 oferta | apelido "pitch black" no `config/catalog.json` (R3, dono) |
+| bynx.gg | JSON-LD | matching pendente → **corrigido (#889)** | quase só cartas avulsas (fora do escopo); "Elite Trainer Box - Pitch Black" agora casa com `me05-etb-en` (alias em inglês de Escuridão Absoluta) | 1 oferta | validar na próxima rodada do robô |
 | maximuxtcg.com | WooCommerce | matching pendente | 4 anúncios: deck box (acessório), "Box Colecionável Equipes do Pokémon GO" (coleção ausente do catálogo), "Box Colecionável dia do Pokémon 30 anos (Inglês)" (produto ambíguo), "Pokébolas" | 1–2 | coleção Pokémon GO no catálogo (R3, dono) |
-| lojapokemonsuper.com | WooCommerce | sem catálogo relevante | os 43 links apontam para **supertcg.com.br**, que já é lida (espelho). O contrato recusa link fora do domínio | 0 (já coberta) | marcar como duplicata da Super TCG (config, R3) |
+| lojapokemonsuper.com | WooCommerce | sem catálogo relevante | os 43 links apontam para **supertcg.com.br**, que já é lida (espelho). O contrato recusa link fora do domínio | 0 (já coberta) | **registrada como espelho da Super TCG (#890)**, pausada e reversível |
 | tabkaramello.com.br | WooCommerce | sem catálogo relevante | boneco, moeda marcador, deck box | 0 hoje | volta com a K5 (acessórios) |
 | vip-tcg.com | JSON-LD | sem catálogo relevante | o mapa traz posts de blog e "evento"; a API WooCommerce não tem produto Pokémon | 0 | nenhuma |
 | deckcerto.com | JSON-LD | sem catálogo relevante | site de conteúdo ("todas as cartas do Surskit…"), não loja; a API WooCommerce é barrada pelo robots.txt | 0 | nenhuma |
@@ -106,11 +106,17 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
   - Mudam 4 dos 3.072 títulos (Mega Lucario, Charizard e 2 de Miraidon), todos de `colecao_ex` para `deck` do mesmo Pokémon.
   - A oferta da Mais Coimbra passa a casar.
 - **#886:** deck box deixa de casar com produto lacrado; nenhum título atual muda.
-- **Não feito (exige R3 ou decisão do dono):**
-  - apelidos e coleções novas no catálogo (Pitch Black, Pokémon GO);
-  - marcar a Loja Pokémon Super como duplicata.
+- **2ª rodada (autorizada pelo dono):**
+  - #889: apelido "pitch black" na `me05`;
+  - #890: a Loja Pokémon Super ficou registrada como espelho da Super TCG.
+- **Pokémon GO:** verificado e não criado. O anúncio não diz a equipe nem o idioma.
 
-## Prioridade sugerida
-1. **BQD:** maior impacto unitário (29 ofertas reais). Primeiro conferir se é produto retirado ou tema novo.
-2. **Grupo Tray:** prova de conceito de leitor Tray fora do robô, no molde da `busca` (#887). Pode recuperar ~100 páginas (Virtual Gift, FN Games, Universal Geek e talvez Happy Nerd e Game of Boards).
-3. **TCG Pro:** 20 páginas atuais; identificar a plataforma.
+## Prioridade sugerida (atualizada na 2ª rodada)
+1. **BQD:** concluída. Os produtos foram removidos e as ofertas continuam não confirmadas. A melhoria proposta é tratar página de erro com HTTP 200 como "página não serve" (PR própria, muda o robô).
+2. **Grupo Tray:** prova de conceito concluída (#891), **não integrar**. Os motivos:
+   - o JSON-LD traz o preço no Pix, e zero quando o produto está esgotado;
+   - o `availability` do dataLayer diz "YES" em produto esgotado;
+   - o preço não aparece escrito na página.
+
+   Só volta à pauta com conferência manual de preços ou com uma fonte oficial (a API da Tray exige credencial da loja).
+3. **TCG Pro:** página de produto sem preço; confirmar se vende ao consumidor.

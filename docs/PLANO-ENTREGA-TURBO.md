@@ -48,7 +48,13 @@
   - 1 indisponível (loja fechada com senha);
   - 13 inconclusivas, entre elas a BQD, com 29 ofertas presas como não confirmadas.
 - **Kalunga** (prova de conceito #887, fora do robô): a busca é permitida e acha 20 produtos Pokémon. A página de produto não tem dados estruturados (preço só na vitrine, estoque invisível). **Não integrar.**
-- **Próximo:** conferir a BQD; prova de conceito de leitor Tray fora do robô; identificar a plataforma da TCG Pro.
+- **3ª rodada, 24/10:**
+  - **BQD:** 29/29 produtos removidos. As ofertas ficam não confirmadas e o histórico fica intacto.
+  - **Prova Tray (#891):** não integrar, porque o estoque não é verificável e o preço no JSON-LD é o do Pix.
+  - **Catálogo:** apelido "Pitch Black" (#889), validado em runtime com 2 ETBs da Ri Happy.
+  - **Loja Pokémon Super:** registrada como espelho da Super TCG (#890), publicada.
+  - **TCG Pro:** sem preço público, inconclusiva.
+- **Próximo:** tratar página de erro com HTTP 200 como "página não serve" (PR própria); Tray só com fonte oficial ou conferência manual.
 
 ### Especificação resumida de “Monte seu kit”
 - Página independente, rota sugerida `/monte-seu-kit/`, item no menu e CTA na Home: “Sua jornada Pokémon começa aqui” / “Descobrir meu kit ideal”.
