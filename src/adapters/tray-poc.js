@@ -19,15 +19,24 @@ const words = (t) => new Set(norm(t).split(' ').filter((w) => w.length > 1));
 export function nomeConfere(nome, pagina) { const A = words(nome); const B = words(pagina); if (A.size < 2) return false; for (const w of A) if (!B.has(w)) return false; return true; }
 const igual = (a, b) => a != null && b != null && Math.abs(a - b) < 0.005;
 
-/** dataLayer da Tray (primeiro objeto de `dataLayer = [{…}]`), ou null. */
-export function dataLayerTray(html) {
-  const m = String(html || '').match(/dataLayer\s*=\s*\[\s*(\{[\s\S]*?\})\s*\]\s*;/);
-  if (!m) return null; try { const o = JSON.parse(m[1]); return o && typeof o === 'object' ? o : null; } catch { return null; }
+/** Objeto JSON que começa no primeiro "{" depois de `ancora` (chaves balanceadas, respeitando strings), já lido; ou null. */
+export function objetoApos(html, ancora) {
+  const h = String(html || ''); const m = ancora.exec(h); if (!m) return null;
+  const ini = h.indexOf('{', m.index + m[0].length - 1); if (ini < 0 || ini - (m.index + m[0].length) > 5) return null;
+  let prof = 0; let str = false; let esc = false;
+  for (let i = ini; i < h.length && i < ini + 200000; i++) {
+    const c = h[i];
+    if (str) { if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') str = false; continue; }
+    if (c === '"') str = true; else if (c === '{') prof++; else if (c === '}' && --prof === 0) { try { const o = JSON.parse(h.slice(ini, i + 1)); return o && typeof o === 'object' ? o : null; } catch { return null; } }
+  }
+  return null;
 }
+/** dataLayer da Tray (primeiro objeto de `dataLayer = [{…}]`), ou null. */
+export const dataLayerTray = (html) => objetoApos(html, /dataLayer\s*=\s*\[\s*/);
 /** Preços do evento GA4 view_item (value e items[].price), em reais. */
 export function precosGa4(html) {
-  const m = String(html || '').match(/gtag\(\s*['"]event['"]\s*,\s*['"]view_item['"]\s*,\s*(\{[\s\S]*?\})\s*\)\s*;/);
-  if (!m) return []; try { const o = JSON.parse(m[1]); return [o.value, ...[].concat(o.items || []).map((i) => i?.price)].map((v) => brl(v)).filter(Boolean); } catch { return []; }
+  const o = objetoApos(html, /gtag\(\s*['"]event['"]\s*,\s*['"]view_item['"]\s*,\s*/);
+  return o ? [o.value, ...[].concat(o.items || []).map((i) => i?.price)].map((v) => brl(v)).filter(Boolean) : [];
 }
 function produtoLd(html) {
   const { nodes, stats } = jsonLdNodes(html);

@@ -15,7 +15,7 @@ const U = 'https://fn.test/jogos/cartas-pokemon/tcg-pokemon-blister-triplo';
 const pagina = ({ dl = {}, ld = { price: '69.90', availability: 'InStock' }, ga4 = null, h1 = NOME, sem = false, extraLd = '' } = {}) => {
   const d = { pageCategory: 'Produto', idProduct: '2621', nameProduct: NOME, priceSell: '69.90', price: '69.90', availability: 'YES', urlProduct: 'http://www.fn.test/jogos/cartas-pokemon/tcg-pokemon-blister-triplo', urlImage: 'https://img.test/2621.png', ...dl };
   return `<html><head><title>${h1} - Loja</title>${ld ? `<script type="application/ld+json">${JSON.stringify({ '@type': 'Product', name: NOME, sku: '2621', offers: { '@type': 'Offer', priceCurrency: 'BRL', price: ld.price, availability: `https://schema.org/${ld.availability}` } })}</script>` : ''}${extraLd}
-<script>${ga4 ? `gtag('event', 'view_item', ${JSON.stringify(ga4)});` : ''}${sem ? '' : `dataLayer = [${JSON.stringify(d)}];`}</script></head><body><h1>${h1}</h1><div>Meu Carrinho 0 itens R$ 0,00</div></body></html>`;
+<script>${ga4 ? `gtag('event', 'view_item', ${JSON.stringify(ga4)});` : ''}${sem ? '' : `dataLayer = [${JSON.stringify({ ...d, listSku: [] })}]\n`}</script></head><body><h1>${h1}</h1><div>Meu Carrinho 0 itens R$ 0,00</div></body></html>`;
 };
 const ler = (o) => tray.lerPaginaTray(pagina(o), U);
 
@@ -41,6 +41,9 @@ assert.equal(ler({ dl: { availability: 'YES' }, ld: { price: '69.90', availabili
 // leitores das fontes
 assert.equal(tray.dataLayerTray('<script>dataLayer = [{"pageCategory":"Produto","priceSell":"1.00"}];</script>').priceSell, '1.00');
 assert.equal(tray.dataLayerTray('<script>dataLayer = [{quebrado: 1}];</script>'), null);
+// formato real (sonda 40118537418): sem ";" no fim, listas aninhadas e "}" dentro de string
+assert.equal(tray.dataLayerTray('<script>dataLayer = [{"pageCategory":"Produto","nameProduct":"Box {Especial}","listSku":[{"id":"1"}],"priceSell":"59.90"}]\n</script>').priceSell, '59.90');
+assert.equal(tray.dataLayerTray('<script>var x = 1;</script>'), null);
 assert.deepEqual(tray.precosGa4(`<script>gtag('event', 'view_item', {"currency":"BRL","value":159.9,"items":[{"price":159.9}]});</script>`), [159.9, 159.9]);
 assert.equal(tray.nomeConfere('Booster', 'Booster Fogo'), false, 'nome de uma palavra não basta');
 
