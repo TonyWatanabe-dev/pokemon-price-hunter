@@ -37,7 +37,7 @@
   - #886: deck box não casa mais com produto lacrado; auditoria dos 15 candidatos e seleção por perfil (toploader em "cartas especiais"); o kit sugere só a categoria.
   - Ligar a coleta de acessórios depende das decisões 1 a 3 do dono (`docs/kit-acessorios-candidatos.md`).
   - Preço, estoque e link no Brasil continuam sem confirmação: as lojas que vendem os candidatos bloqueiam leitura automática.
-- K6 (menu, Home, sitemap): bloqueada até o critério de liberação e burn-in 7/7.
+- K6 (menu, Home, sitemap): **parcial por decisão do dono em 24/10** (chat: "Liberar agora"): item no menu do topo e no Mais, chamada na Home abaixo do pódio e sem o aviso de protótipo. **Continua fora do índice (noindex) e do sitemap** até o burn-in 7/7.
 - Burn-in #271, em 24/10: 0/7 dias encerrados. O dia 24 está parcial e verde (até 16:52 UTC). O 7/7 sai, no mínimo, no fechamento de 30/10, relatado em 31/10.
 
 ### Cobertura de lojas — 24/10/2026, noite

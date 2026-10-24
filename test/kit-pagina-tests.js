@@ -1,4 +1,5 @@
-// Monte seu kit (K3): página protótipo oculta + rota /api/v1/site/kit. Fora do índice e do menu até o critério de §6.
+// Monte seu kit: página + rota /api/v1/site/kit. K6 parcial (decisão do dono em 24/10): no menu e na Home, sem o aviso de
+// protótipo; continua fora do índice e do sitemap até o burn-in 7/7.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
@@ -9,9 +10,15 @@ assert.ok(vj.rewrites.some((r) => r.source === '/monte-seu-kit/:passo*' && r.des
 assert.match(JSON.parse(read('package.json')).scripts.build, /\bkit\.html\b/, 'build copia kit.html');
 assert.match(vj.functions['api/v1.mjs'].includeFiles, /config\/frete-gratis\.json/, 'função leva a regra de frete grátis');
 assert.match(html, /<meta name="robots" content="noindex, nofollow">/, 'protótipo fora do índice');
-assert.match(html, /Protótipo em teste/); assert.match(html, /Sua jornada <span>Pokémon<\/span> começa aqui/);
+assert.doesNotMatch(html, /Protótipo em teste/); assert.match(html, /Sua jornada <span>Pokémon<\/span> começa aqui/);
 assert.doesNotMatch(html.replace(/<script[^>]*\ssrc="[^"]+"[^>]*><\/script>/g, ''), /<script/i, 'sem script inline (CSP)');
-assert.doesNotMatch(index, /monte-seu-kit/, 'ainda fora do menu e da Home (K6)');
+assert.match(index, /<a class="navbtn" href="\/monte-seu-kit" data-kit="menu">/, 'no menu do topo');
+assert.match(index, /<a href="\/monte-seu-kit" data-kit="mais">/, 'no menu Mais do celular');
+assert.match(index, /function kitCtaHTML\(\)\{return`<a class="kit-cta" href="\/monte-seu-kit" data-kit="home">/, 'chamada na Home');
+assert.match(index, /\$\{kitCtaHTML\(\)\}\n  <div class="home-slot" id="home-rail">/, 'logo abaixo do pódio');
+assert.match(index, /Descobrir meu kit ideal/);
+assert.match(index, /track\("kit_click",\{origem:kb\.dataset\.kit\}\)/, 'clique contado');
+assert.doesNotMatch(index.match(/function kitCtaHTML[^\n]*/)[0], /rara|garantid|chance/i, 'sem promessa de carta');
 assert.doesNotMatch(JSON.stringify(vj.rewrites.filter((r) => /sitemap/.test(r.source))), /kit/);
 assert.doesNotMatch(read('api/sitemap.mjs'), /monte-seu-kit/, 'fora do sitemap');
 assert.match(js, /\/api\/v1\/site\/kit\?/, 'preço vem da API'); assert.match(js, /sessionStorage/); assert.match(js, /try \{ sessionStorage/);
@@ -49,4 +56,4 @@ assert.equal((await call('/api/v1/site/kit?objetivo=voar&orcamento=10')).status,
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=0')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=50&idioma=xx')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=proteger&fonte=state')).status, 200, 'proteger sem orçamento: limitação, não erro');
-console.log('✓ kit-pagina: rota oculta, sem índice/menu, API com validação e total honesto');
+console.log('✓ kit-pagina: no menu e na Home, fora do índice, API com validação e total honesto');

@@ -39,11 +39,14 @@ const rewrite = (p) => {
 };
 // Saída do build em /assets/web: arquivos de assets/web/ + CSS/JS da casca gerados pelo slim (mesmo nome do build).
 const built = Object.fromEntries(slim(fs.readFileSync(path.join(root, 'index.html'), 'utf8')).arquivos.map((a) => ['/assets/web/' + a.nome, a]));
+const COPIADAS = (JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).scripts.build.match(/cp ([^&]+?) public\//)?.[1] || '').split(/\s+/).filter((f) => f.endsWith('.html'));
 const TYPES = { '.css': 'text/css', '.js': 'text/javascript', '.webp': 'image/webp', '.woff2': 'font/woff2', '.html': 'text/html; charset=utf-8' };
 function staticFile(p) {
   if (built[p]) return { body: built[p].conteudo, type: built[p].tipo };
   if (p.startsWith('/assets/web/') && !p.slice(12).includes('/') && fs.existsSync(path.join(root, 'assets/web', p.slice(12)))) return { body: '(binário)', type: TYPES[path.extname(p)] || 'application/octet-stream' };
   if (p === '/app.html') return { body: slim(fs.readFileSync(path.join(root, 'index.html'), 'utf8')).html, type: TYPES['.html'] };
+  // páginas avulsas que o build copia para public/ (entrar.html, ir.html, kit.html…)
+  if (/^\/[a-z-]+\.html$/.test(p) && COPIADAS.includes(p.slice(1))) return { body: fs.readFileSync(path.join(root, p.slice(1)), 'utf8'), type: TYPES['.html'] };
   return null;
 }
 

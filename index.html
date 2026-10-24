@@ -188,10 +188,10 @@ button.sblock:active{transform:scale(.99)}
 @media (max-width:859px){.topnav{display:none!important}.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))}}
 @media (min-width:860px){.tabbar{display:none}}
 .more-list{display:flex;flex-direction:column;padding:6px 10px calc(14px + env(safe-area-inset-bottom))}
-.more-list button{display:flex;align-items:center;gap:14px;border:0;background:none;text-align:left;padding:14px 10px;border-radius:14px;font-size:16px;font-weight:600}
-.more-list button .icon{width:24px;height:24px;color:var(--muted)}
-.more-list button small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:1px}
-.more-list button:active{background:var(--sunk)}
+.more-list :is(button,a){display:flex;color:inherit;text-decoration:none;align-items:center;gap:14px;border:0;background:none;text-align:left;padding:14px 10px;border-radius:14px;font-size:16px;font-weight:600}
+.more-list :is(button,a) .icon{width:24px;height:24px;color:var(--muted)}
+.more-list :is(button,a) small{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:1px}
+.more-list :is(button,a):active{background:var(--sunk)}
 .more-list .count{margin-left:auto;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--sticker);color:var(--sticker-ink);font-size:12px;font-weight:700;line-height:22px;text-align:center}
 dialog.sheet.small{max-height:70dvh}
 @media (min-width:760px){dialog.sheet.small{max-width:420px}}
@@ -837,6 +837,17 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 
 /* Em sequência: as próximas, distribuídas uma a uma */
 .seq{margin-top:64px}
+/* chamada do Monte seu kit: cartão amarelo de figurinha, sombra dura (design system Social) */
+.kit-cta{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px 22px;margin:40px 0 0;padding:22px 24px;border-radius:24px;background:var(--sticker);color:#131F49;text-decoration:none;box-shadow:8px 8px 0 #131F49;transition:transform 160ms ease,box-shadow 160ms ease}
+.kit-cta:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 #131F49}.kit-cta:active{transform:translate(3px,3px);box-shadow:4px 4px 0 #131F49}
+.kit-cta:focus-visible{outline:3px solid #131F49;outline-offset:4px}
+.kit-ic{display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:#131F49;color:var(--sticker);transform:rotate(-6deg)}.kit-ic .icon{width:34px;height:34px}
+.kit-tx small{display:block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.kit-tx b{display:block;margin:2px 0 4px;font-size:clamp(21px,2.4vw,28px);font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.kit-tx>span{display:block;font-size:15px;line-height:1.4;max-width:60ch}
+.kit-go{display:inline-flex;align-items:center;gap:6px;padding:13px 20px;border-radius:999px;background:#131F49;color:#fff;font-size:15px;font-weight:800;white-space:nowrap}
+.kit-chev{width:16px;height:16px;transform:rotate(-90deg)}
+@media (max-width:720px){.kit-cta{grid-template-columns:auto minmax(0,1fr);padding:18px}.kit-ic{width:52px;height:52px}.kit-go{grid-column:1/-1;justify-content:center}}
 .rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,300px);gap:18px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:10px 4px 26px;margin:0 -4px;scrollbar-width:thin;perspective:1400px}
 .rail>.deal{scroll-snap-align:start}
 /* 6C.0: na sequência, loja e selo numa linha e o botão sempre na de baixo (antes a quebra variava com o tamanho do nome da loja) */
@@ -1451,6 +1462,7 @@ body.has-dock .wrap{padding-bottom:calc(180px + env(safe-area-inset-bottom,0px))
       <a class="navbtn" data-go="copag" href="/precos"><span class="lbl">Preços Copag</span><svg class="icon nav-ico"><use href="#i-tag"/></svg></a>
       <a class="navbtn" data-go="prevenda" href="/pre-vendas"><span class="lbl">Pré-vendas</span><svg class="icon nav-ico"><use href="#i-calendar-blank"/></svg><span class="count c-pre" hidden></span></a>
       <a class="navbtn" data-go="grupos" href="/comunidade"><span class="lbl">Grupos</span><svg class="icon nav-ico"><use href="#i-chat"/></svg></a>
+      <a class="navbtn" href="/monte-seu-kit" data-kit="menu"><span class="lbl">Monte seu kit</span><svg class="icon nav-ico"><use href="#i-package-f"/></svg></a>
       <span class="navsep" aria-hidden="true"></span>
       <button class="navbtn theme-btn" type="button" aria-label="Alternar tema claro ou escuro"><svg class="icon"><use href="#i-moon"/></svg></button>
       <a class="navbtn usr" data-go="favoritos" href="/favoritos" aria-label="Favoritos" hidden><svg class="icon"><use href="#i-heart"/></svg></a>
@@ -1482,6 +1494,7 @@ body.has-dock .wrap{padding-bottom:calc(180px + env(safe-area-inset-bottom,0px))
     <button type="button" data-go="favoritos"><svg class="icon"><use href="#i-heart"/></svg><span>Favoritos<small>Os produtos que você acompanha</small></span></button>
     <button type="button" data-go="alertas"><svg class="icon"><use href="#i-bell"/></svg><span>Alertas de preço<small>Aviso quando chegar no seu preço</small></span><span class="count c-hit" hidden></span></button>
     <button type="button" data-go="prevenda"><svg class="icon"><use href="#i-calendar-blank"/></svg><span>Pré-vendas<small>Lançamentos que ainda não chegaram</small></span><span class="count c-pre" hidden></span></button>
+    <a href="/monte-seu-kit" data-kit="mais"><svg class="icon"><use href="#i-package-f"/></svg><span>Monte seu kit<small>Por onde começar, dentro do seu orçamento</small></span></a>
     <button type="button" data-go="oportunidades"><svg class="icon"><use href="#i-seal-check"/></svg><span>Oportunidades<small>Todas as ofertas abaixo da Copag, com filtros</small></span></button>
     <button type="button" data-go="grupos"><svg class="icon"><use href="#i-chat"/></svg><span>Grupos de ofertas<small>WhatsApp e Telegram, grátis</small></span></button>
     <button type="button" data-go="lojas"><svg class="icon"><use href="#i-storefront"/></svg><span>Lojas<small>Todas as lojas conhecidas, com busca direta</small></span></button>
@@ -1814,6 +1827,8 @@ const SINCE=(()=>{let s=null;try{s=sessionStorage.getItem("ph:since")}catch{}if(
 store.set("seenBefore",true);
 function activity(){return(S.activity||[]).filter((e)=>P[e.productId])}
 function dedupeAct(list){const seen=new Set();return list.filter((e)=>{const k=e.type+e.productId;if(seen.has(k))return false;seen.add(k);return true})}
+/* Monte seu kit (K6 parcial, decisão do dono em 24/10): chamada na Home logo abaixo do pódio. A página segue fora do índice até o burn-in. */
+function kitCtaHTML(){return`<a class="kit-cta" href="/monte-seu-kit" data-kit="home"><span class="kit-ic" aria-hidden="true">${ic("package-f")}</span><span class="kit-tx"><small>Monte seu kit</small><b>Sua jornada Pokémon começa aqui</b><span>Não sabe qual coleção comprar? Responda 4 perguntas rápidas e veja um kit dentro do seu orçamento, com preços reais das lojas.</span></span><span class="kit-go">Descobrir meu kit ideal${ic("caret-down","icon kit-chev")}</span></a>`}
 function sectionHead(icon,title,sub,action){return`<header class="sh2"><div><h2>${icon?ic(icon,"icon sh2-i"):""}${title}</h2>${sub?`<p>${sub}</p>`:""}</div>${action||""}</header>`}
 const seeAll=(go,label="Ver todas")=>`<a class="seeall" href="/${PATHS[go]??""}" data-go="${go}">${label} ${ic("caret-down","icon chev")}</a>`;
 
@@ -2069,6 +2084,7 @@ function renderDeals(){
     <header class="stage-h" style="--d:600"><h2 id="pod-h">Melhores oportunidades agora</h2><p>As três primeiras na ordem do Opportunity Score. <a href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></p></header>
     <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
   </div></section>
+  ${kitCtaHTML()}
   <div class="home-slot" id="home-rail">${railOppHTML()}</div>
   ${colWallHTML()}
   ${radarHTML()}
@@ -3677,6 +3693,7 @@ document.addEventListener("click",(e)=>{
   const t=e.target;
   if(!t.closest(".sbox"))acClose();
   const shb=t.closest("[data-share]");if(shb){sharePid(shb.dataset.share);return}
+  const kb=t.closest("[data-kit]");if(kb)track("kit_click",{origem:kb.dataset.kit});   /* segue o link normalmente */
   const gl=t.closest("[data-grupo]");if(gl){track("group_click",{canal:gl.dataset.grupo,origem:gl.dataset.orig||""});return}
   const rl=t.closest("[data-rede]");if(rl){track("social_click",{rede:rl.dataset.rede});return}
   if(grpArrastou&&t.closest("#grp-fab")){grpArrastou=false;return}   /* soltar depois de arrastar não conta como clique */
