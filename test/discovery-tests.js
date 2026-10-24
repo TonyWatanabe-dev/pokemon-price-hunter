@@ -167,7 +167,7 @@ const quiet = () => {};
   assert.deepEqual([r.ok, r.skipped], [true, 'desligado']); assert.equal(requested.length, 0);
   assert.ok(!fs.existsSync(dat('discovery.json')) && !fs.existsSync(dat('discovery-stores.txt')));
   assert.equal(enabled({ HUNTER_DISCOVERY: '0' }), false); assert.equal(enabled({}), true);
-  const n = await runDiscovery({ log: quiet, env: {} });
+  const n = await runDiscovery({ log: quiet, env: { HUNTER_DISCOVERY_OSM: '0' } }); // sem conector e sem OSM: nenhuma rede (OSM ligado é coberto em discovery-fase0-tests.js)
   assert.deepEqual([n.ok, n.skipped], [true, 'sem conector']); assert.equal(requested.length, 0);
   const lg = JSON.parse(fs.readFileSync(dat('discovery.json'), 'utf8')); const last = lg.runs.at(-1); assert.equal(last.skipped, 'sem conector'); assert.ok(last.connectors.brave && last.connectors.brave.available === false, 'ledger registra por que pulou, sem valores de segredo'); assert.ok(!JSON.stringify(lg).includes('"k"'), 'sem valor de chave no ledger');
 }

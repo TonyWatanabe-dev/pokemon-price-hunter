@@ -5,7 +5,8 @@ import { registry } from './connectors/index.js';
 import { generateQueries } from './queries.js';
 import { loadLedger, saveLedger, selectQueries, queryStats, noteConnector } from './ledger.js';
 import { inventory } from './hosts.js';
-import { createPipeline } from './pipeline.js';
+import { createPipeline, RECONFERIR, VALIDATOR_VERSION } from './pipeline.js';
+import { carregarOsm } from './osm.js';
 import { readJson, configPath, dataPath } from '../db.js';
 import { readMeta, writeJsonAtomic } from '../opstate.js';
 import { safeReason } from '../http.js';
@@ -20,6 +21,40 @@ export function snapshot(inv) {
   return { knownHosts: inv.byHost.size, offers: offers.length, liveOffers: live.length, productsWithOffers: new Set(offers.map((o) => o.productId)).size };
 }
 
+const envNum = (env, k, d) => { const n = Math.floor(Number(env[k])); return Number.isFinite(n) && n >= 0 ? n : d; };
+
+/** Fontes grátis que não dependem de conector de busca (24/10/2026):
+ *  1) reconferir: hosts recusados na v1 por motivo que o validador v2 resolve (busca da loja, sitemap) — DISCOVERY_RECONFERIR_MAX (20);
+ *  2) OpenStreetMap: sites de lojas de jogos/brinquedos/hobby do mapa, com cidade e UF — DISCOVERY_OSM_MAX (30) validações.
+ *  HUNTER_DISCOVERY_OSM=0 desliga o OSM. Cada fonte tem o próprio pipeline (limites próprios) e grava como as buscas.
+ *  Prazo total DISCOVERY_EXTRAS_SEG (150 s): a rodada diária tem teto de 18 min no Actions e não pode ser cortada antes de
+ *  salvar (dia vermelho no burn-in). O que não couber fica para a rodada seguinte (o ledger lembra o que já foi visto). */
+export async function runExtras({ ledger, log, now, env, validate, osmLoader = carregarOsm, clock = Date.now }) {
+  const at = now.toISOString(); const out = {};
+  const prazo = clock() + envNum(env, 'DISCOVERY_EXTRAS_SEG', 150) * 1000; const cabe = () => clock() < prazo;
+  const recMax = envNum(env, 'DISCOVERY_RECONFERIR_MAX', 15);
+  const alvo = Object.entries(ledger.hosts).filter(([, h]) => (h.validator || 1) < VALIDATOR_VERSION && ['rejected', 'candidate'].includes(h.verdict) && RECONFERIR.test(h.reason || '')).map(([host]) => host).slice(0, recMax);
+  if (alvo.length) {
+    const pipe = createPipeline({ inv: inventory(), ledger, log, now, connector: 'reconferir', validate, env: { ...env, DISCOVERY_MAX_VALIDATIONS: String(recMax), DISCOVERY_MAX_NEW_STORES: String(recMax) }, reconferir: new Set(alvo) });
+    for (const host of alvo) { if (!cabe()) break; await pipe.processResult({ url: 'https://' + host }, { id: 'reconferir:v' + VALIDATOR_VERSION }); }
+    const r = pipe.flush(); out.reconferir = { hosts: alvo.length, aceitas: r.newStores.length, candidatas: r.candidates.length };
+    log(`DIE/reconferir: ${alvo.length} host(s) reconferido(s), ${r.newStores.length} loja(s) aceita(s), ${r.candidates.length} candidata(s).`);
+  }
+  if (String(env.HUNTER_DISCOVERY_OSM ?? '') !== '0' && cabe()) {
+    const osm = await osmLoader({ now, log });
+    if (osm?.comSite?.length) {
+      const osmMax = envNum(env, 'DISCOVERY_OSM_MAX', 20);
+      const pipe = createPipeline({ inv: inventory(), ledger, log, now, connector: 'osm', validate, env: { ...env, DISCOVERY_MAX_VALIDATIONS: String(osmMax), DISCOVERY_MAX_NEW_STORES: String(osmMax) } });
+      for (const x of osm.comSite) if (cabe()) await pipe.processResult({ url: x.url, loc: { cidade: x.cidade, uf: x.uf, fonte: 'osm', nome: x.nome } }, { id: 'osm:' + (x.shop || 'loja') });
+      const r = pipe.flush();
+      out.osm = { lista: osm.comSite.length, semSite: osm.semSite, validados: r.counts.validated, aceitas: r.newStores.length, candidatas: r.candidates.length, fetchedAt: osm.fetchedAt };
+      log(`DIE/OSM: ${r.counts.validated} site(s) conferido(s) nesta rodada, ${r.newStores.length} loja(s) aceita(s), ${r.candidates.length} candidata(s).`);
+    }
+  }
+  if (Object.keys(out).length) ledger.extras = { at, ...out };
+  return out;
+}
+
 export async function runDiscovery({ log = console.log, env = process.env, now = new Date(), connectors = registry(env), validate } = {}) {
   const t0 = Date.now(); const at = now.toISOString();
   if (!enabled(env)) { log('DIE: desligado (HUNTER_DISCOVERY=0).'); return { ok: true, skipped: 'desligado', connectors: connectors.status() }; }
@@ -27,9 +62,10 @@ export async function runDiscovery({ log = console.log, env = process.env, now =
   const conn = connectors.pick();
   for (const [id, s] of Object.entries(status)) if (!s.available) log(`DIE: conector ${id} indisponível: ${s.reason} (${s.keyName})`);
   if (!conn) {
-    log('DIE: nenhum conector disponível; nada a fazer.');
+    log('DIE: nenhum conector de busca disponível; seguem só as fontes grátis (reconferir, OpenStreetMap).');
     // Mesmo sem rodar, deixa evidência no ramo data: qual conector faltou e por quê (nomes de variável, nunca valores).
-    try { const ledger = loadLedger(); ledger.runs.push({ at, skipped: 'sem conector', connectors: status, durationMs: Date.now() - t0 }); saveLedger(ledger); } catch (e) { log(`DIE: não gravou o ledger (${e.message})`); }
+    try { const ledger = loadLedger(); let extras = {}; try { extras = await runExtras({ ledger, log, now, env, validate }); } catch (e) { log(`DIE: fontes grátis falharam (${safeReason(e)})`); }
+      ledger.runs.push({ at, skipped: 'sem conector', connectors: status, extras, durationMs: Date.now() - t0 }); saveLedger(ledger); } catch (e) { log(`DIE: não gravou o ledger (${e.message})`); }
     try { const f = dataPath('meta.json'); const meta = readMeta(f); meta.discovery = { version: 1, last: { at, skipped: 'sem conector', connectors: status } }; writeJsonAtomic(f, meta); } catch {}
     return { ok: true, skipped: 'sem conector', connectors: status };
   }
@@ -60,10 +96,11 @@ export async function runDiscovery({ log = console.log, env = process.env, now =
       if (gained.s || gained.u) st.lastNewAt = at;
     }
     const out = pipe.flush();
+    let extras = {}; try { extras = await runExtras({ ledger, log, now, env, validate }); } catch (e) { log(`DIE: fontes grátis falharam (${safeReason(e)})`); }
     const found = { stores: out.newStores.length, candidates: out.candidates.length, urls: out.newUrls.length, hosts: Object.keys(ledger.hosts).length };
     const cost = { connector: conn.id, unit: conn.cost.unit, queries: queriesRun + errors, estimate: (queriesRun + errors) * conn.cost.estimate };
     const run = { at, connector: conn.id, queriesRun, queriesPlanned: picked.length, queriesTotal: all.length, hits, newHosts: out.counts.validated, storesAccepted: found.stores, storesCandidates: found.candidates, urlsAccepted: found.urls,
-      errors, stopped, durationMs: Date.now() - t0, baseline, found, cost, counts: out.counts, connectors: connectors.status() };
+      errors, stopped, durationMs: Date.now() - t0, baseline, found, cost, counts: out.counts, connectors: connectors.status(), extras };
     ledger.runs.push(run);
     saveLedger(ledger);
     // data/meta.json: resumo da última rodada sob a chave `discovery` (mergeOps preserva chaves desconhecidas).

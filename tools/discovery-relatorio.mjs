@@ -41,3 +41,24 @@ console.log([pad('', 22), pad('antes (1ª rodada)', 20), 'agora'].join(' '));
 for (const k of ['knownHosts', 'offers', 'liveOffers', 'productsWithOffers']) console.log([pad(k, 22), pad(num(first?.[k]), 20), num(now[k])].join(' '));
 console.log(`\nLojas aceitas (acumulado): ${runs.reduce((a, r) => a + (r.storesAccepted || 0), 0)} | candidatas: ${runs.reduce((a, r) => a + (r.storesCandidates || 0), 0)} | URLs entregues ao coletor: ${runs.reduce((a, r) => a + (r.urlsAccepted || 0), 0)}`);
 console.log('Nota: "antes" é o retrato gravado na primeira rodada do ledger; "agora" lê o estado atual (state.json vem do ramo data no robô).');
+
+// Cobertura por estado (Fase 0, 24/10/2026): cidade/UF vêm do OpenStreetMap (ledger.hosts[h].loc). Lojas aceitas,
+// candidatas e recusadas por UF, e quantas lojas do mapa ainda não têm site (semente do diretório por cidade).
+{
+  const { readJson, dataPath } = await import('../src/db.js');
+  const { UFS } = await import('../src/discovery/osm.js');
+  const osm = readJson(dataPath('osm-lojas.json'), null);
+  const por = Object.fromEntries(UFS.map((u) => [u, { aceitas: 0, candidatas: 0, recusadas: 0, conhecidas: 0 }]));
+  const inv = inventory();
+  for (const [host, h] of Object.entries(ledger.hosts)) {
+    const uf = h.loc?.uf; if (!uf || !por[uf]) continue;
+    if (inv.byHost.has(host) && h.verdict !== 'accepted') por[uf].conhecidas++;
+    else if (h.verdict === 'accepted') por[uf].aceitas++; else if (h.verdict === 'candidate') por[uf].candidatas++; else if (h.verdict === 'rejected') por[uf].recusadas++;
+  }
+  console.log('\n-- Cobertura por estado (lojas com cidade/UF conhecida) --');
+  console.log([pad('UF', 4), pad('já no robô', 11), pad('novas', 6), pad('candid.', 8), pad('recusadas', 10), 'no mapa (todas)'].join(' '));
+  for (const uf of UFS) { const x = por[uf]; console.log([pad(uf, 4), pad(x.conhecidas, 11), pad(x.aceitas, 6), pad(x.candidatas, 8), pad(x.recusadas, 10), osm?.porUf?.[uf] ?? '-'].join(' ')); }
+  if (osm) console.log(`OpenStreetMap (${osm.fetchedAt}): ${osm.comSite.length} com site, ${osm.semSite} sem site.`);
+  else console.log('OpenStreetMap: lista ainda não buscada (sai na próxima rodada diária).');
+  if (ledger.extras) console.log(`Última rodada das fontes grátis: ${JSON.stringify(ledger.extras)}`);
+}
