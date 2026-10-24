@@ -41,6 +41,20 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Qualidade dos dados — 24/10/2026, noite (America/Sao_Paulo)
+
+| Item | Resultado | PR | Estado |
+|---|---|---|---|
+| A. Nomes duplicados | Auditoria: 545 produtos, 3 com nome repetido ("Baralho de Batalha Batalha ex"). Origem no **casamento** (`detectVariant`): "batalha" lido como Pokémon juntava baralhos diferentes (Miraidon, Melmetal, Houndoom, Lucario…) em `sv6_5/sv5/avulsos-deck-batalha`. Regra própria para Baralho/Deck de Batalha; dois baralhos no anúncio ou sem nome → sem produto. Ids preservados (variante no formato de sempre). Em 3.072 títulos: 31 mudam, todos saindo dos *-deck-batalha para produtos existentes; 0 fora deles | #879 | integrado; efeito nas próximas rodadas |
+| B. Kalunga, Havan, Leitura | Kalunga: **falha técnica** (página com JSON-LD válido, mas o mapa do site não lista produtos). Havan: **inconclusiva** (índice de 7 mapas, 0 páginas Pokémon; logs inacessíveis). Leitura: **falha técnica** (site em JS, mapa sem produtos). Nenhuma recuperada. Mapa do robots.txt não entrou no robô (0 anúncio a mais na sonda); sonda ganhou diagnóstico JSON-LD | #880 | integrado (só ferramenta) |
+| C. Estado das lojas | Selo "Com ofertas" / "Lida · sem estoque agora" / "Lida · sem produto Pokémon" no lugar de "Monitorada". Dados de 24/10: 75 / 16 / 31 das 122 lidas | #881 | publicado |
+| K5 (independente) | Taxonomia de acessórios nas categorias do banco (0 falso positivo em 3.402 ofertas), não ligada ao robô; candidatos em `docs/kit-acessorios-candidatos.md` (Copag não vende acessórios avulsos; Ultra PRO licenciado); teste de que comissão só desempata preço igual no kit/cesta | #882 | integrado |
+| K4 | Critérios conferidos: preço por produto × quantidade, frete desconhecido ≠ 0, pedidos e fretes por loja, comparação parcial sinalizada, sem viés de afiliado (golden em `kit-cesta-tests.js`, `kit-afiliado-tests.js`) | #877, #878, #882 | publicado (oculto) |
+
+**Próximo:** #271 (dia 24 parcial verde); decisão do dono sobre acessórios (K5); Kalunga só com novo leitor de página de departamento (avaliar custo × ganho); 31 lojas "lidas sem produto Pokémon" para revisar/pausar. K6 continua bloqueada até §6 + burn-in 7/7.
+
+---
+
 ## Execução do roadmap — 24/10/2026, tarde (America/Sao_Paulo)
 
 ### Auditoria (13h30 UTC)
