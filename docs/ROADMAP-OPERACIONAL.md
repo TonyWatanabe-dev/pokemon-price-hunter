@@ -41,6 +41,31 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Social, grupos e Monte seu kit — 24/10/2026, noite, 6ª rodada (America/Sao_Paulo)
+
+Rodada pedida pelo proprietário no chat: entrada no grupo pelos anúncios, posts de Top 3/Top 10 nos grupos, ritmo do WhatsApp e liberação do Monte seu kit. P0 (#271, #231) sem mudança desde a 5ª rodada.
+
+| PR | Mudança | Testes locais | CI (4 checks) e revisão | Integrada | Publicada | Validada em runtime |
+|---|---|---|---|---|---|---|
+| #860 (26c0eea) | `/ir`: no navegador interno do Instagram/Facebook/TikTok, em vez do redirecionamento automático (bloqueado pelos apps), botão "Abrir o WhatsApp" com deep link (`whatsapp://` no iOS, `intent://` com fallback https no Android), plano B "Abrir no navegador" e copiar link. Fora desses apps, igual. `ir-v2.js` versionado | `npm test` ok; Playwright com UA de Instagram Android, TikTok iOS e Chrome | verdes; revisão sem bloqueantes (notas aplicadas) | sim | deploy 26c0eea: success | **sim**: `/ir/whatsapp/smoke` servindo `ir-v2.js` com o bloco do app interno. Conversão clique → entrada: medir na análise de 26/10 |
+| #903 (698946e) | Top 3 (9h, 13h, 19h) e Top 10 (21h) do site nos grupos do WhatsApp e do Telegram: arte no estilo Social do design system com o ranking de `/api/v1/oportunidades` (mesmo pódio do site), só o link `www.tcgpricehunter.com.br`. Falha fechada: sem freshness, ranking com mais de 6 h, sem estoque ou incompleto não vira post; desconto arredondado para baixo; não repete o mesmo post na mesma hora; teto de 24 h vale. Agendamento atrás de `SOCIAL_TOP=1`; cada canal respeita `SOCIAL_AUTO` / `SOCIAL_WHATSAPP_AUTO` | `npm test` com 316 arquivos, EXIT 0 | verdes; revisão: 2 bloqueantes corrigidos antes do merge | sim | sim (workflow `social-top.yml`) | **sim**: run 40133215439 (Top 10) com arte, Telegram e WhatsApp verdes; run 40131206999 publicou Top 3 e Top 10 no Telegram (o WhatsApp desse run foi cancelado: esperava o intervalo antigo) |
+| #905 (89670ad) | Job da arte em `ubuntu-24.04`: o `ubuntu-latest` migrou para o Ubuntu 26 e o `playwright install --with-deps` 1.56 não reconhece o sistema (run 40130723237 falhou nesse passo) | teste do Top ok | verdes | sim | sim | sim (runs seguintes) |
+| #906 (599a94b) | WhatsApp sem intervalo mínimo de 30 min entre mensagens (pedido do proprietário: "o grupo precisa ser movimentado"). Seguem 1 oferta nova por rodada, 60 min entre afiliadas e madrugada só novidades | `npm test` com 317 arquivos, EXIT 0 | verdes | sim | sim | sim (run 40133215439 enviou sem espera) |
+| #907 (6a2c37c) | Teto do WhatsApp de 34 para 70 mensagens em 24 h (pedido do proprietário), para o grupo seguir movimentado até a meia-noite. Risco de bloqueio do número já assumido pelo proprietário (automação não oficial) | `npm test` com 317 arquivos, EXIT 0 | verdes | sim | sim | pendente: conferir no diário da próxima noite que o envio segue depois das ~15h30 |
+| #908 (5372cd6) | **K6 parcial, decisão do proprietário** (chat: "Liberar agora"): "Monte seu kit" no menu do topo e no Mais do celular, cartão na Home logo abaixo do pódio ("Sua jornada Pokémon começa aqui" / "Descobrir meu kit ideal"), clique contado (`kit_click` por origem) e sem o aviso de protótipo. **Continua noindex e fora do sitemap** até o burn-in 7/7 | `npm test` com 317 arquivos, EXIT 0; CTA conferido em 1200 px e 390 px | verdes; revisão sem bloqueantes (notas 1 e 3 aplicadas) | sim | deploy 5372cd6: success | **sim**: `/monte-seu-kit` 200 sem o aviso e com noindex; menu do topo e Mais com o link no HTML publicado. O cartão da Home é montado no navegador: conferir no celular |
+
+**Validação pendente da 5ª rodada, agora feita:** #899 — o HTML da Home publicada (22:02 UTC) mostra "no Pix" e "(frete a calcular)" / "(frete grátis)" nas oportunidades.
+
+**Release Governor:** a K6 saiu do NO-GO só na parte de navegação, por decisão explícita do proprietário; o gate do burn-in segue valendo para índice e sitemap. Rollback de qualquer item: `git revert` da PR ou deploy anterior na Vercel; no social, apagar a variável do canal.
+
+**Pendências:**
+1. **Proprietário:** criar a variável `SOCIAL_TOP = 1` (Settings → Actions → Variables) para ligar o agendamento do Top 3/Top 10; o proxy desta sessão não acessa variáveis do Actions.
+2. Confirmar no grupo do WhatsApp se o Top 3 de 24/10 saiu antes do cancelamento do run 40131206999; no Telegram, o Top 10 saiu duas vezes (uma pode ser apagada).
+3. 26/10, 10h: análise dos anúncios (Instagram e TikTok) e da conversão `/entrar` → `/ir` → entrada no grupo, já com a #860.
+4. Seguem da 5ª rodada: #897 em runtime (25/10, 17:30 UTC), defeito do Vigia sem motivo, burn-in #271.
+
+---
+
 ## Produto removido com HTTP 200 e validações em runtime — 24/10/2026, noite, 5ª rodada (America/Sao_Paulo)
 
 **P0:**
