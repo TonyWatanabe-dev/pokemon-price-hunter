@@ -29,9 +29,10 @@ assert.ok(api({ data: API.data.map((x) => ({ ...x, stock: 'out_of_stock' })), me
 assert.ok(api(null, 'top3').erro);
 assert.match(api({ ...API, meta: { updated_at: API.meta.updated_at } }, 'top3').erro, /sem informação/, 'sem freshness: não posta');
 assert.match(itensDaApi(API, 'top3', AGORA + 7 * 3600e3).erro, /mais de 6 h/, 'ranking velho: não posta');
-// diário do WhatsApp: não repete, respeita o teto e espera o intervalo de 30 min
+// diário do WhatsApp: não repete, respeita o teto e (com regra de intervalo) espera
 const at = (min) => new Date(AGORA - min * 60e3).toISOString();
-assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA), { pode: true, esperaMs: 20 * 60e3 });
+assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA), { pode: true, esperaMs: 0 }, 'WhatsApp sem intervalo mínimo');
+assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA, { intervaloMin: 30 }), { pode: true, esperaMs: 20 * 60e3 });
 assert.deepEqual(vez([{ ofertaId: 'x', at: at(40) }], 'top3:h', AGORA), { pode: true, esperaMs: 0 });
 assert.equal(vez([{ ofertaId: 'top3:h', at: at(40) }], 'top3:h', AGORA).pode, false);
 assert.equal(vez(Array.from({ length: 34 }, (_, k) => ({ ofertaId: 'o' + k, at: at(40 + k) })), 'top3:h', AGORA).pode, false);
@@ -104,7 +105,7 @@ let html = '';
   assert.equal(await main(['telegram', '--tipo', 'top3', '--dir', dir, '--titulo', 'Outro'], { SOCIAL_ENABLED: '1', SOCIAL_TELEGRAM_BOT_TOKEN: token, SOCIAL_TELEGRAM_CHAT_ID: '-100' }, io().io, { fetchFn }), 2, 'grupo errado: recusa');
   assert.equal(await main(['telegram', '--tipo', 'top3', '--dir', dir, '--titulo', 'Grupo'], {}, io().io, { fetchFn: () => assert.fail('desligado não chama a rede') }), 0);
 }
-{ // WhatsApp: grupo exato, imagem + legenda, diário registrado (conta no intervalo de 30 min), sessão regravada
+{ // WhatsApp: grupo exato, imagem + legenda, diário registrado (conta no teto de 24 h), sessão regravada
   const CHAVE = 'k'.repeat(40); const sessao = path.join(dir, 'sessao.bin'); const diario = path.join(dir, 'diario.json');
   fs.writeFileSync(sessao, cifrarSessao({ 'creds.json': '{}' }, CHAVE)); fs.writeFileSync(diario, '[]');
   const enviados = [];

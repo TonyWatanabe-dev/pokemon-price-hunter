@@ -34,10 +34,11 @@ await t('3. grupo: só título exato e único', () => {
   assert.equal(acharGrupo({ ...g, c: { id: '3@g.us', subject: 'Outro' } }, 'Outro'), null, 'ambíguo: não posta');
 });
 
-await t('4. regras do WhatsApp: 30 min, 1 nova por rodada, teto de 34/24 h; Telegram inalterado', () => {
+await t('4. regras do WhatsApp: sem intervalo mínimo (24/10), 1 nova por rodada, teto de 34/24 h; Telegram inalterado', () => {
   const c = (id, f = iso(5000)) => ({ item: { ofertaId: id }, oferta: { firstSeen: f }, afiliado: false });
   assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.maxDia, undefined);
-  assert.deepEqual(planejar([c('a')], [{ ofertaId: 'x', at: iso(20) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar, []);
+  assert.equal(REGRAS_WHATSAPP.intervaloMin, 0);
+  assert.equal(planejar([c('a')], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1, 'sem espera entre mensagens');
   assert.equal(planejar([c('a')], [{ ofertaId: 'x', at: iso(31) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1);
   assert.equal(planejar([c('n1', iso(5)), c('n2', iso(5))], [], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1);
   const cheio = Array.from({ length: 34 }, (_, i) => ({ ofertaId: 'o' + i, at: iso(40 + i) }));
@@ -85,7 +86,7 @@ await t('7. enviar: posta imagem + legenda no grupo certo, grava diário e regra
   assert.deepEqual(decifrarSessao(fs.readFileSync(sessao), CHAVE), { 'creds.json': '{"novo":true}' }, 'sessão atualizada');
   assert.ok(f.fechou());
   const f2 = fakeCon(); assert.equal(await main(a, ENV, io().io, { conectar: f2.conectar, fetchFn: fetchImg, now: () => NOW + 10 * 60e3, esperar: async () => {} }), 0);
-  assert.equal(f2.env.length, 0, '30 min ainda não passaram: nem conecta');
+  assert.equal(f2.env.length, 0, 'oferta já enviada e nada novo: nem conecta');
 });
 
 await t('7b. enviar: conexão cai logo após abrir → reconecta uma vez e posta sem duplicar', async () => {

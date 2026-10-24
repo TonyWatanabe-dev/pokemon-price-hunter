@@ -4,7 +4,7 @@
 //
 //   parear — liga o número ao bot: imprime um código de pareamento (WhatsApp → Aparelhos conectados → Conectar com
 //            número de telefone), espera a conexão e salva a sessão CIFRADA (AES-256-GCM, chave SOCIAL_WHATSAPP_CHAVE).
-//   enviar — uma rodada: restaura a sessão, confere o grupo pelo título exato, planeja com REGRAS_WHATSAPP (30 min,
+//   enviar — uma rodada: restaura a sessão, confere o grupo pelo título exato, planeja com REGRAS_WHATSAPP (sem intervalo mínimo desde 24/10,
 //            1 nova por rodada, teto de 34/24 h, madrugada só novidades, afiliada 1×/24 h, demais voltam após 6 h), posta e salva a sessão.
 // A biblioteca Baileys é instalada só no workflow (npm install --no-save); aqui é importada dinamicamente.
 // Uso: node tools/social-whatsapp.mjs parear --sessao arq --numero 5511...
