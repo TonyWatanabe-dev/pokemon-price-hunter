@@ -2,10 +2,42 @@
 // Não altera nada do que o site lê hoje (arquivos do ramo data).
 import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows, isFutureAt, FUTURE_TOLERANCE_MS } from './mappers.js';
 import { ensureMonth } from '../db/partitions.js';
+import { KNOWN_TYPES } from './taxonomy.js';
 
 const J = (v) => JSON.stringify(v);
 // Mesmo critério do `ts` de mappers.js: valor presente que não vira data válida.
 const invalidAt = (v) => !!v && Number.isNaN(new Date(v).getTime());
+
+// Quarentena (23/10/2026): uma linha ruim não derruba mais a sincronização inteira (incidentes de 19/10 e 22/10).
+// O lote vai num SAVEPOINT; se o banco recusar, o lote é dividido ao meio até isolar as linhas recusadas, que ficam de
+// fora (o banco mantém a última versão delas) e aparecem em stats.quarantine. Erro sistêmico (mais de 10% das linhas
+// ou mais de 50) continua derrubando a rodada: não é para esconder problema geral.
+export const QUARENTENA_MAX = Object.freeze({ frac: 0.1, abs: 50 });
+async function bulk(c, label, sql, rows, idOf, extra, stats) {
+  const q = stats.quarantine || (stats.quarantine = []);
+  const out = { rows: [], rowCount: 0 };
+  let n = 0;
+  const run = async (part) => {
+    if (!part.length && part !== rows) return;   // lote vazio de cima ainda roda (mesmo comportamento de antes)
+    const sp = `q_${label}_${n++}`;
+    await c.query(`SAVEPOINT ${sp}`);
+    try {
+      const r = await c.query(sql, [J(part), ...extra]);
+      await c.query(`RELEASE SAVEPOINT ${sp}`);
+      out.rows.push(...(r.rows || [])); out.rowCount += r.rowCount || 0;
+    } catch (e) {
+      await c.query(`ROLLBACK TO SAVEPOINT ${sp}`);
+      if (part.length === 1) { q.push({ etapa: label, id: idOf(part[0]), motivo: String(e.message).slice(0, 200) }); return; }
+      const lim = Math.min(QUARENTENA_MAX.abs, Math.max(1, Math.floor(rows.length * QUARENTENA_MAX.frac)));
+      if (q.filter((x) => x.etapa === label).length >= lim) throw e;
+      const m = Math.ceil(part.length / 2); await run(part.slice(0, m)); await run(part.slice(m));
+    }
+  };
+  await run(rows);
+  const lim = Math.min(QUARENTENA_MAX.abs, Math.max(1, Math.floor(rows.length * QUARENTENA_MAX.frac)));
+  if (q.filter((x) => x.etapa === label).length > lim) throw new Error(`quarentena de ${label} acima do limite: erro sistêmico`);
+  return out;
+}
 
 export async function syncState(c, { state, catalog = null, historyLines = [], log = () => {}, now = null }) {
   const stats = {};
@@ -41,6 +73,13 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   stats.collections = cols.length;
 
   // 2) Produtos (slug fixo: só na criação; colisão ganha sufixo)
+  // Tipo sem categoria na taxonomia (incidente de 19/10): o produto fica de fora desta rodada em vez de parar tudo.
+  const known_t = new Set(KNOWN_TYPES);
+  const semTipo = (state.products || []).filter((p) => !known_t.has(p.type));
+  if (semTipo.length) {
+    (stats.quarantine || (stats.quarantine = [])).push(...semTipo.map((p) => ({ etapa: 'produto', id: p.id, motivo: `tipo sem categoria: ${p.type}` })));
+    state = { ...state, products: state.products.filter((p) => known_t.has(p.type)) };
+  }
   const prods = productsRows(state.products || []);
   const known = new Map((await c.query('SELECT legacy_id, slug FROM product WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, r.slug]));
   const taken = new Set((await c.query('SELECT slug FROM product')).rows.map((r) => r.slug));
@@ -48,11 +87,11 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
     if (known.has(p.legacy_id)) { p.slug = known.get(p.legacy_id); continue; }
     let s = p.slug, i = 2; while (taken.has(s)) s = `${p.slug}-${i++}`; p.slug = s; taken.add(s);
   }
-  await c.query(`INSERT INTO product (legacy_id, slug, tcg_id, collection_id, category_id, brand, canonical_name, language, units, variant, image_url, status, attrs)
+  await bulk(c, 'produto', `INSERT INTO product (legacy_id, slug, tcg_id, collection_id, category_id, brand, canonical_name, language, units, variant, image_url, status, attrs)
     SELECT legacy_id, slug, tcg_id, collection_id, category_id, brand, canonical_name, language, units, variant, image_url, status, attrs FROM jsonb_to_recordset($1::jsonb)
       AS x(legacy_id text, slug text, tcg_id text, collection_id text, category_id text, brand text, canonical_name text, language text, units int, variant text, image_url text, status text, attrs jsonb)
     ON CONFLICT (legacy_id) DO UPDATE SET collection_id = EXCLUDED.collection_id, category_id = EXCLUDED.category_id, canonical_name = EXCLUDED.canonical_name,
-      units = EXCLUDED.units, variant = EXCLUDED.variant, image_url = coalesce(EXCLUDED.image_url, product.image_url), attrs = EXCLUDED.attrs, updated_at = now()`, [J(prods)]);
+      units = EXCLUDED.units, variant = EXCLUDED.variant, image_url = coalesce(EXCLUDED.image_url, product.image_url), attrs = EXCLUDED.attrs, updated_at = now()`, prods, (r) => r.legacy_id, [], stats);
   const pid = new Map((await c.query('SELECT legacy_id, id FROM product WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, Number(r.id)]));
   const eans = prods.filter((p) => p.ean).map((p) => ({ product_id: pid.get(p.legacy_id), value: String(p.ean) }));
   if (eans.length) await c.query(`INSERT INTO product_identifier (product_id, kind, value, source) SELECT product_id, 'ean', value, 'robot' FROM jsonb_to_recordset($1::jsonb) AS x(product_id bigint, value text) ON CONFLICT DO NOTHING`, [J(eans)]);
@@ -122,7 +161,7 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
      WHERE x.external_offer_id IS NOT NULL AND o.external_offer_id = x.external_offer_id AND o.marketplace_id = x.marketplace_id
        AND coalesce(o.seller_id, 0) = coalesce(x.seller_id, 0) AND o.legacy_id IS DISTINCT FROM x.legacy_id`,
     [J(rows.map((r) => ({ legacy_id: r.legacy_id, marketplace_id: r.marketplace_id, seller_id: r.seller_id ?? null, external_offer_id: r.external_offer_id ?? null })))]);
-  const up = await c.query(`INSERT INTO offer (legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
+  const up = await bulk(c, 'oferta', `INSERT INTO offer (legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
       shipping_status, shipping_price, total_price, stock_status, quantity, match_confidence, confirmed, anomalous, status, source_type, first_seen_at, last_seen_at)
     SELECT legacy_id, product_id, store_id, marketplace_id, seller_id, external_offer_id, title_raw, url, image_url, price, price_kind, list_price, pix_price,
       shipping_status, shipping_price, total_price, stock_status, quantity, match_confidence, confirmed, anomalous, status, source_type, coalesce(first_seen_at, now()), coalesce(last_seen_at, now())
@@ -135,13 +174,14 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
       quantity = EXCLUDED.quantity, match_confidence = EXCLUDED.match_confidence, confirmed = EXCLUDED.confirmed, anomalous = EXCLUDED.anomalous, status = EXCLUDED.status,
       last_seen_at = CASE WHEN EXCLUDED.legacy_id = ANY($3::text[]) THEN offer.last_seen_at ELSE EXCLUDED.last_seen_at END, updated_at = now()
     WHERE EXCLUDED.legacy_id = ANY($3::text[]) OR offer.last_seen_at IS NULL OR offer.last_seen_at <= EXCLUDED.last_seen_at OR offer.last_seen_at > $2::timestamptz
-    RETURNING legacy_id`, [J(rows), maxSeen, untimed]);
+    RETURNING legacy_id`, rows, (r) => r.legacy_id, [maxSeen, untimed], stats);
   // Corrida entre syncs/retries: leitura com carimbo mais antigo que o já gravado é descartada (igual passa, então repetir é idempotente).
   // Sem carimbo ($3): a atualização passa como antes, mas mantém o last_seen_at gravado. O now() do SELECT só preenche a
   // linha candidata (o NOT NULL é checado antes do ON CONFLICT); oferta nova sem horário já foi filtrada acima.
   // Carimbo gravado no futuro (> 5 min, dado de antes da #620) é impossível: a próxima leitura válida o substitui (recuperação).
   const applied = new Set(up.rows.map((r) => r.legacy_id));
-  stats.offersStale = rows.length - applied.size;
+  const presas = new Set((stats.quarantine || []).filter((x) => x.etapa === 'oferta').map((x) => x.id));
+  stats.offersStale = rows.length - applied.size - presas.size;
   const oid = new Map((await c.query('SELECT legacy_id, id FROM offer WHERE legacy_id IS NOT NULL')).rows.map((r) => [r.legacy_id, Number(r.id)]));
   const live = new Set([...allOffers.map((r) => r.legacy_id), ...badIds]);
   const gone = await c.query(`UPDATE offer SET status = 'removed', stock_status = 'unknown', updated_at = now() WHERE status <> 'removed' AND legacy_id IS NOT NULL AND NOT (legacy_id = ANY($1::text[]))`, [[...live]]);
@@ -204,6 +244,8 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
     WHERE (source_distrust.until_day, source_distrust.reason) IS DISTINCT FROM (EXCLUDED.until_day, EXCLUDED.reason)`, [J(dist)]);
   stats.distrustStores = dist.length;
   stats.historySkipped = hrows.filter((h) => !oid.get(h.offer_legacy_id)).length;
+  stats.quarantined = (stats.quarantine || []).length;
+  stats.quarantine = (stats.quarantine || []).slice(0, 20);
   log(stats);
   return stats;
 }

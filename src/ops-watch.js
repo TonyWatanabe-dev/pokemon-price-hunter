@@ -18,13 +18,15 @@
 //    - deploy de produção degradado (deployIssues): o último deployment "Production" da API do GitHub (criado pela
 //      integração da Vercel) terminou em failure/error, ou ficou pendente por mais de DEPLOY_STUCK_MIN min.
 //      Leitura ausente ou ilegível não avisa (sem evidência não há alarme, e o Vigia não cai por isso).
+//    - WhatsApp parado (whatsappIssues, 24/10/2026): as últimas WA_FAILED rodadas concluídas do envio automático ao
+//      grupo falharam (sessão caída, número bloqueado, grupo não achado). Rodada pulada (kill switch) não conta.
 // Avisos: um na transição para falha (ou quando surge problema novo), um lembrete a cada REMIND_MIN min enquanto
 // continuar, e um de recuperação depois de 2 checagens saudáveis seguidas (evita aviso em vaivém).
 // O "livro" (ledger) guarda o que já foi avisado; só muda quando a mensagem chega a pelo menos um canal.
 // Aviso antecipado (não é falha, não muda o estado): copag_vencendo — referência Copag oficial que sai da nota em até
 // 7 dias (copagWarnings / decideWarning); avisa quando a lista muda e lembra a cada WARN_REMIND_MIN.
 
-export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440, UNKNOWN_CONSEC: 3, DEPLOY_STUCK_MIN: 30 };
+export const RULES = { STOP_MIN: 45, META_LAG_MIN: 45, CONSEC: 2, MIN_READ_FOR_ZERO: 10, REMIND_MIN: 360, FAILED_RUNS: 2, WARN_REMIND_MIN: 1440, UNKNOWN_CONSEC: 3, DEPLOY_STUCK_MIN: 30, WA_FAILED: 4 };
 const BAD = new Set(['degradado', 'parado']);
 
 const min = (a, b) => (Number.isFinite(a) && Number.isFinite(b) ? Math.round((a - b) / 6e4) : null);
@@ -76,12 +78,19 @@ export function deployIssues(deploy, now) {
   return [];
 }
 
-export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, meta, metaError = null, runs, deploy = null }) {
-  const ev = evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy });
+/** Envio automático ao WhatsApp: as últimas WA_FAILED rodadas concluídas (sem as puladas) falharam → grupo parado. */
+export function whatsappIssues(waRuns) {
+  const done = completedRuns(waRuns).filter((r) => r.conclusion !== 'skipped').slice(0, RULES.WA_FAILED);
+  if (done.length < RULES.WA_FAILED || done.some((r) => r.conclusion === 'success')) return [];
+  return [{ code: 'whatsapp_parado', text: `As ${RULES.WA_FAILED} últimas rodadas do envio ao grupo do WhatsApp falharam (última às ${hhmm(done[0].at)}): o grupo está sem ofertas. Confira a sessão (pode ser preciso parear de novo) e se o número foi bloqueado.` }];
+}
+
+export function evaluate({ now = new Date().toISOString(), stateGeneratedAt, meta, metaError = null, runs, deploy = null, waRuns = null }) {
+  const ev = evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy, waRuns });
   return { ...ev, warnings: copagWarnings(meta, now) };
 }
 
-function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy }) {
+function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy, waRuns }) {
   const N = Date.parse(now);
   const reasons = [];
   const add = (code, text) => reasons.push({ code, text });
@@ -131,6 +140,7 @@ function evaluateStatus({ now, stateGeneratedAt, meta, metaError, runs, deploy }
     if (all((r) => r.engine?.status === 'parado')) add('motor_parado', `Motor de oportunidades parado (última execução: ${hhmm(last.engine.runAt)}): as notas podem estar antigas.`);
   }
   for (const x of deployIssues(deploy, now)) { const preso = x.code === 'deploy_preso'; add(preso ? 'deploy_preso' : 'deploy_falhou', x.text); }
+  const wa = whatsappIssues(waRuns); if (wa.length) add('whatsapp_parado', wa[0].text);
   if (reasons.length) return { status: 'degradado', reasons, facts };
   if (!ops?.last) { add(metaError === 'ausente' || !meta ? 'meta_ausente' : 'ops_ausente', 'Ainda sem estado operacional registrado: banco e leitor não verificados.'); return { status: 'desconhecido', reasons, facts }; }
   return { status: 'saudavel', reasons, facts };
@@ -150,7 +160,7 @@ export const CODE_LABEL = {
   rodadas_falhando: 'rodadas falhando', meta_ilegivel: 'estado operacional ilegível', meta_desatualizado: 'estado operacional parado',
   sync_falhando: 'banco sem sincronizar', banco_inacessivel: 'banco inacessível', banco_desligado: 'robô sem banco',
   leitor_indisponivel: 'leitor oficial indisponível', leitor_sem_nota: 'leitor sem nota válida', fonte_degradada: 'fonte sem anúncios ou bloqueada',
-  motor_parado: 'motor de oportunidades parado', deploy_falhou: 'deploy de produção falhou', deploy_preso: 'deploy de produção preso',
+  motor_parado: 'motor de oportunidades parado', deploy_falhou: 'deploy de produção falhou', deploy_preso: 'deploy de produção preso', whatsapp_parado: 'grupo do WhatsApp sem envios',
 };
 
 /** Decide se avisa. Não altera o livro: use commitLedger depois de tentar enviar. */

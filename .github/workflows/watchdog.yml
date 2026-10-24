@@ -44,6 +44,9 @@ jobs:
         run: |
           gh run list -R "${{ github.repository }}" --workflow hunter.yml --limit 10 \
             --json databaseId,status,conclusion,createdAt,updatedAt,event > wd/runs.json || echo '[]' > wd/runs.json
+          # Envio ao grupo do WhatsApp (só leitura): falha na leitura apaga o arquivo e a checagem é pulada.
+          gh run list -R "${{ github.repository }}" --workflow social-whatsapp-auto.yml --limit 8 \
+            --json databaseId,status,conclusion,createdAt,updatedAt,event > wd/wa-runs.json || rm -f wd/wa-runs.json
       # Último deploy de produção (integração Vercel → API de deployments do GitHub), só leitura. Falha na leitura
       # não derruba o Vigia: sem o arquivo, o deploy simplesmente não é verificado.
       - name: Último deploy de produção
@@ -71,7 +74,7 @@ jobs:
           TESTE: ${{ inputs.teste }}
         run: |
           if [ "$TESTE" = "true" ]; then node tools/watchdog.mjs --test; exit 0; fi
-          node tools/watchdog.mjs --state wd/state.json --meta wd/meta.json --runs wd/runs.json --ledger wd/ledger.json --deploy wd/deploy.json
+          node tools/watchdog.mjs --state wd/state.json --meta wd/meta.json --runs wd/runs.json --ledger wd/ledger.json --deploy wd/deploy.json --wa-runs wd/wa-runs.json
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         if: always() && hashFiles('wd/ledger.json') != ''
         continue-on-error: true
