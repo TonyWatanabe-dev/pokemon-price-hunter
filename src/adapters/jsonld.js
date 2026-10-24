@@ -3,6 +3,7 @@ import { get } from '../http.js';
 import { guard, brl } from './common.js';
 import { availableFromOf } from '../availability.js';
 import { jsonLdNodes } from './parse-limits.js';
+import { paginaRemovida } from '../pagina-erro.js';
 
 const PRODUCT_URL = /pokemon/i;
 const SEALED_HINT = /(booster|box|display|caixa|combo|kit|treinador|etb|elite|blister|colecao|cole%c3%a7%c3%a3o)/i;
@@ -213,6 +214,7 @@ export async function search(store) {
   const base = store.url.replace(/\/$/, '');
   const urls = store.plannedUrls || [...new Set([...(store.productUrls || []), ...(await productUrls(base, store.maxPages || 60))])];
   const out = []; const failed = []; const reasons = {}; const cond = store.cond || null; let naoMudou = 0;
+  const gone = {}; // página com evidência explícita de produto inexistente: HTTP 404/410 ou página de erro com HTTP 200
   for (const [i, u] of urls.entries()) {
     // Prazo da rodada (18/10): loja com centenas de páginas relevantes (1,5 s por página) passava do tempo do job e a
     // rodada inteira era cancelada sem salvar. Passado o prazo, as páginas restantes ficam para a próxima rodada como
@@ -231,6 +233,7 @@ export async function search(store) {
       const r = await get(u, Object.keys(headers).length ? { headers } : undefined);
       if (r.notModified && c?.listing) { out.push({ ...c.listing }); naoMudou++; continue; }
       const l = parseProductPage(r.text, r.url); if (l) out.push(l);
+      else { const pr = paginaRemovida(r.text, r.url || u); if (pr.estado === 'removida') gone[u] = `página de erro com HTTP 200 (${pr.motivo})`; }
       if (cond) { if (l && (r.etag || r.lastModified)) cond[u] = { etag: r.etag || null, lm: r.lastModified || null, listing: l }; else delete cond[u]; }
     }
     catch (e) {
@@ -238,8 +241,10 @@ export async function search(store) {
       // 404/410 (produto não existe mais), outro 4xx definitivo ou robots.txt: a página não serve, não é falha.
       // Rede, timeout, 5xx e site fora do ar: falha de leitura passageira — a oferta da página não some.
       if (transientPageError(e)) { failed.push(u); reasons[u] = String(e?.message || 'falha de leitura').slice(0, 120); }
+      else if (e?.status === 404 || e?.status === 410) gone[u] = `HTTP ${e.status}`;
     }
   }
+  out.gone = gone; // src/run.js só remove depois de RODADAS_REMOCAO rodadas seguidas com evidência (src/pagina-erro.js)
   out.failed = failed; // páginas que não abriram nesta rodada (src/run.js preserva as ofertas delas)
   out.notModified = naoMudou; // páginas que a loja disse não ter mudado (304)
   out.failReasons = reasons;

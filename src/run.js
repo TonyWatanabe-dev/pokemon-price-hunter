@@ -14,6 +14,7 @@ const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazin
 export const positiveEnv = (name, def) => { const v = Number(process.env[name]); return Number.isFinite(v) && v > 0 ? v : def; };
 export async function pool(items, n, fn) { n = Number.isInteger(n) && n > 0 ? n : 1; let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) await fn(items[i++]); })); }
 import { variantesDe, matchProduct, msrpKeys, TYPE_LABEL, groupOf, applyOverride, overridesIndex } from './match.js';
+import { atualizarRemocoes, remocoesConfirmadas, RODADAS_REMOCAO } from './pagina-erro.js';
 import { copagStatus, pickPrice, PRICE_LABEL, storeScore, isAnomalous } from './score.js';
 import { readOfficial, officialFor } from './opportunity-read.js';
 import { readDbHealth, syncStatus } from './db-health.js';
@@ -300,6 +301,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       const raw = await adapters[platform].search(store, catalog);
       handoff.seen(store.id, raw); // URL descoberta que virou anúncio sai da fila; as outras têm até 3 tentativas
       const failedUrls = new Set(raw.failed || []);
+      let removidasOk = new Set(); // URLs com remoção confirmada (preenchido no bloco do cache JSON-LD)
       // Contrato comum do anúncio (#47): anúncio fora do contrato não vira oferta. Conta o motivo por loja e segue com os
       // outros (um anúncio ruim não derruba a loja). Se a oferta já existia, fica como leitura que falhou (staleCopy:
       // estoque desconhecido, lastValid e frete pela validade), nunca como "removida".
@@ -324,6 +326,15 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         cache.visited = cache.visited.filter((u) => !failedUrls.has(u) || rel.has(u) || gaveUp.has(u));
         for (const u of givenUp) if (!cache.visited.includes(u)) cache.visited.push(u);
         for (const u of Object.keys(tries)) if (!cache.candidates.includes(u) && !rel.has(u)) delete tries[u];
+        // Produto removido com evidência explícita (HTTP 404/410 ou página de erro com HTTP 200, src/pagina-erro.js): conta
+        // rodadas seguidas por URL; falha de leitura não soma nem zera. Só a confirmada (RODADAS_REMOCAO) sai da proteção
+        // de "zero casados" abaixo e segue o caminho normal de remoção (evento "removed"; histórico de preço intacto).
+        cache.removidas = atualizarRemocoes(cache.removidas, raw.gone || {}, planned.filter((u) => !failedUrls.has(u)), T);
+        for (const u of Object.keys(cache.removidas)) if (!cache.candidates.includes(u)) delete cache.removidas[u];
+        removidasOk = remocoesConfirmadas(cache.removidas);
+        // evidência ainda não confirmada: a página volta na próxima rodada (senão só voltaria depois de HUNTER_JSONLD_RETRY_H)
+        for (const [u, a] of Object.entries(cache.removidas)) if (a.n < RODADAS_REMOCAO && !cache.relevant.includes(u)) cache.relevant.push(u);
+        src.pagesGone = Object.keys(raw.gone || {}).length; src.pagesGoneConfirmed = removidasOk.size;
         src.pageFailures = failedUrls.size; src.pageGiveUps = givenUp.length;
         src.pageFailReason = failedUrls.size ? Object.values(raw.failReasons || {})[0] || 'falha de leitura' : null;
       }
@@ -401,10 +412,14 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       // Só quando a loja respondeu normalmente (nenhuma página falhou): com falha parcial, cada página já tem seu destino.
       let reason = null;
       if (matched === 0 && !failedUrls.size) {
-        const kept = Object.entries(prev).filter(([id, o]) => o.storeId === store.id && o.sourceType !== PISTA_SOURCE && !offers[id]); // oferta de pista tem destino próprio (bloco das pistas)
+        const all = Object.entries(prev).filter(([id, o]) => o.storeId === store.id && o.sourceType !== PISTA_SOURCE && !offers[id]); // oferta de pista tem destino próprio (bloco das pistas)
+        // Página com remoção confirmada não é "mudança na coleta": essa oferta sai (removed), as outras ficam protegidas.
+        const kept = all.filter(([, o]) => !removidasOk.has(o.url));
+        const gone = all.length - kept.length;
+        if (gone) log(`[${store.id}] ${gone} oferta(s) com produto removido confirmado em ${RODADAS_REMOCAO} rodadas (HTTP 404/410 ou página de erro): saem como removidas`);
         if (kept.length) {
           for (const [id, o] of kept) offers[id] = staleCopy(o, now);
-          reason = `zero casados após ${Number.isInteger(src.matched) && src.matched > 0 ? src.matched : kept.length} (${raw.length} anúncios lidos): ${kept.length} oferta(s) mantida(s) como não confirmadas, sem remoção`;
+          reason = `zero casados após ${Number.isInteger(src.matched) && src.matched > 0 ? src.matched : kept.length} (${raw.length} anúncios lidos): ${kept.length} oferta(s) mantida(s) como não confirmadas, sem remoção${gone ? `; ${gone} removida(s) com evidência confirmada` : ''}`;
           log(`[${store.id}] ${reason}`);
         }
       }
