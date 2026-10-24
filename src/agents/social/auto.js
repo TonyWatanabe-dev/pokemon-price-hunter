@@ -2,7 +2,7 @@
 // Regra do proprietário em 17/10/2026:
 //   1. Intervalo mínimo entre mensagens (Telegram 5 min, WhatsApp 30 min), para não floodar o grupo.
 //   2. Oferta que acabou de entrar no radar (firstSeen recente) e nunca foi postada sai na hora.
-//   3. Oferta SEM link de afiliado do dono: postada normalmente, mas UMA VEZ só (nunca repostada).
+//   3. Oferta SEM link de afiliado do dono: no Telegram sai UMA VEZ só; no WhatsApp pode voltar depois de 6 h (23/10).
 //   4. Oferta COM link de afiliado do dono: postada e repostada a cada 24 h (decisão do dono 18/10; antes 48 h), espaçada (no máximo 1 afiliada a cada
 //      20 min no Telegram e 60 min no WhatsApp); entre uma e outra saem as demais ofertas.
 //   5. Madrugada (0h–7h, horário de Brasília): só ofertas novas; o resto fica para o dia.
@@ -55,5 +55,8 @@ export function registrar(diario, envios, { now = Date.now(), regras = REGRAS } 
   return [...(Array.isArray(diario) ? diario : []), ...envios].filter((d) => (ms(d?.at) ?? 0) >= corte).slice(-regras.diarioMax);
 }
 
-// WhatsApp (decisão do proprietário em 14/10/2026, automação não oficial): mais espaçado para reduzir risco de bloqueio.
-export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 30, afiliadoIntervaloMin: 60, novasPorRodada: 1, maxDia: 20 });
+// WhatsApp (decisão do proprietário em 14/10/2026, automação não oficial): espaçado para reduzir risco de bloqueio.
+// 23/10/2026, pedido do dono ("entregue mais anúncios, pode reenviar o dia todo até o horário limite"): uma mensagem a
+// cada 30 min das 7h à meia-noite (34 no dia) e oferta sem afiliado pode voltar depois de 6 h, para a fila não secar.
+export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 30, afiliadoIntervaloMin: 60, novasPorRodada: 1, maxDia: 34,
+  naoAfiliadoUmaVez: false, repetirHoras: 6 });
