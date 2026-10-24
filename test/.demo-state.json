@@ -107,6 +107,7 @@
       "variant": null,
       "name": "Caos Ascendente - Blister Triplo",
       "ean": null,
+      "language": "pt",
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
@@ -148,6 +149,7 @@
       "variant": null,
       "name": "Escuridão Absoluta - Booster Box 36",
       "ean": null,
+      "language": "pt",
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
@@ -193,6 +195,7 @@
       "variant": null,
       "name": "Caos Ascendente - Booster Box 36",
       "ean": "0196214156098",
+      "language": "pt",
       "image": "https://cdn.shop.test/caos.jpg",
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
@@ -236,6 +239,7 @@
       "variant": null,
       "name": "Caos Ascendente - Treinador Avançado (ETB)",
       "ean": null,
+      "language": "pt",
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
@@ -277,6 +281,7 @@
       "variant": null,
       "name": "Celebração de 30 Anos - Blister Duplo",
       "ean": null,
+      "language": "pt",
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
@@ -321,6 +326,7 @@
       "variant": "Greninja ex",
       "name": "Celebração de 30 Anos - Box Pokémon ex Greninja ex",
       "ean": null,
+      "language": "pt",
       "image": null,
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
@@ -790,6 +796,9 @@
       "url": "https://shop.test",
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "platform": "shopify",
+      "zeroRuns": 0,
+      "sig": "f5db79b4bdbdebaa",
+      "intervalMin": 30,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
@@ -797,7 +806,7 @@
       "matched": 5,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 26,
+      "lastDurationMs": 59,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -821,6 +830,9 @@
       "url": "https://vtex.test",
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "platform": "vtex",
+      "zeroRuns": 0,
+      "sig": "2b6455edcc00416a",
+      "intervalMin": 30,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
@@ -828,7 +840,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 29,
+      "lastDurationMs": 62,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -849,6 +861,9 @@
       "pageFailures": 0,
       "pageGiveUps": 0,
       "pageFailReason": null,
+      "zeroRuns": 0,
+      "sig": "598fece8a7c7d95f",
+      "intervalMin": 120,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
@@ -856,7 +871,7 @@
       "matched": 2,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 14,
+      "lastDurationMs": 21,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -877,6 +892,9 @@
       "pageFailures": 0,
       "pageGiveUps": 0,
       "pageFailReason": null,
+      "zeroRuns": 0,
+      "sig": "ce8bfc6880075613",
+      "intervalMin": 120,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
@@ -884,7 +902,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 7,
+      "lastDurationMs": 11,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -908,7 +926,7 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "bloqueio",
-      "lastDurationMs": 8,
+      "lastDurationMs": 14,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": 403,
@@ -951,6 +969,9 @@
       "url": "https://cop.test",
       "lastCheck": "2026-10-06T10:25:00.000Z",
       "platform": "vtex",
+      "zeroRuns": 0,
+      "sig": "fa7ffc88103b4db7",
+      "intervalMin": 0,
       "status": "ACTIVE",
       "reason": null,
       "fails": 0,
@@ -958,7 +979,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 29,
+      "lastDurationMs": 62,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -985,12 +1006,12 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "plataforma",
-      "lastDurationMs": 10,
+      "lastDurationMs": 22,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": null,
         "errorCode": null,
-        "elapsedMs": 10,
+        "elapsedMs": 22,
         "server": null,
         "cfRay": null,
         "via": null,
@@ -1034,12 +1055,12 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "plataforma",
-      "lastDurationMs": 11,
+      "lastDurationMs": 23,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": null,
         "errorCode": null,
-        "elapsedMs": 11,
+        "elapsedMs": 23,
         "server": null,
         "cfRay": null,
         "via": null,
@@ -1060,7 +1081,7 @@
       "title": "Pokémon Chaos Rising Booster Box 36 Packs EN",
       "url": "https://shop.test/products/en",
       "why": [
-        "idioma diferente de PT"
+        "coleção não identificada"
       ]
     }
   ],
@@ -1104,6 +1125,11 @@
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
       "isNew": false,
+      "destino": {
+        "at": "2026-10-06T10:00:00.000Z",
+        "versao": 1,
+        "erro": "fetch failed"
+      },
       "collectionName": "Caos Ascendente",
       "label": "Booster Box com 36 boosters",
       "msrp": 449.99,
@@ -1127,6 +1153,11 @@
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
       "isNew": false,
+      "destino": {
+        "at": "2026-10-06T10:00:00.000Z",
+        "versao": 1,
+        "erro": "fetch failed"
+      },
       "collectionName": "Celebração de 30 Anos",
       "label": "Blister Triplo",
       "msrp": null,
@@ -1144,7 +1175,6 @@
       "url": "https://www.amazon.com.br/dp/B0TEST",
       "postUrl": "https://t.me/promopoke/77",
       "expired": false,
-      "postedAt": "2026-10-16T22:49:19.352Z",
       "id": "fe220ca5587c",
       "productId": "me05-etb",
       "matchConfidence": 0.8,
@@ -1152,6 +1182,11 @@
       "firstSeen": "2026-10-06T10:00:00.000Z",
       "lastSeen": "2026-10-06T10:25:00.000Z",
       "isNew": false,
+      "destino": {
+        "at": "2026-10-06T10:00:00.000Z",
+        "versao": 1,
+        "erro": "fetch failed"
+      },
       "collectionName": "Escuridão Absoluta",
       "label": "Treinador Avançado (ETB)",
       "msrp": null,
@@ -1276,7 +1311,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\nMotivo: preço-alvo atingido · \"Caos Ascendente Box abaixo de R$350\" (até R$ 350,00)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\nMotivo: preço-alvo atingido · \"Caos Ascendente Box abaixo de R$350\" (até R$ 350,00)\nComparado só pelo preço (frete à parte)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:20 de 06/10",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1290,7 +1325,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer box abaixo de R$10 por booster\" (até R$ 10,00 por booster)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer box abaixo de R$10 por booster\" (até R$ 10,00 por booster)\nComparado só pelo preço (frete à parte)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:20 de 06/10",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1304,7 +1339,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer produto 25% abaixo da Copag\" (25% ou mais abaixo da Copag)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 329,00 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer produto 25% abaixo da Copag\" (25% ou mais abaixo da Copag)\nComparado só pelo preço (frete à parte)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:20 de 06/10",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1318,7 +1353,7 @@
       "channels": [
         "capture"
       ],
-      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00 + frete\nMotivo: novo menor preço do produto (queda de 2,9% sobre R$ 339,00)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:20 UTC",
+      "text": "📉 QUEDA DE PREÇO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 → R$ 329,00 + frete\nMotivo: novo menor preço do produto (queda de 2,9% sobre R$ 339,00)\nComparado só pelo preço (frete à parte)\n\nCopag: R$ 449,99\n↓ 26,9%\nR$ 9,14 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:20 de 06/10",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1332,7 +1367,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\nMotivo: preço-alvo atingido · \"Caos Ascendente Box abaixo de R$350\" (até R$ 350,00)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\nMotivo: preço-alvo atingido · \"Caos Ascendente Box abaixo de R$350\" (até R$ 350,00)\nComparado só pelo preço (frete à parte)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:00 de 06/10",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1346,7 +1381,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer box abaixo de R$10 por booster\" (até R$ 10,00 por booster)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nBooster Box com 36 boosters\n\nR$ 339,00 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer box abaixo de R$10 por booster\" (até R$ 10,00 por booster)\nComparado só pelo preço (frete à parte)\n\nCopag: R$ 449,99\n↓ 24,7%\nR$ 9,42 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:00 de 06/10",
       "url": "https://shop.test/products/box-caos"
     },
     {
@@ -1360,7 +1395,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer ETB abaixo de R$300\" (até R$ 300,00)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🔥 POKÉMON DEAL\n\nCAOS ASCENDENTE\nTreinador Avançado (ETB)\n\nR$ 289,90 + frete (preço da loja)\nMotivo: regra atendida · \"Qualquer ETB abaixo de R$300\" (até R$ 300,00)\nComparado só pelo preço (frete à parte)\n\nCopag: sem preço oficial\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:00 de 06/10",
       "url": "https://shop.test/products/etb"
     },
     {
@@ -1374,7 +1409,7 @@
       "channels": [
         "capture"
       ],
-      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 + frete (preço da loja)\nMotivo: preço-alvo atingido · \"Blister Duplo 30 Anos até R$ 70\" (até R$ 70,00)\nComparação: só o preço (frete a calcular), só contra preços sem frete conhecido\n\nCopag: sem preço oficial\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido em: 2026-10-06 10:00 UTC",
+      "text": "🎯 PREÇO-ALVO ATINGIDO\n\nCELEBRAÇÃO DE 30 ANOS\nBlister Duplo com 2 boosters\n\nR$ 59,90 + frete (preço da loja)\nMotivo: preço-alvo atingido · \"Blister Duplo 30 Anos até R$ 70\" (até R$ 70,00)\nComparado só pelo preço (frete à parte)\n\nCopag: sem preço oficial\nR$ 29,95 / booster\n\nEstoque: confirmado\nLoja: Loja Shopify\nFrete: a calcular\nLido às 07:00 de 06/10",
       "url": "https://shop.test/products/c30-duplo"
     },
     {
