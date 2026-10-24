@@ -1,0 +1,32 @@
+{
+ "descricao": "24/10: dono pediu para publicar já o Short refeito (trilha nova) em vez de 25/10 15h.",
+ "cancelar": [
+  {
+   "quando": "2026-10-25T15:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção com Pôster",
+   "motivo": "adiantado para agora"
+  }
+ ],
+ "itens": [
+  {
+   "id": "m-poster30-yt-agora",
+   "quando": "2026-10-24T20:45",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Coleção com Pôster 30 Anos: deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Abri a Coleção com Pôster da Celebração de 30 Anos. Paguei R$ 135,80. O placar tá no topo da tela, acompanha até o fim 👀\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_poster30.mp4"
+  }
+ ]
+}
