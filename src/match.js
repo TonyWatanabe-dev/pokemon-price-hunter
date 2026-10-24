@@ -136,6 +136,10 @@ function detectVariant(t) {
   const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
   // Todo "<nome> ex" do título, o primeiro que não é palavra genérica ("Coleção EX Lendas Azuis - Xerneas EX" → xerneas).
   for (const x of t.matchAll(/\b(?:mega )?([a-z]{3,}) ex\b/g)) if (!VARIANT_STOP.has(x[1])) return mega + x[1];
+  // "Coleção Ex Lendas Implacáveis - Zacian" (24/10/2026): "lendas" virava o nome e juntava Zacian e Koraidon num produto
+  // só (avulsos-colecao_ex-lendas). Linha "Lendas Implacáveis": o nome vem logo depois (com ou sem ":" e " - ").
+  const li = t.match(/\blendas implacaveis:? (?:- )?(?:ex )?([a-z]{3,})\b/);
+  if (li) return VARIANT_STOP.has(li[1]) || li[1] === 'ex' ? null : mega + li[1];
   let m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
   if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
   return null;
