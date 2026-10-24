@@ -54,7 +54,11 @@
   - **Catálogo:** apelido "Pitch Black" (#889), validado em runtime com 2 ETBs da Ri Happy.
   - **Loja Pokémon Super:** registrada como espelho da Super TCG (#890), publicada.
   - **TCG Pro:** sem preço público, inconclusiva.
-- **Próximo:** tratar página de erro com HTTP 200 como "página não serve" (PR própria); Tray só com fonte oficial ou conferência manual.
+- **4ª rodada, 24/10:**
+  - **#894 (6e103e2):** Lendas Implacáveis deixa de juntar Zacian e Koraidon. Mudam 4 títulos, com IDs preservados; falta validar em runtime.
+  - **#895 (b867750):** a prova Tray tem decisão final de **manter isolada**. O GA4 é cópia do dataLayer e nenhuma das 6 lojas tem preço confirmado por fonte independente.
+  - **Vigia #893:** Mercado Livre bloqueado em 2 rodadas, já recuperado; a issue saiu sem o motivo (pendência).
+- **Próximo:** validar a #894 em runtime; tratar página de erro com HTTP 200 como "página não serve" (PR própria); investigar o resumo do Vigia.
 
 ### Especificação resumida de “Monte seu kit”
 - Página independente, rota sugerida `/monte-seu-kit/`, item no menu e CTA na Home: “Sua jornada Pokémon começa aqui” / “Descobrir meu kit ideal”.
