@@ -45,7 +45,7 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 **P0:**
 - **#271:** 0/7 dias encerrados. O dia 24 está **parcial verde** (19:37 UTC, sem falhas). O fechamento do dia sai às 03:07 UTC de 25/10, e uma conferência está agendada para 03:20 UTC.
-- **#231:** o Dispatcher roda sem falha. A fila `tarefa:aprovada` está vazia, então o worker está parado por falta de tarefa, não por falha.
+- **#231:** o Dispatcher roda sem falha. A fila `tarefa:aprovada` está vazia, então o worker está parado por falta de tarefa, não por falha. O proprietário confirmou (24/10) que a variável `DISPATCHER_ORCAMENTO_USD` foi **apagada**: não há teto de orçamento, e o item antigo do checklist está obsoleto.
 - **Vigia #893:** o próprio Vigia **fechou** o incidente às 18:52 UTC, depois de duas checagens saudáveis seguidas.
   - A causa vista nos dados foi o Mercado Livre bloqueado nas rodadas das 18:00 e das 18:15.
   - **Continua pendente** o defeito da issue sem motivo ("sem detalhe"): os logs do Actions seguem bloqueados daqui (download de logs: 403). Próxima fonte de diagnóstico: o resumo da checagem (`wd/vigia.json`) num artefato ou no *step summary*, quando acessível.
