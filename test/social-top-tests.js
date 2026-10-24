@@ -35,7 +35,7 @@ assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA), { pode: 
 assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA, { intervaloMin: 30 }), { pode: true, esperaMs: 20 * 60e3 });
 assert.deepEqual(vez([{ ofertaId: 'x', at: at(40) }], 'top3:h', AGORA), { pode: true, esperaMs: 0 });
 assert.equal(vez([{ ofertaId: 'top3:h', at: at(40) }], 'top3:h', AGORA).pode, false);
-assert.equal(vez(Array.from({ length: 34 }, (_, k) => ({ ofertaId: 'o' + k, at: at(40 + k) })), 'top3:h', AGORA).pode, false);
+assert.equal(vez(Array.from({ length: 70 }, (_, k) => ({ ofertaId: 'o' + k, at: at(40 + k) })), 'top3:h', AGORA).pode, false);
 
 // legendas: só o link do site, desconto nunca arredondado para cima, data dos preços
 const l3 = legenda('top3', d3);

@@ -2,7 +2,7 @@ name: Social WhatsApp automático
 
 # Envio automático ao grupo do WhatsApp "TCG Price Hunter | 01" (#690). Automação NÃO oficial (Baileys), por decisão
 # do proprietário em 14/10/2026 ("sim, assumo o risco"). Regras mais espaçadas que o Telegram (REGRAS_WHATSAPP):
-# sem intervalo mínimo entre mensagens (pedido do dono em 24/10), 1 oferta nova por rodada, teto de 34 em 24 h, madrugada só novidades.
+# sem intervalo mínimo entre mensagens (pedido do dono em 24/10), 1 oferta nova por rodada, teto de 70 em 24 h, madrugada só novidades.
 # KILL SWITCH: variável do repositório SOCIAL_WHATSAPP_AUTO = 1. Sessão cifrada e diário ficam no cache do Actions.
 on:
   workflow_run:

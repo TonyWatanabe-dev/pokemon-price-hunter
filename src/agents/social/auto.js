@@ -59,6 +59,7 @@ export function registrar(diario, envios, { now = Date.now(), regras = REGRAS } 
 // 23/10/2026, pedido do dono ("entregue mais anúncios, pode reenviar o dia todo até o horário limite"): uma mensagem a
 // cada 30 min das 7h à meia-noite (34 no dia) e oferta sem afiliado pode voltar depois de 6 h, para a fila não secar.
 // 24/10/2026, pedido do dono ("pode tirar essa regra de 30 min do zap, o grupo precisa ser movimentado"): sem intervalo
-// mínimo entre mensagens; seguem 1 oferta nova por rodada, teto de 34 em 24 h e 60 min entre afiliadas.
-export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 0, afiliadoIntervaloMin: 60, novasPorRodada: 1, maxDia: 34,
+// mínimo entre mensagens; seguem 1 oferta nova por rodada e 60 min entre afiliadas. Teto de 70 em 24 h (antes 34, também
+// pedido do dono em 24/10), para o grupo seguir movimentado até a meia-noite.
+export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 0, afiliadoIntervaloMin: 60, novasPorRodada: 1, maxDia: 70,
   naoAfiliadoUmaVez: false, repetirHoras: 6 });
