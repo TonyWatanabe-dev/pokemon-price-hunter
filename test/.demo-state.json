@@ -806,7 +806,7 @@
       "matched": 5,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 45,
+      "lastDurationMs": 48,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -840,7 +840,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 47,
+      "lastDurationMs": 50,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -871,7 +871,7 @@
       "matched": 2,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 15,
+      "lastDurationMs": 12,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -902,7 +902,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 8,
+      "lastDurationMs": 7,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -926,7 +926,7 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "bloqueio",
-      "lastDurationMs": 10,
+      "lastDurationMs": 9,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": 403,
@@ -979,7 +979,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 48,
+      "lastDurationMs": 51,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -1006,12 +1006,12 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "plataforma",
-      "lastDurationMs": 17,
+      "lastDurationMs": 14,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": null,
         "errorCode": null,
-        "elapsedMs": 17,
+        "elapsedMs": 14,
         "server": null,
         "cfRay": null,
         "via": null,
@@ -1055,12 +1055,12 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "plataforma",
-      "lastDurationMs": 18,
+      "lastDurationMs": 14,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": null,
         "errorCode": null,
-        "elapsedMs": 18,
+        "elapsedMs": 14,
         "server": null,
         "cfRay": null,
         "via": null,

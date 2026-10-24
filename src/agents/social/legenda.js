@@ -42,6 +42,7 @@ export function precoAnterior(oferta) {
 export const IDIOMAS = { en: ['🇺🇸', 'Inglês'], ja: ['🇯🇵', 'Japonês'], zh: ['🇨🇳', 'Chinês'], ko: ['🇰🇷', 'Coreano'] };
 export const idiomaDe = (produtoId) => (String(produtoId ?? '').match(/-(en|ja|zh|ko)$/) || [])[1] || null;
 
+// `afiliado` segue aceito por compatibilidade com quem chama (o piloto usa a marcação para repostar); não muda o texto.
 /** { titulo, atual, anterior?, loja, link, afiliado?, produtoId? } → { texto, parseMode }. Lança se faltar dado essencial. */
 export function montarLegenda({ titulo, atual, anterior = null, loja, link, afiliado = false, produtoId = null }) {
   const t = limpar(titulo); const l = limpar(loja); const a = valor(atual); const url = https(link);

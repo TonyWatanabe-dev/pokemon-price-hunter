@@ -51,7 +51,9 @@ t('4. auditoria: nenhum post dos grupos traz frase de afiliado (Telegram e Whats
   }
   const por = Object.fromEntries(lista.map((c) => [c.item.ofertaId, c]));
   assert.ok(por.o1.item.texto.includes('https://meli.la/do-anuncio') && por.o1.afiliado, 'o1: link do anúncio configurado');
-  assert.ok(por.o2.afiliado || linkDeAfiliado('https://meli.la/ja-afiliado'), 'o2: URL da oferta já era de afiliado');
+  assert.ok(por.o2.item.texto.includes('https://meli.la/ja-afiliado'), 'o2: link de afiliado da própria oferta mantido');
+  assert.ok(por.o3.item.texto.includes('https://loja1.test/p'), 'o3: URL da loja mantida');
+  for (const c of lista) assert.match(c.item.texto, /Por <b>R\$ [\d.,]+<\/b> ✅\n\n[^\n]+\nhttps:\/\//, `${c.item.ofertaId}: preço, loja e link seguem no post`);
   assert.match(por.o1.item.texto, /🎟️/, 'cupom presente no ML');
 });
 

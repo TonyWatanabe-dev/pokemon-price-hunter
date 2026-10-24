@@ -11,6 +11,7 @@ export const SOCIAL_ENABLED_DEFAULT = false;
 /** Liga só com SOCIAL_ENABLED=1. Ausente ou qualquer outro valor = desligado. */
 export const socialHabilitado = (env = process.env) => SOCIAL_ENABLED_DEFAULT || env?.SOCIAL_ENABLED === '1';
 
+// Não entra nos posts dos grupos (Telegram/WhatsApp montam o texto em legenda.js, sem frase de afiliado desde 24/10/2026).
 export const DISCLOSURE_AFILIADO = 'Link de afiliado: podemos receber comissão, sem custo extra para você.';
 
 export const MOTIVOS = Object.freeze({
