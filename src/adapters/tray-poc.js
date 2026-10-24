@@ -1,9 +1,11 @@
 // PROVA DE CONCEITO (24/10/2026), fora do robô diário: NÃO está registrado em src/adapters/index.js.
-// Lojas Tray (FN Games, Universal Geek, Virtual Gift…): a página de produto traz JSON-LD Product com preço, mas o preço
-// não aparece escrito no HTML (é montado por script), e o leitor JSON-LD recusa por regra ("preço escrito na página").
-// Aqui o preço do JSON-LD só vale quando uma SEGUNDA fonte da mesma página confirma o mesmo valor: o dataLayer da Tray
-// ({ idProduct, nameProduct, …preço }) ou o evento GA4 view_item ({ value, items[].price }). Sem confirmação, preço zero,
-// nome que não bate com o título da página ou estoque contraditório: a página não publica (motivo em .motivo).
+// Lojas Tray (FN Games, Universal Geek, Virtual Gift…): o preço não aparece escrito no HTML (é montado por script), então
+// o leitor JSON-LD recusa por regra ("preço escrito na página"). Sondas de 24/10 mostraram que as fontes de máquina da
+// página nem sempre concordam: na FN Games o JSON-LD traz 58,10 e o dataLayer da Tray 59,90 (provável preço no Pix × preço
+// de venda); na Universal Geek o JSON-LD traz 0,00 e o GA4 159,90 (produto esgotado).
+// Regra desta prova: o preço é o `priceSell` do dataLayer da Tray (campo da própria plataforma) e só vale quando uma fonte
+// independente da mesma página confirma o mesmo valor (GA4 view_item ou JSON-LD). Sem confirmação, preço zero, nome ou link
+// que não batem, ou estoque contraditório: não publica, e o motivo sai em .motivo (com os valores, para a decisão humana).
 // Usado só pela sonda (tools/sonda-adaptadores.mjs, plataforma "tray"); não grava nada.
 import { get } from '../http.js';
 import { guard, brl } from './common.js';
@@ -13,42 +15,52 @@ import { jsonLdNodes } from './parse-limits.js';
 const AVAIL = { instock: 'IN_STOCK', outofstock: 'OUT_OF_STOCK', soldout: 'OUT_OF_STOCK', preorder: 'PRE_ORDER', backorder: 'PRE_ORDER', discontinued: 'UNAVAILABLE' };
 const norm = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const words = (t) => new Set(norm(t).split(' ').filter((w) => w.length > 1));
-/** O nome do Product precisa estar contido no título/h1 da página (tema que injeta outro produto não passa). */
+/** Todas as palavras do nome (2+) estão no outro texto. */
 export function nomeConfere(nome, pagina) { const A = words(nome); const B = words(pagina); if (A.size < 2) return false; for (const w of A) if (!B.has(w)) return false; return true; }
+const igual = (a, b) => a != null && b != null && Math.abs(a - b) < 0.005;
 
-/** Preços citados por fontes de máquina da própria página (dataLayer da Tray e GA4 view_item), em reais. */
-export function precosSecundarios(html) {
-  const h = String(html || ''); const out = [];
-  const dl = h.match(/dataLayer\s*=\s*\[\s*(\{[\s\S]*?\})\s*\]/)?.[1];
-  if (dl) { try { const o = JSON.parse(dl); for (const [k, v] of Object.entries(o)) if (/price|preco|valor/i.test(k)) { const n = brl(v); if (n) out.push(n); } } catch { /* dataLayer fora do formato: sem confirmação */ } }
-  const vi = h.match(/gtag\(\s*['"]event['"]\s*,\s*['"]view_item['"]\s*,\s*(\{[\s\S]*?\})\s*\)/)?.[1];
-  if (vi) { try { const o = JSON.parse(vi); const vs = [o.value, ...[].concat(o.items || []).map((i) => i?.price)]; for (const v of vs) { const n = brl(v); if (n) out.push(n); } } catch { /* idem */ } }
-  return out;
+/** dataLayer da Tray (primeiro objeto de `dataLayer = [{…}]`), ou null. */
+export function dataLayerTray(html) {
+  const m = String(html || '').match(/dataLayer\s*=\s*\[\s*(\{[\s\S]*?\})\s*\]\s*;/);
+  if (!m) return null; try { const o = JSON.parse(m[1]); return o && typeof o === 'object' ? o : null; } catch { return null; }
 }
+/** Preços do evento GA4 view_item (value e items[].price), em reais. */
+export function precosGa4(html) {
+  const m = String(html || '').match(/gtag\(\s*['"]event['"]\s*,\s*['"]view_item['"]\s*,\s*(\{[\s\S]*?\})\s*\)\s*;/);
+  if (!m) return []; try { const o = JSON.parse(m[1]); return [o.value, ...[].concat(o.items || []).map((i) => i?.price)].map((v) => brl(v)).filter(Boolean); } catch { return []; }
+}
+function produtoLd(html) {
+  const { nodes, stats } = jsonLdNodes(html);
+  if (stats.tooLarge || stats.tooMany || stats.truncated || stats.tooDeep) return { erro: 'JSON-LD fora dos limites' };
+  const ps = nodes.filter((n) => [].concat(n['@type']).some((t) => /^product$/i.test(String(t))));
+  if (ps.length > 1) return { erro: 'mais de um Product na página' };
+  if (!ps.length) return {};
+  const o = [].concat(ps[0].offers || []).find((x) => x && (x.priceCurrency || 'BRL') === 'BRL') || null;
+  return { p: ps[0], preco: brl(o?.price ?? null), stock: AVAIL[String(o?.availability || '').split('/').pop().toLowerCase()] || null };
+}
+const hostDe = (u) => { try { return new URL(u).host.replace(/^www\./, ''); } catch { return null; } };
 
-/** Página de produto Tray → anúncio, ou { motivo } quando não dá para confiar. */
+/** Página de produto Tray → anúncio, ou { motivo }. */
 export function lerPaginaTray(html, url) {
   const h = String(html || '');
-  const { nodes, stats } = jsonLdNodes(h);
-  if (stats.tooLarge || stats.tooMany || stats.truncated || stats.tooDeep) return { motivo: 'JSON-LD fora dos limites' };
-  const prods = nodes.filter((n) => [].concat(n['@type']).some((t) => /^product$/i.test(String(t))));
-  if (prods.length !== 1) return { motivo: prods.length ? 'mais de um Product na página' : 'sem Product no JSON-LD' };
-  const p = prods[0];
-  const titulo = (h.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '').replace(/<[^>]+>/g, ' ') + ' ' + (h.match(/<title\b[^>]*>([^<]*)<\/title>/i)?.[1] || '');
-  if (!nomeConfere(p.name, titulo)) return { motivo: 'nome do Product não bate com o título da página' };
-  const o = [].concat(p.offers || []).find((x) => x && (x.priceCurrency || 'BRL') === 'BRL');
-  const preco = brl(o ? o.price ?? null : null);
-  if (!preco) return { motivo: 'preço ausente ou zero' };
-  const sec = precosSecundarios(h);
-  if (!sec.length) return { motivo: 'sem segunda fonte de preço na página' };
-  if (!sec.some((v) => Math.abs(v - preco) < 0.005)) return { motivo: `preço não confirmado (JSON-LD ${preco} × ${sec.join('/')})` };
-  let stock = AVAIL[String(o.availability || '').split('/').pop().toLowerCase()] || 'UNKNOWN';
-  const txt = h.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ');
-  if (stock === 'IN_STOCK' && /\b(produto esgotado|indispon[ií]vel no momento)\b/i.test(txt)) stock = 'UNKNOWN'; // contradição: não afirma estoque
-  const id = String(p.sku || h.match(/"idProduct"\s*:\s*"?(\d+)/)?.[1] || '').trim() || null;
-  let image = [].concat(p.image || [])[0]; if (image && typeof image === 'object') image = image.url || null;
+  const dl = dataLayerTray(h);
+  if (!dl || dl.pageCategory !== 'Produto') return { motivo: 'sem dataLayer de produto da Tray' };
+  const ld = produtoLd(h); if (ld.erro) return { motivo: ld.erro };
+  const nome = String(dl.nameProduct || '').trim();
+  const h1 = (h.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '').replace(/<[^>]+>/g, ' ');
+  if (!nome || !(nomeConfere(nome, h1) || nomeConfere(nome, ld.p?.name))) return { motivo: 'nome do produto não bate com a página' };
+  if (dl.urlProduct && hostDe(dl.urlProduct) !== hostDe(url)) return { motivo: 'link do produto de outro site' };
+  const base = brl(dl.priceSell ?? dl.price ?? null);
+  if (!base) return { motivo: 'preço ausente ou zero' };
+  const ga4 = precosGa4(h);
+  if (!ga4.some((v) => igual(v, base)) && !igual(ld.preco, base)) return { motivo: `preço não confirmado (dataLayer ${base} × JSON-LD ${ld.preco ?? '—'} × GA4 ${ga4.join('/') || '—'})` };
+  const doDl = /^(yes|sim|true|1)$/i.test(String(dl.availability)) ? 'IN_STOCK' : /^(no|nao|não|false|0)$/i.test(String(dl.availability)) ? 'OUT_OF_STOCK' : null;
+  let stock = doDl || ld.stock || 'UNKNOWN';
+  if (doDl && ld.stock && ld.stock !== doDl) stock = 'UNKNOWN'; // dataLayer e JSON-LD discordam: não afirma estoque
+  let image = dl.urlImage || [].concat(ld.p?.image || [])[0] || null; if (image && typeof image === 'object') image = image.url || null;
   try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }
-  return { title: String(p.name).trim(), url, image, price: { pix: null, base: preco }, listPrice: null, stock, availableFrom: null, quantity: null, sku: id, ean: p.gtin13 || p.gtin || null, seller: null, sourceType: 'json_ld' };
+  return { title: nome, url, image, price: { pix: null, base }, listPrice: null, stock, availableFrom: null, quantity: null,
+    sku: dl.idProduct ? String(dl.idProduct) : (ld.p?.sku ? String(ld.p.sku) : null), ean: ld.p?.gtin13 || ld.p?.gtin || null, seller: null, sourceType: 'store_page' };
 }
 
 /** store: { url } · opts: { max }. Páginas do mapa do site (mesmo filtro do leitor JSON-LD); devolve anúncios + .motivos. */
