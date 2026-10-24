@@ -1720,7 +1720,11 @@ const readNote=(o)=>readKnown(o)?`Atualizado ${ago(o.source_timestamp)}`:"Data d
    há quanto tempo foi a última leitura, em vez de "Nenhuma loja com oferta agora". */
 const staleOnly=(xs)=>{xs=xs.filter((o)=>!o.anomalous);return xs.length&&xs.every((o)=>o.stale)?xs.sort((a,b)=>String(b.source_timestamp??"").localeCompare(String(a.source_timestamp??"")))[0]:null};
 const staleNote=(o)=>readKnown(o)?`Última leitura ${ago(o.source_timestamp)}`:"Última leitura em data desconhecida";
-const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":"Preço antes do frete";
+/* Frete grátis pela regra pública da loja (config/frete-gratis.json, gerado em FG pelo teste de sincronia): só lojas com
+   frete grátis para todo o Brasil acima de um valor, conferido na página da loja. Não muda total, nota nem ordem. */
+const FG={};
+const fgMin=(sid,price)=>{const r=(typeof FG!=="undefined"?FG:{})[sid];return r&&price!=null&&price>=r.min?r.min:null;};
+const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + frete ${money(o.shipping)}`:o.shippingKnown&&o.shipping===0?"Frete grátis":fgMin(o.storeId,o.price)?`Frete grátis acima de ${money(fgMin(o.storeId,o.price))} na loja`:"Preço antes do frete";
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
 function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas que só têm o H1 antes dos cartões */
@@ -3242,7 +3246,9 @@ const oppTotal=(x)=>(x.shipping==="known"||x.shipping==="free")&&x.total!=null?x
 function oppShip(x){
   if(x.shipping==="free"||(x.shipping==="known"&&x.total!=null&&x.total===x.price))return"Frete grátis";
   if(x.shipping==="known"&&x.total!=null)return`Produto ${money(x.price)} + frete ${money(x.total-x.price)}${x.reference_comparison?.available?" · % sobre o produto":""}`;
-  return"Preço antes do frete";
+  const fg=(typeof FG!=="undefined"?FG:{})[x.store?.id];
+  if(fg&&x.price!=null&&x.price>=fg.min)return`Frete grátis acima de ${money(fg.min)} na loja`;
+  return"Preço antes do frete · calculado na loja";
 }
 /* UX-E: ofertas com estoque do produto, do resumo da API (/home: products[].liveCount) e atalho para a comparação.
    Sem o resumo (estado completo), o atalho não aparece: esta página só lê a API. */
