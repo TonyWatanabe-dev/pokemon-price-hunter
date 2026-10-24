@@ -48,7 +48,7 @@ export async function search(store, { termos = ['pokemon'], max = 20 } = {}) {
     if (!achados.length) diag.semLinks.push(termo); // estrutura mudou ou busca vazia: nada é inventado
     for (const l of achados) if (!links.includes(l) && links.length < max) links.push(l);
   }
-  diag.links = links.length;
+  diag.links = links.length; Object.defineProperty(diag, 'urls', { value: links.slice(), enumerable: false }); // a sonda abre 3 para diagnóstico
   const out = []; const failed = []; const reasons = {};
   for (const u of links) {
     try { await guard(u); const r = await get(u); const l = parseProductPage(r.text, r.url || u); if (l) out.push(l); }
