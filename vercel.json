@@ -154,8 +154,12 @@
       "destination": "https://tcg-price-hunter.firebaseapp.com/__/firebase/:path*"
     },
     {
-      "source": "/((?!data/|_vercel/|api/|__/).*)",
+      "source": "/(busca|conta|favoritos|alertas|configuracoes)",
       "destination": "/app.html"
+    },
+    {
+      "source": "/((?!data/|_vercel/|api/|__/).*)",
+      "destination": "/api/pagina?t=nao-encontrada"
     }
   ],
   "cleanUrls": false,
@@ -173,6 +177,11 @@
     "gru1"
   ],
   "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
     {
       "source": "/produtos",
       "destination": "/oportunidades",
