@@ -12,13 +12,14 @@ import { readiness, auditPage, auditSitemap, auditRoutes, report } from '../src/
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 
-// Converte a URL do sitemap na chamada de /api/pagina pelos rewrites do vercel.json (mesma regra da Vercel).
+// Converte a URL do sitemap na chamada de /api/pagina pelos rewrites do vercel.json (mesma regra da Vercel: vale o
+// primeiro rewrite que casa; se ele não for /api/pagina, a rota não é página SSR e volta null).
 export function toQuery(pathname, rewrites) {
   for (const r of rewrites || []) {
-    if (!String(r.destination || '').startsWith('/api/pagina')) continue;
     const names = [];
     const re = new RegExp('^' + String(r.source).replace(/:([A-Za-z_]\w*)/g, (_, n) => { names.push(n); return '([^/]+)'; }) + '$');
     const m = pathname.match(re); if (!m) continue;
+    if (!String(r.destination || '').startsWith('/api/pagina')) return null;
     let d = r.destination; names.forEach((n, i) => { d = d.replace(':' + n, m[i + 1]); });
     return d;
   }

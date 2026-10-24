@@ -1561,7 +1561,8 @@ function parseLoc(){
   if(seg[0]==="produto"&&seg[1])return{view:"produto",slug:decodeURIComponent(seg[1])};
   if((seg[0]==="colecao"||seg[0]==="tipo")&&seg[1])return{view:seg[0],slug:decodeURIComponent(seg[1])};
   if(seg[0]==="guia"&&seg[1]==="glossario")return{view:"glossario",pid:null};   /* Lote E */
-  return{view:ROUTES[seg[0]]||"deals",pid:null};
+  /* Endereço desconhecido: o servidor responde 404 com data-notfound em #view; aqui vira a tela "Página não encontrada" */
+  return{view:ROUTES[seg[0]]||(document.getElementById("view")?.hasAttribute("data-notfound")?"notfound":"deals"),pid:null};
 }
 (function(){const h=location.hash.slice(1);if(h&&OLDHASH[h])history.replaceState(null,"","/"+OLDHASH[h]);
   if(location.pathname.startsWith("/busca"))buscaFromURL(location.search)})();
@@ -2942,7 +2943,7 @@ function renderConfig(){
 }
 
 const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
-const TITLES={grupos:"Grupos de ofertas de Pokémon TCG no WhatsApp e Telegram",busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",lojas:"Lojas de Pokémon TCG no Brasil",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações"};
+const TITLES={grupos:"Grupos de ofertas de Pokémon TCG no WhatsApp e Telegram",busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",lojas:"Lojas de Pokémon TCG no Brasil",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações",notfound:"Página não encontrada"};
 /* Grupos de ofertas: convites oficiais (cópia literal de api/_lib/grupos.mjs; test/grupos-page-tests.js confere). */
 const GRUPOS={"whatsapp":"https://chat.whatsapp.com/BshJHzdMsWx6MkmRDKt8Dv","telegram":"https://t.me/+LzS_Jp1Wvas2NDhh"};
 const REDES={"instagram":"https://www.instagram.com/tcgpricehunter151/","tiktok":"https://www.tiktok.com/@tcgpricehunter","youtube":"https://www.youtube.com/channel/UCiePh0ZymWoPwa8k1d2jrDg","facebook":"https://www.facebook.com/profile.php?id=61595339254811"};
@@ -2985,6 +2986,7 @@ function renderGrupos(){
   <h2>Siga também</h2><p class="foot-social">${redesLinks()}</p>
 </section></div>`;
 }
+function renderNotFound(){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Página não encontrada</h1><p>O endereço pode estar digitado errado ou a página saiu do ar.</p>${searchBox("nf","",false)}<p><a class="btn" href="/" data-go="">Ir para o início</a></p></div>`}
 function render(){
   const cur=view==="deals"?"":view;
   document.querySelectorAll("[data-go]").forEach((b)=>b.setAttribute("aria-current",b.dataset.go===cur?"page":"false"));
@@ -2999,6 +3001,7 @@ function render(){
   if(view==="alertas")return renderAlerts();
   if(view==="configuracoes")return renderConfig();
   if(view==="grupos")return renderGrupos();
+  if(view==="notfound")return renderNotFound();
   if(!S)return;
   if(S.slim&&!API_VIEWS.has(view)){loading();ensureFull();return}
   if(S.slim&&!apiPageReady()){return}   /* FASE 4: dados da página chegando da API (ou caindo no state.json) */
@@ -3522,7 +3525,7 @@ async function fetchHome(){
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
    Se a API falhar, a página cai no state.json completo (ensureFull), como antes. */
-const API_VIEWS=new Set(["deals","produtos","produto","colecao","tipo","busca","oportunidades","guia","glossario","termos","privacidade","copag","pistas","prevenda","lojas"]);   /* 6B.1: /oportunidades só pela API; Lote F: páginas de texto, Copag, pistas, pré-vendas e lojas não baixam o state.json (~1,8 MB) */
+const API_VIEWS=new Set(["deals","notfound","produtos","produto","colecao","tipo","busca","oportunidades","guia","glossario","termos","privacidade","copag","pistas","prevenda","lojas"]);   /* 6B.1: /oportunidades só pela API; Lote F: páginas de texto, Copag, pistas, pré-vendas e lojas não baixam o state.json (~1,8 MB) */
 /* Lote F: /precos, /pistas, /pre-vendas e /lojas pela API (site/pagina/…). PG guarda a lista de cada página na ordem do estado */
 const PG_VIEWS=new Set(["copag","pistas","prevenda","lojas"]);let PG={};
 const APIC=new Map();const APITTL=60e3;

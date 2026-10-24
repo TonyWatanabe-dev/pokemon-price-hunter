@@ -28,6 +28,7 @@ function readLocal() {
 }
 const noindex = (h) => h.replace(/<link rel="canonical" href="[^"]*">\n?/, '').replace('</head>', () => '<meta name="robots" content="noindex">\n</head>');
 const NAME = 'TCG Price Hunter';
+export const NAO_ENCONTRADA = '<h1>Página não encontrada</h1><p>O endereço pode estar digitado errado ou a página saiu do ar.</p><ul class="ssr-links"><li><a href="/">Ir para o início</a></li><li><a href="/oportunidades">Ver as oportunidades</a></li><li><a href="/precos">Preços Copag</a></li></ul>';
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 const crumbs = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map(([n, u], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + u })) });
 // Frete da oferta em texto (issue #84, mesma leitura do site: index.html shipNote). Só diz "com frete"/"frete grátis"
@@ -253,6 +254,17 @@ export default async function handler(req, res) {
   if (!page.html) { res.setHeader('Cache-Control', 'no-store'); res.statusCode = 302; res.setHeader('Location', '/app.html'); return res.end(); }
   if (!page.slim) page.slim = slim(page.html).html;          // Lote F: CSS/JS grandes por arquivo com hash (mesmo nome do build)
   let html = page.slim; let status = 200; let ssr = false;
+  // Endereço que o site não conhece (último rewrite do vercel.json): 404 de verdade, fora do índice, com caminho de volta.
+  // Não depende dos dados; o atributo data-notfound faz o app mostrar "Página não encontrada" em vez da Home.
+  if (t === 'nao-encontrada') {
+    html = noindex(html)
+      .replace(/<title>[^<]*<\/title>/, () => `<title>Página não encontrada | ${esc(NAME)}</title>`)
+      .replace('<div id="view"></div>', () => `<div id="view" data-notfound><div class="ssr">${NAO_ENCONTRADA}</div></div>`);
+    res.statusCode = 404;
+    res.setHeader('content-type', 'text/html; charset=utf-8');
+    res.setHeader('cache-control', 'public, max-age=0, s-maxage=300');
+    return res.end(html);
+  }
   if (slugBad) { status = 404; html = noindex(html); }
   else try {
     let opp = null;
