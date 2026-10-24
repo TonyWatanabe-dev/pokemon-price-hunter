@@ -89,10 +89,10 @@ await t('7. workflow: só manual, leitura, secrets só no passo de conferir/envi
   for (const run of y.split('run: |').slice(1)) assert.doesNotMatch(run.split(/\n {6}- /)[0], /\$\{\{/, 'sem interpolação no shell');
 });
 
-await t('8. legenda no formato aprovado: De só com preço anterior real, centavos, escape, divulgação só com afiliado', () => {
+await t('8. legenda no formato aprovado: De só com preço anterior real, centavos, escape, sem frase de afiliado', () => {
   const l = montarLegenda({ titulo: 'Blister <b>ME04</b> & Cia', atual: 11, anterior: 13, loja: 'Loja Oficial', link: 'https://meli.la/18VoNnj', afiliado: true });
   assert.equal(l.parseMode, 'HTML');
-  assert.equal(l.texto, '🇧🇷 <b>Blister ME04 &amp; Cia</b>\n\nDe <b>R$ 13,00</b> ❌\nPor <b>R$ 11,00</b> ✅\n\nLoja Oficial\nhttps://meli.la/18VoNnj\n\nLink de afiliado: podemos receber comissão, sem custo extra para você.');
+  assert.equal(l.texto, '🇧🇷 <b>Blister ME04 &amp; Cia</b>\n\nDe <b>R$ 13,00</b> ❌\nPor <b>R$ 11,00</b> ✅\n\nLoja Oficial\nhttps://meli.la/18VoNnj');
   const s = montarLegenda({ titulo: 'X', atual: 13.99, anterior: 10, loja: 'L', link: 'https://l.test/p' }).texto;
   assert.doesNotMatch(s, /De |afiliado/, 'anterior menor que o atual não vira "De"; sem afiliado sem divulgação');
   assert.match(s, /Por <b>R\$ 13,99<\/b> ✅/); assert.doesNotMatch(s, /\d{2}:\d{2}/, 'sem horário');

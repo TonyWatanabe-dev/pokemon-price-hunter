@@ -8,7 +8,6 @@
 //
 //   loja
 //   link                           ← link de afiliado do anúncio quando existir (config/affiliates.json), senão o da loja
-//   [linha de divulgação]          ← quando o link é de afiliado (flag de quem chama OU link com cara de afiliado)
 //
 // Saída em HTML do Telegram (parse_mode=HTML): tudo que vem da loja passa por limpar() e escape, então nenhum texto
 // externo vira marcação. Sem horário. Centavos sempre mantidos.
@@ -16,13 +15,13 @@ import { limpar, cortar } from './rascunho.js';
 
 export const PARSE_MODE = 'HTML';
 export const LEGENDA_MAX = 1024;
-export const DIVULGACAO = 'Link de afiliado: podemos receber comissão, sem custo extra para você.';
+// Sem linha de divulgação de afiliado nos grupos (decisão do proprietário, 24/10/2026): o post traz só o essencial.
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const valor = (v) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null);
 export const reais = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-// Hosts de link curto de afiliado e parâmetro de associado da Amazon: link assim SEMPRE leva a divulgação, mesmo que
-// quem chama não tenha marcado `afiliado` (ex.: URL da oferta que já veio com link de afiliado). Só detecta; nada é montado.
+// Hosts de link curto de afiliado e parâmetro de associado da Amazon (ex.: URL da oferta que já veio com link de afiliado).
+// Só detecta; nada é montado. Usado por quem chama para marcar a oferta como de afiliado (repostagem).
 const HOSTS_AFILIADO = new Set(['meli.la', 'amzn.to', 'link.amazon']);
 const AMAZON = /(^|\.)amazon\.com(\.br)?$/;
 /** true quando o link, por si só, é de afiliado (link curto de programa ou Amazon com id de associado). */
@@ -43,6 +42,7 @@ export function precoAnterior(oferta) {
 export const IDIOMAS = { en: ['🇺🇸', 'Inglês'], ja: ['🇯🇵', 'Japonês'], zh: ['🇨🇳', 'Chinês'], ko: ['🇰🇷', 'Coreano'] };
 export const idiomaDe = (produtoId) => (String(produtoId ?? '').match(/-(en|ja|zh|ko)$/) || [])[1] || null;
 
+// `afiliado` segue aceito por compatibilidade com quem chama (o piloto usa a marcação para repostar); não muda o texto.
 /** { titulo, atual, anterior?, loja, link, afiliado?, produtoId? } → { texto, parseMode }. Lança se faltar dado essencial. */
 export function montarLegenda({ titulo, atual, anterior = null, loja, link, afiliado = false, produtoId = null }) {
   const t = limpar(titulo); const l = limpar(loja); const a = valor(atual); const url = https(link);
@@ -52,7 +52,7 @@ export function montarLegenda({ titulo, atual, anterior = null, loja, link, afil
   if (!url) throw new Error('legenda: link não é https');
   const de = valor(anterior) != null && anterior > a ? anterior : null;
   const precos = [de != null && `De <b>${esc(reais(de))}</b> ❌`, `Por <b>${esc(reais(a))}</b> ✅`].filter(Boolean).join('\n');
-  const rodape = `\n\n${precos}\n\n${esc(l)}\n${esc(url)}${afiliado || linkDeAfiliado(url) ? '\n\n' + esc(DIVULGACAO) : ''}`;
+  const rodape = `\n\n${precos}\n\n${esc(l)}\n${esc(url)}`;
   const lang = IDIOMAS[idiomaDe(produtoId)] || null;
   const bandeira = lang ? lang[0] : '🇧🇷'; const linhaIdioma = lang ? `\n🌐 Idioma: ${lang[1]}` : '';
   const espaco = LEGENDA_MAX - rodape.length - linhaIdioma.length - `${bandeira} <b></b>`.length;

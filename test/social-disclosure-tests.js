@@ -1,15 +1,13 @@
-// Fase 6 — divulgação de afiliado nos posts sociais (Telegram e WhatsApp). Auditoria: todo post cujo link é de
-// afiliado (link do anúncio trocado por config, link curto meli.la/amzn.to/link.amazon ou Amazon com id de associado)
-// traz a frase de divulgação, inclusive com a dica de cupom e depois da conversão para o WhatsApp; post com a URL
-// da loja não traz. A ordem dos candidatos não é tocada aqui. Offline: sem rede, banco ou secrets.
+// Posts dos grupos (Telegram e WhatsApp) sem a frase de afiliado (decisão do proprietário, 24/10/2026): o resto do
+// post (título, preço, loja, link, cupom) segue igual. Offline: sem rede, banco ou secrets.
 import assert from 'node:assert/strict';
-import { montarLegenda, linkDeAfiliado, DIVULGACAO, LEGENDA_MAX } from '../src/agents/social/legenda.js';
+import { montarLegenda, linkDeAfiliado, LEGENDA_MAX } from '../src/agents/social/legenda.js';
 import { legendaWhatsApp } from '../src/agents/social/whatsapp.js';
 import { candidatos } from '../tools/social-telegram-piloto.mjs';
 
+const DIVULGACAO = 'Link de afiliado';   // frase removida dos grupos em 24/10/2026: não pode voltar
 let n = 0;
 const t = (name, fn) => { try { fn(); n++; } catch (e) { console.error('✗ ' + name); throw e; } };
-const LINK = /https:\/\/\S+/g;
 
 t('1. detecta link de afiliado só pelo próprio link', () => {
   for (const u of ['https://meli.la/1BzQ4PU', 'https://amzn.to/abc', 'https://link.amazon/B0bVBmGRD',
@@ -19,16 +17,14 @@ t('1. detecta link de afiliado só pelo próprio link', () => {
 });
 
 const base = { titulo: 'Box ME04', atual: 900, loja: 'Loja' };
-t('2. legenda: divulgação com flag OU link de afiliado; sem nenhum dos dois, não aparece', () => {
-  assert.ok(!montarLegenda({ ...base, link: 'https://loja.test/p' }).texto.includes(DIVULGACAO));
-  assert.ok(montarLegenda({ ...base, link: 'https://loja.test/p', afiliado: true }).texto.includes(DIVULGACAO));
-  assert.ok(montarLegenda({ ...base, link: 'https://meli.la/abc' }).texto.includes(DIVULGACAO), 'meli.la sem flag');
-  assert.ok(montarLegenda({ ...base, link: 'https://www.amazon.com.br/dp/B0X?tag=a-20' }).texto.includes(DIVULGACAO), 'Amazon com tag sem flag');
+t('2. legenda: nenhuma frase de afiliado, com ou sem flag/link de afiliado', () => {
+  for (const extra of [{ link: 'https://loja.test/p' }, { link: 'https://loja.test/p', afiliado: true }, { link: 'https://meli.la/abc' },
+    { link: 'https://www.amazon.com.br/dp/B0X?tag=a-20' }]) assert.ok(!montarLegenda({ ...base, ...extra }).texto.includes(DIVULGACAO), JSON.stringify(extra));
 });
 
-t('3. título no limite: a divulgação nunca é cortada', () => {
+t('3. título no limite: termina no link', () => {
   const { texto } = montarLegenda({ ...base, titulo: 'Box & '.repeat(400), link: 'https://meli.la/abc' });
-  assert.ok(texto.length <= LEGENDA_MAX); assert.ok(texto.endsWith(DIVULGACAO));
+  assert.ok(texto.length <= LEGENDA_MAX); assert.ok(texto.endsWith('https://meli.la/abc'));
 });
 
 // Candidatos reais (mesma função dos bots): ML com link do anúncio configurado, ML com URL já de afiliado, loja comum.
@@ -45,22 +41,20 @@ const st = { generatedAt: iso(0), products: [{ id: 'me04-box36', collection: 'me
 const afiliados = { anuncios: { MLB1234567890: 'https://meli.la/do-anuncio' } };
 const cupons = [{ escopo: 'ml', tipo: 'pct', valor: 10, minimo: 0, limite: null, validoAte: '2099-12-31' }];
 
-t('4. auditoria: todo post com link de afiliado tem divulgação (Telegram e WhatsApp, com cupom)', () => {
+t('4. auditoria: nenhum post dos grupos traz frase de afiliado (Telegram e WhatsApp, com cupom)', () => {
   const lista = candidatos(st, { now: NOW, env: {}, afiliados, cupons });
   assert.equal(lista.length, 3, 'as três ofertas elegíveis');
   for (const c of lista) {
-    const links = c.item.texto.match(LINK) || [];
-    const deAfiliado = c.afiliado || links.some(linkDeAfiliado);
     for (const [canal, txt] of [['telegram', c.item.texto], ['whatsapp', legendaWhatsApp(c.item.texto)]]) {
-      assert.equal(txt.includes(DIVULGACAO), deAfiliado, `${c.item.ofertaId} (${canal})`);
+      assert.ok(!txt.includes(DIVULGACAO), `${c.item.ofertaId} (${canal})`);
     }
   }
   const por = Object.fromEntries(lista.map((c) => [c.item.ofertaId, c]));
   assert.ok(por.o1.item.texto.includes('https://meli.la/do-anuncio') && por.o1.afiliado, 'o1: link do anúncio configurado');
-  assert.ok(por.o2.item.texto.includes(DIVULGACAO), 'o2: URL da oferta já era de afiliado');
-  assert.ok(!por.o3.item.texto.includes(DIVULGACAO), 'o3: URL da loja, sem divulgação');
+  assert.ok(por.o2.item.texto.includes('https://meli.la/ja-afiliado'), 'o2: link de afiliado da própria oferta mantido');
+  assert.ok(por.o3.item.texto.includes('https://loja1.test/p'), 'o3: URL da loja mantida');
+  for (const c of lista) assert.match(c.item.texto, /Por <b>R\$ [\d.,]+<\/b> ✅\n\n[^\n]+\nhttps:\/\//, `${c.item.ofertaId}: preço, loja e link seguem no post`);
   assert.match(por.o1.item.texto, /🎟️/, 'cupom presente no ML');
-  assert.ok(por.o1.item.texto.indexOf(DIVULGACAO) < por.o1.item.texto.indexOf('🎟️'), 'divulgação junto do link, antes da dica de cupom');
 });
 
-console.log(`✓ Divulgação de afiliado nos posts sociais (Fase 6): ${n} grupos passaram`);
+console.log(`✓ Posts dos grupos sem frase de afiliado: ${n} grupos passaram`);
