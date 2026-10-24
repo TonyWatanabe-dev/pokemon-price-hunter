@@ -1,6 +1,5 @@
 // Genérico: sitemap -> páginas de produto -> JSON-LD Product / Open Graph. Funciona em Nuvemshop, Tray, Loja Integrada, WooCommerce etc.
 import { get } from '../http.js';
-import { sitemapsOf } from '../robots.js';
 import { guard, brl } from './common.js';
 import { availableFromOf } from '../availability.js';
 import { jsonLdNodes } from './parse-limits.js';
@@ -33,10 +32,7 @@ export function lastmodDe(xml, now = Date.now()) {
 }
 
 export async function productUrls(base, max = 60) {
-  // /sitemap.xml e, depois, os mapas declarados no robots.txt (mesmo host): lojas com o mapa em outro endereço ficavam sem
-  // nenhuma página de produto e apareciam como "plataforma não reconhecida" ou ativas sem oferta.
-  let declarados = []; try { declarados = await sitemapsOf(base + '/'); } catch { /* sem robots */ }
-  const seen = new Set(); const queue = [`${base}/sitemap.xml`, ...declarados.filter((u) => u !== `${base}/sitemap.xml`)]; const urls = []; const lastmod = {};
+  const seen = new Set(); const queue = [`${base}/sitemap.xml`]; const urls = []; const lastmod = {};
   while (queue.length && seen.size < 15 && urls.length < max) {
     const sm = queue.shift(); if (seen.has(sm)) continue; seen.add(sm);
     try { await guard(sm); } catch { continue; }

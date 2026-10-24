@@ -6,8 +6,8 @@ const cache = new Map();
 const token = userAgent.split('/')[0].toLowerCase();
 
 export function parseRobots(txt) { return parseRobotsRules(txt, token); }
-// Linhas "Sitemap:" do robots.txt (RFC 9309 §2.6): só do mesmo host (com ou sem www) e no máximo 5, para o leitor JSON-LD
-// achar o mapa do site quando ele não está em /sitemap.xml (24/10/2026: lojas "ativas" sem nenhuma página de produto).
+// Linhas "Sitemap:" do robots.txt (RFC 9309 §2.6): só do mesmo host (com ou sem www) e no máximo 5. Hoje só a sonda
+// (tools/sonda-adaptadores.mjs) usa; o leitor JSON-LD do robô continua em /sitemap.xml (sem ganho comprovado em 24/10/2026).
 export function sitemapsFrom(txt, origin) {
   const host = new URL(origin).host.replace(/^www\./, ''); const out = [];
   for (const m of String(txt || '').matchAll(/^\s*sitemap\s*:\s*(\S+)/gim)) {
