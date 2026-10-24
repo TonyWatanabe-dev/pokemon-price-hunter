@@ -1,0 +1,141 @@
+name: Social Top 3 e Top 10 do site
+
+# Pedido do dono em 24/10/2026: nos grupos, Top 3 do site às 9h, 13h e 19h e Top 10 às 21h (Brasília), com arte no
+# estilo Social do design system e só o link do site. Ranking = GET /api/v1/oportunidades (Opportunity Score, o mesmo
+# pódio do site). Dado velho ou incompleto não vira post (tools/social-top.mjs falha fechada).
+# KILL SWITCH do agendamento: variável do repositório SOCIAL_TOP = 1. Cada canal respeita também o seu interruptor
+# (SOCIAL_AUTO no Telegram, SOCIAL_WHATSAPP_AUTO no WhatsApp). O disparo manual escolhe top3, top10 ou os dois.
+on:
+  schedule:
+    - cron: '7 12 * * *'   # 9h07
+    - cron: '7 16 * * *'   # 13h07
+    - cron: '7 22 * * *'   # 19h07
+    - cron: '7 0 * * *'    # 21h07 (Top 10)
+  workflow_dispatch:
+    inputs:
+      tipo:
+        description: 'top3, top10 ou ambos'
+        required: true
+        default: top3
+        type: choice
+        options: [top3, top10, ambos]
+
+permissions:
+  contents: read
+
+jobs:
+  arte:
+    if: github.event_name == 'workflow_dispatch' || vars.SOCIAL_TOP == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      tipos: ${{ steps.tipos.outputs.tipos }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Tipos desta rodada
+        id: tipos
+        env:
+          ESCOLHA: ${{ inputs.tipo }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then t="$ESCOLHA"; [ "$t" = ambos ] && t="top3 top10"
+          else t=$(node --input-type=module -e "import { tipoDaHora } from './src/agents/social/top.js'; console.log(tipoDaHora())"); fi
+          echo "tipos=$t" >> "$GITHUB_OUTPUT"; echo "Tipos: $t"
+      - name: Playwright (só neste job, sem alterar package.json)
+        run: npm install --no-save --no-audit --no-fund 'playwright@1.56.0' && npx playwright install --with-deps chromium > /dev/null
+      - name: Artes e legendas
+        env:
+          TIPOS: ${{ steps.tipos.outputs.tipos }}
+        run: |
+          set -o pipefail
+          for t in $TIPOS; do node tools/social-top.mjs arte --tipo "$t" --dir saida | tee -a "$GITHUB_STEP_SUMMARY"; done
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: social-top
+          path: saida/top*.*
+          retention-days: 7
+
+  telegram:
+    needs: arte
+    if: vars.SOCIAL_AUTO == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: social-top
+          path: saida
+      - name: Envio ao grupo do Telegram
+        env:
+          SOCIAL_ENABLED: '1'
+          TIPOS: ${{ needs.arte.outputs.tipos }}
+          TITULO: ${{ vars.SOCIAL_TELEGRAM_TITULO || 'TCG Price Hunter | 01' }}
+          SOCIAL_TELEGRAM_BOT_TOKEN: ${{ secrets.SOCIAL_TELEGRAM_BOT_TOKEN }}
+          SOCIAL_TELEGRAM_CHAT_ID: ${{ secrets.SOCIAL_TELEGRAM_CHAT_ID }}
+        run: |
+          set -o pipefail
+          for t in $TIPOS; do node tools/social-top.mjs telegram --tipo "$t" --dir saida --titulo "$TITULO" | tee -a "$GITHUB_STEP_SUMMARY"; done
+
+  whatsapp:
+    needs: arte
+    if: vars.SOCIAL_WHATSAPP_AUTO == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    concurrency:            # mesma fila do envio automático: uma sessão do WhatsApp por vez
+      group: social-whatsapp
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: social-top
+          path: saida
+      - name: Baileys (só neste job, sem alterar package.json)
+        run: npm install --no-save --no-audit --no-fund --ignore-scripts '@whiskeysockets/baileys@7.0.0-rc14'
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: social/wa-diario.json
+          key: social-whatsapp-diario-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: social-whatsapp-diario-
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: social/wa-sessao.bin
+          key: social-whatsapp-sessao-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: social-whatsapp-sessao-
+      - name: Envio ao grupo do WhatsApp
+        env:
+          SOCIAL_ENABLED: '1'
+          TIPOS: ${{ needs.arte.outputs.tipos }}
+          TITULO: ${{ vars.SOCIAL_WHATSAPP_GRUPO || 'TCG Price Hunter | 01' }}
+          SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
+        run: |
+          set -o pipefail
+          mkdir -p social
+          for t in $TIPOS; do node tools/social-top.mjs whatsapp --tipo "$t" --dir saida --sessao social/wa-sessao.bin --diario social/wa-diario.json --titulo "$TITULO" | tee -a "$GITHUB_STEP_SUMMARY"; done
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && hashFiles('social/wa-diario.json') != ''
+        continue-on-error: true
+        with:
+          path: social/wa-diario.json
+          key: social-whatsapp-diario-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && hashFiles('social/wa-sessao.bin') != ''
+        continue-on-error: true
+        with:
+          path: social/wa-sessao.bin
+          key: social-whatsapp-sessao-${{ github.run_id }}-${{ github.run_attempt }}

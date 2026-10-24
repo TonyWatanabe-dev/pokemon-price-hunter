@@ -1,0 +1,340 @@
+{
+"data": [
+{
+"product": {
+"id": "me04-blister3",
+"slug": "caos-ascendente-blister-triplo",
+"name": "Caos Ascendente - Blister Triplo",
+"type": "blister_3",
+"type_label": "Blister Triplo",
+"image": null,
+"collection": {
+"code": "me04",
+"name": "Caos Ascendente"
+}
+},
+"offer": {
+"price_kind": "pix",
+"url": "https://loja.exemplo/x"
+},
+"price": 29.9,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "radiantetcg.com.br"
+},
+"opportunity_score": 91,
+"reference_comparison": {
+"available": true,
+"reference_kind": "COPAG_OFFICIAL_CURRENT",
+"reference_value": 42.99,
+"percentage_below": 30.45,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me03-blister4",
+"slug": "equilibrio-perfeito-blister-quadruplo",
+"name": "Equilíbrio Perfeito - Blister Quádruplo",
+"type": "blister_4",
+"type_label": "Blister Quádruplo",
+"image": null,
+"collection": {
+"code": "me03",
+"name": "Equilíbrio Perfeito"
+}
+},
+"offer": {
+"price_kind": "pix",
+"url": "https://loja.exemplo/x"
+},
+"price": 41.8,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "gorupa.com.br"
+},
+"opportunity_score": 88,
+"reference_comparison": {
+"available": true,
+"reference_kind": "COPAG_OFFICIAL_CURRENT",
+"reference_value": 55.99,
+"percentage_below": 25.34,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me05-etb",
+"slug": "escuridao-absoluta-treinador-avancado-etb",
+"name": "Escuridão Absoluta - Treinador Avançado (ETB)",
+"type": "etb",
+"type_label": "Treinador Avançado (ETB)",
+"image": null,
+"collection": {
+"code": "me05",
+"name": "Escuridão Absoluta"
+}
+},
+"offer": {
+"price_kind": "base",
+"url": "https://loja.exemplo/x"
+},
+"price": 299,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "matostcg.com.br"
+},
+"opportunity_score": 88,
+"reference_comparison": {
+"available": true,
+"reference_kind": "COPAG_OFFICIAL_CURRENT",
+"reference_value": 399.99,
+"percentage_below": 25.25,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me05-colecao_ex-mega-greninja",
+"slug": "escuridao-absoluta-box-pokemon-ex-mega-greninja-ex",
+"name": "Escuridão Absoluta - Box Pokémon ex Mega Greninja ex",
+"type": "colecao_ex",
+"type_label": "Box Pokémon ex",
+"image": "https://exemplo.invalid/foto.png",
+"collection": {
+"code": "me05",
+"name": "Escuridão Absoluta"
+}
+},
+"offer": {
+"price_kind": "pix",
+"url": "https://loja.exemplo/x"
+},
+"price": 142.49,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "demapapelaria.com.br"
+},
+"opportunity_score": 86,
+"reference_comparison": {
+"available": true,
+"reference_kind": "COPAG_OFFICIAL_CURRENT",
+"reference_value": 179.99,
+"percentage_below": 20.83,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me01-colecao_ex-mega-gengar",
+"slug": "megaevolucao-box-pokemon-ex-mega-gengar-ex",
+"name": "Megaevolução - Box Pokémon ex Mega Gengar ex",
+"type": "colecao_ex",
+"type_label": "Box Pokémon ex",
+"image": null,
+"collection": {
+"code": "me01",
+"name": "Megaevolução"
+}
+},
+"offer": {
+"price_kind": "base",
+"url": "https://loja.exemplo/x"
+},
+"price": 160.04,
+"shipping": "free",
+"stock": "in_stock",
+"store": {
+"name": "Mercado Livre"
+},
+"opportunity_score": 85,
+"reference_comparison": {
+"available": true,
+"reference_kind": "MARKET_CURRENT",
+"reference_value": 232,
+"percentage_below": 31.02,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me04-blister1",
+"slug": "caos-ascendente-blister-unitario",
+"name": "Caos Ascendente - Blister Unitário",
+"type": "blister_1",
+"type_label": "Blister Unitário",
+"image": null,
+"collection": {
+"code": "me04",
+"name": "Caos Ascendente"
+}
+},
+"offer": {
+"price_kind": "base",
+"url": "https://loja.exemplo/x"
+},
+"price": 11.9,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "Mercado Livre"
+},
+"opportunity_score": 83,
+"reference_comparison": {
+"available": true,
+"reference_kind": "COPAG_OFFICIAL_CURRENT",
+"reference_value": 13.99,
+"percentage_below": 14.94,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "c30-colecao_fichario",
+"slug": "celebracao-de-30-anos-colecao-com-fichario",
+"name": "Celebração de 30 Anos - Coleção com Fichário",
+"type": "colecao_fichario",
+"type_label": "Coleção com Fichário",
+"image": null,
+"collection": {
+"code": "c30",
+"name": "Celebração de 30 Anos"
+}
+},
+"offer": {
+"price_kind": "base",
+"url": "https://loja.exemplo/x"
+},
+"price": 249.99,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "pbkids.com.br"
+},
+"opportunity_score": 82,
+"reference_comparison": {
+"available": true,
+"reference_kind": "MARKET_CURRENT",
+"reference_value": 364.27,
+"percentage_below": 31.37,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me04-blister4",
+"slug": "caos-ascendente-blister-quadruplo",
+"name": "Caos Ascendente - Blister Quádruplo",
+"type": "blister_4",
+"type_label": "Blister Quádruplo",
+"image": null,
+"collection": {
+"code": "me04",
+"name": "Caos Ascendente"
+}
+},
+"offer": {
+"price_kind": "base",
+"url": "https://loja.exemplo/x"
+},
+"price": 39.9,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "Mercado Livre"
+},
+"opportunity_score": 81,
+"reference_comparison": {
+"available": true,
+"reference_kind": "COPAG_OFFICIAL_CURRENT",
+"reference_value": 55.99,
+"percentage_below": 28.74,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me02-blister1",
+"slug": "fogo-fantasmagorico-blister-unitario",
+"name": "Fogo Fantasmagórico - Blister Unitário",
+"type": "blister_1",
+"type_label": "Blister Unitário",
+"image": null,
+"collection": {
+"code": "me02",
+"name": "Fogo Fantasmagórico"
+}
+},
+"offer": {
+"price_kind": "pix",
+"url": "https://loja.exemplo/x"
+},
+"price": 12,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "pittasboardgames.com.br"
+},
+"opportunity_score": 81,
+"reference_comparison": {
+"available": true,
+"reference_kind": "MARKET_CURRENT",
+"reference_value": 16.9,
+"percentage_below": 28.99,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+},
+{
+"product": {
+"id": "me02_5-blister3",
+"slug": "herois-excelsos-blister-triplo",
+"name": "Heróis Excelsos - Blister Triplo",
+"type": "blister_3",
+"type_label": "Blister Triplo",
+"image": null,
+"collection": {
+"code": "me02_5",
+"name": "Heróis Excelsos"
+}
+},
+"offer": {
+"price_kind": "pix",
+"url": "https://loja.exemplo/x"
+},
+"price": 75.91,
+"shipping": "unknown",
+"stock": "in_stock",
+"store": {
+"name": "radiantetcg.com.br"
+},
+"opportunity_score": 81,
+"reference_comparison": {
+"available": true,
+"reference_kind": "MARKET_CURRENT",
+"reference_value": 129.9,
+"percentage_below": 41.56,
+"position": "below"
+},
+"updated_at": "2026-10-24T19:56:14.724Z"
+}
+],
+"meta": {
+"updated_at": "2026-10-24T19:56:14.802Z",
+"freshness": {
+"status": "atual"
+}
+}
+}
