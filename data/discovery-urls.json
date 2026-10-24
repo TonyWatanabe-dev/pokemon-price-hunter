@@ -1,0 +1,230 @@
+{
+  "copagcombr": [
+    {
+      "url": "https://copag.com.br/pokemon/blog/detalhes/box-colecao-treinador-avancado-elite-trainer-box-brasil",
+      "q": "store:elite-trainer-box-pokemon-comprar",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "mypcards": [
+    {
+      "url": "https://mypcards.com/outros/produto/378965/elite-trainer-box-pokemon-30-anos-ingles?srsltid=AU7gw4VmghieF-bdM5zKa04nJwPdUsmI8r6_sqeh7Mc3R9iP8VHR9isY",
+      "q": "store:elite-trainer-box-pokemon-comprar",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "meupoacombr": [
+    {
+      "url": "https://www.meupoa.com.br/colecao/pokemon/pokemon-celebracao-de-30-anos-blister-triplo-com-adesivos-sortido",
+      "q": "store:blister-pokemon-celebracao-de-30-anos",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "chqjogoscombr": [
+    {
+      "url": "https://www.chqjogos.com.br/card-games/pokemon/combo-de-booster-pokemon-escuridao-absoluta?srsltid=AU7gw4XzVWqLjNg5ymybTSyPDgfPl7jKfqwXDWDCDoipLPWoevX6wHjR",
+      "q": "store:pokemon-tcg-escuridao-absoluta-booster-box",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.chqjogos.com.br/card-games/pokemon/boosters-e-caixas-de-boosters/booster-box-pokemon-caos-ascendente?srsltid=AU7gw4WoLyBOhp2w4TUTxfiLTFjkyfIftkr_363Q7KVr9E4VmLzo50uw",
+      "q": "store:pokemon-tcg-caos-ascendente-booster-box",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.chqjogos.com.br/card-games/pokemon/boosters-e-caixas-de-boosters/blister-unitario-pokemon-caos-ascendente?srsltid=AU7gw4WHWyBK3oNMKMKPY7ZtvvwCIZHbMn52gkxfyh3Yu1P4tJFDH_1H",
+      "q": "store:blister-pokemon-caos-ascendente",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "ligapokemon": [
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=136641&prod=(PT-BR)%20Kit%20com%2012%20Blister%20Triplo%20-%20Megaevolu%C3%A7%C3%A3o%205%20-%20Escurid%C3%A3o%20Absoluta&srsltid=AU7gw4UEENuBvYb1Ib76DlGMYZ1mxGoEFuWtLBUrYwllwpmA_kzYCoFr",
+      "q": "store:blister-pokemon-escuridao-absoluta",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135525&prod=(PT-BR)%20Blister%20Qu%C3%A1druplo%20Megaevolu%C3%A7%C3%A3o%203%20-%20Equil%C3%ADbrio%20Perfeito%20-%20Chikorita&srsltid=AU7gw4VlQkGXGcNuj9ktugc__sqZXSvgr9cj6nBSWhydKKNOnOhgUAaj",
+      "q": "store:blister-pokemon-equilibrio-perfeito",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135521&prod=(PT-BR)%20Cole%C3%A7%C3%A3o%20Treinador%20Avan%C3%A7ado%20-%20Megaevolu%C3%A7%C3%A3o%203%20-%20Equil%C3%ADbrio%20Perfeito&srsltid=AU7gw4VnJssbG9ixzy3aS3Lo9vlyXSVLAFrOJ9MLyNAyrbLkI1emy4VA",
+      "q": "store:elite-trainer-box-equilibrio-perfeito-comprar",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=135204&prod=(PT-BR)%20Blister%20Qu%C3%A1druplo%20Megaevolu%C3%A7%C3%A3o%202.5%20-%20Her%C3%B3is%20Excelsos%20-%20Tangela&srsltid=AU7gw4UdtMFGv_LYK22yQBKDGePYai-sIV7UCCKf6Xlo4gcEGfDaV68m",
+      "q": "store:blister-pokemon-herois-excelsos",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=134373&prod=(PT-BR)%20Blister%20Triplo%20Megaevolu%C3%A7%C3%A3o%202%20-%20Fogo%20Fantasmag%C3%B3rico%20-%20Whimsicott&srsltid=AU7gw4VmQbN6_NESJX54b8Mq0pIymeULb-edyGXWUtCU0L-N5Kafs9wt",
+      "q": "store:blister-pokemon-fogo-fantasmagorico",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133949&prod=(PT-BR)%20Caixa%20de%20Booster%20-%20Megaevolu%C3%A7%C3%A3o%201%20-%20Megaevolu%C3%A7%C3%A3o&srsltid=AU7gw4UvmT7yMSQpgdY9s8tLKbGDV_CMHZRL1oSyG75zjE4X39ynm_8_",
+      "q": "store:pokemon-tcg-megaevolucao-booster-box",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133953&prod=(PT-BR)%20Blister%20Qu%C3%A1druplo%20Megaevolu%C3%A7%C3%A3o%201%20-%20Megaevolu%C3%A7%C3%A3o%20-%20Psyduck&srsltid=AU7gw4XVWjzYK7lQ_lltIuBraxg56GMLGtGINCoXPWA8DcD9dq4F5oyY",
+      "q": "store:blister-pokemon-megaevolucao",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133945&prod=(PT-BR)%20Cole%C3%A7%C3%A3o%20Treinador%20Avan%C3%A7ado%20-%20Megaevolu%C3%A7%C3%A3o%201%20-%20Megaevolu%C3%A7%C3%A3o%20-%20Mega%20Lucario&srsltid=AU7gw4WesV_KXk2sATm3yBfB--EIMnKqyPVtfdS3UCd5jmT3VcG0nMA0",
+      "q": "store:elite-trainer-box-megaevolucao-comprar",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133786&prod=(ING)%20Caixa%20-%20Escarlate%20e%20Violeta%2010.5%20-%20Fogo%20Branco%20e%20Raio%20Preto%20-%20Cole%C3%A7%C3%A3o%20P%C3%B4ster&srsltid=AU7gw4UDHfszzYva32VLYAh3Vl9GteUvpYf3Ru7h9aDaMUPY_Av96uSq",
+      "q": "store:pokemon-tcg-fogo-branco-e-raio-preto-booster-box",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133787&prod=(PT-BR)%20Blister%20Qu%C3%A1druplo%20Escarlate%20e%20Violeta%2010.5%20-%20Fogo%20Branco%20e%20Raio%20Preto%20-%20Tepig&srsltid=AU7gw4XZaE8qAvcLOfB0hRW158CRheOuL5PJ1S_tcDsBNK2GEzxWytll",
+      "q": "store:blister-pokemon-fogo-branco-e-raio-preto",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.ligapokemon.com.br/?view=prod/view&pcode=133791&prod=(PT-BR)%20Cole%C3%A7%C3%A3o%20Treinador%20Avan%C3%A7ado%20-%20Escarlate%20e%20Violeta%2010.5%20-%20Fogo%20Branco&srsltid=AU7gw4XPc7Q4-D1ApTYIe9g-G6KLCZoCrYkMlaxKWjpD2Zr0dat-Dt1M",
+      "q": "store:elite-trainer-box-fogo-branco-e-raio-preto-comprar",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "pichaucombr": [
+    {
+      "url": "https://www.pichau.com.br/pokemon-tcg-booster-com-embalagem-especial-de-megaevoluc-o-escurid-o-absoluta-6-cartas-4444410424?srsltid=AU7gw4UEL9Ux-ToOVGLpve_bWJiCO6qdmMmr-sVnz5S1JrKqrPam1qRU",
+      "q": "store:blister-pokemon-escuridao-absoluta",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.pichau.com.br/pokemon-tcg-combo-com-4-pacotes-de-booster-de-megaevoluc-o-caos-ascendente-24-cartas-1-carta-promocional-10-10402-101?srsltid=AU7gw4WiyZ-Yk2ILONtSGqIi1L73BVWqs83_sdr0HCbGz3Jj_FJ5pWUu",
+      "q": "store:blister-pokemon-caos-ascendente",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.pichau.com.br/pokemon-tcg-booster-com-embalagem-especial-de-megaevoluc-o-equilibrio-perfeito-6-cartas-10-10378-107?srsltid=AU7gw4XHf1twj2YaB2Tr8OxOR5cu96g1S90Z8ad6CrmQIfd7kmcwcp1V",
+      "q": "store:pokemon-tcg-equilibrio-perfeito-booster-box",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.pichau.com.br/pokemon-tcg-booster-com-embalagem-especial-de-megaevoluc-o-equilibrio-perfeito-6-cartas-10-10378-107?srsltid=AU7gw4WSNot8JwpQwoBGbU9NDfOH-t0ZnUs1XCJ8yiuthq7GCDxrrb-w",
+      "q": "store:blister-pokemon-equilibrio-perfeito",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "underdogamescombr": [
+    {
+      "url": "https://www.underdogames.com.br/pokemon-estampas-ilustradas-tcg/blister-quadruplo-pokemon-estampas-ilustradas-tcg-escuridao-absoluta-25-cartas?srsltid=AU7gw4XaOMiPDns6-IUSHfph_-KkvxUP1UFTMNbWPOOSZdKRIY54fUr_",
+      "q": "store:blister-pokemon-escuridao-absoluta",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "tngeekcombr": [
+    {
+      "url": "https://www.tngeek.com.br/pokemon-blister-triplo-me03-equilibrio-perfeito?srsltid=AU7gw4U63XfJcyQMw8iqF7h5tYDybhnG-aLgJz2YyMwQLIoRk6XdHkl-",
+      "q": "store:blister-pokemon-equilibrio-perfeito",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "actionnewcombr": [
+    {
+      "url": "https://www.actionnew.com.br/pokemon-tcg-blister-quadruplo-megaevolucao-25-herois-excelsos-pt-br?srsltid=AU7gw4VPGasZyT9Ja_Krnt8mfI4sKmlPylFyZ5rsjdwBHEtH05LP9waw",
+      "q": "store:blister-pokemon-herois-excelsos",
+      "at": "2026-10-12T22:41:48.552Z",
+      "tries": 0
+    }
+  ],
+  "kalungacombr": [
+    {
+      "url": "https://www.kalunga.com.br/prod/blister-pokemon-tcg-pokemon-megaevolucao-35655-copag-pacote-com-6-cartas-cada-bt-1-un/154706",
+      "q": "store:blister-pokemon-megaevolucao",
+      "at": "2026-10-13T16:57:34.667Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.kalunga.com.br/prod/blister-pokemon-tcg-pokemon-caos-ascendente-pacote-com-6-cartas-cada-36925-copag-bt-1-un/154758",
+      "q": "store:blister-pokemon-caos-ascendente",
+      "at": "2026-10-14T14:41:30.542Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.kalunga.com.br/prod/blister-pokemon-tcg-pokemon-equilibrio-perfeito-copag-bt-1-un/154755",
+      "q": "store:blister-pokemon-equilibrio-perfeito",
+      "at": "2026-10-24T12:29:27.488Z",
+      "tries": 0
+    }
+  ],
+  "havancombr": [
+    {
+      "url": "https://www.havan.com.br/pokemon-blister-unitario-mega-evolucao-copag-sortido/p",
+      "q": "store:blister-pokemon-megaevolucao",
+      "at": "2026-10-17T12:58:50.760Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.havan.com.br/pokemon-blister-triplo-herois-excelsos-copag-sortido/p",
+      "q": "store:blister-pokemon-herois-excelsos",
+      "at": "2026-10-17T12:58:50.760Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.havan.com.br/box-pokemon-ev10-5-fogo-branco-e-raio-preto-35909/p",
+      "q": "store:elite-trainer-box-fogo-branco-e-raio-preto-comprar",
+      "at": "2026-10-17T12:58:50.760Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.havan.com.br/pokemon-blister-quadruplo-fogo-fantasmagorico-sortido/p",
+      "q": "store:blister-pokemon-fogo-fantasmagorico",
+      "at": "2026-10-17T12:58:50.760Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.havan.com.br/pokemon-blister-unitario-equilibrio-perfeito-copag-sortido/p",
+      "q": "store:blister-pokemon-equilibrio-perfeito",
+      "at": "2026-10-19T16:28:43.994Z",
+      "tries": 0
+    },
+    {
+      "url": "https://www.havan.com.br/pokemon-blister-unitario-caos-ascendente-copag-sortido/p",
+      "q": "store:blister-pokemon-caos-ascendente",
+      "at": "2026-10-20T14:26:34.134Z",
+      "tries": 0
+    }
+  ],
+  "leituracombr": [
+    {
+      "url": "https://leitura.com.br/produto/pokemon-espada-e-escudo-blister-triplo-7896008997366?srsltid=AYCX9vI-urrj-HlFswPxMQw5icGkvf4yDFuIek2a2f-Vel5Tb4g7Tz1K",
+      "q": "store:blister-pokemon-espada-e-escudo",
+      "at": "2026-10-22T14:37:36.449Z",
+      "tries": 0
+    }
+  ]
+}
