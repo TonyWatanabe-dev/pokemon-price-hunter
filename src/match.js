@@ -110,7 +110,26 @@ export function detectBoosters(t) {
 }
 
 const VARIANT_STOP = new Set(['box', 'colecao', 'pokemon', 'de', 'da', 'do', 'com', 'e', 'tcg', 'mega', 'cartas', 'copag', 'booster', 'premium', 'especial', 'estampas', 'ilustradas', 'sortidas', 'sortidos', 'sortida', 'sortido', 'modelos', 'variados', 'brilhante', 'brilhantes', 'jumbo']);
+// Baralho/Deck de Batalha (24/10/2026): "Baralho de Batalha ex Melmetal" pegava "batalha" como Pokémon (padrão "<nome> ex")
+// e juntava baralhos diferentes num produto só (…-deck-batalha). Só para esses títulos: o nome vem depois de "ex" (com ou sem
+// hífen) ou no fim depois de " - "; kit com dois baralhos ("Melmetal e
+// Houndoom") é outro produto e fica sem variante.
+const DECK_BATALHA = /\b(baralho|deck) (de )?batalha\b/;
+const DECK_STOP = new Set([...VARIANT_STOP, 'batalha', 'baralho', 'deck', 'ex', 'cartas', 'card', 'cards', 'unidade', 'un', 'amazonia', 'original', 'lacrado', 'pt', 'br', 'ptbr', 'ref', 'kit', 'liga', 'rivais', 'deluxe', 'ultra', 'rara', 'oficial', 'jgs', 'carta', 'jogo']);
+const nomeOk = (w) => w && /^[a-z]{3,}$/.test(w) && !DECK_STOP.has(w);
+function deckVariant(t) {
+  if (/\bex (?:- )?[a-z][a-z-]{2,} e [a-z][a-z-]{2,}\b/.test(t) || /\b[a-z]{3,} e [a-z]{3,} ex\b/.test(t)) return null; // dois baralhos no mesmo anúncio
+  // Uma palavra, sem hífen, como a variante sempre foi gerada ("Chien-Pao" → pao): muda o produto, nunca o id existente.
+  const pega = (a) => (nomeOk(a) ? a : null);
+  const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : '';
+  // 1º o padrão antigo "<nome> ex" ("Melmetal Ex", "Mega Lucario EX"), agora sem "batalha"/"liga" como nome
+  for (const x of t.matchAll(/\b(?:mega )?([a-z]{3,}) ex\b/g)) if (nomeOk(x[1])) return mega + x[1];
+  for (const m of t.matchAll(/\bex (?:- )?(?:mega )?([a-z]+)/g)) { const v = pega(m[1]); if (v) return mega + v; }
+  const fim = t.match(/ - (?:mega )?([a-z]+)(?: [a-z]+)?(?: ex)?\s*$/); if (fim && pega(fim[1])) return mega + fim[1];
+  return null;
+}
 function detectVariant(t) {
+  if (DECK_BATALHA.test(t)) return deckVariant(t);
   if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
   const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
   // Todo "<nome> ex" do título, o primeiro que não é palavra genérica ("Coleção EX Lendas Azuis - Xerneas EX" → xerneas).
