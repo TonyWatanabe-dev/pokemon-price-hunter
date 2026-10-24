@@ -5,12 +5,13 @@ name: Social Top 3 e Top 10 do site
 # pódio do site). Dado velho ou incompleto não vira post (tools/social-top.mjs falha fechada).
 # KILL SWITCH do agendamento: variável do repositório SOCIAL_TOP = 1. Cada canal respeita também o seu interruptor
 # (SOCIAL_AUTO no Telegram, SOCIAL_WHATSAPP_AUTO no WhatsApp). O disparo manual escolhe top3, top10 ou os dois.
+# O cron do GitHub atrasa e às vezes pula execuções (24/10: a das 19h07 não foi criada). Por isso cada horário tem
+# reservas (+30 min e +1 h); a chave do horário (slotAgora) e os diários dos canais fazem só a 1ª que chegar postar.
 on:
   schedule:
-    - cron: '7 12 * * *'   # 9h07
-    - cron: '7 16 * * *'   # 13h07
-    - cron: '7 22 * * *'   # 19h07
-    - cron: '7 0 * * *'    # 21h07 (Top 10)
+    - cron: '7 12,16,22,0 * * *'    # 9h07, 13h07, 19h07 e 21h07 (Top 10)
+    - cron: '37 12,16,22,0 * * *'   # reserva +30 min
+    - cron: '7 13,17,23,1 * * *'    # reserva +1 h
   workflow_dispatch:
     inputs:
       tipo:
@@ -23,6 +24,10 @@ on:
 permissions:
   contents: read
 
+concurrency:              # uma rodada por vez: os diários (cache) são lidos e gravados em ordem
+  group: social-top
+  cancel-in-progress: false
+
 jobs:
   arte:
     if: github.event_name == 'workflow_dispatch' || vars.SOCIAL_TOP == '1'
@@ -30,6 +35,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       tipos: ${{ steps.tipos.outputs.tipos }}
+      chave: ${{ steps.tipos.outputs.chave }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -37,23 +43,41 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: github.event_name == 'schedule'
+        with:
+          path: social/top-tg.json
+          key: social-top-tg-${{ github.run_id }}
+          restore-keys: social-top-tg-
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: github.event_name == 'schedule'
+        with:
+          path: social/wa-diario.json
+          key: social-whatsapp-diario-${{ github.run_id }}
+          restore-keys: social-whatsapp-diario-
       - name: Tipos desta rodada
         id: tipos
         env:
           ESCOLHA: ${{ inputs.tipo }}
         run: |
-          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then t="$ESCOLHA"; [ "$t" = ambos ] && t="top3 top10"
-          else t=$(node --input-type=module -e "import { tipoDaHora } from './src/agents/social/top.js'; console.log(tipoDaHora())"); fi
-          echo "tipos=$t" >> "$GITHUB_OUTPUT"; echo "Tipos: $t"
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then t="$ESCOLHA"; [ "$t" = ambos ] && t="top3 top10"; c="manual-$GITHUB_RUN_ID"
+          else
+            read -r t c < <(node --input-type=module -e "import { slotAgora } from './src/agents/social/top.js'; const s = slotAgora(); console.log(s ? s.tipo + ' ' + s.chave : '')")
+            if [ -n "$t" ] && [ "$(node tools/social-top.mjs pendente --tipo "$t" --chave "$c" --tg social/top-tg.json --wa social/wa-diario.json)" = nao ]; then echo "Horário $c já enviado nos dois canais."; t=""; fi
+          fi
+          echo "tipos=$t" >> "$GITHUB_OUTPUT"; echo "chave=$c" >> "$GITHUB_OUTPUT"; echo "Tipos: ${t:-nenhum} · chave: ${c:-—}"
       - name: Playwright (só neste job, sem alterar package.json)
+        if: steps.tipos.outputs.tipos != ''
         run: npm install --no-save --no-audit --no-fund 'playwright@1.56.0' && npx playwright install --with-deps chromium > /dev/null
       - name: Artes e legendas
+        if: steps.tipos.outputs.tipos != ''
         env:
           TIPOS: ${{ steps.tipos.outputs.tipos }}
         run: |
           set -o pipefail
           for t in $TIPOS; do node tools/social-top.mjs arte --tipo "$t" --dir saida | tee -a "$GITHUB_STEP_SUMMARY"; done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: steps.tipos.outputs.tipos != ''
         with:
           name: social-top
           path: saida/top*.*
@@ -61,7 +85,7 @@ jobs:
 
   telegram:
     needs: arte
-    if: vars.SOCIAL_AUTO == '1'
+    if: vars.SOCIAL_AUTO == '1' && needs.arte.outputs.tipos != ''
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -75,20 +99,33 @@ jobs:
         with:
           name: social-top
           path: saida
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: social/top-tg.json
+          key: social-top-tg-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: social-top-tg-
       - name: Envio ao grupo do Telegram
         env:
           SOCIAL_ENABLED: '1'
           TIPOS: ${{ needs.arte.outputs.tipos }}
+          CHAVE: ${{ needs.arte.outputs.chave }}
           TITULO: ${{ vars.SOCIAL_TELEGRAM_TITULO || 'TCG Price Hunter | 01' }}
           SOCIAL_TELEGRAM_BOT_TOKEN: ${{ secrets.SOCIAL_TELEGRAM_BOT_TOKEN }}
           SOCIAL_TELEGRAM_CHAT_ID: ${{ secrets.SOCIAL_TELEGRAM_CHAT_ID }}
         run: |
           set -o pipefail
-          for t in $TIPOS; do node tools/social-top.mjs telegram --tipo "$t" --dir saida --titulo "$TITULO" | tee -a "$GITHUB_STEP_SUMMARY"; done
+          mkdir -p social
+          for t in $TIPOS; do node tools/social-top.mjs telegram --tipo "$t" --dir saida --titulo "$TITULO" --chave "$CHAVE" --diario social/top-tg.json | tee -a "$GITHUB_STEP_SUMMARY"; done
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: always() && hashFiles('social/top-tg.json') != ''
+        continue-on-error: true
+        with:
+          path: social/top-tg.json
+          key: social-top-tg-${{ github.run_id }}-${{ github.run_attempt }}
 
   whatsapp:
     needs: arte
-    if: vars.SOCIAL_WHATSAPP_AUTO == '1'
+    if: vars.SOCIAL_WHATSAPP_AUTO == '1' && needs.arte.outputs.tipos != ''
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:            # mesma fila do envio automático: uma sessão do WhatsApp por vez
@@ -121,12 +158,13 @@ jobs:
         env:
           SOCIAL_ENABLED: '1'
           TIPOS: ${{ needs.arte.outputs.tipos }}
+          CHAVE: ${{ needs.arte.outputs.chave }}
           TITULO: ${{ vars.SOCIAL_WHATSAPP_GRUPO || 'TCG Price Hunter | 01' }}
           SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
         run: |
           set -o pipefail
           mkdir -p social
-          for t in $TIPOS; do node tools/social-top.mjs whatsapp --tipo "$t" --dir saida --sessao social/wa-sessao.bin --diario social/wa-diario.json --titulo "$TITULO" | tee -a "$GITHUB_STEP_SUMMARY"; done
+          for t in $TIPOS; do node tools/social-top.mjs whatsapp --tipo "$t" --dir saida --sessao social/wa-sessao.bin --diario social/wa-diario.json --titulo "$TITULO" --chave "$CHAVE" | tee -a "$GITHUB_STEP_SUMMARY"; done
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         if: always() && hashFiles('social/wa-diario.json') != ''
         continue-on-error: true

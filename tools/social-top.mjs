@@ -28,11 +28,11 @@ import { redact } from '../src/redact.js';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url));
 export const API = 'https://tcgpricehunter.com.br/api/v1/oportunidades?limite=15&pagina=1&ordem=score';
-const OPCOES = ['--tipo', '--dir', '--json', '--titulo', '--sessao', '--diario'];
+const OPCOES = ['--tipo', '--dir', '--json', '--titulo', '--sessao', '--diario', '--chave', '--tg', '--wa'];
 
 export function lerArgs(argv) {
   const o = { modo: argv[0] };
-  if (!['arte', 'telegram', 'whatsapp'].includes(o.modo)) throw new Error('modo deve ser arte|telegram|whatsapp');
+  if (!['arte', 'telegram', 'whatsapp', 'pendente'].includes(o.modo)) throw new Error('modo deve ser arte|telegram|whatsapp|pendente');
   for (let i = 1; i < argv.length; i += 2) {
     const a = argv[i]; const v = argv[i + 1];
     if (!OPCOES.includes(a)) throw new Error(`argumento desconhecido: ${a}`);
@@ -40,6 +40,8 @@ export function lerArgs(argv) {
     o[a.slice(2)] = v;
   }
   if (!TIPOS[o.tipo]) throw new Error('--tipo deve ser top3|top10');
+  if (o.chave !== undefined && !/^[a-z0-9:-]{6,40}$/.test(o.chave)) throw new Error('--chave inválida');
+  if (o.modo === 'pendente') { if (!o.chave) throw new Error('--chave é obrigatório'); return o; }
   if (!o.dir) throw new Error('--dir é obrigatório');
   if (o.modo !== 'arte' && !o.titulo) throw new Error('--titulo é obrigatório');
   if (o.modo === 'whatsapp') for (const k of ['sessao', 'diario']) if (!o[k]) throw new Error(`--${k} é obrigatório`);
@@ -76,6 +78,11 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
   const token = env.SOCIAL_TELEGRAM_BOT_TOKEN || '';
   const mascarar = (s) => redact(token ? String(s).split(token).join('***') : String(s), { env: {}, max: 300 });
   try {
+    if (o.modo === 'pendente') {   // algum canal ainda não recebeu este horário? (as tentativas de reserva só geram arte se sim)
+      const ja = (f) => (lerJson(f, []) || []).some?.((d) => d?.ofertaId === `${o.tipo}:${o.chave}`);
+      io.log(ja(o.tg) && ja(o.wa) ? 'nao' : 'sim');
+      return 0;
+    }
     if (o.modo === 'arte') {
       let resp;
       if (o.json) resp = lerJson(o.json, null);
@@ -110,6 +117,8 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     if (o.modo === 'telegram') {
       const chatId = env.SOCIAL_TELEGRAM_CHAT_ID || '';
       if (!token || !chatId) { io.error('SOCIAL_TELEGRAM_BOT_TOKEN/SOCIAL_TELEGRAM_CHAT_ID ausentes'); return 2; }
+      const idTg = o.chave ? `${o.tipo}:${o.chave}` : null;
+      if (idTg && o.diario && (lerJson(o.diario, []) || []).some?.((d) => d?.ofertaId === idTg)) { io.log(`- Telegram: ${o.tipo} não enviado (${idTg} já enviado)`); return 0; }
       const base = `https://api.telegram.org/bot${token}`;
       const c = await (await fetchFn(`${base}/getChat?chat_id=${encodeURIComponent(chatId)}`, { signal: AbortSignal.timeout(10000) })).json().catch(() => null);
       if (c?.result?.title !== o.titulo) { io.error(`envio recusado: título do chat não confere (real: "${c?.result?.title ?? '?'}")`); return 2; }
@@ -120,6 +129,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       const j = await r.json().catch(() => null);
       if (!r.ok || j?.ok !== true) { io.error(`Telegram: HTTP ${r.status} ${mascarar(j?.description ?? '')}`); return 1; }
       io.log(`- Telegram: enviado ${o.tipo} · message_id ${j.result?.message_id}`);
+      if (idTg && o.diario) { const d = lerJson(o.diario, []); fs.writeFileSync(o.diario, JSON.stringify([...(Array.isArray(d) ? d : []), { ofertaId: idTg, at: new Date(now()).toISOString(), messageId: j.result?.message_id ?? null }].slice(-500))); }
       return 0;
     }
     // WhatsApp
@@ -129,7 +139,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-top-'));
     for (const [n, c] of Object.entries(decifrarSessao(fs.readFileSync(o.sessao), segredo))) if (!n.includes('/') && !n.startsWith('.')) fs.writeFileSync(path.join(dir, n), c);
     const salvar = () => fs.writeFileSync(o.sessao, cifrarSessao(Object.fromEntries(fs.readdirSync(dir).map((n) => [n, fs.readFileSync(path.join(dir, n), 'utf8')])), segredo));
-    const id = `${o.tipo}:${new Date(now()).toISOString().slice(0, 13)}`;
+    const id = o.chave ? `${o.tipo}:${o.chave}` : `${o.tipo}:${new Date(now()).toISOString().slice(0, 13)}`;
     const v = vez(lerJson(o.diario, []), id, now());
     if (!v.pode) { io.log(`- WhatsApp: ${o.tipo} não enviado (${v.motivo})`); fs.rmSync(dir, { recursive: true, force: true }); return 0; }
     if (v.esperaMs > 0) { io.log(`- WhatsApp: esperando ${Math.ceil(v.esperaMs / 60e3)} min (intervalo de ${REGRAS_WHATSAPP.intervaloMin} min entre mensagens)`); await esperar(v.esperaMs); }
