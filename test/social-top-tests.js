@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { itensDaApi, legenda, legendaTelegram, arteHtml, nomeCurto, quando, tipoDaHora, SITE } from '../src/agents/social/top.js';
+import { itensDaApi, legenda, legendaTelegram, arteHtml, nomeCurto, quando, tipoDaHora, slotAgora, SITE } from '../src/agents/social/top.js';
 import { main, lerArgs, fotoDe, vez } from '../tools/social-top.mjs';
 import { cifrarSessao } from '../src/agents/social/whatsapp.js';
 
@@ -69,6 +69,13 @@ assert.match(fotoDe({ id: 'nao-existe', imagem: 'http://x.test/a.png', colecaoCo
 assert.equal(tipoDaHora(Date.parse('2026-10-25T00:07:00Z')), 'top10');
 assert.equal(tipoDaHora(Date.parse('2026-10-24T12:07:00Z')), 'top3');
 
+// horário em vigor: 1ª tentativa e reservas (+30 min, +1 h) caem na mesma chave; fora dos horários, nada
+assert.deepEqual(slotAgora(Date.parse('2026-10-24T22:07:00Z')), { tipo: 'top3', chave: '2026-10-24:19' });
+assert.deepEqual(slotAgora(Date.parse('2026-10-24T23:07:00Z')), { tipo: 'top3', chave: '2026-10-24:19' }, 'reserva +1 h');
+assert.deepEqual(slotAgora(Date.parse('2026-10-25T00:37:00Z')), { tipo: 'top10', chave: '2026-10-24:21' }, 'Top 10 de 24/10 mesmo depois da meia-noite UTC');
+assert.deepEqual(slotAgora(Date.parse('2026-10-25T01:07:00Z')), { tipo: 'top10', chave: '2026-10-24:21' });
+assert.equal(slotAgora(Date.parse('2026-10-24T14:07:00Z')), null, '11h: nenhum horário');
+assert.equal(slotAgora(Date.parse('2026-10-25T02:07:00Z')), null, '23h: nenhum horário');
 // argumentos
 assert.throws(() => lerArgs(['arte', '--tipo', 'top5', '--dir', 'x']), /top3\|top10/);
 assert.throws(() => lerArgs(['whatsapp', '--tipo', 'top3', '--dir', 'x', '--titulo', 'G']), /--sessao/);
@@ -116,6 +123,22 @@ let html = '';
   assert.equal(r, 0, out.join());
   assert.equal(enviados[0].jid, 'g@g.us'); assert.equal(enviados[0].m.caption, l3); assert.ok(Buffer.isBuffer(enviados[0].m.image));
   assert.deepEqual(JSON.parse(fs.readFileSync(diario, 'utf8')).map((x) => x.ofertaId), ['top3:2026-10-24T20']);
+}
+{ // reserva: horário já enviado nos dois canais → "nao"; falta um → "sim"; Telegram com chave não repete
+  const tg = path.join(dir, 'tg.json'); const wa = path.join(dir, 'wa.json');
+  fs.writeFileSync(tg, JSON.stringify([{ ofertaId: 'top3:2026-10-24:19' }])); fs.writeFileSync(wa, JSON.stringify([{ ofertaId: 'top3:2026-10-24:19' }]));
+  const p = async () => { const x = io(); await main(['pendente', '--tipo', 'top3', '--chave', '2026-10-24:19', '--tg', tg, '--wa', wa], {}, x.io); return x.out.join(); };
+  assert.equal(await p(), 'nao');
+  fs.writeFileSync(wa, '[]'); assert.equal(await p(), 'sim');
+  const token = '123456:' + 'b'.repeat(30); let fotos = 0;
+  const fetchFn = async (url) => { if (url.includes('/getChat')) return { ok: true, json: async () => ({ ok: true, result: { title: 'Grupo' } }) }; fotos++; return { ok: true, json: async () => ({ ok: true, result: { message_id: 9 } }) }; };
+  const env = { SOCIAL_ENABLED: '1', SOCIAL_TELEGRAM_BOT_TOKEN: token, SOCIAL_TELEGRAM_CHAT_ID: '-100' };
+  const d2 = path.join(dir, 'tg2.json');
+  const a = ['telegram', '--tipo', 'top3', '--dir', dir, '--titulo', 'Grupo', '--chave', '2026-10-24:19', '--diario', d2];
+  assert.equal(await main(a, env, io().io, { fetchFn }), 0); assert.equal(fotos, 1);
+  assert.equal(await main(a, env, io().io, { fetchFn }), 0); assert.equal(fotos, 1, 'mesma chave: não envia de novo');
+  assert.deepEqual(JSON.parse(fs.readFileSync(d2, 'utf8')).map((x) => x.ofertaId), ['top3:2026-10-24:19']);
+  assert.throws(() => lerArgs(['pendente', '--tipo', 'top3', '--chave', 'X Y']), /chave/);
 }
 fs.rmSync(dir, { recursive: true, force: true });
 console.log('✓ Top 3 / Top 10 do site: dados, legendas, arte e envios');

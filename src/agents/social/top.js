@@ -181,6 +181,16 @@ export function arteHtml(tipo, { itens, quando: q }, a) {
   return pagina(BLUE, corpo);
 }
 
+/** Horários (Brasília) dos posts e o tipo de cada um. */
+export const HORARIOS = Object.freeze({ 9: 'top3', 13: 'top3', 19: 'top3', 21: 'top10' });
+/** Rodada agendada → { tipo, chave } do horário em vigor. O cron do GitHub às vezes atrasa ou pula a execução, então o
+ *  workflow tem tentativas de reserva até ~1h depois; a chave ("2026-10-24:19") faz só a 1ª tentativa que chegar postar. */
+export function slotAgora(now = Date.now()) {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(now)).map((x) => [x.type, x.value]));
+  const h = Number(p.hour);
+  const s = Object.keys(HORARIOS).map(Number).filter((x) => x <= h && h - x <= 1).pop();
+  return s == null ? null : { tipo: HORARIOS[s], chave: `${p.year}-${p.month}-${p.day}:${String(s).padStart(2, '0')}` };
+}
 /** Tipo da rodada agendada pela hora de Brasília: 21h é Top 10; o resto, Top 3. */
 export function tipoDaHora(now = Date.now()) {
   const h = Number(new Date(now).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour: 'numeric', hourCycle: 'h23' }));
