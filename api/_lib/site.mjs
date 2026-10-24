@@ -196,7 +196,7 @@ export function sitePre(st) {
   const offers = Object.values(by); const n = liveCounts(st);
   return { products: offers.map((o) => cardP(P.get(o.productId), n)), offers: offers.map((o) => pick(o, OFFER_FIELDS)), ...sideOf(st, offers) };
 }
-const LOJA_F = ['id', 'name', 'platform', 'status', 'offersLive', 'lastReadAt', 'reason', 'searchUrl', 'searchKind'];
+const LOJA_F = ['id', 'name', 'platform', 'status', 'offersLive', 'offersRead', 'lastReadAt', 'reason', 'searchUrl', 'searchKind'];
 /** /lojas: a lista já normalizada (mesma regra de lojasNormalize do site: fontes do estado + ofertas, sem config/stores.json). Nunca preço. */
 export function siteLojas(st, { now = Date.now() } = {}) {
   return { lojas: normalizeLojas({ sources: st.sources || [], stores: [], offers: st.offers || [], now }).map((l) => pick(l, LOJA_F)) };

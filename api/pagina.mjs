@@ -14,7 +14,7 @@ registrarDesempate();   // empate de total: oferta com link de afiliado primeiro
 // Lote E: guia, perguntas frequentes e glossário como dados (fonte única com o site).
 import { GUIA, guiaHTML, faqHTML, glossarioHTML, faqLD, glossarioLD } from './_lib/guia.mjs';
 // Frente 7: /lojas (todas as lojas conhecidas, com busca direta) e "Procurar em outras lojas" no produto.
-import { lojasFromState, sections as lojaSections, outrasLojas, LOJAS_CFG } from './_lib/lojas.mjs';
+import { lojasFromState, sections as lojaSections, outrasLojas, LOJAS_CFG, coleta, coletaFatos, COLETA_CHIP } from './_lib/lojas.mjs';
 import { GRUPOS, REDES } from './_lib/grupos.mjs';
 
 let page = { t: 0, html: null };
@@ -53,9 +53,9 @@ const stamp = (iso) => (iso && !Number.isNaN(Date.parse(iso)) ? new Date(iso).to
 // Link externo para a loja: sempre nofollow + noopener, nova aba. Nunca um preço: só o que o robô leu entra em "Onde comprar".
 const extA = (url, txt) => `<a href="${esc(url)}" rel="nofollow noopener" target="_blank">${txt}<span class="sr"> (abre em nova aba)</span> ↗</a>`;
 function lojaRow(l, oppFilter) {
-  const [cls, lbl] = LOJA_CHIP[l.status] || ['', l.status];
+  const [cls, lbl] = COLETA_CHIP[coleta(l)] || LOJA_CHIP[l.status] || ['', l.status];
   const plat = l.platform && LOJAS_CFG.rotulo[l.platform] ? ` <span class="chip">${esc(LOJAS_CFG.rotulo[l.platform])}</span>` : '';
-  const facts = l.status === 'monitorada' ? ` · ${l.offersLive} ${l.offersLive === 1 ? 'oferta' : 'ofertas'} com estoque${l.lastReadAt ? ` · última leitura ${stamp(l.lastReadAt)}` : ''}` : '';
+  const facts = l.status === 'monitorada' ? ` · ${coletaFatos(l, stamp)}` : '';
   const go = l.searchUrl ? ` · ${extA(l.searchUrl, l.searchKind === 'busca' ? 'Buscar Pokémon na loja' : 'Abrir a loja')}` : '';
   const opp = oppFilter && l.status === 'monitorada' && l.offersLive > 0 ? ` · <a href="/oportunidades?loja=${encodeURIComponent(l.id)}">Ver ofertas</a>` : '';
   return `<li id="loja-${esc(l.id)}"><b>${esc(l.name)}</b>${plat} <span class="chip ${cls}">${lbl}</span>${facts}${go}${opp}${l.reason ? `<br><small>${esc(l.reason)}</small>` : ''}</li>`;
