@@ -32,7 +32,8 @@ export async function main({ env = process.env, fetchImpl = fetch, log = console
   const meta = m.value && typeof m.value === 'object' && !Array.isArray(m.value) ? m.value : null;
   const metaError = m.error || (m.value != null && !meta ? 'ilegivel' : null);
   const deploy = readJsonSafe(opt('deploy')).value;
-  const ev = evaluate({ now, stateGeneratedAt: st?.generatedAt, meta, metaError, runs, deploy });
+  const waRuns = readJsonSafe(opt('wa-runs')).value;   // rodadas do envio ao WhatsApp; ausente = não verifica
+  const ev = evaluate({ now, stateGeneratedAt: st?.generatedAt, meta, metaError, runs, deploy, waRuns });
   const d = decide(ev, ledger, now);
   let sent = { delivered: false, channels: [] };
   if (d.notify && !flag('dry-run')) sent = await sendAll(d.notify, { env, fetchImpl });

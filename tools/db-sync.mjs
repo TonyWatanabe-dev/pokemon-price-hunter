@@ -22,6 +22,8 @@ const t0 = Date.now();
 try {
   const s = await tx((c) => syncState(c, { state, catalog, historyLines: lines }));
   console.log(`Banco sincronizado em ${((Date.now() - t0) / 1000).toFixed(1)} s:`, JSON.stringify(s));
+  // Quarentena: linhas recusadas ficaram de fora sem parar a rodada; aviso visível no Actions.
+  if (s.quarantined) console.log(`::warning title=Sync com quarentena::${s.quarantined} linha(s) ficaram de fora: ${s.quarantine.map((x) => `${x.etapa} ${x.id} (${x.motivo})`).join('; ').slice(0, 900)}`);
 } catch (e) {
   console.error('Sincronização com o banco falhou (o site não é afetado):', e.message);
   process.exitCode = 1;
