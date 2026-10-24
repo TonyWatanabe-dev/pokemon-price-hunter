@@ -24,6 +24,10 @@ export const ORCAMENTOS = Object.freeze([50, 100, 200, 400]);
 import { bestComparable } from './offer-rank.mjs';
 
 const LANGS = ['en', 'ja', 'zh', 'ko'];
+/** Nome do produto para o kit: o do produto; senão o do robô (mapa id → nome); senão "Coleção - <rótulo>". */
+export function nomeProduto(p, nomes = new Map(), rotulo = (x) => x.typeLabel || x.type || 'produto') {
+  return p.name || nomes.get(p.id) || `${p.collectionName || 'Pokémon TCG'} - ${rotulo(p)}`;
+}
 export const idiomaDe = (id) => { const s = String(id).split('-').pop(); return LANGS.includes(s) ? s : 'pt'; };
 const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const r2 = (v) => Math.round(v * 100) / 100;
