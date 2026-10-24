@@ -40,6 +40,11 @@ assert.ok(r.json.itens.every((i) => typeof i.nome === 'string' && i.nome.length 
   const { clearCatalogCache } = await import('../api/_lib/catalog.mjs'); clearCatalogCache();
   const rr = await call('/api/v1/site/kit?objetivo=jogar&orcamento=100&idioma=pt&fonte=state&x=1');
   assert.equal(rr.status, 200, JSON.stringify(rr.json)); assert.equal(rr.json.itens[0].nome, 'X - Baralho de Batalha'); }
+const cz = await call('/api/v1/site/kit/cesta?itens=xx1-blister3:2,xx1-deck:1&fonte=state');
+assert.equal(cz.status, 200, JSON.stringify(cz.json)); assert.equal(cz.json.dividir.pedidos, 2); assert.equal(cz.json.umaLoja.length, 0, 'nenhuma loja tem os dois');
+assert.equal(cz.json.dividir.itens[0].nome, 'X - Blister Triplo');
+assert.equal((await call('/api/v1/site/kit/cesta?itens=')).status, 400); assert.equal((await call('/api/v1/site/kit/cesta?itens=xx1-deck:99')).status, 400);
+assert.match(js, /\/api\/v1\/site\/kit\/cesta\?itens=/);
 assert.equal((await call('/api/v1/site/kit?objetivo=voar&orcamento=10')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=0')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=50&idioma=xx')).status, 400);

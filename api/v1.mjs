@@ -38,7 +38,7 @@ import * as DB from './_lib/read-db.mjs';
 import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
 import { publicAffiliates, registrarDesempate } from './_lib/affiliates.mjs';
-import { recomendar, OBJETIVO_MODELO, nomeProduto } from './_lib/kit.mjs';
+import { recomendar, OBJETIVO_MODELO, nomeProduto, compararLojas } from './_lib/kit.mjs';
 import { label as SEO_LABEL } from './_seo.mjs';
 import { readFileSync } from 'node:fs';
 // Frete grátis pela regra pública da loja (config/frete-gratis.json): usado pelo kit para o frete da cesta.
@@ -64,7 +64,7 @@ const str = (v, max = 80) => (typeof v === 'string' && v.trim() ? v.trim().slice
 const bool = (v) => v === '1' || v === 'true' || v === 'sim';
 // Só parâmetros que a rota lê entram na chave do cache: "?x=1", "?x=2"... não enchem o cache nem forçam consultas repetidas.
 const KEY_PARAMS = new Set(['pagina', 'limite', 'colecao', 'tipo', 'categoria', 'estoque', 'busca', 'ordem', 'todas', 'dias', 'lojas', 'status', 'faixa',
-  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos', 'idioma', 'objetivo', 'orcamento', 'favorito']);
+  'minimo', 'ofertas', 'referencia', 'abaixo', 'confianca_minima', 'produto', 'modo', 'grupo', 'loja', 'max', 'semref', 'produtos', 'idioma', 'objetivo', 'orcamento', 'favorito', 'itens']);
 const SLUG_RE = /^[a-z0-9][a-z0-9_.-]{0,120}$/i;
 
 class HttpError extends Error { constructor(status, msg) { super(msg); this.status = status; } }
@@ -140,6 +140,11 @@ function route(segs, qs) {
     }
     if (id === 'lojas' && segs.length === 2) return { name: 'site-lojas', kind: 'site' };
     // Monte seu kit (docs/monte-seu-kit.md, K3): protótipo; respostas do questionário → cesta com produtos e ofertas reais.
+    if (id === 'kit' && sub === 'cesta' && segs.length === 3) {
+      const itens = (str(qs.get('itens'), 2000) || '').split(',').filter(Boolean).map((x) => { const [pid, q] = x.split(':'); return { productId: pid, quantidade: Number(q || 1) }; });
+      if (!itens.length || itens.length > 15 || itens.some((i) => !SLUG_RE.test(i.productId || '') || !(i.quantidade >= 1 && i.quantidade <= 20))) throw new HttpError(400, 'itens inválidos (até 15, formato id:quantidade, quantidade 1 a 20)');
+      return { name: 'site-kit-cesta', kind: 'site', itens };
+    }
     if (id === 'kit' && segs.length === 2) {
       const objetivo = str(qs.get('objetivo'), 20) || ''; if (!Object.hasOwn(OBJETIVO_MODELO, objetivo)) throw new HttpError(400, `objetivo inválido (use: ${Object.keys(OBJETIVO_MODELO).join(', ')})`);
       const orcamento = Number(qs.get('orcamento')); if (objetivo !== 'proteger' && !(Number.isFinite(orcamento) && orcamento >= 1 && orcamento <= 100000)) throw new HttpError(400, 'orcamento inválido (1 a 100000)');
@@ -167,6 +172,14 @@ async function run(rt, source) {
     case 'site-ofertas': { const st = await catalogState(source);
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
     case 'site-pagina': return { body: { v: 1, source, ...SITE.SITE_PAGES[rt.page](await catalogState(source), { now: FR.nowMs() }) } };
+    case 'site-kit-cesta': { const st = await catalogState(source);
+      const ids = new Set(rt.itens.map((i) => i.productId));
+      const faltaNome = (st.products || []).some((p) => ids.has(p.id) && !p.name);
+      const legado = faltaNome ? await legacyState().then((x) => x?.st).catch(() => null) : null;
+      const nomesL = new Map((legado?.products || []).map((p) => [p.id, p.name]));
+      const nomes = new Map((st.products || []).filter((p) => ids.has(p.id)).map((p) => [p.id, nomeProduto(p, nomesL, SEO_LABEL)]));
+      const ofertas = (st.offers || []).filter((o) => ids.has(o.productId)).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
+      return { body: { v: 1, source, prototipo: true, ...compararLojas(rt.itens, ofertas, { fg: freteGratis(), nomes }) } }; }
     case 'site-kit': { const st = await catalogState(source);
       // Nome: a fonte do banco não traz `name`. Só nesse caso lê o state.json do robô (falha tolerada) e, sem ele, usa o
       // rótulo "Coleção - Tipo" do SEO (nomeProduto em api/_lib/kit.mjs).
