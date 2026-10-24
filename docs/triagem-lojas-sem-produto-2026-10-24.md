@@ -15,10 +15,10 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
 | Classificação | Lojas | Impacto potencial |
 |---|---|---|
 | matching pendente | 3 | baixo: 1 a 2 ofertas cada; 2 corrigidas (#885 Mais Coimbra, #889 Bynx) e 1 sem validação (Maximux, Pokémon GO) |
-| sem catálogo relevante | 8 | nenhum; inclui a **BQD**: 29 ofertas de produtos removidos, preservadas como não confirmadas |
+| sem catálogo relevante | 9 | nenhum; inclui a **BQD**: 29 ofertas de produtos removidos, preservadas como não confirmadas |
 | falha de coleta | 4 | grupo Tray: o preço não aparece escrito na página e o estoque não é verificável (prova de conceito #891, não integrada) |
 | fonte bloqueada ou indisponível | 1 | nenhum enquanto a loja estiver fechada |
-| inconclusiva | 13 | sem mapa do site, mapa sem página candidata ou página sem nenhum preço (TCG Pro) |
+| inconclusiva | 12 | sem mapa do site, mapa sem página candidata ou página sem nenhum preço (TCG Pro) |
 
 ## Lojas
 | Loja | Leitor | Classificação | Evidência | Impacto | Próxima ação |
@@ -46,7 +46,7 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
 | loja.gameofboards.com.br | JSON-LD (Tray) | inconclusiva | mapa Tray sem link candidato; teve leitura não vazia em 21/10 | desconhecido | junto do leitor Tray |
 | farmaciasnissei.com.br | JSON-LD | inconclusiva | 1 página Pokémon, sem dados estruturados | baixo | nenhuma agora |
 | thesaintcollection.com | Shopify | inconclusiva | a busca Shopify volta sem anúncio | desconhecido | conferência manual |
-| livrariacolecionador.com.br | JSON-LD | inconclusiva | sem mapa do site | desconhecido | conferência manual |
+| livrariacolecionador.com.br | JSON-LD (Magento) | sem catálogo relevante | sem mapa do site; a busca da loja (Magento, `/catalogsearch/result/`) não trouxe nenhum produto Pokémon em 3 termos ("pokemon", "pokemon tcg", "booster pokemon"; sonda 40126604916, 24/10) | 0 | nenhuma |
 | loja.balaiodejogos.com.br | JSON-LD | inconclusiva | sem mapa do site | desconhecido | conferência manual |
 | newstation.com.br | JSON-LD | inconclusiva | sem mapa do site | desconhecido | conferência manual |
 | pokepolis.com.br | JSON-LD | inconclusiva | sem mapa do site | desconhecido | conferência manual |

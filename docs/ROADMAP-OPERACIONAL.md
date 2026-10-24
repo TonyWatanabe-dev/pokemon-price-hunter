@@ -41,6 +41,42 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Produto removido com HTTP 200 e validações em runtime — 24/10/2026, noite, 5ª rodada (America/Sao_Paulo)
+
+**P0:**
+- **#271:** 0/7 dias encerrados. O dia 24 está **parcial verde** (19:37 UTC, sem falhas). O fechamento do dia sai às 03:07 UTC de 25/10, e uma conferência está agendada para 03:20 UTC.
+- **#231:** o Dispatcher roda sem falha. A fila `tarefa:aprovada` está vazia, então o worker está parado por falta de tarefa, não por falha.
+- **Vigia #893:** o próprio Vigia **fechou** o incidente às 18:52 UTC, depois de duas checagens saudáveis seguidas.
+  - A causa vista nos dados foi o Mercado Livre bloqueado nas rodadas das 18:00 e das 18:15.
+  - **Continua pendente** o defeito da issue sem motivo ("sem detalhe"): os logs do Actions seguem bloqueados daqui (download de logs: 403). Próxima fonte de diagnóstico: o resumo da checagem (`wd/vigia.json`) num artefato ou no *step summary*, quando acessível.
+
+| PR | Mudança | Testes locais | CI (4 checks) e revisão | Integrada | Publicada | Validada em runtime |
+|---|---|---|---|---|---|---|
+| #897 (4ecbcc6) | Produto removido com evidência explícita (HTTP 404/410, ou página de erro com HTTP 200 e sinal no h1/título, sem produto próprio na página) sai pelo caminho normal de remoção depois de **2 rodadas seguidas**. Falha de leitura, 403/429, esgotado e falta de preço nunca contam | `npm test` com 312 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | deploy 4ecbcc6: success | **pendente**: as páginas da BQD só são relidas no ciclo de 24 h (~15:15 UTC de 25/10); conferência agendada para 17:30 UTC de 25/10 |
+| #898 (722f5bf) | "Lendas" sem o Pokémon não vira produto ("Coleção Ex Lendas Azuis" saía como `avulsos-colecao_ex-lendas`). 1 título muda | `npm test` com 312 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | sim | pendente (próxima leitura da mpbrinquedos) |
+
+**Impacto previsto da #897:** até 35 ofertas.
+- **BQD (29):** página de erro confirmada.
+- **Gato Gingado (1):** HTTP 404, se a página ainda estiver no mapa do site.
+- **Taverna do Turno (5):** continua **protegida**, porque o redirecionamento para `/password/` não é sinal de remoção.
+
+Nenhum produto é recuperado nem publicado, e o histórico de preço fica intacto.
+
+**Validações em runtime desta rodada (ramo data, 19:15 e 19:30 UTC):**
+- **#885, Batalha de Liga:** **validada**. Mega Lucario, Charizard e Miraidon estão em `avulsos-deck-*`.
+- **#894, Lendas Implacáveis:** **validada**. Os títulos de Zacian e Koraidon estão em `sv9-colecao_ex-zacian` e `sv10-colecao_ex-koraidon`. Só sobrou em `avulsos-colecao_ex-lendas` o título sem nome, que a #898 corrige.
+
+**Triagem:** a busca da Livraria Colecionador (Magento) não trouxe nenhum produto Pokémon (sonda 40126604916, 3 termos, 0 links). A loja passa de inconclusiva a **sem catálogo relevante (pela busca)**.
+
+**Próximo:**
+1. Validar a #897 em runtime às 17:30 UTC de 25/10.
+2. Fechar o dia 24 do burn-in.
+3. K5: ligar o classificador de acessórios só quando o dono decidir a lista curada.
+
+A K6 continua oculta.
+
+---
+
 ## Fechamento: fontes independentes na Tray e Lendas Implacáveis — 24/10/2026, noite, 4ª rodada (America/Sao_Paulo)
 
 **P0:**
