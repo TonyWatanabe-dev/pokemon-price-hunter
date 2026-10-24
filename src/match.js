@@ -18,6 +18,8 @@ const REJECT = [
   [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
 ];
 // "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
+const DECK_BOX = /\b(deck ?box(es)?|porta ?deck|caixa (para|de) deck)\b/;
+const SEALED_WITH_ACCESSORY = /\b(boosters?|blister|treinador avancado|elite trainer|etb|box|display|colecao|lata|minilata|baralho de batalha|deck de batalha|kit treinador)\b/;
 const LOOSE_BINDER = (t) => /\b(pasta|fichario|binder)\b/.test(t) && !/\b(colecao|box|caixa|boosters?|pacotes?)\b/.test(t);
 // Várias unidades no mesmo anúncio: "10 unidades", "2 Box ...", "Kit 3 Blister ...", "Kit 2". "Kit 6 Boosters" segue sendo combo.
 const MULTI_UNIT = /^([2-9]|1\d) ?x? (box|boxes|caixas?|blisters?|latas?|minilatas?|baralhos?|colecoes|treinadore?s?|etbs?)\b|\bkit (de )?([2-9]|1\d)\b(?! ?(boosters?|pacotes?|envelopes?|cartas|cards))/;
@@ -216,6 +218,9 @@ export function parseListing(title, catalog) {
   const reasons = [];
   for (const [re, why] of REJECT) if (re.test(t)) reasons.push(why);
   if ((TOY.test(t) || TOY_BALL(t)) && !reasons.includes('acessório ou item não-TCG')) reasons.push('brinquedo, não é carta');
+  // Deck box / porta-deck é acessório: "Deck Box Pokémon Mewtwo ex" casava com "Box Pokémon ex" (lacrado). Mesma regra do
+  // classificador de acessórios (api/_lib/acessorios.mjs): com produto lacrado no nome ("Coleção ... com Deck Box") continua lacrado.
+  if (DECK_BOX.test(t) && !SEALED_WITH_ACCESSORY.test(t.replace(/\bdeck ?box(es)?\b/g, ' ')) && !reasons.includes('acessório ou item não-TCG')) reasons.push('acessório ou item não-TCG');
   // Qualquer idioma que não seja PT (ou idiomas em conflito) nunca casa com o produto em português.
   const language = detectLanguage(t);
   // Importados (inglês, japonês, chinês, coreano) viram produto próprio, com sufixo de idioma e sem referência Copag.
