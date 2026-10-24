@@ -103,3 +103,12 @@ Não usa modelo de linguagem; não lê snippets para decidir; não pontua lojas 
 - URLs de produto não são enviadas para lojas que o robô não lê (BLOCKED/PAUSED/UNAVAILABLE);
 - lojas aceitas vão para `data/discovery-stores.txt` (ramo data), lido por `src/run.js`; a escrita em `config/` falhava porque a main é protegida.
 - o job do workflow subiu de 12 para 18 min (a rodada com descoberta era cancelada antes de salvar).
+
+## Fase 0 da expansão de lojas (24/10/2026) — sem custo
+
+- **Validador v2** (`validateHost`, `VALIDATOR_VERSION = 2`): quando a página inicial não mostra Pokémon lacrado com preço, procura `pokemon` na busca da própria loja (caminho pela plataforma detectada no HTML: Shopify, Nuvemshop, VTEX, Tray, Loja Integrada, Magento, WooCommerce; só se o `robots.txt` permitir) e, sem busca, no sitemap (página de produto com `pokemon` no endereço). Aceite continua exigindo preço em R$ e plataforma legível.
+- **Reconferir** (`runExtras`): hosts recusados na v1 por motivo que a v2 resolve (`RECONFERIR`) são conferidos de novo uma vez, até `DISCOVERY_RECONFERIR_MAX` (15) por rodada. Bloqueio e robots.txt nunca são reconferidos.
+- **OpenStreetMap** (`src/discovery/osm.js`): Overpass API, lojas `shop=games|toys|hobby|comics|anime|video_games|collector|model` no Brasil com site. Cache de 7 dias em `data/osm-lojas.json`; até `DISCOVERY_OSM_MAX` (20) sites conferidos por rodada; cidade e UF ficam em `ledger.hosts[host].loc`. Rede social (Instagram, WhatsApp, Linktree) não conta como site. `HUNTER_DISCOVERY_OSM=0` desliga. Dados © colaboradores do OpenStreetMap (ODbL).
+- **Prazo**: as fontes grátis têm `DISCOVERY_EXTRAS_SEG` (150 s) para não estourar o teto de 18 min da rodada diária; o que não couber fica para a próxima.
+- Rodam também quando não há conector de busca (sem chave ou créditos esgotados).
+- **Relatório**: `npm run discovery:relatorio` ganhou a tabela de cobertura por estado.
