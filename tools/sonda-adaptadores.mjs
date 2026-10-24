@@ -56,10 +56,24 @@ export function resumoPagina(html, url, parse) {
   const escrito = preco != null && Number.isFinite(Number(preco)) ? html.includes(Number(preco).toFixed(2).replace('.', ',')) : null;
   return { caminho, ld, og, publica: !!parse(html, url), ...(prod ? { nome: String(prod.name || '').slice(0, 60), titulo, preco, escrito } : {}) };
 }
+/** Marcadores de plataforma e de estado da página (só leitura, sem guardar a página): explica recusa sem JSON-LD útil. */
+export function marcadores(html) {
+  const h = String(html || ''); const txt = h.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+  const precos = [...txt.matchAll(/R\$\s?[\d.]+,\d{2}/g)].slice(0, 3).map((m) => txt.slice(Math.max(0, m.index - 40), m.index + m[0].length + 25).trim());
+  return {
+    tamanho: h.length,
+    tituloTag: (h.match(/<title\b[^>]*>([^<]*)<\/title>/i)?.[1] || '').replace(/\s+/g, ' ').trim().slice(0, 60),
+    h1: (h.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60),
+    nuvemshop: /LS\.product\s*=/.test(h), variantes: /LS\.variants\s*=/.test(h),
+    tray: /\/loja\/arquivos\/|tray\.com\.br|traycorp/i.test(h), microdata: (h.match(/itemprop=["']price["']/gi) || []).length,
+    dataLayer: /dataLayer/.test(h), esgotado: /esgotad|indispon[ií]vel|avise-?me/i.test(txt), naoEncontrado: /n[aã]o encontrad|p[aá]gina n[aã]o existe|404/i.test(txt),
+    precos,
+  };
+}
 async function diagnosticoPaginas(urls) {
   const { get } = await import('../src/http.js'); const { guard } = await import('../src/adapters/common.js'); const { parseProductPage } = await import('../src/adapters/jsonld.js');
   const out = [];
-  for (const u of urls) { try { await guard(u); const r = await get(u); out.push(resumoPagina(r.text, r.url || u, parseProductPage)); } catch (e) { out.push({ caminho: u.replace(/^https?:\/\/[^/]+/, '').slice(0, 70), erro: String(e?.status || e?.code || e?.message).slice(0, 40) }); } }
+  for (const u of urls) { try { await guard(u); const r = await get(u); out.push({ ...resumoPagina(r.text, r.url || u, parseProductPage), m: marcadores(r.text) }); } catch (e) { out.push({ caminho: u.replace(/^https?:\/\/[^/]+/, '').slice(0, 70), erro: String(e?.status || e?.code || e?.message).slice(0, 40) }); } }
   return out;
 }
 

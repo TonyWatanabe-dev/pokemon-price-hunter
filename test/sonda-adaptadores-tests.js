@@ -52,3 +52,15 @@ console.log('sonda-adaptadores-tests: ok');
   assert.equal(resumoPagina('<html></html>', 'https://lojax.com.br/p/x', () => null).ld, 0);
   console.log('sonda-adaptadores-tests (página): ok');
 }
+
+// Marcadores de página: plataforma (Nuvemshop/Tray), título, h1, microdata, esgotado/não encontrado e trechos de preço.
+{
+  const { marcadores } = await import('../tools/sonda-adaptadores.mjs');
+  const m = marcadores('<html><head><title>Booster X | Loja</title><script>LS.product = {id: 1}; LS.variants = [];</script></head><body><h1>Booster <b>X</b></h1><img src="/loja/arquivos/1/a.png"><span itemprop="price" content="10">R$ 24,90</span><p>Produto esgotado</p></body></html>');
+  assert.equal(m.tituloTag, 'Booster X | Loja'); assert.equal(m.h1, 'Booster X');
+  assert.equal(m.nuvemshop, true); assert.equal(m.variantes, true); assert.equal(m.tray, true); assert.equal(m.microdata, 1);
+  assert.equal(m.esgotado, true); assert.equal(m.naoEncontrado, false);
+  assert.equal(m.precos.length, 1); assert.match(m.precos[0], /R\$ 24,90/);
+  assert.doesNotMatch(JSON.stringify(marcadores('<script>var p = "R$ 9,99"</script>').precos), /9,99/, 'preço dentro de script não conta como escrito');
+  console.log('sonda-adaptadores-tests (marcadores): ok');
+}
