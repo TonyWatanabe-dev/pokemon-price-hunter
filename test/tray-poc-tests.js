@@ -25,10 +25,18 @@ const ler = (o) => tray.lerPaginaTray(pagina(o), U);
   assert.equal(l.motivo, undefined);
   assert.deepEqual([l.title, l.url, l.price.base, l.price.pix, l.stock, l.sku, l.image], [NOME, U, 69.9, null, 'IN_STOCK', '2621', 'https://img.test/2621.png']);
 }
-// confirmado pelo GA4 quando o JSON-LD traz outro valor (FN Games: JSON-LD 58,10 × priceSell 59,90)
-assert.equal(ler({ dl: { priceSell: '59.90', price: '59.90' }, ld: { price: '58.10', availability: 'InStock' }, ga4: { currency: 'BRL', value: 59.9, items: [{ price: 59.9 }] } }).price.base, 59.9);
+// Regra do dono (24/10): GA4 e dataLayer saem do mesmo script de análise (cópias do mesmo dado), então o GA4 igual NÃO
+// confirma o priceSell. JSON-LD menor (FN Games: 58,10 × 59,90) vira só "Pix provável", nunca preço do anúncio.
+{
+  const r = ler({ dl: { priceSell: '59.90', price: '59.90' }, ld: { price: '58.10', availability: 'InStock' }, ga4: { currency: 'BRL', value: 59.9, items: [{ price: 59.9 }] } });
+  assert.equal(r.price, undefined, 'GA4 sozinho não confirma');
+  assert.match(r.motivo, /^preço não confirmado por fonte independente \(dataLayer 59\.9 × JSON-LD 58\.1\)$/);
+  assert.equal(r.detalhe.pixProvavel, 58.1);
+}
+assert.equal(ler({ ld: { price: '0.00', availability: 'OutOfStock' }, ga4: { currency: 'BRL', value: 69.9, items: [{ price: 69.9 }] } }).detalhe.pixProvavel, null, 'JSON-LD zero não é Pix');
+assert.equal(ler({ ld: { price: '40.00', availability: 'InStock' } }).detalhe.pixProvavel, null, 'mais de 20% abaixo não é Pix provável');
 // recusas, com os valores no motivo para a decisão humana
-assert.match(ler({ dl: { priceSell: '59.90', price: '59.90' }, ld: { price: '58.10', availability: 'InStock' } }).motivo, /^preço não confirmado \(dataLayer 59\.9 × JSON-LD 58\.1 × GA4 —\)/);
+assert.match(ler({ dl: { priceSell: '59.90', price: '59.90' }, ld: { price: '58.10', availability: 'InStock' } }).motivo, /^preço não confirmado por fonte independente/);
 assert.equal(ler({ dl: { priceSell: '0.00', price: '0.00' } }).motivo, 'preço ausente ou zero');
 assert.equal(ler({ sem: true }).motivo, 'sem dataLayer de produto da Tray');
 assert.equal(ler({ dl: { pageCategory: 'Categoria' } }).motivo, 'sem dataLayer de produto da Tray');
@@ -43,7 +51,7 @@ assert.equal(ler({ extraLd: '<script type="application/ld+json">{"@type":"Produc
 assert.equal(ler({ dl: { availability: 'NO' }, ld: { price: '69.90', availability: 'OutOfStock' } }).stock, 'OUT_OF_STOCK');
 assert.equal(ler({ dl: { availability: 'YES' }, ld: { price: '69.90', availability: 'OutOfStock' } }).stock, 'UNKNOWN');
 // dataLayer sozinho (sem JSON-LD, Virtual Gift) não afirma estoque
-assert.equal(ler({ ld: null, ga4: { currency: 'BRL', value: 69.9, items: [{ price: 69.9 }] } }).stock, 'UNKNOWN');
+assert.match(ler({ ld: null, ga4: { currency: 'BRL', value: 69.9, items: [{ price: 69.9 }] } }).motivo, /^preço não confirmado por fonte independente/, 'sem JSON-LD (Virtual Gift): não confirma');
 // leitores das fontes
 assert.equal(tray.dataLayerTray('<script>dataLayer = [{"pageCategory":"Produto","priceSell":"1.00"}];</script>').priceSell, '1.00');
 assert.equal(tray.dataLayerTray('<script>dataLayer = [{quebrado: 1}];</script>'), null);
@@ -72,6 +80,10 @@ rotas = {
   const out = await tray.search({ url: 'https://fn.test' });
   assert.equal(out.paginas, 4); assert.equal(out.length, 1); assert.equal(out[0].price.base, 69.9);
   assert.deepEqual(out.motivos, { 'sem dataLayer de produto da Tray': 1 });
+  // detalhe por página para o relatório: lida e recusada, com fonte do preço normal e estoque de cada fonte
+  assert.equal(out.detalhes.length, 2);
+  assert.deepEqual([out.detalhes[0].resultado, out.detalhes[0].id, out.detalhes[0].precoNormal, out.detalhes[0].fontePrecoNormal, out.detalhes[0].estoqueDataLayer, out.detalhes[0].estoqueJsonLd], ['lida', '2621', 69.9, 'dataLayer.priceSell', 'YES', 'IN_STOCK']);
+  assert.deepEqual([out.detalhes[1].resultado, out.detalhes[1].motivo], ['recusada', 'sem dataLayer de produto da Tray']);
   assert.deepEqual(out.failed, ['https://fn.test' + P[3]], '503 é falha passageira; 404 não é');
 }
 console.log('tray-poc-tests: ok');

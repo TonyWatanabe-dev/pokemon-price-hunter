@@ -63,7 +63,12 @@ export function lerPaginaTray(html, url) {
   const base = brl(dl.priceSell ?? dl.price ?? null);
   if (!base) return { motivo: 'preço ausente ou zero' };
   const ga4 = precosGa4(h);
-  if (!ga4.some((v) => igual(v, base)) && !igual(ld.preco, base)) return { motivo: `preço não confirmado (dataLayer ${base} × JSON-LD ${ld.preco ?? '—'} × GA4 ${ga4.join('/') || '—'})` };
+  // Regra do dono (24/10): duas cópias do mesmo dado não são duas fontes. dataLayer e GA4 view_item saem do mesmo script de
+  // análise da Tray (mesmo valor sempre), então o GA4 NÃO confirma o priceSell. Fonte independente aqui: o JSON-LD (marcação
+  // de busca, calculada à parte; na FN Games e na Universal Geek ele traz outro valor). Sem JSON-LD igual: não confirmado.
+  // JSON-LD menor que o priceSell (até 20% abaixo) é só "Pix provável": nunca vira preço Pix do anúncio sem confirmação.
+  const pixProvavel = ld.preco && ld.preco < base && ld.preco >= base * 0.8 ? ld.preco : null;
+  if (!igual(ld.preco, base)) return { motivo: `preço não confirmado por fonte independente (dataLayer ${base} × JSON-LD ${ld.preco ?? '—'})`, detalhe: { pixProvavel, ga4 } };
   const doDl = /^(yes|sim|true|1)$/i.test(String(dl.availability)) ? 'IN_STOCK' : /^(no|nao|não|false|0)$/i.test(String(dl.availability)) ? 'OUT_OF_STOCK' : null;
   // Sonda 40119264932: o dataLayer diz availability "YES" até em produto que o JSON-LD e a página dão como esgotado
   // (Universal Geek, 8 de 8). Então o dataLayer sozinho não afirma estoque: só vale quando o JSON-LD concorda.
@@ -79,18 +84,32 @@ export function lerPaginaTray(html, url) {
   return l;
 }
 
+/** Detalhe de uma página para o relatório: título, id, preço normal (e fonte), JSON-LD, GA4, estoque de cada fonte, motivo. */
+export function detalheDe(html, url, lido) {
+  const dl = dataLayerTray(html) || {}; const ld = produtoLd(String(html || ''));
+  return { url, titulo: dl.nameProduct || null, id: dl.idProduct ? String(dl.idProduct) : null,
+    precoNormal: brl(dl.priceSell ?? dl.price ?? null), fontePrecoNormal: dl.priceSell != null ? 'dataLayer.priceSell' : dl.price != null ? 'dataLayer.price' : null,
+    precoJsonLd: ld.preco ?? null, ga4: precosGa4(html), estoqueDataLayer: dl.availability ?? null, estoqueJsonLd: ld.stock ?? null,
+    resultado: lido?.motivo ? 'recusada' : 'lida', motivo: lido?.motivo || null, estoque: lido?.stock || null, pixProvavel: lido?.detalhe?.pixProvavel ?? null };
+}
+
 /** store: { url } · opts: { max }. Páginas do mapa do site (mesmo filtro do leitor JSON-LD); devolve anúncios + .motivos. */
 export async function search(store, { max = 20 } = {}) {
   const base = store.url.replace(/\/$/, '');
   const urls = (await productUrls(base, max)).slice(0, max);
-  const out = []; const failed = []; const reasons = {}; const motivos = {};
+  const out = []; const failed = []; const reasons = {}; const motivos = {}; const detalhes = [];
   for (const u of urls) {
-    try { await guard(u); const r = await get(u); const l = lerPaginaTray(r.text, r.url || u); if (l.motivo) motivos[l.motivo] = (motivos[l.motivo] || 0) + 1; else out.push(l); }
+    try {
+      await guard(u); const r = await get(u); const l = lerPaginaTray(r.text, r.url || u);
+      if (l.motivo) { const k = l.motivo.replace(/ \(.*\)$/, ''); motivos[k] = (motivos[k] || 0) + 1; } else out.push(l);
+      // detalhe das 3 primeiras páginas (lidas ou não), para o relatório por loja
+      if (detalhes.length < 3) detalhes.push(detalheDe(r.text, r.url || u, l));
+    }
     catch (e) {
       if (e.blocked && e.status !== 'robots' && e.status !== 'unreachable') throw e;
       if (transientPageError(e)) { failed.push(u); reasons[u] = String(e?.message || 'falha de leitura').slice(0, 120); }
     }
   }
-  out.failed = failed; out.failReasons = reasons; out.motivos = motivos; out.paginas = urls.length;
+  out.failed = failed; out.failReasons = reasons; out.motivos = motivos; out.paginas = urls.length; out.detalhes = detalhes;
   return out;
 }
