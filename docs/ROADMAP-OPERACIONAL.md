@@ -1,3 +1,37 @@
+## Atualização executiva — 23/10/2026 (America/Sao_Paulo)
+
+### Entregue em 20–23/10
+
+| Área | Entrega | PR |
+|---|---|---|
+| Alertas | Texto com horário de Brasília e base de comparação (total com frete ou só preço) | #844 |
+| Lojas | 26 lojas mortas retiradas do radar; 8 lojas de importados adicionadas | #845, #846 |
+| Anúncios | Contagem por origem no plano gratuito (/entrar/<origem>, /ir/<canal>/<origem>) e /entrar no design system | #850, #851 |
+| Banco | Sync parado em 22/10 12:15 UTC por `offer_external_uq` (anúncio do ML com novo legacy_id). Corrigido; banco voltou a atualizar às 19:00 UTC de 23/10 | #856 |
+| WhatsApp | Teto 20 → 34 mensagens/24 h (1 a cada 30 min, 7h–24h); oferta sem afiliado volta após 6 h. Motivo: pessoas entravam e saíam do grupo por falta de novidade | #857 |
+| /entrar | Botão do WhatsApp antes da imagem (sem rolar no celular), Telegram no topo e "Ofertas de hoje" vindas da API | #858 |
+
+### Estado
+
+- **Página por coleção:** já estava no ar (/colecao/<slug>, CollectionPage + BreadcrumbList, sitemap). Sai da lista P2.
+- **Painel de métricas:** é o Vercel Web Analytics (ligado). 7 dias até 23/10: 270 visitantes (+52%), 995 visualizações. /entrar/tt-comparativo 106 visitantes, /ir/whatsapp/tt-comparativo 10 (≈9%). TikTok traz mais que Instagram (141 × 47 visitantes nas páginas de entrada). Sai da lista P2; medir o efeito da #858 em 2–3 dias.
+- **Burn-in (#271):** reiniciado pelo incidente de 22/10. Primeiro dia verde possível: 24/10; 7/7 por volta de 30/10 se não houver falha.
+- **Banco:** 165 oportunidades em 23/10 23:37 UTC; frete "não confirmado" na maioria das ofertas (lojas só mostram frete com CEP; Fase 3 segue com a flag desligada).
+
+### Próxima ordem de execução
+
+1. **P0, #271:** acompanhar até 7/7 verdes.
+2. **P0, smoke de produção** com o SHA publicado (rotas, filtro de idioma, /entrar).
+3. **P1, conversão:** comparar visitas × cliques do /entrar antes e depois da #858; ajustar texto ou ordem se ficar abaixo de 15%.
+4. **P1, WhatsApp:** acompanhar entradas e saídas do grupo com o ritmo novo e sinais de bloqueio do número (automação não oficial).
+5. **P1, dados:** resultado das 8 lojas novas; estoque desconhecido da Bravo Jogos; TCG Culture só com moeda confirmada.
+
+### Pendências do proprietário
+
+- Search Console. Backup do Supabase. Caixa de 18 boosters. Desativar o convite antigo do WhatsApp. Links de afiliado novos (ML, Amazon, Shopee) pelo computador.
+
+---
+
 ## Atualização executiva — 20/10/2026 (America/Sao_Paulo)
 
 > Leitura mais recente. Issues abertas: #271, #231 e #84. Sem PRs abertas depois do #841.
