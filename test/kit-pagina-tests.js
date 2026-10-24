@@ -32,6 +32,7 @@ let r = await call('/api/v1/site/kit?objetivo=colecionar&orcamento=100&idioma=pt
 assert.equal(r.status, 200, JSON.stringify(r.json)); assert.equal(r.json.prototipo, true);
 assert.deepEqual(r.json.itens.map((i) => [i.productId, i.quantidade]), [['xx1-blister3', 3]]); assert.equal(r.json.total, null);
 r = await call('/api/v1/site/kit?objetivo=jogar&orcamento=100&idioma=pt&fonte=state'); assert.equal(r.json.total, 95);
+assert.ok(r.json.itens.every((i) => typeof i.nome === 'string' && i.nome.length > 3), 'todo item tem nome');
 assert.equal((await call('/api/v1/site/kit?objetivo=voar&orcamento=10')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=0')).status, 400);
 assert.equal((await call('/api/v1/site/kit?objetivo=jogar&orcamento=50&idioma=xx')).status, 400);

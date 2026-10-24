@@ -41,6 +41,7 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
   const pr = [P('f1-b3', 'blister_3', 'F - Blister Triplo')]; pr[0].image = 'https://cat.test/f1.png';
   assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20, { image: 'https://a.test/foto.jpg' })]).itens[0].imagem, 'https://a.test/foto.jpg');
   assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20)]).itens[0].imagem, 'https://cat.test/f1.png');
+  assert.equal(recomendar({ objetivo: 'colecionar', orcamento: 50, idioma: 'pt' }, pr, [O('f1-b3', 'a', 20, { image: 'http://cdn.test/f.webp' })]).itens[0].imagem, 'https://cdn.test/f.webp', 'foto do anúncio em http vira https');
 }
 // 2. idioma inglês: só produto -en
 { const r = recomendar({ objetivo: 'abrir', orcamento: 60, idioma: 'en' }, produtos, ofertas); assert.deepEqual(r.itens.map((i) => [i.productId, i.quantidade]), [['xx1-blister3-en', 3]]); }

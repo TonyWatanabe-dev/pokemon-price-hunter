@@ -39,6 +39,7 @@ import * as ST from './_lib/read-state.mjs';
 import * as FR from './_lib/freshness.mjs';
 import { publicAffiliates, registrarDesempate } from './_lib/affiliates.mjs';
 import { recomendar, OBJETIVO_MODELO } from './_lib/kit.mjs';
+import { label as SEO_LABEL } from './_seo.mjs';
 import { readFileSync } from 'node:fs';
 // Frete grátis pela regra pública da loja (config/frete-gratis.json): usado pelo kit para o frete da cesta.
 let FG = null; const freteGratis = () => { if (FG) return FG; try { FG = JSON.parse(readFileSync(new URL('../config/frete-gratis.json', import.meta.url), 'utf8')).lojas || {}; } catch { FG = {}; } return FG; };
@@ -167,7 +168,9 @@ async function run(rt, source) {
       return { body: { v: 1, source, ...SITE.siteOffers(st, rt.args), ...(rt.busca != null ? { tips: SITE.tipHits(st, rt.busca) } : {}) } }; }
     case 'site-pagina': return { body: { v: 1, source, ...SITE.SITE_PAGES[rt.page](await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-kit': { const st = await catalogState(source);
-      const produtos = (st.products || []).map((p) => ({ id: p.id, type: p.type, name: p.name, image: p.image || null }));
+      // Nome: o do robô (state.json); a fonte do banco não traz `name`, então cai no rótulo "Coleção - Tipo" do SEO.
+      const nomes = new Map(((await legacyState()).st.products || []).map((p) => [p.id, p.name]));
+      const produtos = (st.products || []).map((p) => ({ id: p.id, type: p.type, name: p.name || nomes.get(p.id) || `${p.collectionName || 'Pokémon TCG'} - ${SEO_LABEL(p)}`, image: p.image || null }));
       const ofertas = (st.offers || []).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
       return { body: { v: 1, source, prototipo: true, ...recomendar(rt.resp, produtos, ofertas, { fg: freteGratis() }) } }; }
     case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };

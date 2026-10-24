@@ -75,7 +75,9 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
     const quantidade = Math.max(1, Math.min(papel.repetir || 1, Math.floor(resta / of.price)));
     resta = r2(resta - of.price * quantidade);
     // Foto: a do anúncio que a pessoa vai abrir; sem ela, a do produto no catálogo (só https).
-    const imagem = [of.image, escolha.image].find((u) => /^https:\/\//.test(u || '')) || null;
+    // http:// das CDNs de loja (Nuvemshop etc.) também serve por https; a página só carrega https (CSP).
+    const https = (u) => (typeof u === 'string' && /^http:\/\//.test(u) ? 'https://' + u.slice(7) : u);
+    const imagem = [https(of.image), escolha.image].find((u) => /^https:\/\//.test(u || '')) || null;
     itens.push({ productId: escolha.id, nome: escolha.name, tipo: escolha.type, idioma: idiomaDe(escolha.id), quantidade, porque: papel.porque, imagem, oferta: of });
   }
   if (modelo.acessorios.length) limitacoes.push(`Sugerimos também ${modelo.acessorios.map((a) => ACESSORIO_NOME[a]).join(', ')}, mas ainda não comparamos o preço de acessórios: não estão no valor do kit.`);
