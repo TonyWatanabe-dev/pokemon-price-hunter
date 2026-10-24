@@ -54,6 +54,8 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 |---|---|---|---|---|---|---|
 | #897 (4ecbcc6) | Produto removido com evidência explícita (HTTP 404/410, ou página de erro com HTTP 200 e sinal no h1/título, sem produto próprio na página) sai pelo caminho normal de remoção depois de **2 rodadas seguidas**. Falha de leitura, 403/429, esgotado e falta de preço nunca contam | `npm test` com 312 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | deploy 4ecbcc6: success | **pendente**: as páginas da BQD só são relidas no ciclo de 24 h (~15:15 UTC de 25/10); conferência agendada para 17:30 UTC de 25/10 |
 | #898 (722f5bf) | "Lendas" sem o Pokémon não vira produto ("Coleção Ex Lendas Azuis" saía como `avulsos-colecao_ex-lendas`). 1 título muda | `npm test` com 312 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | sim | pendente (próxima leitura da mpbrinquedos) |
+| #899 (f0585fe) | Home e /oportunidades (servidas pelo servidor) dizem "no Pix" e o frete ("a calcular", "grátis" ou "R$ X com frete"), como a página de produto. Achado da auditoria de produção | `npm test` com 314 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | deploy da `main` | pendente: conferir o HTML da Home publicada |
+| #900 (1f694bd) | Só testes do Monte seu kit: catálogo vazio, oferta stale e esgotada fora, mudança de quantidade, troca de item com soma coerente, estados de erro e vazio, viewport móvel. Nenhum defeito | `npm test` com 314 arquivos, EXIT 0 | verdes; revisão sem bloqueantes | sim | não se aplica | não se aplica |
 
 **Impacto previsto da #897:** até 35 ofertas.
 - **BQD (29):** página de erro confirmada.
@@ -107,6 +109,20 @@ Nenhum produto é recuperado nem publicado, e o histórico de preço fica intact
   - página com noindex, fora do menu e do sitemap.
 - **Casos-limite adicionados em teste:** catálogo vazio, oferta stale e esgotada fora, mudança de quantidade, troca de item com soma coerente, estados de erro e vazio e viewport móvel.
 - **Resultado:** nenhum defeito encontrado.
+
+**Auditoria do site em produção** (só leitura, ~19:55 UTC; matriz completa no relatório da rodada):
+- **Cabeçalhos de segurança:** CSP restrita, frame-ancestors, HSTS, nosniff, Referrer-Policy. OK.
+- **Validação da API:** 400 para entrada inválida, nunca 500. OK.
+- **Sitemap e robots:** 306 URLs válidas. OK.
+- **Estoque e frete na página de produto:** OK.
+- **Dependências:** `npm audit` sem vulnerabilidades.
+- **Média, corrigida (#899):** a Home servida mostrava o preço sem "no Pix" e sem o frete.
+- **Média, pendente e R3 (`vercel.json`), decisão do dono:** URL inventada fora de /produto, /colecao e /tipo devolve **200** com a casca do app (soft 404), com o canonical apontando para `/` e sem noindex.
+- **Baixas, registradas:**
+  - `oferta.total` igual ao preço na API do kit quando o frete é desconhecido; a página não usa esse campo;
+  - imagem `og:image` em http;
+  - `<h2>` dentro de `<summary>`;
+  - uma oferta InStock com "pre-venda" no slug (Omniverse), a conferir.
 
 **Release Governor — go/no-go (24/10, 20h UTC): NO-GO para a K6** (expor o kit no menu e na Home):
 - **Burn-in:** 0/7, e é o gate obrigatório.
