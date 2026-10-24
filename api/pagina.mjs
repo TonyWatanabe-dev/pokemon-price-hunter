@@ -83,6 +83,17 @@ function prodRow(p, o, of, extra = '') {
   return `<li><a href="/produto/${of[p.id]}">${esc(p.collectionName)} · ${esc(label(p))}</a>${o ? ` — <b>${brl(o.total)}${pix(o)}</b> em ${esc(o.storeName)}` : ' — sem estoque agora'}${p.copagConfirmed && p.msrp ? ` · Copag ${brl(p.msrp)}` : ''}${extra}</li>`;
 }
 
+/** Item da lista de oportunidades (Home e /oportunidades, SSR). Mesma regra da página de produto (shipTag/pix): preço no Pix
+ *  marcado e frete dito sempre — "frete a calcular" quando a loja não informa (auditoria 24/10: a Home mostrava só o valor). */
+export function oppItem(x, pref) {
+  const rc = x.reference_comparison || {}; const parts = [];
+  if (rc.available && rc.position === 'below') parts.push(`${rc.percentage_below.toFixed(1).replace('.', ',')}% abaixo ${rc.reference_kind === 'COPAG_OFFICIAL_CURRENT' ? 'do preço sugerido Copag' : 'da referência de mercado'}`);
+  parts.push(`Opportunity Score ${x.opportunity_score}`);
+  const pixTxt = x.offer?.price_kind === 'pix' ? ' no Pix' : '';
+  const frete = x.shipping === 'free' ? 'frete grátis' : x.shipping === 'known' && x.total != null ? `${brl(x.total)} com frete` : 'frete a calcular';
+  return `<li><a href="/produto/${esc(pref)}">${esc(x.product.name)}</a> — <b>${brl(x.price)}${pixTxt}</b> (${frete}) em ${esc(x.store?.name || '')} (${parts.join(', ')})</li>`;
+}
+
 function build(t, slug, s, opp = null, lojas = []) {
   if (t === 'lojas') return lojasPage(lojas);
   const { by: SL, of } = slugs(s.products || []);
@@ -188,11 +199,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   const [url, title, desc, h1] = st;
   let main = '';
   // 6B.1/6B.2: Home e /oportunidades vêm do Opportunity Engine (banco). Sem banco, nada é estimado nem trocado pelo Deal Score.
-  if (t === 'oportunidades' || t === 'home') main = opp?.length ? `<h2>Melhores oportunidades agora</h2><ol>${opp.map((x) => {
-    const rc = x.reference_comparison || {}; const pref = of[x.product.id] || x.product.id; const parts = [];
-    if (rc.available && rc.position === 'below') parts.push(`${rc.percentage_below.toFixed(1).replace('.', ',')}% abaixo ${rc.reference_kind === 'COPAG_OFFICIAL_CURRENT' ? 'do preço sugerido Copag' : 'da referência de mercado'}`);
-    parts.push(`Opportunity Score ${x.opportunity_score}`);
-    return `<li><a href="/produto/${esc(pref)}">${esc(x.product.name)}</a> — <b>${brl(x.price)}</b> em ${esc(x.store?.name || '')} (${parts.join(', ')})</li>`; }).join('')}</ol>` : '';
+  if (t === 'oportunidades' || t === 'home') main = opp?.length ? `<h2>Melhores oportunidades agora</h2><ol>${opp.map((x) => oppItem(x, of[x.product.id] || x.product.id)).join('')}</ol>` : '';
   // Lote C: sem o banco, /oportunidades lista a melhor oferta com estoque de cada produto (state.json, mesma regra bestBy #84),
   // sem nota: é só o fato (preço, loja, frete, Pix e distância do preço sugerido Copag), para a página não sair vazia.
   if (t === 'oportunidades' && !main) {
