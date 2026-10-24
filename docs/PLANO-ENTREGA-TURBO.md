@@ -33,8 +33,22 @@
 
 ### Estado da implementação (24/10/2026)
 - K1 arquitetura (#871), K2 recomendação (#872), K3 página oculta + `/api/v1/site/kit` (#874, #875), K4 cesta e comparação (#877, #878): **publicados ocultos** (noindex, fora do menu/Home/sitemap), validados em runtime.
-- K5: taxonomia de acessórios pronta (#882), sem ingestão; depende da lista curada do dono.
+- K5: a taxonomia de acessórios ficou pronta na #882, ainda sem ingestão.
+  - #886: deck box não casa mais com produto lacrado; auditoria dos 15 candidatos e seleção por perfil (toploader em "cartas especiais"); o kit sugere só a categoria.
+  - Ligar a coleta de acessórios depende das decisões 1 a 3 do dono (`docs/kit-acessorios-candidatos.md`).
+  - Preço, estoque e link no Brasil continuam sem confirmação: as lojas que vendem os candidatos bloqueiam leitura automática.
 - K6 (menu, Home, sitemap): bloqueada até o critério de liberação e burn-in 7/7.
+- Burn-in #271, em 24/10: 0/7 dias encerrados. O dia 24 está parcial e verde (até 16:52 UTC). O 7/7 sai, no mínimo, no fechamento de 30/10, relatado em 31/10.
+
+### Cobertura de lojas — 24/10/2026, noite
+- **Triagem** (`docs/triagem-lojas-sem-produto-2026-10-24.md`): eram 31 lojas "lidas sem produto"; no snapshot de 16:49 UTC são 29.
+  - 3 matching pendente: 1 corrigida (#885) e 2 dependem do catálogo (R3);
+  - 7 sem catálogo relevante;
+  - 6 falha de coleta (grupo Tray + TCG Pro, ~120 páginas Pokémon);
+  - 1 indisponível (loja fechada com senha);
+  - 12 inconclusivas, entre elas a BQD, com 29 ofertas presas como não confirmadas.
+- **Kalunga** (prova de conceito #887, fora do robô): a busca é permitida e acha 20 produtos Pokémon. A página de produto não tem dados estruturados (preço só na vitrine, estoque invisível). **Não integrar.**
+- **Próximo:** conferir a BQD; prova de conceito de leitor Tray fora do robô; identificar a plataforma da TCG Pro.
 
 ### Especificação resumida de “Monte seu kit”
 - Página independente, rota sugerida `/monte-seu-kit/`, item no menu e CTA na Home: “Sua jornada Pokémon começa aqui” / “Descobrir meu kit ideal”.
