@@ -3,6 +3,7 @@
 // adaptador dedicado disponível (VTEX/Shopify), roda o adaptador dedicado UMA vez e compara com a última rodada real.
 // Não grava nada (nem data/, nem config/, nem banco), usa o mesmo guard (robots.txt) e o mesmo User-Agent dos adaptadores.
 // Uso: node tools/sonda-adaptadores.mjs [pasta-data] --lojas id:plataforma,id:plataforma [--json saida.json]
+// A anotação de cada loja traz até 6 títulos inválidos (com o motivo) e 6 válidos que não casaram, para triar lojas lidas sem produto.
 import fs from 'node:fs';
 import path from 'node:path';
 import { adapters } from '../src/adapters/index.js';
@@ -25,6 +26,22 @@ export function veredito({ atual, sonda }) {
   if (!sonda.validos) return 'sem_anuncios';
   return sonda.casados >= (atual.casados || 0) ? 'passa' : 'pior';
 }
+
+/** Amostra para triagem (só leitura): até `max` anúncios inválidos (1º motivo) e até `max` válidos que não casaram (motivo do casamento). */
+export function amostra(raw, store, catalog, { now = new Date(), max = 6 } = {}) {
+  const invalidos = []; const naoCasados = [];
+  for (const l of raw) {
+    const v = validateListing(l, store, { now });
+    const t = String(l?.title || '').replace(/\s+/g, ' ').slice(0, 90);
+    if (!v.ok) { if (invalidos.length < max) invalidos.push(`${t} — ${String(v.reasons[0] || '').slice(0, 80)}`); continue; }
+    const m = matchProduct(l, catalog);
+    if (!m.productId && naoCasados.length < max) naoCasados.push(`${t} — ${(m.why || []).join('; ').slice(0, 60) || 'sem motivo'}`);
+  }
+  return { invalidos, naoCasados };
+}
+
+// Uma anotação por loja (o GitHub limita anotações por passo): a amostra vai na mesma linha.
+export const textoAmostra = (a) => (!a ? '' : (a.invalidos.length ? ` · inválidos: ${a.invalidos.join(' | ')}` : '') + (a.naoCasados.length ? ` · não casaram: ${a.naoCasados.join(' | ')}` : ''));
 
 const anota = (nivel, msg) => { console.log(msg); if (process.env.GITHUB_ACTIONS) console.log(`::${nivel}::${msg}`); };
 
@@ -56,10 +73,11 @@ async function main() {
       const ok = raw.filter((l) => validateListing(l, store, { now: new Date() }).ok);
       sonda.validos = ok.length;
       sonda.casados = new Set(ok.map((l) => matchProduct(l, catalog).productId).filter(Boolean)).size;
+      sonda.amostra = amostra(raw, store, catalog);
     } catch (e) { sonda.erro = String(e?.status || e?.code || e?.message || e).slice(0, 120); }
     sonda.ms = Date.now() - t0;
     const v = veredito({ atual, sonda }); out.push({ id, url, atual, sonda, veredito: v });
-    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s`);
+    anota(v === 'passa' ? 'notice' : 'warning', `${id} · ${plataforma}: ${v} · dedicado ${sonda.validos} válidos/${sonda.casados} produtos${sonda.erro ? ' · erro ' + sonda.erro : ''}${sonda.urlsProduto != null ? ` · mapas no robots ${sonda.mapas} · páginas de produto ${sonda.urlsProduto}${sonda.mapa ? ' · mapa ' + JSON.stringify(sonda.mapa) : ''}` : ''} · genérico hoje ${atual.anuncios ?? '?'} anúncios/${atual.casados ?? '?'} casados · ${Math.round(sonda.ms / 1000)} s${textoAmostra(sonda.amostra)}`);
   }
   if (opt('--json')) fs.writeFileSync(opt('--json'), JSON.stringify(out, null, 2) + '\n');
 }
