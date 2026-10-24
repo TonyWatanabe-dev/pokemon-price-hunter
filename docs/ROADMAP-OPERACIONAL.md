@@ -41,6 +41,33 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Execução do roadmap — 24/10/2026, tarde (America/Sao_Paulo)
+
+### Auditoria (13h30 UTC)
+- **#271:** 22/10 e 23/10 vermelhos só pela sincronização do banco (0,40 e 0,323; causa corrigida na #856). 24/10 parcial verde (sync 1,0; Hunter 0,977). Sequência 0/7; 7/7 possível em 31/10.
+- **Smoke de produção:** verde no SHA publicado `7094692` (run 40097327606). Deploy `dpl_FAPKuaKNPFeobgrsUsbah9pPQt2Y`.
+- **#231:** Dispatcher roda a cada ~15 min sem falha; worker `tarefas.yml` sem execução desde 14/10 porque não há issue `executor:ready` (fila vazia). Variáveis do Actions não são legíveis por este ambiente (403 no proxy).
+- **Dados (13:00 UTC):** 165 fontes (115 ativas, 33 bloqueadas, 10 indisponíveis, 5 erro, 2 pausadas); 3.402 ofertas, 1.159 com estoque, 986 com menos de 1 h; frete conhecido 288/1.159. 29 lojas "ativas" sem nenhuma oferta (maioria JSON-LD sem página de produto no sitemap). Kalunga, Havan e Leitura cadastradas sem leitura (sonda: Havan VTEX 404; logs e artefatos do Actions bloqueados aqui).
+- **Duplicidade:** 166 pares loja+produto com mais de uma oferta = vendedores diferentes no mesmo marketplace (ML, Ri Happy/PBKids), não duplicação.
+
+### Entregue
+| PR | O quê | Estado |
+|---|---|---|
+| #867 | Descoberta Fase 0 sem custo: validador v2 (busca da loja, sitemap), reconferir recusados, OpenStreetMap | integrado; 1ª rodada: OSM 49 lojas com site/566 sem, 3 conferidas; reconferir 15 → 4 candidatas |
+| #868 | `copag-check` grava em `data/copag-check.json` (push em config/ na main protegida derrubava a rodada de 12:29 UTC) | integrado |
+| #869 | Fase 1: 12 redes (ToyMania, Livraria da Vila, Livrarias Curitiba, Le Biscuit, Riachuelo, Casa&Video, Sam's Club, Drogasil, Araujo, Nissei, Fast Shop, Bruno PokeCartas) | integrado; resultado por loja nas próximas rodadas |
+| #871 | `docs/monte-seu-kit.md` (K1) | integrado |
+| #872 | K2: recomendação pura + golden do critério de liberação (fixtures sintéticas) | integrado |
+| #874, #875 | K3: `/monte-seu-kit` oculto (noindex, fora do menu/Home/sitemap) + `GET /api/v1/site/kit`; nome e foto corrigidos após revisão independente | **publicado e validado em runtime** (14:19 UTC, fonte db, dados "atual") |
+
+### Próximo
+1. P0: acompanhar #271 até 7/7; smoke a cada deploy relevante.
+2. P2 (paralelo, oculto): K4 cesta e comparação uma × várias lojas.
+3. P1: nomes com palavra repetida no catálogo ("Baralho de Batalha Batalha ex"); Kalunga/Havan/Leitura; lojas ativas sem oferta.
+4. Dono: lista de acessórios oficiais para K5.
+
+---
+
 ## Atualização executiva — 24/10/2026 (America/Sao_Paulo)
 
 ### Entregue em 24/10
