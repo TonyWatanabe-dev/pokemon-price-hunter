@@ -53,14 +53,14 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 | Loja Pokémon Super | Registrada como espelho da Super TCG (`duplicateOf`, pausada, mesmo id). Evidência: 43/43 links para supertcg.com.br e 5 de 6 títulos iguais. Reversível; histórico preservado | #890 (57e71b9) | integrado e **publicado**: a página /lojas mostra "Mesmo catálogo de supertcg.com.br…"; o robô a registra como PAUSED |
 | "Batalha de Liga" (#885) | — | d528ca8 | **validado em runtime** para o Miraidon (rodadas das 17:45 e 18:00 UTC: `avulsos-deck-miraidon`). Mega Lucario e Charizard aguardam nova leitura da loja |
 | BQD | As 29 páginas das ofertas são página de erro ("Erro - 404", HTTP 200). A última leitura válida foi às 13h UTC, esgotadas. A busca é vetada pelo robots.txt. Classificação: **produto removido** (29/29). As ofertas ficam não confirmadas e o histórico fica intacto | relatório de triagem | documentado |
-| Prova de conceito Tray | 6 lojas, sonda 40119481265. Nenhuma deu dados completos e verificáveis. O JSON-LD da Tray traz o preço no Pix (3% a 5% a menos), ou zero quando o produto está esgotado; o dataLayer diz "YES" em produto esgotado. Universal Geek e Virtual Gift: preço confirmado, **estoque não verificável**. FN Games: preço divergente entre fontes. Parlenda, Happy Nerd e Game of Boards: inconclusivas. **Não integrar** | #891 | em revisão (só ferramenta, fora do robô) |
+| Prova de conceito Tray | 6 lojas, sonda 40119481265. Nenhuma deu dados completos e verificáveis. O JSON-LD da Tray traz o preço no Pix (3% a 5% a menos), ou zero quando o produto está esgotado; o dataLayer diz "YES" em produto esgotado. Universal Geek e Virtual Gift: preço confirmado, **estoque não verificável**. FN Games: preço divergente entre fontes. Parlenda, Happy Nerd e Game of Boards: inconclusivas. **Não integrar** | #891 (690ca33) | integrado só como ferramenta; fora do robô diário |
 | TCG Pro | A página de produto não tem nenhum preço (texto, JSON-LD, meta ou dataLayer); provável distribuidora. Reclassificada como inconclusiva | relatório de triagem | documentado |
 
 **Triagem atualizada (29 lojas):** 3 matching pendente (2 corrigidas), 8 sem catálogo relevante (inclui a BQD), 4 falha de coleta (Tray), 1 indisponível, 13 inconclusivas.
 
 **Testes:**
 - **#889 e #890:** `npm test` local com 308 arquivos ok, e os 4 checks obrigatórios verdes antes do merge.
-- **#891:** testes da prova de conceito e da sonda ok. O resultado do `npm test` completo e dos checks fica registrado na PR.
+- **#891:** `npm test` local no head dbc094e com 308 arquivos, EXIT 0. Só os testes de banco foram pulados, por falta de `TEST_DATABASE_URL`. Os 4 checks obrigatórios e a sonda ficaram verdes.
 
 **Próximo:**
 - **BQD:** a melhoria proposta é tratar página de erro com HTTP 200 como "página não serve". Muda o robô, então pede PR própria com teste.
