@@ -68,7 +68,8 @@ if (modo === 'metricas') {
 if (modo === 'agendados') {
   // Resumo do que está agendado no perfil, numa anotação só (o Actions mostra no máximo 10 avisos por passo).
   const lista = await cli.agendados(perfil);
-  const linhas = lista.map((p) => `${new Date(new Date(p.scheduledFor).getTime() - 3 * 3600e3).toISOString().slice(0, 16)} ${(p.platforms ?? []).map((x) => x?.platform).join('+')} ${(p.mediaItems ?? []).map((m) => m?.type?.[0] ?? '?').join('')}`).sort();
+  // trecho do texto (sem quebra de linha) para casar o post com o item da agenda; o id curto ajuda a conferir cancelamentos
+  const linhas = lista.map((p) => `${new Date(new Date(p.scheduledFor).getTime() - 3 * 3600e3).toISOString().slice(0, 16)} ${(p.platforms ?? []).map((x) => x?.platform).join('+')} ${(p.mediaItems ?? []).map((m) => m?.type?.[0] ?? '?').join('')} «${String(p.content ?? p.title ?? '').replace(/\s+/g, ' ').slice(0, 48)}»`).sort();
   anota('notice', `agendados (${linhas.length}): ${linhas.join(' | ')}`);
   process.exit(0);
 }
@@ -79,8 +80,10 @@ if (modo === 'cancelar') {
   const lista = await cli.agendados(perfil);
   for (const c of alvos) {
     const utc = new Date(`${c.quando}:00-03:00`).toISOString().slice(0, 16);
+    // trecho (opcional): o texto do post precisa conter esse pedaço — separa dois posts da mesma rede no mesmo horário
     const achados = lista.filter((p) => String(p.scheduledFor ?? '').slice(0, 16) === utc
-      && (p.platforms ?? []).some((x) => x?.platform === c.plataforma));
+      && (p.platforms ?? []).some((x) => x?.platform === c.plataforma)
+      && (!c.trecho || String(p.content ?? '').includes(c.trecho)));
     // manterUm: o horário tem cópias duplicadas; cancela todas menos a primeira (mesmo conteúdo).
     if (c.manterUm ? achados.length < 2 : achados.length !== 1) { falhas++; anota('error', `✗ cancelar ${c.quando} ${c.plataforma}: achei ${achados.length} post(s) agendado(s); nada cancelado`); continue; }
     for (const alvo of c.manterUm ? achados.slice(1) : achados) {
