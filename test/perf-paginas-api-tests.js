@@ -91,7 +91,7 @@ await t('lojas: lista normalizada (mesma regra do site), só os campos da págin
   const r = await get('lojas'); const st = fx();
   const ref = normalizeLojas({ sources: st.sources, stores: [], offers: st.offers, now });
   assert.deepEqual(r.json.lojas.map((l) => l.id), ref.map((l) => l.id));
-  for (const l of r.json.lojas) for (const k of Object.keys(l)) assert.ok(['id', 'name', 'platform', 'status', 'offersLive', 'lastReadAt', 'reason', 'searchUrl', 'searchKind'].includes(k), k);
+  for (const l of r.json.lojas) for (const k of Object.keys(l)) assert.ok(['id', 'name', 'platform', 'status', 'offersLive', 'offersRead', 'lastReadAt', 'reason', 'searchUrl', 'searchKind'].includes(k), k);
   assert.ok(!/"(price|total)"/.test(r.body));
   assert.equal(r.json.lojas.find((l) => l.id === 'a').offersLive, 1);
 });

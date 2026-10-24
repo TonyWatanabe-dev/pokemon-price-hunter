@@ -159,8 +159,8 @@ await t('3. SSR /lojas: título, descrição ≤160, 1 h1, 4 seções (h2) na or
   assert.deepEqual(h2, [['monitoradas', 'Monitoradas agora (6)'], ['sem-leitura', 'Conhecidas, sem leitura automática (5)'], ['marketplaces', `Marketplaces (${3 + K})`], ['pausadas', 'Pausadas (1)']]);
   assert.ok(!/<h3|<h4/.test(p.ssr) && p.ssr.indexOf('<h1') < p.ssr.indexOf('<h2'), 'h1 → h2');
   const s = text(p.ssr);
-  assert.match(s, /Alfa Cards Shopify Monitorada · 1 oferta com estoque · última leitura \d\d\/\d\d, \d\d:\d\d · Buscar Pokémon na loja/);
-  assert.match(s, /beta Nuvemshop Monitorada · 1 oferta com estoque/); assert.match(s, /gama Monitorada · 0 ofertas com estoque · última leitura .*? · Abrir a loja/);
+  assert.match(s, /Alfa Cards Shopify Com ofertas · 1 oferta com estoque · última leitura \d\d\/\d\d, \d\d:\d\d · Buscar Pokémon na loja/);
+  assert.match(s, /beta Nuvemshop Com ofertas · 1 oferta com estoque/); assert.match(s, /gama Lida · sem estoque agora · 0 ofertas com estoque agora \(1 lida\) · última leitura .*? · Abrir a loja/);
   assert.match(s, /delta Sem leitura automática · Abrir a loja .*?A loja não aceita leitura automática/);
   assert.match(s, /zeta Sem leitura automática · Abrir a loja .*?Sem API pública/); assert.match(s, /Iota Sem leitura automática .*?Endereço da loja ainda não confirmado/);
   assert.match(s, /Amazon Brasil Marketplace · Buscar Pokémon na loja/); assert.match(s, /eta Pausada · Abrir a loja/);

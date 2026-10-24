@@ -108,7 +108,7 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
     const stamps = offs.map((o) => Date.parse(o.source_timestamp || '')).filter(okAt);
     const lastRead = stamps.length ? new Date(Math.max(...stamps)).toISOString() : (okAt(Date.parse(s.lastSuccess || '')) ? s.lastSuccess : null);
     raw.push({ id: s.id, name: m ? m.name : (s.name || c.name || host || s.id), host, url, platform: m ? (s.platform === 'mercadolivre' ? 'mercadolivre' : null) : hint, marketplace: m ? s.id : null, status,
-      offersLive: offs.filter(live).length, lastReadAt: status === 'monitorada' ? lastRead : null, reason: reasonOf(s, status), _src: s });
+      offersLive: offs.filter(live).length, offersRead: offs.filter((o) => !o.stale).length, lastReadAt: status === 'monitorada' ? lastRead : null, reason: reasonOf(s, status), _src: s });
   }
   // Mesmo host duas vezes (amazon × amazon.com.br, mercadolivre × mercadolivre.com.br): fica uma, de preferência a monitorada ou o marketplace.
   const rank = (x) => (x.status === 'monitorada' ? 3 : x.marketplace ? 2 : 1);
@@ -126,13 +126,29 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
   }
   for (const [id, o] of Object.entries(cfg.lojasOficiais || {})) {
     if (out.some((x) => x.id === id)) continue;
-    const loja = { id, name: o.name, host: o.host, url: o.url, platform: null, marketplace: o.marketplace, oficial: true, status: 'marketplace', offersLive: 0, lastReadAt: null,
+    const loja = { id, name: o.name, host: o.host, url: o.url, platform: null, marketplace: o.marketplace, oficial: true, status: 'marketplace', offersLive: 0, offersRead: 0, lastReadAt: null,
       reason: o.reason || 'Loja oficial da marca dentro do marketplace; os anúncios dela entram pela leitura do catálogo do Mercado Livre quando estão nas páginas de produto.' };
     out.push({ ...loja, searchUrl: o.url, searchKind: 'loja' });
   }
   const order = { monitorada: 0, 'sem-leitura': 1, indisponivel: 1, marketplace: 2, pausada: 3 };
   out.sort((a, b) => order[a.status] - order[b.status] || b.offersLive - a.offersLive || a.name.localeCompare(b.name, 'pt-BR') || a.id.localeCompare(b.id));
   return out;
+}
+
+/** Estado de coleta da loja (24/10/2026): "monitorada" só diz que o robô lê a loja; a página separa quem tem oferta com
+ *  estoque, quem foi lida sem estoque agora e quem foi lida sem nenhum produto Pokémon reconhecido. */
+export function coleta(l) {
+  if (l.status !== 'monitorada') return l.status;
+  return l.offersLive > 0 ? 'com-ofertas' : l.offersRead > 0 ? 'sem-estoque' : 'sem-produto';
+}
+export const COLETA_CHIP = { 'com-ofertas': ['ok', 'Com ofertas'], 'sem-estoque': ['', 'Lida · sem estoque agora'], 'sem-produto': ['warn', 'Lida · sem produto Pokémon'] };
+export function coletaFatos(l, quando) {
+  const ult = l.lastReadAt ? ` · última leitura ${quando(l.lastReadAt)}` : '';
+  const c = coleta(l);
+  if (c === 'com-ofertas') return `${l.offersLive} ${l.offersLive === 1 ? 'oferta' : 'ofertas'} com estoque${ult}`;
+  if (c === 'sem-estoque') return `0 ofertas com estoque agora (${l.offersRead} lida${l.offersRead === 1 ? '' : 's'})${ult}`;
+  if (c === 'sem-produto') return `nenhum produto Pokémon lacrado reconhecido nas leituras${ult}`;
+  return '';
 }
 
 /** Seções da página /lojas, na ordem. */
