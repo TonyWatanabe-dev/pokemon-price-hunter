@@ -44,9 +44,9 @@
 - **Triagem** (`docs/triagem-lojas-sem-produto-2026-10-24.md`): eram 31 lojas "lidas sem produto"; no snapshot de 16:49 UTC são 29.
   - 3 matching pendente: 1 corrigida (#885) e 2 dependem do catálogo (R3);
   - 7 sem catálogo relevante;
-  - 6 falha de coleta (grupo Tray + TCG Pro, ~120 páginas Pokémon);
+  - 5 falha de coleta (grupo Tray + TCG Pro, ~120 páginas Pokémon);
   - 1 indisponível (loja fechada com senha);
-  - 12 inconclusivas, entre elas a BQD, com 29 ofertas presas como não confirmadas.
+  - 13 inconclusivas, entre elas a BQD, com 29 ofertas presas como não confirmadas.
 - **Kalunga** (prova de conceito #887, fora do robô): a busca é permitida e acha 20 produtos Pokémon. A página de produto não tem dados estruturados (preço só na vitrine, estoque invisível). **Não integrar.**
 - **Próximo:** conferir a BQD; prova de conceito de leitor Tray fora do robô; identificar a plataforma da TCG Pro.
 

@@ -16,9 +16,9 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
 |---|---|---|
 | matching pendente | 3 | baixo: 1 a 2 ofertas cada; 1 corrigida (#885) e 2 dependem do catálogo (R3) |
 | sem catálogo relevante | 7 | nenhum |
-| falha de coleta | 6 | **alto no grupo Tray + TCG Pro: ~120 páginas de produto Pokémon** |
+| falha de coleta | 5 | **alto no grupo Tray + TCG Pro: ~120 páginas de produto Pokémon** |
 | fonte bloqueada ou indisponível | 1 | nenhum enquanto a loja estiver fechada |
-| inconclusiva | 12 | **BQD: 29 ofertas** presas como não confirmadas; o resto sem mapa do site |
+| inconclusiva | 13 | **BQD: 29 ofertas** presas como não confirmadas; o resto sem mapa do site ou com mapa sem página candidata |
 
 ## Lojas
 | Loja | Leitor | Classificação | Evidência | Impacto | Próxima ação |
@@ -29,7 +29,7 @@ A auditoria anterior contou **31** lojas; neste snapshot são **29**. A contagem
 | universalgeek.com.br | JSON-LD (Tray) | falha de coleta | 12 páginas reais (Booster Fogo Fantasmagórico, Amigos de Jornada); o JSON-LD traz preço **0,00** | 12 páginas | idem |
 | tcgpro.com.br | JSON-LD | falha de coleta | 20 páginas atuais (ME04, ME05, Celebração 30 anos); sem JSON-LD e sem meta de preço. A API WooCommerce responde 403 (não contornada) | 20 páginas | investigar a plataforma (link `/produtos/…-id`) |
 | parlendabrinquedos.com.br | JSON-LD | falha de coleta | 1 página (Box Ferramentas de Treinador Fezandipiti ex); preço 287,12 no JSON-LD, não escrito na página | 1 | junto do leitor Tray, se servir |
-| fatimacrianca.com.br | JSON-LD | falha de coleta | o mapa declarado é `sitemap_index.xml.gz` e a leitura volta com 0 links | desconhecido | conferir leitura de mapa `.gz` |
+| fatimacrianca.com.br | JSON-LD | inconclusiva | o mapa declarado é `sitemap_index.xml.gz` e a leitura volta com 0 links: pode ser mapa vazio ou mapa comprimido não lido (não verificado) | desconhecido | conferir a leitura de mapa `.gz` |
 | maiscoimbra.com.br | VTEX | matching pendente | supermercado; 2 anúncios, 1 Pokémon: "Jogo de Cartas Copag Pokémon Batalha de Liga Mewtwo ex" | 1 oferta | **corrigido na #885**; validar na próxima rodada |
 | bynx.gg | JSON-LD | matching pendente | quase só cartas avulsas (fora do escopo); 1 "Elite Trainer Box - Pitch Black". Pitch Black é o nome em inglês de Escuridão Absoluta (`me05`), e o catálogo não tem esse apelido em inglês | 1 oferta | apelido "pitch black" no `config/catalog.json` (R3, dono) |
 | maximuxtcg.com | WooCommerce | matching pendente | 4 anúncios: deck box (acessório), "Box Colecionável Equipes do Pokémon GO" (coleção ausente do catálogo), "Box Colecionável dia do Pokémon 30 anos (Inglês)" (produto ambíguo), "Pokébolas" | 1–2 | coleção Pokémon GO no catálogo (R3, dono) |
