@@ -69,7 +69,8 @@ export function marcadores(html) {
     dataLayer: /dataLayer/.test(h), esgotado: /esgotad|indispon[ií]vel|avise-?me/i.test(txt), naoEncontrado: /n[aã]o encontrad|p[aá]gina n[aã]o existe|404/i.test(txt),
     precos,
     // trecho do dataLayer com preço/produto (Tray põe o preço só no código): 240 caracteres, sem guardar a página
-    dataLayerTrecho: (() => { const i = h.search(/dataLayer[\s\S]{0,400}?(price|preco|valor)/i); return i < 0 ? null : h.slice(i, i + 240).replace(/\s+/g, ' '); })(),
+    dataLayerTrecho: (() => { const i = h.search(/dataLayer[\s\S]{0,400}?(price|preco|valor)/i); return i < 0 ? null : h.slice(i, i + 700).replace(/\s+/g, ' '); })(),
+    viewItem: (() => { const i = h.search(/gtag\(\s*['"]event['"]\s*,\s*['"]view_item['"]/); return i < 0 ? null : h.slice(i, i + 400).replace(/\s+/g, ' '); })(),
   };
 }
 /** Contagem das páginas diagnosticadas: publicadas, página de erro (404 com HTTP 200 ou h1 de erro), sem dados, falha de rede. */
@@ -121,7 +122,8 @@ async function main() {
       let raw;
       if (plataforma === 'busca') {
         const { LOJAS_CFG, hostOf } = await import('../api/_lib/lojas.mjs'); const { search } = await import('../src/adapters/busca.js');
-        const buscaTpl = LOJAS_CFG.buscaPorHost[hostOf(url)]; if (!buscaTpl) throw new Error('loja sem modelo de busca confirmado');
+        // modelo confirmado por loja; senão, o da plataforma identificada (sources.platformHint, ex.: nuvemshop)
+        const buscaTpl = LOJAS_CFG.buscaPorHost[hostOf(url)] || LOJAS_CFG.busca[src.platformHint] || LOJAS_CFG.busca[LOJAS_CFG.plataformaPorHost[hostOf(url)]]; if (!buscaTpl) throw new Error('loja sem modelo de busca confirmado');
         raw = await search({ ...store, buscaTpl }, { termos: ['pokemon', 'pokemon tcg', 'booster pokemon'] }); sonda.busca = raw.diag; sonda.falhas = raw.failed.length; if (!raw.length && raw.diag.urls?.length) sonda.paginas = await diagnosticoPaginas(raw.diag.urls.slice(0, 3));
         sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.pix ?? l.price.base} · ${l.stock} · sku ${l.sku ?? '?'}`);
       } else raw = await adapters[plataforma].search(store, catalog);
