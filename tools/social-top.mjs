@@ -15,6 +15,15 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { itensDaApi, legenda, legendaTelegram, arteHtml, TIPOS } from '../src/agents/social/top.js';
 import { cifrarSessao, decifrarSessao, acharGrupo } from '../src/agents/social/whatsapp.js';
 import { registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
+
+/** Diário do WhatsApp → pode enviar agora? Mesmo post na mesma hora não repete; teto de 24 h vale; devolve a espera para o intervalo de 30 min. */
+export function vez(diario, id, now, regras = REGRAS_WHATSAPP) {
+  const ts = (Array.isArray(diario) ? diario : []).map((d) => ({ id: d?.ofertaId, t: Date.parse(d?.at) })).filter((d) => Number.isFinite(d.t));
+  if (ts.some((d) => d.id === id)) return { pode: false, motivo: `${id} já enviado` };
+  if (regras.maxDia && ts.filter((d) => now - d.t < 24 * 3600e3).length >= regras.maxDia) return { pode: false, motivo: `teto de ${regras.maxDia} mensagens em 24 h` };
+  const ultimo = Math.max(0, ...ts.map((d) => d.t));
+  return { pode: true, esperaMs: Math.max(0, ultimo + regras.intervaloMin * 60e3 - now) };
+}
 import { redact } from '../src/redact.js';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url));
@@ -71,7 +80,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       let resp;
       if (o.json) resp = lerJson(o.json, null);
       else { const r = await fetchFn(API, { signal: AbortSignal.timeout(20000) }); resp = r.ok ? await r.json() : null; if (!r.ok) { io.error(`API respondeu HTTP ${r.status}`); return 2; } }
-      const d = itensDaApi(resp, o.tipo);
+      const d = itensDaApi(resp, o.tipo, now());
       if (d.erro) { io.error(`sem post: ${d.erro}`); return 2; }
       fs.mkdirSync(o.dir, { recursive: true });
       const txt = legenda(o.tipo, d);
@@ -120,6 +129,10 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-top-'));
     for (const [n, c] of Object.entries(decifrarSessao(fs.readFileSync(o.sessao), segredo))) if (!n.includes('/') && !n.startsWith('.')) fs.writeFileSync(path.join(dir, n), c);
     const salvar = () => fs.writeFileSync(o.sessao, cifrarSessao(Object.fromEntries(fs.readdirSync(dir).map((n) => [n, fs.readFileSync(path.join(dir, n), 'utf8')])), segredo));
+    const id = `${o.tipo}:${new Date(now()).toISOString().slice(0, 13)}`;
+    const v = vez(lerJson(o.diario, []), id, now());
+    if (!v.pode) { io.log(`- WhatsApp: ${o.tipo} não enviado (${v.motivo})`); fs.rmSync(dir, { recursive: true, force: true }); return 0; }
+    if (v.esperaMs > 0) { io.log(`- WhatsApp: esperando ${Math.ceil(v.esperaMs / 60e3)} min (intervalo de ${REGRAS_WHATSAPP.intervaloMin} min entre mensagens)`); await esperar(v.esperaMs); }
     const con = await (conectar ?? (await import('./social-whatsapp.mjs')).conectarBaileys)(dir, {});
     try {
       await esperar(2000);
@@ -128,12 +141,14 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       const r = await con.sock().sendMessage(jid, { image: Buffer.from(jpg), caption: txt });
       const diario = lerJson(o.diario, []);
       const at = new Date(now()).toISOString();
-      fs.writeFileSync(o.diario, JSON.stringify(registrar(Array.isArray(diario) ? diario : [], [{ ofertaId: `${o.tipo}:${at.slice(0, 13)}`, afiliado: false, at, messageId: r?.key?.id ?? null }], { now: now(), regras: REGRAS_WHATSAPP })));
+      fs.writeFileSync(o.diario, JSON.stringify(registrar(Array.isArray(diario) ? diario : [], [{ ofertaId: id, afiliado: false, at, messageId: r?.key?.id ?? null }], { now: now(), regras: REGRAS_WHATSAPP })));
       io.log(`- WhatsApp: enviado ${o.tipo}`);
-      await esperar(3000);
-      salvar();
       return 0;
-    } finally { await con.fechar(); fs.rmSync(dir, { recursive: true, force: true }); }
+    } finally {
+      await esperar(8000);                                   // deixa a sessão sincronizar as chaves antes de salvar
+      try { salvar(); } catch { /* mantém a sessão anterior */ }
+      await con.fechar(); fs.rmSync(dir, { recursive: true, force: true });
+    }
   } catch (e) { io.error(`${o.modo}: ${mascarar(e?.message || e)}`); return 1; }
 }
 

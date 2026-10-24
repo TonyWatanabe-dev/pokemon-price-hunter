@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { itensDaApi, legenda, legendaTelegram, arteHtml, nomeCurto, quando, tipoDaHora, SITE } from '../src/agents/social/top.js';
-import { main, lerArgs, fotoDe } from '../tools/social-top.mjs';
+import { main, lerArgs, fotoDe, vez } from '../tools/social-top.mjs';
 import { cifrarSessao } from '../src/agents/social/whatsapp.js';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -14,24 +14,34 @@ const API = JSON.parse(fs.readFileSync(path.join(raiz, 'test/fixtures/oportunida
 const io = () => { const out = []; return { out, io: { log: (s) => out.push(String(s)), error: (s) => out.push('ERRO ' + s) } }; };
 
 // dados
-const d3 = itensDaApi(API, 'top3');
+const AGORA = Date.parse('2026-10-24T20:10:00Z');
+const api = (r, t) => itensDaApi(r, t, AGORA);
+const d3 = api(API, 'top3');
 assert.equal(d3.itens.length, 3);
 assert.equal(d3.quando, '24/10 às 16h56');
 assert.deepEqual(d3.itens.map((i) => i.id), ['me04-blister3', 'me03-blister4', 'me05-etb'], 'mesma ordem da API (Opportunity Score)');
 assert.equal(nomeCurto({ name: 'Escuridão Absoluta - Treinador Avançado (ETB)' }), 'ETB');
 assert.equal(nomeCurto({ name: 'Escuridão Absoluta - Box Pokémon ex Mega Greninja ex' }), 'Box ex Mega Greninja ex');
 assert.equal(quando('2026-10-25T00:05:00Z'), '24/10 às 21h05', 'horário de Brasília');
-assert.equal(itensDaApi({ ...API, data: API.data.slice(0, 5) }, 'top10').erro, 'só 5 oportunidades válidas para um top10');
-assert.match(itensDaApi({ ...API, meta: { ...API.meta, freshness: { status: 'pausado' } } }, 'top3').erro, /frescor/);
-assert.ok(itensDaApi({ data: API.data.map((x) => ({ ...x, stock: 'out_of_stock' })), meta: API.meta }, 'top3').erro, 'sem estoque não entra');
-assert.ok(itensDaApi(null, 'top3').erro);
+assert.equal(api({ ...API, data: API.data.slice(0, 5) }, 'top10').erro, 'só 5 oportunidades válidas para um top10');
+assert.match(api({ ...API, meta: { ...API.meta, freshness: { status: 'pausado' } } }, 'top3').erro, /frescor/);
+assert.ok(api({ data: API.data.map((x) => ({ ...x, stock: 'out_of_stock' })), meta: API.meta }, 'top3').erro, 'sem estoque não entra');
+assert.ok(api(null, 'top3').erro);
+assert.match(api({ ...API, meta: { updated_at: API.meta.updated_at } }, 'top3').erro, /sem informação/, 'sem freshness: não posta');
+assert.match(itensDaApi(API, 'top3', AGORA + 7 * 3600e3).erro, /mais de 6 h/, 'ranking velho: não posta');
+// diário do WhatsApp: não repete, respeita o teto e espera o intervalo de 30 min
+const at = (min) => new Date(AGORA - min * 60e3).toISOString();
+assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA), { pode: true, esperaMs: 20 * 60e3 });
+assert.deepEqual(vez([{ ofertaId: 'x', at: at(40) }], 'top3:h', AGORA), { pode: true, esperaMs: 0 });
+assert.equal(vez([{ ofertaId: 'top3:h', at: at(40) }], 'top3:h', AGORA).pode, false);
+assert.equal(vez(Array.from({ length: 34 }, (_, k) => ({ ofertaId: 'o' + k, at: at(40 + k) })), 'top3:h', AGORA).pode, false);
 
 // legendas: só o link do site, desconto nunca arredondado para cima, data dos preços
 const l3 = legenda('top3', d3);
 assert.match(l3, /🥇 \*Blister Triplo Caos Ascendente\*: R\$ 29,90 no Pix, 30% abaixo do sugerido Copag/);
 assert.match(l3, /🥈 \*Blister Quádruplo Equilíbrio Perfeito\*: R\$ 41,80 no Pix, 25% abaixo\n/);
 assert.match(l3, /🥉 \*ETB Escuridão Absoluta\*: R\$ 299,00, 25% abaixo/);
-const l10 = legenda('top10', itensDaApi(API, 'top10'));
+const l10 = legenda('top10', api(API, 'top10'));
 assert.match(l10, /De blister a R\$ 11,90 a ETB a R\$ 299,00/);
 for (const l of [l3, l10]) {
   assert.equal((l.match(/\S*tcgpricehunter\.com\.br\S*/g) || []).join(), SITE, 'um link só, o do site');
@@ -49,7 +59,7 @@ const h3 = arteHtml('top3', d3, a);
 assert.match(h3, /R\$ 29,90/); assert.match(h3, /−30%<small>DO SUGERIDO/); assert.match(h3, /Preços de 24\/10 às 16h56/);
 assert.doesNotMatch(h3, /\/produto\//);
 assert.match(arteHtml('top3', mercado, a), /−25%<small>DO MERCADO/);
-assert.match(arteHtml('top10', itensDaApi(API, 'top10'), a), /−31,4%/, 'uma casa decimal, como no site');
+assert.match(arteHtml('top10', api(API, 'top10'), a), /−31,3%/, 'uma casa decimal, para baixo');
 assert.ok(!arteHtml('top3', { ...d3, itens: [{ ...d3.itens[0], colecao: '<script>' }, d3.itens[1], d3.itens[2]] }, a).includes('<script>'));
 // foto: acervo revisado; sem acervo, a da loja; sem nada, o logo da coleção
 assert.match(fotoDe({ id: 'me04-blister3' }), /assets\/social\/produtos\/me04-blister3\.webp$/);
@@ -69,7 +79,7 @@ let html = '';
   const { out, io: o } = io();
   const fetchFn = async () => ({ ok: true, headers: { get: () => 'image/png' }, arrayBuffer: async () => new ArrayBuffer(8) });
   const r = await main(['arte', '--tipo', 'top3', '--dir', dir, '--json', path.join(raiz, 'test/fixtures/oportunidades-top.json')], {}, o,
-    { fetchFn, render: async (h, s) => { html = h; fs.writeFileSync(s, 'JPG'); } });
+    { now: () => AGORA, fetchFn, render: async (h, s) => { html = h; fs.writeFileSync(s, 'JPG'); } });
   assert.equal(r, 0, out.join('\n'));
   assert.ok(fs.existsSync(path.join(dir, 'top3.jpg')) && fs.readFileSync(path.join(dir, 'top3.txt'), 'utf8') === l3);
   assert.match(html, /rubik-v1\.woff2/);
@@ -77,7 +87,7 @@ let html = '';
 { // dado velho: não gera nada
   const { out, io: o } = io(); const f = path.join(dir, 'velho.json');
   fs.writeFileSync(f, JSON.stringify({ ...API, meta: { ...API.meta, freshness: { status: 'pausado' } } }));
-  assert.equal(await main(['arte', '--tipo', 'top10', '--dir', dir, '--json', f], {}, o, { render: async () => assert.fail('não renderiza') }), 2);
+  assert.equal(await main(['arte', '--tipo', 'top10', '--dir', dir, '--json', f], {}, o, { now: () => AGORA, render: async () => assert.fail('não renderiza') }), 2);
   assert.match(out.join(), /sem post/);
 }
 { // Telegram: título do chat confere, foto multipart com legenda HTML e token nunca aparece

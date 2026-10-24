@@ -13,7 +13,7 @@ const SH = 'rgba(19,31,73,.92)';
 export const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 export const brl = (v) => 'R$ ' + Number(v).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 export const pctBaixo = (v) => Math.floor(Number(v));
-const pct1 = (v) => Number(v).toFixed(1).replace('.', ',') + '%';   // mesmo arredondamento do site
+const pct1 = (v) => (Math.floor(Number(v) * 10) / 10).toFixed(1).replace('.', ',') + '%';   // para baixo: nunca exagera
 
 /** Nome curto do produto: parte depois de "Coleção - ", com os rótulos longos encurtados. */
 export function nomeCurto(p) {
@@ -43,19 +43,22 @@ export function quando(iso) {
 }
 
 /** Resposta da API → { itens, quando } ou { erro }. Falha fechada: sem dados frescos ou com menos itens que o pedido, não posta. */
-export function itensDaApi(resp, tipo) {
+export const IDADE_MAX_H = 6;   // ranking mais velho que isso não vira post
+export function itensDaApi(resp, tipo, now = Date.now()) {
   const n = TIPOS[tipo]; if (!n) return { erro: `tipo inválido: ${tipo}` };
   const data = Array.isArray(resp?.data) ? resp.data : null;
   if (!data) return { erro: 'resposta da API sem lista de oportunidades' };
   const fr = resp?.meta?.freshness?.status;
-  if (fr && fr !== 'atual' && fr !== 'atrasado') return { erro: `dados sem frescor suficiente (${fr})` };
+  if (fr !== 'atual' && fr !== 'atrasado') return { erro: `dados sem frescor suficiente (${fr ?? 'sem informação'})` };
+  const t = Date.parse(resp?.meta?.updated_at ?? '');
+  if (!Number.isFinite(t) || now - t > IDADE_MAX_H * 3600e3) return { erro: `ranking com mais de ${IDADE_MAX_H} h ou sem data` };
   const bons = data.filter((x) => x?.product?.id && Number.isFinite(Number(x?.price)) && x?.stock === 'in_stock');
   if (bons.length < n) return { erro: `só ${bons.length} oportunidades válidas para um ${tipo}` };
-  const q = quando(resp?.meta?.updated_at || bons[0].updated_at);
+  const q = quando(resp.meta.updated_at);
   if (!q) return { erro: 'sem data dos preços' };
   const itens = bons.slice(0, n).map((x) => {
     const rc = x.reference_comparison || {};
-    const abaixo = rc.available === true && rc.position === 'below' && Number(rc.percentage_below) > 0;
+    const abaixo = rc.available === true && rc.position === 'below' && Number(rc.percentage_below) >= 1;
     return {
       id: x.product.id, colecao: x.product.collection?.name || '', colecaoCodigo: x.product.collection?.code || String(x.product.id).split('-')[0],
       nome: nomeCurto(x.product), tipoArte: tipoArte(x.product), formato: formato(x.product), imagem: x.product.image || x.offer?.image || null,
