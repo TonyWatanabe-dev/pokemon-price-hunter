@@ -33,6 +33,10 @@ assert.equal(ler({ dl: { priceSell: '0.00', price: '0.00' } }).motivo, 'preço a
 assert.equal(ler({ sem: true }).motivo, 'sem dataLayer de produto da Tray');
 assert.equal(ler({ dl: { pageCategory: 'Categoria' } }).motivo, 'sem dataLayer de produto da Tray');
 assert.equal(ler({ dl: { nameProduct: 'Deck Box Pokebola' }, h1: 'Outra coisa' }).motivo, 'nome do produto não bate com a página');
+// sem h1 (Virtual Gift): o nome confere com o <title>
+assert.equal(tray.lerPaginaTray(pagina().replace(/<h1>[^<]*<\/h1>/, ''), U).title, NOME);
+// fontes de cada campo, fora do anúncio (só para a sonda)
+{ const l = ler(); assert.deepEqual(l.fontes, { estoqueDataLayer: 'YES', estoqueJsonLd: 'IN_STOCK', precoJsonLd: 69.9, precoGa4: [] }); assert.equal(Object.keys(l).includes('fontes'), false); }
 assert.equal(ler({ dl: { urlProduct: 'https://outra.test/p/1' } }).motivo, 'link do produto de outro site');
 assert.equal(ler({ extraLd: '<script type="application/ld+json">{"@type":"Product","name":"Outro"}</script>' }).motivo, 'mais de um Product na página');
 // estoque: dataLayer "NO" vale; dataLayer × JSON-LD em conflito vira desconhecido

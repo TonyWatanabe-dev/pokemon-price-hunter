@@ -57,7 +57,8 @@ export function lerPaginaTray(html, url) {
   const ld = produtoLd(h); if (ld.erro) return { motivo: ld.erro };
   const nome = String(dl.nameProduct || '').trim();
   const h1 = (h.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '').replace(/<[^>]+>/g, ' ');
-  if (!nome || !(nomeConfere(nome, h1) || nomeConfere(nome, ld.p?.name))) return { motivo: 'nome do produto não bate com a página' };
+  const tituloTag = h.match(/<title\b[^>]*>([^<]*)<\/title>/i)?.[1] || '';
+  if (!nome || !(nomeConfere(nome, h1) || nomeConfere(nome, ld.p?.name) || nomeConfere(nome, tituloTag))) return { motivo: 'nome do produto não bate com a página' };
   if (dl.urlProduct && hostDe(dl.urlProduct) !== hostDe(url)) return { motivo: 'link do produto de outro site' };
   const base = brl(dl.priceSell ?? dl.price ?? null);
   if (!base) return { motivo: 'preço ausente ou zero' };
@@ -68,8 +69,11 @@ export function lerPaginaTray(html, url) {
   if (doDl && ld.stock && ld.stock !== doDl) stock = 'UNKNOWN'; // dataLayer e JSON-LD discordam: não afirma estoque
   let image = dl.urlImage || [].concat(ld.p?.image || [])[0] || null; if (image && typeof image === 'object') image = image.url || null;
   try { image = image ? new URL(String(image), url).href : null; } catch { image = null; }
-  return { title: nome, url, image, price: { pix: null, base }, listPrice: null, stock, availableFrom: null, quantity: null,
+  const l = { title: nome, url, image, price: { pix: null, base }, listPrice: null, stock, availableFrom: null, quantity: null,
     sku: dl.idProduct ? String(dl.idProduct) : (ld.p?.sku ? String(ld.p.sku) : null), ean: ld.p?.gtin13 || ld.p?.gtin || null, seller: null, sourceType: 'store_page' };
+  // de onde veio cada campo (só para a sonda; fora do anúncio)
+  Object.defineProperty(l, 'fontes', { value: { estoqueDataLayer: dl.availability ?? null, estoqueJsonLd: ld.stock ?? null, precoJsonLd: ld.preco ?? null, precoGa4: ga4 }, enumerable: false });
+  return l;
 }
 
 /** store: { url } · opts: { max }. Páginas do mapa do site (mesmo filtro do leitor JSON-LD); devolve anúncios + .motivos. */

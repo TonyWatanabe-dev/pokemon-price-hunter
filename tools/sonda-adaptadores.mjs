@@ -130,7 +130,7 @@ async function main() {
       } else if (plataforma === 'tray') {
         const { search } = await import('../src/adapters/tray-poc.js');
         raw = await search(store, { max: 20 }); sonda.tray = { paginas: raw.paginas, motivos: raw.motivos, falhas: raw.failed.length };
-        sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.base} · ${l.stock} · id ${l.sku ?? '?'}`);
+        sonda.lidos = raw.slice(0, 8).map((l) => `${String(l.title).slice(0, 70)} → ${matchProduct(l, catalog).productId || 'sem produto'} · R$ ${l.price.base} · ${l.stock} · id ${l.sku ?? '?'}${l.fontes ? ' · fontes ' + JSON.stringify(l.fontes) : ''}`);
       } else raw = await adapters[plataforma].search(store, catalog);
       sonda.anuncios = raw.length;
       const ok = raw.filter((l) => validateListing(l, store, { now: new Date() }).ok);
