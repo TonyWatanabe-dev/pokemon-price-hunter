@@ -92,6 +92,9 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
   const byStore = new Map();
   for (const o of offers) { if (!o?.storeId) continue; if (!byStore.has(o.storeId)) byStore.set(o.storeId, []); byStore.get(o.storeId).push(o); }
   const raw = [];
+  // Loja registrada como espelho de outra já lida (config/stores.json, duplicateOf): fica pausada e diz por quê.
+  const nomeDe = (id) => { const x = list.find((y) => y.id === id); return (cfgStore.get(id) || {}).name || x?.name || id; };
+  const reasonDup = (id) => `Mesmo catálogo de ${nomeDe(id)}, que o robô já lê: os preços aparecem pelas ofertas de ${nomeDe(id)}.`;
   for (const s of list) {
     if (!s?.id) continue;
     const c = cfgStore.get(s.id) || {};
@@ -108,7 +111,7 @@ export function normalizeLojas({ sources = [], stores = [], offers = [], cfg = L
     const stamps = offs.map((o) => Date.parse(o.source_timestamp || '')).filter(okAt);
     const lastRead = stamps.length ? new Date(Math.max(...stamps)).toISOString() : (okAt(Date.parse(s.lastSuccess || '')) ? s.lastSuccess : null);
     raw.push({ id: s.id, name: m ? m.name : (s.name || c.name || host || s.id), host, url, platform: m ? (s.platform === 'mercadolivre' ? 'mercadolivre' : null) : hint, marketplace: m ? s.id : null, status,
-      offersLive: offs.filter(live).length, offersRead: offs.filter((o) => !o.stale).length, lastReadAt: status === 'monitorada' ? lastRead : null, reason: reasonOf(s, status), _src: s });
+      offersLive: offs.filter(live).length, offersRead: offs.filter((o) => !o.stale).length, lastReadAt: status === 'monitorada' ? lastRead : null, reason: c.duplicateOf && status === 'pausada' ? reasonDup(c.duplicateOf) : reasonOf(s, status), ...(c.duplicateOf ? { duplicateOf: c.duplicateOf } : {}), _src: s });
   }
   // Mesmo host duas vezes (amazon × amazon.com.br, mercadolivre × mercadolivre.com.br): fica uma, de preferência a monitorada ou o marketplace.
   const rank = (x) => (x.status === 'monitorada' ? 3 : x.marketplace ? 2 : 1);

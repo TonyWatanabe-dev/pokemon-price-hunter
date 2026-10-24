@@ -1,5 +1,5 @@
 {
-  "_nota": "platform: auto | shopify | vtex | jsonld | mercadolivre | unsupported. enabled:false = loja que bloqueia robôs (não insistimos). evidence alimenta o STORE_SCORE.",
+  "_nota": "platform: auto | shopify | vtex | jsonld | mercadolivre | unsupported. enabled:false = loja que bloqueia robôs (não insistimos). evidence alimenta o STORE_SCORE. duplicateOf: mesma loja/catálogo de outra fonte já lida (fica pausada, sem apagar histórico; para desfazer, remova a entrada e a loja volta pela lista de varredura).",
   "stores": [
     {
       "id": "copagloja",
@@ -127,6 +127,17 @@
       "kind": "marketplace",
       "evidence": {},
       "note": "Sem API pública de busca para terceiros."
+    },
+    {
+      "id": "lojapokemonsupercom",
+      "name": "Loja Pokémon Super",
+      "url": "https://lojapokemonsuper.com",
+      "platform": "auto",
+      "kind": "specialist",
+      "enabled": false,
+      "duplicateOf": "supertcgcombr",
+      "note": "Espelho da Super TCG: os 43 links de produto da loja apontam para supertcg.com.br (sonda 40113956394), e 5 de 6 títulos amostrados existem na Super TCG com o mesmo link. A Super TCG já é lida.",
+      "evidence": {}
     }
   ]
 }
