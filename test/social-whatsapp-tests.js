@@ -34,14 +34,14 @@ await t('3. grupo: só título exato e único', () => {
   assert.equal(acharGrupo({ ...g, c: { id: '3@g.us', subject: 'Outro' } }, 'Outro'), null, 'ambíguo: não posta');
 });
 
-await t('4. regras do WhatsApp: sem intervalo mínimo (24/10), 1 nova por rodada, teto de 34/24 h; Telegram inalterado', () => {
+await t('4. regras do WhatsApp: sem intervalo mínimo (24/10), 1 nova por rodada, teto de 70/24 h; Telegram inalterado', () => {
   const c = (id, f = iso(5000)) => ({ item: { ofertaId: id }, oferta: { firstSeen: f }, afiliado: false });
   assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.maxDia, undefined);
   assert.equal(REGRAS_WHATSAPP.intervaloMin, 0);
   assert.equal(planejar([c('a')], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1, 'sem espera entre mensagens');
   assert.equal(planejar([c('a')], [{ ofertaId: 'x', at: iso(31) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1);
   assert.equal(planejar([c('n1', iso(5)), c('n2', iso(5))], [], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1);
-  const cheio = Array.from({ length: 34 }, (_, i) => ({ ofertaId: 'o' + i, at: iso(40 + i) }));
+  const cheio = Array.from({ length: 70 }, (_, i) => ({ ofertaId: 'o' + i, at: iso(40 + i) }));
   assert.match(planejar([c('n', iso(5))], cheio, { now: NOW, regras: REGRAS_WHATSAPP }).motivo, /teto/);
 });
 
