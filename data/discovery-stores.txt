@@ -1,0 +1,35 @@
+# Lojas encontradas pelo Discovery Intelligence Engine (docs/discovery-engine.md). Linha ativa = entra na coleta
+# (src/run.js lê qualquer config/lojas/*.txt). "# candidata" = sinais parciais, conferir à mão antes de ativar.
+https://ironstudios.com.br  # DIE serper store:blister-pokemon-equilibrio-perfeito 2026-10-13
+https://boosternamesa.com  # DIE serper store:elite-trainer-box-caos-ascendente-comprar 2026-10-13
+https://galeriadelavander.com.br  # DIE serper store:elite-trainer-box-fogo-fantasmagorico-comprar 2026-10-13
+https://deckcerto.com  # DIE serper store:blister-pokemon-equilibrio-perfeito 2026-10-14
+https://odisseiajogos.com.br  # DIE serper store:elite-trainer-box-fogo-fantasmagorico-comprar 2026-10-14
+https://madlabrpg.com  # DIE serper store:elite-trainer-box-coroa-estelar-comprar 2026-10-14
+# candidata https://pirlimpimpimbrinquedos.com.br  # sem preço em R$ na página inicial (DIE serper store:elite-trainer-box-equilibrio-perfeito-comprar 2026-10-15)
+# candidata https://oitopeia.com.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper store:blister-pokemon-destinos-de-paldea 2026-10-15)
+https://pompsgeek.com.br  # DIE serper store:pokemon-tcg-fogo-fantasmagorico-booster-box 2026-10-17
+https://demapapelaria.com.br  # DIE serper store:papelaria-cartas-pokemon-blister 2026-10-17
+https://pandagamesbr.commercesuite.com.br  # DIE serper product:pokemon-tcg-caos-ascendente-blister-duplo 2026-10-17
+# candidata https://vamojogar.com.br  # sem preço em R$ na página inicial (DIE serper store:loja-de-card-game-belem 2026-10-17)
+# candidata https://solosagrado.com.br  # sem preço em R$ na página inicial (DIE serper store:loja-de-card-game-goiania 2026-10-17)
+# candidata https://stormcardgames.com.br  # sem preço em R$ na página inicial (DIE serper store:loja-de-card-game-florianopolis 2026-10-17)
+# candidata https://pokemongolive.com  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper store:blister-pokemon-tcg-comprar 2026-10-19)
+# candidata https://beatsbydre.com  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper store:blister-pokemon-tcg-comprar 2026-10-19)
+# candidata https://blog.spellbox.com.br  # sem preço em R$ na página inicial (DIE serper store:pokemon-tcg-tempestade-prateada-booster-box 2026-10-19)
+# candidata https://baralhosonline.com.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper store:blister-pokemon-origem-perdida 2026-10-19)
+# candidata https://jokerstore.net.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper product:pokemon-tcg-caos-ascendente-blister-triplo 2026-10-20)
+# candidata https://mundoencantado.com  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE serper store:blister-pokemon-astros-cintilantes 2026-10-20)
+# candidata https://br.ign.com  # sem preço em R$ na página inicial (DIE serper store:pokemon-tcg-destinos-brilhantes-booster-box 2026-10-21)
+# candidata https://jornadagames.com  # sem preço em R$ na página inicial (DIE serper store:elite-trainer-box-voltagem-vivida-comprar 2026-10-21)
+https://milium.com.br  # DIE serper store:blister-pokemon-escuridao-incandescente 2026-10-22
+# candidata https://easyonline.com.br  # sem preço em R$ na página inicial (DIE reconferir reconferir:v2 2026-10-24)
+# candidata https://oitopeia.com.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE reconferir reconferir:v2 2026-10-24)
+# candidata https://lidermulti.com.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE reconferir reconferir:v2 2026-10-24)
+# candidata https://ecletiq.com  # plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD) (DIE reconferir reconferir:v2 2026-10-24)
+https://luckykandy.com.br  # DIE serper store:blister-pokemon-evolucoes-prismaticas 2026-10-24
+https://maisquegeek.com.br  # DIE serper product:pokemon-tcg-equilibrio-perfeito-blister-triplo 2026-10-24
+# candidata https://iescamp.com.br  # plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD) (DIE serper store:elite-trainer-box-csv5-ardent-obsidian-comprar 2026-10-24)
+# candidata https://heliotek.com.br  # menciona Pokémon, mas sem sinal de TCG lacrado (DIE reconferir reconferir:v2 2026-10-24)
+# candidata https://vamojogar.com.br  # sem preço em R$ na página inicial (DIE reconferir reconferir:v2 2026-10-24)
+# candidata https://solosagrado.com.br  # sem preço em R$ na página inicial (DIE reconferir reconferir:v2 2026-10-24)
