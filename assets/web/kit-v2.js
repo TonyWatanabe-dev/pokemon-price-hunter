@@ -75,11 +75,13 @@
   });
   // Cesta (K4): itens do resultado, com quantidade e remoção; a comparação "uma loja × dividir" vem de /api/v1/site/kit/cesta.
   var CESTA = []; var J = null;
+  // D2: preço no Pix diz "no Pix" (como a página do produto); a API do kit manda priceKind.
+  function pixK(o) { return o && o.priceKind === 'pix' ? ' <small>no Pix</small>' : ''; }
   function itemHTML(it, i) {
     var o = it.oferta; var img = /^https:\/\//.test(it.imagem || '') ? it.imagem : '';
     return '<div class="item">' + (img ? '<img src="' + esc(img) + '" alt="' + esc(it.nome) + '" loading="lazy" referrerpolicy="no-referrer">' : '<span class="noimg" aria-hidden="true"></span>') +
       '<div style="flex:1"><div class="n">' + esc(it.nome) + '</div><div class="w">' + esc(it.porque) + ' · em ' + esc(o.storeName || o.storeId) + '</div>' +
-      '<div class="p">' + brl(o.price) + ' <small>cada</small></div>' +
+      '<div class="p">' + brl(o.price) + pixK(o) + ' <small>cada</small></div>' +
       '<div class="qty"><button type="button" class="q" data-menos="' + i + '" aria-label="Menos uma unidade">−</button><span aria-live="polite">' + it.quantidade + '</span><button type="button" class="q" data-mais="' + i + '" aria-label="Mais uma unidade">+</button>' +
       '<button type="button" class="rm" data-remover="' + i + '">Remover</button></div>' +
       '<a href="' + esc(o.url) + '" target="_blank" rel="noopener nofollow" data-saida="' + esc(o.storeId) + '" data-pid="' + esc(it.productId) + '" data-preco="' + esc(o.price) + '">Ver na loja ↗</a></div></div>';
@@ -103,7 +105,7 @@
       }
     }
     var alt = (J.alternativas || []).filter(function (a) { return !CESTA.some(function (it) { return it.productId === a.productId; }); });
-    if (alt.length) h += '<h3 class="h3">Outras opções para o kit</h3>' + alt.map(function (a) { return '<div class="cmp alt"><div style="flex:1"><div class="n">' + esc(a.nome) + '</div><div class="w">' + brl(a.oferta.price) + ' em ' + esc(a.oferta.storeName || a.oferta.storeId) + '</div></div><button type="button" class="q" data-add="' + esc(a.productId) + '" aria-label="Adicionar ao kit">+</button></div>'; }).join('');
+    if (alt.length) h += '<h3 class="h3">Outras opções para o kit</h3>' + alt.map(function (a) { return '<div class="cmp alt"><div style="flex:1"><div class="n">' + esc(a.nome) + '</div><div class="w">' + brl(a.oferta.price) + pixK(a.oferta) + ' em ' + esc(a.oferta.storeName || a.oferta.storeId) + '</div></div><button type="button" class="q" data-add="' + esc(a.productId) + '" aria-label="Adicionar ao kit">+</button></div>'; }).join('');
     var lim = (J.limitacoes || []).concat(c && c.limitacoes || []);
     if (lim.length) h += '<ul class="lim">' + lim.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>';
     h += '<div class="row"><button type="button" class="btn sec" data-refazer>Refazer</button><a class="btn pri" href="/oportunidades">Ver todas as ofertas</a></div></div>';
