@@ -3527,9 +3527,13 @@ function loading(){
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
 /* D4: state.json só vale com produtos, ofertas e horário confiável de até 24 h (FRESH_LIM.expira = EXPIRA_MIN da API). A cópia
-   congelada da main (raw main e /data/ do deploy) não vira "Ao vivo"; sem fonte válida, o estado de erro de sempre. */
-const stateOk=(j)=>!!j&&Array.isArray(j.products)&&Array.isArray(j.offers)&&freshState(j).status!=="indisponivel";
-async function fetchData(path,ok){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(!r.ok)continue;const j=await r.json();if(!ok||ok(j))return j}catch{}}return null}
+   congelada da main (raw main e /data/ do deploy) não vira "Ao vivo"; sem fonte válida, o estado de erro de sempre.
+   A idade é medida contra o relógio do servidor que respondeu, nunca o do aparelho: Date (mesma origem) ou, no raw do GitHub
+   (CORS não expõe Date), Expires − max-age. Sem essa referência = sem horário confiável. */
+const srvNow=(r)=>{const h=(k)=>r?.headers?.get?.(k)||"";let t=Date.parse(h("date"));
+  if(!Number.isFinite(t)){const m=/max-age=(\d+)/.exec(h("cache-control"));t=m?Date.parse(h("expires"))-m[1]*1e3:NaN}return Number.isFinite(t)?t:null};
+const stateOk=(j,r)=>{const now=srvNow(r);return now!=null&&!!j&&Array.isArray(j.products)&&Array.isArray(j.offers)&&freshState(j,now).status!=="indisponivel"};
+async function fetchData(path,ok){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(!r.ok)continue;const j=await r.json();if(!ok||ok(j,r))return j}catch{}}return null}
 async function fetchState(){return fetchData("state.json",stateOk)}
 /* FASE 3: a Home lê o resumo da API (banco + Price Engine, ~130 KB) em vez do state.json inteiro (~1,7 MB).
    Qualquer falha cai no state.json, como antes. ?fonte=state força o caminho antigo. */
@@ -3539,7 +3543,7 @@ function hydrateHome(h){const c=Object.fromEntries((h.collections||[]).map((x)=>
 async function fetchHome(){
   if(!HOME_API||new URLSearchParams(location.search).get("fonte")==="state")return null;
   try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),6000);const r=await fetch("/api/v1/home",{signal:ac.signal});clearTimeout(tm);
-    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts&&freshState(h).status!=="indisponivel"?hydrateHome(h):null}catch{return null}
+    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts&&h.freshness?.status!=="indisponivel"?hydrateHome(h):null}catch{return null}
 }
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
@@ -3652,7 +3656,7 @@ function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
   return fullP||=fetchState().then((st)=>{fullP=null;
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals"&&!PRIVATE.includes(view))$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
 let refreshing=false;

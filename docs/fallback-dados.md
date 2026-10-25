@@ -23,6 +23,13 @@ horário válido, não mais de 5 min no futuro e com até 24 h (`FRESH_LIM.expir
 é pulada como se tivesse falhado. Sem nenhuma fonte válida, o site mostra o estado de erro que já existia
 ("Não conseguimos carregar os preços agora" + "Tentar de novo"), nunca a cópia antiga.
 
+- **Relógio de referência (rodada 2, R1):** a idade é medida contra o relógio do servidor que respondeu, nunca o do
+  aparelho (`srvNow`): cabeçalho `Date` (mesma origem: `/data/`) ou, no raw do GitHub, `Expires − max-age` (o CORS do
+  raw não expõe `Date`; `Expires` e `Cache-Control` são cabeçalhos liberados). Sem essa referência, o arquivo é tratado
+  como sem horário confiável. Tolerância: a mesma do `classify` (até 5 min no futuro), sem margem nova. O `/api/v1/home`
+  é aceito pelo `freshness.status` que o servidor mandou (`api/v1.mjs` já classifica com o próprio relógio).
+- **Páginas da conta (rodada 2, R2):** se só o `state.json` falha com a Home vinda da API, conta, favoritos, alertas e
+  configurações continuam na tela (`ensureFull` não as troca pelo estado de erro).
 - `dataAt: null` = nenhuma leitura real = não recente, mesmo com `generatedAt` novo (`docs/frescor.md`, lacuna 4).
 - Entre 90 min e 24 h o dado continua aceito e a barra continua neutra ("Ao vivo"): decisão do dono de 17/10/2026,
   coberta por `test/freshness-tests.js` (teste 4). Cada oferta segue com a própria data de leitura.
@@ -42,7 +49,7 @@ Atualizado há 20 d") e coberto agora por `test/d4-fallback-browser.mjs`.
   congelada recusada, limites 1440/1441 iguais ao `classify` da API, sem horário, JSON inválido/parcial, recuperação,
   histórico sem filtro e `fetchHome`.
 - `test/d4-fallback-browser.mjs` (Playwright, fora do `npm test`): handlers reais (`api/pagina.mjs`, `api/v1.mjs`) e rotas
-  interceptadas, 390 px e 1280 px, 11 cenários. `D4_INDEX=<arquivo>` roda contra outro `index.html` (ex.: o da `main`).
+  interceptadas, 390 px e 1280 px, 17 cenários (inclui relógio do aparelho −30 min, +2 dias e 07/10, e páginas da conta). `D4_INDEX=<arquivo>` roda contra outro `index.html` (ex.: o da `main`).
 
 ## Pendências (fora do escopo desta correção)
 

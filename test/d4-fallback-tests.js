@@ -21,19 +21,27 @@ const RAW_DATA = 'https://raw.githubusercontent.com/o/r/data/data/', RAW_MAIN = 
 const st = (over = {}) => ({ products: [{ id: 'p1' }], offers: [{ id: 'o1', productId: 'p1', stock: 'IN_STOCK', total: 10 }], generatedAt: ago(5), dataAt: ago(5), ...over });
 const frozen = JSON.parse(fs.readFileSync(new URL('../data/state.json', import.meta.url), 'utf8'));   // a cópia da main de verdade
 
-/** routes: { [base]: objeto JSON | número (status HTTP) | 'lixo' (JSON inválido) | 'rede' (falha de rede) } */
-function sandbox(routes, now = NOW) {
-  const calls = [];
+/** routes: { [base]: objeto JSON | número (status HTTP) | 'lixo' (JSON inválido) | 'rede' (falha de rede) }
+ *  now = relógio do servidor (vai nos cabeçalhos); client = relógio do aparelho (Date do sandbox).
+ *  Cabeçalhos como no navegador: o raw do GitHub manda Date, mas o CORS só expõe Expires/Cache-Control; /data/ e a API
+ *  são da mesma origem (Date legível). opts.headers(base) troca os cabeçalhos. */
+const srvHeaders = (base, now) => (base === RAW_DATA || base === RAW_MAIN
+  ? { expires: new Date(now + 300e3).toUTCString(), 'cache-control': 'max-age=300' }
+  : { date: new Date(now).toUTCString() });
+function sandbox(routes, now = NOW, opts = {}) {
+  const client = opts.client ?? now; const calls = [];
   const fetch = async (u) => {
     calls.push(String(u));
     const base = [RAW_DATA, RAW_MAIN, DEPLOY, '/api/v1/'].find((b) => String(u).startsWith(b));
     const v = routes[base];
     if (v === undefined || v === 'rede') throw new Error('rede');
-    if (typeof v === 'number') return { ok: v >= 200 && v < 300, status: v, json: async () => ({}) };
-    return { ok: true, status: 200, json: async () => { if (v === 'lixo') throw new SyntaxError('json'); return JSON.parse(JSON.stringify(v)); } };
+    const hs = Object.fromEntries(Object.entries((opts.headers || srvHeaders)(base, now) || {}).map(([k, x]) => [k.toLowerCase(), x]));
+    const headers = { get: (k) => hs[String(k).toLowerCase()] ?? null };
+    if (typeof v === 'number') return { ok: v >= 200 && v < 300, status: v, headers, json: async () => ({}) };
+    return { ok: true, status: 200, headers, json: async () => { if (v === 'lixo') throw new SyntaxError('json'); return JSON.parse(JSON.stringify(v)); } };
   };
   const ctx = { fetch, REPO: { owner: 'o', repo: 'r' }, location: { search: '' }, URLSearchParams, AbortController, setTimeout, clearTimeout, Object, Array, Math, Number, String,
-    Date: class extends Date { constructor(...a) { super(...(a.length ? a : [now])); } static now() { return now; } } };
+    Date: class extends Date { constructor(...a) { super(...(a.length ? a : [client])); } static now() { return client; } } };
   vm.createContext(ctx); vm.runInContext(code + '\n;globalThis.__={fetchState,fetchData,fetchHome,freshState,DATA_BASES,FRESH_LIM};', ctx);
   return { ...ctx.__, calls };
 }
@@ -106,10 +114,37 @@ await t('9. histórico (hist/*.json) segue a regra antiga: primeira resposta ok,
 await t('10. /api/v1/home: resposta com frescor vencido ou sem horário não é usada; em dia é usada', async () => {
   const home = (fr) => ({ v: 1, slim: true, products: [{ id: 'p1', collection: 'c', type: 't' }], offers: [], counts: {}, collections: [], types: [], ...fr });
   assert.equal(await sandbox({ '/api/v1/': home({ freshness: { status: 'indisponivel', dataAt: null }, generatedAt: null }) }).fetchHome(), null);
-  assert.equal(await sandbox({ '/api/v1/': home({ freshness: { dataAt: ago(1500) }, generatedAt: ago(1500) }) }).fetchHome(), null);
+  assert.equal(await sandbox({ '/api/v1/': home({ freshness: { status: 'indisponivel', dataAt: ago(1500) }, generatedAt: ago(1500) }) }).fetchHome(), null);
   const ok = await sandbox({ '/api/v1/': home({ freshness: { status: 'atual', dataAt: ago(3) }, generatedAt: ago(3) }) }).fetchHome();
   assert.ok(ok && ok.products.length === 1);
   assert.equal(await sandbox({ '/api/v1/': 503 }).fetchHome(), null);
+});
+
+// R1 (frentes/rev-d4.md): o relógio do aparelho não decide. A API já classifica com relógio confiável; o state.json é medido
+// contra o relógio do servidor que respondeu.
+await t('11. relógio do aparelho errado (−10 min, −30 min, +2 dias) não derruba fonte em dia nem salva cópia vencida', async () => {
+  const home = { v: 1, slim: true, products: [{ id: 'p1', collection: 'c', type: 't' }], offers: [], counts: {}, collections: [], types: [], freshness: { status: 'atual', dataAt: ago(2) }, generatedAt: ago(2) };
+  for (const off of [-10, -30, 2 * 1440]) {
+    const client = NOW + off * 6e4;
+    const fresh = st({ dataAt: ago(2), generatedAt: ago(2) });
+    assert.deepEqual(await sandbox({ [RAW_DATA]: fresh }, NOW, { client }).fetchState(), fresh, `raw em dia, aparelho ${off} min`);
+    assert.deepEqual(await sandbox({ [RAW_DATA]: 404, [RAW_MAIN]: 404, [DEPLOY]: fresh }, NOW, { client }).fetchState(), fresh, `/data/ em dia, aparelho ${off} min`);
+    assert.ok(await sandbox({ '/api/v1/': home }, NOW, { client }).fetchHome(), `API em dia, aparelho ${off} min`);
+    const r = await sandbox({ [RAW_DATA]: 404, [RAW_MAIN]: frozen, [DEPLOY]: frozen }, NOW, { client: Date.parse('2026-10-07T14:00:00Z') }).fetchState();
+    assert.ok(r === null, 'aparelho com a data de 07/10 não ressuscita a cópia congelada');
+  }
+});
+
+await t('12. referência do servidor: Date (mesma origem) tem prioridade; Expires − max-age no raw; sem referência = recusado', async () => {
+  const fresh = st({ dataAt: ago(2), generatedAt: ago(2) });
+  const r1 = await sandbox({ [RAW_DATA]: fresh }, NOW, { headers: () => ({}) }).fetchState();
+  assert.ok(r1 === null, 'sem Date nem Expires: sem horário confiável');
+  const r2 = await sandbox({ [RAW_DATA]: fresh }, NOW, { headers: () => ({ expires: new Date(NOW + 300e3).toUTCString() }) }).fetchState();
+  assert.ok(r2 === null, 'Expires sem max-age não serve de referência');
+  const velho = NOW + 3 * 1440 * 6e4;   // servidor diz que já se passaram 3 dias desde a leitura
+  const r3 = await sandbox({ [RAW_DATA]: fresh }, NOW, { headers: () => ({ date: new Date(velho).toUTCString(), expires: new Date(NOW + 300e3).toUTCString(), 'cache-control': 'max-age=300' }) }).fetchState();
+  assert.ok(r3 === null, 'Date manda (3 dias depois da leitura = vencido)');
+  assert.deepEqual(await sandbox({ [RAW_DATA]: fresh }, NOW, { headers: () => ({ expires: new Date(NOW + 60e3).toUTCString(), 'cache-control': 'public, max-age=60' }) }).fetchState(), fresh);
 });
 
 console.log(`d4-fallback: ${n} grupos ok`);

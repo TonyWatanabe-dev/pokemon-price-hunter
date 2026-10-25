@@ -25,7 +25,16 @@ const CENAS = {
   'parcial-sem-horario': { api: '503', raw: 'semhorario', main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'erro' },
   'ssr-recente-api-fora': { api: '503', raw: 404, main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'erro', ssrTem: NEW },
   'ssr-velho-api-ok': { api: 'ok', raw: 'old3d', main: 'frozen', dep: 'frozen', ssr: 'old3d', espera: 'novo', ssrSem: true },
+  // Rodada 2 (frentes/rev-d4.md, cenários do revisor em scratchpad/revd4/): relógio do aparelho errado (clock = minutos) e
+  // páginas da conta com a Home pela API e só o state.json falhando
+  'relogio-30min-atrasado': { api: 'ok', raw: 'fresh', main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'novo', clock: -30 },
+  'relogio-2d-adiantado': { api: 'ok', raw: 'fresh', main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'novo', clock: 2880 },
+  'relogio-30min-atrasado-api-fora': { api: '503', raw: 'fresh', main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'novo', clock: -30 },
+  'relogio-2d-adiantado-api-fora': { api: '503', raw: 'fresh', main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'novo', clock: 2880 },
+  'relogio-07-10-api-e-raw-fora': { api: '503', raw: 404, main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'erro', clockAt: '2026-10-07T14:00:00Z' },
+  'conta-api-ok-raw-fora': { api: 'ok', raw: 404, main: 'frozen', dep: 'frozen', ssr: 'fresh', espera: 'novo', nav: ['favoritos', 'alertas', 'configuracoes', 'conta'] },
 };
+const NAV_TXT = { favoritos: 'Favoritos', alertas: 'Alertas', configuracoes: 'Configurações', conta: 'Minha conta' };
 
 function fixtures() {
   const frozen = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'state.json'), 'utf8'));
@@ -80,10 +89,14 @@ async function cena(nome) {
   const br = await chromium.launch();
   for (const w of [390, 1280]) {
     const ctx = await br.newContext({ viewport: { width: w, height: w < 600 ? 844 : 900 } }); const pg = await ctx.newPage();
+    if (C.clock || C.clockAt) await ctx.addInitScript(([off, at]) => { const D = Date; const sh = at ? Date.parse(at) - D.now() : off * 6e4;
+      class X extends D { constructor(...a) { super(...(a.length ? a : [D.now() + sh])); } static now() { return D.now() + sh; } } globalThis.Date = X; }, [C.clock || 0, C.clockAt || null]);
     let raw = C.raw; const pedidos = [];
+    // cabeçalhos do raw como os do GitHub (o CORS só expõe Expires e Cache-Control; Date fica de fora)
+    const GH = () => ({ 'access-control-allow-origin': '*', 'cache-control': 'max-age=300', expires: new Date(Date.now() + 300e3).toUTCString(), date: new Date().toUTCString() });
     await pg.route(/raw\.githubusercontent\.com/, (r) => { const u = r.request().url(); const ramo = /\/main\/data\//.test(u) ? C.main : raw; pedidos.push(u.replace(/^.*\.com\/[^/]+\/[^/]+\//, 'raw:'));
-      if (ramo === 'rede') return r.abort(); if (ramo === 'lixo') return r.fulfill({ status: 200, contentType: 'application/json', body: '{"products":[' });
-      const b = body(ramo); return b ? r.fulfill({ status: 200, contentType: 'application/json', body: b }) : r.fulfill({ status: typeof ramo === 'number' ? ramo : 404, body: '' }); });
+      if (ramo === 'rede') return r.abort(); if (ramo === 'lixo') return r.fulfill({ status: 200, contentType: 'application/json', headers: GH(), body: '{"products":[' });
+      const b = body(ramo); return b ? r.fulfill({ status: 200, contentType: 'application/json', headers: GH(), body: b }) : r.fulfill({ status: typeof ramo === 'number' ? ramo : 404, headers: GH(), body: '' }); });
     await pg.route(/^https?:\/\/(?!localhost)/, (r) => (/raw\.githubusercontent/.test(r.request().url()) ? r.fallback() : r.fulfill({ status: 204, body: '' })));
     const espera = async () => { await pg.waitForFunction(() => !document.querySelector('#view .ssr') && (document.querySelector('.err-state') || document.querySelector('.buy')), null, { timeout: 15000 }).catch(() => {});
       return pg.evaluate(() => ({ view: (document.querySelector('#view')?.innerText || '').replace(/\u00a0/g, ' '), erro: !!document.querySelector('.err-state'), mini: document.querySelector('#mini-t')?.innerText || '' })); };
@@ -95,6 +108,10 @@ async function cena(nome) {
       if (quer === 'erro' && /com estoque/i.test(r.view)) falha(w, `${etapa}: "com estoque" sem fonte válida`);
     };
     await pg.goto(`${base}/produto/${slug}`, { waitUntil: 'load' }); confere(await espera(), C.espera, 'produto');
+    if (C.nav) { await pg.goto(`${base}/`, { waitUntil: 'load' }); await pg.waitForFunction("(typeof S!=='undefined'&&!!S)||!!document.querySelector('.err-state')", null, { timeout: 15000 }).catch(() => {});
+      for (const v of C.nav) { await pg.evaluate((x) => go(x), v); await pg.waitForTimeout(2500);
+        const r = await pg.evaluate(() => ({ erro: !!document.querySelector('.err-state'), txt: (document.querySelector('#view')?.innerText || '').replace(/\s+/g, ' ').slice(0, 140) }));
+        if (r.erro) falha(w, `${v}: página da conta trocada pelo estado de erro`); else if (!r.txt.includes(NAV_TXT[v])) falha(w, `${v}: página não apareceu ("${r.txt}")`); } }
     if (C.home) { await pg.goto(`${base}/`, { waitUntil: 'load' }); confere(await espera(), 'erro', 'home'); }
     if (C.volta) { raw = 'fresh';   // a fonte principal volta; a tela de erro do passo anterior continua aberta
       if (await pg.$('#retry')) await pg.click('#retry'); else falha(w, 'volta: sem botão "Tentar de novo"'); await pg.waitForFunction((n) => (document.querySelector('#view')?.innerText || '').replace(/\u00a0/g, ' ').includes(n), NEW, { timeout: 15000 }).catch(() => {}); confere(await espera(), 'novo', 'depois de "Tentar de novo"'); }
