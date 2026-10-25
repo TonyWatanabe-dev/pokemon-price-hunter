@@ -151,7 +151,8 @@ function detectVariant0(t) {
   for (const x of t.matchAll(/\b(?:mega )?([a-z]{3,}) ex\b/g)) if (!VARIANT_STOP.has(x[1])) return mega + x[1];
   // "Coleção Ex Lendas Implacáveis - Zacian" (24/10/2026): "lendas" virava o nome e juntava Zacian e Koraidon num produto
   // só (avulsos-colecao_ex-lendas). Linha "Lendas Implacáveis": o nome vem logo depois (com ou sem ":" e " - ").
-  const li = t.match(/\blendas implacaveis:? (?:- )?(?:ex )?([a-z]{3,})\b/);
+  // Hífen no lugar do espaço ("Lendas-Implacáveis Zacian") é a mesma linha (25/10/2026, revisão da v2).
+  const li = t.match(/\blendas[ -]implacaveis:? (?:- )?(?:ex )?([a-z]{3,})\b/);
   if (li) return VARIANT_STOP.has(li[1]) || li[1] === 'ex' ? null : mega + li[1];
   let m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
   // "Coleção Ex Destinos Paradoxais - Fogo Corrosão" (25/10/2026): "destinos" (nome da linha) virava a variante e juntava
@@ -337,12 +338,16 @@ export function variantesDe(ids = []) {
 //   sv9-colecao_ex-zacian é a "Zacian ex do Lupo" (35263, Amigos de Jornada, 40 cartas): a Zacian Implacáveis fica no avulso.
 // - "Coleção (EX) Equipe Rocket <Pokémon> Ex" (35880, Mewtwo/Nidoking/Persian, 49 cartas) não é a "Mewtwo ex da Equipe Rocket"
 //   (35579, 40 cartas) de sv10-colecao_ex-mewtwo: fica no avulso, como as irmãs Nidoking e Persian.
-const LENDAS_IMPLACAVEIS = /\blendas implac(?:a| )?veis\b/; // "Implac?veis" (facilshopping, acento perdido na loja)
+// "Implac?veis" (facilshopping, acento perdido na loja), "Lendas-Implacáveis" (hífen sobrevive à normalização) e o código
+// Copag da caixa (35239) sem o nome da linha: "Box Zacian ex 35239" caía no Lupo (35263) pela variante conhecida.
+const LENDAS_IMPLACAVEIS = /\blendas[ -]implac(?:a| )?veis\b|(?<!\d)35239(?!\d)/;
+// "Lendas de Paldea", também sem o "de" ("Lendas Paldea Koraidon") e com hífen ("Lendas-de-Paldea").
+const LENDAS_DE_PALDEA = /\blendas[ -](?:de[ -])?paldea\b/;
 const IMPLACAVEIS_HERDA = new Set(['koraidon']);
 const PALDEA_NO_AVULSO = new Set(['miraidon']);
 const EQUIPE_ROCKET_35880 = /\bcolecao (?:ex )?equipe rocket (?:mega )?[a-z]{3,} ex\b/;
 function herdaColecao(n, variant) {
-  if (/\blendas de paldea\b/.test(n) || EQUIPE_ROCKET_35880.test(n)) return false;
+  if (LENDAS_DE_PALDEA.test(n) || EQUIPE_ROCKET_35880.test(n)) return false;
   if (LENDAS_IMPLACAVEIS.test(n)) return IMPLACAVEIS_HERDA.has(variant);
   return true;
 }
