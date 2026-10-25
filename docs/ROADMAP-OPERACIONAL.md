@@ -41,6 +41,44 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Burn-in 1/7 e fechamento da rodada de auditorias — 25/10/2026, madrugada (America/Sao_Paulo)
+
+**Burn-in #271: 1/7.** O bot fechou 24/10 como **verde** (comentário de 25/10, 03:07 UTC). Os 11 critérios ficaram dentro do limite:
+- Hunter: 105 rodadas, taxa de sucesso 0,99, maior intervalo de 15 min;
+- Vigia: 103 rodadas, taxa de sucesso 1;
+- Dispatcher: 0 falhas;
+- coleta: 95 rodadas com estado operacional;
+- sincronização com o banco: 1;
+- leitor oficial: 1;
+- motor parado: 0.
+
+O dia 25/10 começou parcial verde. Se 25/10 a 30/10 fecharem verdes, o 7/7 sai no relatório de 31/10, por volta de 03:07 UTC. Nenhum critério, limiar ou registro foi alterado.
+
+**Vigia:** nenhum incidente novo desde a #913 (ML bloqueado às 00:00 e às 00:15 UTC de 25/10), que o próprio Vigia fechou.
+
+**Rodada de auditorias encerrada:** 7 frentes e 2 auditorias extras (produção, CI e releases). O relatório consolidado está no doc "TCG Price Hunter — Auditoria paralela durante o burn-in". As PRs abertas, todas sem merge e aguardando autorização do dono, são:
+
+| PR | O que muda |
+|---|---|
+| #914 | funil do Monte seu kit |
+| #916 | auditoria de merges |
+| #917 | "no Pix" nos grupos |
+| #918 | qualidade dos dados |
+| #919 | mensagem do Vigia |
+| #920 | acessibilidade e SEO |
+| #922 | ME06 não cai em ME01 |
+
+**Confirmado:**
+- #870, #903, #904 e #905 foram integradas antes de os 4 checks obrigatórios terminarem. Foi bypass de admin, com `enforce_admins` desligado.
+- 6 anúncios ME06 "Reinado Delta" da geekstorebrasil casavam em ME01. A correção está na #922.
+
+**Próximo:**
+1. O dono decide ligar `enforce_admins` e adotar um caminho único de merge.
+2. Integrar a #922 e conferir o ETB ME01 no ramo `data`.
+3. Integrar a #919 e ler o próximo incidente.
+
+---
+
 ## Auditoria e correções — 24/10/2026, 19h30 a 22h30, 7ª rodada (America/Sao_Paulo)
 
 Rodada pedida pelo proprietário ("modo turbo"): validar as entregas recentes com evidência, eliminar pendências e corrigir o que estiver seguro.
