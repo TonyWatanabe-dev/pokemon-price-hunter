@@ -134,15 +134,38 @@ const r1 = R.analisar({ dados: d1, base, candidato: cand, agora: T(23) });
   assert.equal(rB.proposto.lowest.P.total, 120, 'nada aplicado sem decisão humana');
 }
 
-// 2) Produto falso sem ofertas legítimas: remoção só como proposta.
+// 2) Produto falso sem ofertas legítimas: remoção só como proposta, e só quando nenhuma oferta do offers.json aponta
+// para ele. Antes da integração do matcher, f1 ainda aponta para F → adiada.
 {
-  const rem = r1.relatorio.remocoes;
-  assert.deepEqual(rem.map((x) => x.produto), ['F']);
-  assert.equal(rem[0].classe, 'revisao'); assert.match(rem[0].acao, /proposta/);
+  assert.deepEqual(r1.relatorio.remocoes, [], 'f1 ainda aponta para F: nada de remoção proposta');
+  const ad = r1.relatorio.remocoesAdiadas;
+  assert.deepEqual(ad.map((x) => x.produto), ['F']);
+  assert.deepEqual(ad[0].ofertasApontando, ['f1']); assert.equal(ad[0].emEstoque, 0); assert.equal(ad[0].classe, 'revisao');
+  assert.equal(r1.relatorio.contagens.remocoesPropostas, 0); assert.equal(r1.relatorio.contagens.remocoesAdiadas, 1);
   assert.equal(r1.proposto.lowest.F, undefined, 'lowest do falso sai (único ponto era a carta)');
   assert.deepEqual(r1.proposto.hist.F.stores, {});
   assert.ok(r1.proposto.state.products.some((p) => p.id === 'F'), 'o produto continua no state: remover é decisão humana');
-  assert.equal(r1.relatorio.contagens.remocoesPropostas, 1);
+
+  // Oferta em estoque apontando também adia (e é contada).
+  const dirE = principal();
+  const offE = JSON.parse(fs.readFileSync(path.join(dirE, 'offers.json'), 'utf8')); offE.f1.stock = 'IN_STOCK';
+  fs.writeFileSync(path.join(dirE, 'offers.json'), JSON.stringify(offE));
+  const rE = R.analisar({ dados: R.lerDados(dirE), base, candidato: cand, agora: T(23) });
+  assert.equal(rE.relatorio.remocoes.length, 0); assert.equal(rE.relatorio.remocoesAdiadas[0].emEstoque, 1);
+
+  // Depois da integração: f1 foi para "sem produto" e sumiu do offers.json. Sem o relatório anterior não há evidência
+  // (oferta sem título); com --anterior, a remoção é proposta.
+  const dirP = principal();
+  const offP = JSON.parse(fs.readFileSync(path.join(dirP, 'offers.json'), 'utf8')); delete offP.f1;
+  fs.writeFileSync(path.join(dirP, 'offers.json'), JSON.stringify(offP));
+  const semAnt = R.analisar({ dados: R.lerDados(dirP), base, candidato: cand, agora: T(23) });
+  assert.equal(semAnt.relatorio.remocoes.length + semAnt.relatorio.remocoesAdiadas.length, 0, 'sem evidência, nada proposto');
+  const comAnt = R.analisar({ dados: R.lerDados(dirP), base, candidato: cand, agora: T(23), anterior: r1.relatorio });
+  assert.deepEqual(comAnt.relatorio.remocoes.map((x) => x.produto), ['F']);
+  assert.match(comAnt.relatorio.remocoes[0].acao, /proposta/); assert.equal(comAnt.relatorio.remocoes[0].classe, 'revisao');
+  assert.equal(comAnt.relatorio.anterior.reassociacoes, 4);
+  // P tem oferta legítima: nunca proposto, nem com --anterior.
+  assert.ok(!comAnt.relatorio.remocoes.some((x) => x.produto === 'P'));
 }
 
 // 3) Escrita: só na saída; products.json nunca é proposto; relatório JSON + MD com contagens.
@@ -155,7 +178,7 @@ const out1 = path.join(tmp, 'saida1');
   assert.ok(!fs.existsSync(path.join(out1, 'proposto/data/products.json')), 'registro de produtos não é reescrito');
   assert.ok(!fs.existsSync(path.join(out1, 'proposto/data/hist/O.json')));
   const md = fs.readFileSync(path.join(out1, 'relatorio.md'), 'utf8');
-  assert.match(md, /ofertas reassociadas \| — \| 4 /); assert.match(md, /produtos bloqueados .* \| M \|/); assert.match(md, /Remoção proposta/);
+  assert.match(md, /ofertas reassociadas \| — \| 4 /); assert.match(md, /produtos bloqueados .* \| M \|/); assert.match(md, /Remoção adiada/);
   const man = JSON.parse(fs.readFileSync(path.join(out1, 'proposto/MANIFEST.json'), 'utf8'));
   assert.ok(man.arquivos.every((a) => /^[0-9a-f]{64}$/.test(a.sha256Depois)));
   R.escreverSaida(out1, r1, { dados: d1 }); // reexecução na mesma saída é permitida (marca .reparo-dados)
@@ -260,6 +283,8 @@ const out1 = path.join(tmp, 'saida1');
   await assert.rejects(R.main(['--dados', dir1, '--saida', path.join(tmp, 's')], () => {}), /uso:/);
   for (const f of ['--aplicar=sim', '--apply=1', '--apply', '--aplicar=']) await assert.rejects(R.main(['--dados', dir1, '--candidato', RAIZ, '--saida', path.join(tmp, 's'), f], () => {}), /não implementado/, f);
   assert.ok(!fs.existsSync(path.join(tmp, 's')), 'nada escrito');
+  fs.writeFileSync(path.join(tmp, 'ant.json'), '{"x":1}');
+  await assert.rejects(R.main(['--dados', dir1, '--candidato', RAIZ, '--saida', path.join(tmp, 's'), '--anterior', path.join(tmp, 'ant.json')], () => {}), /--anterior/);
 }
 
 // 8) resumoHist = histSummary (src/history.js) e matcherDe carrega um checkout de verdade.

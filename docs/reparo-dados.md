@@ -34,7 +34,8 @@ Casos conhecidos (rev-match A1, T4-C, PR #922):
    - havia uma legítima mais cara → **revisão humana**, com a substituição proposta. É uma aproximação, porque o `history.jsonl` não guarda stale nem confirmado.
 4. **`lowest.json`**: só mexe no produto cujo recorde veio de uma oferta reassociada ou de um ponto removido ou em revisão. O novo valor é o menor ponto confiável (`distrust` do state) do `hist` reparado, igual ao `__fromHist` do `run.js` (`offerId: null`). `__fromHist` é preservado. Sem pontos restantes, a entrada sai.
 5. **Tudo ou nada por produto.** Um produto com **qualquer** item em revisão (ponto, menor preço ou reassociação) fica inteiro fora do estado proposto até a decisão do dono: nem `hist`, nem `lowest`, nem reassociações desse produto são aplicados parcialmente. No relatório, esses itens aparecem com `bloqueado: true`, e a contagem `produtosBloqueados` lista os produtos. Aplicar só o `hist` sem o `lowest` deixaria o produto incoerente: na revisão independente, o gráfico do sv9 ganhava uma queda falsa de 6,6%.
-6. **Produto falso**: todas as ofertas já vistas nele (em `offers.json` e no `history.jsonl`) foram reassociadas. Vira **proposta** de remoção em `remocoes-propostas.json`. `products.json` nunca é reescrito.
+6. **Produto falso**: todas as ofertas já vistas nele (em `offers.json` e no `history.jsonl`) foram reassociadas. **Só vira proposta de remoção (`remocoes-propostas.json`) quando nenhuma oferta de `offers.json` aponta para o id**, ou seja, depois que o matcher corrigido rodou e tirou as ofertas de lá. Se ainda há oferta apontando, entra em `remocoesAdiadas`, com as ofertas e quantas estão em estoque. `products.json` nunca é reescrito.
+   - Depois da integração, a oferta que foi para "sem produto" some do `offers.json`, junto com o título, e deixa de servir de evidência. Por isso a rodada pós-integração recebe `--anterior <relatorio.json>` do dry-run feito antes da integração. As reassociações daquele relatório contam como evidência para a remoção. Sem `--anterior`, nada é proposto.
 
 ### Automático × revisão humana
 
@@ -64,7 +65,8 @@ Casos conhecidos (rev-match A1, T4-C, PR #922):
   - `porProduto`: preço atual × menor salvo × histórico;
 - `relatorio.md`: o mesmo em tabelas;
 - `proposto/data/{lowest.json, state.json, hist/<id>.json}`: só as correções automáticas. Em `hist/` vão só os arquivos alterados;
-- `proposto/remocoes-propostas.json` e `proposto/MANIFEST.json` (sha256 antes e depois de cada arquivo).
+- `proposto/remocoes-propostas.json` e `proposto/MANIFEST.json` (sha256 antes e depois de cada arquivo);
+- `relatorio.json` também traz `remocoesAdiadas` e `anterior` (data e quantidade de reassociações do relatório passado em `--anterior`).
 
 Recusas (falha fechada):
 - `--aplicar` e `--apply`, inclusive na forma `--aplicar=valor`;
@@ -85,7 +87,7 @@ node tools/reparo-dados.mjs --dados $S/dados --candidato $S/cand --saida $S/said
 
 ## 4. Resultado do dry-run (ramo data bfaf3cde, 25/10 11:34Z; base main c0b6bf44; candidato proposta/matching-paldea-v2 63fb80c4, que inclui #922)
 
-Rodada 1, antes da regra tudo ou nada. O resultado vigente é o v3 da rodada 2, logo abaixo.
+Rodada 1, antes da regra tudo ou nada. O resultado vigente é a **simulação final**, no fim desta seção.
 
 - 42 reassociações (41 automáticas, 1 em revisão: doremi, que já esteve em `avulsos-colecao_ex-lendas`) em 19 produtos.
 - `hist`: 77 de 10.126 pontos removidos e 2 em revisão (rihappy 24 e 25/10 em sv9, onde a Lupo de R$ 156,99 coexiste com a Implacáveis de R$ 139,99). 10 arquivos alterados.
@@ -107,11 +109,26 @@ Ramo data bfaf3cde; base 75f881ea (`src/` igual à main); candidato `/home/claud
 - `lowest.json` proposto idêntico byte a byte: os dois menores preços desses produtos já estavam em revisão. Os outros 11 arquivos de `hist` também são idênticos.
 - 0 pontos "sem evidência": hoje o `hist` e o log começam em 06/10. A regra nova só passa a fazer diferença quando o log começar a cortar (~20/11).
 
+### Simulação final (vigente): matcher 70f8d695, ferramenta da rodada 3
+
+Ramo data bfaf3cde; base `src/` igual à main (match.js sha256 e64de86e…); candidato `/home/claude/wt-t5-match` @ 70f8d695 (match.js sha256 4ed718ad…); `--agora 2026-10-25T11:34:00Z`; saída `scratchpad/reparo/saida-final`.
+
+| item | total | automático | revisão / bloqueado |
+|---|---|---|---|
+| reassociações | 62 em 35 produtos (17 em estoque; 37 → sem produto; 25 → produto, sendo 14 de id novo) | 50 | 12 (doremi + 11 de sv9/me01-etb) |
+| pontos de `hist` | 10.126 → 10.060 | 66 removidos (11 arquivos) | 24 (2 mistos da rihappy + 22 bloqueados) |
+| `lowest.json` | 262 → 258 entradas; 7 contaminados | 1 recalculado (sv10-mewtwo 139,99 → 169,90) + 4 removidos (alakazam, golem, wigglytuff, kingdra) | 2 (sv9-zacian → 149,90; me01-etb → 1.249) |
+| produtos bloqueados | me01-etb, sv9-colecao_ex-zacian | — | — |
+| remoção de produto | 0 propostas | — | 5 adiadas (destinos 3 ofertas, golem 1, paradoxais 1, venusaur 1, wigglytuff 1 em estoque = 7 ofertas apontando) |
+
+Comparação com `saida-v3c` (mesma ferramenta da rodada 2, mesmo matcher): reassociações, pontos, `lowest` e bloqueios são iguais. `proposto/data/lowest.json`, `state.json` e os 11 arquivos de `hist/` saem idênticos byte a byte. A única diferença é a regra F1: as 5 remoções propostas passam a adiadas, porque ainda há 7 ofertas no `offers.json` apontando para elas (uma em estoque).
+
 ## 5. Sequência para aplicar (não executar sem autorização)
 
+0. Antes da integração: rodar o dry-run e guardar o `relatorio.json`. Ele vai servir de `--anterior` no passo 3.
 1. Integrar o matcher corrigido (#922 → matching v2/v3), depois do burn-in e com autorização.
 2. Esperar pelo menos uma rodada do robô com o matcher novo. Conferir que as ofertas reassociadas já estão no produto novo ou em `unmatched`.
-3. Rodar o dry-run sobre o retrato atual do ramo `data`, com base = commit da `main` anterior à integração e candidato = `main` atual. Revisar o relatório e decidir os itens de revisão humana e as remoções.
+3. Rodar o dry-run sobre o retrato atual do ramo `data`, com base = commit da `main` anterior à integração e candidato = `main` atual. Passar `--anterior <relatório do passo 0>`. Revisar o relatório e decidir os itens de revisão humana e as remoções. Uma remoção só aparece como proposta quando nenhuma oferta aponta mais para o produto.
 4. **Backup**: etiquetar o commit atual do ramo `data` com `data-backup/antes-do-reparo-AAAA-MM-DD`. Essa etiqueta não é apagada pela retenção (`tools/data-backup.mjs`). Anotar o SHA.
 5. **Publicação.** O passo ainda não existe. Exige um workflow novo (arquivo protegido), autorização do dono e o fim do burn-in. Requisitos:
    - **mesmo grupo de concorrência do robô** (`hunter`). O passo lê o ramo `data`, roda o dry-run **sobre esse mesmo retrato**, que é o que vai ser publicado, e publica antes de liberar o grupo. O ramo é reescrito com push -f a cada rodada (bfaf3cde → bb8accd8 em 17 min no dia 25/10), então um `proposto/` calculado sobre um retrato antigo nunca pode ser publicado;
@@ -122,7 +139,10 @@ Ramo data bfaf3cde; base 75f881ea (`src/` igual à main); candidato `/home/claud
    - `npm run golden:eval`;
    - `tools/qualidade-dados.mjs` (quando integrado);
    - rodar o reparo de novo sobre o novo retrato: tem de dar 0 mudanças automáticas;
-   - conferir no site os produtos da tabela do relatório (menor preço, gráfico, `drop7d`).
+   - conferir no site os produtos da tabela do relatório (menor preço, gráfico, `drop7d`). **Só depois do atraso de propagação**:
+     - o `state.json` que a API lê (`lowestHistorical`, `hist`, cards) só é regenerado na **próxima rodada do robô**;
+     - depois disso, o site ainda pode mostrar o valor antigo por cerca de 6 a 7 minutos: cache de memória da função de 60 s (`api/v1.mjs` TTL, `api/_lib/legacy.mjs` TTL_MS), CDN `s-maxage=60, stale-while-revalidate=300`, e o cache do `raw.githubusercontent.com`, de onde a API lê o `state.json` (alguns minutos; valor não medido aqui).
+     Validar antes disso dá falso negativo.
 
 ## 6. Reversão
 
@@ -154,17 +174,18 @@ Só plano. O banco não foi consultado nem tocado.
 - `src/core/sync.js` grava `offer.product_id` a partir do produto do robô (`ON CONFLICT … SET product_id = EXCLUDED.product_id`) e o histórico em `price_history`.
 - `src/core/price-stats.js loadInputs` agrupa os eventos de `price_history` pelo `offer.product_id` **atual**.
 - `computeProductStats` (`src/core/price-engine.js`) usa todas as ofertas do produto na série histórica (`seriesOffers = sameCond`), **inclusive as `removed`**.
-- Reassociação para um produto que existe ou é novo (25 das 59 no v3): a próxima sincronização troca `offer.product_id` e todo o histórico da oferta muda de produto. O produto antigo se corrige sozinho no próximo `runPriceEngine`.
-- Reassociação para "sem produto" (34 das 59, por exemplo ME06 em `me01-*`, kingdra, as cartas): a oferta sai de `offers.json`, a sincronização a marca `status = 'removed'` (`sync.js`, `UPDATE offer SET status = 'removed'`) e o `product_id` antigo fica. O Price Engine continua usando os eventos anteriores à remoção na série do produto antigo. `offer.product_id` é `NOT NULL` (`db/migrations/001_core.sql`), então não dá para simplesmente desassociar.
+- Reassociação para um produto que existe ou é novo (25 das 62 na simulação final): a próxima sincronização troca `offer.product_id` e todo o histórico da oferta muda de produto. O produto antigo se corrige sozinho no próximo `runPriceEngine`.
+- Reassociação para "sem produto" (37 das 62, por exemplo ME06 em `me01-*`, kingdra, as cartas): a oferta sai de `offers.json`, a sincronização a marca `status = 'removed'` (`sync.js`, `UPDATE offer SET status = 'removed'`) e o `product_id` antigo fica. O Price Engine continua usando os eventos anteriores à remoção na série do produto antigo. `offer.product_id` é `NOT NULL` (`db/migrations/001_core.sql`), então não dá para simplesmente desassociar.
 
 **O que precisaria ser feito (exige autorização própria, porque é escrita em produção).**
-1. Medir (só leitura): para os 34 produtos afetados, `product_stats.historical_min` e `price_daily` (`store_id = ''` e por loja), comparados com o relatório do reparo. Listar as `offer` (por `legacy_id` = `offerId` do relatório) com `status = 'removed'` e `product_id` antigo.
+1. Medir (só leitura): para os 35 produtos afetados, `product_stats.historical_min` e `price_daily` (`store_id = ''` e por loja), comparados com o relatório do reparo. Listar as `offer` (por `legacy_id` = `offerId` do relatório) com `status = 'removed'` e `product_id` antigo.
 2. Escolher o mecanismo. Opções, da mais segura para a mais destrutiva:
    - (a) migration nova com uma marca na oferta (ex.: `offer.excluded_from_stats boolean` ou `status = 'mismatched'`), filtrada em `computeProductStats`/`loadInputs`. É reversível e não apaga histórico;
    - (b) mover essas ofertas para um produto de quarentena. Funciona por causa do `NOT NULL`, mas polui o catálogo;
    - (c) apagar as linhas de `price_history` dessas ofertas. É irreversível sem backup e não é recomendado.
 3. Rodar `runPriceEngine` (`tools/db-stats.mjs`). `price_daily` remove sozinho os dias que deixam de existir (`DELETE … NOT EXISTS`), e `product_stats` é recalculado de forma idempotente.
 4. Validar com `tools/db-validate.mjs` e conferir a página dos produtos (fonte `db`).
+   - **Alta esperada no indicador `historyProductMismatch`** (`src/core/integrity-report.js`, `price_history.product_id` ≠ `offer.product_id`). Cada uma das 25 ofertas reassociadas para produto existente ou novo deixa as linhas antigas de `price_history` com o produto antigo, enquanto `offer.product_id` passa a ser o novo. O indicador é `REVIEW_ONLY` (`docs/integridade-referencial.md`, item 3) e não falha a validação. A alta é esperada e proporcional às linhas dessas ofertas, não é regressão. Antes da integração, registrar o valor de referência para comparar depois.
 5. Fazer na mesma janela do reparo do ramo `data`, depois da integração do matcher. Antes: backup do banco (`docs/backup.md`).
 
 ## 9. Limitações

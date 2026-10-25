@@ -25,6 +25,7 @@
 //
 // Uso:
 //   node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO]
+//                               [--anterior <relatorio.json de um dry-run anterior à integração do matcher>]
 //   <pasta> de dados: contém state.json, lowest.json, products.json, offers.json, history.jsonl e hist/ (ou data/ com eles).
 //   <checkout>: pasta com src/match.js, src/gate.js e config/catalog.json (ex.: `git archive <sha> src config | tar -x`).
 // Não há modo de aplicação: --aplicar é recusado. Aplicar é um passo humano documentado em docs/reparo-dados.md.
@@ -99,7 +100,7 @@ export function resumoHist(h, distrust = null) {
 }
 
 // ---------------------------------------------------------------- análise (pura: não escreve nada)
-export function analisar({ dados, base, candidato, agora = new Date().toISOString() }) {
+export function analisar({ dados, base, candidato, agora = new Date().toISOString(), anterior = null }) {
   const { state, offers, history, hist, lowest, products } = dados;
   const distrust = state.distrust && Array.isArray(state.distrust.stores) ? state.distrust : null;
   const rowsPorOferta = new Map();
@@ -245,17 +246,29 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
   }
   for (const p of pontos) if (p.acao === 'revisao' && !p.bloqueado && bloqueados.has(p.produto)) p.bloqueado = true;
 
-  // 5) Produtos que só existem por anúncios reassociados → proposta de remoção (nunca aplicada).
-  const remocoes = [];
-  for (const pid of produtosAfetados) {
+  // 5) Produtos que só existem por anúncios reassociados → proposta de remoção (nunca aplicada). Só é proposta quando
+  // NENHUMA oferta de offers.json aponta para o id (ou seja, depois que o matcher corrigido rodou e tirou as ofertas
+  // de lá). Antes disso fica "adiada". Depois da integração, a oferta que foi para "sem produto" some do offers.json
+  // (sem título): a evidência de que ela era reassociada vem do relatório anterior (--anterior), gerado antes.
+  const reassocAnterior = new Map();
+  for (const r of anterior?.reassociacoes || []) if (r?.offerId && r.produtoAntigo) reassocAnterior.set(r.offerId, r.produtoAntigo);
+  const candidatosRemocao = new Set([...produtosAfetados, ...reassocAnterior.values()]);
+  const remocoes = []; const remocoesAdiadas = [];
+  for (const pid of [...candidatosRemocao].sort()) {
     const ids = new Set();
     for (const o of Object.values(offers)) if (o.productId === pid) ids.add(o.id);
     for (const [oid, rows] of rowsPorOferta) if (rows.some((x) => x.productId === pid)) ids.add(oid);
     if (!ids.size) continue;
-    const todosReassoc = [...ids].every((id) => reassoc.get(id)?.produtoAntigo === pid);
-    if (!todosReassoc) continue;
-    remocoes.push({ produto: pid, nome: products[pid]?.name || null, ofertas: [...ids], classe: 'revisao', acao: 'remover-do-registro (proposta)',
-      motivo: 'todas as ofertas já vistas neste produto foram reassociadas pelo candidato; nenhuma legítima', registro: products[pid] ? 'products.json' : 'ausente do products.json' });
+    const reassocDe = (id) => reassoc.get(id)?.produtoAntigo === pid || reassocAnterior.get(id) === pid;
+    if (![...ids].every(reassocDe)) continue;
+    const apontando = Object.values(offers).filter((o) => o.productId === pid);
+    const item = { produto: pid, nome: products[pid]?.name || null, ofertas: [...ids], classe: 'revisao', registro: products[pid] ? 'products.json' : 'ausente do products.json' };
+    if (apontando.length) {
+      remocoesAdiadas.push({ ...item, acao: 'adiada', ofertasApontando: apontando.map((o) => o.id), emEstoque: apontando.filter((o) => o.stock === 'IN_STOCK').length,
+        motivo: `${apontando.length} oferta(s) do offers.json ainda apontam para o produto; rodar de novo depois que o matcher corrigido tirar as ofertas de lá (com --anterior)` });
+    } else {
+      remocoes.push({ ...item, acao: 'remover-do-registro (proposta)', motivo: 'nenhuma oferta do offers.json aponta para o produto e todas as já vistas nele foram reassociadas; nenhuma legítima' });
+    }
   }
 
   // 6) Preço atual × menor salvo × histórico por produto afetado.
@@ -298,6 +311,7 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
       contaminados: menores.length, recalculadosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'recalcular').length,
       removidosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'remover').length, revisao: menores.filter((m) => m.classe === 'revisao').length },
     remocoesPropostas: remocoes.length,
+    remocoesAdiadas: remocoesAdiadas.length,
     produtosBloqueados: [...bloqueados].sort(),
   };
   contagens.hist.pontosDepois = contagens.hist.pontosAntes - contagens.hist.pontosRemovidosAuto;
@@ -305,7 +319,8 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
     relatorio: { geradoEm: agora, modo: 'dry-run',
       matchers: { base: { nome: base.nome, commit: base.commit || null, matchSha256: base.matchSha256 || null }, candidato: { nome: candidato.nome, commit: candidato.commit || null, matchSha256: candidato.matchSha256 || null } },
       dados: { generatedAt: state.generatedAt || null, linhasHistory: history.length, arquivosHist: Object.keys(hist).length, ofertas: Object.keys(offers).length },
-      contagens, porProduto, reassociacoes: lista, pontos, menores, remocoes },
+      anterior: anterior ? { geradoEm: anterior.geradoEm || null, reassociacoes: reassocAnterior.size } : null,
+      contagens, porProduto, reassociacoes: lista, pontos, menores, remocoes, remocoesAdiadas },
     proposto: { lowest: lowestProposto, hist: histProposto, state: stateProposto, remocoes },
   };
 }
@@ -344,7 +359,8 @@ export function markdown(rel) {
   L.push(`| arquivos de hist alterados | — | ${c.hist.arquivosAlterados} | — | — |`);
   L.push(`| entradas no lowest.json | ${c.lowest.entradasAntes} | ${c.lowest.entradasDepois} | ${c.lowest.recalculadosAuto} recalculados, ${c.lowest.removidosAuto} removidos | ${c.lowest.revisao} |`);
   L.push(`| produtos bloqueados (item em revisão: nada aplicado) | — | ${c.produtosBloqueados.length} | — | ${c.produtosBloqueados.join(', ') || '—'} |`);
-  L.push(`| produtos com remoção proposta | — | ${c.remocoesPropostas} | 0 (nunca automático) | ${c.remocoesPropostas} |`, '');
+  L.push(`| produtos com remoção proposta | — | ${c.remocoesPropostas} | 0 (nunca automático) | ${c.remocoesPropostas} |`);
+  L.push(`| remoções adiadas (ofertas ainda apontam) | — | ${c.remocoesAdiadas} | — | — |`, '');
   L.push('## Por produto: preço atual × menor salvo × histórico', '', '| produto | reassoc. | menor em estoque agora (sem reassoc.) | menor salvo antes → depois | classe | hist: dias/drop7d antes → depois | pontos rem./rev. |', '|---|---|---|---|---|---|---|');
   for (const p of rel.porProduto) {
     const h = (x) => (x ? `${x.days}d/${(x.drop7d * 100).toFixed(1)}%` : '—');
@@ -355,6 +371,7 @@ export function markdown(rel) {
   for (const m of rel.menores) L.push(`- **${m.produto}** [${m.classe}]: ${fmt(m.antes.total)} (${m.antes.storeId}, ${dia(m.antes.at)}) → ${m.depois ? `${fmt(m.depois.total)} (${m.depois.storeId}, ${dia(m.depois.at)})` : 'sem menor preço'}. ${m.motivo}`);
   L.push('', '## Reassociações (evidência)', '', '| classe | loja | preço | visto em | antigo → novo | título |', '|---|---|---|---|---|---|');
   for (const r of rel.reassociacoes) L.push(`| ${r.classe}${r.motivos.length ? ' (' + r.motivos.join('; ').replace(/\|/g, '/') + ')' : ''} | ${r.loja} | ${fmt(r.preco)} ${r.estoque === 'IN_STOCK' ? '' : '(sem estoque)'} | ${dia(r.vistoEm)} | ${r.produtoAntigo} → ${r.produtoNovo || 'sem produto: ' + r.motivoCandidato} | ${String(r.titulo).replace(/\|/g, '/')} |`);
+  if (rel.remocoesAdiadas?.length) { L.push('', '## Remoção adiada (ofertas ainda apontam para o produto)', ''); for (const r of rel.remocoesAdiadas) L.push(`- ${r.produto} (${r.nome || 'sem nome'}): ${r.ofertasApontando.length} oferta(s) apontando (${r.emEstoque} em estoque). ${r.motivo}.`); }
   if (rel.remocoes.length) { L.push('', '## Remoção proposta (decisão humana)', ''); for (const r of rel.remocoes) L.push(`- ${r.produto} (${r.nome || 'sem nome'}): ${r.ofertas.length} oferta(s), todas reassociadas. ${r.registro}.`); }
   const rev = rel.pontos.filter((p) => p.acao === 'revisao');
   if (rev.length) { L.push('', '## Pontos de histórico em revisão humana', ''); for (const p of rev.slice(0, 80)) L.push(`- ${p.produto} / ${p.loja} / ${p.dia}: ${fmt(p.valor)} — ${p.motivo}`); if (rev.length > 80) L.push(`- … mais ${rev.length - 80} (ver relatorio.json)`); }
@@ -390,16 +407,18 @@ function args(argv) {
 export async function main(argv = process.argv.slice(2), log = console.log) {
   const a = args(argv);
   if (Object.keys(a).some((k) => /^(aplicar|apply)(=|$)/.test(k))) throw new Error('modo de aplicação não implementado: o reparo é só dry-run (ver docs/reparo-dados.md)');
-  if (!a.dados || !a.saida || !a.candidato) throw new Error('uso: node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO]');
+  if (!a.dados || !a.saida || !a.candidato) throw new Error('uso: node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO] [--anterior <relatorio.json>]');
   const dados = lerDados(a.dados);
   verificarSaida(a.saida, dados.dir); // antes de qualquer trabalho
   const ids = Object.keys(dados.products);
   const base = await matcherDe(a.base || RAIZ, ids, a['nome-base'] || a.base || 'checkout atual');
   const candidato = await matcherDe(a.candidato, ids, a['nome-candidato'] || a.candidato);
-  const r = analisar({ dados, base, candidato, agora: a.agora || new Date().toISOString() });
+  let anterior = null;
+  if (a.anterior) { anterior = lerJson(a.anterior, null); if (!anterior || !Array.isArray(anterior.reassociacoes)) throw new Error(`--anterior: relatorio.json inválido (${a.anterior})`); }
+  const r = analisar({ dados, base, candidato, agora: a.agora || new Date().toISOString(), anterior });
   const out = escreverSaida(a.saida, r, { dados });
   const c = r.relatorio.contagens;
-  log(`reparo-dados (dry-run): ${c.reassociacoes.total} reassociações (${c.reassociacoes.auto} auto, ${c.reassociacoes.revisao} revisão), ${c.produtosAfetados} produtos; hist −${c.hist.pontosRemovidosAuto} pontos (${c.hist.pontosRevisao} em revisão); lowest ${c.lowest.recalculadosAuto} recalculados, ${c.lowest.removidosAuto} removidos, ${c.lowest.revisao} em revisão; ${c.remocoesPropostas} remoções propostas. Saída: ${out}`);
+  log(`reparo-dados (dry-run): ${c.reassociacoes.total} reassociações (${c.reassociacoes.auto} auto, ${c.reassociacoes.revisao} revisão), ${c.produtosAfetados} produtos; hist −${c.hist.pontosRemovidosAuto} pontos (${c.hist.pontosRevisao} em revisão); lowest ${c.lowest.recalculadosAuto} recalculados, ${c.lowest.removidosAuto} removidos, ${c.lowest.revisao} em revisão; ${c.remocoesPropostas} remoções propostas, ${c.remocoesAdiadas} adiadas. Saída: ${out}`);
   return r;
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
