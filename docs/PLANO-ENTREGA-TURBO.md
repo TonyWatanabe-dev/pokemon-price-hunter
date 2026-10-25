@@ -16,6 +16,8 @@
 - **Fase 8 — Hardening e lançamento:** parcial; depende do burn-in, smoke no SHA publicado e decisão/estratégia de backup do Supabase.
 - **Fase 9 — Manutenção contínua:** começa após os critérios de lançamento da Fase 8.
 
+**Atualização 25/10/2026 (fim da tarde) — estabilização:** nada integrado. Correções preparadas em branches: ME06 sem código, M2 (validada no CI de regras, 53/53), D1–D3 e D5–D7, e reparo de dados com restauração testada. Detalhes e critérios no `ROADMAP-OPERACIONAL.md`. Nenhuma fase mudou de estado. Bloqueios: burn-in 1/7, decisões do dono (preços sv9/me01/alakazam, `enforce_admins`, política de frete D2, kit-v3, reconsulta RA, base do % Copag) e R3 (publicação do reparo, regra M2, cópia de 07/10 no build).
+
 **Atualização 25/10/2026 (tarde):** 22 PRs integradas e publicadas com autorização do dono. Detalhes, SHAs e pendências estão no `ROADMAP-OPERACIONAL.md`, seção de 25/10 tarde. Nenhuma fase mudou de estado.
 - **Fase 1:** burn-in 1/7. O matching v3 (#938) e o ME06 (#922) estão em produção. O reparo dos dados contaminados foi **simulado, não aplicado** (ramo `data` e Postgres).
 - **Fase 2:** o D4 (cópia de 07/10 servida como preço atual) está corrigido e publicado (#939 navegador, #940 API). A falha dupla não foi validada em produção.

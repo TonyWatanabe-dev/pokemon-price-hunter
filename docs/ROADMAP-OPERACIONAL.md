@@ -41,6 +41,78 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Estabilização pós-integração — 25/10/2026, fim da tarde (America/Sao_Paulo)
+
+Nesta rodada não houve merge, deploy, publicação de regras, mudança de proteção nem alteração de dados reais. Todas as correções estão em branches de trabalho, sem PR. Estados: **preparado** (código e teste local na branch), **revisado** (revisão independente concluída), **CI** (checks verdes no GitHub), **integrado** e **produção**.
+
+**Produção (main a39e82f9, deploy READY):**
+- Nenhum erro de runtime nas últimas 6 h.
+- API de produto servindo dado do banco atualizado há 12 min.
+- 404 com noindex; sitemap com 318 URLs, sem Monte seu kit.
+- JavaScript servido com as correções D4 e #941.
+- O `/data/state.json` de 07/10 continua servido pelo build. Navegador e API não o aceitam mais como dado atual; tirar do build é R3.
+- Não verificado: console do navegador real.
+
+**Burn-in #271:** 1/7. 25/10 ainda parcial; o fechamento oficial sai por volta de 26/10 03:07 UTC.
+- Todas as rodadas do Hunter de 25/10 terminaram ok, com maior intervalo de 23 min.
+- Vigia: as 12 últimas execuções foram success.
+- Versões: matching novo a partir das 15:45 UTC; Vigia novo a partir das 16:07 UTC. Critérios inalterados.
+
+**Conferência agendada da #897 (BQD):** 0 remoções. As 29 ofertas foram mantidas pela proteção A1, então a remoção **não está validada em runtime**; o caminho é `proposta/bqd-releitura-pos-burnin`, depois do burn-in.
+- Achado antigo, existente desde 14/10: a Ri Happy alterna o tempo todo entre remover e devolver as mesmas ofertas. Foram 1.205 eventos `removed` em 75 ofertas desde 24/10.
+- Provável causa: `src/run.js:513`, protegido pelo burn-in.
+
+| Frente | Branch / SHA | Estado | Pendência |
+|---|---|---|---|
+| ME06 sem código ("Reinado Delta" caía em ME01) | proposta/me06-sem-codigo / 39f4b3fa | preparado, revisado (ressalva 1 corrigida); 358 arquivos EXIT 0; golden 32/32; muda só 1 título real (moxland) | PR e integração (matching muda o robô durante o burn-in) |
+| Reparo de dados pós-integração | proposta/reparo-dados-pos-integracao / 4b5a3ffa | preparado; restauração testada em clone local byte a byte; 357 arquivos EXIT 0 | decisões sv9-zacian, me01-etb e alakazam; passo de publicação (R3); banco; fim do burn-in |
+| Regra M2 do Firestore | proposta/m2-regras / ea62de90 | preparado; **CI de regras real: 53/53** (run 40217443543); avaliador estático no npm test | PR e publicação no console (R3) |
+| D1 título app × SSR | proposta/consist-d1 / 0543f0c3 | preparado | revisão independente em andamento |
+| D2 kit sem "no Pix" | proposta/consist-d2 / 0d0b3fb6 | preparado | `kit-v2.js` em cache imutável: publicar como kit-v3 é decisão do dono |
+| D3 Reclame Aqui "sem cadastro" falso | proposta/consist-d3 / fc43d252 | preparado (rótulo "não consultado") | reconsultar as 50 lojas fora da tabela é decisão do dono |
+| D5 % Copag com e sem frete | proposta/consist-d5 / 58f79a52 | preparado (texto "(com frete)") | mudar a base do % é decisão do dono (`src/run.js`) |
+| D6 /pre-vendas duplica no SSR | proposta/consist-d6 / 314784e4 | preparado | — |
+| D7 desempate app × SSR | proposta/consist-d7 / 005482a0 | preparado | — |
+
+As 6 branches de consistência juntas com a ME06: 364 arquivos EXIT 0. O index.html fica em 460.367 de 460.800, com 432 de folga.
+
+**Governança:** `enforce_admins` continua false.
+- Recomendação: ligar `enforce_admins`. É um comando reversível e não quebra tarefas.yml, os bots do ramo `data` nem os outros workflows.
+- Achados da auditoria: 15 PRs antigas integradas com a branch atrás da main e 11 commits empurrados direto na main entre 13 e 17/10. As 23 PRs de hoje estão corretas.
+- A trava (`merge-lock`) continua desligada.
+
+**Branches pendentes** (nenhuma apagada):
+
+| Branch | Recomendação |
+|---|---|
+| vigia-diagnostico | descartar: já contida na main pela #919 |
+| matching-restante | descartar: substituída pela #938 e quebra a suíte |
+| ordenacao-frete | decisão funcional do dono: oferta com frete conhecido na frente; também exige ajustar `test/contas-pagina-tests.js` |
+| bqd-releitura-pos-burnin | PR depois do 7/7 |
+
+**Prioridades:**
+- **P0:**
+  - preços contaminados ainda visíveis: sv9-zacian 113,89 e mewtwo 139,99, no ramo `data` e no banco;
+  - ligar `enforce_admins`.
+- **P1:**
+  - concluir o burn-in;
+  - integrar a ME06;
+  - aplicar o reparo depois das decisões;
+  - corrigir o vaivém de remoções da Ri Happy;
+  - integrar a M2;
+  - tirar a cópia de 07/10 do build.
+- **P2:** D1–D3 e D5–D7; política D2 de frete.
+- **P3:** remover as branches redundantes, com autorização.
+
+Critério para encerrar a estabilização:
+- 7/7 no burn-in;
+- reparo aplicado e conferido no ramo `data`, no banco e no site;
+- `enforce_admins` ligado;
+- M2 publicada;
+- D1–D3 e D5–D7 integradas e conferidas em produção.
+
+---
+
 ## Integração e publicação autorizadas — 25/10/2026, tarde (America/Sao_Paulo)
 
 **Autorização do dono no chat:** "Pode dar merge em tudo e publicar". Foram integradas por squash 22 PRs, uma de cada vez, sempre com os 4 checks verdes no SHA exato e behind=0, sem bypass de admin. A Vercel publicou cada uma: o último deploy, de `7825f701` (#919), está READY em produção.
