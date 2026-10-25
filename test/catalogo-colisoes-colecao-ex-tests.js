@@ -145,8 +145,11 @@ t('6. "Destinos Paradoxais": cada caixa no seu produto, kit sem produto', () => 
     'Pokémon Box Destinos Paradoxais Chifres Férreos Ex - Copag': 'avulsos-colecao_ex-ferreos',
     'Pokémon Box Destinos Paradoxais Raio de Fúria Ex - Copag': 'avulsos-colecao_ex-furia',
     'Box Coleção Raio Furia EX Destinos Paradoxais Pokémon TCG': 'avulsos-colecao_ex-furia',
-    'Pokémon Box Destinos Paradoxais EX Rocha Férrea Futurista 3707 - Copag': 'avulsos-colecao_ex-paradoxais', // id existente, não muda
   });
+  // T5-C/C: a asserção antiga ('avulsos-colecao_ex-paradoxais') fixava a variante tirada do nome da linha ("Paradoxais EX"), que
+  // junta qualquer caixa escrita "Destinos Paradoxais EX <caixa>". A Rocha Férrea já tem id próprio no catálogo automático,
+  // avulsos-colecao_ex-ferrea (omniverse "Destinos Paradoxais - Box Rocha Férrea ex", 17/10); vai para ele.
+  assert.equal(id('Pokémon Box Destinos Paradoxais EX Rocha Férrea Futurista 3707 - Copag'), 'avulsos-colecao_ex-ferrea');
 });
 
 t('7. "Kit com N Box" é kit montado pela loja, não a caixa', () => {

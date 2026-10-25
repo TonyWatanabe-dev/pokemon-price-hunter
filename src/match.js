@@ -149,8 +149,18 @@ function deckVariant(t) {
 const GRAFIA = Object.freeze({ xarneas: 'xerneas' });
 const grafia = (v) => (v ? v.replace(/(^|-)([a-z]+)$/, (m, p, w) => p + (GRAFIA[w] || w)) : v);
 function detectVariant(t) { return grafia(detectVariant0(t)); }
+// "Coleção Ex Destinos Paradoxais" (25/10/2026): "destinos"/"paradoxais" (nome da linha) viravam a variante e juntavam caixas
+// diferentes (avulsos-colecao_ex-destinos: Fogo Corrosão + Chifres Férreos + kit; -paradoxais: "Destinos Paradoxais EX Rocha
+// Férrea"). A v2 pegava a última palavra do título, frágil a sufixo de loja ("- Copag", "(PT-BR)", "| Loja") e criava
+// avulsos-colecao_ex-kit. Lista fechada das 4 caixas (T5-C), com as variantes que já são ids do catálogo automático
+// (avulsos-colecao_ex-furia/-ferreos/-corrosao/-ferrea). Nenhuma ou mais de uma caixa no título: sem variante (sem produto).
+const DESTINOS_PARADOXAIS = /\bdestinos paradoxais\b/;
+const CAIXAS_PARADOXAIS = [[/\braio (?:de )?furia\b/, 'furia'], [/\bchifres? f(?:e| )?rreos?\b/, 'ferreos'],
+  [/\bfogo (?:de )?corros(?:ao| o)\b/, 'corrosao'], [/\brocha f(?:e| )?rrea\b/, 'ferrea']];
+function caixaParadoxais(t) { const v = CAIXAS_PARADOXAIS.filter(([re]) => re.test(t)).map(([, x]) => x); return v.length === 1 ? v[0] : null; }
 function detectVariant0(t) {
   if (DECK_BATALHA.test(t)) return deckVariant(t);
+  if (DESTINOS_PARADOXAIS.test(t)) return caixaParadoxais(t);
   if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
   const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
   // Todo "<nome> ex" do título, o primeiro que não é palavra genérica ("Coleção EX Lendas Azuis - Xerneas EX" → xerneas).
@@ -161,10 +171,6 @@ function detectVariant0(t) {
   const li = t.match(/\blendas[ -]implacaveis:? (?:- )?(?:ex )?([a-z]{3,})\b/);
   if (li) return VARIANT_STOP.has(li[1]) || li[1] === 'ex' ? null : mega + li[1];
   let m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
-  // "Coleção Ex Destinos Paradoxais - Fogo Corrosão" (25/10/2026): "destinos" (nome da linha) virava a variante e juntava
-  // Fogo Corrosão, Chifres Férreos e um kit em avulsos-colecao_ex-destinos. A caixa é a última palavra depois da linha, como
-  // nos outros anúncios dela ("Raio de Fúria Ex" → furia, "Chifres Férreos Ex" → ferreos); sem nome, sem variante.
-  if (m && m[1] === 'destinos') { const d = t.match(/\bdestinos paradoxais (?:- )?(?:[a-z]+ )*?([a-z]{3,})(?: ex)?\s*$/); return d && !VARIANT_STOP.has(d[1]) ? mega + d[1] : null; }
   if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
   return null;
 }
