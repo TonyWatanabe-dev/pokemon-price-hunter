@@ -2630,7 +2630,7 @@ function fcChoose(oid,method){const pid=FC.pid;if(!pid||!FC.res[oid])return;FC.p
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
 const ACC={mod:null,user:null,data:null,ready:false,tab:"up",step:"choose",gate:null,err:null,errField:null,form:{},ok:null,told:false};
 let accP=null;
-const AERR={"auth/invalid-email":"E-mail inválido.","auth/missing-email":"Digite o e-mail.","auth/missing-password":"Digite a senha.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/email-already-in-use":"Já existe uma conta com esse e-mail. Entre ou use \"Esqueci minha senha\".","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/wrong-password":"E-mail ou senha incorretos.","auth/user-not-found":"E-mail ou senha incorretos.","auth/too-many-requests":"Muitas tentativas seguidas. Espere alguns minutos e tente de novo.","auth/popup-closed-by-user":"","auth/cancelled-popup-request":"","auth/user-cancelled":"","auth/popup-blocked":"O navegador bloqueou a janela do Google. Libere pop-ups para este site e tente de novo.","auth/network-request-failed":"Sem conexão com a internet. Tente de novo.","auth/requires-recent-login":"Por segurança, entre de novo para excluir a conta.","auth/account-exists-with-different-credential":"Esse e-mail já tem conta com outro jeito de entrar.","auth/unauthorized-domain":"Login ainda não liberado para este endereço do site.","auth/operation-not-allowed":"Esse jeito de entrar ainda não está ativado.","auth/admin-restricted-operation":"Novos cadastros estão fechados no momento. Se você já tem conta, use Entrar.","auth/requests-from-referer":"Cadastro e login ainda não estão liberados neste endereço do site.","auth/invalid-api-key":"Login indisponível neste endereço do site no momento.","auth/app-not-authorized":"Login indisponível neste endereço do site no momento.","auth/configuration-not-found":"Login indisponível no momento: configuração pendente do site.","auth/internal-error":"O serviço de login falhou agora. Tente de novo em instantes.","auth/quota-exceeded":"Muitos cadastros agora. Tente de novo em alguns minutos.","auth/unauthorized-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/invalid-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/web-storage-unsupported":"O navegador está bloqueando os dados do site. Saia do modo anônimo ou libere cookies e tente de novo.","auth/operation-not-supported-in-this-environment":"Este navegador não permite o login com Google aqui. Tente em outro navegador.","auth/redirect-cancelled-by-user":""};
+const AERR={"auth/user-mismatch":"Escolha no Google a mesma conta conectada aqui.","auth/invalid-email":"E-mail inválido.","auth/missing-email":"Digite o e-mail.","auth/missing-password":"Digite a senha.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/email-already-in-use":"Já existe uma conta com esse e-mail. Entre ou use \"Esqueci minha senha\".","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/wrong-password":"E-mail ou senha incorretos.","auth/user-not-found":"E-mail ou senha incorretos.","auth/too-many-requests":"Muitas tentativas seguidas. Espere alguns minutos e tente de novo.","auth/popup-closed-by-user":"","auth/cancelled-popup-request":"","auth/user-cancelled":"","auth/popup-blocked":"O navegador bloqueou a janela do Google. Libere pop-ups para este site e tente de novo.","auth/network-request-failed":"Sem conexão com a internet. Tente de novo.","auth/requires-recent-login":"Por segurança, entre de novo para excluir a conta.","auth/account-exists-with-different-credential":"Esse e-mail já tem conta com outro jeito de entrar.","auth/unauthorized-domain":"Login ainda não liberado para este endereço do site.","auth/operation-not-allowed":"Esse jeito de entrar ainda não está ativado.","auth/admin-restricted-operation":"Novos cadastros estão fechados no momento. Se você já tem conta, use Entrar.","auth/requests-from-referer":"Cadastro e login ainda não estão liberados neste endereço do site.","auth/invalid-api-key":"Login indisponível neste endereço do site no momento.","auth/app-not-authorized":"Login indisponível neste endereço do site no momento.","auth/configuration-not-found":"Login indisponível no momento: configuração pendente do site.","auth/internal-error":"O serviço de login falhou agora. Tente de novo em instantes.","auth/quota-exceeded":"Muitos cadastros agora. Tente de novo em alguns minutos.","auth/unauthorized-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/invalid-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/web-storage-unsupported":"O navegador está bloqueando os dados do site. Saia do modo anônimo ou libere cookies e tente de novo.","auth/operation-not-supported-in-this-environment":"Este navegador não permite o login com Google aqui. Tente em outro navegador.","auth/redirect-cancelled-by-user":""};
 /* campo ligado a cada erro (mensagem ao lado do campo e aria-invalid) */
 const AFIELD={"auth/invalid-email":"email","auth/missing-email":"email","auth/email-already-in-use":"email","auth/missing-password":"pw","auth/weak-password":"pw","auth/password-does-not-meet-requirements":"pw"};
 /* política de senha do Firebase: a mensagem traz a lista de requisitos em inglês; aqui só traduzimos o que ela pede */
@@ -2667,13 +2667,29 @@ async function afterRedirect(m){
 async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
-    if(was!==u.uid){ACC.data=null;ACC.loadFailed=false;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}}
-    if(ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
-    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    if(was!==u.uid){ACC.data=null;ACC.del=null;ACC.loadFailed=false;let d;try{d=await ACC.mod.load();ACC.data=d||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}
+      delCheck(u,!ACC.loadFailed&&!d)}
+    if(ACC.del||ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
+    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base,ACC.semDoc===true);Object.assign(ACC.data,base);ACC.semDoc=false}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
     else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
-  }else ACC.data=null;
+  }else{ACC.data=null;ACC.del=null}
   ACC.ready=true;accSync();
   if(u)await resumeGate();
+}
+/* Exclusão pendente (M1 da #932) */
+const DEL_K="ph:del:";
+function delMark(uid,v){const k=DEL_K+uid;try{if(v===undefined)return localStorage.getItem(k);v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch{}return null}
+function delEnter(why,apagados){ACC.del={why,apagados};ACC.data=null;try{sessionStorage.removeItem("ph:tg:"+ACC.user.uid)}catch{}}
+function delCheck(u,semDoc){
+  ACC.semDoc=semDoc;const mk=delMark(u.uid);
+  if(mk==="andamento"&&!semDoc&&!ACC.loadFailed){delMark(u.uid,null);return}
+  if(mk)return delEnter("pendente",semDoc);
+  if(semDoc&&u.nova===false)delEnter("ausente",true);
+}
+function delStorage(e){
+  const u=ACC.user;if(!u||e.key!==DEL_K+u.uid)return;
+  const v=e.newValue;if(v){if(ACC.del)ACC.del.apagados||=v==="pendente";else{delEnter("pendente",v==="pendente");accSync();render()}}
+  else if(ACC.del?.why==="pendente")location.reload();   /* outra aba concluiu ou desistiu */
 }
 
 /* AuthGate: a única porta para ações que precisam de conta.
@@ -2770,6 +2786,7 @@ async function accAction(a,btn){
     return}
   if(a.startsWith("tg-")){await tgAction(a,btn);return}
   if(a==="del-no"){render();return}
+  if(a==="del-continuar"){await delContinuar(btn);return}
   if(!m)return;
   setBusy(btn,true,a==="out"?"Saindo…":a==="resend"?"Enviando…":a==="reload"?"Verificando…":"Entrando…");
   try{
@@ -2803,14 +2820,33 @@ async function submitAcc(f){
   setBusy(b,false);if(!ACC.user){renderGate();focusErr()}
 }
 async function submitDel(f){
-  const m=ACC.mod;if(!m)return;const pw=new FormData(f).get("pw");const b=f.querySelector("[type=submit]");setBusy(b,true,"Excluindo…");
-  try{await m.wipe(pw||undefined);ACC.data=null;toast("Conta e dados excluídos");go("")}
-  catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");setBusy(b,false)}
+  const m=ACC.mod,u=ACC.user;if(!m||!u)return;const pw=new FormData(f).get("pw")||"";const b=f.querySelector("[type=submit]");
+  const uid=u.uid,antes=delMark(uid);if(!antes)delMark(uid,"andamento");
+  setBusy(b,true,"Excluindo…");
+  let ok;try{ok=await m.wipe(pw||undefined,pw?"password":"google.com")}
+  catch(e){
+    if(e?.docDeleted){delMark(uid,"pendente");delEnter("pendente",true)}else if(!antes)delMark(uid,null);
+    const msg=e?.code==="auth/requires-recent-login"&&!pw&&provs(u).includes("password")?"Por segurança, digite sua senha para excluir.":aerr(e)||"Confirmação cancelada. "+(ACC.del?"A exclusão continua pendente.":"Nada foi excluído.");
+    if(ACC.del){ACC.del.err=msg;accSync();render();toast(e?.docDeleted?"Seus dados foram apagados, mas a conta ainda não. Confirme para concluir.":msg,true);$("#delbox h2")?.focus()}
+    else{toast(msg);setBusy(b,false)}
+    return}
+  if(ok!==true){if(!antes)delMark(uid,null);setBusy(b,false);toast(AERR["auth/requires-recent-login"],true);return}
+  delMark(uid,null);try{sessionStorage.removeItem("ph:tg:"+uid)}catch{}
+  ACC.data=null;ACC.del=null;toast("Conta e dados excluídos");go("");
+}
+async function delContinuar(btn){
+  const m=ACC.mod,u=ACC.user;if(!ACC.del)return;setBusy(btn,true,"Recriando…");
+  const now=new Date().toISOString();const base={name:u.name||"",favorites:[],alerts:[],termsAt:now,createdAt:now};
+  try{await m.save(base,true)}catch(e){setBusy(btn,false);toast(saveErr(e),true);return}
+  delMark(u.uid,null);ACC.del=null;ACC.semDoc=0;ACC.data=base;accSync();render();toast("Perfil recriado.");
 }
 async function saveField(k,v,old){
+  if(ACC.del||(ACC.user&&delMark(ACC.user.uid))){toast("Exclusão da conta pendente. Veja em Minha conta.",true);throw Object.assign(Error("pendente"),{code:"conta/exclusao-pendente"})}
   if(!ACC.user||!ACC.data){toast("Entre na sua conta para salvar.");throw Object.assign(new Error("sem login"),{code:"auth/no-user"})}
   if(ACC.loadFailed){toast("Seus dados não carregaram. Recarregue a página antes de salvar.");throw Object.assign(new Error("dados não carregados"),{code:"data/not-loaded"})}
-  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast(saveErr(e));throw e}
+  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;
+    if(e?.code==="not-found"){delEnter("ausente",true);accSync();render();toast("Conta sem dados salvos. Veja em Minha conta.",true);throw e}
+    accSync(false);toast(saveErr(e));throw e}
 }
 const SAVE_AUTH=new Set(["auth/no-user","unauthenticated","auth/user-token-expired","auth/user-not-found"]);
 const SAVE_NET=new Set(["unavailable","auth/network-request-failed","deadline-exceeded"]);
@@ -2954,14 +2990,19 @@ function renderAlerts(){
 }
 function renderConfig(){
   const u=ACC.user;if(!u){$("#view").innerHTML=privateGate("Configurações","Entre para mudar as configurações da sua conta.");return}
-  const th=document.documentElement.dataset.theme||"";const pwUser=u.provider==="password";
+  const th=document.documentElement.dataset.theme||"";
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel cfg"><h2>Configurações</h2>
   <h3>Tema</h3><div class="tabs" role="group" aria-label="Tema">${[["","Automático"],["light","Claro"],["dark","Escuro"]].map(([v,l])=>`<button type="button" data-theme-set="${v}" aria-pressed="${th===v}">${l}</button>`).join("")}</div>
   <h3>Seus dados</h3><p>Guardamos nome, e-mail, favoritos e alertas (e, se você ligar os alertas no Telegram, o número da conversa com o bot). Veja a <a href="/privacidade" data-go="privacidade">Política de privacidade</a>.</p>
   <h3 style="color:var(--bad)">Excluir conta</h3><p>Apaga sua conta, favoritos e alertas na hora. Não dá para desfazer.</p>
-  <form id="delf" class="delf" novalidate>${pwUser?`<div class="field"><label for="d-pw">Confirme sua senha</label><input id="d-pw" name="pw" type="password" autocomplete="current-password" required></div>`:""}<button class="btn danger" type="submit">${ic("trash")}Excluir conta e dados</button></form>
+  ${delForm(u,"Excluir conta e dados")}
   </section></div>`;
 }
+function provs(u){return u.providers?.length?u.providers:[u.provider]}
+function delForm(u,label){const v=provs(u),pw=v.includes("password"),g=v.includes("google.com");
+  return`<form id="delf" class="delf" novalidate>${pw?`<div class="field"><label for="d-pw">Confirme sua senha${g?" (em branco: Google)":""}</label><input id="d-pw" name="pw" type="password" autocomplete="current-password"${g?"":" required"}></div>`:""}<button class="btn danger" type="submit">${ic("trash")}${label}</button></form>`}
+function delPanel(){const d=ACC.del,p=d.why==="pendente";
+  return`<div class="stack" style="margin-top:16px"><section class="panel" id="delbox"><h2 tabindex="-1">${p?"Exclusão pendente: confirme para concluir":"Conta sem dados salvos"}</h2><p role="status">${p?d.apagados?"Favoritos, alertas e perfil já foram apagados; falta excluir o login.":"A exclusão não terminou.":"Sem perfil, favoritos e alertas (exclusão não concluída?)."} Até lá, nada é salvo.</p>${d.err?`<p class="err" tabindex="-1" role="alert">${esc(d.err)}</p>`:""}${delForm(ACC.user,p?"Concluir a exclusão":"Excluir a conta")}<p><button type="button" data-a="del-continuar">Continuar usando a conta</button> (perfil vazio; vale de novo o aceite dos <a href="/termos" data-go="termos">Termos</a>)</p></section></div>`}
 
 const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
 const TITLES={grupos:"Grupos de ofertas de Pokémon TCG no WhatsApp e Telegram",busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",lojas:"Lojas de Pokémon TCG no Brasil",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações",notfound:"Página não encontrada"};
@@ -3021,6 +3062,7 @@ function render(){
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
   canonSync();grpUI();
   if(S?.slim&&PRIVATE.includes(view))ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
+  if(ACC.user&&ACC.del&&PRIVATE.includes(view))return $("#view").innerHTML=delPanel();
   if(view==="conta")return renderConta();
   if(view==="favoritos")return renderFavs();
   if(view==="alertas")return renderAlerts();
@@ -3783,6 +3825,7 @@ function themeSync(){document.querySelectorAll(".theme-btn use").forEach((u)=>u.
 (function(){const t=store.get("theme",null);if(t)document.documentElement.dataset.theme=t;themeSync();
   document.querySelectorAll(".theme-btn").forEach((b)=>b.onclick=()=>{document.documentElement.dataset.theme=isDark()?"light":"dark";store.set("theme",document.documentElement.dataset.theme);themeSync();if(view==="configuracoes")render()})})();
 accSync(false);
+addEventListener("storage",delStorage);
 load();
 if(store.get("acc",false)||redirFlag())accMod().catch(()=>{ACC.ready=true;accSync()});
 </script>

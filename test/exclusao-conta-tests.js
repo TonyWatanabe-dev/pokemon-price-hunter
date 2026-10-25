@@ -40,11 +40,12 @@ const wipeName = bundle.match(/export\{[^}]*?([\w$]+) as wipe[,}]/)?.[1];
 assert.ok(wipeName, 'wipe não exportada pelo bundle (account.js desatualizado? rode tools/build-account.mjs)');
 assert.doesNotMatch(bundle, / as remove[,}]/, 'bundle ainda exporta remove(): account.js não foi regenerado');
 const wipeTxt = fnText(wipeName);
-const wm = wipeTxt.match(new RegExp(`^async function ${esc(wipeName)}\\(\\w\\)\\{let \\w=${ID}\\.currentUser;if\\(\\w\\)\\{await ${ID}\\(\\w,\\w\\);try\\{await ${ID}\\(${ID}\\(\\w\\.uid\\)\\)\\}catch\\(\\w\\)\\{if\\(\\w\\?\\.code!=="not-found"\\)throw \\w\\}try\\{await ${ID}\\(\\w\\)\\}catch`));
+// Forma após proposta/exclusao-pos-932: wipe(password, via) e confirmIdentity(u, password, via).
+const wm = wipeTxt.match(new RegExp(`^async function ${esc(wipeName)}\\(\\w,\\w\\)\\{let \\w=${ID}\\.currentUser;if\\(\\w\\)\\{await ${ID}\\(\\w,\\w,\\w\\);try\\{await ${ID}\\(${ID}\\(\\w\\.uid\\)\\)\\}catch\\(\\w\\)\\{if\\(\\w\\?\\.code!=="not-found"\\)throw \\w\\}try\\{await ${ID}\\(\\w\\)\\}catch`));
 assert.ok(wm, `forma inesperada de wipe no bundle (ajuste o extrator se o build mudou): ${wipeTxt}`);
 const [, bAuth, bConfirm, bDeleteDoc, bRef, bDeleteUser] = wm;
 const confTxt = fnText(bConfirm);
-const cm = confTxt.match(new RegExp(`^async function ${esc(bConfirm)}\\(\\w,\\w\\)\\{let \\w=${ID}\\(\\w\\)\\.provider;if\\(\\w==="google\\.com"\\)await ${ID}\\(\\w,new ${ID}\\);else if\\(\\w==="password"\\)\\{.*?await ${ID}\\(\\w,${ID}\\.credential\\(\\w\\.email,\\w\\)\\)\\}\\}$`));
+const cm = confTxt.match(new RegExp(`^async function ${esc(bConfirm)}\\(\\w,\\w,\\w\\)\\{let \\w=${ID}\\(\\w\\),.*?;if\\(\\w==="google\\.com"\\)await ${ID}\\(\\w,new ${ID}\\);else if\\(\\w==="password"\\)\\{.*?await ${ID}\\(\\w,${ID}\\.credential\\(\\w\\.email,\\w\\)\\)\\}else if\\(!\\(Date\\.now\\(\\)-\\(\\w\\.lastIn\\|\\|0\\)<5\\*6e4\\)\\)throw [^;]*requires-recent-login[^;]*\\}$`));
 assert.ok(cm, `forma inesperada de confirmIdentity no bundle: ${confTxt}`);
 const [, bPub, bPopup, bGoogle, bCred, bEmail] = cm;
 function loadBundle(m) {
@@ -55,14 +56,15 @@ function loadBundle(m) {
 
 // ---------- mundo simulado: Auth + Firestore ----------
 // fail: { reauth, deleteDoc, deleteUser } = lista de códigos de erro consumidos um por chamada (undefined = sucesso).
-function world({ provider = 'password', hasDoc = true, fail = {}, user = true } = {}) {
+// providers: todos os jeitos de entrar (padrão: só provider); lastIn: hora do último login (ms; 0 = antigo).
+function world({ provider = 'password', providers, lastIn = 0, hasDoc = true, fail = {}, user = true } = {}) {
   const calls = []; const docs = new Set(hasDoc ? ['users/u1'] : []); const accounts = new Set(['u1']);
   const take = (k) => { const c = fail[k]?.shift?.(); if (c) throw err(c); };
-  const u = { uid: 'u1', email: 'a@b.c', providerData: [{ providerId: provider }] };
+  const u = { uid: 'u1', email: 'a@b.c', lastIn, providerData: (providers || [provider]).map((providerId) => ({ providerId })) };
   const m = {
     auth: { currentUser: user ? u : null },
     ref: (uid) => `users/${uid}`,
-    pub: (x) => ({ provider: x.providerData?.[0]?.providerId || 'password' }),
+    pub: (x) => ({ provider: x.providerData?.[0]?.providerId || 'password', providers: x.providerData.map((p) => p.providerId), lastIn: x.lastIn }),
     deleteDoc: async (r) => { calls.push('deleteDoc'); take('deleteDoc'); docs.delete(r); },
     deleteUser: async (x) => { calls.push('deleteUser'); take('deleteUser'); accounts.delete(x.uid); m.auth.currentUser = null; },
     reauthenticateWithPopup: async (_u, p) => { calls.push('reauthPopup'); assert.ok(p instanceof m.GoogleAuthProvider); take('reauth'); },
@@ -72,7 +74,7 @@ function world({ provider = 'password', hasDoc = true, fail = {}, user = true } 
   };
   return { m, calls, docs, accounts, state: () => ({ doc: docs.has('users/u1'), conta: accounts.has('u1') }), relogin: () => { if (accounts.has('u1')) m.auth.currentUser = u; } };
 }
-async function run(load, w, pw) { const wipe = load(w.m); try { await wipe(pw); return { ok: true }; } catch (e) { return { ok: false, code: e?.code, docDeleted: e?.docDeleted === true }; } }
+async function run(load, w, pw, via) { const wipe = load(w.m); try { await wipe(pw, via); return { ok: true }; } catch (e) { return { ok: false, code: e?.code, docDeleted: e?.docDeleted === true }; } }
 
 // Cada cenário roda nas duas implementações e compara.
 const IMPLS = [['fonte', loadSrc], ['bundle', loadBundle]];
@@ -150,13 +152,46 @@ await both('falha de rede na exclusão da conta (documento já apagado): erro co
   return { r1, r2, calls: w.calls };
 });
 
-await both('requires-recent-login mesmo após confirmar (provedor sem confirmação prévia): repetir conclui', async (load) => {
-  const w = world({ provider: 'phone', fail: { deleteUser: ['auth/requires-recent-login'] } });
+// B2 (rev932): provedor sem confirmação pelo site e login antigo — antes apagava o documento e o deleteUser falhava
+// sempre (laço). Agora não começa: requires-recent-login sem nenhuma chamada.
+await both('provedor sem confirmação prévia e login antigo: não começa, nada apagado (B2)', async (load) => {
+  const w = world({ provider: 'phone', lastIn: 0 }); const r = await run(load, w);
+  assert.deepEqual(r, { ok: false, code: 'auth/requires-recent-login', docDeleted: false });
+  assert.deepEqual(w.calls, []); assert.deepEqual(w.state(), { doc: true, conta: true });
+  return { r, calls: w.calls };
+});
+
+await both('requires-recent-login mesmo após confirmar (provedor sem confirmação prévia, login recente): repetir conclui', async (load) => {
+  const w = world({ provider: 'phone', lastIn: Date.now(), fail: { deleteUser: ['auth/requires-recent-login'] } });
   const r1 = await run(load, w);
   assert.deepEqual(r1, { ok: false, code: 'auth/requires-recent-login', docDeleted: true });
   assert.deepEqual(w.state(), { doc: false, conta: true });
   const r2 = await run(load, w); assert.deepEqual(r2, { ok: true }); assert.deepEqual(w.state(), { doc: false, conta: false });
   return { r1, r2, calls: w.calls };
+});
+
+await both('Google + senha: sem senha confirma pelo Google; com senha usa a senha; via escolhe (B2)', async (load) => {
+  const out = [];
+  for (const [pw, via, esperado] of [[undefined, undefined, 'reauthPopup'], ['pw', undefined, 'reauthCred:pw'], ['pw', 'google.com', 'reauthPopup'],
+    [undefined, 'google.com', 'reauthPopup'], ['pw', 'password', 'reauthCred:pw']]) {
+    for (const providers of [['google.com', 'password'], ['password', 'google.com']]) {
+      const w = world({ providers }); const r = await run(load, w, pw, via);
+      assert.deepEqual(r, { ok: true }, `${providers} pw=${pw} via=${via}`);
+      assert.deepEqual(w.calls, [esperado, 'deleteDoc', 'deleteUser'], `${providers} pw=${pw} via=${via}`);
+      out.push(w.calls[0]);
+    }
+  }
+  const w = world({ providers: ['password', 'google.com'] }); const r = await run(load, w, '', 'password');
+  assert.deepEqual(r, { ok: false, code: 'auth/requires-recent-login', docDeleted: false }); assert.deepEqual(w.calls, []);
+  const g = world({ provider: 'google.com' }); assert.deepEqual(await run(load, g, 'pw', 'password'), { ok: true });
+  assert.deepEqual(g.calls, ['reauthPopup', 'deleteDoc', 'deleteUser'], 'via de provedor que a conta não tem é ignorado');
+  return out;
+});
+
+await both('wipe devolve true só quando concluiu (sem usuário: undefined, para a página não dizer "conta excluída")', async (load) => {
+  const a = world(); assert.equal(await load(a.m)('pw'), true);
+  const b = world({ user: false }); assert.equal(await load(b.m)('pw'), undefined);
+  return 'ok';
 });
 
 await both('repetição após falha no deleteDoc: a 2ª tentativa conclui', async (load) => {

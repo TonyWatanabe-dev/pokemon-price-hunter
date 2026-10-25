@@ -7,7 +7,7 @@ import {
   createUserWithEmailAndPassword, updateProfile, sendEmailVerification, sendPasswordResetEmail,
   signOut, deleteUser, reauthenticateWithPopup, reauthenticateWithCredential, EmailAuthProvider,
 } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore/lite';
 
 // Login com Google por REDIRECIONAMENTO na mesma aba só nos endereços listados aqui. Nesses endereços o "authDomain" é o
 // próprio site e /__/auth/* é repassado ao Firebase (vercel.json), então o fluxo não depende de cookies de terceiros.
@@ -33,6 +33,12 @@ const ref = (uid) => doc(db, 'users', uid);
 const pub = (u) => u && ({
   uid: u.uid, email: u.email, name: u.displayName || '', photo: u.photoURL || '', verified: !!u.emailVerified,
   provider: u.providerData?.[0]?.providerId || 'password',
+  // Todos os jeitos de entrar da conta (Google e senha podem coexistir) e as datas do Auth (ms; 0 = desconhecida): a
+  // página usa para escolher como confirmar a exclusão e para não recriar sozinha o perfil de conta antiga sem documento.
+  providers: (u.providerData || []).map((p) => p?.providerId).filter(Boolean),
+  // nova = último login a menos de 2 min da criação (cadastro agora); sem datas, conta como nova.
+  lastIn: Date.parse(u.metadata?.lastSignInTime || '') || 0,
+  nova: !(Date.parse(u.metadata?.creationTime) < Date.parse(u.metadata?.lastSignInTime) - 120e3),
 });
 const back = () => ({ url: location.origin + '/' });
 // Link de volta nos e-mails: se o endereço atual não estiver autorizado no Firebase, manda sem o link de volta
@@ -68,9 +74,14 @@ export async function load() {
   const u = auth.currentUser; if (!u) return null;
   const s = await getDoc(ref(u.uid)); return s.exists() ? s.data() : null;
 }
-export async function save(patch) {
+// Gravação: por padrão só ATUALIZA um documento que já existe (updateDoc; documento inexistente = erro not-found). Assim
+// uma aba ou aparelho com dados antigos em memória não recria o documento de quem pediu a exclusão. Criar o perfil
+// (setDoc com merge) só com criar = true, numa ação explícita da página (cadastro novo ou "continuar usando").
+export async function save(patch, criar) {
   const u = auth.currentUser; if (!u) throw Object.assign(new Error('sem login'), { code: 'auth/no-user' });
-  await setDoc(ref(u.uid), { ...patch, updatedAt: new Date().toISOString() }, { merge: true });
+  const data = { ...patch, updatedAt: new Date().toISOString() };
+  if (criar === true) await setDoc(ref(u.uid), data, { merge: true });
+  else await updateDoc(ref(u.uid), data);
 }
 // Exclusão da conta, em ordem segura: falha em qualquer passo NUNCA deixa conta excluída com dados guardados.
 // 1) Confirma a identidade ANTES de apagar qualquer coisa. O Firebase pode exigir login recente para excluir a conta e
@@ -81,17 +92,23 @@ export async function save(patch) {
 //    é excluída e o erro sobe para a página, que deixa tentar de novo. Documento já inexistente conta como sucesso.
 // 3) Só então exclui a conta no Auth. Se falhar aqui, o documento já não existe (erro com docDeleted = true) e a
 //    próxima tentativa conclui sem perda: o robô só grava com pré-condição de documento existente, nunca o recria.
-async function confirmIdentity(u, password) {
-  const provider = pub(u).provider;
-  if (provider === 'google.com') await reauthenticateWithPopup(u, new GoogleAuthProvider());
-  else if (provider === 'password') {
+// Conta com mais de um jeito de entrar (Google + senha): via escolhe ('password' ou 'google.com'); sem via, senha
+// digitada usa a senha e, sem senha, o Google. Outro provedor (sem confirmação pelo site): só com login de até 5 min;
+// senão requires-recent-login ANTES de apagar (antes apagava o documento e falhava sempre no deleteUser).
+// Devolve true quando concluiu; sem usuário logado devolve undefined (a página não pode dizer "conta excluída").
+async function confirmIdentity(u, password, via) {
+  const p = pub(u); const has = (x) => (p.providers?.length ? p.providers : [p.provider]).includes(x);
+  const use = via && has(via) ? via : password && has('password') ? 'password' : has('google.com') ? 'google.com' : p.provider;
+  if (use === 'google.com') await reauthenticateWithPopup(u, new GoogleAuthProvider());
+  else if (use === 'password') {
     if (!password) throw Object.assign(new Error('senha necessária para excluir'), { code: 'auth/requires-recent-login' });
     await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, password));
-  }
+  } else if (!(Date.now() - (p.lastIn || 0) < 5 * 60e3)) throw Object.assign(new Error('entre de novo para excluir'), { code: 'auth/requires-recent-login' });
 }
-export async function wipe(password) {
+export async function wipe(password, via) {
   const u = auth.currentUser; if (!u) return;
-  await confirmIdentity(u, password);
+  await confirmIdentity(u, password, via);
   try { await deleteDoc(ref(u.uid)); } catch (e) { if (e?.code !== 'not-found') throw e; }
   try { await deleteUser(u); } catch (e) { if (e && typeof e === 'object') e.docDeleted = true; throw e; }
+  return true;
 }
