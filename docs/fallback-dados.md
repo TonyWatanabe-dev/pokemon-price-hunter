@@ -55,8 +55,43 @@ Atualizado há 20 d") e coberto agora por `test/d4-fallback-browser.mjs`.
 
 - Excluir a cópia do deploy: tirar `cp data/state.json public/data/` do `build` (`package.json`). Mudança de build/deploy
   (R3): só como proposta.
-- `api/_lib/legacy.mjs` ainda tenta o raw da `main` quando o ramo `data` falha. Com o banco em dia, campos que só o robô
-  tem (pistas, reputação, atividade, menor preço histórico, média de mercado) podem vir da cópia de 07/10 por baixo dos
-  preços do banco. Proposta: aceitar o raw da `main` só se `classify(stateDataAt(st))` não for `indisponivel`.
 - Aba aberta por mais de 24 h sem conseguir atualizar continua mostrando "Ao vivo" (decisão de 17/10). Mudar o texto da
   barra para o caso `indisponivel` exige aprovação do dono.
+
+## D4b — o state.json do robô dentro da API (`api/_lib/legacy.mjs`)
+
+`legacyState` lê o raw do ramo `data` e, se ele falha, o raw da `main` (a cópia congelada de 07/10). O módulo só
+transporta; a idade é conferida em quem consome, sempre com `classify(stateDataAt(st))` e o limite que já existe
+(`LIMITS.EXPIRA_MIN`, 24 h):
+
+| Consumidor | Com o state.json vencido, sem horário ou ausente |
+|---|---|
+| Gate final do `api/v1.mjs` (fonte `state`) | 503 com `freshness.status = indisponivel` (já existia) |
+| `catalogState('db')` (`api/_lib/catalog.mjs`, `legacyOverlay`): Home, `/site/*`, kit, lojas | preços, estoque, frete e nota continuam do banco, com o frescor do banco; os campos que só o robô tem saem nulos/vazios: menor preço já visto, média de mercado, histórico, primeira aparição, pistas, reputação, atividade, distrust, cobertura/totais, nota das lojas (`score`), validação da loja (`false`, o padrão de quando não há dado), lançamento de pré-venda. Fica só identidade e ordem (ids, tipos; lojas com nome, URL, status de leitura e plataforma). Loja com oferta em estoque lida pelo banco é "monitorada" em /lojas, nunca "sem leitura" (`sourcesFromDb`). O estado ganha `robotData: 'indisponivel'`. Sem state.json nenhum, o banco em dia segue servindo (antes, a falha do legado derrubava a resposta) |
+| `/api/v1/frete` e `/frete/estado` | 503 `no-store`, sem cotação (oferta, item e vendedor vêm do state.json); nunca frete zero |
+
+### Caches (nenhum segura dado vencido como atual)
+
+| Cache | Regra | Pior caso |
+|---|---|---|
+| Memória do `api/v1.mjs` | TTL 60–120 s pelo relógio de frescor; resposta não utilizável fica 15 s e sai `no-store` | dado reclassificado a cada pedido fora do TTL |
+| CDN (`api/v1.mjs`) | `s-maxage`/`stale-while-revalidate` só com frescor `atual`/`atrasado`; desatualizado, fallback e 5xx = `no-store` | 90 min + 60 s + 300 s (home/site) ou + 120 s + 600 s (demais): sempre ≪ 24 h |
+| CDN do SSR (`api/pagina.mjs`) | `s-maxage=600, stale-while-revalidate=3600` só quando o HTML leva preço (state ≤ 90 min); sem preço, 30 s | 90 min + 70 min = 160 min ≪ 24 h |
+| Memória do `_seo` (10 min) | cada página reclassifica o state em cache; na falha do raw, só usa a cópia se ainda `usable` | state vencido em cache = página sem preço (e sitemap só com as fixas) |
+| `legacy.mjs` ("cópia antiga") | usado na falha da fonte | gate final (503) e `legacyOverlay` (campos omitidos) reclassificam |
+| `catalog.mjs` (60 s) | cache curto por fonte | 60 s |
+
+### Outros consumidores da cópia de 07/10 ou do raw da main
+
+- Sitemap (`api/sitemap.mjs`): só o raw do ramo `data` via `_seo.state()`, com `usable`; vencido = só as páginas fixas.
+- `og:image`: imagem do produto no SSR, que só monta com state `usable`; não é preço.
+- Kit (`/api/v1/site/kit*`): vem de `catalogState`, coberto acima.
+- Social (Top 3/10): ranking de `/api/v1/oportunidades` (só banco). Os demais workflows sociais passam `--state` do checkout
+  do ramo `data` (`ref: data`) e filtram cada oferta pelo frescor (`elegiveis.js`). O padrão `data/state.json` de
+  `tools/social-preview.mjs` só vale rodando local.
+- `src/server.js` e `tools/local-server.mjs`: servidores locais de desenvolvimento.
+
+Testes: `test/d4b-legacy-tests.js` (handlers reais `api/v1.mjs`, `api/pagina.mjs`, `api/sitemap.mjs`, banco simulado):
+campos do robô omitidos com a cópia de 07/10, vencido, sem horário e ausente, e mantidos em dia; limite 1440/1441; frete
+503; caches; SSR × API do mesmo produto (recente com o mesmo menor preço; 2 h: SSR sem preço e API marcada
+`desatualizado`; 25 h: SSR sem preço e API 503); sitemap.
