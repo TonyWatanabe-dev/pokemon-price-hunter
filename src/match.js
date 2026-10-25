@@ -380,6 +380,15 @@ function herdaColecao(n, variant) {
   if (LENDAS_IMPLACAVEIS.test(n)) return IMPLACAVEIS_HERDA.has(variant);
   return true;
 }
+// Código Copag de cada caixa que mora num id herdado por variante conhecida (títulos reais do ramo data: "Lendas Implacáveis
+// Koraidon … 35239", "Zacian Ex Do Lupo Copag 35263", "Mewtwo EX da Equipe Rocket 35579"). Título com código Copag (3xxxx) e
+// nenhum deles igual ao da caixa herdada não herda.
+const CODIGO_DA_CAIXA = Object.freeze({ 'colecao_ex|koraidon': '35239', 'colecao_ex|zacian': '35263', 'colecao_ex|mewtwo': '35579' });
+function codigoDiverge(listing, chave) {
+  const esperado = CODIGO_DA_CAIXA[chave]; if (!esperado) return false;
+  const cods = String(listing.title || '').match(/(?<![\d/-])3\d{4}(?![\d/])/g);
+  return !!cods && !cods.includes(esperado);
+}
 const BRILHANTE_COL = 'sv4_5';
 const BRILHANTE_SV4_5 = new Set(['charizard']);
 const semAcento = (s = '') => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -439,6 +448,9 @@ export function matchProduct(listing, catalog) {
     // variante de sempre, então avulsos-colecao_ex-miraidon (que já é a Paldea) não muda de id nem perde histórico.
     // Outras linhas com o mesmo Pokémon em outra caixa: ver herdaColecao.
     const conhecida = (herdaColecao(n, p.variant) && catalog?.variantes?.[`${p.type}|${p.variant}`]) || null;
+    // Código Copag no título que não é o da caixa herdada: é outra caixa do mesmo Pokémon (T5-C rodada 2: "Box Koraidon ex 33016"
+    // caía em sv10-colecao_ex-koraidon, que é a 35239). Sem produto, para revisão (não presume a qual caixa o código pertence).
+    if (conhecida && codigoDiverge(listing, `${p.type}|${p.variant}`)) return { productId: null, confidence: 0, parsed: p, why: ['código Copag diverge da caixa conhecida'] };
     // Lendas Implacáveis sem coleção conhecida nunca cai no avulso de uma caixa Lendas de Paldea (risco: "Lendas Implacáveis
     // Miraidon" juntaria com avulsos-colecao_ex-miraidon). Fica sem produto, para revisão.
     if (!conhecida && LENDAS_IMPLACAVEIS.test(n) && PALDEA_NO_AVULSO.has(p.variant)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
