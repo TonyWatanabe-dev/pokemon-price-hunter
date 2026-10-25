@@ -1,0 +1,5 @@
+ok U_combo30 83.1s voz=sim (-14.2 LUFS)
+ok D_1Qogr9IS 37.2s voz=sim (-30.0 LUFS)
+ok 30A_hit_moltres 16.2s voz=sim (-20.4 LUFS)
+ok D_1yMcrChx 14.7s voz=sim (-18.4 LUFS)
+ok D_poster30 67.1s voz=sim (-26.0 LUFS)
