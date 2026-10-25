@@ -50,4 +50,23 @@ t('R2. Miraidon Implacáveis × Miraidon Paldea: cada um no seu id atual, com h�
   assert.equal(id('Box Pokémon Miraidon ex', futuro), 'sv10-colecao_ex-miraidon'); // (guarda) sem linha nem código: variante conhecida
 });
 
+t('R3. variantes de escrita do kit: "Kit c/ 2", "Kit com 02", "Kit 2x", "Kit com Duas" = "Kit com 2"', () => {
+  const KIT = 'kit montado pela loja ou caixa com várias unidades';
+  // (nova) em 9c56a407 caíam no blister/caixa unitário
+  for (const title of ['Kit c/ 2 Blister Triplo Caos Ascendente Charmeleon Pokémon Megaevolução', 'Kit c/2 Blister Triplo Caos Ascendente Charmeleon Pokémon',
+    'Kit com 02 Blister Quadruplo Caos Ascendente Toxel Pokémon', 'Kit 2x Blister Triplo Caos Ascendente Charmeleon Pokémon',
+    'Kit 2x Blister quadruplo Pokemon TCG Heróis Excelsos 50u', // real (ramo data b1fcfa20), estava em me02_5-blister4
+    'Kit com Duas Box Pokémon Coleção Mega Lucario Ex']) {
+    const r = m(title); assert.equal(r.productId, null, title); assert.ok(r.why.includes(KIT), title);
+  }
+  // (guarda) não é kit de várias unidades
+  todos({
+    'Kit c/ 10 Boosters Pokémon Mega Evolução': 'me01-combo10',
+    'Kit com 10 Boosters Avulsos Pokémon Mega Evolução': 'me01-combo10', // real
+    'Pokémon Ferramentas de Treinador Squawkabilly ex Kit Com 92 Cartas e Boosters': 'avulsos-colecao_especial-ferramentas-de-treinador-squawkabilly', // real
+    'Kit de Cartas Pokemon Blister Triplo Origem Perdida 3 Pacotes + 1 Carta Scorbunny': 'swsh11-blister3', // real
+    'Kit Treinador Pokémon Escarlate e Violeta': 'sv1-kit_treinador',
+  });
+});
+
 console.log(`matching-v3-rodada2-tests: ok (${n} grupos)`);

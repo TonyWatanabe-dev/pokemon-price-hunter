@@ -266,7 +266,8 @@ export function parseListing(title, catalog) {
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
   // "Kit com N <embalagem>" (N ≥ 2: box, blister, lata, baralho...) é kit de várias unidades, nunca a unidade (T5-C, 25/10/2026:
   // "Kit com 2 Blister Triplo … Charmeleon" casava com me04-blister3 a R$ 81,68). "Kit com 92 Cartas"/"Kit com 10 Boosters" não.
-  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\bkit com ([2-9]|[1-9]\d) (box(es)?|caixas?|blisters?|latas?|minilatas?|baralhos?|decks?|colecoes|etbs?|treinadore?s? avancados?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
+  // Mesmas variantes de escrita (rodada 2): "Kit c/ 2", "Kit com 02", "Kit 2x", "Kit de 2", "Kit com Duas Box".
+  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\bkit (?:com |c\/ ?|de )?(?:0?[2-9]|[1-9]\d|dois|duas|tres) ?x? (box(es)?|caixas?|blisters?|latas?|minilatas?|baralhos?|decks?|colecoes|etbs?|treinadore?s? avancados?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
   // "Case" (caixa master com várias boxes/ETBs) e "6x Booster Box" nunca são a unidade do catálogo.
   // "Case vazio/vazia" continua só como acessório (regra REJECT acima), sem esse segundo motivo.
   else if (/\bcase\b(?! vazi[oa]\b)|\b(caixa|box) master\b|\bmaster (case|box)\b|\b([2-9]|1\d) ?x? (booster box(es)?|box(es)? display|displays?|treinadore?s? avancados?|etbs?)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
