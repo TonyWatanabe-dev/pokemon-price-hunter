@@ -14,6 +14,8 @@ const errCode = cut('const AERR=', 'const favs=()=>');
 const accData = cut('const favs=()=>', 'const authPending=');
 const submitAccCode = cut('function focusErr(){', 'async function submitDel(');
 const submitDelCode = cut('async function submitDel(f){', 'async function saveField(');
+const delEnterCode = cut('function delEnter(', 'function delStorage(');
+const accSrc = read('tools/account.src.js');
 const saveCode = cut('async function saveField(', 'function favBtn(');
 const setBusyCode = cut('function setBusy(b,on,txt){', '/* Favoritos (perfil)');
 const accSyncCode = cut('function accSync(', 'function syncFavButtons(');
@@ -116,23 +118,44 @@ await t('login e cadastro: erro do Firebase vira mensagem no campo certo; cadast
 });
 
 // ------------------------------------------------------------------ exclusão
-function delSandbox(wipe) { const c = base(); const calls = []; c.ACC.mod = { wipe: async (pw) => { calls.push(pw); return wipe(pw); } }; c.ACC.data = { favorites: ['a'] }; vm.runInContext(submitDelCode, c); return { c, calls }; }
+// #932/#937: a página chama m.excluir(senha) (que grava a marca de exclusão e chama wipe) e só diz "excluída" quando o
+// módulo devolve true; exige ACC.user. Senha vazia vira undefined dentro do módulo (excluir → wipe(password || undefined)),
+// não mais na página: a asserção "senha vazia vai como undefined" foi para o código do módulo (ver abaixo).
+const USER = { uid: 'u1', provider: 'password', providers: ['password'] };
+function delSandbox(excluir, user = USER) {
+  const c = base(); const calls = [];
+  c.ACC.user = user; c.ACC.data = { favorites: ['a'] };
+  c.ACC.mod = { excluir: async (pw) => { calls.push(pw); return excluir(pw); }, provs: (u) => (u.providers?.length ? u.providers : [u.provider]) };
+  c.sessionStorage = { removeItem() {} };
+  vm.runInContext(delEnterCode + submitDelCode, c); return { c, calls };
+}
 const delForm = (c, pw) => { const b = btn(); c.FormData = function () { return { get: () => pw }; }; return { b, f: { querySelector: () => b } }; };
 
-await t('excluir: sucesso limpa os dados da memória, avisa e volta para a home', async () => {
-  const { c, calls } = delSandbox(async () => {}); const { f } = delForm(c, 'senha1');
+await t('excluir: sucesso limpa os dados da memória, avisa e volta para a home; sem confirmação do módulo não diz "excluída"', async () => {
+  const { c, calls } = delSandbox(async () => true); const { f } = delForm(c, 'senha1');
   await c.submitDel(f);
   assert.deepEqual(calls, ['senha1']); assert.equal(c.ACC.data, null); assert.deepEqual(c.toasts, ['Conta e dados excluídos']); assert.deepEqual(c.gone, ['']);
+  const x = delSandbox(async () => undefined); const y = delForm(x.c, 'senha1'); await x.c.submitDel(y.f);
+  assert.deepEqual(x.c.toasts, ['Por segurança, entre de novo para excluir a conta.']); assert.notEqual(x.c.ACC.data, null); assert.deepEqual(x.c.gone, []); assert.equal(y.b.disabled, false);
+  const z = delSandbox(async () => true, null); await z.c.submitDel(delForm(z.c, 'senha1').f);
+  assert.deepEqual(z.calls, [], 'sem usuário na página: nada é chamado'); assert.deepEqual(z.c.toasts, []);
+  assert.match(accSrc, /ok = await wipe\(password \|\| undefined, password \? 'password' : 'google\.com'\)/, 'senha vazia vai ao wipe como undefined');
 });
 
-await t('excluir: login antigo sem senha, Google cancelado, rede e senha errada têm mensagem; botão volta', async () => {
-  const run = async (e, pw) => { const { c, calls } = delSandbox(async () => { throw e; }); const { b, f } = delForm(c, pw); await c.submitDel(f); return { c, b, calls }; };
+await t('excluir: login antigo sem senha, Google cancelado, rede e senha errada têm mensagem; botão volta; nada apagado', async () => {
+  const run = async (e, pw, user) => { const { c, calls } = delSandbox(async () => { throw e; }, user); const { b, f } = delForm(c, pw); await c.submitDel(f); return { c, b, calls }; };
   let r = await run(err('auth/requires-recent-login'), '');
-  assert.deepEqual(r.calls, [undefined], 'senha vazia vai como undefined'); assert.deepEqual(r.c.toasts, ['Por segurança, digite sua senha para excluir.']); assert.equal(r.b.disabled, false);
-  r = await run(err('auth/popup-closed-by-user'), ''); assert.deepEqual(r.c.toasts, ['Não foi possível excluir agora.']);
-  r = await run(err('auth/network-request-failed'), 'x'); assert.match(r.c.toasts[0], /Sem conexão/);
+  assert.deepEqual(r.calls, [''], 'a página repassa a senha digitada; o módulo converte'); assert.deepEqual(r.c.toasts, ['Por segurança, digite sua senha para excluir.']); assert.equal(r.b.disabled, false);
+  // #932: o texto do cancelamento passou a dizer o que aconteceu ("Nada foi excluído") em vez de "Não foi possível excluir agora."
+  r = await run(err('auth/popup-closed-by-user'), '', { uid: 'u1', provider: 'google.com', providers: ['google.com'] }); assert.deepEqual(r.c.toasts, ['Confirmação cancelada. Nada foi excluído.']); assert.equal(r.b.disabled, false);
+  r = await run(err('auth/requires-recent-login'), '', { uid: 'u1', provider: 'google.com', providers: ['google.com'] }); assert.deepEqual(r.c.toasts, ['Por segurança, entre de novo para excluir a conta.'], 'conta só Google: não pede senha');
+  r = await run(err('auth/network-request-failed'), 'x'); assert.match(r.c.toasts[0], /Sem conexão/); assert.equal(r.b.disabled, false);
   r = await run(err('auth/invalid-credential'), 'errada'); assert.equal(r.c.toasts[0], 'E-mail ou senha incorretos.');
-  assert.notEqual(r.c.ACC.data, null); assert.deepEqual(r.c.gone, []);
+  assert.notEqual(r.c.ACC.data, null); assert.deepEqual(r.c.gone, []); assert.equal(r.c.ACC.del, undefined);
+  // documento apagado e login não (exclusão parcial): pendente, dados fora da memória, nunca "excluída"
+  r = await run(Object.assign(err('auth/network-request-failed'), { docDeleted: true }), 'x');
+  assert.equal(r.c.ACC.del.why, 'pendente'); assert.equal(r.c.ACC.data, null); assert.deepEqual(r.c.gone, []);
+  assert.deepEqual(r.c.toasts, ['Seus dados foram apagados, mas a conta ainda não. Confirme para concluir.']); assert.match(r.c.ACC.del.err, /Sem conexão/);
 });
 
 // ------------------------------------------------------------------ favoritos e alertas: limites e valor
@@ -140,7 +163,7 @@ function saveSandbox(data, extra = {}) {
   const saves = [];
   const c = base({ ...extra });
   c.ACC.user = { uid: 'u1' }; c.ACC.data = structuredClone(data);
-  c.ACC.mod = { save: async (p) => { saves.push(structuredClone(p)); } };
+  c.ACC.mod = { save: async (p) => { saves.push(structuredClone(p)); }, mark: () => null };
   vm.runInContext(saveCode + ';this.saveAlerts=saveAlerts;this.toggleFav=toggleFav;', c);
   return { c, saves };
 }
@@ -247,9 +270,20 @@ await t('política de privacidade, configurações e /privacidade (SSR) descreve
   assert.match(privacidade, /E-mails<\/b>?[^]*?confirmação de e-mail e troca de senha/);
 });
 
+// #932/#937: o formulário de exclusão saiu do index.html para o módulo (delForm em tools/account.src.js, só carrega
+// para quem entrou). Conta com senha e Google pode deixar a senha em branco para confirmar pelo Google; por isso o
+// campo deixa de ser obrigatório só nesse caso. Mesma proteção, agora executando o código real.
 await t('senha de exclusão só para conta com senha; Google reautentica pelo popup', async () => {
-  assert.match(renderConfigCode, /\$\{pwUser\?`<div class="field"><label for="d-pw">Confirme sua senha<\/label>/);
-  assert.match(renderConfigCode, /const pwUser=u\.provider==="password"/);
+  assert.match(renderConfigCode, /\$\{ACC\.mod\.delForm\(u,"Excluir conta e dados",ic\("trash"\)\)\}/);
+  const i = accSrc.indexOf('const esc = (s) =>'); const j = accSrc.indexOf('// Painel que substitui', i); assert.ok(i > 0 && j > i, 'delForm no módulo');
+  const m = vm.createContext({ String }); vm.runInContext(accSrc.slice(i, j).replace(/^export /gm, '') + ';this.delForm=delForm;', m);
+  const pw = m.delForm({ provider: 'password', providers: ['password'] }, 'Excluir conta e dados');
+  assert.match(pw, /<label for="d-pw">Confirme sua senha<\/label><input id="d-pw" name="pw" type="password" autocomplete="current-password" required>/);
+  const g = m.delForm({ provider: 'google.com', providers: ['google.com'] }, 'Excluir conta e dados');
+  assert.doesNotMatch(g, /d-pw|type="password"/, 'conta Google: sem campo de senha');
+  const ambos = m.delForm({ provider: 'password', providers: ['password', 'google.com'] }, 'Excluir conta e dados');
+  assert.match(ambos, /Confirme sua senha \(em branco: Google\)<\/label><input id="d-pw"[^>]*type="password"[^>]*>/); assert.doesNotMatch(ambos, /required/);
+  for (const h of [pw, g, ambos]) assert.match(h, /Excluir conta e dados/);
 });
 
 // ------------------------------------------------------------------ regras do Firestore: só o dono

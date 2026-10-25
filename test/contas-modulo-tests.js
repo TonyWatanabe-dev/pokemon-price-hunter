@@ -44,6 +44,7 @@ function setup({ host = 'tcgpricehunter.com.br', user = null, redirect = Promise
     reauthenticateWithCredential: async () => { log('reauthCred'); },
     getDoc: async (r) => { log('getDoc', r); if (sdk.getDoc) throw sdk.getDoc; return { exists: () => store.has(r), data: () => structuredClone(store.get(r)) }; },
     setDoc: async (r, d, o) => { log('setDoc', r, structuredClone(d), o); if (sdk.setDoc) throw sdk.setDoc; store.set(r, { ...(o?.merge ? store.get(r) : {}), ...d }); },
+    updateDoc: async (r, d) => { log('updateDoc', r, structuredClone(d)); if (sdk.updateDoc) throw sdk.updateDoc; if (!store.has(r)) throw err('not-found'); store.set(r, { ...store.get(r), ...d }); },
     deleteDoc: async (r) => { log('deleteDoc', r); store.delete(r); },
   };
   vm.createContext(ctx);
@@ -64,12 +65,20 @@ await t('produção usa popup e authDomain do Firebase; só hosts da lista usam 
   assert.equal(r.of('initializeApp')[0][1].authDomain, host);
 });
 
-await t('pub expõe só uid, e-mail, nome, foto, verificado e provedor (sem token)', async () => {
+// #932/#937: pub também leva os jeitos de entrar (providers) e as datas do Auth (lastIn, nova), que a página usa para
+// escolher como confirmar a exclusão e para não recriar sozinha o perfil de conta antiga sem documento. Continua sem
+// token nem objeto do SDK: a comparação é da forma EXATA (qualquer campo a mais falha).
+const OLD = { creationTime: 'Thu, 01 Jan 2026 10:00:00 GMT', lastSignInTime: 'Mon, 20 Oct 2026 10:00:00 GMT' };
+await t('pub expõe só uid, e-mail, nome, foto, verificado, provedor(es) e datas do Auth (sem token)', async () => {
   const { ctx } = setup();
-  assert.deepEqual({ ...ctx.pub(pwUser) }, { uid: 'u1', email: 'a@b.c', name: '', photo: '', verified: false, provider: 'password' });
-  assert.deepEqual({ ...ctx.pub({ ...gUser, accessToken: 'tk', stsTokenManager: {} }) },
-    { uid: 'g1', email: 'g@gmail.com', name: 'Pessoa G', photo: gUser.photoURL, verified: true, provider: 'google.com' });
+  assert.deepEqual({ ...ctx.pub(pwUser), providers: [...ctx.pub(pwUser).providers] },
+    { uid: 'u1', email: 'a@b.c', name: '', photo: '', verified: false, provider: 'password', providers: ['password'], lastIn: 0, nova: true });
+  const g = ctx.pub({ ...gUser, accessToken: 'tk', stsTokenManager: {}, metadata: OLD });
+  assert.deepEqual({ ...g, providers: [...g.providers] },
+    { uid: 'g1', email: 'g@gmail.com', name: 'Pessoa G', photo: gUser.photoURL, verified: true, provider: 'google.com', providers: ['google.com'], lastIn: Date.parse(OLD.lastSignInTime), nova: false });
   assert.equal(ctx.pub({ ...pwUser, providerData: [] }).provider, 'password');
+  assert.deepEqual([...ctx.pub({ ...pwUser, providerData: [] }).providers], []);
+  assert.deepEqual([...ctx.pub({ ...pwUser, providerData: [{ providerId: 'password' }, { providerId: 'google.com' }] }).providers], ['password', 'google.com']);
   assert.equal(ctx.pub(null), null);
 });
 
@@ -156,17 +165,32 @@ await t('load: sem login não lê; lê só users/<próprio uid>; documento inexi
   await assert.rejects(setup({ user: pwUser, sdk: { getDoc: err('unavailable') } }).ctx.load(), { code: 'unavailable' }, 'offline: a página marca loadFailed');
 });
 
-await t('save: sem login falha com auth/no-user sem gravar; com login grava só o patch + updatedAt, com merge, no próprio uid', async () => {
+// #932/#937: gravação comum passou de setDoc merge para updateDoc, que nunca cria o documento (depois de uma exclusão
+// parcial, favoritar não recria dados pessoais). Criar o perfil só com save(base, true) = setDoc merge. A asserção
+// antiga ("grava com merge") virou duas: patch + updateDoc no caso comum e setDoc merge só ao criar.
+await t('save: sem login falha com auth/no-user sem gravar; com login grava só o patch + updatedAt no próprio uid, sem criar documento', async () => {
   const none = setup();
-  await assert.rejects(none.ctx.save({ favorites: [] }), { code: 'auth/no-user' }); assert.equal(none.of('setDoc').length, 0);
+  await assert.rejects(none.ctx.save({ favorites: [] }), { code: 'auth/no-user' }); assert.equal(none.of('setDoc').length + none.of('updateDoc').length, 0);
+  await assert.rejects(none.ctx.save({ name: 'x' }, true), { code: 'auth/no-user' }); assert.equal(none.of('setDoc').length, 0);
   const p = setup({ user: pwUser, docs: { 'users/u1': { name: 'T', favorites: ['a'], alerts: [{ p: 'x', v: 10 }] } } });
   await p.ctx.save({ favorites: ['a', 'b'] });
-  const [, ref, data, opts] = p.of('setDoc')[0];
-  assert.equal(ref, 'users/u1'); assert.deepEqual({ ...opts }, { merge: true });
+  assert.equal(p.of('setDoc').length, 0, 'gravação comum nunca usa setDoc');
+  const [, ref, data] = p.of('updateDoc')[0];
+  assert.equal(ref, 'users/u1');
   assert.deepEqual(Object.keys(data).sort(), ['favorites', 'updatedAt']);
   assert.match(data.updatedAt, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/);
-  assert.deepEqual(p.store.get('users/u1').alerts, [{ p: 'x', v: 10 }], 'merge não apaga os outros campos');
-  await assert.rejects(setup({ user: pwUser, sdk: { setDoc: err('permission-denied') } }).ctx.save({ name: 'x' }), { code: 'permission-denied' });
+  assert.deepEqual(p.store.get('users/u1').alerts, [{ p: 'x', v: 10 }], 'atualização não apaga os outros campos');
+  // documento inexistente: not-found, nada criado
+  const q = setup({ user: pwUser });
+  await assert.rejects(q.ctx.save({ favorites: ['a'] }), { code: 'not-found' }); assert.equal(q.store.has('users/u1'), false); assert.equal(q.of('setDoc').length, 0);
+  // criar o perfil (cadastro): setDoc com merge, só o patch + updatedAt, no próprio uid
+  await q.ctx.save({ name: 'T', favorites: [], alerts: [], termsAt: 't', createdAt: 't' }, true);
+  const [, cref, cdata, copts] = q.of('setDoc')[0];
+  assert.equal(cref, 'users/u1'); assert.deepEqual({ ...copts }, { merge: true });
+  assert.deepEqual(Object.keys(cdata).sort(), ['alerts', 'createdAt', 'favorites', 'name', 'termsAt', 'updatedAt']);
+  assert.equal(q.of('updateDoc').length, 1, 'criar não passa por updateDoc');
+  await assert.rejects(setup({ user: pwUser, docs: { 'users/u1': {} }, sdk: { updateDoc: err('permission-denied') } }).ctx.save({ name: 'x' }), { code: 'permission-denied' });
+  await assert.rejects(setup({ user: pwUser, sdk: { setDoc: err('permission-denied') } }).ctx.save({ name: 'x' }, true), { code: 'permission-denied' });
 });
 
 await t('o módulo só toca a coleção users e só com o uid do usuário logado', async () => {
