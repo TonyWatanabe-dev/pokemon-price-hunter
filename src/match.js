@@ -339,7 +339,10 @@ export function matchProduct(listing, catalog) {
   // mesma caixa já existe numa coleção (catalog.variantes, montado do catálogo automático), vai para ela; senão, para a
   // pseudo-coleção "avulsos". Antes, 153 de 200 anúncios não casados (17/10) eram "coleção não identificada", muitos assim.
   if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
-    const conhecida = catalog?.variantes?.[`${p.type}|${p.variant}`] || null;
+    // "Lendas de Paldea" (Koraidon ex / Miraidon ex, Copag) é outra caixa, não a da "Lendas Implacáveis": não herda a coleção
+    // de catalog.variantes (25/10/2026: 3 Koraidon Paldea caíam em sv10-colecao_ex-koraidon). Fica no avulso com a mesma
+    // variante de sempre, então avulsos-colecao_ex-miraidon (que já é a Paldea) não muda de id nem perde histórico.
+    const conhecida = (!/\blendas de paldea\b/.test(p.normalized) && catalog?.variantes?.[`${p.type}|${p.variant}`]) || null;
     const prod = describeProduct(catalog, conhecida || AVULSOS, p.type, p.boosters, p.variant, p.lang);
     return { productId: prod.id, product: prod, confidence: conhecida ? 0.7 : 0.65, parsed: p, why: [], via: conhecida ? 'variante-conhecida' : 'avulso' };
   }
