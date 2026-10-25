@@ -8,7 +8,7 @@ const base = JSON.parse(fs.readFileSync(new URL('../config/catalog.json', import
 base.products ||= []; base.copag ||= {};
 base.refs = JSON.parse(fs.readFileSync(new URL('../config/refs-copag.json', import.meta.url), 'utf8'))?.refs || {};
 const IDS = ['sv9-colecao_ex-zacian', 'sv10-colecao_ex-koraidon', 'avulsos-colecao_ex-miraidon', 'sv10-colecao_ex-mewtwo', 'sv10-colecao_ex-mewtwo-en',
-  'sv10-colecao_ex-equipe', 'avulsos-colecao_ex-nidoking', 'sv8-colecao_ex-ogerpon', 'avulsos-colecao_ex-charizard', 'sv4_5-colecao_ex-charizard', 'sv9-colecao_ex-charizard'];
+  'sv10-colecao_ex-equipe', 'avulsos-colecao_ex-nidoking', 'sv8-colecao_ex-ogerpon', 'sv9-colecao_ex-clefairy', 'avulsos-colecao_ex-charizard', 'sv4_5-colecao_ex-charizard', 'sv9-colecao_ex-charizard'];
 const catalog = { ...base, variantes: variantesDe(IDS) };
 const m = (title, c = catalog) => matchProduct({ title }, c);
 const id = (title, c) => m(title, c).productId;
@@ -84,6 +84,16 @@ t('R4. importado de caixa que não herda a coleção (35880, Implacáveis, Palde
     'Box Pokémon Lendas de Paldea Miraidon ex Inglês': 'avulsos-colecao_ex-miraidon-en', // avulso sem herança: igual à base
     'Box Pokémon Coleção Equipe Rocket Mewtwo Ex': 'sv10-colecao_ex-equipe', // o PT continua
   });
+});
+
+t('R5. lado direito do "&": brinde/acessório continua na caixa; segundo nome desconhecido fica sem produto (conservador)', () => {
+  // (nova) em 9c56a407 ficavam sem produto ("broche"/"adesivos" contavam como segundo Pokémon)
+  todos({ 'Box Pokémon Charizard ex & Broche': 'avulsos-colecao_ex-charizard', 'Box Pokémon Charizard ex & Adesivos': 'avulsos-colecao_ex-charizard' });
+  // (guarda) "Kieran & Ogerpon ex": Kieran (treinador) está fora de TREINADORES e nenhum título real usa esse formato (o padrão BR é
+  // "X ex da Y"). Ambíguo: fica sem produto em vez de arriscar sv8-colecao_ex-ogerpon. Duas caixas de verdade também.
+  for (const title of ['Box Pokémon Kieran & Ogerpon ex', 'Box Pokémon Charizard ex & Pikachu ex', 'Box Pokémon Greninja & Kingdra ex'])
+    assert.deepEqual([id(title), m(title).why], [null, ['mais de um produto no mesmo anúncio']], title);
+  todos({ 'Box Pokémon Lillie & Clefairy ex': 'sv9-colecao_ex-clefairy' }); // (guarda) treinador conhecido
 });
 
 console.log(`matching-v3-rodada2-tests: ok (${n} grupos)`);

@@ -407,7 +407,12 @@ const TREINADORES = new Set(['lillie', 'lilian', 'iono', 'kissera', 'ash', 'cynt
   'arven', 'giovanni', 'misty', 'brock', 'erika', 'lauro', 'nemona', 'penny', 'larry', 'equipe', 'team', 'rocket']);
 const NAO_POKEMON = new Set([...VARIANT_STOP, 'ex', 'amigos', 'amigo', 'friends', 'cia', 'brinde', 'brindes', 'promo', 'carta', 'card', 'cards',
   'boosters', 'pacotes', 'sleeves', 'shield', 'sword', 'scarlet', 'violet', 'escarlate', 'violeta', 'deck', 'baralho', 'moeda', 'pin', 'frete',
-  'envio', 'oferta', 'presente', 'lacrado', 'original', 'oficial', 'jogo', 'kit', 'lata', 'blister', 'treinador', 'jumbo', 'mais', 'outros']);
+  'envio', 'oferta', 'presente', 'lacrado', 'original', 'oficial', 'jogo', 'kit', 'lata', 'blister', 'treinador', 'jumbo', 'mais', 'outros',
+  // brinde/acessório do lado direito do "&" (rodada 2: "Charizard ex & Broche" ficava sem produto). Lista fechada: palavra fora dela
+  // conta como Pokémon e o anúncio fica sem produto ("Kieran & Ogerpon ex": treinador fora de TREINADORES; lado seguro).
+  'broche', 'broches', 'pins', 'moeda', 'moedas', 'marcador', 'marcadores', 'dado', 'dados', 'sleeve', 'adesivo', 'adesivos', 'poster',
+  'chaveiro', 'caneca', 'camiseta', 'pelucia', 'figura', 'miniatura', 'bonus', 'extra', 'extras', 'pacote', 'protetor', 'protetores',
+  'playmat', 'tapete', 'colecionador', 'colecionadores', 'surpresa']);
 const PARES = [/\b([a-z]{3,}) ex ?& ?(?:mega )?([a-z]{3,})\b/g, /\b([a-z]{3,}) ?[&+/] ?(?:mega )?([a-z]{3,}) ex\b/g,
   /\b([a-z]{3,}) ex ?[&+/] ?(?:mega )?([a-z]{3,}) ex\b/g];
 const pokemonDoPar = (w) => !NAO_POKEMON.has(w) && !TREINADORES.has(w);
