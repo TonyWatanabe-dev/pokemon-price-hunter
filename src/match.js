@@ -76,6 +76,7 @@ export const TYPE_GROUP = {
 };
 export const groupOf = (type) => TYPE_GROUP[type] || 'Coleções';
 
+const CODIGO_SERIE = /\b(?:me|sv|swsh)\s?0*\d+(?:[.,]\d+)?\b/;
 export function detectCollection(t, collections) {
   // langAliases: nome da coleção em outro idioma ({ en: ['surging sparks'], ja: [...] }). Casar só por ele dá a pista
   // do idioma (langHint), usada quando o título não diz o idioma.
@@ -91,7 +92,10 @@ export function detectCollection(t, collections) {
     return { id: null, ambiguous: hits.map((h) => h.id) };
   }
   // Alias de fallback seguido de número ("Mega Evolução 99") é coleção numerada fora dos aliases: não cai no fallback.
-  const fb = collections.filter((c) => (c.fallbackAliases || []).some((a) => wordRe(a).test(t) && !new RegExp(esc(a).replace(/ /g, '\\s?') + '\\s?0*\\d+(?!\\d|\\s?(?:cartas?|cards?|boosters?|pacotes?|envelopes?|packs?|un|unidades?|blisters?|x)\\b)').test(t)));
+  // Código de expansão no título (ME06, SV10, SWSH12) que nenhum alias reconheceu = coleção fora do catálogo: o nome
+  // da série ("Megaevolução - Reinado Delta (ME06)") não pode jogar a oferta na coleção base da série (ME01).
+  if (CODIGO_SERIE.test(t)) return { id: null };
+  const fb =collections.filter((c) => (c.fallbackAliases || []).some((a) => wordRe(a).test(t) && !new RegExp(esc(a).replace(/ /g, '\\s?') + '\\s?0*\\d+(?!\\d|\\s?(?:cartas?|cards?|boosters?|pacotes?|envelopes?|packs?|un|unidades?|blisters?|x)\\b)').test(t)));
   return fb.length === 1 ? { id: fb[0].id, fallback: true } : { id: null };
 }
 
