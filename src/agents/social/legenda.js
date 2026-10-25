@@ -4,7 +4,7 @@
 //   🌐 Idioma: Inglês             ← só no importado (produto com sufixo -en/-ja/-zh/-ko); nunca compara com a Copag
 //
 //   De <b>R$ anterior</b> ❌        ← só com preço anterior confiável (listPrice da própria loja, maior que o atual)
-//   Por <b>R$ atual</b> ✅
+//   Por <b>R$ atual</b> ✅          ← "no Pix" depois do valor quando o preço é o do Pix (priceKind da oferta)
 //
 //   loja
 //   link                           ← link de afiliado do anúncio quando existir (config/affiliates.json), senão o da loja
@@ -43,15 +43,16 @@ export const IDIOMAS = { en: ['🇺🇸', 'Inglês'], ja: ['🇯🇵', 'Japonês
 export const idiomaDe = (produtoId) => (String(produtoId ?? '').match(/-(en|ja|zh|ko)$/) || [])[1] || null;
 
 // `afiliado` segue aceito por compatibilidade com quem chama (o piloto usa a marcação para repostar); não muda o texto.
-/** { titulo, atual, anterior?, loja, link, afiliado?, produtoId? } → { texto, parseMode }. Lança se faltar dado essencial. */
-export function montarLegenda({ titulo, atual, anterior = null, loja, link, afiliado = false, produtoId = null }) {
+/** { titulo, atual, anterior?, loja, link, afiliado?, produtoId?, pix? } → { texto, parseMode }. Lança se faltar dado essencial.
+ *  pix=true: o preço atual é o do Pix e o post diz isso ("Por R$ X no Pix"), para não vender o preço do Pix como preço geral. */
+export function montarLegenda({ titulo, atual, anterior = null, loja, link, afiliado = false, produtoId = null, pix = false }) {
   const t = limpar(titulo); const l = limpar(loja); const a = valor(atual); const url = https(link);
   if (!t) throw new Error('legenda: título vazio');
   if (!l) throw new Error('legenda: loja vazia');
   if (a == null) throw new Error('legenda: preço atual inválido');
   if (!url) throw new Error('legenda: link não é https');
   const de = valor(anterior) != null && anterior > a ? anterior : null;
-  const precos = [de != null && `De <b>${esc(reais(de))}</b> ❌`, `Por <b>${esc(reais(a))}</b> ✅`].filter(Boolean).join('\n');
+  const precos = [de != null && `De <b>${esc(reais(de))}</b> ❌`, `Por <b>${esc(reais(a))}</b>${pix === true ? ' no Pix' : ''} ✅`].filter(Boolean).join('\n');
   const rodape = `\n\n${precos}\n\n${esc(l)}\n${esc(url)}`;
   const lang = IDIOMAS[idiomaDe(produtoId)] || null;
   const bandeira = lang ? lang[0] : '🇧🇷'; const linhaIdioma = lang ? `\n🌐 Idioma: ${lang[1]}` : '';
