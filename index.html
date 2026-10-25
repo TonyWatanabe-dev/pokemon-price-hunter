@@ -912,12 +912,14 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 
 
 /* Selo do Reclame Aqui */
-.ra{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 8px 3px 5px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:filter 160ms ease}
+.ra{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;flex:none;min-height:24px;padding:3px 8px 3px 5px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:filter 160ms ease}
 .ra img{width:14px;height:14px;border-radius:3px;flex:none}
 .ra b{font-weight:700}.ra span{font-weight:600;opacity:.8}.ra em{font-style:normal;font-weight:800}
 .ra::before{content:"";position:absolute;inset:-10px -4px}   /* área de toque ≥44px sem mudar o layout */
 .ra-top,.ra-ok{background:#DCF5E6;color:#0B6B3A}.ra-good{background:#E8F6DA;color:#3D6B12}.ra-mid{background:#FFF3CC;color:#7A5300}.ra-bad{background:#FFE3D6;color:#9A3412}.ra-worst{background:#FDE0DE;color:#A11B12}
 .ra-none{background:var(--sunk);color:var(--muted);border-color:var(--line-soft)}.ra-none img{filter:grayscale(1);opacity:.7}
+/* a11y 25/10: no selo cinza o texto secundário fica sem opacidade (com .8 caía para 3,4:1 sobre --sunk; axe color-contrast) */
+.ra-none span{opacity:1}
 :root[data-theme="dark"] .ra-top,:root[data-theme="dark"] .ra-ok{background:rgb(76 212 154 / .14);color:#6FE0AE}
 :root[data-theme="dark"] .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}
 :root[data-theme="dark"] .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}
@@ -1812,8 +1814,8 @@ function filtersHTML(all){
 /* Início: busca em destaque, oportunidades agora e todos os preços */
 function searchBox(id,q,big){
   return`<form class="sbox${big?" sbox-lg":""}" role="search" data-search="${id}" autocomplete="off">
-  <div class="sbox-in">${ic("magnifying-glass")}<input id="${id}" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscar produto, coleção ou SKU…" value="${esc(q||"")}" aria-label="Buscar produto, coleção, SKU ou EAN" aria-autocomplete="list" aria-controls="${id}-ac" aria-expanded="false" autocomplete="off"><button class="sbox-x" type="button" data-sclear aria-label="Limpar busca"${q?"":" hidden"}>${ic("x")}</button><button class="btn" type="submit">Buscar</button></div>
-  <div class="ac" id="${id}-ac" role="listbox" hidden></div></form>`;
+  <div class="sbox-in">${ic("magnifying-glass")}<input id="${id}" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscar produto, coleção ou SKU…" value="${esc(q||"")}" role="combobox" aria-label="Buscar produto, coleção, SKU ou EAN" aria-autocomplete="list" aria-controls="${id}-ac" aria-expanded="false" autocomplete="off"><button class="sbox-x" type="button" data-sclear aria-label="Limpar busca"${q?"":" hidden"}>${ic("x")}</button><button class="btn" type="submit">Buscar</button></div>
+  <div class="ac" id="${id}-ac" role="listbox" aria-label="Sugestões de busca" hidden></div></form>`;
 }
 /* Início: painel editorial de oportunidades. Descoberta → Oportunidade → Inteligência → Novidades → Compra */
 const ACT_LABEL={new:["Nova oportunidade","flame-f","hot"],drop:["Queda de preço","trend-down","ok"],restock:["Voltou ao estoque","package","info"],lowest:["Novo menor preço","seal-check-f","ok"],tip:["Telegram","lightbulb","info"]};
@@ -2048,7 +2050,7 @@ function groupNav(){
 function renderGroup(kind,slug){
   const isCol=kind==="colecao";
   const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):typeGroupOf(slug);
-  if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Página não encontrada</h3><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
+  if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Página não encontrada</h1><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
   const name=isCol?g0.name:g0.label;
   const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:inGroup(g0,p)));
   const best={},n={};if(S.slim)for(const p of ps)n[p.id]=p.liveCount||0;for(const o of OFF){if(!live(o))continue;if(!S.slim)n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||byTot(o,best[o.productId])<0)best[o.productId]=o}
@@ -2432,7 +2434,7 @@ let PENDING_HASH="";
 function hashScroll(){if(!PENDING_HASH)return;const el=document.getElementById(PENDING_HASH);if(!el)return;PENDING_HASH="";requestAnimationFrame(()=>el.scrollIntoView({block:"start"}))}
 function renderProduct(pid){
   const p=P[pid];
-  if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
+  if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Produto não encontrado</h1><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
   const gg=g(p);const offers=OFF.filter((o)=>o.productId===pid).sort(OFFER_SORTS[offerSort]);
   const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");const old=!best&&!pre&&staleOnly(offers);
   const c=p.copag||{};const col=(S.collections||[]).find((x)=>x.id===p.collection);
@@ -2648,7 +2650,10 @@ const alertOf=(pid)=>alertsL().find((a)=>a.p===pid);
 /* desempate fixo (preço, id): o mesmo no site e na API, não depende da ordem das ofertas na lista */
 const byTot=(a,b)=>a.total-b.total||afPref(b)-afPref(a)||String(a.id).localeCompare(String(b.id));   /* empate de total: nosso link primeiro */
 const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort(byTot)[0];
-const hits=()=>alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v);
+/* "Chegou no seu preço" só com preço em dia: a mesma checagem de frescor de setAlert. Com dado velho, nada de contador,
+   aviso ou selo afirmando o preço (o alerta continua salvo e volta a valer na próxima leitura). */
+const precoEmDia=()=>freshState(S).status==="atual";
+const hits=()=>precoEmDia()?alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v):[];
 const authPending=()=>!ACC.ready&&store.get("acc",false);
 function accMod(){return accP||=import("/account.js").then((m)=>{ACC.mod=m;m.watch(onUser);afterRedirect(m);return m}).catch((e)=>{accP=null;throw e})}
 /* volta do Google no modo redirecionamento: sucesso segue por onUser/resumeGate; cancelamento ou erro reabrem a mesma tela */
@@ -2861,7 +2866,7 @@ async function sharePid(pid){if(!P[pid])return;const url=location.origin+"/produ
   const wa="https://wa.me/?text="+encodeURIComponent(text+" "+url);window.open(wa,"_blank","noopener")}
 function favBtn(pid){const on=isFav(pid);return`<button class="btn ghost favbtn" type="button" data-fav="${esc(pid)}" aria-pressed="${on}">${ic(on?"heart-f":"heart")}${on?"Nos favoritos":"Favoritar"}</button>`}
 function alertBox(pid){
-  const a=alertOf(pid),o=bestLive(pid);const hit=a&&o&&o.total<=a.v;
+  const a=alertOf(pid),o=bestLive(pid);const hit=a&&o&&o.total<=a.v&&precoEmDia();
   const now=o?`Menor preço com estoque agora: <b>${money(o.total)}${pixTxt(o)}</b> em ${esc(storeTxt(o))}.`:"Sem oferta com estoque confirmado agora.";
   const sug=o?Math.floor(o.total*.9):"";
   return`<section class="alertbox${hit?" hit":""}" id="abox"><h2>${ic(hit?"bell-ringing":"bell")}${a?"Seu alerta de preço":"Me avise quando baixar"}</h2>
@@ -3002,6 +3007,10 @@ function renderGrupos(){
   <h2>Siga também</h2><p class="foot-social">${redesLinks()}</p>
 </section></div>`;
 }
+/* Busca, conta e endereço desconhecido ficam fora do índice (X-Robots-Tag no vercel.json, noindex no 404): a casca
+   (app.html) vem com o canonical da Home, que aqui sai para não dar sinal conflitante. As páginas com SSR trazem o próprio. */
+const SEM_CANON=new Set(["busca","notfound",...PRIVATE]);
+function canonSync(){if(SEM_CANON.has(view))document.querySelector('link[rel="canonical"]')?.remove()}
 function renderNotFound(){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Página não encontrada</h1><p>O endereço pode estar digitado errado ou a página saiu do ar.</p>${searchBox("nf","",false)}<p><a class="btn" href="/" data-go="">Ir para o início</a></p></div>`}
 function render(){
   const cur=view==="deals"?"":view;
@@ -3010,7 +3019,7 @@ function render(){
   const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","lojas","grupos","guia","glossario","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
-  grpUI();
+  canonSync();grpUI();
   if(S?.slim&&PRIVATE.includes(view))ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
   if(view==="conta")return renderConta();
   if(view==="favoritos")return renderFavs();
@@ -3526,8 +3535,15 @@ function loading(){
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
-async function fetchData(path){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(r.ok)return await r.json()}catch{}}return null}
-async function fetchState(){return fetchData("state.json")}
+/* D4: state.json só vale com produtos, ofertas e horário confiável de até 24 h (FRESH_LIM.expira = EXPIRA_MIN da API). A cópia
+   congelada da main (raw main e /data/ do deploy) não vira "Ao vivo"; sem fonte válida, o estado de erro de sempre.
+   A idade é medida contra o relógio do servidor que respondeu, nunca o do aparelho: Date (mesma origem) ou, no raw do GitHub
+   (CORS não expõe Date), Expires − max-age. Sem essa referência = sem horário confiável. */
+const srvNow=(r)=>{const h=(k)=>r?.headers?.get?.(k)||"";let t=Date.parse(h("date"));
+  if(!Number.isFinite(t)){const m=/max-age=(\d+)/.exec(h("cache-control"));t=m?Date.parse(h("expires"))-m[1]*1e3:NaN}return Number.isFinite(t)?t:null};
+const stateOk=(j,r)=>{const now=srvNow(r);return now!=null&&!!j&&Array.isArray(j.products)&&Array.isArray(j.offers)&&freshState(j,now).status!=="indisponivel"};
+async function fetchData(path,ok){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(!r.ok)continue;const j=await r.json();if(!ok||ok(j,r))return j}catch{}}return null}
+async function fetchState(){return fetchData("state.json",stateOk)}
 /* FASE 3: a Home lê o resumo da API (banco + Price Engine, ~130 KB) em vez do state.json inteiro (~1,7 MB).
    Qualquer falha cai no state.json, como antes. ?fonte=state força o caminho antigo. */
 const HOME_API=true;
@@ -3536,7 +3552,7 @@ function hydrateHome(h){const c=Object.fromEntries((h.collections||[]).map((x)=>
 async function fetchHome(){
   if(!HOME_API||new URLSearchParams(location.search).get("fonte")==="state")return null;
   try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),6000);const r=await fetch("/api/v1/home",{signal:ac.signal});clearTimeout(tm);
-    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts?hydrateHome(h):null}catch{return null}
+    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts&&h.freshness?.status!=="indisponivel"?hydrateHome(h):null}catch{return null}
 }
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
@@ -3647,9 +3663,9 @@ function watchMore(){const el=$("#prod-more");if(!el)return;if(!("IntersectionOb
 let fullP=null;
 function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
-  return fullP||=fetchState().then((st)=>{fullP=null;
+  return fullP||=fetchState().then((st)=>{fullP=null;   /* sem state.json: páginas da conta (= PRIVATE) ficam com o resumo da API (D4, R2) */
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals"&&!["conta","favoritos","alertas","configuracoes"].includes(view))$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
 let refreshing=false;
