@@ -24,9 +24,10 @@ export const SEMENTE = Object.freeze({
 
 const lista = (n) => Array.from({ length: n }, (_, i) => `id-${i}`);
 const perfil = { name: 'Novo', favorites: [], alerts: [], termsAt: 2, createdAt: 2, updatedAt: 2 };
+const semCampo = (k) => Object.fromEntries(Object.entries(perfil).filter(([c]) => c !== k));
 const SEMENTE_A = () => ({ ...SEMENTE[`users/${A}`] });
 
-/** grupo: dono | outro-usuario | anonimo | campos | telegram | outros-caminhos. */
+/** grupo: dono | outro-usuario | anonimo | campos | telegram | outros-caminhos | criacao. */
 export const CASOS = Object.freeze([
   // Dono: lê, cria, grava (merge, como a página), atualiza e apaga o próprio documento.
   { id: 'dono-le', grupo: 'dono', quem: A, op: 'get', caminho: `users/${A}`, esperado: 'permitido' },
@@ -75,4 +76,20 @@ export const CASOS = Object.freeze([
   { id: 'outra-grava', grupo: 'outros-caminhos', quem: A, op: 'set', caminho: 'outra/2', dados: { x: 1 }, esperado: 'negado' },
   { id: 'outra-apaga', grupo: 'outros-caminhos', quem: A, op: 'delete', caminho: 'outra/1', esperado: 'negado' },
   { id: 'colecao-nova-grava', grupo: 'outros-caminhos', quem: A, op: 'set', caminho: `qualquer/${A}`, dados: { x: 1 }, esperado: 'negado' },
+  // Exclusão de conta (regra M2): criar users/{uid} só com perfil completo (createdAt + termsAt); documento existente segue com gravação parcial.
+  // Gravação parcial de cliente antigo (setDoc merge de favorito/alerta) NÃO recria documento apagado (lacuna M2 hoje).
+  { id: 'm2-cria-parcial-favorito', grupo: 'criacao', quem: 'novo', op: 'merge', caminho: 'users/novo', dados: { favorites: ['sv1-1'], updatedAt: 3 }, esperado: 'negado' },
+  { id: 'm2-cria-parcial-alerta', grupo: 'criacao', quem: 'novo', op: 'merge', caminho: 'users/novo', dados: { alerts: [{ p: 'sv1-1', alvo: 10 }], updatedAt: 3 }, esperado: 'negado' },
+  { id: 'm2-cria-sem-termsAt', grupo: 'criacao', quem: 'novo', op: 'set', caminho: 'users/novo', dados: semCampo('termsAt'), esperado: 'negado' },
+  { id: 'm2-cria-sem-createdAt', grupo: 'criacao', quem: 'novo', op: 'merge', caminho: 'users/novo', dados: semCampo('createdAt'), esperado: 'negado' },
+  { id: 'm2-cria-vazio', grupo: 'criacao', quem: 'novo', op: 'set', caminho: 'users/novo', dados: {}, esperado: 'negado' },
+  { id: 'm2-cria-completo-campo-extra', grupo: 'criacao', quem: 'novo', op: 'set', caminho: 'users/novo', dados: { ...perfil, admin: true }, esperado: 'negado' },
+  { id: 'm2-cria-completo-201', grupo: 'criacao', quem: 'novo', op: 'merge', caminho: 'users/novo', dados: { ...perfil, favorites: Array.from({ length: 201 }, (_, i) => `id-${i}`) }, esperado: 'negado' },
+  // Cadastro e "Criar perfil"/"Continuar usando" seguem funcionando.
+  { id: 'm2-cria-completo-merge', grupo: 'criacao', quem: 'novo', op: 'merge', caminho: 'users/novo', dados: perfil, esperado: 'permitido' },
+  { id: 'm2-cria-completo-set', grupo: 'criacao', quem: 'novo', op: 'set', caminho: 'users/novo', dados: perfil, esperado: 'permitido' },
+  // Documento existente: gravação parcial (merge/update) continua permitida, com os mesmos campos e limites.
+  { id: 'm2-existente-merge-parcial', grupo: 'criacao', quem: A, op: 'merge', caminho: `users/${A}`, dados: { favorites: ['sv1-9'], updatedAt: 4 }, esperado: 'permitido' },
+  { id: 'm2-existente-update-parcial', grupo: 'criacao', quem: A, op: 'update', caminho: `users/${A}`, dados: { alerts: [], updatedAt: 4 }, esperado: 'permitido' },
+  { id: 'm2-existente-campo-extra', grupo: 'criacao', quem: A, op: 'merge', caminho: `users/${A}`, dados: { admin: true }, esperado: 'negado' },
 ]);
