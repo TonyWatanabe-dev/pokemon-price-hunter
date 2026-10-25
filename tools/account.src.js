@@ -72,22 +72,26 @@ export async function save(patch) {
   const u = auth.currentUser; if (!u) throw Object.assign(new Error('sem login'), { code: 'auth/no-user' });
   await setDoc(ref(u.uid), { ...patch, updatedAt: new Date().toISOString() }, { merge: true });
 }
-// Exclui os dados e a conta. Se o login for antigo, o Firebase pede para confirmar de novo.
-export async function remove(password) {
-  const u = auth.currentUser; if (!u) return;
-  try { await deleteUser(u); }
-  catch (e) {
-    if (e.code !== 'auth/requires-recent-login') throw e;
-    if (pub(u).provider === 'google.com') await reauthenticateWithPopup(u, new GoogleAuthProvider());
-    else { if (!password) throw e; await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, password)); }
-    await deleteDoc(ref(u.uid));
-    await deleteUser(u);
-    return;
+// Exclusão da conta, em ordem segura: falha em qualquer passo NUNCA deixa conta excluída com dados guardados.
+// 1) Confirma a identidade ANTES de apagar qualquer coisa. O Firebase pode exigir login recente para excluir a conta e
+//    não há como saber sem tentar a exclusão; por isso confirma sempre: Google por popup (primeira chamada, ainda no
+//    clique, sem ser bloqueada) e senha com a senha digitada. Conta com senha sem senha digitada: não começa (erro
+//    auth/requires-recent-login, nada apagado).
+// 2) Apaga users/<uid> (depois de excluir a conta não há mais permissão para apagar). Se falhar, para aqui: a conta NÃO
+//    é excluída e o erro sobe para a página, que deixa tentar de novo. Documento já inexistente conta como sucesso.
+// 3) Só então exclui a conta no Auth. Se falhar aqui, o documento já não existe (erro com docDeleted = true) e a
+//    próxima tentativa conclui sem perda: o robô só grava com pré-condição de documento existente, nunca o recria.
+async function confirmIdentity(u, password) {
+  const provider = pub(u).provider;
+  if (provider === 'google.com') await reauthenticateWithPopup(u, new GoogleAuthProvider());
+  else if (provider === 'password') {
+    if (!password) throw Object.assign(new Error('senha necessária para excluir'), { code: 'auth/requires-recent-login' });
+    await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, password));
   }
 }
-// Apaga o documento antes da conta (depois de excluir a conta não há mais permissão para apagar).
 export async function wipe(password) {
   const u = auth.currentUser; if (!u) return;
-  try { await deleteDoc(ref(u.uid)); } catch { /* sem documento */ }
-  await remove(password);
+  await confirmIdentity(u, password);
+  try { await deleteDoc(ref(u.uid)); } catch (e) { if (e?.code !== 'not-found') throw e; }
+  try { await deleteUser(u); } catch (e) { if (e && typeof e === 'object') e.docDeleted = true; throw e; }
 }
