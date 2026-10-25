@@ -90,7 +90,7 @@ export const groupOf = (type) => TYPE_GROUP[type] || 'Coleções';
 // coleção base da série, como o código de expansão. Não cria produto: o anúncio fica sem coleção até o catálogo ganhar a
 // coleção (aí o alias dela casa antes, em `hits`, e esta lista deixa de ter efeito para ela). Retire a entrada nessa hora.
 export const FORA_DO_CATALOGO = Object.freeze([
-  { id: 'me06', nome: 'Reinado Delta', serie: 'Megaevolução', re: /\breinado[\s-]?delta\b/ },
+  { id: 'me06', nome: 'Reinado Delta', serie: 'Megaevolução', re: /\breinado[\s/.-]{0,3}delta\b/ },
 ]);
 const CODIGO_SERIE = /\b(?:me|sv|swsh)\s?0*\d+(?:[.,]\d+)?\b/;
 export function detectCollection(t, collections) {

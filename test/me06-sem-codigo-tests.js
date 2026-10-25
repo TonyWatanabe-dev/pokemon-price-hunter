@@ -37,7 +37,8 @@ t('2. com e sem ME06: sem produto nos dois casos', () => {
 t('3. variantes de escrita: hífen, maiúsculas, espaço duplo, sem acento', () => {
   for (const title of ['Combo de Boosters - Megaevolução Reinado-Delta', 'COMBO DE BOOSTERS - MEGAEVOLUÇÃO REINADO DELTA',
     'Combo de Boosters - Megaevolução Reinado  Delta', 'Combo de Boosters - Megaevolucao Reinado Delta',
-    'Booster Box Pokémon Mega Evolução Reinado-Delta 36 Boosters', 'Combo de Boosters Pokémon Megaevolucao ReinadoDelta']) semProduto(title);
+    'Booster Box Pokémon Mega Evolução Reinado-Delta 36 Boosters', 'Combo de Boosters Pokémon Megaevolucao ReinadoDelta',
+    'Combo de Boosters - Megaevolução Reinado/Delta', 'Combo de Boosters - Megaevolução Reinado. Delta']) semProduto(title);
 });
 
 t('4. ME01 de verdade e as outras coleções da série não mudam', () => {
