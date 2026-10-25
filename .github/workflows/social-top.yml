@@ -7,7 +7,12 @@ name: Social Top 3 e Top 10 do site
 # (SOCIAL_AUTO no Telegram, SOCIAL_WHATSAPP_AUTO no WhatsApp). O disparo manual escolhe top3, top10 ou os dois.
 # O cron do GitHub atrasa e às vezes pula execuções (24/10: a das 19h07 não foi criada). Por isso cada horário tem
 # reservas (+30 min e +1 h); a chave do horário (slotAgora) e os diários dos canais fazem só a 1ª que chegar postar.
+# 24/10, noite: o GitHub também não criou as execuções das 21h07 e das reservas. Gatilho principal passa a ser o fim de
+# cada rodada do robô (Price Hunter, ~15 min), como no envio automático do WhatsApp; os crons ficam de reserva.
 on:
+  workflow_run:
+    workflows: ['Price Hunter']
+    types: [completed]
   schedule:
     - cron: '7 12,16,22,0 * * *'    # 9h07, 13h07, 19h07 e 21h07 (Top 10)
     - cron: '37 12,16,22,0 * * *'   # reserva +30 min
@@ -30,7 +35,7 @@ concurrency:              # uma rodada por vez: os diários (cache) são lidos e
 
 jobs:
   arte:
-    if: github.event_name == 'workflow_dispatch' || vars.SOCIAL_TOP == '1'
+    if: github.event_name == 'workflow_dispatch' || (vars.SOCIAL_TOP == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'))
     runs-on: ubuntu-24.04   # o instalador do Playwright 1.56 ainda não reconhece o Ubuntu 26 do ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -44,13 +49,13 @@ jobs:
         with:
           node-version: 22
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        if: github.event_name == 'schedule'
+        if: github.event_name != 'workflow_dispatch'
         with:
           path: social/top-tg.json
           key: social-top-tg-${{ github.run_id }}
           restore-keys: social-top-tg-
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        if: github.event_name == 'schedule'
+        if: github.event_name != 'workflow_dispatch'
         with:
           path: social/wa-diario.json
           key: social-whatsapp-diario-${{ github.run_id }}
