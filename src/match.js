@@ -85,6 +85,13 @@ export const TYPE_GROUP = {
 };
 export const groupOf = (type) => TYPE_GROUP[type] || 'Coleções';
 
+// Coleções lançadas (ou anunciadas) que ainda NÃO estão em config/catalog.json. Lista fechada e explícita, sem similaridade
+// textual: o nome no título normalizado (acento já removido; espaço, hífen ou nada entre as palavras) impede o fallback para a
+// coleção base da série, como o código de expansão. Não cria produto: o anúncio fica sem coleção até o catálogo ganhar a
+// coleção (aí o alias dela casa antes, em `hits`, e esta lista deixa de ter efeito para ela). Retire a entrada nessa hora.
+export const FORA_DO_CATALOGO = Object.freeze([
+  { id: 'me06', nome: 'Reinado Delta', serie: 'Megaevolução', re: /\breinado[\s-]?delta\b/ },
+]);
 const CODIGO_SERIE = /\b(?:me|sv|swsh)\s?0*\d+(?:[.,]\d+)?\b/;
 export function detectCollection(t, collections) {
   // langAliases: nome da coleção em outro idioma ({ en: ['surging sparks'], ja: [...] }). Casar só por ele dá a pista
@@ -104,6 +111,9 @@ export function detectCollection(t, collections) {
   // Código de expansão no título (ME06, SV10, SWSH12) que nenhum alias reconheceu = coleção fora do catálogo: o nome
   // da série ("Megaevolução - Reinado Delta (ME06)") não pode jogar a oferta na coleção base da série (ME01).
   if (CODIGO_SERIE.test(t)) return { id: null };
+  // Mesmo efeito pelo NOME de uma coleção conhecida que está fora do catálogo (E6-M, 25/10/2026): "Combo de Boosters -
+  // Megaevolução Reinado Delta" (moxland, sem o código ME06) caía em me01-combo pelo fallbackAlias "megaevolucao".
+  if (FORA_DO_CATALOGO.some((c) => c.re.test(t))) return { id: null };
   const fb =collections.filter((c) => (c.fallbackAliases || []).some((a) => wordRe(a).test(t) && !new RegExp(esc(a).replace(/ /g, '\\s?') + '\\s?0*\\d+(?!\\d|\\s?(?:cartas?|cards?|boosters?|pacotes?|envelopes?|packs?|un|unidades?|blisters?|x)\\b)').test(t)));
   return fb.length === 1 ? { id: fb[0].id, fallback: true } : { id: null };
 }
