@@ -21,10 +21,13 @@ export function slugs(products) {
   return { by, of };
 }
 let cache = { t: 0, s: null };
-export async function state() {
+// Prazo do download do state.json (cabeçalhos + corpo): GitHub raw pendurado não pode segurar a página nem o sitemap até
+// a plataforma derrubar a função. Estourou = mesma falha de rede de antes: cai no último state bom ainda em dia, ou lança.
+export const STATE_TIMEOUT_MS = 5000;
+export async function state({ timeoutMs = STATE_TIMEOUT_MS } = {}) {
   if (cache.s && Date.now() - cache.t < 10 * 60e3) return cache.s;
   try {
-    const r = await fetch(RAW); if (!r.ok) throw new Error('state ' + r.status);
+    const r = await fetch(RAW, { signal: AbortSignal.timeout(timeoutMs) }); if (!r.ok) throw new Error('state ' + r.status);
     cache = { t: Date.now(), s: await r.json() }; return cache.s;
   } catch (e) {
     // Falha do GitHub raw (429/5xx, rede): usa o último state bom enquanto ele ainda estiver dentro do frescor
