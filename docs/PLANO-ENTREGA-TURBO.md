@@ -16,6 +16,12 @@
 - **Fase 8 — Hardening e lançamento:** parcial; depende do burn-in, smoke no SHA publicado e decisão/estratégia de backup do Supabase.
 - **Fase 9 — Manutenção contínua:** começa após os critérios de lançamento da Fase 8.
 
+**Atualização 25/10/2026 (tarde):** 22 PRs integradas e publicadas com autorização do dono. Detalhes, SHAs e pendências estão no `ROADMAP-OPERACIONAL.md`, seção de 25/10 tarde. Nenhuma fase mudou de estado.
+- **Fase 1:** burn-in 1/7. O matching v3 (#938) e o ME06 (#922) estão em produção. O reparo dos dados contaminados foi **simulado, não aplicado** (ramo `data` e Postgres).
+- **Fase 2:** o D4 (cópia de 07/10 servida como preço atual) está corrigido e publicado (#939 navegador, #940 API). A falha dupla não foi validada em produção.
+- **Fase 4:** exclusão de conta publicada (#932, #937). A regra M2 do Firestore **não foi validada nem publicada**.
+- **Fase 0:** a trava de integração está integrada e desligada; `enforce_admins` continua false.
+
 **Ordem de prioridade:** (1) confiabilidade e evidências de operação (#271, #231); (2) frescor, matching e taxonomia; (3) motor de ofertas e custo total, sem cotação não autorizada (#84); (4) medição de conversão e afiliados; (5) preparação e lançamento gradual de “Monte seu kit”.
 
 **Regra de dependência:** “Monte seu kit” é uma nova experiência de produto, não uma nova fonte de dados. Seu questionário, combos e comparação devem reutilizar o catálogo, Offer Engine, ranking, links e regras de preço/frete existentes. Design e protótipos podem avançar em paralelo; recomendações reais não são ativadas até que a qualidade dos dados e os critérios de custo total estejam comprovados.

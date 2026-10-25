@@ -41,6 +41,65 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Integração e publicação autorizadas — 25/10/2026, tarde (America/Sao_Paulo)
+
+**Autorização do dono no chat:** "Pode dar merge em tudo e publicar". Foram integradas por squash 22 PRs, uma de cada vez, sempre com os 4 checks verdes no SHA exato e behind=0, sem bypass de admin. A Vercel publicou cada uma: o último deploy, de `7825f701` (#919), está READY em produção.
+
+**Ordem integrada:** #924, #925, #939, #927, #940, #928, #918, #916, #935, #931, #936, #930, #920, #941, #932, #937, #914, #917, #926, #922, #938, #919.
+- **#941:** separada da #937 (parte de SEO/404 e frescor dos alertas) porque o qa-review bloqueou a #937 por escopo misturado.
+- **#937:** reescrita só com a exclusão de conta. Na segunda rodada passou no qa-review.
+- **#926:** os testes de conta foram adaptados à exclusão nova, sem enfraquecer nenhuma asserção (d3f374b1).
+
+**Burn-in #271:** 1/7. 24/10 fechou verde; 25/10 segue parcial verde (atualizado até 15:52 UTC). Nenhum critério, limite ou janela foi alterado. Com autorização do dono, entraram durante o burn-in mudanças que afetam o robô e o Vigia:
+- #922 e #938 mudam o matching;
+- #919 muda o texto das issues do Vigia.
+
+Leitura de 25/10 em diante: não mudam coleta, `src/run.js`, Dispatcher, workflows nem critérios. Os dias seguintes medem a versão nova.
+
+**D4: snapshot de 07/10 servido como preço atual.**
+- Antes: confirmado em produção, com `/data/state.json` em 200 e generatedAt 2026-10-07.
+- #939 (navegador) e #940 (API, `legacy.mjs`) estão publicadas; o JavaScript servido já contém `fetchState`/`stateOk`.
+- Testes locais de navegador: 17/17 na correção, 10/17 na main antiga.
+- Revisão independente final: A aprovável; B aprovável depois da correção do B1 (/lojas).
+- **Não validado em produção** o cenário de falha dupla (API e raw fora), porque não dá para derrubar as fontes reais.
+- A cópia de 07/10 continua no build (`package.json` build → `public/data`); tirar é R3. Ela não é mais aceita como dado atual.
+
+**Matching v3 (#938) e ME06 (#922) integrados:**
+- Em relação à main anterior, 51 títulos mudam no ramo `data`.
+- 3 revisões independentes, todas com ressalvas não bloqueantes.
+- O efeito aparece a partir da próxima rodada do robô.
+
+**Dados já gravados continuam contaminados.** A #936 integrou só a ferramenta de simulação. Simulação final (matcher 70f8d695, cópia bfaf3cde):
+- 62 reassociações, 50 automáticas;
+- histórico de 10.126 para 10.060 pontos: 66 removidos, 24 em revisão;
+- 7 menores preços contaminados: sv10-mewtwo 139,99 → 169,90; alakazam, golem, wigglytuff e kingdra removidos; sv9-zacian 113,89 e me01-etb 379,91 em revisão e bloqueados;
+- 5 remoções de produto adiadas, porque ainda há ofertas apontando para eles.
+
+O Postgres também segue contaminado. Aplicar o reparo exige: o passo de publicação no workflow do robô (R3), fim do burn-in e autorização para tocar dados reais.
+
+**Exclusão de conta (#932 + #937):**
+- Publicada.
+- Emulador do Firebase Auth 11/11 em execução local.
+- **Regra M2 do Firestore não validada nem publicada:** o emulador do Firestore está bloqueado pelo proxy. O diff e os casos estão prontos para uma PR de regras (R3).
+- O código novo não depende da M2: `updateDoc` não recria documento.
+
+**Trava de integração (#931):** integrada e **desligada** (`EM_USO=false`). Não impede merge pela UI nem pela API. `enforce_admins` continua false.
+
+**Auditoria de consistência (#935, só teste):** D1–D3 e D5–D7 continuam abertos (detalhes no relatório da frente). O D4 foi corrigido pela #939/#940.
+
+**Aguardam autorização do dono:**
+1. Ligar `enforce_admins` e, se quiser, a trava.
+2. PR da regra M2, com execução real no CI de regras.
+3. Depois do burn-in 7/7: passo de publicação do reparo (R3) e aplicação no ramo `data` e no Postgres.
+4. Tirar a cópia de 07/10 do build (R3).
+5. Correções D1–D3 e D5–D7 da auditoria de consistência.
+6. Decisões de catálogo:
+   - o rótulo "Rivais Predestinados" do Koraidon Implacáveis;
+   - Nidoking/Persian 35880;
+   - os 2 menores preços em revisão (sv9-zacian e me01-etb).
+
+---
+
 ## Burn-in 1/7 e fechamento da rodada de auditorias — 25/10/2026, madrugada (America/Sao_Paulo)
 
 **Burn-in #271: 1/7.** O bot fechou 24/10 como **verde** (comentário de 25/10, 03:07 UTC). Os 11 critérios ficaram dentro do limite:
