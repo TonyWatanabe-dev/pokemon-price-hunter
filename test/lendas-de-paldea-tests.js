@@ -38,10 +38,12 @@ const IMPLACAVEIS = {
   'Pokémon TCG - Coleção Lendas Implacáveis - Koraidon Ex': 'sv10-colecao_ex-koraidon',
   'Pokemon Box - Coleção Ex Lendas Implacáveis - Koraidon': 'sv10-colecao_ex-koraidon',
   'Pokemon Box - Lendas Implac?veis - Koraidon Ex': 'sv10-colecao_ex-koraidon',
-  'Box Pokémon Lendas Implacáveis Zacian': 'sv9-colecao_ex-zacian',
-  'Pokemon Box - Coleção Ex Lendas Implacáveis - Zacian': 'sv9-colecao_ex-zacian',
-  'Pokémon TCG – Box Coleção Lendas Implacáveis: Zacian EX (PT-BR) | 6 Boosters + Promo + Jumbo': 'sv9-colecao_ex-zacian',
-  'Pokémon Box Coleção EX Lendas Implacáveis Zacian 38 Cartas 100-10392 35239 - Copag': 'sv9-colecao_ex-zacian',
+  // 25/10/2026 (T4-C): as 4 Zacian esperavam sv9-colecao_ex-zacian, o produto da "Zacian ex do Lupo" (35263) — fixavam a
+  // colisão H1. A Zacian Implacáveis (35239) fica no avulso; só o Koraidon da linha herda a coleção conhecida.
+  'Box Pokémon Lendas Implacáveis Zacian': 'avulsos-colecao_ex-zacian',
+  'Pokemon Box - Coleção Ex Lendas Implacáveis - Zacian': 'avulsos-colecao_ex-zacian',
+  'Pokémon TCG – Box Coleção Lendas Implacáveis: Zacian EX (PT-BR) | 6 Boosters + Promo + Jumbo': 'avulsos-colecao_ex-zacian',
+  'Pokémon Box Coleção EX Lendas Implacáveis Zacian 38 Cartas 100-10392 35239 - Copag': 'avulsos-colecao_ex-zacian',
 };
 
 t('(a) Lendas de Paldea Koraidon não cai mais em sv10 (produto da Lendas Implacáveis)', () => {
@@ -80,11 +82,11 @@ t('(b) outros casamentos válidos com Koraidon/Miraidon/Paldea não mudam', () =
   for (const [title, esperado] of Object.entries(casos)) assert.equal(id(title), esperado, title);
 });
 
-t('(c) Lendas Implacáveis Koraidon/Zacian continuam em sv10/sv9', () => {
+t('(c) Lendas Implacáveis Koraidon continua em sv10; Zacian no avulso (sv9 é o Lupo)', () => {
   for (const [title, esperado] of Object.entries(IMPLACAVEIS)) {
     const r = m(title);
     assert.equal(r.productId, esperado, title);
-    assert.equal(r.via, 'variante-conhecida', title);
+    assert.equal(r.via, esperado.startsWith('avulsos-') ? 'avulso' : 'variante-conhecida', title);
   }
 });
 

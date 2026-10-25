@@ -15,6 +15,9 @@ const TOY_BALL = (t) => /\b(pokebola|poke ball)\b/.test(t) && !/\b(lata|box|cole
 const REJECT = [
   [/\b(usad[oa]s?|aberto|aberta|sem lacre|violad[oa]|avariad[oa]|caixa amassada|embalagem danificada)\b/, 'condição: não lacrado/usado'],
   [/\b(avulsas?|lote de cartas|cartas? aleatorias|sem repetidas|brilhantes? garantid|proxy|replica|nao original|similar|cartas? unitarias?)\b/, 'não é produto lacrado oficial'],
+  // Carta avulsa com número de coleção ("Carta Pokémon TCG Alakazam ex (065/165) Coleção 151", 25/10/2026): caía na caixa
+  // sv3_5-colecao_ex-alakazam (R$ 47,41 virou o menor preço da caixa) e criava produtos de caixa falsos (Golem, Venusaur, Wigglytuff).
+  [/\bcarta\b.*\b\d{3}\/\d{3}\b/, 'carta avulsa, não é produto lacrado'],
   [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
 ];
 // "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
@@ -151,6 +154,10 @@ function detectVariant0(t) {
   const li = t.match(/\blendas implacaveis:? (?:- )?(?:ex )?([a-z]{3,})\b/);
   if (li) return VARIANT_STOP.has(li[1]) || li[1] === 'ex' ? null : mega + li[1];
   let m = t.match(/\bex (?:mega )?([a-z]{3,})\b/); // "Box Pokémon Ex Greninja"
+  // "Coleção Ex Destinos Paradoxais - Fogo Corrosão" (25/10/2026): "destinos" (nome da linha) virava a variante e juntava
+  // Fogo Corrosão, Chifres Férreos e um kit em avulsos-colecao_ex-destinos. A caixa é a última palavra depois da linha, como
+  // nos outros anúncios dela ("Raio de Fúria Ex" → furia, "Chifres Férreos Ex" → ferreos); sem nome, sem variante.
+  if (m && m[1] === 'destinos') { const d = t.match(/\bdestinos paradoxais (?:- )?(?:[a-z]+ )*?([a-z]{3,})(?: ex)?\s*$/); return d && !VARIANT_STOP.has(d[1]) ? mega + d[1] : null; }
   if (m && !VARIANT_STOP.has(m[1])) return mega + m[1];
   return null;
 }
@@ -244,7 +251,7 @@ export function parseListing(title, catalog) {
   let lang = language.code && IMPORT_LANGS[language.code] ? language.code : null;
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
-  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
+  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\bkit com ([2-9]|1\d) box(es)?\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
   // "Case" (caixa master com várias boxes/ETBs) e "6x Booster Box" nunca são a unidade do catálogo.
   // "Case vazio/vazia" continua só como acessório (regra REJECT acima), sem esse segundo motivo.
   else if (/\bcase\b(?! vazi[oa]\b)|\b(caixa|box) master\b|\bmaster (case|box)\b|\b([2-9]|1\d) ?x? (booster box(es)?|box(es)? display|displays?|treinadore?s? avancados?|etbs?)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
@@ -323,6 +330,25 @@ export function variantesDe(ids = []) {
   return Object.fromEntries([...by].filter(([, s]) => s.size === 1).map(([k, s]) => [k, [...s][0]]));
 }
 
+// Variante conhecida (catalog.variantes) vale para título sem coleção, mas algumas linhas Copag têm o mesmo Pokémon em outra
+// caixa (25/10/2026, auditoria do ramo data):
+// - "Lendas de Paldea": nunca herda.
+// - "Lendas Implacáveis" (35239, Koraidon/Zacian, 38 cartas): só o Koraidon herda (sv10-colecao_ex-koraidon já é essa caixa).
+//   sv9-colecao_ex-zacian é a "Zacian ex do Lupo" (35263, Amigos de Jornada, 40 cartas): a Zacian Implacáveis fica no avulso.
+// - "Coleção (EX) Equipe Rocket <Pokémon> Ex" (35880, Mewtwo/Nidoking/Persian, 49 cartas) não é a "Mewtwo ex da Equipe Rocket"
+//   (35579, 40 cartas) de sv10-colecao_ex-mewtwo: fica no avulso, como as irmãs Nidoking e Persian.
+const LENDAS_IMPLACAVEIS = /\blendas implac(?:a| )?veis\b/; // "Implac?veis" (facilshopping, acento perdido na loja)
+const IMPLACAVEIS_HERDA = new Set(['koraidon']);
+const PALDEA_NO_AVULSO = new Set(['miraidon']);
+const EQUIPE_ROCKET_35880 = /\bcolecao (?:ex )?equipe rocket (?:mega )?[a-z]{3,} ex\b/;
+function herdaColecao(n, variant) {
+  if (/\blendas de paldea\b/.test(n) || EQUIPE_ROCKET_35880.test(n)) return false;
+  if (LENDAS_IMPLACAVEIS.test(n)) return IMPLACAVEIS_HERDA.has(variant);
+  return true;
+}
+const semAcento = (s = '') => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const DUAS_CAIXAS = /\b[a-z]{3,} ex ?& ?(?:mega )?[a-z]{3,}\b|\b[a-z]{3,} ?& ?(?:mega )?[a-z]{3,} ex\b/;
+
 export function matchProduct(listing, catalog) {
   const p = parseListing(listing.title, catalog);
   // EAN cadastrado vence o título.
@@ -339,10 +365,22 @@ export function matchProduct(listing, catalog) {
   // mesma caixa já existe numa coleção (catalog.variantes, montado do catálogo automático), vai para ela; senão, para a
   // pseudo-coleção "avulsos". Antes, 153 de 200 anúncios não casados (17/10) eram "coleção não identificada", muitos assim.
   if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
+    const n = p.normalized;
+    // Duas caixas num anúncio só ("Box Greninja & Kingdra Ex", "Box Coleção Mega Lucario Ex & Mega Gardevoir", 25/10/2026):
+    // a "<nome> ex" levava para a caixa de um Pokémon só e o preço dela (R$ 229,99) virava o menor da Kingdra.
+    // O "&" some na normalização, por isso o título original.
+    if (DUAS_CAIXAS.test(semAcento(listing.title))) return { productId: null, confidence: 0, parsed: p, why: ['mais de um produto no mesmo anúncio'] };
+    // "Charizard ex Brilhante" é a caixa da Destinos de Paldea (sv4_5), não a "Charizard ex em Dobro": sem a coleção no título,
+    // a variante sozinha juntava as duas em avulsos-colecao_ex-charizard (25/10/2026). Sem coleção, sem produto.
+    if (/\bex brilhante\b/.test(n)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
     // "Lendas de Paldea" (Koraidon ex / Miraidon ex, Copag) é outra caixa, não a da "Lendas Implacáveis": não herda a coleção
     // de catalog.variantes (25/10/2026: 3 Koraidon Paldea caíam em sv10-colecao_ex-koraidon). Fica no avulso com a mesma
     // variante de sempre, então avulsos-colecao_ex-miraidon (que já é a Paldea) não muda de id nem perde histórico.
-    const conhecida = (!/\blendas de paldea\b/.test(p.normalized) && catalog?.variantes?.[`${p.type}|${p.variant}`]) || null;
+    // Outras linhas com o mesmo Pokémon em outra caixa: ver herdaColecao.
+    const conhecida = (herdaColecao(n, p.variant) && catalog?.variantes?.[`${p.type}|${p.variant}`]) || null;
+    // Lendas Implacáveis sem coleção conhecida nunca cai no avulso de uma caixa Lendas de Paldea (risco: "Lendas Implacáveis
+    // Miraidon" juntaria com avulsos-colecao_ex-miraidon). Fica sem produto, para revisão.
+    if (!conhecida && LENDAS_IMPLACAVEIS.test(n) && PALDEA_NO_AVULSO.has(p.variant)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
     const prod = describeProduct(catalog, conhecida || AVULSOS, p.type, p.boosters, p.variant, p.lang);
     return { productId: prod.id, product: prod, confidence: conhecida ? 0.7 : 0.65, parsed: p, why: [], via: conhecida ? 'variante-conhecida' : 'avulso' };
   }
