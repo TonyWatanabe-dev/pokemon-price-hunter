@@ -104,6 +104,7 @@ export async function stateLikeFromDb(legacy, { dataAt } = {}) {
     generatedAt: dataAt !== undefined ? dataAt : legacy.generatedAt, coverage: legacy.coverage, totals: legacy.totals, types: legacy.types,
     collections, products, offers,
     activity: legacy.activity, tips: legacy.tips, sources: legacy.sources, reputation: legacy.reputation, distrust: legacy.distrust ?? null,
+    ...(legacy.robotData ? { robotData: legacy.robotData } : {}),   // D4b: campos do robô omitidos (state.json vencido/ausente)
   };
 }
 
