@@ -25,7 +25,9 @@
 // vigente = NÃO PODE (outra sessão está integrando; a main vai andar — espere, como check rodando); lock de outro dono
 // EXPIRADO ou sem dono legível = REVISÃO HUMANA (sessão pode ter morrido no meio do merge; só humano confere e decide
 // a liberação forçada); seu lock expirado = NÃO PODE; main andou desde a aquisição do seu lock = REVISÃO HUMANA
-// (alguém integrou fora do lock); sem lock = aviso, ou NÃO PODE com --exigir-lock; ilegível = EVIDÊNCIA INSUFICIENTE.
+// (alguém integrou fora do lock); lock inconsistente (tag aponta para outro SHA, TTL fora de faixa) ou relógio suspeito
+// (adquirido no futuro) = REVISÃO HUMANA; sem lock = aviso, ou NÃO PODE com --exigir-lock (que, com EM_USO=false, não
+// tem como ser satisfeito); falha ao LER o lock = EVIDÊNCIA INSUFICIENTE.
 // Dono = --sessao <id> + esta PR + head atual; sem --sessao nenhum lock é reconhecido como seu.
 // O comando de merge NÃO é impresso por padrão; só com --mostrar-comando e só no estado PODE, com sha fixado e o
 // aviso de que não é autorização.
@@ -34,7 +36,7 @@
 import { execFileSync } from 'node:child_process';
 import { comRetry } from './gh-retry.mjs';
 // Só as funções de LEITURA do lock (tools/merge-lock.mjs, proposta): nada aqui adquire, libera ou escreve.
-import { lerLock, situacao as situacaoLock, descrever as descreverLock, LOCK_REF } from './merge-lock.mjs';
+import { lerLock, situacao as situacaoLock, descrever as descreverLock, LOCK_REF, EM_USO as LOCK_EM_USO } from './merge-lock.mjs';
 
 export const REQUIRED = Object.freeze(['test', 'regression', 'golden', 'qa-review']);
 export const BASE = 'main';
@@ -274,7 +276,9 @@ export function avaliar({
   if (lock === null) evidencia.push(`lock de merge (${LOCK_REF}) não lido${lockErro ? `: ${lockErro}` : ''}`);
   else if (lock && lock.livre) {
     lockSit = { livre: true };
-    if (exigirLock) motivos.push(`nenhum lock de merge (${LOCK_REF}) desta sessão: adquira antes (--exigir-lock)`);
+    if (exigirLock) motivos.push(LOCK_EM_USO
+      ? `nenhum lock de merge (${LOCK_REF}) desta sessão: adquira antes (--exigir-lock)`
+      : `nenhum lock de merge (${LOCK_REF}) e a aquisição está desligada (EM_USO=false em tools/merge-lock.mjs): --exigir-lock não tem como ser satisfeito sem autorização do dono`);
     else avisos.push(`sem lock de merge (${LOCK_REF}); o procedimento de lock é proposta e não está em uso`);
   } else if (lock) {
     const quem = sessao && head ? { sessao, pr: n, sha: head } : null;
@@ -282,12 +286,17 @@ export function avaliar({
     lockSit = s;
     const d = descreverLock(s);
     if (!s.dono) revisao.push(`lock de merge sem dono legível (${s.motivo}): só um humano identifica o dono e decide`);
+    else if (s.ilegivel) revisao.push(`lock de merge inconsistente (${s.motivo}) — ${d}: só um humano decide`);
+    else if (s.relogioSuspeito && s.seu) revisao.push(`relógio suspeito: seu lock foi adquirido no futuro (${s.dono.adquiridoEm} > ${lidoEm}); só um humano decide`);
     else if (s.seu) {
       if (s.expirado) motivos.push(`seu lock de merge expirou (${s.dono.expiraEm}): libere e adquira de novo antes de integrar`);
       else if (s.mainAndou) revisao.push(`a main andou desde a aquisição do seu lock (${curto(s.dono.main)} → ${curto(mainSha)}): alguém integrou fora do lock`);
       else avisos.push(`lock de merge é seu (expira ${s.dono.expiraEm})`);
     } else if (s.expirado) revisao.push(`lock de merge de outro dono EXPIRADO — ${d}. A sessão pode ter morrido no meio do merge: humano confere se a PR #${s.dono.pr} foi integrada e decide a liberação forçada`);
-    else motivos.push(`lock de merge de outro dono — ${d}${sessao ? '' : ' (sem --sessao nenhum lock é reconhecido como seu)'}: espere a liberação e rode de novo`);
+    else {
+      motivos.push(`lock de merge de outro dono — ${d}${sessao ? '' : ' (sem --sessao nenhum lock é reconhecido como seu)'}: espere a liberação e rode de novo`);
+      if (s.relogioSuspeito) revisao.push(`relógio suspeito no lock de outro dono (adquirido em ${s.dono.adquiridoEm}, no futuro): humano confere e decide a liberação forçada`);
+    }
   }
 
   for (const { numero, trecho } of dependenciasDeclaradas(pr.body, n)) {

@@ -206,7 +206,8 @@ regra "sem lock próprio, sem merge" (`pode-integrar --exigir-lock`) → (a) se 
 - Dono = (sessão, PR, SHA). Mesmo dono readquire sem escrever; resposta perdida no POST é resolvida relendo. Ocupado →
   código 1 com dono, idade e expiração. Expiração padrão 30 min (5–120). Lock expirado **não** é tomado
   automaticamente (apagar+criar não é atômico entre sessões); só `liberar --forcar --tag <sha do objeto> --motivo
-  "..."`, e só depois de expirar. Não-dono não libera.
+  "..."`, e só depois de expirar — ou já, se os metadados forem ilegíveis/fora de faixa ou o relógio de quem adquiriu
+  estiver adiantado (§8.2). Não-dono não libera.
 - `pode-integrar`: lock de outro dono vigente → **NÃO PODE** (fato técnico transitório, como check rodando: a main vai
   andar; esperar resolve). Lock de outro dono expirado ou sem metadados → **REVISÃO HUMANA** (a sessão pode ter morrido
   no meio do merge; alguém precisa conferir se a PR foi integrada antes de forçar). Seu lock expirado → NÃO PODE. Main
@@ -249,3 +250,60 @@ Recuperação:
   `merged` antes de forçar.
 
 Impacto no burn-in: nenhum (ferramenta e doc; nada em uso; nenhuma ref criada).
+
+## 8. Análise técnica final da trava e escolha (25/10, rodada T5-A)
+
+> **A trava NÃO é enforcement.** Está desligada (`EM_USO = false`) e, mesmo ligada, só vale para quem usa a
+> ferramenta. Nada impede merge pela UI, pela API (`PUT pulls/N/merge`), pelo `gh pr merge` ou pela Bridge sem
+> passar por ela. Quem garante algo para todos é a proteção da `main` no GitHub.
+
+### 8.1 Estado verificado (só leitura, `gh api`, 25/10)
+- Dono do repositório: `owner.type = User` (conta pessoal), público.
+- Proteção da `main`: `strict = true`, checks `test, regression, golden, qa-review`, **`enforce_admins = false`**,
+  0 aprovações. `refs/tags/merge-lock` → 404 (nenhuma trava existe).
+
+### 8.2 `tools/merge-lock.mjs` — propriedade por propriedade
+| propriedade | conclusão | base |
+|---|---|---|
+| Exclusão mútua | `POST git/refs` só cria se a ref não existe; a decisão é sempre tomada **relendo** a ref, não pelo código de erro. N aquisições simultâneas → exatamente 1 vence. | Docs REST `git/refs`: create lista 201/409/422 (422 = "Validation failed"); get: "If the `:ref` doesn't match an existing ref, a `404` is returned". Atomicidade da criação condicional **não é declarada** na documentação (é a semântica de ref do git; hipótese forte). Teste: `Promise.all` de 12, 5 sementes de intercalação. |
+| Duplicada do mesmo dono | todas as cópias recebem OK; uma ref; com concorrentes misturados, ou todas as cópias do dono vencem juntas ou nenhuma. | teste local |
+| Falha no meio | morte entre criar o objeto tag e a ref → sem trava (objeto órfão inofensivo); morte depois da ref → **trava órfã**. Resposta perdida no POST ou no DELETE → relê e confirma. Erro não reconhecido → código 3 (fail-closed). | teste local |
+| Expiração/TTL | 5–120 min, padrão 30. **Corrigido**: metadados com `expiraEm` incoerente com `ttlMin`, acima do máximo ou anterior à aquisição eram aceitos — uma `expiraEm` adulterada (ex.: 2099) travava para sempre, porque a forçada só vale depois de expirar. Agora é "ilegível". | teste que falhava antes |
+| Recuperação de órfã | ninguém toma sozinho; forçada manual com `--tag` exato + `--motivo`, após expirar, ou já se ilegível / relógio suspeito. | teste local (CLI) |
+| Liberação só pelo dono | outra sessão, mesma sessão com outra PR, mesma sessão com outro head → recusado sem escrita. Sem DELETE condicional no GitHub (docs: delete sem parâmetro de SHA esperado): relê antes de apagar; janela estreita, não zero. | docs REST + teste |
+| Relógio | idade/expiração = relógio de quem lê × UTC gravado por quem adquiriu. **Corrigido**: relógio de quem adquiriu adiantado (aquisição > agora + 5 min) prolongava a trava sem aviso; agora `relogioSuspeito` libera a forçada manual e o `pode-integrar` dá REVISÃO HUMANA. Relógio de quem lê adiantado só antecipa a expiração → REVISÃO HUMANA (nunca toma sozinho). | teste que falhava antes |
+| `EM_USO = false` | CLI recusa `adquirir`/`liberar` no modo real com código 5 e **zero chamadas**; `status` só lê. O `pode-integrar` só lê. **Corrigido**: `--exigir-lock` mandava "adquira antes", impossível com a ferramenta desligada; agora diz que a aquisição está desligada. | teste local |
+
+`pode-integrar` (corrigido): lock **próprio** com tag inconsistente (objeto aponta para SHA diferente do gravado)
+dava **PODE**; agora REVISÃO HUMANA. Lock próprio com relógio suspeito: REVISÃO HUMANA. Lock de outro dono vigente
+continua NÃO PODE; expirado/sem dono legível, REVISÃO HUMANA; falha de leitura, EVIDÊNCIA INSUFICIENTE.
+
+### 8.3 Comparação das quatro abordagens
+| | trava por ref (`merge-lock`) | workflow único + `concurrency` | proteções nativas (`strict`, merge queue) | `enforce_admins` |
+|---|---|---|---|---|
+| É enforcement? | **não** (voluntária) | **não** (só serializa quem passa pelo workflow) | **sim**, para quem não tem bypass | **sim**: retira o bypass de admin |
+| Disponível | código pronto, desligado | proposta (workflow = R3) | `strict` já ligado; **merge queue indisponível**: a documentação limita a "any public repository owned by an organization" e privados de organizações no Enterprise Cloud; este repo é de conta pessoal | 1 toggle do dono |
+| O que resolve | coordena sessões que usam a ferramenta | serializa runs: por padrão "only one run can be pending… any additional pending runs cancel the previous one"; a documentação cita fila opt-in que executa em ordem | `strict` faz o GitHub recusar merge de branch atrás da main → cada PR integrada foi testada contra a main atual; merge queue testaria a árvore combinada | sem ele, admin (o token das sessões) ignora `strict` e checks |
+| Órfão / falha | órfã possível (expiração + forçada) | não (run termina/cancela) | não | não |
+| Custo | 2 escritas/aquisição; possível evento `push` de tag (hipótese §7.3) | token de escrita num workflow; caminho de merge automatizado novo | atualizações de branch e CI repetida quando a main anda | admin também passa a esperar checks |
+
+### 8.4 Escolha
+**Solução preferida: proteção nativa — `enforce_admins = true` sobre o `strict` que já existe — com `-f sha=<head>`
+no PUT e `pode-integrar --sha` imediatamente antes.** Com `strict` valendo para todos, a segunda de duas sessões com
+PODE simultâneo é recusada pelo próprio GitHub (a branch ficou atrás), e o `sha=` recusa head trocado. Isso fecha a
+corrida para qualquer caminho (UI, API, Bridge, ferramenta), coisa que nenhuma trava faz. A trava por ref fica
+**desligada** como cortesia opcional de coordenação (evita CI desperdiçada), nunca como garantia. Workflow com
+`concurrency` só se o dono quiser um caminho único de merge (R3). Merge queue só se o repo for para uma organização,
+depois do burn-in.
+
+**Exige autorização do dono (nada disto foi feito):**
+1. Ligar `enforce_admins` (mudança de proteção).
+2. Pôr a trava em uso: PR mudando `EM_USO` para `true` + regra `--exigir-lock` + mitigação do `firestore-regras.yml`
+   (workflow, R3).
+3. Qualquer workflow de merge com `concurrency` (workflow + token de escrita, R3).
+4. Transferir o repositório para organização (merge queue) — depois do burn-in.
+
+Fontes (25/10): docs.github.com — REST `git/refs`; Actions, conceito de `concurrency`; "Merging a pull request with a
+merge queue" (disponibilidade). Não lidas nesta rodada (acesso bloqueado ao buscador): "Managing a merge queue" e
+"About protected branches" (comportamento de `enforce_admins`/bypass de admin vem da leitura anterior da proteção e do
+campo da API, não de releitura da documentação).

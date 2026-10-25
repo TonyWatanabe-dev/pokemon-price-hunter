@@ -211,9 +211,16 @@ async function rodaCli(argv, { api, emUso, apiReal = false, agora = () => em(0) 
     if (e.isDirectory()) varre(p); else if (/\.(m?js|ya?ml|sh|json)$/.test(e.name) && fs.readFileSync(p, 'utf8').includes('merge-lock.mjs')) achados.push(path.relative(raiz, p));
   } };
   varre(raiz);
-  assert.deepEqual(achados.sort(), ['test/merge-lock-tests.js', 'test/pode-integrar-tests.js', 'tools/merge-lock.mjs', 'tools/pode-integrar.mjs']);
+  // só os testes da própria ferramenta (test/merge-lock-*.js, test/pode-integrar-*.js) e os dois módulos
+  const fora = achados.filter((p) => !/^test\/(merge-lock|pode-integrar)-[\w-]+\.js$/.test(p));
+  assert.deepEqual(fora.sort(), ['tools/merge-lock.mjs', 'tools/pode-integrar.mjs']);
+  assert.ok(achados.includes('test/merge-lock-tests.js'));
   const src = fs.readFileSync(path.join(raiz, 'tools/pode-integrar.mjs'), 'utf8');
-  assert.match(src, /import \{ lerLock, situacao as situacaoLock, descrever as descreverLock, LOCK_REF \} from '\.\/merge-lock\.mjs'/);
+  // só nomes de leitura/constantes podem ser importados (nunca adquirir/liberar/main)
+  const imp = src.match(/import \{([^}]+)\} from '\.\/merge-lock\.mjs'/);
+  assert.ok(imp, 'pode-integrar importa merge-lock');
+  const nomes = imp[1].split(',').map((x) => x.trim().split(/\s+as\s+/)[0]).filter(Boolean);
+  assert.deepEqual(nomes.filter((x) => !['lerLock', 'situacao', 'descrever', 'LOCK_REF', 'EM_USO'].includes(x)), [], nomes.join(','));
   assert.doesNotMatch(src, /\badquirir\b|\bliberar\(/);
 }
 

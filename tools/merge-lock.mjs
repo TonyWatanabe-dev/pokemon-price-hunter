@@ -15,8 +15,11 @@
 //   - dono = (sessão, PR, SHA do head). O mesmo dono readquire sem escrever (idempotente); resposta perdida no POST
 //     é resolvida relendo a ref.
 //   - ocupado por outro dono → recusa (código 1) mostrando dono, idade e expiração.
-//   - expiração (padrão 30 min): lock expirado NÃO é tomado automaticamente (apagar+criar entre duas sessões não é
-//     atômico). Só `liberar --forcar --tag <sha do objeto tag> --motivo "..."`, manual, e só se já expirou.
+//   - expiração (padrão 30 min, 5–120): lock expirado NÃO é tomado automaticamente (apagar+criar entre duas sessões
+//     não é atômico). Só `liberar --forcar --tag <sha do objeto tag> --motivo "..."`, manual, e só se já expirou, se
+//     os metadados são ilegíveis/fora de faixa (TTL incoerente, expiração adulterada) ou se o relógio de quem
+//     adquiriu estava adiantado (adquiridoEm > agora + 5 min).
+//   - relógio: idade/expiração são calculadas com o relógio de QUEM LÊ contra o UTC gravado por quem adquiriu.
 //   - liberar por quem não é dono → recusa (código 1).
 // Códigos: 0 ok/livre · 1 ocupado ou recusado · 2 uso inválido · 3 leitura/escrita falhou ou lock ilegível ·
 //          5 escrita não autorizada (EM_USO=false).
@@ -36,6 +39,8 @@ export const BASE = 'main';
 export const TTL_PADRAO_MIN = 30;
 export const TTL_MIN = 5;
 export const TTL_MAX = 120;
+/** Tolerância de relógio: adquiridoEm mais no futuro que isto (relógio de quem adquiriu adiantado) = suspeito. */
+export const TOLERANCIA_RELOGIO_MS = 5 * 60000;
 export const CODIGOS = Object.freeze({ OK: 0, OCUPADO: 1, USO: 2, FALHA: 3, NAO_AUTORIZADO: 5 });
 const SHA = /^[0-9a-f]{40}$/;
 const RE_SESSAO = /^[A-Za-z0-9._:\/@-]{3,120}$/;
@@ -62,7 +67,11 @@ export function lerMensagem(msg) {
   let o; try { o = JSON.parse(t.slice(a, b + 1)); } catch { return null; }
   if (!o || o.versao !== 1 || !RE_SESSAO.test(o.sessao || '') || !Number.isInteger(o.pr) || o.pr <= 0) return null;
   if (!SHA.test(o.sha || '') || !SHA.test(o.main || '')) return null;
-  if (!Number.isFinite(Date.parse(o.adquiridoEm)) || !Number.isFinite(Date.parse(o.expiraEm))) return null;
+  const ini = Date.parse(o.adquiridoEm); const fim = Date.parse(o.expiraEm);
+  if (!Number.isFinite(ini) || !Number.isFinite(fim)) return null;
+  // validade coerente e limitada: sem isso, um expiraEm adulterado (ex.: 2099) travaria para sempre — a forçada só
+  // vale depois de expirar. Fora da faixa = ilegível (forçada permitida; pode-integrar → revisão humana).
+  if (!Number.isInteger(o.ttlMin) || o.ttlMin < TTL_MIN || o.ttlMin > TTL_MAX || fim - ini !== o.ttlMin * 60000) return null;
   return o;
 }
 
@@ -91,6 +100,9 @@ export function situacao(lock, { agora, mainAtual = null, quem = null } = {}) {
   if (d) {
     s.idadeMs = t - Date.parse(d.adquiridoEm);
     s.expirado = t >= Date.parse(d.expiraEm);
+    // relógio de quem adquiriu adiantado: o lock pareceria válido por mais tempo que o TTL. Não é tomado sozinho,
+    // mas libera a forçada manual e o pode-integrar pede revisão humana.
+    s.relogioSuspeito = s.idadeMs < -TOLERANCIA_RELOGIO_MS;
     s.mainAtual = mainAtual;
     s.mainAndou = !!(mainAtual && mainAtual !== d.main);
   }
@@ -103,7 +115,8 @@ export function descrever(s) {
   if (!s.dono) return `ocupado por dono desconhecido (${s.motivo}); tag ${s.tagSha}`;
   const d = s.dono;
   return `ocupado por sessão ${d.sessao} · PR #${d.pr} · head ${d.sha.slice(0, 10)} · main ${d.main.slice(0, 10)} · `
-    + `adquirido ${d.adquiridoEm} (há ${idade(s.idadeMs)}) · expira ${d.expiraEm}${s.expirado ? ' · EXPIRADO' : ''} · tag ${s.tagSha}`;
+    + `adquirido ${d.adquiridoEm} (há ${idade(s.idadeMs)}) · expira ${d.expiraEm}${s.expirado ? ' · EXPIRADO' : ''}`
+    + `${s.relogioSuspeito ? ' · RELÓGIO SUSPEITO (adquirido no futuro)' : ''}${s.ilegivel ? ` · ILEGÍVEL (${s.motivo})` : ''} · tag ${s.tagSha}`;
 }
 
 // ---------------------------------------------------------------- operações (api injetável)
@@ -157,7 +170,7 @@ export async function liberar(api, repo, { sessao, pr, sha, forcar = false, tag 
   const s = situacao(lock, { agora, quem });
   if (forcar) {
     if (lock.tagSha !== tag) return { codigo: CODIGOS.OCUPADO, resultado: `recusado: --tag ${String(tag).slice(0, 10)} não é o lock atual (${lock.tagSha.slice(0, 10)}); releia o status`, situacao: s };
-    if (s.dono && !s.expirado) return { codigo: CODIGOS.OCUPADO, resultado: 'recusado: lock ainda não expirou; liberação forçada só depois da expiração', situacao: s };
+    if (s.dono && !s.ilegivel && !s.expirado && !s.relogioSuspeito) return { codigo: CODIGOS.OCUPADO, resultado: 'recusado: lock ainda não expirou; liberação forçada só depois da expiração (ou se ilegível / relógio suspeito)', situacao: s };
   } else if (!s.seu) {
     return { codigo: CODIGOS.OCUPADO, resultado: 'recusado: você não é o dono do lock', situacao: s };
   }
@@ -165,7 +178,14 @@ export async function liberar(api, repo, { sessao, pr, sha, forcar = false, tag 
   const agoraLock = await lerLock(api, repo);
   if (agoraLock.livre) return { codigo: CODIGOS.OK, resultado: 'já estava livre (nada escrito)', situacao: { livre: true } };
   if (agoraLock.tagSha !== lock.tagSha) return { codigo: CODIGOS.OCUPADO, resultado: 'recusado: o lock mudou durante a liberação', situacao: situacao(agoraLock, { agora, quem }) };
-  await api(['api', '-X', 'DELETE', `repos/${repo}/git/refs/tags/${LOCK_TAG}`]);
+  try {
+    await api(['api', '-X', 'DELETE', `repos/${repo}/git/refs/tags/${LOCK_TAG}`]);
+  } catch (e) {
+    // resposta perdida ou 422 (já não existia): relê; livre = a liberação valeu. Qualquer outra coisa propaga.
+    const depois = await lerLock(api, repo);
+    if (depois.livre) return { codigo: CODIGOS.OK, resultado: 'liberado (confirmado relendo após erro na resposta)', situacao: { livre: true } };
+    throw e;
+  }
   return { codigo: CODIGOS.OK, resultado: forcar ? `liberado À FORÇA (motivo: ${motivo})` : 'liberado', situacao: s };
 }
 
