@@ -12,12 +12,18 @@ const wordRe = (alias) => new RegExp('(^|[^a-z0-9.])' + esc(alias).replace(/ /g,
 // Brinquedo licenciado (figura, Funko, Pokébola de brinquedo, LEGO...): não é carta. Lata Pokébola/box seguem como TCG.
 const TOY = /\b(funko|figuras?|bonecos?|lego|monopoly|playset|squish|pokedex|arena de combate|pops open|pikachu de combate|guia de personagens|meu parceiro pikachu|game ataque surpresa)\b|\b(clipe|cinto com) pokebola\b/;
 const TOY_BALL = (t) => /\b(pokebola|poke ball)\b/.test(t) && !/\b(lata|box|colecao|boosters?|cartas|cards|tcg)\b/.test(t);
+const CARTA_INICIO = /^(?:(?:pokemon|tcg|-)\s+)*(?:carta|card)\b(?!s)/;
+const NUMERO_CARTA = /(?<![\d/])\d{1,3}\/\d{2,3}(?![\d/])/;
+const EMBALAGEM = /\b(box|caixa|blisters?|latas?|minilatas?|boosters?|kit|baralho|deck|display|etb|treinador avancado|colecao (?:ex|premium|especial)|pacotes?)\b/;
 const REJECT = [
   [/\b(usad[oa]s?|aberto|aberta|sem lacre|violad[oa]|avariad[oa]|caixa amassada|embalagem danificada)\b/, 'condição: não lacrado/usado'],
   [/\b(avulsas?|lote de cartas|cartas? aleatorias|sem repetidas|brilhantes? garantid|proxy|replica|nao original|similar|cartas? unitarias?)\b/, 'não é produto lacrado oficial'],
   // Carta avulsa com número de coleção ("Carta Pokémon TCG Alakazam ex (065/165) Coleção 151", 25/10/2026): caía na caixa
   // sv3_5-colecao_ex-alakazam (R$ 47,41 virou o menor preço da caixa) e criava produtos de caixa falsos (Golem, Venusaur, Wigglytuff).
-  [/\bcarta\b.*\b\d{3}\/\d{3}\b/, 'carta avulsa, não é produto lacrado'],
+  // Regra (T5-C): o anúncio COMEÇA por "carta"/"card" (depois de "Pokémon"/"TCG"), tem número de carta (65/165, 065/165) e não
+  // fala de embalagem lacrada. "Box … com carta promo 065/165" e "Carta Pokemon Box Zacian EX" (loja que chama box de carta)
+  // continuam sendo caixa; o código de loja "15606/36932" não é número de carta.
+  [{ test: (t) => CARTA_INICIO.test(t) && NUMERO_CARTA.test(t) && !EMBALAGEM.test(t) }, 'carta avulsa, não é produto lacrado'],
   [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
 ];
 // "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
@@ -252,7 +258,9 @@ export function parseListing(title, catalog) {
   let lang = language.code && IMPORT_LANGS[language.code] ? language.code : null;
   // "Dados Treinador Avançado", "Moeda ... Celebração": acessório vendido à parte, não o produto lacrado.
   // Kit montado pela loja ("Kit ... + 6 Booster", "Kit 4 Booster Box ... Case Fechada"): não é o produto Copag.
-  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\bkit com ([2-9]|1\d) box(es)?\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
+  // "Kit com N <embalagem>" (N ≥ 2: box, blister, lata, baralho...) é kit de várias unidades, nunca a unidade (T5-C, 25/10/2026:
+  // "Kit com 2 Blister Triplo … Charmeleon" casava com me04-blister3 a R$ 81,68). "Kit com 92 Cartas"/"Kit com 10 Boosters" não.
+  if ((/\bkit\b/.test(t) && /\b(fichario|binder|poster|pasta)\b/.test(t)) || /\bcase fechad[ao]\b|\bkit \d+ (booster box|box|displays?)\b|\bkit com ([2-9]|[1-9]\d) (box(es)?|caixas?|blisters?|latas?|minilatas?|baralhos?|decks?|colecoes|etbs?|treinadore?s? avancados?)\b|\b\d+ (booster boxes|displays)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
   // "Case" (caixa master com várias boxes/ETBs) e "6x Booster Box" nunca são a unidade do catálogo.
   // "Case vazio/vazia" continua só como acessório (regra REJECT acima), sem esse segundo motivo.
   else if (/\bcase\b(?! vazi[oa]\b)|\b(caixa|box) master\b|\bmaster (case|box)\b|\b([2-9]|1\d) ?x? (booster box(es)?|box(es)? display|displays?|treinadore?s? avancados?|etbs?)\b/.test(t)) reasons.push('kit montado pela loja ou caixa com várias unidades');
@@ -345,9 +353,24 @@ const LENDAS_IMPLACAVEIS = /\blendas[ -]implac(?:a| )?veis\b|(?<!\d)35239(?!\d)/
 const LENDAS_DE_PALDEA = /\blendas[ -](?:de[ -])?paldea\b/;
 const IMPLACAVEIS_HERDA = new Set(['koraidon']);
 const PALDEA_NO_AVULSO = new Set(['miraidon']);
-const EQUIPE_ROCKET_35880 = /\bcolecao (?:ex )?equipe rocket (?:mega )?[a-z]{3,} ex\b/;
+// Também com hífen ("Coleção Equipe Rocket - Mewtwo Ex") e pelo código Copag sem o formato do nome ("Equipe Rocket Mewtwo Ex 35880").
+const EQUIPE_ROCKET_35880 = /\bcolecao (?:ex )?equipe rocket (?:- )?(?:mega )?[a-z]{3,} ex\b|(?<!\d)35880(?!\d)/;
+// Caixa 35880 cujo Pokémon tem OUTRA caixa conhecida (Mewtwo: sv10-colecao_ex-mewtwo é a 35579). A 35880 já tem produto no
+// catálogo automático, colecao_ex-equipe (sv10-colecao_ex-equipe: "Coleção Ex Equipe Rocket Copag 35880", "… - MewTwo"):
+// vai para ele, sem criar avulso novo (T5-C). Sem esse produto no catálogo: sem produto, para revisão (nunca a 35579).
+// Nidoking/Persian (sem outra caixa) continuam no avulso de sempre (avulsos-colecao_ex-nidoking/-persian, ids existentes).
+const EQUIPE = 'equipe';
+function caixa35880(p, n, catalog) {
+  if (p.type !== 'colecao_ex' || !p.variant || p.variant === EQUIPE || p.lang || !EQUIPE_ROCKET_35880.test(n)) return undefined;
+  const outra = catalog?.variantes?.[`colecao_ex|${p.variant}`];
+  if (!outra || (p.collection && p.collection !== outra)) return undefined;
+  const col = catalog?.variantes?.[`colecao_ex|${EQUIPE}`];
+  if (!col || (p.collection && p.collection !== col)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
+  const prod = describeProduct(catalog, col, 'colecao_ex', p.boosters, EQUIPE, null);
+  return { productId: prod.id, product: prod, confidence: 0.7, parsed: p, why: [], via: 'caixa-35880' };
+}
 function herdaColecao(n, variant) {
-  if (LENDAS_DE_PALDEA.test(n) || EQUIPE_ROCKET_35880.test(n)) return false;
+  if (LENDAS_DE_PALDEA.test(n) || (EQUIPE_ROCKET_35880.test(n) && variant !== EQUIPE)) return false;
   if (LENDAS_IMPLACAVEIS.test(n)) return IMPLACAVEIS_HERDA.has(variant);
   return true;
 }
@@ -369,6 +392,7 @@ export function matchProduct(listing, catalog) {
   // Box/coleção com Pokémon em destaque ("Box Mega Zygarde ex") sem coleção no título: produto avulso da Copag. Se a
   // mesma caixa já existe numa coleção (catalog.variantes, montado do catálogo automático), vai para ela; senão, para a
   // pseudo-coleção "avulsos". Antes, 153 de 200 anúncios não casados (17/10) eram "coleção não identificada", muitos assim.
+  const c35880 = caixa35880(p, p.normalized, catalog); if (c35880) return c35880;
   if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
     const n = p.normalized;
     // Duas caixas num anúncio só ("Box Greninja & Kingdra Ex", "Box Coleção Mega Lucario Ex & Mega Gardevoir", 25/10/2026):

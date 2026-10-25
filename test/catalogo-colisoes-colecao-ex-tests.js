@@ -68,12 +68,15 @@ t('1. Zacian Lendas Implacáveis sai do produto do Lupo (sv9) e vai para avulsos
   });
 });
 
-t('2. "Coleção Equipe Rocket Mewtwo Ex" (35880) sai de sv10-colecao_ex-mewtwo (35579)', () => {
+// T5-C/B: o destino era avulsos-colecao_ex-mewtwo (id novo), mas a caixa 35880 já tem produto no catálogo automático,
+// sv10-colecao_ex-equipe ("Box Pokémon Coleção Ex Equipe Rocket Copag 35880", "… Equipe Rocket - MewTwo"). A asserção antiga
+// fixava um produto avulso novo para uma caixa que já existia (a mesma caixa em dois produtos): agora vai para o da 35880.
+t('2. "Coleção Equipe Rocket Mewtwo Ex" (35880) sai de sv10-colecao_ex-mewtwo (35579) e vai para o produto da 35880', () => {
   vai([
     ['Box Pokémon Coleção Equipe Rocket Mewtwo Ex', 'https://www.mercadolivre.com.br/p/MLB56462428'],
     ['Pokémon TCG - Box Pokémon Coleção Equipe Rocket Mewtwo Ex - 49 Cartas', 'https://www.preech.com.br/card-game/card-pokemon/pokemon-tcg-box-pokemon-colecao-equipe-rocket-mewtwo-ex-49-cartas'],
     ['Box Pokémon TCG Coleção Equipe Rocket Mewtwo Ex - Copag', 'https://4bestplay.com.br/produtos/box-pokemon-tcg-colecao-equipe-rocket-mewtwo-ex-copag-tqp4f/'],
-  ], 'avulsos-colecao_ex-mewtwo');
+  ], 'sv10-colecao_ex-equipe');
   fica({
     // 35579 continua no produto dele
     'Pokémon Box Mewtwo EX da Equipe Rocket 35579 - Copag': 'sv10-colecao_ex-mewtwo',
@@ -157,9 +160,12 @@ t('7. "Kit com N Box" é kit montado pela loja, não a caixa', () => {
   fica({
     'Box Ilustração Parceiro Inicial Série 1 Pokémon 30 Anos – Original Lacrado': 'c30-colecao_ilustracao',
     'Pokémon Ferramentas de Treinador Squawkabilly ex Kit Com 92 Cartas e Boosters': 'avulsos-colecao_especial-ferramentas-de-treinador-squawkabilly',
-    // fora do escopo desta correção (achado lateral no relatório T4-C): "Kit com 2 Blister" ainda casa com o blister unitário
-    'Kit com 2 Blister Triplo Caos Ascendente Charmeleon Pokémon Megaevolução': 'me04-blister3',
   });
+  // T5-C/B: a asserção antiga ('me04-blister3') fixava o defeito conhecido (o próprio comentário admitia): um kit de 2 blisters
+  // (R$ 81,68) dentro do blister triplo unitário. "Kit com N <embalagem>" agora é kit montado pela loja, como "Kit com N Box".
+  const kit2 = m('Kit com 2 Blister Triplo Caos Ascendente Charmeleon Pokémon Megaevolução');
+  assert.equal(kit2.productId, null);
+  assert.ok(kit2.why.includes('kit montado pela loja ou caixa com várias unidades'));
 });
 
 t('H3 (guarda): "Lendas Implacáveis Miraidon" nunca entra no produto da Lendas de Paldea', () => {
