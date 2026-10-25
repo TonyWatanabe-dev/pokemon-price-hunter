@@ -147,4 +147,11 @@ await t('12. referência do servidor: Date (mesma origem) tem prioridade; Expire
   assert.deepEqual(await sandbox({ [RAW_DATA]: fresh }, NOW, { headers: () => ({ expires: new Date(NOW + 60e3).toUTCString(), 'cache-control': 'public, max-age=60' }) }).fetchState(), fresh);
 });
 
+await t('13. R2: ensureFull sem state.json não troca as páginas da conta (mesma lista de PRIVATE) pelo estado de erro', () => {
+  const priv = JSON.parse(html.match(/const PRIVATE=(\[[^\]]*\]);/)[1]);
+  const ens = cut('function ensureFull(){', 'let refreshing=false;');
+  const lista = JSON.parse(ens.match(/!(\[[^\]]*\])\.includes\(view\)/)[1]);
+  assert.deepEqual(lista, priv, 'lista do ensureFull = PRIVATE');
+});
+
 console.log(`d4-fallback: ${n} grupos ok`);

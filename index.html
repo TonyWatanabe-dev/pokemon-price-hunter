@@ -3654,9 +3654,9 @@ function watchMore(){const el=$("#prod-more");if(!el)return;if(!("IntersectionOb
 let fullP=null;
 function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
-  return fullP||=fetchState().then((st)=>{fullP=null;
+  return fullP||=fetchState().then((st)=>{fullP=null;   /* sem state.json: páginas da conta (= PRIVATE) ficam com o resumo da API (D4, R2) */
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals"&&!PRIVATE.includes(view))$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals"&&!["conta","favoritos","alertas","configuracoes"].includes(view))$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
 let refreshing=false;
