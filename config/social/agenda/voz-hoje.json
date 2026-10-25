@@ -1,37 +1,6 @@
 {
  "descricao": "Reenvio com a voz do dono mantida (25/10): voz separada do áudio original + uma trilha nossa.",
- "cancelar": [
-  {
-   "quando": "2026-10-25T12:00",
-   "plataforma": "youtube",
-   "trecho": "Gastei R$ 766,25 em pr",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-25T18:00",
-   "plataforma": "instagram",
-   "trecho": "Booster da Celebração ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-25T18:00",
-   "plataforma": "tiktok",
-   "trecho": "hit ou brick? booster ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-25T18:00",
-   "plataforma": "youtube",
-   "trecho": "Booster de R$ 41,23 da",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-25T15:00",
-   "plataforma": "youtube",
-   "trecho": "Abri a Coleção com Pôs",
-   "motivo": "áudio com a voz do dono"
-  }
- ],
+ "cancelar": [],
  "itens": [
   {
    "id": "m-v-10-18-30a-deulucro-yt-03-voz",
@@ -92,25 +61,32 @@
    ],
    "legenda": "Booster de R$ 41,23 da Celebração de 30 Anos. Hit ou brick? 🔥\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
    "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1yMcrChx.mp4"
+  }
+ ],
+ "cancelar_feito": [
+  {
+   "quando": "2026-10-25T12:00",
+   "plataforma": "youtube",
+   "trecho": "Gastei R$ 766,25 em pr",
+   "motivo": "áudio com a voz do dono"
   },
   {
-   "id": "m-poster30-yt-repost-voz",
-   "quando": "2026-10-25T15:00",
-   "tipo": "video",
-   "plataformas": [
-    "youtube"
-   ],
-   "titulo": "Coleção com Pôster 30 Anos: deu lucro?",
-   "tags": [
-    "pokemon tcg",
-    "pokemon tcg brasil",
-    "abrindo booster",
-    "pack opening",
-    "pokemon 30 anos",
-    "celebracao 30 anos"
-   ],
-   "legenda": "Abri a Coleção com Pôster da Celebração de 30 Anos. Paguei R$ 135,80. O placar tá no topo da tela, acompanha até o fim 👀\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
-   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_poster30.mp4"
+   "quando": "2026-10-25T18:00",
+   "plataforma": "instagram",
+   "trecho": "Booster da Celebração ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "tiktok",
+   "trecho": "hit ou brick? booster ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 41,23 da",
+   "motivo": "áudio com a voz do dono"
   }
  ]
 }
