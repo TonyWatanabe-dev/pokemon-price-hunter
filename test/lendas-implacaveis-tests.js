@@ -16,7 +16,7 @@ const casos = {
   'Pokemon Box - Coleção Ex Lendas Implacáveis - Koraidon': 'sv10-colecao_ex-koraidon',
   'Pokémon Box Coleção EX Lendas Implacáveis Zacian 38 Cartas 100-10392 35239 - Copag': 'avulsos-colecao_ex-zacian',
   'Pokémon Box Coleção EX Lendas Implacáveis Koraidon 38 Cartas 100-10392 35239 - Copag': 'sv10-colecao_ex-koraidon',
-  // já casavam e continuam iguais
+  // formato com ":" e "(PT-BR)": a Zacian também saiu de sv9-colecao_ex-zacian (Lupo) para o avulso (T4-C); o Koraidon não muda
   'Box Coleção - Lendas Implacáveis Zacian EX (Pokémon TCG)': 'avulsos-colecao_ex-zacian',
   'Pokémon TCG – Box Coleção Lendas Implacáveis: Koraidon EX (PT-BR) | 6 Boosters + Promo': 'sv10-colecao_ex-koraidon',
 };
