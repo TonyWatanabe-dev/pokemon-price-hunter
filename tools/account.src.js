@@ -52,7 +52,10 @@ async function withBack(send) { try { await send(back()); } catch (e) { if (!CON
 const redirectOutcome = getRedirectResult(auth).then((r) => ({ user: pub(r?.user) || null }), (e) => ({ error: { code: e?.code || 'auth/internal-error', message: e?.message || '' } }));
 export function redirectResult() { return redirectOutcome; }
 
-export function watch(cb) { return onAuthStateChanged(auth, (u) => cb(pub(u))); }
+// Primeiro estado sem login = marcas de exclusão órfãs: conta excluída em outro aparelho é descartada pelo Firebase ao
+// abrir a página (reload no início falha), então o uid nem chega aqui. Sem login a marca não protege nada (valem o
+// updateDoc do save e a regra da conta antiga em delState); limpar só troca o painel de 'pendente' para 'ausente'.
+export function watch(cb) { let i = 1; return onAuthStateChanged(auth, (u) => { if (i && !u) limparMarcas(); i = 0; cb(pub(u)); }); }
 export async function google() {
   const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' });
   if (authMode === 'redirect') { await signInWithRedirect(auth, p); return null; }   // a página segue para o Google
@@ -123,6 +126,9 @@ export function mark(uid, v) {
   try { if (v === undefined) return localStorage.getItem(k); if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch { /* sem storage */ }
   return null;
 }
+export function limparMarcas() {
+  try { for (let i = localStorage.length; i--;) { const k = localStorage.key(i); if (k?.startsWith('ph:del:')) localStorage.removeItem(k); } } catch { /* sem storage */ }
+}
 // Estado ao entrar, com o documento lido (d = dados; null = não existe; undefined = falha ao ler). 'pendente' = há marca;
 // 'ausente' = conta antiga (não acabou de ser criada) sem documento e sem marca: o perfil NÃO é recriado sozinho (outro
 // aparelho depois de uma exclusão parcial); 'fim' = a conta já foi excluída (em outro aparelho): limpa a marca e encerra
@@ -131,7 +137,9 @@ export async function delState(d) {
   const u = auth.currentUser; if (!u) return ''; const mk = mark(u.uid);
   if (mk === 'andamento' && d) return mark(u.uid, null) || '';
   const s = mk ? 'pendente' : d === null && !pub(u).nova ? 'ausente' : '';
-  if (s && !d) try { await u.reload(); } catch (e) { if (e?.code === 'auth/user-not-found') { mark(u.uid, null); await signOut(auth); return 'fim'; } }
+  // Conta excluída: o SDK traduz o USER_NOT_FOUND do servidor em auth/user-token-expired (e já encerra a sessão); token
+  // revogado com a conta viva dá o mesmo código: aí só se perde a marca (próximo login vê 'ausente', nunca recria sozinho).
+  if (s && !d) try { await u.reload(); } catch (e) { if (/^auth\/user-(not-found|token-expired)$/.test(e?.code)) { mark(u.uid, null); await signOut(auth); return 'fim'; } }
   return s;
 }
 // Exclusão pedida na página: grava 'andamento' de forma síncrona (o popup do Google continua saindo no clique), troca

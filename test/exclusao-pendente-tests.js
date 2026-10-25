@@ -364,6 +364,16 @@ await t('conta já excluída em outro aparelho: a marca some, a sessão é encer
   const W2 = world({ doc: null }); W2.ls.set('ph:del:u1', 'pendente'); W2.fail.reload = ['auth/network-request-failed']; const B = tab(W2); await B.login();
   assert.equal(B.ctx.ACC.del.why, 'pendente', 'sem resposta do Auth: continua pendente'); assert.equal(W2.ls.get('ph:del:u1'), 'pendente'); assert.deepEqual(W2.calls, []);
 });
+// T4-A: no SDK real (firebase 12.19.0, conferido no emulador do Auth) o reload de conta excluída falha com
+// auth/user-token-expired (USER_NOT_FOUND do servidor é traduzido); e o estado "fim" não pode ficar preso em memória.
+await t('conta excluída com o código real do SDK (user-token-expired): fim, marca limpa, nada preso em ACC.del, sem resumeGate', async () => {
+  const W = world({ doc: null }); W.ls.set('ph:del:u1', 'pendente'); W.fail.reload = ['auth/user-token-expired']; const A = tab(W);
+  let gates = 0; A.ctx.resumeGate = async () => { gates++; };
+  await A.login(); await W.settle();
+  assert.equal(W.ls.has('ph:del:u1'), false); assert.ok(A.toasts.includes('Essa conta já foi excluída.')); assert.deepEqual(W.calls, ['signOut']);
+  assert.equal(A.ctx.ACC.user, null); assert.equal(A.ctx.ACC.del, null, 'estado "fim" não fica preso depois de sair'); assert.equal(A.ctx.ACC.data, null);
+  assert.equal(gates, 0, 'não retoma ação pendente com a sessão encerrada');
+});
 
 // ---------- fonte ≡ bundle: pub e save ----------
 await t('bundle account.js: pub e save idênticos à fonte (mesmas saídas e mesmas chamadas)', async () => {

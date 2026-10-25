@@ -19,7 +19,7 @@ const iSrc = src.indexOf('export function mark(');
 assert.ok(iSrc > 0, 'mark() não encontrada em account.src.js');
 const srcCode = src.slice(iSrc).replace(/^export /gm, '');
 assert.doesNotMatch(srcCode, /^\s*(import|export)\b/m);
-const NOMES = ['mark', 'delState', 'excluir', 'continuar', 'provs', 'delForm', 'delPanel'];
+const NOMES = ['mark', 'limparMarcas', 'delState', 'excluir', 'continuar', 'provs', 'delForm', 'delPanel'];
 
 // ---------- implementação 2: bundle minificado ----------
 const ex = Object.fromEntries([...bundle.slice(bundle.lastIndexOf('export{')).matchAll(/([\w$]+) as (\w+)/g)].map((m) => [m[2], m[1]]));
@@ -32,7 +32,7 @@ function fnText(name) {
   }
   throw new Error('chaves desbalanceadas');
 }
-const T = Object.fromEntries(['mark', 'delState', 'excluir', 'continuar', 'delForm', 'delPanel'].map((k) => [k, fnText(ex[k])]));
+const T = Object.fromEntries(['mark', 'limparMarcas', 'delState', 'excluir', 'continuar', 'delForm', 'delPanel'].map((k) => [k, fnText(ex[k])]));
 const pick = (txt, re, what) => { const m = txt.match(re); assert.ok(m, `forma inesperada de ${what} no bundle (ajuste o extrator se o build mudou): ${txt}`); return m; };
 const [, bAuth] = pick(T.delState, /^async function [\w$]+\(\w\)\{let \w=([\w$]+)\.currentUser;/, 'delState');
 const [, bPub] = pick(T.delState, /!([\w$]+)\(\w\)\.nova/, 'delState (pub)');
@@ -77,6 +77,8 @@ function mundo() {
       getItem: (k) => { if (fail.ls) throw new Error('bloqueado'); return ls.has(k) ? ls.get(k) : null; },
       setItem: (k, v) => { if (fail.ls) throw new Error('bloqueado'); log.push(['ls.set', k, v]); ls.set(k, String(v)); },
       removeItem: (k) => { if (fail.ls) throw new Error('bloqueado'); log.push(['ls.del', k]); ls.delete(k); },
+      key: (i) => { if (fail.ls) throw new Error('bloqueado'); return [...ls.keys()][i] ?? null; },
+      get length() { if (fail.ls) throw new Error('bloqueado'); return ls.size; },
     },
     sessionStorage: { removeItem: (k) => { log.push(['ss.del', k]); ss.delete(k); } },
   };
@@ -111,8 +113,10 @@ async function bateria(kind) {
   // mark
   await caso('mark', null, async (m) => [m.mark('u1'), m.mark('u1', 'andamento'), m.mark('u1'), m.mark('u1', null), m.mark('u1')]);
   await caso('mark sem storage', (w) => { w.fail.ls = true; }, async (m) => [m.mark('u1'), m.mark('u1', 'pendente')]);
+  await caso('limparMarcas', (w) => { for (const [k, v] of [['ph:del:u1', 'pendente'], ['ph:del:u2', 'andamento'], ['ph:x', '1'], ['acc', '1']]) w.ls.set(k, v); }, async (m) => m.limparMarcas());
+  await caso('limparMarcas sem storage', (w) => { w.fail.ls = true; }, async (m) => m.limparMarcas());
   // delState: marca × documento × conta nova/antiga × resposta do Auth
-  for (const mk of [null, 'andamento', 'pendente']) for (const d of [DOC, null, undefined]) for (const nova of [false, true]) for (const re of [null, 'auth/user-not-found', 'auth/network-request-failed']) {
+  for (const mk of [null, 'andamento', 'pendente']) for (const d of [DOC, null, undefined]) for (const nova of [false, true]) for (const re of [null, 'auth/user-not-found', 'auth/user-token-expired', 'auth/network-request-failed']) {
     await caso(`delState ${mk}/${d && 'doc'}/${nova}/${re}`, (w) => { w.user = user({ nova, reloadErr: re }); if (mk) w.ls.set('ph:del:u1', mk); }, async (m) => m.delState(d));
   }
   await caso('delState sem usuário', null, async (m) => m.delState(null));
@@ -161,6 +165,13 @@ await t('delState: pendente, ausente, andamento limpo, fim (conta já excluída)
   const r = get('delState pendente/null/false/auth/network-request-failed'); assert.equal(r.r, 'pendente'); assert.deepEqual(r.ls, [['ph:del:u1', 'pendente']]);
   assert.equal(get('delState pendente/doc/false/auth/user-not-found').r, 'pendente', 'com documento não consulta o Auth');
   assert.equal(get('delState sem usuário').r, '');
+  // T4-A: o SDK real devolve user-token-expired para conta excluída (USER_NOT_FOUND traduzido; conferido no emulador do Auth)
+  const x = get('delState pendente/null/false/auth/user-token-expired'); assert.equal(x.r, 'fim'); assert.deepEqual(x.ls, []); assert.equal(x.user, false);
+  assert.equal(get('delState null/null/false/auth/user-token-expired').r, 'fim');
+  assert.equal(get('delState pendente/doc/false/auth/user-token-expired').r, 'pendente', 'com documento não consulta o Auth');
+});
+await t('limparMarcas: remove só ph:del:*; storage bloqueado não quebra', () => {
+  assert.deepEqual(get('limparMarcas').ls, [['ph:x', '1'], ['acc', '1']]); assert.equal(get('limparMarcas sem storage').e, '(undefined)');
 });
 await t('excluir: andamento antes do wipe, pendente com docDeleted, limpa no sucesso e na falha antes de apagar', () => {
   const ok = get('excluir null/segredo/true');
@@ -192,6 +203,25 @@ await t('telas: senha opcional com Google, required só sem Google; painel neutr
   assert.match(naoApagou, /A exclusão não terminou\./); assert.match(naoApagou, /<p class="err" tabindex="-1" role="alert">Falhou &#60;b&#62;&#34;x&#34;&#60;\/b&#62; &#38; &#39;y&#39;<\/p>/);
   assert.match(aus, /Sua conta não tem dados salvos/); assert.match(aus, /Criar perfil\? Ele começa sem favoritos e alertas\./); assert.match(aus, />Criar perfil<\/button> \(começa vazio/);
   assert.doesNotMatch(aus, /pendente|exclusão não/i); assert.match(aus, /Excluir a conta/); assert.match(fim, /Exclusão pendente/);
+});
+
+// T4-A: watch limpa as marcas órfãs só no PRIMEIRO estado, e só se for sem login (conta excluída noutro aparelho é
+// descartada pelo SDK ao abrir a página; conferido no emulador do Auth em test/exclusao-emulador-tests.mjs).
+await t('watch: primeiro estado sem login limpa ph:del:*; com login ou depois do primeiro, não (fonte ≡ bundle)', () => {
+  const wSrc = src.slice(src.indexOf('export function watch('), src.indexOf('\n', src.indexOf('export function watch('))).replace(/^export /, '');
+  const wB = fnText(ex.watch);
+  const [, bOn, bA, bLimpa, bPub2] = pick(wB, /return ([\w$]+)\(([\w$]+),\w=>\{\w&&!\w&&([\w$]+)\(\),\w=0,\w\(([\w$]+)\(\w\)\)\}\)/, 'watch');
+  assert.equal(bLimpa, ex.limparMarcas);
+  const rodar = (kind, estados) => {
+    const log = []; let cb; const AUTH = {};
+    const deps = { on: (a, f) => { assert.equal(a, AUTH); cb = f; return 'un'; }, limpa: () => log.push('limpa'), pub: (u) => (u ? { uid: u.uid } : null) };
+    const ctx = kind === 'fonte' ? { onAuthStateChanged: deps.on, auth: AUTH, limparMarcas: deps.limpa, pub: deps.pub } : { [bOn]: deps.on, [bA]: AUTH, [bLimpa]: deps.limpa, [bPub2]: deps.pub };
+    vm.createContext(ctx); vm.runInContext(`${kind === 'fonte' ? wSrc : wB}\n;this.$w=${kind === 'fonte' ? 'watch' : ex.watch};`, ctx);
+    const r = ctx.$w((u) => log.push(['cb', u && u.uid])); for (const e of estados) cb(e); return JSON.parse(JSON.stringify([r, log]));
+  };
+  for (const est of [[null], [null, { uid: 'u1' }, null], [{ uid: 'u1' }, null], [{ uid: 'u1' }]]) assert.deepEqual(rodar('bundle', est), rodar('fonte', est));
+  assert.deepEqual(rodar('fonte', [null, { uid: 'u1' }, null])[1], ['limpa', ['cb', null], ['cb', 'u1'], ['cb', null]]);
+  assert.deepEqual(rodar('fonte', [{ uid: 'u1' }, null])[1], [['cb', 'u1'], ['cb', null]], 'sair depois (ou forçado pelo SDK) não apaga o pendente');
 });
 
 console.log(`✓ Exclusão pendente no módulo (fonte ≡ bundle): ${n} grupos de testes passaram`);

@@ -2668,7 +2668,7 @@ async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
     if(was!==u.uid){ACC.data=ACC.del=null;ACC.loadFailed=false;let d;try{d=await ACC.mod.load();ACC.data=d||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}
-      ACC.semDoc=d===null;const s=await ACC.mod.delState?.(d);if(s)delEnter(s,ACC.semDoc);if(s==="fim")toast("Essa conta já foi excluída.")}
+      ACC.semDoc=d===null;const s=await ACC.mod.delState?.(d);if(s==="fim"){toast("Essa conta já foi excluída.");return}if(s)delEnter(s,ACC.semDoc)}
     if(ACC.del||ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
     else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base,ACC.semDoc);Object.assign(ACC.data,base);ACC.semDoc=false}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
     else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
