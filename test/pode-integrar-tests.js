@@ -171,6 +171,8 @@ assert.equal(new Set(Object.values(CODIGOS)).size, 5);
   assert.ok(marcadoresDeRisco({ labels: [{ name: 'bloqueado' }, { name: 'docs' }] }).length === 1);
   for (const body of ['os 4 checks e a revisão independe de humano', 'Mercado Livre bloqueado às 00:00 UTC', 'auth/requires-recent-login', 'Proposta que depende do dono', 'Nada em produção depende destes arquivos.'])
     assert.equal(avaliar(base({ pr: pr({ body }) })).estado, ESTADOS.PODE, body);
+  // citação em código não conta (documentar o marcador não é usar o marcador)
+  assert.equal(avaliar(base({ pr: pr({ body: 'Marcadores: `bloqueado até`, `depende de #918`.\n```\nDo not merge\n```' }) })).estado, ESTADOS.PODE);
 }
 
 // 15. Dependências declaradas

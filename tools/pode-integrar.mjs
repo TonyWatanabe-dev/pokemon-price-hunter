@@ -16,6 +16,7 @@
 //                                  marcador no corpo ("bloqueado até", "não integrar"...), label de bloqueio, ou
 //                                  dependência fechada sem merge / issue ainda aberta;
 //   2 uso inválido (nenhuma chamada à API).
+// Trechos em código (`...` ou blocos ```) são ignorados nos marcadores e dependências.
 // Dependências: "depende de #N", "Depends on #N", "após #N", "bloqueado por #N", "blocked by #N", "requer #N" no
 // corpo. PR #N integrada = ok; PR #N aberta = NÃO PODE (integre #N antes ou corrija o corpo); PR #N fechada sem
 // merge ou issue #N aberta = REVISÃO HUMANA; issue #N fechada = ok (aviso); ilegível = EVIDÊNCIA INSUFICIENTE.
@@ -71,6 +72,8 @@ const MARCADORES = Object.freeze([
 ]);
 const RE_LABEL = /bloque|block|do.?not.?merge|n[ãa]o.?integrar|wip|depend|revis[ãa]o.?humana|^r3$|hold/i;
 
+/** Remove blocos ``` e trechos `inline` (citações/exemplos não contam como marcador nem dependência). */
+export const semCodigo = (t) => String(t || '').replace(/```[\s\S]*?```/g, ' ').replace(/`[^`\n]*`/g, ' ');
 const ts = (s) => { const t = Date.parse(s || ''); return Number.isFinite(t) ? t : 0; };
 const nome = (s) => String(s || '').trim().toLowerCase();
 const curto = (s) => (s ? String(s).slice(0, 10) : '?');
@@ -120,7 +123,7 @@ export function exigidos(protecao) {
 /** Dependências declaradas no corpo ("depende de #N" etc.), sem a própria PR. */
 export function dependenciasDeclaradas(body, propria = null) {
   const out = new Map();
-  const texto = String(body || '');
+  const texto = semCodigo(body);
   for (const m of texto.matchAll(RE_DEP)) {
     for (const d of m[2].matchAll(/#(\d+)/g)) {
       const n = Number(d[1]);
@@ -133,7 +136,7 @@ export function dependenciasDeclaradas(body, propria = null) {
 /** Marcadores de risco no corpo e nas labels. */
 export function marcadoresDeRisco(pr) {
   const out = [];
-  const body = String(pr?.body || '');
+  const body = semCodigo(pr?.body);
   for (const re of MARCADORES) { const m = body.match(re); if (m) out.push(`corpo da PR contém "${m[0]}"`); }
   for (const l of Array.isArray(pr?.labels) ? pr.labels : []) {
     const n = typeof l === 'string' ? l : l?.name;
