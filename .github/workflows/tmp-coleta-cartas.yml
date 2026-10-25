@@ -55,8 +55,8 @@ jobs:
         if: contains(github.event.head_commit.message, 'remix')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/clipes.py
         if: contains(github.event.head_commit.message, 'clipes')
-      - run: sudo apt-get install -y -qq ffmpeg >/dev/null && pip install -q --break-system-packages demucs torchaudio soundfile && python3 tools/tmp-cartas/voz.py
-        if: contains(github.event.head_commit.message, 'voz-remix')
+      - run: sudo apt-get install -y -qq ffmpeg >/dev/null && pip install -q --break-system-packages torch torchaudio --index-url https://download.pytorch.org/whl/cpu && pip install -q --break-system-packages demucs soundfile && python3 tools/tmp-cartas/voz.py
+        if: contains(github.event.head_commit.message, 'fala-mix')
       - run: python3 tools/tmp-cartas/smoke.py
         if: contains(github.event.head_commit.message, 'smoke')
       - run: |
