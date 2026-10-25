@@ -33,32 +33,36 @@ function cenario({ offers, history, hist, lowest, products, distrust = null }) {
 
 // Cenário principal: produto P (caixa do Lupo) contaminado pela caixa Implacáveis (vai para Q); F é produto falso (carta).
 const TL = 'Box Zacian ex do Lupo'; const TI = 'Box Lendas Implacáveis Zacian'; const TC = 'Carta Golem ex (076/165)';
-const base = fake('base', { [TL]: 'P', [TI]: 'P', [TC]: 'F', 'Box Outro': 'O' });
-const cand = fake('cand', { [TL]: 'P', [TI]: 'Q', [TC]: null, 'Box Outro': 'O' });
+// M: produto com loja mista (item em revisão) → inteiro fora da parte automática (tudo ou nada por produto).
+const TML = 'Box M certo'; const TMI = 'Box M errado';
+const base = fake('base', { [TL]: 'P', [TI]: 'P', [TC]: 'F', 'Box Outro': 'O', [TML]: 'M', [TMI]: 'M' });
+const cand = fake('cand', { [TL]: 'P', [TI]: 'Q', [TC]: null, 'Box Outro': 'O', [TML]: 'M', [TMI]: 'Q2' });
 function principal() {
   return cenario({
     offers: [
       offer('a1', 'P', 'lojaA', TL, 150),           // legítima
       offer('b1', 'P', 'lojaB', TI, 110),           // contaminada: loja B só tem Implacáveis em P
-      offer('c1', 'P', 'lojaC', TL, 160),           // C: mista
-      offer('c2', 'P', 'lojaC', TI, 160),
+      offer('c1', 'M', 'lojaC', TML, 160),          // M/C: mista
+      offer('c2', 'M', 'lojaC', TMI, 160),
+      offer('d1', 'M', 'lojaD', TMI, 100),          // M/D: só reassociada (seria removida, mas M está bloqueado)
       offer('f1', 'F', 'lojaF', TC, 47.41, 'OUT_OF_STOCK'), // carta avulsa criou o produto F
       offer('o1', 'O', 'lojaA', 'Box Outro', 99),   // produto sem relação
     ],
     history: [
       row(T(20), 'a1', 'P', 'lojaA', 150), row(T(21), 'b1', 'P', 'lojaB', 110),
-      row(T(20), 'c1', 'P', 'lojaC', 160), row(T(21), 'c2', 'P', 'lojaC', 155), row(T(22), 'c2', 'P', 'lojaC', 160),
+      row(T(20), 'c1', 'M', 'lojaC', 160), row(T(21), 'c2', 'M', 'lojaC', 155), row(T(22), 'c2', 'M', 'lojaC', 160), row(T(21), 'd1', 'M', 'lojaD', 100),
       row(T(20), 'f1', 'F', 'lojaF', 47.41), row(T(21, '13'), 'f1', 'F', 'lojaF', 47.41, 'OUT_OF_STOCK'),
       row(T(20), 'o1', 'O', 'lojaA', 99),
     ],
     hist: [
       { productId: 'P', stores: { lojaA: { name: 'A', pts: [['2026-10-20', 150], ['2026-10-21', 150], ['2026-10-22', 150], ['2026-10-23', 150]] },
-        lojaB: { name: 'B', pts: [['2026-10-21', 110], ['2026-10-22', 110], ['2026-10-23', 110]] },
-        lojaC: { name: 'C', pts: [['2026-10-20', 160], ['2026-10-21', 155], ['2026-10-22', 160], ['2026-10-23', 160]] } } },
+        lojaB: { name: 'B', pts: [['2026-10-21', 110], ['2026-10-22', 110], ['2026-10-23', 110]] } } },
+      { productId: 'M', stores: { lojaC: { name: 'C', pts: [['2026-10-20', 160], ['2026-10-21', 155], ['2026-10-22', 160], ['2026-10-23', 160]] },
+        lojaD: { name: 'D', pts: [['2026-10-21', 100], ['2026-10-22', 100]] } } },
       { productId: 'F', stores: { lojaF: { name: 'F', pts: [['2026-10-20', 47.41], ['2026-10-21', 47.41]] } } },
       { productId: 'O', stores: { lojaA: { name: 'A', pts: [['2026-10-20', 99]] } } },
     ],
-    lowest: { P: { total: 110, at: T(21), storeId: 'lojaB', offerId: 'b1' }, F: { total: 47.41, at: T(20), storeId: 'lojaF', offerId: 'f1' }, O: { total: 99, at: T(20), storeId: 'lojaA', offerId: 'o1' } },
+    lowest: { P: { total: 110, at: T(21), storeId: 'lojaB', offerId: 'b1' }, F: { total: 47.41, at: T(20), storeId: 'lojaF', offerId: 'f1' }, O: { total: 99, at: T(20), storeId: 'lojaA', offerId: 'o1' }, M: { total: 100, at: T(21), storeId: 'lojaD', offerId: 'd1' } },
   });
 }
 
@@ -68,8 +72,8 @@ const d1 = R.lerDados(dir1);
 const r1 = R.analisar({ dados: d1, base, candidato: cand, agora: T(23) });
 {
   const re = r1.relatorio.reassociacoes;
-  assert.deepEqual(re.map((x) => x.offerId).sort(), ['b1', 'c2', 'f1'], 'só as ofertas cujo produto muda');
-  assert.ok(re.every((x) => x.classe === 'auto'));
+  assert.deepEqual(re.map((x) => x.offerId).sort(), ['b1', 'c2', 'd1', 'f1'], 'só as ofertas cujo produto muda');
+  assert.ok(re.filter((x) => x.produtoAntigo !== 'M').every((x) => x.classe === 'auto'));
   const b1 = re.find((x) => x.offerId === 'b1');
   assert.equal(b1.produtoAntigo, 'P'); assert.equal(b1.produtoNovo, 'Q'); assert.equal(b1.titulo, TI); assert.equal(b1.loja, 'lojaB'); assert.equal(b1.preco, 110);
   assert.deepEqual(b1.historico.emEstoqueNoAntigo, [[T(21), 110]], 'evidência: linhas do history.jsonl no produto antigo');
@@ -85,21 +89,35 @@ const r1 = R.analisar({ dados: d1, base, candidato: cand, agora: T(23) });
   const hP = r1.proposto.hist.P;
   assert.equal(hP.stores.lojaB, undefined, 'loja só com anúncios reassociados sai do hist do produto');
   assert.deepEqual(hP.stores.lojaA.pts, d1.hist.P.stores.lojaA.pts, 'loja sem contaminação: série idêntica');
-  // C: 20 só legítimo mantém; 21 a contaminada (155) ficou abaixo da legítima (160, em estoque por carry-forward); 22-23 empate mantém
-  const pc = r1.relatorio.pontos.filter((p) => p.produto === 'P' && p.loja === 'lojaC');
-  assert.equal(pc.length, 1); assert.equal(pc[0].dia, '2026-10-21'); assert.equal(pc[0].acao, 'revisao', 'mista: substituição é decisão humana');
-  assert.equal(pc[0].proposta, 160);
-  assert.deepEqual(hP.stores.lojaC.pts, d1.hist.P.stores.lojaC.pts, 'ponto em revisão não é alterado no estado proposto');
   assert.equal(r1.proposto.hist.O, undefined, 'hist de produto sem relação não é proposto');
 
   // preço atual × menor salvo × histórico separados
   const pp = r1.relatorio.porProduto.find((p) => p.produto === 'P');
-  assert.equal(pp.precoAtual.menorEmEstoque, 110); assert.equal(pp.precoAtual.menorEmEstoqueSemReassociadas, 150); assert.equal(pp.precoAtual.reassociadasEmEstoque, 2);
+  assert.equal(pp.precoAtual.menorEmEstoque, 110); assert.equal(pp.precoAtual.menorEmEstoqueSemReassociadas, 150); assert.equal(pp.precoAtual.reassociadasEmEstoque, 1);
   assert.equal(pp.menorSalvo.antes.total, 110); assert.equal(pp.menorSalvo.depois.total, 150);
-  assert.equal(pp.historico.pontosRemovidos, 3); assert.equal(pp.historico.pontosRevisao, 1);
+  assert.equal(pp.historico.pontosRemovidos, 3); assert.equal(pp.historico.pontosRevisao, 0);
   const sp = r1.proposto.state.products.find((p) => p.id === 'P');
   assert.equal(sp.lowestHistorical.total, 150, 'state espelha o lowest proposto');
   assert.equal(r1.proposto.state.products.find((p) => p.id === 'O').lowestHistorical.total, 99);
+}
+
+// 1a) R2, tudo ou nada por produto: M tem um ponto misto em revisão, então nada de M é aplicado (nem a loja D, que
+// sozinha seria removida automaticamente, nem o lowest, nem as reassociações).
+{
+  // C: 20 só legítimo mantém; 21 a contaminada (155) ficou abaixo da legítima (160, em estoque por carry-forward); 22-23 empate mantém
+  const pc = r1.relatorio.pontos.filter((p) => p.produto === 'M' && p.loja === 'lojaC');
+  assert.equal(pc.length, 1); assert.equal(pc[0].dia, '2026-10-21'); assert.equal(pc[0].acao, 'revisao', 'mista: substituição é decisão humana');
+  assert.equal(pc[0].proposta, 160);
+  const pd = r1.relatorio.pontos.filter((p) => p.produto === 'M' && p.loja === 'lojaD');
+  assert.equal(pd.length, 2); assert.ok(pd.every((p) => p.acao === 'revisao' && p.bloqueado && /bloqueado/.test(p.motivo)));
+  assert.equal(r1.proposto.hist.M, undefined, 'nenhum arquivo de hist de M no proposto');
+  assert.deepEqual(r1.proposto.lowest.M, d1.lowest.M, 'lowest de M intocado');
+  const mM = r1.relatorio.menores.find((m) => m.produto === 'M');
+  assert.equal(mM.classe, 'revisao'); assert.equal(mM.bloqueado, true); assert.equal(mM.depois.total, 160, 'proposta registrada');
+  assert.ok(r1.relatorio.reassociacoes.filter((x) => x.produtoAntigo === 'M').every((x) => x.classe === 'revisao' && x.bloqueado));
+  assert.deepEqual(r1.relatorio.contagens.produtosBloqueados, ['M']);
+  assert.equal(r1.proposto.state.products.find((p) => p.id === 'M').lowestHistorical.total, 100);
+  assert.ok(r1.proposto.hist.P, 'P (sem revisão) continua automático');
 }
 
 // 1b) Ponto em revisão abaixo do menor proposto: o lowest também vai para revisão (proposta trata o ponto como contaminado).
@@ -137,7 +155,7 @@ const out1 = path.join(tmp, 'saida1');
   assert.ok(!fs.existsSync(path.join(out1, 'proposto/data/products.json')), 'registro de produtos não é reescrito');
   assert.ok(!fs.existsSync(path.join(out1, 'proposto/data/hist/O.json')));
   const md = fs.readFileSync(path.join(out1, 'relatorio.md'), 'utf8');
-  assert.match(md, /ofertas reassociadas \| — \| 3 /); assert.match(md, /Remoção proposta/);
+  assert.match(md, /ofertas reassociadas \| — \| 4 /); assert.match(md, /produtos bloqueados .* \| M \|/); assert.match(md, /Remoção proposta/);
   const man = JSON.parse(fs.readFileSync(path.join(out1, 'proposto/MANIFEST.json'), 'utf8'));
   assert.ok(man.arquivos.every((a) => /^[0-9a-f]{64}$/.test(a.sha256Depois)));
   R.escreverSaida(out1, r1, { dados: d1 }); // reexecução na mesma saída é permitida (marca .reparo-dados)
@@ -151,10 +169,12 @@ const out1 = path.join(tmp, 'saida1');
   const d2 = R.lerDados(dir2);
   const r2 = R.analisar({ dados: d2, base, candidato: cand, agora: T(23) });
   assert.equal(r2.relatorio.contagens.hist.pontosRemovidosAuto, 0);
-  assert.equal(r2.relatorio.contagens.lowest.contaminados, 0);
+  assert.deepEqual(r2.relatorio.menores.map((m) => [m.produto, m.classe]), [['M', 'revisao']], 'só o bloqueado continua pendente');
+  assert.equal(r2.relatorio.contagens.lowest.recalculadosAuto + r2.relatorio.contagens.lowest.removidosAuto, 0);
   assert.deepEqual(r2.proposto.lowest, d2.lowest);
   assert.deepEqual(Object.keys(r2.proposto.hist), []);
-  assert.equal(r2.relatorio.contagens.hist.pontosRevisao, 1, 'o ponto em revisão continua apontado até decisão humana');
+  assert.equal(r2.relatorio.contagens.hist.pontosRevisao, 3, 'os itens de M continuam apontados até decisão humana');
+  assert.deepEqual(r2.relatorio.contagens.produtosBloqueados, ['M']);
   // Rodar duas vezes sobre a mesma entrada dá o mesmo resultado.
   const r1b = R.analisar({ dados: R.lerDados(dir1), base, candidato: cand, agora: T(23) });
   assert.deepEqual(r1b.proposto, r1.proposto);
@@ -165,12 +185,12 @@ const out1 = path.join(tmp, 'saida1');
 {
   const dir3 = principal();
   const offs = JSON.parse(fs.readFileSync(path.join(dir3, 'offers.json'), 'utf8'));
-  offs.b1.productId = 'Q'; offs.c2.productId = 'Q';
+  offs.b1.productId = 'Q'; offs.c2.productId = 'Q2'; offs.d1.productId = 'Q2';
   fs.writeFileSync(path.join(dir3, 'offers.json'), JSON.stringify(offs));
   const r3 = R.analisar({ dados: R.lerDados(dir3), base, candidato: cand, agora: T(23) });
   assert.equal(r3.proposto.lowest.P.total, 150);
   assert.equal(r3.relatorio.reassociacoes.find((x) => x.offerId === 'b1').produtoGravado, 'Q');
-  assert.ok(r3.relatorio.reassociacoes.every((x) => x.classe === 'auto'));
+  assert.ok(r3.relatorio.reassociacoes.filter((x) => x.produtoAntigo === 'P').every((x) => x.classe === 'auto'));
 }
 
 // 6) Revisão humana: oferta com histórico em outro produto (título pode ter mudado) e salto grande no menor preço.
@@ -196,9 +216,25 @@ const out1 = path.join(tmp, 'saida1');
     lowest: { P: { total: 100, at: T(20), storeId: 'lojaX', offerId: 'x1' } },
   });
   const r5 = R.analisar({ dados: R.lerDados(dir5), base, candidato: cand, agora: T(23) });
-  assert.equal(r5.relatorio.pontos[0].acao, 'remover');
   assert.equal(r5.relatorio.menores[0].classe, 'revisao', `400 > ${R.SALTO_MAX}× 100: decisão humana`);
   assert.equal(r5.proposto.lowest.P.total, 100);
+  assert.ok(r5.relatorio.pontos[0].acao === 'revisao' && r5.relatorio.pontos[0].bloqueado, 'lowest em revisão bloqueia também a remoção do ponto');
+  assert.equal(r5.proposto.hist.P, undefined);
+
+  // R6: série da loja só com anúncios reassociados, mas ponto anterior à 1ª linha do history.jsonl (log de 45 dias ×
+  // hist de 180): sem evidência, vai para revisão e nada da loja/produto é apagado.
+  const dir6 = cenario({
+    offers: [offer('x1', 'P', 'lojaX', TI, 95), offer('y1', 'P', 'lojaY', TL, 120)],
+    history: [row(T(22), 'x1', 'P', 'lojaX', 95), row(T(10), 'y1', 'P', 'lojaY', 120)],
+    hist: [{ productId: 'P', stores: { lojaX: { name: 'X', pts: [['2026-09-15', 90], ['2026-10-22', 95]] }, lojaY: { name: 'Y', pts: [['2026-10-10', 120]] } } }],
+    lowest: { P: { total: 90, at: '2026-09-15T12:00:00.000Z', storeId: 'lojaX', offerId: null } },
+  });
+  const r6 = R.analisar({ dados: R.lerDados(dir6), base, candidato: cand, agora: T(23) });
+  const antigo = r6.relatorio.pontos.find((p) => p.dia === '2026-09-15');
+  assert.equal(antigo.acao, 'revisao'); assert.match(antigo.motivo, /sem evidência/);
+  assert.equal(r6.relatorio.pontos.find((p) => p.dia === '2026-10-22').acao, 'revisao', 'produto bloqueado: o ponto com evidência também espera');
+  assert.equal(r6.proposto.hist.P, undefined, 'nenhum ponto sem evidência apagado');
+  assert.deepEqual(r6.proposto.lowest.P, R.lerDados(dir6).lowest.P);
 }
 
 // 7) Recusa de escrita no ramo data, dentro da pasta lida, em pasta alheia; recusa de --aplicar.
@@ -222,6 +258,8 @@ const out1 = path.join(tmp, 'saida1');
   assert.throws(() => R.verificarSaida(alheia), /não está vazia/);
   await assert.rejects(R.main(['--dados', dir1, '--candidato', RAIZ, '--saida', path.join(tmp, 's'), '--aplicar'], () => {}), /não implementado/);
   await assert.rejects(R.main(['--dados', dir1, '--saida', path.join(tmp, 's')], () => {}), /uso:/);
+  for (const f of ['--aplicar=sim', '--apply=1', '--apply', '--aplicar=']) await assert.rejects(R.main(['--dados', dir1, '--candidato', RAIZ, '--saida', path.join(tmp, 's'), f], () => {}), /não implementado/, f);
+  assert.ok(!fs.existsSync(path.join(tmp, 's')), 'nada escrito');
 }
 
 // 8) resumoHist = histSummary (src/history.js) e matcherDe carrega um checkout de verdade.

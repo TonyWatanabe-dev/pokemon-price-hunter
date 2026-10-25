@@ -182,8 +182,10 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
       for (const [d, v] of s.pts || []) {
         const a = agg.get(`${pid}|${sid}|${d}`);
         let acao = 'manter'; let motivo = ''; let proposta = null; let ids = a ? [...a.contIds] : idsSerie;
-        if (soCont) { acao = 'remover'; motivo = 'a loja só teve anúncios reassociados neste produto'; ids = idsSerie; }
-        else if (!a) { acao = 'revisao'; motivo = 'sem linha no history.jsonl para o dia (não dá para atribuir o ponto)'; }
+        // Sem linha no history.jsonl para o dia não há evidência, nem quando a série da loja é toda reassociada (o log tem
+        // 45 dias e o hist 180: ponto antigo pode ser de anúncio legítimo que já saiu do log).
+        if (!a) { acao = 'revisao'; motivo = soCont ? 'série da loja só com anúncios reassociados, mas sem linha no history.jsonl para o dia (sem evidência)' : 'sem linha no history.jsonl para o dia (não dá para atribuir o ponto)'; }
+        else if (soCont) { acao = 'remover'; motivo = 'a loja só teve anúncios reassociados neste produto'; }
         else if (!igual(a.cont, v)) { motivo = 'valor não vem de anúncio reassociado'; }
         else if (igual(a.legit, v) || igual(a.desconhecida, v)) { motivo = 'mesmo valor também em anúncio legítimo'; }
         else if (a.legit == null && a.desconhecida == null) { acao = 'remover'; motivo = 'no dia, só anúncios reassociados em estoque nesta loja'; }
@@ -225,6 +227,23 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
     menores.push({ produto: pid, antes: L, depois: melhor, acao: melhor ? 'recalcular' : 'remover', classe, motivo });
     if (classe === 'auto') { if (melhor) lowestProposto[pid] = melhor; else delete lowestProposto[pid]; }
   }
+
+  // 4b) Tudo ou nada por produto: produto com QUALQUER item em revisão (ponto, menor preço ou reassociação) fica inteiro
+  // fora do estado proposto até a decisão humana. Aplicar só parte (ex.: hist sem o lowest) deixa o produto incoerente.
+  const bloqueados = new Set([
+    ...pontos.filter((p) => p.acao === 'revisao').map((p) => p.produto),
+    ...menores.filter((m) => m.classe === 'revisao').map((m) => m.produto),
+    ...[...reassoc.values()].filter((r) => r.classe === 'revisao').map((r) => r.produtoAntigo),
+  ]);
+  const NOTA = 'produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente';
+  for (const pid of bloqueados) {
+    delete histProposto[pid];
+    if (lowest[pid]) lowestProposto[pid] = lowest[pid]; else delete lowestProposto[pid];
+    for (const p of pontos) if (p.produto === pid && p.acao === 'remover') { p.acao = 'revisao'; p.classe = 'revisao'; p.bloqueado = true; p.motivo += '; ' + NOTA; }
+    for (const m of menores) if (m.produto === pid) { m.bloqueado = true; if (m.classe === 'auto') { m.classe = 'revisao'; m.motivo += '; ' + NOTA; } }
+    for (const r of reassoc.values()) if (r.produtoAntigo === pid) { r.bloqueado = true; if (r.classe === 'auto') { r.classe = 'revisao'; r.motivos.push(NOTA); } }
+  }
+  for (const p of pontos) if (p.acao === 'revisao' && !p.bloqueado && bloqueados.has(p.produto)) p.bloqueado = true;
 
   // 5) Produtos que só existem por anúncios reassociados → proposta de remoção (nunca aplicada).
   const remocoes = [];
@@ -273,12 +292,13 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
       emEstoque: lista.filter((r) => r.estoque === 'IN_STOCK').length, paraSemProduto: lista.filter((r) => !r.produtoNovo).length,
       paraIdNovo: lista.filter((r) => r.produtoNovo && !products[r.produtoNovo]).length },
     produtosAfetados: produtosAfetados.size,
-    hist: { arquivosAlterados: Object.keys(histProposto).length, pontosRemovidosAuto: pontos.filter((p) => p.acao === 'remover').length, pontosRevisao: emRevisao.length,
+    hist: { arquivosAlterados: Object.keys(histProposto).length, pontosRemovidosAuto: pontos.filter((p) => p.acao === 'remover').length, pontosRevisao: pontos.filter((p) => p.acao === 'revisao').length,
       pontosAntes: Object.values(hist).reduce((n, h) => n + Object.values(h.stores || {}).reduce((m, s) => m + (s.pts || []).length, 0), 0) },
     lowest: { entradasAntes: Object.keys(lowest).filter((k) => !k.startsWith('__')).length, entradasDepois: Object.keys(lowestProposto).filter((k) => !k.startsWith('__')).length,
       contaminados: menores.length, recalculadosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'recalcular').length,
       removidosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'remover').length, revisao: menores.filter((m) => m.classe === 'revisao').length },
     remocoesPropostas: remocoes.length,
+    produtosBloqueados: [...bloqueados].sort(),
   };
   contagens.hist.pontosDepois = contagens.hist.pontosAntes - contagens.hist.pontosRemovidosAuto;
   return {
@@ -323,6 +343,7 @@ export function markdown(rel) {
   L.push(`| pontos de hist (todos os arquivos) | ${c.hist.pontosAntes} | ${c.hist.pontosDepois} | ${c.hist.pontosRemovidosAuto} removidos | ${c.hist.pontosRevisao} |`);
   L.push(`| arquivos de hist alterados | — | ${c.hist.arquivosAlterados} | — | — |`);
   L.push(`| entradas no lowest.json | ${c.lowest.entradasAntes} | ${c.lowest.entradasDepois} | ${c.lowest.recalculadosAuto} recalculados, ${c.lowest.removidosAuto} removidos | ${c.lowest.revisao} |`);
+  L.push(`| produtos bloqueados (item em revisão: nada aplicado) | — | ${c.produtosBloqueados.length} | — | ${c.produtosBloqueados.join(', ') || '—'} |`);
   L.push(`| produtos com remoção proposta | — | ${c.remocoesPropostas} | 0 (nunca automático) | ${c.remocoesPropostas} |`, '');
   L.push('## Por produto: preço atual × menor salvo × histórico', '', '| produto | reassoc. | menor em estoque agora (sem reassoc.) | menor salvo antes → depois | classe | hist: dias/drop7d antes → depois | pontos rem./rev. |', '|---|---|---|---|---|---|---|');
   for (const p of rel.porProduto) {
@@ -368,7 +389,7 @@ function args(argv) {
 }
 export async function main(argv = process.argv.slice(2), log = console.log) {
   const a = args(argv);
-  if (a.aplicar || a.apply) throw new Error('modo de aplicação não implementado: o reparo é só dry-run (ver docs/reparo-dados.md)');
+  if (Object.keys(a).some((k) => /^(aplicar|apply)(=|$)/.test(k))) throw new Error('modo de aplicação não implementado: o reparo é só dry-run (ver docs/reparo-dados.md)');
   if (!a.dados || !a.saida || !a.candidato) throw new Error('uso: node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO]');
   const dados = lerDados(a.dados);
   verificarSaida(a.saida, dados.dir); // antes de qualquer trabalho
