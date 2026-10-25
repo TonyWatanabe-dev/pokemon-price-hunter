@@ -30,8 +30,12 @@ export function parseResumo(raw) {
   if (typeof raw === 'string') { try { r = JSON.parse(raw); } catch { return null; } }
   if (!r || typeof r !== 'object') return null;
   if (!['saudavel', 'degradado', 'parado', 'desconhecido'].includes(r.status)) return null;
-  const reasons = (Array.isArray(r.reasonsDetail) ? r.reasonsDetail : []).filter((x) => x && codeOk(x.code));
+  const lista = Array.isArray(r.reasonsDetail) ? r.reasonsDetail : null;
+  const reasons = (lista || []).filter((x) => x && codeOk(x.code));
+  // Só para a mensagem da issue (não muda ação nem impressão digital): por que a lista de motivos ficou vazia.
+  const discarded = (lista || []).filter((x) => !(x && codeOk(x.code))).map((x) => (x && typeof x === 'object' ? String(x.code ?? '') : typeof x));
   return { status: r.status, previousStatus: typeof r.previousStatus === 'string' ? r.previousStatus : null, reasons,
+    reasonsInfo: { received: lista ? lista.length : null, discarded },
     facts: r.facts && typeof r.facts === 'object' ? r.facts : {}, now: typeof r.now === 'string' ? r.now : null };
 }
 
@@ -53,6 +57,14 @@ export function lastFingerprint(issue, comments, { trustedAuthor = TRUSTED_AUTHO
   return fp;
 }
 
+/** Por que a issue saiu sem motivo: o resumo chegou sem a lista, com a lista vazia ou com códigos fora do formato. */
+export function semDetalhe(info) {
+  if (!info || info.received == null) return 'o resumo da checagem chegou sem a lista de motivos (reasonsDetail)';
+  if (!info.received) return 'o resumo da checagem chegou com a lista de motivos vazia';
+  const xs = (info.discarded || []).slice(0, 3).map((c) => `"${safeText(c, 40).replace(/`/g, '')}"`);
+  return `${info.received} motivo(s) recebido(s), ${info.discarded?.length ?? 0} descartado(s) por código fora do formato [a-z_]: ${xs.join(', ')}`;
+}
+
 function diagnosis(r, { runUrl } = {}) {
   const f = r.facts || {};
   const fato = (k, v) => (v == null || v === '' ? null : `- ${k}: ${safeText(v, 80)}`);
@@ -60,7 +72,7 @@ function diagnosis(r, { runUrl } = {}) {
     `**Estado:** ${r.status}${r.now ? ` (checagem de ${safeText(r.now, 40)})` : ''}`,
     '',
     '**Problemas:**',
-    ...(r.reasons.length ? r.reasons.map((x) => `- \`${x.code}\`: ${safeText(x.text)}`) : ['- (sem detalhe)']),
+    ...(r.reasons.length ? r.reasons.map((x) => `- \`${x.code}\`: ${safeText(x.text)}`) : [`- (sem detalhe: ${semDetalhe(r.reasonsInfo)})`]),
     '',
     '**Fatos lidos (somente leitura):**',
     ...[fato('Dados publicados em', f.dataGeneratedAt), fato('Idade dos dados (min)', f.dataAgeMin), fato('Última rodada concluída', f.lastRunAt),
