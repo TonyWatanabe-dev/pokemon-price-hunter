@@ -369,10 +369,12 @@ const EQUIPE_ROCKET_35880 = /\bcolecao (?:ex )?equipe rocket (?:- )?(?:mega )?[a
 // vai para ele, sem criar avulso novo (T5-C). Sem esse produto no catálogo: sem produto, para revisão (nunca a 35579).
 // Nidoking/Persian (sem outra caixa) continuam no avulso de sempre (avulsos-colecao_ex-nidoking/-persian, ids existentes).
 const EQUIPE = 'equipe';
+const IMPORTADO_SEM_PRODUTO = 'importado sem produto identificado no idioma';
 function caixa35880(p, n, catalog) {
-  if (p.type !== 'colecao_ex' || !p.variant || p.variant === EQUIPE || p.lang || !EQUIPE_ROCKET_35880.test(n)) return undefined;
+  if (p.type !== 'colecao_ex' || !p.variant || p.variant === EQUIPE || !EQUIPE_ROCKET_35880.test(n)) return undefined;
   const outra = catalog?.variantes?.[`colecao_ex|${p.variant}`];
   if (!outra || (p.collection && p.collection !== outra)) return undefined;
+  if (p.lang) return { productId: null, confidence: 0, parsed: p, why: [IMPORTADO_SEM_PRODUTO] };
   const col = catalog?.variantes?.[`colecao_ex|${EQUIPE}`];
   if (!col || (p.collection && p.collection !== col)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
   const prod = describeProduct(catalog, col, 'colecao_ex', p.boosters, EQUIPE, null);
@@ -450,7 +452,12 @@ export function matchProduct(listing, catalog) {
     // de catalog.variantes (25/10/2026: 3 Koraidon Paldea caíam em sv10-colecao_ex-koraidon). Fica no avulso com a mesma
     // variante de sempre, então avulsos-colecao_ex-miraidon (que já é a Paldea) não muda de id nem perde histórico.
     // Outras linhas com o mesmo Pokémon em outra caixa: ver herdaColecao.
-    const conhecida = (herdaColecao(n, p.variant) && catalog?.variantes?.[`${p.type}|${p.variant}`]) || null;
+    const herda = herdaColecao(n, p.variant);
+    const conhecida = (herda && catalog?.variantes?.[`${p.type}|${p.variant}`]) || null;
+    // Importado ("Inglês", "EN"...) de uma caixa que NÃO herda a coleção conhecida (Paldea, Implacáveis, 35880): a regra de idioma
+    // do projeto é id do produto PT + sufixo, e aqui o produto PT da caixa não está identificado. Sem produto, em vez de criar um
+    // id novo (T5-C rodada 2: "Coleção Equipe Rocket Mewtwo Ex Inglês" criava avulsos-colecao_ex-mewtwo-en).
+    if (!herda && p.lang && catalog?.variantes?.[`${p.type}|${p.variant}`]) return { productId: null, confidence: 0, parsed: p, why: [IMPORTADO_SEM_PRODUTO] };
     // Código Copag no título que não é o da caixa herdada: é outra caixa do mesmo Pokémon (T5-C rodada 2: "Box Koraidon ex 33016"
     // caía em sv10-colecao_ex-koraidon, que é a 35239). Sem produto, para revisão (não presume a qual caixa o código pertence).
     if (conhecida && codigoDiverge(listing, `${p.type}|${p.variant}`)) return { productId: null, confidence: 0, parsed: p, why: ['código Copag diverge da caixa conhecida'] };

@@ -69,4 +69,21 @@ t('R3. variantes de escrita do kit: "Kit c/ 2", "Kit com 02", "Kit 2x", "Kit com
   });
 });
 
+t('R4. importado de caixa que não herda a coleção (35880, Implacáveis, Paldea) não cria id novo', () => {
+  const IMP = 'importado sem produto identificado no idioma';
+  // (nova) em 9c56a407 criavam avulsos-colecao_ex-mewtwo-en / -zacian-en / -koraidon-en
+  for (const title of ['Box Pokémon Coleção Equipe Rocket Mewtwo Ex Inglês', 'Box Pokémon Coleção Equipe Rocket Mewtwo Ex - English',
+    'Box Pokémon Coleção Equipe Rocket Mewtwo Ex (EN)', 'Box Pokémon Lendas Implacáveis Zacian ex Inglês', 'Box Pokémon Lendas de Paldea Koraidon ex Inglês']) {
+    const r = m(title);
+    assert.equal(r.productId, null, title); assert.deepEqual(r.why, [IMP], title);
+  }
+  // (guarda) regra de idioma do projeto (id PT + sufixo) onde o produto PT está identificado
+  todos({
+    'Pokemon Box Team Rockets Mewtwo Ex (EN)': 'sv10-colecao_ex-mewtwo-en', // real
+    "Team's Rocket Mewtwo Ex Box - Pokémon TCG: Destined Rivals - Inglês - Galápagos": 'sv10-colecao_ex-mewtwo-en', // real
+    'Box Pokémon Lendas de Paldea Miraidon ex Inglês': 'avulsos-colecao_ex-miraidon-en', // avulso sem herança: igual à base
+    'Box Pokémon Coleção Equipe Rocket Mewtwo Ex': 'sv10-colecao_ex-equipe', // o PT continua
+  });
+});
+
 console.log(`matching-v3-rodada2-tests: ok (${n} grupos)`);
