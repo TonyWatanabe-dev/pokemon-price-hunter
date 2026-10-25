@@ -355,8 +355,10 @@ export function variantesDe(ids = []) {
 // "Implac?veis" (facilshopping, acento perdido na loja), "Lendas-Implacáveis" (hífen sobrevive à normalização) e o código
 // Copag da caixa (35239) sem o nome da linha: "Box Zacian ex 35239" caía no Lupo (35263) pela variante conhecida.
 const LENDAS_IMPLACAVEIS = /\blendas[ -]implac(?:a| )?veis\b|(?<!\d)35239(?!\d)/;
-// "Lendas de Paldea", também sem o "de" ("Lendas Paldea Koraidon") e com hífen ("Lendas-de-Paldea").
-const LENDAS_DE_PALDEA = /\blendas[ -](?:de[ -])?paldea\b/;
+// "Lendas de Paldea", também sem o "de" ("Lendas Paldea Koraidon") e com hífen ("Lendas-de-Paldea"), e o código Copag da
+// Miraidon Paldea (33017, título real "Box Pokémon Lendas de Paldea - Miraidon EX - 33017 Copag"): sem o nome da linha, o código
+// basta para nunca herdar uma futura caixa Miraidon de coleção (T5-C rodada 2). O 33016 não entra: sem evidência.
+const LENDAS_DE_PALDEA = /\blendas[ -](?:de[ -])?paldea\b|(?<!\d)33017(?!\d)/;
 const IMPLACAVEIS_HERDA = new Set(['koraidon']);
 const PALDEA_NO_AVULSO = new Set(['miraidon']);
 // Também com hífen ("Coleção Equipe Rocket - Mewtwo Ex") e pelo código Copag sem o formato do nome ("Equipe Rocket Mewtwo Ex 35880").

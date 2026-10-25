@@ -34,4 +34,20 @@ t('R1. código Copag que não é o da caixa herdada não cai nela ("Box Koraidon
   });
 });
 
+t('R2. Miraidon Implacáveis × Miraidon Paldea: cada um no seu id atual, com hífen e código, hoje e com uma caixa Miraidon futura', () => {
+  // ids atuais: Paldea = avulsos-colecao_ex-miraidon; Implacáveis Miraidon não existe = sem produto (guarda H3 da v2)
+  const PALDEA = ['Box Pokémon Lendas de Paldea - Miraidon EX - 33017 Copag', 'Box Pokémon Lendas De Paldea Miraidon Ex Copag', // reais
+    'Box Pokémon Lendas-de-Paldea Miraidon ex', 'Box Pokémon Lendas Paldea Miraidon ex', 'Box Pokémon Miraidon ex 33017 Copag'];
+  const IMPLAC = ['Box Pokémon Lendas Implacáveis Miraidon', 'Box Pokémon Lendas-Implacáveis Miraidon ex', 'Box Pokémon Miraidon ex 35239',
+    'Pokemon Box - Lendas Implac?veis - Miraidon Ex'];
+  // (guarda) catálogo de hoje: já valia em 9c56a407
+  for (const title of PALDEA) assert.equal(id(title), 'avulsos-colecao_ex-miraidon', title);
+  for (const title of IMPLAC) assert.equal(id(title), null, title);
+  // risco futuro: o catálogo automático ganha uma caixa Miraidon de coleção (ex.: canal40 "… EV10" cria sv10-colecao_ex-miraidon)
+  const futuro = { ...base, variantes: variantesDe([...IDS, 'sv10-colecao_ex-miraidon']) };
+  for (const title of PALDEA) assert.equal(id(title, futuro), 'avulsos-colecao_ex-miraidon', title); // (nova) o 33017 sem linha herdava sv10
+  for (const title of IMPLAC) assert.equal(id(title, futuro), null, title); // (guarda) Implacáveis só herda Koraidon
+  assert.equal(id('Box Pokémon Miraidon ex', futuro), 'sv10-colecao_ex-miraidon'); // (guarda) sem linha nem código: variante conhecida
+});
+
 console.log(`matching-v3-rodada2-tests: ok (${n} grupos)`);
