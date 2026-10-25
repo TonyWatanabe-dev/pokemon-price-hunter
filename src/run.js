@@ -274,7 +274,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });
       src.platform = platform;
       // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas.
-      let cache = null; let planned = [];
+      let cache = null; let planned = []; let comOferta = new Set();
       if (platform === 'jsonld') {
         cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
         const at = (cache.visitedAt ||= {}); // url -> quando foi lida com sucesso pela última vez
@@ -290,7 +290,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         // virado produto. Divide as 25 vagas da rodada com as novas (as mais antigas primeiro).
         const RETRY = Number(process.env.HUNTER_JSONLD_RETRY_H || 24) * 3600e3;
         const rel = new Set(cache.relevant);
-        const retry = cache.candidates.filter((u) => cache.visited.includes(u) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY) && !(lm[u] && at[u] && lm[u] <= at[u]))
+        // Página de oferta não confirmada (stale) volta pela regra das 24 h mesmo com lastmod antigo ou fora do sitemap:
+        // senão a oferta nunca junta evidência de remoção (#897) nem volta a ser confirmada.
+        comOferta = new Set(Object.values(prev).filter((o) => o.storeId === store.id && o.sourceType !== PISTA_SOURCE && o.stale && o.url).map((o) => o.url));
+        const retry = [...new Set([...cache.candidates, ...comOferta])].filter((u) => (cache.visited.includes(u) || comOferta.has(u)) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY) && (comOferta.has(u) || !(lm[u] && at[u] && lm[u] <= at[u])))
           .sort((a, b) => (at[a] || '').localeCompare(at[b] || '')).slice(0, Math.max(0, 25 - fresh.length));
         cache.visited.push(...fresh);
         planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
@@ -330,7 +333,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         // rodadas seguidas por URL; falha de leitura não soma nem zera. Só a confirmada (RODADAS_REMOCAO) sai da proteção
         // de "zero casados" abaixo e segue o caminho normal de remoção (evento "removed"; histórico de preço intacto).
         cache.removidas = atualizarRemocoes(cache.removidas, raw.gone || {}, planned.filter((u) => !failedUrls.has(u)), T);
-        for (const u of Object.keys(cache.removidas)) if (!cache.candidates.includes(u)) delete cache.removidas[u];
+        for (const u of Object.keys(cache.removidas)) if (!cache.candidates.includes(u) && !comOferta.has(u)) delete cache.removidas[u];
         removidasOk = remocoesConfirmadas(cache.removidas);
         // evidência ainda não confirmada: a página volta na próxima rodada (senão só voltaria depois de HUNTER_JSONLD_RETRY_H)
         for (const [u, a] of Object.entries(cache.removidas)) if (a.n < RODADAS_REMOCAO && !cache.relevant.includes(u)) cache.relevant.push(u);
