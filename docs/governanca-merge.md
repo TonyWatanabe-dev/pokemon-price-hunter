@@ -31,6 +31,9 @@ Não cobre — por isso as propostas abaixo continuam necessárias:
   contratos diferentes). Só CI na árvore integrada (fila ou push na main) pega isso.
 - **Admin**: com `enforce_admins=false` o GitHub aceita o merge mesmo quando a ferramenta diz NÃO PODE.
 - **Autorização**: PODE é um fato técnico, não uma permissão. Um agente não pode tratar a saída como autorização.
+- **Exclusividade**: a ferramenta só lê; não trava nada. Duas sessões (inclusive na mesma conta) podem obter PODE ao
+  mesmo tempo para PRs diferentes e integrar em sequência sem que a segunda seja reavaliada contra a main nova. Só o lock
+  global (3.5) ou a fila de merge resolvem isso.
 
 ## 3. Propostas (ordem de prioridade)
 
