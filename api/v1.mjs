@@ -318,13 +318,15 @@ async function frete(req, res, path, qs) {
   const SC = await import('./_lib/shipping-calc.mjs');
   let st;
   try { st = (await legacyState()).st; } catch { return send(res, 503, { error: 'dados indisponíveis no momento' }, H); }
+  // D4b: oferta, item e vendedor vêm do state.json; vencido (> 24 h) ou sem horário, não cota (nunca frete zero/inventado)
+  if (FR.classify(FR.stateDataAt(st)).status === 'indisponivel') return send(res, 503, { error: 'dados desatualizados ou sem horário confiável no momento' }, H);
   if (path.length === 2 && path[1] === 'estado') {
     return send(res, 200, { enabled: true, stores: SC.calcSources(st).map((s) => s.id), ttlSec: SC.QUOTE_TTL_MS / 1000,
       limits: { perIpPerMin: SC.RATE_LIMIT.max, perKeyPerMin: SC.KEY_RATE_LIMIT.max } }, H);
   }
   if (path.length !== 1) return send(res, 404, { error: 'rota não encontrada' }, H);
   freteHandler ||= SC.createShippingCalcHandler({ enabled: true, ...(freteDeps?.service ? { service: freteDeps.service } : {}),
-    resolveOffer: async (id) => SC.resolveVtexOffer((await legacyState()).st, id) });
+    resolveOffer: async (id) => { const s2 = (await legacyState()).st; return FR.classify(FR.stateDataAt(s2)).status === 'indisponivel' ? null : SC.resolveVtexOffer(s2, id); } });
   // do pedido só saem oferta, CEP e quantidade; qualquer outro parâmetro (base, url, itemId, sellerId…) é ignorado
   const r = await freteHandler({ offerId: qs.get('oferta') ?? undefined, cep: qs.get('cep') ?? undefined, quantity: qs.get('quantidade') ?? 1 }, { ip: clientIp(req) });
   return send(res, r.status, r.body, { ...H, ...(r.status === 429 ? { 'Retry-After': '60' } : {}) });
