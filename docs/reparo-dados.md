@@ -231,6 +231,25 @@ O Postgres não foi acessado (sem credencial; não tentei obter).
 - na fonte db, nada muda sem o passo do banco.
 
 
+### 0.10 Adendo: ME06 "Reinado Delta" sem código no título (candidata `proposta/me06-sem-codigo` cce87e84, não integrada)
+
+A frente de matching (E6-M) achou anúncios "Reinado Delta" sem "ME06" no título que caem em ME01 pelo fallback "megaevolucao". A correção está em cce87e84 (`FORA_DO_CATALOGO`), em revisão. Registros no retrato 8f28f68c:
+
+| registro | produto | anúncio / título | `history.jsonl` | situação no reparo |
+|---|---|---|---|---|
+| moxland | me01-combo | `e6551daa8516` "Combo de Boosters - Megaevolução Reinado Delta" | 14/10 17:30 em estoque a R$ 249; 20/10 03:30 sem estoque (2 linhas) | **só com a candidata cce87e84**: 7 pontos (14 a 20/10, R$ 249) removidos, automático; `lowest` de me01-combo vai de R$ 249 (moxland, 14/10) para **R$ 250,99** (arenacwg, 07/10; paladins 249,90 em 07/10 está em `distrust`); classe inválido/contaminado |
+| gorupa | me01-combo18 | `a2904e988b24` "Combo Booster Box Pokémon Reinado Delta Megaevolução ME06 - 18 Pacotes" | 16/10 12:00 sem estoque (1 linha) | já detectado com a main (#922 cobre "ME06"): reassociação automática para "sem produto", **0 pontos e 0 `lowest`** (nunca esteve em estoque). O `lowest` de me01-combo18 (canal40 232,79) e a série gorupa 236,55 vêm de outra oferta e ficam |
+
+Simulação com a candidata (`--candidato` = `git archive cce87e84 src config`, mesma base c0b6bf44, mesmo `--anterior`, `--agora 2026-10-25T17:10:00Z`, saída `scratchpad/reparo/e6b-c`), comparada com a main (`e6b-b`):
+- reassociações: 63 → 64 (+ moxland, automática);
+- pontos removidos: 65 → 72;
+- arquivos de hist: 10 → 11 (+ `me01-combo.json`, sha256 antes `3802a8b2…`, depois `cb2291fc…`);
+- `lowest`: só muda me01-combo;
+- o resto do `proposto/` é idêntico.
+
+**Regra de inclusão:** o registro da moxland só entra no plano aplicável depois que cce87e84 (ou equivalente) for integrado e o robô reler a moxland. Antes disso, a main ainda casa o anúncio em me01-combo, e o reparo seria desfeito na rodada seguinte. Até lá, ele fica no inventário como **condicional**. O dry-run final roda com o candidato = main do momento: se a correção já estiver integrada, o registro entra sozinho; se não, fica de fora.
+
+
 ## 1. Problema e origem
 
 Quando o matcher junta produtos diferentes, corrigir o matcher tira o anúncio do produto errado na rodada seguinte. Três coisas gravadas antes continuam erradas:
