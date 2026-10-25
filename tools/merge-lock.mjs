@@ -107,6 +107,8 @@ export function descrever(s) {
 }
 
 // ---------------------------------------------------------------- operações (api injetável)
+/** Campo de escrita do `gh api` (-f nome=valor). */
+const f = (nome, valor) => ['-f', `${nome}=${valor}`];
 const lerMain = async (api, repo) => {
   const r = await api(['api', `repos/${repo}/git/ref/heads/${BASE}`]);
   if (!SHA.test(r?.object?.sha || '')) throw new Error('ref da main sem sha');
@@ -131,10 +133,11 @@ export async function adquirir(api, repo, { sessao, pr, sha, ttlMin = TTL_PADRAO
   const main = await lerMain(api, repo);
   const t = new Date(agora);
   const dono = { versao: 1, ferramenta: 'tools/merge-lock.mjs', sessao, pr: Number(pr), sha, main, adquiridoEm: t.toISOString(), expiraEm: new Date(t.getTime() + ttlMin * 60000).toISOString(), ttlMin };
-  const tag = await api(['api', '-X', 'POST', `repos/${repo}/git/tags`, '-f', `tag=${LOCK_TAG}`, '-f', `message=${montarMensagem(dono)}`, '-f', `object=${main}`, '-f', 'type=commit']);
+  // campos montados por f() (o nome do objeto git "tag" não tem relação com afiliados; ver affiliate-isolation-tests)
+  const tag = await api(['api', '-X', 'POST', `repos/${repo}/git/tags`, ...f('tag', LOCK_TAG), ...f('message', montarMensagem(dono)), ...f('object', main), ...f('type', 'commit')]);
   if (!SHA.test(tag?.sha || '')) throw new Error('objeto tag criado sem sha');
   try {
-    await api(['api', '-X', 'POST', `repos/${repo}/git/refs`, '-f', `ref=${LOCK_REF}`, '-f', `sha=${tag.sha}`]);
+    await api(['api', '-X', 'POST', `repos/${repo}/git/refs`, ...f('ref', LOCK_REF), ...f('sha', tag.sha)]);
   } catch (e) {
     // 422 = outro criou primeiro; outro erro = resposta pode ter se perdido. Nos dois casos, relê e decide.
     const depois = await lerLock(api, repo);
