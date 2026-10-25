@@ -2648,7 +2648,7 @@ const alertsL=()=>ACC.data?.alerts||[];
 const isFav=(pid)=>favs().includes(pid);
 const alertOf=(pid)=>alertsL().find((a)=>a.p===pid);
 /* desempate fixo (preço, id): o mesmo no site e na API, não depende da ordem das ofertas na lista */
-const byTot=(a,b)=>a.total-b.total||afPref(b)-afPref(a)||String(a.id).localeCompare(String(b.id));   /* empate de total: nosso link primeiro */
+const byTot=(a,b)=>shipCmp(a,b)||a.total-b.total||afPref(b)-afPref(a)||String(a.id).localeCompare(String(b.id));   /* #84: frete conhecido antes (preço sem frete não disputa com total confirmado); empate de total: nosso link primeiro */
 const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort(byTot)[0];
 const hits=()=>alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v);
 const authPending=()=>!ACC.ready&&store.get("acc",false);
