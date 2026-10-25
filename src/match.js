@@ -381,7 +381,24 @@ function herdaColecao(n, variant) {
   return true;
 }
 const semAcento = (s = '') => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-const DUAS_CAIXAS = /\b[a-z]{3,} ex ?& ?(?:mega )?[a-z]{3,}\b|\b[a-z]{3,} ?& ?(?:mega )?[a-z]{3,} ex\b/;
+// Duas caixas num anúncio só, ligadas por "&", "+" ou "/" (T5-C). Os símbolos somem na normalização: lê o título original.
+// - "&": "<A> ex & <B>" ou "<A> & <B> ex" ("Greninja & Kingdra Ex", "Mega Lucario Ex & Mega Gardevoir").
+// - "+" e "/": só com "ex" do lado direito ("Greninja ex + Kingdra ex", "Greninja/Kingdra ex"); "<A> ex + Brinde/Envio..." não.
+// Não são duas caixas: treinador + Pokémon ("Lillie & Clefairy ex", "Iono & Bellibolt ex", "Ash & Pikachu ex"), "Pikachu ex &
+// Amigos", "Scarlet & Violet", entidade HTML (&amp;, &#8211;). Vale com ou sem coleção no título ("Fábulas Nebulosas Greninja &
+// Kingdra ex" caía em sv6_5-colecao_ex-kingdra).
+const TREINADORES = new Set(['lillie', 'lilian', 'iono', 'kissera', 'ash', 'cynthia', 'cintia', 'hop', 'lupo', 'marnie', 'steven', 'ethan',
+  'arven', 'giovanni', 'misty', 'brock', 'erika', 'lauro', 'nemona', 'penny', 'larry', 'equipe', 'team', 'rocket']);
+const NAO_POKEMON = new Set([...VARIANT_STOP, 'ex', 'amigos', 'amigo', 'friends', 'cia', 'brinde', 'brindes', 'promo', 'carta', 'card', 'cards',
+  'boosters', 'pacotes', 'sleeves', 'shield', 'sword', 'scarlet', 'violet', 'escarlate', 'violeta', 'deck', 'baralho', 'moeda', 'pin', 'frete',
+  'envio', 'oferta', 'presente', 'lacrado', 'original', 'oficial', 'jogo', 'kit', 'lata', 'blister', 'treinador', 'jumbo', 'mais', 'outros']);
+const PARES = [/\b([a-z]{3,}) ex ?& ?(?:mega )?([a-z]{3,})\b/g, /\b([a-z]{3,}) ?[&+/] ?(?:mega )?([a-z]{3,}) ex\b/g,
+  /\b([a-z]{3,}) ex ?[&+/] ?(?:mega )?([a-z]{3,}) ex\b/g];
+const pokemonDoPar = (w) => !NAO_POKEMON.has(w) && !TREINADORES.has(w);
+function duasCaixas(title) {
+  const s = semAcento(title).replace(/&(?:amp;)+/g, '&').replace(/&#?\w+;/g, ' ');
+  return PARES.some((re) => [...s.matchAll(re)].some((x) => pokemonDoPar(x[1]) && pokemonDoPar(x[2])));
+}
 
 export function matchProduct(listing, catalog) {
   const p = parseListing(listing.title, catalog);
@@ -398,13 +415,12 @@ export function matchProduct(listing, catalog) {
   // Box/coleção com Pokémon em destaque ("Box Mega Zygarde ex") sem coleção no título: produto avulso da Copag. Se a
   // mesma caixa já existe numa coleção (catalog.variantes, montado do catálogo automático), vai para ela; senão, para a
   // pseudo-coleção "avulsos". Antes, 153 de 200 anúncios não casados (17/10) eram "coleção não identificada", muitos assim.
+  // Duas caixas num anúncio só ("Box Greninja & Kingdra Ex", "Box Coleção Mega Lucario Ex & Mega Gardevoir", 25/10/2026): a
+  // "<nome> ex" levava para a caixa de um Pokémon só e o preço dela (R$ 229,99) virava o menor da Kingdra. Ver duasCaixas.
+  if (p.variant && AVULSO_TYPES.has(p.type) && duasCaixas(listing.title)) return { productId: null, confidence: 0, parsed: p, why: ['mais de um produto no mesmo anúncio'] };
   const c35880 = caixa35880(p, p.normalized, catalog); if (c35880) return c35880;
   if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
     const n = p.normalized;
-    // Duas caixas num anúncio só ("Box Greninja & Kingdra Ex", "Box Coleção Mega Lucario Ex & Mega Gardevoir", 25/10/2026):
-    // a "<nome> ex" levava para a caixa de um Pokémon só e o preço dela (R$ 229,99) virava o menor da Kingdra.
-    // O "&" some na normalização, por isso o título original.
-    if (DUAS_CAIXAS.test(semAcento(listing.title))) return { productId: null, confidence: 0, parsed: p, why: ['mais de um produto no mesmo anúncio'] };
     // "Charizard ex Brilhante" é a caixa da Destinos de Paldea (sv4_5), não a "Charizard ex em Dobro": sem a coleção no título,
     // a variante sozinha juntava as duas em avulsos-colecao_ex-charizard (25/10/2026). Sem coleção, sem produto.
     if (/\bex brilhante\b/.test(n)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
