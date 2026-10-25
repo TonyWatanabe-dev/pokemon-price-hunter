@@ -67,14 +67,14 @@ Nesta rodada não houve merge, deploy, publicação de regras, mudança de prote
 | ME06 sem código ("Reinado Delta" caía em ME01) | proposta/me06-sem-codigo / 39f4b3fa | preparado, revisado (ressalva 1 corrigida); 358 arquivos EXIT 0; golden 32/32; muda só 1 título real (moxland) | PR e integração (matching muda o robô durante o burn-in) |
 | Reparo de dados pós-integração | proposta/reparo-dados-pos-integracao / 4b5a3ffa | preparado; restauração testada em clone local byte a byte; 357 arquivos EXIT 0 | decisões sv9-zacian, me01-etb e alakazam; passo de publicação (R3); banco; fim do burn-in |
 | Regra M2 do Firestore | proposta/m2-regras / ea62de90 | preparado; **CI de regras real: 53/53** (run 40217443543); avaliador estático no npm test | PR e publicação no console (R3) |
-| D1 título app × SSR | proposta/consist-d1 / 0543f0c3 | preparado | revisão independente em andamento |
-| D2 kit sem "no Pix" | proposta/consist-d2 / 0d0b3fb6 | preparado | `kit-v2.js` em cache imutável: publicar como kit-v3 é decisão do dono |
-| D3 Reclame Aqui "sem cadastro" falso | proposta/consist-d3 / fc43d252 | preparado (rótulo "não consultado") | reconsultar as 50 lojas fora da tabela é decisão do dono |
-| D5 % Copag com e sem frete | proposta/consist-d5 / 58f79a52 | preparado (texto "(com frete)") | mudar a base do % é decisão do dono (`src/run.js`) |
-| D6 /pre-vendas duplica no SSR | proposta/consist-d6 / 314784e4 | preparado | — |
-| D7 desempate app × SSR | proposta/consist-d7 / 005482a0 | preparado | — |
+| D1 título app × SSR | proposta/consist-d1 / 0543f0c3 | preparado, revisado (aprovável) | integrar junto com a D7 ou depois dela |
+| D2 kit sem "no Pix" | proposta/consist-d2 / 0d0b3fb6 | preparado, revisado (aprovável) | `kit-v2.js` em cache imutável: publicar como kit-v3 é decisão do dono |
+| D3 Reclame Aqui "sem cadastro" falso | proposta/consist-d3 / fc43d252 | preparado (rótulo "não consultado"), revisado (aprovável) | reconsultar as 50 lojas fora da tabela é decisão do dono |
+| D5 % Copag com e sem frete | proposta/consist-d5 / 58f79a52 | preparado (texto "(com frete)"), revisado com ressalva: "Onde comprar" e o SSR seguem sem o aviso | mudar a base do % é decisão do dono (`src/run.js`) |
+| D6 /pre-vendas duplica no SSR | proposta/consist-d6 / 314784e4 | preparado, revisado (aprovável) | — |
+| D7 desempate app × SSR | proposta/consist-d7 / 005482a0 | preparado, revisado (aprovável) | — |
 
-As 6 branches de consistência juntas com a ME06: 364 arquivos EXIT 0. O index.html fica em 460.367 de 460.800, com 432 de folga.
+As 6 branches de consistência mescladas sobre a main: sem conflito e 363 arquivos EXIT 0 (revisor). Somadas também à ME06: 364 arquivos EXIT 0. Cada teste novo falha na main. O index.html fica em 460.367 de 460.800, com 432 de folga.
 
 **Governança:** `enforce_admins` continua false.
 - Recomendação: ligar `enforce_admins`. É um comando reversível e não quebra tarefas.yml, os bots do ramo `data` nem os outros workflows.
