@@ -16,7 +16,8 @@ const casos = {
   'Pokémon Baralho Batalha de Liga Charizard ex': 'avulsos-deck-charizard',
   'Pokémon Box Coleção Mega Lucario EX - Copag': 'avulsos-colecao_ex-mega-lucario',
   'Box Coleção Charizard ex em Dobro - Pokémon': 'avulsos-colecao_ex-charizard',
-  'Box Pokémon Lendas de Paldea - Miraidon EX - 33017 Copag': 'avulsos-colecao_ex-miraidon',
+  // id com a linha desde 25/10 (Lendas de Paldea ≠ Lendas Implacáveis); o que este caso trava segue igual: colecao_ex, não deck
+  'Box Pokémon Lendas de Paldea - Miraidon EX - 33017 Copag': 'avulsos-colecao_ex-lendas-de-paldea-miraidon',
 };
 for (const [t, esperado] of Object.entries(casos)) assert.equal(id(t), esperado, t);
 console.log('batalha-de-liga-tests: ok');

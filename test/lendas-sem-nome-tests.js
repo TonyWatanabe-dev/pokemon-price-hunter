@@ -16,8 +16,9 @@ const casos = {
   'Pokemon Box - Coleção Ex Lendas Implacáveis - Zacian': 'avulsos-colecao_ex-zacian',
 };
 for (const [t, esperado] of Object.entries(casos)) assert.equal(id(t), esperado, t);
-// com o catálogo automático do robô, Lendas de Paldea continua na coleção conhecida
-assert.equal(id('Box Pokémon Lendas de Paldea - KORAIDON EX', { ...cat, variantes: variantesDe(['sv10-colecao_ex-koraidon']) }), 'sv10-colecao_ex-koraidon');
+// Lendas de Paldea (Copag 33017) é outra caixa que a Lendas Implacáveis (35239): desde 25/10 tem variante própria e não
+// vai para a coleção da Implacáveis, mesmo com o catálogo automático do robô (test/matching-restante-tests.js).
+assert.equal(id('Box Pokémon Lendas de Paldea - KORAIDON EX', { ...cat, variantes: variantesDe(['sv10-colecao_ex-koraidon']) }), 'avulsos-colecao_ex-lendas-de-paldea-koraidon');
 // nenhum título vira o produto "lendas"
 for (const t of ['Pokemon Box - Coleção Ex Lendas Azuis', ...Object.keys(casos)]) assert.notEqual(id(t), 'avulsos-colecao_ex-lendas', t);
 console.log('lendas-sem-nome-tests: ok');
