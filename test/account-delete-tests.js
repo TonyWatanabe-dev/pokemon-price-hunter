@@ -1,12 +1,13 @@
-// Exclusão de conta (tools/account.src.js): roda o código real de remove/wipe com o SDK do Firebase simulado.
+// Exclusão de conta (tools/account.src.js): roda o código real de confirmIdentity/wipe com o SDK do Firebase simulado.
 // Sem rede, sem emulador e sem produção. Inverter a ordem deleteDoc/deleteUser no código faz estes testes falharem.
+// Falhas, repetição e equivalência com o bundle account.js: test/exclusao-conta-tests.js.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
 const src = fs.readFileSync(new URL('../tools/account.src.js', import.meta.url), 'utf8');
-const i = src.indexOf('export async function remove(');
-assert.ok(i > 0, 'remove() não encontrada em account.src.js');
+const i = src.indexOf('async function confirmIdentity(');
+assert.ok(i > 0, 'confirmIdentity() não encontrada em account.src.js');
 const code = src.slice(i).replace(/export /g, '');
 let n = 0; const t = async (name, fn) => { await fn(); n++; };
 
@@ -28,14 +29,14 @@ function setup({ provider = 'password', failFirstDelete = false, user = true } =
     EmailAuthProvider: { credential: (_e, pw) => ({ pw }) },
   };
   vm.createContext(ctx);
-  vm.runInContext(code + '\nthis.wipe = wipe; this.remove = remove;', ctx);
+  vm.runInContext(code + '\nthis.wipe = wipe;', ctx);
   return { ctx, calls };
 }
 
-await t('wipe apaga o documento antes da conta', async () => {
+await t('wipe confirma a senha e apaga o documento antes da conta', async () => {
   const { ctx, calls } = setup();
   await ctx.wipe('pw');
-  assert.deepEqual(calls, ['deleteDoc:users/u1', 'deleteUser']);
+  assert.deepEqual(calls, ['reauthCred:pw', 'deleteDoc:users/u1', 'deleteUser']);
 });
 
 await t('wipe sem usuário logado não faz nada', async () => {
@@ -44,22 +45,22 @@ await t('wipe sem usuário logado não faz nada', async () => {
   assert.deepEqual(calls, []);
 });
 
-await t('requires-recent-login (senha): reautentica, apaga o documento e remove a conta', async () => {
-  const { ctx, calls } = setup({ failFirstDelete: true });
+await t('senha: reautentica ANTES de apagar qualquer coisa', async () => {
+  const { ctx, calls } = setup();
   await ctx.wipe('pw');
-  assert.deepEqual(calls, ['deleteDoc:users/u1', 'deleteUser', 'reauthCred:pw', 'deleteDoc:users/u1', 'deleteUser']);
+  assert.equal(calls[0], 'reauthCred:pw');
 });
 
-await t('requires-recent-login (Google): reautentica por popup antes de apagar', async () => {
-  const { ctx, calls } = setup({ provider: 'google.com', failFirstDelete: true });
+await t('Google: reautentica por popup antes de apagar', async () => {
+  const { ctx, calls } = setup({ provider: 'google.com' });
   await ctx.wipe();
-  assert.deepEqual(calls, ['deleteDoc:users/u1', 'deleteUser', 'reauthPopup', 'deleteDoc:users/u1', 'deleteUser']);
+  assert.deepEqual(calls, ['reauthPopup', 'deleteDoc:users/u1', 'deleteUser']);
 });
 
-await t('requires-recent-login sem senha propaga o erro e não reautentica', async () => {
+await t('conta com senha sem senha digitada: erro requires-recent-login e nada é apagado', async () => {
   const { ctx, calls } = setup({ failFirstDelete: true });
   await assert.rejects(() => ctx.wipe(''), { code: 'auth/requires-recent-login' });
-  assert.ok(!calls.some((c) => c.startsWith('reauth')));
+  assert.deepEqual(calls, []);
 });
 
 console.log(`✓ Exclusão de conta: ${n} grupos de testes passaram`);
