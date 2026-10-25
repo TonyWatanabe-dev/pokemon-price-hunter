@@ -207,12 +207,14 @@ assert.equal(new Set(Object.values(CODIGOS)).size, 5);
 
 // ---------------------------------------------------------------- CLI com API falsa: só GET, filter=all, paginação, estados
 function apiFalsa({ prs, runs = verdes(), compare = { behind_by: 0, base_commit: { sha: M } }, protecaoResp = protecao, protecaoFalha = false, mudaHead = false,
-  arquivos = arquivosOk, arquivosFalha = false, issues = {}, mains = [M], refFalha = false } = {}) {
+  arquivos = arquivosOk, arquivosFalha = false, issues = {}, mains = [M], refFalha = false, lockRef = null, lockTags = {}, lockFalha = false } = {}) {
   const chamadas = []; const lidas = {}; let refs = 0;
   const api = async (args) => {
     chamadas.push(args);
     assert.equal(args[0], 'api'); assert.equal(args.length, 2, 'só GET simples, sem -X/-f/--input');
     const p = args[1];
+    if (p === 'repos/o/r/git/ref/tags/merge-lock') { if (lockFalha) throw new Error('HTTP 502'); if (!lockRef) throw new Error('gh: Not Found (HTTP 404)'); return lockRef; }
+    let t = p.match(/^repos\/o\/r\/git\/tags\/([0-9a-f]{40})$/); if (t) { if (!lockTags[t[1]]) throw new Error('HTTP 404'); return lockTags[t[1]]; }
     if (p === 'repos/o/r/git/ref/heads/main') { if (refFalha) throw new Error('HTTP 502'); return { object: { sha: mains[Math.min(refs++, mains.length - 1)] } }; }
     let m = p.match(/^repos\/o\/r\/pulls\/(\d+)$/);
     if (m) { lidas[m[1]] = (lidas[m[1]] || 0) + 1; const x = prs[m[1]]; if (!x) throw new Error('gh: Not Found (HTTP 404)'); return mudaHead && lidas[m[1]] > 1 ? { ...x, head: { sha: H2 } } : x; }
@@ -238,10 +240,10 @@ const roda = async (argv, cfg) => { const linhas = []; const { api, chamadas } =
   assert.equal(cod, 0, txt);
   assert.ok(linhas[0].includes('→ PODE') && !linhas[0].includes('NÃO'));
   assert.ok(txt.includes(`lido em ${AGORA} (UTC) · main ${M}`));
-  assert.ok(!txt.includes('/merge'), 'sem --mostrar-comando não imprime comando');
+  assert.ok(!/pulls\/\d+\/merge/.test(txt), 'sem --mostrar-comando não imprime comando');
   assert.ok(txt.includes('Comando de merge omitido'));
   assert.ok(chamadas.some((c) => c[1].includes('check-runs?filter=all')));
-  assert.ok(!chamadas.some((c) => /\/merge\b/.test(c[1])), 'nunca chama a rota de merge');
+  assert.ok(!chamadas.some((c) => /\/merge$/.test(c[1])), 'nunca chama a rota de merge');
   assert.equal(chamadas.filter((c) => /pulls\/922$/.test(c[1])).length, 2, 'relê a PR no fim');
   assert.equal(chamadas.filter((c) => /git\/ref\/heads\/main$/.test(c[1])).length, 2, 'relê a main no fim');
 }
@@ -267,7 +269,7 @@ const roda = async (argv, cfg) => { const linhas = []; const { api, chamadas } =
   assert.equal((await roda(['922', '--repo', R], { prs: { 922: pr() }, mudaHead: true })).cod, 1);
   assert.equal((await roda(['922', '--repo', R, '--sha', H2], { prs: { 922: pr() } })).cod, 1);
   const d = await roda(['922', '--repo', R, '--mostrar-comando'], { prs: { 922: pr({ body: 'Depende de #918' }), 918: pr({ number: 918 }) } });
-  assert.equal(d.cod, 1); assert.ok(d.txt.includes('dependência #918: aberta')); assert.ok(!d.txt.includes('/merge'));
+  assert.equal(d.cod, 1); assert.ok(d.txt.includes('dependência #918: aberta')); assert.ok(!/pulls\/\d+\/merge/.test(d.txt));
   // PR integrada: não lê check-runs, compare nem arquivos
   const f = await roda(['904', '--repo', R], { prs: { 904: pr({ number: 904, state: 'closed', merged: true }) } });
   assert.equal(f.cod, 1); assert.ok(!f.chamadas.some((c) => /check-runs|compare|files/.test(c[1])));
@@ -286,7 +288,7 @@ const roda = async (argv, cfg) => { const linhas = []; const { api, chamadas } =
 // REVISÃO HUMANA pela CLI (código 4): caminho crítico; issue aberta como dependência (404 em pulls → issues); sem comando mesmo com a flag
 {
   const c = await roda(['922', '--repo', R, '--mostrar-comando'], { prs: { 922: pr() }, arquivos: [{ filename: 'src/match.js' }, { filename: 'test/match-tests.js' }] });
-  assert.equal(c.cod, 4, c.txt); assert.ok(c.txt.includes('REVISÃO HUMANA NECESSÁRIA')); assert.ok(!c.txt.includes('/merge'));
+  assert.equal(c.cod, 4, c.txt); assert.ok(c.txt.includes('REVISÃO HUMANA NECESSÁRIA')); assert.ok(!/pulls\/\d+\/merge/.test(c.txt));
   const i = await roda(['922', '--repo', R], { prs: { 922: pr({ body: 'Depende de #84 (frete)' }) }, issues: { 84: { number: 84, state: 'open' } } });
   assert.equal(i.cod, 4); assert.ok(i.chamadas.some((x) => x[1] === 'repos/o/r/issues/84'));
   // enforce_admins=false e 0 aprovações aparecem como aviso na CLI
@@ -298,6 +300,46 @@ const roda = async (argv, cfg) => { const linhas = []; const { api, chamadas } =
   const { api, chamadas } = apiFalsa({ prs: {} });
   for (const a of [[], ['x'], ['0'], ['1', '2'], ['1', '--repo', 'o/r; rm -rf /'], ['1', '--sha', 'abc']]) assert.equal(await main(a, { api, log: silencioso, agora }), 2, a.join(' '));
   assert.equal(chamadas.length, 0);
+}
+
+// ---------------------------------------------------------------- lock de merge (só leitura; tools/merge-lock.mjs)
+{
+  const { montarMensagem } = await import('../tools/merge-lock.mjs');
+  const T = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  const dono = (o = {}) => ({ versao: 1, ferramenta: 'tools/merge-lock.mjs', sessao: 'sess-A', pr: 922, sha: H, main: M, adquiridoEm: '2026-10-25T09:50:00.000Z', expiraEm: '2026-10-25T10:20:00.000Z', ttlMin: 30, ...o });
+  const lk = (o) => ({ livre: false, tagSha: T, dono: dono(o) });
+  // função pura
+  assert.equal(avaliar(base()).lock, null, 'sem lock consultado: nada muda');
+  const livre = avaliar(base({ lock: { livre: true } }));
+  assert.equal(livre.estado, ESTADOS.PODE); assert.ok(tem(livre.avisos, /sem lock de merge.*não está em uso/));
+  assert.equal(avaliar(base({ lock: { livre: true }, exigirLock: true })).estado, ESTADOS.NAO_PODE, '--exigir-lock sem lock');
+  const outro = avaliar(base({ lock: lk({ sessao: 'sess-B', pr: 918 }), sessao: 'sess-A' }));
+  assert.equal(outro.estado, ESTADOS.NAO_PODE); assert.ok(tem(outro.motivos, /lock de merge de outro dono — ocupado por sessão sess-B · PR #918.*há 10 min/));
+  assert.equal(avaliar(base({ lock: lk() })).estado, ESTADOS.NAO_PODE, 'sem --sessao, lock alheio não é reconhecido como seu');
+  const meu = avaliar(base({ lock: lk(), sessao: 'sess-A' }));
+  assert.equal(meu.estado, ESTADOS.PODE, JSON.stringify(meu)); assert.ok(tem(meu.avisos, /lock de merge é seu/)); assert.equal(meu.lock.seu, true);
+  assert.equal(avaliar(base({ lock: lk({ sha: H2 }), sessao: 'sess-A' })).estado, ESTADOS.NAO_PODE, 'mesmo sessão, outro head = outro dono');
+  const expOutro = avaliar(base({ lock: lk({ sessao: 'sess-B', expiraEm: '2026-10-25T09:59:00.000Z' }), sessao: 'sess-A' }));
+  assert.equal(expOutro.estado, ESTADOS.REVISAO); assert.ok(tem(expOutro.revisao, /EXPIRADO.*morrido no meio do merge/));
+  assert.equal(avaliar(base({ lock: lk({ expiraEm: '2026-10-25T09:59:00.000Z' }), sessao: 'sess-A' })).estado, ESTADOS.NAO_PODE, 'seu lock expirado');
+  const andou = avaliar(base({ lock: lk({ main: M2 }), sessao: 'sess-A' }));
+  assert.equal(andou.estado, ESTADOS.REVISAO); assert.ok(tem(andou.revisao, /main andou desde a aquisição do seu lock/));
+  assert.equal(avaliar(base({ lock: { livre: false, tagSha: T, dono: null, ilegivel: true, motivo: 'x' } })).estado, ESTADOS.REVISAO);
+  assert.equal(avaliar(base({ lock: null, lockErro: 'HTTP 502' })).estado, ESTADOS.EVIDENCIA);
+  // CLI
+  const tagDe = (d) => ({ [T]: { sha: T, object: { sha: d.main, type: 'commit' }, message: montarMensagem(d) } });
+  const refT = { object: { sha: T, type: 'tag' } };
+  const a = await roda(['922', '--repo', R, '--sessao', 'sess-A'], { prs: { 922: pr() }, lockRef: refT, lockTags: tagDe(dono({ sessao: 'sess-B', pr: 918 })) });
+  assert.equal(a.cod, 1, a.txt); assert.ok(a.txt.includes('lock de merge: ocupado por sessão sess-B')); assert.ok(a.chamadas.every((c) => c.length === 2), 'só GET');
+  const b = await roda(['922', '--repo', R, '--sessao', 'sess-A'], { prs: { 922: pr() }, lockRef: refT, lockTags: tagDe(dono()) });
+  assert.equal(b.cod, 0, b.txt); assert.ok(b.txt.includes('(seu)'));
+  assert.equal((await roda(['922', '--repo', R], { prs: { 922: pr() }, lockFalha: true })).cod, 3, 'lock ilegível → evidência');
+  assert.equal((await roda(['922', '--repo', R, '--exigir-lock'], { prs: { 922: pr() } })).cod, 1);
+  const leve = await roda(['922', '--repo', R], { prs: { 922: pr() }, lockRef: { object: { sha: M, type: 'commit' } } });
+  assert.equal(leve.cod, 4, 'ref leve criada à mão: dono desconhecido → revisão humana');
+  assert.equal(await main(['922', '--sessao', 'a b'], { api: apiFalsa({ prs: {} }).api, log: silencioso, agora }), 2);
+  // arquivo do lock é caminho crítico
+  assert.ok(arquivosCriticos([{ filename: 'tools/merge-lock.mjs' }]).length === 1);
 }
 
 console.log('pode-integrar-tests ok');

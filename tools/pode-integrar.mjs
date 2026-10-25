@@ -21,11 +21,20 @@
 // corpo. PR #N integrada = ok; PR #N aberta = NÃO PODE (integre #N antes ou corrija o corpo); PR #N fechada sem
 // merge ou issue #N aberta = REVISÃO HUMANA; issue #N fechada = ok (aviso); ilegível = EVIDÊNCIA INSUFICIENTE.
 //
+// Lock de merge (refs/tags/merge-lock, proposta em tools/merge-lock.mjs — só leitura aqui): lock de OUTRO dono
+// vigente = NÃO PODE (outra sessão está integrando; a main vai andar — espere, como check rodando); lock de outro dono
+// EXPIRADO ou sem dono legível = REVISÃO HUMANA (sessão pode ter morrido no meio do merge; só humano confere e decide
+// a liberação forçada); seu lock expirado = NÃO PODE; main andou desde a aquisição do seu lock = REVISÃO HUMANA
+// (alguém integrou fora do lock); sem lock = aviso, ou NÃO PODE com --exigir-lock; ilegível = EVIDÊNCIA INSUFICIENTE.
+// Dono = --sessao <id> + esta PR + head atual; sem --sessao nenhum lock é reconhecido como seu.
 // O comando de merge NÃO é impresso por padrão; só com --mostrar-comando e só no estado PODE, com sha fixado e o
 // aviso de que não é autorização.
-// Uso: node tools/pode-integrar.mjs <pr> [--repo dono/repo] [--sha <head esperado>] [--json] [--mostrar-comando]
+// Uso: node tools/pode-integrar.mjs <pr> [--repo dono/repo] [--sha <head esperado>] [--sessao <id>] [--exigir-lock]
+//        [--json] [--mostrar-comando]
 import { execFileSync } from 'node:child_process';
 import { comRetry } from './gh-retry.mjs';
+// Só as funções de LEITURA do lock (tools/merge-lock.mjs, proposta): nada aqui adquire, libera ou escreve.
+import { lerLock, situacao as situacaoLock, descrever as descreverLock, LOCK_REF } from './merge-lock.mjs';
 
 export const REQUIRED = Object.freeze(['test', 'regression', 'golden', 'qa-review']);
 export const BASE = 'main';
@@ -62,6 +71,7 @@ export const CAMINHOS_CRITICOS = Object.freeze([
   { re: /^api\//, motivo: 'API em produção (api/)' },
   { re: /^src\/agents\/release-/, motivo: 'Release Executor Bridge/Governor' },
   { re: /^tools\/pode-integrar\.mjs$/, motivo: 'o próprio verificador de merge' },
+  { re: /^tools\/merge-lock\.mjs$/, motivo: 'lock de merge (tools/merge-lock.mjs)' },
   { re: /^package\.json$|^test\/run-all\.mjs$/, motivo: 'execução da suíte de testes' },
 ]);
 
@@ -166,9 +176,10 @@ export function arquivosCriticos(arquivos) {
 export function avaliar({
   pr, prFinal, checkRuns, compare, protecao, arquivos = null, dependencias = {}, mainSha = null, mainShaFinal = null,
   lidoEm = new Date().toISOString(), falhas = [], shaEsperado = null, repo = '', mostrarComando = false,
+  lock, lockErro = null, sessao = null, exigirLock = false,
 }) {
   const motivos = []; const evidencia = [...falhas]; const revisao = []; const avisos = []; const checks = [];
-  const criticos = []; const deps = [];
+  const criticos = []; const deps = []; let lockSit = null;
   const head = pr?.head?.sha || null;
   const n = pr?.number;
   const fim = () => {
@@ -176,7 +187,7 @@ export function avaliar({
     const pode = estado === ESTADOS.PODE;
     const comando = pode && mostrarComando && /^[0-9a-f]{40}$/.test(head || '')
       ? `gh api -X PUT repos/${repo}/pulls/${n}/merge -f sha=${head} -f merge_method=squash` : null;
-    return { estado, codigo: CODIGOS[estado], pode, lidoEm, mainSha, head, motivos, evidencia, revisao, avisos, checks, criticos, dependencias: deps, comando };
+    return { estado, codigo: CODIGOS[estado], pode, lidoEm, mainSha, head, motivos, evidencia, revisao, avisos, checks, criticos, dependencias: deps, lock: lockSit, comando };
   };
 
   if (!pr || typeof pr !== 'object') { if (!evidencia.length) evidencia.push('PR não lida'); return fim(); }
@@ -259,6 +270,26 @@ export function avaliar({
   }
   for (const m of marcadoresDeRisco(pr)) revisao.push(m);
 
+  // lock de merge (só leitura). undefined = não consultado (uso da função pura sem lock).
+  if (lock === null) evidencia.push(`lock de merge (${LOCK_REF}) não lido${lockErro ? `: ${lockErro}` : ''}`);
+  else if (lock && lock.livre) {
+    lockSit = { livre: true };
+    if (exigirLock) motivos.push(`nenhum lock de merge (${LOCK_REF}) desta sessão: adquira antes (--exigir-lock)`);
+    else avisos.push(`sem lock de merge (${LOCK_REF}); o procedimento de lock é proposta e não está em uso`);
+  } else if (lock) {
+    const quem = sessao && head ? { sessao, pr: n, sha: head } : null;
+    const s = situacaoLock(lock, { agora: lidoEm, mainAtual: mainSha, quem });
+    lockSit = s;
+    const d = descreverLock(s);
+    if (!s.dono) revisao.push(`lock de merge sem dono legível (${s.motivo}): só um humano identifica o dono e decide`);
+    else if (s.seu) {
+      if (s.expirado) motivos.push(`seu lock de merge expirou (${s.dono.expiraEm}): libere e adquira de novo antes de integrar`);
+      else if (s.mainAndou) revisao.push(`a main andou desde a aquisição do seu lock (${curto(s.dono.main)} → ${curto(mainSha)}): alguém integrou fora do lock`);
+      else avisos.push(`lock de merge é seu (expira ${s.dono.expiraEm})`);
+    } else if (s.expirado) revisao.push(`lock de merge de outro dono EXPIRADO — ${d}. A sessão pode ter morrido no meio do merge: humano confere se a PR #${s.dono.pr} foi integrada e decide a liberação forçada`);
+    else motivos.push(`lock de merge de outro dono — ${d}${sessao ? '' : ' (sem --sessao nenhum lock é reconhecido como seu)'}: espere a liberação e rode de novo`);
+  }
+
   for (const { numero, trecho } of dependenciasDeclaradas(pr.body, n)) {
     const d = dependencias?.[numero];
     const linha = { numero, trecho, tipo: d?.tipo ?? null, situacao: 'ilegível' };
@@ -300,16 +331,19 @@ export async function main(argv = process.argv.slice(2), { api = gh, log = conso
   const repo = opt('repo') || process.env.GITHUB_REPOSITORY || 'TonyWatanabe-dev/pokemon-price-hunter';
   const pos = [];
   for (let i = 0; i < argv.length; i++) {
-    if (argv[i] === '--repo' || argv[i] === '--sha') { i++; continue; }
+    if (argv[i] === '--repo' || argv[i] === '--sha' || argv[i] === '--sessao') { i++; continue; }
     if (!argv[i].startsWith('--')) pos.push(argv[i]);
   }
   const n = Number(String(pos[0] ?? '').replace(/^#/, ''));
   const sha = opt('sha');
   const mostrarComando = argv.includes('--mostrar-comando');
-  const uso = 'uso: node tools/pode-integrar.mjs <pr> [--repo dono/repo] [--sha <head>] [--json] [--mostrar-comando]';
+  const exigirLock = argv.includes('--exigir-lock');
+  const sessao = opt('sessao');
+  const uso = 'uso: node tools/pode-integrar.mjs <pr> [--repo dono/repo] [--sha <head>] [--sessao <id>] [--exigir-lock] [--json] [--mostrar-comando]';
   if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { log('uso inválido — repositório inválido'); return CODIGOS.USO; }
   if (!Number.isInteger(n) || n <= 0 || pos.length !== 1) { log(uso); return CODIGOS.USO; }
   if (sha != null && !/^[0-9a-f]{40}$/.test(sha)) { log('uso inválido — --sha precisa ser o SHA completo (40 hex)'); return CODIGOS.USO; }
+  if (argv.includes('--sessao') && !/^[A-Za-z0-9._:\/@-]{3,120}$/.test(sessao || '')) { log('uso inválido — --sessao inválido'); return CODIGOS.USO; }
 
   const falhas = [];
   const ler = async (oque, fn) => { try { return await fn(); } catch (e) { falhas.push(`${oque} não lido(a): ${msgErro(e)}`); return null; } };
@@ -321,11 +355,12 @@ export async function main(argv = process.argv.slice(2), { api = gh, log = conso
   const protecao = await ler('proteção da main', () => api(['api', `repos/${repo}/branches/${BASE}/protection`]));
   const head = pr?.head?.sha;
   const viva = pr?.state === 'open' && pr?.merged === false && /^[0-9a-f]{40}$/.test(head || '');
-  let checkRuns = null; let compare = null; let arquivos = null; const dependencias = {};
+  let checkRuns = null; let compare = null; let arquivos = null; const dependencias = {}; let lock; let lockErro = null;
   if (viva) {
     checkRuns = await ler('check-runs', () => paginado(api, `repos/${repo}/commits/${head}/check-runs?filter=all`, (r) => r?.check_runs));
     compare = await ler('compare com a main', () => api(['api', `repos/${repo}/compare/${BASE}...${head}`]));
     arquivos = await ler('arquivos da PR', () => paginado(api, `repos/${repo}/pulls/${n}/files`, (r) => r, MAX_ARQUIVOS / 100));
+    try { lock = await lerLock(api, repo); } catch (e) { lock = null; lockErro = msgErro(e); }
     for (const { numero } of dependenciasDeclaradas(pr.body, n)) {
       try { dependencias[numero] = { tipo: 'pr', dado: await api(['api', `repos/${repo}/pulls/${numero}`]) }; } catch (e) {
         if (!/HTTP 404/.test(String(e?.message || e))) { dependencias[numero] = null; continue; }
@@ -336,7 +371,7 @@ export async function main(argv = process.argv.slice(2), { api = gh, log = conso
   const prFinal = pr ? await ler(`releitura da PR #${n}`, () => api(['api', `repos/${repo}/pulls/${n}`])) : null;
   const mainShaFinal = pr ? await ler('releitura da main', refMain) : null;
   // `falhas` só entra quando a leitura correspondente é necessária (PR fechada não precisa de check-runs)
-  const res = avaliar({ pr, prFinal, checkRuns, compare, protecao, arquivos, dependencias, mainSha, mainShaFinal, lidoEm, falhas, shaEsperado: sha, repo, mostrarComando });
+  const res = avaliar({ pr, prFinal, checkRuns, compare, protecao, arquivos, dependencias, mainSha, mainShaFinal, lidoEm, falhas, shaEsperado: sha, repo, mostrarComando, lock, lockErro, sessao, exigirLock });
 
   if (argv.includes('--json')) {
     log(JSON.stringify({ pr: n, repo, ...res, aviso: 'resultado vale só no instante da leitura; PODE não é autorização de merge', ...(res.comando ? { avisoComando: AVISO_COMANDO } : {}) }, null, 2));
@@ -346,6 +381,7 @@ export async function main(argv = process.argv.slice(2), { api = gh, log = conso
   log(`  lido em ${lidoEm} (UTC) · main ${mainSha || '?'}`);
   for (const c of res.checks) log(`  ${c.nome.padEnd(11)} ${c.status === 'completed' ? c.conclusion : c.status || 'ausente'}${c.id ? ` (rodada ${c.id}; ${c.rodadas} no SHA)` : ''}`);
   for (const d of res.dependencias) log(`  dependência #${d.numero}: ${d.situacao}`);
+  if (res.lock) log(`  lock de merge: ${descreverLock(res.lock)}${res.lock.seu ? ' (seu)' : ''}`);
   for (const m of res.motivos) log(`  ✗ ${m}`);
   for (const m of res.evidencia) log(`  ? ${m}`);
   for (const m of res.revisao) log(`  ⚑ ${m}`);
