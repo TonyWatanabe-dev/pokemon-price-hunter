@@ -44,6 +44,11 @@ function fitDesc(required, ...optional) {
   return d.length > DESC_MAX ? d.slice(0, DESC_MAX - 1).replace(/\s+\S*$/, '') + '…' : d;
 }
 const day = (iso) => (iso && !Number.isNaN(Date.parse(iso)) ? new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '');
+// Imagem de prévia (og:image e JSON-LD) sempre em https: a mesma troca que o site faz ao mostrar a foto (index.html,
+// photo(): http:// → https://). Várias lojas (CDN da Nuvemshop) gravam a foto em http, e buscador/WhatsApp recusam ou avisam.
+export const httpsImg = (u) => String(u || '').replace(/^http:\/\//i, 'https://');
+// "1 produto", "2 produtos" (a coleção com um produto só dizia "1 produtos").
+export const nProd = (n) => `${n} ${n === 1 ? 'produto' : 'produtos'}`;
 const hostOf = (u) => { try { return new URL(u).host.replace(/^www\./, ''); } catch { return ''; } };
 // Oferta individual no JSON-LD (dentro do AggregateOffer): preço, loja e disponibilidade; nunca declara frete (#84).
 const ldOffer = (o) => ({ '@type': 'Offer', price: o.total, priceCurrency: 'BRL', availability: 'https://schema.org/InStock', ...(o.url ? { url: o.url } : {}), seller: { '@type': 'Organization', name: o.storeName } });
@@ -127,7 +132,7 @@ function build(t, slug, s, opp = null, lojas = []) {
       ? fitDesc(`${name} (Pokémon TCG lacrado): a partir de ${brl(lo.total)}${pix(lo)} (${shipTag(lo)}) em ${lo.storeName}.`,
         p.copagConfirmed && lo.discount > 0 ? ` ${pct(lo.discount)} abaixo do preço sugerido Copag.` : '', ` Compare ${nLojas} com estoque.`)
       : fitDesc(`${name} (Pokémon TCG lacrado): preço sugerido Copag${p.copagConfirmed ? ` ${brl(p.msrp)}` : ''}, histórico e lojas que vendem no Brasil.`);
-    const img = b0?.image || p.image || `${SITE}/og.jpg`;
+    const img = httpsImg(b0?.image || p.image) || `${SITE}/og.jpg`;
     const ean = [p.ean, ...offers.map((o) => o.ean)].find((x) => /^\d{13}$/.test(String(x || '')));
     // Último item do caminho = o produto (formato + coleção), não o nome do formato de novo.
     const trail = [['Início', '/'], ...(col ? [[col.name, `/colecao/${colSlug(col)}`]] : []), ...(ty ? [[ty.label, `/tipo/${typeSlug(ty)}`]] : []), [name, url]];
@@ -150,10 +155,10 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const kinds = [...new Set(list.map((p) => p.typeLabel))].slice(0, 3).join(', ');
     const url = `/colecao/${colSlug(c)}`;
     const title = `${c.name} Pokémon TCG: preços e promoções | ${NAME}`;
-    const desc = fitDesc(`${c.name} Pokémon TCG lacrado: ${list.length} produtos em lojas do Brasil comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}.`, kinds ? ` Formatos: ${kinds}.` : '', ' Estoque conferido a cada 15 min.');
+    const desc = fitDesc(`${c.name} Pokémon TCG lacrado: ${nProd(list.length)} em lojas do Brasil comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}.`, kinds ? ` Formatos: ${kinds}.` : '', ' Estoque conferido a cada 15 min.');
     const trail = [['Início', '/'], [c.name, url]];
     const json = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${c.name}: preços de Pokémon TCG lacrado`, url: SITE + url, mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 30).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/produto/${of[p.id]}`, name: `${label(p)} ${c.name}` })) } }, crumbs(trail)];
-    const body = `${bc(trail)}<h1>${esc(c.name)}: preços de Pokémon TCG lacrado</h1><p>${list.length} produtos da coleção ${esc(c.name)} (${esc(c.series || 'Pokémon TCG')}) em lojas brasileiras, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><ul>${list.map((p) => prodRow(p, best[p.id], of, best[p.id] && best[p.id].discount > 0 && p.copagConfirmed ? ` (${pct(best[p.id].discount)} abaixo)` : '')).join('')}</ul>${navLinks}`;
+    const body = `${bc(trail)}<h1>${esc(c.name)}: preços de Pokémon TCG lacrado</h1><p>${nProd(list.length)} da coleção ${esc(c.name)} (${esc(c.series || 'Pokémon TCG')}) em lojas brasileiras, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><ul>${list.map((p) => prodRow(p, best[p.id], of, best[p.id] && best[p.id].discount > 0 && p.copagConfirmed ? ` (${pct(best[p.id].discount)} abaixo)` : '')).join('')}</ul>${navLinks}`;
     return { title, desc, url, json, body };
   }
   // Lote E: /tipo/blister reúne os formatos de blister (unitário, duplo, triplo, quádruplo) numa página só,
@@ -166,10 +171,10 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const low = list.map((p) => best[p.id]?.total).filter(Boolean).sort((a, b) => a - b)[0];
     const url = '/tipo/blister';
     const title = `Blister Pokémon TCG: preços e onde comprar mais barato | ${NAME}`;
-    const desc = fitDesc(`Blister Pokémon TCG lacrado (unitário, duplo, triplo e quádruplo): ${list.length} produtos em lojas do Brasil comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}.`, ' Estoque conferido a cada 15 min.');
+    const desc = fitDesc(`Blister Pokémon TCG lacrado (unitário, duplo, triplo e quádruplo): ${nProd(list.length)} em lojas do Brasil comparados com o preço sugerido Copag${low ? `, a partir de ${brl(low)}` : ''}.`, ' Estoque conferido a cada 15 min.');
     const trail = [['Início', '/'], ['Blister', url]];
     const json = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Blister Pokémon TCG: preços', url: SITE + url, mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 30).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/produto/${of[p.id]}`, name: `${label(p)} ${p.collectionName}` })) } }, crumbs(trail)];
-    const body = `${bc(trail)}<h1>Blister Pokémon TCG: preços e onde comprar mais barato</h1><p>${list.length} produtos em blister (${subs.map((x) => x.label.toLowerCase()).join(', ')}), de todas as coleções, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><h2>Por tipo de blister</h2><ul class="ssr-links">${subs.map((x) => `<li><a href="/tipo/${typeSlug(x)}">${esc(x.label)}</a> (${list.filter((p) => p.type === x.id).length})</li>`).join('')}</ul><h2>Todos os blisters</h2><ul>${list.map((p) => prodRow(p, best[p.id], of)).join('')}</ul>${navLinks}`;
+    const body = `${bc(trail)}<h1>Blister Pokémon TCG: preços e onde comprar mais barato</h1><p>${nProd(list.length)} em blister (${subs.map((x) => x.label.toLowerCase()).join(', ')}), de todas as coleções, comparados com o preço sugerido da Copag. Só conta oferta com estoque.</p><h2>Por tipo de blister</h2><ul class="ssr-links">${subs.map((x) => `<li><a href="/tipo/${typeSlug(x)}">${esc(x.label)}</a> (${list.filter((p) => p.type === x.id).length})</li>`).join('')}</ul><h2>Todos os blisters</h2><ul>${list.map((p) => prodRow(p, best[p.id], of)).join('')}</ul>${navLinks}`;
     return { title, desc, url, json, body };
   }
   if (t === 'tipo') {
@@ -177,10 +182,10 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
     const list = prods.filter((p) => p.type === ty.id).sort(sortP);
     const url = `/tipo/${typeSlug(ty)}`;
     const title = `Preço de ${ty.label} Pokémon TCG no Brasil: todas as coleções | ${NAME}`;
-    const desc = fitDesc(`${ty.label} Pokémon TCG lacrado: preço de ${list.length} produtos, de todas as coleções, em lojas do Brasil comparado com o preço sugerido Copag.`, ' Estoque conferido a cada 15 min.');
+    const desc = fitDesc(`${ty.label} Pokémon TCG lacrado: preço de ${nProd(list.length)}, de todas as coleções, em lojas do Brasil comparado com o preço sugerido Copag.`, ' Estoque conferido a cada 15 min.');
     const trail = [['Início', '/'], [ty.label, url]];
     const json = [{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${ty.label} Pokémon TCG: preços`, url: SITE + url, mainEntity: { '@type': 'ItemList', itemListElement: list.slice(0, 30).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${SITE}/produto/${of[p.id]}`, name: `${label(p)} ${p.collectionName}` })) } }, crumbs(trail)];
-    const body = `${bc(trail)}<h1>${esc(ty.label)} Pokémon TCG: preços no Brasil</h1><p>${list.length} produtos neste formato, de todas as coleções, comparados com o preço sugerido da Copag.</p><ul>${list.map((p) => prodRow(p, best[p.id], of)).join('')}</ul>${navLinks}`;
+    const body = `${bc(trail)}<h1>${esc(ty.label)} Pokémon TCG: preços no Brasil</h1><p>${nProd(list.length)} neste formato, de todas as coleções, comparados com o preço sugerido da Copag.</p><ul>${list.map((p) => prodRow(p, best[p.id], of)).join('')}</ul>${navLinks}`;
     return { title, desc, url, json, body };
   }
   // Descrições de até 160 caracteres (o que o Google mostra), com as palavras-chave: Pokémon TCG, preço sugerido Copag, formato, coleção.
