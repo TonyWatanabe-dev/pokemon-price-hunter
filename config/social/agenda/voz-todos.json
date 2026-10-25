@@ -1,325 +1,6 @@
 {
  "descricao": "Reenvio com a voz do dono mantida (25/10): voz separada do áudio original + uma trilha nossa.",
- "cancelar": [
-  {
-   "quando": "2026-10-26T12:00",
-   "plataforma": "tiktok",
-   "trecho": "Segundo pack do Combo ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-26T12:00",
-   "plataforma": "youtube",
-   "trecho": "R$ 114,99 no Desafio E",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-26T12:00",
-   "plataforma": "youtube",
-   "trecho": "Segundo pack do Combo ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-26T19:00",
-   "plataforma": "instagram",
-   "trecho": "Um pack de R$ 40 do Co",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-26T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Um pack de R$ 40 do Co",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-26T19:00",
-   "plataforma": "youtube",
-   "trecho": "Um pack de R$ 40 do Co",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-27T12:00",
-   "plataforma": "tiktok",
-   "trecho": "nem todo booster é hit",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-27T12:00",
-   "plataforma": "youtube",
-   "trecho": "Nem todo booster é hit",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-27T19:00",
-   "plataforma": "instagram",
-   "trecho": "Último pack do Combo d",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-27T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Último pack do Combo d",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-27T19:00",
-   "plataforma": "youtube",
-   "trecho": "Último pack do Combo d",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-28T12:00",
-   "plataforma": "tiktok",
-   "trecho": "abri 8 boosters de R$ ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-28T12:00",
-   "plataforma": "youtube",
-   "trecho": "8 packs do Desafio Est",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-28T12:00",
-   "plataforma": "youtube",
-   "trecho": "Booster de R$ 45,27 da",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-28T19:00",
-   "plataforma": "instagram",
-   "trecho": "Abri a Coleção Mega Fo",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-28T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Abri a Coleção Mega Fo",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-28T19:00",
-   "plataforma": "youtube",
-   "trecho": "Abri a Coleção Mega Fo",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-29T19:00",
-   "plataforma": "instagram",
-   "trecho": "Pack de Caos Ascendent",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-29T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Pack de Caos Ascendent",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-29T19:00",
-   "plataforma": "youtube",
-   "trecho": "Pack de Caos Ascendent",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-30T12:00",
-   "plataforma": "tiktok",
-   "trecho": "unboxing baralho batal",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-30T12:00",
-   "plataforma": "youtube",
-   "trecho": "Unboxing do Baralho Ba",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-30T19:00",
-   "plataforma": "instagram",
-   "trecho": "Quinto pack da box Meg",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-30T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Quinto pack da box Meg",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-30T19:00",
-   "plataforma": "youtube",
-   "trecho": "Quinto pack da box Meg",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-31T19:00",
-   "plataforma": "instagram",
-   "trecho": "Último pack da box Meg",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-31T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Último pack da box Meg",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-10-31T19:00",
-   "plataforma": "youtube",
-   "trecho": "Último pack da box Meg",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-01T11:00",
-   "plataforma": "instagram",
-   "trecho": "Segundo pack do Combo ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-01T18:00",
-   "plataforma": "instagram",
-   "trecho": "ETB da Celebração de 3",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-01T18:00",
-   "plataforma": "tiktok",
-   "trecho": "ETB 30 anos por R$ 519",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-01T18:00",
-   "plataforma": "youtube",
-   "trecho": "Abri a Coleção Treinad",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-03T19:00",
-   "plataforma": "instagram",
-   "trecho": "Booster da Celebração ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-03T19:00",
-   "plataforma": "tiktok",
-   "trecho": "booster de R$ 47. vale",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-03T19:00",
-   "plataforma": "youtube",
-   "trecho": "Booster de R$ 60,89 da",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-04T19:00",
-   "plataforma": "instagram",
-   "trecho": "Desafio Estratégico de",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-04T19:00",
-   "plataforma": "tiktok",
-   "trecho": "será que agora vem?",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-04T19:00",
-   "plataforma": "youtube",
-   "trecho": "Desafio Estratégico de",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-07T11:00",
-   "plataforma": "instagram",
-   "trecho": "Blister Duplo da Celeb",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-07T11:00",
-   "plataforma": "tiktok",
-   "trecho": "blister de R$ 69. vale",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-07T11:00",
-   "plataforma": "youtube",
-   "trecho": "Blister da Celebração ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-08T11:00",
-   "plataforma": "instagram",
-   "trecho": "Nem todo booster é hit",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-08T19:00",
-   "plataforma": "instagram",
-   "trecho": "8 boosters do Desafio ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-09T19:00",
-   "plataforma": "instagram",
-   "trecho": "Mais um Desafio Estrat",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-09T19:00",
-   "plataforma": "tiktok",
-   "trecho": "a essa altura é questã",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-09T19:00",
-   "plataforma": "youtube",
-   "trecho": "Mais um Desafio Estrat",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-10T19:00",
-   "plataforma": "instagram",
-   "trecho": "Último pack do Desafio",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-10T19:00",
-   "plataforma": "tiktok",
-   "trecho": "último pack da série. ",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-10T19:00",
-   "plataforma": "youtube",
-   "trecho": "Último pack do Desafio",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-11T19:00",
-   "plataforma": "instagram",
-   "trecho": "Abri 2 Blisters Duplos",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-11T19:00",
-   "plataforma": "tiktok",
-   "trecho": "2 blisters duplos da 3",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-11T19:00",
-   "plataforma": "youtube",
-   "trecho": "Abri 2 Blisters Duplos",
-   "motivo": "áudio com a voz do dono"
-  },
-  {
-   "quando": "2026-11-15T11:00",
-   "plataforma": "instagram",
-   "trecho": "Unboxing do Baralho Ba",
-   "motivo": "áudio com a voz do dono"
-  }
- ],
+ "cancelar": [],
  "itens": [
   {
    "id": "m-u-hit-pikachu-tt-07-voz",
@@ -1034,6 +715,326 @@
    "capaMs": 22000,
    "legenda": "Unboxing do Baralho Batalha de Liga Miraidon ex ⚡ Deck pronto pra jogar: o que vem dentro?\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #miraidon #batalhadeliga #unboxing",
    "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1aEcSNI1.mp4"
+  }
+ ],
+ "cancelar_feito": [
+  {
+   "quando": "2026-10-26T12:00",
+   "plataforma": "tiktok",
+   "trecho": "Segundo pack do Combo ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-26T12:00",
+   "plataforma": "youtube",
+   "trecho": "R$ 114,99 no Desafio E",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-26T12:00",
+   "plataforma": "youtube",
+   "trecho": "Segundo pack do Combo ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-26T19:00",
+   "plataforma": "instagram",
+   "trecho": "Um pack de R$ 40 do Co",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-26T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Um pack de R$ 40 do Co",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-26T19:00",
+   "plataforma": "youtube",
+   "trecho": "Um pack de R$ 40 do Co",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-27T12:00",
+   "plataforma": "tiktok",
+   "trecho": "nem todo booster é hit",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-27T12:00",
+   "plataforma": "youtube",
+   "trecho": "Nem todo booster é hit",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-27T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack do Combo d",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-27T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Último pack do Combo d",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-27T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack do Combo d",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-28T12:00",
+   "plataforma": "tiktok",
+   "trecho": "abri 8 boosters de R$ ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-28T12:00",
+   "plataforma": "youtube",
+   "trecho": "8 packs do Desafio Est",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-28T12:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 45,27 da",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-28T19:00",
+   "plataforma": "instagram",
+   "trecho": "Abri a Coleção Mega Fo",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-28T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Abri a Coleção Mega Fo",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-28T19:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção Mega Fo",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-29T19:00",
+   "plataforma": "instagram",
+   "trecho": "Pack de Caos Ascendent",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-29T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Pack de Caos Ascendent",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-29T19:00",
+   "plataforma": "youtube",
+   "trecho": "Pack de Caos Ascendent",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-30T12:00",
+   "plataforma": "tiktok",
+   "trecho": "unboxing baralho batal",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-30T12:00",
+   "plataforma": "youtube",
+   "trecho": "Unboxing do Baralho Ba",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "instagram",
+   "trecho": "Quinto pack da box Meg",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Quinto pack da box Meg",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "youtube",
+   "trecho": "Quinto pack da box Meg",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack da box Meg",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Último pack da box Meg",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack da box Meg",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-01T11:00",
+   "plataforma": "instagram",
+   "trecho": "Segundo pack do Combo ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "instagram",
+   "trecho": "ETB da Celebração de 3",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "tiktok",
+   "trecho": "ETB 30 anos por R$ 519",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção Treinad",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "instagram",
+   "trecho": "Booster da Celebração ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "tiktok",
+   "trecho": "booster de R$ 47. vale",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 60,89 da",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "instagram",
+   "trecho": "Desafio Estratégico de",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "tiktok",
+   "trecho": "será que agora vem?",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "youtube",
+   "trecho": "Desafio Estratégico de",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "instagram",
+   "trecho": "Blister Duplo da Celeb",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "tiktok",
+   "trecho": "blister de R$ 69. vale",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "youtube",
+   "trecho": "Blister da Celebração ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-08T11:00",
+   "plataforma": "instagram",
+   "trecho": "Nem todo booster é hit",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-08T19:00",
+   "plataforma": "instagram",
+   "trecho": "8 boosters do Desafio ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "instagram",
+   "trecho": "Mais um Desafio Estrat",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "tiktok",
+   "trecho": "a essa altura é questã",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "youtube",
+   "trecho": "Mais um Desafio Estrat",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack do Desafio",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "tiktok",
+   "trecho": "último pack da série. ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack do Desafio",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "instagram",
+   "trecho": "Abri 2 Blisters Duplos",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "tiktok",
+   "trecho": "2 blisters duplos da 3",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "youtube",
+   "trecho": "Abri 2 Blisters Duplos",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-11-15T11:00",
+   "plataforma": "instagram",
+   "trecho": "Unboxing do Baralho Ba",
+   "motivo": "áudio com a voz do dono"
   }
  ]
 }
