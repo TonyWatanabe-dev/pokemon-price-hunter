@@ -1,0 +1,116 @@
+{
+ "descricao": "Reenvio com a voz do dono mantida (25/10): voz separada do áudio original + uma trilha nossa.",
+ "cancelar": [
+  {
+   "quando": "2026-10-25T12:00",
+   "plataforma": "youtube",
+   "trecho": "Gastei R$ 766,25 em pr",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "instagram",
+   "trecho": "Booster da Celebração ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "tiktok",
+   "trecho": "hit ou brick? booster ",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-25T18:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 41,23 da",
+   "motivo": "áudio com a voz do dono"
+  },
+  {
+   "quando": "2026-10-25T15:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção com Pôs",
+   "motivo": "áudio com a voz do dono"
+  }
+ ],
+ "itens": [
+  {
+   "id": "m-v-10-18-30a-deulucro-yt-03-voz",
+   "quando": "2026-10-25T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Gastei R$ 766 em Pokémon 30 Anos: deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Gastei R$ 766,25 em produtos da Celebração de 30 Anos. Somei o valor de cada carta que saiu. Deu lucro?\n\nO placar sobe a cada hit. Chuta antes de ver o final 👇\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1Qogr9IS.mp4"
+  },
+  {
+   "id": "m-v-10-25-30a-hit-moltres-ig-site-q-04-voz",
+   "quando": "2026-10-25T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 11000,
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_moltres.mp4",
+   "legenda": "Booster da Celebração de 30 Anos no menor preço que o site já registrou: R$ 47,40. Hit ou brick? 🔥\n\nMoltres, Zapdos ou Articuno: qual é o seu? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster"
+  },
+  {
+   "id": "m-v-10-25-30a-hit-moltres-tt-site-q-05-voz",
+   "quando": "2026-10-25T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_30A_hit_moltres.mp4",
+   "legenda": "hit ou brick? booster de R$ 47 🔥\n\nMoltres, Zapdos ou Articuno: qual é o seu? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #pokemon30anos #packopening #fyp",
+   "capaMs": 11000
+  },
+  {
+   "id": "m-v-10-25-30a-hit-moltres-yt-06-voz",
+   "quando": "2026-10-25T18:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Booster de R$ 41 da 30 Anos: hit ou brick?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Booster de R$ 41,23 da Celebração de 30 Anos. Hit ou brick? 🔥\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1yMcrChx.mp4"
+  },
+  {
+   "id": "m-poster30-yt-repost-voz",
+   "quando": "2026-10-25T15:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Coleção com Pôster 30 Anos: deu lucro?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "pokemon 30 anos",
+    "celebracao 30 anos"
+   ],
+   "legenda": "Abri a Coleção com Pôster da Celebração de 30 Anos. Paguei R$ 135,80. O placar tá no topo da tela, acompanha até o fim 👀\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_poster30.mp4"
+  }
+ ]
+}
