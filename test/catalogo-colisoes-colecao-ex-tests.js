@@ -125,8 +125,10 @@ t('4. duas caixas no mesmo anúncio ("&") não caem na caixa de um Pokémon só'
   });
 });
 
-t('5. "Charizard ex Brilhante" sem coleção não cai na "Charizard ex em Dobro"', () => {
-  assert.equal(id('Pokémon Box Coleção Charizard ex Brilhante', 'https://tiocharles.com.br/produtos/pokemon-box-colecao-charizard-ex-brilhante/'), null);
+t('5. "Charizard ex Brilhante" sem coleção não cai na "Charizard ex em Dobro" (vai para a caixa sv4_5)', () => {
+  // T5-C/E: a v2 esperava null (sem produto, falso negativo). A caixa tem produto: os 7 títulos com coleção e "Charizard ex
+  // Brilhante" do ramo data estão em sv4_5-colecao_ex-charizard. Associação anterior e nova: matching-v3-charizard-brilhante-tests.
+  assert.equal(id('Pokémon Box Coleção Charizard ex Brilhante', 'https://tiocharles.com.br/produtos/pokemon-box-colecao-charizard-ex-brilhante/'), 'sv4_5-colecao_ex-charizard');
   fica({
     'Pokémon Box Coleção Charizard ex Em Dobro': 'avulsos-colecao_ex-charizard',
     'Pokemon Box - Coleção Charizard Ex em Dobro': 'avulsos-colecao_ex-charizard',

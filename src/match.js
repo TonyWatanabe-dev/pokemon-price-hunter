@@ -380,6 +380,8 @@ function herdaColecao(n, variant) {
   if (LENDAS_IMPLACAVEIS.test(n)) return IMPLACAVEIS_HERDA.has(variant);
   return true;
 }
+const BRILHANTE_COL = 'sv4_5';
+const BRILHANTE_SV4_5 = new Set(['charizard']);
 const semAcento = (s = '') => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 // Duas caixas num anúncio só, ligadas por "&", "+" ou "/" (T5-C). Os símbolos somem na normalização: lê o título original.
 // - "&": "<A> ex & <B>" ou "<A> & <B> ex" ("Greninja & Kingdra Ex", "Mega Lucario Ex & Mega Gardevoir").
@@ -421,9 +423,17 @@ export function matchProduct(listing, catalog) {
   const c35880 = caixa35880(p, p.normalized, catalog); if (c35880) return c35880;
   if (!p.collection && p.variant && AVULSO_TYPES.has(p.type)) {
     const n = p.normalized;
-    // "Charizard ex Brilhante" é a caixa da Destinos de Paldea (sv4_5), não a "Charizard ex em Dobro": sem a coleção no título,
-    // a variante sozinha juntava as duas em avulsos-colecao_ex-charizard (25/10/2026). Sem coleção, sem produto.
-    if (/\bex brilhante\b/.test(n)) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
+    // "<Pokémon> ex Brilhante" é a linha de caixas da Destinos de Paldea (sv4_5): sem a coleção no título, "Charizard ex
+    // Brilhante" juntava com a "Charizard ex em Dobro" em avulsos-colecao_ex-charizard (base) e a v2 a deixava sem produto.
+    // T5-C: vai para a caixa sv4_5 quando a variante conhecida já é sv4_5 (Trilho Férreo, Presa Grande) ou está em
+    // BRILHANTE_SV4_5 (Charizard: variante ambígua sv4_5/sv9; os 7 títulos com coleção e "Charizard ex Brilhante" do ramo data
+    // estão todos em sv4_5-colecao_ex-charizard). Outro Pokémon "ex Brilhante" sem coleção: sem produto, para revisão.
+    if (p.type === 'colecao_ex' && /\bex brilhante\b/.test(n)) {
+      const col = catalog?.variantes?.[`colecao_ex|${p.variant}`] === BRILHANTE_COL || BRILHANTE_SV4_5.has(p.variant) ? BRILHANTE_COL : null;
+      if (!col || p.lang) return { productId: null, confidence: 0, parsed: p, why: ['coleção não identificada'] };
+      const prod = describeProduct(catalog, col, p.type, p.boosters, p.variant, null);
+      return { productId: prod.id, product: prod, confidence: 0.7, parsed: p, why: [], via: 'brilhante-sv4_5' };
+    }
     // "Lendas de Paldea" (Koraidon ex / Miraidon ex, Copag) é outra caixa, não a da "Lendas Implacáveis": não herda a coleção
     // de catalog.variantes (25/10/2026: 3 Koraidon Paldea caíam em sv10-colecao_ex-koraidon). Fica no avulso com a mesma
     // variante de sempre, então avulsos-colecao_ex-miraidon (que já é a Paldea) não muda de id nem perde histórico.
