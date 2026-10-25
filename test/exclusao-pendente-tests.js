@@ -375,6 +375,38 @@ await t('conta excluída com o código real do SDK (user-token-expired): fim, ma
   assert.equal(gates, 0, 'não retoma ação pendente com a sessão encerrada');
 });
 
+// T5-B: no emulador do Auth (test/exclusao-emulador-tests.mjs, E1/E2/E11) o deleteUser que falha com conta desativada
+// ou token revogado ENCERRA a sessão no próprio SDK antes de o erro chegar à página (onUser(null) roda no meio).
+await t('falha parcial com sessão encerrada pelo SDK no meio (user-token-expired/user-disabled): nunca "excluída", nada gravado, novo login na mesma página volta ao pendente', async () => {
+  for (const code of ['auth/user-token-expired', 'auth/user-disabled']) {
+    const W = world(); const A = tab(W); await A.login(); W.calls.length = 0;
+    A.mctx.deleteUser = async () => { W.calls.push('deleteUser'); for (const o of W.tabs) { o.auth.currentUser = null; await o.ctx.onUser(null); } throw err(code); };
+    await del(A, 'pw'); await W.settle();
+    assert.deepEqual(W.calls, ['reauthCred:pw', 'deleteDoc', 'deleteUser'], code);
+    assert.equal(W.ls.get('ph:del:u1'), 'pendente'); assert.equal(W.docs.has('users/u1'), false); assert.equal(A.ctx.ACC.user, null);
+    assert.ok(!A.toasts.some((m) => /excluída|excluídos/.test(m)), `${code}: nunca diz que a conta foi excluída`);
+    assert.match(ultima(A), /Seus dados foram apagados, mas a conta ainda não\. Confirme para concluir/);
+    // mensagem do painel hoje: genérica com o código (ver frentes/T5-B.md: proposta de texto "entre de novo")
+    assert.ok(A.ctx.ACC.del?.err?.includes(`código: ${code}`), `${code}: ${A.ctx.ACC.del?.err}`);
+    A.auth.currentUser = W.user; await A.login(); await W.settle();
+    assert.equal(A.ctx.ACC.del?.why, 'pendente', `${code}: novo login sem recarregar mostra o pendente`); assert.equal(A.ctx.ACC.del.apagados, true);
+    assert.match(painel(A), /já foram apagados; falta excluir o login/);
+    assert.ok(!W.calls.some((c) => /setDoc|updateDoc|tx\.set/.test(c)), `${code}: nada recriado`); assert.equal(W.docs.has('users/u1'), false);
+  }
+});
+
+await t('mensagens quando a exclusão não termina: nunca vazias, nunca "excluída", sempre com próximo passo; antes de apagar diz "Nada foi excluído" ou pede a senha', async () => {
+  const passo = /tente de novo|entre de novo|digite sua senha|libere|espere|confirme|senha incorretos/i;
+  for (const [onde, code] of [['reauth', 'auth/network-request-failed'], ['reauth', 'auth/too-many-requests'], ['reauth', 'auth/invalid-credential'], ['deleteUser', 'auth/network-request-failed'], ['deleteUser', 'auth/requires-recent-login'], ['deleteUser', 'auth/internal-error'], ['deleteUser', 'auth/user-token-expired']]) {
+    const W = world(); const A = tab(W); await A.login(); W.fail[onde] = [code]; await del(A, 'pw'); await W.settle();
+    const msgs = [...A.toasts, A.ctx.ACC.del?.err].filter((m) => m !== undefined);
+    assert.ok(msgs.length && msgs.every((m) => m && !/excluída|excluídos/.test(m)), `${onde}/${code}: ${msgs.join(' | ')}`);
+    assert.ok(msgs.some((m) => passo.test(m)), `${onde}/${code} sem próximo passo: ${msgs.join(' | ')}`);
+    if (onde === 'reauth') { assert.ok(W.docs.has('users/u1'), 'nada apagado'); assert.equal(W.ls.has('ph:del:u1'), false); assert.equal(A.ctx.ACC.del, null); }
+    else { assert.equal(A.ctx.ACC.del?.why, 'pendente'); assert.equal(W.ls.get('ph:del:u1'), 'pendente'); }
+  }
+});
+
 // ---------- fonte ≡ bundle: pub e save ----------
 await t('bundle account.js: pub e save idênticos à fonte (mesmas saídas e mesmas chamadas)', async () => {
   const exp = (name) => bundle.match(new RegExp(`export\\{[^}]*?([\\w$]+) as ${name}[,}]`))?.[1];

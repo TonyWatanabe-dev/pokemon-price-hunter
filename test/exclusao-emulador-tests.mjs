@@ -1,6 +1,6 @@
 // Exclusão de conta contra os EMULADORES do Firebase (Auth + Firestore), sem projeto real e sem rede de produção.
-// Fica FORA do `npm test` (o executor só descobre test/*-tests.js) e se pula sozinho sem emulador, como
-// firebase/test/regras-emulador.mjs. Roda o código de tools/account.src.js (a mesma fonte do account.js; fonte ≡ bundle
+// O `npm test` (test/run-all.mjs) descobre este arquivo, mas sem emulador ele só imprime "pulado" e sai 0 (nada é
+// baixado nem executado contra rede). Roda o código de tools/account.src.js (a mesma fonte do account.js; fonte ≡ bundle
 // em test/exclusao-modulo-tests.js) com o SDK firebase@12.19.0 apontado para os emuladores.
 // Uso (projeto demo-, versões do workflow firestore-regras.yml; FB_DIR = pasta com node_modules de firebase-tools e firebase):
 //   cd <pasta com firebase.json declarando auth e firestore> && "$FB_DIR/node_modules/.bin/firebase" emulators:exec \
@@ -19,6 +19,9 @@ const FS = process.env.FIRESTORE_EMULATOR_HOST;
 const PID = process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'demo-tcgph';
 if (!AUTH) { console.log('exclusao-emulador: pulado (sem FIREBASE_AUTH_EMULATOR_HOST; rode dentro de `firebase emulators:exec --only auth,firestore`)'); process.exit(0); }
 assert.match(PID, /^demo-/, 'só projeto demo- (nada fala com o projeto real)');
+// Falha de rede de verdade numa chamada escolhida (o SDK do Auth guarda o fetch global ao carregar: o desvio vem antes).
+const fetchReal = globalThis.fetch; let falharRede = null;
+globalThis.fetch = (u, o) => { if (falharRede?.(String(u))) { falharRede = null; return Promise.reject(new TypeError('fetch failed')); } return fetchReal(u, o); };
 const req = createRequire(path.join(process.env.FB_DIR || process.cwd(), 'package.json'));
 const APP = req('firebase/app'); const A = req('firebase/auth'); const L = req('firebase/firestore/lite');
 const ler = (p) => fs.readFileSync(new URL(p, import.meta.url), 'utf8');
@@ -171,6 +174,70 @@ await caso('E6 reabrir a página depois da exclusão concluída noutro aparelho:
   // controle: conta que existe → a sessão volta e a marca fica
   const n2 = navegador(); const m2 = n2.aba(); const c2 = await conta(m2); n2.ls.set(`ph:del:${c2.uid}`, 'pendente');
   const u2 = await primeiroEstado(n2.aba()); assert.equal(u2?.uid, c2.uid); assert.equal(n2.ls.get(`ph:del:${c2.uid}`), 'pendente');
+});
+
+// ---------- T5-B: caminho feliz, rede, recarga, "Continuar usando", sessão, repetição ----------
+await caso(`E7 exclusão bem-sucedida (${fundo}): conta e documento somem, marca e vínculo do Telegram limpos, sessão encerrada; repetir não faz nada`, null, async () => {
+  const nav = navegador(); const m = nav.aba(); const c = await conta(m); await m.continuar('Ana'); await m.save({ favorites: ['p1'] }); nav.ss.set(`ph:tg:${c.uid}`, 'x');
+  assert.equal(await m.excluir(PW), true);
+  assert.equal(await existe(c.uid), false); assert.equal(await docServidor(c.uid), null);
+  assert.equal(nav.ls.has(`ph:del:${c.uid}`), false); assert.equal(nav.ss.has(`ph:tg:${c.uid}`), false); assert.equal(m.auth.currentUser, null);
+  assert.equal(await m.excluir(PW), undefined, 'sem usuário: undefined (a página não repete "conta excluída")');
+  assert.equal(await primeiroEstado(nav.aba()), null, 'reabrir: sem sessão');
+});
+
+await caso(`E8 rede cai no deleteUser (sessão mantida; ${fundo}) → pendente; recarga mantém o pendente; outro aparelho não recria; retomar conclui`, null, async () => {
+  const nav = navegador(); const m = nav.aba(); const c = await conta(m); await m.continuar('Ana'); await m.save({ favorites: ['p1'] });
+  const outro = navegador().aba(); await outro.emailIn(c.email, PW);   // aparelho com a página aberta e dados antigos
+  G.aposDeleteDoc = () => { falharRede = (u) => u.includes('accounts:delete'); };
+  let e; try { await m.excluir(PW); } catch (x) { e = x; }
+  assert.equal(e?.code, 'auth/network-request-failed'); assert.equal(e?.docDeleted, true);
+  assert.equal(nav.ls.get(`ph:del:${c.uid}`), 'pendente'); assert.equal(await docServidor(c.uid), null); assert.ok(await existe(c.uid));
+  assert.equal(m.auth.currentUser?.uid, c.uid, 'erro de rede não encerra a sessão');
+  // recarga no mesmo navegador: sessão restaurada pelo SDK, marca preservada (só some no 1º estado SEM login)
+  const r = nav.aba(); const u = await primeiroEstado(r); assert.equal(u?.uid, c.uid); assert.equal(nav.ls.get(`ph:del:${c.uid}`), 'pendente');
+  const d = await r.load(); assert.equal(d, null); assert.equal(await r.delState(d), 'pendente');
+  assert.equal(await codigo(r.save({ favorites: ['p2'] })), 'not-found', 'gravação comum não recria');
+  // outro aparelho (sem a marca): favoritar não recria; ao recarregar, conta antiga sem documento = ausente (não cria sozinho)
+  assert.equal(await codigo(outro.save({ favorites: ['p3'] })), 'not-found'); assert.equal(await outro.delState(await outro.load()), 'ausente');
+  assert.equal(await docServidor(c.uid), null, 'nada recriado em nenhum aparelho');
+  assert.equal(await r.excluir(PW), true); assert.equal(await r.excluir(PW), undefined);
+  assert.equal(await existe(c.uid), false); assert.equal(nav.ls.has(`ph:del:${c.uid}`), false);
+});
+
+await caso(`E9 "Continuar usando" depois da exclusão parcial (${fundo}): perfil vazio só com o clique, marca limpa, volta a gravar; repetir não grava de novo`, null, async () => {
+  const nav = navegador(); const m = nav.aba(); const c = await conta(m); await m.continuar('Ana'); await m.save({ favorites: ['p1'] });
+  G.aposDeleteDoc = () => { falharRede = (u) => u.includes('accounts:delete'); };
+  await m.excluir(PW).catch(() => {}); assert.equal(nav.ls.get(`ph:del:${c.uid}`), 'pendente');
+  const x = await m.continuar('Ana'); assert.deepEqual(x.favorites, [], 'o que foi apagado não volta'); assert.ok(x.createdAt && x.termsAt);
+  assert.equal(nav.ls.has(`ph:del:${c.uid}`), false); assert.equal(await m.delState(await m.load()), '');
+  assert.equal(await codigo(m.save({ favorites: ['p9'] })), 'ok');
+  const y = await m.continuar('Outro'); assert.equal(y.createdAt, x.createdAt); assert.deepEqual(y.favorites, ['p9'], 'perfil completo: só lê');
+  assert.ok(await existe(c.uid));
+});
+
+await caso(`E10 sessão: senha em branco (conta só com senha) e senha errada param ANTES de apagar; sem usuário nada acontece (${fundo})`, null, async () => {
+  const nav = navegador(); const m = nav.aba(); const c = await conta(m); await m.continuar('Ana');
+  assert.equal(await codigo(m.excluir('')), 'auth/requires-recent-login');
+  assert.ok(await docServidor(c.uid), 'documento intacto'); assert.ok(await existe(c.uid)); assert.equal(nav.ls.has(`ph:del:${c.uid}`), false, 'marca nova desfeita');
+  assert.match(await codigo(m.excluir('errada-123')), /^auth\/(invalid-credential|wrong-password|invalid-login-credentials)$/);
+  assert.ok(await docServidor(c.uid)); assert.equal(nav.ls.has(`ph:del:${c.uid}`), false);
+  // marca pendente anterior + senha errada: a marca continua (não some o aviso)
+  nav.ls.set(`ph:del:${c.uid}`, 'pendente'); await m.excluir('errada-123').catch(() => {}); assert.equal(nav.ls.get(`ph:del:${c.uid}`), 'pendente');
+  nav.ls.delete(`ph:del:${c.uid}`);
+  await A.signOut(m.auth); assert.equal(await m.excluir(PW), undefined); assert.equal(await codigo(m.continuar('Ana')), 'auth/no-user');
+  assert.ok(await docServidor(c.uid)); assert.ok(await existe(c.uid)); assert.equal(nav.ls.size, 0);
+});
+
+await caso(`E11 sessão encerrada pelo Auth na falha parcial (token revogado) + recarga sem login: marca some (custo do 73c658ff), novo login vê "ausente" e NADA é recriado (${fundo})`, null, async () => {
+  const nav = navegador(); const m = nav.aba(); const c = await conta(m); await m.continuar('Ana');
+  G.aposDeleteDoc = () => adm('accounts:update', { localId: c.uid, validSince: String(Math.floor(Date.now() / 1000) + 2) });
+  await m.excluir(PW).catch(() => {}); assert.equal(nav.ls.get(`ph:del:${c.uid}`), 'pendente'); assert.equal(m.auth.currentUser, null);
+  assert.equal(await primeiroEstado(nav.aba()), null); assert.equal(nav.ls.has(`ph:del:${c.uid}`), false, 'limpa no 1º estado sem login');
+  await espera(3100); const r = nav.aba(); await r.emailIn(c.email, PW); const d = await r.load();
+  assert.equal(d, null); assert.equal(await r.delState(d), 'ausente', 'texto neutro; perfil não é criado sozinho');
+  assert.equal(await codigo(r.save({ favorites: ['x'] })), 'not-found'); assert.equal(await docServidor(c.uid), null);
+  assert.equal(await r.excluir(PW), true); assert.equal(await existe(c.uid), false);
 });
 
 await caso('F1 continuar() em duas abas ao mesmo tempo (dois clientes, documento ausente): um perfil só', 'firestore', async () => {
