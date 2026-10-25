@@ -190,5 +190,22 @@ await t('7. sitemap: state vencido em cache não vira lastmod/URLs de produto', 
   FR.setFreshnessClock(() => NOW);
 });
 
+await t('8. /lojas com os campos do robô fora: loja com oferta viva no banco nunca "sem leitura"; status e plataforma ficam', async () => {
+  await useDb(true);
+  const comErro = () => { const x = COPIA_0710(); x.sources[1].status = 'ERROR'; return x; };   // status antigo ruim, banco lendo agora
+  for (const [nome, fx] of [['cópia de 07/10', COPIA_0710], ['cópia com ERROR', comErro], ['vencido', VENCIDO], ['ausente', null]]) {
+    loader(fx ? async () => fx() : async () => { throw new Error('state.json indisponível'); });
+    const r = await call('/api/v1/site/pagina/lojas'); assert.equal(r.status, 200, nome);
+    const vivas = r.json.lojas.filter((l) => l.offersLive > 0);
+    assert.ok(vivas.length >= 2, `${nome}: lojas com oferta viva listadas (${vivas.map((l) => l.id)})`);
+    for (const l of vivas) assert.equal(l.status, 'monitorada', `${nome}: ${l.id} com ${l.offersLive} ofertas vivas está "${l.status}"`);
+    assert.doesNotMatch(r.body, /NOTA-ROBO/, `${nome}: nota antiga da loja não volta`);
+  }
+  // status e plataforma ficam no overlay (configuração, não valor de outra época); a nota sai
+  const { legacyOverlay } = await import('../api/_lib/catalog.mjs');
+  const src = { ...COPIA_0710(), sources: [{ id: 'a', name: 'Loja A', url: 'https://a.com.br', status: 'PAUSED', platform: 'vtex', score: { evidence: ['x'] }, lastSuccess: '2026-10-07T13:00:00Z' }] };
+  assert.deepEqual(legacyOverlay(src).sources, [{ id: 'a', name: 'Loja A', url: 'https://a.com.br', status: 'PAUSED', platform: 'vtex', platformHint: undefined }]);
+});
+
 globalThis.fetch = realFetch; await DBM.closeApiPool(); delete process.env.API_DATABASE_URL;
 console.log(`d4b-legacy: ${n} grupos ok`);
