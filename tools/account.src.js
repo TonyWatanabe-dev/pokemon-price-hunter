@@ -7,7 +7,7 @@ import {
   createUserWithEmailAndPassword, updateProfile, sendEmailVerification, sendPasswordResetEmail,
   signOut, deleteUser, reauthenticateWithPopup, reauthenticateWithCredential, EmailAuthProvider,
 } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, runTransaction } from 'firebase/firestore/lite';
 
 // Login com Google por REDIRECIONAMENTO na mesma aba só nos endereços listados aqui. Nesses endereços o "authDomain" é o
 // próprio site e /__/auth/* é repassado ao Firebase (vercel.json), então o fluxo não depende de cookies de terceiros.
@@ -111,4 +111,69 @@ export async function wipe(password, via) {
   try { await deleteDoc(ref(u.uid)); } catch (e) { if (e?.code !== 'not-found') throw e; }
   try { await deleteUser(u); } catch (e) { if (e && typeof e === 'object') e.docDeleted = true; throw e; }
   return true;
+}
+
+// ---- Exclusão pendente (a página só mostra; a regra fica aqui). Testes: test/exclusao-pendente-tests.js ----
+// Marca local por conta, ph:del:<uid>: 'andamento' (clique em excluir, antes de tudo) → 'pendente' (documento apagado,
+// login não). Só esses valores, nunca dado pessoal. As outras abas do navegador param de gravar já no 'andamento'
+// (evento storage na página) e a recarga mostra o pendente. Storage bloqueado: valem o updateDoc do save e a regra da
+// conta antiga em delState.
+export function mark(uid, v) {
+  const k = 'ph:del:' + uid;
+  try { if (v === undefined) return localStorage.getItem(k); if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch { /* sem storage */ }
+  return null;
+}
+// Estado ao entrar, com o documento lido (d = dados; null = não existe; undefined = falha ao ler). 'pendente' = há marca;
+// 'ausente' = conta antiga (não acabou de ser criada) sem documento e sem marca: o perfil NÃO é recriado sozinho (outro
+// aparelho depois de uma exclusão parcial); 'fim' = a conta já foi excluída (em outro aparelho): limpa a marca e encerra
+// a sessão; '' = normal. Marca 'andamento' com documento presente (aba fechada no meio, ou falha antes de apagar) é limpa.
+export async function delState(d) {
+  const u = auth.currentUser; if (!u) return ''; const mk = mark(u.uid);
+  if (mk === 'andamento' && d) return mark(u.uid, null) || '';
+  const s = mk ? 'pendente' : d === null && !pub(u).nova ? 'ausente' : '';
+  if (s && !d) try { await u.reload(); } catch (e) { if (e?.code === 'auth/user-not-found') { mark(u.uid, null); await signOut(auth); return 'fim'; } }
+  return s;
+}
+// Exclusão pedida na página: grava 'andamento' de forma síncrona (o popup do Google continua saindo no clique), troca
+// por 'pendente' se o documento foi apagado e o login não, e limpa ao concluir (com o vínculo do Telegram da sessão)
+// ou se falhou antes de apagar sem marca anterior. Senha digitada confirma pela senha; em branco, pelo Google.
+export async function excluir(password) {
+  const u = auth.currentUser; if (!u) return; const antes = mark(u.uid); if (!antes) mark(u.uid, 'andamento');
+  let ok;
+  try { ok = await wipe(password || undefined, password ? 'password' : 'google.com'); } catch (e) { if (e?.docDeleted) mark(u.uid, 'pendente'); else if (!antes) mark(u.uid, null); throw e; }
+  if (ok === true) { mark(u.uid, null); try { sessionStorage.removeItem('ph:tg:' + u.uid); } catch { /* sem storage */ } } else if (!antes) mark(u.uid, null);
+  return ok;
+}
+// "Continuar usando" / "Criar perfil": NUNCA apaga dados. Perfil completo existente (marca antiga e conta usada em outro
+// aparelho, ou outra aba no meio de uma exclusão) = só devolve os dados, sem gravar; documento inexistente = cria o perfil
+// vazio; documento parcial = completa sem perder favoritos e alertas. Transação: a gravação leva a pré-condição do que
+// foi lido (não existe / mesma versão); se outra aba ou aparelho gravar no meio, o Firestore repete e relê.
+export async function continuar(name) {
+  const u = auth.currentUser; if (!u) throw Object.assign(new Error('sem login'), { code: 'auth/no-user' });
+  const r = ref(u.uid); const now = new Date().toISOString();
+  const d = await runTransaction(db, async (t) => {
+    const s = await t.get(r); const x = s.exists() ? s.data() : {};
+    if (x.createdAt) return x;
+    const b = { ...x, name: x.name || name, favorites: x.favorites || [], alerts: x.alerts || [], termsAt: now, createdAt: now, updatedAt: now };
+    t.set(r, b); return b;
+  });
+  mark(u.uid, null); return d;
+}
+
+// ---- Telas da exclusão: só servem a quem entrou, então ficam aqui (carregado à parte) e não pesam no index.html ----
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+export const provs = (u) => (u.providers?.length ? u.providers : [u.provider]);
+// Formulário de exclusão: senha quando a conta tem senha (com Google também: em branco = confirmar pelo Google).
+export function delForm(u, label, icon = '') {
+  const v = provs(u), pw = v.includes('password'), g = v.includes('google.com');
+  return `<form id="delf" class="delf" novalidate>${pw ? `<div class="field"><label for="d-pw">Confirme sua senha${g ? ' (em branco: Google)' : ''}</label><input id="d-pw" name="pw" type="password" autocomplete="current-password"${g ? '' : ' required'}></div>` : ''}<button class="btn danger" type="submit">${icon}${label}</button></form>`;
+}
+// Painel que substitui Minha conta, Favoritos, Alertas e Configurações enquanto d (estado da página) existir.
+// 'ausente' (conta sem documento e sem pedido de exclusão neste navegador): texto neutro e "Criar perfil".
+export function delPanel(d, u, icon) {
+  const p = d.why !== 'ausente';
+  return `<div class="stack" style="margin-top:16px"><section class="panel" id="delbox"><h2 tabindex="-1">${p ? 'Exclusão pendente: confirme para concluir' : 'Sua conta não tem dados salvos'}</h2>`
+    + `<p role="status">${p ? (d.apagados ? 'Favoritos, alertas e perfil já foram apagados; falta excluir o login.' : 'A exclusão não terminou.') + ' Até lá, nada é salvo.' : 'Criar perfil? Ele começa sem favoritos e alertas.'}</p>`
+    + (d.err ? `<p class="err" tabindex="-1" role="alert">${esc(d.err)}</p>` : '') + delForm(u, p ? 'Concluir a exclusão' : 'Excluir a conta', icon)
+    + `<p><button type="button" data-a="del-continuar">${p ? 'Continuar usando a conta' : 'Criar perfil'}</button> (${p ? 'retoma o que ainda existir' : 'começa vazio'}; vale o aceite dos <a href="/termos" data-go="termos">Termos</a>)</p></section></div>`;
 }
