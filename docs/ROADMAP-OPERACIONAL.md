@@ -41,6 +41,45 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Auditoria e correções — 24/10/2026, 19h30 a 22h30, 7ª rodada (America/Sao_Paulo)
+
+Rodada pedida pelo proprietário ("modo turbo"): validar as entregas recentes com evidência, eliminar pendências e corrigir o que estiver seguro.
+
+**Validado (evidência):**
+- **#898** (Lendas sem o Pokémon): `avulsos-colecao_ex-lendas` com 0 ofertas no `state.json` de 22:15 UTC; a mpbrinquedos foi relida às 22:00 UTC (554 anúncios, 121 casados) sem o título "Lendas Azuis" sem nome. **Validado em runtime.**
+- **#894** (Lendas Implacáveis): 20 ofertas em `sv9-colecao_ex-zacian` / `sv10-colecao_ex-koraidon`, nenhuma no produto genérico. **Validado em runtime.**
+- **#899** (Home com "no Pix" e frete): HTML publicado às 22:02 UTC confirma. **Validado.**
+- **#897** (página removida): **pendente**, sem falha. A BQD foi lida às 21:30 UTC (29 anúncios, 0 casados, `pagesGone` 0): as páginas de produto só são reabertas no ciclo de 24 h. Timeout, 403/429 e 5xx continuam fora da contagem de remoção.
+- **Top 3/Top 10:** variáveis `SOCIAL_TOP`, `SOCIAL_AUTO` e `SOCIAL_WHATSAPP_AUTO` = `1` (print do proprietário). Run 40133215439 (manual): arte, Telegram (3 s) e WhatsApp (12 s, compatível com envio real; pulado leva ~1 s).
+- **WhatsApp sem intervalo e teto 70/24 h:** em 24/10 (00h–22h30 BRT), 91 rodadas do envio automático: 63 sem envio (passo de ~0–1 s) e 26 com envio provável (16–62 s), mais o Top 10. Depois das 15h30: 11 envios automáticos + Top. Teto não atingido. *Evidência indireta* (duração do passo): os logs do Actions não abrem desta sessão.
+
+**Falhas e causa:**
+- **Cron do GitHub não criou nenhuma execução agendada do `social-top.yml`** (19h07, 21h07 e as reservas), enquanto Dispatcher, Vigia e os envios automáticos rodaram. Correção: #911 (reservas com chave do horário) e #915 (gatilho principal no fim de cada rodada do Price Hunter, como o WhatsApp automático).
+- **Content ID no YouTube:** o Short "Coleção com Pôster 30 Anos: deu lucro?" foi bloqueado no mundo todo pela música "Funky Sparks" (ShutterStock/Orfium), que estava no **áudio original das gravações** (o `render.py` mantinha o som da fonte). Reivindicação, não strike.
+- **Produto duplicado por grafia:** "Xarneas EX" (tavernadorei) criava `avulsos-colecao_ex-xarneas`.
+
+| PR / ação | Mudança | Testes | CI e revisão | Integrada | Publicada | Validada em runtime |
+|---|---|---|---|---|---|---|
+| #910 (5b2fc55) | Grafia "xarneas" → "xerneas" na variante. Impacto: 1/3.608 títulos | `npm test` 318 arquivos | verdes; revisão sem bloqueantes | sim | robô roda a `main` | pendente: próxima leitura da tavernadorei |
+| #911 (f4a2249) | Top: reservas +30 min e +1 h, chave do horário (`slotAgora`), diário do Telegram (cache `social/top-tg.json`), modo `pendente`, fila única | `npm test` 318 | verdes; revisão sem bloqueantes | sim | sim | parcial (ver #915) |
+| #912 (fbece21) | +26 links curtos do ML do proprietário nos posts dos grupos (44 no total) | `npm test` 318 | verdes | sim | sim | pendente: links resolvidos a cada rodada do bot |
+| #915 (860cf19) | Top dispara ao fim de cada rodada do robô | `npm test` 318 | verdes | sim | sim | **sim**: run 40149208703 (22h04 BRT, Top 10 das 21h) com arte, Telegram e WhatsApp; run 40150306222 (22h21) **não repetiu** (chave já enviada, sem arte) |
+| Trilha nova (ramo social) | 40 vídeos refeitos com **uma trilha só** (Artlist, gerada para nós) no lugar do áudio original; 78 posts cancelados e reagendados nos mesmos horários e textos; 9 slideshows mantidos (já só com a nossa trilha) | 40/40 renderizados (log `M_log.txt`, loudness −16 LUFS) | — | `social/artes-s1-s4` (`trilha-nova.json`) | Zernio: 97 vídeos agendados, mesmos horários de antes | conferido pela listagem da Zernio |
+| Repost do Short | "Coleção com Pôster 30 Anos: deu lucro?" com a trilha nova, adiantado para 24/10 20h45 (pedido do proprietário); cópia de 25/10 15h cancelada. O vídeo bloqueado foi **excluído pelo proprietário** | — | — | — | saiu da fila da Zernio às 20h45 | pendente: conferir no canal |
+
+**Duplicados conhecidos:** Telegram recebeu o Top 10 três vezes em 24/10 (dois disparos manuais e o das 21h). No WhatsApp, o Top 3 do run 40131206999 provavelmente saiu por volta das 18h06, antes do cancelamento (inferência pelo tempo de espera do código antigo; sem log).
+
+**Burn-in (#271):** 0/7 dias encerrados. O dia 24 está **parcial e sem critério vermelho** (atualizado às 00:52 UTC de 25/10); fecha às 03:07 UTC. Se fechar verde, a contagem passa a 1/7. O 7/7 mais cedo sai no fechamento de 30/10 (relatado às 03:07 UTC de 31/10). O Monte seu kit continua noindex e fora do sitemap até lá.
+
+**Próximo:**
+1. 25/10, 03:07 UTC: conferir o fechamento do dia 24 no burn-in.
+2. 25/10, 9h: primeiro Top 3 pelo gatilho do robô.
+3. 25/10, ~15h15 UTC: relida da BQD; validar a #897 às 17:30 UTC.
+4. 26/10, 10h: análise dos anúncios e da conversão `/entrar` → `/ir` → grupo.
+5. Proprietário: conferir o repost no canal do YouTube; enviar a tabela "URL do anúncio ; link gerado" se quiser os novos links do ML também nos botões do site.
+
+---
+
 ## Social, grupos e Monte seu kit — 24/10/2026, noite, 6ª rodada (America/Sao_Paulo)
 
 Rodada pedida pelo proprietário no chat: entrada no grupo pelos anúncios, posts de Top 3/Top 10 nos grupos, ritmo do WhatsApp e liberação do Monte seu kit. P0 (#271, #231) sem mudança desde a 5ª rodada.
