@@ -115,7 +115,7 @@ O dia 25/10 começou parcial verde. Se 25/10 a 30/10 fecharem verdes, o 7/7 sai 
 
 **Vigia:** nenhum incidente novo desde a #913 (ML bloqueado às 00:00 e às 00:15 UTC de 25/10), que o próprio Vigia fechou.
 
-**Rodada de auditorias encerrada:** 7 frentes e 2 auditorias extras (produção, CI e releases). O relatório consolidado está no doc "TCG Price Hunter — Auditoria paralela durante o burn-in". As PRs abertas, todas sem merge e aguardando autorização do dono, são:
+**Rodada de auditorias encerrada:** 7 frentes e 2 auditorias extras (produção, CI e releases). O relatório consolidado está no doc "TCG Price Hunter — Auditoria paralela durante o burn-in". *Registro histórico (madrugada de 25/10): todas as PRs abaixo foram integradas na tarde de 25/10 — ver a seção acima.* As PRs abertas naquele momento, sem merge e aguardando autorização do dono, eram:
 
 | PR | O que muda |
 |---|---|
