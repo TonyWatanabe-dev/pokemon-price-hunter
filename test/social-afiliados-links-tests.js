@@ -8,8 +8,8 @@ const t = async (name, fn) => { try { await fn(); n++; } catch (e) { console.err
 const res = (status, { location, body = '' } = {}) => ({ status, ok: status >= 200 && status < 300, headers: { get: (h) => (h === 'location' ? location : null) }, text: async () => body });
 const fake = (mapa) => { const calls = []; const f = async (url) => { calls.push(url); return mapa[url] ?? res(404); }; f.calls = calls; return f; };
 
-await t('1. config: 18 links únicos, só meli.la', () => {
-  const l = lerLinks(); assert.equal(l.length, 18); assert.ok(l.every((x) => x.startsWith('https://meli.la/')));
+await t('1. config: 44 links únicos (18 de 14/10 + 26 de 24/10), só meli.la', () => {
+  const l = lerLinks(); assert.equal(l.length, 44); assert.equal(new Set(l).size, l.length, 'sem repetido'); assert.ok(l.every((x) => x.startsWith('https://meli.la/')));
 });
 
 await t('2. segue redirecionamentos até o anúncio (pdp_filters ou /MLB-), ou lê o id no HTML', async () => {
