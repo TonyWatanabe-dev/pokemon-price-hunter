@@ -144,6 +144,10 @@ function detectVariant0(t) {
   if (DECK_BATALHA.test(t)) return deckVariant(t);
   if (/\bou\b/.test(t) && /\bex\b/.test(t) || /\bsortid/.test(t)) return null; // "Zapdos ex ou Alakazam ex": a loja escolhe qual vem
   const mega = /\bmega\b(?! evolu)/.test(t) ? 'mega-' : ''; // "mega" em qualquer posição ("Greninja ex mega")
+  // "Lendas de Paldea" (Copag 33017, 2023) é outra caixa que a "Lendas Implacáveis" (35239, 2025) com o mesmo Pokémon:
+  // "Box Lendas de Paldea Koraidon ex" caía em sv10-colecao_ex-koraidon junto com a Implacáveis (25/10/2026).
+  const lp = t.match(/\blendas de paldea:? (?:- )?(?:ex )?([a-z]{3,})\b/);
+  if (lp) return VARIANT_STOP.has(lp[1]) || lp[1] === 'ex' ? null : 'lendas-de-paldea-' + lp[1];
   // Todo "<nome> ex" do título, o primeiro que não é palavra genérica ("Coleção EX Lendas Azuis - Xerneas EX" → xerneas).
   for (const x of t.matchAll(/\b(?:mega )?([a-z]{3,}) ex\b/g)) if (!VARIANT_STOP.has(x[1])) return mega + x[1];
   // "Coleção Ex Lendas Implacáveis - Zacian" (24/10/2026): "lendas" virava o nome e juntava Zacian e Koraidon num produto
