@@ -13,6 +13,13 @@ export function urlDeVideo(u) {
   return x.href;
 }
 
+/** Capa própria (jpg/png) publicada no repositório; mesma regra de host do vídeo. */
+export function urlDeCapa(u) {
+  let x; try { x = new URL(u); } catch { throw new Error('url da capa inválida'); }
+  if (x.protocol !== 'https:' || x.hostname !== 'raw.githubusercontent.com' || !/\.(jpe?g|png)$/i.test(x.pathname)) throw new Error('url da capa precisa ser https://raw.githubusercontent.com/.../*.jpg ou .png');
+  return x.href;
+}
+
 export const PLATAFORMAS = Object.freeze(['instagram', 'tiktok', 'youtube']);
 export const TITULO_YT_MAX = 100;
 export const TIPOS = Object.freeze(['carrossel', 'imagem', 'story', 'video']);
@@ -51,6 +58,7 @@ export function validarItem(it) {
   if (['imagem', 'story'].includes(i.tipo) && arqs.length !== 1) p.push('imagem/story precisa de exatamente 1 arquivo');
   if (i.tipo === 'video' && arqs.length !== 1 && typeof i.drive !== 'string' && typeof i.url !== 'string') p.push('vídeo precisa de 1 arquivo, do campo drive ou de url (vazio = pendente)');
   if (i.url !== undefined) { try { urlDeVideo(i.url); } catch (e) { p.push(e.message); } }
+  if (i.capa !== undefined) { try { urlDeCapa(i.capa); } catch (e) { p.push(e.message); } if (i.tipo !== 'video') p.push('capa só vale para vídeo'); }
   for (const a of arqs) if (!mimeDe(a)) p.push(`formato não suportado: ${a}`);
   if (i.tipo !== 'story') {
     if (typeof i.legenda !== 'string' || !i.legenda.trim()) p.push('legenda vazia');
@@ -61,7 +69,7 @@ export function validarItem(it) {
 }
 
 /** Corpo de POST /posts para uma plataforma. urls = URLs públicas das mídias já enviadas. */
-export function montarPost(it, { accountId, plataforma, urls, simular = false }) {
+export function montarPost(it, { accountId, plataforma, urls, capaUrl, simular = false }) {
   const tipoMidia = (u) => (/\.mp4(\?|$)/i.test(u) || it.tipo === 'video' ? 'video' : 'image');
   const entrada = { platform: plataforma, accountId };
   if (plataforma === 'instagram') {
@@ -69,12 +77,13 @@ export function montarPost(it, { accountId, plataforma, urls, simular = false })
     if (it.tipo === 'video' && Number.isFinite(it.capaMs)) entrada.platformSpecificData.thumbOffset = it.capaMs;
   }
   if (plataforma === 'youtube') {
-    // Shorts: vídeo vertical de até 3 min; sem flag de tipo. Sem miniatura via API.
+    // Shorts: vídeo vertical de até 3 min; sem flag de tipo. Miniatura própria vai no item de mídia (thumbnail).
     entrada.platformSpecificData = { title: it.titulo, visibility: 'public', madeForKids: false, containsSyntheticMedia: false, categoryId: '20' };
   }
   return {
     content: it.tipo === 'story' ? '' : it.legenda,
-    mediaItems: urls.map((url) => ({ type: tipoMidia(url), url })),
+    // capa própria: YouTube lê mediaItems[].thumbnail; Instagram lê instagramThumbnail (tem prioridade sobre thumbOffset); TikTok só aceita o quadro (capaMs)
+    mediaItems: urls.map((url) => ({ type: tipoMidia(url), url, ...(capaUrl && tipoMidia(url) === 'video' && plataforma === 'youtube' ? { thumbnail: capaUrl } : {}), ...(capaUrl && tipoMidia(url) === 'video' && plataforma === 'instagram' ? { instagramThumbnail: capaUrl } : {}) })),
     platforms: [entrada],
     scheduledFor: it.quando.length === 16 ? `${it.quando}:00` : it.quando,
     timezone: FUSO,
