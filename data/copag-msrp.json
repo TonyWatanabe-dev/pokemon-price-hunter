@@ -1,0 +1,290 @@
+{
+  "me04-etb": {
+    "msrp": 399.99,
+    "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-06T12:26:46.710Z"
+  },
+  "me05-etb": {
+    "msrp": 399.99,
+    "source_url": "https://www.copagloja.com.br/treinador-avancado-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-06T12:26:46.710Z"
+  },
+  "me03-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-chikorita-me03-equilibrio-perfeito/p",
+    "source_timestamp": "2026-10-18T04:15:23.272Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-blister1": {
+    "msrp": 13.99,
+    "source_url": "https://www.copagloja.com.br/blister-unitario-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-blister3": {
+    "msrp": 42.99,
+    "source_url": "https://www.copagloja.com.br/blister-triplo-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me04-combo": {
+    "msrp": 250.99,
+    "source_url": "https://www.copagloja.com.br/combo-de-booster-pokemon-me04-caos-ascendente/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me05-blister1": {
+    "msrp": 13.99,
+    "source_url": "https://www.copagloja.com.br/blister-unitario-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-28T18:30:30.562Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me05-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "me05-combo": {
+    "msrp": 250.99,
+    "source_url": "https://www.copagloja.com.br/combo-de-booster-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:01:45.749Z"
+  },
+  "sv10-box36": {
+    "msrp": 349.99,
+    "source_url": "https://www.copagloja.com.br/box-display-pokemon-escarlate-e-violeta-10-rivais-predestinados-028d100000000bx/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-07T07:23:11.746Z"
+  },
+  "c30-blister2": {
+    "msrp": 69.99,
+    "source_url": "https://www.copagloja.com.br/blister-duplo-com-moeda/p",
+    "source_timestamp": "2026-10-21T23:30:30.351Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-08T13:30:10.097Z"
+  },
+  "c30-colecao_poster": {
+    "msrp": 115.99,
+    "source_url": "https://www.copagloja.com.br/box-colecao-com-poster-/p",
+    "source_timestamp": "2026-10-23T20:00:32.697Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-08T14:45:32.571Z"
+  },
+  "me05-colecao_ex-mega-greninja": {
+    "msrp": 179.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-colecao-mega-greninja-ex/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-17T11:15:23.424Z"
+  },
+  "me03-colecao_ex-mega-zygarde": {
+    "msrp": 179.99,
+    "source_url": "https://www.copagloja.com.br/box-colecao-mega-zygarde-ex/p",
+    "source_timestamp": "2026-10-19T11:00:30.623Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-17T11:15:23.424Z"
+  },
+  "avulsos-deck-ninetales": {
+    "msrp": 99.99,
+    "source_url": "https://www.copagloja.com.br/baralho-de-batalha-deluxe-pokemon-ninetales-ex-028d927000000sd/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-17T11:15:23.424Z"
+  },
+  "avulsos-colecao_ex-mega-zygarde": {
+    "msrp": 179.99,
+    "source_url": "https://www.copagloja.com.br/box-colecao-mega-zygarde-ex/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-19T11:15:23.150Z"
+  },
+  "me05-blister3": {
+    "msrp": 42.99,
+    "source_url": "https://www.copagloja.com.br/blister-triplo-pokemon-me05-escuridao-absoluta/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-21T16:45:23.029Z"
+  },
+  "avulsos-deck-mega-lucario": {
+    "msrp": 139.99,
+    "source_url": "https://www.copagloja.com.br/deck-batalha-de-liga-mega-lucario-ex/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-21T18:45:25.941Z"
+  },
+  "me05-box36": {
+    "msrp": 449.99,
+    "source_url": "https://www.copagloja.com.br/box-display-pokemon-me05-escuridao-absoluta-028d199900000bx/p",
+    "source_timestamp": "2026-10-27T23:15:22.370Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-21T18:45:25.941Z"
+  },
+  "avulsos-deck-houndoom": {
+    "msrp": 69.99,
+    "source_url": "https://www.copagloja.com.br/deck-de-batalha-pokemon-houndoom-ex/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-21T18:45:25.941Z"
+  },
+  "avulsos-deck-melmetal": {
+    "msrp": 69.99,
+    "source_url": "https://www.copagloja.com.br/deck-de-batalha-pokemon-melmetal-ex/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-21T18:45:25.941Z"
+  },
+  "avulsos-deck-deluxe-miraidon": {
+    "msrp": 99.99,
+    "source_url": "https://www.copagloja.com.br/deck-de-batalha-pokemon-deluxe-miraidon/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-24T10:00:35.382Z"
+  },
+  "avulsos-colecao_especial-mega-luar-gengar": {
+    "msrp": 139.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-colecao-mega-luar-mega-gengar/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-24T10:00:35.382Z"
+  },
+  "avulsos-colecao_ilustracao-parceiro-inicial-serie-2": {
+    "msrp": 99.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-colecao-parceiro-inicial--serie-2/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-24T10:00:35.382Z"
+  },
+  "c30-colecao_fichario": {
+    "msrp": 230.99,
+    "source_url": "https://www.copagloja.com.br/box-colecao-fichario/p",
+    "source_timestamp": "2026-10-27T04:00:33.260Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-26T19:45:21.337Z"
+  },
+  "me01-box36": {
+    "msrp": 449.99,
+    "source_url": "https://www.copagloja.com.br/box-display-pokemon-me01/p",
+    "source_timestamp": "2026-10-27T22:30:29.609Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-27T20:59:44.221Z"
+  },
+  "avulsos-colecao_ilustracao-parceiro-inicial-serie-3": {
+    "msrp": 99.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-colecao-ilustracao--parceiro-inicial--serie-3/p",
+    "source_timestamp": "2026-10-27T21:15:22.695Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-27T20:59:44.221Z"
+  },
+  "c30-blister3": {
+    "msrp": 99.99,
+    "source_url": "https://www.copagloja.com.br/blister-triplo-exeggutor/p",
+    "source_timestamp": "2026-10-27T21:45:27.047Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-27T21:30:28.658Z"
+  },
+  "c30-colecao_ex-greninja": {
+    "msrp": 169.99,
+    "source_url": "https://www.copagloja.com.br/box-greninja/p",
+    "source_timestamp": "2026-10-27T23:45:24.065Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-27T23:30:27.085Z"
+  },
+  "avulsos-colecao_ex-mega-darkrai": {
+    "msrp": 139.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-mega-forcas-mega-darkrai-ex/p",
+    "source_timestamp": "2026-10-29T21:30:28.285Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-28T22:00:33.558Z"
+  },
+  "avulsos-colecao_ex-mega-dragonite": {
+    "msrp": 139.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-mega-forcas-mega-dragonite-ex/p",
+    "source_timestamp": "2026-10-29T18:30:32.286Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-28T22:00:33.558Z"
+  },
+  "avulsos-colecao_ex-mega-zeraora": {
+    "msrp": 139.99,
+    "source_url": "https://www.copagloja.com.br/box-pokemon-mega-forcas-mega-zeraora-ex/p",
+    "source_timestamp": "2026-10-29T22:30:27.899Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-28T23:30:28.636Z"
+  },
+  "me02-blister3": {
+    "msrp": 42.99,
+    "source_url": "https://www.copagloja.com.br/blister-triplo-whimsicott-me02-fogo-fantasmagorico/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-29T19:15:23.916Z"
+  },
+  "me02-blister4": {
+    "msrp": 55.99,
+    "source_url": "https://www.copagloja.com.br/blister-quadruplo-weavile-me02-fogo-fantasmagorico/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-29T19:30:29.976Z"
+  },
+  "me01-booster": {
+    "msrp": 13.99,
+    "source_url": "https://www.copagloja.com.br/booster-unitario-pokemon-mega-evolucao/p",
+    "source_timestamp": "2026-10-30T10:45:25.320Z",
+    "confidence": "OFICIAL",
+    "previous_msrp": null,
+    "msrp_updated_at": "2026-10-29T20:00:31.115Z"
+  }
+}
