@@ -57,3 +57,27 @@ def gera(cfg, edl, baixa, saida):
     logo(fr)
     os.remove(tmp); fr.convert('RGB').save(saida, quality=92)
     return saida
+
+def de_video(video, t, saida):
+    """Capa de vídeo já editado (sem bruto): carta em t aproximada pelo centro (corta placar e legendas); t=None = desfocado."""
+    tmp = saida + '.raw.jpg'
+    if t is not None:
+        base = quadro(video, t, tmp)
+        z = 1.45; cw, ch = int(W / z), int(H / z)
+        base = base.crop(((W - cw) // 2, (H - ch) // 2, (W + cw) // 2, (H + ch) // 2)).resize((W, H), Image.LANCZOS)
+        base = ImageEnhance.Color(base).enhance(1.3); base = ImageEnhance.Contrast(base).enhance(1.1); base = ImageEnhance.Sharpness(base).enhance(1.5)
+        fr = vinheta(base, 0.45).convert('RGBA')
+        glow = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(glow)
+        d.rounded_rectangle((26, 26, W - 26, H - 26), 60, outline=(255, 207, 51, 255), width=22)
+        fr.alpha_composite(glow.filter(ImageFilter.GaussianBlur(14))); fr.alpha_composite(glow)
+        random.seed(int(t * 10))
+        for _ in range(9):
+            r = random.randint(22, 48); x = random.choice((random.randint(70, 300), random.randint(780, 1010))); y = random.randint(260, 1750)
+            b = brilho4(r); fr.alpha_composite(b, (x - b.width // 2, y - b.height // 2))
+        logo(fr)
+    else:
+        dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', video], capture_output=True, text=True).stdout)
+        base = quadro(video, dur * 0.4, tmp).filter(ImageFilter.GaussianBlur(45))
+        fr = vinheta(ImageEnhance.Color(base).enhance(1.3), 0.35).convert('RGBA'); logo(fr, 560, 820)
+    os.remove(tmp); fr.convert('RGB').save(saida, quality=92)
+    return saida
