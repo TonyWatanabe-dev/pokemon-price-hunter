@@ -43,3 +43,43 @@ ok D_1jcAxoxF 38.0s voz=sim (-26.7 LUFS)
 ok BD_blister_duplo_pedro 54.9s voz=sim (-13.7 LUFS)
 ok D_1gasvWy1 15.0s voz=não (-38.4 LUFS)
 ok D_poster30 67.1s voz=sim (-25.7 LUFS)
+ok U_combo30 asmr
+ok D_1Qogr9IS 37.2s capa=26.7 voz=sim (-30.3 LUFS)
+ok 30A_hit_moltres 16.2s capa=10.0 voz=sim (-18.9 LUFS)
+ok D_1yMcrChx 14.7s capa=10.0 voz=sim (-18.5 LUFS)
+ok U_hit_pikachu_ex asmr
+ok D_1iRyheRC 47.0s capa=None voz=sim (-27.5 LUFS)
+ok U_hit_umbreon_ex asmr
+ok 30A_hit_uxie 19.5s capa=9.899999999999999 voz=sim (-27.6 LUFS)
+ok D_1hJuUAuT 18.0s capa=9.899999999999999 voz=sim (-27.9 LUFS)
+ok D_1zrk8sN9 15.0s capa=sem voz=não (-48.4 LUFS)
+ok U_hit_buzzwole_gx asmr
+ok DE_caixa_8packs 171.2s capa=None voz=sim (-31.0 LUFS)
+ok D_1EPxLYY7 169.7s capa=None voz=sim (-31.1 LUFS)
+ok D_1T1ouiV1 14.9s capa=10.399999999999999 voz=sim (-28.8 LUFS)
+ok U_box_dragonite asmr
+ok D_1nhPa11D 40.1s capa=sem voz=não (-47.6 LUFS)
+ok U_hit_dragalge asmr
+ok D_1aEcSNI1 54.0s capa=None voz=sim (-19.2 LUFS)
+ok U_hit_thievul asmr
+ok 30A_hit_gholdengo 19.0s capa=10.0 voz=não (-42.7 LUFS)
+ok D_1vqSDjK3 17.5s capa=10.0 voz=não (-64.9 LUFS)
+ok U_brick_dragonite asmr
+ok 30A_etb_abertura_v2 154.2s capa=116.60000000000001 voz=sim (-26.8 LUFS)
+ok D_1OqyWoLO 152.7s capa=116.60000000000001 voz=sim (-26.4 LUFS)
+ok D_1fMEIC2M 15.0s capa=sem voz=não (-49.2 LUFS)
+ok 30A_hit_zapdos 20.4s capa=13.6 voz=sim (-25.6 LUFS)
+ok D_1m4gqBO5 18.9s capa=13.6 voz=sim (-24.9 LUFS)
+ok DE_video02 43.0s capa=None voz=sim (-27.0 LUFS)
+ok D_1OMlQu6V 41.5s capa=None voz=sim (-26.8 LUFS)
+ok D_1MgGFefS 15.0s capa=sem voz=não (-49.7 LUFS)
+ok RD_lancamento_motion 18.0s capa=sem voz=sim (-37.2 LUFS)
+ok 30A_blister_abertura 46.6s capa=40.7 voz=sim (-22.3 LUFS)
+ok D_1twqA6Sq 45.1s capa=40.7 voz=sim (-22.3 LUFS)
+ok DE_video03 44.4s capa=None voz=sim (-28.1 LUFS)
+ok D_1PyQ0SRD 42.9s capa=None voz=sim (-28.0 LUFS)
+ok DE_video04 39.5s capa=None voz=sim (-26.8 LUFS)
+ok D_1jcAxoxF 38.0s capa=None voz=sim (-26.8 LUFS)
+ok BD_blister_duplo_pedro 54.9s capa=43.51 voz=sim (-13.7 LUFS)
+ok D_1gasvWy1 15.0s capa=sem voz=não (-42.8 LUFS)
+ok D_poster30 67.1s capa=62.2 voz=sim (-25.2 LUFS)

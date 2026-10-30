@@ -27,5 +27,106 @@
    50.27
   ],
   "preco": 9.833333
+ },
+ "hit_pikachu": {
+  "dur": 18.3,
+  "inicio": [
+   0.0,
+   8.03
+  ],
+  "hits": [
+   11.83
+  ],
+  "bricks": [],
+  "preco": null
+ },
+ "hit_umbreon": {
+  "dur": 20.2,
+  "inicio": [
+   0.0,
+   8.0
+  ],
+  "hits": [
+   10.6,
+   14.8
+  ],
+  "bricks": [],
+  "preco": null
+ },
+ "hit_buzzwole": {
+  "dur": 20.4,
+  "inicio": [
+   0.0,
+   3.2,
+   9.2
+  ],
+  "hits": [
+   12.2
+  ],
+  "bricks": [],
+  "preco": null
+ },
+ "box_dragonite": {
+  "dur": 151.8,
+  "inicio": [
+   0.0,
+   9.97,
+   19.43,
+   37.93,
+   47.67,
+   57.27,
+   67.33,
+   77.03,
+   83.23,
+   94.23,
+   106.63,
+   113.83,
+   124.83,
+   136.43
+  ],
+  "hits": [
+   20.03,
+   91.53,
+   121.33
+  ],
+  "bricks": [
+   133.43
+  ],
+  "preco": 10.066340999999998
+ },
+ "hit_thievul": {
+  "dur": 20.4,
+  "inicio": [
+   0.0,
+   6.2
+  ],
+  "hits": [
+   14.5
+  ],
+  "bricks": [],
+  "preco": null
+ },
+ "hit_dragalge": {
+  "dur": 21.4,
+  "inicio": [
+   0.0,
+   7.2
+  ],
+  "hits": [
+   14.7
+  ],
+  "bricks": [],
+  "preco": null
+ },
+ "brick_dragonite": {
+  "dur": 14.8,
+  "inicio": [
+   0.0
+  ],
+  "hits": [],
+  "bricks": [
+   8.6
+  ],
+  "preco": null
  }
 }
