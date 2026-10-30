@@ -304,7 +304,7 @@ def processa(nome, cfg):
          f"[orig][trd]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]")
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', base, '-framerate', str(FPS), '-i', f'{cam}/%05d.png', '-framerate', str(FPS), '-i', f'{fimd}/f%04d.png', '-i', trl,
                     '-filter_complex', g, '-map', '[vf]', '-map', '[a]', '-c:a', 'aac', '-b:a', '192k', '-t', f'{DUR + EXTRA:.2f}',
-                    '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '6M', '-bufsize', '12M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', saida], check=True)
+                    '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '4M' if ASMR else '6M', '-bufsize', '8M' if ASMR else '12M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', saida], check=True)
     provas = [1.2] + ([t_pre + 1.9] if t_pre is not None else []) + [x[0] + 0.5 for x in hits] + [x[0] + 1.0 for x in bricks] + [DUR + EXTRA - 0.5]
     for tt in provas:
         subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', f'{tt:.2f}', '-i', saida, '-frames:v', '1', '-vf', 'scale=540:-2', f'{OUT}/{cfg["saida"]}_prova_{tt:05.1f}.jpg'])

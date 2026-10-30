@@ -42,7 +42,7 @@ for nome, f in FONTES.items():
     try:
         asmr = f"tmp-render/{nome}_asmr.mp4"
         if nome.startswith('U_') and os.path.exists(asmr):  # gravação original já refeita em ASMR (unbox.py ASMR=1)
-            shutil.copy(asmr, f'tmp-render/M_{nome}.mp4'); shutil.copy(f"tmp-render/{nome}_asmr_thumb.jpg", f'tmp-render/M_{nome}_thumb.jpg')
+            shutil.copy(asmr, f'tmp-render/M_{nome}.mp4'); shutil.copy(f"tmp-render/{nome}_asmr_thumb.jpg", f'tmp-render/M_{nome}_thumb.jpg'); os.remove(asmr)
             log.append(f'ok {nome} asmr'); print(log[-1], flush=True); continue
         src = f.get('arquivo') or baixa(f'https://drive.usercontent.google.com/download?id={f["drive"]}&export=download&confirm=t', f'{T}/{nome}.mp4')
         dur = float(run('ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src).stdout)

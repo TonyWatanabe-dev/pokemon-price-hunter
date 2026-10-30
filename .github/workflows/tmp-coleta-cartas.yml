@@ -64,4 +64,4 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render tmp-blister tmp-comp tmp-dragonite tmp-dragonite-d 2>/dev/null; git commit -m "tmp: resultado da coleta" && git push
+          git add -A tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render tmp-blister tmp-comp tmp-dragonite tmp-dragonite-d 2>/dev/null; find tmp-render -name "*.mp4" -size +95M -printf "GRANDE %p %s\n" -delete; git commit -m "tmp: resultado da coleta" && (git push || (git pull --no-rebase --no-edit && git push))
