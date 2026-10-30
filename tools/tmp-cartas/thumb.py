@@ -58,11 +58,28 @@ def gera(cfg, edl, baixa, saida):
     os.remove(tmp); fr.convert('RGB').save(saida, quality=92)
     return saida
 
+def nitidez(im):
+    c = im.crop((W // 4, H // 4, W * 3 // 4, H * 3 // 4)).convert('L').resize((270, 480))
+    e = c.filter(ImageFilter.FIND_EDGES); px = list(e.getdata()); m = sum(px) / len(px)
+    return sum((x - m) ** 2 for x in px) / len(px)
+
+def mais_nitido(video, t, tmp, antes=1.0, depois=2.0, passo=0.2):
+    """O instante do salto do placar costuma pegar a carta em movimento: procura o quadro mais nítido em volta."""
+    melhor = None; k = t - antes
+    while k <= t + depois:
+        if k >= 0:
+            try: im = quadro(video, k, tmp)
+            except Exception: break
+            n = nitidez(im)
+            if melhor is None or n > melhor[0]: melhor = (n, im)
+        k += passo
+    return melhor[1]
+
 def de_video(video, t, saida):
     """Capa de vídeo já editado (sem bruto): carta em t aproximada pelo centro (corta placar e legendas); t=None = desfocado."""
     tmp = saida + '.raw.jpg'
     if t is not None:
-        base = quadro(video, t, tmp)
+        base = mais_nitido(video, t, tmp)
         z = 1.45; cw, ch = int(W / z), int(H / z)
         base = base.crop(((W - cw) // 2, (H - ch) // 2, (W + cw) // 2, (H + ch) // 2)).resize((W, H), Image.LANCZOS)
         base = ImageEnhance.Color(base).enhance(1.3); base = ImageEnhance.Contrast(base).enhance(1.1); base = ImageEnhance.Sharpness(base).enhance(1.5)
