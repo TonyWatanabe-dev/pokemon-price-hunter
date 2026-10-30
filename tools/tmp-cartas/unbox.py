@@ -294,7 +294,7 @@ def processa(nome, cfg):
     # áudio: original realçado (ASMR) + trilha baixa com ducking pela fala; whoosh simples na troca para o final
     saida = f'{OUT}/{cfg["saida"]}.mp4'
     trl = trilha()
-    AUD = (f"[0:a]highpass=f=60,equalizer=f=4500:t=q:w=1.2:g=5,equalizer=f=9000:t=q:w=1:g=3,acompressor=threshold=-30dB:ratio=4:attack=3:release=90:makeup=9,apad=pad_dur={EXTRA},asplit=2[orig][sc];" if ASMR else
+    AUD = (f"[0:a]highpass=f=90,equalizer=f=180:t=q:w=1:g=-3,equalizer=f=380:t=q:w=1:g=-6,equalizer=f=800:t=q:w=1:g=-2,equalizer=f=3000:t=q:w=1.2:g=6,equalizer=f=6000:t=q:w=1:g=3,afftdn=nf=-30,acompressor=threshold=-24dB:ratio=2.5:attack=8:release=150:makeup=5,apad=pad_dur={EXTRA},asplit=2[orig][sc];" if ASMR else
            f"[0:a]highpass=f=70,acompressor=threshold=-24dB:ratio=3:attack=5:release=120:makeup=6,apad=pad_dur={EXTRA},asplit=2[orig][sc];")
     g = (f"[0:v]{zoom},subtitles={T}/{nome}.ass:fontsdir={AQUI}[v0];[v0][1:v]overlay=0:0:eof_action=pass[v1];"
          f"[2:v]setpts=PTS-STARTPTS+{DUR:.3f}/TB[fe];[v1]tpad=stop_mode=clone:stop_duration={EXTRA}[v2];[v2][fe]overlay=0:0:eof_action=repeat[vf];"
