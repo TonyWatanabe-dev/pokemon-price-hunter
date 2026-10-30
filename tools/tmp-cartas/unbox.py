@@ -187,13 +187,17 @@ def valor_img(v):
     return pilula(brl2(v), F(900, 70), (11, 113, 72), BRANCO, pad=(36, 14))
 
 # ---------- montagem ----------
+ASMR = os.environ.get('ASMR') == '1'
 def processa(nome, cfg):
     edl = cfg['edl']
+    if ASMR:  # 30/10, pedido do dono: ritmo de unboxing ASMR (sem acelerar abertura), som do pacote em destaque, trilha bem baixa
+        edl = [[s_, a_, b_, (1.0 if v_ <= 2 else 1.4)] for s_, a_, b_, v_ in edl]
+        cfg = dict(cfg, whips=[], saida=cfg['saida'] + '_asmr', vol_trilha=0.10)
     clipes, inicio, t = [], [], 0.0
     for i, (src, a, b, v) in enumerate(edl):
         arq = baixa(src); c = f'{T}/{nome}_c{i:02d}.mp4'
         af = (f'atempo={min(v, 2.0)},' + (f'atempo={v / 2.0},' if v > 2 else '')) if v != 1 else ''
-        if v > 1.6: af += 'volume=0.35,'
+        if v > 1.6 and not ASMR: af += 'volume=0.35,'
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(a), '-to', str(b), '-i', arq,
                         '-vf', f'scale=1080:1920:flags=lanczos,setsar=1,fps={FPS},setpts=PTS/{v}', '-af', f'{af}aresample=48000',
                         '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', '-c:a', 'aac', '-b:a', '192k', c], check=True)
@@ -284,15 +288,17 @@ def processa(nome, cfg):
     for i in range(int(EXTRA * FPS)):
         mf.end_card(fim, i / FPS).save(f'{fimd}/f{i:04d}.png', compress_level=1)
     # zoom-punch no vídeo nos hits
-    Z = '+'.join(f'0.04*exp(-((t-{th + 0.1:.3f})*(t-{th + 0.1:.3f}))/0.05)' for th, _ in hits) or '0'
+    Z = '+'.join(f'{0.02 if ASMR else 0.04}*exp(-((t-{th + 0.1:.3f})*(t-{th + 0.1:.3f}))/0.05)' for th, _ in hits) or '0'
     zoom = f"scale=w='2*trunc(540*(1+{Z}))':h='2*trunc(960*(1+{Z}))':eval=frame,crop=1080:1920"
 
     # áudio: original realçado (ASMR) + trilha baixa com ducking pela fala; whoosh simples na troca para o final
     saida = f'{OUT}/{cfg["saida"]}.mp4'
     trl = trilha()
+    AUD = (f"[0:a]highpass=f=60,equalizer=f=4500:t=q:w=1.2:g=5,equalizer=f=9000:t=q:w=1:g=3,acompressor=threshold=-30dB:ratio=4:attack=3:release=90:makeup=9,apad=pad_dur={EXTRA},asplit=2[orig][sc];" if ASMR else
+           f"[0:a]highpass=f=70,acompressor=threshold=-24dB:ratio=3:attack=5:release=120:makeup=6,apad=pad_dur={EXTRA},asplit=2[orig][sc];")
     g = (f"[0:v]{zoom},subtitles={T}/{nome}.ass:fontsdir={AQUI}[v0];[v0][1:v]overlay=0:0:eof_action=pass[v1];"
          f"[2:v]setpts=PTS-STARTPTS+{DUR:.3f}/TB[fe];[v1]tpad=stop_mode=clone:stop_duration={EXTRA}[v2];[v2][fe]overlay=0:0:eof_action=repeat[vf];"
-         f"[0:a]highpass=f=70,acompressor=threshold=-24dB:ratio=3:attack=5:release=120:makeup=6,apad=pad_dur={EXTRA},asplit=2[orig][sc];"
+         f"{AUD}"
          f"[3:a]volume={cfg.get('vol_trilha', 0.22)},aloop=loop=-1:size=2e9,atrim=0:{DUR + EXTRA:.2f},afade=t=in:d=0.6,afade=t=out:st={DUR + EXTRA - 1.2:.2f}:d=1.2[tr];"
          f"[tr][sc]sidechaincompress=threshold=0.04:ratio=6:attack=20:release=400[trd];"
          f"[orig][trd]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]")
@@ -302,6 +308,8 @@ def processa(nome, cfg):
     provas = [1.2] + ([t_pre + 1.9] if t_pre is not None else []) + [x[0] + 0.5 for x in hits] + [x[0] + 1.0 for x in bricks] + [DUR + EXTRA - 0.5]
     for tt in provas:
         subprocess.run(['ffmpeg', '-v', 'quiet', '-y', '-ss', f'{tt:.2f}', '-i', saida, '-frames:v', '1', '-vf', 'scale=540:-2', f'{OUT}/{cfg["saida"]}_prova_{tt:05.1f}.jpg'])
+    if ASMR:
+        import thumb; thumb.gera(cfg, edl, baixa, f'{OUT}/{cfg["saida"]}_thumb.jpg')
     return {'dur': round(DUR + EXTRA, 1), 'inicio': [round(x, 2) for x in inicio], 'hits': [round(x[0], 2) for x in hits], 'bricks': [round(x[0], 2) for x in bricks], 'preco': t_pre}
 
 rel = {}
