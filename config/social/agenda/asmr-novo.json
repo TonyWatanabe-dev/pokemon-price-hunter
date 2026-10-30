@@ -1,211 +1,6 @@
 {
  "descricao": "30/10: vídeos remodelados (ASMR nas gravações originais, voz mais clara, capa sem texto, legenda PT+EN).",
- "cancelar": [
-  {
-   "quando": "2026-10-30T19:00",
-   "plataforma": "instagram",
-   "trecho": "Quinto pack da box Meg",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-30T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Quinto pack da box Meg",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-30T19:00",
-   "plataforma": "youtube",
-   "trecho": "Quinto pack da box Meg",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-31T11:00",
-   "plataforma": "instagram",
-   "trecho": "Feliz Halloween",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-31T11:00",
-   "plataforma": "tiktok",
-   "trecho": "o maior susto do hallo",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-31T11:00",
-   "plataforma": "youtube",
-   "trecho": "Feliz Halloween",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-31T19:00",
-   "plataforma": "instagram",
-   "trecho": "Último pack da box Meg",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-31T19:00",
-   "plataforma": "tiktok",
-   "trecho": "Último pack da box Meg",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-10-31T19:00",
-   "plataforma": "youtube",
-   "trecho": "Último pack da box Meg",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-01T11:00",
-   "plataforma": "instagram",
-   "trecho": "Segundo pack do Combo ",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-01T18:00",
-   "plataforma": "instagram",
-   "trecho": "ETB da Celebração de 3",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-01T18:00",
-   "plataforma": "tiktok",
-   "trecho": "ETB 30 anos por R$ 519",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-01T18:00",
-   "plataforma": "youtube",
-   "trecho": "Abri a Coleção Treinad",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-03T19:00",
-   "plataforma": "instagram",
-   "trecho": "Booster da Celebração ",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-03T19:00",
-   "plataforma": "tiktok",
-   "trecho": "booster de R$ 47. vale",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-03T19:00",
-   "plataforma": "youtube",
-   "trecho": "Booster de R$ 60,89 da",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-04T19:00",
-   "plataforma": "instagram",
-   "trecho": "Desafio Estratégico de",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-04T19:00",
-   "plataforma": "tiktok",
-   "trecho": "será que agora vem?",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-04T19:00",
-   "plataforma": "youtube",
-   "trecho": "Desafio Estratégico de",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-07T11:00",
-   "plataforma": "instagram",
-   "trecho": "Blister Duplo da Celeb",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-07T11:00",
-   "plataforma": "tiktok",
-   "trecho": "blister de R$ 69. vale",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-07T11:00",
-   "plataforma": "youtube",
-   "trecho": "Blister da Celebração ",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-08T11:00",
-   "plataforma": "instagram",
-   "trecho": "Nem todo booster é hit",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-08T19:00",
-   "plataforma": "instagram",
-   "trecho": "8 boosters do Desafio ",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-09T19:00",
-   "plataforma": "instagram",
-   "trecho": "Mais um Desafio Estrat",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-09T19:00",
-   "plataforma": "tiktok",
-   "trecho": "a essa altura é questã",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-09T19:00",
-   "plataforma": "youtube",
-   "trecho": "Mais um Desafio Estrat",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-10T19:00",
-   "plataforma": "instagram",
-   "trecho": "Último pack do Desafio",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-10T19:00",
-   "plataforma": "tiktok",
-   "trecho": "último pack da série. ",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-10T19:00",
-   "plataforma": "youtube",
-   "trecho": "Último pack do Desafio",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-11T19:00",
-   "plataforma": "instagram",
-   "trecho": "Abri 2 Blisters Duplos",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-11T19:00",
-   "plataforma": "tiktok",
-   "trecho": "2 blisters duplos da 3",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-11T19:00",
-   "plataforma": "youtube",
-   "trecho": "Abri 2 Blisters Duplos",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  },
-  {
-   "quando": "2026-11-15T11:00",
-   "plataforma": "instagram",
-   "trecho": "Unboxing do Baralho Ba",
-   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
-  }
- ],
+ "cancelar": [],
  "itens": [
   {
    "id": "m-u-hit-thievul-ig-32-asmr",
@@ -685,6 +480,212 @@
    "legenda": "🇺🇸 Unboxing the Miraidon ex League Battle Deck\n\nUnboxing do Baralho Batalha de Liga Miraidon ex ⚡ Deck pronto pra jogar: o que vem dentro?\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #miraidon #batalhadeliga #unboxing",
    "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1aEcSNI1.mp4",
    "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1aEcSNI1_thumb.jpg"
+  }
+ ],
+ "cancelar_feito": [
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "instagram",
+   "trecho": "Quinto pack da box Meg",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Quinto pack da box Meg",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-30T19:00",
+   "plataforma": "youtube",
+   "trecho": "Quinto pack da box Meg",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-31T11:00",
+   "plataforma": "instagram",
+   "trecho": "Feliz Halloween",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-31T11:00",
+   "plataforma": "tiktok",
+   "trecho": "o maior susto do hallo",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-31T11:00",
+   "plataforma": "youtube",
+   "trecho": "Feliz Halloween",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack da box Meg",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Último pack da box Meg",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-10-31T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack da box Meg",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-01T11:00",
+   "plataforma": "instagram",
+   "trecho": "Segundo pack do Combo ",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "instagram",
+   "trecho": "ETB da Celebração de 3",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "tiktok",
+   "trecho": "ETB 30 anos por R$ 519",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-01T18:00",
+   "plataforma": "youtube",
+   "trecho": "Abri a Coleção Treinad",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "instagram",
+   "trecho": "Booster da Celebração ",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "tiktok",
+   "trecho": "booster de R$ 47. vale",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-03T19:00",
+   "plataforma": "youtube",
+   "trecho": "Booster de R$ 60,89 da",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "instagram",
+   "trecho": "Desafio Estratégico de",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "tiktok",
+   "trecho": "será que agora vem?",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "youtube",
+   "trecho": "Desafio Estratégico de",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "instagram",
+   "trecho": "Blister Duplo da Celeb",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "tiktok",
+   "trecho": "blister de R$ 69. vale",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "youtube",
+   "trecho": "Blister da Celebração ",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-08T11:00",
+   "plataforma": "instagram",
+   "trecho": "Nem todo booster é hit",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-08T19:00",
+   "plataforma": "instagram",
+   "trecho": "8 boosters do Desafio ",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "instagram",
+   "trecho": "Mais um Desafio Estrat",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "tiktok",
+   "trecho": "a essa altura é questã",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "youtube",
+   "trecho": "Mais um Desafio Estrat",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "instagram",
+   "trecho": "Último pack do Desafio",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "tiktok",
+   "trecho": "último pack da série. ",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "youtube",
+   "trecho": "Último pack do Desafio",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "instagram",
+   "trecho": "Abri 2 Blisters Duplos",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "tiktok",
+   "trecho": "2 blisters duplos da 3",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "youtube",
+   "trecho": "Abri 2 Blisters Duplos",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
+  },
+  {
+   "quando": "2026-11-15T11:00",
+   "plataforma": "instagram",
+   "trecho": "Unboxing do Baralho Ba",
+   "motivo": "formato novo (ASMR, capa sem texto, PT+EN)"
   }
  ]
 }
