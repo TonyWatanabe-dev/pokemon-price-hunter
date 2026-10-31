@@ -531,6 +531,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
   for (const o of Object.values(prev)) if (!offers[o.id] && (touched.has(o.storeId) || o.sourceType === PISTA_SOURCE)) history.push({ t: T, offerId: o.id, productId: o.productId, storeId: o.storeId, stock: 'UNAVAILABLE', event: 'removed' });
 
+  // Foto fixa por produto (config/fotos-produto.json, decisão do dono): vence a primeira foto vista numa loja, que pode ser de
+  // outra embalagem. Só https; produto que ainda não existe no catálogo automático é ignorado.
+  for (const [pid, url] of Object.entries(readJson(configPath('fotos-produto.json'), {})?.fotos || {})) if (registry[pid] && typeof url === 'string' && /^https:\/\//.test(url)) registry[pid].image = url;
+
   // Agregados por produto. Preço Copag cadastrado à mão vence; senão vale o capturado na loja oficial.
   const products = {}; const newLowest = new Map();
   for (const base of Object.values(registry)) {
