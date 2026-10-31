@@ -40,7 +40,9 @@ const MARCAS = [['copag', /\bcopag\b/], ['Ultra PRO', /\bultra ?pro\b/], ['Drago
 export function classificarAcessorio(titulo) {
   const t = norm(titulo);
   if (!t || LACRADO.test(t.replace(/\bdeck ?box(es)?\b/g, ' '))) return null;
-  const hit = REGRAS.find(([, re]) => re.test(t)); if (!hit) return null;
+  // A marca "Dragon Shield"/"Central Shield" não é a palavra "shield" de sleeve ("Deck Box Dragon Shield Shell" é deck box).
+  const semMarca = t.replace(/\b(dragon|central) ?shield\b/g, ' ');
+  const hit = REGRAS.find(([, re]) => re.test(semMarca)); if (!hit) return null;
   const categoria = hit[0];
   const marcaHit = MARCAS.find(([, re]) => re.test(t)); const marca = marcaHit ? (marcaHit[0] === 'copag' ? 'Copag' : marcaHit[0]) : null;
   const pokemon = /\bpokemon\b/.test(t);
