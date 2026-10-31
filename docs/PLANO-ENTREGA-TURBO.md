@@ -1,5 +1,22 @@
 # Plano de entrega Turbo — Pokémon TCG Price Hunter
 
+## Verificação pós-burn-in — 31/10/2026, 08:52 (America/Sao_Paulo)
+
+- Burn-in #271: **7/7 concluído**, com veredito final `final=true` em 31/10 às 03:07 UTC; os detalhes diários estão em `docs/ROADMAP-OPERACIONAL.md`.
+- Main: `688d8043cbe6837cdce599209a2bd921e988f434`. Deploy de produção Vercel associado ao mesmo SHA está **READY**. O deploy anterior da #985 falhou; #986 corrigiu o caminho da imagem ETB e o deploy atual está READY.
+- Integradas após o burn-in: #945, #967–#979, #982 e #984–#986, conforme matriz e ressalvas no roadmap operacional. #946 continua aberta porque o `qa-review` foi pulado; check pulado não é aprovação.
+- Mercado Livre #974: correção de 429 integrada, validação em runtime ainda parcial; manter acompanhamento de bloqueios e frescor.
+- Ri Happy #975: leitura parcial não remove ofertas ausentes; runtime confirmou 18 ofertas mantidas como não confirmadas sem remoção falsa. Toy Mania permanece investigação separada.
+- Reparo: #979 aplicou o primeiro lote no ramo `data`; #984 registrou a decisão de apagar os três itens em revisão. A execução posterior dessa decisão precisa ser comprovada no ramo `data`. Postgres não foi alterado; exige `pg_dump` verificável.
+- M2 (#976) está integrada e testada, mas a publicação no console Firebase não foi comprovada. `enforce_admins` também não foi confirmado; último estado documentado era false.
+- Incidente operacional #983: WhatsApp parado, issue aberta no último estado consultado e falhas recentes do workflow de envio. Resolver e validar entrega real antes de fechar.
+- Próximas prioridades: incidente WhatsApp → confirmar reparo residual/backup do Postgres → M2 e proteção de branch → revisão #946 → monitoramento ML/Ri Happy/Toy Mania → pendências de Reclame Aqui e limpeza de branches.
+
+Esta atualização não marca como concluídas ações sem evidência. Estados de implementação, integração, publicação e validação em runtime permanecem distintos.
+
+---
+
+
 > **Atualizado em:** 24/10/2026 (America/Sao_Paulo)
 > **Fonte de estado:** `docs/ROADMAP-OPERACIONAL.md`. O roadmap operacional é a fonte de verdade para fases, issues e evidências; este documento descreve execução, dependências e critérios.
 

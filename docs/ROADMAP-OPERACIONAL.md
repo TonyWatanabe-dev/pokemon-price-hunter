@@ -1,3 +1,52 @@
+## Incidente WhatsApp #983 — diagnóstico técnico confirmado (31/10/2026, 08:58)
+
+- Run mais recente analisado: [#41198916275](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/41198916275), SHA `688d8043`.
+- Checkout de `main` e `data`, dependências, instalação Baileys e restauração dos caches da sessão/diário concluíram normalmente.
+- A falha ocorre exclusivamente na etapa “Rodada de envio”: WhatsApp fecha conexão com **código 401** (duas ocorrências); exit code 1.
+- Diagnóstico provável: credencial/aparelho conectado da sessão inválido ou revogado. O log não comprova bloqueio do número. Não é erro de build, geração do card nem checkout dos dados.
+- **Correção requerida:** refazer pareamento por `.github/workflows/social-whatsapp-parear.yml`. O workflow solicita número no formato `55DDDNUMERO`, gera código de 8 caracteres e salva a nova sessão cifrada no cache do Actions. No celular do número do bot: WhatsApp → Aparelhos conectados → Conectar aparelho → Conectar com número de telefone → inserir o código.
+- Após o pareamento, executar uma rodada controlada e comprovar mensagem entregue no grupo exato `TCG Price Hunter | 01`. Não repetir o workflow de envio antes do pareamento: a sessão atual retorna 401.
+- Nenhum número foi alterado, cache apagado ou mensagem disparada durante o diagnóstico. A automação permanece habilitada; a issue #983 continua aberta até confirmação de entrega.
+
+# Verificação pós-burn-in e atualização operacional — 31/10/2026, 08:52 (America/Sao_Paulo)
+
+> **Base verificada:** `main` em `688d8043cbe6837cdce599209a2bd921e988f434`. Deploy de produção Vercel `dpl_ExPJyfqHNVxSDtXRLt5iYA3sSsr2` em **READY**, associado ao mesmo SHA. Esta atualização separa integração, publicação e validação em runtime; não presume que uma etapa comprova as demais.
+
+## Estado pós-burn-in
+
+- **Burn-in #271: 7/7 concluído**, conforme o veredito final `final=true` de 31/10 às 03:07 UTC, para os sete dias de 24 a 30/10. Os 11 critérios permaneceram dentro dos limites; critérios e thresholds não foram alterados. A tabela diária e as métricas detalhadas permanecem na seção “Burn-in 7/7 concluído”.
+- **Main e produção:** a main atual está em `688d8043`; a Vercel publicou esse SHA com estado READY. O deploy imediatamente anterior, do commit de #985, ficou ERROR; a #986 corrigiu o caminho do arquivo e o deploy mais recente ficou READY. Não confundir READY do build com smoke completo de todas as rotas.
+- **Fila pós-burn-in:** #967 ME06; #968–#973 D1/D2/D3/D5/D6/D7; #974 Mercado Livre 429; #975 leitura parcial/Ri Happy; #976 regra M2; #977 releitura BQD; #978 ordenação por total; #979 ferramenta e publicação do reparo; #945 varredura semanal; #982 kit-v3; #984 registro das decisões de dados; #985/#986 foto ETB 30 anos — todas integradas.
+- **Mercado Livre (#974):** correção integrada. O último registro documentado na seção pós-burn-in mostrou loja ACTIVE desde 06:45 e `rateLimit.retries=0`, validação ainda parcial; manter monitoramento de novos 429 e do frescor real das ofertas.
+- **Ri Happy (#975):** correção integrada e validada em runtime na rodada documentada: 18 ofertas ausentes permaneceram como não confirmadas, sem evento `removed` falso. MP Brinquedos compartilha o teto de leitura parcial; Toy Mania ainda tinha comportamento intermitente por causa diferente e segue como investigação separada.
+- **ME06 e consistência:** #967 e #968–#973 integradas e publicadas. A D5 (#971) é uma alteração de texto na página do produto; não declarar todas as superfícies consistentes sem validar também a lista “Onde comprar” e a página do servidor.
+- **Dados:** #979 aplicou no ramo `data` o reparo inicial com etiqueta `data-backup/antes-do-reparo-2026-10-31-0712`, alterando 11 arquivos, com 14 inserções e 32 remoções; 65 pontos falsos removidos. O Mewtwo passou de R$ 139,99 para R$ 169,90; Wigglytuff, Golem e Kingdra perderam recordes falsos.
+- **Decisões de catálogo:** #984 foi integrada e registra a decisão do proprietário de apagar os pontos/menores preços em revisão de `sv9-zacian`, `me01-etb` e Alakazam. **A integração da decisão não prova que a aplicação posterior no ramo `data` foi executada**; confirmar o workflow e o estado final dos arquivos antes de marcar esses três casos como reparados.
+- **Postgres:** continua sem evidência de aplicação. O procedimento documentado exige backup `pg_dump` manual verificável antes de qualquer escrita. Não afirmar que a limpeza do banco foi concluída.
+- **Firestore M2:** #976 integrada e testes do emulador/CI aprovados. Publicação no console Firebase não foi comprovada nesta verificação; manter como pendente até evidência do console/runtime.
+- **Governança:** o último estado documentado indicava `enforce_admins=false`. A leitura atual da proteção de `main` não ficou disponível pela integração (403); portanto, não declarar a proteção ativada. Confirmar manualmente em Settings → Branches.
+- **PR #946:** permanece aberta. Os testes `test`, `regression` e `golden` foram reportados verdes, mas `qa-review` foi pulado no fluxo do Dependabot; skipped não equivale a aprovado. Não marcar como integrada.
+- **Incidente novo #983 — WhatsApp:** issue permanece aberta no último estado consultado, com `whatsapp_parado`; quatro últimas rodadas do envio ao grupo falharam segundo o diagnóstico do Vigia. As execuções automáticas do WhatsApp também apresentaram falha nos runs 41196752395 e 41197426098. Tratar como incidente operacional ativo até comprovar pareamento/restauração e uma entrega real bem-sucedida. Não confundir o sucesso do Hunter/Dispatcher com a saúde do canal WhatsApp.
+- **Branches:** não foram apagadas nesta atualização. A limpeza das branches integradas continua pendente de execução autorizada e verificação de refs exclusivas.
+- **Reclame Aqui:** #970 corrigiu o rótulo para “Não consultado” quando não existe registro; a reconsulta das lojas fora da tabela não está comprovada.
+- **Foto do ETB 30 anos:** #985 teve deploy ERROR por caminho em subpasta não publicado pelo build; #986 moveu o arquivo para o diretório publicado e o deploy atual de `688d8043` está READY.
+
+## Próximas prioridades — estado observado em 31/10
+
+1. **P0 — Resolver o incidente #983 do WhatsApp:** verificar sessão/pareamento e bloqueio do número conforme runbook; validar envio real ao grupo e fechar a issue somente com evidência.
+2. **P0 — Confirmar o reparo residual:** verificar se a decisão registrada na #984 foi aplicada ao ramo `data`; revisar o resultado dos três produtos e preservar a etiqueta de backup. Não tocar no Postgres antes do `pg_dump` verificável.
+3. **P1 — Governança e M2:** proprietário confirmar `enforce_admins` nas configurações do GitHub e publicar M2 no console Firebase com cópia da regra anterior e validação pós-publicação.
+4. **P1 — PR #946:** obter revisão/check obrigatório equivalente ao `qa-review` no SHA atual; não tratar check pulado como verde.
+5. **P1 — Observabilidade dos coletores:** continuar medindo 429 do Mercado Livre e frescor por loja após #974; investigar Toy Mania e limites de paginação da MP Brinquedos sem contornar controles dos sites.
+6. **P2 — Fechar lacunas de consistência:** completar a validação D5 nas superfícies restantes e revalidar as demais D1–D3/D6/D7 após deploy.
+7. **P2 — Pendências comerciais/operacionais:** reconsulta Reclame Aqui, limpeza de branches e demais itens do backlog, cada um com evidência própria.
+
+## Critério de encerramento desta rodada
+
+A fila de integração pós-burn-in está majoritariamente integrada e publicada, mas **não declarar todas as pendências encerradas** enquanto #983 estiver aberta, o reparo residual e o Postgres não tiverem evidência, M2 e `enforce_admins` não forem confirmados, e #946 permanecer sem revisão obrigatória. Para cada item, manter os estados “implementado”, “integrado”, “publicado” e “validado em runtime” separados.
+
+---
+
 # Atualização estratégica — 24/10/2026 (America/Sao_Paulo)
 
 ## Nova prioridade de produto: infraestrutura antes dos combos
