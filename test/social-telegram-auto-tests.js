@@ -43,7 +43,7 @@ await t('3b. oferta com link de afiliado volta a cada 24 h, espaçada, e as outr
   assert.equal(planejar([af('A'), c('b')], d, { now: NOW }).enviar[0].item.ofertaId, 'b', 'no intervalo entre afiliadas sai outra oferta');
   assert.equal(planejar([af('A'), c('b')], [{ ofertaId: 'X', at: iso(21), afiliado: true }], { now: NOW }).enviar[0].item.ofertaId, 'A');
   assert.match(planejar([af('A')], d, { now: NOW }).motivo, /espaçamento/);
-  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 60); assert.equal(REGRAS.afiliadoIntervaloMin, 20); assert.equal(REGRAS.repetirHorasAfiliado, 24);
+  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 30); assert.equal(REGRAS.afiliadoIntervaloMin, 20); assert.equal(REGRAS.repetirHorasAfiliado, 24);
 });
 
 await t('4. diário: guarda 30 dias (o que saiu uma vez não volta) e ignora lixo', () => {
