@@ -127,7 +127,7 @@ jobs:
       # Caminho do label (operador aplica executor:github): modo tag da action, como antes.
       - id: claude
         if: github.event_name == 'issues'
-        uses: anthropics/claude-code-action@f27be6b65a4652f08a2ba3cff79114829b588967 # v1.0.252
+        uses: anthropics/claude-code-action@16f9f71ab9c490faf367f94dd294897edc25be33 # v1.0.261
         env:
           TEST_DATABASE_URL: postgres://postgres:pw@localhost:5432/postgres
         with:
@@ -144,7 +144,7 @@ jobs:
       # Commits pela API do app (use_commit_signing) na branch da tentativa, sem git push em Bash.
       - id: claude_despacho
         if: github.event_name == 'workflow_dispatch' && steps.despacho.outcome == 'success'
-        uses: anthropics/claude-code-action@f27be6b65a4652f08a2ba3cff79114829b588967 # v1.0.252
+        uses: anthropics/claude-code-action@16f9f71ab9c490faf367f94dd294897edc25be33 # v1.0.261
         env:
           TEST_DATABASE_URL: postgres://postgres:pw@localhost:5432/postgres
           CLAUDE_BRANCH: ${{ steps.despacho.outputs.branch }}
