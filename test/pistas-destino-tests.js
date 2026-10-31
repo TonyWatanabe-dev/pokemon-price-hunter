@@ -42,7 +42,7 @@ await t('config pública: só links do painel (s.shopee / link.amazon), nada mon
     { links: [{ asin: 'B0HFNSM2T3', shortUrl: 'https://link.amazon/B0894sCU8' }, { asin: 'B0XXXXXXX1', shortUrl: 'https://amzn.evil/x' }] });
   assert.deepEqual(o, { shopee: { '1234/567890': 'https://s.shopee.com.br/AbC1' }, amazon: { B0HFNSM2T3: 'https://link.amazon/B0894sCU8' } });
   const real = loadOutrasLojas({ fresh: true });
-  assert.equal(Object.keys(real.shopee).length, 45, 'os 45 links da Shopee do dono'); assert.equal(Object.keys(real.amazon).length, 31);
+  assert.equal(Object.keys(real.shopee).length, 45, 'os 45 links da Shopee do dono'); assert.equal(Object.keys(real.amazon).length, 67, 'os 67 links curtos da Amazon do dono (31 de 17/10 + 36 de 30/10)');
   assert.deepEqual(Object.keys(publicAffiliates()).sort(), ['amazon', 'anuncios', 'geral', 'shopee', 'v']);
 });
 

@@ -87,7 +87,7 @@ export function legenda(tipo, { itens, quando: q }) {
   const lista = itens.slice(0, 10);
   const min = lista.reduce((a, b) => (b.preco < a.preco ? b : a)); const max = lista.reduce((a, b) => (b.preco > a.preco ? b : a));
   return ['📋 *TOP 10 DO SITE: AS MELHORES OFERTAS AGORA*', '',
-    `De ${min.formato} a ${brl(min.preco)} a ${max.formato} a ${brl(max.preco)}: tudo lacrado, em português e com estoque confirmado.`, '',
+    `De ${min.formato} a ${brl(min.preco)}${min.pix ? ' no Pix' : ''} a ${max.formato} a ${brl(max.preco)}${max.pix ? ' no Pix' : ''}: tudo lacrado, em português e com estoque confirmado.`, '',
     'Quer saber qual loja tem, quanto fica o frete e se o preço já foi mais baixo? Tá tudo no site, grátis e sem cadastro 👇', SITE, '', rodape].join('\n');
 }
 
@@ -172,6 +172,7 @@ export function arteHtml(tipo, { itens, quando: q }, a) {
       + `<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:${NAVY};opacity:.7;white-space:nowrap">${esc(i.colecao)}</div>`
       + `<div style="font-size:24px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(i.tipoArte)}</div></div>`
       + (i.pct == null ? '' : `<span style="flex:none;padding:6px 12px;border-radius:12px;background:${RED};color:#fff;font-size:22px;font-weight:900">−${pct1(i.pct)}</span>`)
+      + (i.pix ? `<span style="flex:none;padding:4px 8px;border-radius:8px;background:${d ? NAVY : Y};color:${d ? Y : NAVY};font-size:15px;font-weight:900;letter-spacing:1px">PIX</span>` : '')
       + `<span class="pr" style="font-size:34px;letter-spacing:-1px;flex:none;width:186px;text-align:right">${brl(i.preco)}</span></div>`;
   });
   const corpo = raio(Y, -200, 520, 620, 0.16, -8) + raio(WHITE, 780, 120, 400, 0.12, 12, true) + dots(WHITE, 620, 980, 0.14) + aneis(WHITE, 860, 300, [220, 300], 0.18)

@@ -59,7 +59,7 @@ const off = (id, price, shipping = null, extra = {}) => ({ id, productId: produt
 
 t('site: byTot da página (grade de coleção/formato, alertas) segue a #84 como produto e servidor (D2 resolvida)', () => {
   const semFrete = off('a-semfrete', 90); const comFrete = off('b-comfrete', 95, 5);
-  // D2 resolvida (proposta/ordenacao-frete): antes o byTot só olhava o total e o preço sem frete vencia.
+  // D2 resolvida (#978): antes o byTot só olhava o total e o preço sem frete vencia.
   assert.deepEqual(ids([comFrete, semFrete].sort(ctx.__t.byTot)), ['b-comfrete', 'a-semfrete'], 'byTot: frete conhecido antes (#84)');
   assert.deepEqual(ids([semFrete, comFrete].sort(ctx.__t.OFFER_SORTS.price)), ['b-comfrete', 'a-semfrete'], 'página do produto: frete conhecido antes (#84)');
   assert.deepEqual(ids([semFrete, comFrete].sort(byComparableTotal)), ['b-comfrete', 'a-semfrete'], 'servidor: frete conhecido antes (#84)');
