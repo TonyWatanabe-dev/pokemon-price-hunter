@@ -53,6 +53,9 @@ const day = (iso) => (iso && !Number.isNaN(Date.parse(iso)) ? new Date(iso).toLo
 // Imagem de prévia (og:image e JSON-LD) sempre em https: a mesma troca que o site faz ao mostrar a foto (index.html,
 // photo(): http:// → https://). Várias lojas (CDN da Nuvemshop) gravam a foto em http, e buscador/WhatsApp recusam ou avisam.
 export const httpsImg = (u) => String(u || '').replace(/^http:\/\//i, 'https://');
+// Foto própria do produto (config/fotos-produto.json → /assets/web/produto-*) vence a foto da oferta, como em photo().
+export const FOTO_PROPRIA = /\/assets\/web\/produto-/;
+export const fotoDe = (p, o) => (FOTO_PROPRIA.test(p?.image || '') ? p.image : o?.image || p?.image);
 // "1 produto", "2 produtos" (a coleção com um produto só dizia "1 produtos").
 export const nProd = (n) => `${n} ${n === 1 ? 'produto' : 'produtos'}`;
 const hostOf = (u) => { try { return new URL(u).host.replace(/^www\./, ''); } catch { return ''; } };
@@ -138,7 +141,7 @@ function build(t, slug, s, opp = null, lojas = []) {
       ? fitDesc(`${name} (Pokémon TCG lacrado): a partir de ${brl(lo.total)}${pix(lo)} (${shipTag(lo)}) em ${lo.storeName}.`,
         p.copagConfirmed && lo.discount > 0 ? ` ${pct(lo.discount)} abaixo do preço sugerido Copag.` : '', ` Compare ${nLojas} com estoque.`)
       : fitDesc(`${name} (Pokémon TCG lacrado): preço sugerido Copag${p.copagConfirmed ? ` ${brl(p.msrp)}` : ''}, histórico e lojas que vendem no Brasil.`);
-    const img = httpsImg(b0?.image || p.image) || `${SITE}/og.jpg`;
+    const img = httpsImg(fotoDe(p, b0)) || `${SITE}/og.jpg`;
     const ean = [p.ean, ...offers.map((o) => o.ean)].find((x) => /^\d{13}$/.test(String(x || '')));
     // Último item do caminho = o produto (formato + coleção), não o nome do formato de novo.
     const trail = [['Início', '/'], ...(col ? [[col.name, `/colecao/${colSlug(col)}`]] : []), ...(ty ? [[ty.label, `/tipo/${typeSlug(ty)}`]] : []), [name, url]];

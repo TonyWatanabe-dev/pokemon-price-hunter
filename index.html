@@ -1602,7 +1602,7 @@ function toast(msg,warn){const t=$("#toast"),now=Date.now();if(!warn&&toast.unti
 
 function stockChip(o){const[c,l]=STOCK[o.stock]||["",o.stock];return`<span class="chip ${c}">${o.stock==="IN_STOCK"&&o.quantity?`${esc(o.quantity)} em estoque`:esc(l)}</span>`}
 function photo(p,o,cls="photo",eager=false){
-  const src=String(o?.image||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
+  const src=String((/\/assets\/web\/produto-/.test(p?.image)?p.image:o?.image)||p?.image||"").replace(/^http:\/\//i,"https://");const gg={...g(p),icon:CATW[catOf(p)].i};
   const fb=`<div class="${cls} fallback" style="--ec:${gg.c}" aria-hidden="true">${ic(gg.icon)}</div>`;
   if(!src)return fb;
   /* width/height na proporção do CSS (.cat-media 4/3; .photo 1/1) evitam salto de layout; lazy em tudo menos no pódio (eager). alt descritivo: coleção · formato. */
