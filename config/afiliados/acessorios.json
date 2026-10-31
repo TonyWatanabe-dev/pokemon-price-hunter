@@ -1,7 +1,7 @@
 {
  "program": "acessorios",
  "updatedAt": "2026-10-31",
- "regras": "Acessórios de carta (sleeve, fichário, toploader, playmat, deck box) com link de afiliado do dono, lidos por ele no Chrome. Lista curada, à parte do catálogo de lacrados: nunca entra em oferta, ranking, Opportunity Score, alerta ou total do kit. price = preço à vista sem cupom; priceCupom = valor com cupom que a Shopee destaca; aPartirDe = anúncio com faixa de preço por cor. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Fora: tamanho que não é de carta (4x6\") e estampa de outra franquia. Gerado por tools/acessorios-importar.mjs.",
+ "regras": "Acessórios de carta (sleeve, fichário, toploader, playmat, deck box) com link de afiliado do dono, lidos por ele no Chrome. Lista curada, à parte do catálogo de lacrados: nunca entra em oferta, ranking, Opportunity Score ou alerta. O Monte seu kit usa o mais barato de cada categoria para completar o kit (frete a calcular). price = preço à vista sem cupom; priceCupom = valor com cupom que a Shopee destaca; aPartirDe = anúncio com faixa de preço por cor. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Fora: tamanho que não é de carta (4x6\") e estampa de outra franquia. Gerado por tools/acessorios-importar.mjs.",
  "origem": "Leitura do dono no Chrome em 31/10/2026 (12:57–13:32).",
  "categorias": {
   "sleeve": "Sleeves",

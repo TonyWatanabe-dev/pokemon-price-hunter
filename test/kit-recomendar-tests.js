@@ -35,7 +35,8 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
   assert.equal(it.oferta.url, 'https://a.test/xx1-blister3', 'link da oferta real'); assert.ok(it.oferta.source_timestamp, 'oferta rastreável');
   assert.equal(it.imagem, null, 'sem foto https: nenhuma imagem inventada');
   assert.equal(r.total, null, 'frete desconhecido: sem total'); assert.equal(r.fretes[0].frete, null);
-  assert.ok(r.limitacoes.some((l) => /acessórios/.test(l)), 'acessórios avisados, fora do valor');
+  assert.deepEqual(r.acessorios, ['sleeve', 'fichario'], 'acessórios do modelo vão para a página completar o kit (lista curada, #991)');
+  assert.ok(r.itens.every((it) => it.productId && it.oferta), 'a API não inventa item de acessório: só lacrados com oferta real');
   assert.ok(!JSON.stringify(r).match(/rara|chance|garantid|probabilidade/i), 'nunca promete carta');
 }
 // 1b. foto: a do anúncio; sem ela, a do produto
@@ -61,8 +62,8 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
   const m = recomendar({ objetivo: 'especiais', orcamento: 200, idioma: 'pt', favorito: 'Mewtwo' }, produtos, ofertas); assert.equal(m.itens[0].productId, 'avulsos-colecao_ex-gengar', 'mais em conta quando o favorito não existe'); assert.ok(m.limitacoes.some((l) => /Mewtwo/.test(l)));
   assert.equal(m.total, 140, 'frete grátis informado pela loja conta como 0 conhecido');
 }
-// 7. proteger cartas: sem acessórios no catálogo → limitação, nenhum item inventado
-{ const r = recomendar({ objetivo: 'proteger', orcamento: 100 }, produtos, ofertas); assert.equal(r.itens.length, 0); assert.match(r.limitacoes[0], /acessórios/); }
+// 7. proteger cartas: kit só de acessórios (a página escolhe na lista curada); a API não inventa item lacrado
+{ const r = recomendar({ objetivo: 'proteger', orcamento: 100 }, produtos, ofertas); assert.equal(r.itens.length, 0); assert.equal(r.modelo, 'proteger'); assert.deepEqual(r.acessorios, ['sleeve', 'toploader', 'fichario', 'deck_box']); }
 // 8. frete por loja: dois itens na mesma loja com frete por item conhecido → combinado desconhecido (nunca soma por item);
 //    regra pública de frete grátis vale quando o subtotal da loja passa do mínimo
 {

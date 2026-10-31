@@ -63,7 +63,7 @@ t('site: página fora do índice, link de afiliado marcado, ordem só por preço
   assert.match(ler('kit.html'), /href="\/acessorios\.html"/);
 });
 
-t('robô, ranking, Score e kit não leem a lista de acessórios', () => {
+t('robô, ranking, Score e API não leem a lista de acessórios (o kit completa no navegador)', () => {
   const lista = (d) => fs.readdirSync(path.join(root, d), { recursive: true }).filter((f) => /\.(m?js)$/.test(f)).map((f) => path.join(d, f));
   for (const f of [...lista('src'), ...lista('api')]) assert.doesNotMatch(ler(f), /acessorios\.json|afiliados-acessorios/, f);
 });

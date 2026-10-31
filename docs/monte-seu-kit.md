@@ -77,7 +77,7 @@ O Vercel Analytics gratuito conta páginas, não eventos. Mesmo truque do `/entr
 | K2 | `src/kit/modelos.js` + `src/kit/recomendar.js` (puro: produtos + ofertas + respostas → cesta) com golden de §6 usando fixtures sintéticas | K1 | testes verdes |
 | K3 | Rota `/monte-seu-kit/*` oculta (`noindex`, fora do menu), questionário e resultado chamando `/api/v1/site/ofertas` | K2 | smoke da rota; aviso de protótipo |
 | K4 | Cesta e comparação uma × várias lojas | K3 | golden de frete por loja |
-| K5 | Acessórios opção B (`config/kit-acessorios.json`, categoria `accessory.*`) | K2, decisão do dono sobre itens | casamento estrito com golden; fora do ranking de lacrados |
+| K5 | Acessórios opção B — **feito em 31/10**: lista curada `config/afiliados/acessorios.json` (#991) e kit completo na `kit-v4.js` (mais barato de cada tipo, orçamento do kit inteiro, frete a calcular) | — | fora do ranking de lacrados e do Score |
 | K6 | Liberar: menu desktop/mobile, chamada na Home ("Sua jornada Pokémon começa aqui" / CTA "Descobrir meu kit ideal"), sitemap | §6 verde + burn-in 7/7 | smoke no SHA publicado |
 
 Decisões do dono antes de K5/K6: quais acessórios oficiais entram na lista curada; faixas de orçamento padrão.

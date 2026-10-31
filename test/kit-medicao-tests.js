@@ -1,6 +1,6 @@
 // Monte seu kit, medição (docs/monte-seu-kit.md §7). O script do Vercel Web Analytics (0.1.3) só conta página vista na
 // carga, em history.pushState e em popstate; a página do kit troca a etapa com replaceState. Este teste roda
-// assets/web/kit-v3.js num DOM falso e confere: cada etapa nova vira UMA página vista (a primeira é a automática),
+// assets/web/kit-v4.js num DOM falso e confere: cada etapa nova vira UMA página vista (a primeira é a automática),
 // marcar opção não conta de novo, utm_* ficam no caminho, clique de saída vira /monte-seu-kit/saida/<loja>, eventos
 // do funil existem e nenhum dado pessoal (texto do Pokémon favorito) sai para o analytics.
 import assert from 'node:assert/strict';
@@ -8,13 +8,13 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
-const js = read('assets/web/kit-v3.js');
+const js = read('assets/web/kit-v4.js');
 const html = read('kit.html');
 
 // kit.html carrega a v2, uma vez, antes do script do Vercel (ordem dos defer: o kit troca o caminho antes da página vista automática)
-assert.equal((html.match(/kit-v\d+\.js/g) || []).join(), 'kit-v3.js', 'kit.html usa só a kit-v3.js');
+assert.equal((html.match(/kit-v\d+\.js/g) || []).join(), 'kit-v4.js', 'kit.html usa só a kit-v4.js');
 assert.equal((html.match(/_vercel\/insights\/script\.js/g) || []).length, 1, 'script do Vercel uma vez só');
-assert.ok(html.indexOf('kit-v3.js') < html.indexOf('_vercel/insights/script.js'), 'kit antes do analytics');
+assert.ok(html.indexOf('kit-v4.js') < html.indexOf('_vercel/insights/script.js'), 'kit antes do analytics');
 assert.ok(fs.existsSync(new URL('../assets/web/kit-v1.js', import.meta.url)), 'v1 continua publicada (cache imutável de HTML antigo)');
 
 function montar({ search = '', api } = {}) {
@@ -72,7 +72,7 @@ const okApi = (u) => Promise.resolve({ ok: true, json: () => Promise.resolve(u.i
   const v = k.vistas();
   assert.deepEqual(v.slice(-2), ['/monte-seu-kit/favorito', '/monte-seu-kit/resultado/primeira-colecao'], '"resultado" (carregando) não conta; conta o kit mostrado');
   assert.equal(v.filter((p) => p === '/monte-seu-kit/resultado').length, 0);
-  assert.deepEqual(k.eventos('kit_result'), [{ modelo: 'primeira-colecao', itens: 1, objetivo: 'colecionar', idioma: 'pt', faixa: '100', favorito: true }]);
+  assert.deepEqual(k.eventos('kit_result'), [{ modelo: 'primeira-colecao', itens: 1, acessorios: 0, objetivo: 'colecionar', idioma: 'pt', faixa: '100', favorito: true }]);
   assert.deepEqual(k.eventos('kit_step').map((d) => d.etapa), ['orcamento', 'idioma', 'orcamento', 'idioma', 'favorito', 'resultado', 'resultado/primeira-colecao']);
 
   // 3. Item alterado e clique de saída (esquerdo e do meio; direito não conta).
