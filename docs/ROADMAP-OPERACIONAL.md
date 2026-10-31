@@ -41,6 +41,51 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Pós-burn-in: integração da fila aprovada — 31/10/2026, manhã (America/Sao_Paulo)
+
+**Autorização do dono no chat:** "Pode seguir todos" (fila da seção de 31/10 abaixo). Todas as PRs foram integradas por squash, uma de cada vez, com os 4 checks verdes no SHA exato e behind=0, sem bypass de admin. Deploy final na Vercel READY e sem erros de runtime.
+
+| Frente | PR | Estado |
+|---|---|---|
+| Roadmap: burn-in 7/7 | #966 | integrado |
+| ME06 "Reinado Delta" sem código | #967 | integrado e publicado |
+| Consistência D1, D2, D3, D5, D6, D7 | #968–#973 | integrados e publicados |
+| Mercado Livre: 429 de rajada | #974 | integrado; **validado em runtime parcial**: ML ACTIVE desde 06:45, `rateLimit.retries` 0 |
+| Leitura parcial não remove oferta (Ri Happy) | #975 | integrado; **validado em runtime**: 18 ofertas ausentes mantidas como não confirmadas na rodada de 07:15 UTC, nenhum `removed` falso |
+| Reparo de dados: ferramenta + publicação | #979 | integrado e **aplicado no ramo data** (ver abaixo) |
+| Regra M2 do Firestore | #976 | integrado (emulador verde na PR e na main); **não publicado** no console |
+| BQD: reler ofertas stale (A1/A3 da #897) | #977 | integrado |
+| Varredura semanal de lojas | #945 | integrado |
+| Ordenação por total no cliente (#84, D2) | #978 | integrado |
+| claude-code-action v1.0.261 | #946 | **não integrado**: testes de SHA atualizados (3eeac100), test/regression/golden verdes; `qa-review` não roda em PR do Dependabot (pulado ≠ verde), então fica para o dono |
+
+**Diagnóstico do Mercado Livre:** todas as quedas foram 429 `local_rate_limited`, sem Retry-After, recusadas em 30–70 ms nos primeiros segundos de rodadas das :00/:30. Evidência: `sources.json` de commits do ramo `data` recuperados pelo histórico de pushes (30/10 09:00, 11:00 e 21:30 UTC; 31/10 03:00 UTC). Um 429 em qualquer das ~290 chamadas derrubava a loja e o backoff de 30 min deixava ~45 min sem preço. Agora há até 3 novas tentativas curtas antes de desistir.
+
+**Diagnóstico da Ri Happy:** a busca "pokemon" traz 1.800+ anúncios e o adaptador VTEX lê 500 (teto de 10 páginas, `sources.partial`). A ordem da API muda a cada rodada, então as mesmas ofertas, quase sempre esgotadas, saíam como `removed` e voltavam como novas (30/10: 1.068 remoções e 1.024 voltas; p99 de volta 9 h). Agora, com leitura parcial, a oferta ausente fica como não confirmada por até 24 h. A MP Brinquedos tem o mesmo teto. A Toy Mania pisca por outro motivo (leitura completa), ainda não investigado.
+
+**Reparo de dados aplicado (ramo `data`):** workflow `reparo-dados.yml`, dry-run 41179073013 e aplicação 41179626888.
+- Etiqueta de backup: `data-backup/antes-do-reparo-2026-10-31-0712`.
+- Mudaram exatamente 11 arquivos (`lowest.json` + 10 `hist/`), com 14 inserções e 32 remoções. Nenhum outro arquivo do ramo mudou.
+- Efeitos: mewtwo de 139,99 para 169,90; wigglytuff, golem e kingdra sem recorde falso; 65 pontos falsos removidos.
+- Fora da aplicação: sv9-zacian, me01-etb e alakazam continuam bloqueados até a decisão do dono (`docs/reparo-dados.md` §0.6).
+- Em produção (fonte db), o mewtwo já mostra 169,90 como menor preço histórico.
+- O passo do Postgres (§8) **não foi feito**: o banco não tem backup (`docs/backup.md`) e o repositório é público. Exige `pg_dump` manual do dono antes.
+
+**Não executado nesta sessão (bloqueio do ambiente, não da política):**
+- **`enforce_admins`:** a escrita na proteção da branch é recusada pelo proxy da sessão. Continua false; o dono ativa em Settings → Branches.
+- **Limpeza de branches:** a exclusão de refs é recusada pelo proxy. Há 577 branches com PR integrada e ponta igual à da PR, que podem ser apagadas com segurança (restauráveis pela PR).
+- **Regra M2:** publicação no console é passo do dono (`docs/firestore-regras.md`, copiando as regras atuais antes).
+
+**Pendências do dono:**
+1. Decidir sv9-zacian (A/B/C), me01-etb (A/B/C/D) e alakazam (A/B/C) do reparo.
+2. Fazer o backup do banco antes do passo do Postgres.
+3. Publicar a M2 no console do Firebase.
+4. Ativar `enforce_admins`.
+5. Apagar as branches integradas.
+6. Revisar e integrar a #946 (bump da `claude-code-action`, que é a ação do próprio revisor).
+
+---
+
 ## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)
 
 **Fase 1, critério do burn-in: cumprido.** O bot de #271 (`tools/burnin.mjs`, critérios inalterados) fechou 7 dias consecutivos verdes, de 24/10 a 30/10; o veredito de 30/10 saiu em 31/10 às 03:07 UTC com `final=true` e nenhuma falha. Modo burn-in exclusivo de 25/10 a 30/10: nada foi integrado nesse período.
