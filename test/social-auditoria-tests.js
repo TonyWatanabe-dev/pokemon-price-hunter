@@ -21,7 +21,7 @@ const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const H = 3600e3;
 const horaBrt = (ms) => Number(new Date(ms).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour: 'numeric', hourCycle: 'h23' }));
 
-t('1-2. WhatsApp: 48 h simuladas, teto de 70 em qualquer janela de 24 h e madrugada só com novidade', () => {
+t('1-2. WhatsApp: 48 h simuladas, intervalo de 30 min, teto de 70 e madrugada só com novidade', () => {
   const INICIO = Date.parse('2026-10-25T03:00:00Z');   // 0h em Brasília
   let diario = []; const envios = []; let seq = 0;
   for (let now = INICIO; now < INICIO + 48 * H; now += 10 * 60e3) {
@@ -49,7 +49,7 @@ t('1-2. WhatsApp: 48 h simuladas, teto de 70 em qualquer janela de 24 h e madrug
     if (h >= 0 && h < 7 && !e.top) assert.ok(e.nova, `madrugada (${h}h): ${e.id} não é novidade`);
   }
   assert.ok(envios.some((e) => e.top), 'Top entrou no diário (conta no teto)');
-  assert.ok(envios.filter((e) => e.now < INICIO + 24 * H).length >= 60, 'o teto é atingido no pior caso (o limite está de fato em uso)');
+  assert.ok(envios.filter((e) => e.now < INICIO + 24 * H).length >= 30, 'o canal mantém cadência diária mesmo com intervalo de 30 min');
 });
 
 // Candidatos reais (mesma função dos dois bots), Pix e base, frete desconhecido.
