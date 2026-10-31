@@ -133,6 +133,8 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 5. Apagar as branches integradas.
 6. Revisar e integrar a #946 (bump da `claude-code-action`, que é a ação do próprio revisor).
 
+**Acessórios com link de afiliado (31/10, tarde):** pedido do dono com as três leituras dele no Chrome (ML, Amazon, Shopee, 12:57–13:32). Lista curada `config/afiliados/acessorios.json`, gerada por `tools/acessorios-importar.mjs` a partir das leituras versionadas em `tools/acessorios/`: 137 itens (sleeve 53, fichário 30, deck box 31, playmat 16, toploader 7), duplicatas entre buscas removidas, categoria pela coluna do dono conferida com `api/_lib/acessorios.mjs` (corrigido: "Dragon Shield" no título classificava deck box/fichário como sleeve). Fora (7): toploader 4x6", estampas Lorcana, Magic e D&D. Página `acessorios.html` (noindex, link no rodapé da Home e no kit), ordem só por preço, data da leitura em cada item, preço sem frete. Não lida pelo robô, ranking, Score, alerta nem pelo total do kit (teste `test/acessorios-tests.js`). Preço não se atualiza sozinho: nova leitura = rodar o importador. Rota limpa `/acessorios` exigiria `vercel.json` (R3): fica para decisão do dono.
+
 ---
 
 ## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)
