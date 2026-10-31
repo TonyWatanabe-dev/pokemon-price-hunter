@@ -4,6 +4,7 @@ name: Social WhatsApp automático
 # do proprietário em 14/10/2026 ("sim, assumo o risco"). Regras mais espaçadas que o Telegram (REGRAS_WHATSAPP):
 # sem intervalo mínimo entre mensagens (pedido do dono em 24/10), 1 oferta nova por rodada, teto de 70 em 24 h, madrugada só novidades.
 # KILL SWITCH: variável do repositório SOCIAL_WHATSAPP_AUTO = 1. Sessão cifrada e diário ficam no cache do Actions.
+# A sessão só é persistida após rodada bem-sucedida; falhas de autenticação nunca promovem credenciais possivelmente inválidas.
 on:
   workflow_run:
     workflows: ['Price Hunter']
@@ -79,7 +80,7 @@ jobs:
           path: social/wa-diario.json
           key: social-whatsapp-diario-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        if: always() && hashFiles('social/wa-sessao.bin') != ''
+        if: success() && hashFiles('social/wa-sessao.bin') != ''
         continue-on-error: true
         with:
           path: social/wa-sessao.bin
