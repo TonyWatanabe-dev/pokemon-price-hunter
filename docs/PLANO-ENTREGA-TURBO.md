@@ -16,6 +16,8 @@
 - **Fase 8 — Hardening e lançamento:** parcial; depende do burn-in, smoke no SHA publicado e decisão/estratégia de backup do Supabase.
 - **Fase 9 — Manutenção contínua:** começa após os critérios de lançamento da Fase 8.
 
+**Atualização 31/10/2026 (manhã):** fila pós-burn-in integrada (#966–#979, #945, #978). Correções do ML (429) e da Ri Happy (leitura parcial) validadas em runtime; reparo automático aplicado no ramo `data`. Pendências do dono em `ROADMAP-OPERACIONAL.md`, seção de 31/10 manhã: decisões do reparo, backup do banco, publicar a M2, `enforce_admins` e limpeza de branches.
+
 **Atualização 31/10/2026:** burn-in **7/7** concluído (24–30/10, #271), com evidência em `ROADMAP-OPERACIONAL.md`, seção de 31/10. Fase 1 sai do bloqueio do burn-in; seguem pendentes os bloqueios recorrentes do Mercado Livre e o reparo dos dados (ambos na próxima ordem).
 
 **Atualização 25/10/2026 (tarde):** 22 PRs integradas e publicadas com autorização do dono. Detalhes, SHAs e pendências estão no `ROADMAP-OPERACIONAL.md`, seção de 25/10 tarde. Nenhuma fase mudou de estado.
