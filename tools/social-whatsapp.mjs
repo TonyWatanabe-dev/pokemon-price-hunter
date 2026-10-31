@@ -137,7 +137,8 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
   } catch (e) {
     io.error(`WhatsApp: ${String(e?.message || e).slice(0, 300)}`);
     io.log(`WhatsApp: ${String(e?.message || e).slice(0, 300)}`);
-    try { if (o.modo === 'enviar' && fs.readdirSync(dir).length) salvar(); } catch { /* mantém a sessão anterior */ }
+    // Não persistir credenciais após falha: a conexão pode ter invalidado ou parcialmente atualizado a sessão.
+    // O cache anterior válido deve permanecer como fonte de recuperação.
     return 1;
   } finally {
     if (con) await con.fechar();
