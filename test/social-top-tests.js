@@ -31,7 +31,7 @@ assert.match(api({ ...API, meta: { updated_at: API.meta.updated_at } }, 'top3').
 assert.match(itensDaApi(API, 'top3', AGORA + 7 * 3600e3).erro, /mais de 6 h/, 'ranking velho: não posta');
 // diário do WhatsApp: não repete, respeita o teto e (com regra de intervalo) espera
 const at = (min) => new Date(AGORA - min * 60e3).toISOString();
-assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA), { pode: true, esperaMs: 0 }, 'WhatsApp sem intervalo mínimo');
+assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA), { pode: true, esperaMs: 20 * 60e3 }, 'WhatsApp aguarda completar 30 min entre posts');
 assert.deepEqual(vez([{ ofertaId: 'x', at: at(10) }], 'top3:h', AGORA, { intervaloMin: 30 }), { pode: true, esperaMs: 20 * 60e3 });
 assert.deepEqual(vez([{ ofertaId: 'x', at: at(40) }], 'top3:h', AGORA), { pode: true, esperaMs: 0 });
 assert.equal(vez([{ ofertaId: 'top3:h', at: at(40) }], 'top3:h', AGORA).pode, false);
