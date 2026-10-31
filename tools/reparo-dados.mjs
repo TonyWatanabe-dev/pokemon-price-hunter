@@ -26,6 +26,8 @@
 // Uso:
 //   node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO]
 //                               [--anterior <relatorio.json de um dry-run anterior à integração do matcher>]
+//   Depois da integração: --base = checkout da main ANTIGA (o matcher que gravou os dados; o padrão é este checkout)
+//   e --anterior = relatório pré-integração (evidência das ofertas que sumiram do offers.json e da remoção de produtos).
 //   <pasta> de dados: contém state.json, lowest.json, products.json, offers.json, history.jsonl e hist/ (ou data/ com eles).
 //   <checkout>: pasta com src/match.js, src/gate.js e config/catalog.json (ex.: `git archive <sha> src config | tar -x`).
 // Não há modo de aplicação: --aplicar é recusado. Aplicar é um passo humano documentado em docs/reparo-dados.md.
@@ -126,8 +128,25 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
       produtoAntigo: b.productId, produtoNovo: c.productId, produtoGravado: o.productId || null, motivoCandidato: c.productId ? (c.via || 'casamento') : (c.why || []).join('; '),
       historico: { linhasNoAntigo: noAntigo.length, primeira: noAntigo[0]?.t || null, ultima: noAntigo.at(-1)?.t || null,
         emEstoqueNoAntigo: noAntigo.filter((r) => r.stock === 'IN_STOCK' && r.total > 0).map((r) => [r.t, r.total]) },
-      classe: motivos.length ? 'revisao' : 'auto', motivos,
+      classe: motivos.length ? 'revisao' : 'auto', motivos, origem: 'titulo',
     });
+  }
+  // 1b) Depois da integração do matcher, a oferta que foi para "sem produto" sai do offers.json e leva o título junto:
+  // a comparação base × candidato não a enxerga mais, e as linhas dela no history.jsonl virariam "desconhecidas"
+  // (protegendo o ponto contaminado). Com --anterior (relatório de um dry-run feito ANTES da integração), a reassociação
+  // registrada lá vale como evidência para essas ofertas ausentes. Oferta ainda presente usa a comparação pelo título.
+  for (const ra of anterior?.reassociacoes || []) {
+    if (!ra?.offerId || !ra.produtoAntigo || reassoc.has(ra.offerId) || offers[ra.offerId]) continue;
+    const rows = rowsPorOferta.get(ra.offerId) || [];
+    const estranhos = [...new Set(rows.map((r) => r.productId).filter((p) => p && p !== ra.produtoAntigo && p !== ra.produtoNovo))];
+    const motivos = [];
+    if (ra.classe !== 'auto' && !ra.bloqueado) motivos.push('reassociação estava em revisão no relatório anterior');
+    if (estranhos.length) motivos.push(`history.jsonl tem a oferta em outro produto (${estranhos.join(', ')}): título pode ter mudado`);
+    const noAntigo = rows.filter((r) => r.productId === ra.produtoAntigo);
+    reassoc.set(ra.offerId, { ...ra, origem: 'anterior', produtoGravado: null,
+      historico: { linhasNoAntigo: noAntigo.length, primeira: noAntigo[0]?.t || null, ultima: noAntigo.at(-1)?.t || null,
+        emEstoqueNoAntigo: noAntigo.filter((r) => r.stock === 'IN_STOCK' && r.total > 0).map((r) => [r.t, r.total]) },
+      classe: motivos.length ? 'revisao' : 'auto', motivos, bloqueado: undefined });
   }
   const afetadosPorProduto = new Map(); // produto antigo → Set(offerId)
   for (const r of reassoc.values()) (afetadosPorProduto.get(r.produtoAntigo) || afetadosPorProduto.set(r.produtoAntigo, new Set()).get(r.produtoAntigo)).add(r.offerId);
@@ -301,7 +320,7 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
   const lista = [...reassoc.values()];
   const contagens = {
     ofertasAnalisadas: Object.values(offers).filter((o) => o?.title).length,
-    reassociacoes: { total: lista.length, auto: lista.filter((r) => r.classe === 'auto').length, revisao: lista.filter((r) => r.classe === 'revisao').length,
+    reassociacoes: { total: lista.length, viaAnterior: lista.filter((r) => r.origem === 'anterior').length, auto: lista.filter((r) => r.classe === 'auto').length, revisao: lista.filter((r) => r.classe === 'revisao').length,
       emEstoque: lista.filter((r) => r.estoque === 'IN_STOCK').length, paraSemProduto: lista.filter((r) => !r.produtoNovo).length,
       paraIdNovo: lista.filter((r) => r.produtoNovo && !products[r.produtoNovo]).length },
     produtosAfetados: produtosAfetados.size,

@@ -1,0 +1,5032 @@
+{
+  "geradoEm": "2026-10-25T11:34:00Z",
+  "modo": "dry-run",
+  "matchers": {
+    "base": {
+      "nome": "main antiga c0b6bf44",
+      "commit": null,
+      "matchSha256": "e64de86ecb6c21736664e787da5ba8914b5812248bfbf715af16830fb305b154"
+    },
+    "candidato": {
+      "nome": "main a39e82f9",
+      "commit": "a39e82f9b307bb0262f3ed33f0ca5da243763a22",
+      "matchSha256": "4ed718ad9132d6f3a2f24523f9fdff23181ab24266024d798293b2113e76930a"
+    }
+  },
+  "dados": {
+    "generatedAt": "2026-10-25T11:30:31.357Z",
+    "linhasHistory": 50822,
+    "arquivosHist": 277,
+    "ofertas": 3893
+  },
+  "anterior": null,
+  "contagens": {
+    "ofertasAnalisadas": 3893,
+    "reassociacoes": {
+      "total": 62,
+      "viaAnterior": 0,
+      "auto": 50,
+      "revisao": 12,
+      "emEstoque": 17,
+      "paraSemProduto": 37,
+      "paraIdNovo": 14
+    },
+    "produtosAfetados": 35,
+    "hist": {
+      "arquivosAlterados": 11,
+      "pontosRemovidosAuto": 66,
+      "pontosRevisao": 24,
+      "pontosAntes": 10126,
+      "pontosDepois": 10060
+    },
+    "lowest": {
+      "entradasAntes": 262,
+      "entradasDepois": 258,
+      "contaminados": 7,
+      "recalculadosAuto": 1,
+      "removidosAuto": 4,
+      "revisao": 2
+    },
+    "remocoesPropostas": 0,
+    "remocoesAdiadas": 5,
+    "produtosBloqueados": [
+      "me01-etb",
+      "sv9-colecao_ex-zacian"
+    ]
+  },
+  "porProduto": [
+    {
+      "produto": "avulsos-colecao_ex-charizard",
+      "nome": "Box Pokémon - Box Pokémon ex Charizard ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": null,
+        "depois": null,
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": null,
+        "depois": null,
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-colecao_ex-destinos",
+      "nome": "Box Pokémon - Box Pokémon ex Destinos ex",
+      "ofertasReassociadas": 3,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": null,
+        "depois": null,
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": null,
+        "depois": null,
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-colecao_ex-golem",
+      "nome": "avulsos - Box Pokémon ex Golem ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 47.41,
+          "at": "2026-10-17T20:47:33.823Z",
+          "storeId": "pontotcgstorecombr",
+          "offerId": "9ebe5d8fb84f"
+        },
+        "depois": null,
+        "proposto": null,
+        "classe": "auto"
+      },
+      "historico": {
+        "antes": {
+          "days": 1,
+          "from": "2026-10-17",
+          "enough": false,
+          "drop7d": 0
+        },
+        "depois": null,
+        "pontosRemovidos": 1,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-colecao_ex-mega-lucario",
+      "nome": "Box Pokémon - Box Pokémon ex Mega Lucario ex",
+      "ofertasReassociadas": 2,
+      "precoAtual": {
+        "menorEmEstoque": 139.9,
+        "menorEmEstoqueSemReassociadas": 139.9,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 139.9,
+          "at": "2026-10-17T12:45:21.335Z",
+          "storeId": "lojanerdzcombr",
+          "offerId": "37e5de07226d"
+        },
+        "depois": {
+          "total": 139.9,
+          "at": "2026-10-17T12:45:21.335Z",
+          "storeId": "lojanerdzcombr",
+          "offerId": "37e5de07226d"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-colecao_ex-paradoxais",
+      "nome": "Box Pokémon - Box Pokémon ex Paradoxais ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": null,
+        "depois": null,
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": null,
+        "depois": null,
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-colecao_ex-venusaur",
+      "nome": "avulsos - Box Pokémon ex Venusaur ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": null,
+        "depois": null,
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": null,
+        "depois": null,
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "nome": "Box Pokémon - Box Pokémon ex Wigglytuff ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 27.46,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 27.46,
+          "at": "2026-10-17T12:15:25.246Z",
+          "storeId": "pontotcgstorecombr",
+          "offerId": "3bbfcd905952"
+        },
+        "depois": null,
+        "proposto": null,
+        "classe": "auto"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": null,
+        "pontosRemovidos": 9,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "avulsos-deck-mega-gengar",
+      "nome": "Box Pokémon - Baralho de Batalha Mega Gengar ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 319.99,
+        "menorEmEstoqueSemReassociadas": 319.99,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 319.99,
+          "at": "2026-10-17T11:30:29.693Z",
+          "storeId": "rihappycombr",
+          "offerId": "045899567f47"
+        },
+        "depois": {
+          "total": 319.99,
+          "at": "2026-10-17T11:30:29.693Z",
+          "storeId": "rihappycombr",
+          "offerId": "045899567f47"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "c30-colecao_ilustracao",
+      "nome": "Celebração de 30 Anos - Coleção Ilustração",
+      "ofertasReassociadas": 2,
+      "precoAtual": {
+        "menorEmEstoque": 132.91,
+        "menorEmEstoqueSemReassociadas": 132.91,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 132.91,
+          "at": "2026-10-08T00:01:13.313Z",
+          "storeId": "ilusoeslindoiacombr",
+          "offerId": "e448aa0bf535"
+        },
+        "depois": {
+          "total": 132.91,
+          "at": "2026-10-08T00:01:13.313Z",
+          "storeId": "ilusoeslindoiacombr",
+          "offerId": "e448aa0bf535"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me01-blister1",
+      "nome": "Megaevolução - Blister Unitário",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 13.9,
+        "menorEmEstoqueSemReassociadas": 13.9,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 13.9,
+          "at": "2026-10-24T13:27:26.915Z",
+          "storeId": "livrariascuritibacombr",
+          "offerId": "4eeaf3ae0805"
+        },
+        "depois": {
+          "total": 13.9,
+          "at": "2026-10-24T13:27:26.915Z",
+          "storeId": "livrariascuritibacombr",
+          "offerId": "4eeaf3ae0805"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0.1775
+        },
+        "depois": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0.1775
+        },
+        "pontosRemovidos": 4,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me01-blister3",
+      "nome": "Megaevolução - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 37.11,
+        "menorEmEstoqueSemReassociadas": 37.11,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 35.5,
+          "at": "2026-10-08T12:33:33.080Z",
+          "storeId": "mercadolivre",
+          "offerId": "4e844372a2b1"
+        },
+        "depois": {
+          "total": 35.5,
+          "at": "2026-10-08T12:33:33.080Z",
+          "storeId": "mercadolivre",
+          "offerId": "4e844372a2b1"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 4,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me01-blister4",
+      "nome": "Megaevolução - Blister Quádruplo",
+      "ofertasReassociadas": 3,
+      "precoAtual": {
+        "menorEmEstoque": 46.41,
+        "menorEmEstoqueSemReassociadas": 46.41,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 44.91,
+          "at": "2026-10-08T00:01:13.313Z",
+          "storeId": "lojaarenagamescombr",
+          "offerId": "4b2eb3fe07d4"
+        },
+        "depois": {
+          "total": 44.91,
+          "at": "2026-10-08T00:01:13.313Z",
+          "storeId": "lojaarenagamescombr",
+          "offerId": "4b2eb3fe07d4"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0.009
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0.009
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me01-box36",
+      "nome": "Megaevolução - Booster Box 36",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 398.99,
+        "menorEmEstoqueSemReassociadas": 398.99,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 398.99,
+          "at": "2026-10-13T03:15:23.765Z",
+          "storeId": "shisuistorecombr",
+          "offerId": "3e0c120c13ae"
+        },
+        "depois": {
+          "total": 398.99,
+          "at": "2026-10-13T03:15:23.765Z",
+          "storeId": "shisuistorecombr",
+          "offerId": "3e0c120c13ae"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 4,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me01-combo18",
+      "nome": "Megaevolução - Combo de Booster 18",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 236.55,
+        "menorEmEstoqueSemReassociadas": 236.55,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 232.79,
+          "at": "2026-10-14T21:15:20.478Z",
+          "storeId": "canal40",
+          "offerId": "1a848aa3d9e3"
+        },
+        "depois": {
+          "total": 232.79,
+          "at": "2026-10-14T21:15:20.478Z",
+          "storeId": "canal40",
+          "offerId": "1a848aa3d9e3"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me01-etb",
+      "nome": "Megaevolução - Treinador Avançado (ETB)",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 399.88,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 379.91,
+          "at": "2026-10-23T23:15:20.797Z",
+          "storeId": "geekstorebrasilcombr",
+          "offerId": "f6ee2e6ffbeb"
+        },
+        "depois": {
+          "total": 379.91,
+          "at": "2026-10-23T23:15:20.797Z",
+          "storeId": "geekstorebrasilcombr",
+          "offerId": "f6ee2e6ffbeb"
+        },
+        "proposto": {
+          "total": 1249,
+          "at": "2026-10-08T12:00:00.000Z",
+          "storeId": "mercadolivre",
+          "offerId": null
+        },
+        "classe": "revisao"
+      },
+      "historico": {
+        "antes": {
+          "days": 11,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0.0001
+        },
+        "depois": {
+          "days": 11,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0.0001
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 4
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me02_5-blister3",
+      "nome": "Heróis Excelsos - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 75.91,
+        "menorEmEstoqueSemReassociadas": 75.91,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 75.91,
+          "at": "2026-10-13T02:45:24.286Z",
+          "storeId": "radiantetcgcombr",
+          "offerId": "408435686759"
+        },
+        "depois": {
+          "total": 75.91,
+          "at": "2026-10-13T02:45:24.286Z",
+          "storeId": "radiantetcgcombr",
+          "offerId": "408435686759"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 16,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 16,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me02_5-blister4",
+      "nome": "Heróis Excelsos - Blister Quádruplo",
+      "ofertasReassociadas": 2,
+      "precoAtual": {
+        "menorEmEstoque": 94.91,
+        "menorEmEstoqueSemReassociadas": 94.91,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 94.91,
+          "at": "2026-10-08T00:01:13.313Z",
+          "storeId": "ilusoeslindoiacombr",
+          "offerId": "209fc1996284"
+        },
+        "depois": {
+          "total": 94.91,
+          "at": "2026-10-08T00:01:13.313Z",
+          "storeId": "ilusoeslindoiacombr",
+          "offerId": "209fc1996284"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me03-blister3",
+      "nome": "Equilíbrio Perfeito - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 29.1,
+        "menorEmEstoqueSemReassociadas": 29.1,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 29.1,
+          "at": "2026-10-13T12:30:31.548Z",
+          "storeId": "cardoracombr",
+          "offerId": "73149d793551"
+        },
+        "depois": {
+          "total": 29.1,
+          "at": "2026-10-13T12:30:31.548Z",
+          "storeId": "cardoracombr",
+          "offerId": "73149d793551"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me03-blister4",
+      "nome": "Equilíbrio Perfeito - Blister Quádruplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 41.8,
+        "menorEmEstoqueSemReassociadas": 41.8,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 41.8,
+          "at": "2026-10-08T12:19:25.776Z",
+          "storeId": "gorupacombr",
+          "offerId": "4527cc424170"
+        },
+        "depois": {
+          "total": 41.8,
+          "at": "2026-10-08T12:19:25.776Z",
+          "storeId": "gorupacombr",
+          "offerId": "4527cc424170"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 9,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me04-blister3",
+      "nome": "Caos Ascendente - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 29.9,
+        "menorEmEstoqueSemReassociadas": 29.9,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 29.9,
+          "at": "2026-10-13T02:45:24.286Z",
+          "storeId": "radiantetcgcombr",
+          "offerId": "4ac090c87bb4"
+        },
+        "depois": {
+          "total": 29.9,
+          "at": "2026-10-13T02:45:24.286Z",
+          "storeId": "radiantetcgcombr",
+          "offerId": "4ac090c87bb4"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me04-blister4",
+      "nome": "Caos Ascendente - Blister Quádruplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 39.9,
+        "menorEmEstoqueSemReassociadas": 39.9,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 36.64,
+          "at": "2026-10-21T22:00:33.346Z",
+          "storeId": "mercadolivre",
+          "offerId": "0a55b545fac9"
+        },
+        "depois": {
+          "total": 36.64,
+          "at": "2026-10-21T22:00:33.346Z",
+          "storeId": "mercadolivre",
+          "offerId": "0a55b545fac9"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me05-blister1",
+      "nome": "Escuridão Absoluta - Blister Unitário",
+      "ofertasReassociadas": 2,
+      "precoAtual": {
+        "menorEmEstoque": 12.97,
+        "menorEmEstoqueSemReassociadas": 12.97,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 12.51,
+          "at": "2026-10-17T14:45:24.718Z",
+          "storeId": "kamikardscombr",
+          "offerId": "1b0cbfa7842c"
+        },
+        "depois": {
+          "total": 12.51,
+          "at": "2026-10-17T14:45:24.718Z",
+          "storeId": "kamikardscombr",
+          "offerId": "1b0cbfa7842c"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me05-blister3",
+      "nome": "Escuridão Absoluta - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 25.85,
+        "menorEmEstoqueSemReassociadas": 25.85,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 25.85,
+          "at": "2026-10-24T00:15:23.990Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "8c2c6d65c9a4"
+        },
+        "depois": {
+          "total": 25.85,
+          "at": "2026-10-24T00:15:23.990Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "8c2c6d65c9a4"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0.1355
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0.1355
+        },
+        "pontosRemovidos": 1,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "me05-blister4",
+      "nome": "Escuridão Absoluta - Blister Quádruplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 40.74,
+        "menorEmEstoqueSemReassociadas": 40.74,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 37.01,
+          "at": "2026-10-13T17:30:27.381Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "446656b301da"
+        },
+        "depois": {
+          "total": 37.01,
+          "at": "2026-10-13T17:30:27.381Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "446656b301da"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 19,
+          "from": "2026-10-07",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 1,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv10-colecao_ex-equipe",
+      "nome": "Rivais Predestinados - Box Pokémon ex Equipe ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": null,
+        "depois": null,
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": null,
+        "depois": null,
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv10-colecao_ex-koraidon",
+      "nome": "Rivais Predestinados - Box Pokémon ex Koraidon ex",
+      "ofertasReassociadas": 3,
+      "precoAtual": {
+        "menorEmEstoque": 117.5,
+        "menorEmEstoqueSemReassociadas": 117.5,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 106.95,
+          "at": "2026-10-17T11:45:21.859Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "1b1844a9b928"
+        },
+        "depois": {
+          "total": 106.95,
+          "at": "2026-10-17T11:45:21.859Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "1b1844a9b928"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "nome": "Rivais Predestinados - Box Pokémon ex Mewtwo ex",
+      "ofertasReassociadas": 7,
+      "precoAtual": {
+        "menorEmEstoque": 139.99,
+        "menorEmEstoqueSemReassociadas": 169.9,
+        "reassociadasEmEstoque": 1
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 139.99,
+          "at": "2026-10-17T11:30:29.693Z",
+          "storeId": "rihappycombr",
+          "offerId": "5da09bdacdc5"
+        },
+        "depois": {
+          "total": 169.9,
+          "at": "2026-10-17T12:00:00.000Z",
+          "storeId": "lojaarenagamescombr",
+          "offerId": null
+        },
+        "proposto": {
+          "total": 169.9,
+          "at": "2026-10-17T12:00:00.000Z",
+          "storeId": "lojaarenagamescombr",
+          "offerId": null
+        },
+        "classe": "auto"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 18,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv10_5r-blister3",
+      "nome": "Raio Preto - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 51.99,
+          "at": "2026-10-16T12:45:24.272Z",
+          "storeId": "mercadolivre",
+          "offerId": "f30fb40a52af"
+        },
+        "depois": {
+          "total": 51.99,
+          "at": "2026-10-16T12:45:24.272Z",
+          "storeId": "mercadolivre",
+          "offerId": "f30fb40a52af"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 16,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0.0884
+        },
+        "depois": {
+          "days": 16,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0.0884
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv3_5-colecao_ex-alakazam",
+      "nome": "Coleção Especial 151 - Box Pokémon ex Alakazam ex",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 47.41,
+          "at": "2026-10-17T20:47:33.823Z",
+          "storeId": "pontotcgstorecombr",
+          "offerId": "bf8513c84056"
+        },
+        "depois": null,
+        "proposto": null,
+        "classe": "auto"
+      },
+      "historico": {
+        "antes": {
+          "days": 1,
+          "from": "2026-10-17",
+          "enough": false,
+          "drop7d": 0
+        },
+        "depois": null,
+        "pontosRemovidos": 1,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "nome": "Fábulas Nebulosas - Box Pokémon ex Kingdra ex",
+      "ofertasReassociadas": 2,
+      "precoAtual": {
+        "menorEmEstoque": 229.99,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 2
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 229.99,
+          "at": "2026-10-19T11:15:23.150Z",
+          "storeId": "rihappycombr",
+          "offerId": "a38bf35ac0ba"
+        },
+        "depois": null,
+        "proposto": null,
+        "classe": "auto"
+      },
+      "historico": {
+        "antes": {
+          "days": 7,
+          "from": "2026-10-19",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": null,
+        "pontosRemovidos": 14,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv8_5-blister3",
+      "nome": "Evoluções Prismáticas - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": 99.9,
+        "menorEmEstoqueSemReassociadas": 99.9,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 52.16,
+          "at": "2026-10-13T02:15:19.861Z",
+          "storeId": "radiantetcgcombr",
+          "offerId": "c58487b7e226"
+        },
+        "depois": {
+          "total": 52.16,
+          "at": "2026-10-13T02:15:19.861Z",
+          "storeId": "radiantetcgcombr",
+          "offerId": "c58487b7e226"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 18,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv8_5-blister4",
+      "nome": "Evoluções Prismáticas - Blister Quádruplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 111.87,
+          "at": "2026-10-20T03:15:23.115Z",
+          "storeId": "mercadolivre",
+          "offerId": "c00b4d7cd54f"
+        },
+        "depois": {
+          "total": 111.87,
+          "at": "2026-10-20T03:15:23.115Z",
+          "storeId": "mercadolivre",
+          "offerId": "c00b4d7cd54f"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 16,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 16,
+          "from": "2026-10-08",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "nome": "Amigos de Jornada - Box Pokémon ex Zacian ex",
+      "ofertasReassociadas": 11,
+      "precoAtual": {
+        "menorEmEstoque": 113.89,
+        "menorEmEstoqueSemReassociadas": 149.9,
+        "reassociadasEmEstoque": 4
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 113.89,
+          "at": "2026-10-20T17:30:27.997Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "df91b2a4d618"
+        },
+        "depois": {
+          "total": 113.89,
+          "at": "2026-10-20T17:30:27.997Z",
+          "storeId": "facilshoppingcombr",
+          "offerId": "df91b2a4d618"
+        },
+        "proposto": {
+          "total": 149.9,
+          "at": "2026-10-17T12:00:00.000Z",
+          "storeId": "lojaarenagamescombr",
+          "offerId": null
+        },
+        "classe": "revisao"
+      },
+      "historico": {
+        "antes": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0.0315
+        },
+        "depois": {
+          "days": 9,
+          "from": "2026-10-17",
+          "enough": true,
+          "drop7d": 0.0315
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 20
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "swsh11-blister3",
+      "nome": "Origem Perdida - Blister Triplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": {
+          "total": 228.9,
+          "at": "2026-10-19T18:30:36.550Z",
+          "storeId": "mercadolivre",
+          "offerId": "b7d30b7c6078"
+        },
+        "depois": {
+          "total": 228.9,
+          "at": "2026-10-19T18:30:36.550Z",
+          "storeId": "mercadolivre",
+          "offerId": "b7d30b7c6078"
+        },
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": {
+          "days": 7,
+          "from": "2026-10-19",
+          "enough": true,
+          "drop7d": 0
+        },
+        "depois": {
+          "days": 7,
+          "from": "2026-10-19",
+          "enough": true,
+          "drop7d": 0
+        },
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    },
+    {
+      "produto": "swsh11-blister4",
+      "nome": "Origem Perdida - Blister Quádruplo",
+      "ofertasReassociadas": 1,
+      "precoAtual": {
+        "menorEmEstoque": null,
+        "menorEmEstoqueSemReassociadas": null,
+        "reassociadasEmEstoque": 0
+      },
+      "menorSalvo": {
+        "antes": null,
+        "depois": null,
+        "classe": "intocado"
+      },
+      "historico": {
+        "antes": null,
+        "depois": null,
+        "pontosRemovidos": 0,
+        "pontosRevisao": 0
+      },
+      "remocaoProposta": false
+    }
+  ],
+  "reassociacoes": [
+    {
+      "offerId": "2c3948cc7931",
+      "titulo": "Box Pokémon Lendas Implacáveis Zacian",
+      "loja": "rihappycombr",
+      "lojaNome": "rihappy.com.br",
+      "url": "https://www.rihappy.com.br/box-pokemon-lendas-implacaveis-zacian-1003175671/p",
+      "preco": 139.99,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:30:31.357Z",
+      "primeiraVez": "2026-10-25T11:30:31.357Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 15,
+        "primeira": "2026-10-24T19:45:25.358Z",
+        "ultima": "2026-10-25T11:30:31.357Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-24T19:45:25.358Z",
+            139.99
+          ],
+          [
+            "2026-10-24T21:45:22.376Z",
+            139.99
+          ],
+          [
+            "2026-10-24T22:45:22.446Z",
+            139.99
+          ],
+          [
+            "2026-10-25T00:45:24.817Z",
+            139.99
+          ],
+          [
+            "2026-10-25T02:30:27.803Z",
+            139.99
+          ],
+          [
+            "2026-10-25T07:15:24.403Z",
+            139.99
+          ],
+          [
+            "2026-10-25T10:15:24.092Z",
+            139.99
+          ],
+          [
+            "2026-10-25T11:30:31.357Z",
+            139.99
+          ]
+        ]
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "5da09bdacdc5",
+      "titulo": "Box Pokémon Coleção Equipe Rocket Mewtwo Ex",
+      "loja": "rihappycombr",
+      "lojaNome": "rihappy.com.br",
+      "url": "https://www.rihappy.com.br/box-pokemon-colecao-equipe-rocket-mewtwo-ex-1003201549/p",
+      "preco": 139.99,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:30:31.357Z",
+      "primeiraVez": "2026-10-25T09:45:20.851Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 205,
+        "primeira": "2026-10-17T11:15:23.424Z",
+        "ultima": "2026-10-25T09:45:20.851Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T11:15:23.424Z",
+            139.99
+          ],
+          [
+            "2026-10-17T14:00:32.180Z",
+            139.99
+          ],
+          [
+            "2026-10-17T16:00:29.879Z",
+            139.99
+          ],
+          [
+            "2026-10-17T18:29:17.489Z",
+            139.99
+          ],
+          [
+            "2026-10-17T20:30:24.898Z",
+            139.99
+          ],
+          [
+            "2026-10-18T02:45:22.994Z",
+            139.99
+          ],
+          [
+            "2026-10-18T04:15:23.272Z",
+            139.99
+          ],
+          [
+            "2026-10-18T06:00:31.069Z",
+            139.99
+          ],
+          [
+            "2026-10-18T07:00:32.875Z",
+            139.99
+          ],
+          [
+            "2026-10-18T09:00:32.123Z",
+            139.99
+          ],
+          [
+            "2026-10-18T09:30:26.261Z",
+            139.99
+          ],
+          [
+            "2026-10-18T14:15:20.989Z",
+            139.99
+          ],
+          [
+            "2026-10-18T15:45:21.821Z",
+            139.99
+          ],
+          [
+            "2026-10-18T16:45:23.419Z",
+            139.99
+          ],
+          [
+            "2026-10-18T17:45:20.141Z",
+            139.99
+          ],
+          [
+            "2026-10-18T21:15:20.462Z",
+            139.99
+          ],
+          [
+            "2026-10-18T23:15:24.145Z",
+            139.99
+          ],
+          [
+            "2026-10-19T00:45:28.359Z",
+            139.99
+          ],
+          [
+            "2026-10-19T01:45:26.246Z",
+            139.99
+          ],
+          [
+            "2026-10-19T03:15:21.000Z",
+            139.99
+          ],
+          [
+            "2026-10-19T03:45:22.781Z",
+            139.99
+          ],
+          [
+            "2026-10-19T04:45:21.963Z",
+            139.99
+          ],
+          [
+            "2026-10-19T08:15:27.339Z",
+            139.99
+          ],
+          [
+            "2026-10-19T09:45:22.272Z",
+            139.99
+          ],
+          [
+            "2026-10-19T10:45:21.484Z",
+            139.99
+          ],
+          [
+            "2026-10-19T12:45:22.763Z",
+            139.99
+          ],
+          [
+            "2026-10-19T14:15:25.215Z",
+            139.99
+          ],
+          [
+            "2026-10-19T15:30:30.140Z",
+            139.99
+          ],
+          [
+            "2026-10-19T18:00:32.422Z",
+            139.99
+          ],
+          [
+            "2026-10-19T19:30:28.125Z",
+            139.99
+          ],
+          [
+            "2026-10-19T21:30:28.641Z",
+            139.99
+          ],
+          [
+            "2026-10-19T23:30:27.978Z",
+            139.99
+          ],
+          [
+            "2026-10-20T01:30:25.530Z",
+            139.99
+          ],
+          [
+            "2026-10-20T03:30:26.219Z",
+            139.99
+          ],
+          [
+            "2026-10-20T04:45:21.973Z",
+            139.99
+          ],
+          [
+            "2026-10-20T06:30:26.974Z",
+            139.99
+          ],
+          [
+            "2026-10-20T08:30:27.811Z",
+            139.99
+          ],
+          [
+            "2026-10-20T10:00:33.163Z",
+            139.99
+          ],
+          [
+            "2026-10-20T10:45:27.593Z",
+            139.99
+          ],
+          [
+            "2026-10-20T18:00:34.532Z",
+            139.99
+          ],
+          [
+            "2026-10-20T19:30:27.521Z",
+            139.99
+          ],
+          [
+            "2026-10-20T20:30:27.035Z",
+            139.99
+          ],
+          [
+            "2026-10-20T21:30:30.787Z",
+            139.99
+          ],
+          [
+            "2026-10-20T21:54:25.719Z",
+            139.99
+          ],
+          [
+            "2026-10-21T01:00:31.912Z",
+            139.99
+          ],
+          [
+            "2026-10-21T02:30:30.458Z",
+            139.99
+          ],
+          [
+            "2026-10-21T03:45:21.361Z",
+            139.99
+          ],
+          [
+            "2026-10-21T05:45:29.101Z",
+            139.99
+          ],
+          [
+            "2026-10-21T07:15:25.025Z",
+            139.99
+          ],
+          [
+            "2026-10-21T09:30:37.295Z",
+            139.99
+          ],
+          [
+            "2026-10-21T11:30:36.402Z",
+            139.99
+          ],
+          [
+            "2026-10-21T12:45:27.752Z",
+            139.99
+          ],
+          [
+            "2026-10-21T13:45:24.425Z",
+            139.99
+          ],
+          [
+            "2026-10-21T14:43:17.601Z",
+            139.99
+          ],
+          [
+            "2026-10-21T16:00:32.006Z",
+            139.99
+          ],
+          [
+            "2026-10-21T18:00:32.654Z",
+            139.99
+          ],
+          [
+            "2026-10-21T21:00:42.721Z",
+            139.99
+          ],
+          [
+            "2026-10-22T01:30:32.754Z",
+            139.99
+          ],
+          [
+            "2026-10-22T07:15:21.774Z",
+            139.99
+          ],
+          [
+            "2026-10-22T08:15:23.311Z",
+            139.99
+          ],
+          [
+            "2026-10-22T08:45:22.928Z",
+            139.99
+          ],
+          [
+            "2026-10-22T11:37:35.594Z",
+            139.99
+          ],
+          [
+            "2026-10-22T13:30:32.889Z",
+            139.99
+          ],
+          [
+            "2026-10-22T14:39:08.522Z",
+            139.99
+          ],
+          [
+            "2026-10-22T15:30:30.228Z",
+            139.99
+          ],
+          [
+            "2026-10-22T16:45:22.227Z",
+            139.99
+          ],
+          [
+            "2026-10-22T17:45:23.292Z",
+            139.99
+          ],
+          [
+            "2026-10-22T20:45:23.810Z",
+            139.99
+          ],
+          [
+            "2026-10-22T22:45:23.068Z",
+            139.99
+          ],
+          [
+            "2026-10-23T01:30:30.458Z",
+            139.99
+          ],
+          [
+            "2026-10-23T02:00:33.295Z",
+            139.99
+          ],
+          [
+            "2026-10-23T04:15:20.971Z",
+            139.99
+          ],
+          [
+            "2026-10-23T05:00:30.026Z",
+            139.99
+          ],
+          [
+            "2026-10-23T10:45:23.603Z",
+            139.99
+          ],
+          [
+            "2026-10-23T13:30:27.946Z",
+            139.99
+          ],
+          [
+            "2026-10-23T14:45:29.378Z",
+            139.99
+          ],
+          [
+            "2026-10-23T16:15:23.156Z",
+            139.99
+          ],
+          [
+            "2026-10-23T17:45:25.985Z",
+            139.99
+          ],
+          [
+            "2026-10-23T19:15:22.433Z",
+            139.99
+          ],
+          [
+            "2026-10-23T20:28:01.235Z",
+            139.99
+          ],
+          [
+            "2026-10-23T22:45:23.028Z",
+            139.99
+          ],
+          [
+            "2026-10-24T02:00:32.434Z",
+            139.99
+          ],
+          [
+            "2026-10-24T04:00:29.506Z",
+            139.99
+          ],
+          [
+            "2026-10-24T05:15:23.665Z",
+            139.99
+          ],
+          [
+            "2026-10-24T06:00:31.111Z",
+            139.99
+          ],
+          [
+            "2026-10-24T09:00:33.277Z",
+            139.99
+          ],
+          [
+            "2026-10-24T11:00:33.576Z",
+            139.99
+          ],
+          [
+            "2026-10-24T11:30:34.198Z",
+            139.99
+          ],
+          [
+            "2026-10-24T16:30:29.829Z",
+            139.99
+          ],
+          [
+            "2026-10-24T17:00:33.460Z",
+            139.99
+          ],
+          [
+            "2026-10-24T19:30:28.348Z",
+            139.99
+          ],
+          [
+            "2026-10-24T20:30:29.158Z",
+            139.99
+          ],
+          [
+            "2026-10-24T21:45:22.376Z",
+            139.99
+          ],
+          [
+            "2026-10-24T23:15:25.723Z",
+            139.99
+          ],
+          [
+            "2026-10-25T00:45:24.817Z",
+            139.99
+          ],
+          [
+            "2026-10-25T01:15:24.407Z",
+            139.99
+          ],
+          [
+            "2026-10-25T02:45:24.384Z",
+            139.99
+          ],
+          [
+            "2026-10-25T03:15:24.129Z",
+            139.99
+          ],
+          [
+            "2026-10-25T04:30:29.690Z",
+            139.99
+          ],
+          [
+            "2026-10-25T05:30:29.364Z",
+            139.99
+          ],
+          [
+            "2026-10-25T07:30:33.055Z",
+            139.99
+          ],
+          [
+            "2026-10-25T08:15:22.933Z",
+            139.99
+          ],
+          [
+            "2026-10-25T09:45:20.851Z",
+            139.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "f9af9a71a9ad",
+      "titulo": "Jogo De Cartas - Pokémon - Box Coleção Mega Lucario Ex & Mega Gardevoir",
+      "loja": "rihappycombr",
+      "lojaNome": "rihappy.com.br",
+      "url": "https://www.rihappy.com.br/jogo-de-cartas-pokemon-box-premium-collection-me25-copag/p",
+      "preco": 249.99,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:30:31.357Z",
+      "primeiraVez": "2026-10-19T11:00:30.623Z",
+      "produtoAntigo": "avulsos-colecao_ex-mega-lucario",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-colecao_ex-mega-lucario",
+      "motivoCandidato": "mais de um produto no mesmo anúncio",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-19T11:00:30.623Z",
+        "ultima": "2026-10-19T11:00:30.623Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "0de1d21cb2f1",
+      "titulo": "Kit 10x Blister Unitário Pokémon ME05 Escuridão Absoluta 6 Cartas",
+      "loja": "rihappycombr",
+      "lojaNome": "rihappy.com.br",
+      "url": "https://www.rihappy.com.br/kit-10x-blister-unitario-pokemon-me05-escuridao-absoluta-6-cartas-1003307752/p",
+      "preco": 139.99,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:30:31.357Z",
+      "primeiraVez": "2026-10-09T08:45:18.953Z",
+      "produtoAntigo": "me05-blister1",
+      "produtoNovo": null,
+      "produtoGravado": "me05-blister1",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 9,
+        "primeira": "2026-10-09T08:45:18.953Z",
+        "ultima": "2026-10-11T20:45:25.960Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-09T08:45:18.953Z",
+            139.99
+          ],
+          [
+            "2026-10-09T12:00:27.349Z",
+            160.77
+          ],
+          [
+            "2026-10-09T12:15:19.417Z",
+            139.99
+          ],
+          [
+            "2026-10-09T17:30:26.292Z",
+            160.77
+          ],
+          [
+            "2026-10-09T18:00:28.290Z",
+            139.99
+          ],
+          [
+            "2026-10-09T19:30:29.218Z",
+            160.77
+          ],
+          [
+            "2026-10-09T19:45:21.010Z",
+            139.99
+          ],
+          [
+            "2026-10-10T01:30:23.236Z",
+            160.77
+          ],
+          [
+            "2026-10-11T20:45:25.960Z",
+            139.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "a38bf35ac0ba",
+      "titulo": "Jogo de Cartas - Pokemon - Box Greninja & Kingdra Ex - Copag",
+      "loja": "rihappycombr",
+      "lojaNome": "rihappy.com.br",
+      "url": "https://www.rihappy.com.br/jogo-de-cartas-pokemon-box-greninja--kingdra-ex-copag/p",
+      "preco": 229.99,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:30:31.357Z",
+      "primeiraVez": "2026-10-19T11:00:30.623Z",
+      "produtoAntigo": "sv6_5-colecao_ex-kingdra",
+      "produtoNovo": null,
+      "produtoGravado": "sv6_5-colecao_ex-kingdra",
+      "motivoCandidato": "mais de um produto no mesmo anúncio",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-19T11:00:30.623Z",
+        "ultima": "2026-10-19T11:00:30.623Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-19T11:00:30.623Z",
+            229.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "34f47cdac54b",
+      "titulo": "Booster Box Megaevolução - Reinado Delta (ME06) — PT — 36 Boosters",
+      "loja": "geekstorebrasilcombr",
+      "lojaNome": "geekstorebrasil.com.br",
+      "url": "https://www.geekstorebrasil.com.br/produtos/pre-venda-booster-box-display-36-boosters-pokemon-megaevolucao-reinado-delta-me06/",
+      "preco": 449.88,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-15T00:45:22.623Z",
+      "produtoAntigo": "me01-box36",
+      "produtoNovo": null,
+      "produtoGravado": "me01-box36",
+      "motivoCandidato": "não menciona Pokémon",
+      "historico": {
+        "linhasNoAntigo": 4,
+        "primeira": "2026-10-15T00:45:22.623Z",
+        "ultima": "2026-10-24T16:45:24.601Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-22T13:15:28.475Z",
+            449.9
+          ],
+          [
+            "2026-10-23T23:00:47.488Z",
+            427.41
+          ],
+          [
+            "2026-10-24T16:45:24.601Z",
+            449.88
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "a2711ff8752b",
+      "titulo": "Blister Unitário Megaevolução - Reinado Delta (ME06) — PT — 1 Booster",
+      "loja": "geekstorebrasilcombr",
+      "lojaNome": "geekstorebrasil.com.br",
+      "url": "https://www.geekstorebrasil.com.br/produtos/blister-unitario-pokemon-megaevolucao-reinado-delta-me06/",
+      "preco": 14.9,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-15T00:45:22.623Z",
+      "produtoAntigo": "me01-blister1",
+      "produtoNovo": null,
+      "produtoGravado": "me01-blister1",
+      "motivoCandidato": "não menciona Pokémon",
+      "historico": {
+        "linhasNoAntigo": 4,
+        "primeira": "2026-10-15T00:45:22.623Z",
+        "ultima": "2026-10-24T16:45:24.601Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-22T13:15:28.475Z",
+            14.9
+          ],
+          [
+            "2026-10-23T23:00:47.488Z",
+            14.16
+          ],
+          [
+            "2026-10-24T16:45:24.601Z",
+            14.9
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "3364ebc9f409",
+      "titulo": "Blister Triplo Megaevolução - Reinado Delta (ME06) — PT — 3 Boosters",
+      "loja": "geekstorebrasilcombr",
+      "lojaNome": "geekstorebrasil.com.br",
+      "url": "https://www.geekstorebrasil.com.br/produtos/blister-triplo-3-boosters-pokemon-megaevolucao-reinado-delta-me06/",
+      "preco": 44.9,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-15T00:45:22.623Z",
+      "produtoAntigo": "me01-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "me01-blister3",
+      "motivoCandidato": "não menciona Pokémon",
+      "historico": {
+        "linhasNoAntigo": 4,
+        "primeira": "2026-10-15T00:45:22.623Z",
+        "ultima": "2026-10-24T16:45:24.601Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-22T13:15:28.475Z",
+            44.9
+          ],
+          [
+            "2026-10-23T23:00:47.488Z",
+            42.66
+          ],
+          [
+            "2026-10-24T16:45:24.601Z",
+            44.9
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "c6691f9d7677",
+      "titulo": "Blister Quádruplo Megaevolução - Reinado Delta (ME06) — PT — 4 Boosters",
+      "loja": "geekstorebrasilcombr",
+      "lojaNome": "geekstorebrasil.com.br",
+      "url": "https://www.geekstorebrasil.com.br/produtos/blister-quadruplo-4-boosters-pokemon-megaevolucao-reinado-delta-me06/",
+      "preco": 53.9,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-15T00:45:22.623Z",
+      "produtoAntigo": "me01-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me01-blister4",
+      "motivoCandidato": "não menciona Pokémon",
+      "historico": {
+        "linhasNoAntigo": 4,
+        "primeira": "2026-10-15T00:45:22.623Z",
+        "ultima": "2026-10-24T16:45:24.601Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-22T13:15:28.475Z",
+            53.9
+          ],
+          [
+            "2026-10-23T23:00:47.488Z",
+            51.21
+          ],
+          [
+            "2026-10-24T16:45:24.601Z",
+            53.9
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "f6ee2e6ffbeb",
+      "titulo": "Elite Trainer Box (ETB) Megaevolução - Reinado Delta (ME06) — PT",
+      "loja": "geekstorebrasilcombr",
+      "lojaNome": "geekstorebrasil.com.br",
+      "url": "https://www.geekstorebrasil.com.br/produtos/etb-colecao-treinador-avancado-pokemon-megaevolucao-reinado-delta-me06/",
+      "preco": 399.88,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-15T00:45:22.623Z",
+      "produtoAntigo": "me01-etb",
+      "produtoNovo": null,
+      "produtoGravado": "me01-etb",
+      "motivoCandidato": "não menciona Pokémon",
+      "historico": {
+        "linhasNoAntigo": 4,
+        "primeira": "2026-10-15T00:45:22.623Z",
+        "ultima": "2026-10-24T16:45:24.601Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-22T13:15:28.475Z",
+            399.9
+          ],
+          [
+            "2026-10-23T23:00:47.488Z",
+            379.91
+          ],
+          [
+            "2026-10-24T16:45:24.601Z",
+            399.88
+          ]
+        ]
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "a2904e988b24",
+      "titulo": "Combo Booster Box Pokémon Reinado Delta Megaevolução ME06 - 18 Pacotes",
+      "loja": "gorupacombr",
+      "lojaNome": "gorupa.com.br",
+      "url": "https://www.gorupa.com.br/produtos/combo-18-boosters-pokemon-tcg-me06-reinado-delta-copag-gorupa/",
+      "preco": 218.49,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-16T12:00:32.278Z",
+      "produtoAntigo": "me01-combo18",
+      "produtoNovo": null,
+      "produtoGravado": "me01-combo18",
+      "motivoCandidato": "coleção não identificada",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-16T12:00:32.278Z",
+        "ultima": "2026-10-16T12:00:32.278Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "b9c1e79c390e",
+      "titulo": "Box Pokémon Lendas De Paldea Koraidon Ex Copag",
+      "loja": "theoriginalscombr",
+      "lojaNome": "theoriginals.com.br",
+      "url": "https://www.theoriginals.com.br/box-pokemon-lendas-de-paldea-koraidon-ex-copag",
+      "preco": 129.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv10-colecao_ex-koraidon",
+      "produtoNovo": "avulsos-colecao_ex-koraidon",
+      "produtoGravado": "sv10-colecao_ex-koraidon",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "23c54a963ce9",
+      "titulo": "Baralho Box Pokémon Lendas Implacáveis Zacian",
+      "loja": "theoriginalscombr",
+      "lojaNome": "theoriginals.com.br",
+      "url": "https://www.theoriginals.com.br/baralho-box-pokemon-lendas-implacaveis-zacian",
+      "preco": 149.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-24T19:15:23.822Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-24T19:15:23.822Z",
+        "ultima": "2026-10-24T19:15:23.822Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "7a526a8faef2",
+      "titulo": "Box Coleção - Lendas Implacáveis Zacian EX (Pokémon TCG)",
+      "loja": "kamikardscombr",
+      "lojaNome": "kamikards.com.br",
+      "url": "https://kamikards.com.br/produtos/box-colecao-lendas-implacaveis-zacian-ex-pokemon-tcg/",
+      "preco": 116.3,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-17T14:45:24.718Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T14:45:24.718Z",
+        "ultima": "2026-10-17T14:45:24.718Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "61e5303f0581",
+      "titulo": "Pokémon TCG - Coleção Lendas Implacáveis - Zacian Ex",
+      "loja": "dalarancombr",
+      "lojaNome": "dalaran.com.br",
+      "url": "https://www.dalaran.com.br/pokemon-tcg-colecao-lendas-implacaveis-zacian-ex",
+      "preco": 139.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "ca8d35e4448b",
+      "titulo": "Pokémon TCG - Coleção Lendas de Paldea: Koraidon Ex",
+      "loja": "dalarancombr",
+      "lojaNome": "dalaran.com.br",
+      "url": "https://www.dalaran.com.br/pokemon-tcg-colecao-lendas-de-paldea-koraidon-ex",
+      "preco": 129.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv10-colecao_ex-koraidon",
+      "produtoNovo": "avulsos-colecao_ex-koraidon",
+      "produtoGravado": "sv10-colecao_ex-koraidon",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "7539b15acc03",
+      "titulo": "Pokémon TCG - Coleção Ex Destinos Paradoxais - Fogo Corrosão",
+      "loja": "dalarancombr",
+      "lojaNome": "dalaran.com.br",
+      "url": "https://www.dalaran.com.br/pokemon-tcg-colecao-ex-destinos-paradoxais-fogo-corrosao",
+      "preco": 129.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "avulsos-colecao_ex-destinos",
+      "produtoNovo": "avulsos-colecao_ex-corrosao",
+      "produtoGravado": "avulsos-colecao_ex-destinos",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "725410c4f8bb",
+      "titulo": "Pokémon TCG - Coleção Ex Destinos Paradoxais - Chifres Férreos",
+      "loja": "dalarancombr",
+      "lojaNome": "dalaran.com.br",
+      "url": "https://www.dalaran.com.br/pokemon-tcg-colecao-ex-destinos-paradoxais-",
+      "preco": 129.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:15:25.159Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "avulsos-colecao_ex-destinos",
+      "produtoNovo": "avulsos-colecao_ex-ferreos",
+      "produtoGravado": "avulsos-colecao_ex-destinos",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "18b0ebc4db63",
+      "titulo": "Box Pokémon Lendas Implacáveis Zacian",
+      "loja": "pbkidscombr",
+      "lojaNome": "pbkids.com.br",
+      "url": "https://www.pbkids.com.br/box-pokemon-lendas-implacaveis-zacian-1003175671/p",
+      "preco": null,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:00:42.923Z",
+      "primeiraVez": "2026-10-25T10:45:21.708Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 11,
+        "primeira": "2026-10-24T19:15:23.822Z",
+        "ultima": "2026-10-25T10:45:21.708Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "2304c517e16d",
+      "titulo": "Jogo De Cartas - Pokémon - Box Coleção Mega Lucario Ex & Mega Gardevoir",
+      "loja": "pbkidscombr",
+      "lojaNome": "pbkids.com.br",
+      "url": "https://www.pbkids.com.br/jogo-de-cartas-pokemon-box-premium-collection-me25-copag/p",
+      "preco": 249.99,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T11:00:42.923Z",
+      "primeiraVez": "2026-10-19T11:30:28.892Z",
+      "produtoAntigo": "avulsos-colecao_ex-mega-lucario",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-colecao_ex-mega-lucario",
+      "motivoCandidato": "mais de um produto no mesmo anúncio",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-19T11:30:28.892Z",
+        "ultima": "2026-10-19T11:30:28.892Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "99603d290842",
+      "titulo": "Kit 10x Blister Unitário Pokémon ME05 Escuridão Absoluta 6 Cartas",
+      "loja": "pbkidscombr",
+      "lojaNome": "pbkids.com.br",
+      "url": "https://www.pbkids.com.br/kit-10x-blister-unitario-pokemon-me05-escuridao-absoluta-6-cartas-1003307752/p",
+      "preco": 139.99,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:00:42.923Z",
+      "primeiraVez": "2026-10-09T08:30:25.367Z",
+      "produtoAntigo": "me05-blister1",
+      "produtoNovo": null,
+      "produtoGravado": "me05-blister1",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 15,
+        "primeira": "2026-10-09T08:30:25.367Z",
+        "ultima": "2026-10-11T14:45:22.659Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-09T08:30:25.367Z",
+            139.99
+          ],
+          [
+            "2026-10-09T11:00:28.722Z",
+            160.77
+          ],
+          [
+            "2026-10-09T11:15:20.440Z",
+            139.99
+          ],
+          [
+            "2026-10-09T12:15:19.417Z",
+            160.77
+          ],
+          [
+            "2026-10-09T12:30:24.609Z",
+            139.99
+          ],
+          [
+            "2026-10-09T14:00:32.731Z",
+            160.77
+          ],
+          [
+            "2026-10-09T14:15:22.678Z",
+            139.99
+          ],
+          [
+            "2026-10-09T16:13:41.970Z",
+            160.77
+          ],
+          [
+            "2026-10-09T16:30:28.069Z",
+            139.99
+          ],
+          [
+            "2026-10-09T17:15:19.828Z",
+            160.77
+          ],
+          [
+            "2026-10-09T17:30:26.292Z",
+            139.99
+          ],
+          [
+            "2026-10-09T21:00:29.289Z",
+            160.77
+          ],
+          [
+            "2026-10-09T21:15:22.410Z",
+            139.99
+          ],
+          [
+            "2026-10-10T02:45:21.949Z",
+            160.77
+          ],
+          [
+            "2026-10-11T14:45:22.659Z",
+            139.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "f403033e614c",
+      "titulo": "Jogo de Cartas - Pokemon - Box Greninja & Kingdra Ex - Copag",
+      "loja": "pbkidscombr",
+      "lojaNome": "pbkids.com.br",
+      "url": "https://www.pbkids.com.br/jogo-de-cartas-pokemon-box-greninja--kingdra-ex-copag/p",
+      "preco": 229.99,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T11:00:42.923Z",
+      "primeiraVez": "2026-10-19T11:30:28.892Z",
+      "produtoAntigo": "sv6_5-colecao_ex-kingdra",
+      "produtoNovo": null,
+      "produtoGravado": "sv6_5-colecao_ex-kingdra",
+      "motivoCandidato": "mais de um produto no mesmo anúncio",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-19T11:30:28.892Z",
+        "ultima": "2026-10-19T11:30:28.892Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-19T11:30:28.892Z",
+            229.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "71714d45c160",
+      "titulo": "Box Pokémon Coleção Equipe Rocket Mewtwo Ex",
+      "loja": "mercadolivre",
+      "lojaNome": "Mercado Livre",
+      "url": "https://www.mercadolivre.com.br/p/MLB56462428?pdp_filters=item_id%3AMLB5321998975",
+      "preco": 244.46,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-25T10:45:21.708Z",
+      "primeiraVez": "2026-10-17T17:15:25.155Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T17:15:25.155Z",
+        "ultima": "2026-10-17T17:15:25.155Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T17:15:25.155Z",
+            244.46
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "72230267de00",
+      "titulo": "Box Pokémon Coleção Equipe Rocket Mewtwo Ex",
+      "loja": "mercadolivre",
+      "lojaNome": "Mercado Livre",
+      "url": "https://www.mercadolivre.com.br/p/MLB56462428?pdp_filters=item_id%3AMLB7829676818",
+      "preco": 279.99,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-25T10:45:21.708Z",
+      "primeiraVez": "2026-10-24T13:27:26.915Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 3,
+        "primeira": "2026-10-17T17:15:25.155Z",
+        "ultima": "2026-10-24T13:27:26.915Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T17:15:25.155Z",
+            279.99
+          ],
+          [
+            "2026-10-24T13:27:26.915Z",
+            279.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "a9fc4234da10",
+      "titulo": "Box Pokémon Coleção Equipe Rocket Mewtwo Ex",
+      "loja": "mercadolivre",
+      "lojaNome": "Mercado Livre",
+      "url": "https://www.mercadolivre.com.br/p/MLB56462428?pdp_filters=item_id%3AMLB5748102398",
+      "preco": 299.99,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-25T10:45:21.708Z",
+      "primeiraVez": "2026-10-17T17:15:25.155Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T17:15:25.155Z",
+        "ultima": "2026-10-17T17:15:25.155Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T17:15:25.155Z",
+            299.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "5293be459adf",
+      "titulo": "Box Pokémon Coleção Equipe Rocket Mewtwo Ex",
+      "loja": "mercadolivre",
+      "lojaNome": "Mercado Livre",
+      "url": "https://www.mercadolivre.com.br/p/MLB56462428?pdp_filters=item_id%3AMLB4209626165",
+      "preco": 429.99,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-25T10:45:21.708Z",
+      "primeiraVez": "2026-10-17T17:15:25.155Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T17:15:25.155Z",
+        "ultima": "2026-10-17T17:15:25.155Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T17:15:25.155Z",
+            429.99
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "992375e0d110",
+      "titulo": "Pokémon Box Lendas de Paldea - KORAIDON EX",
+      "loja": "tavolageekcombr",
+      "lojaNome": "tavolageek.com.br",
+      "url": "https://www.tavolageek.com.br/pokemon-box-lendas-de-paldea-koraidon-ex",
+      "preco": 129.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:15:24.092Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv10-colecao_ex-koraidon",
+      "produtoNovo": "avulsos-colecao_ex-koraidon",
+      "produtoGravado": "sv10-colecao_ex-koraidon",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "0beed61396f0",
+      "titulo": "Pokémon Box Destinos Paradoxais EX Rocha Férrea Futurista 3707 - Copag",
+      "loja": "happilybrinquedoscombr",
+      "lojaNome": "happilybrinquedos.com.br",
+      "url": "https://www.happilybrinquedos.com.br/pokemon-box-destinos-paradoxais-ex-rocha-ferrea-futurista-3707-copag",
+      "preco": 129,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:15:24.092Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "avulsos-colecao_ex-paradoxais",
+      "produtoNovo": "avulsos-colecao_ex-ferrea",
+      "produtoGravado": "avulsos-colecao_ex-paradoxais",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "53f7032314a4",
+      "titulo": "Kit com 2 Blister Quádruplo Pokémon EE11 Origem Perdida 31666 - Copag",
+      "loja": "happilybrinquedoscombr",
+      "lojaNome": "happilybrinquedos.com.br",
+      "url": "https://www.happilybrinquedos.com.br/2-blister-quadruplo-pokemon-ee11-origem-perdida-31666-copag",
+      "preco": 80,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:15:24.092Z",
+      "primeiraVez": "2026-10-19T03:00:31.914Z",
+      "produtoAntigo": "swsh11-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "swsh11-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-19T03:00:31.914Z",
+        "ultima": "2026-10-19T03:00:31.914Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "9c3dcf9717ed",
+      "titulo": "Kit com 2 Blister Triplo Pokémon EE11 Origem Perdida 31658 - Copag",
+      "loja": "happilybrinquedoscombr",
+      "lojaNome": "happilybrinquedos.com.br",
+      "url": "https://www.happilybrinquedos.com.br/kit-com-2-blister-triplo-pokemon-ee11-origem-perdida-31658-copag",
+      "preco": 60,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:15:24.092Z",
+      "primeiraVez": "2026-10-19T03:00:31.914Z",
+      "produtoAntigo": "swsh11-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "swsh11-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-19T03:00:31.914Z",
+        "ultima": "2026-10-19T03:00:31.914Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "2553d3d903e5",
+      "titulo": "Pokémon TCG - Box Pokémon Coleção Equipe Rocket Mewtwo Ex - 49 Cartas",
+      "loja": "preechcombr",
+      "lojaNome": "preech.com.br",
+      "url": "https://www.preech.com.br/card-game/card-pokemon/pokemon-tcg-box-pokemon-colecao-equipe-rocket-mewtwo-ex-49-cartas",
+      "preco": 149.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "0b21a9b02eca",
+      "titulo": "POKEMON BOX LENDAS IMPLACAVEIS ZACIAN EX | Pokemon | Paladins Games Store",
+      "loja": "paladinsgamescombr",
+      "lojaNome": "paladinsgames.com.br",
+      "url": "https://paladinsgames.com.br/pokemon-box-lendas-implacaveis-zacian-ex",
+      "preco": 139.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-24T07:15:23.369Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-24T07:15:23.369Z",
+        "ultima": "2026-10-24T07:15:23.369Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "df91b2a4d618",
+      "titulo": "Pokemon Box - Lendas Implac?veis - Zacian Ex",
+      "loja": "facilshoppingcombr",
+      "lojaNome": "facilshopping.com.br",
+      "url": "https://www.facilshopping.com.br/produtos/pokemon-box-lendas-implacaveis-zacian-ex/",
+      "preco": 113.89,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 2,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-20T17:15:33.922Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T11:30:29.693Z",
+            119.97
+          ],
+          [
+            "2026-10-20T17:15:33.922Z",
+            113.89
+          ]
+        ]
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "4b816af6cdd5",
+      "titulo": "Kit com 2 Blister Triplo Caos Ascendente Charmeleon Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-triplo-caos-ascendente-charmeleon-pokemon-megaevolucao-c8i37/",
+      "preco": 81.68,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T17:45:21.960Z",
+      "produtoAntigo": "me04-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "me04-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T17:45:21.960Z",
+        "ultima": "2026-10-17T17:45:21.960Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "d69fbfbaabd4",
+      "titulo": "Kit com 2 Blister Quadruplo Caos Ascendente Toxel Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-quadruplo-caos-ascendente-toxel-pokemon-megaevolucao-5vjyc/",
+      "preco": 106.38,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T17:45:21.960Z",
+      "produtoAntigo": "me04-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me04-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T17:45:21.960Z",
+        "ultima": "2026-10-17T17:45:21.960Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T17:45:21.960Z",
+            106.38
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "e989d8fd3eac",
+      "titulo": "Kit com 2 Blister Quadruplo Escuridão Absoluta Binacle Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-quadruplo-escuridao-absoluta-binacle-pokemon-megaevolucao-1yl58/",
+      "preco": 106.38,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T18:45:25.396Z",
+      "produtoAntigo": "me05-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me05-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T18:45:25.396Z",
+        "ultima": "2026-10-17T18:45:25.396Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T18:45:25.396Z",
+            106.38
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "8552065c1ef6",
+      "titulo": "Kit com 2 Blister Triplo Escuridão Absoluta Slowpoke Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-triplo-escuridao-absoluta-slowpoke-pokemon-megaevolucao-r8hyd/",
+      "preco": 81.68,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T18:45:25.396Z",
+      "produtoAntigo": "me05-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "me05-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T18:45:25.396Z",
+        "ultima": "2026-10-17T18:45:25.396Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T18:45:25.396Z",
+            81.68
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "6513f7992624",
+      "titulo": "Carta Pokémon TCG Venusaur ex (003/165) Coleção 151",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/carta-pokemon-tcg-venusaur-ex-003-165-colecao-151-1oepg/",
+      "preco": 47.41,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T20:30:24.898Z",
+      "produtoAntigo": "avulsos-colecao_ex-venusaur",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-colecao_ex-venusaur",
+      "motivoCandidato": "carta avulsa, não é produto lacrado",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T20:30:24.898Z",
+        "ultima": "2026-10-17T20:30:24.898Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "9ebe5d8fb84f",
+      "titulo": "Carta Pokémon TCG Golem ex (076/165) Coleção 151",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/carta-pokemon-tcg-golem-ex-076-165-colecao-151-96k8o/",
+      "preco": 47.41,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T20:30:24.898Z",
+      "produtoAntigo": "avulsos-colecao_ex-golem",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-colecao_ex-golem",
+      "motivoCandidato": "carta avulsa, não é produto lacrado",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T20:30:24.898Z",
+        "ultima": "2026-10-17T20:30:24.898Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T20:30:24.898Z",
+            47.41
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "bf8513c84056",
+      "titulo": "Carta Pokémon TCG Alakazam ex (065/165) Coleção 151",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/carta-pokemon-tcg-alakazam-ex-065-165-colecao-151-1b44y/",
+      "preco": 47.41,
+      "estoque": "UNKNOWN",
+      "vistoEm": "2026-10-17T20:47:33.823Z",
+      "primeiraVez": "2026-10-17T20:30:24.898Z",
+      "produtoAntigo": "sv3_5-colecao_ex-alakazam",
+      "produtoNovo": null,
+      "produtoGravado": "sv3_5-colecao_ex-alakazam",
+      "motivoCandidato": "carta avulsa, não é produto lacrado",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T20:30:24.898Z",
+        "ultima": "2026-10-17T20:30:24.898Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T20:30:24.898Z",
+            47.41
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "8584c6f2daa6",
+      "titulo": "Kit com 2 Blister Triplo Pokémon Escarlate e Violeta 10.5 Raio Preto Reuniclus",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-triplo-pokemon-escarlate-e-violeta-10-5-raio-preto-reuniclus/",
+      "preco": 75.81,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T09:45:26.488Z",
+      "produtoAntigo": "sv10_5r-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "sv10_5r-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T09:45:26.488Z",
+        "ultima": "2026-10-17T09:45:26.488Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "98487639ebda",
+      "titulo": "Kit com 3 Box Pokémon Coleção EX Equipe Rocket (Mewtwo + Nidoking + Persian)",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-3-box-pokemon-colecao-ex-equipe-rocket-mewtwo-nidoking-persian/",
+      "preco": 398.72,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv10-colecao_ex-equipe",
+      "produtoNovo": null,
+      "produtoGravado": "sv10-colecao_ex-equipe",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "725b83cd4495",
+      "titulo": "Kit com 2 Blister Quádruplo Pokémon Megaevolução Pokémon TCG Psyduck",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-quadruplo-pokemon-megaevolucao-pokemon-tcg-psyduck-nmhhc/",
+      "preco": 106.38,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "me01-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me01-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "63f9aa0e85e2",
+      "titulo": "Kit com 2 Blister Quádruplo Pokémon Megaevolução Pokémon TCG Golduck",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-quadruplo-pokemon-megaevolucao-pokemon-tcg-golduck-qb9n0/",
+      "preco": 106.38,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "me01-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me01-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "da9f811b5575",
+      "titulo": "Kit com Baralho De Batalha Pokémon Mega Gengar EX + Mega Diancie EX",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-baralho-de-batalha-pokemon-mega-gengar-ex-mega-diancie-ex-r12ol/",
+      "preco": 218.49,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T11:45:21.859Z",
+      "produtoAntigo": "avulsos-deck-mega-gengar",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-deck-mega-gengar",
+      "motivoCandidato": "mais de um produto no mesmo anúncio",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:45:21.859Z",
+        "ultima": "2026-10-17T11:45:21.859Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "3bbfcd905952",
+      "titulo": "Carta Pokémon TCG Wigglytuff EX (040/165) Coleção 151",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/carta-pokemon-tcg-wigglytuff-ex-040-165-colecao-151-q7481/",
+      "preco": 27.46,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T12:00:34.141Z",
+      "produtoAntigo": "avulsos-colecao_ex-wigglytuff",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-colecao_ex-wigglytuff",
+      "motivoCandidato": "carta avulsa, não é produto lacrado",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T12:00:34.141Z",
+        "ultima": "2026-10-17T12:00:34.141Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T12:00:34.141Z",
+            27.46
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "abf62c79343b",
+      "titulo": "Kit com 2 Blister Triplo Heróis Excelsos Charmander e Gastly Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-triplo-herois-excelsos-charmander-e-gastly-pokemon-megaevolucao-cic2y/",
+      "preco": 81.68,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T12:15:25.246Z",
+      "produtoAntigo": "me02_5-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "me02_5-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T12:15:25.246Z",
+        "ultima": "2026-10-17T12:15:25.246Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "8a56a8696de5",
+      "titulo": "Kit com 2 Blister Quadruplo Heróis Excelsos Komala do Lauro e Tangela da Érica Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-quadruplo-herois-excelsos-komala-do-lauro-e-tangela-da-erica-pokemon-megaevolucao-1f6jt/",
+      "preco": 106.38,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T12:26:33.906Z",
+      "produtoAntigo": "me02_5-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me02_5-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T12:26:33.906Z",
+        "ultima": "2026-10-17T12:26:33.906Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "52a3ff476cef",
+      "titulo": "Kit com 3 Blister Triplo Evoluções Prismáticas Glaceon, Leafeon e Sylveon Pokémon Escarlate e Violeta",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-3-blister-triplo-evolucoes-prismaticas-glaceon-leafeon-e-sylveon-pokemon-escarlate-e-violeta-sdtkv/",
+      "preco": 122.52,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T13:30:27.945Z",
+      "produtoAntigo": "sv8_5-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "sv8_5-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T13:30:27.945Z",
+        "ultima": "2026-10-17T13:30:27.945Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "85b99edab0f9",
+      "titulo": "Kit com 3 Blister Quadruplo Evoluções Prismáticas Jolteon, Flareon e Vaporeon Pokémon Escarlate e Violeta",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-3-blister-quadruplo-evolucoes-prismaticas-jolteon-flareon-e-vaporeon-pokemon-escarlate-e-violeta-1n4rc/",
+      "preco": 159.57,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T13:30:27.945Z",
+      "produtoAntigo": "sv8_5-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "sv8_5-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T13:30:27.945Z",
+        "ultima": "2026-10-17T13:30:27.945Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "566f78b05186",
+      "titulo": "Kit com 2 Box Ilustração Parceiro Inicial Série 1 Pokémon 30 Anos – Original Lacrado",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-box-ilustracao-parceiro-inicial-serie-1-pokemon-30-anos-original-lacrado-14n36/",
+      "preco": 189.98,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T13:45:22.473Z",
+      "produtoAntigo": "c30-colecao_ilustracao",
+      "produtoNovo": null,
+      "produtoGravado": "c30-colecao_ilustracao",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T13:45:22.473Z",
+        "ultima": "2026-10-17T13:45:22.473Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "443d17607f14",
+      "titulo": "Kit com 3 Box Ilustração Parceiro Inicial Série 1 Pokémon 30 Anos – Original Lacrado",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-3-box-ilustracao-parceiro-inicial-serie-1-pokemon-30-anos-original-lacrado-16z6k/",
+      "preco": 284.97,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T13:45:22.473Z",
+      "produtoAntigo": "c30-colecao_ilustracao",
+      "produtoNovo": null,
+      "produtoGravado": "c30-colecao_ilustracao",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T13:45:22.473Z",
+        "ultima": "2026-10-17T13:45:22.473Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "f546d2c510b5",
+      "titulo": "Kit com 2 Blister Quadruplo Equilíbrio Perfeito Chikorita Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-quadruplo-equilibrio-perfeito-chikorita-pokemon-megaevolucao-qf440/",
+      "preco": 106.38,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T13:45:22.473Z",
+      "produtoAntigo": "me03-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me03-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T13:45:22.473Z",
+        "ultima": "2026-10-17T13:45:22.473Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T13:45:22.473Z",
+            106.38
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "238b951e19a0",
+      "titulo": "Kit com 2 Blister Triplo Equilíbrio Perfeito Makuhita Pokémon Megaevolução",
+      "loja": "pontotcgstorecombr",
+      "lojaNome": "pontotcgstore.com.br",
+      "url": "https://pontotcgstore.com.br/produtos/kit-com-2-blister-triplo-equilibrio-perfeito-makuhita-pokemon-megaevolucao-f92f0/",
+      "preco": 81.68,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T10:00:29.032Z",
+      "primeiraVez": "2026-10-17T13:45:22.473Z",
+      "produtoAntigo": "me03-blister3",
+      "produtoNovo": null,
+      "produtoGravado": "me03-blister3",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T13:45:22.473Z",
+        "ultima": "2026-10-17T13:45:22.473Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T13:45:22.473Z",
+            81.68
+          ]
+        ]
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "23e103be32de",
+      "titulo": "Trading Card Game Pokemon - Baralho Coleção Lendas Implacáveis Zacian Ex (38 Cartas) (Novo)",
+      "loja": "lojaarenagamescombr",
+      "lojaNome": "lojaarenagames.com.br",
+      "url": "https://lojaarenagames.com.br/trading-card-game-pokemon-baralho-colecao-lendas-implacaveis-zacian-ex-38-cartas-novo/",
+      "preco": 149.9,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T11:30:29.693Z",
+            149.9
+          ]
+        ]
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "0a86dff3a876",
+      "titulo": "Pokémon TCG – Box Coleção Lendas Implacáveis: Zacian EX (PT-BR) | 6 Boosters + Promo + Jumbo",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "lojaNome": "coffeecatstore.lojavirtualnuvem.com.br",
+      "url": "https://coffeecatstore.lojavirtualnuvem.com.br/produtos/pokemon-tcg-box-colecao-lendas-implacaveis-zacian-ex-pt-br-6-boosters-promo-jumbo/",
+      "preco": 117.59,
+      "estoque": "IN_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T14:30:35.127Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T14:30:35.127Z",
+        "ultima": "2026-10-17T14:30:35.127Z",
+        "emEstoqueNoAntigo": [
+          [
+            "2026-10-17T14:30:35.127Z",
+            117.59
+          ]
+        ]
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "76f71ff51a90",
+      "titulo": "Box Pokémon Lendas Implacáveis Zacian",
+      "loja": "blanctoyscombr",
+      "lojaNome": "blanctoys.com.br",
+      "url": "https://www.blanctoys.com.br/box-pokemon-lendas-implacaveis-zacian",
+      "preco": 159.99,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-24T19:45:25.358Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-24T19:45:25.358Z",
+        "ultima": "2026-10-24T19:45:25.358Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    },
+    {
+      "offerId": "01c1af392c10",
+      "titulo": "Pokémon Kit Box Coleção ex Destinos Paradoxais",
+      "loja": "tiocharlescombr",
+      "lojaNome": "tiocharles.com.br",
+      "url": "https://tiocharles.com.br/produtos/pokemon-kit-box-colecao-ex-destinos-paradoxais/",
+      "preco": 363.97,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "avulsos-colecao_ex-destinos",
+      "produtoNovo": null,
+      "produtoGravado": "avulsos-colecao_ex-destinos",
+      "motivoCandidato": "coleção não identificada",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "80641e7f22d4",
+      "titulo": "Pokémon Box Coleção Charizard ex Brilhante",
+      "loja": "tiocharlescombr",
+      "lojaNome": "tiocharles.com.br",
+      "url": "https://tiocharles.com.br/produtos/pokemon-box-colecao-charizard-ex-brilhante/",
+      "preco": 249.9,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "avulsos-colecao_ex-charizard",
+      "produtoNovo": "sv4_5-colecao_ex-charizard",
+      "produtoGravado": "avulsos-colecao_ex-charizard",
+      "motivoCandidato": "brilhante-sv4_5",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "213eeb6db5c4",
+      "titulo": "Box Pokémon TCG Coleção Equipe Rocket Mewtwo Ex - Copag",
+      "loja": "4bestplaycombr",
+      "lojaNome": "4bestplay.com.br",
+      "url": "https://4bestplay.com.br/produtos/box-pokemon-tcg-colecao-equipe-rocket-mewtwo-ex-copag-tqp4f/",
+      "preco": 129.99,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T11:30:29.693Z",
+      "produtoAntigo": "sv10-colecao_ex-mewtwo",
+      "produtoNovo": "sv10-colecao_ex-equipe",
+      "produtoGravado": "sv10-colecao_ex-mewtwo",
+      "motivoCandidato": "caixa-35880",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T11:30:29.693Z",
+        "ultima": "2026-10-17T11:30:29.693Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "9709cb2b283f",
+      "titulo": "Kit 2x Blister quadruplo Pokemon TCG Heróis Excelsos 50u",
+      "loja": "4bestplaycombr",
+      "lojaNome": "4bestplay.com.br",
+      "url": "https://4bestplay.com.br/produtos/kit-2x-blister-quadruplo-pokemon-tcg-herois-excelsos-50u-jith3/",
+      "preco": 99.99,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T10:30:28.140Z",
+      "produtoAntigo": "me02_5-blister4",
+      "produtoNovo": null,
+      "produtoGravado": "me02_5-blister4",
+      "motivoCandidato": "kit montado pela loja ou caixa com várias unidades",
+      "historico": {
+        "linhasNoAntigo": 1,
+        "primeira": "2026-10-17T10:30:28.140Z",
+        "ultima": "2026-10-17T10:30:28.140Z",
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "auto",
+      "motivos": [],
+      "origem": "titulo"
+    },
+    {
+      "offerId": "e8d546f74f14",
+      "titulo": "Pokémon Box Coleção EX Lendas Implacáveis Zacian 38 Cartas 100-10392 35239 - Copag",
+      "loja": "doremibrinquedoscombr",
+      "lojaNome": "doremibrinquedos.com.br",
+      "url": "https://www.doremibrinquedos.com.br/produtos/pokemon-box-colecao-ex-lendas-implacaveis-zacian-38-cartas-100-10392-35239-copag/",
+      "preco": 139.99,
+      "estoque": "OUT_OF_STOCK",
+      "vistoEm": "2026-10-25T09:45:20.851Z",
+      "primeiraVez": "2026-10-17T11:15:23.424Z",
+      "produtoAntigo": "sv9-colecao_ex-zacian",
+      "produtoNovo": "avulsos-colecao_ex-zacian",
+      "produtoGravado": "sv9-colecao_ex-zacian",
+      "motivoCandidato": "avulso",
+      "historico": {
+        "linhasNoAntigo": 0,
+        "primeira": null,
+        "ultima": null,
+        "emEstoqueNoAntigo": []
+      },
+      "classe": "revisao",
+      "motivos": [
+        "history.jsonl tem a oferta em outro produto (avulsos-colecao_ex-lendas): título pode ter mudado"
+      ],
+      "origem": "titulo",
+      "bloqueado": true
+    }
+  ],
+  "pontos": [
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-17",
+      "valor": 119.97,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-18",
+      "valor": 119.97,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-19",
+      "valor": 119.97,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-20",
+      "valor": 113.89,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-21",
+      "valor": 113.89,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-22",
+      "valor": 113.89,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-23",
+      "valor": 113.89,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-24",
+      "valor": 113.89,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "facilshoppingcombr",
+      "dia": "2026-10-25",
+      "valor": 113.89,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "df91b2a4d618"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "rihappycombr",
+      "dia": "2026-10-24",
+      "valor": 139.99,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "ponto veio de anúncio reassociado; o legítimo do dia era 156.99 (substituição aproximada: o history.jsonl não guarda stale/confirmado)",
+      "proposta": 156.99,
+      "ofertas": [
+        "2c3948cc7931"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "rihappycombr",
+      "dia": "2026-10-25",
+      "valor": 139.99,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "ponto veio de anúncio reassociado; o legítimo do dia era 156.99 (substituição aproximada: o history.jsonl não guarda stale/confirmado)",
+      "proposta": 156.99,
+      "ofertas": [
+        "2c3948cc7931"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-17",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-18",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-19",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-20",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-21",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-22",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-23",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-24",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "loja": "coffeecatstorelojavirtualnuvemcombr",
+      "dia": "2026-10-25",
+      "valor": 117.59,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "0a86dff3a876"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-17",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-18",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-19",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-20",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-21",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-22",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-23",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-24",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "rihappycombr",
+      "dia": "2026-10-25",
+      "valor": 139.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "no dia, só anúncios reassociados em estoque nesta loja",
+      "proposta": null,
+      "ofertas": [
+        "5da09bdacdc5"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-17",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-18",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-19",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-20",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-21",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-22",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-23",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-24",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "loja": "mercadolivre",
+      "dia": "2026-10-25",
+      "valor": 244.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "71714d45c160",
+        "72230267de00",
+        "a9fc4234da10",
+        "5293be459adf"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-19",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-20",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-21",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-22",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-23",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-24",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "rihappycombr",
+      "dia": "2026-10-25",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a38bf35ac0ba"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-19",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-20",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-21",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-22",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-23",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-24",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "loja": "pbkidscombr",
+      "dia": "2026-10-25",
+      "valor": 229.99,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f403033e614c"
+      ]
+    },
+    {
+      "produto": "me01-box36",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-22",
+      "valor": 449.9,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "34f47cdac54b"
+      ]
+    },
+    {
+      "produto": "me01-box36",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-23",
+      "valor": 427.41,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "34f47cdac54b"
+      ]
+    },
+    {
+      "produto": "me01-box36",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-24",
+      "valor": 427.41,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "34f47cdac54b"
+      ]
+    },
+    {
+      "produto": "me01-box36",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-25",
+      "valor": 449.88,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "34f47cdac54b"
+      ]
+    },
+    {
+      "produto": "me01-blister1",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-22",
+      "valor": 14.9,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a2711ff8752b"
+      ]
+    },
+    {
+      "produto": "me01-blister1",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-23",
+      "valor": 14.16,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a2711ff8752b"
+      ]
+    },
+    {
+      "produto": "me01-blister1",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-24",
+      "valor": 14.16,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a2711ff8752b"
+      ]
+    },
+    {
+      "produto": "me01-blister1",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-25",
+      "valor": 14.9,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "a2711ff8752b"
+      ]
+    },
+    {
+      "produto": "me01-blister3",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-22",
+      "valor": 44.9,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3364ebc9f409"
+      ]
+    },
+    {
+      "produto": "me01-blister3",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-23",
+      "valor": 42.66,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3364ebc9f409"
+      ]
+    },
+    {
+      "produto": "me01-blister3",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-24",
+      "valor": 42.66,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3364ebc9f409"
+      ]
+    },
+    {
+      "produto": "me01-blister3",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-25",
+      "valor": 44.9,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3364ebc9f409"
+      ]
+    },
+    {
+      "produto": "me01-etb",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-22",
+      "valor": 399.9,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "f6ee2e6ffbeb"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "me01-etb",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-23",
+      "valor": 379.91,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "f6ee2e6ffbeb"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "me01-etb",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-24",
+      "valor": 379.91,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "f6ee2e6ffbeb"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "me01-etb",
+      "loja": "geekstorebrasilcombr",
+      "dia": "2026-10-25",
+      "valor": 399.88,
+      "acao": "revisao",
+      "classe": "revisao",
+      "motivo": "a loja só teve anúncios reassociados neste produto; produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente",
+      "proposta": null,
+      "ofertas": [
+        "f6ee2e6ffbeb"
+      ],
+      "bloqueado": true
+    },
+    {
+      "produto": "me05-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-17",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "e989d8fd3eac"
+      ]
+    },
+    {
+      "produto": "me05-blister3",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-17",
+      "valor": 81.68,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "8552065c1ef6"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-golem",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-17",
+      "valor": 47.41,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "9ebe5d8fb84f"
+      ]
+    },
+    {
+      "produto": "sv3_5-colecao_ex-alakazam",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-17",
+      "valor": 47.41,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "bf8513c84056"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-17",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-18",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-19",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-20",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-21",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-22",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-23",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-24",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-25",
+      "valor": 27.46,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "3bbfcd905952"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-17",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-18",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-19",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-20",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-21",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-22",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-23",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-24",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    },
+    {
+      "produto": "me03-blister4",
+      "loja": "pontotcgstorecombr",
+      "dia": "2026-10-25",
+      "valor": 106.38,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "a loja só teve anúncios reassociados neste produto",
+      "proposta": null,
+      "ofertas": [
+        "f546d2c510b5"
+      ]
+    }
+  ],
+  "menores": [
+    {
+      "produto": "me01-etb",
+      "antes": {
+        "total": 379.91,
+        "at": "2026-10-23T23:15:20.797Z",
+        "storeId": "geekstorebrasilcombr",
+        "offerId": "f6ee2e6ffbeb"
+      },
+      "depois": {
+        "total": 1249,
+        "at": "2026-10-08T12:00:00.000Z",
+        "storeId": "mercadolivre",
+        "offerId": null
+      },
+      "acao": "recalcular",
+      "classe": "revisao",
+      "motivo": "veio do anúncio reassociado f6ee2e6ffbeb (Elite Trainer Box (ETB) Megaevolução - Reinado Delta (ME06) — PT); o novo menor preço é mais de 1.5× o antigo: conferir se a série legítima restante é representativa",
+      "bloqueado": true
+    },
+    {
+      "produto": "sv10-colecao_ex-mewtwo",
+      "antes": {
+        "total": 139.99,
+        "at": "2026-10-17T11:30:29.693Z",
+        "storeId": "rihappycombr",
+        "offerId": "5da09bdacdc5"
+      },
+      "depois": {
+        "total": 169.9,
+        "at": "2026-10-17T12:00:00.000Z",
+        "storeId": "lojaarenagamescombr",
+        "offerId": null
+      },
+      "acao": "recalcular",
+      "classe": "auto",
+      "motivo": "veio do anúncio reassociado 5da09bdacdc5 (Box Pokémon Coleção Equipe Rocket Mewtwo Ex)"
+    },
+    {
+      "produto": "sv9-colecao_ex-zacian",
+      "antes": {
+        "total": 113.89,
+        "at": "2026-10-20T17:30:27.997Z",
+        "storeId": "facilshoppingcombr",
+        "offerId": "df91b2a4d618"
+      },
+      "depois": {
+        "total": 149.9,
+        "at": "2026-10-17T12:00:00.000Z",
+        "storeId": "lojaarenagamescombr",
+        "offerId": null
+      },
+      "acao": "recalcular",
+      "classe": "revisao",
+      "motivo": "veio do anúncio reassociado df91b2a4d618 (Pokemon Box - Lendas Implac?veis - Zacian Ex); 2 ponto(s) em revisão podem mudar o valor (proposta os trata como contaminados)",
+      "bloqueado": true
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "antes": {
+        "total": 27.46,
+        "at": "2026-10-17T12:15:25.246Z",
+        "storeId": "pontotcgstorecombr",
+        "offerId": "3bbfcd905952"
+      },
+      "depois": null,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "veio do anúncio reassociado 3bbfcd905952 (Carta Pokémon TCG Wigglytuff EX (040/165) Coleção 151)"
+    },
+    {
+      "produto": "sv3_5-colecao_ex-alakazam",
+      "antes": {
+        "total": 47.41,
+        "at": "2026-10-17T20:47:33.823Z",
+        "storeId": "pontotcgstorecombr",
+        "offerId": "bf8513c84056"
+      },
+      "depois": null,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "veio do anúncio reassociado bf8513c84056 (Carta Pokémon TCG Alakazam ex (065/165) Coleção 151)"
+    },
+    {
+      "produto": "avulsos-colecao_ex-golem",
+      "antes": {
+        "total": 47.41,
+        "at": "2026-10-17T20:47:33.823Z",
+        "storeId": "pontotcgstorecombr",
+        "offerId": "9ebe5d8fb84f"
+      },
+      "depois": null,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "veio do anúncio reassociado 9ebe5d8fb84f (Carta Pokémon TCG Golem ex (076/165) Coleção 151)"
+    },
+    {
+      "produto": "sv6_5-colecao_ex-kingdra",
+      "antes": {
+        "total": 229.99,
+        "at": "2026-10-19T11:15:23.150Z",
+        "storeId": "rihappycombr",
+        "offerId": "a38bf35ac0ba"
+      },
+      "depois": null,
+      "acao": "remover",
+      "classe": "auto",
+      "motivo": "veio do anúncio reassociado a38bf35ac0ba (Jogo de Cartas - Pokemon - Box Greninja & Kingdra Ex - Copag)"
+    }
+  ],
+  "remocoes": [],
+  "remocoesAdiadas": [
+    {
+      "produto": "avulsos-colecao_ex-destinos",
+      "nome": "Box Pokémon - Box Pokémon ex Destinos ex",
+      "ofertas": [
+        "7539b15acc03",
+        "725410c4f8bb",
+        "01c1af392c10"
+      ],
+      "classe": "revisao",
+      "registro": "products.json",
+      "acao": "adiada",
+      "ofertasApontando": [
+        "7539b15acc03",
+        "725410c4f8bb",
+        "01c1af392c10"
+      ],
+      "emEstoque": 0,
+      "motivo": "3 oferta(s) do offers.json ainda apontam para o produto; rodar de novo depois que o matcher corrigido tirar as ofertas de lá (com --anterior)"
+    },
+    {
+      "produto": "avulsos-colecao_ex-golem",
+      "nome": "avulsos - Box Pokémon ex Golem ex",
+      "ofertas": [
+        "9ebe5d8fb84f"
+      ],
+      "classe": "revisao",
+      "registro": "products.json",
+      "acao": "adiada",
+      "ofertasApontando": [
+        "9ebe5d8fb84f"
+      ],
+      "emEstoque": 0,
+      "motivo": "1 oferta(s) do offers.json ainda apontam para o produto; rodar de novo depois que o matcher corrigido tirar as ofertas de lá (com --anterior)"
+    },
+    {
+      "produto": "avulsos-colecao_ex-paradoxais",
+      "nome": "Box Pokémon - Box Pokémon ex Paradoxais ex",
+      "ofertas": [
+        "0beed61396f0"
+      ],
+      "classe": "revisao",
+      "registro": "products.json",
+      "acao": "adiada",
+      "ofertasApontando": [
+        "0beed61396f0"
+      ],
+      "emEstoque": 0,
+      "motivo": "1 oferta(s) do offers.json ainda apontam para o produto; rodar de novo depois que o matcher corrigido tirar as ofertas de lá (com --anterior)"
+    },
+    {
+      "produto": "avulsos-colecao_ex-venusaur",
+      "nome": "avulsos - Box Pokémon ex Venusaur ex",
+      "ofertas": [
+        "6513f7992624"
+      ],
+      "classe": "revisao",
+      "registro": "products.json",
+      "acao": "adiada",
+      "ofertasApontando": [
+        "6513f7992624"
+      ],
+      "emEstoque": 0,
+      "motivo": "1 oferta(s) do offers.json ainda apontam para o produto; rodar de novo depois que o matcher corrigido tirar as ofertas de lá (com --anterior)"
+    },
+    {
+      "produto": "avulsos-colecao_ex-wigglytuff",
+      "nome": "Box Pokémon - Box Pokémon ex Wigglytuff ex",
+      "ofertas": [
+        "3bbfcd905952"
+      ],
+      "classe": "revisao",
+      "registro": "products.json",
+      "acao": "adiada",
+      "ofertasApontando": [
+        "3bbfcd905952"
+      ],
+      "emEstoque": 1,
+      "motivo": "1 oferta(s) do offers.json ainda apontam para o produto; rodar de novo depois que o matcher corrigido tirar as ofertas de lá (com --anterior)"
+    }
+  ]
+}

@@ -71,18 +71,43 @@ export const apiError = (b) => (b && typeof b === 'object' ? { status: b.status 
 const SAMPLE_FIELDS = ['item_id', 'status', 'available_quantity', 'sold_quantity', 'condition', 'listing_type_id', 'price', 'original_price', 'official_store_id'];
 const catalogSample = (it) => ({ ...Object.fromEntries(SAMPLE_FIELDS.filter((k) => k in it).map((k) => [k, it[k]])), free_shipping: it.shipping?.free_shipping ?? null });
 
+// Ritmo das chamadas à API. Em 30/10 todas as quedas do ML foram 429 "local_rate_limited", sem Retry-After, recusadas
+// em < 100 ms logo no começo de rodadas cheias (:00/:30): limite de rajada, não bloqueio. Antes, um único 429 em qualquer
+// uma das ~290 chamadas derrubava a loja inteira e a espera de 30 min (run.js) deixava o ML ~45 min sem preço novo.
+// Agora: até 3 novas tentativas curtas no 429 e, depois do primeiro 429 da rodada, um intervalo mínimo entre as chamadas
+// restantes (sem 429 o ritmo é o de sempre). Se o limite persistir, o 429 sobe como antes (loja BLOCKED, ofertas não
+// confirmadas, nunca removidas).
+export const ML_GAP_MS = Number(process.env.ML_GAP_MS ?? 500);
+export const ML_RETRY_429_MS = [2000, 6000, 15000];
+const MAX_RETRY_AFTER_MS = 30e3; // Retry-After maior que isso: não espera dentro da rodada, deixa o backoff da loja agir
+let sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+/** Só para testes: troca a espera (sem relógio real). */
+export function _setSleep(fn) { sleep = fn; }
+
 export async function search(store, catalog, { log = () => {} } = {}) {
   let auth;
   try { auth = await accessToken(); } catch (e) { throw new BlockedError('Mercado Livre: não foi possível renovar o acesso (' + e.message + '). Rode o workflow "Mercado Livre: autorizar".', 'auth'); }
   if (!auth.token) throw new BlockedError('Mercado Livre ainda não autorizado: crie o app e rode o workflow "Mercado Livre: autorizar".', 'auth');
   const H = { headers: { authorization: `Bearer ${auth.token}` } };
+  let lastCall = 0; const rl = { retries: 0, recovered: 0 };
   const call = async (path) => {
-    try { return await getJson(API + path, H); } catch (e) { if (e.status === 401) throw new BlockedError('Mercado Livre recusou o acesso (401): autorize de novo.', 401); throw e; }
+    for (let attempt = 0; ; attempt++) {
+      const wait = rl.retries ? lastCall + ML_GAP_MS - Date.now() : 0; if (wait > 0) await sleep(wait);
+      lastCall = Date.now();
+      try {
+        const j = await getJson(API + path, H); if (attempt) rl.recovered++; return j;
+      } catch (e) {
+        if (e.status === 401) throw new BlockedError('Mercado Livre recusou o acesso (401): autorize de novo.', 401);
+        const ra = Number.isFinite(e.retryAfter) && e.retryAfter > 0 ? e.retryAfter * 1000 : null;
+        if (e.status !== 429 || attempt >= ML_RETRY_429_MS.length || (ra != null && ra > MAX_RETRY_AFTER_MS)) throw e;
+        rl.retries++; await sleep(ra ?? ML_RETRY_429_MS[attempt]);
+      }
+    }
   };
 
   // Diagnóstico da rodada (data/ml-debug.json): o que a API abriu/fechou para o app, campos do catálogo e estoque
   // derivado. Sem token, sem corpo de resposta além do erro estruturado.
-  const dbg = { picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, officialStores: {}, itemsError: null, scope: auth.scope || null };
+  const dbg = { rateLimit: rl, picked: 0, sample: null, drop: {}, searchApi: null, searchError: null, catalogFields: null, catalogSample: null, catalogStock: {}, officialStores: {}, itemsError: null, scope: auth.scope || null };
   const drop = (k) => { dbg.drop[k] = (dbg.drop[k] || 0) + 1; };
   const httpError = (e) => ({ status: e?.status ?? null, error: e?.blocked ? 'blocked' : null, message: String(e?.message || '').slice(0, 200), cause: null });
 
