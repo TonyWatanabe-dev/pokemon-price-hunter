@@ -16,6 +16,8 @@
 - **Fase 8 — Hardening e lançamento:** parcial; depende do burn-in, smoke no SHA publicado e decisão/estratégia de backup do Supabase.
 - **Fase 9 — Manutenção contínua:** começa após os critérios de lançamento da Fase 8.
 
+**Atualização 31/10/2026:** burn-in **7/7** concluído (24–30/10, #271), com evidência em `ROADMAP-OPERACIONAL.md`, seção de 31/10. Fase 1 sai do bloqueio do burn-in; seguem pendentes os bloqueios recorrentes do Mercado Livre e o reparo dos dados (ambos na próxima ordem).
+
 **Atualização 25/10/2026 (tarde):** 22 PRs integradas e publicadas com autorização do dono. Detalhes, SHAs e pendências estão no `ROADMAP-OPERACIONAL.md`, seção de 25/10 tarde. Nenhuma fase mudou de estado.
 - **Fase 1:** burn-in 1/7. O matching v3 (#938) e o ME06 (#922) estão em produção. O reparo dos dados contaminados foi **simulado, não aplicado** (ramo `data` e Postgres).
 - **Fase 2:** o D4 (cópia de 07/10 servida como preço atual) está corrigido e publicado (#939 navegador, #940 API). A falha dupla não foi validada em produção.

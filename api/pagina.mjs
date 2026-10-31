@@ -9,6 +9,7 @@ import { apiDbEnabled } from './_lib/db.mjs';
 import { listOpportunities } from './_lib/read-db.mjs';
 import { classify, usable, dbDataAt, stateDataAt } from './_lib/freshness.mjs';
 import { byComparableTotal, shipKnown } from './_lib/offer-rank.mjs';
+import { sitePre } from './_lib/site.mjs';
 import { registrarDesempate } from './_lib/affiliates.mjs';
 registrarDesempate();   // empate de total: oferta com link de afiliado primeiro (docs/afiliados.md)
 // Lote E: guia, perguntas frequentes e glossário como dados (fonte única com o site).
@@ -227,7 +228,7 @@ ${same.length ? `<h2>Mais de ${esc(p.collectionName)}</h2><ul>${same.map((x) => 
   }
   // melhor oferta de cada produto: a mesma de bestBy (_seo.mjs, issue #84), não o menor total bruto
   if (t === 'produtos') main = `<ul>${Object.values(best).filter((o) => P[o.productId]).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>`;
-  if (t === 'pre-vendas') { const pre = (s.offers || []).filter((o) => o.stock === 'PRE_ORDER' && P[o.productId]); main = pre.length ? `<ul>${pre.slice(0, 30).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>` : '<p>Nenhuma pré-venda aberta agora.</p>'; }
+  if (t === 'pre-vendas') { const pre = sitePre(s).offers.map((o) => (s.offers || []).find((x) => x.id === o.id)); /* uma por produto, a mesma do app (sitePre) */ main = pre.length ? `<ul>${pre.slice(0, 30).map((o) => prodRow(P[o.productId], o, of)).join('')}</ul>` : '<p>Nenhuma pré-venda aberta agora.</p>'; }
   // Páginas legais: o texto completo é o do site (index.html renderLegal); aqui vai título, canonical e a introdução.
   if (t === 'termos') main = '<p>Estes termos valem para quem usa o TCG Price Hunter. O site compara preços de lojas brasileiras com o preço sugerido oficial da Copag; as compras são feitas nas lojas, com os termos delas. Confira preço, frete e estoque na loja antes de comprar. O texto completo aparece ao carregar a página.</p>';
   // Lote E: guia completo (uma seção por h2) + perguntas frequentes (FAQPage); glossário (DefinedTermSet).
