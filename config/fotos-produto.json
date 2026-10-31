@@ -1,6 +1,6 @@
 {
-  "_nota": "Foto fixa por produto (src/run.js): vence a foto da primeira loja que casou. Só https. Arquivos em assets/web/produtos/ (cache immutable: trocar a foto = arquivo novo com -v2, -v3...).",
+  "_nota": "Foto fixa por produto (src/run.js): vence a foto da primeira loja que casou. Só https. Arquivos direto em assets/web/ com prefixo produto- (o build copia assets/web/* sem subpastas; cache immutable: trocar a foto = arquivo novo com -v2, -v3...).",
   "fotos": {
-    "c30-etb": "https://tcgpricehunter.com.br/assets/web/produtos/c30-etb-v1.webp"
+    "c30-etb": "https://tcgpricehunter.com.br/assets/web/produto-c30-etb-v1.webp"
   }
 }

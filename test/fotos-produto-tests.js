@@ -63,4 +63,16 @@ await cenario('foto.test', async ({ rodada, oferta, produto, read }) => {
   assert.equal(produto(pa).image, FOTO, 'continua na rodada seguinte');
   n++;
 }, { 'me05-box36': FOTO, 'me03-etb': 'http://loja.example/inseguro.jpg', 'produto-que-nao-existe': FOTO });
+// As fotos do arquivo real apontam para arquivos que o build publica: assets/web/* é copiado SEM subpastas
+// (package.json → build), então a foto fica direto em assets/web/ (31/10: assets/web/produtos/ deu 404 em produção).
+{
+  const cfg = JSON.parse(fs.readFileSync(path.join(root, 'config/fotos-produto.json'), 'utf8'));
+  const build = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).scripts.build;
+  assert.match(build, /cp assets\/web\/\* public\/assets\/web\//, 'build copia assets/web/*');
+  for (const [pid, url] of Object.entries(cfg.fotos)) {
+    const m = url.match(/^https:\/\/tcgpricehunter\.com\.br\/(assets\/web\/[^/]+)$/);
+    assert.ok(m, `${pid}: foto própria direto em assets/web/ (sem subpasta): ${url}`);
+    assert.ok(fs.existsSync(path.join(root, m[1])), `${pid}: arquivo ${m[1]} existe no repositório`);
+  }
+}
 console.log(`✓ fotos-produto: ${n} cenário passou`);
