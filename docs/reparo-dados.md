@@ -1,7 +1,7 @@
 # Reparo de dados contaminados por casamento errado
 
 Ferramenta: `tools/reparo-dados.mjs` (só dry-run). Testes: `test/reparo-dados-tests.js`.
-Status: **proposta**. Nada foi aplicado ao ramo `data` nem ao banco. O matcher corrigido já está integrado (main a39e82f9). Aplicar ainda exige o fim do burn-in (#271), o passo de publicação (workflow novo) e autorização do dono.
+Status: **ferramenta + passo de publicação** (31/10/2026). O banco não é tocado por este fluxo (§8). Itens em revisão continuam fora até a decisão do dono (§0.6). O matcher corrigido já está integrado (main a39e82f9). Aplicar ainda exige o fim do burn-in (#271), o passo de publicação (workflow novo) e autorização do dono.
 
 ## 0. Plano pós-integração (25/10, tarde), pronto para aprovação
 
@@ -377,7 +377,7 @@ Comparação com `saida-v3c` (mesma ferramenta da rodada 2, mesmo matcher): reas
 2. Esperar pelo menos uma rodada do robô com o matcher novo. Conferir que as ofertas reassociadas já estão no produto novo ou em `unmatched`.
 3. Rodar o dry-run sobre o retrato atual do ramo `data`, com base = commit da `main` anterior à integração e candidato = `main` atual. Passar `--anterior <relatório do passo 0>`. Revisar o relatório e decidir os itens de revisão humana e as remoções. Uma remoção só aparece como proposta quando nenhuma oferta aponta mais para o produto.
 4. **Backup**: etiquetar o commit atual do ramo `data` com `data-backup/antes-do-reparo-AAAA-MM-DD`. Essa etiqueta não é apagada pela retenção (`tools/data-backup.mjs`). Anotar o SHA.
-5. **Publicação.** O passo ainda não existe. Exige um workflow novo (arquivo protegido), autorização do dono e o fim do burn-in. Requisitos:
+5. **Publicação.** Implementada em 31/10/2026 (autorização do dono, depois do burn-in 7/7): `.github/workflows/reparo-dados.yml` (só disparo manual; `aplicar` + `confirmar=APLICAR` para publicar) e `tools/reparo-publicar.mjs` (conferência do MANIFEST e cópia). Requisitos atendidos:
    - **mesmo grupo de concorrência do robô** (`hunter`). O passo lê o ramo `data`, roda o dry-run **sobre esse mesmo retrato**, que é o que vai ser publicado, e publica antes de liberar o grupo. O ramo é reescrito com push -f a cada rodada (bfaf3cde → bb8accd8 em 17 min no dia 25/10), então um `proposto/` calculado sobre um retrato antigo nunca pode ser publicado;
    - **conferir o MANIFEST antes de sobrescrever**: o `sha256Antes` de cada arquivo tem de ser igual ao sha256 do arquivo vigente no retrato. Se um só divergir, aborta sem publicar nada;
    - **publicar só `lowest.json` e os `hist/<id>.json` do MANIFEST. Nunca publicar `state.json`.** O `proposto/data/state.json` é um espelho para conferência: publicá-lo apagaria ofertas e preços da rodada vigente. A rodada seguinte regenera `lowestHistorical` e `hist` a partir de `lowest.json` e `hist/`;
