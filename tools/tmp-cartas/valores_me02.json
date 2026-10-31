@@ -1,0 +1,284 @@
+{
+ "fonte": "Deck Certo (preços de mercado no Brasil)",
+ "colecao": "ME02 Fogo Fantasmagórico",
+ "data_preco": "2026-10-17",
+ "url": "https://deckcerto.com/pokemon-tcg/hits-fogo-fantasmagorico",
+ "cartas": [
+  {
+   "num": "130/094",
+   "nome": "Mega Charizard X ex",
+   "raridade": "Mega Hiper Raro",
+   "preco": 1000.0
+  },
+  {
+   "num": "125/094",
+   "nome": "Mega Charizard X ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 1349.88
+  },
+  {
+   "num": "129/094",
+   "nome": "Dawn",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 117.44
+  },
+  {
+   "num": "127/094",
+   "nome": "Mega Sharpedo ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 73.28
+  },
+  {
+   "num": "126/094",
+   "nome": "Rotom ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 64.9
+  },
+  {
+   "num": "128/094",
+   "nome": "Mega Lopunny ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 58.74
+  },
+  {
+   "num": "109/094",
+   "nome": "Mega Charizard X ex",
+   "raridade": "Rara Ultra",
+   "preco": 82.0
+  },
+  {
+   "num": "118/094",
+   "nome": "Dawn",
+   "raridade": "Rara Ultra",
+   "preco": 31.5
+  },
+  {
+   "num": "124/094",
+   "nome": "Energia de Ignição",
+   "raridade": "Rara Ultra",
+   "preco": 14.5
+  },
+  {
+   "num": "112/094",
+   "nome": "Mismagius ex",
+   "raridade": "Rara Ultra",
+   "preco": 13.3
+  },
+  {
+   "num": "115/094",
+   "nome": "Mega Lopunny ex",
+   "raridade": "Rara Ultra",
+   "preco": 11.95
+  },
+  {
+   "num": "114/094",
+   "nome": "Empoleon ex",
+   "raridade": "Rara Ultra",
+   "preco": 11.83
+  },
+  {
+   "num": "113/094",
+   "nome": "Mega Sharpedo ex",
+   "raridade": "Rara Ultra",
+   "preco": 11.45
+  },
+  {
+   "num": "116/094",
+   "nome": "Jaula de Batalha",
+   "raridade": "Rara Ultra",
+   "preco": 10.85
+  },
+  {
+   "num": "108/094",
+   "nome": "Mega Heracross ex",
+   "raridade": "Rara Ultra",
+   "preco": 9.5
+  },
+  {
+   "num": "123/094",
+   "nome": "Substituição",
+   "raridade": "Rara Ultra",
+   "preco": 9.5
+  },
+  {
+   "num": "110/094",
+   "nome": "Oricorio ex",
+   "raridade": "Rara Ultra",
+   "preco": 7.25
+  },
+  {
+   "num": "119/094",
+   "nome": "Cuspidor de Fogo",
+   "raridade": "Rara Ultra",
+   "preco": 6.5
+  },
+  {
+   "num": "111/094",
+   "nome": "Rotom ex",
+   "raridade": "Rara Ultra",
+   "preco": 6.3
+  },
+  {
+   "num": "121/094",
+   "nome": "Capacete Punk",
+   "raridade": "Rara Ultra",
+   "preco": 6.0
+  },
+  {
+   "num": "120/094",
+   "nome": "Artimanha do Funesto",
+   "raridade": "Rara Ultra",
+   "preco": 5.05
+  },
+  {
+   "num": "117/094",
+   "nome": "Maçarico",
+   "raridade": "Rara Ultra",
+   "preco": 5.0
+  },
+  {
+   "num": "122/094",
+   "nome": "Pingente Sagrado",
+   "raridade": "Rara Ultra",
+   "preco": 4.89
+  },
+  {
+   "num": "106/094",
+   "nome": "Meowth",
+   "raridade": "Ilustração Rara",
+   "preco": 84.88
+  },
+  {
+   "num": "098/094",
+   "nome": "Piplup",
+   "raridade": "Ilustração Rara",
+   "preco": 29.3
+  },
+  {
+   "num": "100/094",
+   "nome": "Zacian",
+   "raridade": "Ilustração Rara",
+   "preco": 19.95
+  },
+  {
+   "num": "097/094",
+   "nome": "Dewgong",
+   "raridade": "Ilustração Rara",
+   "preco": 17.5
+  },
+  {
+   "num": "105/094",
+   "nome": "Wigglytuff",
+   "raridade": "Ilustração Rara",
+   "preco": 17.45
+  },
+  {
+   "num": "103/094",
+   "nome": "Toxtricity",
+   "raridade": "Ilustração Rara",
+   "preco": 12.2
+  },
+  {
+   "num": "102/094",
+   "nome": "Wooper de Paldea",
+   "raridade": "Ilustração Rara",
+   "preco": 11.9
+  },
+  {
+   "num": "099/094",
+   "nome": "Yamper",
+   "raridade": "Ilustração Rara",
+   "preco": 10.48
+  },
+  {
+   "num": "104/094",
+   "nome": "Togedemaru",
+   "raridade": "Ilustração Rara",
+   "preco": 10.07
+  },
+  {
+   "num": "095/094",
+   "nome": "Ludicolo",
+   "raridade": "Ilustração Rara",
+   "preco": 9.88
+  },
+  {
+   "num": "101/094",
+   "nome": "Flygon",
+   "raridade": "Ilustração Rara",
+   "preco": 9.0
+  },
+  {
+   "num": "096/094",
+   "nome": "Nymble",
+   "raridade": "Ilustração Rara",
+   "preco": 8.99
+  },
+  {
+   "num": "107/094",
+   "nome": "Ambipom",
+   "raridade": "Ilustração Rara",
+   "preco": 8.92
+  },
+  {
+   "num": "013/094",
+   "nome": "Mega Charizard X ex",
+   "raridade": "Rara Dupla",
+   "preco": 8.45
+  },
+  {
+   "num": "056/094",
+   "nome": "Mega Gengar ex",
+   "raridade": "Rara Dupla",
+   "preco": 7.9
+  },
+  {
+   "num": "061/094",
+   "nome": "Mega Sharpedo ex",
+   "raridade": "Rara Dupla",
+   "preco": 3.99
+  },
+  {
+   "num": "070/094",
+   "nome": "Empoleon ex",
+   "raridade": "Rara Dupla",
+   "preco": 3.0
+  },
+  {
+   "num": "036/094",
+   "nome": "Mismagius ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.98
+  },
+  {
+   "num": "004/094",
+   "nome": "Mega Heracross ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.79
+  },
+  {
+   "num": "084/094",
+   "nome": "Mega Lopunny ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.73
+  },
+  {
+   "num": "041/094",
+   "nome": "Mega Diancie ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.5
+  },
+  {
+   "num": "018/094",
+   "nome": "Oricorio ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.19
+  },
+  {
+   "num": "029/094",
+   "nome": "Rotom ex",
+   "raridade": "Rara Dupla",
+   "preco": 1.0
+  }
+ ]
+}
