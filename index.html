@@ -2402,7 +2402,7 @@ function chart(s,msrp,avg,min,max){
 
 /* Página de produto: entender, comparar e decidir */
 let curPid=null;
-const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9)||afPref(b)-afPref(a),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9)||afPref(b)-afPref(a)||String(a.id).localeCompare(String(b.id)),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
 /* frete desconhecido não compete pelo menor total (issue #84): sem frete informado, "total" é só o preço e não se compara
    com um total que já inclui o frete. Ofertas com frete conhecido (ou grátis) vêm antes; as outras, depois, por preço. */
 const shipOk=(o)=>o.shippingKnown===true;
