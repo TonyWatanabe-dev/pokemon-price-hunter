@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
-const html = read('kit.html'); const js = read('assets/web/kit-v2.js'); const index = read('index.html');
+const html = read('kit.html'); const js = read('assets/web/kit-v3.js'); const index = read('index.html');
 const vj = JSON.parse(read('vercel.json'));
 assert.ok(vj.rewrites.some((r) => r.source === '/monte-seu-kit' && r.destination === '/kit.html'));
 assert.ok(vj.rewrites.some((r) => r.source === '/monte-seu-kit/:passo*' && r.destination === '/kit.html'), 'etapas viram caminho (funil no Analytics)');

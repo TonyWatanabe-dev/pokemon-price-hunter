@@ -47,7 +47,7 @@ const r2 = (v) => Math.round(v * 100) / 100;
 }
 // 5. página: estados de erro, vazio e carregamento; viewport móvel; frete desconhecido escrito, nunca R$ 0,00
 {
-  const js = read('assets/web/kit-v2.js'); const html = read('kit.html');
+  const js = read('assets/web/kit-v3.js'); const html = read('kit.html');
   assert.match(js, /Não deu para montar o kit agora/, 'erro da API tem mensagem e botão de recomeçar');
   assert.match(js, /renderCesta\(null\)/, 'falha na cesta cai num estado próprio');
   assert.match(js, /Sua cesta está vazia/, 'estado vazio');

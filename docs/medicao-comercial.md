@@ -58,11 +58,11 @@ O teste `test/medicao-catalogo-eventos-tests.js` compara a tabela abaixo com os 
 | `telegram_link_started` | existe | index.html | inicia vínculo com o Telegram (`:2936`) | — |
 | `entrar_view` | existe | assets/web/entrar-v4.js | abre `/entrar` (`:15`) | `origem` |
 | `group_click` | existe | assets/web/entrar-v4.js | toca botão de grupo no `/entrar` (`:19`) | `canal`, `origem`, `pos` |
-| `kit_step` | pr914 | assets/web/kit-v2.js | nova etapa do questionário | `etapa` |
-| `kit_result` | pr914 | assets/web/kit-v2.js | resultado montado | `modelo`, `itens`, `objetivo`, `idioma`, `faixa`, `favorito` |
-| `kit_item` | pr914 | assets/web/kit-v2.js | adiciona/remove/troca item | `acao`, `modelo`, `itens` |
-| `kit_click_store` | pr914 | assets/web/kit-v2.js | "Ver na loja" no kit | `loja`, `produto`, `preco`, `modelo` |
-| `kit_restart` | pr914 | assets/web/kit-v2.js | refaz o questionário | — |
+| `kit_step` | pr914 | assets/web/kit-v3.js | nova etapa do questionário | `etapa` |
+| `kit_result` | pr914 | assets/web/kit-v3.js | resultado montado | `modelo`, `itens`, `objetivo`, `idioma`, `faixa`, `favorito` |
+| `kit_item` | pr914 | assets/web/kit-v3.js | adiciona/remove/troca item | `acao`, `modelo`, `itens` |
+| `kit_click_store` | pr914 | assets/web/kit-v3.js | "Ver na loja" no kit | `loja`, `produto`, `preco`, `modelo` |
+| `kit_restart` | pr914 | assets/web/kit-v3.js | refaz o questionário | — |
 | `click_affiliate` | proposta | index.html | toca link patrocinado sem `data-store`: "Ver na Amazon" (`:2514`), "Ver na Shopee" (`:2529`), rodapé `data-afil` (`:3672`) | `programa` (amazon/shopee/ml), `sup`, `lugar` (produto/rodape) |
 | `freshness_seen` | proposta | index.html | 1ª renderização de uma tela com preço, uma vez por tela | `status` (atual/atrasado/desatualizado/indisponivel), `sup` |
 | `search_empty` | proposta | index.html | busca sem resultado | `n` (tamanho do texto), `tipo` |
