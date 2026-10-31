@@ -22,6 +22,9 @@ export const ORCAMENTOS = Object.freeze([50, 100, 200, 400]);
 //    nunca por item; frete desconhecido nunca vira zero; frete grátis da regra pública da loja vale acima do mínimo;
 //  • sem dado suficiente: cesta vazia com o motivo, nunca um item inventado; nunca prometer carta, raridade ou chance.
 import { bestComparable, byComparableTotal } from './offer-rank.mjs';
+// Foto própria do produto (config/fotos-produto.json → /assets/web/produto-*) vence a foto da oferta (mesma regra de
+// photo() no index.html e de fotoDe() em api/pagina.mjs).
+const FOTO_PROPRIA = /\/assets\/web\/produto-/;
 
 const LANGS = ['en', 'ja', 'zh', 'ko'];
 /** Nome do produto para o kit: o do produto; senão o do robô (mapa id → nome); senão "Coleção - <rótulo>". */
@@ -81,12 +84,12 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
     // Foto: a do anúncio que a pessoa vai abrir; sem ela, a do produto no catálogo (só https).
     // http:// das CDNs de loja (Nuvemshop etc.) também serve por https; a página só carrega https (CSP).
     const https = (u) => (typeof u === 'string' && /^http:\/\//.test(u) ? 'https://' + u.slice(7) : u);
-    const imagem = [https(of.image), escolha.image].find((u) => /^https:\/\//.test(u || '')) || null;
+    const imagem = [FOTO_PROPRIA.test(escolha.image || '') ? escolha.image : null, https(of.image), escolha.image].find((u) => /^https:\/\//.test(u || '')) || null;
     itens.push({ productId: escolha.id, nome: escolha.name, tipo: escolha.type, idioma: idiomaDe(escolha.id), quantidade, porque: papel.porque, imagem, oferta: of });
     // Outras opções do mesmo papel (para a cesta, K4): até 4, mesma regra de idioma/estoque, mais baratas primeiro.
     for (const p of cands.filter((c) => c.id !== escolha.id).sort((a, b) => best.get(a.id).price - best.get(b.id).price).slice(0, 4)) {
       const o2 = best.get(p.id);
-      alternativas.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), porque: papel.porque, imagem: [https(o2.image), p.image].find((u) => /^https:\/\//.test(u || '')) || null, oferta: o2 });
+      alternativas.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), porque: papel.porque, imagem: [FOTO_PROPRIA.test(p.image || '') ? p.image : null, https(o2.image), p.image].find((u) => /^https:\/\//.test(u || '')) || null, oferta: o2 });
     }
   }
   if (modelo.acessorios.length) limitacoes.push(`Sugerimos também ${modelo.acessorios.map((a) => ACESSORIO_NOME[a]).join(', ')}, mas ainda não comparamos o preço de acessórios: não estão no valor do kit.`);
