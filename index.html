@@ -2459,7 +2459,7 @@ function renderProduct(pid){
     ${best?`<section class="card buy">
       <p class="eyebrow">${shipOk(best)?"Melhor preço com estoque":"Menor preço com estoque, frete a calcular"}</p>
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
-      ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
+      ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}${shipOk(best)&&best.shipping>0?" (com frete)":""}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
       ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
       <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
