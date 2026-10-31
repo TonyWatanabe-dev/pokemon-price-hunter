@@ -1,0 +1,284 @@
+{
+ "fonte": "Deck Certo (preços de mercado no Brasil)",
+ "colecao": "ME05 Escuridão Absoluta",
+ "data_preco": "2026-10-12",
+ "url": "https://deckcerto.com/pokemon-tcg/hits-escuridao-absoluta",
+ "cartas": [
+  {
+   "num": "120/084",
+   "nome": "Mega Darkrai ex",
+   "raridade": "Mega Hiper Raro",
+   "preco": 549.5
+  },
+  {
+   "num": "116/084",
+   "nome": "Mega Darkrai ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 590.0
+  },
+  {
+   "num": "117/084",
+   "nome": "Morpeko ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 152.5
+  },
+  {
+   "num": "114/084",
+   "nome": "Mega Zeraora ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 152.45
+  },
+  {
+   "num": "115/084",
+   "nome": "Mega Chandelure ex",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 137.0
+  },
+  {
+   "num": "119/084",
+   "nome": "Clarita",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 133.95
+  },
+  {
+   "num": "118/084",
+   "nome": "Batalha Decisiva do Gladio",
+   "raridade": "Ilustração Rara Especial",
+   "preco": 113.5
+  },
+  {
+   "num": "111/084",
+   "nome": "Vitalidade da Misty",
+   "raridade": "Rara Ultra",
+   "preco": 89.5
+  },
+  {
+   "num": "109/084",
+   "nome": "Clarita",
+   "raridade": "Rara Ultra",
+   "preco": 40.5
+  },
+  {
+   "num": "101/084",
+   "nome": "Mega Darkrai ex",
+   "raridade": "Rara Ultra",
+   "preco": 36.46
+  },
+  {
+   "num": "103/084",
+   "nome": "Mega Excadrill ex",
+   "raridade": "Rara Ultra",
+   "preco": 25.99
+  },
+  {
+   "num": "105/084",
+   "nome": "Martelo Esmagador",
+   "raridade": "Rara Ultra",
+   "preco": 20.15
+  },
+  {
+   "num": "099/084",
+   "nome": "Mega Chandelure ex",
+   "raridade": "Rara Ultra",
+   "preco": 19.95
+  },
+  {
+   "num": "108/084",
+   "nome": "Batalha Decisiva do Gladio",
+   "raridade": "Rara Ultra",
+   "preco": 16.95
+  },
+  {
+   "num": "098/084",
+   "nome": "Mega Zeraora ex",
+   "raridade": "Rara Ultra",
+   "preco": 15.5
+  },
+  {
+   "num": "104/084",
+   "nome": "Bracelete Bravio",
+   "raridade": "Rara Ultra",
+   "preco": 15.45
+  },
+  {
+   "num": "097/084",
+   "nome": "Wailord ex",
+   "raridade": "Rara Ultra",
+   "preco": 14.5
+  },
+  {
+   "num": "107/084",
+   "nome": "Substituição de Energia",
+   "raridade": "Rara Ultra",
+   "preco": 10.95
+  },
+  {
+   "num": "112/084",
+   "nome": "Recruta do Clã Corrosão",
+   "raridade": "Rara Ultra",
+   "preco": 9.39
+  },
+  {
+   "num": "096/084",
+   "nome": "Lurantis ex",
+   "raridade": "Rara Ultra",
+   "preco": 9.0
+  },
+  {
+   "num": "102/084",
+   "nome": "Morpeko ex",
+   "raridade": "Rara Ultra",
+   "preco": 7.89
+  },
+  {
+   "num": "113/084",
+   "nome": "Bombona",
+   "raridade": "Rara Ultra",
+   "preco": 7.75
+  },
+  {
+   "num": "100/084",
+   "nome": "Rampardos ex",
+   "raridade": "Rara Ultra",
+   "preco": 7.25
+  },
+  {
+   "num": "110/084",
+   "nome": "Defensor Férreo",
+   "raridade": "Rara Ultra",
+   "preco": 7.0
+  },
+  {
+   "num": "106/084",
+   "nome": "Sino Sombrio",
+   "raridade": "Rara Ultra",
+   "preco": 6.9
+  },
+  {
+   "num": "087/084",
+   "nome": "Goldeen",
+   "raridade": "Ilustração Rara",
+   "preco": 34.49
+  },
+  {
+   "num": "090/084",
+   "nome": "Slowbro",
+   "raridade": "Ilustração Rara",
+   "preco": 28.85
+  },
+  {
+   "num": "088/084",
+   "nome": "Primarina",
+   "raridade": "Ilustração Rara",
+   "preco": 15.5
+  },
+  {
+   "num": "086/084",
+   "nome": "Armarouge",
+   "raridade": "Ilustração Rara",
+   "preco": 13.5
+  },
+  {
+   "num": "095/084",
+   "nome": "Silvally",
+   "raridade": "Ilustração Rara",
+   "preco": 13.0
+  },
+  {
+   "num": "091/084",
+   "nome": "Dhelmise",
+   "raridade": "Ilustração Rara",
+   "preco": 11.99
+  },
+  {
+   "num": "085/084",
+   "nome": "Fomantis",
+   "raridade": "Ilustração Rara",
+   "preco": 10.0
+  },
+  {
+   "num": "094/084",
+   "nome": "Toucannon",
+   "raridade": "Ilustração Rara",
+   "preco": 10.0
+  },
+  {
+   "num": "089/084",
+   "nome": "Manectric",
+   "raridade": "Ilustração Rara",
+   "preco": 8.0
+  },
+  {
+   "num": "093/084",
+   "nome": "Bastiodon",
+   "raridade": "Ilustração Rara",
+   "preco": 7.99
+  },
+  {
+   "num": "092/084",
+   "nome": "Thievul",
+   "raridade": "Ilustração Rara",
+   "preco": 5.9
+  },
+  {
+   "num": "048/084",
+   "nome": "Mega Darkrai ex",
+   "raridade": "Rara Dupla",
+   "preco": 5.0
+  },
+  {
+   "num": "031/084",
+   "nome": "Mega Slowbro ex",
+   "raridade": "Rara Dupla",
+   "preco": 4.0
+  },
+  {
+   "num": "008/084",
+   "nome": "Mega Delphox ex",
+   "raridade": "Rara Dupla",
+   "preco": 3.78
+  },
+  {
+   "num": "038/084",
+   "nome": "Mega Chandelure ex",
+   "raridade": "Rara Dupla",
+   "preco": 3.67
+  },
+  {
+   "num": "065/084",
+   "nome": "Mega Excadrill ex",
+   "raridade": "Rara Dupla",
+   "preco": 3.5
+  },
+  {
+   "num": "027/084",
+   "nome": "Mega Zeraora ex",
+   "raridade": "Rara Dupla",
+   "preco": 3.4
+  },
+  {
+   "num": "004/084",
+   "nome": "Lurantis ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.48
+  },
+  {
+   "num": "016/084",
+   "nome": "Wailord ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.29
+  },
+  {
+   "num": "055/084",
+   "nome": "Morpeko ex",
+   "raridade": "Rara Dupla",
+   "preco": 2.0
+  },
+  {
+   "num": "045/084",
+   "nome": "Rampardos ex",
+   "raridade": "Rara Dupla",
+   "preco": 1.75
+  }
+ ]
+}
