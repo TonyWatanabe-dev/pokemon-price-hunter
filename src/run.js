@@ -274,7 +274,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       if (!platform) throw Object.assign(new Error('plataforma não reconhecida (sem Shopify, VTEX ou JSON-LD)'), { status: 'platform' });
       src.platform = platform;
       // JSON-LD: varre o sitemap no máximo 1x/dia; nas rodadas lê as páginas relevantes + algumas novas.
-      let cache = null; let planned = [];
+      let cache = null; let planned = []; let comOferta = new Set();
       if (platform === 'jsonld') {
         cache = urlCache[store.id] ||= { at: null, candidates: [], visited: [], relevant: [] };
         const at = (cache.visitedAt ||= {}); // url -> quando foi lida com sucesso pela última vez
@@ -290,7 +290,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         // virado produto. Divide as 25 vagas da rodada com as novas (as mais antigas primeiro).
         const RETRY = Number(process.env.HUNTER_JSONLD_RETRY_H || 24) * 3600e3;
         const rel = new Set(cache.relevant);
-        const retry = cache.candidates.filter((u) => cache.visited.includes(u) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY) && !(lm[u] && at[u] && lm[u] <= at[u]))
+        // Página de oferta não confirmada (stale) volta pela regra das 24 h mesmo com lastmod antigo ou fora do sitemap:
+        // senão a oferta nunca junta evidência de remoção (#897) nem volta a ser confirmada.
+        comOferta = new Set(Object.values(prev).filter((o) => o.storeId === store.id && o.sourceType !== PISTA_SOURCE && o.stale && o.url).map((o) => o.url));
+        const retry = [...new Set([...cache.candidates, ...comOferta])].filter((u) => (cache.visited.includes(u) || comOferta.has(u)) && !rel.has(u) && !(now.getTime() - Date.parse(at[u]) < RETRY) && (comOferta.has(u) || !(lm[u] && at[u] && lm[u] <= at[u])))
           .sort((a, b) => (at[a] || '').localeCompare(at[b] || '')).slice(0, Math.max(0, 25 - fresh.length));
         cache.visited.push(...fresh);
         planned = [...new Set([...cache.relevant, ...fresh, ...retry, ...(store.productUrls || [])])];
@@ -330,7 +333,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
         // rodadas seguidas por URL; falha de leitura não soma nem zera. Só a confirmada (RODADAS_REMOCAO) sai da proteção
         // de "zero casados" abaixo e segue o caminho normal de remoção (evento "removed"; histórico de preço intacto).
         cache.removidas = atualizarRemocoes(cache.removidas, raw.gone || {}, planned.filter((u) => !failedUrls.has(u)), T);
-        for (const u of Object.keys(cache.removidas)) if (!cache.candidates.includes(u)) delete cache.removidas[u];
+        for (const u of Object.keys(cache.removidas)) if (!cache.candidates.includes(u) && !comOferta.has(u)) delete cache.removidas[u];
         removidasOk = remocoesConfirmadas(cache.removidas);
         // evidência ainda não confirmada: a página volta na próxima rodada (senão só voltaria depois de HUNTER_JSONLD_RETRY_H)
         for (const [u, a] of Object.entries(cache.removidas)) if (a.n < RODADAS_REMOCAO && !cache.relevant.includes(u)) cache.relevant.push(u);
@@ -430,6 +433,22 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       src.platformHint = platformHintFor(base) ?? src.platformHint ?? null; // plataforma vista na resposta (diagnostico.js)
       // Leitura parcial (ex.: Shopify com catálogo maior que o teto de páginas): fica registrada; some quando volta a ser completa.
       if (typeof raw.partial === 'string' && raw.partial) { src.partial = raw.partial; log(`[${store.id}] ${raw.partial}`); } else delete src.partial;
+      // Leitura parcial não prova remoção: o que ficou além do teto de páginas não foi lido. Na Ri Happy (VTEX, busca
+      // "pokemon" com 1.800+ anúncios e teto de 500) a ordem da API muda a cada rodada e as mesmas ofertas, quase sempre
+      // esgotadas, saíam como "removed" e voltavam como novas (1.068 remoções e 1.024 voltas em 30/10; p99 de volta 9 h).
+      // A oferta ausente fica como leitura que falhou (staleCopy, estoque não confirmado) por até AUSENCIA_PARCIAL_H
+      // horas desde a primeira ausência; passado isso, ou com remoção confirmada (404/410), sai como antes.
+      if (src.partial) {
+        const maxMs = positiveEnv('AUSENCIA_PARCIAL_H', 24) * 3600e3; let mantidas = 0;
+        for (const [id, o] of Object.entries(prev)) {
+          if (o.storeId !== store.id || offers[id] || o.sourceType === PISTA_SOURCE || removidasOk.has(o.url)) continue;
+          const desde = o.ausenteDesde && Number.isFinite(Date.parse(o.ausenteDesde)) ? o.ausenteDesde : T;
+          if (now.getTime() - Date.parse(desde) >= maxMs) continue; // ausente há tempo demais: segue para "removed"
+          offers[id] = { ...staleCopy(o, now), ausenteDesde: desde }; mantidas++;
+        }
+        if (mantidas) log(`[${store.id}] leitura parcial: ${mantidas} oferta(s) ausente(s) mantida(s) como não confirmadas`);
+        src.ausentesParcial = mantidas;
+      } else delete src.ausentesParcial;
       touched.add(store.id);
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.

@@ -290,7 +290,8 @@ await t('senha de exclusão só para conta com senha; Google reautentica pelo po
 await t('regras: toda permissão de users/{uid} exige login e uid igual; o resto é negado; nada aberto', async () => {
   const code = read('firebase/firestore.rules').replace(/\/\/[^\n]*/g, '');
   const allows = [...code.matchAll(/allow\s+([a-z, ]+):\s*if\s+([^;]+);/g)].map((m) => ({ ops: m[1].split(',').map((s) => s.trim()), cond: m[2].replace(/\s+/g, ' ') }));
-  assert.equal(allows.length, 3);
+  assert.equal(allows.length, 4, 'read+delete, create (M2: só perfil completo), update e o resto negado');
+  assert.match(allows.find((a) => a.ops.join() === 'create')?.cond || '', /keys\(\)\.hasAll\(\['createdAt','termsAt'\]\)/, 'M2: criar exige createdAt e termsAt');
   const users = allows.filter((a) => !/^false$/.test(a.cond.trim()));
   assert.deepEqual(users.flatMap((a) => a.ops).sort(), ['create', 'delete', 'read', 'update']);
   for (const a of users) assert.ok(a.cond.startsWith('request.auth != null && request.auth.uid == uid'), a.cond);
