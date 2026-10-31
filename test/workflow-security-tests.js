@@ -96,11 +96,12 @@ await t('5. regras do Firestore versionadas em firebase/ (não na raiz), iguais 
   assert.match(code, /rules_version\s*=\s*'2'/);
   const own = "request.auth != null && request.auth.uid == uid";
   assert.ok(code.includes(`allow read, delete: if ${own};`), 'ler/apagar só o próprio documento');
-  assert.ok(code.includes(`allow create, update: if ${own}`), 'gravar só o próprio documento');
+  assert.ok(code.includes(`allow create: if ${own}`) && code.includes(`allow update: if ${own}`), 'gravar só o próprio documento');
+  assert.match(code, /allow create: if [^;]*keys\(\)\.hasAll\(\['createdAt','termsAt'\]\)/, 'criar só com perfil completo (M2)');
   assert.match(code, /request\.resource\.data\.favorites\.size\(\) <= 200/);
   assert.match(code, /request\.resource\.data\.alerts\.size\(\) <= 50/);
   assert.match(code, /match \/\{document=\*\*\}\s*\{\s*allow read, write: if false;\s*\}/);
-  assert.equal((code.match(/allow /g) || []).length, 3, 'só as três regras');
+  assert.equal((code.match(/allow /g) || []).length, 4, 'só as quatro regras');
   assert.doesNotMatch(code, /allow [a-z, ]*write: if request\.auth/, 'gravação sem lista de campos');
   // Lista de campos permitidos = campos que a página grava (perfil inicial, saveField, nome, updatedAt do save()).
   const allowed = JSON.parse(code.match(/keys\(\)\.hasOnly\((\[[^\]]*\])\)/)[1].replace(/'/g, '"')).sort();

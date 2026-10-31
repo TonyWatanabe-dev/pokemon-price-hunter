@@ -1,7 +1,7 @@
 rules_version = '2';
 // Regras do Firestore do TCG Price Hunter. PUBLICADAS no console em 11/10/2026 (esta é a cópia versionada).
 // Publicar substitui POR INTEIRO as regras do console: mude aqui primeiro e siga docs/firestore-regras.md.
-// O site só usa users/{uid} (tools/account.src.js: getDoc, setDoc com merge, deleteDoc), sempre com o uid
+// O site só usa users/{uid} (tools/account.src.js: getDoc, updateDoc; setDoc com merge/transação só ao criar o perfil, deleteDoc), sempre com o uid
 // do próprio usuário logado. Campos gravados pela página: name, favorites (até 200), alerts (até 50),
 // termsAt, createdAt, updatedAt, telegramPedido e telegram (só null, para desligar); test/workflow-security-tests.js
 // confere que a lista bate com o código. Alertas no Telegram: docs/alertas-telegram-usuario.md.
@@ -10,11 +10,18 @@ service cloud.firestore {
     // Cada conta lê, apaga e grava só o próprio documento, e só com os campos conhecidos.
     match /users/{uid} {
       allow read, delete: if request.auth != null && request.auth.uid == uid;
-      allow create, update: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['name','favorites','alerts','termsAt','createdAt','updatedAt','telegramPedido','telegram'])
-        && (!('favorites' in request.resource.data) || request.resource.data.favorites.size() <= 200)
-        && (!('alerts' in request.resource.data) || request.resource.data.alerts.size() <= 50)
-        && telegramOk() && pedidoOk();
+      // Criar só com perfil completo (cadastro, "Criar perfil"/"Continuar usando"): gravação parcial de cliente antigo
+      // (setDoc merge de favorito/alerta) não recria o documento de quem pediu a exclusão.
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasAll(['createdAt','termsAt']) && camposOk();
+      allow update: if request.auth != null && request.auth.uid == uid && camposOk();
+
+      function camposOk() {
+        return request.resource.data.keys().hasOnly(['name','favorites','alerts','termsAt','createdAt','updatedAt','telegramPedido','telegram'])
+          && (!('favorites' in request.resource.data) || request.resource.data.favorites.size() <= 200)
+          && (!('alerts' in request.resource.data) || request.resource.data.alerts.size() <= 50)
+          && telegramOk() && pedidoOk();
+      }
 
       // telegram (chat ligado + registro de envios) só é gravado pelo robô, com conta de serviço (fora destas regras).
       // A conta pode deixar como está ou desligar (null); nunca escrever um chat_id.

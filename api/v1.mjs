@@ -178,7 +178,7 @@ async function run(rt, source) {
       const legado = faltaNome ? await legacyState().then((x) => x?.st).catch(() => null) : null;
       const nomesL = new Map((legado?.products || []).map((p) => [p.id, p.name]));
       const nomes = new Map((st.products || []).filter((p) => ids.has(p.id)).map((p) => [p.id, nomeProduto(p, nomesL, SEO_LABEL)]));
-      const ofertas = (st.offers || []).filter((o) => ids.has(o.productId)).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
+      const ofertas = (st.offers || []).filter((o) => ids.has(o.productId)).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, priceKind: o.priceKind ?? null, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
       return { body: { v: 1, source, prototipo: true, ...compararLojas(rt.itens, ofertas, { fg: freteGratis(), nomes }) } }; }
     case 'site-kit': { const st = await catalogState(source);
       // Nome: a fonte do banco não traz `name`. Só nesse caso lê o state.json do robô (falha tolerada) e, sem ele, usa o
@@ -187,7 +187,7 @@ async function run(rt, source) {
       const legado = faltaNome ? await legacyState().then((x) => x?.st).catch(() => null) : null;
       const nomes = new Map((legado?.products || []).map((p) => [p.id, p.name]));
       const produtos = (st.products || []).map((p) => ({ id: p.id, type: p.type, name: nomeProduto(p, nomes, SEO_LABEL), image: p.image || null }));
-      const ofertas = (st.offers || []).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
+      const ofertas = (st.offers || []).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, priceKind: o.priceKind ?? null, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
       return { body: { v: 1, source, prototipo: true, ...recomendar(rt.resp, produtos, ofertas, { fg: freteGratis() }) } }; }
     case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {

@@ -216,6 +216,30 @@ const out1 = path.join(tmp, 'saida1');
   assert.ok(r3.relatorio.reassociacoes.filter((x) => x.produtoAntigo === 'P').every((x) => x.classe === 'auto'));
 }
 
+// 5b) Pós-integração com ofertas que SUMIRAM do offers.json (foram para "sem produto"): sem título, a comparação
+// base × candidato não as vê. Com --anterior (dry-run pré-integração), a reassociação registrada lá vale como evidência.
+{
+  const dirS = principal();
+  const offS = JSON.parse(fs.readFileSync(path.join(dirS, 'offers.json'), 'utf8')); delete offS.b1; delete offS.f1;
+  fs.writeFileSync(path.join(dirS, 'offers.json'), JSON.stringify(offS));
+  const sem = R.analisar({ dados: R.lerDados(dirS), base, candidato: cand, agora: T(23) });
+  assert.ok(!sem.relatorio.reassociacoes.some((r) => r.offerId === 'b1'), 'sem --anterior, b1 (sem título) é invisível');
+  assert.equal(sem.proposto.lowest.P.total, 110, 'e a contaminação de P passaria despercebida');
+  const com = R.analisar({ dados: R.lerDados(dirS), base, candidato: cand, agora: T(23), anterior: r1.relatorio });
+  const b1 = com.relatorio.reassociacoes.find((r) => r.offerId === 'b1');
+  assert.equal(b1.origem, 'anterior'); assert.equal(b1.classe, 'auto'); assert.equal(b1.produtoGravado, null);
+  assert.deepEqual(b1.historico.emEstoqueNoAntigo, [[T(21), 110]], 'evidência recalculada no history.jsonl atual');
+  assert.deepEqual(com.proposto.lowest.P, r1.proposto.lowest.P, 'mesmo resultado do dry-run pré-integração');
+  assert.deepEqual(com.proposto.hist.P, r1.proposto.hist.P);
+  assert.equal(com.relatorio.contagens.reassociacoes.viaAnterior, 2);
+  assert.ok(com.relatorio.reassociacoes.filter((r) => r.offerId !== 'b1' && r.offerId !== 'f1').every((r) => r.origem === 'titulo'));
+  // Oferta da anterior que voltou a aparecer em outro produto (título pode ter mudado) vai para revisão.
+  const hs = fs.readFileSync(path.join(dirS, 'history.jsonl'), 'utf8') + JSON.stringify(row(T(23), 'b1', 'Z', 'lojaB', 90)) + '\n';
+  fs.writeFileSync(path.join(dirS, 'history.jsonl'), hs);
+  const z = R.analisar({ dados: R.lerDados(dirS), base, candidato: cand, agora: T(23), anterior: r1.relatorio });
+  assert.equal(z.relatorio.reassociacoes.find((r) => r.offerId === 'b1').classe, 'revisao');
+}
+
 // 6) Revisão humana: oferta com histórico em outro produto (título pode ter mudado) e salto grande no menor preço.
 {
   const dir4 = cenario({

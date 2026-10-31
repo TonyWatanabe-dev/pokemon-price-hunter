@@ -1,0 +1,11 @@
+# Varredura semanal de 26/10/2026: busca por lançamentos (ME04/ME05), códigos Copag/EAN e diretórios regionais.
+# Confirmadas com página de produto Pokémon lacrado (Copag, PT-BR) e preço:
+https://fourse.com.br                # Fourse · Araraquara/SP · WooCommerce
+https://triotcg.com.br               # Trio TCG · São José do Rio Preto/SP · site próprio
+https://tmstcg.com.br                # TMS TCG · São Paulo/SP · Nuvemshop
+# Fora: emdisa.com.br (distribuidora B2B, preço só com CNPJ), shopcoopera.com.br (marketplace Sicoob),
+# pokemonshop.com.br (portal afiliado), epicone.com.br (e-commerce da Liga, ?view=ecom), boosteria.com.br (abertura
+# de booster online, não vende lacrado), triplacegames.com (Portugal, produto em inglês).
+# Fora por não confirmar preço/carrinho em produto Pokémon: casajoka.com.br, efacil.com.br, planetadobebe.com.br e
+# quintaldosbrinquedos.com.br (Pokémon indisponível/sem preço); memfashionkids.com.br, itabuleiros.com.br e
+# mundoencantado.com (página não abriu na pesquisa).
