@@ -1,0 +1,68 @@
+name: 'Reparo de dados (ramo data)'
+# Passo 5 de docs/reparo-dados.md: aplica no ramo data o reparo dos recordes (lowest.json) e pontos de histórico (hist/)
+# gravados por casamento errado, ENTRE rodadas do robô (mesmo grupo de concorrência "hunter", sem cancelar ninguém).
+# Só disparo manual. Sem "aplicar": roda o dry-run sobre o retrato atual e guarda o relatório como artefato.
+# Com "aplicar" e confirmar=APLICAR: etiqueta o retrato (data-backup/antes-do-reparo-<data>), confere o sha256 de cada
+# arquivo contra o MANIFEST (tools/reparo-publicar.mjs) e publica SÓ lowest.json e hist/<id>.json; nunca state.json.
+# Itens em revisão (decisão do dono) e remoção de produto nunca são aplicados aqui. O banco (Postgres) não é tocado.
+# Reversão: docs/reparo-dados.md §6 (a partir da etiqueta). Autorizado pelo dono em 31/10/2026 ("Pode seguir todos").
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: 'Publicar no ramo data (sem marcar: só dry-run)'
+        type: boolean
+        default: false
+      confirmar:
+        description: 'Para publicar, digite APLICAR'
+        type: string
+        default: ''
+# contents: write só para a etiqueta de backup e o push do ramo data (mesmo token e script do robô).
+permissions:
+  contents: write
+concurrency:
+  group: hunter
+  cancel-in-progress: false
+jobs:
+  reparo:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_SHA: c0b6bf44   # matcher que gravou a contaminação (antes da #922/#938)
+      ANTERIOR: tools/reparo-dados/anterior-2026-10-25.json   # dry-run pré-integração (sha256 98bede1a…), usado como --anterior
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22 }
+      - name: Carregar o retrato atual do ramo data
+        run: |
+          git fetch --depth 1 origin data
+          echo "DATA_SHA=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
+          rm -rf data && git checkout FETCH_HEAD -- data && git reset -q
+      - name: Dry-run sobre esse mesmo retrato
+        run: |
+          mkdir -p "$RUNNER_TEMP/base" && git archive "$BASE_SHA" src config | tar -x -C "$RUNNER_TEMP/base"
+          node tools/reparo-dados.mjs --dados . --base "$RUNNER_TEMP/base" --candidato . --anterior "$ANTERIOR" --saida "$RUNNER_TEMP/saida"
+          node tools/reparo-publicar.mjs --saida "$RUNNER_TEMP/saida" --dados .
+          { echo "### Reparo de dados — dry-run sobre o ramo data \`${DATA_SHA:0:12}\`"; head -40 "$RUNNER_TEMP/saida/relatorio.md"; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: reparo-dados-${{ github.run_id }}
+          path: ${{ runner.temp }}/saida
+          retention-days: 90
+      - name: Etiquetar, conferir e publicar
+        if: inputs.aplicar && inputs.confirmar == 'APLICAR'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="data-backup/antes-do-reparo-$(date -u +%Y-%m-%d-%H%M)"
+          git tag "$TAG" "$DATA_SHA" && git push -q origin "refs/tags/$TAG"
+          echo "Etiqueta de backup: $TAG → $DATA_SHA" >> "$GITHUB_STEP_SUMMARY"
+          node tools/reparo-publicar.mjs --saida "$RUNNER_TEMP/saida" --dados . --aplicar
+          bash tools/push-data.sh
+          # Idempotência: o dry-run de novo sobre o retrato publicado não pode ter mudança automática.
+          node tools/reparo-dados.mjs --dados . --base "$RUNNER_TEMP/base" --candidato . --anterior "$ANTERIOR" --saida "$RUNNER_TEMP/depois" | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/reparo-publicar.mjs --saida "$RUNNER_TEMP/depois" --dados . | tee -a "$GITHUB_STEP_SUMMARY"

@@ -433,6 +433,22 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       src.platformHint = platformHintFor(base) ?? src.platformHint ?? null; // plataforma vista na resposta (diagnostico.js)
       // Leitura parcial (ex.: Shopify com catálogo maior que o teto de páginas): fica registrada; some quando volta a ser completa.
       if (typeof raw.partial === 'string' && raw.partial) { src.partial = raw.partial; log(`[${store.id}] ${raw.partial}`); } else delete src.partial;
+      // Leitura parcial não prova remoção: o que ficou além do teto de páginas não foi lido. Na Ri Happy (VTEX, busca
+      // "pokemon" com 1.800+ anúncios e teto de 500) a ordem da API muda a cada rodada e as mesmas ofertas, quase sempre
+      // esgotadas, saíam como "removed" e voltavam como novas (1.068 remoções e 1.024 voltas em 30/10; p99 de volta 9 h).
+      // A oferta ausente fica como leitura que falhou (staleCopy, estoque não confirmado) por até AUSENCIA_PARCIAL_H
+      // horas desde a primeira ausência; passado isso, ou com remoção confirmada (404/410), sai como antes.
+      if (src.partial) {
+        const maxMs = positiveEnv('AUSENCIA_PARCIAL_H', 24) * 3600e3; let mantidas = 0;
+        for (const [id, o] of Object.entries(prev)) {
+          if (o.storeId !== store.id || offers[id] || o.sourceType === PISTA_SOURCE || removidasOk.has(o.url)) continue;
+          const desde = o.ausenteDesde && Number.isFinite(Date.parse(o.ausenteDesde)) ? o.ausenteDesde : T;
+          if (now.getTime() - Date.parse(desde) >= maxMs) continue; // ausente há tempo demais: segue para "removed"
+          offers[id] = { ...staleCopy(o, now), ausenteDesde: desde }; mantidas++;
+        }
+        if (mantidas) log(`[${store.id}] leitura parcial: ${mantidas} oferta(s) ausente(s) mantida(s) como não confirmadas`);
+        src.ausentesParcial = mantidas;
+      } else delete src.ausentesParcial;
       touched.add(store.id);
     } catch (e) {
       // Motivo real: status HTTP (429, 403, 5xx…), código de rede (ENOTFOUND, TIMEOUT, CERT_*…) e Retry-After.

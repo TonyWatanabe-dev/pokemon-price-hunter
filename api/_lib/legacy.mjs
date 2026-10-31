@@ -5,6 +5,9 @@ const URLS = [
   'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/data/data/state.json',
   'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/main/data/state.json',
 ];
+// D4b: o raw da main é a cópia congelada de data/state.json (07/10). Este módulo só transporta; a idade é conferida em
+// quem consome, com LIMITS.EXPIRA_MIN (24 h): gate final do api/v1.mjs (503 com freshness indisponivel), catalogState
+// ('db': campos do robô omitidos, catalog.mjs legacyOverlay) e /api/v1/frete (503). Ver docs/fallback-dados.md.
 const TTL_MS = 60_000;
 const NEG_MS = 5_000;                                 // cache negativo: após falha, não volta à rede por 5 s
 let cache = { at: 0, st: null, from: null };

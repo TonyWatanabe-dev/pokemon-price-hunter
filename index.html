@@ -912,12 +912,14 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 
 
 /* Selo do Reclame Aqui */
-.ra{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;flex:none;padding:3px 8px 3px 5px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:filter 160ms ease}
+.ra{position:relative;z-index:3;display:inline-flex;align-items:center;gap:5px;flex:none;min-height:24px;padding:3px 8px 3px 5px;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;border:1px solid transparent;transition:filter 160ms ease}
 .ra img{width:14px;height:14px;border-radius:3px;flex:none}
 .ra b{font-weight:700}.ra span{font-weight:600;opacity:.8}.ra em{font-style:normal;font-weight:800}
 .ra::before{content:"";position:absolute;inset:-10px -4px}   /* área de toque ≥44px sem mudar o layout */
 .ra-top,.ra-ok{background:#DCF5E6;color:#0B6B3A}.ra-good{background:#E8F6DA;color:#3D6B12}.ra-mid{background:#FFF3CC;color:#7A5300}.ra-bad{background:#FFE3D6;color:#9A3412}.ra-worst{background:#FDE0DE;color:#A11B12}
 .ra-none{background:var(--sunk);color:var(--muted);border-color:var(--line-soft)}.ra-none img{filter:grayscale(1);opacity:.7}
+/* a11y 25/10: no selo cinza o texto secundário fica sem opacidade (com .8 caía para 3,4:1 sobre --sunk; axe color-contrast) */
+.ra-none span{opacity:1}
 :root[data-theme="dark"] .ra-top,:root[data-theme="dark"] .ra-ok{background:rgb(76 212 154 / .14);color:#6FE0AE}
 :root[data-theme="dark"] .ra-good{background:rgb(160 220 90 / .14);color:#B5E07A}
 :root[data-theme="dark"] .ra-mid{background:rgb(242 180 81 / .15);color:#F2C46B}
@@ -1614,8 +1616,8 @@ const thirdParty=(o)=>{const a=nrm(o.seller),b=nrm(o.storeName);return !!(a&&b&&
 const storeTxt=(o)=>thirdParty(o)?`${o.seller} via ${o.storeName}`:o.storeName;
 const pixTag=(o)=>o?.priceKind==="pix"?`<em class="pixk" title="Valor para pagamento no Pix. No cartão a loja cobra mais.">no Pix</em>`:"";
 /* Reclame Aqui: reputação pública da loja, com link. Sem página ou sem índice também aparece, com o ícone do próprio site. */
-const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-good"],REGULAR:["Regular","ra-mid"],RUIM:["Ruim","ra-bad"],NAO_RECOMENDADA:["Não recomendada","ra-worst"],SEM_INDICE:["Sem índice","ra-none"],EM_ANALISE:["Em análise","ra-none"],INATIVA:["Inativa","ra-none"],NAO_ENCONTRADA:["Sem cadastro","ra-none"]};
-const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
+const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-good"],REGULAR:["Regular","ra-mid"],RUIM:["Ruim","ra-bad"],NAO_RECOMENDADA:["Não recomendada","ra-worst"],SEM_INDICE:["Sem índice","ra-none"],EM_ANALISE:["Em análise","ra-none"],INATIVA:["Inativa","ra-none"],NAO_ENCONTRADA:["Sem cadastro","ra-none"],NAO_CONSULTADA:["Não consultado","ra-none"]};
+const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_CONSULTADA"}:null);   /* fora da tabela manual = nunca consultada (D3) */
 /* nos cartões o selo é curto e sempre diz de onde vem: "RA 8,2", "RA: sem cadastro", "RA: sem índice" */
 const raShort=(lb,nota)=>nota?`RA ${nota}`:lb==="RA1000"?lb:`RA: ${lb.charAt(0).toLowerCase()+lb.slice(1)}`;
 function raBadge(o,full){
@@ -1623,7 +1625,7 @@ function raBadge(o,full){
   const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(String(o.storeName||"").replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
-  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
+  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:r.status==="NAO_CONSULTADA"?`Reclame Aqui: ${lb}. Ainda não consultamos esta loja. Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
   const vis=full?lb:raShort(lb,nota);const al=full?tip:`${vis} · ${tip}`;
   return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(al)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" data-err="rm">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(vis)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
@@ -1812,8 +1814,8 @@ function filtersHTML(all){
 /* Início: busca em destaque, oportunidades agora e todos os preços */
 function searchBox(id,q,big){
   return`<form class="sbox${big?" sbox-lg":""}" role="search" data-search="${id}" autocomplete="off">
-  <div class="sbox-in">${ic("magnifying-glass")}<input id="${id}" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscar produto, coleção ou SKU…" value="${esc(q||"")}" aria-label="Buscar produto, coleção, SKU ou EAN" aria-autocomplete="list" aria-controls="${id}-ac" aria-expanded="false" autocomplete="off"><button class="sbox-x" type="button" data-sclear aria-label="Limpar busca"${q?"":" hidden"}>${ic("x")}</button><button class="btn" type="submit">Buscar</button></div>
-  <div class="ac" id="${id}-ac" role="listbox" hidden></div></form>`;
+  <div class="sbox-in">${ic("magnifying-glass")}<input id="${id}" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscar produto, coleção ou SKU…" value="${esc(q||"")}" role="combobox" aria-label="Buscar produto, coleção, SKU ou EAN" aria-autocomplete="list" aria-controls="${id}-ac" aria-expanded="false" autocomplete="off"><button class="sbox-x" type="button" data-sclear aria-label="Limpar busca"${q?"":" hidden"}>${ic("x")}</button><button class="btn" type="submit">Buscar</button></div>
+  <div class="ac" id="${id}-ac" role="listbox" aria-label="Sugestões de busca" hidden></div></form>`;
 }
 /* Início: painel editorial de oportunidades. Descoberta → Oportunidade → Inteligência → Novidades → Compra */
 const ACT_LABEL={new:["Nova oportunidade","flame-f","hot"],drop:["Queda de preço","trend-down","ok"],restock:["Voltou ao estoque","package","info"],lowest:["Novo menor preço","seal-check-f","ok"],tip:["Telegram","lightbulb","info"]};
@@ -2048,7 +2050,7 @@ function groupNav(){
 function renderGroup(kind,slug){
   const isCol=kind==="colecao";
   const g0=isCol?(S.collections||[]).find((c)=>colSlugOf(c)===slug):typeGroupOf(slug);
-  if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Página não encontrada</h3><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
+  if(!g0){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Página não encontrada</h1><p>Essa coleção ou formato não tem produtos acompanhados agora.</p>${searchBox("nf","",false)}</div>`;return}
   const name=isCol?g0.name:g0.label;
   const ps=(S.products||[]).filter((p)=>p.offerCount>0&&(isCol?p.collection===g0.id:inGroup(g0,p)));
   const best={},n={};if(S.slim)for(const p of ps)n[p.id]=p.liveCount||0;for(const o of OFF){if(!live(o))continue;if(!S.slim)n[o.productId]=(n[o.productId]||0)+1;if(!best[o.productId]||byTot(o,best[o.productId])<0)best[o.productId]=o}
@@ -2400,7 +2402,7 @@ function chart(s,msrp,avg,min,max){
 
 /* Página de produto: entender, comparar e decidir */
 let curPid=null;
-const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9)||afPref(b)-afPref(a),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
+const OFFER_SORTS={price:(a,b)=>(live(b)-live(a))||shipCmp(a,b)||(a.total??1e9)-(b.total??1e9)||afPref(b)-afPref(a)||String(a.id).localeCompare(String(b.id)),score:(a,b)=>(live(b)-live(a))||((oppScore(b)??-1)-(oppScore(a)??-1))||(a.total-b.total),fresh:(a,b)=>(live(b)-live(a))||String(b.source_timestamp).localeCompare(String(a.source_timestamp))};
 /* frete desconhecido não compete pelo menor total (issue #84): sem frete informado, "total" é só o preço e não se compara
    com um total que já inclui o frete. Ofertas com frete conhecido (ou grátis) vêm antes; as outras, depois, por preço. */
 const shipOk=(o)=>o.shippingKnown===true;
@@ -2432,14 +2434,15 @@ let PENDING_HASH="";
 function hashScroll(){if(!PENDING_HASH)return;const el=document.getElementById(PENDING_HASH);if(!el)return;PENDING_HASH="";requestAnimationFrame(()=>el.scrollIntoView({block:"start"}))}
 function renderProduct(pid){
   const p=P[pid];
-  if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h3>Produto não encontrado</h3><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
+  if(!p){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Produto não encontrado</h1><p>O link pode ser antigo ou o produto saiu das lojas acompanhadas.</p>${searchBox("nf","",false)}</div>`;return}
   const gg=g(p);const offers=OFF.filter((o)=>o.productId===pid).sort(OFFER_SORTS[offerSort]);
   const best=bestOffer(offers);const pre=!best&&offers.find((o)=>o.stock==="PRE_ORDER");const old=!best&&!pre&&staleOnly(offers);
   const c=p.copag||{};const col=(S.collections||[]).find((x)=>x.id===p.collection);
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
   const nLive=offers.filter(live).length;
-  document.title=`${label(p)} ${p.collectionName} Pokémon TCG${best?`: a partir de ${money(best.total)}${pixTxt(best)}`:""} | TCG Price Hunter`;
+  const lo=offers.filter(live).sort(OFFER_SORTS.price).slice(0,15).reduce((m,o)=>!m||o.total<m.total?o:m,null);   /* título = SSR (Lote D) */
+  document.title=`${label(p)} ${p.collectionName} Pokémon TCG${lo?`: a partir de ${money(lo.total)}${pixTxt(lo)}${shipOk(lo)?"":" (frete a calcular)"}`:": preço e lojas"} | TCG Price Hunter`;
   const save=best&&p.copagConfirmed&&best.total<p.msrp?p.msrp-best.total:null;
   const scale=p.copagConfirmed&&p.marketAverage&&best?(()=>{const pts=[["Copag",p.msrp,"cop"],["Mercado",p.marketAverage,"mkt"],["Melhor oferta",best.total,"best"]];const lo=Math.min(...pts.map((x)=>x[1])),hi=Math.max(...pts.map((x)=>x[1]));const span=hi-lo||1;
     return`<section class="card refscale"><h2>Referência, mercado e oportunidade</h2><div class="rs-track">${pts.map(([l,v,k])=>`<span class="rs-pt ${k}" style="left:${(8+(v-lo)/span*84).toFixed(1)}%"><i></i><b>${money(v)}</b><small>${l}</small></span>`).join("")}</div>
@@ -2456,7 +2459,7 @@ function renderProduct(pid){
     ${best?`<section class="card buy">
       <p class="eyebrow">${shipOk(best)?"Melhor preço com estoque":"Menor preço com estoque, frete a calcular"}</p>
       <div class="pblock"><span class="big" data-price="${esc(best.id)}">${money(best.total)}</span>${pixTag(best)}</div>
-      ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}</p>`:""}
+      ${p.copagConfirmed&&best.discount!=null?`<p class="pp-disc ${best.discount>0?"down":"up"}">${best.discount>0?`${ic("trend-down")}${pct(best.discount)} abaixo da referência Copag`:best.discount<0?`${pct(-best.discount)} acima da referência Copag`:"Igual à referência Copag"}${shipOk(best)&&best.shipping>0?" (com frete)":""}</p>`:""}
       <p class="so-ship">${shipNote(best)} · ${esc(best.storeName)}</p>
       ${(()=>{const k=shipOk(best)?offers.filter((o)=>live(o)&&!shipOk(o)&&o.total<best.total).length:0;return k?`<p class="hnote">${k===1?"1 oferta com preço menor não informa o frete e fica":`${k} ofertas com preço menor não informam o frete e ficam`} fora desta comparação. Veja em Onde comprar.</p>`:""})()}
       <p class="so-ship" data-read="${readKnown(best)?"known":"unknown"}">${ic("clock")}${readNote(best)}${readKnown(best)?"":". Confira o preço na loja."}</p>
@@ -2628,7 +2631,7 @@ function fcChoose(oid,method){const pid=FC.pid;if(!pid||!FC.res[oid])return;FC.p
    O Firebase (account.js) só é baixado quando a pessoa precisa da conta ou já entrou antes. */
 const ACC={mod:null,user:null,data:null,ready:false,tab:"up",step:"choose",gate:null,err:null,errField:null,form:{},ok:null,told:false};
 let accP=null;
-const AERR={"auth/invalid-email":"E-mail inválido.","auth/missing-email":"Digite o e-mail.","auth/missing-password":"Digite a senha.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/email-already-in-use":"Já existe uma conta com esse e-mail. Entre ou use \"Esqueci minha senha\".","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/wrong-password":"E-mail ou senha incorretos.","auth/user-not-found":"E-mail ou senha incorretos.","auth/too-many-requests":"Muitas tentativas seguidas. Espere alguns minutos e tente de novo.","auth/popup-closed-by-user":"","auth/cancelled-popup-request":"","auth/user-cancelled":"","auth/popup-blocked":"O navegador bloqueou a janela do Google. Libere pop-ups para este site e tente de novo.","auth/network-request-failed":"Sem conexão com a internet. Tente de novo.","auth/requires-recent-login":"Por segurança, entre de novo para excluir a conta.","auth/account-exists-with-different-credential":"Esse e-mail já tem conta com outro jeito de entrar.","auth/unauthorized-domain":"Login ainda não liberado para este endereço do site.","auth/operation-not-allowed":"Esse jeito de entrar ainda não está ativado.","auth/admin-restricted-operation":"Novos cadastros estão fechados no momento. Se você já tem conta, use Entrar.","auth/requests-from-referer":"Cadastro e login ainda não estão liberados neste endereço do site.","auth/invalid-api-key":"Login indisponível neste endereço do site no momento.","auth/app-not-authorized":"Login indisponível neste endereço do site no momento.","auth/configuration-not-found":"Login indisponível no momento: configuração pendente do site.","auth/internal-error":"O serviço de login falhou agora. Tente de novo em instantes.","auth/quota-exceeded":"Muitos cadastros agora. Tente de novo em alguns minutos.","auth/unauthorized-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/invalid-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/web-storage-unsupported":"O navegador está bloqueando os dados do site. Saia do modo anônimo ou libere cookies e tente de novo.","auth/operation-not-supported-in-this-environment":"Este navegador não permite o login com Google aqui. Tente em outro navegador.","auth/redirect-cancelled-by-user":""};
+const AERR={"auth/user-mismatch":"Escolha no Google a mesma conta conectada aqui.","auth/invalid-email":"E-mail inválido.","auth/missing-email":"Digite o e-mail.","auth/missing-password":"Digite a senha.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/email-already-in-use":"Já existe uma conta com esse e-mail. Entre ou use \"Esqueci minha senha\".","auth/invalid-credential":"E-mail ou senha incorretos.","auth/invalid-login-credentials":"E-mail ou senha incorretos.","auth/wrong-password":"E-mail ou senha incorretos.","auth/user-not-found":"E-mail ou senha incorretos.","auth/too-many-requests":"Muitas tentativas seguidas. Espere alguns minutos e tente de novo.","auth/popup-closed-by-user":"","auth/cancelled-popup-request":"","auth/user-cancelled":"","auth/popup-blocked":"O navegador bloqueou a janela do Google. Libere pop-ups para este site e tente de novo.","auth/network-request-failed":"Sem conexão com a internet. Tente de novo.","auth/requires-recent-login":"Por segurança, entre de novo para excluir a conta.","auth/account-exists-with-different-credential":"Esse e-mail já tem conta com outro jeito de entrar.","auth/unauthorized-domain":"Login ainda não liberado para este endereço do site.","auth/operation-not-allowed":"Esse jeito de entrar ainda não está ativado.","auth/admin-restricted-operation":"Novos cadastros estão fechados no momento. Se você já tem conta, use Entrar.","auth/requests-from-referer":"Cadastro e login ainda não estão liberados neste endereço do site.","auth/invalid-api-key":"Login indisponível neste endereço do site no momento.","auth/app-not-authorized":"Login indisponível neste endereço do site no momento.","auth/configuration-not-found":"Login indisponível no momento: configuração pendente do site.","auth/internal-error":"O serviço de login falhou agora. Tente de novo em instantes.","auth/quota-exceeded":"Muitos cadastros agora. Tente de novo em alguns minutos.","auth/unauthorized-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/invalid-continue-uri":"Não conseguimos enviar o e-mail agora. Tente de novo em instantes.","auth/web-storage-unsupported":"O navegador está bloqueando os dados do site. Saia do modo anônimo ou libere cookies e tente de novo.","auth/operation-not-supported-in-this-environment":"Este navegador não permite o login com Google aqui. Tente em outro navegador.","auth/redirect-cancelled-by-user":""};
 /* campo ligado a cada erro (mensagem ao lado do campo e aria-invalid) */
 const AFIELD={"auth/invalid-email":"email","auth/missing-email":"email","auth/email-already-in-use":"email","auth/missing-password":"pw","auth/weak-password":"pw","auth/password-does-not-meet-requirements":"pw"};
 /* política de senha do Firebase: a mensagem traz a lista de requisitos em inglês; aqui só traduzimos o que ela pede */
@@ -2648,7 +2651,10 @@ const alertOf=(pid)=>alertsL().find((a)=>a.p===pid);
 /* desempate fixo (preço, id): o mesmo no site e na API, não depende da ordem das ofertas na lista */
 const byTot=(a,b)=>a.total-b.total||afPref(b)-afPref(a)||String(a.id).localeCompare(String(b.id));   /* empate de total: nosso link primeiro */
 const bestLive=(pid)=>OFF.filter((o)=>o.productId===pid&&live(o)).sort(byTot)[0];
-const hits=()=>alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v);
+/* "Chegou no seu preço" só com preço em dia: a mesma checagem de frescor de setAlert. Com dado velho, nada de contador,
+   aviso ou selo afirmando o preço (o alerta continua salvo e volta a valer na próxima leitura). */
+const precoEmDia=()=>freshState(S).status==="atual";
+const hits=()=>precoEmDia()?alertsL().map((a)=>({a,o:bestLive(a.p)})).filter((x)=>x.o&&x.o.total<=x.a.v):[];
 const authPending=()=>!ACC.ready&&store.get("acc",false);
 function accMod(){return accP||=import("/account.js").then((m)=>{ACC.mod=m;m.watch(onUser);afterRedirect(m);return m}).catch((e)=>{accP=null;throw e})}
 /* volta do Google no modo redirecionamento: sucesso segue por onUser/resumeGate; cancelamento ou erro reabrem a mesma tela */
@@ -2662,14 +2668,20 @@ async function afterRedirect(m){
 async function onUser(u){
   const was=ACC.user?.uid;ACC.user=u;store.set("acc",!!u);
   if(u){
-    if(was!==u.uid){ACC.data=null;ACC.loadFailed=false;try{ACC.data=await ACC.mod.load()||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}}
-    if(ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
-    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base);Object.assign(ACC.data,base)}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
+    if(was!==u.uid){ACC.data=ACC.del=null;ACC.loadFailed=false;let d;try{d=await ACC.mod.load();ACC.data=d||{}}catch{ACC.data={};ACC.loadFailed=true;toast("Não consegui carregar seus favoritos e alertas. Confira a conexão e recarregue a página.",true)}
+      ACC.semDoc=d===null;const s=await ACC.mod.delState?.(d);if(s==="fim"){toast("Essa conta já foi excluída.");return}if(s)delEnter(s,ACC.semDoc)}
+    if(ACC.del||ACC.loadFailed){/* sem os dados reais, gravar sobrescreveria favoritos e alertas existentes */}
+    else if(!ACC.data.createdAt){if(u.provider!=="password")track("signup_completed",{method:"google"});const now=new Date().toISOString();const base={name:u.name||ACC.signupName||"",favorites:ACC.data.favorites||[],alerts:ACC.data.alerts||[],termsAt:ACC.data.termsAt||now,createdAt:now};try{await ACC.mod.save(base,ACC.semDoc);Object.assign(ACC.data,base);ACC.semDoc=false}catch(e){try{console.warn("[conta] perfil não salvo:",e?.code||"erro")}catch{};toast("Você entrou, mas não consegui salvar seu perfil agora. Favoritos e alertas podem não ficar salvos.",true)}}
     else if(!ACC.data.name&&u.name){try{await ACC.mod.save({name:u.name});ACC.data.name=u.name}catch(e){try{console.warn("[conta] nome não salvo:",e?.code||"erro")}catch{}}}
-  }else ACC.data=null;
+  }else{ACC.data=null;ACC.del=null}
   ACC.ready=true;accSync();
   if(u)await resumeGate();
 }
+/* Exclusão pendente (regras e painel: account.js) */
+function delEnter(why,apagados){ACC.del={why,apagados};ACC.data=null;try{sessionStorage.removeItem("ph:tg:"+ACC.user.uid)}catch{}}
+function delStorage(e){const u=ACC.user,v=e.newValue,p=v==="pendente";if(!u||e.key!=="ph:del:"+u.uid)return;
+  if(!v){if(ACC.del?.why==="pendente")location.reload()}   /* outra aba concluiu ou desistiu */
+  else if(ACC.del)ACC.del.apagados||=p;else{delEnter("pendente",p);accSync();render()}}
 
 /* AuthGate: a única porta para ações que precisam de conta.
    Se a pessoa já entrou, executa. Se não, guarda a ação, pede login e, depois, volta ao mesmo produto e conclui. */
@@ -2765,6 +2777,7 @@ async function accAction(a,btn){
     return}
   if(a.startsWith("tg-")){await tgAction(a,btn);return}
   if(a==="del-no"){render();return}
+  if(a==="del-continuar"){await delContinuar(btn);return}
   if(!m)return;
   setBusy(btn,true,a==="out"?"Saindo…":a==="resend"?"Enviando…":a==="reload"?"Verificando…":"Entrando…");
   try{
@@ -2798,14 +2811,28 @@ async function submitAcc(f){
   setBusy(b,false);if(!ACC.user){renderGate();focusErr()}
 }
 async function submitDel(f){
-  const m=ACC.mod;if(!m)return;const pw=new FormData(f).get("pw");const b=f.querySelector("[type=submit]");setBusy(b,true,"Excluindo…");
-  try{await m.wipe(pw||undefined);ACC.data=null;toast("Conta e dados excluídos");go("")}
-  catch(e){toast(e.code==="auth/requires-recent-login"&&!pw?"Por segurança, digite sua senha para excluir.":aerr(e)||"Não foi possível excluir agora.");setBusy(b,false)}
+  const m=ACC.mod,u=ACC.user;if(!m||!u)return;const pw=new FormData(f).get("pw")||"",b=f.querySelector("[type=submit]");setBusy(b,true,"Excluindo…");
+  let ok;try{ok=await m.excluir(pw)}
+  catch(e){if(e?.docDeleted)delEnter("pendente",true);
+    const msg=e?.code==="auth/requires-recent-login"&&!pw&&m.provs(u).includes("password")?"Por segurança, digite sua senha para excluir.":aerr(e)||"Confirmação cancelada. "+(ACC.del?"A exclusão continua pendente.":"Nada foi excluído.");
+    if(ACC.del){ACC.del.err=msg;accSync();render();toast(e?.docDeleted?"Seus dados foram apagados, mas a conta ainda não. Confirme para concluir.":msg,true);$("#delbox h2")?.focus()}
+    else{toast(msg);setBusy(b,false)}
+    return}
+  if(ok!==true){setBusy(b,false);toast(AERR["auth/requires-recent-login"],true);return}
+  ACC.data=ACC.del=null;toast("Conta e dados excluídos");go("");
+}
+async function delContinuar(btn){if(!ACC.del)return;setBusy(btn,true,"Aguarde…");
+  try{ACC.data=await ACC.mod.continuar(ACC.user.name||"")}catch(e){setBusy(btn,false);toast(saveErr(e),true);return}
+  ACC.del=null;ACC.semDoc=false;accSync();render();toast("Pronto: sua conta segue ativa.");
 }
 async function saveField(k,v,old){
+  const dt=()=>toast(ACC.del?.why==="ausente"?"Sua conta não tem dados salvos. Veja em Minha conta.":"Exclusão da conta pendente. Veja em Minha conta.",true);
+  if(ACC.del||ACC.user&&ACC.mod.mark?.(ACC.user.uid)){dt();throw Object.assign(Error("pendente"),{code:"conta/exclusao-pendente"})}
   if(!ACC.user||!ACC.data){toast("Entre na sua conta para salvar.");throw Object.assign(new Error("sem login"),{code:"auth/no-user"})}
   if(ACC.loadFailed){toast("Seus dados não carregaram. Recarregue a página antes de salvar.");throw Object.assign(new Error("dados não carregados"),{code:"data/not-loaded"})}
-  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;accSync(false);toast(saveErr(e));throw e}
+  ACC.data[k]=v;accSync(false);try{await ACC.mod.save({[k]:v})}catch(e){ACC.data[k]=old;
+    if(e?.code==="not-found"){delEnter("ausente",true);accSync();render();dt();throw e}
+    accSync(false);toast(saveErr(e));throw e}
 }
 const SAVE_AUTH=new Set(["auth/no-user","unauthenticated","auth/user-token-expired","auth/user-not-found"]);
 const SAVE_NET=new Set(["unavailable","auth/network-request-failed","deadline-exceeded"]);
@@ -2861,7 +2888,7 @@ async function sharePid(pid){if(!P[pid])return;const url=location.origin+"/produ
   const wa="https://wa.me/?text="+encodeURIComponent(text+" "+url);window.open(wa,"_blank","noopener")}
 function favBtn(pid){const on=isFav(pid);return`<button class="btn ghost favbtn" type="button" data-fav="${esc(pid)}" aria-pressed="${on}">${ic(on?"heart-f":"heart")}${on?"Nos favoritos":"Favoritar"}</button>`}
 function alertBox(pid){
-  const a=alertOf(pid),o=bestLive(pid);const hit=a&&o&&o.total<=a.v;
+  const a=alertOf(pid),o=bestLive(pid);const hit=a&&o&&o.total<=a.v&&precoEmDia();
   const now=o?`Menor preço com estoque agora: <b>${money(o.total)}${pixTxt(o)}</b> em ${esc(storeTxt(o))}.`:"Sem oferta com estoque confirmado agora.";
   const sug=o?Math.floor(o.total*.9):"";
   return`<section class="alertbox${hit?" hit":""}" id="abox"><h2>${ic(hit?"bell-ringing":"bell")}${a?"Seu alerta de preço":"Me avise quando baixar"}</h2>
@@ -2949,15 +2976,14 @@ function renderAlerts(){
 }
 function renderConfig(){
   const u=ACC.user;if(!u){$("#view").innerHTML=privateGate("Configurações","Entre para mudar as configurações da sua conta.");return}
-  const th=document.documentElement.dataset.theme||"";const pwUser=u.provider==="password";
+  const th=document.documentElement.dataset.theme||"";
   $("#view").innerHTML=`<div class="stack" style="margin-top:16px"><section class="panel cfg"><h2>Configurações</h2>
   <h3>Tema</h3><div class="tabs" role="group" aria-label="Tema">${[["","Automático"],["light","Claro"],["dark","Escuro"]].map(([v,l])=>`<button type="button" data-theme-set="${v}" aria-pressed="${th===v}">${l}</button>`).join("")}</div>
   <h3>Seus dados</h3><p>Guardamos nome, e-mail, favoritos e alertas (e, se você ligar os alertas no Telegram, o número da conversa com o bot). Veja a <a href="/privacidade" data-go="privacidade">Política de privacidade</a>.</p>
   <h3 style="color:var(--bad)">Excluir conta</h3><p>Apaga sua conta, favoritos e alertas na hora. Não dá para desfazer.</p>
-  <form id="delf" class="delf" novalidate>${pwUser?`<div class="field"><label for="d-pw">Confirme sua senha</label><input id="d-pw" name="pw" type="password" autocomplete="current-password" required></div>`:""}<button class="btn danger" type="submit">${ic("trash")}Excluir conta e dados</button></form>
+  ${ACC.mod.delForm(u,"Excluir conta e dados",ic("trash"))}
   </section></div>`;
 }
-
 const BASE_TITLE="Preço de Pokémon TCG lacrado no Brasil: compare com a Copag | TCG Price Hunter";
 const TITLES={grupos:"Grupos de ofertas de Pokémon TCG no WhatsApp e Telegram",busca:"Busca",produtos:"Todos os produtos de Pokémon TCG lacrado",oportunidades:"Promoções de Pokémon TCG lacrado hoje",copag:"Preço sugerido Copag de Pokémon TCG",prevenda:"Pré-venda de Pokémon TCG no Brasil",pistas:"Pistas",lojas:"Lojas de Pokémon TCG no Brasil",guia:"Como funciona",glossario:"Glossário de Pokémon TCG lacrado",termos:"Termos de uso",privacidade:"Privacidade",conta:"Minha conta",favoritos:"Favoritos",alertas:"Alertas de preço",configuracoes:"Configurações",notfound:"Página não encontrada"};
 /* Grupos de ofertas: convites oficiais (cópia literal de api/_lib/grupos.mjs; test/grupos-page-tests.js confere). */
@@ -3002,6 +3028,10 @@ function renderGrupos(){
   <h2>Siga também</h2><p class="foot-social">${redesLinks()}</p>
 </section></div>`;
 }
+/* Busca, conta e endereço desconhecido ficam fora do índice (X-Robots-Tag no vercel.json, noindex no 404): a casca
+   (app.html) vem com o canonical da Home, que aqui sai para não dar sinal conflitante. As páginas com SSR trazem o próprio. */
+const SEM_CANON=new Set(["busca","notfound",...PRIVATE]);
+function canonSync(){if(SEM_CANON.has(view))document.querySelector('link[rel="canonical"]')?.remove()}
 function renderNotFound(){$("#view").innerHTML=`<div class="empty" style="margin-top:18px"><h1>Página não encontrada</h1><p>O endereço pode estar digitado errado ou a página saiu do ar.</p>${searchBox("nf","",false)}<p><a class="btn" href="/" data-go="">Ir para o início</a></p></div>`}
 function render(){
   const cur=view==="deals"?"":view;
@@ -3010,8 +3040,9 @@ function render(){
   const mb=document.querySelector(".tabbar [data-more]");if(mb)mb.setAttribute("aria-current",["oportunidades","prevenda","lojas","grupos","guia","glossario","termos","privacidade",...PRIVATE].includes(view)?"page":"false");
   document.querySelectorAll(".accbtn").forEach((b)=>b.setAttribute("aria-current",PRIVATE.includes(view)?"page":"false"));
   if(view!=="produto"&&view!=="colecao"&&view!=="tipo")document.title=TITLES[view]?`${TITLES[view]} | TCG Price Hunter`:BASE_TITLE;
-  grpUI();
+  canonSync();grpUI();
   if(S?.slim&&PRIVATE.includes(view))ensureFull();   /* páginas da conta usam o resumo e ganham o estado completo em seguida */
+  if(ACC.user&&ACC.del&&PRIVATE.includes(view))return $("#view").innerHTML=ACC.mod.delPanel(ACC.del,ACC.user,ic("trash"));
   if(view==="conta")return renderConta();
   if(view==="favoritos")return renderFavs();
   if(view==="alertas")return renderAlerts();
@@ -3526,8 +3557,15 @@ function loading(){
 }
 const RAWB=(br)=>`https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${br}/data/`;
 const DATA_BASES=[RAWB("data"),RAWB("main"),"/data/"];
-async function fetchData(path){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(r.ok)return await r.json()}catch{}}return null}
-async function fetchState(){return fetchData("state.json")}
+/* D4: state.json só vale com produtos, ofertas e horário confiável de até 24 h (FRESH_LIM.expira = EXPIRA_MIN da API). A cópia
+   congelada da main (raw main e /data/ do deploy) não vira "Ao vivo"; sem fonte válida, o estado de erro de sempre.
+   A idade é medida contra o relógio do servidor que respondeu, nunca o do aparelho: Date (mesma origem) ou, no raw do GitHub
+   (CORS não expõe Date), Expires − max-age. Sem essa referência = sem horário confiável. */
+const srvNow=(r)=>{const h=(k)=>r?.headers?.get?.(k)||"";let t=Date.parse(h("date"));
+  if(!Number.isFinite(t)){const m=/max-age=(\d+)/.exec(h("cache-control"));t=m?Date.parse(h("expires"))-m[1]*1e3:NaN}return Number.isFinite(t)?t:null};
+const stateOk=(j,r)=>{const now=srvNow(r);return now!=null&&!!j&&Array.isArray(j.products)&&Array.isArray(j.offers)&&freshState(j,now).status!=="indisponivel"};
+async function fetchData(path,ok){for(const b of DATA_BASES){try{const r=await fetch(b+path,{cache:"no-store"});if(!r.ok)continue;const j=await r.json();if(!ok||ok(j,r))return j}catch{}}return null}
+async function fetchState(){return fetchData("state.json",stateOk)}
 /* FASE 3: a Home lê o resumo da API (banco + Price Engine, ~130 KB) em vez do state.json inteiro (~1,7 MB).
    Qualquer falha cai no state.json, como antes. ?fonte=state força o caminho antigo. */
 const HOME_API=true;
@@ -3536,7 +3574,7 @@ function hydrateHome(h){const c=Object.fromEntries((h.collections||[]).map((x)=>
 async function fetchHome(){
   if(!HOME_API||new URLSearchParams(location.search).get("fonte")==="state")return null;
   try{const ac=new AbortController();const tm=setTimeout(()=>ac.abort(),6000);const r=await fetch("/api/v1/home",{signal:ac.signal});clearTimeout(tm);
-    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts?hydrateHome(h):null}catch{return null}
+    if(!r.ok)return null;const h=await r.json();return h&&h.v===1&&h.slim&&Array.isArray(h.products)&&Array.isArray(h.offers)&&h.counts&&h.freshness?.status!=="indisponivel"?hydrateHome(h):null}catch{return null}
 }
 /* FASE 4 — páginas pela API (frontend → /api/v1 → serviços → banco). Nada de estatística calculada aqui:
    preço médio e menor já visto vêm do Price Engine; as regras de lista/filtro rodam no servidor (mesmas do site).
@@ -3647,9 +3685,9 @@ function watchMore(){const el=$("#prod-more");if(!el)return;if(!("IntersectionOb
 let fullP=null;
 function ensureFull(){
   if(!S||!S.slim)return Promise.resolve();
-  return fullP||=fetchState().then((st)=>{fullP=null;
+  return fullP||=fetchState().then((st)=>{fullP=null;   /* sem state.json: páginas da conta (= PRIVATE) ficam com o resumo da API (D4, R2) */
     if(st)init(st,{silent:view==="deals"});
-    else if(view!=="deals")$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
+    else if(view!=="deals"&&!["conta","favoritos","alertas","configuracoes"].includes(view))$("#view").innerHTML=`<div class="empty err-state" role="alert" style="margin-top:18px">${ic("warning")}<h3>Não conseguimos carregar os preços agora</h3><p>Pode ser a conexão ou uma instabilidade rápida. Seus favoritos e alertas continuam salvos.</p><button class="btn" type="button" id="retry">${ic("arrow-clockwise")}Tentar de novo</button></div>`;
   });
 }
 let refreshing=false;
@@ -3774,6 +3812,7 @@ function themeSync(){document.querySelectorAll(".theme-btn use").forEach((u)=>u.
 (function(){const t=store.get("theme",null);if(t)document.documentElement.dataset.theme=t;themeSync();
   document.querySelectorAll(".theme-btn").forEach((b)=>b.onclick=()=>{document.documentElement.dataset.theme=isDark()?"light":"dark";store.set("theme",document.documentElement.dataset.theme);themeSync();if(view==="configuracoes")render()})})();
 accSync(false);
+addEventListener("storage",delStorage);
 load();
 if(store.get("acc",false)||redirFlag())accMod().catch(()=>{ACC.ready=true;accSync()});
 </script>

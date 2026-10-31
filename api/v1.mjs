@@ -178,7 +178,7 @@ async function run(rt, source) {
       const legado = faltaNome ? await legacyState().then((x) => x?.st).catch(() => null) : null;
       const nomesL = new Map((legado?.products || []).map((p) => [p.id, p.name]));
       const nomes = new Map((st.products || []).filter((p) => ids.has(p.id)).map((p) => [p.id, nomeProduto(p, nomesL, SEO_LABEL)]));
-      const ofertas = (st.offers || []).filter((o) => ids.has(o.productId)).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
+      const ofertas = (st.offers || []).filter((o) => ids.has(o.productId)).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, priceKind: o.priceKind ?? null, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
       return { body: { v: 1, source, prototipo: true, ...compararLojas(rt.itens, ofertas, { fg: freteGratis(), nomes }) } }; }
     case 'site-kit': { const st = await catalogState(source);
       // Nome: a fonte do banco não traz `name`. Só nesse caso lê o state.json do robô (falha tolerada) e, sem ele, usa o
@@ -187,7 +187,7 @@ async function run(rt, source) {
       const legado = faltaNome ? await legacyState().then((x) => x?.st).catch(() => null) : null;
       const nomes = new Map((legado?.products || []).map((p) => [p.id, p.name]));
       const produtos = (st.products || []).map((p) => ({ id: p.id, type: p.type, name: nomeProduto(p, nomes, SEO_LABEL), image: p.image || null }));
-      const ofertas = (st.offers || []).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
+      const ofertas = (st.offers || []).map((o) => ({ productId: o.productId, storeId: o.storeId, storeName: o.storeName, price: o.price, priceKind: o.priceKind ?? null, total: o.total, shipping: o.shipping, shippingKnown: o.shippingKnown, stock: o.stock, url: o.url, image: o.image || null, source_timestamp: o.source_timestamp || null, anomalous: !!o.anomalous, stale: !!o.stale }));
       return { body: { v: 1, source, prototipo: true, ...recomendar(rt.resp, produtos, ofertas, { fg: freteGratis() }) } }; }
     case 'site-lojas': return { body: { v: 1, source, ...STORES.siteStores(await catalogState(source), { now: FR.nowMs() }) } };
     case 'site-produto': {
@@ -318,13 +318,15 @@ async function frete(req, res, path, qs) {
   const SC = await import('./_lib/shipping-calc.mjs');
   let st;
   try { st = (await legacyState()).st; } catch { return send(res, 503, { error: 'dados indisponíveis no momento' }, H); }
+  // D4b: oferta, item e vendedor vêm do state.json; vencido (> 24 h) ou sem horário, não cota (nunca frete zero/inventado)
+  if (FR.classify(FR.stateDataAt(st)).status === 'indisponivel') return send(res, 503, { error: 'dados desatualizados ou sem horário confiável no momento' }, H);
   if (path.length === 2 && path[1] === 'estado') {
     return send(res, 200, { enabled: true, stores: SC.calcSources(st).map((s) => s.id), ttlSec: SC.QUOTE_TTL_MS / 1000,
       limits: { perIpPerMin: SC.RATE_LIMIT.max, perKeyPerMin: SC.KEY_RATE_LIMIT.max } }, H);
   }
   if (path.length !== 1) return send(res, 404, { error: 'rota não encontrada' }, H);
   freteHandler ||= SC.createShippingCalcHandler({ enabled: true, ...(freteDeps?.service ? { service: freteDeps.service } : {}),
-    resolveOffer: async (id) => SC.resolveVtexOffer((await legacyState()).st, id) });
+    resolveOffer: async (id) => { const s2 = (await legacyState()).st; return FR.classify(FR.stateDataAt(s2)).status === 'indisponivel' ? null : SC.resolveVtexOffer(s2, id); } });
   // do pedido só saem oferta, CEP e quantidade; qualquer outro parâmetro (base, url, itemId, sellerId…) é ignorado
   const r = await freteHandler({ offerId: qs.get('oferta') ?? undefined, cep: qs.get('cep') ?? undefined, quantity: qs.get('quantidade') ?? 1 }, { ip: clientIp(req) });
   return send(res, r.status, r.body, { ...H, ...(r.status === 429 ? { 'Retry-After': '60' } : {}) });

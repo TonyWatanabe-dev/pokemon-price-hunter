@@ -41,6 +41,128 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)
+
+**Fase 1, critério do burn-in: cumprido.** O bot de #271 (`tools/burnin.mjs`, critérios inalterados) fechou 7 dias consecutivos verdes, de 24/10 a 30/10; o veredito de 30/10 saiu em 31/10 às 03:07 UTC com `final=true` e nenhuma falha. Modo burn-in exclusivo de 25/10 a 30/10: nada foi integrado nesse período.
+
+| Dia | Hunter rodadas / sucesso | Vigia rodadas / sucesso | Maior intervalo H/V (min) | Dispatcher falhas | Incidentes ML |
+|---|---|---|---|---|---|
+| 24/10 | 105 / 0,99 | 103 / 1 | 15 / 15 | 0 | — |
+| 25/10 | 103 / 1 | 103 / 1 | 15 / 15 | 0 | 2 |
+| 26/10 | 102 / 1 | 100 / 1 | 15 / 15 | 0 | 5 |
+| 27/10 | 102 / 1 | 101 / 1 | 15 / 15 | 0 | 2 |
+| 28/10 | 102 / 1 | 101 / 1 | 15 / 15 | 0 | 4 |
+| 29/10 | 101 / 1 | 100 / 1 | 15 / 15 | 0 | 3 |
+| 30/10 | 102 / 1 | 99 / 0,99 | 15 / 30 | 0 | 4 |
+
+- Sincronização com o banco, leitor e motor dentro do limite todos os dias (pior: sync 0,989 em 26/10).
+- `data/meta.json`: de 26/10 a 30/10, 100% das rodadas na `a39e82f9`; 24–25/10 com versões mistas (integrações até 25/10 16:15 UTC).
+- **Incidentes:** 20 issues do Vigia `fonte_degradada` (Mercado Livre bloqueado), todas fechadas sozinhas e sempre nos mesmos horários (último anúncio lido perto de :45, em Brasília). Não afetaram os critérios, mas deixam o ML até ~1 h sem preços novos. Próxima frente.
+- **Limitações:** a Ri Happy remove e devolve as mesmas ofertas desde 14/10 (`src/run.js`), problema pré-existente; nada de smoke do navegador em produção nesta rodada.
+
+**Integração pós-7/7, autorizada pelo dono:** #962 (`58bc8d31`) e #963 (`800c1739`), só links de afiliado (491 anúncios do ML e 67 ASINs da Amazon). Deploy `dpl_AWSYc2UZLX5qo2nTDcqTbgaXGYBA` READY em produção; `/api/v1/afiliados` em 200; sem erros de runtime.
+
+**Próxima ordem (aprovada pelo dono em 31/10):** bloqueios do ML → Ri Happy → ME06 e consistência D1–D7 → reparo dos dados contaminados → regras M2, `enforce_admins`, #945 e #946 → BQD, frete, kit-v3, Reclame Aqui e limpeza de branches.
+
+---
+
+## Integração e publicação autorizadas — 25/10/2026, tarde (America/Sao_Paulo)
+
+**Autorização do dono no chat:** "Pode dar merge em tudo e publicar". Foram integradas por squash 22 PRs, uma de cada vez, sempre com os 4 checks verdes no SHA exato e behind=0, sem bypass de admin. A Vercel publicou cada uma: o último deploy, de `7825f701` (#919), está READY em produção.
+
+**Ordem integrada:** #924, #925, #939, #927, #940, #928, #918, #916, #935, #931, #936, #930, #920, #941, #932, #937, #914, #917, #926, #922, #938, #919.
+- **#941:** separada da #937 (parte de SEO/404 e frescor dos alertas) porque o qa-review bloqueou a #937 por escopo misturado.
+- **#937:** reescrita só com a exclusão de conta. Na segunda rodada passou no qa-review.
+- **#926:** os testes de conta foram adaptados à exclusão nova, sem enfraquecer nenhuma asserção (d3f374b1).
+
+**Burn-in #271:** 1/7. 24/10 fechou verde; 25/10 segue parcial verde (atualizado até 15:52 UTC). Nenhum critério, limite ou janela foi alterado. Com autorização do dono, entraram durante o burn-in mudanças que afetam o robô e o Vigia:
+- #922 e #938 mudam o matching;
+- #919 muda o texto das issues do Vigia.
+
+Leitura de 25/10 em diante: não mudam coleta, `src/run.js`, Dispatcher, workflows nem critérios. Os dias seguintes medem a versão nova.
+
+**D4: snapshot de 07/10 servido como preço atual.**
+- Antes: confirmado em produção, com `/data/state.json` em 200 e generatedAt 2026-10-07.
+- #939 (navegador) e #940 (API, `legacy.mjs`) estão publicadas; o JavaScript servido já contém `fetchState`/`stateOk`.
+- Testes locais de navegador: 17/17 na correção, 10/17 na main antiga.
+- Revisão independente final: A aprovável; B aprovável depois da correção do B1 (/lojas).
+- **Não validado em produção** o cenário de falha dupla (API e raw fora), porque não dá para derrubar as fontes reais.
+- A cópia de 07/10 continua no build (`package.json` build → `public/data`); tirar é R3. Ela não é mais aceita como dado atual.
+
+**Matching v3 (#938) e ME06 (#922) integrados:**
+- Em relação à main anterior, 51 títulos mudam no ramo `data`.
+- 3 revisões independentes, todas com ressalvas não bloqueantes.
+- O efeito aparece a partir da próxima rodada do robô.
+
+**Dados já gravados continuam contaminados.** A #936 integrou só a ferramenta de simulação. Simulação final (matcher 70f8d695, cópia bfaf3cde):
+- 62 reassociações, 50 automáticas;
+- histórico de 10.126 para 10.060 pontos: 66 removidos, 24 em revisão;
+- 7 menores preços contaminados: sv10-mewtwo 139,99 → 169,90; alakazam, golem, wigglytuff e kingdra removidos; sv9-zacian 113,89 e me01-etb 379,91 em revisão e bloqueados;
+- 5 remoções de produto adiadas, porque ainda há ofertas apontando para eles.
+
+O Postgres também segue contaminado. Aplicar o reparo exige: o passo de publicação no workflow do robô (R3), fim do burn-in e autorização para tocar dados reais.
+
+**Exclusão de conta (#932 + #937):**
+- Publicada.
+- Emulador do Firebase Auth 11/11 em execução local.
+- **Regra M2 do Firestore não validada nem publicada:** o emulador do Firestore está bloqueado pelo proxy. O diff e os casos estão prontos para uma PR de regras (R3).
+- O código novo não depende da M2: `updateDoc` não recria documento.
+
+**Trava de integração (#931):** integrada e **desligada** (`EM_USO=false`). Não impede merge pela UI nem pela API. `enforce_admins` continua false.
+
+**Auditoria de consistência (#935, só teste):** D1–D3 e D5–D7 continuam abertos (detalhes no relatório da frente). O D4 foi corrigido pela #939/#940.
+
+**Aguardam autorização do dono:**
+1. Ligar `enforce_admins` e, se quiser, a trava.
+2. PR da regra M2, com execução real no CI de regras.
+3. Depois do burn-in 7/7: passo de publicação do reparo (R3) e aplicação no ramo `data` e no Postgres.
+4. Tirar a cópia de 07/10 do build (R3).
+5. Correções D1–D3 e D5–D7 da auditoria de consistência.
+6. Decisões de catálogo:
+   - o rótulo "Rivais Predestinados" do Koraidon Implacáveis;
+   - Nidoking/Persian 35880;
+   - os 2 menores preços em revisão (sv9-zacian e me01-etb).
+
+---
+
+## Burn-in 1/7 e fechamento da rodada de auditorias — 25/10/2026, madrugada (America/Sao_Paulo)
+
+**Burn-in #271: 1/7.** O bot fechou 24/10 como **verde** (comentário de 25/10, 03:07 UTC). Os 11 critérios ficaram dentro do limite:
+- Hunter: 105 rodadas, taxa de sucesso 0,99, maior intervalo de 15 min;
+- Vigia: 103 rodadas, taxa de sucesso 1;
+- Dispatcher: 0 falhas;
+- coleta: 95 rodadas com estado operacional;
+- sincronização com o banco: 1;
+- leitor oficial: 1;
+- motor parado: 0.
+
+O dia 25/10 começou parcial verde. Se 25/10 a 30/10 fecharem verdes, o 7/7 sai no relatório de 31/10, por volta de 03:07 UTC. Nenhum critério, limiar ou registro foi alterado.
+
+**Vigia:** nenhum incidente novo desde a #913 (ML bloqueado às 00:00 e às 00:15 UTC de 25/10), que o próprio Vigia fechou.
+
+**Rodada de auditorias encerrada:** 7 frentes e 2 auditorias extras (produção, CI e releases). O relatório consolidado está no doc "TCG Price Hunter — Auditoria paralela durante o burn-in". *Registro histórico (madrugada de 25/10): todas as PRs abaixo foram integradas na tarde de 25/10 — ver a seção acima.* As PRs abertas naquele momento, sem merge e aguardando autorização do dono, eram:
+
+| PR | O que muda |
+|---|---|
+| #914 | funil do Monte seu kit |
+| #916 | auditoria de merges |
+| #917 | "no Pix" nos grupos |
+| #918 | qualidade dos dados |
+| #919 | mensagem do Vigia |
+| #920 | acessibilidade e SEO |
+| #922 | ME06 não cai em ME01 |
+
+**Confirmado:**
+- #870, #903, #904 e #905 foram integradas antes de os 4 checks obrigatórios terminarem. Foi bypass de admin, com `enforce_admins` desligado.
+- 6 anúncios ME06 "Reinado Delta" da geekstorebrasil casavam em ME01. A correção está na #922.
+
+**Próximo:**
+1. O dono decide ligar `enforce_admins` e adotar um caminho único de merge.
+2. Integrar a #922 e conferir o ETB ME01 no ramo `data`.
+3. Integrar a #919 e ler o próximo incidente.
+
+---
+
 ## Auditoria e correções — 24/10/2026, 19h30 a 22h30, 7ª rodada (America/Sao_Paulo)
 
 Rodada pedida pelo proprietário ("modo turbo"): validar as entregas recentes com evidência, eliminar pendências e corrigir o que estiver seguro.

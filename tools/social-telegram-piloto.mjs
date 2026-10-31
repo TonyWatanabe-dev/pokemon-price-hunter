@@ -55,7 +55,7 @@ export function candidatos(state, { now, env = {}, afiliados = {}, cupons = carr
   const lista = p.itens.filter((i) => i.canal === 'telegram').map((it) => {
     const o = state.offers.find((x) => x.id === it.ofertaId);
     const { link, afiliado } = linkDe(o, afiliados);
-    const leg = montarLegenda({ titulo: o.title, atual: o.price, anterior: precoAnterior(o), loja: o.storeName, link, afiliado, produtoId: o.productId });
+    const leg = montarLegenda({ titulo: o.title, atual: o.price, anterior: precoAnterior(o), loja: o.storeName, link, afiliado, produtoId: o.productId, pix: o.priceKind === 'pix' });
     const dica = env.SOCIAL_CUPONS === '0' ? null : dicaCupom(o, cupons, now ?? Date.now());   // kill switch: SOCIAL_CUPONS=0
     const { parseMode } = leg; const texto = dica && leg.texto.length + dica.length + 2 <= LEGENDA_MAX ? `${leg.texto}\n\n${dica.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}` : leg.texto;
     const fila = { ...p.fila, itens: p.fila.itens.map((x) => (x.id === it.id ? { ...x, texto } : x)) };
