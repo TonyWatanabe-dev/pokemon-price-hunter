@@ -1,3 +1,13 @@
+## Incidente WhatsApp #983 — diagnóstico técnico confirmado (31/10/2026, 08:58)
+
+- Run mais recente analisado: [#41198916275](https://github.com/TonyWatanabe-dev/pokemon-price-hunter/actions/runs/41198916275), SHA `688d8043`.
+- Checkout de `main` e `data`, dependências, instalação Baileys e restauração dos caches da sessão/diário concluíram normalmente.
+- A falha ocorre exclusivamente na etapa “Rodada de envio”: WhatsApp fecha conexão com **código 401** (duas ocorrências); exit code 1.
+- Diagnóstico provável: credencial/aparelho conectado da sessão inválido ou revogado. O log não comprova bloqueio do número. Não é erro de build, geração do card nem checkout dos dados.
+- **Correção requerida:** refazer pareamento por `.github/workflows/social-whatsapp-parear.yml`. O workflow solicita número no formato `55DDDNUMERO`, gera código de 8 caracteres e salva a nova sessão cifrada no cache do Actions. No celular do número do bot: WhatsApp → Aparelhos conectados → Conectar aparelho → Conectar com número de telefone → inserir o código.
+- Após o pareamento, executar uma rodada controlada e comprovar mensagem entregue no grupo exato `TCG Price Hunter | 01`. Não repetir o workflow de envio antes do pareamento: a sessão atual retorna 401.
+- Nenhum número foi alterado, cache apagado ou mensagem disparada durante o diagnóstico. A automação permanece habilitada; a issue #983 continua aberta até confirmação de entrega.
+
 # Verificação pós-burn-in e atualização operacional — 31/10/2026, 08:52 (America/Sao_Paulo)
 
 > **Base verificada:** `main` em `688d8043cbe6837cdce599209a2bd921e988f434`. Deploy de produção Vercel `dpl_ExPJyfqHNVxSDtXRLt5iYA3sSsr2` em **READY**, associado ao mesmo SHA. Esta atualização separa integração, publicação e validação em runtime; não presume que uma etapa comprova as demais.
