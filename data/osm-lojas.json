@@ -1,0 +1,371 @@
+{
+  "fetchedAt": "2026-10-31T15:23:51.913Z",
+  "fonte": "OpenStreetMap (ODbL)",
+  "shops": [
+    "games",
+    "toys",
+    "hobby",
+    "comics",
+    "anime",
+    "video_games",
+    "collector",
+    "model"
+  ],
+  "comSite": [
+    {
+      "url": "https://superlegalbrinquedos.com.br/",
+      "nome": "Superlegal",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://territorioinfantil.com.br/",
+      "nome": "Território Infantil",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "http://www.afagosedengos.com.br/",
+      "nome": "Afagos e Dengos Padre Cacique",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://brinkcenter.com.br/",
+      "nome": "Brink Center",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.jottplay.com.br/",
+      "nome": "Jott Play",
+      "cidade": "Curitiba",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.rihappy.com.br/",
+      "nome": "Ri Happy",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "http://www.lojaninho.com.br/",
+      "nome": "Ninho",
+      "cidade": "Campinas",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://yoougeek.com.br/",
+      "nome": "You Geek",
+      "cidade": "Campinas",
+      "uf": null,
+      "shop": "games"
+    },
+    {
+      "url": "https://www.primusrio.com.br/",
+      "nome": "Primus Rio",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.bigcenterfesta.com.br/",
+      "nome": "Big Center Festa Loja Bairro Cavalhada",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.betagames.com.br/",
+      "nome": "Beta Games",
+      "cidade": "Laranjal Paulista",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.riograndemodelismo.com.br/",
+      "nome": "Rio Grande Modelismo",
+      "cidade": "São Paulo",
+      "uf": null,
+      "shop": "model"
+    },
+    {
+      "url": "https://www.gamehameha.com.br/",
+      "nome": "GameHameHa",
+      "cidade": "Araranguá",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://onestore.com.br/",
+      "nome": "One store marisol",
+      "cidade": "Araranguá",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://chawi.com.br/",
+      "nome": "CHAWI",
+      "cidade": "Franco da Rocha",
+      "uf": "SP",
+      "shop": "video_games"
+    },
+    {
+      "url": "https://boards4u.com.br/boards4u/",
+      "nome": "Boards4u",
+      "cidade": null,
+      "uf": null,
+      "shop": "games"
+    },
+    {
+      "url": "https://www.ciadodesenho.com.br/",
+      "nome": "Cia. do Desenho - Clip",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://toyshow.com.br/",
+      "nome": "Toyshow",
+      "cidade": "Jataizinho",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.magicgamesnatal.com.br/",
+      "nome": "Magic Games",
+      "cidade": "Natal - RN",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://oitopeia.com.br/",
+      "nome": "Oitopeia",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.xukixuki.com.br/",
+      "nome": "Xuki Xuki",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.academiadejogos.com.br/",
+      "nome": "Academia de Jogos",
+      "cidade": "São Paulo",
+      "uf": null,
+      "shop": "hobby"
+    },
+    {
+      "url": "https://www.pomerodebrinquedos.com.br/",
+      "nome": "Pomerode Brinquedos",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://brinquedoscastelinho.com.br/",
+      "nome": "Castelinho Brinquedos Educativos",
+      "cidade": "Campinas",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://techmania.net.br/",
+      "nome": "Tech Mania®",
+      "cidade": "Barueri",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://poraodoalien.com/",
+      "nome": "Porão do Alien - K-pop",
+      "cidade": "Rio de Janeiro",
+      "uf": null,
+      "shop": "anime"
+    },
+    {
+      "url": "https://www.playgroundgames.com.br/",
+      "nome": "Playground Game Store",
+      "cidade": null,
+      "uf": null,
+      "shop": "games"
+    },
+    {
+      "url": "https://www.casaludica.com.br/",
+      "nome": "Casa Lúdica Sorriso",
+      "cidade": "Sorriso",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.lojafoxgames.com.br/",
+      "nome": "Fox Games",
+      "cidade": "Campos dos Goytacazes",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.gamecenterworld.com.br/",
+      "nome": "Game Center World",
+      "cidade": null,
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.faufau.com.br/",
+      "nome": "Faufau",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.bitostudio.shop/",
+      "nome": "Bito Studio",
+      "cidade": "Recife",
+      "uf": null,
+      "shop": "collector"
+    },
+    {
+      "url": "https://satoshidominoes.com/",
+      "nome": "Satoshi Dominos",
+      "cidade": "Porto Alegre",
+      "uf": null,
+      "shop": "games"
+    },
+    {
+      "url": "https://bazarlinder/",
+      "nome": "Bazar Linder Ltda",
+      "cidade": "Canela",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.balboas.com.br/",
+      "nome": "Balboa's Hobby Games",
+      "cidade": "Fortaleza",
+      "uf": null,
+      "shop": "games"
+    },
+    {
+      "url": "https://www.tocadotabuleiro.com/",
+      "nome": "Toca do Tabuleiro",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://worldgamessorocaba.com.br/",
+      "nome": "World Games",
+      "cidade": "Sorocaba",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.casadoeducador.com/",
+      "nome": "Casa do Educador",
+      "cidade": "Taubaté",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://acgames.com.br/",
+      "nome": "AC Games",
+      "cidade": null,
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.videogamescuritiba.com.br/",
+      "nome": "Start Games",
+      "cidade": "Curitiba",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://acervo.ludoteca.com.br/",
+      "nome": "Ludoteca BGC",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://arenacwg.com/",
+      "nome": "Arena CWG",
+      "cidade": null,
+      "uf": null,
+      "shop": "collector"
+    },
+    {
+      "url": "https://alexgamesnf.com.br/",
+      "nome": "AlexGames",
+      "cidade": "Nova Friburgo",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.pharaohshop.com.br/",
+      "nome": "Pharaoh's Shop",
+      "cidade": "Novo Hamburgo",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://oficinadoaprendiz.com.br/",
+      "nome": "Oficina do Aprendiz",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.bebgames.com.br/",
+      "nome": "B&B Games",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.toyboy.com.br/",
+      "nome": "Toyboy",
+      "cidade": null,
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://www.pbkids.com.br/",
+      "nome": "PBKIDS Brinquedos",
+      "cidade": "São Caetano do Sul",
+      "uf": null,
+      "shop": "toys"
+    },
+    {
+      "url": "https://sebodosgames.com/",
+      "nome": "Sebo dos Games",
+      "cidade": "Jataizinho",
+      "uf": null,
+      "shop": "video_games"
+    },
+    {
+      "url": "https://www.alemaopipas.com.br/",
+      "nome": "Alemão Pipas",
+      "cidade": "Guarulhos",
+      "uf": null,
+      "shop": "hobby"
+    }
+  ],
+  "semSite": 570,
+  "porUf": {
+    "ES": 3,
+    "SP": 3
+  }
+}
