@@ -36,12 +36,13 @@ export function planejar(candidatos, diario, { now = Date.now(), regras = REGRAS
     const hoje = (Array.isArray(diario) ? diario : []).filter((d) => { const t = ms(d?.at); return t != null && now - t < 24 * H; }).length;
     if (hoje >= regras.maxDia) return { enviar: [], motivo: `teto de ${regras.maxDia} mensagens em 24 h` };
   }
-  // O intervalo mínimo vale para TODAS as mensagens, inclusive ofertas recém-detectadas.
-  if (ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: `intervalo de ${regras.intervaloMin} min ainda não passou` };
+  // WhatsApp aplica o intervalo antes de qualquer envio, inclusive novidades.
+  if (regras.intervaloAntesNovas && ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: `intervalo de ${regras.intervaloMin} min ainda não passou` };
   const novas = unicos.filter(nova).slice(0, regras.novasPorRodada);
   if (novas.length) return { enviar: novas, motivo: 'oferta nova no radar' };
   const hora = Number(new Date(now).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo', hour: 'numeric', hourCycle: 'h23' }));
   if (regras.silencio && hora >= regras.silencio[0] && hora < regras.silencio[1]) return { enviar: [], motivo: 'madrugada: só ofertas novas' };
+  if (!regras.intervaloAntesNovas && ultimo != null && now - ultimo < regras.intervaloMin * 60e3) return { enviar: [], motivo: `intervalo de ${regras.intervaloMin} min ainda não passou` };
   const afilPronto = ultimoAfil == null || now - ultimoAfil >= (regras.afiliadoIntervaloMin ?? 0) * 60e3;
   const afil = afilPronto ? unicos.find((c) => c.afiliado && livre(c)) : null;
   if (afil) return { enviar: [afil], motivo: 'link de afiliado (ciclo de 24 h)' };
@@ -61,5 +62,5 @@ export function registrar(diario, envios, { now = Date.now(), regras = REGRAS } 
 // cada 30 min das 7h à meia-noite (34 no dia) e oferta sem afiliado pode voltar depois de 6 h, para a fila não secar.
 // 31/10/2026: intervalo mínimo de 30 min entre TODAS as mensagens, inclusive ofertas novas; afiliadas também respeitam
 // o mesmo espaçamento. Uma oferta por rodada, teto diário preservado; automação permanece desligada até liberação da conta.
-export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 30, afiliadoIntervaloMin: 30, novasPorRodada: 1, maxDia: 70,
+export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 30, intervaloAntesNovas: true, afiliadoIntervaloMin: 30, novasPorRodada: 1, maxDia: 70,
   naoAfiliadoUmaVez: false, repetirHoras: 6 });
