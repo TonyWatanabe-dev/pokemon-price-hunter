@@ -41,6 +41,31 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 ---
 
+## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)
+
+**Fase 1, critério do burn-in: cumprido.** O bot de #271 (`tools/burnin.mjs`, critérios inalterados) fechou 7 dias consecutivos verdes, de 24/10 a 30/10; o veredito de 30/10 saiu em 31/10 às 03:07 UTC com `final=true` e nenhuma falha. Modo burn-in exclusivo de 25/10 a 30/10: nada foi integrado nesse período.
+
+| Dia | Hunter rodadas / sucesso | Vigia rodadas / sucesso | Maior intervalo H/V (min) | Dispatcher falhas | Incidentes ML |
+|---|---|---|---|---|---|
+| 24/10 | 105 / 0,99 | 103 / 1 | 15 / 15 | 0 | — |
+| 25/10 | 103 / 1 | 103 / 1 | 15 / 15 | 0 | 2 |
+| 26/10 | 102 / 1 | 100 / 1 | 15 / 15 | 0 | 5 |
+| 27/10 | 102 / 1 | 101 / 1 | 15 / 15 | 0 | 2 |
+| 28/10 | 102 / 1 | 101 / 1 | 15 / 15 | 0 | 4 |
+| 29/10 | 101 / 1 | 100 / 1 | 15 / 15 | 0 | 3 |
+| 30/10 | 102 / 1 | 99 / 0,99 | 15 / 30 | 0 | 4 |
+
+- Sincronização com o banco, leitor e motor dentro do limite todos os dias (pior: sync 0,989 em 26/10).
+- `data/meta.json`: de 26/10 a 30/10, 100% das rodadas na `a39e82f9`; 24–25/10 com versões mistas (integrações até 25/10 16:15 UTC).
+- **Incidentes:** 20 issues do Vigia `fonte_degradada` (Mercado Livre bloqueado), todas fechadas sozinhas e sempre nos mesmos horários (último anúncio lido perto de :45, em Brasília). Não afetaram os critérios, mas deixam o ML até ~1 h sem preços novos. Próxima frente.
+- **Limitações:** a Ri Happy remove e devolve as mesmas ofertas desde 14/10 (`src/run.js`), problema pré-existente; nada de smoke do navegador em produção nesta rodada.
+
+**Integração pós-7/7, autorizada pelo dono:** #962 (`58bc8d31`) e #963 (`800c1739`), só links de afiliado (491 anúncios do ML e 67 ASINs da Amazon). Deploy `dpl_AWSYc2UZLX5qo2nTDcqTbgaXGYBA` READY em produção; `/api/v1/afiliados` em 200; sem erros de runtime.
+
+**Próxima ordem (aprovada pelo dono em 31/10):** bloqueios do ML → Ri Happy → ME06 e consistência D1–D7 → reparo dos dados contaminados → regras M2, `enforce_admins`, #945 e #946 → BQD, frete, kit-v3, Reclame Aqui e limpeza de branches.
+
+---
+
 ## Integração e publicação autorizadas — 25/10/2026, tarde (America/Sao_Paulo)
 
 **Autorização do dono no chat:** "Pode dar merge em tudo e publicar". Foram integradas por squash 22 PRs, uma de cada vez, sempre com os 4 checks verdes no SHA exato e behind=0, sem bypass de admin. A Vercel publicou cada uma: o último deploy, de `7825f701` (#919), está READY em produção.

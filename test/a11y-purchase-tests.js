@@ -44,7 +44,7 @@ for (const file of ['../index.html', '../tools/page.template.html']) {
     vm.createContext(ctx); vm.runInContext(code + '\n' + fnCode + '\nglobalThis.raBadge=raBadge;globalThis.RA_ST=RA_ST;', ctx);
     let checked = 0;
     for (const st of Object.keys(ctx.RA_ST)) for (const nota of [null, 8.5]) for (const full of [false, true]) {
-      if (st === 'NAO_ENCONTRADA' && nota != null) { checked++; continue; }   // loja sem cadastro não tem nota
+      if ((st === 'NAO_ENCONTRADA' || st === 'NAO_CONSULTADA') && nota != null) { checked++; continue; }   // loja sem cadastro (ou nunca consultada) não tem nota
       ctx.S.reputation.lojas = { loja: { status: st, nota, respondidas: null, url: 'https://www.reclameaqui.com.br/empresa/loja/' } };
       const out = ctx.raBadge({ storeId: 'loja', storeName: 'Loja' }, full);
       const label = (out.match(/aria-label="([^"]*)"/) || [])[1]; assert.ok(label, `${st}: sem aria-label`);
@@ -55,7 +55,12 @@ for (const file of ['../index.html', '../tools/page.template.html']) {
     }
     assert.equal(checked, Object.keys(ctx.RA_ST).length * 4);
     // a loja sem cadastro continua dizendo que não foi encontrada (nada de nota inventada)
-    ctx.S.reputation.lojas = {}; assert.match(ctx.raBadge({ storeId: 'x', storeName: 'Loja' }, false), /Não encontramos esta loja no Reclame Aqui/);
+    ctx.S.reputation.lojas = { x: { status: 'NAO_ENCONTRADA' } }; assert.match(ctx.raBadge({ storeId: 'x', storeName: 'Loja' }, false), /Não encontramos esta loja no Reclame Aqui/);
+    // loja fora da tabela manual nunca foi consultada: no site (index.html) não pode dizer que não foi encontrada (E6-E/D3);
+    // o template defasado (#157, não editado) segue com a regra antiga
+    ctx.S.reputation.lojas = {}; const nc = ctx.raBadge({ storeId: 'x', storeName: 'Loja' }, false);
+    if (file === '../index.html') { assert.match(nc, /Ainda não consultamos esta loja/); assert.doesNotMatch(nc, /Não encontramos|sem cadastro/); }
+    else assert.match(nc, /Não encontramos esta loja no Reclame Aqui/);
   });
 
   // ---------------------------------------------------------------- autocomplete da busca: aria-expanded acompanha a lista visível
