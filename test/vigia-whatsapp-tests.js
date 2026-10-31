@@ -16,4 +16,9 @@ const ev = evaluate({ now, stateGeneratedAt: '2026-10-24T15:00:00Z', meta: null,
 assert.equal(ev.status, 'degradado'); assert.ok(ev.reasons.some((x) => x.code === 'whatsapp_parado'));
 const wf = readFileSync(new URL('../.github/workflows/watchdog.yml', import.meta.url), 'utf8');
 assert.match(wf, /--workflow social-whatsapp-auto\.yml/); assert.match(wf, /--wa-runs wd\/wa-runs\.json/);
-console.log('✓ vigia-whatsapp: avisa com 4 falhas seguidas; pulada, sucesso ou sem leitura não avisam');
+const waAuto = readFileSync(new URL('../.github/workflows/social-whatsapp-auto.yml', import.meta.url), 'utf8');
+assert.match(waAuto, /if: success\(\) && hashFiles\('social\/wa-sessao\.bin'\) != ''/, 'cache da sessão só é salvo após sucesso');
+const waScript = readFileSync(new URL('../tools/social-whatsapp.mjs', import.meta.url), 'utf8');
+assert.match(waScript, /Não persistir credenciais após falha/);
+assert.doesNotMatch(waScript, /try \{ if \(o\.modo === 'enviar' && fs\.readdirSync\(dir\)\.length\) salvar\(\); \}/, 'falhas não podem salvar sessão possivelmente inválida');
+console.log('✓ vigia-whatsapp: falhas seguidas alertam; cache da sessão só avança após sucesso');
