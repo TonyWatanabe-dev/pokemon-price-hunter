@@ -1,0 +1,9 @@
+{
+  "comentario": "Decisões do dono sobre os produtos em revisão (docs/reparo-dados.md §0.6). Chat de 31/10/2026: '1 apagar 2 apagar ... carta? Não salvamos preços de carta. Apagar.'",
+  "decididoEm": "2026-10-31",
+  "decisoes": {
+    "sv9-colecao_ex-zacian": "apagar",
+    "me01-etb": "apagar",
+    "sv3_5-colecao_ex-alakazam": "apagar"
+  }
+}
