@@ -325,5 +325,25 @@ const out1 = path.join(tmp, 'saida1');
   assert.ok('productId' in x);
 }
 
+// Decisão do dono (docs/reparo-dados.md §0.6): "apagar" tira os pontos em revisão do produto (sem substituto) e apaga o
+// menor preço salvo sem recalcular; o produto deixa de ficar bloqueado. Os outros produtos não mudam.
+{
+  const rd = R.analisar({ dados: d1, base, candidato: cand, agora: T(23), decisoes: { M: 'apagar' } });
+  assert.deepEqual(rd.relatorio.contagens.produtosBloqueados, [], 'M deixa de ficar bloqueado');
+  const pM = rd.relatorio.pontos.filter((p) => p.produto === 'M');
+  assert.ok(pM.length && pM.every((p) => p.acao === 'remover'), 'nenhum ponto de M fica em revisão');
+  assert.ok(pM.filter((p) => p.classe === 'decisao').every((p) => p.proposta == null && /decisão do dono: apagar/.test(p.motivo)), 'sem valor substituto');
+  assert.ok(pM.some((p) => p.classe === 'decisao'));
+  const mM = rd.relatorio.menores.find((m) => m.produto === 'M');
+  assert.equal(mM.classe, 'decisao'); assert.equal(mM.depois, null);
+  assert.equal(rd.proposto.lowest.M, undefined, 'lowest de M apagado, sem recalcular');
+  assert.equal(rd.relatorio.contagens.lowest.removidosDecisao, 1);
+  assert.ok(rd.proposto.hist.M, 'hist de M proposto sem os pontos contaminados');
+  for (const p of pM) assert.ok(!(rd.proposto.hist.M.stores[p.loja]?.pts || []).some(([d]) => d === p.dia), `ponto ${p.loja} ${p.dia} removido`);
+  assert.deepEqual(rd.proposto.lowest.P, r1.proposto.lowest.P, 'P igual ao reparo automático');
+  assert.deepEqual(rd.proposto.hist.P, r1.proposto.hist.P);
+  assert.throws(() => R.analisar({ dados: d1, base, candidato: cand, agora: T(23), decisoes: { M: 'recalcular' } }), /decisão inválida/);
+}
+
 fs.rmSync(tmp, { recursive: true, force: true });
-console.log('reparo-dados: ok (8 grupos)');
+console.log('reparo-dados: ok (9 grupos)');

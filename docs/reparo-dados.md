@@ -148,7 +148,10 @@ git -C "$C" diff --quiet "$T" HEAD -- data   # + sha256 de cada arquivo = sha256
 
 Em produção, a restauração por arquivo inteiro perde os recordes gravados depois do reparo (§6). A reversão seletiva por produto e ponto continua sendo a recomendada. O teste acima prova o caminho "voltar exatamente ao retrato etiquetado", usado logo depois de aplicar, antes de uma nova rodada.
 
-### 0.6 Decisões pendentes (evidência, sem decisão)
+### 0.6 Decisões do dono (31/10/2026)
+
+**Decidido no chat em 31/10/2026: apagar os três** ("1 apagar 2 apagar … carta? Não salvamos preços de carta. Apagar."). Registro em `tools/reparo-dados/decisoes.json`; a ferramenta aplica com `--decisoes`: os pontos em revisão do produto saem sem valor substituto e o menor preço salvo é apagado sem recalcular (a rodada seguinte recria com a oferta legítima vigente). Evidência original abaixo.
+
 
 **sv9-colecao_ex-zacian: menor preço R$ 113,89 (facilshopping, 20/10)**
 
