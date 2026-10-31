@@ -19,6 +19,8 @@ const accSrc = read('tools/account.src.js');
 const saveCode = cut('async function saveField(', 'function favBtn(');
 const setBusyCode = cut('function setBusy(b,on,txt){', '/* Favoritos (perfil)');
 const accSyncCode = cut('function accSync(', 'function syncFavButtons(');
+// byTot (dentro do trecho do accSync) usa shipCmp desde a ordenação da #84 no cliente (D2): mesmas linhas do index.html.
+const shipCode = cut('const shipOk=', 'const bestOffer=');
 const renderAlertsCode = cut('function renderAlerts(){', 'function renderConfig(){');
 const renderConfigCode = cut('function renderConfig(){', 'const BASE_TITLE=');
 const privacidade = cut('privacidade:`<h2>Política de privacidade</h2>', '`};');
@@ -209,7 +211,7 @@ function syncSandbox({ alerts, offers, user = { uid: 'u1', email: 'a@b.c' }, S =
   c.ACC.user = user; c.ACC.data = { alerts };
   c.document = { querySelectorAll: (s) => (s === '.c-hit' ? els : []), querySelector: () => null };
   c.$ = () => ({ open: false, dataset: {} });
-  vm.runInContext(accSyncCode + 'function syncFavButtons(){}', c);
+  vm.runInContext(shipCode + accSyncCode + 'function syncFavButtons(){}', c);
   return { c, els };
 }
 const off = (id, productId, total, more = {}) => ({ id, productId, total, stock: 'IN_STOCK', ...more });
