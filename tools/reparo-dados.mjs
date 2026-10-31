@@ -102,7 +102,13 @@ export function resumoHist(h, distrust = null) {
 }
 
 // ---------------------------------------------------------------- análise (pura: não escreve nada)
-export function analisar({ dados, base, candidato, agora = new Date().toISOString(), anterior = null }) {
+// decisoes: { [produtoId]: 'apagar' } — decisão do dono sobre produto em revisão (docs/reparo-dados.md §0.6). 'apagar':
+// os pontos em revisão do produto saem (sem valor substituto) e o menor preço salvo é apagado sem recalcular; a rodada
+// seguinte do robô recria o recorde com a oferta legítima vigente. O produto deixa de ficar bloqueado.
+export const DECISOES_VALIDAS = new Set(['apagar']);
+export function analisar({ dados, base, candidato, agora = new Date().toISOString(), anterior = null, decisoes = {} }) {
+  for (const [pid, d] of Object.entries(decisoes || {})) if (!DECISOES_VALIDAS.has(d)) throw new Error(`decisão inválida para ${pid}: ${d}`);
+  const apagar = (pid) => decisoes?.[pid] === 'apagar';
   const { state, offers, history, hist, lowest, products } = dados;
   const distrust = state.distrust && Array.isArray(state.distrust.stores) ? state.distrust : null;
   const rowsPorOferta = new Map();
@@ -212,7 +218,9 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
         else { acao = 'revisao'; proposta = Math.min(...[a.legit, a.desconhecida].filter((x) => x != null)); motivo = `ponto veio de anúncio reassociado; o legítimo do dia era ${proposta} (substituição aproximada: o history.jsonl não guarda stale/confirmado)`; }
         const autoOk = (acao === 'remover') && (ids.length ? ids.every((id) => reassoc.get(id)?.classe === 'auto') : serieAuto);
         if (acao === 'remover' && !autoOk) { acao = 'revisao'; motivo += '; anúncio(s) com reassociação em revisão'; }
-        if (acao !== 'manter') pontos.push({ produto: pid, loja: sid, dia: d, valor: v, acao, classe: acao === 'remover' ? 'auto' : 'revisao', motivo, proposta, ofertas: ids });
+        let classeP = acao === 'remover' ? 'auto' : 'revisao';
+        if (acao === 'revisao' && apagar(pid)) { acao = 'remover'; classeP = 'decisao'; proposta = null; motivo += '; decisão do dono: apagar'; }
+        if (acao !== 'manter') pontos.push({ produto: pid, loja: sid, dia: d, valor: v, acao, classe: classeP, motivo, proposta, ofertas: ids });
         if (acao === 'remover') mudou = true; else manter.push([d, v]);
       }
       if (manter.length !== (s.pts || []).length) { if (manter.length) novo.stores[sid].pts = manter; else delete novo.stores[sid]; }
@@ -244,6 +252,7 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
     const motivo = [porOferta ? `veio do anúncio reassociado ${L.offerId} (${r.titulo})` : `ponto ${L.storeId} ${dia(L.at)} R$ ${L.total} é contaminado`,
       pend.length ? `${pend.length} ponto(s) em revisão podem mudar o valor (proposta os trata como contaminados)` : null, ofertaRevisao ? 'reassociação do anúncio em revisão' : null,
       salto ? `o novo menor preço é mais de ${SALTO_MAX}× o antigo: conferir se a série legítima restante é representativa` : null].filter(Boolean).join('; ');
+    if (apagar(pid)) { menores.push({ produto: pid, antes: L, depois: null, acao: 'remover', classe: 'decisao', motivo: motivo + '; decisão do dono: apagar (sem recalcular; a rodada seguinte recria com a oferta legítima)' }); delete lowestProposto[pid]; continue; }
     menores.push({ produto: pid, antes: L, depois: melhor, acao: melhor ? 'recalcular' : 'remover', classe, motivo });
     if (classe === 'auto') { if (melhor) lowestProposto[pid] = melhor; else delete lowestProposto[pid]; }
   }
@@ -254,7 +263,7 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
     ...pontos.filter((p) => p.acao === 'revisao').map((p) => p.produto),
     ...menores.filter((m) => m.classe === 'revisao').map((m) => m.produto),
     ...[...reassoc.values()].filter((r) => r.classe === 'revisao').map((r) => r.produtoAntigo),
-  ]);
+  ].filter((pid) => !apagar(pid)));
   const NOTA = 'produto bloqueado: há item em revisão neste produto e nada dele é aplicado parcialmente';
   for (const pid of bloqueados) {
     delete histProposto[pid];
@@ -328,7 +337,7 @@ export function analisar({ dados, base, candidato, agora = new Date().toISOStrin
       pontosAntes: Object.values(hist).reduce((n, h) => n + Object.values(h.stores || {}).reduce((m, s) => m + (s.pts || []).length, 0), 0) },
     lowest: { entradasAntes: Object.keys(lowest).filter((k) => !k.startsWith('__')).length, entradasDepois: Object.keys(lowestProposto).filter((k) => !k.startsWith('__')).length,
       contaminados: menores.length, recalculadosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'recalcular').length,
-      removidosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'remover').length, revisao: menores.filter((m) => m.classe === 'revisao').length },
+      removidosAuto: menores.filter((m) => m.classe === 'auto' && m.acao === 'remover').length, removidosDecisao: menores.filter((m) => m.classe === 'decisao').length, revisao: menores.filter((m) => m.classe === 'revisao').length },
     remocoesPropostas: remocoes.length,
     remocoesAdiadas: remocoesAdiadas.length,
     produtosBloqueados: [...bloqueados].sort(),
@@ -426,7 +435,7 @@ function args(argv) {
 export async function main(argv = process.argv.slice(2), log = console.log) {
   const a = args(argv);
   if (Object.keys(a).some((k) => /^(aplicar|apply)(=|$)/.test(k))) throw new Error('modo de aplicação não implementado: o reparo é só dry-run (ver docs/reparo-dados.md)');
-  if (!a.dados || !a.saida || !a.candidato) throw new Error('uso: node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO] [--anterior <relatorio.json>]');
+  if (!a.dados || !a.saida || !a.candidato) throw new Error('uso: node tools/reparo-dados.mjs --dados <pasta> --candidato <checkout> --saida <pasta> [--base <checkout>] [--agora ISO] [--anterior <relatorio.json>] [--decisoes <json>]');
   const dados = lerDados(a.dados);
   verificarSaida(a.saida, dados.dir); // antes de qualquer trabalho
   const ids = Object.keys(dados.products);
@@ -434,10 +443,12 @@ export async function main(argv = process.argv.slice(2), log = console.log) {
   const candidato = await matcherDe(a.candidato, ids, a['nome-candidato'] || a.candidato);
   let anterior = null;
   if (a.anterior) { anterior = lerJson(a.anterior, null); if (!anterior || !Array.isArray(anterior.reassociacoes)) throw new Error(`--anterior: relatorio.json inválido (${a.anterior})`); }
-  const r = analisar({ dados, base, candidato, agora: a.agora || new Date().toISOString(), anterior });
+  let decisoes = {};
+  if (a.decisoes) { const j = lerJson(a.decisoes, null); if (!j || typeof j.decisoes !== 'object') throw new Error(`--decisoes: arquivo inválido (${a.decisoes})`); decisoes = j.decisoes; }
+  const r = analisar({ dados, base, candidato, agora: a.agora || new Date().toISOString(), anterior, decisoes });
   const out = escreverSaida(a.saida, r, { dados });
   const c = r.relatorio.contagens;
-  log(`reparo-dados (dry-run): ${c.reassociacoes.total} reassociações (${c.reassociacoes.auto} auto, ${c.reassociacoes.revisao} revisão), ${c.produtosAfetados} produtos; hist −${c.hist.pontosRemovidosAuto} pontos (${c.hist.pontosRevisao} em revisão); lowest ${c.lowest.recalculadosAuto} recalculados, ${c.lowest.removidosAuto} removidos, ${c.lowest.revisao} em revisão; ${c.remocoesPropostas} remoções propostas, ${c.remocoesAdiadas} adiadas. Saída: ${out}`);
+  log(`reparo-dados (dry-run): ${c.reassociacoes.total} reassociações (${c.reassociacoes.auto} auto, ${c.reassociacoes.revisao} revisão), ${c.produtosAfetados} produtos; hist −${c.hist.pontosRemovidosAuto} pontos (${c.hist.pontosRevisao} em revisão); lowest ${c.lowest.recalculadosAuto} recalculados, ${c.lowest.removidosAuto} removidos, ${c.lowest.removidosDecisao} apagados por decisão, ${c.lowest.revisao} em revisão; ${c.remocoesPropostas} remoções propostas, ${c.remocoesAdiadas} adiadas. Saída: ${out}`);
   return r;
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
