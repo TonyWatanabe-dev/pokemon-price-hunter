@@ -38,8 +38,10 @@ await t('4. regras do WhatsApp: intervalo de 30 min entre TODAS as mensagens, 1 
   const c = (id, f = iso(5000), afiliado = false) => ({ item: { ofertaId: id }, oferta: { firstSeen: f }, afiliado });
   assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.maxDia, undefined);
   assert.equal(REGRAS_WHATSAPP.intervaloMin, 30);
+  assert.equal(REGRAS_WHATSAPP.intervaloAntesNovas, true);
   assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 30);
-  assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 0, 'oferta nova também respeita intervalo');
+  assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS }).enviar.length, 1, 'Telegram mantém envio imediato de novidade');
+  assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 0, 'WhatsApp segura novidade durante intervalo');
   assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(31) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1, 'libera após 30 min');
   assert.equal(planejar([c('n1', iso(5)), c('n2', iso(5))], [], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1);
   const cheio = Array.from({ length: 70 }, (_, i) => ({ ofertaId: 'o' + i, at: iso(40 + i) }));
