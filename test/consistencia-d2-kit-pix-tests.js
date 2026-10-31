@@ -31,10 +31,10 @@ await t('API /site/kit/cesta: ofertas levam priceKind (Pix e base)', () => {
   assert.deepEqual(kinds, { 'xx1-blister3': 'pix', 'xx1-deck': 'base' });
 });
 
-// ---- kit-v3.js real: o resultado marca "no Pix" só no item Pix (item e "Outras opções")
-const js = fs.readFileSync(new URL('../assets/web/kit-v3.js', import.meta.url), 'utf8');
+// ---- kit-v4.js real: o resultado marca "no Pix" só no item Pix (item e "Outras opções")
+const js = fs.readFileSync(new URL('../assets/web/kit-v4.js', import.meta.url), 'utf8');
 const html = fs.readFileSync(new URL('../kit.html', import.meta.url), 'utf8');
-await t('kit.html carrega a kit-v3.js', () => assert.match(html, /\/assets\/web\/kit-v3\.js/));
+await t('kit.html carrega a kit-v4.js', () => assert.match(html, /\/assets\/web\/kit-v4\.js/));
 async function resultado(resp) {
   const ouvintes = {}; const app = { innerHTML: '', addEventListener: (tp, f) => { (ouvintes[tp] = ouvintes[tp] || []).push(f); }, querySelector: () => null, querySelectorAll: () => ({ forEach() {} }) };
   const loc = { pathname: '/monte-seu-kit', search: '', href: 'https://x.test/monte-seu-kit' };
@@ -53,11 +53,11 @@ const RESP = { modelo: 'primeira-colecao', nomeModelo: 'Primeira coleção', orc
   itens: [item('pix1', 25.85, 'pix'), item('base1', 80, 'base')], alternativas: [{ ...item('alt-pix', 12.5, 'pix'), quantidade: undefined }] };
 const h = await resultado(RESP);
 const bloco = (pid) => { const i = h.indexOf(`data-pid="${pid}"`); assert.ok(i > 0, `item ${pid} no HTML`); return h.slice(h.lastIndexOf('<div class="item">', i), i); };
-await t('kit-v3: item Pix mostra "no Pix"; item base não', () => {
+await t('kit-v4: item Pix mostra "no Pix"; item base não', () => {
   assert.match(bloco('pix1'), /R\$\s?25,85 <small>no Pix<\/small> <small>cada<\/small>/);
   assert.doesNotMatch(bloco('base1'), /no Pix/);
 });
-await t('kit-v3: "Outras opções" também marca o Pix', () => {
+await t('kit-v4: "Outras opções" também marca o Pix', () => {
   const i = h.indexOf('data-add="alt-pix"'); assert.ok(i > 0, 'alternativa no HTML');
   assert.match(h.slice(h.lastIndexOf('<div class="cmp alt">', i), i), /R\$\s?12,50 <small>no Pix<\/small> em S/);
 });

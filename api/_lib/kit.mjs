@@ -1,7 +1,8 @@
 // "Monte seu kit" (docs/monte-seu-kit.md): modelos de combo + recomendação. Mora em api/_lib porque a função da Vercel não
 // leva src/ (.vercelignore); src/kit/*.js reexporta daqui (mesmo padrão de offer-rank.mjs e references.mjs).
-// Cada papel lista os tipos do catálogo (TYPE_LABEL de src/match.js) em ordem de preferência. Acessórios ainda não têm
-// produto no catálogo (o casamento os recusa): o modelo só declara quais seriam sugeridos, para o aviso honesto.
+// Cada papel lista os tipos do catálogo (TYPE_LABEL de src/match.js) em ordem de preferência. Acessórios não têm produto no
+// catálogo (o casamento os recusa): o modelo declara quais completam o kit, e a página (kit-v4.js) escolhe o mais barato de
+// cada um na lista curada de acessórios (#991, lida no navegador), com a data da leitura e frete a calcular.
 export const MODELOS = Object.freeze({
   primeira_colecao: { nome: 'Minha primeira coleção', papeis: [{ papel: 'abrir', tipos: ['blister_3', 'blister_4', 'blister_2', 'blister_1', 'booster_pack'], porque: 'para abrir pacotes e começar a coleção', repetir: 3 }], acessorios: ['sleeve', 'fichario'] },
   colecionador: { nome: 'Colecionador organizado', papeis: [{ papel: 'colecao', tipos: ['etb', 'colecao_fichario', 'colecao', 'colecao_poster', 'lata'], porque: 'produto de coleção com boosters e itens para organizar' }], acessorios: ['fichario', 'sleeve'] },
@@ -10,6 +11,8 @@ export const MODELOS = Object.freeze({
 });
 // Objetivo do questionário → modelo.
 export const OBJETIVO_MODELO = Object.freeze({ colecionar: 'primeira_colecao', abrir: 'primeira_colecao', presentear: 'colecionador', jogar: 'jogar', especiais: 'especiais', proteger: null });
+// "Proteger minhas cartas": kit só de acessórios (sem lacrado).
+export const PROTEGER = Object.freeze({ modelo: 'proteger', nomeModelo: 'Proteger minhas cartas', acessorios: ['sleeve', 'toploader', 'fichario', 'deck_box'] });
 export const ACESSORIO_NOME = Object.freeze({ sleeve: 'sleeves (protetores)', fichario: 'fichário', deck_box: 'deck box', playmat: 'playmat', toploader: 'toploader' });
 export const ORCAMENTOS = Object.freeze([50, 100, 200, 400]);
 
@@ -64,7 +67,8 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
   const limitacoes = [];
   const modeloId = OBJETIVO_MODELO[respostas?.objetivo];
   const orcamento = Number(respostas?.orcamento);
-  if (!modeloId) return { modelo: null, itens: [], limitacoes: ['Ainda não comparamos preço de acessórios (sleeves, fichários, deck boxes). Veja as lojas que vendem na página de lojas.'] };
+  if (respostas?.objetivo === 'proteger') return { ...PROTEGER, acessorios: [...PROTEGER.acessorios], itens: [], alternativas: [], limitacoes: [] };
+  if (!modeloId) return { modelo: null, itens: [], limitacoes: ['Escolha um objetivo para montar o kit.'] };
   if (!(orcamento > 0)) return { modelo: modeloId, itens: [], limitacoes: ['Informe um orçamento para montar o kit.'] };
   const modelo = MODELOS[modeloId];
   const idioma = ['pt', 'en', 'ja', 'zh', 'ko'].includes(respostas.idioma) ? respostas.idioma : 'qualquer';
@@ -92,12 +96,11 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
       alternativas.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), porque: papel.porque, imagem: [FOTO_PROPRIA.test(p.image || '') ? p.image : null, https(o2.image), p.image].find((u) => /^https:\/\//.test(u || '')) || null, oferta: o2 });
     }
   }
-  if (modelo.acessorios.length) limitacoes.push(`Sugerimos também ${modelo.acessorios.map((a) => ACESSORIO_NOME[a]).join(', ')}, mas ainda não comparamos o preço de acessórios: não estão no valor do kit.`);
   const subtotal = r2(itens.reduce((s, it) => s + it.oferta.price * it.quantidade, 0));
   const fretes = freteDaCesta(itens, fg);
   const freteConhecido = fretes.length > 0 && fretes.every((f) => f.frete != null);
   const total = freteConhecido ? r2(subtotal + fretes.reduce((s, f) => s + f.frete, 0)) : null;
-  return { modelo: modeloId, nomeModelo: modelo.nome, orcamento, itens, alternativas, subtotal, fretes, total, cabeNoOrcamento: subtotal <= orcamento, limitacoes };
+  return { modelo: modeloId, nomeModelo: modelo.nome, acessorios: [...modelo.acessorios], orcamento, itens, alternativas, subtotal, fretes, total, cabeNoOrcamento: subtotal <= orcamento, limitacoes };
 }
 
 /** K4 — cesta: itens [{ productId, quantidade }] + ofertas reais → comparação "tudo numa loja" × "dividir entre lojas".

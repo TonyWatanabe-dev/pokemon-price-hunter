@@ -135,6 +135,8 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 **Acessórios com link de afiliado (31/10, tarde):** pedido do dono com as três leituras dele no Chrome (ML, Amazon, Shopee, 12:57–13:32). Lista curada `config/afiliados/acessorios.json`, gerada por `tools/acessorios-importar.mjs` a partir das leituras versionadas em `tools/acessorios/`: 137 itens (sleeve 53, fichário 30, deck box 31, playmat 16, toploader 7), duplicatas entre buscas removidas, categoria pela coluna do dono conferida com `api/_lib/acessorios.mjs` (corrigido: "Dragon Shield" no título classificava deck box/fichário como sleeve). Fora (7): toploader 4x6", estampas Lorcana, Magic e D&D. Página `acessorios.html` (noindex, link no rodapé da Home e no kit), ordem só por preço, data da leitura em cada item, preço sem frete. Não lida pelo robô, ranking, Score, alerta nem pelo total do kit (teste `test/acessorios-tests.js`). Preço não se atualiza sozinho: nova leitura = rodar o importador. Rota limpa `/acessorios` exigiria `vercel.json` (R3): fica para decisão do dono.
 
+**Kit completo com acessórios (31/10, tarde, pedido do dono):** o Monte seu kit passa a juntar lacrados e acessórios (`kit-v4.js`). A API diz quais acessórios cada modelo pede (`acessorios`), a página escolhe o mais barato de cada um na lista curada, desconta do orçamento antes de pedir os lacrados (se nenhum lacrado couber, tira o último acessório e avisa) e mostra "Kit completo" = produtos + acessórios, com frete a calcular quando há acessório. "Proteger minhas cartas" vira kit só de acessórios (sleeve, toploader, fichário, deck box). Testes: `test/kit-acessorios-tests.js`, `test/kit-recomendar-tests.js`.
+
 ---
 
 ## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)
