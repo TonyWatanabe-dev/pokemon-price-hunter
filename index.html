@@ -1616,8 +1616,8 @@ const thirdParty=(o)=>{const a=nrm(o.seller),b=nrm(o.storeName);return !!(a&&b&&
 const storeTxt=(o)=>thirdParty(o)?`${o.seller} via ${o.storeName}`:o.storeName;
 const pixTag=(o)=>o?.priceKind==="pix"?`<em class="pixk" title="Valor para pagamento no Pix. No cartão a loja cobra mais.">no Pix</em>`:"";
 /* Reclame Aqui: reputação pública da loja, com link. Sem página ou sem índice também aparece, com o ícone do próprio site. */
-const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-good"],REGULAR:["Regular","ra-mid"],RUIM:["Ruim","ra-bad"],NAO_RECOMENDADA:["Não recomendada","ra-worst"],SEM_INDICE:["Sem índice","ra-none"],EM_ANALISE:["Em análise","ra-none"],INATIVA:["Inativa","ra-none"],NAO_ENCONTRADA:["Sem cadastro","ra-none"]};
-const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_ENCONTRADA"}:null);
+const RA_ST={RA1000:["RA1000","ra-top"],OTIMO:["Ótima","ra-ok"],BOM:["Boa","ra-good"],REGULAR:["Regular","ra-mid"],RUIM:["Ruim","ra-bad"],NAO_RECOMENDADA:["Não recomendada","ra-worst"],SEM_INDICE:["Sem índice","ra-none"],EM_ANALISE:["Em análise","ra-none"],INATIVA:["Inativa","ra-none"],NAO_ENCONTRADA:["Sem cadastro","ra-none"],NAO_CONSULTADA:["Não consultado","ra-none"]};
+const raOf=(sid)=>S.reputation?.lojas?.[sid]||(S.reputation?{status:"NAO_CONSULTADA"}:null);   /* fora da tabela manual = nunca consultada (D3) */
 /* nos cartões o selo é curto e sempre diz de onde vem: "RA 8,2", "RA: sem cadastro", "RA: sem índice" */
 const raShort=(lb,nota)=>nota?`RA ${nota}`:lb==="RA1000"?lb:`RA: ${lb.charAt(0).toLowerCase()+lb.slice(1)}`;
 function raBadge(o,full){
@@ -1625,7 +1625,7 @@ function raBadge(o,full){
   const href=r.url||`https://www.reclameaqui.com.br/busca/?q=${encodeURIComponent(String(o.storeName||"").replace(/\.com(\.br)?$/,""))}`;
   const when=S.reputation.consultadoEm?new Date(S.reputation.consultadoEm+"T12:00:00").toLocaleDateString("pt-BR"):"";
   const nota=r.nota!=null?String(r.nota).replace(".",","):null;
-  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
+  const tip=r.status==="NAO_ENCONTRADA"?`Reclame Aqui: ${lb}. Não encontramos esta loja no Reclame Aqui (consulta em ${when}). Toque para procurar.`:r.status==="NAO_CONSULTADA"?`Reclame Aqui: ${lb}. Ainda não consultamos esta loja. Toque para procurar.`:`Reclame Aqui: ${lb}${nota?` · nota ${nota}/10`:""}${r.respondidas!=null?` · ${String(r.respondidas).replace(".",",")}% respondidas`:""}${r.periodo?` · período ${r.periodo}`:""} · consultado em ${when}`;
   const vis=full?lb:raShort(lb,nota);const al=full?tip:`${vis} · ${tip}`;
   return`<a class="ra ${cls}" href="${esc(safeUrl(href))}" target="_blank" rel="noopener nofollow" title="${esc(tip)}" aria-label="${esc(al)}"><img src="https://icons.duckduckgo.com/ip3/reclameaqui.com.br.ico" alt="" width="14" height="14" loading="lazy" referrerpolicy="no-referrer" data-err="rm">${full?`<span>Reclame Aqui</span>`:""}<b>${esc(vis)}</b>${full&&nota?`<em>${esc(nota)}/10</em>`:""}</a>`;
 }
@@ -2441,7 +2441,8 @@ function renderProduct(pid){
   const src=c.source_url&&/copagloja/.test(c.source_url)?"loja oficial Copag":c.manual?"tabela de preços Copag":"cadastro com fonte Copag";
   const eans=[...new Set([p.ean,...offers.map((o)=>o.ean)].filter((x)=>/^\d{8,14}$/.test(String(x||""))))];
   const nLive=offers.filter(live).length;
-  document.title=`${label(p)} ${p.collectionName} Pokémon TCG${best?`: a partir de ${money(best.total)}${pixTxt(best)}`:""} | TCG Price Hunter`;
+  const lo=offers.filter(live).sort(OFFER_SORTS.price).slice(0,15).reduce((m,o)=>!m||o.total<m.total?o:m,null);   /* título = SSR (Lote D) */
+  document.title=`${label(p)} ${p.collectionName} Pokémon TCG${lo?`: a partir de ${money(lo.total)}${pixTxt(lo)}${shipOk(lo)?"":" (frete a calcular)"}`:": preço e lojas"} | TCG Price Hunter`;
   const save=best&&p.copagConfirmed&&best.total<p.msrp?p.msrp-best.total:null;
   const scale=p.copagConfirmed&&p.marketAverage&&best?(()=>{const pts=[["Copag",p.msrp,"cop"],["Mercado",p.marketAverage,"mkt"],["Melhor oferta",best.total,"best"]];const lo=Math.min(...pts.map((x)=>x[1])),hi=Math.max(...pts.map((x)=>x[1]));const span=hi-lo||1;
     return`<section class="card refscale"><h2>Referência, mercado e oportunidade</h2><div class="rs-track">${pts.map(([l,v,k])=>`<span class="rs-pt ${k}" style="left:${(8+(v-lo)/span*84).toFixed(1)}%"><i></i><b>${money(v)}</b><small>${l}</small></span>`).join("")}</div>
