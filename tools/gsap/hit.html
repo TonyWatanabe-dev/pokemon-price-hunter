@@ -65,6 +65,17 @@ html,body{width:1080px;height:1920px;background:transparent;overflow:hidden;font
 #fim p{font:500 40px Rubik;color:#d3d9f5;margin-top:16px;position:relative}
 #fim .cta{position:relative;overflow:hidden;margin-top:44px;white-space:nowrap;background:var(--am);color:var(--az);font:900 36px Rubik;padding:30px 40px;border-radius:999px;box-shadow:0 14px 40px rgba(0,0,0,.35)}
 #fim .perfil{font:700 34px Rubik;color:#b9c2ea;margin-top:34px;position:relative}
+
+/* tipos claros (Elétrico, Incolor): fundo claro do tipo, texto escuro */
+#fim.claro{color:#131f49;background:linear-gradient(170deg,var(--ty),color-mix(in srgb,var(--ty) 82%,#7a5a00) 100%)}
+#fim.claro .marca{fill:#131f49;opacity:.1}
+#fim.claro .tag,#fim.claro .lucro,#fim.claro .lin b.pos{color:#0b7148}
+#fim.claro .lin b.neg{color:#ae2318}
+#fim.claro .linhas,#fim.claro .lin{border-color:rgba(19,31,73,.18)}
+#fim.claro .lin small,#fim.claro .perfil{color:#3c466b}
+#fim.claro p{color:#131f49}
+#fim.claro h2 em{color:#2c7be5}
+#fim.claro .cta{background:#131f49;color:#fff}
 </style>
 </head>
 <body>
@@ -108,7 +119,7 @@ const fmt = (v) => Math.abs(v).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3}
 const brl = (v) => (v < 0 ? '−' : '+') + 'R$ ' + fmt(v);
 const reais = (v) => 'R$ ' + fmt(v);
 const $ = (id) => document.getElementById(id);
-const COR = { planta: '#2f9a55', fogo: '#e0512b', agua: '#2c7be5', eletrico: '#a8801a', psiquico: '#8e4bd6', lutador: '#c25a1c', escuridao: '#2b2d42', metal: '#6e7a90', dragao: '#a8801a', fada: '#e05aa0', incolor: '#556079' };
+const COR = { planta: '#2f9a55', fogo: '#e0512b', agua: '#2c7be5', eletrico: '#ffcf33', psiquico: '#8e4bd6', lutador: '#c25a1c', escuridao: '#2b2d42', metal: '#6e7a90', dragao: '#a8801a', fada: '#e05aa0', incolor: '#c9ced8' };
 $('placarRot').textContent = C.rotulo; $('placarTxt').textContent = brl(-C.pack);
 $('kick').textContent = C.kick; $('tit').innerHTML = C.titulo;
 $('raridade').textContent = C.raridade; $('nome').textContent = C.carta; $('preco').textContent = reais(C.valor);
@@ -117,7 +128,8 @@ $('fimTag').textContent = C.tagFim; $('fimLucro').textContent = brl(C.valor - C.
 $('fimLinhas').innerHTML = `<div class="lin"><span>${C.linhaPack}<small>${C.notaPack}</small></span><b class="neg">${brl(-C.pack)}</b></div>`
   + `<div class="lin"><span>${C.carta}<small>média Liga Pokémon</small></span><b class="pos">${brl(C.valor)}</b></div>`;
 // lâmina final na cor do tipo da carta (sem tipo, ex. Treinador: navy da marca)
-if (C.tipoCarta) { document.documentElement.style.setProperty('--ty', COR[C.tipoCarta]); $('marcaTipo').setAttribute('href', '#i-t-' + C.tipoCarta); } else { $('fim').querySelector('.marca').remove(); }
+if (C.tipoCarta) { document.documentElement.style.setProperty('--ty', COR[C.tipoCarta]); $('marcaTipo').setAttribute('href', '#i-t-' + C.tipoCarta); }
+if (['eletrico', 'incolor'].includes(C.tipoCarta)) $('fim').classList.add('claro'); else { $('fim').querySelector('.marca').remove(); }
 
 const brilhos = [];
 for (let i = 0; i < 14; i++) { const b = document.createElement('div'); b.className = 'brilho'; $('palco').insertBefore(b, $('fim')); brilhos.push(b); }

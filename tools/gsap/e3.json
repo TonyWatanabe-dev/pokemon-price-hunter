@@ -1,0 +1,30 @@
+{
+ "rotulo": "1 pack da booster box",
+ "pack": 9.72,
+ "kick": "Escuridão Absoluta",
+ "titulo": "1 pack… espera a <em>última carta</em> 👀",
+ "carta": "Manectric",
+ "tipoCarta": "eletrico",
+ "raridade": "Ilustração Rara",
+ "valor": 14.54,
+ "tagFim": "Resultado · Escuridão Absoluta",
+ "linhaPack": "1 pack da booster box",
+ "notaPack": "box R$ 349,90 no menor preço do site ÷ 36",
+ "hitT": 13.3,
+ "dur": 24.1,
+ "fimDur": 4.5,
+ "ganchoAte": 3.6,
+ "revela": 11.0,
+ "segs": [
+  [
+   "../../tmp-lotes/E3_manectric.mp4",
+   20.0,
+   32.9
+  ],
+  [
+   "../../tmp-lotes/E3_manectric_det.mp4",
+   3.8,
+   10.5
+  ]
+ ]
+}

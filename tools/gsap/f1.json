@@ -1,0 +1,30 @@
+{
+ "rotulo": "1 blister unitário",
+ "pack": 6.75,
+ "kick": "Fogo Fantasmagórico",
+ "titulo": "1 blister… espera a <em>última carta</em> 👀",
+ "carta": "Dawn",
+ "raridade": "Ilustração Rara Especial",
+ "valor": 170.61,
+ "tagFim": "Resultado · Fogo Fantasmagórico",
+ "linhaPack": "1 blister unitário",
+ "notaPack": "48 blisters por R$ 323,96 (promoção no site) ÷ 48",
+ "hitT": 18.2,
+ "dur": 33.5,
+ "fimDur": 4.5,
+ "ganchoAte": 3.6,
+ "revela": 16.0,
+ "detalhe": 23.5,
+ "segs": [
+  [
+   "../../tmp-lotes/F1_dawn.mp4",
+   13.0,
+   36.5
+  ],
+  [
+   "../../tmp-lotes/F_vitrine_det.mp4",
+   29.5,
+   35.0
+  ]
+ ]
+}
