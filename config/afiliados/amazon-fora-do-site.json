@@ -1,7 +1,7 @@
 {
  "program": "amazon",
  "tag": "tcgpricehunter-20",
- "updatedAt": "2026-10-30",
+ "updatedAt": "2026-11-01",
  "nota": "Anúncios Pokémon da mesma busca que NÃO aparecem no site, com o motivo. Não é publicado; serve para revisar depois (ex.: quando o catálogo crescer).",
  "itens": [
   {
@@ -4575,6 +4575,12 @@
    "title": "Sleeves Central Shield Matte Framboesa Standard Padrão",
    "motivo": "acessório (Sleeves): fora do catálogo do site; candidato ao Monte seu kit",
    "url": "https://www.amazon.com.br/dp/B0CQRY6JQX?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0HK1KYQ6G",
+   "title": "Pokémon TCG: Mega Evolution - Reinado Delta - Advanced Trainer Box - Português",
+   "motivo": "coleção Reinado Delta (ME06) ainda não está no catálogo do site; pré-venda Amazon.com.br R$ 399,99 em 01/11/2026 16:14, lançamento 06/11/2026; link curto (SiteStripe, tcgpricehunter-20): https://link.amazon/B093SGPlw",
+   "url": "https://www.amazon.com.br/dp/B0HK1KYQ6G?tag=tcgpricehunter-20"
   }
  ]
 }
