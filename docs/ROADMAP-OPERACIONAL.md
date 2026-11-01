@@ -141,6 +141,8 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 **Página do kit no padrão do Melhor Enxoval (01/11, pedido do dono):** `kit-v6.js` + `kit.html`, com a identidade do TCG Price Hunter (azul/amarelo, Rubik). Questionário com "Pergunta N de 4", barra em segmentos e opções com marcador; resultado num cartão com fotos (+N), total do kit, barra do orçamento e "Sobram", divisão lacrados × acessórios, lista compacta que abre o detalhe (quantidade, remover, Ver na loja), "Ver os N produtos do kit", "Onde comprar", "Ficou de fora", "Outras opções", "Próximos passos", resumo das respostas, como escolhemos e compartilhar (WhatsApp, copiar link, imprimir). Link compartilhado abre direto no resultado (sem o Pokémon favorito). Evento novo `kit_share`.
 
+**Fotos dos acessórios (01/11, pedido do dono):** a foto principal (og:image) dos 137 anúncios foi lida no Chrome do dono a partir de cada página (ML 55, Amazon 52, Shopee 30) e gravada em `tools/acessorios/imagens.json`; o importador põe `image` em cada item (só CDNs das lojas). A página de acessórios (`acessorios-v2.js`) e o kit (`kit-v7.js`) mostram a foto.
+
 ---
 
 ## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)

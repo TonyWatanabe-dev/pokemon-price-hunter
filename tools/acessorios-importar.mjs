@@ -1,6 +1,6 @@
 // Importa as tabelas de acessórios que o dono leu no Chrome (links de afiliado gerados por ele) para
 // config/afiliados/acessorios.json. Uso:
-//   node tools/acessorios-importar.mjs --ml <txt> --amazon <txt> --shopee <txt> --saida config/afiliados/acessorios.json
+//   node tools/acessorios-importar.mjs --ml <txt> --amazon <txt> --shopee <txt> --imagens tools/acessorios/imagens.json --saida config/afiliados/acessorios.json
 // Cada linha: campos separados por " ; " (com ou sem cabeçalho). Nada é buscado na rede; preço e estoque ficam como o dono
 // leu, com a data e a hora da leitura. Critérios (também em parse/validar, testados em test/acessorios-tests.js):
 // - a categoria é a coluna "categoria" do dono (não a busca), conferida com api/_lib/acessorios.mjs quando ele reconhece;
@@ -28,7 +28,11 @@ function data(s) { // "31/10/2026 12:57" ou "31/10/2026, 12:58:13" → ISO -03:0
 const https = (u) => (/^https?:\/\//.test(u) ? u : `https://${u}`).replace(/^http:/, 'https:');
 
 /** loja, texto → { itens, fora } (itens já sem duplicata) */
-export function parse(loja, texto) {
+// Foto do anúncio: só https das CDNs das três lojas (lida no Chrome do dono a partir da página do anúncio, og:image).
+export const FOTO_OK = /^https:\/\/(http2\.mlstatic\.com|m\.media-amazon\.com|down-br\.img\.susercontent\.com)\/[^\s"'<>]+$/;
+
+/** loja, texto, imagens ({'loja:id': url}) → { itens, fora } (itens já sem duplicata) */
+export function parse(loja, texto, imagens = {}) {
   const itens = []; const fora = []; const vistos = new Set();
   for (const linha of String(texto).split(/\r?\n/)) {
     const c = linha.split(' ; ').map((x) => x.trim()); if (c.length < 11 || /^busca$/i.test(c[0])) continue;
@@ -52,6 +56,7 @@ export function parse(loja, texto) {
     const item = { loja, id, categoria: cat, kit: KIT[cat], marca: r.marca.replace(/\s*\(.*\)$/, ''), title: r.title, qtd: r.qtd,
       price: ou ? ps[1] : ps[0], ...(ou ? { priceCupom: ps[0] } : {}), ...(faixa ? { aPartirDe: true } : {}),
       seller: r.seller, ...(r.fulfilledBy ? { fulfilledBy: r.fulfilledBy } : {}), estoque: r.estoque, url: https(r.link), capturedAt: data(r.quando) };
+    const foto = imagens[`${loja}:${id}`]; if (FOTO_OK.test(foto || '')) item.image = foto;
     if (!(item.price > 0) || !item.capturedAt) { fora.push({ loja, title: r.title, motivo: 'preço ou data ilegível' }); continue; }
     const cls = classificarAcessorio(r.title); item.confere = !cls ? null : cls.kit === item.kit || (cls.kit === 'paginas' && item.kit === 'fichario');
     itens.push(item);
@@ -70,6 +75,7 @@ export function validar(j) {
     if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-03:00$/.test(i.capturedAt || '')) erros.push(`${k}: capturedAt`);
     if (i.confere === false) erros.push(`${k}: categoria do dono (${i.categoria}) diverge do classificador`);
     if (FORA.some(([re]) => re.test(norm(i.title)))) erros.push(`${k}: item fora do padrão`);
+    if ('image' in i && !FOTO_OK.test(i.image)) erros.push(`${k}: foto fora das CDNs das lojas`);
     if ('productId' in i || 'score' in i) erros.push(`${k}: acessório não liga a produto lacrado nem a nota`);
   }
   return erros;
@@ -80,9 +86,10 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   // Sem caminho padrão: este arquivo só ESCREVE a lista (test/affiliate-isolation-tests.js proíbe ler a config de afiliados em tools/).
   const saida = arg('saida'); if (!saida) { console.error('use --saida <arquivo>'); process.exit(2); }
   const itens = []; const fora = [];
+  const imagens = arg('imagens') ? JSON.parse(fs.readFileSync(arg('imagens'), 'utf8')).fotos || {} : {};
   for (const loja of ['mercadolivre', 'amazon', 'shopee']) {
     const f = arg(loja === 'mercadolivre' ? 'ml' : loja); if (!f) continue;
-    const r = parse(loja, fs.readFileSync(f, 'utf8')); itens.push(...r.itens); fora.push(...r.fora);
+    const r = parse(loja, fs.readFileSync(f, 'utf8'), imagens); itens.push(...r.itens); fora.push(...r.fora);
   }
   const ordem = Object.keys(CATEGORIAS);
   itens.sort((a, b) => ordem.indexOf(a.categoria) - ordem.indexOf(b.categoria) || a.price - b.price);

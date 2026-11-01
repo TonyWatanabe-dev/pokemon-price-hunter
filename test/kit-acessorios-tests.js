@@ -1,10 +1,10 @@
-// Kit completo com acessórios (kit-v6.js): a API diz quais acessórios o modelo pede; a página escolhe o mais barato de cada
+// Kit completo com acessórios (kit-v7.js): a API diz quais acessórios o modelo pede; a página escolhe o mais barato de cada
 // um na lista curada (/data/afiliados-acessorios.json), desconta do orçamento antes de pedir os lacrados, tira o último
 // acessório se nenhum lacrado couber, mostra data da leitura e frete a calcular. "Proteger" = kit só de acessórios.
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import vm from 'node:vm';
 
-const js = fs.readFileSync(new URL('../assets/web/kit-v6.js', import.meta.url), 'utf8');
+const js = fs.readFileSync(new URL('../assets/web/kit-v7.js', import.meta.url), 'utf8');
 const flush = () => new Promise((r) => setTimeout(r, 0));
 const ACC = { itens: [
   { loja: 'amazon', id: 'S1', kit: 'sleeve', title: 'Sleeve barato', price: 11.39, url: 'https://link.amazon/a', capturedAt: '2026-10-31T13:07:04-03:00' },
