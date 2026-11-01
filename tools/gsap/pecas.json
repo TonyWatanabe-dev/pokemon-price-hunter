@@ -3,7 +3,8 @@
   "mudo": "tmp-gsap/E2_mudo.mp4",
   "saida": "tmp-render/G_E2_placar_box.mp4",
   "trilha": "short_top",
-  "ini": 0
+  "ini": 0,
+  "versao": 2
  },
  {
   "mudo": "tmp-gsap/F3_mudo.mp4",
