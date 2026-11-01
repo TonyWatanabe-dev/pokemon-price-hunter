@@ -145,7 +145,9 @@ tl.from('#placar', { y: -220, opacity: 0, duration: 1, ease: 'elastic.out(1, .6)
   .to('#gancho', { clipPath: 'inset(0% 0% 100% 0% round 40px)', y: -40, duration: .55, ease: 'power3.in' }, G + .2)
   .to('#placar', { y: 8, duration: 1.4, yoyo: true, repeat: Math.max(1, Math.floor((H - 4.5) / 1.4)), ease: 'sine.inOut' }, 1.4);
 // 2. tensão: o placar pulsa cada vez mais rápido
-[[H - 3, .5], [H - 2, .36], [H - 1.1, .24], [H - .5, .16]].forEach(([t, d]) => tl.to('#placar .val', { scale: 1.07, duration: d, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t));
+// a tensão termina quando a carta aparece (C.revela); entre a revelação e o motion a carta fica sozinha na tela
+const R = C.revela ?? H;
+[[R - 3, .5], [R - 2, .36], [R - 1.1, .24], [R - .5, .16]].forEach(([t, d]) => tl.to('#placar .val', { scale: 1.07, duration: d, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t));
 // 3. hit
 const cont = { v: -C.pack };
 tl.to('#flash', { opacity: .75, duration: .07, ease: 'none' }, H).to('#flash', { opacity: 0, duration: .5, ease: 'power2.out' }, H + .07)
