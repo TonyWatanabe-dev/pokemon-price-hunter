@@ -1,0 +1,110 @@
+{
+  "semana": "TikTok: posts das 12h vão para 11h (12h vinha dando 0–11 views; 11h foi o horário do Short mais visto), 01/11",
+  "pasta": "assets/social/agenda/videos",
+  "cancelar": [
+    {
+      "quando": "2026-11-09T12:00",
+      "plataforma": "tiktok",
+      "trecho": "Quiz: adivinha o artista",
+      "motivo": "TikTok 12h -> 11h"
+    },
+    {
+      "quando": "2026-11-11T12:00",
+      "plataforma": "tiktok",
+      "trecho": "As 5 chase da Celebração",
+      "motivo": "TikTok 12h -> 11h"
+    },
+    {
+      "quando": "2026-11-02T12:00",
+      "plataforma": "tiktok",
+      "trecho": "Yuka Morii não desenha: ",
+      "motivo": "TikTok 12h -> 11h"
+    },
+    {
+      "quando": "2026-11-03T12:00",
+      "plataforma": "tiktok",
+      "trecho": "Faltam 3 dias para Reina",
+      "motivo": "TikTok 12h -> 11h"
+    },
+    {
+      "quando": "2026-11-04T12:00",
+      "plataforma": "tiktok",
+      "trecho": "Faltam 2 dias para Reina",
+      "motivo": "TikTok 12h -> 11h"
+    },
+    {
+      "quando": "2026-11-05T12:00",
+      "plataforma": "tiktok",
+      "trecho": "É amanhã: Reinado Delta ",
+      "motivo": "TikTok 12h -> 11h"
+    }
+  ],
+  "itens": [
+    {
+      "id": "ss-quiz-tt-tu-11h",
+      "quando": "2026-11-09T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/T_SS_quiz.mp4",
+      "capaMs": 4500,
+      "legenda": "Quiz: adivinha o artista pelo traço. Comenta quantas você acertou!\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador"
+    },
+    {
+      "id": "ss-chase30-tt-tu-11h",
+      "quando": "2026-11-11T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/T_SS_chase30.mp4",
+      "capaMs": 4500,
+      "legenda": "As 5 chase da Celebração de 30 Anos. Quantas você já puxou?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #pokemon30anos"
+    },
+    {
+      "id": "ss-yuka-tt-tu-11h",
+      "quando": "2026-11-02T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/T_SS_yuka.mp4",
+      "capaMs": 4500,
+      "legenda": "Yuka Morii não desenha: ela esculpe os Pokémon em argila. Você já tem alguma carta dela?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador"
+    },
+    {
+      "id": "ss-delta3-tt-tu-11h",
+      "quando": "2026-11-03T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/T_SS_delta3.mp4",
+      "capaMs": 4500,
+      "legenda": "Faltam 3 dias para Reinado Delta chegar ao Brasil (6/11). O que você quer puxar?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta"
+    },
+    {
+      "id": "ss-delta2-tt-tu-11h",
+      "quando": "2026-11-04T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/T_SS_delta2.mp4",
+      "capaMs": 4500,
+      "legenda": "Faltam 2 dias para Reinado Delta. Já sabe o que vai comprar? Não paga qualquer preço no lançamento.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta"
+    },
+    {
+      "id": "ss-delta1-tt-tu-11h",
+      "quando": "2026-11-05T11:00",
+      "tipo": "video",
+      "plataformas": [
+        "tiktok"
+      ],
+      "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/T_SS_delta1.mp4",
+      "capaMs": 4500,
+      "legenda": "É amanhã: Reinado Delta chega em 6/11. Compara o preço antes de comprar.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon #colecionador #reinadodelta"
+    }
+  ]
+}
