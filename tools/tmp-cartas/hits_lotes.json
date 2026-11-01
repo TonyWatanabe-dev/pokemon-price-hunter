@@ -62,7 +62,8 @@
     "raridade": "Rara Dupla",
     "valor": 7.12,
     "gravado": false,
-    "nota": "saiu no Fogo mas não foi gravado; só o valor entra na conta (dono, 31/10)"
+    "nota": "saiu no Fogo, sem vídeo; foto enviada pelo dono em 01/11",
+    "foto": "tools/carrossel/cartas/lopunny.jpg"
    }
   ],
   "pago": 323.96,
@@ -110,9 +111,9 @@
     "carta": "Wailord ex",
     "num": "097/084",
     "raridade": "Rara Ultra",
-    "valor": 5.91,
-    "valor_pendente": "print Liga do 097/084 (5.91 era do 016/084)",
-    "abertura": "20261031_173352 0:58-1:04"
+    "valor": 17.89,
+    "abertura": "20261031_173352 0:58-1:04",
+    "valor_nota": "print Liga do dono, 01/11"
    },
    {
     "carta": "Rampardos ex",
@@ -126,7 +127,7 @@
   ],
   "pago": 349.9,
   "pago_nota": "menor preço do site (dono não informou o valor pago)",
-  "total_cartas": 875.58,
-  "lucro": 525.68
+  "total_cartas": 887.56,
+  "lucro": 537.66
  }
 }

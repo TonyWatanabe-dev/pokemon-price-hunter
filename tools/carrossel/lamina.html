@@ -93,7 +93,7 @@ if (L.tipo === 'capa') {
     + `<div class="rank" style="left:680px;top:170px">#${L.rank}</div>` + (L.x2 ? `<div class="x2" style="left:860px;top:330px">2×</div>` : '')
     + `<div style="left:680px;top:520px;right:60px">${ficha(L.cartaTipo)}</div>`
     + `<div style="left:72px;right:72px;top:930px"><div class="nome">${L.nome}</div><div class="rar">${L.raridade}</div></div>`
-    + `<div class="box" style="left:72px;right:72px;top:1080px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px"><div><div class="k">Média de venda · Liga Pokémon</div><div class="m">últimos 3 meses · 31/10</div></div><div class="v">${L.valor}</div></div>`
+    + `<div class="box" style="left:72px;right:72px;top:1080px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px"><div><div class="k">Média de venda · Liga Pokémon</div><div class="m">últimos 3 meses · ${L.data || '31/10'}</div></div><div class="v">${L.valor}</div></div>`
     + brilhos([[600, 200, 44], [90, 840, 36]]) + rodape();
 } else if (L.tipo === 'texto') {
   h = fundo() + topo() + `<h2 style="left:72px;right:72px;top:${L.top || 190}px">${L.titulo}</h2>` + (L.corpo ? `<p class="p" style="left:72px;right:72px;top:${L.corpoTop || 470}px">${L.corpo}</p>` : '')
@@ -114,15 +114,16 @@ if (L.tipo === 'capa') {
 } else if (L.tipo === 'grupo') {
   // Arte única por coleção para o grupo (WhatsApp/Telegram): todas as cartas do lote em grade + conta do lote.
   const brl = (v) => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  const tile = (c, i) => `<div style="position:relative;width:296px">`
-    + `<div class="foto" style="position:relative;width:296px;height:250px;border-width:7px;border-radius:16px;transform:rotate(${[-2, 1.5, -1, 2, -1.5, 1][i % 6]}deg)"><img src="cartas/${c.foto}.jpg" alt=""></div>`
+  const n4 = L.cartas.length > 6, TW = n4 ? 214 : 296, TH = n4 ? 268 : 250;
+  const tile = (c, i) => `<div style="position:relative;width:${TW}px">`
+    + `<div class="foto" style="position:relative;width:${TW}px;height:${TH}px;border-width:7px;border-radius:16px;transform:rotate(${[-2, 1.5, -1, 2, -1.5, 1][i % 6]}deg)"><img src="cartas/${c.foto}.jpg" alt=""></div>`
     + (c.qtd > 1 ? `<div class="x2" style="position:absolute;right:-14px;top:-18px;width:84px;height:84px;font-size:32px;box-shadow:0 0 0 5px #fff,0 8px 20px rgba(0,0,0,.5)">${c.qtd}×</div>` : '')
-    + `<div style="margin-top:16px;font:800 27px/1.05 Rubik;letter-spacing:-.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.nome}</div>`
-    + `<div style="margin-top:6px;font:900 34px/1 Rubik;color:${c.valor == null ? '#9aa6d8' : 'var(--sticker)'}">${c.valor == null ? (c.semValor || 'em breve') : brl(c.valor)}</div></div>`;
+    + `<div style="margin-top:16px;font:800 ${n4 ? 21 : 27}px/1.05 Rubik;letter-spacing:${n4 ? -.8 : -.5}px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.nome}</div>`
+    + `<div style="margin-top:6px;font:900 ${n4 ? 30 : 34}px/1 Rubik;color:${c.valor == null ? '#9aa6d8' : 'var(--sticker)'}">${c.valor == null ? (c.semValor || 'em breve') : brl(c.valor)}</div></div>`;
   const conta = (k, v, m, cor) => `<div><div class="k">${k}</div><div class="v" style="font-size:52px;${cor ? 'color:' + cor : ''}">${v}</div><div class="m" style="font-size:19px">${m}</div></div>`;
   h = fundo() + `<div class="eb"><i></i>${L.eb}</div><img class="logo" src="logo.png" alt="">`
     + `<h2 style="left:72px;right:72px;top:128px;font-size:64px">${L.titulo}</h2>`
-    + `<div style="left:72px;right:72px;top:${L.gradeTop || 300}px;display:grid;grid-template-columns:repeat(3,296px);justify-content:space-between;row-gap:26px">${L.cartas.map(tile).join('')}</div>`
+    + `<div style="left:72px;right:72px;top:${L.gradeTop || 300}px;display:flex;flex-wrap:wrap;justify-content:${n4 ? 'center' : 'space-between'};column-gap:${n4 ? 24 : 0}px;row-gap:26px">${L.cartas.map(tile).join('')}</div>`
     + `<div class="box" style="left:72px;right:72px;top:1030px;display:flex;justify-content:space-between;gap:16px;padding:22px 30px">`
     + conta('Preço no site', brl(L.preco), L.precoNota) + conta('Cartas · Liga', brl(L.total) + (L.totalMais ? '+' : ''), L.totalNota || 'média de venda, 3 meses')
     + conta('Saldo', (L.saldo >= 0 ? '+' : '−') + brl(Math.abs(L.saldo)) + (L.totalMais ? '+' : ''), L.saldoNota || 'cartas − preço', L.saldo >= 0 ? 'var(--ok)' : '#c93d25') + `</div>`

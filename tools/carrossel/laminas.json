@@ -28,6 +28,20 @@
    "eb": "Top hits · Escuridão Absoluta",
    "cont": "3/6",
    "rank": 2,
+   "foto": "wailord",
+   "nome": "Wailord ex",
+   "raridade": "Rara Ultra",
+   "cartaTipo": "agua",
+   "valor": "R$ 17,89",
+   "tipoFundo": "agua",
+   "editoria": "#8e4bd6",
+   "data": "01/11"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Escuridão Absoluta",
+   "cont": "4/6",
+   "rank": 3,
    "foto": "manectric",
    "nome": "Manectric",
    "raridade": "Ilustração Rara",
@@ -39,28 +53,14 @@
   {
    "tipo": "carta",
    "eb": "Top hits · Escuridão Absoluta",
-   "cont": "4/6",
-   "rank": 3,
+   "cont": "5/6",
+   "rank": 4,
    "foto": "excadrill",
    "nome": "Mega Excadrill ex",
    "raridade": "Rara Dupla",
    "cartaTipo": "metal",
    "valor": "R$ 10,69",
    "tipoFundo": "metal",
-   "editoria": "#8e4bd6"
-  },
-  {
-   "tipo": "carta",
-   "eb": "Top hits · Escuridão Absoluta",
-   "cont": "5/6",
-   "rank": 4,
-   "foto": "chandelure",
-   "nome": "Mega Chandelure ex",
-   "raridade": "Rara Dupla · saiu duas vezes",
-   "cartaTipo": "psiquico",
-   "valor": "R$ 8,75",
-   "x2": true,
-   "tipoFundo": "psiquico",
    "editoria": "#8e4bd6"
   },
   {
@@ -301,6 +301,11 @@
      "qtd": 2
     },
     {
+     "foto": "lopunny",
+     "nome": "Mega Lopunny ex",
+     "valor": 7.12
+    },
+    {
      "foto": "mismagius",
      "nome": "Mismagius ex",
      "valor": 5.99
@@ -316,7 +321,7 @@
    "total": 595.02,
    "totalNota": "inclui 2× Charizard e 2× Wooper",
    "saldo": 271.06,
-   "nota": "Também saiu Mega Lopunny ex (R$ 7,12, na conta). Valores: média de venda dos últimos 3 meses na Liga Pokémon, 31/10."
+   "nota": "Valores: média de venda dos últimos 3 meses na Liga Pokémon, 31/10."
   }
  ],
  "G2": [
@@ -331,6 +336,11 @@
      "foto": "darkrai",
      "nome": "Mega Darkrai ex",
      "valor": 814.04
+    },
+    {
+     "foto": "wailord",
+     "nome": "Wailord ex",
+     "valor": 17.89
     },
     {
      "foto": "manectric",
@@ -353,21 +363,14 @@
      "nome": "Rampardos ex",
      "valor": 6.45,
      "qtd": 2
-    },
-    {
-     "foto": "wailord",
-     "nome": "Wailord ex",
-     "valor": null,
-     "semValor": "valor em breve"
     }
    ],
    "preco": 349.9,
    "precoNota": "booster box, menor do site",
-   "total": 869.67,
-   "totalMais": true,
-   "totalNota": "sem a Wailord ex",
-   "saldo": 519.77,
-   "nota": "Valores: média de venda dos últimos 3 meses na Liga Pokémon, 31/10. Wailord ex 097/084 em atualização."
+   "total": 887.56,
+   "totalNota": "inclui as repetidas",
+   "saldo": 537.66,
+   "nota": "Valores: média de venda dos últimos 3 meses na Liga Pokémon, 31/10 e 01/11."
   }
  ]
 }

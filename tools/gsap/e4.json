@@ -7,7 +7,7 @@
  "ganchoAte": 2.4,
  "notaPack": "menor preço do site",
  "tipoCarta": "escuridao",
- "lucro": 525.68,
+ "lucro": 537.66,
  "linhas": [
   {
    "nome": "Booster box",
@@ -17,7 +17,7 @@
   {
    "nome": "Todas as ex e IR (8 cartas)",
    "nota": "média Liga Pokémon",
-   "v": 875.58
+   "v": 887.56
   }
  ],
  "carta": "Rampardos ex ×2",
@@ -80,7 +80,7 @@
    "seg": 20.3,
    "t": 21.2,
    "carta": "Wailord ex",
-   "valor": 5.91,
+   "valor": 17.89,
    "raridade": "Rara Ultra",
    "custo": 0
   },
