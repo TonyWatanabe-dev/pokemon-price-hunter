@@ -1,0 +1,21 @@
+{
+ "_nota": "Hits dos brutos de 31/10, confirmados nos vídeos-vitrine (fogo 20261031_171235, esc 20261031_174158). Preços Deck Certo (ME02 17/10, ME05 12/10).",
+ "fogo": {"produto": "me02-blister1", "qtd": 48, "menor_preco_site": 12.0, "menor_preco_fonte": "pittasboardgamescombr, Pix, 13/10",
+  "hits": [
+   {"carta": "Dawn", "num": "129/094", "raridade": "Ilustração Rara Especial", "valor": 117.44, "vitrine_s": 42},
+   {"carta": "Mega Charizard X ex", "num": "109/094", "raridade": "Rara Ultra", "valor": 82.00, "vitrine_s": 16, "abertura": "20261031_165017 0:16-0:26"},
+   {"carta": "Wooper de Paldea", "num": "102/094", "raridade": "Ilustração Rara", "valor": 11.90, "vitrine_s": 32, "abertura": "20261031_164511 0:24-0:26"},
+   {"carta": "Jaula de Batalha", "num": "116/094", "raridade": "Rara Ultra", "valor": 10.85, "vitrine_s": 26, "abertura": "20261031_164134 0:28-0:30"},
+   {"carta": "Mismagius ex", "num": "036/094", "raridade": "Rara Dupla", "valor": 2.98, "vitrine_s": 10, "abertura": "20261031_165532 0:18-0:26"},
+   {"carta": "Mega Heracross ex", "num": "004/094", "raridade": "Rara Dupla", "valor": 2.79, "vitrine_s": 4}
+  ]},
+ "esc": {"produto": "me05-box36", "qtd": 1, "menor_preco_site": 349.90, "menor_preco_fonte": "Mercado Livre, 09/10 e 28/10 (descartados 55,90 / 147,94 / 316,19 como anomalias)",
+  "hits": [
+   {"carta": "Mega Darkrai ex", "num": "116/084", "raridade": "Ilustração Rara Especial", "valor": 590.00, "abertura": "20261031_172141 1:22-1:28"},
+   {"carta": "Manectric", "num": "089/084", "raridade": "Ilustração Rara", "valor": 8.00, "abertura": "20261031_173139 1:36-1:40"},
+   {"carta": "Mega Chandelure ex", "num": "038/084", "raridade": "Rara Dupla", "valor": 3.67, "abertura": "20261031_172141 0:54-0:56"},
+   {"carta": "Mega Excadrill ex", "num": "065/084", "raridade": "Rara Dupla", "valor": 3.50, "abertura": "20261031_171845 0:16-0:22"},
+   {"carta": "Wailord ex", "num": "016/084", "raridade": "Rara Dupla", "valor": 2.29, "abertura": "20261031_173352 0:58-1:04"},
+   {"carta": "Rampardos ex", "num": "045/084", "raridade": "Rara Dupla", "valor": 1.75, "abertura": "20261031_173139 1:16-1:18"}
+  ]}
+}
