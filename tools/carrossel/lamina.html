@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Lâmina de carrossel</title>
+<!-- Lâmina de feed 4:5 (1080x1350) no padrão PostsAprovados do design system TCG Price Hunter: fundo navy liso, barra no topo,
+     editoria no canto, logo na capa, título Rubik 900 com final amarelo, foto real com moldura e sombra, rodapé com crédito e "Arrasta →". -->
+<style>
+@font-face{font-family:Rubik;font-weight:500;src:url(rubik500.ttf)}
+@font-face{font-family:Rubik;font-weight:700;src:url(rubik700.ttf)}
+@font-face{font-family:Rubik;font-weight:800;src:url(rubik800.ttf)}
+@font-face{font-family:Rubik;font-weight:900;src:url(rubik900.ttf)}
+:root{--ink:#131f49;--muted:#556079;--sticker:#ffcf33;--sticker-ink:#2b2200;--navy:#0e1330;--ok:#0b7148;--ty:#2b2d42;--ed:#ffcf33}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1350px;overflow:hidden;font-family:Rubik,sans-serif;font-variant-numeric:tabular-nums}
+.sp{position:absolute;inset:0;background:var(--navy);color:#fff;overflow:hidden}
+.sp > *{position:absolute}
+.barra{left:0;right:0;top:0;height:12px;background:var(--ed)}
+.glow{left:-200px;right:-200px;bottom:-520px;height:900px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--ty) 85%,#fff 0%),transparent);opacity:.85}
+.disco{right:-260px;top:-260px;width:760px;height:760px;border-radius:50%;background:var(--ty);opacity:.55}
+.estampa{inset:0;width:1080px;height:1350px;opacity:.08}
+.eb{left:72px;top:72px;display:flex;align-items:center;gap:14px;font:700 26px/1 Rubik;letter-spacing:3px;text-transform:uppercase}
+.eb i{width:22px;height:22px;border-radius:5px;background:var(--ed)}
+.logo{right:72px;top:56px;width:190px}
+.cont{right:72px;top:66px;font:800 28px/1 Rubik;color:#c3cceb}
+h1{left:72px;right:72px;top:150px;font:900 96px/.95 Rubik;letter-spacing:-4px;text-shadow:0 6px 0 rgba(0,0,0,.6);text-wrap:balance}
+h1 em,h2 em{font-style:normal;color:var(--sticker)}
+h2{font:900 76px/.98 Rubik;letter-spacing:-3px;text-shadow:0 5px 0 rgba(0,0,0,.55);text-wrap:balance}
+.foto{border:10px solid #fff;border-radius:22px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.55);background:#fff}
+.foto img{display:block;width:100%;height:100%;object-fit:cover}
+.rank{font:900 150px/1 Rubik;color:var(--sticker);letter-spacing:-6px;text-shadow:0 8px 0 rgba(0,0,0,.5)}
+.tipo-chip{display:inline-flex;align-items:center;gap:14px;padding:10px 26px 10px 10px;border-radius:999px;background:#fff;color:var(--ink);font:800 24px/1 Rubik;letter-spacing:2px;text-transform:uppercase;box-shadow:0 8px 0 rgba(9,13,35,.25);white-space:nowrap}
+.tipo{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:32%;background:var(--tyc);color:#fff}
+.tipo.claro{color:#131f49}
+.tipo svg{width:62%;height:62%;fill:currentColor}
+.box{background:#fff;color:var(--ink);border-radius:24px;padding:26px 32px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.box .k{font:700 22px/1.2 Rubik;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.box .v{font:900 72px/1 Rubik;letter-spacing:-2px;margin-top:8px;white-space:nowrap}
+.box .m{font:500 22px/1.3 Rubik;color:var(--muted);margin-top:8px}
+.x2{display:inline-grid;place-items:center;width:150px;height:150px;border-radius:50%;background:#c93d25;color:#fff;font:900 54px/1 Rubik;transform:rotate(-8deg);box-shadow:0 0 0 7px #fff,0 12px 40px rgba(0,0,0,.5)}
+.nome{font:900 64px/1 Rubik;letter-spacing:-2px}
+.rar{font:700 26px/1.25 Rubik;color:#c3cceb;margin-top:12px}
+.p{font:500 40px/1.35 Rubik;color:#dfe4fa}
+.foot{left:72px;right:72px;bottom:52px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.legal{font:500 20px/1.35 Rubik;color:#9aa6d8}
+.swipe{font:800 30px/1 Rubik;color:var(--sticker);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;padding:28px 46px;border-radius:999px;background:var(--ink);color:#fff;font:800 38px/1 Rubik;white-space:nowrap}
+.brilho{width:var(--b);height:var(--b);color:#fff}
+.lin{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:22px 0;border-top:3px solid rgba(255,255,255,.14);font:700 36px/1.15 Rubik}
+.lin b{font:900 44px/1 Rubik;white-space:nowrap}
+.lin small{display:block;font:500 22px/1.25 Rubik;color:#9aa6d8;margin-top:6px}
+/* CTA (CTAGrupo) */
+.sp.amarelo{background:var(--sticker);color:var(--ink)}
+.sp.amarelo h2{text-shadow:none}
+.sp.amarelo h2 em{color:#2c7be5}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-t-fogo" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.8c2 4.2 6.8 6.4 6.8 12.4a6.8 6.8 0 0 1-13.6 0c0-3.6 2.4-5 2.8-8 1.8 1.6 2.4 3.4 2.6 5 1.8-2.6 2.2-6 1.4-9.4Z"/></symbol>
+  <symbol id="i-t-agua" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.6c3.4 5.2 7.4 9 7.4 13.2a7.4 7.4 0 0 1-14.8 0C4.6 10.6 8.6 6.8 12 1.6Zm-3.6 13a3.8 3.8 0 0 0 3.6 3.8v-1.8a2 2 0 0 1-1.8-2Z"/></symbol>
+  <symbol id="i-t-eletrico" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M13.6 1.6 3.8 13.8h7l-1.2 8.6 10.6-13h-7.2Z"/></symbol>
+  <symbol id="i-t-psiquico" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M1.6 12C5.8 4.6 18.2 4.6 22.4 12 18.2 19.4 5.8 19.4 1.6 12Zm10.4 4.2a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0-2.4a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6Z"/></symbol>
+  <symbol id="i-t-lutador" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.5 14.4 7.6 20.9 6.5 16.9 11.7 21.3 16.6 14.8 16.4 12 22.5 9.2 16.4 2.7 16.6 7.1 11.7 3.1 6.5 9.6 7.6Z"/></symbol>
+  <symbol id="i-t-escuridao" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M14.6 2.4a9.8 9.8 0 1 0 7 12.6A7.8 7.8 0 1 1 14.6 2.4Z"/></symbol>
+  <symbol id="i-t-metal" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.8 20.8 6.9v10.2L12 22.2 3.2 17.1V6.9Zm0 6.6a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Z"/></symbol>
+  <symbol id="i-t-incolor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10.8 1.8h2.4v7.3l6.3-3.6 1.2 2.1-6.3 3.6 6.3 3.6-1.2 2.1-6.3-3.6v7.3h-2.4v-7.3l-6.3 3.6-1.2-2.1 6.3-3.6L3.3 7.6l1.2-2.1 6.3 3.6Z"/></symbol>
+  <symbol id="brilho" viewBox="-30 -30 60 60"><path fill="currentColor" d="M0 -30 L7.8 -7.8 L30 0 L7.8 7.8 L0 30 L-7.8 7.8 L-30 0 L-7.8 -7.8 Z"/></symbol>
+</svg>
+<div class="sp" id="sp"></div>
+<script>
+const L = window.LAM || {};
+if (L.tipo === 'capa') L.capa = true;
+const COR = { fogo: '#e0512b', agua: '#2c7be5', eletrico: '#ffcf33', psiquico: '#8e4bd6', lutador: '#c25a1c', escuridao: '#2b2d42', metal: '#6e7a90', incolor: '#c9ced8', treinador: '#556079' };
+const NOME = { fogo: 'Fogo', agua: 'Água', eletrico: 'Elétrico', psiquico: 'Psíquico', lutador: 'Lutador', escuridao: 'Escuridão', metal: 'Metal', incolor: 'Incolor' };
+const sp = document.getElementById('sp');
+document.documentElement.style.setProperty('--ty', COR[L.tipoFundo] || '#2b2d42');
+document.documentElement.style.setProperty('--ed', L.editoria || '#ffcf33');
+const ficha = (t) => t && NOME[t] ? `<span class="tipo-chip"><span class="tipo${['eletrico', 'incolor'].includes(t) ? ' claro' : ''}" style="--tyc:${COR[t]}"><svg viewBox="0 0 24 24"><use href="#i-t-${t}"/></svg></span>Tipo ${NOME[t]}</span>` : `<span class="tipo-chip" style="padding:16px 26px">${L.categoria || 'Treinador'}</span>`;
+const brilhos = (lista) => lista.map(([x, y, s]) => `<svg class="brilho" style="left:${x}px;top:${y}px;--b:${s}px" viewBox="-30 -30 60 60"><use href="#brilho"/></svg>`).join('');
+const estampa = (t) => `<svg class="estampa" viewBox="0 0 1080 1350"><defs><pattern id="pe" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><use href="#i-t-${t}" x="12" y="12" width="46" height="46" fill="#fff"/><use href="#i-t-${t}" x="87" y="87" width="46" height="46" fill="#fff"/></pattern></defs><rect width="1080" height="1350" fill="url(#pe)"/></svg>`;
+const fundo = () => `<div class="disco"></div><div class="glow"></div>${L.tipoFundo && NOME[L.tipoFundo] ? estampa(L.tipoFundo) : ''}<div class="barra"></div>`;
+const topo = () => `<div class="eb"><i></i>${L.eb}</div>` + (L.capa ? '<img class="logo" src="logo.png" alt="">' : `<div class="cont">${L.cont}</div>`);
+const rodape = (ultimo) => `<div class="foot"><span class="legal">© Pokémon/Nintendo/Creatures/GAME FREAK · foto: TCG Price Hunter</span>${ultimo ? '' : '<span class="swipe">Arrasta →</span>'}</div>`;
+const SELO = (id) => `<svg viewBox="0 0 200 200" style="width:100%;height:100%"><defs><path id="${id}" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs><circle cx="100" cy="100" r="97" fill="#ffcf33" stroke="#0b0b0f" stroke-width="6"/><circle cx="100" cy="100" r="58" fill="#fff" stroke="#0b0b0f" stroke-width="4"/><text font-family="Rubik" font-weight="900" font-size="17" letter-spacing="2.2" fill="#0b0b0f"><textPath href="#${id}" textLength="456" lengthAdjust="spacingAndGlyphs">CAÇADO PELO TCG PRICE HUNTER • MENOR PREÇO • </textPath></text><image href="logo-icone.png" x="64" y="64" width="72" height="72"/></svg>`;
+let h = '';
+if (L.tipo === 'capa') {
+  h = fundo() + topo() + `<h1>${L.titulo}</h1>`
+    + `<div class="foto" style="left:250px;top:${L.fotoTop || 470}px;width:580px;height:725px;transform:rotate(-4deg)"><img src="cartas/${L.foto}.jpg" alt=""></div>`
+    + brilhos([[170, 560, 60], [880, 640, 46], [900, 1080, 38]]) + (L.chip ? `<div style="left:72px;top:${(L.fotoTop || 470) - 100}px">${ficha(L.chip)}</div>` : '') + rodape();
+} else if (L.tipo === 'carta') {
+  h = fundo() + topo() + `<div class="foto" style="left:72px;top:170px;width:560px;height:700px;transform:rotate(-3deg)"><img src="cartas/${L.foto}.jpg" alt=""></div>`
+    + `<div class="rank" style="left:680px;top:170px">#${L.rank}</div>` + (L.x2 ? `<div class="x2" style="left:860px;top:330px">2×</div>` : '')
+    + `<div style="left:680px;top:520px;right:60px">${ficha(L.cartaTipo)}</div>`
+    + `<div style="left:72px;right:72px;top:930px"><div class="nome">${L.nome}</div><div class="rar">${L.raridade}</div></div>`
+    + `<div class="box" style="left:72px;right:72px;top:1080px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px"><div><div class="k">Média de venda · Liga Pokémon</div><div class="m">últimos 3 meses · 31/10</div></div><div class="v">${L.valor}</div></div>`
+    + brilhos([[600, 200, 44], [90, 840, 36]]) + rodape();
+} else if (L.tipo === 'texto') {
+  h = fundo() + topo() + `<h2 style="left:72px;right:72px;top:${L.top || 190}px">${L.titulo}</h2>` + (L.corpo ? `<p class="p" style="left:72px;right:72px;top:${L.corpoTop || 470}px">${L.corpo}</p>` : '')
+    + (L.linhas ? `<div style="left:72px;right:72px;top:${L.linhasTop || 640}px">${L.linhas.map((l) => `<div class="lin"><span>${l[0]}<small>${l[1] || ''}</small></span><b style="color:${l[3] || '#2ee36b'}">${l[2]}</b></div>`).join('')}</div>` : '')
+    + (!L.foto && !L.linhas ? `<div style="left:660px;top:950px;width:300px;height:300px;transform:rotate(-10deg)">${SELO('st')}</div>` : '')
+    + (L.foto ? `<div class="foto" style="left:${L.fotoX || 600}px;top:${L.fotoY || 760}px;width:${L.fotoW || 380}px;height:${(L.fotoW || 380) * 1.25}px;transform:rotate(${L.rot || 4}deg)"><img src="cartas/${L.foto}.jpg" alt=""></div>` : '')
+    + brilhos([[900, 230, 46], [120, 1140, 36]]) + rodape();
+} else if (L.tipo === 'cta') {
+  sp.classList.add('amarelo');
+  h = `<svg class="estampa" style="opacity:.07" viewBox="0 0 1080 1350"><defs><pattern id="pc" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><use href="#i-t-eletrico" x="12" y="12" width="46" height="46" fill="#131f49"/><use href="#i-t-eletrico" x="87" y="87" width="46" height="46" fill="#131f49"/></pattern></defs><rect width="1080" height="1350" fill="url(#pc)"/></svg>`
+    + `<svg style="left:0;top:0;width:1080px;height:1350px" viewBox="0 0 1080 1350"><path fill="#131f49" opacity="0.08" d="M990 60 L906 276 L978 266 L901 456 L1091 194 L1009 206 L1079 60 Z"/><circle cx="540" cy="1500" r="560" fill="#fff" opacity=".35"/></svg>`
+    + `<div class="barra" style="background:#2c7be5"></div><div class="eb" style="color:#131f49"><i style="background:#2c7be5"></i>${L.eb}</div><img class="logo" src="logo.png" alt="">`
+    + `<div style="left:410px;top:170px;width:260px;height:260px;transform:rotate(-8deg)"><svg viewBox="0 0 200 200"><defs><path id="cs" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs><circle cx="100" cy="100" r="97" fill="#ffcf33" stroke="#0b0b0f" stroke-width="6"/><circle cx="100" cy="100" r="58" fill="#fff" stroke="#0b0b0f" stroke-width="4"/><text font-family="Rubik" font-weight="900" font-size="17" letter-spacing="2.2" fill="#0b0b0f"><textPath href="#cs" textLength="456" lengthAdjust="spacingAndGlyphs">CAÇADO PELO TCG PRICE HUNTER • MENOR PREÇO • </textPath></text><image href="logo-icone.png" x="64" y="64" width="72" height="72"/></svg></div>`
+    + `<h2 style="left:72px;right:72px;top:480px;text-align:center;font-size:104px">${L.titulo || 'Não rasgue <em>dinheiro.</em>'}</h2>`
+    + `<p class="p" style="left:120px;right:120px;top:720px;text-align:center;color:#131f49">${L.corpo || 'O site varre as lojas a cada 15 min e manda a melhor oferta no grupo.'}</p>`
+    + `<div style="left:0;right:0;top:900px;display:grid;justify-items:center;gap:30px"><span class="btn">Link na bio → grupo</span><span style="font:700 32px/1 Rubik">www.tcgpricehunter.com.br</span></div>`
+    + brilhos([[150, 260, 48], [930, 560, 36]]);
+}
+sp.innerHTML = h;
+</script>
+</body>
+</html>

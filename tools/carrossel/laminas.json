@@ -1,0 +1,273 @@
+{
+ "C1": [
+  {
+   "tipo": "capa",
+   "eb": "Top hits · Escuridão Absoluta",
+   "titulo": "Top hits da <em>Escuridão Absoluta</em>",
+   "foto": "darkrai",
+   "tipoFundo": "escuridao",
+   "editoria": "#8e4bd6",
+   "chip": "escuridao",
+   "fotoTop": 500
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Escuridão Absoluta",
+   "cont": "2/6",
+   "rank": 1,
+   "foto": "darkrai",
+   "nome": "Mega Darkrai ex",
+   "raridade": "Ilustração Rara Especial",
+   "cartaTipo": "escuridao",
+   "valor": "R$ 814,04",
+   "tipoFundo": "escuridao",
+   "editoria": "#8e4bd6"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Escuridão Absoluta",
+   "cont": "3/6",
+   "rank": 2,
+   "foto": "manectric",
+   "nome": "Manectric",
+   "raridade": "Ilustração Rara",
+   "cartaTipo": "eletrico",
+   "valor": "R$ 14,54",
+   "tipoFundo": "eletrico",
+   "editoria": "#8e4bd6"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Escuridão Absoluta",
+   "cont": "4/6",
+   "rank": 3,
+   "foto": "excadrill",
+   "nome": "Mega Excadrill ex",
+   "raridade": "Rara Dupla",
+   "cartaTipo": "metal",
+   "valor": "R$ 10,69",
+   "tipoFundo": "metal",
+   "editoria": "#8e4bd6"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Escuridão Absoluta",
+   "cont": "5/6",
+   "rank": 4,
+   "foto": "chandelure",
+   "nome": "Mega Chandelure ex",
+   "raridade": "Rara Dupla · saiu duas vezes",
+   "cartaTipo": "psiquico",
+   "valor": "R$ 8,75",
+   "x2": true,
+   "tipoFundo": "psiquico",
+   "editoria": "#8e4bd6"
+  },
+  {
+   "tipo": "cta",
+   "eb": "Top hits · Escuridão Absoluta"
+  }
+ ],
+ "C2": [
+  {
+   "tipo": "capa",
+   "eb": "Top hits · Fogo Fantasmagórico",
+   "titulo": "Top hits do <em>Fogo Fantasmagórico</em>",
+   "foto": "charizard",
+   "tipoFundo": "fogo",
+   "editoria": "#e0512b",
+   "chip": "fogo",
+   "fotoTop": 500
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Fogo Fantasmagórico",
+   "cont": "2/6",
+   "rank": 1,
+   "foto": "charizard",
+   "nome": "Mega Charizard X ex",
+   "raridade": "Rara Ultra · saiu duas vezes",
+   "cartaTipo": "fogo",
+   "valor": "R$ 174,22",
+   "x2": true,
+   "tipoFundo": "fogo",
+   "editoria": "#e0512b"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Fogo Fantasmagórico",
+   "cont": "3/6",
+   "rank": 2,
+   "foto": "dawn",
+   "nome": "Dawn",
+   "raridade": "Ilustração Rara Especial",
+   "categoria": "Treinador · Apoiador",
+   "valor": "R$ 170,61",
+   "tipoFundo": "treinador",
+   "editoria": "#e0512b"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Fogo Fantasmagórico",
+   "cont": "4/6",
+   "rank": 3,
+   "foto": "jaula",
+   "nome": "Jaula de Batalha",
+   "raridade": "Rara Ultra",
+   "categoria": "Treinador · Estádio",
+   "valor": "R$ 20,68",
+   "tipoFundo": "treinador",
+   "editoria": "#e0512b"
+  },
+  {
+   "tipo": "carta",
+   "eb": "Top hits · Fogo Fantasmagórico",
+   "cont": "5/6",
+   "rank": 4,
+   "foto": "wooper",
+   "nome": "Wooper de Paldea",
+   "raridade": "Ilustração Rara · saiu duas vezes",
+   "cartaTipo": "escuridao",
+   "valor": "R$ 18,20",
+   "x2": true,
+   "tipoFundo": "escuridao",
+   "editoria": "#e0512b"
+  },
+  {
+   "tipo": "cta",
+   "eb": "Top hits · Fogo Fantasmagórico"
+  }
+ ],
+ "C3": [
+  {
+   "tipo": "capa",
+   "eb": "Box ou blister?",
+   "titulo": "Box ou blister? <em>Abri os dois.</em>",
+   "foto": "charizard",
+   "tipoFundo": "psiquico",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "texto",
+   "eb": "Box ou blister?",
+   "cont": "2/5",
+   "titulo": "Booster box de <em>Escuridão Absoluta</em>",
+   "linhasTop": 440,
+   "linhas": [
+    [
+     "36 packs",
+     "1 caixa fechada",
+     "1 box"
+    ],
+    [
+     "Melhor carta",
+     "Mega Darkrai ex · média Liga",
+     "R$ 814,04"
+    ],
+    [
+     "Retorno sobre o que paguei",
+     "cartas pela média da Liga, 31/10",
+     "+150%"
+    ]
+   ],
+   "foto": "darkrai",
+   "fotoX": 620,
+   "fotoY": 800,
+   "fotoW": 340,
+   "tipoFundo": "escuridao",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "texto",
+   "eb": "Box ou blister?",
+   "cont": "3/5",
+   "titulo": "48 blisters de <em>Fogo Fantasmagórico</em>",
+   "linhasTop": 440,
+   "linhas": [
+    [
+     "48 blisters",
+     "1 pack em cada",
+     "48 packs"
+    ],
+    [
+     "Melhor carta",
+     "Mega Charizard X ex ×2 · média Liga",
+     "R$ 174,22"
+    ],
+    [
+     "Retorno sobre o que paguei",
+     "cartas pela média da Liga, 31/10",
+     "+84%"
+    ]
+   ],
+   "foto": "charizard",
+   "fotoX": 620,
+   "fotoY": 800,
+   "fotoW": 340,
+   "tipoFundo": "fogo",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "texto",
+   "eb": "Box ou blister?",
+   "cont": "4/5",
+   "titulo": "Quem <em>ganhou?</em>",
+   "corpoTop": 360,
+   "corpo": "A box rendeu mais porque um Mega Darkrai ex pagou tudo. Sem ele, ela fecharia no prejuízo.<br><br>Nos blisters o lucro veio espalhado: Charizard X duas vezes, Dawn, Wooper duas vezes e mais hits menores.<br><br>Box é aposta numa carta grande. Blister é mais chance de hit.",
+   "tipoFundo": "psiquico",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "cta",
+   "eb": "Box ou blister?",
+   "corpo": "Seja box ou blister, o site acha o menor preço e manda no grupo."
+  }
+ ],
+ "C4": [
+  {
+   "tipo": "capa",
+   "eb": "Black Friday · 27/11",
+   "titulo": "Antes da Black Friday: <em>compare o preço</em>",
+   "foto": "darkrai",
+   "fotoTop": 520,
+   "tipoFundo": "escuridao",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "texto",
+   "eb": "Black Friday · 27/11",
+   "cont": "2/5",
+   "titulo": "1. Veja o <em>menor preço</em> já registrado",
+   "corpoTop": 420,
+   "corpo": "O site guarda o histórico de cada produto. Desconto de verdade é abaixo do menor preço que ele já teve, não do preço “de”.",
+   "tipoFundo": "escuridao",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "texto",
+   "eb": "Black Friday · 27/11",
+   "cont": "3/5",
+   "titulo": "2. Compare com o <em>preço sugerido</em> Copag",
+   "corpoTop": 420,
+   "corpo": "Todo produto lacrado tem um preço sugerido oficial. O site mostra quanto a oferta está abaixo (ou acima) dele.",
+   "tipoFundo": "escuridao",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "texto",
+   "eb": "Black Friday · 27/11",
+   "cont": "4/5",
+   "titulo": "3. Some o <em>frete</em> e confira o Pix",
+   "corpoTop": 420,
+   "corpo": "Oferta barata com frete caro não é oferta. E preço no Pix aparece sempre marcado como Pix, para você comparar igual com igual.",
+   "tipoFundo": "escuridao",
+   "editoria": "#ffcf33"
+  },
+  {
+   "tipo": "cta",
+   "eb": "Black Friday · 27/11",
+   "titulo": "O grupo avisa <em>quando cai.</em>",
+   "corpo": "Entra no grupo antes da Black Friday e recebe a melhor oferta assim que ela aparece."
+  }
+ ]
+}
