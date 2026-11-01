@@ -108,9 +108,10 @@
    },
    {
     "carta": "Wailord ex",
-    "num": "016/084",
-    "raridade": "Rara Dupla",
+    "num": "097/084",
+    "raridade": "Rara Ultra",
     "valor": 5.91,
+    "valor_pendente": "print Liga do 097/084 (5.91 era do 016/084)",
     "abertura": "20261031_173352 0:58-1:04"
    },
    {
