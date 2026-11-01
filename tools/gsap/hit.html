@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Hit GSAP</title>
+<!-- Camada de vídeo 9:16 no design system TCG Price Hunter (seção Social): lupa caçadora, ficha de tipo,
+     selo "Caçado pelo", sticker, ticket serrilhado, brilhos e lâmina final CTAGrupo. Zona segura 250–1620 px. -->
+<style>
+@font-face{font-family:Rubik;font-weight:500;src:url(rubik500.ttf)}
+@font-face{font-family:Rubik;font-weight:700;src:url(rubik700.ttf)}
+@font-face{font-family:Rubik;font-weight:800;src:url(rubik800.ttf)}
+@font-face{font-family:Rubik;font-weight:900;src:url(rubik900.ttf)}
+:root{
+  --font-sans:Rubik,sans-serif;
+  --ink:#131f49;--muted:#556079;--cover:#1b2c74;--cover-2:#24398f;--cover-muted:#c3cceb;
+  --sticker:#ffcf33;--sticker-ink:#2b2200;--hot:#c93d25;--ok:#0b7148;
+  --e-fire:#e0512b;--e-water:#2c7be5;--e-grass:#2f9a55;--e-psychic:#8e4bd6;--e-metal:#6e7a90;
+  --t-lutador:#c25a1c;--t-escuridao:#2b2d42;--t-dragao:#a8801a;--t-fada:#e05aa0;--t-incolor:#c9ced8;--t-ink:#131f49;
+  --sp-navy:#0e1330;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;background:transparent;overflow:hidden;font-family:var(--font-sans);font-variant-numeric:tabular-nums}
+#palco{position:absolute;inset:0;overflow:hidden}
+#palco > *{position:absolute}
+
+/* Tipagem */
+[data-tipo="planta"]{--ty:var(--e-grass);--tyi:#fff}[data-tipo="fogo"]{--ty:var(--e-fire);--tyi:#fff}[data-tipo="agua"]{--ty:var(--e-water);--tyi:#fff}
+[data-tipo="eletrico"]{--ty:var(--sticker);--tyi:var(--t-ink)}[data-tipo="psiquico"]{--ty:var(--e-psychic);--tyi:#fff}[data-tipo="lutador"]{--ty:var(--t-lutador);--tyi:#fff}
+[data-tipo="escuridao"]{--ty:var(--t-escuridao);--tyi:#fff}[data-tipo="metal"]{--ty:var(--e-metal);--tyi:#fff}[data-tipo="dragao"]{--ty:var(--t-dragao);--tyi:#fff}
+[data-tipo="fada"]{--ty:var(--t-fada);--tyi:#fff}[data-tipo="incolor"]{--ty:var(--t-incolor);--tyi:var(--t-ink)}
+.tipo{display:inline-grid;place-items:center;width:var(--ts,64px);height:var(--ts,64px);border-radius:32%;background:var(--ty);color:var(--tyi);box-shadow:0 0 0 calc(var(--ts,64px)*.07) #fff,0 calc(var(--ts,64px)*.1) 0 calc(var(--ts,64px)*.07) rgba(9,13,35,.35);flex:none}
+.tipo svg{width:62%;height:62%;fill:currentColor}
+.tipo-chip{display:inline-flex;align-items:center;gap:14px;padding:10px 26px 10px 10px;border-radius:999px;background:#fff;color:var(--ink);font:800 26px/1 var(--font-sans);letter-spacing:2px;text-transform:uppercase;box-shadow:0 8px 0 rgba(9,13,35,.25);white-space:nowrap}
+.tipo-chip.sem{padding:18px 28px;background:var(--ink);color:#fff}
+.tipo-chip .tipo{--ts:52px;box-shadow:none}
+
+/* abertura */
+#barra{left:0;right:0;top:0;height:18px;background:var(--lote)}
+#pill{left:72px;top:262px;display:inline-flex;align-items:center;padding:14px 32px;border-radius:999px;background:var(--sticker);color:var(--sticker-ink);font:700 30px/1 var(--font-sans);letter-spacing:3px;text-transform:uppercase;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#titulo{left:72px;right:72px;top:1150px;font:900 104px/.95 var(--font-sans);letter-spacing:-4px;color:#fff;text-shadow:0 6px 0 rgba(0,0,0,.6),0 0 40px rgba(0,0,0,.45);text-wrap:balance}
+#titulo em{font-style:normal;color:var(--sticker)}
+#chipSet{left:72px;top:1480px}
+
+/* lupa caçadora = placar */
+.lupa{width:var(--ls);height:var(--ls);border-radius:50%;overflow:visible}
+.lupa .lente{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:calc(var(--ls)*.07) solid #0b0b0f;box-shadow:0 0 0 calc(var(--ls)*.025) #fff,0 24px 50px rgba(0,0,0,.45);background:var(--hot);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center}
+.lupa .lente::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(60% 50% at 30% 22%,rgba(255,255,255,.45),transparent 60%)}
+.lupa .cabo{position:absolute;width:calc(var(--ls)*.16);height:calc(var(--ls)*.48);right:calc(var(--ls)*-.08);bottom:calc(var(--ls)*-.36);background:#0b0b0f;border-radius:calc(var(--ls)*.06);transform:rotate(-45deg);transform-origin:top center;box-shadow:0 0 0 calc(var(--ls)*.025) #fff}
+#lupa{--ls:350px;right:110px;top:250px}
+#lupa .v{position:relative;z-index:1;font:900 56px/1 var(--font-sans);letter-spacing:-2px;white-space:nowrap}
+#lupa .k{position:relative;z-index:1;font:700 24px/1.1 var(--font-sans);margin-top:8px}
+#lupa .verde{position:absolute;inset:0;border-radius:50%;background:var(--ok);opacity:0}
+
+/* hit */
+#flash{inset:0;background:#fff;opacity:0}
+#sticker{left:72px;top:620px;width:210px;height:210px;border-radius:50%;background:var(--hot);color:#fff;display:flex;align-items:center;justify-content:center;font:900 64px/1 var(--font-sans);letter-spacing:-1px;box-shadow:0 0 0 8px #fff,0 12px 40px rgba(0,0,0,.5);transform:scale(0)}
+#selo{width:240px;height:240px;right:72px;top:1010px;opacity:0}
+#selo svg,.selo svg{width:100%;height:100%;overflow:visible}
+#serra{left:72px;top:1262px;width:936px;height:24px;opacity:0}
+#ticket{left:72px;right:72px;top:1285px;background:#fff;color:var(--ink);border-radius:0 0 24px 24px;padding:28px 40px 30px;box-shadow:0 12px 40px rgba(0,0,0,.5);opacity:0}
+#ticket .lin1{display:flex;align-items:center;gap:18px}
+#ticket .rar{font:800 24px/1 var(--font-sans);letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+#ticket .lin2{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-top:18px}
+#ticket .nome{font:900 62px/1 var(--font-sans);letter-spacing:-2px;white-space:nowrap}
+#ticket .valor{font:900 62px/1 var(--font-sans);letter-spacing:-2px;color:var(--ok);white-space:nowrap}
+#ticket .fonte{font:500 22px/1.3 var(--font-sans);color:var(--muted);margin-top:14px}
+.brilho{width:var(--b);height:var(--b);opacity:0;color:#fff}
+.brilho svg{width:100%;height:100%;display:block}
+
+/* lâmina final: CTAGrupo em 9:16 */
+#fim{inset:0;background:var(--sticker);color:var(--ink);transform:translateY(100%);overflow:hidden}
+#fim > *{position:absolute}
+#fim .barra{left:0;right:0;top:0;height:18px;background:var(--lote)}
+#fim .eb{left:72px;top:270px;display:flex;align-items:center;gap:14px;font:700 26px/1 var(--font-sans);letter-spacing:3px;text-transform:uppercase}
+#fim .eb i{width:22px;height:22px;border-radius:5px;background:var(--lote)}
+#fim .logo{right:72px;top:236px;width:220px}
+#fim .tag{left:72px;top:400px;font:800 34px/1 var(--font-sans)}
+#fim h1{left:72px;right:72px;top:452px;font:900 132px/.95 var(--font-sans);letter-spacing:-5px}
+#fim .lucro{left:72px;top:582px;font:900 132px/1 var(--font-sans);letter-spacing:-5px;color:var(--ok)}
+#fim .box{left:72px;right:72px;top:770px;background:#fff;border-radius:24px;padding:8px 36px;box-shadow:0 12px 40px rgba(19,31,73,.14)}
+#fim .lin{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:22px 0;font:700 38px/1.1 var(--font-sans)}
+#fim .lin + .lin{border-top:3px solid #e3e7ef}
+#fim .lin small{display:block;font:500 24px/1.2 var(--font-sans);color:var(--muted);margin-top:6px}
+#fim .lin b{font-weight:900;white-space:nowrap}
+#fim .lin b.neg{color:#ae2318}#fim .lin b.pos{color:var(--ok)}
+#fim h2{left:72px;top:1110px;font:900 112px/.95 var(--font-sans);letter-spacing:-4px}
+#fim h2 em{font-style:normal;color:var(--e-water)}
+#fim p{left:72px;right:72px;top:1350px;font:500 34px/1.3 var(--font-sans)}
+#fim .acoes{left:72px;right:72px;top:1470px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#fim .btn{display:inline-flex;align-items:center;padding:30px 44px;border-radius:999px;background:var(--ink);color:#fff;font:800 36px/1 var(--font-sans);white-space:nowrap}
+#fim .site{font:700 30px/1.25 var(--font-sans);text-align:right}
+#fim .selo{left:770px;top:1060px;width:240px;height:240px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-t-planta" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 20C4 10 10 4 20 4c0 10-6 16-16 16Zm2.2-1.8 8.6-8.6-1.4-1.4-8.6 8.6Z"/></symbol>
+  <symbol id="i-t-fogo" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.8c2 4.2 6.8 6.4 6.8 12.4a6.8 6.8 0 0 1-13.6 0c0-3.6 2.4-5 2.8-8 1.8 1.6 2.4 3.4 2.6 5 1.8-2.6 2.2-6 1.4-9.4Z"/></symbol>
+  <symbol id="i-t-agua" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.6c3.4 5.2 7.4 9 7.4 13.2a7.4 7.4 0 0 1-14.8 0C4.6 10.6 8.6 6.8 12 1.6Zm-3.6 13a3.8 3.8 0 0 0 3.6 3.8v-1.8a2 2 0 0 1-1.8-2Z"/></symbol>
+  <symbol id="i-t-eletrico" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M13.6 1.6 3.8 13.8h7l-1.2 8.6 10.6-13h-7.2Z"/></symbol>
+  <symbol id="i-t-psiquico" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M1.6 12C5.8 4.6 18.2 4.6 22.4 12 18.2 19.4 5.8 19.4 1.6 12Zm10.4 4.2a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0-2.4a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6Z"/></symbol>
+  <symbol id="i-t-lutador" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.5 14.4 7.6 20.9 6.5 16.9 11.7 21.3 16.6 14.8 16.4 12 22.5 9.2 16.4 2.7 16.6 7.1 11.7 3.1 6.5 9.6 7.6Z"/></symbol>
+  <symbol id="i-t-escuridao" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M14.6 2.4a9.8 9.8 0 1 0 7 12.6A7.8 7.8 0 1 1 14.6 2.4Z"/></symbol>
+  <symbol id="i-t-metal" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.8 20.8 6.9v10.2L12 22.2 3.2 17.1V6.9Zm0 6.6a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Z"/></symbol>
+  <symbol id="i-t-dragao" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 3h3.2l-1 18H3Zm6.4-1h3.4l-1.6 20H9.2Zm6.6 1h3.4L18 21h-3Z"/></symbol>
+  <symbol id="i-t-fada" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 1.5c.9 5.3 2.9 7.6 8.5 8.5-5.6.9-7.6 3.2-8.5 8.5-.9-5.3-2.9-7.6-8.5-8.5 5.6-.9 7.6-3.2 8.5-8.5Zm6.5 14.5c.4 2.2 1.2 3.1 3.5 3.5-2.3.4-3.1 1.3-3.5 3.5-.4-2.2-1.2-3.1-3.5-3.5 2.3-.4 3.1-1.3 3.5-3.5Z"/></symbol>
+  <symbol id="i-t-incolor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10.8 1.8h2.4v7.3l6.3-3.6 1.2 2.1-6.3 3.6 6.3 3.6-1.2 2.1-6.3-3.6v7.3h-2.4v-7.3l-6.3 3.6-1.2-2.1 6.3-3.6L3.3 7.6l1.2-2.1 6.3 3.6Z"/></symbol>
+  <symbol id="brilho" viewBox="-30 -30 60 60"><path fill="currentColor" d="M0 -30 L7.8 -7.8 L30 0 L7.8 7.8 L0 30 L-7.8 7.8 L-30 0 L-7.8 -7.8 Z"/></symbol>
+</svg>
+<div id="palco">
+  <div id="flash"></div>
+  <div id="barra"></div>
+  <div id="pill"></div>
+  <div id="titulo"></div>
+  <div id="chipSet"></div>
+  <div class="lupa" id="lupa"><div class="cabo"></div><div class="lente"><div class="verde"></div><span class="v" id="placarVal"></span><span class="k" id="placarK"></span></div></div>
+  <div id="sticker">HIT!</div>
+  <div id="selo"></div>
+  <svg id="serra" viewBox="0 0 936 24" preserveAspectRatio="none" aria-hidden="true"><path fill="#fff" d="M0 24 L0 14 L26 0 L52 14 L78 0 L104 14 L130 0 L156 14 L182 0 L208 14 L234 0 L260 14 L286 0 L312 14 L338 0 L364 14 L390 0 L416 14 L442 0 L468 14 L494 0 L520 14 L546 0 L572 14 L598 0 L624 14 L650 0 L676 14 L702 0 L728 14 L754 0 L780 14 L806 0 L832 14 L858 0 L884 14 L910 0 L936 14 L936 24 Z"/></svg>
+  <div id="ticket"><div class="lin1" id="tChip"></div><div class="lin2"><span class="nome" id="tNome"></span><span class="valor" id="tValor"></span></div><div class="fonte" id="tFonte"></div></div>
+  <div id="fim">
+    <svg viewBox="0 0 1080 1920" style="left:0;top:0;width:1080px;height:1920px" aria-hidden="true">
+      <defs><pattern id="pfim" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><use href="#i-t-eletrico" x="12" y="12" width="46" height="46" fill="#131f49"/><use href="#i-t-eletrico" x="87" y="87" width="46" height="46" fill="#131f49"/></pattern></defs>
+      <rect width="1080" height="1920" fill="url(#pfim)" opacity="0.07"/>
+      <path fill="#131f49" opacity="0.08" d="M990 360 L860 680 L970 665 L850 950 L1140 560 L1015 578 L1120 360 Z"/>
+      <circle cx="540" cy="2150" r="700" fill="#fff" opacity=".35"/>
+      <use href="#brilho" x="96" y="690" width="48" height="48" color="#fff"/><use href="#brilho" x="950" y="700" width="34" height="34" color="#fff"/><use href="#brilho" x="640" y="1290" width="40" height="40" color="#fff"/>
+    </svg>
+    <div class="barra"></div>
+    <div class="eb"><i></i><span>Resultado</span></div>
+    <img class="logo" src="logo.png" alt="">
+    <div class="tag" id="fimTag"></div>
+    <h1>Deu lucro!</h1>
+    <div class="lucro" id="fimLucro"></div>
+    <div class="box" id="fimBox"></div>
+    <h2>Não rasgue<br><em>dinheiro.</em></h2>
+    <div class="selo" id="fimSelo"></div>
+    <p>O site varre as lojas a cada 15 min e manda a melhor oferta no grupo.</p>
+    <div class="acoes"><span class="btn">Link na bio → grupo</span><span class="site">www.tcgpricehunter<br>.com.br</span></div>
+  </div>
+</div>
+<script src="gsap.min.js"></script>
+<script>
+const C = window.CFG || {};
+const fmt = (v) => Math.abs(v).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const brl = (v) => (v < 0 ? '−' : '+') + 'R$ ' + fmt(v);
+const reais = (v) => 'R$ ' + fmt(v);
+const $ = (id) => document.getElementById(id);
+const ficha = (t, ts) => `<span class="tipo" data-tipo="${t}" style="--ts:${ts}px"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-t-${t}"/></svg></span>`;
+const NOMES = { planta: 'Planta', fogo: 'Fogo', agua: 'Água', eletrico: 'Elétrico', psiquico: 'Psíquico', lutador: 'Lutador', escuridao: 'Escuridão', metal: 'Metal', dragao: 'Dragão', fada: 'Fada', incolor: 'Incolor' };
+const selo = (id) => `<svg viewBox="0 0 200 200" aria-hidden="true"><defs><path id="${id}" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs><circle cx="100" cy="100" r="97" fill="#ffcf33" stroke="#0b0b0f" stroke-width="6"/><circle cx="100" cy="100" r="58" fill="#fff" stroke="#0b0b0f" stroke-width="4"/><text font-family="Rubik, sans-serif" font-weight="900" font-size="17" letter-spacing="2.2" fill="#0b0b0f"><textPath href="#${id}" textLength="456" lengthAdjust="spacingAndGlyphs">CAÇADO PELO TCG PRICE HUNTER • MENOR PREÇO • </textPath></text><image href="logo-icone.png" x="64" y="64" width="72" height="72"/></svg>`;
+
+// a cor do lote vem do tipo da coleção (Fogo Fantasmagórico = Fogo; Escuridão Absoluta = Escuridão)
+document.documentElement.style.setProperty('--lote', `var(--${{ fogo: 'e-fire', escuridao: 't-escuridao', psiquico: 'e-psychic' }[C.tipoLote] || 'sticker'})`);
+$('pill').textContent = C.colecao;
+$('titulo').innerHTML = C.titulo;
+$('chipSet').innerHTML = `<span class="tipo-chip">${ficha(C.tipoLote, 52)}${C.produto}</span>`;
+$('placarVal').textContent = brl(-C.pack); $('placarK').textContent = C.porQue;
+$('selo').innerHTML = selo('s1'); $('fimSelo').innerHTML = selo('s2');
+$('tChip').innerHTML = (C.tipoCarta ? `<span class="tipo-chip">${ficha(C.tipoCarta, 52)}Tipo ${NOMES[C.tipoCarta]}</span>` : `<span class="tipo-chip sem">${C.categoria}</span>`) + `<span class="rar">${C.raridade}</span>`;
+$('tNome').textContent = C.carta; $('tValor').textContent = reais(C.valor);
+$('tFonte').textContent = 'Média de venda dos últimos 3 meses · Liga Pokémon · 31/10';
+$('fimTag').textContent = C.colecao;
+$('fimLucro').textContent = brl(C.valor - C.pack);
+$('fimBox').innerHTML = `<div class="lin"><span>${C.linhaPack}<small>${C.notaPack}</small></span><b class="neg">${brl(-C.pack)}</b></div>`
+  + `<div class="lin"><span>${C.carta}<small>média Liga Pokémon</small></span><b class="pos">${brl(C.valor)}</b></div>`;
+
+// brilhos ✦ em volta da carta no hit
+const B = [[170, 540, 72], [910, 700, 54], [860, 960, 44], [230, 1100, 60], [560, 610, 40]];
+const brilhos = B.map(([x, y, s]) => { const d = document.createElement('div'); d.className = 'brilho'; d.style.cssText = `left:${x - s / 2}px;top:${y - s / 2}px;--b:${s}px`; d.innerHTML = '<svg viewBox="-30 -30 60 60"><use href="#brilho"/></svg>'; $('palco').insertBefore(d, $('fim')); return d; });
+
+const H = C.hitT, D = C.dur, F = D - C.fimDur;
+const tl = gsap.timeline({ paused: true });
+// abertura: coleção, lupa com o custo do pack, gancho e produto
+tl.from('#barra', { scaleX: 0, transformOrigin: 'left center', duration: .5, ease: 'power3.out' }, 0)
+  .from('#pill', { y: -40, opacity: 0, duration: .45, ease: 'back.out(2)' }, .15)
+  .from('#lupa', { scale: 0, rotation: -30, duration: .6, ease: 'back.out(1.8)' }, .3)
+  .from('#titulo', { y: 80, opacity: 0, duration: .55, ease: 'power3.out' }, .45)
+  .from('#chipSet', { x: -80, opacity: 0, duration: .45, ease: 'back.out(1.6)' }, .75)
+  .to('#titulo, #chipSet', { y: 60, opacity: 0, duration: .4, ease: 'power2.in' }, C.ganchoAte)
+  .to('#lupa', { scale: 1.05, duration: .5, yoyo: true, repeat: 3, ease: 'sine.inOut' }, H - 4);
+// hit: o placar vira, sticker, ticket da carta, selo e brilhos
+const cont = { v: -C.pack };
+const cabe = () => { const el = $('placarVal'); const n = el.textContent.length; el.style.fontSize = (n <= 8 ? 60 : n <= 9 ? 56 : n <= 10 ? 50 : 44) + 'px'; };
+cabe();
+tl.to('#flash', { opacity: .7, duration: .08 }, H).to('#flash', { opacity: 0, duration: .35 }, H + .08)
+  .to(cont, { v: C.valor - C.pack, duration: .9, ease: 'power2.out', onUpdate: () => { $('placarVal').textContent = brl(cont.v); cabe(); } }, H)
+  .to('#lupa .verde', { opacity: 1, duration: .25 }, H + .15)
+  .call(() => { $('placarK').textContent = 'de lucro'; }, null, H + .15)
+  .call(() => { $('placarK').textContent = C.porQue; }, null, H + .14)
+  .fromTo('#lupa', { scale: 1 }, { scale: 1.16, duration: .2, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, H)
+  .fromTo('#sticker', { scale: 0, rotation: -40 }, { scale: 1, rotation: -8, duration: .5, ease: 'back.out(2.4)', immediateRender: false }, H + .1)
+  .to('#sticker', { rotation: 4, duration: .8, yoyo: true, repeat: 3, ease: 'sine.inOut' }, H + .6)
+  .fromTo('#serra, #ticket', { y: 420, opacity: 0 }, { y: 0, opacity: 1, duration: .55, ease: 'back.out(1.3)', immediateRender: false }, H + .35)
+  .fromTo('#selo', { scale: 2.2, rotation: 30, opacity: 0 }, { scale: 1, rotation: -10, opacity: 1, duration: .35, ease: 'power4.in', immediateRender: false }, H + .8)
+  .to('#selo', { rotation: -4, duration: 1.2, yoyo: true, repeat: 2, ease: 'sine.inOut' }, H + 1.2);
+brilhos.forEach((b, i) => {
+  tl.fromTo(b, { scale: 0, rotation: -45, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .35, ease: 'back.out(3)', immediateRender: false }, H + .1 + i * .07)
+    .to(b, { scale: .5, opacity: 0, duration: .6 }, H + 1.3 + i * .08);
+});
+// fechamento (CTAGrupo)
+tl.to('#sticker, #selo, #ticket, #serra, #lupa, #pill, #barra', { opacity: 0, duration: .3 }, F - .2)
+  .to('#fim', { y: 0, duration: .6, ease: 'power3.out' }, F)
+  .from('#fim .eb, #fim .logo, #fim .tag, #fim h1, #fim .lucro', { y: 40, opacity: 0, stagger: .08, duration: .4 }, F + .3)
+  .from('#fim .lin', { x: -60, opacity: 0, stagger: .12, duration: .4 }, F + .7)
+  .from('#fim h2, #fim p, #fim .acoes', { y: 40, opacity: 0, stagger: .1, duration: .4 }, F + 1.05)
+  .fromTo('#fim .selo', { scale: 2, rotation: 30, opacity: 0 }, { scale: 1, rotation: -10, opacity: 1, duration: .35, ease: 'power4.in', immediateRender: false }, F + 1.4)
+  .to('#fim .btn', { scale: 1.05, duration: .45, yoyo: true, repeat: 3, ease: 'sine.inOut' }, F + 1.8)
+  .set({}, {}, D);
+window.tl = tl;
+</script>
+</body>
+</html>
