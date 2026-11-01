@@ -2,7 +2,7 @@
 // Lista curada à parte: nunca lida pelo robô, ranking, Score ou kit; preço com data da leitura; ordem só por preço.
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { parse, validar, CATEGORIAS } from '../tools/acessorios-importar.mjs';
+import { parse, validar, CATEGORIAS, FOTO_OK } from '../tools/acessorios-importar.mjs';
 import { classificarAcessorio } from '../api/_lib/acessorios.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -50,8 +50,8 @@ t('classificador: a marca Dragon Shield não transforma deck box ou fichário em
 });
 
 t('site: página fora do índice, link de afiliado marcado, ordem só por preço, data da leitura', () => {
-  const h = ler('acessorios.html'); const js = ler('assets/web/acessorios-v1.js');
-  assert.match(h, /<meta name="robots" content="noindex/); assert.match(h, /acessorios-v1\.js/);
+  const h = ler('acessorios.html'); const js = ler('assets/web/acessorios-v2.js');
+  assert.match(h, /<meta name="robots" content="noindex/); assert.match(h, /acessorios-v2\.js/);
   assert.match(h, /nunca muda a ordem/);
   assert.match(js, /fetch\('\/data\/afiliados-acessorios\.json'\)/);
   assert.match(js, /rel="sponsored nofollow noopener"/);
@@ -66,6 +66,17 @@ t('site: página fora do índice, link de afiliado marcado, ordem só por preço
 t('robô, ranking, Score e API não leem a lista de acessórios (o kit completa no navegador)', () => {
   const lista = (d) => fs.readdirSync(path.join(root, d), { recursive: true }).filter((f) => /\.(m?js)$/.test(f)).map((f) => path.join(d, f));
   for (const f of [...lista('src'), ...lista('api')]) assert.doesNotMatch(ler(f), /acessorios\.json|afiliados-acessorios/, f);
+});
+
+t('fotos: todo item tem a foto do anúncio, só das CDNs das lojas', () => {
+  const j = JSON.parse(ler('config/afiliados/acessorios.json'));
+  assert.ok(j.itens.every((i) => FOTO_OK.test(i.image || '')), 'item sem foto ou fora das CDNs');
+  const linha = 'x ; shopee.com.br/product/1/2 ; https://s.shopee.com.br/abc ; Dragon Shield Matte 100 Sleeves ; R$ 92,11 ; - ; Loja ; Dragon Shield ; sleeve ; 100 un ; 1 ; 31/10/2026 12:57\n';
+  assert.equal(parse('shopee', linha, { 'shopee:1/2': 'https://down-br.img.susercontent.com/file/abc' }).itens[0].image, 'https://down-br.img.susercontent.com/file/abc');
+  assert.equal(parse('shopee', linha, { 'shopee:1/2': 'https://evil.test/x.jpg' }).itens[0].image, undefined, 'host fora da lista não entra');
+  assert.ok(validar({ itens: [{ ...parse('shopee', linha).itens[0], image: 'http://x.test/a.jpg' }] }).some((e) => /foto/.test(e)));
+  assert.match(ler('assets/web/acessorios-v2.js'), /class="ft" src="' \+ esc\(i\.image\)/);
+  assert.match(ler('assets/web/kit-v7.js'), /thumb\(a\.image, a\.title\)/);
 });
 
 console.log(`✓ acessorios: ${n} grupos passaram`);
