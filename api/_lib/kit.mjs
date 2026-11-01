@@ -3,12 +3,28 @@
 // Cada papel lista os tipos do catálogo (TYPE_LABEL de src/match.js) em ordem de preferência. Acessórios não têm produto no
 // catálogo (o casamento os recusa): o modelo declara quais completam o kit, e a página (kit-v4.js) escolhe o mais barato de
 // cada um na lista curada de acessórios (#991, lida no navegador), com a data da leitura e frete a calcular.
+// extras: com orçamento sobrando, o kit cresce (um produto diferente por papel, em rodadas) até usar o orçamento; no fim,
+// pacotes (blister/booster) ganham unidades. Pedido do dono (31/10): com R$ 2.000 o kit usava só R$ 111.
+const ABRIR = ['blister_3', 'blister_4', 'blister_2', 'blister_1', 'booster_pack'];
+const COLECAO = ['etb', 'colecao_fichario', 'colecao', 'colecao_poster', 'lata'];
+const ESPECIAL = ['colecao_ex', 'colecao_ilustracao', 'colecao_premium', 'colecao_especial'];
 export const MODELOS = Object.freeze({
-  primeira_colecao: { nome: 'Minha primeira coleção', papeis: [{ papel: 'abrir', tipos: ['blister_3', 'blister_4', 'blister_2', 'blister_1', 'booster_pack'], porque: 'para abrir pacotes e começar a coleção', repetir: 3 }], acessorios: ['sleeve', 'fichario'] },
-  colecionador: { nome: 'Colecionador organizado', papeis: [{ papel: 'colecao', tipos: ['etb', 'colecao_fichario', 'colecao', 'colecao_poster', 'lata'], porque: 'produto de coleção com boosters e itens para organizar' }], acessorios: ['fichario', 'sleeve'] },
-  jogar: { nome: 'Quero aprender a jogar', papeis: [{ papel: 'deck', tipos: ['deck', 'kit_treinador', 'desafio'], porque: 'baralho pronto para começar a jogar' }], acessorios: ['sleeve', 'deck_box', 'playmat'] },
-  especiais: { nome: 'Quero cartas especiais', papeis: [{ papel: 'especial', tipos: ['colecao_ex', 'colecao_ilustracao', 'colecao_premium', 'colecao_especial'], porque: 'coleção com carta promocional no nome do produto' }], acessorios: ['sleeve', 'toploader'] },
+  primeira_colecao: { nome: 'Minha primeira coleção', papeis: [{ papel: 'abrir', tipos: ABRIR, porque: 'para abrir pacotes e começar a coleção', repetir: 3 }],
+    extras: [{ papel: 'colecao', tipos: COLECAO, porque: 'para a coleção crescer com boosters e itens' }, { papel: 'caixa', tipos: ['booster_box', 'combo'], porque: 'muitos pacotes de uma vez, pelo menor preço por booster' }, { papel: 'especial', tipos: ESPECIAL, porque: 'coleção com carta promocional' }, { papel: 'abrir', tipos: ABRIR, porque: 'mais pacotes para abrir' }],
+    acessorios: ['sleeve', 'fichario'] },
+  colecionador: { nome: 'Colecionador organizado', papeis: [{ papel: 'colecao', tipos: COLECAO, porque: 'produto de coleção com boosters e itens para organizar' }],
+    extras: [{ papel: 'colecao', tipos: COLECAO, porque: 'mais uma coleção para organizar' }, { papel: 'especial', tipos: ESPECIAL, porque: 'coleção com carta promocional' }, { papel: 'abrir', tipos: ABRIR, porque: 'pacotes para abrir' }],
+    acessorios: ['fichario', 'sleeve'] },
+  jogar: { nome: 'Quero aprender a jogar', papeis: [{ papel: 'deck', tipos: ['deck', 'kit_treinador', 'desafio'], porque: 'baralho pronto para começar a jogar' }],
+    extras: [{ papel: 'deck', tipos: ['deck', 'desafio', 'kit_treinador'], porque: 'outro baralho para jogar com alguém' }, { papel: 'etb', tipos: ['etb'], porque: 'ETB traz dados, marcadores e boosters para o jogo' }, { papel: 'abrir', tipos: ABRIR, porque: 'boosters para melhorar o baralho' }],
+    acessorios: ['sleeve', 'deck_box', 'playmat'] },
+  especiais: { nome: 'Quero cartas especiais', papeis: [{ papel: 'especial', tipos: ESPECIAL, porque: 'coleção com carta promocional no nome do produto' }],
+    extras: [{ papel: 'especial', tipos: ESPECIAL, porque: 'mais uma coleção com carta promocional' }, { papel: 'premium', tipos: ['colecao_premium', 'colecao_porta_retrato', 'colecao_ilustracao'], porque: 'coleção premium com cartas especiais' }, { papel: 'colecao', tipos: COLECAO, porque: 'boosters e itens para guardar as cartas' }],
+    acessorios: ['sleeve', 'toploader'] },
 });
+export const MAX_LINHAS = 8;          // produtos diferentes no kit
+export const MAX_UNIDADES_PACOTE = 10; // unidades de um mesmo blister/booster no preenchimento final
+const PACOTE = new Set([...ABRIR, 'booster_box', 'combo']);
 // Objetivo do questionário → modelo.
 export const OBJETIVO_MODELO = Object.freeze({ colecionar: 'primeira_colecao', abrir: 'primeira_colecao', presentear: 'colecionador', jogar: 'jogar', especiais: 'especiais', proteger: null });
 // "Proteger minhas cartas": kit só de acessórios (sem lacrado).
@@ -75,6 +91,9 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
   const best = melhoresOfertas(ofertas);
   const fav = norm(respostas.favorito).trim();
   const itens = []; const alternativas = []; let resta = orcamento;
+  const https = (u) => (typeof u === 'string' && /^http:\/\//.test(u) ? 'https://' + u.slice(7) : u);
+  // Foto: a própria do produto; senão a do anúncio que a pessoa vai abrir; senão a do catálogo (só https).
+  const imagemDe = (p, of) => [FOTO_PROPRIA.test(p.image || '') ? p.image : null, https(of.image), p.image].find((u) => /^https:\/\//.test(u || '')) || null;
   for (const papel of modelo.papeis) {
     let cands = (produtos || []).filter((p) => papel.tipos.includes(p.type) && best.has(p.id) && (idioma === 'qualquer' || idiomaDe(p.id) === idioma));
     if (fav) { const f = cands.filter((p) => norm(p.name).includes(fav)); if (f.length) cands = f; else limitacoes.push(`Nenhum produto com "${respostas.favorito}" no nome dentro deste kit agora; mostramos as outras opções.`); }
@@ -87,14 +106,36 @@ export function recomendar(respostas, produtos, ofertas, { fg = {} } = {}) {
     resta = r2(resta - of.price * quantidade);
     // Foto: a do anúncio que a pessoa vai abrir; sem ela, a do produto no catálogo (só https).
     // http:// das CDNs de loja (Nuvemshop etc.) também serve por https; a página só carrega https (CSP).
-    const https = (u) => (typeof u === 'string' && /^http:\/\//.test(u) ? 'https://' + u.slice(7) : u);
-    const imagem = [FOTO_PROPRIA.test(escolha.image || '') ? escolha.image : null, https(of.image), escolha.image].find((u) => /^https:\/\//.test(u || '')) || null;
+    const imagem = imagemDe(escolha, of);
     itens.push({ productId: escolha.id, nome: escolha.name, tipo: escolha.type, idioma: idiomaDe(escolha.id), quantidade, porque: papel.porque, imagem, oferta: of });
     // Outras opções do mesmo papel (para a cesta, K4): até 4, mesma regra de idioma/estoque, mais baratas primeiro.
     for (const p of cands.filter((c) => c.id !== escolha.id).sort((a, b) => best.get(a.id).price - best.get(b.id).price).slice(0, 4)) {
       const o2 = best.get(p.id);
-      alternativas.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), porque: papel.porque, imagem: [FOTO_PROPRIA.test(p.image || '') ? p.image : null, https(o2.image), p.image].find((u) => /^https:\/\//.test(u || '')) || null, oferta: o2 });
+      alternativas.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), porque: papel.porque, imagem: imagemDe(p, o2), oferta: o2 });
     }
+  }
+  // Orçamento sobrando: rodadas pelos extras, um produto ainda fora do kit por papel (tipo preferido, depois o mais barato
+  // que cabe), até MAX_LINHAS ou nada caber. Depois, pacotes ganham unidades (o mais barato por unidade primeiro).
+  if (itens.length) {
+    const usados = new Set(itens.map((it) => it.productId));
+    for (let mudou = true; mudou && itens.length < MAX_LINHAS;) {
+      mudou = false;
+      for (const papel of modelo.extras || []) {
+        if (itens.length >= MAX_LINHAS) break;
+        let cands = (produtos || []).filter((p) => papel.tipos.includes(p.type) && best.has(p.id) && !usados.has(p.id) && (idioma === 'qualquer' || idiomaDe(p.id) === idioma) && best.get(p.id).price <= resta);
+        if (fav) { const f = cands.filter((p) => norm(p.name).includes(fav)); if (f.length) cands = f; }
+        cands.sort((a, b) => papel.tipos.indexOf(a.type) - papel.tipos.indexOf(b.type) || (idioma === 'qualquer' ? (idiomaDe(a.id) !== 'pt') - (idiomaDe(b.id) !== 'pt') : 0) || best.get(a.id).price - best.get(b.id).price || a.id.localeCompare(b.id));
+        const p = cands[0]; if (!p) continue;
+        const of = best.get(p.id); resta = r2(resta - of.price); usados.add(p.id); mudou = true;
+        itens.push({ productId: p.id, nome: p.name, tipo: p.type, idioma: idiomaDe(p.id), quantidade: 1, porque: papel.porque, imagem: imagemDe(p, of), oferta: of });
+      }
+    }
+    const pacotes = itens.filter((it) => PACOTE.has(it.tipo)).sort((a, b) => a.oferta.price - b.oferta.price);
+    for (let mudou = true; mudou;) {
+      mudou = false;
+      for (const it of pacotes) if (it.quantidade < MAX_UNIDADES_PACOTE && it.oferta.price <= resta) { it.quantidade++; resta = r2(resta - it.oferta.price); mudou = true; }
+    }
+    for (let i = alternativas.length - 1; i >= 0; i--) if (usados.has(alternativas[i].productId)) alternativas.splice(i, 1);
   }
   const subtotal = r2(itens.reduce((s, it) => s + it.oferta.price * it.quantidade, 0));
   const fretes = freteDaCesta(itens, fg);
