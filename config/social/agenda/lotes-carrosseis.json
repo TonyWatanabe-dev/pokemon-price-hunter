@@ -1,72 +1,72 @@
 {
-  "semana": "Carrosséis C1–C4 da série Fogo/Escuridão (Instagram, 12h)",
-  "pasta": "assets/social/agenda/lotes",
-  "itens": [
-    {
-      "id": "lotes-c1-ig",
-      "quando": "2026-11-18T12:00",
-      "tipo": "carrossel",
-      "plataformas": [
-        "instagram"
-      ],
-      "arquivos": [
-        "C1_1.jpg",
-        "C1_2.jpg",
-        "C1_3.jpg",
-        "C1_4.jpg",
-        "C1_5.jpg",
-        "C1_6.jpg"
-      ],
-      "legenda": "🇺🇸 Top hits from one Dark booster box\n\nOs melhores hits da booster box de Escuridão Absoluta: Mega Darkrai ex Ilustração Rara Especial, Manectric Ilustração Rara, Mega Excadrill ex e Mega Chandelure ex duas vezes. Valores pela média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual você queria no binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #megadarkrai #colecionador"
-    },
-    {
-      "id": "lotes-c2-ig",
-      "quando": "2026-11-21T12:00",
-      "tipo": "carrossel",
-      "plataformas": [
-        "instagram"
-      ],
-      "arquivos": [
-        "C2_1.jpg",
-        "C2_2.jpg",
-        "C2_3.jpg",
-        "C2_4.jpg",
-        "C2_5.jpg",
-        "C2_6.jpg"
-      ],
-      "legenda": "🇺🇸 Top hits from 48 Phantasmal Flames blisters\n\nOs melhores hits dos 48 blisters de Fogo Fantasmagórico: Mega Charizard X ex duas vezes, Dawn Ilustração Rara Especial, Jaula de Batalha e Wooper de Paldea duas vezes. Valores pela média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nCharizard ou Dawn?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #charizard #colecionador"
-    },
-    {
-      "id": "lotes-c4-ig",
-      "quando": "2026-11-24T12:00",
-      "tipo": "carrossel",
-      "plataformas": [
-        "instagram"
-      ],
-      "arquivos": [
-        "C4_1.jpg",
-        "C4_2.jpg",
-        "C4_3.jpg",
-        "C4_4.jpg",
-        "C4_5.jpg"
-      ],
-      "legenda": "🇺🇸 Before Black Friday: 3 checks before buying a booster box\n\nBlack Friday é 27/11. Antes de comprar a booster box: veja o menor preço já registrado, compare com o preço sugerido Copag e some o frete. Arrasta pra ver.\n\nVocê vai comprar alguma coisa na Black Friday?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #boosterbox #colecionador"
-    },
-    {
-      "id": "lotes-c3-ig",
-      "quando": "2026-11-27T12:00",
-      "tipo": "carrossel",
-      "plataformas": [
-        "instagram"
-      ],
-      "arquivos": [
-        "C3_1.jpg",
-        "C3_2.jpg",
-        "C3_3.jpg",
-        "C3_4.jpg",
-        "C3_5.jpg"
-      ],
-      "legenda": "🇺🇸 Booster box or blisters? I opened both\n\nAbri uma booster box de Escuridão Absoluta e 48 blisters de Fogo Fantasmagórico. A box rendeu mais por causa de uma carta; os blisters deram mais hits. Retornos pela média da Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #boosterbox #blister #colecionador"
-    }
-  ]
+ "semana": "Carrosséis C1–C4 da série Fogo/Escuridão (Instagram, 12h)",
+ "pasta": "assets/social/agenda/lotes",
+ "itens": [
+  {
+   "id": "lotes-c1-ig",
+   "quando": "2026-11-18T12:00",
+   "tipo": "carrossel",
+   "plataformas": [
+    "instagram"
+   ],
+   "arquivos": [
+    "C1_1.jpg",
+    "C1_2.jpg",
+    "C1_3.jpg",
+    "C1_4.jpg",
+    "C1_5.jpg",
+    "C1_6.jpg"
+   ],
+   "legenda": "🇺🇸 Top hits from one Dark booster box\n\nOs melhores hits da booster box de Escuridão Absoluta: Mega Darkrai ex Ilustração Rara Especial, Wailord ex Rara Ultra, Manectric Ilustração Rara e Mega Excadrill ex. Valores pela média de venda dos últimos 3 meses na Liga Pokémon (31/10 e 01/11).\n\nQual você queria no binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #megadarkrai #colecionador"
+  },
+  {
+   "id": "lotes-c2-ig",
+   "quando": "2026-11-21T12:00",
+   "tipo": "carrossel",
+   "plataformas": [
+    "instagram"
+   ],
+   "arquivos": [
+    "C2_1.jpg",
+    "C2_2.jpg",
+    "C2_3.jpg",
+    "C2_4.jpg",
+    "C2_5.jpg",
+    "C2_6.jpg"
+   ],
+   "legenda": "🇺🇸 Top hits from 48 Phantasmal Flames blisters\n\nOs melhores hits dos 48 blisters de Fogo Fantasmagórico: Mega Charizard X ex duas vezes, Dawn Ilustração Rara Especial, Jaula de Batalha e Wooper de Paldea duas vezes. Valores pela média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nCharizard ou Dawn?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #charizard #colecionador"
+  },
+  {
+   "id": "lotes-c4-ig",
+   "quando": "2026-11-24T12:00",
+   "tipo": "carrossel",
+   "plataformas": [
+    "instagram"
+   ],
+   "arquivos": [
+    "C4_1.jpg",
+    "C4_2.jpg",
+    "C4_3.jpg",
+    "C4_4.jpg",
+    "C4_5.jpg"
+   ],
+   "legenda": "🇺🇸 Before Black Friday: 3 checks before buying a booster box\n\nBlack Friday é 27/11. Antes de comprar a booster box: veja o menor preço já registrado, compare com o preço sugerido Copag e some o frete. Arrasta pra ver.\n\nVocê vai comprar alguma coisa na Black Friday?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #blackfriday #boosterbox #colecionador"
+  },
+  {
+   "id": "lotes-c3-ig",
+   "quando": "2026-11-27T12:00",
+   "tipo": "carrossel",
+   "plataformas": [
+    "instagram"
+   ],
+   "arquivos": [
+    "C3_1.jpg",
+    "C3_2.jpg",
+    "C3_3.jpg",
+    "C3_4.jpg",
+    "C3_5.jpg"
+   ],
+   "legenda": "🇺🇸 Booster box or blisters? I opened both\n\nAbri uma booster box de Escuridão Absoluta e 48 blisters de Fogo Fantasmagórico. A box rendeu mais por causa de uma carta; os blisters deram mais hits. Retornos pela média da Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #boosterbox #blister #colecionador"
+  }
+ ]
 }
