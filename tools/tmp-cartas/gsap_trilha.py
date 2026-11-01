@@ -9,7 +9,7 @@ for p in P:
     if not os.path.exists(wav):
         with urllib.request.urlopen(TR[p['trilha']]['url'], timeout=300) as r, open(wav, 'wb') as f: shutil.copyfileobj(r, f)
     dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', p['mudo']], capture_output=True, text=True).stdout)
-    af = f"atrim=start={p.get('ini', 0)},asetpts=PTS-STARTPTS,atrim=0:{dur:.2f},afade=t=in:d=0.4,afade=t=out:st={dur - 1.6:.2f}:d=1.6,volume=0.9"
+    af = f"aloop=loop=-1:size=2e9,atrim=start={p.get('ini', 0)},asetpts=PTS-STARTPTS,atrim=0:{dur:.2f},afade=t=in:d=0.4,afade=t=out:st={dur - 1.6:.2f}:d=1.6,loudnorm=I=-16:TP=-1.5"
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', p['mudo'], '-i', wav, '-filter_complex', f'[1:a]{af}[a]', '-map', '0:v', '-map', '[a]',
                     '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', p['saida']], check=True)
     print('ok', p['saida'], flush=True)
