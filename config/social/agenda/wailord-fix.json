@@ -1,0 +1,155 @@
+{
+ "semana": "Correção Wailord 097/084 (R$ 17,89, print Liga 01/11): E2, E4 e C1 refeitos",
+ "pasta": "assets/social/agenda/lotes",
+ "cancelar": [
+  {
+   "quando": "2026-11-23T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 I opened a full booster box: here is ",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  },
+  {
+   "quando": "2026-11-23T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 I opened a full booster box: here is ",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  },
+  {
+   "quando": "2026-11-23T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 I opened a full booster box: here is ",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  },
+  {
+   "quando": "2026-11-25T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Every ex from one booster box\n\nTodas ",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  },
+  {
+   "quando": "2026-11-25T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Every ex from one booster box\n\nTodas ",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  },
+  {
+   "quando": "2026-11-25T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Every ex from one booster box\n\nTodas ",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  },
+  {
+   "quando": "2026-11-18T12:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Top hits from one Dark booster box\n\nO",
+   "motivo": "Wailord 097/084 R$ 17,89"
+  }
+ ],
+ "itens": [
+  {
+   "id": "lotes-e2-ig-w",
+   "quando": "2026-11-23T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/G_E2_placar_box.mp4",
+   "legenda": "🇺🇸 I opened a full booster box: here is the final score\n\nAbri a booster box de Escuridão Absoluta inteira. Paguei R$ 349,90 (menor preço do site) e os hits somaram R$ 887,56: lucro de R$ 537,66. O Mega Darkrai ex sozinho valeu R$ 814,04. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere abrir?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E2.jpg",
+   "capaMs": 35500
+  },
+  {
+   "id": "lotes-e2-tt-w",
+   "quando": "2026-11-23T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/G_E2_placar_box.mp4",
+   "legenda": "🇺🇸 I opened a full booster box: here is the final score\n\nAbri a booster box de Escuridão Absoluta inteira. Paguei R$ 349,90 (menor preço do site) e os hits somaram R$ 887,56: lucro de R$ 537,66. O Mega Darkrai ex sozinho valeu R$ 814,04. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere abrir?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E2.jpg",
+   "capaMs": 35500
+  },
+  {
+   "id": "lotes-e2-yt-w",
+   "quando": "2026-11-23T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/G_E2_placar_box.mp4",
+   "legenda": "🇺🇸 I opened a full booster box: here is the final score\n\nAbri a booster box de Escuridão Absoluta inteira. Paguei R$ 349,90 (menor preço do site) e os hits somaram R$ 887,56: lucro de R$ 537,66. O Mega Darkrai ex sozinho valeu R$ 814,04. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere abrir?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E2.jpg",
+   "capaMs": 35500,
+   "titulo": "Abri uma booster box inteira: deu lucro? | Full booster box opening score",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "escuridaoabsoluta"
+   ]
+  },
+  {
+   "id": "lotes-e4-ig-w",
+   "quando": "2026-11-25T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/G_E4_vitrine_ex.mp4",
+   "legenda": "🇺🇸 Every ex from one booster box\n\nTodas as ex da booster box de Escuridão Absoluta, carta por carta: Rampardos x2, Mega Chandelure x2, Mega Excadrill, Wailord, Manectric e o Mega Darkrai ex. R$ 887,56 em cartas numa box de R$ 349,90. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual dessas você queria?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E4.jpg",
+   "capaMs": 30000
+  },
+  {
+   "id": "lotes-e4-tt-w",
+   "quando": "2026-11-25T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/G_E4_vitrine_ex.mp4",
+   "legenda": "🇺🇸 Every ex from one booster box\n\nTodas as ex da booster box de Escuridão Absoluta, carta por carta: Rampardos x2, Mega Chandelure x2, Mega Excadrill, Wailord, Manectric e o Mega Darkrai ex. R$ 887,56 em cartas numa box de R$ 349,90. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual dessas você queria?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E4.jpg",
+   "capaMs": 30000
+  },
+  {
+   "id": "lotes-e4-yt-w",
+   "quando": "2026-11-25T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/G_E4_vitrine_ex.mp4",
+   "legenda": "🇺🇸 Every ex from one booster box\n\nTodas as ex da booster box de Escuridão Absoluta, carta por carta: Rampardos x2, Mega Chandelure x2, Mega Excadrill, Wailord, Manectric e o Mega Darkrai ex. R$ 887,56 em cartas numa box de R$ 349,90. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual dessas você queria?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E4.jpg",
+   "capaMs": 30000,
+   "titulo": "Todas as ex de uma booster box | Every ex from a booster box",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "escuridaoabsoluta"
+   ]
+  },
+  {
+   "id": "lotes-c1-ig-w",
+   "quando": "2026-11-18T12:00",
+   "tipo": "carrossel",
+   "plataformas": [
+    "instagram"
+   ],
+   "arquivos": [
+    "C1_1.jpg",
+    "C1_2.jpg",
+    "C1_3.jpg",
+    "C1_4.jpg",
+    "C1_5.jpg",
+    "C1_6.jpg"
+   ],
+   "legenda": "🇺🇸 Top hits from one Dark booster box\n\nOs melhores hits da booster box de Escuridão Absoluta: Mega Darkrai ex Ilustração Rara Especial, Manectric Ilustração Rara, Mega Excadrill ex e Mega Chandelure ex duas vezes. Valores pela média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual você queria no binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #megadarkrai #colecionador"
+  }
+ ]
+}
