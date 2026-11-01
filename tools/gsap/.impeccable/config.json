@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "clipped-overflow-container",
+        "value": "*",
+        "files": [
+          "tools/gsap/hit.html"
+        ],
+        "createdAt": "2026-11-01T01:07:28.547Z",
+        "reason": "Claude: os .sheen são reflexos de luz que precisam ser recortados pelo próprio contêiner (placar, faixa, CTA); não são popovers"
+      }
+    ]
+  }
+}
