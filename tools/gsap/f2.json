@@ -1,0 +1,39 @@
+{
+ "rotulo": "1 blister unitário",
+ "pack": 6.75,
+ "kick": "Fogo Fantasmagórico",
+ "titulo": "1 blister… espera a <em>última carta</em> 👀",
+ "carta": "Mega Charizard X ex",
+ "raridade": "Rara Ultra",
+ "valor": 174.22,
+ "tagFim": "Resultado · Fogo Fantasmagórico",
+ "linhaPack": "2 blisters unitários",
+ "notaPack": "48 blisters por R$ 323,96 (promoção no site) ÷ 48",
+ "hitT": 14.0,
+ "dur": 33.3,
+ "fimDur": 4.5,
+ "ganchoAte": 3.6,
+ "revela": 11.8,
+ "detalhe": 23.3,
+ "segs": [
+  [
+   "../../tmp-lotes/F2_charizard_a.mp4",
+   4.0,
+   22.0
+  ],
+  [
+   "../../tmp-lotes/F2_charizard_b.mp4",
+   11.5,
+   16.8
+  ],
+  [
+   "../../tmp-lotes/F_vitrine_det.mp4",
+   3.0,
+   8.5
+  ]
+ ],
+ "tipoCarta": "fogo",
+ "rotulo2": "2 blisters",
+ "seg2": 18.0,
+ "hit2T": 20.5
+}
