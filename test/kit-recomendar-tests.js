@@ -53,7 +53,7 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
 // 3. orçamento abaixo do mais barato: cesta vazia com motivo (não estoura)
 { const r = recomendar({ objetivo: 'colecionar', orcamento: 10, idioma: 'pt' }, produtos, ofertas); assert.equal(r.itens.length, 0); assert.ok(r.limitacoes.some((l) => /passa do orçamento/.test(l))); }
 // 4. jogar: deck com frete conhecido → total = preço + frete daquela loja
-{ const r = recomendar({ objetivo: 'jogar', orcamento: 120, idioma: 'pt' }, produtos, ofertas); assert.equal(r.itens[0].productId, 'avulsos-deck-pikachu'); assert.equal(r.total, 105); }
+{ const r = recomendar({ objetivo: 'jogar', orcamento: 100, idioma: 'pt' }, produtos, ofertas); assert.equal(r.itens.length, 1, 'sobram R$ 10: nada mais cabe'); assert.equal(r.itens[0].productId, 'avulsos-deck-pikachu'); assert.equal(r.total, 105); }
 // 5. presente com ETB fora do orçamento cai para o próximo tipo que cabe? ETB 380 > 300: sem item e motivo
 { const r = recomendar({ objetivo: 'presentear', orcamento: 300, idioma: 'pt' }, produtos, ofertas); assert.equal(r.itens.length, 0); assert.ok(r.limitacoes.length); }
 // 6. favorito filtra pelo nome; inexistente avisa e mostra as outras opções
@@ -71,6 +71,20 @@ for (const k of Object.values(OBJETIVO_MODELO)) if (k) assert.ok(MODELOS[k], k);
   const f = freteDaCesta([it('p1', 50, 10), it('p2', 60, 12)]); assert.equal(f.length, 1); assert.equal(f[0].frete, null, 'não soma frete por item');
   const g = freteDaCesta([it('p1', 150, 10), it('p2', 60, 12)], { z: { min: 199.99 } }); assert.equal(g[0].frete, 0); assert.match(g[0].como, /regra da loja/);
   const q = freteDaCesta([{ quantidade: 2, oferta: O('p1', 'y', 50, { shippingKnown: true, shipping: 10 }) }]); assert.equal(q[0].frete, null, 'duas unidades: frete do pedido desconhecido');
+}
+// 8b. orçamento grande: o kit cresce com produtos diferentes (extras do modelo) e pacotes ganham unidades, sem passar do orçamento
+{
+  const r = recomendar({ objetivo: 'colecionar', orcamento: 2000, idioma: 'pt' }, produtos, ofertas);
+  const q = Object.fromEntries(r.itens.map((i) => [i.productId, i.quantidade]));
+  assert.deepEqual(q, { 'xx1-blister3': 10, 'xx1-etb': 1, 'avulsos-colecao_ex-gengar': 1, 'avulsos-colecao_ex-charizard': 1, 'xx1-booster': 10 }, 'ETB, coleções ex e booster entram; pacotes completam até 10 unidades');
+  assert.equal(r.subtotal, 1090); assert.ok(r.subtotal <= 2000);
+  assert.ok(r.itens.every((i) => idiomaDe(i.productId) === 'pt'), 'sem misturar idioma');
+  assert.ok(!r.alternativas.some((a) => q[a.productId]), 'outra opção não repete item do kit');
+  const j = recomendar({ objetivo: 'jogar', orcamento: 200, idioma: 'pt' }, produtos, ofertas);
+  assert.deepEqual(j.itens.map((i) => [i.productId, i.quantidade]), [['avulsos-deck-pikachu', 1], ['xx1-blister3', 2], ['xx1-booster', 4]], 'deck 90 + pacotes para melhorar o baralho até perto do orçamento');
+  assert.equal(j.subtotal, 198);
+  const m = recomendar({ objetivo: 'colecionar', orcamento: 5000, idioma: 'pt' }, Array.from({ length: 12 }, (_, i) => P(`c${i}-etb`, 'etb', `C${i} - ETB`)).concat(produtos), ofertas.concat(Array.from({ length: 12 }, (_, i) => O(`c${i}-etb`, 'a', 300 + i))));
+  assert.ok(m.itens.length <= 8, 'no máximo 8 produtos diferentes'); assert.ok(m.subtotal <= 5000);
 }
 // 9. sem orçamento
 { assert.match(recomendar({ objetivo: 'jogar' }, produtos, ofertas).limitacoes[0], /orçamento/); }

@@ -1,10 +1,10 @@
-// Kit completo com acessórios (kit-v4.js): a API diz quais acessórios o modelo pede; a página escolhe o mais barato de cada
+// Kit completo com acessórios (kit-v5.js): a API diz quais acessórios o modelo pede; a página escolhe o mais barato de cada
 // um na lista curada (/data/afiliados-acessorios.json), desconta do orçamento antes de pedir os lacrados, tira o último
 // acessório se nenhum lacrado couber, mostra data da leitura e frete a calcular. "Proteger" = kit só de acessórios.
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import vm from 'node:vm';
 
-const js = fs.readFileSync(new URL('../assets/web/kit-v4.js', import.meta.url), 'utf8');
+const js = fs.readFileSync(new URL('../assets/web/kit-v5.js', import.meta.url), 'utf8');
 const flush = () => new Promise((r) => setTimeout(r, 0));
 const ACC = { itens: [
   { loja: 'amazon', id: 'S1', kit: 'sleeve', title: 'Sleeve barato', price: 11.39, url: 'https://link.amazon/a', capturedAt: '2026-10-31T13:07:04-03:00' },
@@ -58,5 +58,13 @@ async function clicar(R, opts) {
 { const r = await clicar({}, { proteger: true });
   assert.match(r.h, /Proteger minhas cartas/); assert.match(r.h, /Sleeve barato/); assert.match(r.h, /Toploader 25/); assert.match(r.h, /Deck box 100\+/); assert.match(r.h, /Fichário 9 bolsos/);
   assert.match(r.h, /Kit completo: <b>R\$ 176,03<\/b>/); assert.doesNotMatch(r.h, /Sua cesta está vazia/); }
+
+// orçamento a partir de R$ 300: acessório das marcas de TCG (o mais barato entre elas), sem marca de TCG cai no mais barato
+{ ACC.itens.push({ loja: 'amazon', id: 'S3', kit: 'sleeve', marca: 'Dragon Shield', title: 'Dragon Shield Matte', price: 94.9, url: 'https://link.amazon/f', capturedAt: '2026-10-31T13:10:00-03:00' });
+  const r = await clicar({ objetivo: 'colecionar', orcamento: '2000', idioma: 'pt' }, { cabe: 40 });
+  assert.match(r.h, /Dragon Shield Matte/); assert.doesNotMatch(r.h, /Sleeve barato/); assert.match(r.h, /Fichário 9 bolsos/, 'fichário sem marca de TCG na lista: o mais barato');
+  assert.deepEqual(r.pedidos, [2000, 1826.2], '2000 − (94,90 + 78,90)');
+  const b = await clicar({ objetivo: 'colecionar', orcamento: '150', idioma: 'pt' }, { cabe: 40 });
+  assert.match(b.h, /Sleeve barato/, 'abaixo de R$ 300: o mais barato'); ACC.itens.pop(); }
 
 console.log('✓ kit-acessorios: kit completo com acessórios da lista curada, orçamento do kit inteiro, proteger só com acessórios');

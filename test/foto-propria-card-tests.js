@@ -26,5 +26,7 @@ assert.equal(fotoDe({ image: 'https://x/p.png' }, { image: LOJA }), LOJA, 'og:im
 assert.equal(fotoDe({ image: 'https://x/p.png' }, null), 'https://x/p.png', 'og:image: sem oferta, a do produto');
 
 const kit = read('api/_lib/kit.mjs');
-assert.equal((kit.match(/FOTO_PROPRIA\.test\(/g) || []).length, 2, 'kit: itens e alternativas usam a foto própria primeiro');
+assert.match(kit, /const imagemDe = \(p, of\) => \[FOTO_PROPRIA\.test\(p\.image \|\| ''\) \? p\.image : null, https\(of\.image\), p\.image\]/, 'kit: foto própria primeiro');
+assert.equal((kit.match(/imagem: imagemDe\(|const imagem = imagemDe\(/g) || []).length, 3, 'kit: itens, extras e alternativas usam imagemDe');
+assert.equal((kit.match(/FOTO_PROPRIA\.test\(/g) || []).length, 1, 'kit: uma regra só de foto');
 console.log('✓ foto-propria-card: card, og:image e kit preferem a foto própria do produto');

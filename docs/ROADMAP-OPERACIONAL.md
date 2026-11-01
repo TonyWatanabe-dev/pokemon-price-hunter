@@ -137,6 +137,8 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 
 **Kit completo com acessórios (31/10, tarde, pedido do dono):** o Monte seu kit passa a juntar lacrados e acessórios (`kit-v4.js`). A API diz quais acessórios cada modelo pede (`acessorios`), a página escolhe o mais barato de cada um na lista curada, desconta do orçamento antes de pedir os lacrados (se nenhum lacrado couber, tira o último acessório e avisa) e mostra "Kit completo" = produtos + acessórios, com frete a calcular quando há acessório. "Proteger minhas cartas" vira kit só de acessórios (sleeve, toploader, fichário, deck box). Testes: `test/kit-acessorios-tests.js`, `test/kit-recomendar-tests.js`.
 
+**Kit usa o orçamento todo (31/10, noite, pedido do dono):** com R$ 2.000 o kit montava só R$ 111 (um papel, até 3 blisters). Agora cada modelo tem extras (coleção/ETB, booster box, coleções ex, decks, pacotes): com orçamento sobrando, o kit ganha um produto diferente por papel em rodadas (até 8 produtos) e, no fim, blister/booster ganham unidades (até 10). Simulado sobre o `state.json` real do ramo data: colecionar R$ 1.909,71 → R$ 1.895,30; especiais R$ 2.000 → R$ 1.838,21; jogar R$ 500 → R$ 497,79. Acessório das marcas de TCG a partir de R$ 300 (`kit-v5.js`).
+
 ---
 
 ## Burn-in 7/7 concluído — 31/10/2026 (America/Sao_Paulo)
