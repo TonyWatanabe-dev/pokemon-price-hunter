@@ -90,6 +90,19 @@ html,body{width:1080px;height:1920px;background:transparent;overflow:hidden;font
 #fim .btn{display:inline-flex;align-items:center;padding:30px 44px;border-radius:999px;background:var(--ink);color:#fff;font:800 36px/1 var(--font-sans);white-space:nowrap}
 #fim .site{font:700 30px/1.25 var(--font-sans);text-align:right}
 #fim .selo{left:770px;top:1060px;width:240px;height:240px}
+/* lâmina no tipo da carta (Tipagem: .sp.tipo-bg) */
+#fim.tipo-bg{background:var(--ty);color:#fff}
+#fim.tipo-bg .barra,#fim.tipo-bg .eb i{background:var(--sticker)}
+#fim .box{color:var(--ink)}
+#fim.tipo-bg .lucro{color:#fff;background:var(--ok);padding:6px 30px 14px;border-radius:28px;box-shadow:0 8px 0 rgba(9,13,35,.25);font-size:118px;top:590px}
+#fim.tipo-bg h1,#fim.tipo-bg h2{text-shadow:0 6px 0 rgba(0,0,0,.28)}
+#fim.tipo-bg h2 em{color:var(--sticker)}
+#fim.tipo-bg .btn{background:var(--sticker);color:var(--sticker-ink)}
+#fim.tipo-bg[data-tipo="eletrico"],#fim.tipo-bg[data-tipo="incolor"]{color:var(--t-ink)}
+#fim.tipo-bg[data-tipo="eletrico"] h2 em,#fim.tipo-bg[data-tipo="incolor"] h2 em{color:var(--e-water)}
+#fim.tipo-bg[data-tipo="eletrico"] .eb i,#fim.tipo-bg[data-tipo="eletrico"] .barra{background:var(--ink)}
+#fim.tipo-bg[data-tipo="eletrico"] h1,#fim.tipo-bg[data-tipo="eletrico"] h2,#fim.tipo-bg[data-tipo="incolor"] h1,#fim.tipo-bg[data-tipo="incolor"] h2{text-shadow:none}
+#fim.tipo-bg[data-tipo="eletrico"] .btn,#fim.tipo-bg[data-tipo="incolor"] .btn{background:var(--ink);color:#fff}
 </style>
 </head>
 <body>
@@ -120,10 +133,11 @@ html,body{width:1080px;height:1920px;background:transparent;overflow:hidden;font
   <div id="ticket"><div class="lin1" id="tChip"></div><div class="lin2"><span class="nome" id="tNome"></span><span class="valor" id="tValor"></span></div><div class="fonte" id="tFonte"></div></div>
   <div id="fim">
     <svg viewBox="0 0 1080 1920" style="left:0;top:0;width:1080px;height:1920px" aria-hidden="true">
-      <defs><pattern id="pfim" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><use href="#i-t-eletrico" x="12" y="12" width="46" height="46" fill="#131f49"/><use href="#i-t-eletrico" x="87" y="87" width="46" height="46" fill="#131f49"/></pattern></defs>
-      <rect width="1080" height="1920" fill="url(#pfim)" opacity="0.07"/>
-      <path fill="#131f49" opacity="0.08" d="M990 360 L860 680 L970 665 L850 950 L1140 560 L1015 578 L1120 360 Z"/>
-      <circle cx="540" cy="2150" r="700" fill="#fff" opacity=".35"/>
+      <defs><pattern id="pfim" width="150" height="150" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)"><use id="pu1" href="#i-t-eletrico" x="12" y="12" width="46" height="46" fill="#131f49"/><use id="pu2" href="#i-t-eletrico" x="87" y="87" width="46" height="46" fill="#131f49"/></pattern></defs>
+      <rect id="estampa" width="1080" height="1920" fill="url(#pfim)" opacity="0.07"/>
+      <path id="raio" fill="#131f49" opacity="0.08" d="M990 360 L860 680 L970 665 L850 950 L1140 560 L1015 578 L1120 360 Z"/>
+      <use id="gigante" href="#i-t-eletrico" x="640" y="300" width="560" height="560" fill="#fff" opacity="0" transform="rotate(-12 920 580)"/>
+      <circle id="halo" cx="540" cy="2150" r="700" fill="#fff" opacity=".35"/>
       <use href="#brilho" x="96" y="690" width="48" height="48" color="#fff"/><use href="#brilho" x="950" y="700" width="34" height="34" color="#fff"/><use href="#brilho" x="640" y="1290" width="40" height="40" color="#fff"/>
     </svg>
     <div class="barra"></div>
@@ -161,6 +175,13 @@ $('tChip').innerHTML = (C.tipoCarta ? `<span class="tipo-chip">${ficha(C.tipoCar
 $('tNome').textContent = C.carta; $('tValor').textContent = reais(C.valor);
 $('tFonte').textContent = 'Média de venda dos últimos 3 meses · Liga Pokémon · 31/10';
 $('fimTag').textContent = C.colecao;
+// lâmina final na cor do tipo da carta: estampa do ícone a 13% e ícone gigante a 16% saindo pela borda (Tipagem)
+if (C.tipoCarta) {
+  const f = $('fim'); f.classList.add('tipo-bg'); f.dataset.tipo = C.tipoCarta;
+  const claro = ['eletrico', 'incolor'].includes(C.tipoCarta), cor = claro ? '#131f49' : '#fff';
+  ['pu1', 'pu2', 'gigante'].forEach((id) => { $(id).setAttribute('href', '#i-t-' + C.tipoCarta); $(id).setAttribute('fill', cor); });
+  $('estampa').setAttribute('opacity', '0.13'); $('gigante').setAttribute('opacity', '0.16'); $('raio').remove(); $('halo').setAttribute('opacity', '.1');
+}
 $('fimLucro').textContent = brl(C.valor - C.pack);
 $('fimBox').innerHTML = `<div class="lin"><span>${C.linhaPack}<small>${C.notaPack}</small></span><b class="neg">${brl(-C.pack)}</b></div>`
   + `<div class="lin"><span>${C.carta}<small>média Liga Pokémon</small></span><b class="pos">${brl(C.valor)}</b></div>`;
