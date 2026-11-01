@@ -2,7 +2,7 @@ name: tmp coleta cartas (temporário, não mesclar)
 on:
   push:
     branches: [social/coleta-cartas]
-    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py, tools/tmp-cartas/comp.json, tools/tmp-cartas/comp_edita.py, tools/tmp-cartas/comp_fala.json, tools/tmp-cartas/comp_voz.py, tools/tmp-cartas/palavras.py, tools/tmp-cartas/smoke.py, tools/tmp-cartas/dragonite.json, tools/tmp-cartas/fotos.py, tools/tmp-cartas/fino.json, tools/tmp-cartas/unbox.json, tools/tmp-cartas/unbox.py, tools/tmp-cartas/motion_fx.py, tools/tmp-cartas/quadros_hd.json, tools/tmp-cartas/baixar.json, tools/tmp-cartas/remix.json, tools/tmp-cartas/remix.py, tools/tmp-cartas/clipes.json, tools/tmp-cartas/clipes.py, tools/tmp-cartas/voz.py, tools/tmp-cartas/voz_so.txt, tools/tmp-cartas/thumb.py, tools/tmp-cartas/inventario.py, tools/tmp-cartas/inv_ids.txt, tools/tmp-cartas/inv_fotos.py, tools/tmp-cartas/hires.py]
+    paths: [tools/tmp-cartas/pedido.json, tools/tmp-cartas/videos.json, tools/tmp-cartas/valores.py, tools/tmp-cartas/precos.py, tools/tmp-cartas/quadros.py, tools/tmp-cartas/render.json, tools/tmp-cartas/render.py, tools/tmp-cartas/blister.json, tools/tmp-cartas/blister_edita.py, tools/tmp-cartas/comp.json, tools/tmp-cartas/comp_edita.py, tools/tmp-cartas/comp_fala.json, tools/tmp-cartas/comp_voz.py, tools/tmp-cartas/palavras.py, tools/tmp-cartas/smoke.py, tools/tmp-cartas/dragonite.json, tools/tmp-cartas/fotos.py, tools/tmp-cartas/fino.json, tools/tmp-cartas/unbox.json, tools/tmp-cartas/unbox.py, tools/tmp-cartas/motion_fx.py, tools/tmp-cartas/quadros_hd.json, tools/tmp-cartas/baixar.json, tools/tmp-cartas/remix.json, tools/tmp-cartas/remix.py, tools/tmp-cartas/clipes.json, tools/tmp-cartas/clipes.py, tools/tmp-cartas/voz.py, tools/tmp-cartas/voz_so.txt, tools/tmp-cartas/thumb.py, tools/tmp-cartas/inventario.py, tools/tmp-cartas/inv_ids.txt, tools/tmp-cartas/inv_fotos.py, tools/tmp-cartas/hires.py, tools/tmp-cartas/lotes.py, tools/tmp-cartas/lotes.json]
 permissions:
   contents: write
 jobs:
@@ -65,9 +65,11 @@ jobs:
         if: contains(github.event.head_commit.message, 'inv-fotos')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/hires.py
         if: contains(github.event.head_commit.message, 'hires-hits')
+      - run: sudo apt-get install -y -qq ffmpeg python3-pil >/dev/null && python3 tools/tmp-cartas/lotes.py
+        if: contains(github.event.head_commit.message, 'lotes-gsap')
       - run: python3 tools/tmp-cartas/smoke.py
         if: contains(github.event.head_commit.message, 'smoke')
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A tmp-inv tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render tmp-blister tmp-comp tmp-dragonite tmp-dragonite-d 2>/dev/null; find tmp-render -name "*.mp4" -size +95M -printf "GRANDE %p %s\n" -delete; git commit -m "tmp: resultado da coleta" && (git push || (git pull --no-rebase --no-edit && git push))
+          git add -A tmp-lotes tmp-inv tmp-cartas tmp-videos tmp-valores tmp-precos tmp-quadros tmp-render tmp-blister tmp-comp tmp-dragonite tmp-dragonite-d 2>/dev/null; find tmp-render -name "*.mp4" -size +95M -printf "GRANDE %p %s\n" -delete; git commit -m "tmp: resultado da coleta" && (git push || (git pull --no-rebase --no-edit && git push))
