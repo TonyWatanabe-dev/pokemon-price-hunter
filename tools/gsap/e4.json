@@ -1,0 +1,105 @@
+{
+ "kick": "Escuridão Absoluta",
+ "titulo": "Todas as <em>ex</em> da booster box 👀",
+ "tagFim": "Resultado · Escuridão Absoluta",
+ "pack": 0,
+ "rotulo": "Valor das cartas",
+ "ganchoAte": 2.4,
+ "notaPack": "menor preço do site",
+ "tipoCarta": "escuridao",
+ "lucro": 519.23,
+ "linhas": [
+  {
+   "nome": "Booster box",
+   "nota": "R$ 349,90 no menor preço do site",
+   "v": -349.9
+  },
+  {
+   "nome": "Todas as ex e IR (7 cartas)",
+   "nota": "média Liga Pokémon",
+   "v": 869.13
+  }
+ ],
+ "carta": "Rampardos ex",
+ "valor": 6.45,
+ "raridade": "Rara Dupla",
+ "hitT": 3.3,
+ "revela": 3.0,
+ "segs": [
+  [
+   "../../tmp-lotes/E4_vitrine.mp4",
+   0.0,
+   8.0
+  ],
+  [
+   "../../tmp-lotes/E4_vitrine.mp4",
+   8.0,
+   16.5
+  ],
+  [
+   "../../tmp-lotes/E4_vitrine.mp4",
+   16.5,
+   20.3
+  ],
+  [
+   "../../tmp-lotes/E4_vitrine.mp4",
+   20.3,
+   23.3
+  ],
+  [
+   "../../tmp-lotes/E4_vitrine.mp4",
+   23.3,
+   27.5
+  ],
+  [
+   "../../tmp-lotes/E1_darkrai_det.mp4",
+   2.2,
+   7.8
+  ]
+ ],
+ "extras": [
+  {
+   "seg": 8.0,
+   "t": 8.9,
+   "carta": "Mega Chandelure ex ×2",
+   "valor": 17.5,
+   "raridade": "Rara Dupla",
+   "custo": 0,
+   "estrela": "2×!"
+  },
+  {
+   "seg": 16.5,
+   "t": 17.4,
+   "carta": "Mega Excadrill ex",
+   "valor": 10.69,
+   "raridade": "Rara Dupla",
+   "custo": 0
+  },
+  {
+   "seg": 20.3,
+   "t": 21.2,
+   "carta": "Wailord ex",
+   "valor": 5.91,
+   "raridade": "Rara Dupla",
+   "custo": 0
+  },
+  {
+   "seg": 23.3,
+   "t": 24.2,
+   "carta": "Manectric",
+   "valor": 14.54,
+   "raridade": "Ilustração Rara",
+   "custo": 0
+  },
+  {
+   "seg": 27.5,
+   "t": 28.299999999999997,
+   "carta": "Mega Darkrai ex",
+   "valor": 814.04,
+   "raridade": "Ilustração Rara Especial",
+   "custo": 0
+  }
+ ],
+ "dur": 37.6,
+ "fimDur": 4.5
+}

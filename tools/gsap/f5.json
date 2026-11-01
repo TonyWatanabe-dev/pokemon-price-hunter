@@ -1,0 +1,41 @@
+{
+ "kick": "Fogo Fantasmagórico",
+ "titulo": "1 blister… será que vem <em>hit</em>? 👀",
+ "tagFim": "Resultado · Fogo Fantasmagórico",
+ "notaPack": "48 blisters por R$ 323,96 (promoção no site) ÷ 48",
+ "pack": 6.75,
+ "ganchoAte": 3.6,
+ "rotulo": "1 blister unitário",
+ "carta": "Nada de hit",
+ "valor": 0,
+ "raridade": "Nem todo pack é hit",
+ "brick": true,
+ "estrela": "BRICK",
+ "precoTxt": "😭",
+ "fonte": "no lote inteiro, os 48 blisters deram +R$ 271,06",
+ "h1": "Deu brick.",
+ "lucro": -6.75,
+ "linhas": [
+  {
+   "nome": "1 blister unitário",
+   "nota": "48 blisters por R$ 323,96 ÷ 48",
+   "v": -6.75
+  },
+  {
+   "nome": "Lote inteiro (48 blisters)",
+   "nota": "todos os hits pela média da Liga",
+   "v": 271.06
+  }
+ ],
+ "revela": 18.0,
+ "hitT": 18.3,
+ "segs": [
+  [
+   "../../tmp-lotes/F5_brick.mp4",
+   4.0,
+   25.5
+  ]
+ ],
+ "dur": 26.0,
+ "fimDur": 4.5
+}

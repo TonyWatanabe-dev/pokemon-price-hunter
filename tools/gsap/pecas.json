@@ -1,1 +1,20 @@
-[{"mudo":"tmp-gsap/F2_charizard_mudo.mp4","saida":"tmp-render/G_F2_charizard.mp4","trilha":"short_top","ini":0}]
+[
+ {
+  "mudo": "tmp-gsap/F2_charizard_mudo.mp4",
+  "saida": "tmp-render/G_F2_charizard.mp4",
+  "trilha": "short_top",
+  "ini": 0
+ },
+ {
+  "mudo": "tmp-gsap/F4_mudo.mp4",
+  "saida": "tmp-render/G_F4_wooper_jaula.mp4",
+  "trilha": "short_top",
+  "ini": 0
+ },
+ {
+  "mudo": "tmp-gsap/F5_mudo.mp4",
+  "saida": "tmp-render/G_F5_brick.mp4",
+  "trilha": "short_top",
+  "ini": 0
+ }
+]

@@ -1,0 +1,143 @@
+{
+ "kick": "Fogo Fantasmagórico",
+ "titulo": "Abri <em>48 blisters</em> 👀",
+ "tagFim": "Resultado · Fogo Fantasmagórico",
+ "notaPack": "48 blisters por R$ 323,96 (promoção no site) ÷ 48",
+ "pack": 323.96,
+ "ganchoAte": 2.4,
+ "rotulo": "48 blisters",
+ "tipoCarta": "fogo",
+ "lucro": 271.06,
+ "linhas": [
+  {
+   "nome": "48 blisters unitários",
+   "nota": "R$ 323,96 na promoção do site",
+   "v": -323.96
+  },
+  {
+   "nome": "Mega Charizard X ex ×2 + Dawn",
+   "nota": "média Liga Pokémon",
+   "v": 519.05
+  },
+  {
+   "nome": "Outros 6 hits (1 fora da câmera)",
+   "nota": "inclui Mega Lopunny ex, R$ 7,12",
+   "v": 75.97
+  }
+ ],
+ "carta": "Mega Heracross ex",
+ "valor": 5.78,
+ "raridade": "Rara Dupla",
+ "hitT": 3.5,
+ "revela": 2.0,
+ "detalhe": 34.6,
+ "segs": [
+  [
+   "../../tmp-lotes/F3_heracross.mp4",
+   3.0,
+   7.3
+  ],
+  [
+   "../../tmp-lotes/F3_mismagius.mp4",
+   6.5,
+   10.5
+  ],
+  [
+   "../../tmp-lotes/F4_wooper_a.mp4",
+   16.0,
+   20.0
+  ],
+  [
+   "../../tmp-lotes/F4_wooper_b.mp4",
+   13.0,
+   16.2
+  ],
+  [
+   "../../tmp-lotes/F4_jaula.mp4",
+   14.5,
+   18.8
+  ],
+  [
+   "../../tmp-lotes/F1_dawn.mp4",
+   27.5,
+   32.5
+  ],
+  [
+   "../../tmp-lotes/F2_charizard_a.mp4",
+   14.5,
+   19.5
+  ],
+  [
+   "../../tmp-lotes/F2_charizard_b.mp4",
+   12.0,
+   16.8
+  ],
+  [
+   "../../tmp-lotes/F_vitrine_det.mp4",
+   3.0,
+   8.0
+  ]
+ ],
+ "extras": [
+  {
+   "seg": 4.3,
+   "t": 6.2,
+   "carta": "Mismagius ex",
+   "valor": 5.99,
+   "raridade": "Rara Dupla",
+   "custo": 0
+  },
+  {
+   "seg": 8.3,
+   "t": 10.200000000000001,
+   "carta": "Wooper de Paldea",
+   "valor": 18.2,
+   "raridade": "Ilustração Rara",
+   "custo": 0
+  },
+  {
+   "seg": 12.3,
+   "t": 14.200000000000001,
+   "carta": "Wooper de Paldea",
+   "valor": 18.2,
+   "raridade": "Ilustração Rara · 2ª cópia",
+   "custo": 0,
+   "estrela": "2×!"
+  },
+  {
+   "seg": 15.5,
+   "t": 17.4,
+   "carta": "Jaula de Batalha",
+   "valor": 20.68,
+   "raridade": "Rara Ultra",
+   "custo": 0
+  },
+  {
+   "seg": 19.8,
+   "t": 21.7,
+   "carta": "Dawn",
+   "valor": 170.61,
+   "raridade": "Ilustração Rara Especial",
+   "custo": 0
+  },
+  {
+   "seg": 24.8,
+   "t": 26.5,
+   "carta": "Mega Charizard X ex",
+   "valor": 174.22,
+   "raridade": "Rara Ultra",
+   "custo": 0
+  },
+  {
+   "seg": 29.8,
+   "t": 32.0,
+   "carta": "Mega Charizard X ex",
+   "valor": 174.22,
+   "raridade": "Rara Ultra · 2ª cópia",
+   "custo": 0,
+   "estrela": "2×!"
+  }
+ ],
+ "dur": 44.1,
+ "fimDur": 4.5
+}
