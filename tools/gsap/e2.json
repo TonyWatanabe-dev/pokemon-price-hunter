@@ -19,9 +19,9 @@
    "v": 814.04
   },
   {
-   "nome": "Outras ex e IR (6 cartas)",
+   "nome": "Outras ex e IR (7 cartas)",
    "nota": "média Liga Pokémon",
-   "v": 55.09
+   "v": 61.54
   }
  ],
  "carta": "Wailord ex",
@@ -71,10 +71,11 @@
   {
    "seg": 5.5,
    "t": 7.4,
-   "carta": "Rampardos ex",
-   "valor": 6.45,
+   "carta": "Rampardos ex ×2",
+   "valor": 12.9,
    "raridade": "Rara Dupla",
-   "custo": 0
+   "custo": 0,
+   "estrela": "2×!"
   },
   {
    "seg": 10.5,

@@ -118,12 +118,14 @@
     "num": "045/084",
     "raridade": "Rara Dupla",
     "valor": 6.45,
-    "abertura": "20261031_173139 1:16-1:18"
+    "abertura": "20261031_173139 1:16-1:18",
+    "qtd": 2,
+    "qtd_nota": "2ª cópia informada pelo dono (01/11)"
    }
   ],
   "pago": 349.9,
   "pago_nota": "menor preço do site (dono não informou o valor pago)",
-  "total_cartas": 869.13,
-  "lucro": 519.23
+  "total_cartas": 875.58,
+  "lucro": 525.68
  }
 }

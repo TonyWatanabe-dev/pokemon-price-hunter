@@ -7,7 +7,7 @@
  "ganchoAte": 2.4,
  "notaPack": "menor preço do site",
  "tipoCarta": "escuridao",
- "lucro": 519.23,
+ "lucro": 525.68,
  "linhas": [
   {
    "nome": "Booster box",
@@ -15,16 +15,17 @@
    "v": -349.9
   },
   {
-   "nome": "Todas as ex e IR (7 cartas)",
+   "nome": "Todas as ex e IR (8 cartas)",
    "nota": "média Liga Pokémon",
-   "v": 869.13
+   "v": 875.58
   }
  ],
- "carta": "Rampardos ex",
- "valor": 6.45,
+ "carta": "Rampardos ex ×2",
+ "valor": 12.9,
  "raridade": "Rara Dupla",
  "hitT": 3.3,
  "revela": 3.0,
+ "estrela": "2×!",
  "segs": [
   [
    "../../tmp-lotes/E4_vitrine.mp4",

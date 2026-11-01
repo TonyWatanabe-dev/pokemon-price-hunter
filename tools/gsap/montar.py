@@ -41,9 +41,9 @@ cfg['f5'] = dict(comum, titulo='1 blister… será que vem <em>hit</em>? 👀', 
 # E2: placar da booster box (36 packs), crescente até o Darkrai
 esc = dict(kick='Escuridão Absoluta', titulo='Abri uma <em>booster box</em> inteira 👀', tagFim='Resultado · Escuridão Absoluta', pack=349.90, rotulo='Booster box (36 packs)', ganchoAte=2.4,
            notaPack='menor preço do site', tipoCarta='escuridao')
-cfg['e2'] = monta(dict(esc, linhas=[{'nome': 'Booster box', 'nota': 'R$ 349,90 no menor preço do site', 'v': -349.90}, {'nome': 'Mega Darkrai ex', 'nota': 'média Liga Pokémon', 'v': 814.04}, {'nome': 'Outras ex e IR (6 cartas)', 'nota': 'média Liga Pokémon', 'v': 55.09}]),
+cfg['e2'] = monta(dict(esc, linhas=[{'nome': 'Booster box', 'nota': 'R$ 349,90 no menor preço do site', 'v': -349.90}, {'nome': 'Mega Darkrai ex', 'nota': 'média Liga Pokémon', 'v': 814.04}, {'nome': 'Outras ex e IR (7 cartas)', 'nota': 'média Liga Pokémon', 'v': 61.54}]),
   [dict(arq='E2_wailord.mp4', ini=6.5, fim=12.0, rev=9.0, carta='Wailord ex', valor=5.91, raridade='Rara Dupla', atraso=1.0),
-   dict(arq='E3_manectric.mp4', ini=7.5, fim=12.5, rev=9.0, carta='Rampardos ex', valor=6.45, raridade='Rara Dupla', custo=0),
+   dict(arq='E3_manectric.mp4', ini=7.5, fim=12.5, rev=9.0, carta='Rampardos ex ×2', valor=12.90, raridade='Rara Dupla', custo=0, estrela='2×!'),
    dict(arq='E2_excadrill.mp4', ini=8.0, fim=13.0, rev=10.0, carta='Mega Excadrill ex', valor=10.69, raridade='Rara Dupla', custo=0),
    dict(arq='E3_manectric.mp4', ini=29.5, fim=34.0, rev=31.0, carta='Manectric', valor=14.54, raridade='Ilustração Rara', custo=0),
    dict(arq='E2_chandelure.mp4', ini=7.5, fim=13.0, rev=9.5, carta='Mega Chandelure ex ×2', valor=17.50, raridade='Rara Dupla', custo=0, estrela='2×!'),
@@ -62,9 +62,9 @@ cfg['f3'] = monta(dict(comum, titulo='Abri <em>48 blisters</em> 👀', ganchoAte
    dict(arq='F2_charizard_b.mp4', ini=12.0, fim=16.8, rev=13.8, carta='Mega Charizard X ex', valor=174.22, raridade='Rara Ultra · 2ª cópia', custo=0, estrela='2×!')],
   detalhe=('F_vitrine_det.mp4', 3.0, 8.0))
 # E4: vitrine das ex (sem custo; o placar soma o valor das cartas)
-cfg['e4'] = monta(dict(esc, titulo='Todas as <em>ex</em> da booster box 👀', pack=0, rotulo='Valor das cartas', lucro=519.23,
-  linhas=[{'nome': 'Booster box', 'nota': 'R$ 349,90 no menor preço do site', 'v': -349.90}, {'nome': 'Todas as ex e IR (7 cartas)', 'nota': 'média Liga Pokémon', 'v': 869.13}]),
-  [dict(arq='E4_vitrine.mp4', ini=0.0, fim=8.0, rev=3.0, carta='Rampardos ex', valor=6.45, raridade='Rara Dupla', atraso=0.3),
+cfg['e4'] = monta(dict(esc, titulo='Todas as <em>ex</em> da booster box 👀', pack=0, rotulo='Valor das cartas', lucro=525.68,
+  linhas=[{'nome': 'Booster box', 'nota': 'R$ 349,90 no menor preço do site', 'v': -349.90}, {'nome': 'Todas as ex e IR (8 cartas)', 'nota': 'média Liga Pokémon', 'v': 875.58}]),
+  [dict(arq='E4_vitrine.mp4', ini=0.0, fim=8.0, rev=3.0, carta='Rampardos ex ×2', valor=12.90, raridade='Rara Dupla', atraso=0.3, estrela='2×!'),
    dict(arq='E4_vitrine.mp4', ini=8.0, fim=16.5, rev=8.5, carta='Mega Chandelure ex ×2', valor=17.50, raridade='Rara Dupla', custo=0, estrela='2×!'),
    dict(arq='E4_vitrine.mp4', ini=16.5, fim=20.3, rev=17.0, carta='Mega Excadrill ex', valor=10.69, raridade='Rara Dupla', custo=0),
    dict(arq='E4_vitrine.mp4', ini=20.3, fim=23.3, rev=20.8, carta='Wailord ex', valor=5.91, raridade='Rara Dupla', custo=0),
