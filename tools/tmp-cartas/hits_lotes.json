@@ -19,7 +19,9 @@
     "raridade": "Rara Ultra",
     "valor": 82.0,
     "vitrine_s": 16,
-    "abertura": "20261031_165017 0:16-0:26"
+    "abertura": "20261031_165017 0:16-0:26",
+    "qtd": 2,
+    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma"
    },
    {
     "carta": "Wooper de Paldea",
@@ -27,7 +29,9 @@
     "raridade": "Ilustração Rara",
     "valor": 11.9,
     "vitrine_s": 32,
-    "abertura": "20261031_164511 0:24-0:26"
+    "abertura": "20261031_164511 0:24-0:26",
+    "qtd": 2,
+    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma"
    },
    {
     "carta": "Jaula de Batalha",
@@ -54,7 +58,8 @@
    }
   ],
   "pago": 323.96,
-  "pago_nota": "dono, promoção pega no site (31/10)"
+  "pago_nota": "dono, promoção pega no site (31/10)",
+  "total_cartas": 321.86
  },
  "esc": {
   "produto": "me05-box36",
@@ -81,7 +86,9 @@
     "num": "038/084",
     "raridade": "Rara Dupla",
     "valor": 3.67,
-    "abertura": "20261031_172141 0:54-0:56"
+    "abertura": "20261031_172141 0:54-0:56",
+    "qtd": 2,
+    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma"
    },
    {
     "carta": "Mega Excadrill ex",
@@ -106,6 +113,7 @@
    }
   ],
   "pago": 349.9,
-  "pago_nota": "menor preço do site (dono não informou o valor pago)"
+  "pago_nota": "menor preço do site (dono não informou o valor pago)",
+  "total_cartas": 612.88
  }
 }
