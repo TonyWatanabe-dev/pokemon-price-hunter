@@ -173,6 +173,13 @@ brilhos.forEach((b, i) => {
   tl.fromTo(b, { x: 0, y: 0, opacity: 0, rotation: 0 }, { opacity: 1, x: Math.cos(a) * r, y: Math.sin(a) * r * 1.3, rotation: 180, duration: 1.1, immediateRender: false }, H + .05 + (i % 5) * .03)
     .to(b, { opacity: 0, scale: 0, duration: .5, ease: 'power2.in' }, H + .8 + (i % 5) * .05);
 });
+// 3b. close da vitrine (C.detalhe): flash na troca de plano; estrela e faixa saem para a carta aparecer inteira, o placar fica
+if (C.detalhe) {
+  tl.to('#flash', { opacity: .6, duration: .08, ease: 'none' }, C.detalhe - .08).to('#flash', { opacity: 0, duration: .45, ease: 'power2.out' }, C.detalhe)
+    .to('#hit', { scale: 0, rotation: -30, duration: .35, ease: 'power3.in' }, C.detalhe - .4)
+    .to('#faixa', { clipPath: 'inset(100% 0% 0% 0% round 36px)', y: 120, duration: .45, ease: 'power3.in' }, C.detalhe - .4)
+    .fromTo('#placar', { scale: 1 }, { scale: .82, y: -30, duration: .6, ease: 'power3.out', immediateRender: false }, C.detalhe);
+}
 // 4. transição em círculo para a lâmina na cor do tipo
 tl.to('#hit, #faixa, #placar', { scale: .9, opacity: 0, duration: .35, stagger: .04, ease: 'power2.in' }, F - .45)
   .to('#fim', { clipPath: 'circle(1400px at 540px 900px)', duration: 1, ease: 'expo.inOut' }, F - .3)

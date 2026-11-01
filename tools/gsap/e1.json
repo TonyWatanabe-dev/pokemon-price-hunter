@@ -11,8 +11,21 @@
  "linhaPack": "1 pack da booster box",
  "notaPack": "box R$ 349,90 no menor preço do site ÷ 36",
  "hitT": 18.2,
- "dur": 27.0,
+ "dur": 32.1,
  "fimDur": 4.5,
  "ganchoAte": 3.6,
- "revela": 16.0
+ "revela": 16.0,
+ "detalhe": 22.4,
+ "segs": [
+  [
+   "../../tmp-lotes/E1_darkrai.mp4",
+   6.0,
+   28.4
+  ],
+  [
+   "../../tmp-lotes/E1_darkrai_det.mp4",
+   2.6,
+   7.8
+  ]
+ ]
 }
