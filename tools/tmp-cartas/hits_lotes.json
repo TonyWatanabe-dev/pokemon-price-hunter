@@ -1,5 +1,5 @@
 {
- "_nota": "Hits dos brutos de 31/10, confirmados nos vídeos-vitrine (fogo 20261031_171235, esc 20261031_174158). Preços Deck Certo (ME02 17/10, ME05 12/10).",
+ "_nota": "Hits dos brutos de 31/10, confirmados nos vídeos-vitrine (fogo 20261031_171235, esc 20261031_174158). Valores: média de 'Vendas nos últimos 3 meses' da Liga Pokémon, prints do dono em 31/10 (substitui o Deck Certo).",
  "fogo": {
   "produto": "me02-blister1",
   "qtd": 48,
@@ -10,7 +10,7 @@
     "carta": "Dawn",
     "num": "129/094",
     "raridade": "Ilustração Rara Especial",
-    "valor": 117.44,
+    "valor": 170.61,
     "vitrine_s": 42
    },
    {
@@ -21,14 +21,13 @@
     "vitrine_s": 16,
     "abertura": "20261031_165017 0:16-0:26",
     "qtd": 2,
-    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma",
-    "valor_fonte": "média de venda dos últimos 3 meses no marketplace (print do dono, 31/10); Deck Certo dava 82,00"
+    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma"
    },
    {
     "carta": "Wooper de Paldea",
     "num": "102/094",
     "raridade": "Ilustração Rara",
-    "valor": 11.9,
+    "valor": 18.2,
     "vitrine_s": 32,
     "abertura": "20261031_164511 0:24-0:26",
     "qtd": 2,
@@ -38,7 +37,7 @@
     "carta": "Jaula de Batalha",
     "num": "116/094",
     "raridade": "Rara Ultra",
-    "valor": 10.85,
+    "valor": 20.68,
     "vitrine_s": 26,
     "abertura": "20261031_164134 0:28-0:30"
    },
@@ -46,7 +45,7 @@
     "carta": "Mismagius ex",
     "num": "036/094",
     "raridade": "Rara Dupla",
-    "valor": 2.98,
+    "valor": 5.99,
     "vitrine_s": 10,
     "abertura": "20261031_165532 0:18-0:26"
    },
@@ -54,13 +53,22 @@
     "carta": "Mega Heracross ex",
     "num": "004/094",
     "raridade": "Rara Dupla",
-    "valor": 2.79,
+    "valor": 5.78,
     "vitrine_s": 4
+   },
+   {
+    "carta": "Mega Lopunny ex",
+    "num": "084/094",
+    "raridade": "Rara Dupla",
+    "valor": 7.12,
+    "gravado": false,
+    "nota": "saiu no Fogo mas não foi gravado; só o valor entra na conta (dono, 31/10)"
    }
   ],
   "pago": 323.96,
   "pago_nota": "dono, promoção pega no site (31/10)",
-  "total_cartas": 506.3
+  "total_cartas": 595.02,
+  "lucro": 271.06
  },
  "esc": {
   "produto": "me05-box36",
@@ -72,21 +80,21 @@
     "carta": "Mega Darkrai ex",
     "num": "116/084",
     "raridade": "Ilustração Rara Especial",
-    "valor": 590.0,
+    "valor": 814.04,
     "abertura": "20261031_172141 1:22-1:28"
    },
    {
     "carta": "Manectric",
     "num": "089/084",
     "raridade": "Ilustração Rara",
-    "valor": 8.0,
+    "valor": 14.54,
     "abertura": "20261031_173139 1:36-1:40"
    },
    {
     "carta": "Mega Chandelure ex",
     "num": "038/084",
     "raridade": "Rara Dupla",
-    "valor": 3.67,
+    "valor": 8.75,
     "abertura": "20261031_172141 0:54-0:56",
     "qtd": 2,
     "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma"
@@ -95,26 +103,27 @@
     "carta": "Mega Excadrill ex",
     "num": "065/084",
     "raridade": "Rara Dupla",
-    "valor": 3.5,
+    "valor": 10.69,
     "abertura": "20261031_171845 0:16-0:22"
    },
    {
     "carta": "Wailord ex",
     "num": "016/084",
     "raridade": "Rara Dupla",
-    "valor": 2.29,
+    "valor": 5.91,
     "abertura": "20261031_173352 0:58-1:04"
    },
    {
     "carta": "Rampardos ex",
     "num": "045/084",
     "raridade": "Rara Dupla",
-    "valor": 1.75,
+    "valor": 6.45,
     "abertura": "20261031_173139 1:16-1:18"
    }
   ],
   "pago": 349.9,
   "pago_nota": "menor preço do site (dono não informou o valor pago)",
-  "total_cartas": 612.88
+  "total_cartas": 869.13,
+  "lucro": 519.23
  }
 }
