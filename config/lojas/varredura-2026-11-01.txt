@@ -1,0 +1,9 @@
+# Varredura semanal de 01/11/2026: busca por códigos Copag (36859/36862/35671/36439/36936), lançamentos ME02.5–ME04 e lojas regionais.
+# Confirmada com página de produto Pokémon lacrado (Copag, PT-BR) no site próprio:
+https://www.lktoys.com.br            # LKToys Colecionáveis · SP (DDD 11, cidade não informada) · Loja Integrada
+# Evidência: /treinador-avancado-pokemon-me04-caos-ascendente-copag (indisponível) exibe
+# /blister-triplo-pokemon-me04-caos-ascendente-charmeleon-copag a R$ 46,99 com link de compra.
+# Fora: garimpetoys.com.br (robots.txt bloqueia o robô na página de produto), comprarbrinquedos.com (Barão
+# Distribuidor, venda exclusiva para CNPJ), shopping.sicredi.com.br (marketplace), spkidsdistribuidora.com.br
+# (distribuidora). Fora por não confirmar preço/carrinho em produto Pokémon: planetanerdgeek.com (todo lacrado
+# Pokémon indisponível, sem preço), noybrinquedos.com.br (página não abriu na verificação).
