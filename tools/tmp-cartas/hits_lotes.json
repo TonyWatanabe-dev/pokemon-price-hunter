@@ -17,11 +17,12 @@
     "carta": "Mega Charizard X ex",
     "num": "109/094",
     "raridade": "Rara Ultra",
-    "valor": 82.0,
+    "valor": 174.22,
     "vitrine_s": 16,
     "abertura": "20261031_165017 0:16-0:26",
     "qtd": 2,
-    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma"
+    "qtd_nota": "2ª cópia confirmada pelo dono (31/10); a vitrine mostra uma",
+    "valor_fonte": "média de venda dos últimos 3 meses no marketplace (print do dono, 31/10); Deck Certo dava 82,00"
    },
    {
     "carta": "Wooper de Paldea",
@@ -59,7 +60,7 @@
   ],
   "pago": 323.96,
   "pago_nota": "dono, promoção pega no site (31/10)",
-  "total_cartas": 321.86
+  "total_cartas": 506.3
  },
  "esc": {
   "produto": "me05-box36",
