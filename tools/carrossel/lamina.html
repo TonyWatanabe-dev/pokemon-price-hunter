@@ -111,6 +111,23 @@ if (L.tipo === 'capa') {
     + `<p class="p" style="left:120px;right:120px;top:720px;text-align:center;color:#131f49">${L.corpo || 'O site varre as lojas a cada 15 min e manda a melhor oferta no grupo.'}</p>`
     + `<div style="left:0;right:0;top:900px;display:grid;justify-items:center;gap:30px"><span class="btn">Link na bio → grupo</span><span style="font:700 32px/1 Rubik">www.tcgpricehunter.com.br</span></div>`
     + brilhos([[150, 260, 48], [930, 560, 36]]);
+} else if (L.tipo === 'grupo') {
+  // Arte única por coleção para o grupo (WhatsApp/Telegram): todas as cartas do lote em grade + conta do lote.
+  const brl = (v) => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const tile = (c, i) => `<div style="position:relative;width:296px">`
+    + `<div class="foto" style="position:relative;width:296px;height:250px;border-width:7px;border-radius:16px;transform:rotate(${[-2, 1.5, -1, 2, -1.5, 1][i % 6]}deg)"><img src="cartas/${c.foto}.jpg" alt=""></div>`
+    + (c.qtd > 1 ? `<div class="x2" style="position:absolute;right:-14px;top:-18px;width:84px;height:84px;font-size:32px;box-shadow:0 0 0 5px #fff,0 8px 20px rgba(0,0,0,.5)">${c.qtd}×</div>` : '')
+    + `<div style="margin-top:16px;font:800 27px/1.05 Rubik;letter-spacing:-.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.nome}</div>`
+    + `<div style="margin-top:6px;font:900 34px/1 Rubik;color:${c.valor == null ? '#9aa6d8' : 'var(--sticker)'}">${c.valor == null ? (c.semValor || 'em breve') : brl(c.valor)}</div></div>`;
+  const conta = (k, v, m, cor) => `<div><div class="k">${k}</div><div class="v" style="font-size:52px;${cor ? 'color:' + cor : ''}">${v}</div><div class="m" style="font-size:19px">${m}</div></div>`;
+  h = fundo() + `<div class="eb"><i></i>${L.eb}</div><img class="logo" src="logo.png" alt="">`
+    + `<h2 style="left:72px;right:72px;top:128px;font-size:64px">${L.titulo}</h2>`
+    + `<div style="left:72px;right:72px;top:${L.gradeTop || 300}px;display:grid;grid-template-columns:repeat(3,296px);justify-content:space-between;row-gap:26px">${L.cartas.map(tile).join('')}</div>`
+    + `<div class="box" style="left:72px;right:72px;top:1030px;display:flex;justify-content:space-between;gap:16px;padding:22px 30px">`
+    + conta('Preço no site', brl(L.preco), L.precoNota) + conta('Cartas · Liga', brl(L.total) + (L.totalMais ? '+' : ''), L.totalNota || 'média de venda, 3 meses')
+    + conta('Saldo', (L.saldo >= 0 ? '+' : '−') + brl(Math.abs(L.saldo)) + (L.totalMais ? '+' : ''), L.saldoNota || 'cartas − preço', L.saldo >= 0 ? 'var(--ok)' : '#c93d25') + `</div>`
+    + `<div class="foot" style="bottom:40px;align-items:flex-end"><span class="legal" style="max-width:690px">${L.nota ? L.nota + '<br>' : ''}© Pokémon/Nintendo/Creatures/GAME FREAK · fotos: TCG Price Hunter</span><span class="swipe" style="font-size:24px">tcgpricehunter.com.br</span></div>`
+    + brilhos([[960, 150, 40], [40, 300, 30]]);
 }
 sp.innerHTML = h;
 </script>
