@@ -1,7 +1,47 @@
 {
- "fonte": "Meus cupons (conta do proprietário), leitura da página Brinquedos, Hobbies e Bebês (175 cupons, 6 páginas)",
+ "fonte": "Meus cupons (conta do proprietário), leitura de 02/11/2026: cupons gerais do ML (página inicial de cupons) e de loja (Brinquedos, Hobbies e Bebês, 175 cupons). Cupom geral sem data (\"Está esgotando!\") vale 3 dias a partir da leitura, como no importador.",
  "exportadoEm": "2026-11-02",
  "cupons": [
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 80,
+   "minimo": 400,
+   "limite": 4000,
+   "validoAte": "2026-11-05"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 120,
+   "minimo": 700,
+   "limite": 6000,
+   "validoAte": "2026-11-05"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 170,
+   "minimo": 1100,
+   "limite": 8500,
+   "validoAte": "2026-11-05"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 220,
+   "minimo": 1600,
+   "limite": 11000,
+   "validoAte": "2026-11-05"
+  },
+  {
+   "escopo": "ml",
+   "tipo": "reais",
+   "valor": 280,
+   "minimo": 2000,
+   "limite": 14000,
+   "validoAte": "2026-11-05"
+  },
   {
    "escopo": "vendedor",
    "tipo": "pct",
