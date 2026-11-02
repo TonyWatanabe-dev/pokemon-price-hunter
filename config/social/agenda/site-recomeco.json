@@ -1,0 +1,194 @@
+{
+ "semana": "Vídeos do site com o início refeito (sem tela azul vazia) e capa no texto, 02/11",
+ "pasta": "assets/social/agenda/videos",
+ "cancelar": [
+  {
+   "quando": "2026-11-02T19:00",
+   "plataforma": "instagram",
+   "trecho": "Promoção boa some rápido. No T",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-02T19:00",
+   "plataforma": "tiktok",
+   "trecho": "promoção boa some rápido ⚡\n\ngr",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-02T19:00",
+   "plataforma": "youtube",
+   "trecho": "Promoção boa some rápido. No T",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "instagram",
+   "trecho": "Essa oferta vale a pena? O TCG",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "tiktok",
+   "trecho": "essa oferta vale a pena? nota ",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "youtube",
+   "trecho": "Essa oferta vale a pena? O TCG",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "instagram",
+   "trecho": "Cansou de ficar de olho no pre",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "tiktok",
+   "trecho": "cansou de ficar de olho no pre",
+   "motivo": "início vazio refeito"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "youtube",
+   "trecho": "Cansou de ficar de olho no pre",
+   "motivo": "início vazio refeito"
+  }
+ ],
+ "itens": [
+  {
+   "id": "v-11-02-site-15s-comunidade-ig-tu-r",
+   "quando": "2026-11-02T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 400,
+   "legenda": "Promoção boa some rápido. No TCG Price Hunter a comunidade avisa em tempo real, e no grupo do WhatsApp você recebe primeiro.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_comunidade.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_comunidade_capa.jpg"
+  },
+  {
+   "id": "v-11-02-site-15s-comunidade-tt-tu-r",
+   "quando": "2026-11-02T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "promoção boa some rápido ⚡\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_comunidade.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_comunidade_capa.jpg",
+   "capaMs": 400
+  },
+  {
+   "id": "v-11-02-site-15s-comunidade-yt-tu-r",
+   "quando": "2026-11-02T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Promoção de Pokémon TCG some rápido",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Promoção boa some rápido. No TCG Price Hunter a comunidade avisa em tempo real, e no grupo do WhatsApp você recebe primeiro.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_comunidade.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_comunidade_capa.jpg",
+   "capaMs": 400
+  },
+  {
+   "id": "v-11-05-site-15s-score-ig-tu-r",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 400,
+   "legenda": "Essa oferta vale a pena? O TCG Price Hunter dá uma nota de 0 a 100 pra cada oferta. Reinado Delta chega amanhã: usa antes de comprar.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_score.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_score_capa.jpg"
+  },
+  {
+   "id": "v-11-05-site-15s-score-tt-tu-r",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "essa oferta vale a pena? nota de 0 a 100\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_score.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_score_capa.jpg",
+   "capaMs": 400
+  },
+  {
+   "id": "v-11-05-site-15s-score-yt-tu-r",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Essa oferta de Pokémon TCG vale a pena?",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Essa oferta vale a pena? O TCG Price Hunter dá uma nota de 0 a 100 pra cada oferta. Reinado Delta chega amanhã: usa antes de comprar.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_score.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_score_capa.jpg",
+   "capaMs": 400
+  },
+  {
+   "id": "m-v-10-26-site-15s-alertas-ig-g2-92-r",
+   "quando": "2026-11-14T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "capaMs": 400,
+   "legenda": "Cansou de ficar de olho no preço? Diz quanto quer pagar e o Hunter te avisa quando baixar 🔔\n\nGrátis.\n\nA melhor oferta de Pokémon TCG do Brasil, com comissão ou sem, chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_alertas.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_alertas_capa.jpg"
+  },
+  {
+   "id": "m-v-10-26-site-15s-alertas-tt-g2-93-r",
+   "quando": "2026-11-14T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "legenda": "cansou de ficar de olho no preço? 🔔\n\ngrupo do Zap no link da bio\n\n#pokemontcg #pokemon #tcgbrasil #colecionador #fyp",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_alertas.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_alertas_capa.jpg",
+   "capaMs": 400
+  },
+  {
+   "id": "m-v-10-26-site-15s-alertas-yt-g2-94-r",
+   "quando": "2026-11-14T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Aviso de preço para Pokémon TCG grátis",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "tcg price hunter"
+   ],
+   "legenda": "Cansou de ficar de olho no preço? Diz quanto quer pagar e o Hunter te avisa quando baixar 🔔\n\nGrátis.\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/grupos\n\n#pokemontcg #pokemontcgbrasil #colecionador #ofertas #tcgbrasil",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_alertas.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/R_SITE_alertas_capa.jpg",
+   "capaMs": 400
+  }
+ ]
+}
