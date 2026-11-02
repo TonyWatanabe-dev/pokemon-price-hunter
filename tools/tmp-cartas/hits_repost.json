@@ -1,0 +1,70 @@
+{
+ "_nota": "Valores: média de 'Vendas nos últimos 3 meses' da Liga Pokémon, prints do dono em 02/11/2026 (substituem os do Deck Certo).",
+ "etb30": {
+  "produto": "ETB Celebração de 30 Anos",
+  "menor_preco_site": 519.9,
+  "pago": 548.0,
+  "hits": [
+   {
+    "carta": "Pikachu ex",
+    "num": "150/128",
+    "raridade": "Ilustração Rara Especial",
+    "valor": 490.14
+   },
+   {
+    "carta": "Pikachu (Cartas Clássicas)",
+    "num": "058/30",
+    "raridade": "Clássica",
+    "valor": 198.17
+   },
+   {
+    "carta": "Zapdos",
+    "num": "133/128",
+    "raridade": "Ilustração Rara",
+    "valor": 60.0
+   },
+   {
+    "carta": "Nidorina (promo)",
+    "num": "MEP 101",
+    "raridade": "Promo",
+    "valor": 45.63
+   },
+   {
+    "carta": "Gholdengo",
+    "num": "142/128",
+    "raridade": "Ilustração Rara",
+    "valor": 20.66
+   },
+   {
+    "carta": "Pikachu ex",
+    "num": "053/128",
+    "raridade": "Rara Dupla",
+    "valor": 16.78
+   }
+  ],
+  "total_hits": 831.38
+ },
+ "uxie": {
+  "produto": "Booster Celebração de 30 Anos",
+  "menor_preco_site": 47.4,
+  "pago": 60.89,
+  "hits": [
+   {
+    "carta": "Uxie (Cartas Clássicas)",
+    "num": "043/30",
+    "raridade": "Clássica",
+    "valor": 41.83
+   }
+  ],
+  "total_hits": 41.83
+ },
+ "miraidon": {
+  "produto": "Baralho Batalha de Liga Miraidon ex",
+  "pago": 90.0
+ },
+ "de8": {
+  "produto": "Desafio Estratégico (8 boosters)",
+  "menor_preco_site": 114.99,
+  "hits": []
+ }
+}
