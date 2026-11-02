@@ -1,0 +1,111 @@
+{
+ "kick": "Celebração de 30 Anos",
+ "titulo": "Abri a <em>ETB 30 Anos</em> inteira 👀",
+ "tagFim": "Resultado · Celebração de 30 Anos",
+ "pack": 519.9,
+ "rotulo": "ETB 30 Anos",
+ "notaPack": "menor preço do site",
+ "ganchoAte": 2.6,
+ "tipoCarta": "eletrico",
+ "lucro": 311.48,
+ "linhas": [
+  {
+   "nome": "ETB 30 Anos",
+   "nota": "R$ 519,90 no menor preço do site",
+   "v": -519.9
+  },
+  {
+   "nome": "Os 6 hits da ETB",
+   "nota": "média Liga Pokémon",
+   "v": 831.38
+  }
+ ],
+ "carta": "Nidorina",
+ "valor": 45.63,
+ "raridade": "Promo da ETB",
+ "hitT": 5.8,
+ "revela": 4.6,
+ "estrela": "PROMO",
+ "detalhe": 52.4,
+ "segs": [
+  [
+   "../../tmp-lotes/R_etb_box.mp4",
+   38,
+   45.9
+  ],
+  [
+   "../../tmp-lotes/R_etb_3.mp4",
+   13,
+   21
+  ],
+  [
+   "../../tmp-lotes/R_etb_4.mp4",
+   21,
+   29
+  ],
+  [
+   "../../tmp-lotes/R_etb_5.mp4",
+   18,
+   26.5
+  ],
+  [
+   "../../tmp-lotes/R_etb_8.mp4",
+   18,
+   26
+  ],
+  [
+   "../../tmp-lotes/R_etb_7.mp4",
+   15,
+   27
+  ],
+  [
+   "../../tmp-lotes/R_etb_7.mp4",
+   26.5,
+   29.9
+  ]
+ ],
+ "extras": [
+  {
+   "seg": 7.9,
+   "t": 13.1,
+   "carta": "Gholdengo",
+   "valor": 20.66,
+   "raridade": "Ilustração Rara",
+   "custo": 0
+  },
+  {
+   "seg": 15.9,
+   "t": 20.6,
+   "carta": "Zapdos",
+   "valor": 60.0,
+   "raridade": "Ilustração Rara",
+   "custo": 0
+  },
+  {
+   "seg": 23.9,
+   "t": 28.4,
+   "carta": "Pikachu clássico",
+   "valor": 198.17,
+   "raridade": "Cartas Clássicas",
+   "custo": 0
+  },
+  {
+   "seg": 32.4,
+   "t": 37.1,
+   "carta": "Pikachu ex",
+   "valor": 16.78,
+   "raridade": "Rara Dupla",
+   "custo": 0
+  },
+  {
+   "seg": 40.4,
+   "t": 47.6,
+   "carta": "Pikachu ex",
+   "valor": 490.14,
+   "raridade": "Ilustração Rara Especial",
+   "custo": 0
+  }
+ ],
+ "dur": 60.3,
+ "fimDur": 4.5
+}

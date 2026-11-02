@@ -1,0 +1,32 @@
+{
+ "kick": "Celebração de 30 Anos",
+ "titulo": "Booster de R$ 47… espera a <em>última carta</em> 👀",
+ "tagFim": "Resultado · Celebração de 30 Anos",
+ "pack": 47.4,
+ "rotulo": "1 booster 30 Anos",
+ "notaPack": "menor preço do site",
+ "linhaPack": "1 booster 30 Anos",
+ "ganchoAte": 2.6,
+ "tipoCarta": "psiquico",
+ "carta": "Uxie clássico",
+ "valor": 41.83,
+ "raridade": "Cartas Clássicas",
+ "revela": 15.8,
+ "hitT": 17.8,
+ "detalhe": 20.5,
+ "segs": [
+  [
+   "../../tmp-lotes/R_uxie.mp4",
+   1,
+   21.5
+  ],
+  [
+   "../../tmp-lotes/R_uxie.mp4",
+   27,
+   30.9
+  ]
+ ],
+ "dur": 28.9,
+ "fimDur": 4.5,
+ "h1": "Quase empatou."
+}

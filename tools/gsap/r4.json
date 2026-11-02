@@ -1,0 +1,57 @@
+{
+ "kick": "Desafio Estratégico",
+ "titulo": "8 boosters de R$ 114,99… <em>hit ou brick?</em> 💀",
+ "tagFim": "Resultado · Desafio Estratégico",
+ "pack": 114.99,
+ "rotulo": "Desafio Estratégico",
+ "notaPack": "menor preço do site",
+ "ganchoAte": 2.6,
+ "carta": "Nada de hit",
+ "valor": 0,
+ "raridade": "Nem todo pack é hit",
+ "brick": true,
+ "estrela": "BRICK",
+ "precoTxt": "😭",
+ "fonte": "nenhuma carta rara nos 8 boosters",
+ "h1": "Deu brick.",
+ "lucro": -114.99,
+ "tipoCarta": "escuridao",
+ "linhas": [
+  {
+   "nome": "Desafio Estratégico (8 boosters)",
+   "nota": "R$ 114,99 no menor preço do site",
+   "v": -114.99
+  },
+  {
+   "nome": "Cartas raras",
+   "nota": "nenhum hit",
+   "v": 0
+  }
+ ],
+ "revela": 29.0,
+ "hitT": 29.3,
+ "segs": [
+  [
+   "../../tmp-lotes/R_de_a.mp4",
+   3,
+   9
+  ],
+  [
+   "../../tmp-lotes/R_de_a.mp4",
+   33,
+   41
+  ],
+  [
+   "../../tmp-lotes/R_de_b.mp4",
+   2,
+   9
+  ],
+  [
+   "../../tmp-lotes/R_de_b.mp4",
+   20,
+   29
+  ]
+ ],
+ "dur": 34.5,
+ "fimDur": 4.5
+}

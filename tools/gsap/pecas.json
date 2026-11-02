@@ -1,16 +1,30 @@
 [
  {
-  "mudo": "tmp-gsap/E2_mudo.mp4",
-  "saida": "tmp-render/G_E2_placar_box.mp4",
+  "mudo": "tmp-gsap/R1_mudo.mp4",
+  "saida": "tmp-render/G_R1_etb30.mp4",
   "trilha": "short_top",
   "ini": 0,
-  "versao": 4
+  "versao": 5
  },
  {
-  "mudo": "tmp-gsap/E4_mudo.mp4",
-  "saida": "tmp-render/G_E4_vitrine_ex.mp4",
+  "mudo": "tmp-gsap/R2_mudo.mp4",
+  "saida": "tmp-render/G_R2_uxie.mp4",
   "trilha": "short_top",
   "ini": 0,
-  "versao": 4
+  "versao": 5
+ },
+ {
+  "mudo": "tmp-gsap/R3_mudo.mp4",
+  "saida": "tmp-render/G_R3_miraidon.mp4",
+  "trilha": "short_top",
+  "ini": 0,
+  "versao": 5
+ },
+ {
+  "mudo": "tmp-gsap/R4_mudo.mp4",
+  "saida": "tmp-render/G_R4_desafio.mp4",
+  "trilha": "short_top",
+  "ini": 0,
+  "versao": 5
  }
 ]

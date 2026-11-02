@@ -1,0 +1,53 @@
+{
+ "kick": "Baralho Batalha de Liga",
+ "titulo": "Unboxing: deck do <em>Miraidon ex</em> ⚡",
+ "tagFim": "Baralho Batalha de Liga · Miraidon ex",
+ "pack": 90,
+ "rotulo": "Baralho Batalha de Liga",
+ "ganchoAte": 2.6,
+ "tipoCarta": "eletrico",
+ "semValor": true,
+ "carta": "Miraidon ex",
+ "valor": 0,
+ "raridade": "Carta ex do deck",
+ "precoTxt": "⚡",
+ "fonte": "vem no deck, pronto pra jogar",
+ "estrela": "ex!",
+ "lucro": 0,
+ "lucroTxt": "R$ 90",
+ "h1": "60 cartas prontas pra jogar.",
+ "linhas": [
+  {
+   "nome": "Baralho Batalha de Liga Miraidon ex",
+   "nota": "60 cartas · nível 3",
+   "txt": "R$ 90,00"
+  }
+ ],
+ "revela": 10.5,
+ "hitT": 12.5,
+ "detalhe": 17,
+ "segs": [
+  [
+   "../../tmp-lotes/R_mir_a.mp4",
+   2,
+   9
+  ],
+  [
+   "../../tmp-lotes/R_mir_b.mp4",
+   1,
+   11
+  ],
+  [
+   "../../tmp-lotes/R_mir_det.mp4",
+   2,
+   10
+  ],
+  [
+   "../../tmp-lotes/R_mir_det.mp4",
+   24,
+   30
+  ]
+ ],
+ "dur": 35.5,
+ "fimDur": 4.5
+}
