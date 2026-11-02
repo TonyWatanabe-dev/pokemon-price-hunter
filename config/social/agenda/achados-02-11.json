@@ -1,0 +1,30 @@
+{
+ "semana": "Achados do grupo (02/11): vídeo para impulsionar no IG e TikTok",
+ "pasta": "assets/social/agenda/videos",
+ "itens": [
+  {
+   "id": "achados-in",
+   "quando": "2026-11-02T01:55",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/A_achados_do_grupo.mp4",
+   "legenda": "🇺🇸 Deals our group caught: Pokémon TCG at the lowest prices we found\n\nEsses foram os achados do nosso grupo 👀 ETB 30 Anos, Box Mega Dragonite, Combo 30 Anos, booster box de Escuridão Absoluta e 48 packs de Fogo Fantasmagórico, tudo pelo menor preço que o TCG Price Hunter encontrou.\n\nO site varre as lojas e avisa no grupo do WhatsApp quando aparece preço bom. Entra e pega os próximos: link na bio.\n\n#pokemontcg #pokemontcgbrasil #ofertas #colecionador #tcg",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/A_achados_capa.jpg",
+   "capaMs": 6500
+  },
+  {
+   "id": "achados-ti",
+   "quando": "2026-11-02T01:55",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/A_achados_do_grupo.mp4",
+   "legenda": "achados do nosso grupo de ofertas 👀 o site varre as lojas e avisa no grupo do zap quando aparece preço bom. link na bio 👇 #pokemontcg #pokemontcgbrasil #ofertas #tcg",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/A_achados_capa.jpg",
+   "capaMs": 6500
+  }
+ ]
+}
