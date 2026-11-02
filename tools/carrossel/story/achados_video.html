@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Story achados video</title>
+<!-- Story 1080x1920 "Achados do grupo": 4 fotos reais em grade 2x2, etiquetas pretas com o valor pago (achado pelo site),
+     faixa central com a chamada do grupo e espaço livre embaixo para o adesivo de link do Instagram. -->
+<style>
+@font-face{font-family:Rubik;font-weight:700;src:url(../rubik700.ttf)}
+@font-face{font-family:Rubik;font-weight:800;src:url(../rubik800.ttf)}
+@font-face{font-family:Rubik;font-weight:900;src:url(../rubik900.ttf)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0e1330;font-family:Rubik,sans-serif}
+.q{position:absolute;width:540px;height:960px;overflow:hidden}
+.q img{width:100%;height:100%;object-fit:cover;display:block}
+.q::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 3px #0e1330}
+.tag{position:absolute;background:#0b0b0f;color:#fff;border-radius:18px;padding:14px 24px 16px;box-shadow:0 10px 30px rgba(0,0,0,.45);white-space:nowrap}
+.tag b{display:block;font:900 64px/1 Rubik;letter-spacing:-2px}
+.tag small{display:block;font:800 22px/1.1 Rubik;color:#ffcf33;letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+.tag.p b{font-size:50px}
+.faixa{position:absolute;left:50%;transform:translateX(-50%);background:#0b0b0f;color:#fff;white-space:nowrap;text-align:center}
+.f1{top:870px;padding:20px 40px;border-radius:20px;font:900 62px/1 Rubik;letter-spacing:-1px;box-shadow:0 0 0 6px #ffcf33,0 18px 40px rgba(0,0,0,.5)}
+.f1 em{font-style:normal;color:#ffcf33}
+.f2{top:1000px;padding:14px 28px;border-radius:14px;font:800 32px/1 Rubik}
+.cta{position:absolute;left:50%;transform:translateX(-50%);top:1520px;background:#ffcf33;color:#131f49;padding:22px 44px;border-radius:999px;font:900 50px/1 Rubik;white-space:nowrap;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.logo{position:absolute;right:24px;top:200px;width:170px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
+.fim{position:absolute;inset:0;background:rgba(14,19,48,.92);opacity:0;display:grid;place-content:center;justify-items:center;gap:34px;text-align:center;color:#fff}
+.fim img{width:420px}
+.fim h2{font:900 92px/1 Rubik;letter-spacing:-3px}
+.fim h2 em{font-style:normal;color:#ffcf33}
+.fim p{font:700 38px/1.3 Rubik;color:#dfe4fa;max-width:820px}
+.fim .btn{background:#ffcf33;color:#131f49;padding:26px 52px;border-radius:999px;font:900 54px/1 Rubik}
+.fim small{font:800 32px/1 Rubik;color:#ffcf33}
+.q img{will-change:transform}
+</style>
+<script src="../../gsap/gsap.min.js"></script>
+</head>
+<body>
+<div class="q" style="left:0;top:0"><img src="30anos.jpg" style="object-position:50% 50%" alt=""></div>
+<div class="q" style="left:540px;top:0"><img src="dragonite_combo.jpg" style="object-position:100% 50%" alt=""></div>
+<div class="q" style="left:0;top:960px"><img src="escuridao_box.jpg" style="object-position:50% 40%" alt=""></div>
+<div class="q" style="left:540px;top:960px"><img src="fogo_caixas.jpg" style="object-position:25% 50%" alt=""></div>
+
+<!-- 30 Anos -->
+<div class="tag p" style="left:30px;top:250px;transform:rotate(-5deg)"><b>R$ 135,80</b><small>Coleção com Pôster</small></div>
+<div class="tag p" style="left:250px;top:560px;transform:rotate(4deg)"><b>R$ 82,45</b><small>Blister duplo</small></div>
+<div class="tag p" style="left:30px;top:700px;transform:rotate(-3deg)"><b>R$ 548</b><small>ETB 30 Anos</small></div>
+<!-- Dragonite + Combo -->
+<div class="tag" style="left:590px;top:330px;transform:rotate(-4deg)"><b>R$ 90</b><small>Box Mega Dragonite</small></div>
+<div class="tag" style="left:780px;top:640px;transform:rotate(5deg)"><b>R$ 240</b><small>Combo 30 Anos</small></div>
+<!-- Escuridão -->
+<div class="tag" style="left:40px;top:1110px;transform:rotate(-4deg)"><b>R$ 349,90</b><small>Booster box Escuridão</small></div>
+<!-- Fogo -->
+<div class="tag" style="left:560px;top:1300px;transform:rotate(4deg)"><b>R$ 323,96</b><small>48 packs Fogo Fantasmagórico</small></div>
+
+<div class="faixa f1">🚨 ACHADOS DO <em>GRUPO</em> 🚨</div>
+<div class="faixa f2">Preços que pegamos pelo TCG Price Hunter</div>
+<div class="cta" style="top:1440px">Entra no grupo 👇</div>
+<img class="logo" src="../logo.png" alt="">
+<div class="fim" id="fim"><img src="../logo.png" alt=""><h2>Pega os próximos<br><em>no grupo</em></h2><p>O site varre as lojas e avisa no WhatsApp quando aparece preço bom de Pokémon TCG.</p><span class="btn">Entra no grupo 👇</span><small>www.tcgpricehunter.com.br</small></div>
+<script>
+const tl = gsap.timeline({ paused: true });
+const qs = gsap.utils.toArray('.q'), tags = gsap.utils.toArray('.tag');
+tl.from(qs, { opacity: 0, scale: 1.12, duration: .6, stagger: .12, ease: 'power3.out' }, 0);
+qs.forEach((q) => tl.fromTo(q.querySelector('img'), { scale: 1 }, { scale: 1.08, duration: 11, ease: 'none' }, 0));
+tl.from(tags, { scale: 0, opacity: 0, duration: .45, stagger: .32, ease: 'back.out(2.2)', transformOrigin: '50% 50%' }, .9);
+tl.from('.f1', { scale: 2.2, opacity: 0, duration: .45, ease: 'back.out(1.6)' }, 3.3);
+tl.from('.f2', { y: 30, opacity: 0, duration: .4, ease: 'power2.out' }, 3.7);
+tl.from('.cta', { y: 40, opacity: 0, duration: .4, ease: 'back.out(2)' }, 4.1);
+tl.to('.cta', { scale: 1.08, duration: .35, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 4.6);
+tl.from('.logo', { opacity: 0, duration: .4 }, .4);
+tl.to('#fim', { opacity: 1, duration: .5 }, 7.6);
+tl.from('#fim > *', { y: 40, opacity: 0, duration: .5, stagger: .12, ease: 'power3.out' }, 7.8);
+tl.to('#fim .btn', { scale: 1.07, duration: .4, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 9);
+window.seek = (t) => { tl.seek(t, false); return 1; };
+</script>
+</body>
+</html>
