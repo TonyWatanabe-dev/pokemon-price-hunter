@@ -11,6 +11,8 @@ export const CATEGORIA_TCG = /brinquedo|jogos?\b|colecion|hobb|card|tcg|pok[eé]
 const SEMANA = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
 const iso = (ms) => new Date(ms).toISOString().slice(0, 10);
 const norm = (s) => String(s ?? '').trim().toLowerCase();
+/** Nome de loja comparável: "Saga Geek", "SAGA_GEEK" e "sagageek" viram a mesma chave (o CSV usa o nome de exibição; o anúncio, o apelido). */
+export const chaveLoja = (s) => norm(s).normalize('NFD').replace(/[^a-z0-9]/g, '');
 
 /** Validade do CSV ("31/12", "domingo", "amanhã", vazio) → AAAA-MM-DD, relativa à data da exportação (BRT). */
 export function validadeAte(txt, exportadoEm, { semDataDias = 3 } = {}) {
@@ -44,7 +46,7 @@ export function deLinha(r, exportadoEm, { vendedores = new Set() } = {}) {
   let escopo;
   if (emissor === 'ml' && !campanha) escopo = 'ml';
   else if (emissor === 'ml' && CATEGORIA_TCG.test(campanha) && !/infantil|kids|moda|roupa/i.test(campanha)) escopo = 'categoria';
-  else if (emissor === 'loja' && loja && vendedores.has(norm(loja))) escopo = 'vendedor';
+  else if (emissor === 'loja' && loja && (vendedores.has(norm(loja)) || vendedores.has(chaveLoja(loja)))) escopo = 'vendedor';
   else return null;
   const validoAte = validadeAte(r.validade, exportadoEm);
   if (!validoAte) return null;
@@ -79,10 +81,10 @@ const fmt = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: v 
 /** Melhor cupom para a oferta (ML, válido hoje, preço ≥ mínimo), ou null. Vendedor > categoria > ML geral no empate. */
 export function cupomPara(oferta, cupons, now = Date.now()) {
   if (!oferta || oferta.storeId !== 'mercadolivre' || !(oferta.price > 0) || !Array.isArray(cupons)) return null;
-  const hoje = hojeBrt(now); const vend = norm(oferta.seller);
+  const hoje = hojeBrt(now); const vend = chaveLoja(oferta.seller);
   const peso = { vendedor: 3, categoria: 2, ml: 1 };
   const ok = cupons.filter((c) => c && c.validoAte >= hoje && oferta.price >= (c.minimo || 0)
-    && (c.escopo !== 'vendedor' || (vend && norm(c.vendedor) === vend)));
+    && (c.escopo !== 'vendedor' || (vend && chaveLoja(c.vendedor) === vend)));
   ok.sort((a, b) => descontoEm(b, oferta.price) - descontoEm(a, oferta.price) || peso[b.escopo] - peso[a.escopo]);
   return ok[0] && descontoEm(ok[0], oferta.price) > 0 ? ok[0] : null;
 }
