@@ -3,7 +3,7 @@
  "tag": "tcgpricehunter-20",
  "updatedAt": "2026-11-01",
  "regras": "Só anúncios Pokémon TCG casados por src/match.js com um produto do site e com marca Copag ou Pokémon na página da Amazon. Preço, vendedor e estoque lidos da página do produto na Amazon (oferta em destaque) no momento de capturedAt; o site mostra a data e hora junto do preço. Não é atualizado automaticamente. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score. Quando a Amazon escreve o formato em inglês (\"4-Pack Blister\", \"3-Pack Blister\", \"Advanced Trainer Box\"), matchTitle traz o mesmo título com o nome Copag do formato, e é ele que passa pelo matcher.",
- "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15).",
+ "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (22:05–22:17); 0 ASINs novos; 2 saíram para amazon-fora-do-site.json.",
  "links": [
   {
    "productId": "c30-blister2",
@@ -14,7 +14,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:09:21Z",
+   "capturedAt": "2026-11-02T01:05:17Z",
    "shortUrl": "https://link.amazon/B0894sCU8"
   },
   {
@@ -22,11 +22,11 @@
    "asin": "B0HDZJCZCY",
    "title": "Pokémon TCG, Celebração de 30 anos – Blister Triplo com Adesivo Pokémon Lucario",
    "url": "https://www.amazon.com.br/dp/B0HDZJCZCY?tag=tcgpricehunter-20",
-   "price": 169.9,
-   "seller": "FCR BRINQUEDOS",
+   "price": 169.1,
+   "seller": "GBL COMMERCE",
    "fulfilledBy": "seller",
-   "stockNote": "última unidade",
-   "capturedAt": "2026-11-01T19:09:25Z",
+   "stockNote": "Somente 6 em estoque",
+   "capturedAt": "2026-11-02T01:05:13Z",
    "shortUrl": "https://link.amazon/B0iYOoP2N"
   },
   {
@@ -37,8 +37,8 @@
    "price": 169.9,
    "seller": "FCR BRINQUEDOS",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 3 unidades",
-   "capturedAt": "2026-11-01T19:09:29Z",
+   "stockNote": "Somente 2 em estoque",
+   "capturedAt": "2026-11-02T01:06:10Z",
    "shortUrl": "https://link.amazon/B033z8VLZ"
   },
   {
@@ -50,7 +50,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:09:33Z",
+   "capturedAt": "2026-11-02T01:07:10Z",
    "shortUrl": "https://link.amazon/B05vJd7JC"
   },
   {
@@ -61,8 +61,8 @@
    "price": 284.05,
    "seller": "voltxstore",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 3 unidades",
-   "capturedAt": "2026-11-01T19:09:37Z",
+   "stockNote": "Somente 3 em estoque",
+   "capturedAt": "2026-11-02T01:07:10Z",
    "shortUrl": "https://link.amazon/B0b4DIn9b"
   },
   {
@@ -70,11 +70,11 @@
    "asin": "B0HFNZP4JX",
    "title": "Pokémon TCG, Celebração de 30 anos – Box Pokémon Coleção com Pôster",
    "url": "https://www.amazon.com.br/dp/B0HFNZP4JX?tag=tcgpricehunter-20",
-   "price": 142.4,
-   "seller": "Cano's Paper & Beauty",
+   "price": 142.49,
+   "seller": "PlaymatLindoia",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 9 unidades",
-   "capturedAt": "2026-11-01T19:09:41Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:07:10Z",
    "shortUrl": "https://link.amazon/B0gYGgCec"
   },
   {
@@ -85,45 +85,33 @@
    "price": 50.46,
    "seller": "Mais1",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 7 unidades",
-   "capturedAt": "2026-11-01T19:09:46Z",
+   "stockNote": "Somente 7 em estoque",
+   "capturedAt": "2026-11-02T01:07:10Z",
    "shortUrl": "https://link.amazon/B0hUZNmvI"
   },
   {
    "productId": "me01-blister4",
    "asin": "B0FL2K4CJB",
-   "title": "Pokémon TCG, Blister Quadrúplo MegaExpansão ME01 Golduck",
+   "title": "Pokémon TCG Blister Quadrúplo MegaExpansão ME01 Golduck 25 Cartas",
    "url": "https://www.amazon.com.br/dp/B0FL2K4CJB?tag=tcgpricehunter-20",
    "price": 72.1,
    "seller": "Pomp's Geek",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 2 unidades",
-   "capturedAt": "2026-11-01T19:09:51Z",
+   "stockNote": "Somente 2 em estoque",
+   "capturedAt": "2026-11-02T01:07:10Z",
    "shortUrl": "https://link.amazon/B04zZGaP6"
   },
   {
    "productId": "me02-blister4",
    "asin": "B0FVY2KDPT",
-   "title": "Pokémon TCG, Blister Quadruplo Weavile ME02 Fogo Fantasmagórico",
+   "title": "Pokémon TCG Blister Quadruplo Weavile ME02 Fogo Fantasmagórico 25 Cartas",
    "url": "https://www.amazon.com.br/dp/B0FVY2KDPT?tag=tcgpricehunter-20",
    "price": 74.95,
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:09:56Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:08:48Z",
    "shortUrl": "https://link.amazon/B0fITQ1Wn"
-  },
-  {
-   "productId": "me02-combo",
-   "asin": "B0FVY4GC1D",
-   "title": "Pokémon TCG, Combo de Booster ME02 Fogo Fantasmagórico",
-   "url": "https://www.amazon.com.br/dp/B0FVY4GC1D?tag=tcgpricehunter-20",
-   "price": null,
-   "seller": null,
-   "fulfilledBy": null,
-   "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:10:01Z",
-   "shortUrl": "https://link.amazon/B01KKQWSZ"
   },
   {
    "productId": "me02-desafio",
@@ -134,19 +122,19 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:10:05Z",
+   "capturedAt": "2026-11-02T01:08:48Z",
    "shortUrl": "https://link.amazon/B03OB3fE1"
   },
   {
    "productId": "me02-etb",
    "asin": "B0FVXZBW7T",
-   "title": "Pokémon TCG, Treinador Avançado ME02 Fogo Fantasmagórico",
+   "title": "Pokémon TCG Treinador Avançado ME02 Fogo Fantasmagórico 121 Cartas",
    "url": "https://www.amazon.com.br/dp/B0FVXZBW7T?tag=tcgpricehunter-20",
    "price": 927.01,
    "seller": "LOJA DO TOGURO",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 4 unidades",
-   "capturedAt": "2026-11-01T19:10:10Z",
+   "stockNote": "Somente 4 em estoque",
+   "capturedAt": "2026-11-02T01:08:49Z",
    "shortUrl": "https://link.amazon/B0iIPQ31N"
   },
   {
@@ -158,8 +146,8 @@
    "price": 40.75,
    "seller": "Toca do Tabuleiro",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:10:14Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:08:49Z",
    "shortUrl": "https://link.amazon/B05e5uEOE"
   },
   {
@@ -171,32 +159,32 @@
    "price": 46.46,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:10:18Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:08:49Z",
    "shortUrl": "https://link.amazon/B0cZ17dQr"
   },
   {
    "productId": "me03-box36",
    "asin": "B0GP33SWPM",
-   "title": "Pokémon TCG, Box Display Pokémon ME03 Equilíbrio Perfeito",
+   "title": "Pokémon TCG Box Display ME03 Equilíbrio Perfeito 216 Cartas",
    "url": "https://www.amazon.com.br/dp/B0GP33SWPM?tag=tcgpricehunter-20",
    "price": 446.88,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:10:23Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:08:49Z",
    "shortUrl": "https://link.amazon/B0ettN7YI"
   },
   {
    "productId": "me03-etb",
    "asin": "B0GP36NX4W",
-   "title": "Pokémon TCG, Treinador Avançado Pokémon ME03 Equilíbrio Perfeito",
+   "title": "Pokémon TCG Treinador Avançado ME03 Equilíbrio Perfeito 121 Cartas",
    "url": "https://www.amazon.com.br/dp/B0GP36NX4W?tag=tcgpricehunter-20",
    "price": 360.9,
    "seller": "FCR BRINQUEDOS",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:10:28Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:08:50Z",
    "shortUrl": "https://link.amazon/B03ea4Un2"
   },
   {
@@ -209,7 +197,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:10:33Z",
+   "capturedAt": "2026-11-02T01:08:50Z",
    "shortUrl": "https://link.amazon/B08D9Or3M"
   },
   {
@@ -217,11 +205,11 @@
    "asin": "B0GWFNG7RG",
    "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - Booster Display - Português",
    "url": "https://www.amazon.com.br/dp/B0GWFNG7RG?tag=tcgpricehunter-20",
-   "price": 408.65,
-   "seller": "Amazon.com.br",
-   "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:10:37Z",
+   "price": 394.25,
+   "seller": "PokecardsBrasil",
+   "fulfilledBy": "seller",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:08:51Z",
    "shortUrl": "https://link.amazon/B0afukFjz"
   },
   {
@@ -233,7 +221,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Não disponível",
-   "capturedAt": "2026-11-01T19:15:21Z",
+   "capturedAt": "2026-11-02T01:10:27Z",
    "shortUrl": "https://link.amazon/B09u7Xdxj"
   },
   {
@@ -241,11 +229,11 @@
    "asin": "B0GVVWMFCH",
    "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - Treinador Avançado - Português",
    "url": "https://www.amazon.com.br/dp/B0GVVWMFCH?tag=tcgpricehunter-20",
-   "price": null,
-   "seller": null,
-   "fulfilledBy": null,
-   "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:10:45Z",
+   "price": 473.49,
+   "seller": "CAROLINE F",
+   "fulfilledBy": "seller",
+   "stockNote": "Somente 4 em estoque",
+   "capturedAt": "2026-11-02T01:10:27Z",
    "shortUrl": "https://link.amazon/B02B8iU4T"
   },
   {
@@ -254,11 +242,11 @@
    "title": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - 3-Pack Blister - Português. Jogo de Cartas",
    "matchTitle": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Blister Triplo - Português. Jogo de Cartas",
    "url": "https://www.amazon.com.br/dp/B0H3QD7BQC?tag=tcgpricehunter-20",
-   "price": 43.0,
+   "price": 43,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:10:50Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:10:27Z",
    "shortUrl": "https://link.amazon/B0goTfnvw"
   },
   {
@@ -270,8 +258,8 @@
    "price": 46.44,
    "seller": "REINO ENCANTADO DA CRIANÇA",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 8 unidades",
-   "capturedAt": "2026-11-01T19:10:54Z",
+   "stockNote": "Somente 8 em estoque",
+   "capturedAt": "2026-11-02T01:10:27Z",
    "shortUrl": "https://link.amazon/B0gVboSdt"
   },
   {
@@ -283,8 +271,8 @@
    "price": 378.09,
    "seller": "Pokenino",
    "fulfilledBy": "amazon",
-   "stockNote": "disponível para compra (quantidade não informada)",
-   "capturedAt": "2026-11-01T19:15:35Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-02T01:10:28Z",
    "shortUrl": "https://link.amazon/B0gkCjrRR"
   },
   {
@@ -296,7 +284,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Não disponível",
-   "capturedAt": "2026-11-01T19:15:24Z",
+   "capturedAt": "2026-11-02T01:10:28Z",
    "shortUrl": "https://link.amazon/B0bvI7S72"
   },
   {
@@ -307,8 +295,8 @@
    "price": 854.99,
    "seller": "Planetoy Online",
    "fulfilledBy": "seller",
-   "stockNote": "última unidade",
-   "capturedAt": "2026-11-01T19:11:09Z",
+   "stockNote": "Somente 1 em estoque",
+   "capturedAt": "2026-11-02T01:10:29Z",
    "shortUrl": "https://link.amazon/B04ucpD8i"
   },
   {
@@ -319,8 +307,8 @@
    "price": 474.9,
    "seller": "FCR BRINQUEDOS",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:13Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:10:29Z",
    "shortUrl": "https://link.amazon/B0dOfe4KR"
   },
   {
@@ -331,56 +319,56 @@
    "price": 27.98,
    "seller": "Loja Riviera",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:19Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:10:29Z",
    "shortUrl": "https://link.amazon/B0eDIJLps"
   },
   {
    "productId": "sv9-blister3",
    "asin": "B0DW4CD42C",
-   "title": "Pokémon TCG, Blister Triplo Scraggy EV9 Amigos de Jornada",
+   "title": "Pokémon TCG Blister Triplo Scraggy EV9 Amigos de Jornada 19 Cartas",
    "url": "https://www.amazon.com.br/dp/B0DW4CD42C?tag=tcgpricehunter-20",
    "price": null,
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:11:22Z",
+   "capturedAt": "2026-11-02T01:10:29Z",
    "shortUrl": "https://link.amazon/B00Klzwjh"
   },
   {
    "productId": "sv9-blister3",
    "asin": "B0DW4DLB89",
-   "title": "Pokémon TCG, Blister Triplo Yanma EV9 Amigos de Jornada",
+   "title": "Pokémon TCG Blister Triplo Yanma EV9 Amigos de Jornada 19 Cartas",
    "url": "https://www.amazon.com.br/dp/B0DW4DLB89?tag=tcgpricehunter-20",
    "price": null,
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:11:27Z",
+   "capturedAt": "2026-11-02T01:12:05Z",
    "shortUrl": "https://link.amazon/B093qg8JC"
   },
   {
    "productId": "sv9-blister4",
    "asin": "B0DW4GM5BN",
-   "title": "Pokémon TCG, Blister Quadrúplo Yanmega EV9 Amigos de Jornada",
+   "title": "Pokémon TCG Blister Quadrúplo Yanmega EV9 Amigos de Jornada 25 Cartas",
    "url": "https://www.amazon.com.br/dp/B0DW4GM5BN?tag=tcgpricehunter-20",
    "price": null,
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:11:30Z",
+   "capturedAt": "2026-11-02T01:12:05Z",
    "shortUrl": "https://link.amazon/B06nq65qD"
   },
   {
    "productId": "sv9-box36",
    "asin": "B0DVT86QQV",
-   "title": "Pokémon TCG, Box Display EV9 Amigos de Jornada",
+   "title": "Pokémon TCG Box Display EV9 Amigos de Jornada a Partir de 4 Anos",
    "url": "https://www.amazon.com.br/dp/B0DVT86QQV?tag=tcgpricehunter-20",
    "price": null,
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:11:34Z",
+   "capturedAt": "2026-11-02T01:12:05Z",
    "shortUrl": "https://link.amazon/B0iCvRlnK"
   },
   {
@@ -391,8 +379,8 @@
    "price": 130.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:39Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:12:05Z",
    "shortUrl": "https://link.amazon/B0eHSHS2o"
   },
   {
@@ -403,8 +391,8 @@
    "price": 139.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:43Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:12:05Z",
    "shortUrl": "https://link.amazon/B04rqvMA6"
   },
   {
@@ -415,8 +403,8 @@
    "price": 22.9,
    "seller": "LissiL",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:47Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:12:06Z",
    "shortUrl": "https://link.amazon/B0aI3i2ls"
   },
   {
@@ -427,8 +415,8 @@
    "price": 123.09,
    "seller": "Dalaran Games",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:51Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:12:06Z",
    "shortUrl": "https://link.amazon/B0gSlp1JY"
   },
   {
@@ -440,7 +428,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:11:55Z",
+   "capturedAt": "2026-11-02T01:12:06Z",
    "shortUrl": "https://link.amazon/B0e8LjKov"
   },
   {
@@ -451,8 +439,8 @@
    "price": 110.2,
    "seller": "Conecta Bricks",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:11:59Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:12:06Z",
    "shortUrl": "https://link.amazon/B0jlSQknr"
   },
   {
@@ -463,8 +451,8 @@
    "price": 23.9,
    "seller": "LissiL",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:04Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:12:07Z",
    "shortUrl": "https://link.amazon/B03vpjpi1"
   },
   {
@@ -475,8 +463,8 @@
    "price": 134.83,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:07Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:13:38Z",
    "shortUrl": "https://link.amazon/B0f1RwLiG"
   },
   {
@@ -487,8 +475,8 @@
    "price": 41.8,
    "seller": "PokecardsBrasil",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:11Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:13:39Z",
    "matchTitle": "Pokémon TCG: Mega Evolução - Caos Ascendente - Blister Triplo - Português",
    "shortUrl": "https://link.amazon/B06C5W0Sp"
   },
@@ -500,8 +488,8 @@
    "price": 174.73,
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:15Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:13:39Z",
    "shortUrl": "https://link.amazon/B0ckYypBM"
   },
   {
@@ -512,8 +500,8 @@
    "price": 69.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "últimas 3 unidades",
-   "capturedAt": "2026-11-01T19:12:21Z",
+   "stockNote": "Somente 3 em estoque",
+   "capturedAt": "2026-11-02T01:13:39Z",
    "shortUrl": "https://link.amazon/B0ixRaLeT"
   },
   {
@@ -521,11 +509,11 @@
    "asin": "B0DQWV176X",
    "title": "Deck Pokemon Charizard Ex Batalha De Liga Copag",
    "url": "https://www.amazon.com.br/dp/B0DQWV176X?tag=tcgpricehunter-20",
-   "price": 128.25,
-   "seller": "lojailusoe",
+   "price": 132.05,
+   "seller": "LOJA GAMEUP",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:25Z",
+   "stockNote": "Somente 4 em estoque",
+   "capturedAt": "2026-11-02T01:13:39Z",
    "shortUrl": "https://link.amazon/B0b7r1L5l"
   },
   {
@@ -536,8 +524,8 @@
    "price": 178.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "preparo para envio leva de 1 a 2 dias",
-   "capturedAt": "2026-11-01T19:12:29Z",
+   "stockNote": "Preparo para envio leva de 1 a 2 dias",
+   "capturedAt": "2026-11-02T01:13:40Z",
    "shortUrl": "https://link.amazon/B0gN44m70"
   },
   {
@@ -549,7 +537,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Não disponível",
-   "capturedAt": "2026-11-01T19:15:32Z",
+   "capturedAt": "2026-11-02T01:13:40Z",
    "shortUrl": "https://link.amazon/B02bRfYoC"
   },
   {
@@ -560,8 +548,8 @@
    "price": 78.9,
    "seller": "Starhouse Mega Store",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:37Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:13:40Z",
    "shortUrl": "https://link.amazon/B0gdYgF1b"
   },
   {
@@ -572,8 +560,8 @@
    "price": 569.99,
    "seller": "Planetoy Online",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:40Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:13:40Z",
    "shortUrl": "https://link.amazon/B08hDfT7E"
   },
   {
@@ -584,8 +572,8 @@
    "price": 61.65,
    "seller": "LissiL",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 8 unidades",
-   "capturedAt": "2026-11-01T19:12:45Z",
+   "stockNote": "Somente 8 em estoque",
+   "capturedAt": "2026-11-02T01:13:40Z",
    "shortUrl": "https://link.amazon/B01zwROp9"
   },
   {
@@ -596,8 +584,8 @@
    "price": 359.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:49Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:15:26Z",
    "shortUrl": "https://link.amazon/B09G0Eson"
   },
   {
@@ -608,8 +596,8 @@
    "price": 1253.02,
    "seller": "ACG ECOM",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:12:54Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:15:26Z",
    "shortUrl": "https://link.amazon/B0dPAYKcX"
   },
   {
@@ -620,8 +608,8 @@
    "price": 389.4,
    "seller": "Toca do Tabuleiro",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 8 unidades",
-   "capturedAt": "2026-11-01T19:12:58Z",
+   "stockNote": "Somente 7 em estoque",
+   "capturedAt": "2026-11-02T01:15:26Z",
    "shortUrl": "https://link.amazon/B02hnZ7sl"
   },
   {
@@ -632,8 +620,8 @@
    "price": 218.49,
    "seller": "LOJAS RM",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 5 unidades",
-   "capturedAt": "2026-11-01T19:13:02Z",
+   "stockNote": "Somente 5 em estoque",
+   "capturedAt": "2026-11-02T01:15:27Z",
    "shortUrl": "https://link.amazon/B0e2HozvN"
   },
   {
@@ -644,8 +632,8 @@
    "price": 474.9,
    "seller": "FCR BRINQUEDOS",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 9 unidades",
-   "capturedAt": "2026-11-01T19:13:05Z",
+   "stockNote": "Somente 9 em estoque",
+   "capturedAt": "2026-11-02T01:15:27Z",
    "shortUrl": "https://link.amazon/B04Ka0w6j"
   },
   {
@@ -656,8 +644,8 @@
    "price": 664.99,
    "seller": "Flower Cases",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 6 unidades",
-   "capturedAt": "2026-11-01T19:13:09Z",
+   "stockNote": "Somente 6 em estoque",
+   "capturedAt": "2026-11-02T01:15:28Z",
    "shortUrl": "https://link.amazon/B0iYXsD03"
   },
   {
@@ -668,8 +656,8 @@
    "price": 566.33,
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 4 unidades",
-   "capturedAt": "2026-11-01T19:13:15Z",
+   "stockNote": "Somente 4 em estoque",
+   "capturedAt": "2026-11-02T01:15:28Z",
    "shortUrl": "https://link.amazon/B0aTR8K3J"
   },
   {
@@ -680,8 +668,8 @@
    "price": 599.99,
    "seller": "Flower Cases",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 2 unidades",
-   "capturedAt": "2026-11-01T19:13:18Z",
+   "stockNote": "Somente 2 em estoque",
+   "capturedAt": "2026-11-02T01:15:28Z",
    "shortUrl": "https://link.amazon/B0iMDexgk"
   },
   {
@@ -693,7 +681,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:13:23Z",
+   "capturedAt": "2026-11-02T01:15:28Z",
    "shortUrl": "https://link.amazon/B0hQOn8fo"
   },
   {
@@ -704,8 +692,8 @@
    "price": 189.99,
    "seller": "Planetoy Online",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 2 unidades",
-   "capturedAt": "2026-11-01T19:13:27Z",
+   "stockNote": "Somente 2 em estoque",
+   "capturedAt": "2026-11-02T01:15:29Z",
    "shortUrl": "https://link.amazon/B046G6TUR"
   },
   {
@@ -716,8 +704,8 @@
    "price": 48.92,
    "seller": "M K SUPRIMENTOS INDUSTRIAIS LTDA",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:13:32Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:17:36Z",
    "shortUrl": "https://link.amazon/B0bweEbV5"
   },
   {
@@ -728,8 +716,8 @@
    "price": 99.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:13:37Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:17:36Z",
    "matchTitle": "Pokémon TCG: Mega Evolution - Perfect Order - Blister Triplo - Inglês",
    "shortUrl": "https://link.amazon/B0aYsLsVJ"
   },
@@ -741,8 +729,8 @@
    "price": 55.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "últimas 3 unidades",
-   "capturedAt": "2026-11-01T19:13:41Z",
+   "stockNote": "Somente 3 em estoque",
+   "capturedAt": "2026-11-02T01:17:36Z",
    "shortUrl": "https://link.amazon/B04qJQ0lL"
   },
   {
@@ -753,8 +741,8 @@
    "price": 180.49,
    "seller": "Planetoy Online",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:13:45Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:17:36Z",
    "shortUrl": "https://link.amazon/B0cQ6RAmX"
   },
   {
@@ -765,8 +753,8 @@
    "price": 74.95,
    "seller": "VENDAS ONLINE 013",
    "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:13:50Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:17:36Z",
    "shortUrl": "https://link.amazon/B091SBytK"
   },
   {
@@ -777,22 +765,10 @@
    "price": 129.9,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:13:54Z",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-02T01:17:37Z",
    "matchTitle": "Pokémon TCG: Mega Evolution - Pitch Black - Blister Triplo - Inglês, Jogo de Cartas",
    "shortUrl": "https://link.amazon/B0czwHCSC"
-  },
-  {
-   "productId": "c30-blister2",
-   "asin": "B0HP8BN19P",
-   "title": "Pokémon TCG, Celebração de 30 anos – Blister Duplo Pokémon com moeda",
-   "url": "https://www.amazon.com.br/dp/B0HP8BN19P?tag=tcgpricehunter-20",
-   "price": 119.9,
-   "seller": "PAPERMIX",
-   "fulfilledBy": "seller",
-   "stockNote": null,
-   "capturedAt": "2026-11-01T19:13:57Z",
-   "shortUrl": "https://link.amazon/B0gDVkbRW"
   },
   {
    "productId": "swsh12_5-lata",
@@ -802,8 +778,8 @@
    "price": 636.5,
    "seller": "SUMMER GEEK",
    "fulfilledBy": "seller",
-   "stockNote": "últimas 2 unidades",
-   "capturedAt": "2026-11-01T19:14:01Z",
+   "stockNote": "Somente 2 em estoque",
+   "capturedAt": "2026-11-02T01:17:37Z",
    "shortUrl": "https://link.amazon/B0gRsB3KV"
   },
   {
@@ -815,10 +791,10 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Preço mais alto do que o habitual",
-   "capturedAt": "2026-11-01T19:14:06Z",
+   "capturedAt": "2026-11-02T01:17:37Z",
    "shortUrl": "https://link.amazon/B0bBnCkwN"
   }
  ],
- "capturadoEm": "2026-11-01T19:15:35Z",
+ "capturadoEm": "2026-11-02T01:17:37Z",
  "shortUrlNota": "shortUrl: link curto gerado pelo dono na SiteStripe (17/10/2026, identificação tcgpricehunter-20) para os bots de Telegram/WhatsApp. O site continua usando url (www.amazon.com.br/dp/<ASIN>?tag=...), que mostra o produto e a tag."
 }
