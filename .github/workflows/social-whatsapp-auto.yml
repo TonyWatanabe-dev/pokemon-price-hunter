@@ -2,7 +2,8 @@ name: Social WhatsApp automático
 
 # Envio automático ao grupo do WhatsApp "TCG Price Hunter | 01" (#690). Automação NÃO oficial (Baileys), por decisão
 # do proprietário em 14/10/2026 ("sim, assumo o risco"). Regras mais espaçadas que o Telegram (REGRAS_WHATSAPP):
-# sem intervalo mínimo entre mensagens (pedido do dono em 24/10), 1 oferta nova por rodada, teto de 70 em 24 h, madrugada só novidades.
+# 15 min entre mensagens e revezamento ML/Shopee/Amazon só com link de afiliado (pedido do dono em 02/11), 1 oferta por rodada,
+# teto de 70 em 24 h, madrugada só novidades.
 # KILL SWITCH: variável do repositório SOCIAL_WHATSAPP_AUTO = 1. Sessão cifrada e diário ficam no cache do Actions.
 # A sessão só é persistida após rodada bem-sucedida; falhas de autenticação nunca promovem credenciais possivelmente inválidas.
 on:
@@ -10,7 +11,7 @@ on:
     workflows: ['Price Hunter']
     types: [completed]
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -66,12 +67,13 @@ jobs:
         env:
           SOCIAL_ENABLED: '1'
           SOCIAL_CUPONS: ${{ vars.SOCIAL_CUPONS }}
+          SOCIAL_EXTERNAS: ${{ vars.SOCIAL_EXTERNAS }}
           SOCIAL_WHATSAPP_AUTO: ${{ vars.SOCIAL_WHATSAPP_AUTO }}
           TITULO: ${{ vars.SOCIAL_WHATSAPP_GRUPO || 'TCG Price Hunter | 01' }}
           SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
         run: |
           mkdir -p social
-          node tools/social-whatsapp.mjs enviar --sessao social/wa-sessao.bin --state dados/data/state.json --diario social/wa-diario.json --titulo "$TITULO" --card-dir "$RUNNER_TEMP" | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/social-whatsapp.mjs enviar --sessao social/wa-sessao.bin --state dados/data/state.json --diario social/wa-diario.json --titulo "$TITULO" --card-dir "$RUNNER_TEMP" --shopee config/afiliados/shopee-ofertas.json --amazon config/afiliados/amazon.json | tee -a "$GITHUB_STEP_SUMMARY"
           exit "${PIPESTATUS[0]}"
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         if: always() && hashFiles('social/wa-diario.json') != ''

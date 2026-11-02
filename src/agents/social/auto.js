@@ -62,5 +62,7 @@ export function registrar(diario, envios, { now = Date.now(), regras = REGRAS } 
 // cada 30 min das 7h à meia-noite (34 no dia) e oferta sem afiliado pode voltar depois de 6 h, para a fila não secar.
 // 31/10/2026: intervalo mínimo de 30 min entre TODAS as mensagens, inclusive ofertas novas; afiliadas também respeitam
 // o mesmo espaçamento. Uma oferta por rodada, teto diário preservado; automação permanece desligada até liberação da conta.
-export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 30, intervaloAntesNovas: true, afiliadoIntervaloMin: 30, novasPorRodada: 1, maxDia: 70,
-  naoAfiliadoUmaVez: false, repetirHoras: 6 });
+// 02/11/2026 (pedido do dono): 15 min entre mensagens, só afiliado e revezando ML/Shopee/Amazon (tools/social-whatsapp.mjs);
+// afiliada pode voltar depois de 6 h para a fila de 68 mensagens/dia (7h–24h) não secar. Teto de 70/24 h mantido.
+export const REGRAS_WHATSAPP = Object.freeze({ ...REGRAS, intervaloMin: 15, intervaloAntesNovas: true, afiliadoIntervaloMin: 15, novasPorRodada: 1, maxDia: 70,
+  naoAfiliadoUmaVez: false, repetirHoras: 6, repetirHorasAfiliado: 6 });

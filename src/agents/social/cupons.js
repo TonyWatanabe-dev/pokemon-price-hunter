@@ -92,10 +92,10 @@ export function cupomPara(oferta, cupons, now = Date.now()) {
 /** Linha da dica (texto puro, sem HTML) ou null. */
 export function dicaCupom(oferta, cupons, now = Date.now()) {
   const c = cupomPara(oferta, cupons, now); if (!c) return null;
-  // Curto (pedido do proprietário em 16/10/2026): valor, limite, mínimo e onde achar; "varia por conta" fica implícito
-  // em "Meus cupons" (é a lista da própria conta).
+  // Curto (pedido do proprietário em 16/10/2026): valor, limite, mínimo e onde achar. 02/11/2026: "Meus cupons" só
+  // lista o que já foi aplicado; o cupom geral é ativado em "Cupons" (botão Aplicar), então o post manda para lá.
   const quanto = c.tipo === 'pct' ? `${c.valor}%${c.limite ? ` até ${fmt(c.limite)}` : ''}` : `${fmt(c.valor)} OFF`;
   const onde = c.escopo === 'vendedor' ? ' da loja' : c.escopo === 'categoria' ? ' de Brinquedos' : '';
   const min = c.minimo > 0 ? ` (mín. ${fmt(c.minimo)})` : '';
-  return `🎟️ Cupom${onde}: ${quanto}${min} · veja em "Meus cupons" no ML`;
+  return `🎟️ Cupom${onde}: ${quanto}${min} · ative em "Cupons" no ML`;
 }
