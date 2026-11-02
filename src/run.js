@@ -8,6 +8,7 @@ import { shipping as vtexShipping } from './adapters/vtex.js';
 import { productUrls as jsonldUrls } from './adapters/jsonld.js';
 import { validateListing } from './adapters/contract.js';
 import { loadHandoff } from './discovery/handoff.js';
+import { PROPRIO } from './discovery/hosts.js';
 
 const BIG_MARKETPLACES = /(^|\.)(amazon|mercadolivre|mercadolibre|shopee|magazineluiza|magalu|aliexpress|americanas|casasbahia|pontofrio|extra|submarino|shoptime)\.com(\.br)?$/i;
 // Variável numérica positiva; ausente, 0, negativa ou não numérica usa o padrão.
@@ -169,7 +170,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   const catalog = loadCatalog();
   const overrides = overridesIndex(readJson(configPath('matching-overrides.json'), {})); // revisão humana; vazio se enabled !== true
   const registry = readJson(dataPath('products.json'), {}); // catálogo automático: todo produto já visto
-  const { stores } = readJson(configPath('stores.json'));
+  const stores = (readJson(configPath('stores.json')).stores || []).filter((s) => { try { return !PROPRIO.test(new URL(s.url).host); } catch { return true; } });
   // Lojas extras: um endereço por linha em config/lojas.txt (linhas com # são ignoradas)
   try {
     const known = new Set(stores.filter((s) => s.url).map((s) => new URL(s.url).host.replace(/^www\./, '')));
@@ -181,7 +182,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     for (const line of texts.join('\n').split(/\r?\n/)) {
       const raw = line.replace(/#.*/, '').trim(); if (!raw) continue;
       let u; try { u = new URL(/^https?:\/\//.test(raw) ? raw : 'https://' + raw); } catch { continue; }
-      const host = u.host.replace(/^www\./, ''); if (known.has(host)) continue; known.add(host);
+      const host = u.host.replace(/^www\./, ''); if (known.has(host) || PROPRIO.test(host)) continue; known.add(host);
       stores.push({ id: host.replace(/[^a-z0-9]/gi, '').toLowerCase(), name: host, url: u.origin, platform: 'auto', kind: 'specialist', evidence: {}, fromList: true });
     }
   } catch { /* sem lojas.txt */ }
@@ -204,6 +205,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // meta.json. O histórico de preços (data/hist, history.jsonl, lowest.json) é por storeId e não é tocado.
   const dropped = pruneSources(sources, stores);
   if (dropped.length) log(`sources.json: ${dropped.length} lojas fora da configuração deixam o registro (${dropped.join(', ')})`);
+  // O próprio site não é loja (src/discovery/hosts.js PROPRIO): "menor já visto" que apontava para ele sai.
+  for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && /^tcgpricehunter/.test(String(l.storeId))) delete lowest[pid];
   // Menor preço vindo de leitura antiga não confiável é descartado (o cache é refeito com as leituras novas).
   for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && !trustedPoint(distrust, l.storeId, l.at)) delete lowest[pid];
   // Na rodada da correção, essas lojas não geram eventos (o "antes" delas não era confiável).

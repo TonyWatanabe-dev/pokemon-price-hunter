@@ -5,7 +5,10 @@
 import fs from 'node:fs';
 import { readJson, dataPath, configPath } from '../db.js';
 
-export const IGNORE = /(^|\.)(mercadolivre|mercadolibre|amazon|shopee|magazineluiza|magalu|americanas|casasbahia|pontofrio|extra|submarino|shoptime|carrefour|kabum|aliexpress|youtube|instagram|facebook|tiktok|reddit|wikipedia|buscape|zoom|google|pokemon|ligamagic|escorregaopreco|pelando|promobit|olx|enjoei|twitter|x|pinterest|linkedin|bing|duckduckgo|ebay|tcgplayer|pokemontcgpocket|droper)\.(com|com\.br|net|org|br)$/i;
+export const IGNORE = /(^|\.)(mercadolivre|mercadolibre|amazon|shopee|magazineluiza|magalu|americanas|casasbahia|pontofrio|extra|submarino|shoptime|carrefour|kabum|aliexpress|youtube|instagram|facebook|tiktok|reddit|wikipedia|buscape|zoom|google|pokemon|ligamagic|escorregaopreco|pelando|promobit|olx|enjoei|twitter|x|pinterest|linkedin|bing|duckduckgo|ebay|tcgplayer|pokemontcgpocket|droper|tcgpricehunter)\.(com|com\.br|net|org|br)$/i;
+// O próprio site nunca é loja: a descoberta aceitou tcgpricehunter.com.br em 01/11/2026 (JSON-LD das nossas páginas de
+// produto, que repetem o preço de outra loja) e ele virou "melhor oferta" de dezenas de produtos, com link para nós mesmos.
+export const PROPRIO = /(^|\.)tcgpricehunter\.com\.br$/i;
 export const hostOf = (url) => { try { return new URL(url).host.toLowerCase().replace(/^www\./, ''); } catch { return null; } };
 // Mesma derivação de id que src/run.js usa para lojas vindas de config/lojas/*.txt.
 export const idFromHost = (host) => host.replace(/[^a-z0-9]/gi, '').toLowerCase();
