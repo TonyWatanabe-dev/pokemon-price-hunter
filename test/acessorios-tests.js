@@ -19,7 +19,8 @@ t('arquivo versionado passa na validação e cobre as 5 categorias', () => {
 
 t('o arquivo é o resultado do importador sobre as leituras versionadas', () => {
   const j = JSON.parse(ler('config/afiliados/acessorios.json'));
-  const itens = ['mercadolivre:ml', 'amazon:amazon', 'shopee:shopee'].flatMap((s) => { const [l, f] = s.split(':'); return parse(l, ler(`tools/acessorios/${f}-2026-10-31.txt`)).itens; });
+  // Leitura versionada mais recente de cada loja (Shopee relida em 01/11/2026).
+  const itens = ['mercadolivre:ml-2026-10-31', 'amazon:amazon-2026-10-31', 'shopee:shopee-2026-11-01'].flatMap((s) => { const [l, f] = s.split(':'); return parse(l, ler(`tools/acessorios/${f}.txt`)).itens; });
   assert.equal(j.itens.length, itens.length);
   const k = (i) => `${i.loja}:${i.id}:${i.price}:${i.url}`;
   assert.deepEqual(new Set(j.itens.map(k)), new Set(itens.map(k)));
