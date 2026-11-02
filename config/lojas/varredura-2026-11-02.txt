@@ -1,0 +1,9 @@
+# Varredura semanal de 02/11/2026: busca por códigos Copag (36936/37139/35909), lançamentos ME02–ME04
+# (Fogo Fantasmagórico, Equilíbrio Perfeito, Caos Ascendente, Heróis Excelsos) e lojas regionais.
+# Confirmada com página de produto Pokémon lacrado (Copag, PT-BR) no site próprio:
+https://www.manacardstore.com.br       # Mana Card Store · SP (DDD 19, cidade não informada) · Loja Integrada
+# Evidência (02/11/2026): /brcombo-de-boosters-caos-ascendente lida (HTTP 200): "(BR)Combo de Boosters - Caos
+# Ascendente" (18 boosters), R$ 249,99, "Disponibilidade: Imediata", botão Comprar → /carrinho/produto/401141205/adicionar.
+# Razão social no rodapé: GTW COLECIONAVEIS LTDA. robots.txt não foi lido nesta varredura (o coletor deve respeitá-lo).
+# Fora: voltzcards.com.br (robots.txt bloqueia robô na página de produto), geekshopoficial.com.br (site não abriu
+# na verificação; aparece vinculado à LigaPokemon). Demais resultados já conhecidos ou marketplaces.
