@@ -34,15 +34,16 @@ await t('3. grupo: só título exato e único', () => {
   assert.equal(acharGrupo({ ...g, c: { id: '3@g.us', subject: 'Outro' } }, 'Outro'), null, 'ambíguo: não posta');
 });
 
-await t('4. regras do WhatsApp: intervalo de 30 min entre TODAS as mensagens, 1 nova por rodada, teto de 70/24 h; Telegram inalterado', () => {
+await t('4. regras do WhatsApp: intervalo de 15 min entre TODAS as mensagens, 1 nova por rodada, teto de 70/24 h; Telegram inalterado', () => {
   const c = (id, f = iso(5000), afiliado = false) => ({ item: { ofertaId: id }, oferta: { firstSeen: f }, afiliado });
   assert.equal(REGRAS.intervaloMin, 5); assert.equal(REGRAS.maxDia, undefined);
-  assert.equal(REGRAS_WHATSAPP.intervaloMin, 30);
+  assert.equal(REGRAS_WHATSAPP.intervaloMin, 15);
   assert.equal(REGRAS_WHATSAPP.intervaloAntesNovas, true);
-  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 30);
+  assert.equal(REGRAS_WHATSAPP.afiliadoIntervaloMin, 15);
+  assert.equal(REGRAS_WHATSAPP.repetirHorasAfiliado, 6);
   assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS }).enviar.length, 1, 'Telegram mantém envio imediato de novidade');
   assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(1) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 0, 'WhatsApp segura novidade durante intervalo');
-  assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(31) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1, 'libera após 30 min');
+  assert.equal(planejar([c('nova', iso(5))], [{ ofertaId: 'x', at: iso(16) }], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1, 'libera após 15 min');
   assert.equal(planejar([c('n1', iso(5)), c('n2', iso(5))], [], { now: NOW, regras: REGRAS_WHATSAPP }).enviar.length, 1);
   const cheio = Array.from({ length: 70 }, (_, i) => ({ ofertaId: 'o' + i, at: iso(40 + i) }));
   assert.match(planejar([c('n', iso(5))], cheio, { now: NOW, regras: REGRAS_WHATSAPP }).motivo, /teto/);
@@ -51,7 +52,7 @@ await t('4. regras do WhatsApp: intervalo de 30 min entre TODAS as mensagens, 1 
 // ---------------------------------------------------------------- ferramenta com conexão falsa
 const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'wa-'));
 const st = { generatedAt: new Date(NOW).toISOString(), products: [{ id: 'me04-box36', collection: 'me04', collectionName: 'ME04', type: 'booster_box', boosters: 36, name: 'Box ME04' }],
-  offers: [{ id: 'o1', productId: 'me04-box36', storeId: 'l', storeName: 'Loja', url: 'https://l.test/p', image: 'https://l.test/i.jpg', title: 'Box ME04', price: 900, total: 900,
+  offers: [{ id: 'o1', productId: 'me04-box36', storeId: 'mercadolivre', storeName: 'Mercado Livre', url: 'https://produto.mercadolivre.com.br/MLB-1234567890-box-me04', image: 'https://l.test/i.jpg', title: 'Box ME04', price: 900, total: 900, discount: 0.1,
     shippingKnown: true, shipping: 0, stock: 'IN_STOCK', confirmed: true, stale: false, anomalous: false, firstSeen: iso(5000), source_timestamp: iso(5) }] };
 const stateFile = path.join(tmp, 'state.json'); fs.writeFileSync(stateFile, JSON.stringify(st));
 const io = () => { const out = []; const err = []; return { out, err, io: { log: (s) => out.push(String(s)), error: (s) => err.push(String(s)) } }; };
@@ -63,6 +64,8 @@ const fakeCon = (grupos = { a: { id: '1@g.us', subject: 'TCG Price Hunter | 01' 
   return { conectar, env, fechou: () => fechou };
 };
 const fetchImg = async () => ({ ok: true, arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer });
+// Anúncio do fixture com link de afiliado (o WhatsApp só posta afiliado, 02/11/2026) e sem leituras de Shopee/Amazon.
+const DEPS = { carregarAfiliados: () => ({ anuncios: { MLB1234567890: 'https://meli.la/teste' } }), leituras: { shopee: [], amazon: [] } };
 const ENV = { SOCIAL_ENABLED: '1', SOCIAL_WHATSAPP_AUTO: '1', SOCIAL_WHATSAPP_CHAVE: CHAVE };
 
 await t('5. args: modos e obrigatórios; número no formato 55...', () => {
@@ -73,8 +76,8 @@ await t('5. args: modos e obrigatórios; número no formato 55...', () => {
 
 await t('6. enviar: kill switch e sessão ausente não conectam', async () => {
   const f = fakeCon(); const a = ['enviar', '--sessao', path.join(tmp, 'nao.bin'), '--state', stateFile, '--diario', path.join(tmp, 'd.json'), '--titulo', 'TCG Price Hunter | 01'];
-  assert.equal(await main(a, { ...ENV, SOCIAL_WHATSAPP_AUTO: '0' }, io().io, { conectar: f.conectar, fetchFn: fetchImg, now: () => NOW }), 0);
-  assert.equal(await main(a, ENV, io().io, { conectar: f.conectar, fetchFn: fetchImg, now: () => NOW }), 2);
+  assert.equal(await main(a, { ...ENV, SOCIAL_WHATSAPP_AUTO: '0' }, io().io, { ...DEPS, conectar: f.conectar, fetchFn: fetchImg, now: () => NOW }), 0);
+  assert.equal(await main(a, ENV, io().io, { ...DEPS, conectar: f.conectar, fetchFn: fetchImg, now: () => NOW }), 2);
   assert.equal(f.env.length, 0);
 });
 
@@ -82,13 +85,13 @@ await t('7. enviar: posta imagem + legenda no grupo certo, grava diário e regra
   const sessao = path.join(tmp, 's.bin'); fs.writeFileSync(sessao, cifrarSessao({ 'creds.json': '{"velho":true}' }, CHAVE));
   const diario = path.join(tmp, 'd1.json'); const f = fakeCon(); const x = io();
   const a = ['enviar', '--sessao', sessao, '--state', stateFile, '--diario', diario, '--titulo', 'TCG Price Hunter | 01'];
-  assert.equal(await main(a, ENV, x.io, { conectar: f.conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 0);
+  assert.equal(await main(a, ENV, x.io, { ...DEPS, conectar: f.conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 0);
   assert.equal(f.env.length, 1); assert.equal(f.env[0].jid, '1@g.us');
   assert.ok(Buffer.isBuffer(f.env[0].m.image)); assert.match(f.env[0].m.caption, /^🇧🇷 \*Box ME04\*/); assert.doesNotMatch(f.env[0].m.caption, /<b>/);
   assert.deepEqual(JSON.parse(fs.readFileSync(diario, 'utf8')).map((d) => d.messageId), ['MSG1']);
   assert.deepEqual(decifrarSessao(fs.readFileSync(sessao), CHAVE), { 'creds.json': '{"novo":true}' }, 'sessão atualizada');
   assert.ok(f.fechou());
-  const f2 = fakeCon(); assert.equal(await main(a, ENV, io().io, { conectar: f2.conectar, fetchFn: fetchImg, now: () => NOW + 10 * 60e3, esperar: async () => {} }), 0);
+  const f2 = fakeCon(); assert.equal(await main(a, ENV, io().io, { ...DEPS, conectar: f2.conectar, fetchFn: fetchImg, now: () => NOW + 10 * 60e3, esperar: async () => {} }), 0);
   assert.equal(f2.env.length, 0, 'oferta já enviada e nada novo: nem conecta');
 });
 
@@ -99,7 +102,7 @@ await t('7b. enviar: conexão cai logo após abrir → reconecta uma vez e posta
     sock: () => ({ groupFetchAllParticipating: async () => { if (n === 1) throw new Error('Connection Closed'); return { a: { id: '1@g.us', subject: 'TCG Price Hunter | 01' } }; },
       sendMessage: async (jid, m) => { env.push(m); return { key: { id: 'M' } }; } }), fechar: async () => {} }; };
   const a = ['enviar', '--sessao', sessao, '--state', stateFile, '--diario', path.join(tmp, 'd3.json'), '--titulo', 'TCG Price Hunter | 01'];
-  assert.equal(await main(a, ENV, io().io, { conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 0);
+  assert.equal(await main(a, ENV, io().io, { ...DEPS, conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 0);
   assert.equal(conexoes, 2); assert.equal(env.length, 1);
 });
 
@@ -107,7 +110,7 @@ await t('8. enviar: grupo com outro nome não recebe nada', async () => {
   const sessao = path.join(tmp, 's2.bin'); fs.writeFileSync(sessao, cifrarSessao({ 'creds.json': '{}' }, CHAVE));
   const f = fakeCon({ a: { id: '9@g.us', subject: 'Grupo de teste' } });
   const a = ['enviar', '--sessao', sessao, '--state', stateFile, '--diario', path.join(tmp, 'd2.json'), '--titulo', 'TCG Price Hunter | 01'];
-  assert.equal(await main(a, ENV, io().io, { conectar: f.conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 2);
+  assert.equal(await main(a, ENV, io().io, { ...DEPS, conectar: f.conectar, fetchFn: fetchImg, now: () => NOW, esperar: async () => {} }), 2);
   assert.equal(f.env.length, 0);
 });
 

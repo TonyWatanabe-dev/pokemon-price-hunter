@@ -4,22 +4,25 @@
 //
 //   parear — liga o número ao bot: imprime um código de pareamento (WhatsApp → Aparelhos conectados → Conectar com
 //            número de telefone), espera a conexão e salva a sessão CIFRADA (AES-256-GCM, chave SOCIAL_WHATSAPP_CHAVE).
-//   enviar — uma rodada: restaura a sessão, confere o grupo pelo título exato, planeja com REGRAS_WHATSAPP (sem intervalo mínimo desde 24/10,
-//            1 nova por rodada, teto de 70/24 h, madrugada só novidades, afiliada 1×/24 h, demais voltam após 6 h), posta e salva a sessão.
+//   enviar — uma rodada: restaura a sessão, confere o grupo pelo título exato, planeja com REGRAS_WHATSAPP (15 min entre
+//            mensagens desde 02/11, 1 por rodada, teto de 70/24 h, madrugada só novidades, afiliada volta após 6 h) sobre a fila
+//            candidatosWhatsApp (só afiliado, só promoção, revezando ML/Shopee/Amazon), posta e salva a sessão.
 // A biblioteca Baileys é instalada só no workflow (npm install --no-save); aqui é importada dinamicamente.
 // Uso: node tools/social-whatsapp.mjs parear --sessao arq --numero 5511...
 //      node tools/social-whatsapp.mjs enviar --sessao arq --state state.json --diario diario.json --titulo "..." [--card-dir dir]
+//           [--shopee leitura.json] [--amazon leitura.json]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { candidatos, gerarCard } from './social-telegram-piloto.mjs';
 import { loadAffiliates } from '../api/_lib/affiliates.mjs';
+import { ofertasExternas, candidatoExterno, intercalar, lerLeituras } from '../src/agents/social/externas.js';
 import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
 import { legendaWhatsApp, cifrarSessao, decifrarSessao, acharGrupo } from '../src/agents/social/whatsapp.js';
 
-const OPCOES = ['--sessao', '--numero', '--state', '--diario', '--titulo', '--card-dir'];
+const OPCOES = ['--sessao', '--numero', '--state', '--diario', '--titulo', '--card-dir', '--shopee', '--amazon'];
 export function lerArgs(argv) {
   const o = { modo: argv[0] };
   if (!['parear', 'enviar'].includes(o.modo)) throw new Error('modo deve ser parear|enviar');
@@ -33,6 +36,23 @@ export function lerArgs(argv) {
   if (o.modo === 'parear' && !/^55\d{10,11}$/.test(o.numero || '')) throw new Error('--numero no formato 55DDDNUMERO');
   if (o.modo === 'enviar') for (const k of ['state', 'diario', 'titulo']) if (!o[k]) throw new Error(`--${k} é obrigatório`);
   return o;
+}
+
+/** Fila do WhatsApp (02/11/2026, pedido do dono): só link de afiliado, só promoção, revezando ML → Shopee → Amazon.
+ *  ML: ofertas do robô com afiliado abaixo do preço sugerido da Copag (discount) ou da média do mercado (vsMarket),
+ *  maior desconto primeiro, um anúncio por produto.
+ *  Shopee/Amazon: leituras manuais das últimas 24 h que são promoção (src/agents/social/externas.js); os arquivos vêm
+ *  de --shopee/--amazon, passados pelo workflow (sem eles, só ML).
+ *  SOCIAL_EXTERNAS=0 desliga Shopee/Amazon. A comissão não muda a ordem: dentro de cada loja vale o desconto. */
+const promocao = (o) => Math.max(o?.discount ?? 0, o?.vsMarket ?? 0);
+export function candidatosWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] } } = {}) {
+  const ml = candidatos(state, { now, env, afiliados, limite: 300 })
+    .filter((c) => c.afiliado === true && promocao(c.oferta) > 0)
+    .sort((a, b) => promocao(b.oferta) - promocao(a.oferta))
+    .filter((c, i, l) => l.findIndex((x) => x.oferta.productId === c.oferta.productId) === i);   // um anúncio por produto
+  if (env.SOCIAL_EXTERNAS === '0') return ml;
+  const ext = ofertasExternas({ ...leituras, products: state.products, offers: state.offers, now: now ?? Date.now() }).map(candidatoExterno);
+  return intercalar(ml, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'));
 }
 
 const lerJson = (f, padrao) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return padrao; } };
@@ -70,7 +90,8 @@ export async function conectarBaileys(dir, { aoCodigo, numero, timeoutMs = 90000
 }
 
 export async function main(argv = process.argv.slice(2), env = process.env, io = { log: console.log, error: console.error },
-  { conectar = conectarBaileys, fetchFn = globalThis.fetch, now = Date.now, esperar = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
+  { conectar = conectarBaileys, fetchFn = globalThis.fetch, now = Date.now, esperar = (ms) => new Promise((r) => setTimeout(r, ms)),
+    carregarAfiliados = loadAffiliates, leituras: leiturasFixas = null } = {}) {
   let o; try { o = lerArgs(argv); } catch (e) { io.error(e.message); return 1; }
   const segredo = env.SOCIAL_WHATSAPP_CHAVE || '';
   const dir = pastaTemp();
@@ -92,13 +113,14 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     despejar(decifrarSessao(fs.readFileSync(o.sessao), segredo), dir);
     const state = lerJson(o.state, null);
     if (!state) { io.error('state.json ilegível'); return 1; }
-    let afiliados = {}; try { afiliados = loadAffiliates(); } catch { /* links originais */ }
+    let afiliados = {}; try { afiliados = carregarAfiliados(); } catch { /* links originais */ }
     const diario = lerJson(o.diario, []);
-    let lista = candidatos(state, { now: now(), env, afiliados });
+    const leituras = leiturasFixas ?? lerLeituras(o.shopee ? lerJson(o.shopee, null) : null, o.amazon ? lerJson(o.amazon, null) : null);
+    let lista = candidatosWhatsApp(state, { now: now(), env, afiliados, leituras });
     let plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
     if (plano.enviar.length) {   // só resolve os links curtos de afiliado quando há o que postar (ordem: afiliado primeiro)
       afiliados = await comLinksSociais(afiliados, fetchFn);
-      lista = candidatos(state, { now: now(), env, afiliados });
+      lista = candidatosWhatsApp(state, { now: now(), env, afiliados, leituras });
       plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
     }
     io.log(`## WhatsApp automático\n\nElegíveis agora: ${lista.length} · nesta rodada: ${plano.enviar.length} (${plano.motivo})`);

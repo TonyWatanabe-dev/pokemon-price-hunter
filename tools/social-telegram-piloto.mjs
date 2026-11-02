@@ -50,8 +50,8 @@ const CUPONS = fileURLToPath(new URL('../config/social-cupons.json', import.meta
 /** Cupons importados (config/social-cupons.json); sem arquivo ou ilegível: nenhum. */
 export function carregarCupons(f = CUPONS) { try { const d = JSON.parse(fs.readFileSync(f, 'utf8')); return Array.isArray(d?.cupons) ? d.cupons : []; } catch { return []; } }
 
-export function candidatos(state, { now, env = {}, afiliados = {}, cupons = carregarCupons() } = {}) {
-  const p = gerarPrevia(state, { canais: ['telegram'], now, env, limite: 50 });
+export function candidatos(state, { now, env = {}, afiliados = {}, cupons = carregarCupons(), limite = 50 } = {}) {
+  const p = gerarPrevia(state, { canais: ['telegram'], now, env, limite });
   const lista = p.itens.filter((i) => i.canal === 'telegram').map((it) => {
     const o = state.offers.find((x) => x.id === it.ofertaId);
     const { link, afiliado } = linkDe(o, afiliados);
