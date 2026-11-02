@@ -34,6 +34,6 @@ for nome in P.get('folhas', []):
 for saida, nome, a, b in P.get('cortes', []):
     try:
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(a), '-to', str(b), '-i', baixa(nome), '-vf', 'scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30,setsar=1',
-                        '-c:v', 'libx264', '-crf', '21', '-maxrate', '14M', '-bufsize', '28M', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', f'{OUT}/{saida}.mp4'], check=True)
+                        '-c:v', 'libx264', '-crf', '22', '-maxrate', '10M', '-bufsize', '20M', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', f'{OUT}/{saida}.mp4'], check=True)
         print('corte', saida, flush=True)
     except Exception as e: print('ERRO corte', saida, repr(e), flush=True)

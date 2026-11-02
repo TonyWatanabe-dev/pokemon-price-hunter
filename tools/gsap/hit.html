@@ -122,13 +122,15 @@ const brl = (v) => (v < 0 ? '−' : '+') + 'R$ ' + fmt(v);
 const reais = (v) => 'R$ ' + fmt(v);
 const $ = (id) => document.getElementById(id);
 const COR = { planta: '#2f9a55', fogo: '#e0512b', agua: '#2c7be5', eletrico: '#ffcf33', psiquico: '#8e4bd6', lutador: '#c25a1c', escuridao: '#2b2d42', metal: '#6e7a90', dragao: '#a8801a', fada: '#e05aa0', incolor: '#c9ced8' };
-$('placarRot').textContent = C.rotulo; $('placarTxt').textContent = brl(-C.pack);
+$('placarRot').textContent = C.rotulo; $('placarTxt').textContent = C.semValor ? reais(C.pack) : brl(-C.pack);
+// C.semValor (unboxing de deck, sem carta com valor): placar fica no preço do produto, faixa usa C.precoTxt, tela final usa C.lucroTxt
 $('kick').textContent = C.kick; $('tit').innerHTML = C.titulo;
 $('raridade').textContent = C.raridade; $('nome').textContent = C.carta;
 // nome longo: diminui a fonte para o valor caber na faixa
 $('preco').textContent = reais(C.valor);
 $('fonte').textContent = C.fonte || 'média de venda dos últimos 3 meses · Liga Pokémon';
 if (C.brick) { $('preco').textContent = C.precoTxt || ''; $('hit').classList.add('brick'); }
+if (C.semValor) $('preco').textContent = C.precoTxt || '';
 // hits extras (mesma carta de novo ou outra carta, em outro pack): C.extras = [{seg, t, carta, valor, raridade, estrela, rotulo, custo}]
 // C.hit2T (formato antigo) vira um extra. custo = o que o novo pack desconta na troca (padrão: C.pack)
 const EX = C.extras || (C.hit2T ? [{ seg: C.seg2, t: C.hit2T, carta: C.carta, valor: C.valor, raridade: C.raridade + ' · 2ª cópia', estrela: '2×!', rotulo: C.rotulo2 }] : []);
@@ -137,9 +139,10 @@ const LUCRO = C.lucro ?? (C.valor - C.pack + valorEx - custoEx);
 const Q = C.hit2T ? 2 : 1;
 $('fimTag').textContent = C.tagFim; $('fimLucro').textContent = brl(LUCRO);
 const LIN = C.linhas || [{ nome: C.linhaPack, nota: C.notaPack, v: -(C.pack + custoEx) }, { nome: C.carta + (Q > 1 ? ' ×' + Q : ''), nota: 'média Liga Pokémon', v: C.valor * Q }];
-$('fimLinhas').innerHTML = LIN.map((l) => `<div class="lin"><span>${l.nome}<small>${l.nota || ''}</small></span><b class="${l.v < 0 ? 'neg' : 'pos'}">${brl(l.v)}</b></div>`).join('');
+$('fimLinhas').innerHTML = LIN.map((l) => `<div class="lin"><span>${l.nome}<small>${l.nota || ''}</small></span><b class="${l.txt ? 'pos' : l.v < 0 ? 'neg' : 'pos'}">${l.txt || brl(l.v)}</b></div>`).join('');
+if (C.semValor) $('fimLucro').textContent = C.lucroTxt || '';
 if (C.h1) $('fimH1').textContent = C.h1;
-if (LUCRO < 0) $('fim').classList.add('neg');
+if (LUCRO < 0 && !C.semValor) $('fim').classList.add('neg');
 // lâmina final na cor do tipo da carta (sem tipo, ex. Treinador: navy da marca)
 if (C.tipoCarta) { document.documentElement.style.setProperty('--ty', COR[C.tipoCarta]); $('marcaTipo').setAttribute('href', '#i-t-' + C.tipoCarta); }
 else $('fim').querySelector('.marca').remove();
@@ -183,9 +186,9 @@ const R = C.revela ?? H;
 const cont = { v: -C.pack };
 tl.to('#flash', { opacity: .75, duration: .07, ease: 'none' }, H).to('#flash', { opacity: 0, duration: .5, ease: 'power2.out' }, H + .07)
   .fromTo('.anel', { scale: .3, opacity: .9, transformOrigin: '540px 900px' }, { scale: 3.4, opacity: 0, duration: 1.2, stagger: .13, immediateRender: false }, H)
-  .to(cont, { v: C.valor - C.pack, duration: 1.3, onUpdate: () => { $('placarTxt').textContent = brl(cont.v); } }, H)
+  .to(cont, { v: C.valor - C.pack, duration: 1.3, onUpdate: () => { if (!C.semValor) $('placarTxt').textContent = brl(cont.v); } }, H)
   .fromTo('#placarTxt', { filter: 'blur(6px)' }, { filter: 'blur(0px)', duration: .9, immediateRender: false }, H)
-  .to('#placar .val', { color: C.valor - C.pack < 0 ? '#ff3b3b' : '#2ee36b', borderColor: C.valor - C.pack < 0 ? '#ff3b3b' : '#2ee36b', duration: .3, ease: 'power2.out' }, H + .12)
+  .to('#placar .val', C.semValor ? { duration: .3 } : { color: C.valor - C.pack < 0 ? '#ff3b3b' : '#2ee36b', borderColor: C.valor - C.pack < 0 ? '#ff3b3b' : '#2ee36b', duration: .3, ease: 'power2.out' }, H + .12)
   .to('#placar .val', { scale: 1.2, duration: .14, ease: 'power2.out' }, H)
   .to('#placar .val', { scale: 1, duration: 1, ease: 'elastic.out(1.1, .4)' }, H + .14)
   .fromTo('#sheenPlacar', { left: '-60%' }, { left: '140%', duration: .8, ease: 'power2.inOut', immediateRender: false }, H + .6)
@@ -196,7 +199,7 @@ tl.to('#flash', { opacity: .75, duration: .07, ease: 'none' }, H).to('#flash', {
   .fromTo('#faixa', { clipPath: 'inset(100% 0% 0% 0% round 36px)', y: 120, opacity: 1 }, { clipPath: 'inset(0% 0% 0% 0% round 36px)', y: 0, duration: .85, immediateRender: false }, H + .4)
   .from('#faixa .topo, #faixa .nome, #faixa .preco, #faixa .fonte', { y: 34, opacity: 0, duration: .6, stagger: .07 }, H + .6);
 const pv = { v: 0 };
-tl.to(pv, { v: C.valor, duration: 1.1, onUpdate: () => { $('preco').textContent = C.brick ? (C.precoTxt || '') : reais(pv.v); } }, H + .75)
+tl.to(pv, { v: C.valor, duration: 1.1, onUpdate: () => { $('preco').textContent = (C.brick || C.semValor) ? (C.precoTxt || '') : reais(pv.v); } }, H + .75)
   .fromTo('#sheenFaixa', { left: '-60%' }, { left: '140%', duration: .9, ease: 'power2.inOut', immediateRender: false }, H + 1.6);
 if (C.brick) brilhos.length = 0;
 brilhos.forEach((b, i) => {
@@ -248,7 +251,7 @@ tl.to('#hit, #faixa, #placar', { scale: .9, opacity: 0, duration: .35, stagger: 
   .from('#fim .logo, #fim .tag', { y: 30, opacity: 0, duration: .7, stagger: .07 }, F + .25)
   .from(wH1, { yPercent: 115, rotation: 6, duration: .8, stagger: .08 }, F + .35);
 const fl = { v: 0 };
-tl.to(fl, { v: LUCRO, duration: 1.1, onUpdate: () => { $('fimLucro').textContent = brl(fl.v); } }, F + .55)
+tl.to(fl, { v: LUCRO, duration: 1.1, onUpdate: () => { $('fimLucro').textContent = C.semValor ? (C.lucroTxt || '') : brl(fl.v); } }, F + .55)
   .from('#fim .lucro', { y: 40, opacity: 0, duration: .6 }, F + .55)
   .from('#fim .lin', { x: -70, opacity: 0, duration: .7, stagger: .12 }, F + .8)
   .from(wH2, { yPercent: 115, rotation: 6, duration: .8, stagger: .07 }, F + 1.1)
