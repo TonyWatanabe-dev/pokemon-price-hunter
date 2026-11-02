@@ -106,7 +106,8 @@ A experiência pode ser desenhada e testada com fixtures claramente sintéticas,
 | BQD: reler ofertas stale (A1/A3 da #897) | #977 | integrado |
 | Varredura semanal de lojas | #945 | integrado |
 | Ordenação por total no cliente (#84, D2) | #978 | integrado |
-| claude-code-action v1.0.261 | #946 | **não integrado**: testes de SHA atualizados (3eeac100), test/regression/golden verdes; `qa-review` não roda em PR do Dependabot (pulado ≠ verde), então fica para o dono |
+| claude-code-action v1.0.261 | #946 | integrado |
+| claude-code-action v1.0.265 | #1007 | testes de SHA atualizados (`tarefas-workflow`, `revisor-workflow`); `qa-review` não roda em PR do Dependabot (pulado ≠ verde), merge fica para o dono |
 
 **Diagnóstico do Mercado Livre:** todas as quedas foram 429 `local_rate_limited`, sem Retry-After, recusadas em 30–70 ms nos primeiros segundos de rodadas das :00/:30. Evidência: `sources.json` de commits do ramo `data` recuperados pelo histórico de pushes (30/10 09:00, 11:00 e 21:30 UTC; 31/10 03:00 UTC). Um 429 em qualquer das ~290 chamadas derrubava a loja e o backoff de 30 min deixava ~45 min sem preço. Agora há até 3 novas tentativas curtas antes de desistir.
 
