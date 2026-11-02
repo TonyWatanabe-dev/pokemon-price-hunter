@@ -19,7 +19,9 @@ t('arquivo versionado passa na validação e cobre as 5 categorias', () => {
 
 t('o arquivo é o resultado do importador sobre as leituras versionadas', () => {
   const j = JSON.parse(ler('config/afiliados/acessorios.json'));
-  const itens = ['mercadolivre:ml', 'amazon:amazon', 'shopee:shopee'].flatMap((s) => { const [l, f] = s.split(':'); return parse(l, ler(`tools/acessorios/${f}-2026-10-31.txt`)).itens; });
+  // A leitura mais recente de cada loja (tools/acessorios/<loja>-AAAA-MM-DD.txt); as anteriores ficam como histórico.
+  const ultima = (f) => fs.readdirSync(path.join(root, 'tools/acessorios')).filter((x) => new RegExp(`^${f}-\\d{4}-\\d{2}-\\d{2}\\.txt$`).test(x)).sort().at(-1);
+  const itens = ['mercadolivre:ml', 'amazon:amazon', 'shopee:shopee'].flatMap((s) => { const [l, f] = s.split(':'); return parse(l, ler(`tools/acessorios/${ultima(f)}`)).itens; });
   assert.equal(j.itens.length, itens.length);
   const k = (i) => `${i.loja}:${i.id}:${i.price}:${i.url}`;
   assert.deepEqual(new Set(j.itens.map(k)), new Set(itens.map(k)));

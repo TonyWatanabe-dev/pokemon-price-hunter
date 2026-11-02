@@ -1,8 +1,8 @@
 {
  "program": "acessorios",
- "updatedAt": "2026-10-31",
+ "updatedAt": "2026-11-01",
  "regras": "Acessórios de carta (sleeve, fichário, toploader, playmat, deck box) com link de afiliado do dono, lidos por ele no Chrome. Lista curada, à parte do catálogo de lacrados: nunca entra em oferta, ranking, Opportunity Score ou alerta. O Monte seu kit usa o mais barato de cada categoria para completar o kit (frete a calcular). price = preço à vista sem cupom; priceCupom = valor com cupom que a Shopee destaca; aPartirDe = anúncio com faixa de preço por cor. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Fora: tamanho que não é de carta (4x6\") e estampa de outra franquia. Gerado por tools/acessorios-importar.mjs.",
- "origem": "Leitura do dono no Chrome em 31/10/2026 (12:57–13:32).",
+ "origem": "Leitura do dono no Chrome em 31/10/2026 (12:57–13:32); os 52 itens da Amazon relidos em 01/11/2026 (22:22–22:31).",
  "categorias": {
   "sleeve": "Sleeves",
   "fichário": "Fichários",
@@ -11,40 +11,6 @@
   "deck box": "Deck boxes"
  },
  "itens": [
-  {
-   "loja": "amazon",
-   "id": "B0BRQNC8CP",
-   "categoria": "sleeve",
-   "kit": "sleeve",
-   "marca": "Buró",
-   "title": "Buró, Sleeve Cristal: Standard 63,5x88mm",
-   "qtd": "Standard 63,5x88 mm",
-   "price": 11.39,
-   "seller": "Amazon.com.br",
-   "fulfilledBy": "Amazon",
-   "estoque": "Em estoque",
-   "url": "https://link.amazon/B0gs5RSHu",
-   "capturedAt": "2026-10-31T13:07:04-03:00",
-   "image": "https://m.media-amazon.com/images/I/71duV2lCgZL._AC_SL500_.jpg",
-   "confere": true
-  },
-  {
-   "loja": "amazon",
-   "id": "B07PDGM46R",
-   "categoria": "sleeve",
-   "kit": "sleeve",
-   "marca": "MeepleBR",
-   "title": "MeepleBR Sleeves SLIM - PADRÃO (63,5x88mm), TCG, Plástico para Proteção de Cartas",
-   "qtd": "Slim padrão 63,5x88 mm",
-   "price": 17.89,
-   "seller": "SMSTOCK",
-   "fulfilledBy": "Amazon",
-   "estoque": "Em estoque",
-   "url": "https://link.amazon/B06LM2FRq",
-   "capturedAt": "2026-10-31T13:06:56-03:00",
-   "image": "https://m.media-amazon.com/images/I/61C6Ov2ZnLL._AC_SL500_.jpg",
-   "confere": true
-  },
   {
    "loja": "amazon",
    "id": "B0H6NSKQ3V",
@@ -58,8 +24,25 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B092KyPDE",
-   "capturedAt": "2026-10-31T13:02:56-03:00",
+   "capturedAt": "2026-11-01T22:23:27-03:00",
    "image": "https://m.media-amazon.com/images/I/51vFyCQHybL._AC_SL500_.jpg",
+   "confere": true
+  },
+  {
+   "loja": "amazon",
+   "id": "B07PDGM46R",
+   "categoria": "sleeve",
+   "kit": "sleeve",
+   "marca": "MeepleBR",
+   "title": "MeepleBR Sleeves SLIM - PADRÃO (63,5x88mm), TCG, Plástico para Proteção de Cartas",
+   "qtd": "Slim padrão 63,5x88 mm",
+   "price": 19.5,
+   "seller": "Margue Utilidades",
+   "fulfilledBy": "Amazon",
+   "estoque": "Somente 8 em estoque.",
+   "url": "https://link.amazon/B06LM2FRq",
+   "capturedAt": "2026-11-01T22:23:21-03:00",
+   "image": "https://m.media-amazon.com/images/I/61C6Ov2ZnLL._AC_SL500_.jpg",
    "confere": true
   },
   {
@@ -75,8 +58,25 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0dKmxFEi",
-   "capturedAt": "2026-10-31T13:17:25-03:00",
+   "capturedAt": "2026-11-01T22:23:27-03:00",
    "image": "https://m.media-amazon.com/images/I/61R6PfnszXL._AC_SL500_.jpg",
+   "confere": true
+  },
+  {
+   "loja": "amazon",
+   "id": "B0BRQNC8CP",
+   "categoria": "sleeve",
+   "kit": "sleeve",
+   "marca": "Buró",
+   "title": "Buró, Sleeve Cristal: Standard 63,5x88mm",
+   "qtd": "Standard 63,5x88 mm",
+   "price": 22.28,
+   "seller": "Amazon.com.br",
+   "fulfilledBy": "Amazon",
+   "estoque": "Em estoque",
+   "url": "https://link.amazon/B0gs5RSHu",
+   "capturedAt": "2026-11-01T22:22:52-03:00",
+   "image": "https://m.media-amazon.com/images/I/71duV2lCgZL._AC_SL500_.jpg",
    "confere": true
   },
   {
@@ -92,7 +92,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0icZi64F",
-   "capturedAt": "2026-10-31T13:07:11-03:00",
+   "capturedAt": "2026-11-01T22:23:28-03:00",
    "image": "https://m.media-amazon.com/images/I/61V1d2BGMWL._AC_SL500_.jpg",
    "confere": true
   },
@@ -157,7 +157,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B03I7E36v",
-   "capturedAt": "2026-10-31T13:09:27-03:00",
+   "capturedAt": "2026-11-01T22:23:28-03:00",
    "image": "https://m.media-amazon.com/images/I/51D732+RexL._AC_SL500_.jpg",
    "confere": true
   },
@@ -174,7 +174,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B01Tp6tt5",
-   "capturedAt": "2026-10-31T13:07:47-03:00",
+   "capturedAt": "2026-11-01T22:23:28-03:00",
    "image": "https://m.media-amazon.com/images/I/61q9NFWP9aL._AC_SL500_.jpg",
    "confere": true
   },
@@ -207,7 +207,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B05ubW3KY",
-   "capturedAt": "2026-10-31T13:09:07-03:00",
+   "capturedAt": "2026-11-01T22:23:28-03:00",
    "image": "https://m.media-amazon.com/images/I/71syOOmo6aL._AC_SL500_.jpg",
    "confere": null
   },
@@ -272,7 +272,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B095hfexc",
-   "capturedAt": "2026-10-31T13:09:25-03:00",
+   "capturedAt": "2026-11-01T22:23:43-03:00",
    "image": "https://m.media-amazon.com/images/I/71bRTchYEnL._AC_SL500_.jpg",
    "confere": null
   },
@@ -289,7 +289,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B07sZgFLZ",
-   "capturedAt": "2026-10-31T12:59:40-03:00",
+   "capturedAt": "2026-11-01T22:23:50-03:00",
    "image": "https://m.media-amazon.com/images/I/61lp50oN+nL._AC_SL500_.jpg",
    "confere": true
   },
@@ -306,7 +306,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0fDKkucM",
-   "capturedAt": "2026-10-31T13:07:48-03:00",
+   "capturedAt": "2026-11-01T22:25:38-03:00",
    "image": "https://m.media-amazon.com/images/I/61HLWEo3O4L._AC_SL500_.jpg",
    "confere": true
   },
@@ -387,7 +387,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 2 em estoque.",
    "url": "https://link.amazon/B03WgO7n6",
-   "capturedAt": "2026-10-31T13:03:03-03:00",
+   "capturedAt": "2026-11-01T22:25:38-03:00",
    "image": "https://m.media-amazon.com/images/I/61WajrQjBHL._AC_SL500_.jpg",
    "confere": true
   },
@@ -420,7 +420,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 2 em estoque.",
    "url": "https://link.amazon/B0hYoJtEg",
-   "capturedAt": "2026-10-31T13:03:07-03:00",
+   "capturedAt": "2026-11-01T22:25:38-03:00",
    "image": "https://m.media-amazon.com/images/I/51w9YWLOQEL._AC_SL500_.jpg",
    "confere": true
   },
@@ -435,9 +435,9 @@
    "price": 94.9,
    "seller": "NewStation",
    "fulfilledBy": "Vendedor",
-   "estoque": "Somente 5 em estoque.",
+   "estoque": "Somente 3 em estoque.",
    "url": "https://link.amazon/B05WBbd3R",
-   "capturedAt": "2026-10-31T13:02:10-03:00",
+   "capturedAt": "2026-11-01T22:25:39-03:00",
    "image": "https://m.media-amazon.com/images/I/611o-xtTTZL._AC_SL500_.jpg",
    "confere": null
   },
@@ -454,7 +454,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 4 em estoque.",
    "url": "https://link.amazon/B03cXSWa8",
-   "capturedAt": "2026-10-31T13:05:56-03:00",
+   "capturedAt": "2026-11-01T22:25:39-03:00",
    "image": "https://m.media-amazon.com/images/I/51qdv4IJB9L._AC_SL500_.jpg",
    "confere": null
   },
@@ -521,7 +521,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 9 em estoque.",
    "url": "https://link.amazon/B01mI7zCH",
-   "capturedAt": "2026-10-31T13:05:18-03:00",
+   "capturedAt": "2026-11-01T22:25:39-03:00",
    "image": "https://m.media-amazon.com/images/I/51tdxWN5vuL._AC_SL500_.jpg",
    "confere": null
   },
@@ -620,7 +620,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 1 em estoque.",
    "url": "https://link.amazon/B095BUELk",
-   "capturedAt": "2026-10-31T12:58:13-03:00",
+   "capturedAt": "2026-11-01T22:25:39-03:00",
    "image": "https://m.media-amazon.com/images/I/61CCzZociwL._AC_SL500_.jpg",
    "confere": true
   },
@@ -702,7 +702,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 1 em estoque.",
    "url": "https://link.amazon/B0cCLDIPg",
-   "capturedAt": "2026-10-31T12:57:47-03:00",
+   "capturedAt": "2026-11-01T22:25:40-03:00",
    "image": "https://m.media-amazon.com/images/I/6183+8T0y5L._AC_SL500_.jpg",
    "confere": true
   },
@@ -719,7 +719,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 3 em estoque.",
    "url": "https://link.amazon/B0a9uvY90",
-   "capturedAt": "2026-10-31T12:57:50-03:00",
+   "capturedAt": "2026-11-01T22:25:41-03:00",
    "image": "https://m.media-amazon.com/images/I/61Dx1PE7yrL._AC_SL500_.jpg",
    "confere": true
   },
@@ -734,9 +734,9 @@
    "price": 128.25,
    "seller": "SpellCast Games",
    "fulfilledBy": "Vendedor",
-   "estoque": "Somente 2 em estoque.",
+   "estoque": "Somente 1 em estoque.",
    "url": "https://link.amazon/B0dyzNJhc",
-   "capturedAt": "2026-10-31T13:00:35-03:00",
+   "capturedAt": "2026-11-01T22:25:41-03:00",
    "image": "https://m.media-amazon.com/images/I/71G2g0bxxeL._AC_SL500_.jpg",
    "confere": null
   },
@@ -879,12 +879,12 @@
    "marca": "Gamegenic",
    "title": "Gamegenic Matte Standard Card Game Sleeve Value Pack 200",
    "qtd": "200 un. (standard)",
-   "price": 232.63,
+   "price": 251.01,
    "seller": "Amazon.com.br",
    "fulfilledBy": "Amazon",
    "estoque": "Somente 7 em estoque.",
    "url": "https://link.amazon/B02ScPBRM",
-   "capturedAt": "2026-10-31T13:05:06-03:00",
+   "capturedAt": "2026-11-01T22:27:40-03:00",
    "image": "https://m.media-amazon.com/images/I/51KGmWrhh6L._AC_SL500_.jpg",
    "confere": true
   },
@@ -965,7 +965,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0ib2g07L",
-   "capturedAt": "2026-10-31T13:12:13-03:00",
+   "capturedAt": "2026-11-01T22:27:40-03:00",
    "image": "https://m.media-amazon.com/images/I/61zIXtFr49L._AC_SL500_.jpg",
    "confere": true
   },
@@ -980,9 +980,9 @@
    "price": 119.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "Amazon",
-   "estoque": "Somente 10 em estoque.",
+   "estoque": "Somente 9 em estoque.",
    "url": "https://link.amazon/B03UXLysW",
-   "capturedAt": "2026-10-31T13:14:57-03:00",
+   "capturedAt": "2026-11-01T22:27:40-03:00",
    "image": "https://m.media-amazon.com/images/I/511iSkQutFL._AC_SL500_.jpg",
    "confere": null
   },
@@ -999,7 +999,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B03EcExqo",
-   "capturedAt": "2026-10-31T13:16:10-03:00",
+   "capturedAt": "2026-11-01T22:27:40-03:00",
    "image": "https://m.media-amazon.com/images/I/81ojlCsJB5L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1016,7 +1016,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B02VW751p",
-   "capturedAt": "2026-10-31T13:16:11-03:00",
+   "capturedAt": "2026-11-01T22:27:41-03:00",
    "image": "https://m.media-amazon.com/images/I/81lRTivd9QL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1033,7 +1033,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B06edGJsR",
-   "capturedAt": "2026-10-31T13:16:13-03:00",
+   "capturedAt": "2026-11-01T22:27:41-03:00",
    "image": "https://m.media-amazon.com/images/I/71VxLp3mJML._AC_SL500_.jpg",
    "confere": true
   },
@@ -1050,7 +1050,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Somente 4 em estoque.",
    "url": "https://link.amazon/B04032iHb",
-   "capturedAt": "2026-10-31T13:11:00-03:00",
+   "capturedAt": "2026-11-01T22:27:41-03:00",
    "image": "https://m.media-amazon.com/images/I/61zmR2+b1QL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1067,7 +1067,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B041eBLVn",
-   "capturedAt": "2026-10-31T13:14:58-03:00",
+   "capturedAt": "2026-11-01T22:27:41-03:00",
    "image": "https://m.media-amazon.com/images/I/719R1mdOMsL._AC_SL500_.jpg",
    "confere": null
   },
@@ -1084,7 +1084,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B03MPp8WL",
-   "capturedAt": "2026-10-31T13:15:00-03:00",
+   "capturedAt": "2026-11-01T22:27:41-03:00",
    "image": "https://m.media-amazon.com/images/I/71nCI40gPNL._AC_SL500_.jpg",
    "confere": null
   },
@@ -1101,7 +1101,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0h3awisr",
-   "capturedAt": "2026-10-31T13:10:03-03:00",
+   "capturedAt": "2026-11-01T22:27:41-03:00",
    "image": "https://m.media-amazon.com/images/I/81DWixeO-fL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1118,7 +1118,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B036a3xmh",
-   "capturedAt": "2026-10-31T13:10:04-03:00",
+   "capturedAt": "2026-11-01T22:29:24-03:00",
    "image": "https://m.media-amazon.com/images/I/81M6wLiYGmL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1135,7 +1135,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0aWWuq4q",
-   "capturedAt": "2026-10-31T13:10:06-03:00",
+   "capturedAt": "2026-11-01T22:29:24-03:00",
    "image": "https://m.media-amazon.com/images/I/71RM2VbTzaL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1152,7 +1152,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B04409LTP",
-   "capturedAt": "2026-10-31T13:16:14-03:00",
+   "capturedAt": "2026-11-01T22:29:24-03:00",
    "image": "https://m.media-amazon.com/images/I/81CZLj0FS+L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1169,7 +1169,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0gsvvg1j",
-   "capturedAt": "2026-10-31T13:10:08-03:00",
+   "capturedAt": "2026-11-01T22:29:24-03:00",
    "image": "https://m.media-amazon.com/images/I/81xAoXvBfuL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1186,7 +1186,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Somente 5 em estoque.",
    "url": "https://link.amazon/B0hrTk53q",
-   "capturedAt": "2026-10-31T13:14:55-03:00",
+   "capturedAt": "2026-11-01T22:29:25-03:00",
    "image": "https://m.media-amazon.com/images/I/81sBOa7Ci3L._AC_SL500_.jpg",
    "confere": null
   },
@@ -1203,7 +1203,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B09ZxrbS9",
-   "capturedAt": "2026-10-31T13:10:11-03:00",
+   "capturedAt": "2026-11-01T22:29:25-03:00",
    "image": "https://m.media-amazon.com/images/I/81x52LRhkIL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1220,7 +1220,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0dE1Qt4A",
-   "capturedAt": "2026-10-31T13:16:17-03:00",
+   "capturedAt": "2026-11-01T22:29:25-03:00",
    "image": "https://m.media-amazon.com/images/I/81X4XVkei2L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1237,7 +1237,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B07SMqw2M",
-   "capturedAt": "2026-10-31T13:14:53-03:00",
+   "capturedAt": "2026-11-01T22:29:25-03:00",
    "image": "https://m.media-amazon.com/images/I/71k6MLQSDlL._AC_SL500_.jpg",
    "confere": null
   },
@@ -1287,7 +1287,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Somente 2 em estoque.",
    "url": "https://link.amazon/B05izE9t9",
-   "capturedAt": "2026-10-31T13:10:57-03:00",
+   "capturedAt": "2026-11-01T22:29:27-03:00",
    "image": "https://m.media-amazon.com/images/I/61KBVhTcb2L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1304,7 +1304,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Somente 1 em estoque (mais a caminho).",
    "url": "https://link.amazon/B0hAKb07H",
-   "capturedAt": "2026-10-31T13:11:35-03:00",
+   "capturedAt": "2026-11-01T22:29:27-03:00",
    "image": "https://m.media-amazon.com/images/I/718MVKHgl9L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1514,7 +1514,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B09RizPlS",
-   "capturedAt": "2026-10-31T13:27:08-03:00",
+   "capturedAt": "2026-11-01T22:31:43-03:00",
    "image": "https://m.media-amazon.com/images/I/31f+xp7Qt4L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1627,7 +1627,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0iTS4r1R",
-   "capturedAt": "2026-10-31T13:25:45-03:00",
+   "capturedAt": "2026-11-01T22:31:43-03:00",
    "image": "https://m.media-amazon.com/images/I/31dTXokbwGL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1644,7 +1644,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B04yh7dMD",
-   "capturedAt": "2026-10-31T13:27:13-03:00",
+   "capturedAt": "2026-11-01T22:31:43-03:00",
    "image": "https://m.media-amazon.com/images/I/31S3TpN9GKL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1709,7 +1709,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "—",
    "url": "https://link.amazon/B04NZkRXG",
-   "capturedAt": "2026-10-31T13:27:11-03:00",
+   "capturedAt": "2026-11-01T22:31:44-03:00",
    "image": "https://m.media-amazon.com/images/I/41D31MwxmjL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1726,7 +1726,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Somente 4 em estoque.",
    "url": "https://link.amazon/B03Ra1mcW",
-   "capturedAt": "2026-10-31T13:27:15-03:00",
+   "capturedAt": "2026-11-01T22:31:44-03:00",
    "image": "https://m.media-amazon.com/images/I/31wJ7oGC57L._AC_SL500_.jpg",
    "confere": true
   },
@@ -1776,7 +1776,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 4 em estoque.",
    "url": "https://link.amazon/B05DASe90",
-   "capturedAt": "2026-10-31T13:31:31-03:00",
+   "capturedAt": "2026-11-01T22:31:44-03:00",
    "image": "https://m.media-amazon.com/images/I/71shshz8jUL._AC_SL500_.jpg",
    "confere": null
   },
@@ -1825,7 +1825,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B05J630n7",
-   "capturedAt": "2026-10-31T13:27:45-03:00",
+   "capturedAt": "2026-11-01T22:31:44-03:00",
    "image": "https://m.media-amazon.com/images/I/51-D02A9nbL._AC_SL500_.jpg",
    "confere": true
   },
@@ -1874,7 +1874,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Em estoque",
    "url": "https://link.amazon/B0etTqQLo",
-   "capturedAt": "2026-10-31T13:32:11-03:00",
+   "capturedAt": "2026-11-01T22:31:45-03:00",
    "image": "https://m.media-amazon.com/images/I/418Jxth3j2L._AC_SL500_.jpg",
    "confere": null
   },
@@ -1985,9 +1985,9 @@
    "price": 52.98,
    "seller": "Amazon.com.br",
    "fulfilledBy": "Amazon",
-   "estoque": "Somente 9 em estoque.",
+   "estoque": "Somente 10 em estoque.",
    "url": "https://link.amazon/B0aBJaQhC",
-   "capturedAt": "2026-10-31T13:32:09-03:00",
+   "capturedAt": "2026-11-01T22:31:45-03:00",
    "image": "https://m.media-amazon.com/images/I/4110X8kcmuS._AC_SL500_.jpg",
    "confere": null
   },
@@ -2016,11 +2016,11 @@
    "title": "Ultra Pro - Caixa de baralho edição Pikachu 2025, armazena e protege 75 cartas Pokémon de mangas duplas e cartões de tamanho padrão, tampa de travamento automático, divisor de deck",
    "qtd": "75 cartas",
    "price": 56.9,
-   "seller": "Limiar Games",
+   "seller": "Two Head Games",
    "fulfilledBy": "Vendedor",
-   "estoque": "Somente 10 em estoque.",
+   "estoque": "Somente 2 em estoque.",
    "url": "https://link.amazon/B03rNiq7B",
-   "capturedAt": "2026-10-31T13:23:53-03:00",
+   "capturedAt": "2026-11-01T22:31:45-03:00",
    "image": "https://m.media-amazon.com/images/I/71s2yqeCo1L._AC_SL500_.jpg",
    "confere": null
   },
@@ -2086,7 +2086,7 @@
    "fulfilledBy": "Vendedor",
    "estoque": "Somente 1 em estoque.",
    "url": "https://link.amazon/B0iQ5J1yo",
-   "capturedAt": "2026-10-31T13:32:06-03:00",
+   "capturedAt": "2026-11-01T22:31:45-03:00",
    "image": "https://m.media-amazon.com/images/I/519iA04j37L._AC_SL500_.jpg",
    "confere": null
   },
@@ -2200,7 +2200,7 @@
    "fulfilledBy": "Amazon",
    "estoque": "Somente 7 em estoque.",
    "url": "https://link.amazon/B00lmwtPr",
-   "capturedAt": "2026-10-31T13:32:08-03:00",
+   "capturedAt": "2026-11-01T22:31:46-03:00",
    "image": "https://m.media-amazon.com/images/I/41Tpmd1TSsL._AC_SL500_.jpg",
    "confere": true
   },
