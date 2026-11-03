@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Estilo "só abertura" (referência @pokebrasil151, pedido do dono em 03/11): abertura em tempo real, sem gancho/estrela/faixa/tela final,
+"""Estilo (áudio: som real da abertura em primeiro plano, trilha baixa por baixo, moedinha em cada hit) "só abertura" (referência @pokebrasil151, pedido do dono em 03/11): abertura em tempo real, sem gancho/estrela/faixa/tela final,
 sem chamada do site. Só: logo redondo no 1º segundo, placar pequeno no topo e selo verde "+R$" curto no hit. Trilha única por baixo.
 Uso: python3 limpo.py <config.json> <saida.mp4>   config: {"segs":[[arq,ini,fim],...], "pack":47.40, "hits":[{"t":16.8,"valor":41.83}], "fim":"logo"}"""
 import json, os, subprocess, sys, tempfile
@@ -17,8 +17,8 @@ C = json.load(open(sys.argv[1])); out = sys.argv[2]; T = tempfile.mkdtemp()
 lst = []
 for i, (a, ini, fim) in enumerate(C['segs']):
     p = f'{T}/s{i}.mp4'; lst.append(p)
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(ini), '-to', str(fim), '-i', os.path.join(RAIZ, a), '-an', '-vf', 'fps=30,scale=1080:1920,setsar=1',
-                    '-c:v', 'libx264', '-crf', '18', '-preset', 'veryfast', p], check=True)
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(ini), '-to', str(fim), '-i', os.path.join(RAIZ, a), '-vf', 'fps=30,scale=1080:1920,setsar=1', '-af', 'aresample=48000,aformat=channel_layouts=stereo',
+                    '-c:v', 'libx264', '-crf', '18', '-preset', 'veryfast', '-c:a', 'aac', '-b:a', '192k', p], check=True)
 open(f'{T}/l.txt', 'w').write(''.join(f"file '{p}'\n" for p in lst))
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', f'{T}/l.txt', '-c', 'copy', f'{T}/base.mp4'], check=True)
 dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f'{T}/base.mp4'], capture_output=True, text=True).stdout)
@@ -40,9 +40,15 @@ for k, h in enumerate(C.get('hits', [])):
 logo = os.path.join(AQUI, '../../carrossel/logo-redondo.png'); ins += ['-loop', '1', '-t', f'{dur:.2f}', '-i', logo]
 filt.append(f"[{n}:v]scale=380:-1,format=rgba,fade=t=in:st=0.1:d=0.25:alpha=1,fade=t=out:st=1.4:d=0.3:alpha=1[lg]")
 filt.append(f"{cur}[lg]overlay=x=(W-380)/2:y=560:enable='lt(t,1.8)'[vf]")
-# 4. trilha única (de um vídeo já mixado) por baixo
-ins += ['-i', os.path.join(RAIZ, 'tmp-render/G_E2_placar_box.mp4')]
-filt.append(f"[{n + 1}:a]aloop=loop=-1:size=2e9,atrim=0:{dur:.2f},afade=t=in:d=0.3,afade=t=out:st={dur - 1.5:.2f}:d=1.5,loudnorm=I=-16:TP=-1.5[a]")
+# 4. áudio: som real da abertura (ASMR do pacote) na frente, trilha única baixa por baixo, moedinha em cada hit
+ins += ['-i', os.path.join(RAIZ, 'tmp-render/G_E2_placar_box.mp4')]; it = n + 1
+filt.append(f"[0:a]highpass=f=90,acompressor=threshold=-24dB:ratio=3:makeup=6,volume=1.0[asmr]")
+filt.append(f"[{it}:a]aloop=loop=-1:size=2e9,atrim=0:{dur:.2f},volume=0.22,afade=t=in:d=0.3,afade=t=out:st={dur - 1.5:.2f}:d=1.5[tr]")
+mix = ['[asmr]', '[tr]']
+for k, h in enumerate(C.get('hits', [])):
+    ins += ['-i', os.path.join(AQUI, 'moeda.wav')]; ms = int(h['t'] * 1000)
+    filt.append(f"[{it + 1 + k}:a]adelay={ms}|{ms},volume=0.9[m{k}]"); mix.append(f'[m{k}]')
+filt.append(f"{''.join(mix)}amix=inputs={len(mix)}:normalize=0:duration=first,loudnorm=I=-15:TP=-1.5[a]")
 subprocess.run(['ffmpeg', '-v', 'error', '-y', *ins, '-filter_complex', ';'.join(filt), '-map', '[vf]', '-map', '[a]', '-t', f'{dur:.2f}',
                 '-c:v', 'libx264', '-crf', '20', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out], check=True)
 print('ok', out, f'{dur:.1f}s')
