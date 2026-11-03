@@ -89,7 +89,7 @@ export function semRecorte(productId, f = SEM_RECORTE) {
   try { const d = JSON.parse(fs.readFileSync(f, 'utf8')); return Array.isArray(d?.produtos) && d.produtos.includes(productId); } catch { return false; }
 }
 
-export async function gerarCard(foto, saida, fetchFn, run = spawnSync, productId = null, dir = ACERVO) {
+export async function gerarCard(foto, saida, fetchFn, run = spawnSync, productId = null, dir = ACERVO, { tema = null } = {}) {
   try {
     if (productId && semRecorte(productId)) return null;     // foto original da loja, sem card
     let tmp = fotoAcervo(productId, dir);
@@ -100,7 +100,7 @@ export async function gerarCard(foto, saida, fetchFn, run = spawnSync, productId
       fs.writeFileSync(tmp, Buffer.from(await r.arrayBuffer()));
     }
     const script = fileURLToPath(new URL('./social-card.py', import.meta.url));
-    const x = run(process.env.SOCIAL_PYTHON || 'python3', [script, '--foto', tmp, '--saida', saida], { encoding: 'utf8', timeout: 180000 });
+    const x = run(process.env.SOCIAL_PYTHON || 'python3', [script, '--foto', tmp, '--saida', saida, ...(tema === 'blackfriday' ? ['--tema', 'blackfriday'] : [])], { encoding: 'utf8', timeout: 180000 });
     return x.status === 0 && fs.existsSync(saida) ? new Uint8Array(fs.readFileSync(saida)) : null;
   } catch { return null; }
 }

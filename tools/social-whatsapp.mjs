@@ -16,9 +16,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { candidatos, gerarCard } from './social-telegram-piloto.mjs';
-import { loadAffiliates } from '../api/_lib/affiliates.mjs';
+import { loadAffiliates, mlListingId } from '../api/_lib/affiliates.mjs';
 import { ofertasExternas, candidatoExterno, intercalar, lerLeituras } from '../src/agents/social/externas.js';
 import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
+import { candidatosCampanha, fotoDoAnuncio, lerCampanha } from '../src/agents/social/blackfriday.js';
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
 import { legendaWhatsApp, cifrarSessao, decifrarSessao, acharGrupo } from '../src/agents/social/whatsapp.js';
 
@@ -45,14 +46,22 @@ export function lerArgs(argv) {
  *  de --shopee/--amazon, passados pelo workflow (sem eles, só ML).
  *  SOCIAL_EXTERNAS=0 desliga Shopee/Amazon. A comissão não muda a ordem: dentro de cada loja vale o desconto. */
 const promocao = (o) => Math.max(o?.discount ?? 0, o?.vsMarket ?? 0);
-export function candidatosWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] } } = {}) {
+//  Black Friday (02/11/2026, pedido do dono: "quero priorizar elas"): a campanha de config/social-black-friday.json
+//  vem na frente — primeiro as com selo BLACK FRIDAY, maior desconto primeiro; as demais da campanha entram no
+//  revezamento junto com ML/Shopee/Amazon. SOCIAL_BLACKFRIDAY=0 desliga. Fora da validade (24 h) a campanha some sozinha.
+export function candidatosWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] }, campanha = lerCampanha() } = {}) {
+  const camp = candidatosCampanha(campanha, { now: now ?? Date.now(), env });
+  const bf = camp.filter((c) => c.blackFriday); const campResto = camp.filter((c) => !c.blackFriday);
   const ml = candidatos(state, { now, env, afiliados, limite: 300 })
     .filter((c) => c.afiliado === true && promocao(c.oferta) > 0)
     .sort((a, b) => promocao(b.oferta) - promocao(a.oferta))
     .filter((c, i, l) => l.findIndex((x) => x.oferta.productId === c.oferta.productId) === i);   // um anúncio por produto
-  if (env.SOCIAL_EXTERNAS === '0') return ml;
+  // anúncio que já está na campanha não sai duplicado pela fila do robô
+  const naCampanha = new Set(camp.map((c) => c.itemMl));
+  const mlSemDup = ml.filter((c) => !naCampanha.has(mlListingId(c.oferta?.url)));
+  if (env.SOCIAL_EXTERNAS === '0') return [...bf, ...intercalar(mlSemDup, campResto)];
   const ext = ofertasExternas({ ...leituras, products: state.products, offers: state.offers, now: now ?? Date.now() }).map(candidatoExterno);
-  return intercalar(ml, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'));
+  return [...bf, ...intercalar(mlSemDup, campResto, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'))];
 }
 
 const lerJson = (f, padrao) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return padrao; } };
@@ -129,7 +138,8 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     // derruba conexão ociosa ("Connection Closed"). Conectado, só confere o grupo e posta.
     const prontos = [];
     for (const [i, c] of plano.enviar.entries()) {
-      let img = o.cardDir ? await gerarCard(c.foto, path.join(o.cardDir, `wa-card-${i}.jpg`), fetchFn, undefined, c.oferta?.productId) : null;
+      if (!c.foto && c.itemMl) c.foto = await fotoDoAnuncio(c.itemMl, fetchFn);   // campanha: foto do próprio anúncio
+      let img = o.cardDir && c.foto ? await gerarCard(c.foto, path.join(o.cardDir, `wa-card-${i}.jpg`), fetchFn, undefined, c.oferta?.productId, undefined, { tema: c.tema }) : null;
       if (!img && c.foto) { try { const r = await fetchFn(c.foto, { signal: AbortSignal.timeout(15000) }); if (r.ok) img = new Uint8Array(await r.arrayBuffer()); } catch { /* sem foto */ } }
       const caption = legendaWhatsApp(c.item.texto);
       prontos.push({ c, msg: img ? { image: Buffer.from(img), caption } : { text: caption } });
@@ -151,7 +161,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       const r = await tentar(() => con.sock().sendMessage(jid, msg));
       feitos.push({ ofertaId: c.item.ofertaId, afiliado: c.afiliado === true, at: new Date(now()).toISOString(), messageId: r?.key?.id ?? null });
       fs.writeFileSync(o.diario, JSON.stringify(registrar(Array.isArray(diario) ? diario : [], feitos, { now: now(), regras: REGRAS_WHATSAPP })));
-      io.log(`- enviado \`${c.item.ofertaId}\`${msg.image ? ' · com imagem' : ' · só texto'}`);
+      io.log(`- enviado \`${c.item.ofertaId}\`${c.blackFriday ? ' · Black Friday' : ''}${msg.image ? ' · com imagem' : ' · só texto'}`);
     }
     await esperar(3000);
     salvar();
