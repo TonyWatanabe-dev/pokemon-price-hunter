@@ -62,6 +62,8 @@ t('config real: válida, só links meli.la, todas com afiliado no mapa do site',
   assert.ok(c && Array.isArray(c.ofertas) && c.ofertas.length >= 200);
   assert.ok(c.ofertas.every((o) => /^MLB\d+$/.test(o.item) && /^https:\/\/meli\.la\/[A-Za-z0-9]+$/.test(o.link)));
   assert.equal(new Set(c.ofertas.map((o) => o.item)).size, c.ofertas.length, 'um registro por anúncio');
+  assert.ok(c.ofertas.every((o) => /^https:\/\/http2\.mlstatic\.com\/D_NQ_NP_\d+-[A-Z]{3}\d+_\d+-O\.webp$/.test(o.foto)), 'toda oferta tem foto do CDN do ML');
+  assert.ok(candidatosCampanha(c, { now: Date.parse(c.capturedAt) + 3600e3 }).every((x) => x.foto), 'a foto chega ao candidato');
   const aff = parseAffiliates(JSON.parse(fs.readFileSync(new URL('../config/affiliates.json', import.meta.url), 'utf8')));
   assert.ok(c.ofertas.every((o) => aff.anuncios[o.item]), 'todo anúncio da campanha tem link de afiliado no site');
   assert.ok(candidatosCampanha(c, { now: Date.parse(c.capturedAt) + 3600e3 }).filter((x) => x.blackFriday).length >= 50);

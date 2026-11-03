@@ -8,7 +8,9 @@
 //     preço foi lido, porque pode ter mudado;
 //   • só promoção: desconto do anúncio > 0 (selo Black Friday sem desconto fica de fora);
 //   • ordem: primeiro as com selo Black Friday (maior desconto primeiro), depois as demais da campanha;
-//   • as com selo usam o card de Black Friday (tools/social-card.py --tema blackfriday).
+//   • as com selo usam o card de Black Friday (tools/social-card.py --tema blackfriday). A foto vem do campo `foto` do
+//     arquivo (lida na mesma leitura, porque o ML não entrega a página do anúncio ao runner do GitHub) e, sem ela, do
+//     og:image do anúncio.
 // Kill switch: SOCIAL_BLACKFRIDAY=0.
 import fs from 'node:fs';
 import { montarLegenda } from './legenda.js';
@@ -17,6 +19,7 @@ export const ARQUIVO = new URL('../../../config/social-black-friday.json', impor
 const H = 3600e3;
 const ITEM = /^MLB\d{6,15}$/;
 const MELI = /^https:\/\/meli\.la\/[A-Za-z0-9]+$/;
+const IMG = /^https:\/\/(?:[a-z0-9-]+\.)*mlstatic\.com\/[^\s"'<>]+$/i;   // foto: só do CDN do Mercado Livre
 
 export function lerCampanha(arquivo = ARQUIVO) {
   try { return JSON.parse(fs.readFileSync(arquivo, 'utf8')); } catch { return null; }
@@ -50,12 +53,11 @@ export function candidatoCampanha(o, capturedAt) {
   return {
     item: { ofertaId, texto: `${topo}${texto}\n\n${extra}`, canal: 'whatsapp' },
     oferta: { id: ofertaId, productId: null, storeId: 'mercadolivre', firstSeen: null },
-    foto: null, itemMl: o.item, tema: o.blackFriday === true ? 'blackfriday' : null,
+    foto: typeof o.foto === 'string' && IMG.test(o.foto) ? o.foto : null, itemMl: o.item, tema: o.blackFriday === true ? 'blackfriday' : null,
     parseMode, afiliado: true, loja: 'mercadolivre', campanha: 'black-friday', blackFriday: o.blackFriday === true,
   };
 }
 
-const IMG = /^https:\/\/(?:[a-z0-9-]+\.)*mlstatic\.com\/[^\s"'<>]+$/i;
 const OG = /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']|<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i;
 /** Foto do anúncio (og:image da página MLB-<id>), só de *.mlstatic.com. Falha: null (o post sai com o card sem foto do produto). */
 export async function fotoDoAnuncio(item, fetchFn, { timeoutMs = 15000 } = {}) {

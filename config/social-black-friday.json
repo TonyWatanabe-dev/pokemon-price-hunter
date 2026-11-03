@@ -1,5 +1,5 @@
 {
- "_nota": "Campanha Black Friday nos grupos (pedido do dono em 02/11/2026). Busca \"pokémon tcg\" no Mercado Livre lida em 02/11/2026: anúncios com selo BLACK FRIDAY ou desconto de 20% ou mais. Preço e desconto são os do anúncio na leitura (o desconto é sobre o \"de\" do próprio vendedor). link = afiliado do dono (etiqueta tcgpricehunter), gerado a partir do anúncio MLB-<id>. Vale por validadeHoras (48 h) a partir de capturedAt; depois sai da fila até nova leitura.",
+ "_nota": "Campanha Black Friday nos grupos (pedido do dono em 02/11/2026). Busca \"pokémon tcg\" no Mercado Livre lida em 02/11/2026: anúncios com selo BLACK FRIDAY ou desconto de 20% ou mais. Preço e desconto são os do anúncio na leitura (o desconto é sobre o \"de\" do próprio vendedor). link = afiliado do dono (etiqueta tcgpricehunter), gerado a partir do anúncio MLB-<id>. Vale por validadeHoras (48 h) a partir de capturedAt; depois sai da fila até nova leitura. foto = imagem do anúncio/produto no CDN do ML, lida na mesma data (o ML não entrega a página do anúncio ao runner do GitHub).",
  "capturedAt": "2026-11-02T19:00:00.000Z",
  "validadeHoras": 48,
  "ofertas": [
@@ -9,7 +9,8 @@
    "preco": 65.56,
    "desconto": 56,
    "blackFriday": true,
-   "link": "https://meli.la/1svvmf7"
+   "link": "https://meli.la/1svvmf7",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_937047-CBT118381093123_092026-O.webp"
   },
   {
    "item": "MLB5352495805",
@@ -17,7 +18,8 @@
    "preco": 29.5,
    "desconto": 50,
    "blackFriday": true,
-   "link": "https://meli.la/2BQ3bHP"
+   "link": "https://meli.la/2BQ3bHP",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_956211-MLA116834293748_092026-O.webp"
   },
   {
    "item": "MLB7730343792",
@@ -25,7 +27,8 @@
    "preco": 41.48,
    "desconto": 40,
    "blackFriday": true,
-   "link": "https://meli.la/1YiiBwB"
+   "link": "https://meli.la/1YiiBwB",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_935612-MLB118829895511_102026-O.webp"
   },
   {
    "item": "MLB5229721544",
@@ -33,7 +36,8 @@
    "preco": 112.1,
    "desconto": 39,
    "blackFriday": true,
-   "link": "https://meli.la/1JeN5pn"
+   "link": "https://meli.la/1JeN5pn",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_842585-MLB92382485163_092025-O.webp"
   },
   {
    "item": "MLB5367185403",
@@ -41,7 +45,8 @@
    "preco": 152.0,
    "desconto": 38,
    "blackFriday": true,
-   "link": "https://meli.la/2rywpTG"
+   "link": "https://meli.la/2rywpTG",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_984115-MLB120386348319_102026-O.webp"
   },
   {
    "item": "MLB7912184598",
@@ -49,7 +54,8 @@
    "preco": 78.9,
    "desconto": 34,
    "blackFriday": true,
-   "link": "https://meli.la/15vPeFW"
+   "link": "https://meli.la/15vPeFW",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_779223-MLB115191442937_072026-O.webp"
   },
   {
    "item": "MLB5179842713",
@@ -57,7 +63,8 @@
    "preco": 545.1,
    "desconto": 31,
    "blackFriday": true,
-   "link": "https://meli.la/1uTknrm"
+   "link": "https://meli.la/1uTknrm",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_601468-MLB117094079097_092026-O.webp"
   },
   {
    "item": "MLB7580581400",
@@ -65,7 +72,8 @@
    "preco": 300.92,
    "desconto": 30,
    "blackFriday": true,
-   "link": "https://meli.la/2ubtpRH"
+   "link": "https://meli.la/2ubtpRH",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_607841-MLA117092697301_092026-O.webp"
   },
   {
    "item": "MLB5236118016",
@@ -73,7 +81,8 @@
    "preco": 38.0,
    "desconto": 30,
    "blackFriday": true,
-   "link": "https://meli.la/2uNzwUM"
+   "link": "https://meli.la/2uNzwUM",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_898957-MLB91737610880_092025-O.webp"
   },
   {
    "item": "MLB5519800506",
@@ -81,7 +90,8 @@
    "preco": 105.45,
    "desconto": 29,
    "blackFriday": true,
-   "link": "https://meli.la/2TeyAdi"
+   "link": "https://meli.la/2TeyAdi",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_855426-MLB92392715487_092025-O.webp"
   },
   {
    "item": "MLB5188753493",
@@ -89,7 +99,8 @@
    "preco": 24.15,
    "desconto": 26,
    "blackFriday": true,
-   "link": "https://meli.la/26sV8kq"
+   "link": "https://meli.la/26sV8kq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_646123-MLB117205869143_092026-O.webp"
   },
   {
    "item": "MLB4146488123",
@@ -97,7 +108,8 @@
    "preco": 109.25,
    "desconto": 26,
    "blackFriday": true,
-   "link": "https://meli.la/1Lztnt8"
+   "link": "https://meli.la/1Lztnt8",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_845451-MLB91355616038_092025-O.webp"
   },
   {
    "item": "MLB7718567068",
@@ -105,7 +117,8 @@
    "preco": 36.75,
    "desconto": 25,
    "blackFriday": true,
-   "link": "https://meli.la/1tXTbLw"
+   "link": "https://meli.la/1tXTbLw",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_691311-MLB116851272608_092026-O.webp"
   },
   {
    "item": "MLB7717400824",
@@ -113,7 +126,8 @@
    "preco": 81.59,
    "desconto": 25,
    "blackFriday": true,
-   "link": "https://meli.la/1ioLmTw"
+   "link": "https://meli.la/1ioLmTw",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_600161-MLA118397528125_092026-O.webp"
   },
   {
    "item": "MLB5386933127",
@@ -121,7 +135,8 @@
    "preco": 341.24,
    "desconto": 24,
    "blackFriday": true,
-   "link": "https://meli.la/29W1SNm"
+   "link": "https://meli.la/29W1SNm",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_930475-MLA118477811736_102026-O.webp"
   },
   {
    "item": "MLB7834681418",
@@ -129,7 +144,8 @@
    "preco": 130.14,
    "desconto": 23,
    "blackFriday": true,
-   "link": "https://meli.la/2HMZSuW"
+   "link": "https://meli.la/2HMZSuW",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_897048-MLB118036139046_102026-O.webp"
   },
   {
    "item": "MLB4573328957",
@@ -137,7 +153,8 @@
    "preco": 129.0,
    "desconto": 23,
    "blackFriday": true,
-   "link": "https://meli.la/1e5WTiz"
+   "link": "https://meli.la/1e5WTiz",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_988080-MLB109096677557_032026-O.webp"
   },
   {
    "item": "MLB6172526682",
@@ -145,7 +162,8 @@
    "preco": 22.46,
    "desconto": 22,
    "blackFriday": true,
-   "link": "https://meli.la/2UjC3gp"
+   "link": "https://meli.la/2UjC3gp",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_664594-MLB105343509287_012026-O.webp"
   },
   {
    "item": "MLB7409683054",
@@ -153,7 +171,8 @@
    "preco": 39.78,
    "desconto": 22,
    "blackFriday": true,
-   "link": "https://meli.la/1ybDVHu"
+   "link": "https://meli.la/1ybDVHu",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_691344-MLB116127455869_082026-O.webp"
   },
   {
    "item": "MLB5236097700",
@@ -161,7 +180,8 @@
    "preco": 20.28,
    "desconto": 22,
    "blackFriday": true,
-   "link": "https://meli.la/1t6Q4ZS"
+   "link": "https://meli.la/1t6Q4ZS",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_883475-MLB81365598706_122024-O.webp"
   },
   {
    "item": "MLB5236118086",
@@ -169,7 +189,8 @@
    "preco": 21.84,
    "desconto": 22,
    "blackFriday": true,
-   "link": "https://meli.la/2hCNSSa"
+   "link": "https://meli.la/2hCNSSa",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_910872-MLB81634987411_122024-O.webp"
   },
   {
    "item": "MLB5236073554",
@@ -177,7 +198,8 @@
    "preco": 50.7,
    "desconto": 22,
    "blackFriday": true,
-   "link": "https://meli.la/1CG2egH"
+   "link": "https://meli.la/1CG2egH",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_625105-MLB81365598666_122024-O.webp"
   },
   {
    "item": "MLB6200304722",
@@ -185,7 +207,8 @@
    "preco": 22.41,
    "desconto": 21,
    "blackFriday": true,
-   "link": "https://meli.la/1NB4uYy"
+   "link": "https://meli.la/1NB4uYy",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_714949-MLB110427293041_042026-O.webp"
   },
   {
    "item": "MLB7309848092",
@@ -193,7 +216,8 @@
    "preco": 1571.0,
    "desconto": 21,
    "blackFriday": true,
-   "link": "https://meli.la/2G5Gbyp"
+   "link": "https://meli.la/2G5Gbyp",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_802436-MLA100031196621_122025-O.webp"
   },
   {
    "item": "MLB2892846459",
@@ -201,7 +225,8 @@
    "preco": 47.0,
    "desconto": 20,
    "blackFriday": true,
-   "link": "https://meli.la/2qYFe1L"
+   "link": "https://meli.la/2qYFe1L",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_881348-MLB52124794673_102022-O.webp"
   },
   {
    "item": "MLB4019616369",
@@ -209,7 +234,8 @@
    "preco": 103.55,
    "desconto": 20,
    "blackFriday": true,
-   "link": "https://meli.la/2iYTbYW"
+   "link": "https://meli.la/2iYTbYW",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_728220-MLB106668429344_022026-O.webp"
   },
   {
    "item": "MLB5354950535",
@@ -217,7 +243,8 @@
    "preco": 230.84,
    "desconto": 20,
    "blackFriday": true,
-   "link": "https://meli.la/12HVuTj"
+   "link": "https://meli.la/12HVuTj",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_651723-MLB118993718269_102026-O.webp"
   },
   {
    "item": "MLB2206293014",
@@ -225,7 +252,8 @@
    "preco": 39.47,
    "desconto": 19,
    "blackFriday": true,
-   "link": "https://meli.la/1D4vbty"
+   "link": "https://meli.la/1D4vbty",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_915323-MLB118582467826_102026-O.webp"
   },
   {
    "item": "MLB1126345659",
@@ -233,7 +261,8 @@
    "preco": 79.8,
    "desconto": 19,
    "blackFriday": true,
-   "link": "https://meli.la/2hqofVw"
+   "link": "https://meli.la/2hqofVw",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_908623-MLB85828345948_062025-O.webp"
   },
   {
    "item": "MLB3440517279",
@@ -241,7 +270,8 @@
    "preco": 178.6,
    "desconto": 19,
    "blackFriday": true,
-   "link": "https://meli.la/1udgud8"
+   "link": "https://meli.la/1udgud8",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_912150-MLA71585770340_092023-O.webp"
   },
   {
    "item": "MLB7886181864",
@@ -249,7 +279,8 @@
    "preco": 41.22,
    "desconto": 17,
    "blackFriday": true,
-   "link": "https://meli.la/1DfHwBX"
+   "link": "https://meli.la/1DfHwBX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_945072-MLA119970257023_102026-O.webp"
   },
   {
    "item": "MLB5440794096",
@@ -257,7 +288,8 @@
    "preco": 94.05,
    "desconto": 17,
    "blackFriday": true,
-   "link": "https://meli.la/2UBXpQx"
+   "link": "https://meli.la/2UBXpQx",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_790210-MLB93836096424_102025-O.webp"
   },
   {
    "item": "MLB6174814332",
@@ -265,7 +297,8 @@
    "preco": 83.78,
    "desconto": 16,
    "blackFriday": true,
-   "link": "https://meli.la/13BZdDX"
+   "link": "https://meli.la/13BZdDX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_944669-MLA104439912570_012026-O.webp"
   },
   {
    "item": "MLB7184272340",
@@ -273,7 +306,8 @@
    "preco": 461.7,
    "desconto": 16,
    "blackFriday": true,
-   "link": "https://meli.la/1YgbvtN"
+   "link": "https://meli.la/1YgbvtN",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_786679-MLB113401534778_072026-O.webp"
   },
   {
    "item": "MLB5282647893",
@@ -281,7 +315,8 @@
    "preco": 245.09,
    "desconto": 16,
    "blackFriday": true,
-   "link": "https://meli.la/2AYaEbQ"
+   "link": "https://meli.la/2AYaEbQ",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_779348-MLB118123503425_092026-O.webp"
   },
   {
    "item": "MLB5773343502",
@@ -289,7 +324,8 @@
    "preco": 53.0,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/2KeWzgq"
+   "link": "https://meli.la/2KeWzgq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_940381-MLA100080929589_122025-O.webp"
   },
   {
    "item": "MLB5366394101",
@@ -297,7 +333,8 @@
    "preco": 33.15,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/1vJCG7u"
+   "link": "https://meli.la/1vJCG7u",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_966843-MLB119103279689_102026-O.webp"
   },
   {
    "item": "MLB7753719190",
@@ -305,7 +342,8 @@
    "preco": 69.19,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/1bDvh6D"
+   "link": "https://meli.la/1bDvh6D",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_835951-MLB118807661371_102026-O.webp"
   },
   {
    "item": "MLB7724089960",
@@ -313,7 +351,8 @@
    "preco": 24.65,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/15ZyJm6"
+   "link": "https://meli.la/15ZyJm6",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_908050-MLB116899197934_092026-O.webp"
   },
   {
    "item": "MLB4545727023",
@@ -321,7 +360,8 @@
    "preco": 229.41,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/2QGgWHN"
+   "link": "https://meli.la/2QGgWHN",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_843881-MLB109361887467_032026-O.webp"
   },
   {
    "item": "MLB7419133266",
@@ -329,7 +369,8 @@
    "preco": 20.4,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/1KXUVqi"
+   "link": "https://meli.la/1KXUVqi",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_940271-MLB116194054899_082026-O.webp"
   },
   {
    "item": "MLB3941288613",
@@ -337,7 +378,8 @@
    "preco": 34.85,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/2sWXH2X"
+   "link": "https://meli.la/2sWXH2X",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_944657-MLB81365598624_122024-O.webp"
   },
   {
    "item": "MLB5236097690",
@@ -345,7 +387,8 @@
    "preco": 45.9,
    "desconto": 15,
    "blackFriday": true,
-   "link": "https://meli.la/2oDvha3"
+   "link": "https://meli.la/2oDvha3",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_993420-MLB81365598644_122024-O.webp"
   },
   {
    "item": "MLB5435237711",
@@ -353,7 +396,8 @@
    "preco": 128.16,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/32pBteL"
+   "link": "https://meli.la/32pBteL",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_897262-MLB118248685396_102026-O.webp"
   },
   {
    "item": "MLB3165537775",
@@ -361,7 +405,8 @@
    "preco": 257.72,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/1NhxBia"
+   "link": "https://meli.la/1NhxBia",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_944472-MLB53530298429_012023-O.webp"
   },
   {
    "item": "MLB4889163069",
@@ -369,7 +414,8 @@
    "preco": 207.09,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/18eggpo"
+   "link": "https://meli.la/18eggpo",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_873501-MLB114507499559_072026-O.webp"
   },
   {
    "item": "MLB7029587478",
@@ -377,7 +423,8 @@
    "preco": 51.51,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/2RfEZse"
+   "link": "https://meli.la/2RfEZse",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_929616-MLA112537241500_062026-O.webp"
   },
   {
    "item": "MLB7201391820",
@@ -385,7 +432,8 @@
    "preco": 76.95,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/17orbLL"
+   "link": "https://meli.la/17orbLL",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_920051-MLB113531349346_072026-O.webp"
   },
   {
    "item": "MLB5132315673",
@@ -393,7 +441,8 @@
    "preco": 126.42,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/2do2kC3"
+   "link": "https://meli.la/2do2kC3",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_736359-MLB116712095615_082026-O.webp"
   },
   {
    "item": "MLB7201394894",
@@ -401,7 +450,8 @@
    "preco": 76.95,
    "desconto": 14,
    "blackFriday": true,
-   "link": "https://meli.la/1FHXhWK"
+   "link": "https://meli.la/1FHXhWK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_939577-MLB114803154969_072026-O.webp"
   },
   {
    "item": "MLB5401489547",
@@ -409,7 +459,8 @@
    "preco": 474.33,
    "desconto": 13,
    "blackFriday": true,
-   "link": "https://meli.la/1Th2Gex"
+   "link": "https://meli.la/1Th2Gex",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_937942-MLB117875471418_102026-O.webp"
   },
   {
    "item": "MLB5461206419",
@@ -417,7 +468,8 @@
    "preco": 254.04,
    "desconto": 13,
    "blackFriday": true,
-   "link": "https://meli.la/2XUQuWr"
+   "link": "https://meli.la/2XUQuWr",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_946203-MLA114014126653_072026-O.webp"
   },
   {
    "item": "MLB4842932282",
@@ -425,7 +477,8 @@
    "preco": 83.0,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/13YgKN9"
+   "link": "https://meli.la/13YgKN9",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_912171-MLB92123904654_092025-O.webp"
   },
   {
    "item": "MLB5336395863",
@@ -433,7 +486,8 @@
    "preco": 747.03,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/2AeRKTK"
+   "link": "https://meli.la/2AeRKTK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_752092-MLA118015048431_092026-O.webp"
   },
   {
    "item": "MLB4627226439",
@@ -441,7 +495,8 @@
    "preco": 35.0,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/2UTZV3b"
+   "link": "https://meli.la/2UTZV3b",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_876942-MLB109872504716_042026-O.webp"
   },
   {
    "item": "MLB5282034371",
@@ -449,7 +504,8 @@
    "preco": 104.96,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/2E6AhrN"
+   "link": "https://meli.la/2E6AhrN",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_916662-MLB119104688939_102026-O.webp"
   },
   {
    "item": "MLB5056281943",
@@ -457,7 +513,8 @@
    "preco": 25.52,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/1RHV3sX"
+   "link": "https://meli.la/1RHV3sX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_993777-MLB116127450803_082026-O.webp"
   },
   {
    "item": "MLB5056769493",
@@ -465,7 +522,8 @@
    "preco": 58.96,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/13F4fhA"
+   "link": "https://meli.la/13F4fhA",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_764913-MLB114761745272_082026-O.webp"
   },
   {
    "item": "MLB7409675420",
@@ -473,7 +531,8 @@
    "preco": 29.92,
    "desconto": 12,
    "blackFriday": true,
-   "link": "https://meli.la/1BEe2wt"
+   "link": "https://meli.la/1BEe2wt",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_692721-MLB116128080983_082026-O.webp"
   },
   {
    "item": "MLB7407797800",
@@ -481,7 +540,8 @@
    "preco": 43.19,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/2KcDtgE"
+   "link": "https://meli.la/2KcDtgE",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_923150-MLB116115453331_082026-O.webp"
   },
   {
    "item": "MLB5205199745",
@@ -489,7 +549,8 @@
    "preco": 76.05,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/26QBctf"
+   "link": "https://meli.la/26QBctf",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_602598-MLB117377367147_092026-O.webp"
   },
   {
    "item": "MLB4831859579",
@@ -497,7 +558,8 @@
    "preco": 179.91,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/1Tyt2Mz"
+   "link": "https://meli.la/1Tyt2Mz",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_823521-MLA99502529232_112025-O.webp"
   },
   {
    "item": "MLB7830685886",
@@ -505,7 +567,8 @@
    "preco": 49.41,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/2HikNEK"
+   "link": "https://meli.la/2HikNEK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_757150-MLB119627660263_102026-O.webp"
   },
   {
    "item": "MLB7296134008",
@@ -513,7 +576,8 @@
    "preco": 44.62,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/2WqT8cj"
+   "link": "https://meli.la/2WqT8cj",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_957342-MLB114031447282_072026-O.webp"
   },
   {
    "item": "MLB5168609209",
@@ -521,7 +585,8 @@
    "preco": 490.82,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/1za6uLd"
+   "link": "https://meli.la/1za6uLd",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_642203-MLA108034445222_032026-O.webp"
   },
   {
    "item": "MLB5064059889",
@@ -529,7 +594,8 @@
    "preco": 21.6,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/2aXePaH"
+   "link": "https://meli.la/2aXePaH",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_669278-MLB116193311637_082026-O.webp"
   },
   {
    "item": "MLB5360285141",
@@ -537,7 +603,8 @@
    "preco": 357.1,
    "desconto": 10,
    "blackFriday": true,
-   "link": "https://meli.la/2L6KJtU"
+   "link": "https://meli.la/2L6KJtU",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_964564-MLA79485478153_092024-O.webp"
   },
   {
    "item": "MLB4088488608",
@@ -545,7 +612,8 @@
    "preco": 69.0,
    "desconto": 9,
    "blackFriday": true,
-   "link": "https://meli.la/2pD67Te"
+   "link": "https://meli.la/2pD67Te",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_875321-MLA115694893240_092026-O.webp"
   },
   {
    "item": "MLB6768275754",
@@ -553,7 +621,8 @@
    "preco": 37.86,
    "desconto": 9,
    "blackFriday": true,
-   "link": "https://meli.la/1vwxCLg"
+   "link": "https://meli.la/1vwxCLg",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_854417-MLB111644868613_052026-O.webp"
   },
   {
    "item": "MLB4785061955",
@@ -561,7 +630,8 @@
    "preco": 122.0,
    "desconto": 9,
    "blackFriday": true,
-   "link": "https://meli.la/1DFVt3q"
+   "link": "https://meli.la/1DFVt3q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_944580-MLB112198538668_062026-O.webp"
   },
   {
    "item": "MLB5398990317",
@@ -569,7 +639,8 @@
    "preco": 197.0,
    "desconto": 8,
    "blackFriday": true,
-   "link": "https://meli.la/1hKpsqF"
+   "link": "https://meli.la/1hKpsqF",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_669161-MLA116266426190_092026-O.webp"
   },
   {
    "item": "MLB6680345982",
@@ -577,7 +648,8 @@
    "preco": 30.03,
    "desconto": 8,
    "blackFriday": true,
-   "link": "https://meli.la/2XWUh4i"
+   "link": "https://meli.la/2XWUh4i",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_611508-MLA95245155211_102025-O.webp"
   },
   {
    "item": "MLB7683221536",
@@ -585,7 +657,8 @@
    "preco": 1167.0,
    "desconto": 8,
    "blackFriday": true,
-   "link": "https://meli.la/2PMcXMt"
+   "link": "https://meli.la/2PMcXMt",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_865361-CBT118049351927_092026-O.webp"
   },
   {
    "item": "MLB7419458202",
@@ -593,7 +666,8 @@
    "preco": 22.0,
    "desconto": 8,
    "blackFriday": true,
-   "link": "https://meli.la/1aWDhFi"
+   "link": "https://meli.la/1aWDhFi",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_690087-MLB114822662254_082026-O.webp"
   },
   {
    "item": "MLB2027060996",
@@ -601,7 +675,8 @@
    "preco": 275.0,
    "desconto": 8,
    "blackFriday": true,
-   "link": "https://meli.la/2cJNoZC"
+   "link": "https://meli.la/2cJNoZC",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_915879-MLB114536078216_082026-O.webp"
   },
   {
    "item": "MLB7908622224",
@@ -609,7 +684,8 @@
    "preco": 62.57,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/2jW6ZfR"
+   "link": "https://meli.la/2jW6ZfR",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_971416-MLB120437615543_102026-O.webp"
   },
   {
    "item": "MLB4709479941",
@@ -617,7 +693,8 @@
    "preco": 92.0,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/2QAh8Lu"
+   "link": "https://meli.la/2QAh8Lu",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_922281-MLB119595532205_102026-O.webp"
   },
   {
    "item": "MLB5405344603",
@@ -625,7 +702,8 @@
    "preco": 164.95,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/1ij1cMX"
+   "link": "https://meli.la/1ij1cMX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_860246-MLB117927035850_102026-O.webp"
   },
   {
    "item": "MLB7716760572",
@@ -633,7 +711,8 @@
    "preco": 72.62,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/18mez1d"
+   "link": "https://meli.la/18mez1d",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_854971-MLB120260986351_102026-O.webp"
   },
   {
    "item": "MLB7419459882",
@@ -641,7 +720,8 @@
    "preco": 22.29,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/1LV2VGD"
+   "link": "https://meli.la/1LV2VGD",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_909855-MLB116194999687_082026-O.webp"
   },
   {
    "item": "MLB4066227211",
@@ -649,7 +729,8 @@
    "preco": 73.72,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/2QGkFcN"
+   "link": "https://meli.la/2QGkFcN",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_710945-MLB84881607575_052025-O.webp"
   },
   {
    "item": "MLB7161665552",
@@ -657,7 +738,8 @@
    "preco": 128.91,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/1aHLAub"
+   "link": "https://meli.la/1aHLAub",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_600365-MLB113268177460_072026-O.webp"
   },
   {
    "item": "MLB7372257350",
@@ -665,7 +747,8 @@
    "preco": 294.78,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/1pMirGY"
+   "link": "https://meli.la/1pMirGY",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_905246-MLB117045306599_092026-O.webp"
   },
   {
    "item": "MLB7419552520",
@@ -673,7 +756,8 @@
    "preco": 27.86,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/2Ls8TFS"
+   "link": "https://meli.la/2Ls8TFS",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_723362-MLB114823826114_082026-O.webp"
   },
   {
    "item": "MLB7670224056",
@@ -681,7 +765,8 @@
    "preco": 396.18,
    "desconto": 7,
    "blackFriday": true,
-   "link": "https://meli.la/1WrqTDk"
+   "link": "https://meli.la/1WrqTDk",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_964664-MLA99956709447_112025-O.webp"
   },
   {
    "item": "MLB5205190267",
@@ -689,7 +774,8 @@
    "preco": 75.12,
    "desconto": 6,
    "blackFriday": true,
-   "link": "https://meli.la/2p7ZrC3"
+   "link": "https://meli.la/2p7ZrC3",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_858233-MLB115907728878_092026-O.webp"
   },
   {
    "item": "MLB7739781524",
@@ -697,7 +783,8 @@
    "preco": 67.39,
    "desconto": 5,
    "blackFriday": true,
-   "link": "https://meli.la/1xPwMQo"
+   "link": "https://meli.la/1xPwMQo",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_860329-MLU71708773268_092023-O.webp"
   },
   {
    "item": "MLB7724238516",
@@ -705,7 +792,8 @@
    "preco": 27.55,
    "desconto": 5,
    "blackFriday": true,
-   "link": "https://meli.la/19FjdnM"
+   "link": "https://meli.la/19FjdnM",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_708724-MLB118460174983_092026-O.webp"
   },
   {
    "item": "MLB5429369617",
@@ -713,7 +801,8 @@
    "preco": 43.0,
    "desconto": 5,
    "blackFriday": true,
-   "link": "https://meli.la/2wA1YuZ"
+   "link": "https://meli.la/2wA1YuZ",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_874659-CBT114996436720_082026-O.webp"
   },
   {
    "item": "MLB7158106512",
@@ -721,7 +810,8 @@
    "preco": 4610.0,
    "desconto": 5,
    "blackFriday": true,
-   "link": "https://meli.la/2EHFQ6Q"
+   "link": "https://meli.la/2EHFQ6Q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_971041-MLA99855281223_112025-O.webp"
   },
   {
    "item": "MLB5026965621",
@@ -729,7 +819,8 @@
    "preco": 209.93,
    "desconto": 4,
    "blackFriday": true,
-   "link": "https://meli.la/2XPVwoC"
+   "link": "https://meli.la/2XPVwoC",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_825525-MLB115857240205_082026-O.webp"
   },
   {
    "item": "MLB7372432724",
@@ -737,7 +828,8 @@
    "preco": 281.2,
    "desconto": 4,
    "blackFriday": true,
-   "link": "https://meli.la/2akxFic"
+   "link": "https://meli.la/2akxFic",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_920503-MLB115857927245_082026-O.webp"
   },
   {
    "item": "MLB7557047744",
@@ -745,7 +837,8 @@
    "preco": 145.4,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/2sJSu4G"
+   "link": "https://meli.la/2sJSu4G",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_940022-MLB115821971400_092026-O.webp"
   },
   {
    "item": "MLB7656497130",
@@ -753,7 +846,8 @@
    "preco": 174.5,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/2fDhkTq"
+   "link": "https://meli.la/2fDhkTq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_736617-MLB116309471812_092026-O.webp"
   },
   {
    "item": "MLB7594319306",
@@ -761,7 +855,8 @@
    "preco": 116.3,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/1W7oqJT"
+   "link": "https://meli.la/1W7oqJT",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_730888-MLB117250826203_092026-O.webp"
   },
   {
    "item": "MLB5119958269",
@@ -769,7 +864,8 @@
    "preco": 111.45,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/2GqvrUT"
+   "link": "https://meli.la/2GqvrUT",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_749641-MLB116624967565_082026-O.webp"
   },
   {
    "item": "MLB5075744651",
@@ -777,7 +873,8 @@
    "preco": 223.0,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/1e1szQJ"
+   "link": "https://meli.la/1e1szQJ",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_914959-MLB117041858685_092026-O.webp"
   },
   {
    "item": "MLB4958307701",
@@ -785,7 +882,8 @@
    "preco": 90.88,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/1Y2Xpgq"
+   "link": "https://meli.la/1Y2Xpgq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_609567-MLB116726878417_082026-O.webp"
   },
   {
    "item": "MLB5192254975",
@@ -793,7 +891,8 @@
    "preco": 116.3,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/27dn7AZ"
+   "link": "https://meli.la/27dn7AZ",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_819224-MLB117282889177_092026-O.webp"
   },
   {
    "item": "MLB5158139359",
@@ -801,7 +900,8 @@
    "preco": 58.1,
    "desconto": 3,
    "blackFriday": true,
-   "link": "https://meli.la/1MC6p6n"
+   "link": "https://meli.la/1MC6p6n",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_865164-MLB115817628538_092026-O.webp"
   },
   {
    "item": "MLB5435257297",
@@ -809,7 +909,8 @@
    "preco": 270.63,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1HVhzh3"
+   "link": "https://meli.la/1HVhzh3",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_677171-MLB119893420963_102026-O.webp"
   },
   {
    "item": "MLB5473441449",
@@ -817,7 +918,8 @@
    "preco": 58.1,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2a3zpnU"
+   "link": "https://meli.la/2a3zpnU",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_787442-MLB118654256526_102026-O.webp"
   },
   {
    "item": "MLB7891531848",
@@ -825,7 +927,8 @@
    "preco": 67.8,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1oz7Df1"
+   "link": "https://meli.la/1oz7Df1",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_724014-MLB118598427110_102026-O.webp"
   },
   {
    "item": "MLB7735116914",
@@ -833,7 +936,8 @@
    "preco": 271.57,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1JZwHrS"
+   "link": "https://meli.la/1JZwHrS",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_803641-MLB117337666634_102026-O.webp"
   },
   {
    "item": "MLB5473155379",
@@ -841,7 +945,8 @@
    "preco": 96.9,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1F3b4ia"
+   "link": "https://meli.la/1F3b4ia",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_899437-MLB118649868612_102026-O.webp"
   },
   {
    "item": "MLB7568044968",
@@ -849,7 +954,8 @@
    "preco": 105.49,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1qcBwuu"
+   "link": "https://meli.la/1qcBwuu",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_733938-MLA111794514285_052026-O.webp"
   },
   {
    "item": "MLB7718754956",
@@ -857,7 +963,8 @@
    "preco": 28.13,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1jeAhr7"
+   "link": "https://meli.la/1jeAhr7",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_929998-MLB116853843790_092026-O.webp"
   },
   {
    "item": "MLB7913528322",
@@ -865,7 +972,8 @@
    "preco": 368.5,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2g7u5pN"
+   "link": "https://meli.la/2g7u5pN",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_990205-MLA104280662173_012026-O.webp"
   },
   {
    "item": "MLB5467863867",
@@ -873,7 +981,8 @@
    "preco": 76.53,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1TJozf7"
+   "link": "https://meli.la/1TJozf7",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_972842-MLB120265187095_102026-O.webp"
   },
   {
    "item": "MLB7897140086",
@@ -881,7 +990,8 @@
    "preco": 48.4,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2GQ3Y37"
+   "link": "https://meli.la/2GQ3Y37",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_724266-MLB118648312696_102026-O.webp"
   },
   {
    "item": "MLB5433586241",
@@ -889,7 +999,8 @@
    "preco": 28.7,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1iJhvna"
+   "link": "https://meli.la/1iJhvna",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_782906-MLB118229814408_102026-O.webp"
   },
   {
    "item": "MLB7718839526",
@@ -897,7 +1008,8 @@
    "preco": 947.82,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1p9fK6M"
+   "link": "https://meli.la/1p9fK6M",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_909469-MLB117047430018_102026-O.webp"
   },
   {
    "item": "MLB5409091091",
@@ -905,7 +1017,8 @@
    "preco": 892.72,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2qq8yjB"
+   "link": "https://meli.la/2qq8yjB",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_677158-MLB117985113100_102026-O.webp"
   },
   {
    "item": "MLB5433611071",
@@ -913,7 +1026,8 @@
    "preco": 28.7,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1v79Hts"
+   "link": "https://meli.la/1v79Hts",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_797700-MLB118229554098_102026-O.webp"
   },
   {
    "item": "MLB5454090799",
@@ -921,7 +1035,8 @@
    "preco": 104.75,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2JWem3q"
+   "link": "https://meli.la/2JWem3q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_618669-MLA105465157747_012026-O.webp"
   },
   {
    "item": "MLB5188889001",
@@ -929,7 +1044,8 @@
    "preco": 58.1,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1JEwDqo"
+   "link": "https://meli.la/1JEwDqo",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_848034-MLB115752529764_092026-O.webp"
   },
   {
    "item": "MLB7735276748",
@@ -937,7 +1053,8 @@
    "preco": 135.7,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1Pdj6nd"
+   "link": "https://meli.la/1Pdj6nd",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_672822-MLB117340132870_102026-O.webp"
   },
   {
    "item": "MLB3839974568",
@@ -945,7 +1062,8 @@
    "preco": 39.67,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/21CFgNv"
+   "link": "https://meli.la/21CFgNv",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_661739-MLA70712525532_072023-O.webp"
   },
   {
    "item": "MLB5240575327",
@@ -953,7 +1071,8 @@
    "preco": 96.9,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1Qx8Qja"
+   "link": "https://meli.la/1Qx8Qja",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_981373-MLB117725152389_092026-O.webp"
   },
   {
    "item": "MLB7800950440",
@@ -961,7 +1080,8 @@
    "preco": 196.69,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2v9wS9C"
+   "link": "https://meli.la/2v9wS9C",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_949054-CBT118190650386_102026-O.webp"
   },
   {
    "item": "MLB5075540129",
@@ -969,7 +1089,8 @@
    "preco": 58.1,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2N2eV9Q"
+   "link": "https://meli.la/2N2eV9Q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_676427-MLB114901648714_082026-O.webp"
   },
   {
    "item": "MLB5120175173",
@@ -977,7 +1098,8 @@
    "preco": 58.1,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/22swGNa"
+   "link": "https://meli.la/22swGNa",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_844957-MLB115819310338_092026-O.webp"
   },
   {
    "item": "MLB7432392084",
@@ -985,7 +1107,8 @@
    "preco": 76.53,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1jXNfwq"
+   "link": "https://meli.la/1jXNfwq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_903676-MLB115817065916_092026-O.webp"
   },
   {
    "item": "MLB5300531061",
@@ -993,7 +1116,8 @@
    "preco": 247.0,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2GSouJd"
+   "link": "https://meli.la/2GSouJd",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_826711-MLB116940034980_092026-O.webp"
   },
   {
    "item": "MLB5192336307",
@@ -1001,7 +1125,8 @@
    "preco": 67.8,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2EnW9zH"
+   "link": "https://meli.la/2EnW9zH",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_709984-MLB115792300626_092026-O.webp"
   },
   {
    "item": "MLB5001707329",
@@ -1009,7 +1134,8 @@
    "preco": 24.15,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2V1Axxo"
+   "link": "https://meli.la/2V1Axxo",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_617955-MLB115686946507_082026-O.webp"
   },
   {
    "item": "MLB5162457665",
@@ -1017,7 +1143,8 @@
    "preco": 75.56,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2FATo2W"
+   "link": "https://meli.la/2FATo2W",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_710913-MLB117282330357_092026-O.webp"
   },
   {
    "item": "MLB5195410181",
@@ -1025,7 +1152,8 @@
    "preco": 96.9,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1gHLB2h"
+   "link": "https://meli.la/1gHLB2h",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_796401-MLB117284128109_092026-O.webp"
   },
   {
    "item": "MLB5162547829",
@@ -1033,7 +1161,8 @@
    "preco": 75.61,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/28tsD55"
+   "link": "https://meli.la/28tsD55",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_708450-MLB117282152885_092026-O.webp"
   },
   {
    "item": "MLB7597684156",
@@ -1041,7 +1170,8 @@
    "preco": 76.53,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1fM7ztz"
+   "link": "https://meli.la/1fM7ztz",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_912245-MLB115824452940_092026-O.webp"
   },
   {
    "item": "MLB5157574601",
@@ -1049,7 +1179,8 @@
    "preco": 58.1,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1rXpww2"
+   "link": "https://meli.la/1rXpww2",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_907913-MLB116913254635_082026-O.webp"
   },
   {
    "item": "MLB5042196707",
@@ -1057,7 +1188,8 @@
    "preco": 33.85,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1k2tEQc"
+   "link": "https://meli.la/1k2tEQc",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_765382-MLB115981079677_082026-O.webp"
   },
   {
    "item": "MLB5162398859",
@@ -1065,7 +1197,8 @@
    "preco": 57.36,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2J4cozM"
+   "link": "https://meli.la/2J4cozM",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_619110-MLB115822340250_092026-O.webp"
   },
   {
    "item": "MLB7372033068",
@@ -1073,7 +1206,8 @@
    "preco": 29.0,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1YXGMfk"
+   "link": "https://meli.la/1YXGMfk",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_959463-MLA115854488437_082026-O.webp"
   },
   {
    "item": "MLB5158213579",
@@ -1081,7 +1215,8 @@
    "preco": 58.1,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2iBCh3q"
+   "link": "https://meli.la/2iBCh3q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_746605-MLB115486375786_082026-O.webp"
   },
   {
    "item": "MLB7309839600",
@@ -1089,7 +1224,8 @@
    "preco": 2415.0,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/2WHYNeS"
+   "link": "https://meli.la/2WHYNeS",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_703068-MLA99908750097_112025-O.webp"
   },
   {
    "item": "MLB7009015840",
@@ -1097,7 +1233,8 @@
    "preco": 67.8,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1pFxmec"
+   "link": "https://meli.la/1pFxmec",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_606072-MLB115817068946_092026-O.webp"
   },
   {
    "item": "MLB3925450331",
@@ -1105,7 +1242,8 @@
    "preco": 193.99,
    "desconto": 0,
    "blackFriday": true,
-   "link": "https://meli.la/1k7Ghen"
+   "link": "https://meli.la/1k7Ghen",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_814692-MLB91303620344_092025-O.webp"
   },
   {
    "item": "MLB7580464662",
@@ -1113,7 +1251,8 @@
    "preco": 149.0,
    "desconto": 70,
    "blackFriday": false,
-   "link": "https://meli.la/1iwWrgs"
+   "link": "https://meli.la/1iwWrgs",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_836755-MLB117090963755_092026-O.webp"
   },
   {
    "item": "MLB5179559533",
@@ -1121,7 +1260,8 @@
    "preco": 19.99,
    "desconto": 59,
    "blackFriday": false,
-   "link": "https://meli.la/2ZWujsB"
+   "link": "https://meli.la/2ZWujsB",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_664869-MLB115642448022_092026-O.webp"
   },
   {
    "item": "MLB4598319616",
@@ -1129,7 +1269,8 @@
    "preco": 51.06,
    "desconto": 57,
    "blackFriday": false,
-   "link": "https://meli.la/2u96bMy"
+   "link": "https://meli.la/2u96bMy",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_863215-MLB114608202608_082026-O.webp"
   },
   {
    "item": "MLB5179276403",
@@ -1137,7 +1278,8 @@
    "preco": 33.85,
    "desconto": 57,
    "blackFriday": false,
-   "link": "https://meli.la/2YCrSEq"
+   "link": "https://meli.la/2YCrSEq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_656021-MLB115639019226_092026-O.webp"
   },
   {
    "item": "MLB7905885320",
@@ -1145,7 +1287,8 @@
    "preco": 129.63,
    "desconto": 56,
    "blackFriday": false,
-   "link": "https://meli.la/17zNn8K"
+   "link": "https://meli.la/17zNn8K",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_762553-MLA116267537712_092026-O.webp"
   },
   {
    "item": "MLB5346420371",
@@ -1153,7 +1296,8 @@
    "preco": 137.12,
    "desconto": 54,
    "blackFriday": false,
-   "link": "https://meli.la/32H1ykx"
+   "link": "https://meli.la/32H1ykx",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_942273-MLB117716112152_102026-O.webp"
   },
   {
    "item": "MLB5926141398",
@@ -1161,7 +1305,8 @@
    "preco": 35.99,
    "desconto": 54,
    "blackFriday": false,
-   "link": "https://meli.la/1VxiHW2"
+   "link": "https://meli.la/1VxiHW2",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_659561-MLB97522537912_112025-O.webp"
   },
   {
    "item": "MLB7906082910",
@@ -1169,7 +1314,8 @@
    "preco": 75.21,
    "desconto": 53,
    "blackFriday": false,
-   "link": "https://meli.la/2JxZykF"
+   "link": "https://meli.la/2JxZykF",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_725525-MLA117207617071_092026-O.webp"
   },
   {
    "item": "MLB7901934804",
@@ -1177,7 +1323,8 @@
    "preco": 142.0,
    "desconto": 52,
    "blackFriday": false,
-   "link": "https://meli.la/1N1R9aP"
+   "link": "https://meli.la/1N1R9aP",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_734411-MLA112737753653_062026-O.webp"
   },
   {
    "item": "MLB4026017531",
@@ -1185,7 +1332,8 @@
    "preco": 1499.0,
    "desconto": 51,
    "blackFriday": false,
-   "link": "https://meli.la/2P3vxP3"
+   "link": "https://meli.la/2P3vxP3",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_942296-MLA99937701717_112025-O.webp"
   },
   {
    "item": "MLB5179600359",
@@ -1193,7 +1341,8 @@
    "preco": 29.09,
    "desconto": 51,
    "blackFriday": false,
-   "link": "https://meli.la/1TdGUAX"
+   "link": "https://meli.la/1TdGUAX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_834225-MLB115643080224_092026-O.webp"
   },
   {
    "item": "MLB6838214746",
@@ -1201,7 +1350,8 @@
    "preco": 70.86,
    "desconto": 51,
    "blackFriday": false,
-   "link": "https://meli.la/28xGoZ1"
+   "link": "https://meli.la/28xGoZ1",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_706602-MLB111195949758_052026-O.webp"
   },
   {
    "item": "MLB5064546129",
@@ -1209,7 +1359,8 @@
    "preco": 29.99,
    "desconto": 49,
    "blackFriday": false,
-   "link": "https://meli.la/2swBmRV"
+   "link": "https://meli.la/2swBmRV",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_812885-MLB114823655772_082026-O.webp"
   },
   {
    "item": "MLB4719909209",
@@ -1217,7 +1368,8 @@
    "preco": 73.62,
    "desconto": 49,
    "blackFriday": false,
-   "link": "https://meli.la/2gKjiL8"
+   "link": "https://meli.la/2gKjiL8",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_655254-MLB111358960022_052026-O.webp"
   },
   {
    "item": "MLB4129269961",
@@ -1225,7 +1377,8 @@
    "preco": 22.32,
    "desconto": 44,
    "blackFriday": false,
-   "link": "https://meli.la/2EUt7CX"
+   "link": "https://meli.la/2EUt7CX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_990457-MLB87843196906_072025-O.webp"
   },
   {
    "item": "MLB7905877760",
@@ -1233,7 +1386,8 @@
    "preco": 279.9,
    "desconto": 44,
    "blackFriday": false,
-   "link": "https://meli.la/2Hvnac2"
+   "link": "https://meli.la/2Hvnac2",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_643338-MLA118132109709_092026-O.webp"
   },
   {
    "item": "MLB7547522208",
@@ -1241,7 +1395,8 @@
    "preco": 44.0,
    "desconto": 43,
    "blackFriday": false,
-   "link": "https://meli.la/1Dcc7se"
+   "link": "https://meli.la/1Dcc7se",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_654423-MLB117846472273_092026-O.webp"
   },
   {
    "item": "MLB5386527359",
@@ -1249,7 +1404,8 @@
    "preco": 505.07,
    "desconto": 43,
    "blackFriday": false,
-   "link": "https://meli.la/2mmH7fa"
+   "link": "https://meli.la/2mmH7fa",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_703365-MLB119289543477_102026-O.webp"
   },
   {
    "item": "MLB3321114039",
@@ -1257,7 +1413,8 @@
    "preco": 28.31,
    "desconto": 43,
    "blackFriday": false,
-   "link": "https://meli.la/1wvdwLa"
+   "link": "https://meli.la/1wvdwLa",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_817948-MLB78762309095_082024-O.webp"
   },
   {
    "item": "MLB5930202958",
@@ -1265,7 +1422,8 @@
    "preco": 79.9,
    "desconto": 42,
    "blackFriday": false,
-   "link": "https://meli.la/2yAdXhU"
+   "link": "https://meli.la/2yAdXhU",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_813285-MLA97324226431_112025-O.webp"
   },
   {
    "item": "MLB7225996242",
@@ -1273,7 +1431,8 @@
    "preco": 387.88,
    "desconto": 41,
    "blackFriday": false,
-   "link": "https://meli.la/2p4epcC"
+   "link": "https://meli.la/2p4epcC",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_710048-MLB114957729471_072026-O.webp"
   },
   {
    "item": "MLB7535084340",
@@ -1281,7 +1440,8 @@
    "preco": 17.99,
    "desconto": 41,
    "blackFriday": false,
-   "link": "https://meli.la/19UrxsZ"
+   "link": "https://meli.la/19UrxsZ",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_623159-MLA115405123992_082026-O.webp"
   },
   {
    "item": "MLB5245533929",
@@ -1289,7 +1449,8 @@
    "preco": 174.59,
    "desconto": 41,
    "blackFriday": false,
-   "link": "https://meli.la/18FRPVT"
+   "link": "https://meli.la/18FRPVT",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_749384-MLB116274735172_092026-O.webp"
   },
   {
    "item": "MLB7735290738",
@@ -1297,7 +1458,8 @@
    "preco": 174.59,
    "desconto": 41,
    "blackFriday": false,
-   "link": "https://meli.la/19n2V4Y"
+   "link": "https://meli.la/19n2V4Y",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_775608-MLB117340254492_102026-O.webp"
   },
   {
    "item": "MLB5179174555",
@@ -1305,7 +1467,8 @@
    "preco": 34.99,
    "desconto": 41,
    "blackFriday": false,
-   "link": "https://meli.la/157Lvap"
+   "link": "https://meli.la/157Lvap",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_774643-MLB117082431093_092026-O.webp"
   },
   {
    "item": "MLB5321557603",
@@ -1313,7 +1476,8 @@
    "preco": 179.99,
    "desconto": 40,
    "blackFriday": false,
-   "link": "https://meli.la/2S5nC4C"
+   "link": "https://meli.la/2S5nC4C",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_879344-MLB118936565131_102026-O.webp"
   },
   {
    "item": "MLB3648440553",
@@ -1321,7 +1485,8 @@
    "preco": 45.55,
    "desconto": 40,
    "blackFriday": false,
-   "link": "https://meli.la/1yMsyiX"
+   "link": "https://meli.la/1yMsyiX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_883239-MLB91520279173_092025-O.webp"
   },
   {
    "item": "MLB6174862120",
@@ -1329,7 +1494,8 @@
    "preco": 20.87,
    "desconto": 40,
    "blackFriday": false,
-   "link": "https://meli.la/1MMRZhF"
+   "link": "https://meli.la/1MMRZhF",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_832572-MLA104990944711_012026-O.webp"
   },
   {
    "item": "MLB7501738694",
@@ -1337,7 +1503,8 @@
    "preco": 29.0,
    "desconto": 40,
    "blackFriday": false,
-   "link": "https://meli.la/2zraFTx"
+   "link": "https://meli.la/2zraFTx",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_920562-MLA115260854450_082026-O.webp"
   },
   {
    "item": "MLB5575544854",
@@ -1345,7 +1512,8 @@
    "preco": 24.28,
    "desconto": 39,
    "blackFriday": false,
-   "link": "https://meli.la/1NQae8q"
+   "link": "https://meli.la/1NQae8q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_800105-MLB114590561202_082026-O.webp"
   },
   {
    "item": "MLB4463780115",
@@ -1353,7 +1521,8 @@
    "preco": 70.44,
    "desconto": 38,
    "blackFriday": false,
-   "link": "https://meli.la/1buwhpY"
+   "link": "https://meli.la/1buwhpY",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_670967-MLB107421500525_022026-O.webp"
   },
   {
    "item": "MLB4375094663",
@@ -1361,7 +1530,8 @@
    "preco": 46.27,
    "desconto": 38,
    "blackFriday": false,
-   "link": "https://meli.la/2ZwAQiC"
+   "link": "https://meli.la/2ZwAQiC",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_692708-MLB117425675356_102026-O.webp"
   },
   {
    "item": "MLB4697956507",
@@ -1369,7 +1539,8 @@
    "preco": 24.73,
    "desconto": 38,
    "blackFriday": false,
-   "link": "https://meli.la/27j6RFx"
+   "link": "https://meli.la/27j6RFx",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_834049-MLB111990173345_052026-O.webp"
   },
   {
    "item": "MLB5031772699",
@@ -1377,7 +1548,8 @@
    "preco": 19.0,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/1MtiE2V"
+   "link": "https://meli.la/1MtiE2V",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_773533-MLA118149981781_092026-O.webp"
   },
   {
    "item": "MLB6795934382",
@@ -1385,7 +1557,8 @@
    "preco": 37.0,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/2z9JfgK"
+   "link": "https://meli.la/2z9JfgK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_762856-MLA111659979935_052026-O.webp"
   },
   {
    "item": "MLB5361405010",
@@ -1393,7 +1566,8 @@
    "preco": 72.97,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/1H2LXgX"
+   "link": "https://meli.la/1H2LXgX",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_682596-MLB112404223609_052026-O.webp"
   },
   {
    "item": "MLB4782567045",
@@ -1401,7 +1575,8 @@
    "preco": 57.0,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/2aQqCpe"
+   "link": "https://meli.la/2aQqCpe",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_706564-MLB112160349518_062026-O.webp"
   },
   {
    "item": "MLB5325615793",
@@ -1409,7 +1584,8 @@
    "preco": 322.0,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/2zjhdQQ"
+   "link": "https://meli.la/2zjhdQQ",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_696441-MLB117671118308_102026-O.webp"
   },
   {
    "item": "MLB6177831834",
@@ -1417,7 +1593,8 @@
    "preco": 76.0,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/1bLoE4C"
+   "link": "https://meli.la/1bLoE4C",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_768324-MLB104544509020_012026-O.webp"
   },
   {
    "item": "MLB5215731733",
@@ -1425,7 +1602,8 @@
    "preco": 125.99,
    "desconto": 36,
    "blackFriday": false,
-   "link": "https://meli.la/1s36ms1"
+   "link": "https://meli.la/1s36ms1",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_839670-MLB116002718478_092026-O.webp"
   },
   {
    "item": "MLB4190975067",
@@ -1433,7 +1611,8 @@
    "preco": 69.7,
    "desconto": 35,
    "blackFriday": false,
-   "link": "https://meli.la/2ShfaSh"
+   "link": "https://meli.la/2ShfaSh",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_837596-MLB91674260008_092025-O.webp"
   },
   {
    "item": "MLB2824425350",
@@ -1441,7 +1620,8 @@
    "preco": 19.31,
    "desconto": 35,
    "blackFriday": false,
-   "link": "https://meli.la/1AYVHwr"
+   "link": "https://meli.la/1AYVHwr",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_824943-MLB80655670821_112024-O.webp"
   },
   {
    "item": "MLB5664606654",
@@ -1449,7 +1629,8 @@
    "preco": 69.7,
    "desconto": 35,
    "blackFriday": false,
-   "link": "https://meli.la/26HtGxr"
+   "link": "https://meli.la/26HtGxr",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_602286-MLB92009003071_092025-O.webp"
   },
   {
    "item": "MLB5461364267",
@@ -1457,7 +1638,8 @@
    "preco": 19.42,
    "desconto": 35,
    "blackFriday": false,
-   "link": "https://meli.la/1BvMVca"
+   "link": "https://meli.la/1BvMVca",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_764300-MLB118514048872_102026-O.webp"
   },
   {
    "item": "MLB7645730002",
@@ -1465,7 +1647,8 @@
    "preco": 51.36,
    "desconto": 34,
    "blackFriday": false,
-   "link": "https://meli.la/1fP91uG"
+   "link": "https://meli.la/1fP91uG",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_744746-MLA99998617323_112025-O.webp"
   },
   {
    "item": "MLB7081554822",
@@ -1473,7 +1656,8 @@
    "preco": 29.89,
    "desconto": 33,
    "blackFriday": false,
-   "link": "https://meli.la/1p9srEV"
+   "link": "https://meli.la/1p9srEV",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_728805-MLB113001553674_072026-O.webp"
   },
   {
    "item": "MLB4570553769",
@@ -1481,7 +1665,8 @@
    "preco": 46.72,
    "desconto": 33,
    "blackFriday": false,
-   "link": "https://meli.la/19LEcfy"
+   "link": "https://meli.la/19LEcfy",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_884260-MLB113916480059_062026-O.webp"
   },
   {
    "item": "MLB5329061567",
@@ -1489,7 +1674,8 @@
    "preco": 999.0,
    "desconto": 33,
    "blackFriday": false,
-   "link": "https://meli.la/2s2kSXr"
+   "link": "https://meli.la/2s2kSXr",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_660247-MLB119096959637_102026-O.webp"
   },
   {
    "item": "MLB4888617261",
@@ -1497,7 +1683,8 @@
    "preco": 199.95,
    "desconto": 33,
    "blackFriday": false,
-   "link": "https://meli.la/1H2H6BH"
+   "link": "https://meli.la/1H2H6BH",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_679935-MLB114502765403_072026-O.webp"
   },
   {
    "item": "MLB7776789896",
@@ -1505,7 +1692,8 @@
    "preco": 26.45,
    "desconto": 33,
    "blackFriday": false,
-   "link": "https://meli.la/2yGx57f"
+   "link": "https://meli.la/2yGx57f",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_908440-MLA116611114446_092026-O.webp"
   },
   {
    "item": "MLB5234577531",
@@ -1513,7 +1701,8 @@
    "preco": 149.72,
    "desconto": 32,
    "blackFriday": false,
-   "link": "https://meli.la/1yZMxHT"
+   "link": "https://meli.la/1yZMxHT",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_794432-MLB117667336247_092026-O.webp"
   },
   {
    "item": "MLB4571358277",
@@ -1521,7 +1710,8 @@
    "preco": 47.52,
    "desconto": 32,
    "blackFriday": false,
-   "link": "https://meli.la/26mvCK5"
+   "link": "https://meli.la/26mvCK5",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_947572-MLB109801120781_032026-O.webp"
   },
   {
    "item": "MLB7602545862",
@@ -1529,7 +1719,8 @@
    "preco": 55.13,
    "desconto": 31,
    "blackFriday": false,
-   "link": "https://meli.la/2B1P16p"
+   "link": "https://meli.la/2B1P16p",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_967702-MLB117548905913_092026-O.webp"
   },
   {
    "item": "MLB4931077899",
@@ -1537,7 +1728,8 @@
    "preco": 433.0,
    "desconto": 31,
    "blackFriday": false,
-   "link": "https://meli.la/1jaBd6A"
+   "link": "https://meli.la/1jaBd6A",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_724710-MLA114014129011_072026-O.webp"
   },
   {
    "item": "MLB4687220547",
@@ -1545,7 +1737,8 @@
    "preco": 115.5,
    "desconto": 31,
    "blackFriday": false,
-   "link": "https://meli.la/2z4sysr"
+   "link": "https://meli.la/2z4sysr",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_756717-MLB111817588589_052026-O.webp"
   },
   {
    "item": "MLB7608843904",
@@ -1553,7 +1746,8 @@
    "preco": 210.8,
    "desconto": 31,
    "blackFriday": false,
-   "link": "https://meli.la/17bWnQK"
+   "link": "https://meli.la/17bWnQK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_936052-MLA83622980974_042025-O.webp"
   },
   {
    "item": "MLB5234587619",
@@ -1561,7 +1755,8 @@
    "preco": 123.49,
    "desconto": 31,
    "blackFriday": false,
-   "link": "https://meli.la/15k51gc"
+   "link": "https://meli.la/15k51gc",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_768233-MLB116181092030_092026-O.webp"
   },
   {
    "item": "MLB5270313739",
@@ -1569,7 +1764,8 @@
    "preco": 104.9,
    "desconto": 30,
    "blackFriday": false,
-   "link": "https://meli.la/26TBZoK"
+   "link": "https://meli.la/26TBZoK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_645354-MLA98676622877_112025-O.webp"
   },
   {
    "item": "MLB7778589614",
@@ -1577,7 +1773,8 @@
    "preco": 84.0,
    "desconto": 30,
    "blackFriday": false,
-   "link": "https://meli.la/2tjxyif"
+   "link": "https://meli.la/2tjxyif",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_917299-MLB119046535959_102026-O.webp"
   },
   {
    "item": "MLB7573871688",
@@ -1585,7 +1782,8 @@
    "preco": 140.32,
    "desconto": 29,
    "blackFriday": false,
-   "link": "https://meli.la/1EnSU9Q"
+   "link": "https://meli.la/1EnSU9Q",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_672931-MLA114222223435_072026-O.webp"
   },
   {
    "item": "MLB6823331442",
@@ -1593,7 +1791,8 @@
    "preco": 39.9,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/2wkaTFK"
+   "link": "https://meli.la/2wkaTFK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_861056-MLA116069207296_092026-O.webp"
   },
   {
    "item": "MLB5248485559",
@@ -1601,7 +1800,8 @@
    "preco": 294.49,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/2KSpjf8"
+   "link": "https://meli.la/2KSpjf8",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_888612-MLB117799635551_092026-O.webp"
   },
   {
    "item": "MLB4449417789",
@@ -1609,7 +1809,8 @@
    "preco": 16.52,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/1KxSdQ1"
+   "link": "https://meli.la/1KxSdQ1",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_938381-MLB105488288696_012026-O.webp"
   },
   {
    "item": "MLB754960753",
@@ -1617,7 +1818,8 @@
    "preco": 127.54,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/2pEb9P4"
+   "link": "https://meli.la/2pEb9P4",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_632891-MLB75105593431_032024-O.webp"
   },
   {
    "item": "MLB2782173195",
@@ -1625,7 +1827,8 @@
    "preco": 95.47,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/19US9eY"
+   "link": "https://meli.la/19US9eY",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_635466-MLB96316096593_102025-O.webp"
   },
   {
    "item": "MLB4945713831",
@@ -1633,7 +1836,8 @@
    "preco": 24.93,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/2EoxwDn"
+   "link": "https://meli.la/2EoxwDn",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_746221-MLB115442875665_082026-O.webp"
   },
   {
    "item": "MLB5034058989",
@@ -1641,7 +1845,8 @@
    "preco": 56.9,
    "desconto": 28,
    "blackFriday": false,
-   "link": "https://meli.la/1zKKAcG"
+   "link": "https://meli.la/1zKKAcG",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_844725-MLB116443891775_082026-O.webp"
   },
   {
    "item": "MLB7573811204",
@@ -1649,7 +1854,8 @@
    "preco": 140.7,
    "desconto": 27,
    "blackFriday": false,
-   "link": "https://meli.la/18hBsVp"
+   "link": "https://meli.la/18hBsVp",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_672931-MLA114222223435_072026-O.webp"
   },
   {
    "item": "MLB7776255302",
@@ -1657,7 +1863,8 @@
    "preco": 16.42,
    "desconto": 27,
    "blackFriday": false,
-   "link": "https://meli.la/1gfcALC"
+   "link": "https://meli.la/1gfcALC",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_978717-MLA99599699154_122025-O.webp"
   },
   {
    "item": "MLB6926069826",
@@ -1665,7 +1872,8 @@
    "preco": 115.0,
    "desconto": 26,
    "blackFriday": false,
-   "link": "https://meli.la/2P1DuBE"
+   "link": "https://meli.la/2P1DuBE",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_736154-MLA112147536081_052026-O.webp"
   },
   {
    "item": "MLB7041639928",
@@ -1673,7 +1881,8 @@
    "preco": 28.53,
    "desconto": 26,
    "blackFriday": false,
-   "link": "https://meli.la/2aR4ozU"
+   "link": "https://meli.la/2aR4ozU",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_632787-MLA112553874062_062026-O.webp"
   },
   {
    "item": "MLB4725980834",
@@ -1681,7 +1890,8 @@
    "preco": 29.92,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/1fRA4wo"
+   "link": "https://meli.la/1fRA4wo",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_757253-MLB107110579157_022026-O.webp"
   },
   {
    "item": "MLB4842711169",
@@ -1689,7 +1899,8 @@
    "preco": 18.74,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/2aqPLRT"
+   "link": "https://meli.la/2aqPLRT",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_867758-MLA114013689257_072026-O.webp"
   },
   {
    "item": "MLB5168341641",
@@ -1697,7 +1908,8 @@
    "preco": 38.5,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/2iwstK6"
+   "link": "https://meli.la/2iwstK6",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_699326-MLB116985101023_082026-O.webp"
   },
   {
    "item": "MLB5276316670",
@@ -1705,7 +1917,8 @@
    "preco": 58.73,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/33nm5Pe"
+   "link": "https://meli.la/33nm5Pe",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_796057-MLB82243526787_022025-O.webp"
   },
   {
    "item": "MLB5276395556",
@@ -1713,7 +1926,8 @@
    "preco": 58.73,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/2KWxtPE"
+   "link": "https://meli.la/2KWxtPE",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_942280-MLB82243885161_022025-O.webp"
   },
   {
    "item": "MLB5276329142",
@@ -1721,7 +1935,8 @@
    "preco": 58.73,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/1rYbsP5"
+   "link": "https://meli.la/1rYbsP5",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_747546-MLB82243396131_022025-O.webp"
   },
   {
    "item": "MLB4690642083",
@@ -1729,7 +1944,8 @@
    "preco": 47.24,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/2vy836V"
+   "link": "https://meli.la/2vy836V",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_869040-MLA110791672456_052026-O.webp"
   },
   {
    "item": "MLB5276368884",
@@ -1737,7 +1953,8 @@
    "preco": 58.73,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/2xX35RM"
+   "link": "https://meli.la/2xX35RM",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_772782-MLB81962264810_022025-O.webp"
   },
   {
    "item": "MLB7692222568",
@@ -1745,7 +1962,8 @@
    "preco": 315.0,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/2xp9ovf"
+   "link": "https://meli.la/2xp9ovf",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_861938-MLB116614576702_092026-O.webp"
   },
   {
    "item": "MLB5281231225",
@@ -1753,7 +1971,8 @@
    "preco": 515.19,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/22LHzEq"
+   "link": "https://meli.la/22LHzEq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_679506-MLB118111166465_092026-O.webp"
   },
   {
    "item": "MLB2667468830",
@@ -1761,7 +1980,8 @@
    "preco": 57.0,
    "desconto": 25,
    "blackFriday": false,
-   "link": "https://meli.la/18BCBRV"
+   "link": "https://meli.la/18BCBRV",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_977185-MLB69984881541_062023-O.webp"
   },
   {
    "item": "MLB4836905127",
@@ -1769,7 +1989,8 @@
    "preco": 42.42,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/23KLUa7"
+   "link": "https://meli.la/23KLUa7",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_917866-MLA114013158499_072026-O.webp"
   },
   {
    "item": "MLB6121313568",
@@ -1777,7 +1998,8 @@
    "preco": 54.98,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/2ibcjEG"
+   "link": "https://meli.la/2ibcjEG",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_603381-MLA99596992016_122025-O.webp"
   },
   {
    "item": "MLB4918573241",
@@ -1785,7 +2007,8 @@
    "preco": 547.49,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/2jsLNzg"
+   "link": "https://meli.la/2jsLNzg",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_678680-MLB120368909715_102026-O.webp"
   },
   {
    "item": "MLB715034416",
@@ -1793,7 +2016,8 @@
    "preco": 167.96,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/2r68aVt"
+   "link": "https://meli.la/2r68aVt",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_756185-MLB108963231898_032026-O.webp"
   },
   {
    "item": "MLB1473355800",
@@ -1801,7 +2025,8 @@
    "preco": 81.9,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/1uTHJVM"
+   "link": "https://meli.la/1uTHJVM",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_863930-MLB100363207568_122025-O.webp"
   },
   {
    "item": "MLB7198301008",
@@ -1809,7 +2034,8 @@
    "preco": 44.39,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/1zLMrGj"
+   "link": "https://meli.la/1zLMrGj",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_847801-MLB113508268400_072026-O.webp"
   },
   {
    "item": "MLB5304989321",
@@ -1817,7 +2043,8 @@
    "preco": 414.9,
    "desconto": 24,
    "blackFriday": false,
-   "link": "https://meli.la/1MFPm7o"
+   "link": "https://meli.la/1MFPm7o",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_744313-MLB117015394560_102026-O.webp"
   },
   {
    "item": "MLB4571331589",
@@ -1825,7 +2052,8 @@
    "preco": 60.63,
    "desconto": 23,
    "blackFriday": false,
-   "link": "https://meli.la/22Ske1Y"
+   "link": "https://meli.la/22Ske1Y",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_917751-MLB119086636285_102026-O.webp"
   },
   {
    "item": "MLB5239312147",
@@ -1833,7 +2061,8 @@
    "preco": 76.52,
    "desconto": 23,
    "blackFriday": false,
-   "link": "https://meli.la/16j7Cmy"
+   "link": "https://meli.la/16j7Cmy",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_904937-MLB117307198988_102026-O.webp"
   },
   {
    "item": "MLB5108612409",
@@ -1841,7 +2070,8 @@
    "preco": 19.99,
    "desconto": 23,
    "blackFriday": false,
-   "link": "https://meli.la/1H4vBr7"
+   "link": "https://meli.la/1H4vBr7",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_910331-MLB117491417895_092026-O.webp"
   },
   {
    "item": "MLB4695743019",
@@ -1849,7 +2079,8 @@
    "preco": 418.99,
    "desconto": 23,
    "blackFriday": false,
-   "link": "https://meli.la/22uPvq6"
+   "link": "https://meli.la/22uPvq6",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_928392-MLA110357531604_052026-O.webp"
   },
   {
    "item": "MLB1463559706",
@@ -1857,7 +2088,8 @@
    "preco": 119.99,
    "desconto": 23,
    "blackFriday": false,
-   "link": "https://meli.la/2TFegds"
+   "link": "https://meli.la/2TFegds",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_826352-MLB113191996442_072026-O.webp"
   },
   {
    "item": "MLB6655532942",
@@ -1865,7 +2097,8 @@
    "preco": 62.0,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/2ke1EDr"
+   "link": "https://meli.la/2ke1EDr",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_803592-MLB119879009669_102026-O.webp"
   },
   {
    "item": "MLB6907281740",
@@ -1873,7 +2106,8 @@
    "preco": 59.7,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/1QeUD8U"
+   "link": "https://meli.la/1QeUD8U",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_774134-MLB115896916509_082026-O.webp"
   },
   {
    "item": "MLB7651166934",
@@ -1881,7 +2115,8 @@
    "preco": 25.49,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/2iR42Yq"
+   "link": "https://meli.la/2iR42Yq",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_642620-MLA112895453027_062026-O.webp"
   },
   {
    "item": "MLB4912030583",
@@ -1889,7 +2124,8 @@
    "preco": 60.84,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/1vW7Cr4"
+   "link": "https://meli.la/1vW7Cr4",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_725978-MLB113510356786_072026-O.webp"
   },
   {
    "item": "MLB4886861381",
@@ -1897,7 +2133,8 @@
    "preco": 1705.0,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/2sPbeoG"
+   "link": "https://meli.la/2sPbeoG",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_946280-MLU78128711350_082024-O.webp"
   },
   {
    "item": "MLB5057028827",
@@ -1905,7 +2142,8 @@
    "preco": 34.32,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/1f5S5QK"
+   "link": "https://meli.la/1f5S5QK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_987459-MLB116131690759_082026-O.webp"
   },
   {
    "item": "MLB5944642414",
@@ -1913,7 +2151,8 @@
    "preco": 52.25,
    "desconto": 22,
    "blackFriday": false,
-   "link": "https://meli.la/1Y3jt4u"
+   "link": "https://meli.la/1Y3jt4u",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_858825-MLB98191503238_112025-O.webp"
   },
   {
    "item": "MLB3715558227",
@@ -1921,7 +2160,8 @@
    "preco": 118.46,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2yfj9Mx"
+   "link": "https://meli.la/2yfj9Mx",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_978732-MLB92075589008_092025-O.webp"
   },
   {
    "item": "MLB5276343778",
@@ -1929,7 +2169,8 @@
    "preco": 58.73,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2vQZmFN"
+   "link": "https://meli.la/2vQZmFN",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_777438-MLB82243885249_022025-O.webp"
   },
   {
    "item": "MLB5276382630",
@@ -1937,7 +2178,8 @@
    "preco": 62.33,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2sSgLPG"
+   "link": "https://meli.la/2sSgLPG",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_907645-MLB81962665922_022025-O.webp"
   },
   {
    "item": "MLB5276395558",
@@ -1945,7 +2187,8 @@
    "preco": 59.17,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2X1PxQ3"
+   "link": "https://meli.la/2X1PxQ3",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_646143-MLB81962674738_022025-O.webp"
   },
   {
    "item": "MLB5276367544",
@@ -1953,7 +2196,8 @@
    "preco": 59.17,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2QnJoJj"
+   "link": "https://meli.la/2QnJoJj",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_944648-MLB81961900614_022025-O.webp"
   },
   {
    "item": "MLB5276317184",
@@ -1961,7 +2205,8 @@
    "preco": 59.17,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2GqLj4C"
+   "link": "https://meli.la/2GqLj4C",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_762763-MLB81962562864_022025-O.webp"
   },
   {
    "item": "MLB5276367540",
@@ -1969,7 +2214,8 @@
    "preco": 62.33,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/2cE9Wy6"
+   "link": "https://meli.la/2cE9Wy6",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_660448-MLB81961892352_022025-O.webp"
   },
   {
    "item": "MLB5276303194",
@@ -1977,7 +2223,8 @@
    "preco": 59.17,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/1LH4Mbm"
+   "link": "https://meli.la/1LH4Mbm",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_762422-MLB82243396209_022025-O.webp"
   },
   {
    "item": "MLB5276277898",
@@ -1985,7 +2232,8 @@
    "preco": 58.73,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/18aksUL"
+   "link": "https://meli.la/18aksUL",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_789928-MLB82243520201_022025-O.webp"
   },
   {
    "item": "MLB5276381836",
@@ -1993,7 +2241,8 @@
    "preco": 59.17,
    "desconto": 21,
    "blackFriday": false,
-   "link": "https://meli.la/1KJbk4V"
+   "link": "https://meli.la/1KJbk4V",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_858031-MLB81962268368_022025-O.webp"
   },
   {
    "item": "MLB7581220256",
@@ -2001,7 +2250,8 @@
    "preco": 52.41,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/2KUnXd4"
+   "link": "https://meli.la/2KUnXd4",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_798701-MLB115658756902_092026-O.webp"
   },
   {
    "item": "MLB5322237095",
@@ -2009,7 +2259,8 @@
    "preco": 31.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/1aDfkqj"
+   "link": "https://meli.la/1aDfkqj",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_873042-MLB117013940640_102026-O.webp"
   },
   {
    "item": "MLB5306216887",
@@ -2017,7 +2268,8 @@
    "preco": 31.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/28Y9dkt"
+   "link": "https://meli.la/28Y9dkt",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_949198-MLB118404062651_092026-O.webp"
   },
   {
    "item": "MLB3776797937",
@@ -2025,7 +2277,8 @@
    "preco": 47.85,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/27Kf7Xp"
+   "link": "https://meli.la/27Kf7Xp",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_938261-MLB78761531573_082024-O.webp"
   },
   {
    "item": "MLB3964366401",
@@ -2033,7 +2286,8 @@
    "preco": 23.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/2ZhVnoE"
+   "link": "https://meli.la/2ZhVnoE",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_789609-MLB92332738289_092025-O.webp"
   },
   {
    "item": "MLB4879852789",
@@ -2041,7 +2295,8 @@
    "preco": 55.99,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/31FF1JK"
+   "link": "https://meli.la/31FF1JK",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_826873-MLB113180193712_072026-O.webp"
   },
   {
    "item": "MLB2206288533",
@@ -2049,7 +2304,8 @@
    "preco": 53.59,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/1EK2pWm"
+   "link": "https://meli.la/1EK2pWm",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_915323-MLB118582467826_102026-O.webp"
   },
   {
    "item": "MLB7198295688",
@@ -2057,7 +2313,8 @@
    "preco": 46.69,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/2nE3pWj"
+   "link": "https://meli.la/2nE3pWj",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_646952-MLB113508008226_072026-O.webp"
   },
   {
    "item": "MLB2202579943",
@@ -2065,7 +2322,8 @@
    "preco": 31.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/2MccEGS"
+   "link": "https://meli.la/2MccEGS",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_768325-MLB69966693380_062023-O.webp"
   },
   {
    "item": "MLB2104983402",
@@ -2073,7 +2331,8 @@
    "preco": 47.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/1hbwLkR"
+   "link": "https://meli.la/1hbwLkR",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_911835-MLB75311716968_032024-O.webp"
   },
   {
    "item": "MLB6533836682",
@@ -2081,7 +2340,8 @@
    "preco": 67.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/17HgYHw"
+   "link": "https://meli.la/17HgYHw",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_623088-MLB109721692145_032026-O.webp"
   },
   {
    "item": "MLB2676370071",
@@ -2089,7 +2349,8 @@
    "preco": 55.2,
    "desconto": 20,
    "blackFriday": false,
-   "link": "https://meli.la/2vio775"
+   "link": "https://meli.la/2vio775",
+   "foto": "https://http2.mlstatic.com/D_NQ_NP_814433-MLB69984704707_062023-O.webp"
   }
  ]
 }
