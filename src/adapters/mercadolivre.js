@@ -5,7 +5,7 @@
 import { getJson, BlockedError } from '../http.js';
 import { searchTerms } from './common.js';
 import { accessToken } from '../mlauth.js';
-import { matchProduct } from '../match.js';
+import { matchProduct, normEan } from '../match.js';
 import { dataPath, readJson, writeJson } from '../db.js';
 
 const API = 'https://api.mercadolibre.com';
@@ -84,6 +84,28 @@ let sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 /** Só para testes: troca a espera (sem relógio real). */
 export function _setSleep(fn) { sleep = fn; }
 
+// Código de barras (EAN/GTIN) por produto, aprendido das ofertas de OUTRAS lojas na rodada anterior (state.json).
+// Só entra EAN que aponta para um único produto em português, visto em 2+ ofertas ou com prefixo de fabricante
+// conhecido (Copag 789619, The Pokémon Company 196214). Usado para achar no catálogo do ML o produto que a busca
+// por nome não trouxe (#ML-cobertura, 03/11/2026).
+const PREFIXO_EAN = /^(789619|196214)/;
+export function eansDeOfertas(offers) {
+  const porEan = new Map();
+  for (const o of Array.isArray(offers) ? offers : []) {
+    if (!o?.productId || o.storeId === 'mercadolivre' || /-(en|ja|zh|ko)$/.test(o.productId)) continue;
+    const e = normEan(o.ean); if (e.length < 8 || e.length > 14) continue;
+    const r = porEan.get(e) || { ids: new Set(), n: 0 }; r.ids.add(o.productId); r.n++; porEan.set(e, r);
+  }
+  const out = new Map();   // productId → [ean, ...] (mais visto primeiro)
+  for (const [e, r] of [...porEan.entries()].sort((a, b) => b[1].n - a[1].n)) {
+    if (r.ids.size !== 1 || !(r.n >= 2 || PREFIXO_EAN.test(e))) continue;
+    const id = [...r.ids][0]; (out.get(id) || out.set(id, []).get(id)).push(e);
+  }
+  return out;
+}
+export const ML_CATALOGO_PAGINAS = Number(process.env.ML_CATALOGO_PAGINAS || 3);   // até 60 produtos de catálogo por coleção
+export const ML_EAN_MAX = Number(process.env.ML_EAN_MAX || 150);                    // buscas por EAN por varredura diária
+
 export async function search(store, catalog, { log = () => {} } = {}) {
   let auth;
   try { auth = await accessToken(); } catch (e) { throw new BlockedError('Mercado Livre: não foi possível renovar o acesso (' + e.message + '). Rode o workflow "Mercado Livre: autorizar".', 'auth'); }
@@ -137,15 +159,43 @@ export async function search(store, catalog, { log = () => {} } = {}) {
   const cache = readJson(cacheFile, { at: null, products: {}, sellers: {} });
   if (!cache.at || Date.now() - Date.parse(cache.at) > DAY) {
     const found = {}; const terms = searchTerms(catalog); let failed = 0;
+    const sweep = { terms: terms.length, pages: 0, eanAsked: 0, eanFound: 0, eanFailed: 0, eanConflict: 0 };
     for (const term of terms) {
+      // Até ML_CATALOGO_PAGINAS páginas de 20: a 1ª decide se a coleção tem mais (paging.total ou página cheia).
+      for (let page = 0; page < ML_CATALOGO_PAGINAS; page++) {
+        let j;
+        try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20&offset=${page * 20}`); } catch (e) { if (e.blocked) throw e; if (page === 0) { failed++; log(`ML catálogo: busca "${term}" falhou (${e.message})`); } break; }
+        sweep.pages++;
+        const res = j.results || [];
+        for (const p of res) {
+          const name = p.name || p.title; if (!name || !/pok[eé]mon/i.test(name)) continue;
+          const m = matchProduct({ title: name, url: '' }, catalog);
+          if (m.productId && !mlReject(name, m.productId, catalog)) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
+        }
+        const total = Number(j.paging?.total);
+        if (res.length < 20 || (Number.isFinite(total) && total <= (page + 1) * 20)) break;
+      }
+    }
+    // Produtos que a busca por nome não trouxe (mais de 60 produtos de catálogo na coleção, nome fora do topo): procura
+    // pelo EAN visto nas outras lojas. Só entra se o nome do catálogo do ML levar ao MESMO produto; kit/lote segue barrado.
+    const achados = new Set(Object.values(found).map((x) => x.productId));
+    const eans = eansDeOfertas(readJson(dataPath('state.json'), {}).offers);
+    for (const [productId, lista] of eans) {
+      if (achados.has(productId) || sweep.eanAsked >= ML_EAN_MAX) continue;
+      const ean = lista[0]; sweep.eanAsked++;
       let j;
-      try { j = await call(`/products/search?status=active&site_id=MLB&q=${encodeURIComponent(term)}&limit=20`); } catch (e) { if (e.blocked) throw e; failed++; log(`ML catálogo: busca "${term}" falhou (${e.message})`); continue; }
+      try { j = await call(`/products/search?status=active&site_id=MLB&product_identifier=${ean.padStart(13, '0')}`); } catch (e) { if (e.blocked) throw e; sweep.eanFailed++; continue; }
       for (const p of j.results || []) {
         const name = p.name || p.title; if (!name || !/pok[eé]mon/i.test(name)) continue;
         const m = matchProduct({ title: name, url: '' }, catalog);
-        if (m.productId && !mlReject(name, m.productId, catalog)) found[p.id] = { name, productId: m.productId, image: p.pictures?.[0]?.url || null };
+        // O run.js casa o anúncio pelo título de novo: só vale o produto do catálogo do ML cujo nome já leva ao mesmo produto.
+        if (m.productId !== productId) { if (m.productId) sweep.eanConflict++; continue; }
+        if (mlReject(name, productId, catalog)) continue;
+        found[p.id] = { name, productId, image: p.pictures?.[0]?.url || null, ean }; achados.add(productId); sweep.eanFound++;
       }
     }
+    dbg.catalogSweep = sweep;
+    log(`ML catálogo: ${terms.length} coleções em ${sweep.pages} páginas; EAN: ${sweep.eanFound} achados em ${sweep.eanAsked} buscas (${sweep.eanFailed} falhas, ${sweep.eanConflict} conflitos)`);
     // O cache só é trocado por uma varredura completa. Com busca falhando, o anterior fica (somado ao que veio agora) e
     // a varredura é refeita na próxima rodada; nunca vira cache vazio ou pela metade.
     if (!failed) { cache.products = found; cache.at = new Date().toISOString(); }
