@@ -37,9 +37,9 @@ for k, h in enumerate(C.get('hits', [])):
     w, hh = pilula(brl(h['valor']), (24, 170, 80), None, f'{T}/h{k}.png'); ins += ['-i', f'{T}/h{k}.png']
     filt.append(f"{cur}[{n}:v]overlay=x=(W-{w})/2:y={C.get('seloY', 1480)}:enable='between(t,{h['t']:.2f},{h['t'] + 2.6:.2f})'[v{n}]"); cur = f'[v{n}]'; n += 1
 # 3. logo redondo no começo (e no fim), entrando com escala
-logo = os.path.join(AQUI, '../../carrossel/logo-redondo.png'); ins += ['-loop', '1', '-t', f'{dur:.2f}', '-i', logo]
-filt.append(f"[{n}:v]scale=380:-1,format=rgba,fade=t=in:st=0.1:d=0.25:alpha=1,fade=t=out:st=1.4:d=0.3:alpha=1[lg]")
-filt.append(f"{cur}[lg]overlay=x=(W-380)/2:y=560:enable='lt(t,1.8)'[vf]")
+logo = os.path.join(AQUI, '../../carrossel/logo.png'); ins += ['-loop', '1', '-t', f'{dur:.2f}', '-i', logo]
+filt.append(f"[{n}:v]scale=640:-1,format=rgba,fade=t=in:st=0.1:d=0.25:alpha=1,fade=t=out:st=1.4:d=0.3:alpha=1[lg]")
+filt.append(f"{cur}[lg]overlay=x=(W-640)/2:y=620:enable='lt(t,1.8)'[vf]")
 # 4. áudio: som real da abertura (ASMR do pacote) na frente, trilha única baixa por baixo, moedinha em cada hit
 ins += ['-i', os.path.join(RAIZ, 'tmp-render/G_E2_placar_box.mp4')]; it = n + 1
 # só nos trechos de abertura/cartas (C["asmr"] = [[ini,fim],...] no tempo final); gate corta respiração e ruído baixo entre os estalos
