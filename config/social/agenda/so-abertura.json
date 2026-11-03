@@ -1,0 +1,816 @@
+{
+ "semana": "Vídeos de abertura refeitos no estilo só abertura (03/11, ref. pokebrasil151)",
+ "pasta": "assets/social/agenda/videos",
+ "cancelar": [
+  {
+   "quando": "2026-11-16T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 One pack from a booster box",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-16T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 One pack from a booster box",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-16T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 One pack from a booster box",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-17T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 One blister of Phantasmal F",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-17T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 One blister of Phantasmal F",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-17T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 One blister of Phantasmal F",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-19T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Mega Charizard X ex… twice!",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-19T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Mega Charizard X ex… twice!",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-19T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Mega Charizard X ex… twice!",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-20T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Manectric illustration rare",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-20T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Manectric illustration rare",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-20T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Manectric illustration rare",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-22T11:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Not every pack is a hit 😭\n\n",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-22T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Not every pack is a hit 😭\n\n",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-22T11:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Not every pack is a hit 😭\n\n",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-24T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Paldean Wooper twice and a ",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-24T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Paldean Wooper twice and a ",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-24T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Paldean Wooper twice and a ",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-26T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 48 blisters opened: was it ",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-26T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 48 blisters opened: was it ",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-26T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 48 blisters opened: was it ",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-23T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 I opened a full booster box",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-23T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 I opened a full booster box",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-23T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 I opened a full booster box",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-25T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Every ex from one booster b",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-25T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Every ex from one booster b",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-25T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Every ex from one booster b",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-08T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 30th Anniversary booster: w",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-08T12:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 30th Anniversary booster: w",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-10T12:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 30th Anniversary booster: w",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-15T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Unboxing the Miraidon ex Le",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-15T12:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Unboxing the Miraidon ex Le",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-18T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Full 30th Anniversary Elite",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-18T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Full 30th Anniversary Elite",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-18T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Full 30th Anniversary Elite",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-28T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 8 boosters for R$ 114,99… h",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-28T12:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 8 boosters for R$ 114,99… h",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-08T11:00",
+   "plataforma": "instagram",
+   "trecho": "Not every booster is a hit",
+   "motivo": "troca pela versão só abertura"
+  },
+  {
+   "quando": "2026-11-08T19:00",
+   "plataforma": "instagram",
+   "trecho": "8 boosters from the Strategic",
+   "motivo": "troca pela versão só abertura"
+  },
+  {
+   "quando": "2026-11-15T11:00",
+   "plataforma": "instagram",
+   "trecho": "Unboxing the Miraidon ex League",
+   "motivo": "troca pela versão só abertura"
+  }
+ ],
+ "itens": [
+  {
+   "id": "lotes-e1-ig-sa",
+   "quando": "2026-11-16T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e1.mp4",
+   "legenda": "🇺🇸 One pack from a booster box… and Mega Darkrai ex SIR paid for the whole box\n\n1 pack da booster box de Escuridão Absoluta e saiu Mega Darkrai ex Ilustração Rara Especial: R$ 814,04. O pack saiu por R$ 9,72 (box a R$ 349,90, o menor preço do site, ÷ 36). Uma carta pagou a box. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê já puxou essa?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #megadarkrai",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E1.jpg",
+   "capaMs": 17500
+  },
+  {
+   "id": "lotes-e1-tt-sa",
+   "quando": "2026-11-16T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e1.mp4",
+   "legenda": "🇺🇸 One pack from a booster box… and Mega Darkrai ex SIR paid for the whole box\n\n1 pack da booster box de Escuridão Absoluta e saiu Mega Darkrai ex Ilustração Rara Especial: R$ 814,04. O pack saiu por R$ 9,72 (box a R$ 349,90, o menor preço do site, ÷ 36). Uma carta pagou a box. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê já puxou essa?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #megadarkrai",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E1.jpg",
+   "capaMs": 17500
+  },
+  {
+   "id": "lotes-e1-yt-sa",
+   "quando": "2026-11-16T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e1.mp4",
+   "legenda": "🇺🇸 One pack from a booster box… and Mega Darkrai ex SIR paid for the whole box\n\n1 pack da booster box de Escuridão Absoluta e saiu Mega Darkrai ex Ilustração Rara Especial: R$ 814,04. O pack saiu por R$ 9,72 (box a R$ 349,90, o menor preço do site, ÷ 36). Uma carta pagou a box. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê já puxou essa?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #megadarkrai",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E1.jpg",
+   "capaMs": 17500,
+   "titulo": "Uma carta pagou a booster box: Mega Darkrai ex | Mega Darkrai ex SIR pull",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "escuridaoabsoluta"
+   ]
+  },
+  {
+   "id": "lotes-f1-ig-sa",
+   "quando": "2026-11-17T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f1.mp4",
+   "legenda": "🇺🇸 One blister of Phantasmal Flames… Dawn SIR on the last card\n\n1 blister de Fogo Fantasmagórico e veio a Dawn Ilustração Rara Especial: R$ 170,61. O blister saiu por R$ 6,75 (48 por R$ 323,96 numa promoção achada no site). Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual treinadora você quer no binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #dawn",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F1.jpg",
+   "capaMs": 17500
+  },
+  {
+   "id": "lotes-f1-tt-sa",
+   "quando": "2026-11-17T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f1.mp4",
+   "legenda": "🇺🇸 One blister of Phantasmal Flames… Dawn SIR on the last card\n\n1 blister de Fogo Fantasmagórico e veio a Dawn Ilustração Rara Especial: R$ 170,61. O blister saiu por R$ 6,75 (48 por R$ 323,96 numa promoção achada no site). Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual treinadora você quer no binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #dawn",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F1.jpg",
+   "capaMs": 17500
+  },
+  {
+   "id": "lotes-f1-yt-sa",
+   "quando": "2026-11-17T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f1.mp4",
+   "legenda": "🇺🇸 One blister of Phantasmal Flames… Dawn SIR on the last card\n\n1 blister de Fogo Fantasmagórico e veio a Dawn Ilustração Rara Especial: R$ 170,61. O blister saiu por R$ 6,75 (48 por R$ 323,96 numa promoção achada no site). Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual treinadora você quer no binder?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #dawn",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F1.jpg",
+   "capaMs": 17500,
+   "titulo": "Blister de R$ 6,75 e veio a Dawn | Dawn SIR pull",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "fogofantasmagorico"
+   ]
+  },
+  {
+   "id": "lotes-f2-ig-sa",
+   "quando": "2026-11-19T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f2.mp4",
+   "legenda": "🇺🇸 Mega Charizard X ex… twice! Two blisters, two hits\n\nMega Charizard X ex saiu duas vezes nos blisters de Fogo Fantasmagórico: R$ 174,22 cada. Dois blisters a R$ 6,75 viraram R$ 348,44 em carta. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê ficaria com as duas ou trocaria uma?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #charizard",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F2.jpg",
+   "capaMs": 20000
+  },
+  {
+   "id": "lotes-f2-tt-sa",
+   "quando": "2026-11-19T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f2.mp4",
+   "legenda": "🇺🇸 Mega Charizard X ex… twice! Two blisters, two hits\n\nMega Charizard X ex saiu duas vezes nos blisters de Fogo Fantasmagórico: R$ 174,22 cada. Dois blisters a R$ 6,75 viraram R$ 348,44 em carta. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê ficaria com as duas ou trocaria uma?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #charizard",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F2.jpg",
+   "capaMs": 20000
+  },
+  {
+   "id": "lotes-f2-yt-sa",
+   "quando": "2026-11-19T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f2.mp4",
+   "legenda": "🇺🇸 Mega Charizard X ex… twice! Two blisters, two hits\n\nMega Charizard X ex saiu duas vezes nos blisters de Fogo Fantasmagórico: R$ 174,22 cada. Dois blisters a R$ 6,75 viraram R$ 348,44 em carta. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê ficaria com as duas ou trocaria uma?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #charizard",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F2.jpg",
+   "capaMs": 20000,
+   "titulo": "Mega Charizard X ex saiu DUAS vezes | Mega Charizard X ex pulled twice",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "fogofantasmagorico"
+   ]
+  },
+  {
+   "id": "lotes-e3-ig-sa",
+   "quando": "2026-11-20T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e3.mp4",
+   "legenda": "🇺🇸 Manectric illustration rare from the booster box\n\nManectric Ilustração Rara na booster box de Escuridão Absoluta: R$ 14,54. O pack saiu por R$ 9,72, e o hit pagou o pack. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nIlustração rara vale mais que ex pra você?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #manectric",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E3.jpg",
+   "capaMs": 12500
+  },
+  {
+   "id": "lotes-e3-tt-sa",
+   "quando": "2026-11-20T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e3.mp4",
+   "legenda": "🇺🇸 Manectric illustration rare from the booster box\n\nManectric Ilustração Rara na booster box de Escuridão Absoluta: R$ 14,54. O pack saiu por R$ 9,72, e o hit pagou o pack. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nIlustração rara vale mais que ex pra você?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #manectric",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E3.jpg",
+   "capaMs": 12500
+  },
+  {
+   "id": "lotes-e3-yt-sa",
+   "quando": "2026-11-20T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e3.mp4",
+   "legenda": "🇺🇸 Manectric illustration rare from the booster box\n\nManectric Ilustração Rara na booster box de Escuridão Absoluta: R$ 14,54. O pack saiu por R$ 9,72, e o hit pagou o pack. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nIlustração rara vale mais que ex pra você?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #manectric",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E3.jpg",
+   "capaMs": 12500,
+   "titulo": "Manectric IR pagou o pack | Manectric illustration rare pull",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "escuridaoabsoluta"
+   ]
+  },
+  {
+   "id": "lotes-f5-ig-sa",
+   "quando": "2026-11-22T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f5.mp4",
+   "legenda": "🇺🇸 Not every pack is a hit 😭\n\nNem todo blister é hit: esse de Fogo Fantasmagórico terminou numa energia. Prejuízo de R$ 6,75 nesse, mas o lote dos 48 blisters fechou com +R$ 271,06. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual foi o seu pior brick?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #brick",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F5.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "lotes-f5-tt-sa",
+   "quando": "2026-11-22T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f5.mp4",
+   "legenda": "🇺🇸 Not every pack is a hit 😭\n\nNem todo blister é hit: esse de Fogo Fantasmagórico terminou numa energia. Prejuízo de R$ 6,75 nesse, mas o lote dos 48 blisters fechou com +R$ 271,06. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual foi o seu pior brick?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #brick",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F5.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "lotes-f5-yt-sa",
+   "quando": "2026-11-22T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f5.mp4",
+   "legenda": "🇺🇸 Not every pack is a hit 😭\n\nNem todo blister é hit: esse de Fogo Fantasmagórico terminou numa energia. Prejuízo de R$ 6,75 nesse, mas o lote dos 48 blisters fechou com +R$ 271,06. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual foi o seu pior brick?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #brick",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F5.jpg",
+   "capaMs": 2500,
+   "titulo": "Nem todo blister é hit: deu brick | Not every pack is a hit",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "fogofantasmagorico"
+   ]
+  },
+  {
+   "id": "lotes-f4-ig-sa",
+   "quando": "2026-11-24T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f4.mp4",
+   "legenda": "🇺🇸 Paldean Wooper twice and a Battle Cage in three blisters\n\nWooper de Paldea Ilustração Rara saiu duas vezes (R$ 18,20 cada) e ainda veio a Jaula de Batalha (R$ 20,68). Três blisters de R$ 6,75: lucro de R$ 36,83. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê também pega carinho por Wooper?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #wooper",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F4.jpg",
+   "capaMs": 19700
+  },
+  {
+   "id": "lotes-f4-tt-sa",
+   "quando": "2026-11-24T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f4.mp4",
+   "legenda": "🇺🇸 Paldean Wooper twice and a Battle Cage in three blisters\n\nWooper de Paldea Ilustração Rara saiu duas vezes (R$ 18,20 cada) e ainda veio a Jaula de Batalha (R$ 20,68). Três blisters de R$ 6,75: lucro de R$ 36,83. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê também pega carinho por Wooper?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #wooper",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F4.jpg",
+   "capaMs": 19700
+  },
+  {
+   "id": "lotes-f4-yt-sa",
+   "quando": "2026-11-24T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f4.mp4",
+   "legenda": "🇺🇸 Paldean Wooper twice and a Battle Cage in three blisters\n\nWooper de Paldea Ilustração Rara saiu duas vezes (R$ 18,20 cada) e ainda veio a Jaula de Batalha (R$ 20,68). Três blisters de R$ 6,75: lucro de R$ 36,83. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nVocê também pega carinho por Wooper?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #wooper",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F4.jpg",
+   "capaMs": 19700,
+   "titulo": "Wooper de Paldea duas vezes + Jaula | Paldean Wooper pulled twice",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "fogofantasmagorico"
+   ]
+  },
+  {
+   "id": "lotes-f3-ig-sa",
+   "quando": "2026-11-26T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f3.mp4",
+   "legenda": "🇺🇸 48 blisters opened: was it worth it?\n\n48 blisters de Fogo Fantasmagórico por R$ 323,96 numa promoção achada no site. Os hits somaram R$ 595,02 (com um Mega Lopunny ex que saiu fora da câmera): lucro de R$ 271,06. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\n48 blisters ou uma booster box?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #blister",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F3.jpg",
+   "capaMs": 32600
+  },
+  {
+   "id": "lotes-f3-tt-sa",
+   "quando": "2026-11-26T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f3.mp4",
+   "legenda": "🇺🇸 48 blisters opened: was it worth it?\n\n48 blisters de Fogo Fantasmagórico por R$ 323,96 numa promoção achada no site. Os hits somaram R$ 595,02 (com um Mega Lopunny ex que saiu fora da câmera): lucro de R$ 271,06. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\n48 blisters ou uma booster box?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #blister",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F3.jpg",
+   "capaMs": 32600
+  },
+  {
+   "id": "lotes-f3-yt-sa",
+   "quando": "2026-11-26T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_f3.mp4",
+   "legenda": "🇺🇸 48 blisters opened: was it worth it?\n\n48 blisters de Fogo Fantasmagórico por R$ 323,96 numa promoção achada no site. Os hits somaram R$ 595,02 (com um Mega Lopunny ex que saiu fora da câmera): lucro de R$ 271,06. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\n48 blisters ou uma booster box?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #fogofantasmagorico #packopening #blister",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/F3.jpg",
+   "capaMs": 32600,
+   "titulo": "Abri 48 blisters: deu lucro? | 48 blisters opening score",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "fogofantasmagorico"
+   ]
+  },
+  {
+   "id": "lotes-e2-ig-sa",
+   "quando": "2026-11-23T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e2.mp4",
+   "legenda": "🇺🇸 I opened a full booster box: here is the final score\n\nAbri a booster box de Escuridão Absoluta inteira. Paguei R$ 349,90 (menor preço do site) e os hits somaram R$ 887,56: lucro de R$ 537,66. O Mega Darkrai ex sozinho valeu R$ 814,04. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere abrir?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E2.jpg",
+   "capaMs": 30200
+  },
+  {
+   "id": "lotes-e2-tt-sa",
+   "quando": "2026-11-23T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e2.mp4",
+   "legenda": "🇺🇸 I opened a full booster box: here is the final score\n\nAbri a booster box de Escuridão Absoluta inteira. Paguei R$ 349,90 (menor preço do site) e os hits somaram R$ 887,56: lucro de R$ 537,66. O Mega Darkrai ex sozinho valeu R$ 814,04. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere abrir?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E2.jpg",
+   "capaMs": 30200
+  },
+  {
+   "id": "lotes-e2-yt-sa",
+   "quando": "2026-11-23T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e2.mp4",
+   "legenda": "🇺🇸 I opened a full booster box: here is the final score\n\nAbri a booster box de Escuridão Absoluta inteira. Paguei R$ 349,90 (menor preço do site) e os hits somaram R$ 887,56: lucro de R$ 537,66. O Mega Darkrai ex sozinho valeu R$ 814,04. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nBox ou blister: qual você prefere abrir?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E2.jpg",
+   "capaMs": 30200,
+   "titulo": "Abri uma booster box inteira: deu lucro? | Full booster box opening score",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "escuridaoabsoluta"
+   ]
+  },
+  {
+   "id": "lotes-e4-ig-sa",
+   "quando": "2026-11-25T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e4.mp4",
+   "legenda": "🇺🇸 Every ex from one booster box\n\nTodas as ex da booster box de Escuridão Absoluta, carta por carta: Rampardos x2, Mega Chandelure x2, Mega Excadrill, Wailord, Manectric e o Mega Darkrai ex. R$ 887,56 em cartas numa box de R$ 349,90. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual dessas você queria?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E4.jpg",
+   "capaMs": 28900
+  },
+  {
+   "id": "lotes-e4-tt-sa",
+   "quando": "2026-11-25T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e4.mp4",
+   "legenda": "🇺🇸 Every ex from one booster box\n\nTodas as ex da booster box de Escuridão Absoluta, carta por carta: Rampardos x2, Mega Chandelure x2, Mega Excadrill, Wailord, Manectric e o Mega Darkrai ex. R$ 887,56 em cartas numa box de R$ 349,90. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual dessas você queria?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E4.jpg",
+   "capaMs": 28900
+  },
+  {
+   "id": "lotes-e4-yt-sa",
+   "quando": "2026-11-25T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_e4.mp4",
+   "legenda": "🇺🇸 Every ex from one booster box\n\nTodas as ex da booster box de Escuridão Absoluta, carta por carta: Rampardos x2, Mega Chandelure x2, Mega Excadrill, Wailord, Manectric e o Mega Darkrai ex. R$ 887,56 em cartas numa box de R$ 349,90. Valor: média de venda dos últimos 3 meses na Liga Pokémon (31/10).\n\nQual dessas você queria?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #escuridaoabsoluta #packopening #boosterbox",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/E4.jpg",
+   "capaMs": 28900,
+   "titulo": "Todas as ex de uma booster box | Every ex from a booster box",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster",
+    "escuridaoabsoluta"
+   ]
+  },
+  {
+   "id": "rp2-uxie-ti-sa",
+   "quando": "2026-11-08T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_uxie.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: wait for the last card 👀\n\nBooster da Celebração de 30 Anos por R$ 47,40 (menor preço do site). Saiu o Uxie clássico, R$ 41,83 na média da Liga: quase empatou 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R2.jpg",
+   "capaMs": 17600
+  },
+  {
+   "id": "rp2-uxie-yo-sa",
+   "quando": "2026-11-08T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_uxie.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: wait for the last card 👀\n\nBooster da Celebração de 30 Anos por R$ 47,40 (menor preço do site). Saiu o Uxie clássico, R$ 41,83 na média da Liga: quase empatou 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R2.jpg",
+   "capaMs": 17600,
+   "titulo": "Booster 30 Anos: quase empatou | 30th Anniversary booster opening",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "rp2-uxie-in-sa",
+   "quando": "2026-11-08T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_uxie.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: wait for the last card 👀\n\nBooster da Celebração de 30 Anos por R$ 47,40 (menor preço do site). Saiu o Uxie clássico, R$ 41,83 na média da Liga: quase empatou 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #packopening #colecionador",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R2.jpg",
+   "capaMs": 17600
+  },
+  {
+   "id": "rp2-miraidon-ti-sa",
+   "quando": "2026-11-15T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r3.mp4",
+   "legenda": "🇺🇸 Unboxing the Miraidon ex League Battle Deck ⚡\n\nAbri o Baralho Batalha de Liga do Miraidon ex: R$ 90, 60 cartas prontas pra jogar, com Miraidon ex, Regieleki V e Regieleki VMAX. Vale pra quem tá começando?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #miraidon #unboxing #colecionador",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R3.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "rp2-miraidon-yo-sa",
+   "quando": "2026-11-15T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r3.mp4",
+   "legenda": "🇺🇸 Unboxing the Miraidon ex League Battle Deck ⚡\n\nAbri o Baralho Batalha de Liga do Miraidon ex: R$ 90, 60 cartas prontas pra jogar, com Miraidon ex, Regieleki V e Regieleki VMAX. Vale pra quem tá começando?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #miraidon #unboxing #colecionador",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R3.jpg",
+   "capaMs": 2500,
+   "titulo": "Unboxing: Baralho Batalha de Liga Miraidon ex | League Battle Deck",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "rp2-etb30-ti-sa",
+   "quando": "2026-11-18T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r1.mp4",
+   "legenda": "🇺🇸 Full 30th Anniversary Elite Trainer Box: +R$ 311 profit 👀\n\nAbri a ETB da Celebração de 30 Anos (R$ 519,90 no menor preço do site). Os 6 hits somaram R$ 831,38 pela média da Liga, com o Pikachu ex Ilustração Rara Especial valendo R$ 490,14 sozinho.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #pikachuex #packopening",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R1.jpg",
+   "capaMs": 48200
+  },
+  {
+   "id": "rp2-etb30-in-sa",
+   "quando": "2026-11-18T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r1.mp4",
+   "legenda": "🇺🇸 Full 30th Anniversary Elite Trainer Box: +R$ 311 profit 👀\n\nAbri a ETB da Celebração de 30 Anos (R$ 519,90 no menor preço do site). Os 6 hits somaram R$ 831,38 pela média da Liga, com o Pikachu ex Ilustração Rara Especial valendo R$ 490,14 sozinho.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #pikachuex #packopening",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R1.jpg",
+   "capaMs": 48200
+  },
+  {
+   "id": "rp2-etb30-yo-sa",
+   "quando": "2026-11-18T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r1.mp4",
+   "legenda": "🇺🇸 Full 30th Anniversary Elite Trainer Box: +R$ 311 profit 👀\n\nAbri a ETB da Celebração de 30 Anos (R$ 519,90 no menor preço do site). Os 6 hits somaram R$ 831,38 pela média da Liga, com o Pikachu ex Ilustração Rara Especial valendo R$ 490,14 sozinho.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #pokemon30anos #pikachuex #packopening",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R1.jpg",
+   "capaMs": 48200,
+   "titulo": "Abri a ETB 30 Anos inteira: deu lucro? | 30th Anniversary ETB opening",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "rp2-desafio-ti-sa",
+   "quando": "2026-11-28T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r4.mp4",
+   "legenda": "🇺🇸 8 boosters for R$ 114,99… hit or brick? 💀\n\nDesafio Estratégico Equilíbrio Perfeito, 8 boosters por R$ 114,99 no menor preço do site. Nenhuma carta rara: deu brick 😭 Nem todo pack é hit.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #equilibrioperfeito #brick #packopening",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R4.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "rp2-desafio-yo-sa",
+   "quando": "2026-11-28T12:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r4.mp4",
+   "legenda": "🇺🇸 8 boosters for R$ 114,99… hit or brick? 💀\n\nDesafio Estratégico Equilíbrio Perfeito, 8 boosters por R$ 114,99 no menor preço do site. Nenhuma carta rara: deu brick 😭 Nem todo pack é hit.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #equilibrioperfeito #brick #packopening",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R4.jpg",
+   "capaMs": 2500,
+   "titulo": "8 boosters do Desafio Estratégico: deu brick | 8 booster pack opening",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "rp2-desafio-in-sa",
+   "quando": "2026-11-08T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r4.mp4",
+   "legenda": "🇺🇸 8 boosters for R$ 114,99… hit or brick? 💀\n\nDesafio Estratégico Equilíbrio Perfeito, 8 boosters por R$ 114,99 no menor preço do site. Nenhuma carta rara: deu brick 😭 Nem todo pack é hit.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #equilibrioperfeito #brick #packopening",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R4.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "rp2-miraidon-in-sa",
+   "quando": "2026-11-15T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_r3.mp4",
+   "legenda": "🇺🇸 Unboxing the Miraidon ex League Battle Deck ⚡\n\nAbri o Baralho Batalha de Liga do Miraidon ex: R$ 90, 60 cartas prontas pra jogar, com Miraidon ex, Regieleki V e Regieleki VMAX. Vale pra quem tá começando?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #miraidon #unboxing #colecionador",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/R3.jpg",
+   "capaMs": 2500
+  }
+ ]
+}
