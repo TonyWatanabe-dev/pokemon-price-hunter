@@ -23,15 +23,18 @@ open(f'{T}/l.txt', 'w').write(''.join(f"file '{p}'\n" for p in lst))
 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', f'{T}/l.txt', '-c', 'copy', f'{T}/base.mp4'], check=True)
 dur = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f'{T}/base.mp4'], capture_output=True, text=True).stdout)
 # 2. placar: um PNG por estado; selo do hit
+# eventos: hits (somam e mostram selo) e custos (C["custos"]=[{t,valor}]: outro pack entrando, só desconta)
+ev = sorted([(h['t'], h['valor']) for h in C.get('hits', [])] + [(c['t'], -c['valor']) for c in C.get('custos', [])])
 saldo, estados, t0 = -C['pack'], [], 0.0
-for h in sorted(C.get('hits', []), key=lambda h: h['t']):
-    estados.append((t0, h['t'], saldo)); saldo += h['valor']; t0 = h['t']
+for t, v in ev:
+    estados.append((t0, t, saldo)); saldo += v; t0 = t
 estados.append((t0, dur, saldo))
 ins, filt, n = ['-i', f'{T}/base.mp4'], [], 1
 cur = '[0:v]'
 for k, (a, b, v) in enumerate(estados):
-    cor = (255, 70, 70) if v < 0 else (46, 227, 107)
-    w, h = pilula(brl(v), cor, cor, f'{T}/p{k}.png'); ins += ['-i', f'{T}/p{k}.png']
+    if C.get('placarTxt'): txt, cor = C['placarTxt'], (255, 207, 51)   # unboxing sem conta: só o preço do produto
+    else: txt, cor = brl(v), ((255, 70, 70) if v < 0 else (46, 227, 107))
+    w, h = pilula(txt, cor, cor, f'{T}/p{k}.png'); ins += ['-i', f'{T}/p{k}.png']
     filt.append(f"{cur}[{n}:v]overlay=x=(W-{w})/2:y=150:enable='between(t,{a:.2f},{b:.2f})'[v{n}]"); cur = f'[v{n}]'; n += 1
 for k, h in enumerate(C.get('hits', [])):
     w, hh = pilula(brl(h['valor']), (24, 170, 80), None, f'{T}/h{k}.png'); ins += ['-i', f'{T}/h{k}.png']

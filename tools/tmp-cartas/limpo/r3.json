@@ -1,0 +1,34 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/R_mir_a.mp4",
+   2,
+   9
+  ],
+  [
+   "tmp-lotes/R_mir_b.mp4",
+   1,
+   11
+  ],
+  [
+   "tmp-lotes/R_mir_det.mp4",
+   2,
+   10
+  ],
+  [
+   "tmp-lotes/R_mir_det.mp4",
+   24,
+   30
+  ]
+ ],
+ "pack": 90,
+ "hits": [],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ],
+ "placarTxt": "R$ 90,00"
+}

@@ -1,0 +1,28 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/F1_dawn.mp4",
+   13.0,
+   36.5
+  ],
+  [
+   "tmp-lotes/F_vitrine_det.mp4",
+   29.5,
+   35.0
+  ]
+ ],
+ "pack": 6.75,
+ "hits": [
+  {
+   "t": 16.5,
+   "valor": 170.61
+  }
+ ],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}

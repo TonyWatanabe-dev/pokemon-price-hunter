@@ -1,0 +1,33 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/R_de_a.mp4",
+   3,
+   9
+  ],
+  [
+   "tmp-lotes/R_de_a.mp4",
+   33,
+   41
+  ],
+  [
+   "tmp-lotes/R_de_b.mp4",
+   2,
+   9
+  ],
+  [
+   "tmp-lotes/R_de_b.mp4",
+   20,
+   29
+  ]
+ ],
+ "pack": 114.99,
+ "hits": [],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}

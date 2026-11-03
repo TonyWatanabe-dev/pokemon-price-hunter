@@ -1,0 +1,91 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/F3_heracross.mp4",
+   3.0,
+   7.3
+  ],
+  [
+   "tmp-lotes/F3_mismagius.mp4",
+   6.5,
+   10.5
+  ],
+  [
+   "tmp-lotes/F4_wooper_a.mp4",
+   16.0,
+   20.0
+  ],
+  [
+   "tmp-lotes/F4_wooper_b.mp4",
+   13.0,
+   16.2
+  ],
+  [
+   "tmp-lotes/F4_jaula.mp4",
+   14.5,
+   18.8
+  ],
+  [
+   "tmp-lotes/F1_dawn.mp4",
+   27.5,
+   32.5
+  ],
+  [
+   "tmp-lotes/F2_charizard_a.mp4",
+   14.5,
+   19.5
+  ],
+  [
+   "tmp-lotes/F2_charizard_b.mp4",
+   12.0,
+   16.8
+  ],
+  [
+   "tmp-lotes/F_vitrine_det.mp4",
+   3.0,
+   8.0
+  ]
+ ],
+ "pack": 323.96,
+ "hits": [
+  {
+   "t": 2.5,
+   "valor": 5.78
+  },
+  {
+   "t": 5.8,
+   "valor": 5.99
+  },
+  {
+   "t": 9.8,
+   "valor": 18.2
+  },
+  {
+   "t": 13.8,
+   "valor": 18.2
+  },
+  {
+   "t": 17.0,
+   "valor": 20.68
+  },
+  {
+   "t": 21.3,
+   "valor": 170.61
+  },
+  {
+   "t": 26.1,
+   "valor": 174.22
+  },
+  {
+   "t": 31.6,
+   "valor": 174.22
+  }
+ ],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}

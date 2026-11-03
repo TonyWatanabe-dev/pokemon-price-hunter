@@ -1,0 +1,55 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/F4_wooper_a.mp4",
+   9.0,
+   21.0
+  ],
+  [
+   "tmp-lotes/F4_wooper_b.mp4",
+   12.0,
+   16.2
+  ],
+  [
+   "tmp-lotes/F4_jaula.mp4",
+   13.5,
+   20.0
+  ],
+  [
+   "tmp-lotes/F_vitrine_det.mp4",
+   18.5,
+   23.0
+  ]
+ ],
+ "pack": 6.75,
+ "hits": [
+  {
+   "t": 9.0,
+   "valor": 18.2
+  },
+  {
+   "t": 14.5,
+   "valor": 18.2
+  },
+  {
+   "t": 18.7,
+   "valor": 20.68
+  }
+ ],
+ "custos": [
+  {
+   "t": 12.2,
+   "valor": 6.75
+  },
+  {
+   "t": 16.4,
+   "valor": 6.75
+  }
+ ],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}

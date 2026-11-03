@@ -1,0 +1,68 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/E4_vitrine.mp4",
+   0.0,
+   8.0
+  ],
+  [
+   "tmp-lotes/E4_vitrine.mp4",
+   8.0,
+   16.5
+  ],
+  [
+   "tmp-lotes/E4_vitrine.mp4",
+   16.5,
+   20.3
+  ],
+  [
+   "tmp-lotes/E4_vitrine.mp4",
+   20.3,
+   23.3
+  ],
+  [
+   "tmp-lotes/E4_vitrine.mp4",
+   23.3,
+   27.5
+  ],
+  [
+   "tmp-lotes/E1_darkrai_det.mp4",
+   2.2,
+   7.8
+  ]
+ ],
+ "pack": 349.9,
+ "hits": [
+  {
+   "t": 3.5,
+   "valor": 12.9
+  },
+  {
+   "t": 8.5,
+   "valor": 17.5
+  },
+  {
+   "t": 17.0,
+   "valor": 10.69
+  },
+  {
+   "t": 20.8,
+   "valor": 17.89
+  },
+  {
+   "t": 23.8,
+   "valor": 14.54
+  },
+  {
+   "t": 27.9,
+   "valor": 814.04
+  }
+ ],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}

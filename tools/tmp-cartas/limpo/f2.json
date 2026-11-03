@@ -1,0 +1,37 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/F2_charizard_a.mp4",
+   4.0,
+   22.0
+  ],
+  [
+   "tmp-lotes/F2_charizard_b.mp4",
+   11.5,
+   16.8
+  ],
+  [
+   "tmp-lotes/F_vitrine_det.mp4",
+   3.0,
+   8.5
+  ]
+ ],
+ "pack": 6.75,
+ "hits": [
+  {
+   "t": 12.3,
+   "valor": 174.22
+  },
+  {
+   "t": 19.0,
+   "valor": 174.22
+  }
+ ],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}

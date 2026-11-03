@@ -1,0 +1,28 @@
+{
+ "segs": [
+  [
+   "tmp-lotes/E3_manectric.mp4",
+   20.0,
+   32.9
+  ],
+  [
+   "tmp-lotes/E3_manectric_det.mp4",
+   3.8,
+   10.5
+  ]
+ ],
+ "pack": 9.72,
+ "hits": [
+  {
+   "t": 11.5,
+   "valor": 14.54
+  }
+ ],
+ "custos": [],
+ "asmr": [
+  [
+   0.6,
+   999
+  ]
+ ]
+}
