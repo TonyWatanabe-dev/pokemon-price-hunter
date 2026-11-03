@@ -46,11 +46,11 @@ export function lerArgs(argv) {
  *  de --shopee/--amazon, passados pelo workflow (sem eles, só ML).
  *  SOCIAL_EXTERNAS=0 desliga Shopee/Amazon. A comissão não muda a ordem: dentro de cada loja vale o desconto. */
 const promocao = (o) => Math.max(o?.discount ?? 0, o?.vsMarket ?? 0);
-//  Black Friday (02/11/2026, pedido do dono: "quero priorizar elas"): a campanha de config/social-black-friday.json
-//  vem na frente — primeiro as com selo BLACK FRIDAY, maior desconto primeiro; as demais da campanha entram no
+//  Black Friday (02/11/2026, pedido do dono: "quero priorizar elas"; só selado original e preço bom, sem carta avulsa):
+//  a campanha de config/social-black-friday.json vem na frente — primeiro as com selo BLACK FRIDAY, maior desconto primeiro; as demais da campanha entram no
 //  revezamento junto com ML/Shopee/Amazon. SOCIAL_BLACKFRIDAY=0 desliga. Fora da validade (24 h) a campanha some sozinha.
 export function candidatosWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] }, campanha = lerCampanha() } = {}) {
-  const camp = candidatosCampanha(campanha, { now: now ?? Date.now(), env });
+  const camp = candidatosCampanha(campanha, { now: now ?? Date.now(), env, state });   // só selado original com preço bom (02/11)
   const bf = camp.filter((c) => c.blackFriday); const campResto = camp.filter((c) => !c.blackFriday);
   const ml = candidatos(state, { now, env, afiliados, limite: 300 })
     .filter((c) => c.afiliado === true && promocao(c.oferta) > 0)
