@@ -1,0 +1,194 @@
+{
+ "semana": "DE 02-04 no estilo só abertura (03/11)",
+ "pasta": "assets/social/agenda/videos",
+ "cancelar": [
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "instagram",
+   "trecho": "Strategic Challenge box again",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Strategic Challenge box again",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-04T19:00",
+   "plataforma": "youtube",
+   "trecho": "Strategic Challenge box again",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "instagram",
+   "trecho": "Strategic Challenge box: it is",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Strategic Challenge box: it is",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-09T19:00",
+   "plataforma": "youtube",
+   "trecho": "Strategic Challenge box: it is",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "instagram",
+   "trecho": "Last pack of the Strategic",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Last pack of the Strategic",
+   "motivo": "estilo só abertura"
+  },
+  {
+   "quando": "2026-11-10T19:00",
+   "plataforma": "youtube",
+   "trecho": "Last pack of the Strategic",
+   "motivo": "estilo só abertura"
+  }
+ ],
+ "itens": [
+  {
+   "id": "sa-de2-in",
+   "quando": "2026-11-04T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de2.mp4",
+   "legenda": "🇺🇸 Strategic Challenge box again: will the hit come this time?\n\nDesafio Estratégico de novo: 8 boosters por R$ 114,99, o menor preço que o site já viu. Será que agora vem? 🙏\n\nQual carta você quer que saia no próximo pack? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video02_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de2-ti",
+   "quando": "2026-11-04T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de2.mp4",
+   "legenda": "🇺🇸 Strategic Challenge box again: will the hit come this time?\n\nserá que agora vem? 🙏\n\nQual carta você quer que saia no próximo pack? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video02_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de2-yo",
+   "quando": "2026-11-04T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Desafio Estratégico de novo: será que agora vem? | Strategic Challenge box",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "🇺🇸 Strategic Challenge box again: will the hit come this time?\n\nDesafio Estratégico de novo. Será que agora vem? 🙏\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de2.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1OMlQu6V_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de3-in",
+   "quando": "2026-11-09T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de3.mp4",
+   "legenda": "🇺🇸 Strategic Challenge box: it is a matter of honor now\n\nMais um Desafio Estratégico (R$ 114,99, menor preço que o site já viu). A essa altura é questão de honra 😤\n\nContinuo a série ou paro por aqui? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video03_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de3-ti",
+   "quando": "2026-11-09T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de3.mp4",
+   "legenda": "🇺🇸 Strategic Challenge box: it is a matter of honor now\n\na essa altura é questão de honra 😤\n\nContinuo a série ou paro por aqui? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video03_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de3-yo",
+   "quando": "2026-11-09T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Desafio Estratégico: questão de honra | Strategic Challenge box",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "🇺🇸 Strategic Challenge box: it is a matter of honor now\n\nMais um Desafio Estratégico. A essa altura é questão de honra 😤\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de3.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1PyQ0SRD_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de4-in",
+   "quando": "2026-11-10T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de4.mp4",
+   "legenda": "🇺🇸 Last pack of the Strategic Challenge series\n\nÚltimo pack do Desafio Estratégico (R$ 114,99, menor preço que o site já viu). Fecha a série comigo 👇\n\nQual foi o melhor pack da série? 👇\n\nNão rasgue dinheiro: o site compara as lojas e o grupo do WhatsApp avisa na hora quando o preço cai. Link na bio.\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video04_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de4-ti",
+   "quando": "2026-11-10T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de4.mp4",
+   "legenda": "🇺🇸 Last pack of the Strategic Challenge series\n\núltimo pack da série. vem? 👇\n\nQual foi o melhor pack da série? 👇\n\nmenor preço + grupo de ofertas no link da bio\n\n#pokemontcg #pokemon #packopening #brick #fyp",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_DE_video04_thumb.jpg",
+   "capaMs": 2500
+  },
+  {
+   "id": "sa-de4-yo",
+   "quando": "2026-11-10T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "titulo": "Último pack do Desafio Estratégico | Last pack of the series",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "abrindo booster",
+    "pack opening",
+    "desafio estrategico"
+   ],
+   "legenda": "🇺🇸 Last pack of the Strategic Challenge series\n\nÚltimo pack do Desafio Estratégico. Fecha a série comigo 👇\n\nGrupo de ofertas no WhatsApp e Telegram: tcgpricehunter.com.br/entrar/yt-shorts\n\n#pokemontcg #pokemontcgbrasil #desafioestrategico #packopening #abrindobooster",
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/L_de4.mp4",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/M_D_1jcAxoxF_thumb.jpg",
+   "capaMs": 2500
+  }
+ ]
+}
