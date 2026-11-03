@@ -42,7 +42,9 @@ filt.append(f"[{n}:v]scale=380:-1,format=rgba,fade=t=in:st=0.1:d=0.25:alpha=1,fa
 filt.append(f"{cur}[lg]overlay=x=(W-380)/2:y=560:enable='lt(t,1.8)'[vf]")
 # 4. áudio: som real da abertura (ASMR do pacote) na frente, trilha única baixa por baixo, moedinha em cada hit
 ins += ['-i', os.path.join(RAIZ, 'tmp-render/G_E2_placar_box.mp4')]; it = n + 1
-filt.append(f"[0:a]highpass=f=90,acompressor=threshold=-24dB:ratio=3:makeup=6,volume=1.0[asmr]")
+# só nos trechos de abertura/cartas (C["asmr"] = [[ini,fim],...] no tempo final); gate corta respiração e ruído baixo entre os estalos
+jan = '+'.join(f'between(t,{a},{b})' for a, b in C.get('asmr', [[0, dur]]))
+filt.append(f"[0:a]highpass=f=700,agate=threshold=0.035:ratio=6:attack=2:release=120,acompressor=threshold=-26dB:ratio=3:makeup=5,volume='gt({jan},0)':eval=frame[asmr]")
 filt.append(f"[{it}:a]aloop=loop=-1:size=2e9,atrim=0:{dur:.2f},volume=0.22,afade=t=in:d=0.3,afade=t=out:st={dur - 1.5:.2f}:d=1.5[tr]")
 mix = ['[asmr]', '[tr]']
 for k, h in enumerate(C.get('hits', [])):
