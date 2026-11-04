@@ -217,6 +217,9 @@ export function detectType(t) {
   // "Kit/caixa com N boosters" só vira combo se nada no título indicar outro formato (box ex, coleção, blister, fichário...).
   if (b.count >= 6 && has(t, /\b(kit|caixa|combo)\b/) && !has(t, /\b(box|colecao|blister|blisters|fichario|binder|poster|miniatura|lata|latas|ex|deck|baralho)\b/)) return r('combo', b.count, b.inferred);
   if (has(t, /\bbooster box\b/)) return r('booster_box', b.count, b.inferred); // sem contagem: não casa (18 ou 36?)
+  // "Sleeved Booster" (03/11/2026): nome da Amazon/Pokémon para o pacote de booster avulso em embalagem plástica, em PT e EN
+  // ("Mega Evolução - Caos Ascendente - Sleeved Booster - Português"). Sem formato extra no título, é 1 booster.
+  if (has(t, /\bsleeved booster\b/) && !has(t, /\b(box|display|bundle|caixa|combo|kit|blister|\d+ boosters)\b/)) return r('booster_pack', 1);
   if (has(t, /\b(booster unitario|pacote de booster|booster avulso|1 booster|booster com embalagem especial)\b/) || /^(pokemon )?(tcg )?booster\b/.test(t)) return r('booster_pack', 1);
   if (has(t, /\bposter\b/)) return r('colecao_poster', b.count);
   if (has(t, /\b(fichario|binder)\b/)) return r('colecao_fichario', b.count);
