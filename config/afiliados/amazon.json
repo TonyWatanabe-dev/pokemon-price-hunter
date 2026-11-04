@@ -1,9 +1,9 @@
 {
  "program": "amazon",
  "tag": "tcgpricehunter-20",
- "updatedAt": "2026-11-02",
+ "updatedAt": "2026-11-04",
  "regras": "Só anúncios Pokémon TCG casados por src/match.js com um produto do site e com marca Copag ou Pokémon na página da Amazon. Preço, vendedor e estoque lidos da página do produto na Amazon (oferta em destaque) no momento de capturedAt; o site mostra a data e hora junto do preço. Não é atualizado automaticamente. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score. Quando a Amazon escreve o formato em inglês (\"4-Pack Blister\", \"3-Pack Blister\", \"Advanced Trainer Box\"), matchTitle traz o mesmo título com o nome Copag do formato, e é ele que passa pelo matcher.",
- "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (22:05–22:17); 0 ASINs novos; 2 saíram para amazon-fora-do-site.json. Todos os 65 relidos pelo dono no Chrome em 02/11/2026 (22:32–22:36, UTC 03/11 01:32–01:36), oferta em destaque.",
+ "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (22:05–22:17); 0 ASINs novos; 2 saíram para amazon-fora-do-site.json. Todos os 65 relidos pelo dono no Chrome em 02/11/2026 (22:32–22:36, UTC 03/11 01:32–01:36), oferta em destaque. 6 ASINs novos lidos pelo dono no Chrome em 03/11/2026 (23:09, UTC 04/11 02:09), oferta em destaque: 1 blister triplo e 5 Sleeved Booster (o matcher passou a ler \"Sleeved Booster\" como booster avulso).",
  "links": [
   {
    "productId": "c30-blister2",
@@ -793,6 +793,72 @@
    "stockNote": "Preço mais alto do que o habitual",
    "capturedAt": "2026-11-03T01:36:10Z",
    "shortUrl": "https://link.amazon/B0bBnCkwN"
+  },
+  {
+   "productId": "me01-blister3",
+   "asin": "B0FSSSJQCF",
+   "title": "Blister Triplo Pokemon Megaevolução Drifloon",
+   "url": "https://www.amazon.com.br/dp/B0FSSSJQCF?tag=tcgpricehunter-20",
+   "price": 47.49,
+   "seller": "BatatinhaBrinquedos",
+   "fulfilledBy": "amazon",
+   "stockNote": "Somente 2 em estoque.",
+   "capturedAt": "2026-11-04T02:09:30Z"
+  },
+  {
+   "productId": "me04-booster",
+   "asin": "B0GVVSBBCJ",
+   "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - Sleeved Booster - Português",
+   "url": "https://www.amazon.com.br/dp/B0GVVSBBCJ?tag=tcgpricehunter-20",
+   "price": 11.9,
+   "seller": "Amazon.com.br",
+   "fulfilledBy": "amazon",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-04T02:09:30Z"
+  },
+  {
+   "productId": "me03-booster",
+   "asin": "B0GP2Z9XKK",
+   "title": "Pokémon TCG: Mega Evolução - Equilíbrio Perfeito - Sleeved Booster - Português",
+   "url": "https://www.amazon.com.br/dp/B0GP2Z9XKK?tag=tcgpricehunter-20",
+   "price": 9.99,
+   "seller": "Amazon.com.br",
+   "fulfilledBy": "amazon",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-04T02:09:30Z"
+  },
+  {
+   "productId": "me05-booster",
+   "asin": "B0H3Q97V12",
+   "title": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Sleeved Booster - Português, Jogo de Cartas",
+   "url": "https://www.amazon.com.br/dp/B0H3Q97V12?tag=tcgpricehunter-20",
+   "price": 13.99,
+   "seller": "Amazon.com.br",
+   "fulfilledBy": "amazon",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-04T02:09:30Z"
+  },
+  {
+   "productId": "me05-booster-en",
+   "asin": "B0H27L3TKW",
+   "title": "Pokémon TCG: Mega Evolution - Pitch Black - Sleeved Booster - Inglês",
+   "url": "https://www.amazon.com.br/dp/B0H27L3TKW?tag=tcgpricehunter-20",
+   "price": 32.33,
+   "seller": "Amazon.com.br",
+   "fulfilledBy": "amazon",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-04T02:09:30Z"
+  },
+  {
+   "productId": "me03-booster-en",
+   "asin": "B0GJQSXHH8",
+   "title": "Pokémon TCG: Mega Evolution - Perfect Order - Sleeved Booster - Inglês",
+   "url": "https://www.amazon.com.br/dp/B0GJQSXHH8?tag=tcgpricehunter-20",
+   "price": 39.1,
+   "seller": "Amazon.com.br",
+   "fulfilledBy": "amazon",
+   "stockNote": "Em estoque",
+   "capturedAt": "2026-11-04T02:09:30Z"
   }
  ],
  "capturadoEm": "2026-11-02T01:17:37Z",
