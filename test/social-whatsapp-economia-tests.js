@@ -85,6 +85,8 @@ t('ordem: Black Friday primeiro, maior desconto e economia em reais; outra loja 
   assert.deepEqual(ids([c('a', 'ml', 0.30), c('bf', 'ml', 0.10, 10, true), c('b', 'ml', 0.30, 20)]), ['bf', 'b', 'a'], 'BF na frente; empate de % decide pelos reais');
   assert.deepEqual(ids([c('m1', 'mercadolivre', 0.30), c('m2', 'mercadolivre', 0.29), c('s1', 'shopee', 0.27), c('s2', 'shopee', 0.06)]), ['m1', 's1', 'm2', 's2'], 'revezamento só entre descontos próximos');
   assert.deepEqual(ids([c('m1', 'mercadolivre', 0.30), c('m2', 'mercadolivre', 0.29), c('s1', 'shopee', 0.10)]), ['m1', 'm2', 's1'], 'desconto fraco não passa na frente');
+  const d = (id, economia, pid) => ({ ...c(id, 'mercadolivre', economia), oferta: { productId: pid } });
+  assert.deepEqual(ids([d('deck', 0.37, 'avulsos-deck-mewtwo'), d('bl', 0.29, 'me04-blister4'), d('etb', 0.20, 'me04-etb')]), ['bl', 'etb', 'deck'], 'baralho vai para o fim do bloco');
 });
 
 console.log(`✓ WhatsApp foco em economia: ${n} grupos passaram`);

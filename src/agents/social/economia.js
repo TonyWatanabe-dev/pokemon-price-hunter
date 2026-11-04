@@ -59,5 +59,8 @@ export function ordenarPorEconomia(lista, { folga = 0.05 } = {}) {
     }
     return out;
   };
-  return [...intercala(lista.filter((c) => c.blackFriday)), ...intercala(lista.filter((c) => !c.blackFriday))];
+  // 04/11/2026 ("melhor dar preferência para blister, ETBs e etc do que baralho"): baralho de batalha vai para o fim de cada bloco.
+  const baralho = (c) => /-deck-/.test(c.oferta?.productId || '');
+  const bloco = (l) => [...intercala(l.filter((c) => !baralho(c))), ...intercala(l.filter(baralho))];
+  return [...bloco(lista.filter((c) => c.blackFriday)), ...bloco(lista.filter((c) => !c.blackFriday))];
 }

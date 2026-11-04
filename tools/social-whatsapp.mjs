@@ -69,7 +69,7 @@ function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shope
  *  até R$ 100 (SOCIAL_PRECO_MAX) e pelo menos 5% abaixo do sugerido Copag ou da média do mercado (SOCIAL_ECONOMIA_MIN),
  *  com "De X por Y"; outro produto só com 20%+ de desconto e até R$ 250 (SOCIAL_DESCONTO_FORTE, SOCIAL_PRECO_MAX_FORTE).
  *  Só link de afiliado do dono (ML, Shopee, Amazon). Ordem (04/11): Black Friday primeiro, depois maior desconto e maior
- *  economia em reais (outra loja só passa na frente com desconto a até 5 pontos do melhor). SOCIAL_FOCO=0 volta à fila completa. */
+ *  economia em reais (outra loja só passa na frente com desconto a até 5 pontos do melhor), baralho no fim. SOCIAL_FOCO=0 volta à fila completa. */
 export function candidatosWhatsApp(state, opts = {}) {
   const lista = filaWhatsApp(state, opts); const env = opts.env || {};
   if (env.SOCIAL_FOCO === '0') return lista;
