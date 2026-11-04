@@ -13,6 +13,7 @@ const produtos = new Map([
   ['me04-box36', { id: 'me04-box36', msrp: 449.99 }],
   ['me04-blister4-en', { id: 'me04-blister4-en', msrp: 55.99 }],
   ['sv1-blister2', { id: 'sv1-blister2' }],
+  ['me04-etb', { id: 'me04-etb', msrp: 249.99 }],
 ]);
 const cand = (productId, preco) => ({ item: { ofertaId: productId, texto: montarLegenda({ titulo: `T ${productId}`, atual: preco, loja: 'Mercado Livre', link: 'https://meli.la/x' }).texto }, oferta: { productId, price: preco } });
 
@@ -31,6 +32,15 @@ t('só blister 2/3/4 em português, até o teto de preço e com economia mínima
   assert.equal(ok('me04-blister4', 54.99), null, 'menos de 5% de economia');
   assert.equal(ok('me04-blister4', 39.9, { precoMax: 30 }), null, 'acima do teto');
   assert.equal(Math.round(ok('me05-blister3', 39).economia * 100), 13);
+});
+
+t('outro produto só com desconto forte (20%+) e até R$ 250; caixa cara não volta', () => {
+  const ok = (pid, preco, o = {}) => focoEconomia(cand(pid, preco), { produtos, ...o });
+  assert.ok(ok('me04-etb', 189.9), '24% abaixo do sugerido: entra');
+  assert.equal(ok('me04-etb', 210), null, '16%: não é desconto forte');
+  assert.equal(ok('me04-box36', 300), null, '33% mas acima de R$ 250');
+  assert.ok(ok('me04-box36', 300, { precoMaxForte: 400 }), 'teto ajustável');
+  assert.equal(ok('me04-etb', 189.9, { descontoForte: 0.3 }), null, 'desconto forte ajustável');
 });
 
 t('legenda: "De X (rótulo) ❌", "Por" e a economia em reais e %', () => {
@@ -66,7 +76,7 @@ t('fila: aplica o foco por padrão; SOCIAL_FOCO=0 volta à fila completa; teto e
   assert.deepEqual(ids({ SOCIAL_PRECO_MAX: '30' }), []);
   assert.deepEqual(ids({ SOCIAL_ECONOMIA_MIN: '0.5' }), []);
   const y = fs.readFileSync(new URL('../.github/workflows/social-whatsapp-auto.yml', import.meta.url), 'utf8');
-  for (const v of ['SOCIAL_FOCO', 'SOCIAL_PRECO_MAX', 'SOCIAL_ECONOMIA_MIN']) assert.match(y, new RegExp(`${v}: \\$\\{\\{ vars\\.${v} \\}\\}`));
+  for (const v of ['SOCIAL_FOCO', 'SOCIAL_PRECO_MAX', 'SOCIAL_ECONOMIA_MIN', 'SOCIAL_DESCONTO_FORTE', 'SOCIAL_PRECO_MAX_FORTE']) assert.match(y, new RegExp(`${v}: \\$\\{\\{ vars\\.${v} \\}\\}`));
 });
 
 console.log(`✓ WhatsApp foco em economia: ${n} grupos passaram`);

@@ -2,10 +2,11 @@
 // preços com de X por X, focar em economia mesmo [...] booster ou pack caros demais não vou perder tempo levando ao
 // grupo"). Puro: sem rede, banco ou secrets.
 //
-//   • só blister duplo, triplo e quádruplo (produto do catálogo *-blister2/3/4, em português);
-//   • só preço até `precoMax` (padrão R$ 100): blister caro de coleção antiga fica de fora;
+//   • blister duplo, triplo e quádruplo (produto do catálogo *-blister2/3/4, em português) até `precoMax` (padrão R$ 100);
+//   • qualquer outro produto em português só com desconto forte (`descontoForte`, padrão 20%) e até `precoMaxForte`
+//     (padrão R$ 250): oferta verdadeiramente barata entra, caixa cara não;
 //   • "De X por Y" com referência honesta e rotulada: o preço sugerido da Copag do produto; sem ele, a média do mercado
-//     que o site calcula. Só entra com economia de pelo menos `economiaMin` (padrão 5%) sobre essa referência;
+//     que o site calcula. Blister entra com economia de pelo menos `economiaMin` (padrão 5%) sobre essa referência;
 //   • o "De" do vendedor (listPrice) não é usado: costuma ser inflado.
 import { reais } from './legenda.js';
 
@@ -22,11 +23,15 @@ export function referencia(produto) {
 }
 
 /** Candidato da fila → mesmo candidato com "De X (rótulo) ❌" e a economia no texto, ou null se não for o foco. */
-export function focoEconomia(c, { produtos, precoMax = 100, economiaMin = 0.05 } = {}) {
+export function focoEconomia(c, { produtos, precoMax = 100, economiaMin = 0.05, descontoForte = 0.2, precoMaxForte = 250 } = {}) {
   const pid = c?.oferta?.productId; const preco = pos(c?.preco ?? c?.oferta?.price);
-  if (!pid || !TIPOS.test(pid) || IMPORTADO.test(pid) || !preco || preco > precoMax) return null;
+  if (!pid || IMPORTADO.test(pid) || !preco) return null;
   const r = referencia(produtos?.get(pid)); if (!r) return null;
-  const economia = 1 - preco / r.ref; if (economia < economiaMin) return null;
+  const economia = 1 - preco / r.ref;
+  // Blister 2/3/4: até precoMax com economiaMin. Outro produto (03/11: "ofertas verdadeiramente baratas, aonde os
+  // descontos são bons"): só com desconto forte (descontoForte) e até precoMaxForte, para caixa cara não voltar.
+  const blister = TIPOS.test(pid);
+  if (blister ? (preco > precoMax || economia < economiaMin) : (preco > precoMaxForte || economia < descontoForte)) return null;
   let texto = String(c.item?.texto ?? '');
   if (!/\nPor <b>/.test(texto)) return null;                       // sem a linha "Por": não há como montar o "De X por Y"
   // O "De" do vendedor (listPrice) e a linha 💰 de outra base (campanha) saem: fica uma referência só, a do foco.

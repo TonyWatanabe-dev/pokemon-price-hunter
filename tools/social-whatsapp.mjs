@@ -67,13 +67,15 @@ function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shope
 
 /** Fila do WhatsApp com o foco em economia (03/11/2026, src/agents/social/economia.js): só blister duplo/triplo/quádruplo
  *  até R$ 100 (SOCIAL_PRECO_MAX) e pelo menos 5% abaixo do sugerido Copag ou da média do mercado (SOCIAL_ECONOMIA_MIN),
- *  com "De X por Y". Black Friday continua na frente. SOCIAL_FOCO=0 volta à fila completa. */
+ *  com "De X por Y"; outro produto só com 20%+ de desconto e até R$ 250 (SOCIAL_DESCONTO_FORTE, SOCIAL_PRECO_MAX_FORTE).
+ *  Black Friday continua na frente. SOCIAL_FOCO=0 volta à fila completa. */
 export function candidatosWhatsApp(state, opts = {}) {
   const lista = filaWhatsApp(state, opts); const env = opts.env || {};
   if (env.SOCIAL_FOCO === '0') return lista;
   const num = (v, d) => { const n = Number(v); return v != null && v !== '' && Number.isFinite(n) && n > 0 ? n : d; };
   const produtos = new Map((state?.products || []).map((p) => [p.id, p]));
-  const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, 100), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, 0.05) };
+  const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, 100), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, 0.05),
+    descontoForte: num(env.SOCIAL_DESCONTO_FORTE, 0.2), precoMaxForte: num(env.SOCIAL_PRECO_MAX_FORTE, 250) };
   return lista.map((c) => focoEconomia(c, cfg)).filter(Boolean);
 }
 
