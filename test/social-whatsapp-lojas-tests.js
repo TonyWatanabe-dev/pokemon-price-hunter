@@ -64,10 +64,10 @@ t('fila do WhatsApp: só ML com afiliado e desconto, revezando com Shopee e Amaz
       { ...of('m4', 'https://produto.mercadolivre.com.br/MLB-4444444444-d', null, 80), vsMarket: 0.25 }, of('m5', 'https://produto.mercadolivre.com.br/MLB-5555555555-e', -0.1, 90), ...offers] };
   const afiliados = { anuncios: { MLB1111111111: 'https://meli.la/a', MLB2222222222: 'https://meli.la/b', MLB4444444444: 'https://meli.la/d', MLB5555555555: 'https://meli.la/e' } };   // m3 sem afiliado; m5 acima do preço
   const leituras = { shopee: [sh('1', 'p1', 110, 95)], amazon: [am('A1', 'p1', 90), am('A9', 'p3', 25)] };
-  const l = candidatosWhatsApp(state, { now: NOW, env: {}, afiliados, leituras });
+  const l = candidatosWhatsApp(state, { now: NOW, env: { SOCIAL_FOCO: '0' }, afiliados, leituras });
   assert.deepEqual(l.map((c) => c.item.ofertaId), ['m2', 'shopee:1', 'amazon:A1', 'm4', 'amazon:A9', 'm1']);
   assert.ok(l.every((c) => c.afiliado === true));
-  assert.deepEqual(candidatosWhatsApp(state, { now: NOW, env: { SOCIAL_EXTERNAS: '0' }, afiliados, leituras }).map((c) => c.item.ofertaId), ['m2', 'm4', 'm1']);
+  assert.deepEqual(candidatosWhatsApp(state, { now: NOW, env: { SOCIAL_EXTERNAS: '0', SOCIAL_FOCO: '0' }, afiliados, leituras }).map((c) => c.item.ofertaId), ['m2', 'm4', 'm1']);
 });
 
 t('ritmo: 15 min, afiliada volta em 6 h, teto de 70; workflow a cada 15 min com o kill switch das externas', () => {

@@ -75,7 +75,7 @@ export function candidatoExterno(o) {
     `🕒 Preço lido em ${quando(o.capturedAt)}; pode ter mudado`,
   ].filter(Boolean).join('\n');
   const t = `${texto}\n\n${extra}`;
-  return { item: { ofertaId: o.ofertaId, texto: t, canal: 'whatsapp' }, oferta: { id: o.ofertaId, productId: o.productId, storeId: o.loja, firstSeen: null }, foto: o.image, parseMode, afiliado: true, loja: o.loja };
+  return { item: { ofertaId: o.ofertaId, texto: t, canal: 'whatsapp' }, oferta: { id: o.ofertaId, productId: o.productId, storeId: o.loja, firstSeen: null }, foto: o.image, parseMode, afiliado: true, loja: o.loja, preco: o.preco };
 }
 
 /** Intercala as listas na ordem dada (ML, Shopee, Amazon, ML, ...). Lista que acaba sai da roda. */

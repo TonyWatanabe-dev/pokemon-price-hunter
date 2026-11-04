@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { candidatos, gerarCard } from './social-telegram-piloto.mjs';
 import { loadAffiliates, mlListingId } from '../api/_lib/affiliates.mjs';
 import { ofertasExternas, candidatoExterno, intercalar, lerLeituras } from '../src/agents/social/externas.js';
+import { focoEconomia } from '../src/agents/social/economia.js';
 import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
 import { candidatosCampanha, fotoDoAnuncio, lerCampanha } from '../src/agents/social/blackfriday.js';
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
@@ -49,7 +50,7 @@ const promocao = (o) => Math.max(o?.discount ?? 0, o?.vsMarket ?? 0);
 //  Black Friday (02/11/2026, pedido do dono: "quero priorizar elas"; só selado original e preço bom, sem carta avulsa):
 //  a campanha de config/social-black-friday.json vem na frente — primeiro as com selo BLACK FRIDAY, maior desconto primeiro; as demais da campanha entram no
 //  revezamento junto com ML/Shopee/Amazon. SOCIAL_BLACKFRIDAY=0 desliga. Fora da validade (24 h) a campanha some sozinha.
-export function candidatosWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] }, campanha = lerCampanha() } = {}) {
+function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] }, campanha = lerCampanha() } = {}) {
   const camp = candidatosCampanha(campanha, { now: now ?? Date.now(), env, state });   // só selado original com preço bom (02/11)
   const bf = camp.filter((c) => c.blackFriday); const campResto = camp.filter((c) => !c.blackFriday);
   const ml = candidatos(state, { now, env, afiliados, limite: 300 })
@@ -63,6 +64,19 @@ export function candidatosWhatsApp(state, { now, env = {}, afiliados = {}, leitu
   const ext = ofertasExternas({ ...leituras, products: state.products, offers: state.offers, now: now ?? Date.now() }).map(candidatoExterno);
   return [...bf, ...intercalar(mlSemDup, campResto, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'))];
 }
+
+/** Fila do WhatsApp com o foco em economia (03/11/2026, src/agents/social/economia.js): só blister duplo/triplo/quádruplo
+ *  até R$ 100 (SOCIAL_PRECO_MAX) e pelo menos 5% abaixo do sugerido Copag ou da média do mercado (SOCIAL_ECONOMIA_MIN),
+ *  com "De X por Y". Black Friday continua na frente. SOCIAL_FOCO=0 volta à fila completa. */
+export function candidatosWhatsApp(state, opts = {}) {
+  const lista = filaWhatsApp(state, opts); const env = opts.env || {};
+  if (env.SOCIAL_FOCO === '0') return lista;
+  const num = (v, d) => { const n = Number(v); return v != null && v !== '' && Number.isFinite(n) && n > 0 ? n : d; };
+  const produtos = new Map((state?.products || []).map((p) => [p.id, p]));
+  const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, 100), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, 0.05) };
+  return lista.map((c) => focoEconomia(c, cfg)).filter(Boolean);
+}
+
 
 const lerJson = (f, padrao) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return padrao; } };
 const pastaTemp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'wa-'));

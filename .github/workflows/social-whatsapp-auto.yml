@@ -68,6 +68,9 @@ jobs:
           SOCIAL_ENABLED: '1'
           SOCIAL_CUPONS: ${{ vars.SOCIAL_CUPONS }}
           SOCIAL_EXTERNAS: ${{ vars.SOCIAL_EXTERNAS }}
+          SOCIAL_FOCO: ${{ vars.SOCIAL_FOCO }}
+          SOCIAL_PRECO_MAX: ${{ vars.SOCIAL_PRECO_MAX }}
+          SOCIAL_ECONOMIA_MIN: ${{ vars.SOCIAL_ECONOMIA_MIN }}
           SOCIAL_WHATSAPP_AUTO: ${{ vars.SOCIAL_WHATSAPP_AUTO }}
           TITULO: ${{ vars.SOCIAL_WHATSAPP_GRUPO || 'TCG Price Hunter | 01' }}
           SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
