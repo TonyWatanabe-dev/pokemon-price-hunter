@@ -1,7 +1,7 @@
 // WhatsApp com foco em economia (pedido do dono em 03/11/2026): só blister 2/3/4, barato, com "De X por Y" honesto.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { focoEconomia, referencia } from '../src/agents/social/economia.js';
+import { focoEconomia, referencia, ordenarPorEconomia } from '../src/agents/social/economia.js';
 import { candidatosWhatsApp } from '../tools/social-whatsapp.mjs';
 import { legendaWhatsApp } from '../src/agents/social/whatsapp.js';
 import { montarLegenda } from '../src/agents/social/legenda.js';
@@ -77,6 +77,14 @@ t('fila: aplica o foco por padrão; SOCIAL_FOCO=0 volta à fila completa; teto e
   assert.deepEqual(ids({ SOCIAL_ECONOMIA_MIN: '0.5' }), []);
   const y = fs.readFileSync(new URL('../.github/workflows/social-whatsapp-auto.yml', import.meta.url), 'utf8');
   for (const v of ['SOCIAL_FOCO', 'SOCIAL_PRECO_MAX', 'SOCIAL_ECONOMIA_MIN', 'SOCIAL_DESCONTO_FORTE', 'SOCIAL_PRECO_MAX_FORTE']) assert.match(y, new RegExp(`${v}: \\$\\{\\{ vars\\.${v} \\}\\}`));
+});
+
+t('ordem: Black Friday primeiro, maior desconto e economia em reais; outra loja só fura a fila com desconto próximo', () => {
+  const c = (id, loja, economia, economiaReais = 10, blackFriday = false) => ({ id, loja, economia, economiaReais, blackFriday });
+  const ids = (l) => ordenarPorEconomia(l).map((x) => x.id);
+  assert.deepEqual(ids([c('a', 'ml', 0.30), c('bf', 'ml', 0.10, 10, true), c('b', 'ml', 0.30, 20)]), ['bf', 'b', 'a'], 'BF na frente; empate de % decide pelos reais');
+  assert.deepEqual(ids([c('m1', 'mercadolivre', 0.30), c('m2', 'mercadolivre', 0.29), c('s1', 'shopee', 0.27), c('s2', 'shopee', 0.06)]), ['m1', 's1', 'm2', 's2'], 'revezamento só entre descontos próximos');
+  assert.deepEqual(ids([c('m1', 'mercadolivre', 0.30), c('m2', 'mercadolivre', 0.29), c('s1', 'shopee', 0.10)]), ['m1', 'm2', 's1'], 'desconto fraco não passa na frente');
 });
 
 console.log(`✓ WhatsApp foco em economia: ${n} grupos passaram`);
