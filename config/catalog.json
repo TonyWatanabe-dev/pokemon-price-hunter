@@ -1340,6 +1340,14 @@
     }
   ],
   "copag": {
+    "me04-box36": {
+      "msrp": 449.99,
+      "source_url": "https://www.copagloja.com.br/box-display-pokemon-me04-caos-ascendente/p",
+      "source_timestamp": "2026-11-03",
+      "confidence": "OFICIAL",
+      "manual": true,
+      "note": "Preço da loja oficial Copag (Box Display ME04 Caos Ascendente, cód. 028D108800000BX), lido em 03/11/2026 pela API pública da loja com o produto indisponível. Cadastro manual porque a página traz o EAN 0196214156081, que nas outras lojas é o do booster unitário ME04; o anúncio da Copag fica recusado pelo EAN e o preço não chega pelo robô."
+    },
     "c30-blister2": {
       "msrp": 69.99,
       "source_url": "https://www.instagram.com/voltztcg/",
