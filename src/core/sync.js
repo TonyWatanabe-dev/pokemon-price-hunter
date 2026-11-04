@@ -3,6 +3,7 @@
 import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, historyRows, distrustRows, isFutureAt, FUTURE_TOLERANCE_MS } from './mappers.js';
 import { ensureMonth } from '../db/partitions.js';
 import { KNOWN_TYPES } from './taxonomy.js';
+import { AVULSOS } from '../match.js';
 
 const J = (v) => JSON.stringify(v);
 // Mesmo critério do `ts` de mappers.js: valor presente que não vira data válida.
@@ -46,6 +47,10 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   const maxSeen = new Date(nowMs + FUTURE_TOLERANCE_MS).toISOString();
   // Coleções: catálogo de configuração + o que o robô viu
   const colSrc = [...new Map([...(catalog?.collections || []), ...(state.collections || [])].map((x) => [x.id, x])).values()];
+  // Pseudo-coleção "avulsos" (src/match.js, #797): box, baralho e coleção especial sem coleção no título. Sem ela aqui, o
+  // sync tratava esses produtos como código de coleção antigo e os mandava para a revisão: não entravam no banco, no site
+  // (/produtos) nem no Opportunity Engine — 44 produtos com estoque fora do ranking em 04/11/2026.
+  if ((state.products || []).some((p) => p.collection === AVULSOS) && !colSrc.some((x) => x.id === AVULSOS)) colSrc.push({ id: AVULSOS, name: 'Box Pokémon', series: null, aliases: [] });
   const colIds = new Set(colSrc.map((x) => x.id));
   const byName = new Map(colSrc.map((x) => [x.name, x.id]));
   // Produto com código de coleção antigo: aponta para a coleção atual pelo nome; se já existe o mesmo produto, é duplicado → fila de revisão
