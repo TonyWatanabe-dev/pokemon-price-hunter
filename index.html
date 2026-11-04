@@ -1881,7 +1881,7 @@ function dropsHTML(){
 /* Destaques (6B.2): os três recordes de oportunidade vêm prontos da API (1ª por Opportunity Score, por "abaixo da referência"
    e por economia); o "booster mais barato" é preço por booster das lojas (não é oportunidade) e continua do resumo da Home. */
 function hlTile(k,x,v,u,j){const pr=x.product||{};const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
-  return`<a class="hl-t" style="--j:${j}" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}" data-p="${esc(pr.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(p,{image:x.offer?.image},"photo hl-ph")}<span class="hl-n">${esc(pr.collection?.name||"")} · ${esc(pr.type_label||pr.name||"")}</span><span class="hl-s">${esc(x.store?.name||"")} · ${money(x.price)}</span></a>`}
+  return`<a class="hl-t" style="--j:${j}" href="/produto/${SLUG[pr.id]||encodeURIComponent(pr.id||"")}" data-p="${esc(pr.id)}"><span class="hl-k">${k}</span><span class="hl-v">${v}</span><span class="hl-u">${u}</span>${photo(p,{image:x.offer?.image},"photo hl-ph")}<span class="hl-n">${esc(pr.collection?.name||"")} · ${esc(oppName(pr))}</span><span class="hl-s">${esc(x.store?.name||"")} · ${money(x.price)}</span></a>`}
 function highlightsOppHTML(){
   if(HOMEOPP.status!=="ok")return"";
   /* Lote A: cada produto aparece uma vez nos destaques. Os candidatos vêm na ordem da API (até 4 por métrica); quando o 1º já
@@ -1912,6 +1912,7 @@ function startTicker(){clearInterval(tickT);const t=$(".ticker");if(!t||reduceMo
 const HOMEOPP={status:"idle",top:[],below:[],save:[],at:0,p:null,fr:null};const HOME_OPP_KEY="oportunidades?limite=15&pagina=1&ordem=score";
 /* as três listas da home: retryHomeOpp limpa exatamente as mesmas chaves que loadHomeOpp pede (#83) */
 const HOME_OPP_KEYS=[HOME_OPP_KEY,"oportunidades?limite=4&pagina=1&ordem=abaixo","oportunidades?limite=4&pagina=1&ordem=economia"];
+const preferirSelados=(l)=>[...l.filter((x)=>x?.product?.type!=="deck"),...l.filter((x)=>x?.product?.type==="deck")];
 function loadHomeOpp(){
   if(HOMEOPP.status==="ok"&&Date.now()-HOMEOPP.at<APITTL)return Promise.resolve();
   return HOMEOPP.p||=Promise.all(HOME_OPP_KEYS.map((k)=>apiGet(k)))
@@ -1919,7 +1920,7 @@ function loadHomeOpp(){
       if(isPause(a,HOME_OPP_KEY)){Object.assign(HOMEOPP,{status:"stale",top:[]});setPause(a||{},HOME_OPP_KEY)}   /* Lote 2 + UX: banco sem sincronizar ou 503 */
       else if(!a||a.notFound||!Array.isArray(a.data))Object.assign(HOMEOPP,{status:"error"});
       else if(a.meta?.status==="requires_db")Object.assign(HOMEOPP,{status:"nodb",top:[]});
-      else{Object.assign(HOMEOPP,{status:"ok",top:a.data,below:Array.isArray(b?.data)?b.data:[],save:Array.isArray(c?.data)?c.data:[],at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
+      else{Object.assign(HOMEOPP,{status:"ok",top:preferirSelados(a.data),below:Array.isArray(b?.data)?b.data:[],save:Array.isArray(c?.data)?c.data:[],at:Date.now(),fr:a.meta?.freshness||null});setPause(null)}
       HOMEOPP.p=null});
 }
 /* Pódio: as 3 primeiras do motor como destaques 1º, 2º e 3º lugar (6C.1; mesmo componente, sem medalhas nem raridade) */
@@ -1927,7 +1928,7 @@ function podCardOpp(x,r){
   const pr=x.product||{},of=x.offer||{},st=x.store||{},rc=x.reference_comparison||{},cr=x.current_reference||{};
   const p={id:pr.id,type:pr.type,group:pr.group,image:pr.image,collectionName:pr.collection?.name};
   const sc=x.opportunity_score;const bu=BAND_UI[x.opportunity_band]||["Sem faixa","var(--muted)","—"];
-  const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));const fav=isFav(pr.id);const name=pr.type_label||pr.name||"";
+  const href="/produto/"+(SLUG[pr.id]||encodeURIComponent(pr.id||""));const fav=isFav(pr.id);const name=oppName(pr);
   const mkOnly=cr.kind==="MARKET_CURRENT"&&cr.market_composition==="MARKETPLACE_ONLY";   /* pela referência ATUAL, nunca pelo campo do topo */
   const refTxt=rc.available?`${refShort(rc.reference_kind)}${mkOnly?" (marketplaces)":""} · ${money(rc.reference_value)}`:"Sem referência atual";
   const ra=S?.reputation?.lojas?.[st.id]?raBadge({storeId:st.id,storeName:st.name||""}):"";const lv=x.confidence_level;
@@ -3185,6 +3186,7 @@ function moreBusca(){
 function buscaNav(){const u=buscaURL();if(location.pathname+location.search!==u)history.pushState(null,"",u);view="busca";render()}
 
 /* Categorias do site (tipo ou grupo do produto). Home e /oportunidades leem as oportunidades da API (6B.2: sem oppPool). */
+const oppName=(pr)=>String(pr?.name||"").split(" - ").slice(1).join(" - ")||pr?.type_label||pr?.name||"";
 const CATS=[["","Todos"],["Boosters","Todos os boosters"],["etb","ETB"],["booster_box","Booster Box"],["combo","Combos e bundles"],["Blisters","Blisters"],["booster_pack","Boosters avulsos"],["Coleções","Coleções"],["Latas","Latas"],["Baralhos","Baralhos"]];
 const catMatch=(p,c)=>!c||p.type===c||p.group===c;
 /* Pistas misturadas nas oportunidades (decisão do proprietário, 16/10/2026: "integrar todas as pistas em ofertas"): toda pista
@@ -3379,7 +3381,7 @@ function oppCard(x,i,opt={}){const H=opt.h||"h3";
     <button class="deal-fav" type="button" data-fav="${esc(pr.id)}" aria-pressed="${fav}" aria-label="${fav?"Tirar dos favoritos":"Favoritar"}">${ic(fav?"heart-f":"heart")}</button></div>
   <div class="deal-body">
     <p class="deal-col">${esc(pr.collection?.name||"")}</p>
-    <${H} class="deal-name">${esc(pr.type_label||pr.name||"")}</${H}>
+    <${H} class="deal-name">${esc(oppName(pr))}</${H}>
     <div class="opp-pv"><p class="deal-price opp-price"><b>${money(oppTotal(x))}</b>${pixTag({priceKind:of.price_kind})}</p>${oppCmp(x.reference_comparison)}<p class="opp-ship">${oppShip(x)}</p></div>
     ${sc!=null?`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,sc))}%"></b></i><strong>${sc}<small> · ${bu[2]}</small></strong></div>`:""}
     <div class="rc-row"><p class="opp-conf lv-${lv==="média"?"media":lv||"none"}" title="Confiança dos dados usados na avaliação${x.confidence!=null?`: ${Math.round(x.confidence*100)}%`:""}. Não altera a nota."><i aria-hidden="true"></i>${x.confidence!=null?(CONF_UI[lv]||"Confiança informada"):"Confiança não informada"}</p>${ageHTML(x)}</div>
