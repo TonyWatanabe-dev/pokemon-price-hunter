@@ -1,8 +1,8 @@
 {
  "program": "shopee",
- "updatedAt": "2026-11-02",
+ "updatedAt": "2026-11-04",
  "regras": "Anúncios da Shopee com link de afiliado do dono (config/afiliados/shopee.json), lidos pelo dono no Chrome. Entram só produtos selados, casados por src/match.js com confiança de 0,8 ou mais, sem anúncio de várias opções e sem vendedor de fora de TCG. price = preço sem cupom (o \"ou R$\" da página); priceCupom = o valor em destaque, que a Shopee mostra com cupom. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score.",
- "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu.",
+ "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido).",
  "ofertas": [
   {
    "productId": "me01-blister4",
@@ -14,7 +14,7 @@
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:33Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me05-blister3",
@@ -26,7 +26,7 @@
    "seller": "Rodobanca",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:34Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me05-combo",
@@ -61,20 +61,20 @@
    "priceCupom": null,
    "seller": "Alexandre Miniaturas",
    "selo": null,
-   "stockNote": "últimas 6 unidades",
-   "capturedAt": "2026-11-03T01:36Z"
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me05-blister1",
    "item": "446413605/58217017576",
    "title": "Blister Unitário Pokémon TCG ME05 Mega Evolução Escuridão Absoluta 6 Cartas Original Copag",
    "url": "https://s.shopee.com.br/9fLk082QkM",
-   "price": 17.99,
+   "price": 16.99,
    "priceCupom": null,
    "seller": "Mais Barato Brinquedos",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:36Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me05-blister3",
@@ -86,7 +86,7 @@
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:36Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me04-etb",
@@ -122,7 +122,7 @@
    "seller": "GxT Store",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:38Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me04-blister4",
@@ -133,8 +133,8 @@
    "priceCupom": null,
    "seller": "Rodobanca",
    "selo": "Indicado",
-   "stockNote": "última unidade",
-   "capturedAt": "2026-11-03T01:38Z"
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "c30-blister2",
@@ -146,7 +146,7 @@
    "seller": "Superlegal Brinquedos",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:38Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "me03-blister4",
@@ -158,7 +158,7 @@
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:38Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "c30-blister2",
@@ -170,7 +170,7 @@
    "seller": "A Sua Maneira",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-03T01:39Z"
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "c30-blister3",
@@ -181,8 +181,8 @@
    "priceCupom": 169.2,
    "seller": "Fun GC",
    "selo": "Indicado",
-   "stockNote": "últimas 4 unidades",
-   "capturedAt": "2026-11-03T01:38Z"
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
   },
   {
    "productId": "c30-etb",
@@ -207,6 +207,426 @@
    "selo": null,
    "stockNote": "últimas 10 unidades",
    "capturedAt": "2026-11-03T01:40Z"
+  },
+  {
+   "productId": "me04-blister1",
+   "item": "560111198/58266627654",
+   "title": "Blister Unitário Pokémon Caos Ascendente - 6 Cartas Blister Unitário Pokémon Me04 Caos Ascendente - 6 Cartas Bliste",
+   "url": "https://s.shopee.com.br/80DxmXPd4X",
+   "price": 19.9,
+   "priceCupom": null,
+   "seller": "Saint Geek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me03-blister4",
+   "item": "450761307/58258435940",
+   "title": "Pokémon TCG, Blister Quadrúplo Pokémon Chikorita ME03 Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/1Lh3qHp0bM",
+   "price": 52.9,
+   "priceCupom": null,
+   "seller": "Alexandre Miniaturas",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister3",
+   "item": "741099352/58267550688",
+   "title": "Pokémon TCG: Blister Triplo Caos Ascendente (Charmeleon), The Pokémon Company | Copag",
+   "url": "https://s.shopee.com.br/1gJuEtnjvS",
+   "price": 66.9,
+   "priceCupom": null,
+   "seller": "Poltrona Mágica",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me03-blister3",
+   "item": "741099352/23899660844",
+   "title": "Pokémon TCG: Blister Triplo Equilíbrio Perfeito (Makuhita), The Pokémon Company | Copag",
+   "url": "https://s.shopee.com.br/gRN33rXxI",
+   "price": 62.9,
+   "priceCupom": null,
+   "seller": "Poltrona Mágica",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister4",
+   "item": "320200645/47468655009",
+   "title": "Pokémon Escuridão Absoluta Blister Quádruplo 4 Pacotes Tcg Pokemon",
+   "url": "https://s.shopee.com.br/qknFMqucL",
+   "price": 77.36,
+   "priceCupom": null,
+   "seller": "GOLD PAGE",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me03-blister1",
+   "item": "1244371840/58260765958",
+   "title": "PokEmon TCG, Blister Unitário Pokémon ME03 Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/1BNddypdwR",
+   "price": 19.99,
+   "priceCupom": null,
+   "seller": "Baruque Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister4",
+   "item": "740278289/58262147265",
+   "title": "Blister Quadruplo Caos Ascendente Pokémon 4 Pacotes - Pokémon",
+   "url": "https://s.shopee.com.br/BV6S8tRyH",
+   "price": 60,
+   "priceCupom": null,
+   "seller": "Poke X TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister4",
+   "item": "406053427/58214253999",
+   "title": "POKÉMON ME05 - Blister Quadruplo Escuridão Absoluta Pokemon Copag Português",
+   "url": "https://s.shopee.com.br/W7wqksBIN",
+   "price": 65.5,
+   "priceCupom": null,
+   "seller": "Preço Justo Presentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister3",
+   "item": "324620096/58219643074",
+   "title": "Pokémon TCG, Celebração de 30 anos – Blister Triplo com Adesivo Pokémon Lucario",
+   "url": "https://s.shopee.com.br/4fxVoPcJqC",
+   "price": 179,
+   "priceCupom": null,
+   "seller": "Shiratori-Poke-Loja",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister3",
+   "item": "462568278/58219477076",
+   "title": "Pokémon TCG, Celebração de 30 anos – Blister Triplo com Adesivo Pokémon Exeggutor",
+   "url": "https://s.shopee.com.br/2qVrd2jIZ3",
+   "price": 169.9,
+   "priceCupom": null,
+   "seller": "O Recanto do Nerd",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "343440649/58260953509",
+   "title": "Pokémon TCG, Celebração de 30 anos – Blister Duplo Pokémon com moeda",
+   "url": "https://s.shopee.com.br/30pHpLifE6",
+   "price": 159.9,
+   "priceCupom": null,
+   "seller": "Mr.TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister3",
+   "item": "822103155/58268927860",
+   "title": "Cartas Pokémon Copag ME04 Blister Triplo",
+   "url": "https://s.shopee.com.br/7puXaEQGQ7",
+   "price": 42.8,
+   "priceCupom": null,
+   "seller": "Efácil Oficial",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me03-blister1",
+   "item": "1541987699/23894177784",
+   "title": "Pokémon TCG Equilíbrio Perfeito Blister / Booster Unitário  com 6 cartas sortidas",
+   "url": "https://s.shopee.com.br/6fiaC5Uhmu",
+   "price": 14.5,
+   "priceCupom": null,
+   "seller": "ConectarStore",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister3",
+   "item": "1921253621/22595175924",
+   "title": "Blister Triplo Pokémon ME05 Escuridão Absoluta 19 Cartas TCG Estampas Ilustradas Original Colecionável",
+   "url": "https://s.shopee.com.br/60StOrXF8q",
+   "price": 77.9,
+   "priceCupom": null,
+   "seller": "Odisseia das Cartas",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister4",
+   "item": "453570610/58214417902",
+   "title": "Blister Quádruplo Pokémon: Megaevolução Escuridão Absoluta - Copag",
+   "url": "https://s.shopee.com.br/6L5jnTVySw",
+   "price": 49.9,
+   "priceCupom": null,
+   "seller": "Rodobanca",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister4",
+   "item": "822103155/58219540863",
+   "title": "Cartas Pokemon Copag ME04 Blister Quádruplo",
+   "url": "https://s.shopee.com.br/5q9TCYXsTv",
+   "price": 53.1,
+   "priceCupom": null,
+   "seller": "Efácil Oficial",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "sv9-blister4",
+   "item": "1473074966/20399706584",
+   "title": "Blister Quádruplo EV 09 | Amigos de Jornada | Pokémon Tcg | COPAG",
+   "url": "https://s.shopee.com.br/9fMBlbJHhm",
+   "price": 119.99,
+   "priceCupom": null,
+   "seller": "Papelaria Beh",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister1",
+   "item": "1383337686/58213093151",
+   "title": "Blister Unitário Pokémon Coleção Caos Ascendente Cartas Oficiais Copag",
+   "url": "https://s.shopee.com.br/906UyNLp3i",
+   "price": 18.99,
+   "priceCupom": null,
+   "seller": "Hunter Card Game",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me01-blister4",
+   "item": "710749365/43973814464",
+   "title": "BLISTER QUÁDRUPLO - POKÉMON MEGA EVOLUÇÃO COPAG TCG BOOSTER CARTAS GARDEVOIR EX QUAD PACK ME01",
+   "url": "https://s.shopee.com.br/8AXNyqOzkb",
+   "price": 52.9,
+   "priceCupom": null,
+   "seller": "Geek_Aura",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "sv8_5-blister3",
+   "item": "474208366/22899813659",
+   "title": "Pokémon Blister Triplo Evoluções Prismáticas Leafeon",
+   "url": "https://s.shopee.com.br/2Vt1EQkZFY",
+   "price": 149.9,
+   "priceCupom": null,
+   "seller": "EPIC ONE — Hobby Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister3",
+   "item": "549681447/58267599245",
+   "title": "Blister Triplo Pokémon TCG Caos Ascendente Com 3 Boosters E Carta Promocional Charmeleon",
+   "url": "https://s.shopee.com.br/1BNddypdxQ",
+   "price": 41.9,
+   "priceCupom": null,
+   "seller": "JHPresentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister4",
+   "item": "428265631/58216784405",
+   "title": "Blister Quádruplo Pokémon TCG Escuridão Absoluta ME05 4 Boosters Cartas Colecionáveis",
+   "url": "https://s.shopee.com.br/gRN33rXyN",
+   "price": 52.9,
+   "priceCupom": null,
+   "seller": "Dias tcg",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "1275308322/58269627804",
+   "title": "TCG Blister Duplo Com Moeda Celebração 30 Anos Pokémon",
+   "url": "https://s.shopee.com.br/W7wqksBJM",
+   "price": 129.99,
+   "priceCupom": null,
+   "seller": "FN Games",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me01-blister4",
+   "item": "714969484/23699039294",
+   "title": "Blister Quádruplo - Mega Evolução Golduck ME01 - Pokémon TCG - Copag - cartas - 4 Booster",
+   "url": "https://s.shopee.com.br/LoWeRsoeL",
+   "price": 55.9,
+   "priceCupom": null,
+   "seller": "LM Cards TCG e 3D",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "1162387686/58270045566",
+   "title": "Blister Duplo Pokémon Celebração de 30 Anos com Moeda - Copag",
+   "url": "https://s.shopee.com.br/1BgFpu5KJ",
+   "price": 129.99,
+   "priceCupom": null,
+   "seller": "Brink Center",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "1627853025/58270663407",
+   "title": "Jogo de Cartas Pokémon - Blister Duplo - Celebração de 30 Anos - Copag",
+   "url": "https://s.shopee.com.br/4qGw0ibgWI",
+   "price": 120.53,
+   "priceCupom": null,
+   "seller": "DMT Imports",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me03-blister3",
+   "item": "453570610/58263053178",
+   "title": "Blister Triplo Pokémon: Megaevolução Equilíbrio Perfeito - Makuhita",
+   "url": "https://s.shopee.com.br/4Ve5c6cxCG",
+   "price": 39,
+   "priceCupom": null,
+   "seller": "Rodobanca",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "494301218/58219081283",
+   "title": "POKÉMON 30 Anos-Blister Duplo Original Copag",
+   "url": "https://s.shopee.com.br/4LKfPndaXF",
+   "price": 129.99,
+   "priceCupom": null,
+   "seller": "BANCA SANTANA",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "1736590620/58269027789",
+   "title": "Blister Duplo Com Moeda Celebração 30 Anos Pokémon TCG Português",
+   "url": "https://s.shopee.com.br/4B1FDUeDsE",
+   "price": 126,
+   "priceCupom": null,
+   "seller": "FORGI3D",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister1",
+   "item": "1566314985/58267021425",
+   "title": "Blister Unitário Pokémon TCG Mega Evolução Escuridão Absoluta 6 Cartas Original Copag",
+   "url": "https://s.shopee.com.br/40hp1BerDD",
+   "price": 17.99,
+   "priceCupom": null,
+   "seller": "Shark Magazine",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "1182269567/23595381923",
+   "title": "Pokémon Blister Duplo Moeda Eevee Celebração Coleção 30 Anos - 2 Boosters - Português Copag",
+   "url": "https://s.shopee.com.br/3qOOosfUYC",
+   "price": 118.28,
+   "priceCupom": null,
+   "seller": "Fun GC",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me05-blister4",
+   "item": "1908472295/23199650844",
+   "title": "Blister Quadrúplo Pokémon ME05 Escuridão Absoluta",
+   "url": "https://s.shopee.com.br/3VlYQGglEA",
+   "price": 52.9,
+   "priceCupom": null,
+   "seller": "BREE COLECIONÁVEIS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me02_5-blister3",
+   "item": "832648489/58254299921",
+   "title": "Pokémon Blister Triplo Megaevolução Herois Excelsos Charmander",
+   "url": "https://s.shopee.com.br/3B8i1ei1u8",
+   "price": 129.9,
+   "priceCupom": null,
+   "seller": "EPIC GAME - Santos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me03-blister4",
+   "item": "428265631/58217499176",
+   "title": "Blister Quadruplo Pokémon TCG Equilíbrio Perfeito + Promo Chikorita Copag Original",
+   "url": "https://s.shopee.com.br/30pHpLifF7",
+   "price": 54.9,
+   "priceCupom": null,
+   "seller": "Dias tcg",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
+  },
+  {
+   "productId": "me04-blister3",
+   "item": "450761307/58260602400",
+   "title": "Blister Triplo Pokémon: Megaevolução Caos Ascendente -Charmeleon",
+   "url": "https://s.shopee.com.br/2qVrd2jIa6",
+   "price": 42.9,
+   "priceCupom": null,
+   "seller": "Alexandre Miniaturas",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-04T02:05Z"
   }
  ],
  "foraDaLista": [
@@ -237,6 +657,55 @@
   "421628821/23294951728 — esgotado",
   "1630011990/46916682946 — vendedor fora de TCG (Click Motos & Peças); esgotado",
   "377651836/58208791356 — vendedor fora de TCG (SOMOS.NATURA.VERAO); esgotado",
-  "464326997/58260761640 — esgotado na releitura de 02/11/2026 (me04-blister3)"
+  "464326997/58260761640 — esgotado na releitura de 02/11/2026 (me04-blister3)",
+  "736410306/23694656132 — anúncio com várias opções (título) [lote 03/11]",
+  "357609890/23794682874 — anúncio com várias opções (título) [lote 03/11]",
+  "1776253370/58220529182 — anúncio com várias opções (título) [lote 03/11]",
+  "450761307/58265378252 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "273038997/58256008868 — não casou com segurança (me01-blister3, 0,7) [lote 03/11]",
+  "437751820/58255927683 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "450761307/23699043047 — anúncio com várias opções (título) [lote 03/11]",
+  "1820629761/58269817832 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "774797832/22598824660 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "1011081417/58216772488 — anúncio com faixa de preço por variação (R$ 36.9–R$ 59.6) [lote 03/11]",
+  "357609890/58219475687 — anúncio com faixa de preço por variação (R$ 279–R$ 299.0) [lote 03/11]",
+  "740278289/58208795481 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "219981738/58215125783 — vendedor fora de TCG (Criações em EVA) [lote 03/11]",
+  "390325784/58267963034 — vendedor fora de TCG (Soudes Informática) [lote 03/11]",
+  "655464452/58219386850 — vendedor fora de TCG (Slim fit) [lote 03/11]",
+  "974681097/58208017470 — anúncio com faixa de preço por variação (R$ 42.99–R$ 54.99) [lote 03/11]",
+  "288492414/22699383965 — não casou com segurança (me01-blister4, 0,7) [lote 03/11]",
+  "393264615/58207054266 — vendedor fora de TCG (Copo Meio Cheio) [lote 03/11]",
+  "1612525217/58216154601 — anúncio com faixa de preço por variação (R$ 49.9–R$ 179.9) [lote 03/11]",
+  "385840874/58211220909 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "1612525217/58266148119 — anúncio com faixa de preço por variação (R$ 59.9–R$ 229.9) [lote 03/11]",
+  "1690250367/58260519090 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "1506579658/23799657405 — não casou com segurança (me01-blister3, 0,7) [lote 03/11]",
+  "1328268132/22099311760 — anúncio com faixa de preço por variação (R$ 26.9–R$ 64.9) [lote 03/11]",
+  "344417515/20799253099 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "893869193/58214644938 — vendedor fora de TCG (Drogaria  Araujo) [lote 03/11]",
+  "445721324/44752909524 — preço fora do padrão para blister triplo (R$ 16,90); conferir se é o triplo mesmo [lote 03/11]",
+  "450761307/58260602408 — não casou com segurança (me01-blister4, 0,7) [lote 03/11]",
+  "1330944570/58261149579 — anúncio com faixa de preço por variação (R$ 45.9–R$ 165.9) [lote 03/11]",
+  "299598678/58265318787 — anúncio com várias opções (título) [lote 03/11]",
+  "464326997/22599143593 — anúncio com faixa de preço por variação (R$ 19.99–R$ 47.99) [lote 03/11]",
+  "406861258/19846224157 — anúncio com várias opções (título) [lote 03/11]",
+  "1061459383/58218871914 — anúncio com várias opções (título) [lote 03/11]",
+  "863483465/58268026174 — preço fora do padrão para blister triplo (R$ 19,90) e faixa de preço [lote 03/11]",
+  "346314669/58219071993 — anúncio com faixa de preço por variação (R$ 171.99–R$ 339.99) [lote 03/11]",
+  "453570610/58201708807 — não casou com segurança (me01-blister4, 0,75) [lote 03/11]",
+  "389337856/18898267339 — anúncio com faixa de preço por variação (R$ 54.99–R$ 99.99) [lote 03/11]",
+  "1732438108/23199430845 — anúncio com várias opções (título) [lote 03/11]",
+  "1010111376/58252565672 — anúncio com várias opções (título) [lote 03/11]",
+  "464326997/58211613846 — anúncio com faixa de preço por variação (R$ 59.99–R$ 231.99) [lote 03/11]",
+  "421628821/23294953103 — anúncio com faixa de preço por variação (R$ 199.9–R$ 398.9) [lote 03/11]",
+  "450761307/22194570513 — anúncio com várias opções (título) [lote 03/11]",
+  "810975905/22699154006 — não casou com segurança (me01-blister4, 0,75) [lote 03/11]",
+  "389337856/18499859643 — anúncio com faixa de preço por variação (R$ 18.99–R$ 49.99) [lote 03/11]",
+  "450669946/57316292924 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "464326997/58258411127 — anúncio com faixa de preço por variação (R$ 19.99–R$ 59.99) [lote 03/11]",
+  "450761307/58266479432 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "464326997/55913956737 — anúncio com faixa de preço por variação (R$ 58.99–R$ 223.99) [lote 03/11]",
+  "450761307/58217405510 — não casou com segurança (sem produto, 0) [lote 03/11]"
  ]
 }

@@ -66,7 +66,8 @@ const fakeCon = (grupos = { a: { id: '1@g.us', subject: 'TCG Price Hunter | 01' 
 const fetchImg = async () => ({ ok: true, arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer });
 // Anúncio do fixture com link de afiliado (o WhatsApp só posta afiliado, 02/11/2026) e sem leituras de Shopee/Amazon.
 const DEPS = { carregarAfiliados: () => ({ anuncios: { MLB1234567890: 'https://meli.la/teste' } }), leituras: { shopee: [], amazon: [] } };
-const ENV = { SOCIAL_ENABLED: '1', SOCIAL_WHATSAPP_AUTO: '1', SOCIAL_WHATSAPP_CHAVE: CHAVE };
+// SOCIAL_FOCO=0: o fixture é uma caixa de R$ 900; o foco em blister (03/11) tem teste próprio em social-whatsapp-economia-tests.js.
+const ENV = { SOCIAL_ENABLED: '1', SOCIAL_WHATSAPP_AUTO: '1', SOCIAL_WHATSAPP_CHAVE: CHAVE, SOCIAL_FOCO: '0' };
 
 await t('5. args: modos e obrigatórios; número no formato 55...', () => {
   assert.throws(() => lerArgs(['x', '--sessao', 's']));

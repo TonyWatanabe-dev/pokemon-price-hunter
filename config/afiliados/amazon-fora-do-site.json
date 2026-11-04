@@ -1,7 +1,7 @@
 {
  "program": "amazon",
  "tag": "tcgpricehunter-20",
- "updatedAt": "2026-11-01",
+ "updatedAt": "2026-11-04",
  "nota": "Anúncios Pokémon da mesma busca que NÃO aparecem no site, com o motivo. Não é publicado; serve para revisar depois (ex.: quando o catálogo crescer).",
  "itens": [
   {
@@ -9,18 +9,6 @@
    "title": "Kit Blister Triplo Pokémon + 100 Sleeve Me05 Escuridão Absoluta 19 Cartas",
    "motivo": "acessório ou item não-TCG",
    "url": "https://www.amazon.com.br/dp/B0HM24TMRC?tag=tcgpricehunter-20"
-  },
-  {
-   "asin": "B0GP2Z9XKK",
-   "title": "Pokémon TCG: Mega Evolução - Equilíbrio Perfeito - Sleeved Booster - Português",
-   "motivo": "tipo de produto não identificado",
-   "url": "https://www.amazon.com.br/dp/B0GP2Z9XKK?tag=tcgpricehunter-20"
-  },
-  {
-   "asin": "B0H3Q97V12",
-   "title": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Sleeved Booster - Português, Jogo de Cartas",
-   "motivo": "tipo de produto não identificado",
-   "url": "https://www.amazon.com.br/dp/B0H3Q97V12?tag=tcgpricehunter-20"
   },
   {
    "asin": "B0HDZ947QS",
@@ -3671,12 +3659,6 @@
    "url": "https://www.amazon.com.br/dp/2821208995?tag=tcgpricehunter-20"
   },
   {
-   "asin": "B0GVVSBBCJ",
-   "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - Sleeved Booster - Português",
-   "motivo": "tipo de produto não identificado",
-   "url": "https://www.amazon.com.br/dp/B0GVVSBBCJ?tag=tcgpricehunter-20"
-  },
-  {
    "asin": "B0H3QKR97T",
    "title": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Booster Bundle - Português, Jogo de Cartas",
    "motivo": "kit montado pela loja ou caixa com várias unidades",
@@ -3825,12 +3807,6 @@
    "title": "Pokémon TCG: 2-Pack Blister Double Wide - Inglês",
    "motivo": "coleção não identificada",
    "url": "https://www.amazon.com.br/dp/B0H7T3MZZ4?tag=tcgpricehunter-20"
-  },
-  {
-   "asin": "B0H27L3TKW",
-   "title": "Pokémon TCG: Mega Evolution - Pitch Black - Sleeved Booster - Inglês, Jogo de Cartas",
-   "motivo": "tipo de produto não identificado",
-   "url": "https://www.amazon.com.br/dp/B0H27L3TKW?tag=tcgpricehunter-20"
   },
   {
    "asin": "B0G26JXWMH",
@@ -4719,6 +4695,72 @@
    "title": "Pokémon TCG Combo de Booster ME02 Fogo Fantasmagórico 108 Cartas",
    "motivo": "saiu do site em 01/11/2026 22:08: a Amazon trocou o título (agora com \"108 Cartas\") e o matcher passou a inferir 18 boosters e casar com me02-combo18, que não está no catálogo (antes casava com me02-combo); sem oferta em destaque (Preço mais alto do que o habitual). Volta quando o matcher/catálogo tratar o combo ME02 de 18 boosters",
    "url": "https://www.amazon.com.br/dp/B0FVY4GC1D?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0HP6SH7XR",
+   "title": "Pokemon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
+   "motivo": "marca Genérico na página (não é Copag nem Pokémon); casava com c30-blister2; R$ 107,35 em 03/11/2026",
+   "url": "https://www.amazon.com.br/dp/B0HP6SH7XR?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0HBNYZSJV",
+   "title": "Blister Triplo Pokemon TCG Mega Evolução Escuridão Absoluta ME05",
+   "motivo": "marca Genérico na página (não é Copag nem Pokémon); casava com me05-blister3; Gamelot Brasil R$ 66,40 em 03/11/2026",
+   "url": "https://www.amazon.com.br/dp/B0HBNYZSJV?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0HB5T3TVD",
+   "title": "Pokémon Mega Evolution Pitch Black Checklane Blister Pack (1 booster, cartão promocional Slowpoke e moeda)",
+   "motivo": "checklane com promo e moeda casava como booster avulso (me05-booster-en): casamento inseguro",
+   "url": "https://www.amazon.com.br/dp/B0HB5T3TVD?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0C7S9QZD5",
+   "title": "Pokémon TCG Booster - Evolução em Paldea",
+   "motivo": "coleção não identificada",
+   "url": "https://www.amazon.com.br/dp/B0C7S9QZD5?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0HJPRYGYF",
+   "title": "Pokémon TCG Blister Triplo",
+   "motivo": "título sem coleção",
+   "url": "https://www.amazon.com.br/dp/B0HJPRYGYF?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0GV94JYDY",
+   "title": "Pokemon TCG: Mega Evolution Chaos Rising Sleeved Booster Pack",
+   "motivo": "coleção não identificada (Chaos Rising sem alias no catálogo)",
+   "url": "https://www.amazon.com.br/dp/B0GV94JYDY?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0C1H7TCBN",
+   "title": "Pokemon TCG Scarlet & Violet Checklane Blister (Spidops)",
+   "motivo": "coleção não identificada",
+   "url": "https://www.amazon.com.br/dp/B0C1H7TCBN?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0HBWQGBJ4",
+   "title": "Pokémon Pacote com 2 Blister (2 Boosters & Foil Promo Card)",
+   "motivo": "coleção não identificada",
+   "url": "https://www.amazon.com.br/dp/B0HBWQGBJ4?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0CT5XD8FM",
+   "title": "Pokémon TCG Enhanced 2024 2-Pack Blister - EN",
+   "motivo": "coleção não identificada",
+   "url": "https://www.amazon.com.br/dp/B0CT5XD8FM?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0GF4B15PX",
+   "title": "Pokémon TCG Enhanced 2 Pack Blister - Raikou",
+   "motivo": "coleção não identificada",
+   "url": "https://www.amazon.com.br/dp/B0GF4B15PX?tag=tcgpricehunter-20"
+  },
+  {
+   "asin": "B0GPMCKRF2",
+   "title": "Pokemon Trading Card Game Mega Evolutions Ascended Heroes 2 Packs",
+   "motivo": "tipo de produto não identificado",
+   "url": "https://www.amazon.com.br/dp/B0GPMCKRF2?tag=tcgpricehunter-20"
   }
  ]
 }

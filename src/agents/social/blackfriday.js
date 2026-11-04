@@ -99,7 +99,7 @@ export function candidatoCampanha(o, capturedAt, { productId = null, ref = null,
     item: { ofertaId, texto: `${topo}${texto}\n\n${extra}`, canal: 'whatsapp' },
     oferta: { id: ofertaId, productId, storeId: 'mercadolivre', firstSeen: null },
     foto: typeof o.foto === 'string' && IMG.test(o.foto) ? o.foto : null, itemMl: o.item, tema: o.blackFriday === true ? 'blackfriday' : null,
-    parseMode, afiliado: true, loja: 'mercadolivre', campanha: 'black-friday', blackFriday: o.blackFriday === true,
+    parseMode, afiliado: true, loja: 'mercadolivre', campanha: 'black-friday', blackFriday: o.blackFriday === true, preco: o.preco,
   };
 }
 
