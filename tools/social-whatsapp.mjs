@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { candidatos, gerarCard } from './social-telegram-piloto.mjs';
 import { loadAffiliates, mlListingId } from '../api/_lib/affiliates.mjs';
 import { ofertasExternas, candidatoExterno, intercalar, lerLeituras } from '../src/agents/social/externas.js';
-import { focoEconomia } from '../src/agents/social/economia.js';
+import { focoEconomia, ordenarPorEconomia } from '../src/agents/social/economia.js';
 import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
 import { candidatosCampanha, fotoDoAnuncio, lerCampanha } from '../src/agents/social/blackfriday.js';
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
@@ -68,7 +68,8 @@ function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shope
 /** Fila do WhatsApp com o foco em economia (03/11/2026, src/agents/social/economia.js): só blister duplo/triplo/quádruplo
  *  até R$ 100 (SOCIAL_PRECO_MAX) e pelo menos 5% abaixo do sugerido Copag ou da média do mercado (SOCIAL_ECONOMIA_MIN),
  *  com "De X por Y"; outro produto só com 20%+ de desconto e até R$ 250 (SOCIAL_DESCONTO_FORTE, SOCIAL_PRECO_MAX_FORTE).
- *  Black Friday continua na frente. SOCIAL_FOCO=0 volta à fila completa. */
+ *  Só link de afiliado do dono (ML, Shopee, Amazon). Ordem (04/11): Black Friday primeiro, depois maior desconto e maior
+ *  economia em reais (outra loja só passa na frente com desconto a até 5 pontos do melhor), baralho no fim. SOCIAL_FOCO=0 volta à fila completa. */
 export function candidatosWhatsApp(state, opts = {}) {
   const lista = filaWhatsApp(state, opts); const env = opts.env || {};
   if (env.SOCIAL_FOCO === '0') return lista;
@@ -76,7 +77,7 @@ export function candidatosWhatsApp(state, opts = {}) {
   const produtos = new Map((state?.products || []).map((p) => [p.id, p]));
   const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, 100), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, 0.05),
     descontoForte: num(env.SOCIAL_DESCONTO_FORTE, 0.2), precoMaxForte: num(env.SOCIAL_PRECO_MAX_FORTE, 250) };
-  return lista.map((c) => focoEconomia(c, cfg)).filter(Boolean);
+  return ordenarPorEconomia(lista.map((c) => focoEconomia(c, cfg)).filter(Boolean));
 }
 
 

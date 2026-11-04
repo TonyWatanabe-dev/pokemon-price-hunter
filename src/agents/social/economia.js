@@ -39,5 +39,28 @@ export function focoEconomia(c, { produtos, precoMax = 100, economiaMin = 0.05, 
   const de = `\nDe <b>${esc(reais(r.ref))}</b> (${r.rotulo}) ❌`;
   const eco = `\n💰 Economia de <b>${esc(reais(r.ref - preco))}</b> (${Math.round(economia * 100)}%)`;
   texto = texto.replace(/(\nPor <b>[^\n]*)/, `${de}$1${eco}`);
-  return { ...c, item: { ...c.item, texto }, economia };
+  return { ...c, item: { ...c.item, texto }, economia, economiaReais: r.ref - preco };
+}
+
+const lojaDe = (c) => c.loja || c.oferta?.storeId || '';
+/** Ordem da fila (04/11/2026: "privilegiando os com mais desconto e melhor valor", nos 3 marketplaces):
+ *  Black Friday primeiro; dentro de cada bloco, maior desconto (%) e, no empate, maior economia em reais. Para variar
+ *  de loja, a oferta de outra loja passa na frente só se o desconto dela estiver a até `folga` (5 pontos) do melhor:
+ *  desconto alto nunca perde a vez para um fraco só para revezar. */
+export function ordenarPorEconomia(lista, { folga = 0.05 } = {}) {
+  const ordem = (a, b) => (b.economia ?? 0) - (a.economia ?? 0) || (b.economiaReais ?? 0) - (a.economiaReais ?? 0);
+  const intercala = (l) => {
+    const resto = [...l].sort(ordem); const out = [];
+    while (resto.length) {
+      const ultima = out.length ? lojaDe(out.at(-1)) : null;
+      const topo = resto[0].economia ?? 0;
+      const i = lojaDe(resto[0]) === ultima ? resto.findIndex((c) => lojaDe(c) !== ultima && (c.economia ?? 0) >= topo - folga) : 0;
+      out.push(resto.splice(i < 0 ? 0 : i, 1)[0]);
+    }
+    return out;
+  };
+  // 04/11/2026 ("melhor dar preferência para blister, ETBs e etc do que baralho"): baralho de batalha vai para o fim de cada bloco.
+  const baralho = (c) => /-deck-/.test(c.oferta?.productId || '');
+  const bloco = (l) => [...intercala(l.filter((c) => !baralho(c))), ...intercala(l.filter(baralho))];
+  return [...bloco(lista.filter((c) => c.blackFriday)), ...bloco(lista.filter((c) => !c.blackFriday))];
 }
