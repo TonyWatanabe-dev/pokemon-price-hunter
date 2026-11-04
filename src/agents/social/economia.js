@@ -28,7 +28,11 @@ export function focoEconomia(c, { produtos, precoMax = 100, economiaMin = 0.05 }
   const r = referencia(produtos?.get(pid)); if (!r) return null;
   const economia = 1 - preco / r.ref; if (economia < economiaMin) return null;
   let texto = String(c.item?.texto ?? '');
-  if (!/\nDe <b>/.test(texto)) texto = texto.replace(/\nPor <b>/, `\nDe <b>${esc(reais(r.ref))}</b> (${r.rotulo}) ❌\nPor <b>`);
-  if (!texto.includes('💰')) texto = texto.replace(/(\nPor <b>[^\n]*)/, `$1\n💰 Economia de <b>${esc(reais(r.ref - preco))}</b> (${Math.round(economia * 100)}%)`);
+  if (!/\nPor <b>/.test(texto)) return null;                       // sem a linha "Por": não há como montar o "De X por Y"
+  // O "De" do vendedor (listPrice) e a linha 💰 de outra base (campanha) saem: fica uma referência só, a do foco.
+  texto = texto.replace(/\nDe <b>[^\n]*/g, '').replace(/\n💰[^\n]*/g, '').replace(/\n{3,}/g, '\n\n');
+  const de = `\nDe <b>${esc(reais(r.ref))}</b> (${r.rotulo}) ❌`;
+  const eco = `\n💰 Economia de <b>${esc(reais(r.ref - preco))}</b> (${Math.round(economia * 100)}%)`;
+  texto = texto.replace(/(\nPor <b>[^\n]*)/, `${de}$1${eco}`);
   return { ...c, item: { ...c.item, texto }, economia };
 }

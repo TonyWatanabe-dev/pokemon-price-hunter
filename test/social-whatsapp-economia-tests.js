@@ -40,6 +40,17 @@ t('legenda: "De X (rótulo) ❌", "Por" e a economia em reais e %', () => {
   assert.match(m, /De \*R\$ 45,00\* \(média do mercado\) ❌/);
 });
 
+t('revisão: "De" do vendedor e 💰 de outra base são trocados pela referência do foco; sem "Por" sai da fila', () => {
+  const comDe = { item: { ofertaId: 'x', texto: montarLegenda({ titulo: 'T', atual: 39.9, anterior: 99.9, loja: 'Mercado Livre', link: 'https://meli.la/x' }).texto }, oferta: { productId: 'me04-blister4', price: 39.9 } };
+  const w = legendaWhatsApp(focoEconomia(comDe, { produtos }).item.texto);
+  assert.doesNotMatch(w, /99,90/); assert.equal((w.match(/^De /gm) || []).length, 1);
+  assert.match(w, /De \*R\$ 55,99\* \(sugerido Copag\) ❌\nPor \*R\$ 39,90\* ✅\n💰 Economia de \*R\$ 16,09\* \(29%\)/);
+  const camp = { item: { ofertaId: 'y', texto: `${montarLegenda({ titulo: 'T', atual: 39.9, loja: 'Mercado Livre', link: 'https://meli.la/x' }).texto}\n\n💰 Abaixo do menor preço das outras lojas (R$ 45,00)\n🕒 Preço lido em 03/11` }, preco: 39.9, oferta: { productId: 'me04-blister4' } };
+  const wc = legendaWhatsApp(focoEconomia(camp, { produtos }).item.texto);
+  assert.equal((wc.match(/💰/g) || []).length, 1); assert.match(wc, /💰 Economia de \*R\$ 16,09\* \(29%\)/); assert.match(wc, /🕒 Preço lido em 03\/11/);
+  assert.equal(focoEconomia({ item: { texto: 'sem preço' }, oferta: { productId: 'me04-blister4', price: 39.9 } }, { produtos }), null);
+});
+
 t('fila: aplica o foco por padrão; SOCIAL_FOCO=0 volta à fila completa; teto e economia ajustáveis', () => {
   const agora = Date.parse('2026-11-03T15:00:00Z'); const iso = new Date(agora).toISOString();
   const of = (id, pid, price, discount, url) => ({ id, productId: pid, storeId: 'mercadolivre', storeName: 'Mercado Livre', url, image: 'https://i/x.jpg', title: `ML ${pid}`, price, total: price,
