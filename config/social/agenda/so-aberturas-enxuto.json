@@ -1,0 +1,617 @@
+{
+ "semana": "Só aberturas (04/11): corta posts de agenda e preenche com vídeos de 1 pack",
+ "pasta": "assets/social/agenda/videos",
+ "cancelar": [
+  {
+   "quando": "2026-11-05T11:00",
+   "plataforma": "tiktok",
+   "trecho": "É amanhã: Reinado Delta cheg",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-05T12:00",
+   "plataforma": "instagram",
+   "trecho": "Reinado Delta chega sexta, 6",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-05T12:00",
+   "plataforma": "youtube",
+   "trecho": "É amanhã: Reinado Delta cheg",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "instagram",
+   "trecho": "Essa oferta vale a pena? O T",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "tiktok",
+   "trecho": "essa oferta vale a pena? not",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-05T19:00",
+   "plataforma": "youtube",
+   "trecho": "Essa oferta vale a pena? O T",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "plataforma": "instagram",
+   "trecho": "Saiu hoje: Reinado Delta, a ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Reinado Delta saiu hoje. lan",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-06T19:00",
+   "plataforma": "youtube",
+   "trecho": "Saiu hoje: Reinado Delta, a ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 30th Anniversary double b",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 30th Anniversary double b",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-07T11:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 30th Anniversary double b",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-09T11:00",
+   "plataforma": "tiktok",
+   "trecho": "Quiz: adivinha o artista pel",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-09T12:00",
+   "plataforma": "instagram",
+   "trecho": "Quiz: adivinha o artista pel",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-09T12:00",
+   "plataforma": "youtube",
+   "trecho": "Quiz: adivinha o artista pel",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-11T11:00",
+   "plataforma": "tiktok",
+   "trecho": "As 5 chase da Celebração de ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-11T12:00",
+   "plataforma": "instagram",
+   "trecho": "As 5 cartas mais raras da Ce",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-11T12:00",
+   "plataforma": "youtube",
+   "trecho": "As 5 chase da Celebração de ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Two 30th Anniversary doub",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Two 30th Anniversary doub",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-11T19:00",
+   "plataforma": "youtube",
+   "trecho": "🇺🇸 Two 30th Anniversary doub",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-12T12:00",
+   "plataforma": "instagram",
+   "trecho": "Black Friday chegando e com ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-12T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Alerta de golpe: 5 sinais de",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-12T19:00",
+   "plataforma": "youtube",
+   "trecho": "Alerta de golpe: 5 sinais de",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-13T12:00",
+   "plataforma": "instagram",
+   "trecho": "Black Friday é 27/11. 3 dica",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-13T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Esquenta Black Friday: como ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-13T19:00",
+   "plataforma": "youtube",
+   "trecho": "Esquenta Black Friday: como ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "instagram",
+   "trecho": "Cansou de ficar de olho no p",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "tiktok",
+   "trecho": "cansou de ficar de olho no p",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-14T19:00",
+   "plataforma": "youtube",
+   "trecho": "Cansou de ficar de olho no p",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-18T12:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Top hits from one Dark bo",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-21T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Last pack of the Mega Dra",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-21T12:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Top hits from 48 Phantasm",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-24T12:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Before Black Friday: 3 ch",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-27T12:00",
+   "plataforma": "instagram",
+   "trecho": "🇺🇸 Booster box or blisters? ",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-27T19:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Black Friday: the same bo",
+   "motivo": "só aberturas"
+  },
+  {
+   "quando": "2026-11-29T11:00",
+   "plataforma": "tiktok",
+   "trecho": "🇺🇸 Stop hunting prices. Hunt",
+   "motivo": "só aberturas"
+  }
+ ],
+ "itens": [
+  {
+   "id": "sp-zapdos-in",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_zapdos.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Zapdos illustration rare ⚡\n\nUm booster da Celebração de 30 Anos (R$ 47,40) e veio o Zapdos Ilustração Rara: R$ 60 na média da Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_zapdos.jpg",
+   "capaMs": 22800
+  },
+  {
+   "id": "sp-zapdos-ti",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_zapdos.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Zapdos illustration rare ⚡\n\nUm booster da Celebração de 30 Anos (R$ 47,40) e veio o Zapdos Ilustração Rara: R$ 60 na média da Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_zapdos.jpg",
+   "capaMs": 22800
+  },
+  {
+   "id": "sp-zapdos-yo",
+   "quando": "2026-11-05T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_zapdos.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Zapdos illustration rare ⚡\n\nUm booster da Celebração de 30 Anos (R$ 47,40) e veio o Zapdos Ilustração Rara: R$ 60 na média da Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_zapdos.jpg",
+   "capaMs": 22800,
+   "titulo": "Booster 30 Anos: saiu Zapdos IR | 30th Anniversary booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-wailord-in",
+   "quando": "2026-11-06T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_wailord.mp4",
+   "legenda": "🇺🇸 One Dark booster: Wailord ex Ultra Rare 🐋\n\nUm booster da Escuridão Absoluta e veio o Wailord ex Rara Ultra: R$ 17,89 na Liga, num pack de R$ 9,72. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_wailord.jpg",
+   "capaMs": 10300
+  },
+  {
+   "id": "sp-wailord-ti",
+   "quando": "2026-11-06T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_wailord.mp4",
+   "legenda": "🇺🇸 One Dark booster: Wailord ex Ultra Rare 🐋\n\nUm booster da Escuridão Absoluta e veio o Wailord ex Rara Ultra: R$ 17,89 na Liga, num pack de R$ 9,72. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_wailord.jpg",
+   "capaMs": 10300
+  },
+  {
+   "id": "sp-wailord-yo",
+   "quando": "2026-11-06T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_wailord.mp4",
+   "legenda": "🇺🇸 One Dark booster: Wailord ex Ultra Rare 🐋\n\nUm booster da Escuridão Absoluta e veio o Wailord ex Rara Ultra: R$ 17,89 na Liga, num pack de R$ 9,72. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_wailord.jpg",
+   "capaMs": 10300,
+   "titulo": "Escuridão Absoluta: saiu Wailord ex | Dark booster opening",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-pikaclass-in",
+   "quando": "2026-11-07T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaclass.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: classic Pikachu! 💛\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu clássico das Cartas Clássicas: R$ 198,17 na média da Liga 😳 Valeu a pena?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachu",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaclass.jpg",
+   "capaMs": 19600
+  },
+  {
+   "id": "sp-pikaclass-ti",
+   "quando": "2026-11-07T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaclass.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: classic Pikachu! 💛\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu clássico das Cartas Clássicas: R$ 198,17 na média da Liga 😳 Valeu a pena?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachu",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaclass.jpg",
+   "capaMs": 19600
+  },
+  {
+   "id": "sp-pikaclass-yo",
+   "quando": "2026-11-07T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaclass.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: classic Pikachu! 💛\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu clássico das Cartas Clássicas: R$ 198,17 na média da Liga 😳 Valeu a pena?\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachu",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaclass.jpg",
+   "capaMs": 19600,
+   "titulo": "Booster 30 Anos: saiu Pikachu clássico | 30th Anniversary booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-excadrill-in",
+   "quando": "2026-11-11T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_excadrill.mp4",
+   "legenda": "🇺🇸 One Dark booster: Mega Excadrill ex\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Mega Excadrill ex: R$ 10,69 na Liga. Pagou o pack 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_excadrill.jpg",
+   "capaMs": 11300
+  },
+  {
+   "id": "sp-excadrill-ti",
+   "quando": "2026-11-11T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_excadrill.mp4",
+   "legenda": "🇺🇸 One Dark booster: Mega Excadrill ex\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Mega Excadrill ex: R$ 10,69 na Liga. Pagou o pack 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_excadrill.jpg",
+   "capaMs": 11300
+  },
+  {
+   "id": "sp-excadrill-yo",
+   "quando": "2026-11-11T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_excadrill.mp4",
+   "legenda": "🇺🇸 One Dark booster: Mega Excadrill ex\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Mega Excadrill ex: R$ 10,69 na Liga. Pagou o pack 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_excadrill.jpg",
+   "capaMs": 11300,
+   "titulo": "Escuridão Absoluta: saiu Mega Excadrill ex | Dark booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-pikaex-in",
+   "quando": "2026-11-12T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaex.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Pikachu ex\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu ex: R$ 16,78 na Liga. Valeu a pena ou não? 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachu",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaex.jpg",
+   "capaMs": 20800
+  },
+  {
+   "id": "sp-pikaex-ti",
+   "quando": "2026-11-12T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaex.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Pikachu ex\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu ex: R$ 16,78 na Liga. Valeu a pena ou não? 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachu",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaex.jpg",
+   "capaMs": 20800
+  },
+  {
+   "id": "sp-pikaex-yo",
+   "quando": "2026-11-12T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaex.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Pikachu ex\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu ex: R$ 16,78 na Liga. Valeu a pena ou não? 👇\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachu",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaex.jpg",
+   "capaMs": 20800,
+   "titulo": "Booster 30 Anos: saiu Pikachu ex | 30th Anniversary booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-chandelure-in",
+   "quando": "2026-11-13T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_chandelure.mp4",
+   "legenda": "🇺🇸 One Dark booster: Mega Chandelure ex 👻\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Mega Chandelure ex: R$ 8,75 na Liga. Quase pagou 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_chandelure.jpg",
+   "capaMs": 10800
+  },
+  {
+   "id": "sp-chandelure-ti",
+   "quando": "2026-11-13T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_chandelure.mp4",
+   "legenda": "🇺🇸 One Dark booster: Mega Chandelure ex 👻\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Mega Chandelure ex: R$ 8,75 na Liga. Quase pagou 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_chandelure.jpg",
+   "capaMs": 10800
+  },
+  {
+   "id": "sp-chandelure-yo",
+   "quando": "2026-11-13T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_chandelure.mp4",
+   "legenda": "🇺🇸 One Dark booster: Mega Chandelure ex 👻\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Mega Chandelure ex: R$ 8,75 na Liga. Quase pagou 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_chandelure.jpg",
+   "capaMs": 10800,
+   "titulo": "Escuridão Absoluta: saiu Mega Chandelure ex | Dark booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-gholdengo-in",
+   "quando": "2026-11-14T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_gholdengo.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Gholdengo illustration rare 🪙\n\nUm booster da 30 Anos (R$ 47,40) e veio o Gholdengo Ilustração Rara: R$ 20,66 na Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_gholdengo.jpg",
+   "capaMs": 15300
+  },
+  {
+   "id": "sp-gholdengo-ti",
+   "quando": "2026-11-14T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_gholdengo.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Gholdengo illustration rare 🪙\n\nUm booster da 30 Anos (R$ 47,40) e veio o Gholdengo Ilustração Rara: R$ 20,66 na Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_gholdengo.jpg",
+   "capaMs": 15300
+  },
+  {
+   "id": "sp-gholdengo-yo",
+   "quando": "2026-11-14T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_gholdengo.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Gholdengo illustration rare 🪙\n\nUm booster da 30 Anos (R$ 47,40) e veio o Gholdengo Ilustração Rara: R$ 20,66 na Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_gholdengo.jpg",
+   "capaMs": 15300,
+   "titulo": "Booster 30 Anos: saiu Gholdengo IR | 30th Anniversary booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-mismagius-in",
+   "quando": "2026-11-21T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_mismagius.mp4",
+   "legenda": "🇺🇸 One Phantasmal Flames blister: Mismagius ex 👻\n\nUm blister do Fogo Fantasmagórico (R$ 6,75) e veio o Mismagius ex: R$ 5,99 na Liga. Quase 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #fogofantasmagorico",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_mismagius.jpg",
+   "capaMs": 9300
+  },
+  {
+   "id": "sp-mismagius-ti",
+   "quando": "2026-11-21T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_mismagius.mp4",
+   "legenda": "🇺🇸 One Phantasmal Flames blister: Mismagius ex 👻\n\nUm blister do Fogo Fantasmagórico (R$ 6,75) e veio o Mismagius ex: R$ 5,99 na Liga. Quase 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #fogofantasmagorico",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_mismagius.jpg",
+   "capaMs": 9300
+  },
+  {
+   "id": "sp-mismagius-yo",
+   "quando": "2026-11-21T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_mismagius.mp4",
+   "legenda": "🇺🇸 One Phantasmal Flames blister: Mismagius ex 👻\n\nUm blister do Fogo Fantasmagórico (R$ 6,75) e veio o Mismagius ex: R$ 5,99 na Liga. Quase 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #fogofantasmagorico",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_mismagius.jpg",
+   "capaMs": 9300,
+   "titulo": "Fogo Fantasmagórico: saiu Mismagius ex | Phantasmal Flames",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  },
+  {
+   "id": "sp-pikaire-in",
+   "quando": "2026-11-27T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaire.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Pikachu ex Special Illustration Rare! 🎉\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu ex Ilustração Rara Especial: R$ 490,14 na média da Liga 😱 Esse valeu a pena.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachuex",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaire.jpg",
+   "capaMs": 21300
+  },
+  {
+   "id": "sp-pikaire-ti",
+   "quando": "2026-11-27T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaire.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Pikachu ex Special Illustration Rare! 🎉\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu ex Ilustração Rara Especial: R$ 490,14 na média da Liga 😱 Esse valeu a pena.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachuex",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaire.jpg",
+   "capaMs": 21300
+  },
+  {
+   "id": "sp-pikaire-yo",
+   "quando": "2026-11-27T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_pikaire.mp4",
+   "legenda": "🇺🇸 30th Anniversary booster: Pikachu ex Special Illustration Rare! 🎉\n\nUm booster da 30 Anos (R$ 47,40) e veio o Pikachu ex Ilustração Rara Especial: R$ 490,14 na média da Liga 😱 Esse valeu a pena.\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #pokemon30anos #pikachuex",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_pikaire.jpg",
+   "capaMs": 21300,
+   "titulo": "Booster 30 Anos: saiu Pikachu ex IRE! | 30th Anniversary booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  }
+ ]
+}
