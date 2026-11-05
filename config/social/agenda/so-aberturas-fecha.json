@@ -1,0 +1,61 @@
+{
+ "semana": "Fecha 28/11 (IG) e 29/11 com 1 pack",
+ "pasta": "assets/social/agenda/videos",
+ "itens": [
+  {
+   "id": "sp-heracross-in",
+   "quando": "2026-11-28T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_heracross.mp4",
+   "legenda": "🇺🇸 One Phantasmal Flames blister: Mega Heracross ex\n\nUm blister do Fogo Fantasmagórico (R$ 6,75) e veio o Mega Heracross ex: R$ 5,78 na Liga. Quase 😅\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #fogofantasmagorico",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_heracross.jpg",
+   "capaMs": 5500
+  },
+  {
+   "id": "sp-rampardos-in",
+   "quando": "2026-11-29T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_rampardos.mp4",
+   "legenda": "🇺🇸 One Dark booster: Rampardos ex\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Rampardos ex: R$ 6,45 na Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_rampardos.jpg",
+   "capaMs": 7500
+  },
+  {
+   "id": "sp-rampardos-ti",
+   "quando": "2026-11-29T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_rampardos.mp4",
+   "legenda": "🇺🇸 One Dark booster: Rampardos ex\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Rampardos ex: R$ 6,45 na Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_rampardos.jpg",
+   "capaMs": 7500
+  },
+  {
+   "id": "sp-rampardos-yo",
+   "quando": "2026-11-29T11:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_s_rampardos.mp4",
+   "legenda": "🇺🇸 One Dark booster: Rampardos ex\n\nUm booster da Escuridão Absoluta (R$ 9,72) e veio o Rampardos ex: R$ 6,45 na Liga. Valeu a pena? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #escuridaoabsoluta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/S_rampardos.jpg",
+   "capaMs": 7500,
+   "titulo": "Escuridão Absoluta: saiu Rampardos ex | Dark booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "abrindo booster"
+   ]
+  }
+ ]
+}
