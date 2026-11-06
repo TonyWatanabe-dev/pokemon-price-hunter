@@ -1,6 +1,9 @@
 // Shopee e Amazon nos posts do WhatsApp (pedido do proprietário em 02/11/2026: "15 min, variando entre os 3
 // marketplaces, sempre com meus links de afiliado, as melhores promoções"). Puro: sem rede, banco ou secrets.
 //
+// Mercado Livre (06/11/2026, pedido do dono): anúncio fora do catálogo o robô não enxerga (a API do ML não abre anúncio
+// avulso de terceiros), então a planilha do dono com preço e link meli.la entra pela mesma regra das leituras manuais.
+//
 // O robô não lê Shopee nem Amazon: os preços vêm das leituras manuais com link de afiliado do dono
 // (leituras de Shopee e Amazon carregadas por api/_lib/affiliates.mjs). Por isso, diferente das ofertas do ML
 // (frescor de 30 min), aqui vale:
@@ -30,13 +33,14 @@ export function melhoresDoSite(offers) {
 }
 
 /** Leituras manuais → ofertas de promoção { loja, ofertaId, titulo, preco, precoCupom, efetivo, desconto, link, productId, capturedAt }. */
-export function ofertasExternas({ shopee = [], amazon = [], products = [], offers = [], now = Date.now(), maxHoras = 24 } = {}) {
+export function ofertasExternas({ shopee = [], amazon = [], ml = [], products = [], offers = [], now = Date.now(), maxHoras = 24 } = {}) {
   const prod = new Map((Array.isArray(products) ? products : []).map((p) => [p.id, p]));
   const site = melhoresDoSite(offers);
   const brutas = [
     ...(Array.isArray(shopee) ? shopee : []).map((x) => ({ loja: 'shopee', ofertaId: `shopee:${x.item}`, titulo: x.title, preco: pos(x.price), precoCupom: pos(x.priceCupom), link: x.url, productId: x.productId, capturedAt: x.capturedAt })),
     ...(Array.isArray(amazon) ? amazon : []).filter((x) => x?.stockNote !== 'Não disponível')
       .map((x) => ({ loja: 'amazon', ofertaId: `amazon:${x.asin}`, titulo: x.title, preco: pos(x.price), precoCupom: null, link: x.shortUrl, productId: x.productId, capturedAt: x.capturedAt })),
+    ...(Array.isArray(ml) ? ml : []).map((x) => ({ loja: 'mercadolivre', ofertaId: `mercadolivre:${x.item}`, itemMl: x.item, titulo: x.title, preco: pos(x.price), precoCupom: null, link: x.url, productId: x.productId, capturedAt: x.capturedAt })),
   ];
   const melhor = new Map();
   for (const o of brutas) {
@@ -56,16 +60,18 @@ export function ofertasExternas({ shopee = [], amazon = [], products = [], offer
 
 const SHOPEE_LINK = /^https:\/\/s\.shopee\.com\.br\/[A-Za-z0-9]+$/;
 const AMAZON_CURTO = /^https:\/\/link\.amazon\/[A-Za-z0-9]+$/;
-/** JSON das leituras (o workflow passa os caminhos) → { shopee, amazon }; só links curtos de afiliado do dono. */
-export function lerLeituras(shopeeJson, amazonJson) {
+const MELI_LINK = /^https:\/\/meli\.la\/[A-Za-z0-9]+$/;
+/** JSON das leituras (o workflow passa os caminhos) → { shopee, amazon, ml }; só links curtos de afiliado do dono. */
+export function lerLeituras(shopeeJson, amazonJson, mlJson = null) {
   const am = amazonJson?.links;
   return {
+    ml: (Array.isArray(mlJson?.ofertas) ? mlJson.ofertas : []).filter((x) => /^MLB\d+$/.test(x?.item || '') && MELI_LINK.test(x?.url || '')),
     shopee: (Array.isArray(shopeeJson?.ofertas) ? shopeeJson.ofertas : []).filter((x) => SHOPEE_LINK.test(x?.url || '')),
     amazon: (Array.isArray(am) ? am : Object.values(am && typeof am === 'object' ? am : {})).filter((x) => /^[A-Z0-9]{10}$/.test(x?.asin || '') && AMAZON_CURTO.test(x?.shortUrl || '')),
   };
 }
 
-const NOME = { shopee: 'Shopee', amazon: 'Amazon' };
+const NOME = { shopee: 'Shopee', amazon: 'Amazon', mercadolivre: 'Mercado Livre' };
 
 /** Oferta externa → candidato no formato de candidatos() (item.texto em HTML do Telegram; o WhatsApp converte). */
 export function candidatoExterno(o) {
@@ -75,7 +81,7 @@ export function candidatoExterno(o) {
     `🕒 Preço lido em ${quando(o.capturedAt)}; pode ter mudado`,
   ].filter(Boolean).join('\n');
   const t = `${texto}\n\n${extra}`;
-  return { item: { ofertaId: o.ofertaId, texto: t, canal: 'whatsapp' }, oferta: { id: o.ofertaId, productId: o.productId, storeId: o.loja, firstSeen: null }, foto: o.image, parseMode, afiliado: true, loja: o.loja, preco: o.preco };
+  return { item: { ofertaId: o.ofertaId, texto: t, canal: 'whatsapp' }, oferta: { id: o.ofertaId, productId: o.productId, storeId: o.loja, firstSeen: null }, foto: o.image, parseMode, afiliado: true, loja: o.loja, preco: o.preco, ...(o.itemMl ? { itemMl: o.itemMl } : {}) };
 }
 
 /** Intercala as listas na ordem dada (ML, Shopee, Amazon, ML, ...). Lista que acaba sai da roda. */
