@@ -1,5 +1,5 @@
 {
- "_nota": "Campanha Black Friday (pedido do dono em 02/11/2026; planilha \"Ofertas BF Pokémon TCG\" do dono de 06/11/2026). Uma linha por anúncio, com o link de afiliado do dono (ML etiqueta tcgpricehunter, Shopee Sub ID tcgpricehunter, Amazon link curto da tag tcgpricehunte-20). preco e de são os do anúncio na leitura, sem frete; o \"de\" é do próprio vendedor. productId: mapeamento manual título a título para um produto do site (null quando não há correspondência segura). capturedAt = hora em que a planilha foi enviada (as leituras são do mesmo dia). O grupo usa só as linhas com productId, fora do Pix e com preço até o sugerido Copag (ou 5% abaixo do menor preço do site); a Home mostra todas, com a data da leitura. Vale por validadeHoras (grupo e Home). Amazon só com link curto do dono: Display Escuridão Absoluta, Triplo Reinado Delta ficam de fora até ter link curto.",
+ "_nota": "Campanha Black Friday (pedido do dono em 02/11/2026; planilha \"Ofertas BF Pokémon TCG\" do dono de 06/11/2026). Uma linha por anúncio, com o link de afiliado do dono (ML etiqueta tcgpricehunter, Shopee Sub ID tcgpricehunter, Amazon link curto da tag tcgpricehunte-20). preco e de são os do anúncio na leitura, sem frete; o \"de\" é do próprio vendedor. productId: mapeamento manual título a título para um produto do site (null quando não há correspondência segura). capturedAt = hora em que a planilha foi enviada (as leituras são do mesmo dia). O grupo usa só as linhas com productId, fora do Pix e com preço até o sugerido Copag (ou 5% abaixo do menor preço do site); a Home mostra todas, com a data da leitura. Vale por validadeHoras (grupo e Home). Amazon só com link curto do dono: Display Escuridão Absoluta, Triplo Reinado Delta ficam de fora até ter link curto. imagem: a foto do produto que o site já usa (state.json, convertida para https); null quando não há produto do site.",
  "capturedAt": "2026-11-06T22:16:00Z",
  "validadeHoras": 48,
  "ofertas": [
@@ -14,7 +14,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": "me05-blister3"
+   "productId": "me05-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167105/Pokemon-TCG-Mega-Evolution—Pitch-Black---3pk-Blister---Front_PTBR.png?v=639198193633070000"
   },
   {
    "loja": "mercadolivre",
@@ -26,7 +27,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": "me05-blister4"
+   "productId": "me05-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000"
   },
   {
    "loja": "mercadolivre",
@@ -39,7 +41,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me04-blister4"
+   "productId": "me04-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166978/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Four-Booster-Blister---Front_PTBR.png?v=639149874808400000"
   },
   {
    "loja": "mercadolivre",
@@ -52,7 +55,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me04-blister3"
+   "productId": "me04-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166976/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Three-Booster-Blister---Front_PTBR.png?v=639149875329900000"
   },
   {
    "loja": "mercadolivre",
@@ -65,7 +69,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me04-blister1"
+   "productId": "me04-blister1",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166968/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Sleeved-Booster---Mega-Pyroar_PTBR.png?v=639149876472300000"
   },
   {
    "loja": "mercadolivre",
@@ -77,7 +82,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me05-booster"
+   "productId": "me05-booster",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/10103907/17830159580475.jpg?v=639186821615570000"
   },
   {
    "loja": "mercadolivre",
@@ -90,7 +96,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me03-booster"
+   "productId": "me03-booster",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/10162019/17875927920574.jpg?v=639232591744500000"
   },
   {
    "loja": "mercadolivre",
@@ -102,7 +109,8 @@
    "pix": true,
    "blackFriday": true,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "mercadolivre",
@@ -115,7 +123,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": "me05-colecao_ex-mega-greninja"
+   "productId": "me05-colecao_ex-mega-greninja",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167080/Pokemon-TCG---Mega-Greninja-ex-Premium-Collection---Left_PTBR.png?v=639192831236700000"
   },
   {
    "loja": "mercadolivre",
@@ -127,7 +136,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "mercadolivre",
@@ -139,7 +149,8 @@
    "pix": true,
    "blackFriday": false,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "mercadolivre",
@@ -151,7 +162,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": "me03-desafio"
+   "productId": "me03-desafio",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9885301/17762813782678.jpg?v=639119236483670000"
   },
   {
    "loja": "mercadolivre",
@@ -164,7 +176,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": "Cupom aplicado no anúncio",
-   "productId": "me02-desafio"
+   "productId": "me02-desafio",
+   "imagem": "https://acdn-us.mitiendanube.com/stores/001/735/433/products/aa8cdbd0acbbd4949531b160345fff53-2c6a4ef3ba3745652317654449535100-640-0.webp"
   },
   {
    "loja": "mercadolivre",
@@ -177,7 +190,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me05-etb"
+   "productId": "me05-etb",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167093/Pokemon-TCG-Mega-Evolution—Pitch-Black---Advanced-Trainer-Box---Left_PTBR--1-.png?v=639198192827400000"
   },
   {
    "loja": "mercadolivre",
@@ -190,7 +204,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me03-etb"
+   "productId": "me03-etb",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9865077/17756099032823.jpg?v=639112326558070000"
   },
   {
    "loja": "mercadolivre",
@@ -202,7 +217,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": "c30-etb"
+   "productId": "c30-etb",
+   "imagem": "https://tcgpricehunter.com.br/assets/web/produto-c30-etb-v1.webp"
   },
   {
    "loja": "mercadolivre",
@@ -215,7 +231,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": "Oferta relâmpago até 07/11 02h59",
-   "productId": "me04-combo18"
+   "productId": "me04-combo18",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9981857/17789488950396.jpg?v=639146022567730000"
   },
   {
    "loja": "mercadolivre",
@@ -228,7 +245,8 @@
    "pix": true,
    "blackFriday": false,
    "obs": null,
-   "productId": "me04-box36"
+   "productId": "me04-box36",
+   "imagem": "https://acdn-us.mitiendanube.com/stores/005/656/297/products/bb-pt-af6d262fda7485000417789407906254-480-0.webp"
   },
   {
    "loja": "mercadolivre",
@@ -241,7 +259,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me05-box36"
+   "productId": "me05-box36",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167097/Pokemon-TCG-Mega-Evolution—Pitch-Black---Booster-Display---Left_PTBR.png?v=639198193009500000"
   },
   {
    "loja": "mercadolivre",
@@ -253,7 +272,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "mercadolivre",
@@ -265,7 +285,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "mercadolivre",
@@ -278,7 +299,8 @@
    "pix": false,
    "blackFriday": true,
    "obs": null,
-   "productId": "me05-colecao_ex-mega-greninja"
+   "productId": "me05-colecao_ex-mega-greninja",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167080/Pokemon-TCG---Mega-Greninja-ex-Premium-Collection---Left_PTBR.png?v=639192831236700000"
   },
   {
    "loja": "shopee",
@@ -290,7 +312,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me05-blister3"
+   "productId": "me05-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167105/Pokemon-TCG-Mega-Evolution—Pitch-Black---3pk-Blister---Front_PTBR.png?v=639198193633070000"
   },
   {
    "loja": "shopee",
@@ -302,7 +325,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "shopee",
@@ -314,7 +338,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me05-blister4"
+   "productId": "me05-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000"
   },
   {
    "loja": "shopee",
@@ -326,7 +351,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me01-blister4"
+   "productId": "me01-blister4",
+   "imagem": "https://cdn.awsli.com.br/800x800/2749/2749010/produto/370597262/d68be63333412275e03ddf7f64d5d669-pzx1x7e6l5.jpg"
   },
   {
    "loja": "shopee",
@@ -338,7 +364,8 @@
    "pix": true,
    "blackFriday": false,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "shopee",
@@ -350,7 +377,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": null
+   "productId": null,
+   "imagem": null
   },
   {
    "loja": "shopee",
@@ -362,7 +390,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": "Cupom da loja (R$ 5/R$ 10) já no preço; R$ 439,99 sem cupom",
-   "productId": "me05-box36"
+   "productId": "me05-box36",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167097/Pokemon-TCG-Mega-Evolution—Pitch-Black---Booster-Display---Left_PTBR.png?v=639198193009500000"
   },
   {
    "loja": "amazon",
@@ -375,7 +404,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "avulsos-colecao_especial-ferramentas-de-treinador-fezandipiti"
+   "productId": "avulsos-colecao_especial-ferramentas-de-treinador-fezandipiti",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9477608/17641922275378.jpg?v=638998277260900000"
   },
   {
    "loja": "amazon",
@@ -388,7 +418,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me04-box36"
+   "productId": "me04-box36",
+   "imagem": "https://acdn-us.mitiendanube.com/stores/005/656/297/products/bb-pt-af6d262fda7485000417789407906254-480-0.webp"
   },
   {
    "loja": "amazon",
@@ -401,7 +432,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me05-blister4"
+   "productId": "me05-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000"
   },
   {
    "loja": "amazon",
@@ -414,7 +446,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "me04-blister3"
+   "productId": "me04-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166976/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Three-Booster-Blister---Front_PTBR.png?v=639149875329900000"
   },
   {
    "loja": "amazon",
@@ -427,7 +460,8 @@
    "pix": false,
    "blackFriday": false,
    "obs": null,
-   "productId": "avulsos-colecao_ilustracao-parceiro-inicial-serie-3"
+   "productId": "avulsos-colecao_ilustracao-parceiro-inicial-serie-3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167154/Pokemon-TCG---First-Partner-Illustration-Collection—Series-3_PTBR.png?v=639201668237700000"
   }
  ]
 }

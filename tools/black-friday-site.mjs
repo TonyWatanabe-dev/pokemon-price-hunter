@@ -33,7 +33,8 @@ export function dadosSecao(campanha) {
     .filter((o) => o && NOME[o.loja] && LINKS[o.loja].test(o.link) && typeof o.titulo === 'string' && o.titulo.trim() && o.preco > 0)
     .map((o) => {
       const de = typeof o.de === 'number' && o.de > o.preco ? o.de : null;
-      return { l: o.loja, t: o.titulo.trim(), p: o.preco, d: de, x: de ? Math.round((1 - o.preco / de) * 100) : 0, pix: o.pix === true, bf: o.blackFriday === true, obs: o.obs || null, u: o.link };
+      const i = typeof o.imagem === 'string' && /^https:\/\/[^\s"'<>]+$/.test(o.imagem) ? o.imagem : null;
+      return { l: o.loja, t: o.titulo.trim(), i, k: typeof o.tipo === 'string' && o.tipo.trim() ? o.tipo.trim() : 'Selado', p: o.preco, d: de, x: de ? Math.round((1 - o.preco / de) * 100) : 0, pix: o.pix === true, bf: o.blackFriday === true, obs: o.obs || null, u: o.link };
     })
     .sort((a, b) => (b.bf - a.bf) || (b.x - a.x) || (a.p - b.p));
   return { em: t, ate: t + horas * 3600e3, ofertas };
@@ -47,6 +48,7 @@ export function render(d, now) {
   const lojas = { mercadolivre: 'Mercado Livre', shopee: 'Shopee', amazon: 'Amazon' };
   const quando = new Date(d.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' às');
   const card = (o, i) => `<li class="bf-c${i >= 10 ? ' bf-mais' : i >= 4 ? ' bf-m' : ''}"><div class="bf-top"><span class="bf-loja bf-${o.l}">${lojas[o.l]}</span>${o.bf ? '<span class="bf-selo">Black Friday</span>' : ''}${o.x >= 5 ? `<span class="bf-x">-${o.x}%</span>` : ''}</div>`
+    + `<div class="bf-f">${o.i ? `<img src="${esc(o.i)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="160" height="160">` : `<span class="bf-sf">${esc(o.k)}</span>`}</div>`
     + `<p class="bf-t">${esc(o.t)}</p><p class="bf-p">${o.d ? `<s>${rs(o.d)}</s> ` : ''}<b>${rs(o.p)}</b>${o.pix ? ' <small>no Pix</small>' : ''}</p>`
     + `${o.obs ? `<p class="bf-o">${esc(o.obs)}</p>` : ''}<a class="bf-b" href="${esc(o.u)}" target="_blank" rel="sponsored nofollow noopener">Ver na loja</a></li>`;
   const mais = d.ofertas.length > 10 ? `<button class="bf-ver" type="button" aria-expanded="false">Ver as ${d.ofertas.length} ofertas</button>` : '';
@@ -62,6 +64,8 @@ const CSS = `.bf{margin:28px 0;border-radius:20px;background:#0B0B0F;color:#F4F4
 .bf-g{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .bf-c{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:14px;background:#17171F;border:1px solid rgb(255 255 255/.08)}
 .bf.bf-fechado .bf-mais{display:none}@media(max-width:600px){.bf.bf-fechado .bf-m{display:none}}
+.bf-f{display:grid;place-items:center;height:150px;border-radius:10px;background:#fff;overflow:hidden}.bf-f img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;padding:8px;box-sizing:border-box}
+.bf-sf{color:#556079;font-weight:800;font-size:.9rem;text-transform:uppercase;letter-spacing:.06em}@media(max-width:600px){.bf-f{height:180px}}
 .bf-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.bf-loja,.bf-selo,.bf-x{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px}
 .bf-loja{background:rgb(255 255 255/.1);color:#fff}.bf-mercadolivre{background:#FFE600;color:#2D3277}.bf-shopee{background:#EE4D2D;color:#fff}.bf-amazon{background:#232F3E;color:#FF9900}
 .bf-selo{background:#fff;color:#0B0B0F}.bf-x{background:#4CD49A;color:#0B2A1E;margin-left:auto}

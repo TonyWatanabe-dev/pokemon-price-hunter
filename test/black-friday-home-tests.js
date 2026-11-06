@@ -32,6 +32,9 @@ t('render: validade, escape, Pix, frete e aviso de afiliado', () => {
   assert.match(h, /Cupom &quot;R\$ 5&quot;/); assert.match(h, /Preço sem frete/); assert.match(h, /lidos em 06\/11 às 19:00/);
   assert.match(h, /rel="sponsored nofollow noopener"/); assert.match(h, /A comissão não muda a ordem nem o ranking/);
   assert.ok(!/R\$ 0,00/.test(h));
+  const f = render(dadosSecao(camp([o({ imagem: 'https://img.x/a.jpg' }), o({ titulo: 'B', tipo: 'ETB', imagem: 'http://inseguro/x.jpg' }), o({ titulo: 'C', imagem: 'https://x/"onerror=1' })])), EM + 3600e3);
+  assert.equal((f.match(/<img /g) || []).length, 1, 'só imagem https válida'); assert.match(f, /<img src="https:\/\/img\.x\/a\.jpg" alt="" loading="lazy"/);
+  assert.match(f, /<span class="bf-sf">ETB<\/span>/, 'sem foto: o tipo no lugar');
 });
 
 t('asset publicado bate com o config e o index aponta para ele', () => {
