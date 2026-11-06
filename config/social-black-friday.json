@@ -1,2356 +1,467 @@
 {
- "_nota": "Campanha Black Friday nos grupos (pedido do dono em 02/11/2026). Busca \"pokémon tcg\" no Mercado Livre lida em 02/11/2026: anúncios com selo BLACK FRIDAY ou desconto de 20% ou mais. Preço e desconto são os do anúncio na leitura (o desconto é sobre o \"de\" do próprio vendedor). link = afiliado do dono (etiqueta tcgpricehunter), gerado a partir do anúncio MLB-<id>. Vale por validadeHoras (48 h) a partir de capturedAt; depois sai da fila até nova leitura. foto = imagem do anúncio/produto no CDN do ML, lida na mesma data (o ML não entrega a página do anúncio ao runner do GitHub).",
- "capturedAt": "2026-11-02T19:00:00.000Z",
+ "_nota": "Campanha Black Friday (pedido do dono em 02/11/2026; planilha \"Ofertas BF Pokémon TCG\" do dono de 06/11/2026). Uma linha por anúncio, com o link de afiliado do dono (ML etiqueta tcgpricehunter, Shopee Sub ID tcgpricehunter, Amazon link curto da tag tcgpricehunte-20). preco e de são os do anúncio na leitura, sem frete; o \"de\" é do próprio vendedor. productId: mapeamento manual título a título para um produto do site (null quando não há correspondência segura). capturedAt = hora em que a planilha foi enviada (as leituras são do mesmo dia). O grupo usa só as linhas com productId, fora do Pix e com preço até o sugerido Copag (ou 5% abaixo do menor preço do site); a Home mostra todas, com a data da leitura. Vale por validadeHoras (grupo e Home). Amazon só com link curto do dono: Display Escuridão Absoluta, Triplo Reinado Delta ficam de fora até ter link curto. imagem: a foto do produto que o site já usa (state.json, convertida para https); null quando não há produto do site.",
+ "capturedAt": "2026-11-06T22:16:00Z",
  "validadeHoras": 48,
  "ofertas": [
   {
-   "item": "MLB7705948164",
-   "titulo": "Celebração Do 30º Aniversário Do Pokémon Tcg Em Booster 6car",
-   "preco": 65.56,
-   "desconto": 56,
+   "loja": "mercadolivre",
+   "item": "MLB7077055152",
+   "link": "https://meli.la/2LjTQXH",
+   "titulo": "Blister Triplo ME05 Escuridão Absoluta",
+   "tipo": "Blister",
+   "preco": 29.9,
+   "de": 42.99,
+   "pix": false,
    "blackFriday": true,
-   "link": "https://meli.la/1svvmf7",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_937047-CBT118381093123_092026-O.webp"
+   "obs": null,
+   "productId": "me05-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167105/Pokemon-TCG-Mega-Evolution—Pitch-Black---3pk-Blister---Front_PTBR.png?v=639198193633070000"
   },
   {
-   "item": "MLB5352495805",
-   "titulo": "Carta Pokémon Mega Excadrill Ex 065/084 Rara Dupla Copag Português",
-   "preco": 29.5,
-   "desconto": 50,
-   "blackFriday": true,
-   "link": "https://meli.la/2BQ3bHP",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_956211-MLA116834293748_092026-O.webp"
-  },
-  {
-   "item": "MLB7730343792",
-   "titulo": "Cartas Blister Pokémon Escuridão Absoluta Binacle 25un Copag",
+   "loja": "mercadolivre",
+   "link": "https://meli.la/189kPFS",
+   "titulo": "Blister Quádruplo ME05",
+   "tipo": "Blister",
    "preco": 41.48,
-   "desconto": 40,
+   "de": 69.9,
+   "pix": false,
    "blackFriday": true,
-   "link": "https://meli.la/1YiiBwB",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_935612-MLB118829895511_102026-O.webp"
+   "obs": null,
+   "productId": "me05-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000"
   },
   {
-   "item": "MLB5229721544",
-   "titulo": "Kit 18 Cartas Pokémon C/ Pikachu With Grey Felt Hat Van Gogh",
-   "preco": 112.1,
-   "desconto": 39,
-   "blackFriday": true,
-   "link": "https://meli.la/1JeN5pn",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_842585-MLB92382485163_092025-O.webp"
-  },
-  {
-   "item": "MLB5367185403",
-   "titulo": "200 Cartas Pokémon Pikachu Charmander 40 Brilhantes 4 Raras",
-   "preco": 152.0,
-   "desconto": 38,
-   "blackFriday": true,
-   "link": "https://meli.la/2rywpTG",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_984115-MLB120386348319_102026-O.webp"
-  },
-  {
-   "item": "MLB7912184598",
-   "titulo": "Toploader 25 Un Rígido Central Pokémon Tcg Magic Lorcana",
-   "preco": 78.9,
-   "desconto": 34,
-   "blackFriday": true,
-   "link": "https://meli.la/15vPeFW",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_779223-MLB115191442937_072026-O.webp"
-  },
-  {
-   "item": "MLB5179842713",
-   "titulo": "Pokémon Carta Zoroark Ex Do N Graduada Cgc 10 131/100 Japão",
-   "preco": 545.1,
-   "desconto": 31,
-   "blackFriday": true,
-   "link": "https://meli.la/1uTknrm",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_601468-MLB117094079097_092026-O.webp"
-  },
-  {
-   "item": "MLB7580581400",
-   "titulo": "Cartas Pokémon Tcg Escuridão Absoluta Colecionável Original",
-   "preco": 300.92,
-   "desconto": 30,
-   "blackFriday": true,
-   "link": "https://meli.la/2ubtpRH",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_607841-MLA117092697301_092026-O.webp"
-  },
-  {
-   "item": "MLB5236118016",
-   "titulo": "Carta Pokémon Original Gyarados Ex Ultra Rara",
-   "preco": 38.0,
-   "desconto": 30,
-   "blackFriday": true,
-   "link": "https://meli.la/2uNzwUM",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_898957-MLB91737610880_092025-O.webp"
-  },
-  {
-   "item": "MLB5519800506",
-   "titulo": "Kit 10 Charizard Todas Versões +40 Cartas Vmax Gx Shiny Ex+",
-   "preco": 105.45,
-   "desconto": 29,
-   "blackFriday": true,
-   "link": "https://meli.la/2TeyAdi",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_855426-MLB92392715487_092025-O.webp"
-  },
-  {
-   "item": "MLB5188753493",
-   "titulo": "Cartas Pokémon Escuridão Absoluta Booster Blister Copag 6 Un",
-   "preco": 24.15,
-   "desconto": 26,
-   "blackFriday": true,
-   "link": "https://meli.la/26sV8kq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_646123-MLB117205869143_092026-O.webp"
-  },
-  {
-   "item": "MLB4146488123",
-   "titulo": "Kit Arceus Dialga E Palkia +5 Cartas Pokémon Tcg Pocket",
-   "preco": 109.25,
-   "desconto": 26,
-   "blackFriday": true,
-   "link": "https://meli.la/1Lztnt8",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_845451-MLB91355616038_092025-O.webp"
-  },
-  {
-   "item": "MLB7718567068",
-   "titulo": "Carta Pokémon Pikachu Numero 18/30 Coleção 30 Anos",
-   "preco": 36.75,
-   "desconto": 25,
-   "blackFriday": true,
-   "link": "https://meli.la/1tXTbLw",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_691311-MLB116851272608_092026-O.webp"
-  },
-  {
-   "item": "MLB7717400824",
-   "titulo": "Carta Pokemon Mewex Mew Ex 066/128 Celebração 30 Anos",
-   "preco": 81.59,
-   "desconto": 25,
-   "blackFriday": true,
-   "link": "https://meli.la/1ioLmTw",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_600161-MLA118397528125_092026-O.webp"
-  },
-  {
-   "item": "MLB5386933127",
-   "titulo": "Combo De Booster Pokémon - Celebração 30 Anos Copag Português",
-   "preco": 341.24,
-   "desconto": 24,
-   "blackFriday": true,
-   "link": "https://meli.la/29W1SNm",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_930475-MLA118477811736_102026-O.webp"
-  },
-  {
-   "item": "MLB7834681418",
-   "titulo": "Pokemon Box Coleção Mega Luar Megaevolução Copag Original Pt",
-   "preco": 130.14,
-   "desconto": 23,
-   "blackFriday": true,
-   "link": "https://meli.la/2HMZSuW",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_897048-MLB118036139046_102026-O.webp"
-  },
-  {
-   "item": "MLB4573328957",
-   "titulo": "Cartas Pokémon Batalha Mewtwo Ex Equipe Rocket 60 Un Copag",
-   "preco": 129.0,
-   "desconto": 23,
-   "blackFriday": true,
-   "link": "https://meli.la/1e5WTiz",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_988080-MLB109096677557_032026-O.webp"
-  },
-  {
-   "item": "MLB6172526682",
-   "titulo": "10 Folhas Plástica P/ Pasta Fichário Coleção Álbum Pokémon",
-   "preco": 22.46,
-   "desconto": 22,
-   "blackFriday": true,
-   "link": "https://meli.la/2UjC3gp",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_664594-MLB105343509287_012026-O.webp"
-  },
-  {
-   "item": "MLB7409683054",
-   "titulo": "Carta Pokémon Mega Zeraora Ex Ultra Rara Original Japones",
-   "preco": 39.78,
-   "desconto": 22,
-   "blackFriday": true,
-   "link": "https://meli.la/1ybDVHu",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_691344-MLB116127455869_082026-O.webp"
-  },
-  {
-   "item": "MLB5236097700",
-   "titulo": "Carta Pokémon Original Squawkabilly Ex Ultra Rara",
-   "preco": 20.28,
-   "desconto": 22,
-   "blackFriday": true,
-   "link": "https://meli.la/1t6Q4ZS",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_883475-MLB81365598706_122024-O.webp"
-  },
-  {
-   "item": "MLB5236118086",
-   "titulo": "Carta Pokémon Original Glimmora Ex Ultra Rara",
-   "preco": 21.84,
-   "desconto": 22,
-   "blackFriday": true,
-   "link": "https://meli.la/2hCNSSa",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_910872-MLB81634987411_122024-O.webp"
-  },
-  {
-   "item": "MLB5236073554",
-   "titulo": "Carta Pokémon Original Metagross Vmax Ultra Rara",
-   "preco": 50.7,
-   "desconto": 22,
-   "blackFriday": true,
-   "link": "https://meli.la/1CG2egH",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_625105-MLB81365598666_122024-O.webp"
-  },
-  {
-   "item": "MLB6200304722",
-   "titulo": "Lote 20 Cartas Pokemon Brilhantes Originais Copag S/repetida",
-   "preco": 22.41,
-   "desconto": 21,
-   "blackFriday": true,
-   "link": "https://meli.la/1NB4uYy",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_714949-MLB110427293041_042026-O.webp"
-  },
-  {
-   "item": "MLB7309848092",
-   "titulo": "Box Booster Com 36 Booster De 6 Cards Pokemon Origem Perdida",
-   "preco": 1571.0,
-   "desconto": 21,
-   "blackFriday": true,
-   "link": "https://meli.la/2G5Gbyp",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_802436-MLA100031196621_122025-O.webp"
-  },
-  {
-   "item": "MLB2892846459",
-   "titulo": "Kit 50 Cartinhas Pokémon Sem Repetição Em Português Original",
-   "preco": 47.0,
-   "desconto": 20,
-   "blackFriday": true,
-   "link": "https://meli.la/2qYFe1L",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_881348-MLB52124794673_102022-O.webp"
-  },
-  {
-   "item": "MLB4019616369",
-   "titulo": "Kit 50 Cartas Pokémon Gx Vmax Tag Team Brilhantes Raras",
-   "preco": 103.55,
-   "desconto": 20,
-   "blackFriday": true,
-   "link": "https://meli.la/2iYTbYW",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_728220-MLB106668429344_022026-O.webp"
-  },
-  {
-   "item": "MLB5354950535",
-   "titulo": "Pokémon Box Coleção Mega Lucario Ex Copag",
-   "preco": 230.84,
-   "desconto": 20,
-   "blackFriday": true,
-   "link": "https://meli.la/12HVuTj",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_651723-MLB118993718269_102026-O.webp"
-  },
-  {
-   "item": "MLB2206293014",
-   "titulo": "20 Folhas Plástica P/ Pasta Fichário Álbum Pokemon Magic",
-   "preco": 39.47,
-   "desconto": 19,
-   "blackFriday": true,
-   "link": "https://meli.la/1D4vbty",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_915323-MLB118582467826_102026-O.webp"
-  },
-  {
-   "item": "MLB1126345659",
-   "titulo": "Kit 5 Cartas Pokemon Grandes Jumbo Brilhantes",
-   "preco": 79.8,
-   "desconto": 19,
-   "blackFriday": true,
-   "link": "https://meli.la/2hqofVw",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_908623-MLB85828345948_062025-O.webp"
-  },
-  {
-   "item": "MLB3440517279",
-   "titulo": "Cartas Pokémon Ex V Vmax Cromadas Copag Avulsas 10 Unidades",
-   "preco": 178.6,
-   "desconto": 19,
-   "blackFriday": true,
-   "link": "https://meli.la/1udgud8",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_912150-MLA71585770340_092023-O.webp"
-  },
-  {
-   "item": "MLB7886181864",
-   "titulo": "Kit 3 Blister Unitário Pokemon Me4 Português",
-   "preco": 41.22,
-   "desconto": 17,
-   "blackFriday": true,
-   "link": "https://meli.la/1DfHwBX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_945072-MLA119970257023_102026-O.webp"
-  },
-  {
-   "item": "MLB5440794096",
-   "titulo": "Kit 40 Cartas Pokémon C/ Charizard Pikachu Brilhantes",
-   "preco": 94.05,
-   "desconto": 17,
-   "blackFriday": true,
-   "link": "https://meli.la/2UBXpQx",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_790210-MLB93836096424_102025-O.webp"
-  },
-  {
-   "item": "MLB6174814332",
-   "titulo": "Kit Pokémon Flareon Jolteon Vaporeon +15 Cartas Copag Brinde",
-   "preco": 83.78,
-   "desconto": 16,
-   "blackFriday": true,
-   "link": "https://meli.la/13BZdDX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_944669-MLA104439912570_012026-O.webp"
-  },
-  {
-   "item": "MLB7184272340",
-   "titulo": "Carta Pokémon Mew Ex (327/190) Shiny Original Japones",
-   "preco": 461.7,
-   "desconto": 16,
-   "blackFriday": true,
-   "link": "https://meli.la/1YgbvtN",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_786679-MLB113401534778_072026-O.webp"
-  },
-  {
-   "item": "MLB5282647893",
-   "titulo": "Pokemon Celebração 30 Anos Coleção Ex Com Poster 26 Cartas",
-   "preco": 245.09,
-   "desconto": 16,
-   "blackFriday": true,
-   "link": "https://meli.la/2AYaEbQ",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_779348-MLB118123503425_092026-O.webp"
-  },
-  {
-   "item": "MLB5773343502",
-   "titulo": "Blister Quadruplo 4 Boosters Pokémon Mega Evolução - Psyduck",
-   "preco": 53.0,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/2KeWzgq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_940381-MLA100080929589_122025-O.webp"
-  },
-  {
-   "item": "MLB5366394101",
-   "titulo": "Carta Pokémon Pikachu Numero 22/30 Coleção 30 Anos",
-   "preco": 33.15,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/1vJCG7u",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_966843-MLB119103279689_102026-O.webp"
-  },
-  {
-   "item": "MLB7753719190",
-   "titulo": "Blister Triplo Pokémon + 100 Sleeve Me05 Escuridão Absoluta",
-   "preco": 69.19,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/1bDvh6D",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_835951-MLB118807661371_102026-O.webp"
-  },
-  {
-   "item": "MLB7724089960",
-   "titulo": "Carta Pokémon Fuecoco Ex Coleção 30 Anos",
-   "preco": 24.65,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/15ZyJm6",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_908050-MLB116899197934_092026-O.webp"
-  },
-  {
-   "item": "MLB4545727023",
-   "titulo": "Pokémon Cartas Colecionáveis Fezendipiti Ex Cromadas 94 Unid",
-   "preco": 229.41,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/2QGgWHN",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_843881-MLB109361887467_032026-O.webp"
-  },
-  {
-   "item": "MLB7419133266",
-   "titulo": "Carta Pokémon Lunala 25 Anos Celebraçoes Rara",
-   "preco": 20.4,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/1KXUVqi",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_940271-MLB116194054899_082026-O.webp"
-  },
-  {
-   "item": "MLB3941288613",
-   "titulo": "Carta Pokémon Original Metagross V Ultra Rara",
-   "preco": 34.85,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/2sWXH2X",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_944657-MLB81365598624_122024-O.webp"
-  },
-  {
-   "item": "MLB5236097690",
-   "titulo": "Carta Pokémon Original Celebi V Ultra Rara",
-   "preco": 45.9,
-   "desconto": 15,
-   "blackFriday": true,
-   "link": "https://meli.la/2oDvha3",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_993420-MLB81365598644_122024-O.webp"
-  },
-  {
-   "item": "MLB5435237711",
-   "titulo": "Jogo De Cartas Pokémon Tcg Desafio Estratégico Megaevolução",
-   "preco": 128.16,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/32pBteL",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_897262-MLB118248685396_102026-O.webp"
-  },
-  {
-   "item": "MLB3165537775",
-   "titulo": "Deck Pokémon Inteleon Espada E Escudo Original Copag",
-   "preco": 257.72,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/1NhxBia",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_944472-MLB53530298429_012023-O.webp"
-  },
-  {
-   "item": "MLB4889163069",
-   "titulo": "Box Cards Pokémon Mega Greninja-ex Copag Original Português",
-   "preco": 207.09,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/18eggpo",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_873501-MLB114507499559_072026-O.webp"
-  },
-  {
-   "item": "MLB7029587478",
-   "titulo": "Blister Triplo Pokémon Caos Ascendentes Charmeleon",
-   "preco": 51.51,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/2RfEZse",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_929616-MLA112537241500_062026-O.webp"
-  },
-  {
-   "item": "MLB7201391820",
-   "titulo": "Carta Pokémon Oshawott Ilustração Rara 30 Anos Pokémon",
-   "preco": 76.95,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/17orbLL",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_920051-MLB113531349346_072026-O.webp"
-  },
-  {
-   "item": "MLB5132315673",
-   "titulo": "Box Pokémon Coleção Mega Forças - Megaevolução Ex Tcg Copag",
-   "preco": 126.42,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/2do2kC3",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_736359-MLB116712095615_082026-O.webp"
-  },
-  {
-   "item": "MLB7201394894",
-   "titulo": "Carta Pokémon Snivy Ilustração Rara 30 Anos Pokémon",
-   "preco": 76.95,
-   "desconto": 14,
-   "blackFriday": true,
-   "link": "https://meli.la/1FHXhWK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_939577-MLB114803154969_072026-O.webp"
-  },
-  {
-   "item": "MLB5401489547",
-   "titulo": "Pokemon Tcg Celebração 30 Anos Sylveon Ex Box Inglês",
-   "preco": 474.33,
-   "desconto": 13,
-   "blackFriday": true,
-   "link": "https://meli.la/1Th2Gex",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_937942-MLB117875471418_102026-O.webp"
-  },
-  {
-   "item": "MLB5461206419",
-   "titulo": "Cartas Pokémon TCG Booster Coleção Escuridão Absoluta 108 Cards Copag",
-   "preco": 254.04,
-   "desconto": 13,
-   "blackFriday": true,
-   "link": "https://meli.la/2XUQuWr",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_946203-MLA114014126653_072026-O.webp"
-  },
-  {
-   "item": "MLB4842932282",
-   "titulo": "Kit 3 Cartas Pokémon Jumbo + 10 Vmax Brilhantes Pequenas",
-   "preco": 83.0,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/13YgKN9",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_912171-MLB92123904654_092025-O.webp"
-  },
-  {
-   "item": "MLB5336395863",
-   "titulo": "Box Pokémon Coleção Treinador Avançado 30 Anos Potugues",
-   "preco": 747.03,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/2AeRKTK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_752092-MLA118015048431_092026-O.webp"
-  },
-  {
-   "item": "MLB4627226439",
-   "titulo": "Carta Pokémon - Pikachu 025/165 Coleção Rara 151 Original",
-   "preco": 35.0,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/2UTZV3b",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_876942-MLB109872504716_042026-O.webp"
-  },
-  {
-   "item": "MLB5282034371",
-   "titulo": "Copag Caos Ascendente 2026 Com 63 Cartas Português",
-   "preco": 104.96,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/2E6AhrN",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_916662-MLB119104688939_102026-O.webp"
-  },
-  {
-   "item": "MLB5056281943",
-   "titulo": "Carta Pokémon Mismagius Ex Ultra Rara Original Japones",
-   "preco": 25.52,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/1RHV3sX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_993777-MLB116127450803_082026-O.webp"
-  },
-  {
-   "item": "MLB5056769493",
-   "titulo": "Carta Pokémon Lycanroc Ilustração Rara Original Japones",
-   "preco": 58.96,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/13F4fhA",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_764913-MLB114761745272_082026-O.webp"
-  },
-  {
-   "item": "MLB7409675420",
-   "titulo": "Carta Pokémon Mega Dragalge Ex Ultra Rara Original Japones",
-   "preco": 29.92,
-   "desconto": 12,
-   "blackFriday": true,
-   "link": "https://meli.la/1BEe2wt",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_692721-MLB116128080983_082026-O.webp"
-  },
-  {
-   "item": "MLB7407797800",
-   "titulo": "Blister Unitário Rivais Predestinados Pokémon Tcg Copag",
-   "preco": 43.19,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/2KcDtgE",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_923150-MLB116115453331_082026-O.webp"
-  },
-  {
-   "item": "MLB5205199745",
-   "titulo": "Booster Halloween Pokémon Trick Or Trade Original 2024 Raro",
-   "preco": 76.05,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/26QBctf",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_602598-MLB117377367147_092026-O.webp"
-  },
-  {
-   "item": "MLB4831859579",
-   "titulo": "Pokémon Lata Tcg Batalha Paradoxal Folhas Férreas Ex",
-   "preco": 179.91,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/1Tyt2Mz",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_823521-MLA99502529232_112025-O.webp"
-  },
-  {
-   "item": "MLB7830685886",
-   "titulo": "70 Cartas Pokemon Com 13 Brilhantes Originais 2 Ultra Raras",
-   "preco": 49.41,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/2HikNEK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_757150-MLB119627660263_102026-O.webp"
-  },
-  {
-   "item": "MLB7296134008",
-   "titulo": "50 Cartas Pokémon C/ 10 Brilhantes E 1 Ultra Rara Original",
-   "preco": 44.62,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/2WqT8cj",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_957342-MLB114031447282_072026-O.webp"
-  },
-  {
-   "item": "MLB5168609209",
-   "titulo": "Booster Box Gem Pack Chinesa Pokémon Sylveon Lacrada Gem Pack Chinês",
-   "preco": 490.82,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/1za6uLd",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_642203-MLA108034445222_032026-O.webp"
-  },
-  {
-   "item": "MLB5064059889",
-   "titulo": "Carta Pokémon Xerneas 25 Anos Celebraçoes Rara",
-   "preco": 21.6,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/2aXePaH",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_669278-MLB116193311637_082026-O.webp"
-  },
-  {
-   "item": "MLB5360285141",
-   "titulo": "Pokémon 2 Triple Pack Espada E Escudo Ponyta E Morpeko",
-   "preco": 357.1,
-   "desconto": 10,
-   "blackFriday": true,
-   "link": "https://meli.la/2L6KJtU",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_964564-MLA79485478153_092024-O.webp"
-  },
-  {
-   "item": "MLB4088488608",
-   "titulo": "Álbum Pasta Fichário Pokemon Golpe Fusão Reforçado Capa Dura",
-   "preco": 69.0,
-   "desconto": 9,
-   "blackFriday": true,
-   "link": "https://meli.la/2pD67Te",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_875321-MLA115694893240_092026-O.webp"
-  },
-  {
-   "item": "MLB6768275754",
-   "titulo": "Carta Pokémon Bellibolt Ex Da Kissera Original Copag",
-   "preco": 37.86,
-   "desconto": 9,
-   "blackFriday": true,
-   "link": "https://meli.la/1vwxCLg",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_854417-MLB111644868613_052026-O.webp"
-  },
-  {
-   "item": "MLB4785061955",
-   "titulo": "Carta Pokemon Chikorita 30 Anos Parceiros Iniciais 2 Copag",
-   "preco": 122.0,
-   "desconto": 9,
-   "blackFriday": true,
-   "link": "https://meli.la/1DFVt3q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_944580-MLB112198538668_062026-O.webp"
-  },
-  {
-   "item": "MLB5398990317",
-   "titulo": "Box Pokémon TCG Mega Greninja EX Copag 61 Cartas Português",
-   "preco": 197.0,
-   "desconto": 8,
-   "blackFriday": true,
-   "link": "https://meli.la/1hKpsqF",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_669161-MLA116266426190_092026-O.webp"
-  },
-  {
-   "item": "MLB6680345982",
-   "titulo": "Tarjetas Pokemon Juegos De Cartas Pokemon 55 Cartas Doradas",
-   "preco": 30.03,
-   "desconto": 8,
-   "blackFriday": true,
-   "link": "https://meli.la/2XWUh4i",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_611508-MLA95245155211_102025-O.webp"
-  },
-  {
-   "item": "MLB7683221536",
-   "titulo": "Caixa De Presente Da Coleção Pokémon Tcg 30th Espeon Ex E Um 30th Celebration Display Collection Box Simplified Chinese",
-   "preco": 1167.0,
-   "desconto": 8,
-   "blackFriday": true,
-   "link": "https://meli.la/2PMcXMt",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_865361-CBT118049351927_092026-O.webp"
-  },
-  {
-   "item": "MLB7419458202",
-   "titulo": "Carta Pokémon Solgaleo 25 Anos Celebraçoes Rara Original",
-   "preco": 22.0,
-   "desconto": 8,
-   "blackFriday": true,
-   "link": "https://meli.la/1aWDhFi",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_690087-MLB114822662254_082026-O.webp"
-  },
-  {
-   "item": "MLB2027060996",
-   "titulo": "Carta Pokémon Gigante Pikachu Blister Inicial 25 Anos",
-   "preco": 275.0,
-   "desconto": 8,
-   "blackFriday": true,
-   "link": "https://meli.la/2cJNoZC",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_915879-MLB114536078216_082026-O.webp"
-  },
-  {
-   "item": "MLB7908622224",
-   "titulo": "Carta Pokémon 4 Pacotinhos Copag Original Booster Pack Tcg",
-   "preco": 62.57,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/2jW6ZfR",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_971416-MLB120437615543_102026-O.webp"
-  },
-  {
-   "item": "MLB4709479941",
-   "titulo": "Lote 113 Cartas Pokémon 3 Ultra Rara Com Mega + 10 Brilhosa",
-   "preco": 92.0,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/2QAh8Lu",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_922281-MLB119595532205_102026-O.webp"
-  },
-  {
-   "item": "MLB5405344603",
-   "titulo": "Box Pokémon Mega Forças Copag Darkrai/dragonite/zeraora",
-   "preco": 164.95,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/1ij1cMX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_860246-MLB117927035850_102026-O.webp"
-  },
-  {
-   "item": "MLB7716760572",
-   "titulo": "Kit 6 Pacotes Caos Ascendente - Pokemon",
-   "preco": 72.62,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/18mez1d",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_854971-MLB120260986351_102026-O.webp"
-  },
-  {
-   "item": "MLB7419459882",
-   "titulo": "Carta Pokémon Groudon 25 Anos Celebraçoes Rara Original",
-   "preco": 22.29,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/1LV2VGD",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_909855-MLB116194999687_082026-O.webp"
-  },
-  {
-   "item": "MLB4066227211",
-   "titulo": "Pack Com 55 Carta Pokémon Vmax Gx Edição Limitadas Coloridas",
-   "preco": 73.72,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/2QGkFcN",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_710945-MLB84881607575_052025-O.webp"
-  },
-  {
-   "item": "MLB7161665552",
-   "titulo": "Kit 100 Cartas Pokémon Japonesas + 2 Ex + 2 Holo -s/ Repetir",
-   "preco": 128.91,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/1aHLAub",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_600365-MLB113268177460_072026-O.webp"
-  },
-  {
-   "item": "MLB7372257350",
-   "titulo": "Carta Pokémon Raríssima Pikachu Ex 219/191 Original Copag",
-   "preco": 294.78,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/1pMirGY",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_905246-MLB117045306599_092026-O.webp"
-  },
-  {
-   "item": "MLB7419552520",
-   "titulo": "Carta Pokémon Hydreigon 25 Anos Celebraçoes Rara Original",
-   "preco": 27.86,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/2Ls8TFS",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_723362-MLB114823826114_082026-O.webp"
-  },
-  {
-   "item": "MLB7670224056",
-   "titulo": "Lata Pokemon Poderes Divergentes Decidueye de Hisui V",
-   "preco": 396.18,
-   "desconto": 7,
-   "blackFriday": true,
-   "link": "https://meli.la/1WrqTDk",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_964664-MLA99956709447_112025-O.webp"
-  },
-  {
-   "item": "MLB5205190267",
-   "titulo": "Booster Halloween Pokémon Trick Or Trade Original 2023 Raro",
-   "preco": 75.12,
-   "desconto": 6,
-   "blackFriday": true,
-   "link": "https://meli.la/2p7ZrC3",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_858233-MLB115907728878_092026-O.webp"
-  },
-  {
-   "item": "MLB7739781524",
-   "titulo": "Blister Unitário Pokémon Obsidiana Em Chamas Ev3 33487 Copag",
-   "preco": 67.39,
-   "desconto": 5,
-   "blackFriday": true,
-   "link": "https://meli.la/1xPwMQo",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_860329-MLU71708773268_092023-O.webp"
-  },
-  {
-   "item": "MLB7724238516",
-   "titulo": "Carta Pokémon Jirachi Ex Coleção 30 Anos",
-   "preco": 27.55,
-   "desconto": 5,
-   "blackFriday": true,
-   "link": "https://meli.la/19FjdnM",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_708724-MLB118460174983_092026-O.webp"
-  },
-  {
-   "item": "MLB5429369617",
-   "titulo": "Cartão De Classificação Pokémon Screaming Pikachu Meal Subst",
-   "preco": 43.0,
-   "desconto": 5,
-   "blackFriday": true,
-   "link": "https://meli.la/2wA1YuZ",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_874659-CBT114996436720_082026-O.webp"
-  },
-  {
-   "item": "MLB7158106512",
-   "titulo": "Pokémon Box Treinador Avançado 151 Escarlate Violeta Snorlax Copag",
-   "preco": 4610.0,
-   "desconto": 5,
-   "blackFriday": true,
-   "link": "https://meli.la/2EHFQ6Q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_971041-MLA99855281223_112025-O.webp"
-  },
-  {
-   "item": "MLB5026965621",
-   "titulo": "Carta Pokémon 30 Anos Raríssima Bulbasaur 037 Original Copag",
-   "preco": 209.93,
-   "desconto": 4,
-   "blackFriday": true,
-   "link": "https://meli.la/2XPVwoC",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_825525-MLB115857240205_082026-O.webp"
-  },
-  {
-   "item": "MLB7372432724",
-   "titulo": "Carta Pokémon 30 Anos Raríssima Charmander 38 Original Copag",
-   "preco": 281.2,
-   "desconto": 4,
-   "blackFriday": true,
-   "link": "https://meli.la/2akxFic",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_920503-MLB115857927245_082026-O.webp"
-  },
-  {
-   "item": "MLB7557047744",
-   "titulo": "Carta Pokemon Mega Lucario Original Ultra Rara + Toploader",
-   "preco": 145.4,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/2sJSu4G",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_940022-MLB115821971400_092026-O.webp"
-  },
-  {
-   "item": "MLB7656497130",
-   "titulo": "Carta Pokémon Vulpix Ultra Rara 138/132 Original + Brindes",
-   "preco": 174.5,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/2fDhkTq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_736617-MLB116309471812_092026-O.webp"
-  },
-  {
-   "item": "MLB7594319306",
-   "titulo": "Carta Pokemon Noibat Ilustracao Rara Original + Toploader",
-   "preco": 116.3,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/1W7oqJT",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_730888-MLB117250826203_092026-O.webp"
-  },
-  {
-   "item": "MLB5119958269",
-   "titulo": "Carta Pokemon Rarissima Eevee V + Toploader",
-   "preco": 111.45,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/2GqvrUT",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_749641-MLB116624967565_082026-O.webp"
-  },
-  {
-   "item": "MLB5075744651",
-   "titulo": "Carta Pokemon Raríssima Pikachu Vmax Voador Especial 25 Anos",
-   "preco": 223.0,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/1e1szQJ",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_914959-MLB117041858685_092026-O.webp"
-  },
-  {
-   "item": "MLB4958307701",
-   "titulo": "Carta Pokémon Pikachu 062/193 Evoluções Em Paldea R. Foil",
-   "preco": 90.88,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/1Y2Xpgq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_609567-MLB116726878417_082026-O.webp"
-  },
-  {
-   "item": "MLB5192254975",
-   "titulo": "Carta Pokemon Raboot Ilustracao Rara Original + Toploader",
-   "preco": 116.3,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/27dn7AZ",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_819224-MLB117282889177_092026-O.webp"
-  },
-  {
-   "item": "MLB5158139359",
-   "titulo": "Carta Pokemon Gumshoos 153/132 Ilustracao Rara + Toploader",
-   "preco": 58.1,
-   "desconto": 3,
-   "blackFriday": true,
-   "link": "https://meli.la/1MC6p6n",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_865164-MLB115817628538_092026-O.webp"
-  },
-  {
-   "item": "MLB5435257297",
-   "titulo": "Mini Lata 30 Anos Celebrações Pokemon Inglês - Lapras",
-   "preco": 270.63,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1HVhzh3",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_677171-MLB119893420963_102026-O.webp"
-  },
-  {
-   "item": "MLB5473441449",
-   "titulo": "Carta Pokemon Rara Ninjask Full Art Original + Toploader",
-   "preco": 58.1,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2a3zpnU",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_787442-MLB118654256526_102026-O.webp"
-  },
-  {
-   "item": "MLB7891531848",
-   "titulo": "Carta Pokémon Ultra Rara Rotom Ventilador + Toploader",
-   "preco": 67.8,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1oz7Df1",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_724014-MLB118598427110_102026-O.webp"
-  },
-  {
-   "item": "MLB7735116914",
-   "titulo": "Blister Quádruplo Pack Origem Perdida Pokémon Tcg 1magnus",
-   "preco": 271.57,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1JZwHrS",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_803641-MLB117337666634_102026-O.webp"
-  },
-  {
-   "item": "MLB5473155379",
-   "titulo": "Carta Pokemon Wigglytuff Ilustracao Rara + Toploader",
-   "preco": 96.9,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1F3b4ia",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_899437-MLB118649868612_102026-O.webp"
-  },
-  {
-   "item": "MLB7568044968",
-   "titulo": "Jogo de cartas colecionáveis Pokémon LFD COMÉRCIO E IMPORTAÇÃO",
-   "preco": 105.49,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1qcBwuu",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_733938-MLA111794514285_052026-O.webp"
-  },
-  {
-   "item": "MLB7718754956",
-   "titulo": "Carta Pokémon Pikachu Numero 28/30 Coleção 30 Anos",
-   "preco": 28.13,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1jeAhr7",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_929998-MLB116853843790_092026-O.webp"
-  },
-  {
-   "item": "MLB7913528322",
-   "titulo": "Pokemon Baralho De Batalha Mega Gengar Ex 60 Cartas Português",
-   "preco": 368.5,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2g7u5pN",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_990205-MLA104280662173_012026-O.webp"
-  },
-  {
-   "item": "MLB5467863867",
-   "titulo": "Card Pokemon Misdreavus Ilustracao Rara Original + Toploader",
-   "preco": 76.53,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1TJozf7",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_972842-MLB120265187095_102026-O.webp"
-  },
-  {
-   "item": "MLB7897140086",
-   "titulo": "Carta Pokemon Nymble Ilustração Rara Original + Toploader",
-   "preco": 48.4,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2GQ3Y37",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_724266-MLB118648312696_102026-O.webp"
-  },
-  {
-   "item": "MLB5433586241",
-   "titulo": "25 Cartas Pokémon Primeira Geração Originais",
-   "preco": 28.7,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1iJhvna",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_782906-MLB118229814408_102026-O.webp"
-  },
-  {
-   "item": "MLB7718839526",
-   "titulo": "Pokémon Booster Box Storm Emeralda M6 Japonesa Lacrada",
-   "preco": 947.82,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1p9fK6M",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_909469-MLB117047430018_102026-O.webp"
-  },
-  {
-   "item": "MLB5409091091",
-   "titulo": "Kit 3 Cartas Pokémon Mewtwo V Vstar Japonês Cgc10 Sequencial",
-   "preco": 892.72,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2qq8yjB",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_677158-MLB117985113100_102026-O.webp"
-  },
-  {
-   "item": "MLB5433611071",
-   "titulo": "50 Cartas Pokémon Sortidas Originais",
-   "preco": 28.7,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1v79Hts",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_797700-MLB118229554098_102026-O.webp"
-  },
-  {
-   "item": "MLB5454090799",
-   "titulo": "Blister Triplo Pokémon TCG Amigos de Jornada com Scraggy – Escarlate e Violeta",
-   "preco": 104.75,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2JWem3q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_618669-MLA105465157747_012026-O.webp"
-  },
-  {
-   "item": "MLB5188889001",
-   "titulo": "Carta Pokemon Mega Pyroar Ex Rara Original + Toploader",
-   "preco": 58.1,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1JEwDqo",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_848034-MLB115752529764_092026-O.webp"
-  },
-  {
-   "item": "MLB7735276748",
-   "titulo": "Pokemon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
-   "preco": 135.7,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1Pdj6nd",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_672822-MLB117340132870_102026-O.webp"
-  },
-  {
-   "item": "MLB3839974568",
-   "titulo": "Refil Plástico Kit 10 Folhas Carta Cartões Card Yes",
-   "preco": 39.67,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/21CFgNv",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_661739-MLA70712525532_072023-O.webp"
-  },
-  {
-   "item": "MLB5240575327",
-   "titulo": "Carta Linda Pokemon 2015 Pikachu Raríssima + Toploader",
-   "preco": 96.9,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1Qx8Qja",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_981373-MLB117725152389_092026-O.webp"
-  },
-  {
-   "item": "MLB7800950440",
-   "titulo": "Pokémon Dragonite & Mewtwo & Camerupt & Sinistcha Happy Deck Variation",
-   "preco": 196.69,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2v9wS9C",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_949054-CBT118190650386_102026-O.webp"
-  },
-  {
-   "item": "MLB5075540129",
-   "titulo": "Carta Pokemon Rara Delibird Full Art + Toploader E Brindes",
-   "preco": 58.1,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2N2eV9Q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_676427-MLB114901648714_082026-O.webp"
-  },
-  {
-   "item": "MLB5120175173",
-   "titulo": "Carta Pokémon Ultra Rara Inteleon + Toploader E Brindes",
-   "preco": 58.1,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/22swGNa",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_844957-MLB115819310338_092026-O.webp"
-  },
-  {
-   "item": "MLB7432392084",
-   "titulo": "Carta Pokemon Rara Litleo Full Art + Toploader E Brindes",
-   "preco": 76.53,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1jXNfwq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_903676-MLB115817065916_092026-O.webp"
-  },
-  {
-   "item": "MLB5300531061",
-   "titulo": "Box Coleção Dia De Pokémon 2026 Pikachu 49 Cartas - 30 Anos",
-   "preco": 247.0,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2GSouJd",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_826711-MLB116940034980_092026-O.webp"
-  },
-  {
-   "item": "MLB5192336307",
-   "titulo": "Carta Pokemon Pawmi Ilustracao Rara Original + Toploader",
-   "preco": 67.8,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2EnW9zH",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_709984-MLB115792300626_092026-O.webp"
-  },
-  {
-   "item": "MLB5001707329",
-   "titulo": "Carta Pokémon - Escolher Gastly Ou Haunter + 3 Cartas Bônus",
-   "preco": 24.15,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2V1Axxo",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_617955-MLB115686946507_082026-O.webp"
-  },
-  {
-   "item": "MLB5162457665",
-   "titulo": "Carta Pokemon Mega Zeraora Ex 098/084 Ultra Rara + Toploader",
-   "preco": 75.56,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2FATo2W",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_710913-MLB117282330357_092026-O.webp"
-  },
-  {
-   "item": "MLB5195410181",
-   "titulo": "Carta Pokemon Greedent Ilustracao Rara Original + Toploader",
-   "preco": 96.9,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1gHLB2h",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_796401-MLB117284128109_092026-O.webp"
-  },
-  {
-   "item": "MLB5162547829",
-   "titulo": "Carta Pokemon Trevenant Original Ilustracao Rara + Toploader",
-   "preco": 75.61,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/28tsD55",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_708450-MLB117282152885_092026-O.webp"
-  },
-  {
-   "item": "MLB7597684156",
-   "titulo": "Carta Pokemon Pikachu Rara Original + Toploader",
-   "preco": 76.53,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1fM7ztz",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_912245-MLB115824452940_092026-O.webp"
-  },
-  {
-   "item": "MLB5157574601",
-   "titulo": "Carta Pokemon Togedemaru 104/094 Ilustracao Rara + Toploader",
-   "preco": 58.1,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1rXpww2",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_907913-MLB116913254635_082026-O.webp"
-  },
-  {
-   "item": "MLB5042196707",
-   "titulo": "Carta Pokémon Rara Charmeleon Ev. Do Charmander + Bonus",
-   "preco": 33.85,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1k2tEQc",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_765382-MLB115981079677_082026-O.webp"
-  },
-  {
-   "item": "MLB5162398859",
-   "titulo": "Carta Pokemon Ludicolo 095/094 Ilustracao Rara + Toploader",
-   "preco": 57.36,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2J4cozM",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_619110-MLB115822340250_092026-O.webp"
-  },
-  {
-   "item": "MLB7372033068",
-   "titulo": "4x Cartas Pokémon Clarita 078 Escuridão Absoluta Meta Deck",
-   "preco": 29.0,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1YXGMfk",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_959463-MLA115854488437_082026-O.webp"
-  },
-  {
-   "item": "MLB5158213579",
-   "titulo": "Carta Pokemon Fomantis 085/084 Ilustracao Rara + Toploader",
-   "preco": 58.1,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2iBCh3q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_746605-MLB115486375786_082026-O.webp"
-  },
-  {
-   "item": "MLB7309839600",
-   "titulo": "Booster Box Tempestade Prateada - Pokémon Tcg [ Ee12",
-   "preco": 2415.0,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/2WHYNeS",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_703068-MLA99908750097_112025-O.webp"
-  },
-  {
-   "item": "MLB7009015840",
-   "titulo": "Carta Pokémon Ultra Rara Aurorus 092/088 + Toploader Brindes",
-   "preco": 67.8,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1pFxmec",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_606072-MLB115817068946_092026-O.webp"
-  },
-  {
-   "item": "MLB3925450331",
-   "titulo": "Carta Pokemon Mega Alakazam Ex Original Copag",
-   "preco": 193.99,
-   "desconto": 0,
-   "blackFriday": true,
-   "link": "https://meli.la/1k7Ghen",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_814692-MLB91303620344_092025-O.webp"
-  },
-  {
-   "item": "MLB7580464662",
-   "titulo": "Box Pokémon Coleção Mega Forças Pokémon Com Carta Mega Ex",
-   "preco": 149.0,
-   "desconto": 70,
-   "blackFriday": false,
-   "link": "https://meli.la/1iwWrgs",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_836755-MLB117090963755_092026-O.webp"
-  },
-  {
-   "item": "MLB5179559533",
-   "titulo": "20 Cartas Pokémon Todas Brilhantes Originais Copag",
-   "preco": 19.99,
-   "desconto": 59,
-   "blackFriday": false,
-   "link": "https://meli.la/2ZWujsB",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_664869-MLB115642448022_092026-O.webp"
-  },
-  {
-   "item": "MLB4598319616",
-   "titulo": "Pasta Fichário Coleção Álbum Pokemon 50 Folhas Plásticas",
-   "preco": 51.06,
-   "desconto": 57,
-   "blackFriday": false,
-   "link": "https://meli.la/2u96bMy",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_863215-MLB114608202608_082026-O.webp"
-  },
-  {
-   "item": "MLB5179276403",
-   "titulo": "Pokémon Todas Cartas Brilhantes Sem Repetidas Original Copag",
-   "preco": 33.85,
-   "desconto": 57,
-   "blackFriday": false,
-   "link": "https://meli.la/2YCrSEq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_656021-MLB115639019226_092026-O.webp"
-  },
-  {
-   "item": "MLB7905885320",
-   "titulo": "Box Pokémon: Coleção Mega Forças - Mega Darkrai Ex - Copag Mega Darkrai Pt",
-   "preco": 129.63,
-   "desconto": 56,
-   "blackFriday": false,
-   "link": "https://meli.la/17zNn8K",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_762553-MLA116267537712_092026-O.webp"
-  },
-  {
-   "item": "MLB5346420371",
-   "titulo": "Pokemon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
-   "preco": 137.12,
-   "desconto": 54,
-   "blackFriday": false,
-   "link": "https://meli.la/32H1ykx",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_942273-MLB117716112152_102026-O.webp"
-  },
-  {
-   "item": "MLB5926141398",
-   "titulo": "Ultra Pro Deck Box Poké Ball 75 Cards Pokémon Tcg",
-   "preco": 35.99,
-   "desconto": 54,
-   "blackFriday": false,
-   "link": "https://meli.la/1VxiHW2",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_659561-MLB97522537912_112025-O.webp"
-  },
-  {
-   "item": "MLB7906082910",
-   "titulo": "Blister Triplo E Quádruplo Escuridão Absoluta Pokémon Copag",
-   "preco": 75.21,
-   "desconto": 53,
-   "blackFriday": false,
-   "link": "https://meli.la/2JxZykF",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_725525-MLA117207617071_092026-O.webp"
-  },
-  {
-   "item": "MLB7901934804",
-   "titulo": "Jogo De Cartas - Pokémon - Deck Mega Lucario Ex - Copag",
-   "preco": 142.0,
-   "desconto": 52,
-   "blackFriday": false,
-   "link": "https://meli.la/1N1R9aP",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_734411-MLA112737753653_062026-O.webp"
-  },
-  {
-   "item": "MLB4026017531",
-   "titulo": "Box Pokemon Pikachu Vmax Especial Realeza Absoluta Copag",
-   "preco": 1499.0,
-   "desconto": 51,
-   "blackFriday": false,
-   "link": "https://meli.la/2P3vxP3",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_942296-MLA99937701717_112025-O.webp"
-  },
-  {
-   "item": "MLB5179600359",
-   "titulo": "50 Cartas Pokémon Original Copag Com 5 Brilhantes Garantidas",
-   "preco": 29.09,
-   "desconto": 51,
-   "blackFriday": false,
-   "link": "https://meli.la/1TdGUAX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_834225-MLB115643080224_092026-O.webp"
-  },
-  {
-   "item": "MLB6838214746",
-   "titulo": "Kit 100 Cartas Pokémon 10 Brilhantes 2 Ultra Raras Original",
-   "preco": 70.86,
-   "desconto": 51,
-   "blackFriday": false,
-   "link": "https://meli.la/28xGoZ1",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_706602-MLB111195949758_052026-O.webp"
-  },
-  {
-   "item": "MLB5064546129",
-   "titulo": "Carta Pokémon Mega Excadrill Ex 065/084 Rara Dupla Copag",
-   "preco": 29.99,
-   "desconto": 49,
-   "blackFriday": false,
-   "link": "https://meli.la/2swBmRV",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_812885-MLB114823655772_082026-O.webp"
-  },
-  {
-   "item": "MLB4719909209",
-   "titulo": "Lote 100 Cartas Pokémon 10 Brilhantes 2 Ultra Raras Original",
-   "preco": 73.62,
-   "desconto": 49,
-   "blackFriday": false,
-   "link": "https://meli.la/2gKjiL8",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_655254-MLB111358960022_052026-O.webp"
-  },
-  {
-   "item": "MLB4129269961",
-   "titulo": "Pacotinho Pokemon De 10 Cartas + 1 Ultra Raro Brilhante",
-   "preco": 22.32,
-   "desconto": 44,
-   "blackFriday": false,
-   "link": "https://meli.la/2EUt7CX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_990457-MLB87843196906_072025-O.webp"
-  },
-  {
-   "item": "MLB7905877760",
-   "titulo": "Pokémon Coleção 30 Anos Tech Sticker Exeggutor Em Inglês",
-   "preco": 279.9,
-   "desconto": 44,
-   "blackFriday": false,
-   "link": "https://meli.la/2Hvnac2",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_643338-MLA118132109709_092026-O.webp"
-  },
-  {
-   "item": "MLB7547522208",
-   "titulo": "Pasta Fichário Coleção Álbum 50 Folhas Plástica Para Pokemon",
-   "preco": 44.0,
-   "desconto": 43,
-   "blackFriday": false,
-   "link": "https://meli.la/1Dcc7se",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_654423-MLB117846472273_092026-O.webp"
-  },
-  {
-   "item": "MLB5386527359",
-   "titulo": "Pokémon Tcg 30 Anos Mini Booster Box Etb - Inglês Copag",
-   "preco": 505.07,
-   "desconto": 43,
-   "blackFriday": false,
-   "link": "https://meli.la/2mmH7fa",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_703365-MLB119289543477_102026-O.webp"
-  },
-  {
-   "item": "MLB3321114039",
-   "titulo": "50 Cartinhas Pokemon + 5 Cartas Foil Brilhante Garantidas",
-   "preco": 28.31,
-   "desconto": 43,
-   "blackFriday": false,
-   "link": "https://meli.la/1wvdwLa",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_817948-MLB78762309095_082024-O.webp"
-  },
-  {
-   "item": "MLB5930202958",
-   "titulo": "Box Pokemon Baralho De Batalha Mewtwo Ex Equipe Rocket Português",
-   "preco": 79.9,
-   "desconto": 42,
-   "blackFriday": false,
-   "link": "https://meli.la/2yAdXhU",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_813285-MLA97324226431_112025-O.webp"
-  },
-  {
-   "item": "MLB7225996242",
-   "titulo": "36 Booster Pokémon Megaevolução Escuridão Absoluta Tcg Copag",
-   "preco": 387.88,
-   "desconto": 41,
-   "blackFriday": false,
-   "link": "https://meli.la/2p4epcC",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_710048-MLB114957729471_072026-O.webp"
-  },
-  {
-   "item": "MLB7535084340",
-   "titulo": "Booster Pokémon Me05 6 Cartas Copag Original",
-   "preco": 17.99,
-   "desconto": 41,
-   "blackFriday": false,
-   "link": "https://meli.la/19UrxsZ",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_623159-MLA115405123992_082026-O.webp"
-  },
-  {
-   "item": "MLB5245533929",
-   "titulo": "Pokémon Box Com Pôster Celebração De 30 Anos Original Copag",
-   "preco": 174.59,
-   "desconto": 41,
-   "blackFriday": false,
-   "link": "https://meli.la/18FRPVT",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_749384-MLB116274735172_092026-O.webp"
-  },
-  {
-   "item": "MLB7735290738",
-   "titulo": "Pokemon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
-   "preco": 174.59,
-   "desconto": 41,
-   "blackFriday": false,
-   "link": "https://meli.la/19n2V4Y",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_775608-MLB117340254492_102026-O.webp"
-  },
-  {
-   "item": "MLB5179174555",
-   "titulo": "Pokémon Lotes Até 110 Cartas Sem Repetidas Original Copag",
-   "preco": 34.99,
-   "desconto": 41,
-   "blackFriday": false,
-   "link": "https://meli.la/157Lvap",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_774643-MLB117082431093_092026-O.webp"
-  },
-  {
-   "item": "MLB5321557603",
-   "titulo": "Pokemon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
-   "preco": 179.99,
-   "desconto": 40,
-   "blackFriday": false,
-   "link": "https://meli.la/2S5nC4C",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_879344-MLB118936565131_102026-O.webp"
-  },
-  {
-   "item": "MLB3648440553",
-   "titulo": "Deck 55 Cartas Pokémon Douradas Impermeáveis Especial",
-   "preco": 45.55,
-   "desconto": 40,
-   "blackFriday": false,
-   "link": "https://meli.la/1yMsyiX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_883239-MLB91520279173_092025-O.webp"
-  },
-  {
-   "item": "MLB6174862120",
-   "titulo": "Kit Pokémon Inteleon Sobble Amigos + 15 Cartas Copag Brinde",
-   "preco": 20.87,
-   "desconto": 40,
-   "blackFriday": false,
-   "link": "https://meli.la/1MMRZhF",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_832572-MLA104990944711_012026-O.webp"
-  },
-  {
-   "item": "MLB7501738694",
-   "titulo": "Carta Pokémon Rampardos Ex 045/084 Rara Dupla Copag Português",
-   "preco": 29.0,
-   "desconto": 40,
-   "blackFriday": false,
-   "link": "https://meli.la/2zraFTx",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_920562-MLA115260854450_082026-O.webp"
-  },
-  {
-   "item": "MLB5575544854",
-   "titulo": "Pokemon 100 Códigos Tcg Card Live Pacotinhos Triple Box Etc",
-   "preco": 24.28,
-   "desconto": 39,
-   "blackFriday": false,
-   "link": "https://meli.la/1NQae8q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_800105-MLB114590561202_082026-O.webp"
-  },
-  {
-   "item": "MLB4463780115",
-   "titulo": "Kit 100 Cartas Pokémon, 10 Brilhantes E 2 Ultra Raras - Lote",
-   "preco": 70.44,
-   "desconto": 38,
-   "blackFriday": false,
-   "link": "https://meli.la/1buwhpY",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_670967-MLB107421500525_022026-O.webp"
-  },
-  {
-   "item": "MLB4375094663",
-   "titulo": "Carta Pokémon Dourada Prata Preto Hd Jogo Recreativo",
-   "preco": 46.27,
-   "desconto": 38,
-   "blackFriday": false,
-   "link": "https://meli.la/2ZwAQiC",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_692708-MLB117425675356_102026-O.webp"
-  },
-  {
-   "item": "MLB4697956507",
-   "titulo": "Carta Pokémon Crobat Ex Em Japonês",
-   "preco": 24.73,
-   "desconto": 38,
-   "blackFriday": false,
-   "link": "https://meli.la/27j6RFx",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_834049-MLB111990173345_052026-O.webp"
-  },
-  {
-   "item": "MLB5031772699",
-   "titulo": "Pokemon - TCG Blister Unitário Caos Ascendente",
-   "preco": 19.0,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/1MtiE2V",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_773533-MLA118149981781_092026-O.webp"
-  },
-  {
-   "item": "MLB6795934382",
-   "titulo": "Pokémon Caos Ascendentes - Blister Triplo - Mega Evolução",
-   "preco": 37.0,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/2z9JfgK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_762856-MLA111659979935_052026-O.webp"
-  },
-  {
-   "item": "MLB5361405010",
-   "titulo": "100 Cartas Pokémon C/ 10 Brilhantes E 2 Ultra Raras Original",
-   "preco": 72.97,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/1H2LXgX",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_682596-MLB112404223609_052026-O.webp"
-  },
-  {
-   "item": "MLB4782567045",
-   "titulo": "Kit Cartas Pokémon 50 Unidades Lote Cards Sortidas Copag",
-   "preco": 57.0,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/2aQqCpe",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_706564-MLB112160349518_062026-O.webp"
-  },
-  {
-   "item": "MLB5325615793",
-   "titulo": "Carta Pokémon Frogadier 087/083 Psa 9 Graduada",
-   "preco": 322.0,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/2zjhdQQ",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_696441-MLB117671118308_102026-O.webp"
-  },
-  {
-   "item": "MLB6177831834",
-   "titulo": "Mega Dragonite Ex Carta Pokémon Original Ultra Rara",
-   "preco": 76.0,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/1bLoE4C",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_768324-MLB104544509020_012026-O.webp"
-  },
-  {
-   "item": "MLB5215731733",
-   "titulo": "Pokémon Todas Cartas Ultra Rara Sem Repetição Original Copag",
-   "preco": 125.99,
-   "desconto": 36,
-   "blackFriday": false,
-   "link": "https://meli.la/1s36ms1",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_839670-MLB116002718478_092026-O.webp"
-  },
-  {
-   "item": "MLB4190975067",
-   "titulo": "Álbum Pasta Fichário Pokémon Charizard X 10 Folhas Capa Dura",
-   "preco": 69.7,
-   "desconto": 35,
-   "blackFriday": false,
-   "link": "https://meli.la/2ShfaSh",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_837596-MLB91674260008_092025-O.webp"
-  },
-  {
-   "item": "MLB2824425350",
-   "titulo": "Lotes De 50 Energias Pokemon (escolha As Suas)",
-   "preco": 19.31,
-   "desconto": 35,
-   "blackFriday": false,
-   "link": "https://meli.la/1AYVHwr",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_824943-MLB80655670821_112024-O.webp"
-  },
-  {
-   "item": "MLB5664606654",
-   "titulo": "Álbum Pasta Fichário Pokémon Charizard 10 Folhas Capa Dura",
-   "preco": 69.7,
-   "desconto": 35,
-   "blackFriday": false,
-   "link": "https://meli.la/26HtGxr",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_602286-MLB92009003071_092025-O.webp"
-  },
-  {
-   "item": "MLB5461364267",
-   "titulo": "Kit 8 Cartas Pokémon Tcg Energia 2025 + Brinde",
-   "preco": 19.42,
-   "desconto": 35,
-   "blackFriday": false,
-   "link": "https://meli.la/1BvMVca",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_764300-MLB118514048872_102026-O.webp"
-  },
-  {
-   "item": "MLB7645730002",
-   "titulo": "Blister Quadruplo 4 Boosters Pokémon Mega Evolução - Golduck",
-   "preco": 51.36,
-   "desconto": 34,
-   "blackFriday": false,
-   "link": "https://meli.la/1fP91uG",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_744746-MLA99998617323_112025-O.webp"
-  },
-  {
-   "item": "MLB7081554822",
-   "titulo": "50 Cartas Pokémon Originais Copag 8 Brilhantes Lote Kit",
-   "preco": 29.89,
-   "desconto": 33,
-   "blackFriday": false,
-   "link": "https://meli.la/1p9srEV",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_728805-MLB113001553674_072026-O.webp"
-  },
-  {
-   "item": "MLB4570553769",
-   "titulo": "50 Cartas Pokémon Com 5 Brilhantes + Ultra Rara Original",
-   "preco": 46.72,
-   "desconto": 33,
-   "blackFriday": false,
-   "link": "https://meli.la/19LEcfy",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_884260-MLB113916480059_062026-O.webp"
-  },
-  {
-   "item": "MLB5329061567",
-   "titulo": "Pokémon Tcg: 30th Elite Trainer Box - Inglês",
-   "preco": 999.0,
-   "desconto": 33,
-   "blackFriday": false,
-   "link": "https://meli.la/2s2kSXr",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_660247-MLB119096959637_102026-O.webp"
-  },
-  {
-   "item": "MLB4888617261",
-   "titulo": "Booster Bundle Pokémon Pitch Black Tcg Em Inglês",
-   "preco": 199.95,
-   "desconto": 33,
-   "blackFriday": false,
-   "link": "https://meli.la/1H2H6BH",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_679935-MLB114502765403_072026-O.webp"
-  },
-  {
-   "item": "MLB7776789896",
-   "titulo": "Carta Pokémon Crobat V Em Japonês",
-   "preco": 26.45,
-   "desconto": 33,
-   "blackFriday": false,
-   "link": "https://meli.la/2yGx57f",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_908440-MLA116611114446_092026-O.webp"
-  },
-  {
-   "item": "MLB5234577531",
-   "titulo": "Kit 3 Blisters Quadruplo Caos Ascendente",
-   "preco": 149.72,
-   "desconto": 32,
-   "blackFriday": false,
-   "link": "https://meli.la/1yZMxHT",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_794432-MLB117667336247_092026-O.webp"
-  },
-  {
-   "item": "MLB4571358277",
-   "titulo": "Blister Triplo Pokémon Equilíbrio Perfeito Makuhita - Copag",
-   "preco": 47.52,
-   "desconto": 32,
-   "blackFriday": false,
-   "link": "https://meli.la/26mvCK5",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_947572-MLB109801120781_032026-O.webp"
-  },
-  {
-   "item": "MLB7602545862",
-   "titulo": "50 Cartas Pokémon Com 8 Brilhantes + 1 Ultra - Originais",
-   "preco": 55.13,
-   "desconto": 31,
-   "blackFriday": false,
-   "link": "https://meli.la/2B1P16p",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_967702-MLB117548905913_092026-O.webp"
-  },
-  {
-   "item": "MLB4931077899",
-   "titulo": "Cartas Pokémon Coleção Escuridão Absoluta Treinador Avançado 121 Cards Copag",
-   "preco": 433.0,
-   "desconto": 31,
-   "blackFriday": false,
-   "link": "https://meli.la/1jaBd6A",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_724710-MLA114014129011_072026-O.webp"
-  },
-  {
-   "item": "MLB4687220547",
-   "titulo": "Kit 2 Blister 1 Triplo + 1 Quádruplo Caos Ascendente Pokémon",
-   "preco": 115.5,
-   "desconto": 31,
-   "blackFriday": false,
-   "link": "https://meli.la/2z4sysr",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_756717-MLB111817588589_052026-O.webp"
-  },
-  {
-   "item": "MLB7608843904",
-   "titulo": "Pokémon TCG: Dragapult Ex League Battle Deck de Batalha em Inglês",
-   "preco": 210.8,
-   "desconto": 31,
-   "blackFriday": false,
-   "link": "https://meli.la/17bWnQK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_936052-MLA83622980974_042025-O.webp"
-  },
-  {
-   "item": "MLB5234587619",
-   "titulo": "Kit 3 Blisters Triplo Escuridao Absoluta",
-   "preco": 123.49,
-   "desconto": 31,
-   "blackFriday": false,
-   "link": "https://meli.la/15k51gc",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_768233-MLB116181092030_092026-O.webp"
-  },
-  {
-   "item": "MLB5270313739",
-   "titulo": "Pokémon TCG Sleeves Pikachu 2025 65un 66x91mm ChromaFusion",
-   "preco": 104.9,
-   "desconto": 30,
-   "blackFriday": false,
-   "link": "https://meli.la/26TBZoK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_645354-MLA98676622877_112025-O.webp"
-  },
-  {
-   "item": "MLB7778589614",
-   "titulo": "101 Cartas Pokémon Com 25 Brilhantes E 1 Ultra Rara Copag",
-   "preco": 84.0,
-   "desconto": 30,
-   "blackFriday": false,
-   "link": "https://meli.la/2tjxyif",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_917299-MLB119046535959_102026-O.webp"
-  },
-  {
-   "item": "MLB7573871688",
-   "titulo": "Box Pokémon Escuridão Absoluta Desafio Estratégico 88un",
-   "preco": 140.32,
-   "desconto": 29,
-   "blackFriday": false,
-   "link": "https://meli.la/1EnSU9Q",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_672931-MLA114222223435_072026-O.webp"
-  },
-  {
+   "loja": "mercadolivre",
    "item": "MLB6823331442",
-   "titulo": "Pokémon ME04 Caos Ascendente Blister Quádruplo Toxel 4 Boosters copag",
-   "preco": 39.9,
-   "desconto": 28,
-   "blackFriday": false,
    "link": "https://meli.la/2wkaTFK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_861056-MLA116069207296_092026-O.webp"
+   "titulo": "Blister Quádruplo Caos Ascendente (Toxel)",
+   "tipo": "Blister",
+   "preco": 39.9,
+   "de": 55.99,
+   "pix": false,
+   "blackFriday": false,
+   "obs": null,
+   "productId": "me04-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166978/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Four-Booster-Blister---Front_PTBR.png?v=639149874808400000"
   },
   {
-   "item": "MLB5248485559",
-   "titulo": "Case 24 Sleeved Booster Caos Ascendente Pokémon Português",
-   "preco": 294.49,
-   "desconto": 28,
+   "loja": "mercadolivre",
+   "item": "MLB7377730604",
+   "link": "https://meli.la/1L6adJQ",
+   "titulo": "Blister Triplo Caos Ascendente (Charmeleon)",
+   "tipo": "Blister",
+   "preco": 43.55,
+   "de": 92.28,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2KSpjf8",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_888612-MLB117799635551_092026-O.webp"
+   "obs": null,
+   "productId": "me04-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166976/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Three-Booster-Blister---Front_PTBR.png?v=639149875329900000"
   },
   {
-   "item": "MLB4449417789",
-   "titulo": "Sleeve Central Shield Básico Transparente Central Acessórios",
-   "preco": 16.52,
-   "desconto": 28,
+   "loja": "mercadolivre",
+   "item": "MLB5031772699",
+   "link": "https://meli.la/1MtiE2V",
+   "titulo": "Blister Unitário Caos Ascendente",
+   "tipo": "Blister",
+   "preco": 19,
+   "de": 30,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1KxSdQ1",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_938381-MLB105488288696_012026-O.webp"
+   "obs": null,
+   "productId": "me04-blister1",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166968/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Sleeved-Booster---Mega-Pyroar_PTBR.png?v=639149876472300000"
   },
   {
-   "item": "MLB754960753",
-   "titulo": "Pasta Álbum Fichário Pokemon + 20 Folhas + 6 Cards + Brinde",
-   "preco": 127.54,
-   "desconto": 28,
+   "loja": "mercadolivre",
+   "link": "https://meli.la/2XzFjFF",
+   "titulo": "Booster ME05",
+   "tipo": "Booster",
+   "preco": 19.51,
+   "de": 27.15,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2pEb9P4",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_632891-MLB75105593431_032024-O.webp"
+   "obs": null,
+   "productId": "me05-booster",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/10103907/17830159580475.jpg?v=639186821615570000"
   },
   {
-   "item": "MLB2782173195",
-   "titulo": "Álbum Pasta Fichário Pokemon + 05 Folhas + 6 Cards + Brinde",
-   "preco": 95.47,
-   "desconto": 28,
+   "loja": "mercadolivre",
+   "item": "MLB4612200203",
+   "link": "https://meli.la/27AydWX",
+   "titulo": "Booster Equilíbrio Perfeito",
+   "tipo": "Booster",
+   "preco": 21.18,
+   "de": 31.21,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/19US9eY",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_635466-MLB96316096593_102025-O.webp"
+   "obs": null,
+   "productId": "me03-booster",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/10162019/17875927920574.jpg?v=639232591744500000"
   },
   {
-   "item": "MLB4945713831",
-   "titulo": "30 Cartas Pokémon Originais / 25 Normais + 5 Foil Garantidas",
-   "preco": 24.93,
-   "desconto": 28,
-   "blackFriday": false,
-   "link": "https://meli.la/2EoxwDn",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_746221-MLB115442875665_082026-O.webp"
+   "loja": "mercadolivre",
+   "link": "https://meli.la/1s4fxMQ",
+   "titulo": "Blister Duplo 30 Anos c/ moeda",
+   "tipo": "Blister",
+   "preco": 111.15,
+   "de": 137.8,
+   "pix": true,
+   "blackFriday": true,
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB5034058989",
-   "titulo": "Blister Quádruplo Pokémon Me04 Caos Ascendente",
-   "preco": 56.9,
-   "desconto": 28,
-   "blackFriday": false,
-   "link": "https://meli.la/1zKKAcG",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_844725-MLB116443891775_082026-O.webp"
+   "loja": "mercadolivre",
+   "item": "MLB7846671272",
+   "link": "https://meli.la/1qrzZpf",
+   "titulo": "Box Mega Greninja ex",
+   "tipo": "Box",
+   "preco": 167.49,
+   "de": 249.99,
+   "pix": false,
+   "blackFriday": true,
+   "obs": null,
+   "productId": "me05-colecao_ex-mega-greninja",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167080/Pokemon-TCG---Mega-Greninja-ex-Premium-Collection---Left_PTBR.png?v=639192831236700000"
   },
   {
-   "item": "MLB7573811204",
-   "titulo": "Box Booster Pokémon Escuridão Absoluta Desafio Estratégico",
-   "preco": 140.7,
-   "desconto": 27,
-   "blackFriday": false,
-   "link": "https://meli.la/18hBsVp",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_672931-MLA114222223435_072026-O.webp"
+   "loja": "mercadolivre",
+   "link": "https://meli.la/2UeRNRm",
+   "titulo": "Box 30 Anos Sylveon/Greninja",
+   "tipo": "Box",
+   "preco": 282,
+   "de": 399.98,
+   "pix": false,
+   "blackFriday": true,
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB7776255302",
-   "titulo": "Sleeves Pokémon Básico Transparente 100 Unidades 65x90mm Central",
-   "preco": 16.42,
-   "desconto": 27,
+   "loja": "mercadolivre",
+   "link": "https://meli.la/2FBqbkD",
+   "titulo": "Greninja ex Coleção 30 Anos",
+   "tipo": "Box",
+   "preco": 365.04,
+   "de": 502.26,
+   "pix": true,
    "blackFriday": false,
-   "link": "https://meli.la/1gfcALC",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_978717-MLA99599699154_122025-O.webp"
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB6926069826",
-   "titulo": "60 Cartas Pokemon Batalha De Liga Mega Lucario Ex Original",
-   "preco": 115.0,
-   "desconto": 26,
-   "blackFriday": false,
-   "link": "https://meli.la/2P1DuBE",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_736154-MLA112147536081_052026-O.webp"
+   "loja": "mercadolivre",
+   "link": "https://meli.la/1dbg3Yo",
+   "titulo": "Desafio Estratégico Equilíbrio Perfeito",
+   "tipo": "Box",
+   "preco": 117.25,
+   "de": 146.57,
+   "pix": false,
+   "blackFriday": true,
+   "obs": null,
+   "productId": "me03-desafio",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9885301/17762813782678.jpg?v=639119236483670000"
   },
   {
-   "item": "MLB7041639928",
-   "titulo": "Carta Pokémon Mega Dragalge Ex 065/086 Ultra Rara Pt-br Português",
-   "preco": 28.53,
-   "desconto": 26,
+   "loja": "mercadolivre",
+   "item": "MLB7640770428",
+   "link": "https://meli.la/235sgsQ",
+   "titulo": "Desafio Estratégico Fogo Fantasmagórico",
+   "tipo": "Box",
+   "preco": 265.9,
+   "de": 299.9,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2aR4ozU",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_632787-MLA112553874062_062026-O.webp"
+   "obs": "Cupom aplicado no anúncio",
+   "productId": "me02-desafio",
+   "imagem": "https://acdn-us.mitiendanube.com/stores/001/735/433/products/aa8cdbd0acbbd4949531b160345fff53-2c6a4ef3ba3745652317654449535100-640-0.webp"
   },
   {
-   "item": "MLB4725980834",
-   "titulo": "Kit 50 Cartas Pokémon Original Copag Lote Com 5 Brilhantes",
-   "preco": 29.92,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "item": "MLB4918636761",
+   "link": "https://meli.la/26saona",
+   "titulo": "ETB Escuridão Absoluta",
+   "tipo": "ETB",
+   "preco": 449.17,
+   "de": 619.98,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1fRA4wo",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_757253-MLB107110579157_022026-O.webp"
+   "obs": null,
+   "productId": "me05-etb",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167093/Pokemon-TCG-Mega-Evolution—Pitch-Black---Advanced-Trainer-Box---Left_PTBR--1-.png?v=639198192827400000"
   },
   {
-   "item": "MLB4842711169",
-   "titulo": "Blister Unitário Pokémon Me05 Escuridão Absoluta Copag",
-   "preco": 18.74,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "item": "MLB4807690067",
+   "link": "https://meli.la/1Byd45W",
+   "titulo": "ETB Equilíbrio Perfeito",
+   "tipo": "ETB",
+   "preco": 469.98,
+   "de": 619.98,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2aqPLRT",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_867758-MLA114013689257_072026-O.webp"
+   "obs": null,
+   "productId": "me03-etb",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9865077/17756099032823.jpg?v=639112326558070000"
   },
   {
-   "item": "MLB5168341641",
-   "titulo": "Kit Lote 100 Cartas De Energia Pokémon",
-   "preco": 38.5,
-   "desconto": 25,
-   "blackFriday": false,
-   "link": "https://meli.la/2iwstK6",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_699326-MLB116985101023_082026-O.webp"
+   "loja": "mercadolivre",
+   "link": "https://meli.la/2LvRNKC",
+   "titulo": "ETB 30 Anos",
+   "tipo": "ETB",
+   "preco": 715,
+   "de": 899,
+   "pix": false,
+   "blackFriday": true,
+   "obs": null,
+   "productId": "c30-etb",
+   "imagem": "https://tcgpricehunter.com.br/assets/web/produto-c30-etb-v1.webp"
   },
   {
-   "item": "MLB5276316670",
-   "titulo": "Fichário Álbum Pasta Pokemon Charizard V Max Cartas Pokemon",
-   "preco": 58.73,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "item": "MLB5462342807",
+   "link": "https://meli.la/2DPmXdR",
+   "titulo": "Booster Box 18 pacotes Caos Ascendente",
+   "tipo": "Booster Box",
+   "preco": 225.42,
+   "de": 289,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/33nm5Pe",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_796057-MLB82243526787_022025-O.webp"
+   "obs": "Oferta relâmpago até 07/11 02h59",
+   "productId": "me04-combo18",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9981857/17789488950396.jpg?v=639146022567730000"
   },
   {
-   "item": "MLB5276395556",
-   "titulo": "Fichário Álbum Pasta Pokemon Destinos De Paldea Capa Dura",
-   "preco": 58.73,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "item": "MLB6808430118",
+   "link": "https://meli.la/1RzR8Cz",
+   "titulo": "Display 36 Caos Ascendente",
+   "tipo": "Display",
+   "preco": 398.04,
+   "de": 544.98,
+   "pix": true,
    "blackFriday": false,
-   "link": "https://meli.la/2KWxtPE",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_942280-MLB82243885161_022025-O.webp"
+   "obs": null,
+   "productId": "me04-box36",
+   "imagem": "https://acdn-us.mitiendanube.com/stores/005/656/297/products/bb-pt-af6d262fda7485000417789407906254-480-0.webp"
   },
   {
-   "item": "MLB5276329142",
-   "titulo": "Fichário Álbum Pasta Pokemon Mega Charizard Cartas Pokemon",
-   "preco": 58.73,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "item": "MLB7077055110",
+   "link": "https://meli.la/1ajWURZ",
+   "titulo": "Display ME05",
+   "tipo": "Display",
+   "preco": 379.9,
+   "de": 449.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1rYbsP5",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_747546-MLB82243396131_022025-O.webp"
+   "obs": null,
+   "productId": "me05-box36",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167097/Pokemon-TCG-Mega-Evolution—Pitch-Black---Booster-Display---Left_PTBR.png?v=639198193009500000"
   },
   {
-   "item": "MLB4690642083",
-   "titulo": "Blister Quadruplo Pokémon Tcg Caos Ascendente - Toxel",
-   "preco": 47.24,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "link": "https://meli.la/2HH8zNb",
+   "titulo": "Trick or Trade 2023 (mini booster)",
+   "tipo": "Booster",
+   "preco": 39.99,
+   "de": 78.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2vy836V",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_869040-MLA110791672456_052026-O.webp"
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB5276368884",
-   "titulo": "Fichário Álbum Pasta Pokemon Pokemon Go Cartas Pokemon",
-   "preco": 58.73,
-   "desconto": 25,
+   "loja": "mercadolivre",
+   "link": "https://meli.la/2yAdXhU",
+   "titulo": "Baralho de Batalha Mewtwo ex",
+   "tipo": "Baralho",
+   "preco": 79.9,
+   "de": 139.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2xX35RM",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_772782-MLB81962264810_022025-O.webp"
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB7692222568",
-   "titulo": "Pokémon Celebração 30 Anos - Coleção Greninja Ex",
-   "preco": 315.0,
-   "desconto": 25,
-   "blackFriday": false,
-   "link": "https://meli.la/2xp9ovf",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_861938-MLB116614576702_092026-O.webp"
+   "loja": "mercadolivre",
+   "item": "MLB4889163069",
+   "link": "https://meli.la/18eggpo",
+   "titulo": "Box Mega Greninja-ex (outro vendedor)",
+   "tipo": "Box",
+   "preco": 207.09,
+   "de": null,
+   "pix": false,
+   "blackFriday": true,
+   "obs": null,
+   "productId": "me05-colecao_ex-mega-greninja",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167080/Pokemon-TCG---Mega-Greninja-ex-Premium-Collection---Left_PTBR.png?v=639192831236700000"
   },
   {
-   "item": "MLB5281231225",
-   "titulo": "Pokémon Box Celebração De 30anos Com Fichário Copag Original",
-   "preco": 515.19,
-   "desconto": 25,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/gRRY6cP3E",
+   "titulo": "Blister Triplo ME05",
+   "tipo": "Blister",
+   "preco": 39.9,
+   "de": null,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/22LHzEq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_679506-MLB118111166465_092026-O.webp"
+   "obs": null,
+   "productId": "me05-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167105/Pokemon-TCG-Mega-Evolution—Pitch-Black---3pk-Blister---Front_PTBR.png?v=639198193633070000"
   },
   {
-   "item": "MLB2667468830",
-   "titulo": "Carta Pokémon Typhlosion De Hisui V Astro Estrelas Radiantes",
-   "preco": 57.0,
-   "desconto": 25,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/114Hwib8NK",
+   "titulo": "Blister ME05 Quádruplo/Triplo",
+   "tipo": "Blister",
+   "preco": 42.99,
+   "de": 49.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/18BCBRV",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_977185-MLB69984881541_062023-O.webp"
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB4836905127",
-   "titulo": "Booster Quádruplo Escuridão Absoluta Português",
-   "preco": 42.42,
-   "desconto": 24,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/qkrkPbliH",
+   "titulo": "Blister Quádruplo ME05",
+   "tipo": "Blister",
+   "preco": 49.9,
+   "de": null,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/23KLUa7",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_917866-MLA114013158499_072026-O.webp"
+   "obs": null,
+   "productId": "me05-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000"
   },
   {
-   "item": "MLB6121313568",
-   "titulo": "Blister Triplo Pokémon Megaevolução Drifloon Tcg Jogo Copag",
-   "preco": 54.98,
-   "desconto": 24,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/1BNi91aV2N",
+   "titulo": "Blister Quádruplo ME01",
+   "tipo": "Blister",
+   "preco": 52.46,
+   "de": null,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2ibcjEG",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_603381-MLA99596992016_122025-O.webp"
+   "obs": null,
+   "productId": "me01-blister4",
+   "imagem": "https://cdn.awsli.com.br/800x800/2749/2749010/produto/370597262/d68be63333412275e03ddf7f64d5d669-pzx1x7e6l5.jpg"
   },
   {
-   "item": "MLB4918573241",
-   "titulo": "36 Booster Pokémon Megaevolução Escuridão Absoluta Tcg Copag",
-   "preco": 547.49,
-   "desconto": 24,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/9KjPs25PSy",
+   "titulo": "Blister Duplo 30 Anos",
+   "tipo": "Blister",
+   "preco": 123.5,
+   "de": null,
+   "pix": true,
    "blackFriday": false,
-   "link": "https://meli.la/2jsLNzg",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_678680-MLB120368909715_102026-O.webp"
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB715034416",
-   "titulo": "Pasta Álbum Fichário Pokemon + 30 Folhas + 9 Cartas + Brinde",
-   "preco": 167.96,
-   "desconto": 24,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/9fMGGfq8KX",
+   "titulo": "Box 30 Anos com Pôster",
+   "tipo": "Box",
+   "preco": 185.25,
+   "de": 194.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/2r68aVt",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_756185-MLB108963231898_032026-O.webp"
+   "obs": null,
+   "productId": null,
+   "imagem": null
   },
   {
-   "item": "MLB1473355800",
-   "titulo": "Pastas Fichário Álbum Pokemon",
-   "preco": 81.9,
-   "desconto": 24,
+   "loja": "shopee",
+   "link": "https://s.shopee.com.br/9pfgSypUzY",
+   "titulo": "Display ME05",
+   "tipo": "Display",
+   "preco": 413.82,
+   "de": 439.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1uTHJVM",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_863930-MLB100363207568_122025-O.webp"
+   "obs": "Cupom da loja (R$ 5/R$ 10) já no preço; R$ 439,99 sem cupom",
+   "productId": "me05-box36",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167097/Pokemon-TCG-Mega-Evolution—Pitch-Black---Booster-Display---Left_PTBR.png?v=639198193009500000"
   },
   {
-   "item": "MLB7198301008",
-   "titulo": "Carta Pokémon Fomantis Ilustração Rara Escuridão Absoluta",
-   "preco": 44.39,
-   "desconto": 24,
+   "loja": "amazon",
+   "asin": "B0FWKQGPBX",
+   "link": "https://link.amazon/B05MW9CBR",
+   "titulo": "Ferramentas de Treinador",
+   "tipo": "Acessório",
+   "preco": 173.63,
+   "de": 250.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1zLMrGj",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_847801-MLB113508268400_072026-O.webp"
+   "obs": null,
+   "productId": "avulsos-colecao_especial-ferramentas-de-treinador-fezandipiti",
+   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9477608/17641922275378.jpg?v=638998277260900000"
   },
   {
-   "item": "MLB5304989321",
-   "titulo": "Box Pokémon Celebração 30 Anos Coleção Greninja Ex Inglês",
-   "preco": 414.9,
-   "desconto": 24,
+   "loja": "amazon",
+   "asin": "B0GWFNG7RG",
+   "link": "https://link.amazon/B07FeCIXR",
+   "titulo": "Display Caos Ascendente",
+   "tipo": "Display",
+   "preco": 394.25,
+   "de": 503.64,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1MFPm7o",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_744313-MLB117015394560_102026-O.webp"
+   "obs": null,
+   "productId": "me04-box36",
+   "imagem": "https://acdn-us.mitiendanube.com/stores/005/656/297/products/bb-pt-af6d262fda7485000417789407906254-480-0.webp"
   },
   {
-   "item": "MLB4571331589",
-   "titulo": "100 Cartas Pokémon Com 10 Brilhantes E 1 Ultra Rara Original",
-   "preco": 60.63,
-   "desconto": 23,
+   "loja": "amazon",
+   "asin": "B0H3Q1XTG4",
+   "link": "https://link.amazon/B00KWKjgN",
+   "titulo": "Blister Quádruplo Escuridão Absoluta",
+   "tipo": "Blister",
+   "preco": 48.43,
+   "de": 55.99,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/22Ske1Y",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_917751-MLB119086636285_102026-O.webp"
+   "obs": null,
+   "productId": "me05-blister4",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000"
   },
   {
-   "item": "MLB5239312147",
-   "titulo": "Kit De 10 A 50 Cartas Copag Pokémon Borda Amarela Original",
-   "preco": 76.52,
-   "desconto": 23,
+   "loja": "amazon",
+   "asin": "B0GVVN4T41",
+   "link": "https://link.amazon/B065YtcFr",
+   "titulo": "Triplo Caos Ascendente",
+   "tipo": "Blister",
+   "preco": 41.8,
+   "de": 44,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/16j7Cmy",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_904937-MLB117307198988_102026-O.webp"
+   "obs": null,
+   "productId": "me04-blister3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166976/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Three-Booster-Blister---Front_PTBR.png?v=639149875329900000"
   },
   {
-   "item": "MLB5108612409",
-   "titulo": "Pokemon Cartas - Mega Evolução - Caos Ascendente - Booster U",
-   "preco": 19.99,
-   "desconto": 23,
+   "loja": "amazon",
+   "asin": "B0H7XF3LJL",
+   "link": "https://link.amazon/B04V893bH",
+   "titulo": "Parceiro Inicial",
+   "tipo": "Box",
+   "preco": 130.99,
+   "de": 145.82,
+   "pix": false,
    "blackFriday": false,
-   "link": "https://meli.la/1H4vBr7",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_910331-MLB117491417895_092026-O.webp"
-  },
-  {
-   "item": "MLB4695743019",
-   "titulo": "Box 36 Booster Pokémon Caos Ascendente Copag Origin. Lacrado",
-   "preco": 418.99,
-   "desconto": 23,
-   "blackFriday": false,
-   "link": "https://meli.la/22uPvq6",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_928392-MLA110357531604_052026-O.webp"
-  },
-  {
-   "item": "MLB1463559706",
-   "titulo": "Sleeves Standard Matte 100 Protetores Dragon Shield Clear",
-   "preco": 119.99,
-   "desconto": 23,
-   "blackFriday": false,
-   "link": "https://meli.la/2TFegds",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_826352-MLB113191996442_072026-O.webp"
-  },
-  {
-   "item": "MLB6655532942",
-   "titulo": "100 Cartas Pokémon C/ 20 Brilhantes + 1 Ultra Rara Originais",
-   "preco": 62.0,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/2ke1EDr",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_803592-MLB119879009669_102026-O.webp"
-  },
-  {
-   "item": "MLB6907281740",
-   "titulo": "Lote 100 Cartas Pokémon 10 Brilhantes 1 Ultra Rara Original",
-   "preco": 59.7,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/1QeUD8U",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_774134-MLB115896916509_082026-O.webp"
-  },
-  {
-   "item": "MLB7651166934",
-   "titulo": "Kit 50 Cartas Pokemon Com 10 Brilhantes - Copag",
-   "preco": 25.49,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/2iR42Yq",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_642620-MLA112895453027_062026-O.webp"
-  },
-  {
-   "item": "MLB4912030583",
-   "titulo": "Carta Pokémon Silvally Ilustração Rara Escuridão Absoluta",
-   "preco": 60.84,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/1vW7Cr4",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_725978-MLB113510356786_072026-O.webp"
-  },
-  {
-   "item": "MLB4886861381",
-   "titulo": "Combo De Pacotes 151 Pokemon Tcg 18 Booster Mini Display Box",
-   "preco": 1705.0,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/2sPbeoG",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_946280-MLU78128711350_082024-O.webp"
-  },
-  {
-   "item": "MLB5057028827",
-   "titulo": "Carta Pokémon Maractus Ilustração Rara Original Japones",
-   "preco": 34.32,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/1f5S5QK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_987459-MLB116131690759_082026-O.webp"
-  },
-  {
-   "item": "MLB5944642414",
-   "titulo": "Blister Triplo Pokémon Mega Fogo Fantasmagórico Whimsicott",
-   "preco": 52.25,
-   "desconto": 22,
-   "blackFriday": false,
-   "link": "https://meli.la/1Y3jt4u",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_858825-MLB98191503238_112025-O.webp"
-  },
-  {
-   "item": "MLB3715558227",
-   "titulo": "Kit 10 Cartas Pokémon Charizard Brilhantes Ultra Raras",
-   "preco": 118.46,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2yfj9Mx",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_978732-MLB92075589008_092025-O.webp"
-  },
-  {
-   "item": "MLB5276343778",
-   "titulo": "Álbum Pasta Fichário Pokemon Destinos De Paldea Capa Dura",
-   "preco": 58.73,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2vQZmFN",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_777438-MLB82243885249_022025-O.webp"
-  },
-  {
-   "item": "MLB5276382630",
-   "titulo": "Fichário Álbum Pasta Pokemon Mew Golpe Fusão Capa Dura",
-   "preco": 62.33,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2sSgLPG",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_907645-MLB81962665922_022025-O.webp"
-  },
-  {
-   "item": "MLB5276395558",
-   "titulo": "Álbum Pasta Fichário Pokemon Ceruledge Paldea Capa Dura",
-   "preco": 59.17,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2X1PxQ3",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_646143-MLB81962674738_022025-O.webp"
-  },
-  {
-   "item": "MLB5276367544",
-   "titulo": "Álbum Pasta Fichário Pokemon Celebração 25 Anos Capa Dura",
-   "preco": 59.17,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2QnJoJj",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_944648-MLB81961900614_022025-O.webp"
-  },
-  {
-   "item": "MLB5276317184",
-   "titulo": "Álbum Pasta Fichário Pokemon Violet Miraidon Capa Dura",
-   "preco": 59.17,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2GqLj4C",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_762763-MLB81962562864_022025-O.webp"
-  },
-  {
-   "item": "MLB5276367540",
-   "titulo": "Fichário Álbum Pasta Pokemon Celebração 25 Anos Para Cards",
-   "preco": 62.33,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/2cE9Wy6",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_660448-MLB81961892352_022025-O.webp"
-  },
-  {
-   "item": "MLB5276303194",
-   "titulo": "Álbum Pasta Fichário Pokemon Mega Charizard Capa Dura",
-   "preco": 59.17,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/1LH4Mbm",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_762422-MLB82243396209_022025-O.webp"
-  },
-  {
-   "item": "MLB5276277898",
-   "titulo": "Álbum Pasta Fichário Pokemon Pokemon Go Capa Dura",
-   "preco": 58.73,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/18aksUL",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_789928-MLB82243520201_022025-O.webp"
-  },
-  {
-   "item": "MLB5276381836",
-   "titulo": "Álbum Pasta Fichário Pokemon Charizard V Max Capa Dura",
-   "preco": 59.17,
-   "desconto": 21,
-   "blackFriday": false,
-   "link": "https://meli.la/1KJbk4V",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_858031-MLB81962268368_022025-O.webp"
-  },
-  {
-   "item": "MLB7581220256",
-   "titulo": "Blister Quadruplo Caus Ascendente Pokémon 25 Cartas",
-   "preco": 52.41,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/2KUnXd4",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_798701-MLB115658756902_092026-O.webp"
-  },
-  {
-   "item": "MLB5322237095",
-   "titulo": "Carta Pokémon 3 Meowth Diferentes Coleção 30 Anos",
-   "preco": 31.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/1aDfkqj",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_873042-MLB117013940640_102026-O.webp"
-  },
-  {
-   "item": "MLB5306216887",
-   "titulo": "Carta Pokémon Pikachu Numero 11/30 Coleção 30 Anos",
-   "preco": 31.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/28Y9dkt",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_949198-MLB118404062651_092026-O.webp"
-  },
-  {
-   "item": "MLB3776797937",
-   "titulo": "Original - Pacote De 50 Cartas Pokemon + 1 Carta Ex Copag",
-   "preco": 47.85,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/27Kf7Xp",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_938261-MLB78761531573_082024-O.webp"
-  },
-  {
-   "item": "MLB3964366401",
-   "titulo": "Carta Pokémon Pidgeot Ex Obsidiana Em Chamas Original",
-   "preco": 23.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/2ZhVnoE",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_789609-MLB92332738289_092025-O.webp"
-  },
-  {
-   "item": "MLB4879852789",
-   "titulo": "Kit 100 Cartas Pokemon 10 Brilhantes E 1 Ultra Rara",
-   "preco": 55.99,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/31FF1JK",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_826873-MLB113180193712_072026-O.webp"
-  },
-  {
-   "item": "MLB2206288533",
-   "titulo": "30 Folhas Plástica Fichário Cards Gpk Magic 11 Furos Pokémon",
-   "preco": 53.59,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/1EK2pWm",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_915323-MLB118582467826_102026-O.webp"
-  },
-  {
-   "item": "MLB7198295688",
-   "titulo": "Carta Pokémon Bastiodon Ilustração Rara Escuridão Absoluta",
-   "preco": 46.69,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/2nE3pWj",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_646952-MLB113508008226_072026-O.webp"
-  },
-  {
-   "item": "MLB2202579943",
-   "titulo": "Carta Pokémon Whimsicott V Astro Astros Cintilantes Original",
-   "preco": 31.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/2MccEGS",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_768325-MLB69966693380_062023-O.webp"
-  },
-  {
-   "item": "MLB2104983402",
-   "titulo": "Carta Pokémon Tsareena V Full Arte Coleção Golpe Fusão",
-   "preco": 47.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/1hbwLkR",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_911835-MLB75311716968_032024-O.webp"
-  },
-  {
-   "item": "MLB6533836682",
-   "titulo": "Carta Pokemon Turtwig 30 Anos Parceiros Iniciais Copag",
-   "preco": 67.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/17HgYHw",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_623088-MLB109721692145_032026-O.webp"
-  },
-  {
-   "item": "MLB2676370071",
-   "titulo": "Carta Pokémon Lilligant De Hisui V Astro Estrelas Radiantes",
-   "preco": 55.2,
-   "desconto": 20,
-   "blackFriday": false,
-   "link": "https://meli.la/2vio775",
-   "foto": "https://http2.mlstatic.com/D_NQ_NP_814433-MLB69984704707_062023-O.webp"
+   "obs": null,
+   "productId": "avulsos-colecao_ilustracao-parceiro-inicial-serie-3",
+   "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167154/Pokemon-TCG---First-Partner-Illustration-Collection—Series-3_PTBR.png?v=639201668237700000"
   }
  ]
 }

@@ -17,6 +17,11 @@
 //   • as com selo usam o card de Black Friday (tools/social-card.py --tema blackfriday). A foto vem do campo `foto` do
 //     arquivo (lida na mesma leitura, porque o ML não entrega a página do anúncio ao runner do GitHub) e, sem ela, do
 //     og:image do anúncio.
+// Três lojas (06/11/2026, planilha "Ofertas BF Pokémon TCG" do dono): cada linha pode trazer `loja` (mercadolivre,
+// padrão; shopee; amazon), o link de afiliado do dono daquela loja, `pix` (preço só no Pix, a legenda diz "no Pix") e
+// `productId` — mapeamento manual título a título, usado quando o título curto da planilha não passa no verificador;
+// o produto ainda tem de existir no site e o preço continua sujeito à mesma regra. Sem `item`, o anúncio do ML é
+// identificado pelo link. A mesma planilha alimenta a seção Black Friday da Home (tools/black-friday-site.mjs).
 // Kill switch: SOCIAL_BLACKFRIDAY=0.
 import fs from 'node:fs';
 import { montarLegenda, reais } from './legenda.js';
@@ -27,6 +32,14 @@ export const ARQUIVO = new URL('../../../config/social-black-friday.json', impor
 const H = 3600e3;
 const ITEM = /^MLB\d{6,15}$/;
 const MELI = /^https:\/\/meli\.la\/[A-Za-z0-9]+$/;
+// link de afiliado do dono por loja (Amazon: só o link curto, como as leituras manuais)
+export const LINKS = {
+  mercadolivre: MELI,
+  shopee: /^https:\/\/s\.shopee\.com\.br\/[A-Za-z0-9]+$/,
+  amazon: /^https:\/\/link\.amazon\/[A-Za-z0-9]+$/,
+};
+const NOME = { mercadolivre: 'Mercado Livre', shopee: 'Shopee', amazon: 'Amazon' };
+const lojaDe = (o) => (o?.loja == null ? 'mercadolivre' : o.loja);
 const IMG = /^https:\/\/(?:[a-z0-9-]+\.)*mlstatic\.com\/[^\s"'<>]+$/i;   // foto: só do CDN do Mercado Livre
 
 const CATALOGO = new URL('../../../config/catalog.json', import.meta.url);
@@ -46,9 +59,12 @@ export function cartaAvulsa(titulo) {
  *  products/offers = state.json do robô (msrp por produto e ofertas em estoque). */
 export function seladoComPrecoBom(o, { catalog, products = [], offers = [], site = null } = {}) {
   if (!catalog || cartaAvulsa(o.titulo)) return null;
-  const r = parseListing(o.titulo, catalog);
-  if (r.rejects.length || !r.collection || !r.type) return null;
-  const productId = productIdOf(r.collection, r.type, r.boosters ?? null, r.variant ?? null, r.lang);
+  let productId = typeof o.productId === 'string' && o.productId ? o.productId : null;
+  if (!productId) {
+    const r = parseListing(o.titulo, catalog);
+    if (r.rejects.length || !r.collection || !r.type) return null;
+    productId = productIdOf(r.collection, r.type, r.boosters ?? null, r.variant ?? null, r.lang);
+  }
   const p = (Array.isArray(products) ? products : []).find((x) => x?.id === productId);
   if (!p) return null;                                     // fora do catálogo do site: não posta
   const msrp = typeof p.msrp === 'number' && p.msrp > 0 ? p.msrp : null;
@@ -74,9 +90,11 @@ export function candidatosCampanha(campanha, { now = Date.now(), env = {}, maxHo
   const site = melhoresDoSite(state.offers);
   const melhor = new Map();                                 // um anúncio por produto: o mais barato
   for (const o of campanha.ofertas) {
-    if (!o || !ITEM.test(o.item) || !MELI.test(o.link) || typeof o.titulo !== 'string' || !o.titulo.trim() || typeof o.preco !== 'number' || !(o.preco > 0)) continue;
+    const loja = lojaDe(o);
+    if (!o || !LINKS[loja]?.test(o.link) || (o.item != null && !ITEM.test(o.item)) || (loja === 'mercadolivre' && o.item == null && !o.productId) || typeof o.titulo !== 'string' || !o.titulo.trim() || typeof o.preco !== 'number' || !(o.preco > 0)) continue;
     const bom = seladoComPrecoBom(o, { catalog, products: state.products, site });
     if (!bom) continue;
+    bom.imagem = (state.products || []).find((p) => p?.id === bom.productId)?.image || null;
     const atual = melhor.get(bom.productId);
     if (!atual || o.preco < atual.o.preco) melhor.set(bom.productId, { o, ...bom, economia: 1 - o.preco / bom.ref });
   }
@@ -87,19 +105,21 @@ export function candidatosCampanha(campanha, { now = Date.now(), env = {}, maxHo
   return [...bf, ...resto].map((x) => candidatoCampanha(x.o, campanha.capturedAt, x));
 }
 
-export function candidatoCampanha(o, capturedAt, { productId = null, ref = null, tipoRef = null } = {}) {
-  const { texto, parseMode } = montarLegenda({ titulo: o.titulo, atual: o.preco, loja: 'Mercado Livre', link: o.link, afiliado: true, produtoId: productId });
+export function candidatoCampanha(o, capturedAt, { productId = null, ref = null, tipoRef = null, imagem = null } = {}) {
+  const loja = lojaDe(o);
+  const { texto, parseMode } = montarLegenda({ titulo: o.titulo, atual: o.preco, loja: NOME[loja], link: o.link, afiliado: true, produtoId: productId, pix: o.pix === true });
   const topo = o.blackFriday === true ? '🖤 <b>BLACK FRIDAY</b> 🖤\n\n' : '';
   const linhaRef = ref == null ? null : tipoRef === 'copag'
     ? (o.preco < ref - 0.009 ? `💰 Abaixo do preço sugerido Copag (${reais(ref)})` : `💰 No preço sugerido Copag (${reais(ref)})`)
     : `💰 Abaixo do menor preço das outras lojas (${reais(ref)})`;
   const extra = [linhaRef, `🕒 Preço lido em ${quando(capturedAt)}; pode ter mudado`].filter(Boolean).join('\n');
-  const ofertaId = `ml:${o.item}`;
+  const ofertaId = o.item ? `ml:${o.item}` : `${loja}:${o.link.split('/').pop()}`;
+  const foto = typeof o.foto === 'string' && IMG.test(o.foto) ? o.foto : (typeof imagem === 'string' && /^https:\/\//.test(imagem) ? imagem : null);
   return {
     item: { ofertaId, texto: `${topo}${texto}\n\n${extra}`, canal: 'whatsapp' },
-    oferta: { id: ofertaId, productId, storeId: 'mercadolivre', firstSeen: null },
-    foto: typeof o.foto === 'string' && IMG.test(o.foto) ? o.foto : null, itemMl: o.item, tema: o.blackFriday === true ? 'blackfriday' : null,
-    parseMode, afiliado: true, loja: 'mercadolivre', campanha: 'black-friday', blackFriday: o.blackFriday === true, preco: o.preco,
+    oferta: { id: ofertaId, productId, storeId: loja, firstSeen: null },
+    foto, ...(o.item ? { itemMl: o.item } : {}), tema: o.blackFriday === true ? 'blackfriday' : null,
+    parseMode, afiliado: true, loja, campanha: 'black-friday', blackFriday: o.blackFriday === true, preco: o.preco,
   };
 }
 

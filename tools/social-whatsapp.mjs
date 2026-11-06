@@ -62,7 +62,10 @@ function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shope
   const naCampanha = new Set(camp.map((c) => c.itemMl));
   const mlSemDup = ml.filter((c) => !naCampanha.has(mlListingId(c.oferta?.url)));
   if (env.SOCIAL_EXTERNAS === '0') return [...bf, ...intercalar(mlSemDup, campResto)];
-  const ext = ofertasExternas({ ...leituras, products: state.products, offers: state.offers, now: now ?? Date.now() }).map(candidatoExterno);
+  // produto que a campanha já leva naquela loja não sai de novo pela leitura manual (06/11: campanha com Shopee/Amazon)
+  const campLoja = new Set(camp.map((c) => `${c.loja}|${c.oferta?.productId}`));
+  const ext = ofertasExternas({ ...leituras, products: state.products, offers: state.offers, now: now ?? Date.now() }).map(candidatoExterno)
+    .filter((c) => !campLoja.has(`${c.loja}|${c.oferta?.productId}`));
   const doRobo = new Set([...naCampanha, ...ml.map((c) => mlListingId(c.oferta?.url))]);
   const mlPlanilha = ext.filter((c) => c.loja === 'mercadolivre' && !doRobo.has(c.itemMl));
   return [...bf, ...intercalar(mlSemDup, campResto, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'), mlPlanilha)];
