@@ -10,7 +10,7 @@
 // A biblioteca Baileys é instalada só no workflow (npm install --no-save); aqui é importada dinamicamente.
 // Uso: node tools/social-whatsapp.mjs parear --sessao arq --numero 5511...
 //      node tools/social-whatsapp.mjs enviar --sessao arq --state state.json --diario diario.json --titulo "..." [--card-dir dir]
-//           [--shopee leitura.json] [--amazon leitura.json]
+//           [--shopee leitura.json] [--amazon leitura.json] [--ml leitura.json]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -24,7 +24,7 @@ import { candidatosCampanha, fotoDoAnuncio, lerCampanha } from '../src/agents/so
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
 import { legendaWhatsApp, cifrarSessao, decifrarSessao, acharGrupo } from '../src/agents/social/whatsapp.js';
 
-const OPCOES = ['--sessao', '--numero', '--state', '--diario', '--titulo', '--card-dir', '--shopee', '--amazon'];
+const OPCOES = ['--sessao', '--numero', '--state', '--diario', '--titulo', '--card-dir', '--shopee', '--amazon', '--ml'];
 export function lerArgs(argv) {
   const o = { modo: argv[0] };
   if (!['parear', 'enviar'].includes(o.modo)) throw new Error('modo deve ser parear|enviar');
@@ -45,12 +45,13 @@ export function lerArgs(argv) {
  *  maior desconto primeiro, um anúncio por produto.
  *  Shopee/Amazon: leituras manuais das últimas 24 h que são promoção (src/agents/social/externas.js); os arquivos vêm
  *  de --shopee/--amazon, passados pelo workflow (sem eles, só ML).
+ *  ML fora do catálogo (06/11): planilha do dono via --ml, mesma regra; anúncio que o robô ou a campanha já têm não repete.
  *  SOCIAL_EXTERNAS=0 desliga Shopee/Amazon. A comissão não muda a ordem: dentro de cada loja vale o desconto. */
 const promocao = (o) => Math.max(o?.discount ?? 0, o?.vsMarket ?? 0);
 //  Black Friday (02/11/2026, pedido do dono: "quero priorizar elas"; só selado original e preço bom, sem carta avulsa):
 //  a campanha de config/social-black-friday.json vem na frente — primeiro as com selo BLACK FRIDAY, maior desconto primeiro; as demais da campanha entram no
 //  revezamento junto com ML/Shopee/Amazon. SOCIAL_BLACKFRIDAY=0 desliga. Fora da validade (24 h) a campanha some sozinha.
-function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [] }, campanha = lerCampanha() } = {}) {
+function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shopee: [], amazon: [], ml: [] }, campanha = lerCampanha() } = {}) {
   const camp = candidatosCampanha(campanha, { now: now ?? Date.now(), env, state });   // só selado original com preço bom (02/11)
   const bf = camp.filter((c) => c.blackFriday); const campResto = camp.filter((c) => !c.blackFriday);
   const ml = candidatos(state, { now, env, afiliados, limite: 300 })
@@ -62,7 +63,9 @@ function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shope
   const mlSemDup = ml.filter((c) => !naCampanha.has(mlListingId(c.oferta?.url)));
   if (env.SOCIAL_EXTERNAS === '0') return [...bf, ...intercalar(mlSemDup, campResto)];
   const ext = ofertasExternas({ ...leituras, products: state.products, offers: state.offers, now: now ?? Date.now() }).map(candidatoExterno);
-  return [...bf, ...intercalar(mlSemDup, campResto, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'))];
+  const doRobo = new Set([...naCampanha, ...ml.map((c) => mlListingId(c.oferta?.url))]);
+  const mlPlanilha = ext.filter((c) => c.loja === 'mercadolivre' && !doRobo.has(c.itemMl));
+  return [...bf, ...intercalar(mlSemDup, campResto, ext.filter((c) => c.loja === 'shopee'), ext.filter((c) => c.loja === 'amazon'), mlPlanilha)];
 }
 
 /** Fila do WhatsApp com o foco em economia (03/11/2026, src/agents/social/economia.js): só blister duplo/triplo/quádruplo
@@ -141,7 +144,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
     if (!state) { io.error('state.json ilegível'); return 1; }
     let afiliados = {}; try { afiliados = carregarAfiliados(); } catch { /* links originais */ }
     const diario = lerJson(o.diario, []);
-    const leituras = leiturasFixas ?? lerLeituras(o.shopee ? lerJson(o.shopee, null) : null, o.amazon ? lerJson(o.amazon, null) : null);
+    const leituras = leiturasFixas ?? lerLeituras(o.shopee ? lerJson(o.shopee, null) : null, o.amazon ? lerJson(o.amazon, null) : null, o.ml ? lerJson(o.ml, null) : null);
     let lista = candidatosWhatsApp(state, { now: now(), env, afiliados, leituras });
     let plano = planejar(lista, Array.isArray(diario) ? diario : [], { now: now(), regras: REGRAS_WHATSAPP });
     if (plano.enviar.length) {   // só resolve os links curtos de afiliado quando há o que postar (ordem: afiliado primeiro)

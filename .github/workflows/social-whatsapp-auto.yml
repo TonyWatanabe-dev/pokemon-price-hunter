@@ -78,7 +78,7 @@ jobs:
           SOCIAL_WHATSAPP_CHAVE: ${{ secrets.SOCIAL_WHATSAPP_CHAVE }}
         run: |
           mkdir -p social
-          node tools/social-whatsapp.mjs enviar --sessao social/wa-sessao.bin --state dados/data/state.json --diario social/wa-diario.json --titulo "$TITULO" --card-dir "$RUNNER_TEMP" --shopee config/afiliados/shopee-ofertas.json --amazon config/afiliados/amazon.json | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/social-whatsapp.mjs enviar --sessao social/wa-sessao.bin --state dados/data/state.json --diario social/wa-diario.json --titulo "$TITULO" --card-dir "$RUNNER_TEMP" --shopee config/afiliados/shopee-ofertas.json --amazon config/afiliados/amazon.json --ml config/afiliados/ml-leituras.json | tee -a "$GITHUB_STEP_SUMMARY"
           exit "${PIPESTATUS[0]}"
       - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         if: always() && hashFiles('social/wa-diario.json') != ''

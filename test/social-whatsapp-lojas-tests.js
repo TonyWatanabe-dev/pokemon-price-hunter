@@ -44,7 +44,7 @@ t('legenda: preço sem cupom no "Por", linha do cupom da Shopee e hora da leitur
 t('lerLeituras: só links curtos de afiliado do dono; arquivos reais carregam', () => {
   const l = lerLeituras({ ofertas: [sh('1', 'p1', 1), { ...sh('2', 'p1', 1), url: 'https://shopee.com.br/x' }] }, { links: { a: am('B000000001', 'p1', 1), b: { ...am('B000000002', 'p1', 1), shortUrl: null } } });
   assert.deepEqual([l.shopee.length, l.amazon.length], [1, 1]);
-  assert.deepEqual(lerLeituras(null, null), { shopee: [], amazon: [] });
+  assert.deepEqual(lerLeituras(null, null), { ml: [], shopee: [], amazon: [] });
   const ler = (f) => JSON.parse(fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'));
   const real = lerLeituras(ler('config/afiliados/shopee-ofertas.json'), ler('config/afiliados/amazon.json'));
   assert.ok(real.shopee.length > 0 && real.amazon.length > 0);
