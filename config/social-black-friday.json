@@ -1,5 +1,5 @@
 {
- "_nota": "Campanha Black Friday (pedido do dono em 02/11/2026; planilha \"Ofertas BF Pokémon TCG\" do dono de 06/11/2026). Uma linha por anúncio, com o link de afiliado do dono (ML etiqueta tcgpricehunter, Shopee Sub ID tcgpricehunter, Amazon link curto da tag tcgpricehunte-20). preco e de são os do anúncio na leitura, sem frete; o \"de\" é do próprio vendedor. productId: mapeamento manual título a título para um produto do site (null quando não há correspondência segura). capturedAt = hora em que a planilha foi enviada (as leituras são do mesmo dia). O grupo usa só as linhas com productId, fora do Pix e com preço até o sugerido Copag (ou 5% abaixo do menor preço do site); a Home mostra todas, com a data da leitura. Vale por validadeHoras (grupo e Home). Amazon só com link curto do dono: Display Escuridão Absoluta, Triplo Reinado Delta ficam de fora até ter link curto. imagem: a foto do produto que o site já usa (state.json, convertida para https); null quando não há produto do site.",
+ "_nota": "Campanha Black Friday (pedido do dono em 02/11/2026; planilha \"Ofertas BF Pokémon TCG\" do dono de 06/11/2026). Uma linha por anúncio, com o link de afiliado do dono (ML etiqueta tcgpricehunter, Shopee Sub ID tcgpricehunter, Amazon link curto da tag tcgpricehunte-20). preco e de são os do anúncio na leitura, sem frete; o \"de\" é do próprio vendedor. productId: mapeamento manual título a título para um produto do site (null quando não há correspondência segura). capturedAt = hora em que a planilha foi enviada (as leituras são do mesmo dia). O grupo usa só as linhas com productId, fora do Pix e com preço até o sugerido Copag (ou 5% abaixo do menor preço do site); a Home mostra todas, com a data da leitura. Vale por validadeHoras (grupo e Home). Amazon só com link curto do dono: Display Escuridão Absoluta, Triplo Reinado Delta ficam de fora até ter link curto. imagem: a foto do produto que o site já usa (state.json, convertida para https); sem produto do site, a foto do próprio anúncio (og:image lida em 06/11 no navegador do dono).",
  "capturedAt": "2026-11-06T22:16:00Z",
  "validadeHoras": 48,
  "ofertas": [
@@ -110,7 +110,7 @@
    "blackFriday": true,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://http2.mlstatic.com/D_NQ_NP_896714-MLA117063745326_102026-P.webp"
   },
   {
    "loja": "mercadolivre",
@@ -137,7 +137,7 @@
    "blackFriday": true,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://http2.mlstatic.com/D_NQ_NP_823691-MLB119006425951_102026-P.webp"
   },
   {
    "loja": "mercadolivre",
@@ -150,7 +150,7 @@
    "blackFriday": false,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://http2.mlstatic.com/D_NQ_NP_652778-MLB117430601954_102026-P.webp"
   },
   {
    "loja": "mercadolivre",
@@ -273,7 +273,7 @@
    "blackFriday": false,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://http2.mlstatic.com/D_NQ_NP_979150-MLB118718547651_102026-P.webp"
   },
   {
    "loja": "mercadolivre",
@@ -286,7 +286,7 @@
    "blackFriday": false,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://http2.mlstatic.com/D_NQ_NP_813285-MLA97324226431_112025-P.webp"
   },
   {
    "loja": "mercadolivre",
@@ -326,7 +326,7 @@
    "blackFriday": false,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://down-br.img.susercontent.com/file/br-11134207-820la-mqqmvbj3lssi4b"
   },
   {
    "loja": "shopee",
@@ -365,7 +365,7 @@
    "blackFriday": false,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://down-br.img.susercontent.com/file/sg-11134201-8257z-mudk3366lp1g64"
   },
   {
    "loja": "shopee",
@@ -378,7 +378,7 @@
    "blackFriday": false,
    "obs": null,
    "productId": null,
-   "imagem": null
+   "imagem": "https://down-br.img.susercontent.com/file/sg-11134201-82592-mudk4sqc5q81fe"
   },
   {
    "loja": "shopee",
