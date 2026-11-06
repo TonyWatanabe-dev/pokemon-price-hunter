@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { candidatosCampanha, cartaAvulsa, fotoDoAnuncio, lerCampanha, lerCatalogo, seladoComPrecoBom } from '../src/agents/social/blackfriday.js';
+import { LINKS, candidatosCampanha, cartaAvulsa, fotoDoAnuncio, lerCampanha, lerCatalogo, seladoComPrecoBom } from '../src/agents/social/blackfriday.js';
 import { candidatosWhatsApp } from '../tools/social-whatsapp.mjs';
 import { gerarCard } from '../tools/social-telegram-piloto.mjs';
 import { planejar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
@@ -75,22 +75,22 @@ t('WhatsApp: BF na frente da fila do robô', () => {
   assert.equal(p.enviar[0].itemMl, A.item, 'a primeira mensagem é a Black Friday de maior economia');
 });
 
-t('config real: válida, só links meli.la, todas com afiliado no mapa do site; nenhuma carta avulsa passa', () => {
+t('config real (planilha do dono de 06/11): link de afiliado por loja, produto do site, nenhuma carta avulsa', () => {
   const c = lerCampanha();
-  assert.ok(c && Array.isArray(c.ofertas) && c.ofertas.length >= 200);
-  assert.ok(c.ofertas.every((o) => /^MLB\d+$/.test(o.item) && /^https:\/\/meli\.la\/[A-Za-z0-9]+$/.test(o.link)));
-  assert.equal(new Set(c.ofertas.map((o) => o.item)).size, c.ofertas.length, 'um registro por anúncio');
-  assert.ok(c.ofertas.every((o) => /^https:\/\/http2\.mlstatic\.com\/D_NQ_NP_\d+-[A-Z]{3}\d+_\d+-O\.webp$/.test(o.foto)), 'toda oferta tem foto do CDN do ML');
+  assert.ok(c && Array.isArray(c.ofertas) && c.ofertas.length >= 30);
+  assert.ok(c.ofertas.every((o) => LINKS[o.loja]?.test(o.link)), 'link de afiliado do dono da própria loja');
+  assert.equal(new Set(c.ofertas.map((o) => o.link)).size, c.ofertas.length, 'um registro por anúncio');
+  assert.ok(c.ofertas.every((o) => typeof o.titulo === 'string' && o.preco > 0 && (o.de == null || o.de > o.preco) && typeof o.blackFriday === 'boolean' && typeof o.pix === 'boolean'));
   const aff = parseAffiliates(JSON.parse(fs.readFileSync(new URL('../config/affiliates.json', import.meta.url), 'utf8')));
-  assert.ok(c.ofertas.every((o) => aff.anuncios[o.item]), 'todo anúncio da campanha tem link de afiliado no site');
-  // state "generoso": todo produto do catálogo com msrp alto — mesmo assim carta avulsa, lote e acessório não passam
-  const cat = lerCatalogo();
-  const ids = new Set(c.ofertas.map((o) => { const r = parseListing(o.titulo, cat); return r.collection && r.type ? productIdOf(r.collection, r.type, r.boosters ?? null, r.variant ?? null, r.lang) : null; }).filter(Boolean));
-  const generoso = { products: [...ids].map((id) => ({ id, msrp: 1e6 })), offers: [] };
+  assert.ok(c.ofertas.filter((o) => o.item).every((o) => o.loja === 'mercadolivre' && /^MLB\d+$/.test(o.item) && aff.anuncios[o.item] === o.link), 'item do ML = anúncio do link no mapa do site');
+  const cat = lerCatalogo(); const noCatalogo = (id) => id.startsWith('avulsos-') || cat.products.some((p) => p.id === id) || cat.collections.some((col) => id.startsWith(`${col.id}-`));
+  const comId = c.ofertas.filter((o) => o.productId); const ids = new Set(comId.map((o) => o.productId));
+  assert.ok(comId.length >= 20 && comId.every((o) => noCatalogo(o.productId)), 'productId manual é de uma coleção do catálogo');
+  assert.ok(c.ofertas.every((o) => !cartaAvulsa(o.titulo) && !/\b(sleeves?|pasta|toploader|folhas|lotes?)\b/i.test(o.titulo)), 'só selado');
+  const generoso = { products: [...ids].map((id) => ({ id, msrp: 1e6, image: 'https://img/x.jpg' })), offers: [] };
   const r = candidatosCampanha(c, { now: Date.parse(c.capturedAt) + 3600e3, state: generoso });
-  assert.ok(r.length >= 15 && r.every((x) => x.foto && x.oferta.productId));
-  const titulo = (x) => c.ofertas.find((o) => o.item === x.itemMl).titulo;
-  assert.ok(r.every((x) => !cartaAvulsa(titulo(x)) && !/\b(sleeves?|pasta|toploader|folhas|lotes?|brilhantes|ultra raras?|energias?|c[oó]digos)\b|^\s*(kit )?\d+ cartas/i.test(titulo(x))), r.map(titulo).join(' | '));
+  assert.ok(r.length >= 15 && r.every((x) => x.foto && x.oferta.productId), `${r.length}`);
+  assert.deepEqual([...new Set(r.map((x) => x.loja))].sort(), ['amazon', 'mercadolivre', 'shopee']);
 });
 
 await ta('foto do anúncio: og:image só de mlstatic', async () => {
