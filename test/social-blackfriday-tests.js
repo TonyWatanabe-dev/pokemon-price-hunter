@@ -52,6 +52,11 @@ t('falha fechada, validade e kill switch', () => {
   assert.equal(candidatosCampanha({ ...camp, validadeHoras: 48 }, { now: Date.parse(CAP) + 40 * 3600e3, state }).length, 3, 'validade do arquivo');
   assert.equal(candidatosCampanha({ ...camp, validadeHoras: 500 }, { now: Date.parse(CAP) + 80 * 3600e3, state }).length, 0, 'teto de 72 h');
   assert.equal(candidatosCampanha({ capturedAt: CAP, ofertas: [{ ...A, link: 'https://evil.example/x' }] }, { now: NOW, state }).length, 0, 'link fora do meli.la');
+  // capturedAt por linha (releitura parcial de 07/11): a linha velha vence sozinha, a relida continua
+  const velha = new Date(Date.parse(CAP) - 20 * 3600e3).toISOString();
+  const mista = { capturedAt: CAP, ofertas: [{ ...A, capturedAt: velha }, B] };
+  assert.deepEqual(candidatosCampanha(mista, { now: Date.parse(CAP) + 6 * 3600e3, state }).map((x) => x.preco), [50], 'A (lida há 26 h) saiu, B ficou');
+  assert.match(candidatosCampanha({ capturedAt: CAP, ofertas: [{ ...A, capturedAt: velha }] }, { now: Date.parse(CAP), state })[0].item.texto, new RegExp(new Date(velha).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit' }).replace('/', '\\/')), 'legenda usa a hora da linha');
 });
 
 t('legenda: selo BF, preço, referência Copag/site, data da leitura e link de afiliado; sem "% OFF" do vendedor', () => {

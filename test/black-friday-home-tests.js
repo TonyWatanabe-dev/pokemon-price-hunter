@@ -62,4 +62,11 @@ t('asset no navegador: entra logo depois do palco, uma vez só, e o botão abre 
   assert.ok(classes.has('bf-fechado')); btn.click(); assert.equal(btn.attrs['aria-expanded'], 'true'); assert.equal(btn.textContent, 'Mostrar menos');
 });
 
+t('capturedAt por oferta: cada uma vence no seu tempo e o cabeçalho mostra o intervalo', () => {
+  const d = dadosSecao(camp([o({ titulo: 'velha', capturedAt: new Date(EM - 24 * 3600e3).toISOString() }), o({ titulo: 'nova' })]));
+  const h1 = render(d, EM + 3600e3); assert.match(h1, /2 anúncios/); assert.match(h1, /lidos entre 05\/11 às 19:00 e 06\/11 às 19:00/);
+  const h2 = render(d, EM + 30 * 3600e3); assert.match(h2, /1 anúncios/); assert.ok(!h2.includes('velha') && h2.includes('nova'), 'a de 54 h saiu');
+  assert.equal(render(d, EM + 49 * 3600e3), '', 'todas vencidas');
+});
+
 console.log(`✓ black-friday-home: ${n} grupos passaram`);

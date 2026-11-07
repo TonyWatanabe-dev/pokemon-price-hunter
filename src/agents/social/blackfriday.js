@@ -4,7 +4,7 @@
 // Fonte: config/social-black-friday.json — anúncios do Mercado Livre lidos na busca "pokémon tcg", cada um com o link de
 // afiliado do dono gerado para o próprio anúncio (MLB-<id>), preço e desconto vistos na leitura e o selo BLACK FRIDAY.
 // Regras:
-//   • vale por `validadeHoras` do arquivo (padrão 24 h, teto 72 h) a partir de capturedAt, como as leituras manuais de Shopee/Amazon; o post diz quando o
+//   • vale por `validadeHoras` do arquivo (padrão 24 h, teto 72 h) a partir do capturedAt da linha (ou do arquivo), como as leituras manuais de Shopee/Amazon; o post diz quando o
 //     preço foi lido, porque pode ter mudado;
 //   • só produto SELADO e ORIGINAL (decisão do dono em 02/11/2026: "não vou ficar anunciando cartas no grupo. É só
 //     produto selado e original e preços bons"): o título tem de ser reconhecido pelo mesmo verificador do robô
@@ -85,13 +85,14 @@ export function candidatosCampanha(campanha, { now = Date.now(), env = {}, maxHo
   if (env.SOCIAL_BLACKFRIDAY === '0' || !campanha || !Array.isArray(campanha.ofertas) || !state || !catalog) return [];
   // validadeHoras do arquivo (padrão 24 h, teto 72 h); a legenda sempre diz o dia da leitura.
   if (maxHoras == null) maxHoras = Number.isFinite(campanha.validadeHoras) ? Math.min(Math.max(campanha.validadeHoras, 1), 72) : 24;
-  const t = Date.parse(campanha.capturedAt);
-  if (!Number.isFinite(t) || t > now + 5 * 60e3 || now - t > maxHoras * H) return [];
+  // cada linha pode ter o próprio capturedAt (releitura parcial, 07/11/2026); sem ele, vale o do arquivo
+  const quandoDe = (o) => (typeof o?.capturedAt === 'string' ? o.capturedAt : campanha.capturedAt);
+  const vigente = (o) => { const t = Date.parse(quandoDe(o)); return Number.isFinite(t) && t <= now + 5 * 60e3 && now - t <= maxHoras * H; };
   const site = melhoresDoSite(state.offers);
   const melhor = new Map();                                 // um anúncio por produto: o mais barato
   for (const o of campanha.ofertas) {
     const loja = lojaDe(o);
-    if (!o || !LINKS[loja]?.test(o.link) || (o.item != null && !ITEM.test(o.item)) || (loja === 'mercadolivre' && o.item == null && !o.productId) || typeof o.titulo !== 'string' || !o.titulo.trim() || typeof o.preco !== 'number' || !(o.preco > 0)) continue;
+    if (!o || !vigente(o) || !LINKS[loja]?.test(o.link) || (o.item != null && !ITEM.test(o.item)) || (loja === 'mercadolivre' && o.item == null && !o.productId) || typeof o.titulo !== 'string' || !o.titulo.trim() || typeof o.preco !== 'number' || !(o.preco > 0)) continue;
     const bom = seladoComPrecoBom(o, { catalog, products: state.products, site });
     if (!bom) continue;
     bom.imagem = (state.products || []).find((p) => p?.id === bom.productId)?.image || null;
@@ -102,7 +103,7 @@ export function candidatosCampanha(campanha, { now = Date.now(), env = {}, maxHo
   const todas = [...melhor.values()];
   const bf = todas.filter((x) => x.o.blackFriday === true).sort(ordem);
   const resto = todas.filter((x) => x.o.blackFriday !== true).sort(ordem);
-  return [...bf, ...resto].map((x) => candidatoCampanha(x.o, campanha.capturedAt, x));
+  return [...bf, ...resto].map((x) => candidatoCampanha(x.o, quandoDe(x.o), x));
 }
 
 export function candidatoCampanha(o, capturedAt, { productId = null, ref = null, tipoRef = null, imagem = null } = {}) {
