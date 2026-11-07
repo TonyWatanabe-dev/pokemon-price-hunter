@@ -1,6 +1,6 @@
 {
  "program": "shopee",
- "updatedAt": "2026-11-06",
+ "updatedAt": "2026-11-07",
  "regras": "Links de afiliado da Shopee gerados pelo dono no Portal de Afiliados (Link personalizado), um por produto. Chave = loja/item do anúncio (shopee.com.br/product/<loja>/<item>). Lido só por api/_lib/affiliates.mjs. Usado para trocar o destino de pistas (e, depois, ofertas) da Shopee pelo link do dono; sem preço aqui.",
  "links": {
   "445721324/28743217032": "https://s.shopee.com.br/8KqMPflVXS",
@@ -593,6 +593,19 @@
   "978433794/20898317181": "https://s.shopee.com.br/70LUaBQPZ6",
   "978433794/20699894921": "https://s.shopee.com.br/7AeumUPmE9",
   "553882697/22193762693": "https://s.shopee.com.br/6fieBZRgF4",
-  "1854821069/58213509214": "https://s.shopee.com.br/30pLoqRgyT"
+  "1854821069/58213509214": "https://s.shopee.com.br/30pLoqRgyT",
+  "289833923/23899669125": "https://s.shopee.com.br/6L5pMEGdu0",
+  "315886001/58210917911": "https://s.shopee.com.br/6VPFYXG0Z3",
+  "372765275/58217901380": "https://s.shopee.com.br/60SyxcHuZy",
+  "422661618/23033347969": "https://s.shopee.com.br/6AmP9vHHF1",
+  "570530015/58269308874": "https://s.shopee.com.br/9fMHKM3x8i",
+  "821171986/23694672091": "https://s.shopee.com.br/9zz7j0t9eA",
+  "406305539/22094995419": "https://s.shopee.com.br/AAIXvJsWJD",
+  "341653628/23699393213": "https://s.shopee.com.br/8KqtjwzV1s",
+  "819402616/58216327027": "https://s.shopee.com.br/8VAJwFyrgv",
+  "1159663797/22198589728": "https://s.shopee.com.br/80E3LL0lhq",
+  "1079031011/58213586630": "https://s.shopee.com.br/qksoBVyhi",
+  "437751820/58218770694": "https://s.shopee.com.br/gRSbsWc2h",
+  "714969484/58209507332": "https://s.shopee.com.br/9KjQvnzcSO"
  }
 }

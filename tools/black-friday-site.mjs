@@ -9,7 +9,7 @@
 //     da leitura e o aviso de que pode ter mudado e não inclui frete (frete desconhecido nunca vira zero);
 //   • ordem: selo Black Friday primeiro, depois maior desconto do anúncio; não usa comissão nem o Opportunity Score e não
 //     entra no ranking;
-//   • some sozinha depois de validadeHoras (mesma validade do grupo, teto 72 h) a partir de capturedAt;
+//   • cada oferta some sozinha depois de validadeHoras (mesma validade do grupo, teto 72 h) a partir do capturedAt dela (ou do arquivo);
 //   • só links de afiliado do dono das três lojas (mesmas regras de LINKS da campanha).
 // Uso: node tools/black-friday-site.mjs [--check]   (--check: falha se o asset publicado não bate com o config)
 import fs from 'node:fs';
@@ -27,34 +27,40 @@ const NOME = { mercadolivre: 'Mercado Livre', shopee: 'Shopee', amazon: 'Amazon'
 /** Campanha → dados públicos da seção (só o que a Home mostra), na ordem de exibição. */
 export function dadosSecao(campanha) {
   const horas = Number.isFinite(campanha?.validadeHoras) ? Math.min(Math.max(campanha.validadeHoras, 1), 72) : 24;
-  const t = Date.parse(campanha?.capturedAt);
-  if (!Number.isFinite(t) || !Array.isArray(campanha?.ofertas)) throw new Error('black-friday: campanha inválida');
+  const t0 = Date.parse(campanha?.capturedAt);
+  if (!Number.isFinite(t0) || !Array.isArray(campanha?.ofertas)) throw new Error('black-friday: campanha inválida');
+  const em = (o) => { const x = Date.parse(o?.capturedAt); return Number.isFinite(x) ? x : t0; };   // capturedAt da linha (releitura parcial)
   const ofertas = campanha.ofertas
     .filter((o) => o && NOME[o.loja] && LINKS[o.loja].test(o.link) && typeof o.titulo === 'string' && o.titulo.trim() && o.preco > 0)
     .map((o) => {
       const de = typeof o.de === 'number' && o.de > o.preco ? o.de : null;
       const i = typeof o.imagem === 'string' && /^https:\/\/[^\s"'<>]+$/.test(o.imagem) ? o.imagem : null;
-      return { l: o.loja, t: o.titulo.trim(), i, k: typeof o.tipo === 'string' && o.tipo.trim() ? o.tipo.trim() : 'Selado', p: o.preco, d: de, x: de ? Math.round((1 - o.preco / de) * 100) : 0, pix: o.pix === true, bf: o.blackFriday === true, obs: o.obs || null, u: o.link };
+      return { e: em(o), l: o.loja, t: o.titulo.trim(), i, k: typeof o.tipo === 'string' && o.tipo.trim() ? o.tipo.trim() : 'Selado', p: o.preco, d: de, x: de ? Math.round((1 - o.preco / de) * 100) : 0, pix: o.pix === true, bf: o.blackFriday === true, obs: o.obs || null, u: o.link };
     })
     .sort((a, b) => (b.bf - a.bf) || (b.x - a.x) || (a.p - b.p));
-  return { em: t, ate: t + horas * 3600e3, ofertas };
+  const es = ofertas.map((o) => o.e);
+  return { em: es.length ? Math.min(...es) : t0, ate: (es.length ? Math.max(...es) : t0) + horas * 3600e3, h: horas * 3600e3, ofertas };
 }
 
 /** HTML da seção (puro; roda no navegador e no teste). Vazio fora da validade. */
 export function render(d, now) {
-  if (!d || !d.ofertas || !d.ofertas.length || now < d.em - 3e5 || now > d.ate) return '';
+  if (!d || !d.ofertas) return '';
+  const vale = d.ofertas.filter((o) => now >= o.e - 3e5 && now <= o.e + d.h);
+  if (!vale.length) return '';
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const rs = (v) => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   const lojas = { mercadolivre: 'Mercado Livre', shopee: 'Shopee', amazon: 'Amazon' };
-  const quando = new Date(d.em).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' às');
+  const fmt = (x) => new Date(x).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(',', ' às');
+  const es = vale.map((o) => o.e); const a = fmt(Math.min(...es)); const b = fmt(Math.max(...es));
+  const quando = a === b ? `em ${a}` : `entre ${a} e ${b}`;
   const card = (o, i) => `<li class="bf-c${i >= 10 ? ' bf-mais' : i >= 4 ? ' bf-m' : ''}"><div class="bf-top"><span class="bf-loja bf-${o.l}">${lojas[o.l]}</span>${o.bf ? '<span class="bf-selo">Black Friday</span>' : ''}${o.x >= 5 ? `<span class="bf-x">-${o.x}%</span>` : ''}</div>`
     + `<div class="bf-f">${o.i ? `<img src="${esc(o.i)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="160" height="160">` : `<span class="bf-sf">${esc(o.k)}</span>`}</div>`
     + `<p class="bf-t">${esc(o.t)}</p><p class="bf-p">${o.d ? `<s>${rs(o.d)}</s> ` : ''}<b>${rs(o.p)}</b>${o.pix ? ' <small>no Pix</small>' : ''}</p>`
     + `${o.obs ? `<p class="bf-o">${esc(o.obs)}</p>` : ''}<a class="bf-b" href="${esc(o.u)}" target="_blank" rel="sponsored nofollow noopener">Ver na loja</a></li>`;
-  const mais = d.ofertas.length > 10 ? `<button class="bf-ver" type="button" aria-expanded="false">Ver as ${d.ofertas.length} ofertas</button>` : '';
+  const mais = vale.length > 10 ? `<button class="bf-ver" type="button" aria-expanded="false">Ver as ${vale.length} ofertas</button>` : '';
   return `<section class="bf" id="black-friday" aria-labelledby="bf-h"><div class="bf-in"><header class="bf-h"><p class="bf-k">Black Friday</p><h2 id="bf-h">As ofertas de Black Friday que valem a pena</h2>`
-    + `<p class="bf-s">${d.ofertas.length} anúncios no Mercado Livre, na Shopee e na Amazon, lidos em ${quando}. Preço sem frete; pode ter mudado, confira na loja. O "de" é o do próprio anúncio.</p></header>`
-    + `<ul class="bf-g">${d.ofertas.map(card).join('')}</ul>${mais}<p class="bf-n">Links de afiliado: a loja pode pagar comissão ao site, sem custo para você. A comissão não muda a ordem nem o ranking.</p></div></section>`;
+    + `<p class="bf-s">${vale.length} anúncios no Mercado Livre, na Shopee e na Amazon, lidos ${quando}. Preço sem frete; pode ter mudado, confira na loja. O "de" é o do próprio anúncio.</p></header>`
+    + `<ul class="bf-g">${vale.map(card).join('')}</ul>${mais}<p class="bf-n">Links de afiliado: a loja pode pagar comissão ao site, sem custo para você. A comissão não muda a ordem nem o ranking.</p></div></section>`;
 }
 
 const CSS = `.bf{margin:28px 0;border-radius:20px;background:#0B0B0F;color:#F4F4F6;--bfy:#FFCF33;overflow:hidden}
@@ -83,7 +89,7 @@ export function asset(d) {
 const st=document.createElement("style");st.textContent=${JSON.stringify(CSS)};document.head.appendChild(st);
 const por=()=>{const v=document.getElementById("view");if(!v)return;const palco=v.querySelector(":scope>.stage");if(!palco||v.querySelector("#black-friday"))return;
 const h=render(D,Date.now());if(!h)return;palco.insertAdjacentHTML("afterend",h);const s=v.querySelector("#black-friday");const b=s.querySelector(".bf-ver");
-if(b){s.classList.add("bf-fechado");b.addEventListener("click",()=>{const f=s.classList.toggle("bf-fechado");b.setAttribute("aria-expanded",String(!f));b.textContent=f?"Ver as "+D.ofertas.length+" ofertas":"Mostrar menos"})}};
+if(b){s.classList.add("bf-fechado");b.addEventListener("click",()=>{const f=s.classList.toggle("bf-fechado");b.setAttribute("aria-expanded",String(!f));b.textContent=f?"Ver as "+s.querySelectorAll(".bf-c").length+" ofertas":"Mostrar menos"})}};
 const ini=()=>{const v=document.getElementById("view");if(!v)return;por();new MutationObserver(por).observe(v,{childList:true})};
 document.readyState==="loading"?document.addEventListener("DOMContentLoaded",ini):ini()})();
 `;
