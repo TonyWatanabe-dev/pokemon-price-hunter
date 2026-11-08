@@ -635,7 +635,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Destino limpo (17/10/2026): o botão da pista não leva ao afiliado de quem postou; o site usa o link do dono ou o anúncio limpo.
   if (process.env.PISTAS_DESTINO !== '0') { try { await destinosPistas(tipStore, { now, max: positiveEnv('PISTAS_DESTINO_MAX', 30), log }); } catch (e) { log(`[pistas] destino: ${e.message}`); } }
   // Site só com parceiros: pista aponta para qualquer loja; só publica a que leva a anúncio do ML com link do dono.
-  const tips = Object.values(tipStore).filter((t) => !SO || pub({ url: t.destino?.url ?? t.destino ?? t.url })).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
+  const tips = Object.values(tipStore).filter((t) => !SO || pub({ url: String(t.destino?.url ?? (typeof t.destino === 'string' ? t.destino : '') ?? '') || String(t.url ?? '') })).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
 
   // Bot: analisa links/promoções que você encaminhar para ele no Telegram.
   const inbox = readJson(dataPath('inbox.json'), {});
