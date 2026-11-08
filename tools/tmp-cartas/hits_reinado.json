@@ -1,0 +1,55 @@
+{
+ "_nota": "Reinado Delta (DLR), aberturas de 08/11/2026. Valores: média de 'Vendas nos últimos 3 meses' na Liga Pokémon, prints do dono em 08/11.",
+ "hits": [
+  {
+   "carta": "Mega Rayquaza ex",
+   "num": "138/103",
+   "raridade": "Ilustração Rara Especial",
+   "valor": 1071.1,
+   "nota": "menos de 5 vendas"
+  },
+  {
+   "carta": "Kecleon",
+   "num": "117/103",
+   "raridade": "Ilustração Rara",
+   "valor": 58.63
+  },
+  {
+   "carta": "Mega Rayquaza ex",
+   "num": "084/103",
+   "raridade": "Rara Dupla",
+   "valor": 40.0
+  },
+  {
+   "carta": "Groudon",
+   "num": "111/103",
+   "raridade": "Ilustração Rara",
+   "valor": 39.83
+  },
+  {
+   "carta": "Pincurchin",
+   "num": "109/103",
+   "raridade": "Ilustração Rara",
+   "valor": 29.0
+  },
+  {
+   "carta": "Hype da Emcee",
+   "num": "128/103",
+   "raridade": "Rara Ultra",
+   "valor": 17.6
+  },
+  {
+   "carta": "Raikou ex",
+   "num": "033/103",
+   "raridade": "Rara Dupla",
+   "valor": 8.85
+  },
+  {
+   "carta": "Wishiwashi ex",
+   "num": "029/103",
+   "raridade": "Rara Dupla",
+   "valor": 5.3
+  }
+ ],
+ "total": 1270.31
+}
