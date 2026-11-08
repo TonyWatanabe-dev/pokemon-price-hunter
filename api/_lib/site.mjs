@@ -8,6 +8,7 @@ import { PRODUCT_FIELDS, OFFER_FIELDS } from './home.mjs';
 import { byComparableTotal, byComparable } from './offer-rank.mjs';
 import { normalizeLojas } from './lojas.mjs';
 import { langOf } from '../_seo.mjs';
+import { soParceiros, lojaParceira } from './modo-parceiros.mjs';
 
 export const live = (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0;
 export const refOf = (p) => (p.copagConfirmed ? { v: p.msrp, net: false } : p.copagReference ? { v: p.copagReference, net: true } : null);
@@ -199,6 +200,8 @@ export function sitePre(st) {
 const LOJA_F = ['id', 'name', 'platform', 'status', 'offersLive', 'offersRead', 'lastReadAt', 'reason', 'searchUrl', 'searchKind'];
 /** /lojas: a lista já normalizada (mesma regra de lojasNormalize do site: fontes do estado + ofertas, sem config/stores.json). Nunca preço. */
 export function siteLojas(st, { now = Date.now() } = {}) {
-  return { lojas: normalizeLojas({ sources: st.sources || [], stores: [], offers: st.offers || [], now }).map((l) => pick(l, LOJA_F)) };
+  // Só lojas parceiras quando o modo está ligado: nenhuma outra loja (nem as lojas oficiais da configuração) sai daqui.
+  const ls = normalizeLojas({ sources: st.sources || [], stores: [], offers: st.offers || [], now });
+  return { lojas: (soParceiros() ? ls.filter((l) => lojaParceira(l.id)) : ls).map((l) => pick(l, LOJA_F)) };
 }
 export const SITE_PAGES = { copag: siteCopag, pistas: siteTips, prevenda: sitePre, lojas: siteLojas };

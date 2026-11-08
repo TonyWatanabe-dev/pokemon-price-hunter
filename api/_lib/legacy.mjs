@@ -1,3 +1,4 @@
+import { estadoParceiro } from './modo-parceiros.mjs';   // site só com parceiros: o que sai daqui já vem só com lojas parceiras
 // state.json do robô: fonte de fallback da API e, por enquanto, dos campos que ainda não estão no banco
 // (Deal Score atual do robô, atividade, pistas, reputação). Lido do ramo "data" (o mesmo que o site usa hoje),
 // com cache em memória para não baixar o arquivo a cada pedido.
@@ -23,7 +24,10 @@ async function fetchJson(url, ms) {
 }
 
 /** Retorna { st, from, age } ou lança erro se nenhuma fonte responder. */
-export async function legacyState({ now = Date.now() } = {}) {
+export async function legacyState(o = {}) {
+  const r = await legacyStateRaw(o); const st = estadoParceiro(r.st); return st === r.st ? r : { ...r, st };
+}
+async function legacyStateRaw({ now = Date.now() } = {}) {
   if (cache.st && now - cache.at < TTL_MS) return { st: cache.st, from: cache.from, age: now - cache.at, cached: true };
   if (fail && now - fail.at >= 0 && now - fail.at < NEG_MS) {
     if (cache.st) return { st: cache.st, from: cache.from + ' (cópia antiga)', age: now - cache.at, cached: true };
