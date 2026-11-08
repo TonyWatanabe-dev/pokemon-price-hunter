@@ -221,11 +221,12 @@ try {
     WHERE (s.reference_kind = 'COPAG_OFFICIAL_CURRENT') <> (c.product_id IS NOT NULL) OR (c.product_id IS NOT NULL AND s.reference_price <> c.value)`)) === 0);
   check('mercado só sem Copag atual e com critério robusto (≥ 3 ofertas, ≥ 2 fontes independentes)', (await n(`SELECT count(*) FROM hunter.product_stats
     WHERE reference_kind = 'MARKET_CURRENT' AND (reference_reason <> 'robust_current_market' OR (quality->'market_reference'->>'ok')::boolean IS NOT TRUE
-      OR (quality->'market_reference'->>'offers')::int < 3 OR (quality->'market_reference'->>'sources')::int < 2 OR number_of_in_stock_offers < 3)`)) === 0);
+      OR (quality->'market_reference'->>'offers')::int < 3 OR (quality->'market_reference'->>'sources')::int < 2
+      OR (number_of_in_stock_offers < 3 AND (quality->'market_reference'->>'external')::boolean IS NOT TRUE))`)) === 0);   // external = mercado de todas as lojas vindo do robô (SITE_SO_PARCEIROS): não depende das ofertas do banco
   // fontes independentes recontadas em SQL: loja tradicional = 1; vendedor de marketplace = 1 (por id estável); anúncios repetidos não somam;
   // loja em janela de desconfiança não conta. As fontes gravadas nunca podem passar dessa contagem (nem do nº de ofertas).
   const srcSql = `WITH s AS (SELECT product_id, as_of_day, (quality->>'anchor')::numeric AS anchor, (quality->'market_reference'->>'sources')::int AS src,
-        (quality->'market_reference'->>'offers')::int AS offs, quality->'market_reference'->>'composition' AS comp, reference_confidence::float8 AS rconf,
+        (quality->'market_reference'->>'offers')::int AS offs, quality->'market_reference'->>'composition' AS comp, reference_confidence::float8 AS rconf, coalesce((quality->'market_reference'->>'external')::boolean, false) AS ext,
         reference_kind, reference_price FROM hunter.product_stats),
       e AS (SELECT o.product_id, o.price, (o.marketplace_id <> 'direct') AS mk, CASE WHEN o.marketplace_id <> 'direct' AND se.external_id IS NOT NULL THEN o.marketplace_id || ':' || se.external_id ELSE 'store:' || o.store_id END AS k
         FROM hunter.offer o JOIN hunter.product p ON p.id = o.product_id JOIN s ON s.product_id = o.product_id LEFT JOIN hunter.seller se ON se.id = o.seller_id
@@ -233,19 +234,19 @@ try {
          AND (s.anchor IS NULL OR (o.price >= round(s.anchor * 0.55, 2) AND o.price <= round(s.anchor * 3, 2)))
          AND NOT EXISTS (SELECT 1 FROM hunter.source_distrust d WHERE d.store_id = o.store_id AND d.until_day >= s.as_of_day))
     SELECT s.product_id, s.src, s.offs, s.comp, s.rconf, s.reference_kind, s.reference_price, count(DISTINCT e.k)::int AS keys, count(e.k)::int AS n,
-           count(DISTINCT e.k) FILTER (WHERE NOT e.mk)::int AS direct_keys, count(DISTINCT e.k) FILTER (WHERE e.mk)::int AS mk_keys,
+           count(DISTINCT e.k) FILTER (WHERE NOT e.mk)::int AS direct_keys, count(DISTINCT e.k) FILTER (WHERE e.mk)::int AS mk_keys, bool_or(s.ext) AS ext,
            round(percentile_cont(0.5) WITHIN GROUP (ORDER BY e.price)::numeric, 2) AS med
       FROM s LEFT JOIN e ON e.product_id = s.product_id GROUP BY 1, 2, 3, 4, 5, 6, 7`;
   const srcRows = await q(srcSql);
-  const srcBad = srcRows.filter((r) => r.src != null && (r.src > r.keys || r.offs > r.n));
+  const srcBad = srcRows.filter((r) => !r.ext && r.src != null && (r.src > r.keys || r.offs > r.n));
   check('fontes independentes: vendedor repetido e loja em desconfiança não contam (recontagem em SQL)', srcBad.length === 0, srcBad.slice(0, 5));
-  const medBad = srcRows.filter((r) => r.reference_kind === 'MARKET_CURRENT' && (r.src !== r.keys || Math.abs(Number(r.med) - Number(r.reference_price)) > 0.005));
+  const medBad = srcRows.filter((r) => !r.ext && r.reference_kind === 'MARKET_CURRENT' && (r.src !== r.keys || Math.abs(Number(r.med) - Number(r.reference_price)) > 0.005));
   check('referência de mercado = mediana das ofertas elegíveis de fontes confiáveis (SQL)', medBad.length === 0, medBad.slice(0, 5));
   // Fase 6A.2: composição recontada em SQL (loja tradicional × fonte de marketplace) e confiança coerente com ela
   const compOf = (d, m) => (!d && !m ? 'NONE' : !m ? 'MARKET_STORES' : !d ? 'MARKETPLACE_ONLY' : 'MARKET_MIXED');
-  const compBad = srcRows.filter((r) => r.reference_kind === 'MARKET_CURRENT' && r.comp !== compOf(r.direct_keys, r.mk_keys));
+  const compBad = srcRows.filter((r) => !r.ext && r.reference_kind === 'MARKET_CURRENT' && r.comp !== compOf(r.direct_keys, r.mk_keys));
   check('composição do mercado correta (lojas tradicionais × marketplace, recontagem em SQL)', compBad.length === 0, compBad.slice(0, 5));
-  const confBad = srcRows.filter((r) => r.reference_kind === 'MARKET_CURRENT' && Math.abs(r.rconf - Math.round((0.6 + Math.min(0.15, 0.05 * (r.offs - 3)) + Math.min(0.1, 0.05 * (r.src - 2)))
+  const confBad = srcRows.filter((r) => !r.ext && r.reference_kind === 'MARKET_CURRENT' && Math.abs(r.rconf - Math.round((0.6 + Math.min(0.15, 0.05 * (r.offs - 3)) + Math.min(0.1, 0.05 * (r.src - 2)))
     * (r.comp === 'MARKETPLACE_ONLY' ? 0.85 : 1) * 1000) / 1000) > 0.0005);
   check('confiança da referência de mercado coerente com a composição (só marketplace × 0,85)', confBad.length === 0, confBad.slice(0, 5));
   rep.referencePolicy = rep.referencePolicy || {};

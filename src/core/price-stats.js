@@ -2,6 +2,7 @@
 // source_distrust), chama o motor puro e grava price_daily e product_stats de forma idempotente:
 // só escreve linha que mudou (IS DISTINCT FROM). Não lê nada de afiliado. Não altera price_history.
 import { computeProductStats, ENGINE_VERSION } from './price-engine.js';
+import { ligado as soParceiros, lojaParceira } from './modo-site.js';
 
 const J = (v) => JSON.stringify(v);
 export const STATS_COLS = {
@@ -17,7 +18,7 @@ export const STATS_COLS = {
 export async function loadInputs(c) {
   const q = async (sql) => (await c.query(sql)).rows;
   const sqls = [
-    `SELECT id, condition FROM product ORDER BY id`,
+    `SELECT id, condition, attrs->'market_ref' AS market_ref FROM product ORDER BY id`,
     `SELECT o.id, o.product_id, o.store_id, o.marketplace_id, se.external_id AS seller_key, o.status, o.condition, o.confirmed, o.price::float8 AS price,
          o.stock_status, o.shipping_status, o.total_price::float8 AS total_price, o.last_seen_at FROM offer o LEFT JOIN seller se ON se.id = o.seller_id`,
     `SELECT offer_id, observed_at AS t, price::float8 AS price, stock_status FROM price_history`,
@@ -41,7 +42,7 @@ export function computeAll({ products, offers, hist, removed, refs, dist }, asOf
   for (const o of offers) { const k = String(o.product_id); if (!byProduct.has(k)) byProduct.set(k, []); byProduct.get(k).push({ ...o, id: String(o.id), events: ev.get(String(o.id)) || [] }); }
   const refBy = new Map(refs.map((r) => [String(r.product_id), r]));
   return products.map((p) => {
-    const { stats, series, storeSeries } = computeProductStats({ product: p, offers: byProduct.get(String(p.id)) || [], reference: refBy.get(String(p.id)) || null, distrust, asOf });
+    const { stats, series, storeSeries } = computeProductStats({ product: p, offers: byProduct.get(String(p.id)) || [], reference: refBy.get(String(p.id)) || null, distrust, asOf, externalMarket: soParceiros() ? p.market_ref || null : null });
     return { product_id: String(p.id), stats, series, storeSeries };
   });
 }
@@ -62,7 +63,7 @@ export async function runPriceEngine(c, { asOf = new Date() } = {}) {
     WHERE (${cols.map((k) => `product_stats.${k}`).join(', ')}) IS DISTINCT FROM (${cols.map((k) => `EXCLUDED.${k}`).join(', ')})`, [J(rows)]);
   const row = (r, store, d) => ({ product_id: r.product_id, store_id: store, day: d.day, min_price: d.min, max_price: d.max, avg_price: d.avg, close_price: d.close, offers: d.offers });
   // store_id '' = produto (todas as lojas); demais = uma série por loja
-  const daily = all.flatMap((r) => [...r.series.map((d) => row(r, '', d)), ...Object.entries(r.storeSeries || {}).flatMap(([sid, ss]) => ss.map((d) => row(r, sid, d)))]);
+  const daily = all.flatMap((r) => [...r.series.map((d) => row(r, '', d)), ...Object.entries(r.storeSeries || {}).filter(([sid]) => !soParceiros() || lojaParceira(sid)).flatMap(([sid, ss]) => ss.map((d) => row(r, sid, d)))]);
   const dd = await c.query(`INSERT INTO price_daily (product_id, store_id, day, min_price, max_price, avg_price, close_price, offers, engine_version)
     SELECT product_id, store_id, day, min_price, max_price, avg_price, close_price, offers, $2 FROM jsonb_to_recordset($1::jsonb)
       AS x(product_id bigint, store_id text, day date, min_price numeric, max_price numeric, avg_price numeric, close_price numeric, offers int)

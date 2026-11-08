@@ -31,7 +31,7 @@ export function productsRows(products) {
     legacy_id: p.id, slug: of[p.id], tcg_id: TCG, collection_id: collectionId(p.collection),
     category_id: categoryOf(p.type), brand: 'Copag', canonical_name: `${p.collectionName} - ${label(p)}`,
     language: LANG_TAG[langOf(p)], units: p.boosters || null, variant: p.variant || null, image_url: p.image || null,
-    status: 'active', attrs: { type: p.type, typeLabel: p.typeLabel, group: p.group },
+    status: 'active', attrs: { type: p.type, typeLabel: p.typeLabel, group: p.group, ...(p.marketRef ? { market_ref: p.marketRef } : {}) },
     ean: p.ean || null,
   }));
 }

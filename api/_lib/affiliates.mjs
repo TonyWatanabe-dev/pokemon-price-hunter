@@ -95,3 +95,81 @@ export function afiliadoPreferido(cfg = null) {
 }
 /** Registra o desempate no offer-rank. Chamado pelas rotas que mostram ofertas (api/v1.mjs, api/pagina.mjs). */
 export function registrarDesempate(cfg = null) { setTiePreference(afiliadoPreferido(cfg)); }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SITE SÓ COM PARCEIROS (decisão do proprietário em 07/11/2026, docs/afiliados.md). O site público mostra apenas ofertas
+// que levam o link de afiliado do dono: anúncios do Mercado Livre com link no mapa + leituras manuais da Amazon e da
+// Shopee. O restante da coleta vira só referência de mercado. As funções abaixo são o ÚNICO ponto que decide isso; quem
+// as chama (src/core/parceiros.js) não lê configuração de afiliado. Ordenação entre parceiros continua por preço/nota:
+// a comissão não reordena (afiliadoPreferido segue sendo só desempate de total igual).
+// ---------------------------------------------------------------------------------------------------------------------
+import crypto from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/** Lojas cujas ofertas podem aparecer no site quando SITE_SO_PARCEIROS=1. */
+export const LOJAS_PARCEIRAS = Object.freeze(['mercadolivre', 'amazon', 'shopee']);
+
+/** Oferta do Mercado Livre cujo anúncio (MLB) tem link de afiliado do dono no mapa. Qualquer outra: false. */
+export function ofertaParceira(o, cfg = null) {
+  const id = mlListingId(o?.url);
+  return !!(id && (cfg || loadAffiliates()).anuncios?.[id]);
+}
+
+/** Carrega a configuração dos parceiros de uma pasta de config (HUNTER_CONFIG_DIR nos testes); sem pasta, a do repositório. */
+export function carregarParceiros({ dir = null } = {}) {
+  const base = dir ? path.resolve(dir) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../config');
+  const ler = (...p) => { try { return JSON.parse(fs.readFileSync(path.join(base, ...p), 'utf8')); } catch { return null; } };
+  return { cfg: parseAffiliates(ler('affiliates.json')), amazon: ler('afiliados', 'amazon.json'), shopee: ler('afiliados', 'shopee-ofertas.json') };
+}
+
+const SEM_OFERTA = /esgotad|indispon|sem oferta|sem estoque|n[ãa]o dispon/i;
+const FUTURO_MS = 5 * 60e3;   // mesma folga de relógio do restante do projeto (src/adapters/contract.js)
+const idDe = (storeId, url) => crypto.createHash('sha1').update(`${storeId}|${url}|`).digest('hex').slice(0, 12);
+
+/**
+ * Leituras manuais do dono (Amazon e Shopee) no formato de oferta do robô (src/run.js). Só entra a leitura com preço, sem
+ * "esgotado/sem oferta", com link curto do dono, de produto que existe, lida há no máximo `maxHoras` e não no futuro:
+ * cada leitura some sozinha quando vence. Frete NUNCA vira zero: fica desconhecido e o total é só o preço.
+ * Shopee: price = preço sem cupom (priceCupom segue como campo extra). products: mapa/lista/Set de ids de produto.
+ */
+export function ofertasManuaisParceiras({ now = new Date(), maxHoras = 48, products = {}, amazon = undefined, shopee = undefined } = {}) {
+  if (amazon === undefined || shopee === undefined) {
+    const lido = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return null; } };
+    if (amazon === undefined) amazon = lido(AMAZON_FILE);
+    if (shopee === undefined) shopee = lido(new URL('../../config/afiliados/shopee-ofertas.json', import.meta.url));
+  }
+  const ids = products instanceof Set ? products : new Set(Array.isArray(products) ? products.map((p) => p?.id ?? p) : Object.keys(products || {}));
+  const t0 = (now instanceof Date ? now : new Date(now)).getTime();
+  const limite = Math.max(0, Number(maxHoras)) * 3600e3;
+  const recente = (iso) => { const t = Date.parse(iso ?? ''); return Number.isFinite(t) && t <= t0 + FUTURO_MS && t0 - t <= limite ? new Date(t).toISOString() : null; };
+  const base = (storeId, storeName, e, at, extra) => {
+    const price = Math.round(Number(e.price) * 100) / 100;
+    return {
+      id: idDe(storeId, extra.url), productId: e.productId, matchConfidence: 1, storeId, storeName, storeKind: 'marketplace',
+      seller: e.seller || null, sellerId: null, sellerKind: 'marketplace_seller', title: e.title, url: extra.url, image: null, sku: extra.sku, ean: null,
+      prices: { base: price }, listPrice: null, price, priceKind: 'base', priceKindLabel: 'preço da loja',
+      shipping: null, shippingKnown: false, shippingAt: null, shippingError: null, total: price, perBooster: null,
+      stock: 'IN_STOCK', availableFrom: null, quantity: extra.quantity ?? null, sourceType: 'manual_afiliado', source_url: extra.url, source_timestamp: at,
+      firstSeen: at, stale: false, confirmed: true, manual: true, capturedAt: at, ...(extra.campos || {}),
+    };
+  };
+  const ok = (e, at) => at && ids.has(e?.productId) && Number.isFinite(Number(e.price)) && Number(e.price) > 0 && typeof e.title === 'string' && e.title && !SEM_OFERTA.test(String(e.stockNote ?? ''));
+  const out = [];
+  for (const l of Array.isArray(amazon?.links) ? amazon.links : []) {
+    const at = recente(l?.capturedAt);
+    if (!ok(l, at) || !/^[A-Z0-9]{10}$/.test(l.asin || '') || !AMAZON_CURTO.test(l.shortUrl || '')) continue;
+    const q = /somente\s+(\d+)\s+em estoque/i.exec(l.stockNote || '');
+    out.push(base('amazon', 'Amazon', l, at, { url: l.shortUrl, sku: l.asin, quantity: q ? Number(q[1]) : null, campos: { fulfilledBy: l.fulfilledBy ?? null } }));
+  }
+  for (const s of Array.isArray(shopee?.ofertas) ? shopee.ofertas : []) {
+    const at = recente(s?.capturedAt);
+    if (!ok(s, at) || !SHOPEE_ID.test(s.item || '') || !SHOPEE_LINK.test(s.url || '')) continue;
+    const cupom = Number(s.priceCupom);
+    out.push(base('shopee', 'Shopee', s, at, { url: s.url, sku: s.item, campos: { selo: s.selo ?? null, ...(Number.isFinite(cupom) && cupom > 0 ? { priceCupom: Math.round(cupom * 100) / 100 } : {}) } }));
+  }
+  // Mesmo link repetido na lista: fica a leitura mais recente.
+  const porId = new Map();
+  for (const o of out) { const x = porId.get(o.id); if (!x || o.source_timestamp > x.source_timestamp) porId.set(o.id, o); }
+  return [...porId.values()].sort((a, b) => a.id.localeCompare(b.id));
+}

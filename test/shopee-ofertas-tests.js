@@ -32,8 +32,11 @@ assert.match(row, /money\(l\.price\)\}<\/b> <small>em \$\{esc\(when\)\}/, 'preç
 assert.match(row, /com cupom da Shopee/, 'valor com cupom marcado como tal');
 assert.match(row, /href="\$\{esc\(safeUrl\(l\.url\)\)\}" target="_blank" rel="noopener nofollow sponsored"/);
 assert.match(JSON.parse(read('package.json')).scripts.build, /cp config\/afiliados\/shopee-ofertas\.json public\/data\/afiliados-shopee\.json/);
-for (const f of ['src/core/price-engine.js', 'src/core/opportunity-engine.js', 'api/v1.mjs', 'api/pagina.mjs', 'api/_lib/affiliates.mjs'])
+// Emenda de 07/11/2026 (decisão do proprietário, site só com parceiros): api/_lib/affiliates.mjs passou a ler a lista, e SÓ ele
+// (ofertasManuaisParceiras, filtro de publicação). Motores e rotas continuam sem ler; test/so-parceiros-tests.js cobre o novo caminho.
+for (const f of ['src/core/price-engine.js', 'src/core/opportunity-engine.js', 'api/v1.mjs', 'api/pagina.mjs'])
   assert.doesNotMatch(read(f), /shopee-ofertas/, `${f} não pode ler a lista`);
+assert.match(read('api/_lib/affiliates.mjs'), /shopee-ofertas/, 'o módulo de afiliados é o único leitor da lista (emenda de 07/11/2026)');
 console.log(`✓ Também na Shopee: ${doc.ofertas.length} anúncios do dono, fora do ranking`);
 for (const f of ['config/afiliados/shopee-ofertas.json', 'config/afiliados/amazon.json'])
   assert.doesNotMatch(read(f), /\b1 unidades?\b/, `${f}: estoque de 1 vira "última unidade"`);

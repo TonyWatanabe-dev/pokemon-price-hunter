@@ -129,7 +129,7 @@ export function historyAnchorOf({ reference, currentInStock = [], historyPrices 
  *   em estoque, ver marketReferenceOf) > NONE. O desconto (discount_vs_reference) é contra essa referência.
  * offers[i]: { id, store_id, marketplace_id, seller_key, status, condition, confirmed, price, stock_status, shipping_status, total_price, last_seen_at, events }
  */
-export function computeProductStats({ product, offers, reference = null, distrust = null, asOf }) {
+export function computeProductStats({ product, offers, reference = null, distrust = null, asOf, externalMarket = null }) {
   // defesa: preço de lançamento (histórico) ou referência comunitária nunca entram como referência atual, mesmo se alguém as passar
   if (reference && (reference.kind ?? 'COPAG_OFFICIAL_CURRENT') !== 'COPAG_OFFICIAL_CURRENT') reference = null;
   const q = { removed: 0, pending: 0, no_price: 0, other_condition: 0, unconfirmed: 0, implausible: 0, untrusted_points: 0, implausible_points: 0 };
@@ -183,7 +183,14 @@ export function computeProductStats({ product, offers, reference = null, distrus
   const implausibleInStock = live.filter((o) => o.stock_status === 'in_stock').length - inStock.length;
   // fonte confiável: loja fora da janela de desconfiança; vendedor de marketplace também pode ter janela própria ('<marketplace>:<vendedor>')
   const isTrusted = (src, o) => trusted(distrust, o.store_id, asOf) && (src.type !== 'MARKETPLACE_SELLER' || trusted(distrust, src.key, asOf));
-  const market = marketReferenceOf(inStock, { implausibleInStock, isTrusted });
+  // Site só com parceiros (SITE_SO_PARCEIROS): o banco só tem ofertas de parceiros, então o mercado "de verdade" (todas as lojas lidas) vem
+  // pronto do robô (state.products[].marketRef → product.attrs.market_ref): mediana do preço, nº de ofertas e de fontes, composição, sem nome
+  // de loja. Quando existe, substitui o mercado derivado só das ofertas do banco (quality.market_reference.external = true). Sem ele
+  // (flag desligada ou mercado fraco), vale o cálculo de sempre.
+  const ext = externalMarket && Number(externalMarket.price) > 0 ? externalMarket : null;
+  const market = ext ? { ok: true, price: round2(Number(ext.price)), confidence: ext.confidence ?? null, reason: 'robust_current_market', composition: ext.composition ?? 'MARKET_MIXED',
+    offers: ext.offers ?? null, sources: ext.sources ?? null, stores: null, marketplace_sellers: null, marketplaces: null, direct_sources: null, marketplace_sources: null,
+    untrusted: 0, untrusted_sources: 0, implausible: 0, external: true } : marketReferenceOf(inStock, { implausibleInStock, isTrusted });
   const cur = resolveCurrentReference({ copag: refOk ? { reference_kind: 'COPAG_OFFICIAL_CURRENT', verification_status: 'verified', value: reference.value,
     source: reference.source, confidence: reference.confidence ?? null, verified_at: reference.verified_at } : null, market, asOf });
 
@@ -226,7 +233,7 @@ export function computeProductStats({ product, offers, reference = null, distrus
         market_reference: { ok: market.ok, reason: market.reason, composition: market.composition, offers: market.offers, sources: market.sources,
           direct_sources: market.direct_sources, marketplace_sources: market.marketplace_sources, stores: market.stores,
           marketplace_sellers: market.marketplace_sellers, marketplaces: market.marketplaces, untrusted: market.untrusted,
-          untrusted_sources: market.untrusted_sources, implausible: market.implausible, price: market.ok ? market.price : null },
+          untrusted_sources: market.untrusted_sources, implausible: market.implausible, price: market.ok ? market.price : null, ...(market.external ? { external: true } : {}) },
         history_anchor: round2(hAnchor), history_anchor_source: hAnchor == null ? null : hAnchor === anchor ? (refOk ? 'reference' : 'current_median') : curIn.length ? 'current_median_small' : 'history_median' },
       engine_version: ENGINE_VERSION,
     },

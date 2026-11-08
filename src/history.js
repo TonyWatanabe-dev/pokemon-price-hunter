@@ -83,6 +83,30 @@ export function trimJsonl(file, days = 45) {
   } catch { /* sem arquivo */ }
 }
 
+// Site só com parceiros (SITE_SO_PARCEIROS): o site lê data/hist/<id>.json, então as séries de lojas que não são parceiras saem
+// dos arquivos (o arquivo sem série nenhuma continua, só com o cabeçalho). Devolve quantos arquivos mudaram. Idempotente.
+export function limparLojasHist(manter) {
+  const keep = new Set(manter); let n = 0; const dir = dataPath('hist');
+  let files; try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')); } catch { return 0; }
+  for (const f of files) {
+    const file = `${dir}/${f}`; const h = readJson(file, null); if (!h || typeof h.stores !== 'object') continue;
+    const fora = Object.keys(h.stores).filter((sid) => !keep.has(sid)); if (!fora.length) continue;
+    for (const sid of fora) delete h.stores[sid];
+    const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, JSON.stringify(h)); fs.renameSync(tmp, file); n++; } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; }
+  }
+  return n;
+}
+// Mesmo filtro para o history.jsonl (linhas com storeId fora da lista saem). Só reescreve se algo saiu.
+export function limparLojasJsonl(file, manter) {
+  const keep = new Set(manter);
+  let txt; try { txt = fs.readFileSync(file, 'utf8'); } catch { return 0; }
+  const lines = txt.split('\n').filter(Boolean); let fora = 0;
+  const kept = lines.filter((l) => { try { const ok = keep.has(JSON.parse(l).storeId); if (!ok) fora++; return ok; } catch { fora++; return false; } });
+  if (!fora) return 0;
+  const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, kept.join('\n') + (kept.length ? '\n' : '')); fs.renameSync(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; }
+  return fora;
+}
+
 // Resumo do histórico de um produto (menor preço do dia entre todas as lojas), usado no ranking "maior queda".
 // Só calcula o que os dados sustentam: com menos de 2 dias, não há queda.
 // Pontos inválidos (dia malformado, valor ausente, zero ou negativo) são descartados, nunca viram preço; duplicatas do mesmo dia ficam com o menor.

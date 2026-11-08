@@ -96,6 +96,9 @@ jobs:
           ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
           ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
           HUNTER_CEP: ${{ vars.HUNTER_CEP }}
+          # Site só com parceiros (decisão do proprietário, 07/11/2026; docs/afiliados.md): '1' publica só anúncios com link do dono
+          # (ML com link + Amazon/Shopee manuais); as demais lojas viram só referência de mercado. Variável SITE_SO_PARCEIROS=0 volta ao antigo.
+          SITE_SO_PARCEIROS: ${{ vars.SITE_SO_PARCEIROS || '1' }}
           # Alertas por usuário no Telegram (docs/alertas-telegram-usuario.md): desligados sem a variável = 1 e sem a
           # conta de serviço do Firebase. Só esta etapa recebe o Secret.
           ALERTAS_TELEGRAM_USUARIO: ${{ vars.ALERTAS_TELEGRAM_USUARIO }}
@@ -113,6 +116,7 @@ jobs:
         continue-on-error: true
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SITE_SO_PARCEIROS: ${{ vars.SITE_SO_PARCEIROS || '1' }}   # db-sync filtra o histórico; db-stats e db-opportunity usam a referência de mercado do robô
           PG_CA_CERT: ${{ secrets.PG_CA_CERT }}
           PG_TLS_STRICT: ${{ vars.PG_TLS_STRICT }}
         run: |
