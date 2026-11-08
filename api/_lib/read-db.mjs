@@ -32,7 +32,7 @@ const PRODUCTS_SQL = `
 const OFFERS_SQL = `
   SELECT o.legacy_id, p.legacy_id AS product_legacy, o.store_id, st.name AS store_name, se.name AS seller_name, o.url, o.image_url,
          o.price, o.price_kind, o.shipping_price, o.shipping_status, o.total_price, o.stock_status, o.quantity, o.confirmed, o.anomalous,
-         o.status, o.first_seen_at, o.last_seen_at,
+         o.status, o.first_seen_at, o.last_seen_at, o.source_type,
          op.opportunity_score AS opp_score, op.opportunity_band AS opp_band, op.confidence AS opp_conf
     FROM hunter.offer o
     LEFT JOIN hunter.opportunity op ON op.offer_id = o.id
@@ -238,14 +238,14 @@ const offerOut = (r) => ({
   total_price: num(r.total_price),                      // nulo quando o frete é desconhecido (nunca inventado)
   stock: r.stock_status, quantity: r.quantity ?? null, status: r.status, confirmed: r.confirmed, anomalous: r.anomalous,
   first_seen_at: iso(r.first_seen_at), last_seen_at: iso(r.last_seen_at),
-  freshness: offerFreshness(iso(r.last_seen_at)),       // frescor desta oferta, não o da loja nem o da resposta
+  freshness: offerFreshness(iso(r.last_seen_at), undefined, r.source_type),       // frescor desta oferta, não o da loja nem o da resposta
 });
 export async function productOffers(key, { page, limit, todas = false }) {
   const p = await productRow(key); if (!p) return null;
   const rows = await q(`
     SELECT o.legacy_id, o.store_id, st.name AS store_name, o.marketplace_id, se.name AS seller_name, o.title_raw, o.url, o.image_url, o.price, o.price_kind,
            o.pix_price, o.list_price, o.shipping_status, o.shipping_price, o.total_price, o.stock_status, o.quantity, o.status, o.confirmed, o.anomalous,
-           o.first_seen_at, o.last_seen_at, count(*) OVER () AS total_rows
+           o.first_seen_at, o.last_seen_at, o.source_type, count(*) OVER () AS total_rows
       FROM hunter.offer o LEFT JOIN hunter.store st ON st.id = o.store_id LEFT JOIN hunter.seller se ON se.id = o.seller_id
      WHERE o.product_id = $1 AND ($2::boolean OR o.status IN ('active', 'pending'))
      ORDER BY (o.status = 'active') DESC, (o.stock_status = 'in_stock') DESC, o.price ASC NULLS LAST, o.legacy_id
@@ -322,7 +322,7 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
   const rows = await query(`
     SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
-           f.last_seen_at, f.status AS offer_status, o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
+           f.last_seen_at, f.status AS offer_status, f.source_type, o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
            (SELECT max(created_at) FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT') AS engine_run_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
@@ -434,7 +434,7 @@ const opportunityOut = (r) => ({
 // (src/agents/social/elegiveis.js; um teste garante a igualdade); null se faltar algum dos três.
 export function opportunityCriteria(r, now = Date.now()) {
   const cmp = referenceComparison({ kind: r.opp_reference_kind, value: r.opp_reference_value, gap: r.opp_reference_gap, price: r.price, reasons: r.reasons });
-  const fr = offerFreshness(iso(r.last_seen_at), now instanceof Date ? now.getTime() : Number(now));
+  const fr = offerFreshness(iso(r.last_seen_at), now instanceof Date ? now.getTime() : Number(now), r.source_type);
   const price = num(r.price); const product = r.legacy_id != null ? String(r.legacy_id).trim() : ''; const store = r.store_id != null ? String(r.store_id).trim() : '';
   return {
     reference: { available: cmp.available, kind: cmp.reference_kind, value: cmp.reference_value, ...(cmp.available ? {} : { reason: cmp.reason }) },

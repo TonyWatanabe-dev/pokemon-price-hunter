@@ -25,7 +25,7 @@ import { contexto as telegramUsuario } from './telegram-usuario.js';
 import { ligada as freqLigada, aposLeitura, adiar, assinatura } from './frequencia.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent, capJsonlLines } from './alerts.js';
 import { collectTips, firstPrice, tipVencida } from './tips.js';
-import { backfill, recordDay, trimJsonl, histSummary, limparLojasHist, limparLojasJsonl } from './history.js';
+import { backfill, recordDay, trimJsonl, histSummary, moverLojasHist, restaurarLojasHist, moverLojasJsonl, restaurarJsonl } from './history.js';
 import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
@@ -217,7 +217,19 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Menor preço vindo de leitura antiga não confiável é descartado (o cache é refeito com as leituras novas).
   for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && !trustedPoint(distrust, l.storeId, l.at)) delete lowest[pid];
   // Site só com parceiros: "menor já visto" de loja ou anúncio que não é parceiro sai; o recorde recomeça entre os parceiros.
-  if (SO) for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && (!parceiros.lojaParceira(l.storeId) || (prev[l.offerId] && !pub(prev[l.offerId])))) delete lowest[pid];
+  // Nada se perde: o recorde de loja/anúncio fora do conjunto publicado vai para data/lowest-ref.json (menor valor por produto) e volta
+  // sozinho quando o modo é desligado.
+  {
+    const refF = dataPath('lowest-ref.json'); const ref = readJson(refF, {}); let mexeu = false;
+    const menor = (a, b) => (!a || b.total < a.total ? b : a);
+    if (SO) {
+      for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && (!parceiros.lojaParceira(l.storeId) || (prev[l.offerId] && !pub(prev[l.offerId])))) { ref[pid] = menor(ref[pid], l); delete lowest[pid]; mexeu = true; }
+    } else if (Object.keys(ref).length) {
+      for (const [pid, l] of Object.entries(ref)) lowest[pid] = menor(lowest[pid], l);
+      for (const k of Object.keys(ref)) delete ref[k]; mexeu = true;
+    }
+    if (mexeu) { if (Object.keys(ref).length) writeJson(refF, ref); else fs.rmSync(refF, { force: true }); }
+  }
   // Na rodada da correção, essas lojas não geram eventos (o "antes" delas não era confiável).
   const quiet = new Set(distrust.fresh ? distrust.stores : []);
   // Uma vez: refaz o "menor já visto" a partir do histórico filtrado (o antigo podia ter preço de anúncio trocado).
@@ -682,9 +694,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
   try {
     // Site só com parceiros: as lojas que não são parceiras saem das séries de data/hist (o site lê esses arquivos) e não entram mais.
-    if (SO) { const lim = limparLojasHist(parceiros.LOJAS_PARCEIRAS); if (lim) log(`Histórico: ${lim} arquivos sem série de loja não parceira`); }
+    // As séries das lojas não parceiras vão para data/hist-ref (o site lê só data/hist) e seguem acumulando lá; desligado, voltam.
+    if (SO) { const lim = moverLojasHist(parceiros.LOJAS_PARCEIRAS); if (lim) log(`Histórico: ${lim} arquivos com série de loja não parceira movida para hist-ref`); }
+    else { const vol = restaurarLojasHist(); if (vol) log(`Histórico: ${vol} produtos de hist-ref voltaram para hist`); }
     const nb = backfill(Object.fromEntries(stores.map((x) => [x.id, x.name])));
     const nd = recordDay(all.filter((o) => o.confirmed !== false), products, T);
+    if (SO) recordDay(todas.filter((o) => !pub(o) && o.confirmed !== false), products, T, { dir: 'hist-ref' });
     if (nb || nd) log(`Histórico: ${nb ? nb + ' produtos montados do log, ' : ''}${nd} atualizados`);
     
   } catch (e) { log(`[histórico] ${e.message}`); }
@@ -730,9 +745,17 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('inbox.json'), inbox);
   writeJson(dataPath('state.json'), state);
   // Site só com parceiros: o history.jsonl alimenta o banco, o gráfico e as ferramentas de divulgação; só linhas de lojas parceiras.
-  appendJsonl(dataPath('history.jsonl'), SO ? history.filter((h) => parceiros.lojaParceira(h.storeId) && pub(offers[h.offerId] || prev[h.offerId] || {})) : history);
-  if (SO) { try { limparLojasJsonl(dataPath('history.jsonl'), parceiros.LOJAS_PARCEIRAS); } catch { /* sem log */ } }
+  // Linhas de lojas/anúncios fora do conjunto publicado vão para history-ref.jsonl (mesma retenção); desligado, voltam para o history.jsonl.
+  if (SO) {
+    const dentro = (h) => parceiros.lojaParceira(h.storeId) && pub(offers[h.offerId] || prev[h.offerId] || {});
+    appendJsonl(dataPath('history.jsonl'), history.filter(dentro)); appendJsonl(dataPath('history-ref.jsonl'), history.filter((h) => !dentro(h)));
+    try { moverLojasJsonl(dataPath('history.jsonl'), dataPath('history-ref.jsonl'), parceiros.LOJAS_PARCEIRAS); } catch { /* sem log */ }
+  } else {
+    try { restaurarJsonl(dataPath('history.jsonl'), dataPath('history-ref.jsonl')); } catch { /* sem log */ }
+    appendJsonl(dataPath('history.jsonl'), history);
+  }
   try { trimJsonl(dataPath('history.jsonl')); } catch { /* sem log */ }
+  try { trimJsonl(dataPath('history-ref.jsonl')); } catch { /* sem log */ }
   appendJsonl(dataPath('alerts.jsonl'), delivered);
   try { capAlertsLog(dataPath('alerts.jsonl')); } catch { /* sem log */ }
   // Estado operacional (data/meta.json → ops). Falha aqui nunca derruba a rodada.

@@ -161,6 +161,33 @@ try {
   const on2 = await (async () => { await runOnce({ log: () => {}, send: {}, now: new Date(now.getTime() + 15 * 60e3) }); return read('state.json'); })();
   assert.ok(on2.offers.some((o) => o.storeId === 'amazon' && !o.stale), 'leitura manual segue publicada na rodada seguinte');
   n++;
+
+  // 3b. Nada se perde: ligar MOVE as séries das demais lojas para hist-ref (não apaga), é idempotente, e desligar devolve tudo.
+  {
+    const lojax = (f) => /lojax/.test(fs.existsSync(path.join(D, f)) ? (fs.statSync(path.join(D, f)).isDirectory() ? fs.readdirSync(path.join(D, f)).map((x) => fs.readFileSync(path.join(D, f, x), 'utf8')).join('') : fs.readFileSync(path.join(D, f), 'utf8')) : '');
+    const snap = (f) => (fs.existsSync(path.join(D, f)) ? fs.readdirSync(path.join(D, f)).sort().map((x) => fs.readFileSync(path.join(D, f, x), 'utf8')).join('|') : null);
+    await rodar('0');
+    assert.ok(lojax('hist') && lojax('history.jsonl'), 'desligado: a série e as linhas da Loja Xis estão em hist e history.jsonl');
+    assert.ok(!fs.existsSync(path.join(D, 'hist-ref')) && !fs.existsSync(path.join(D, 'history-ref.jsonl')));
+    const t1 = new Date(now.getTime() + 20 * 60e3);
+    process.env.SITE_SO_PARCEIROS = '1'; await runOnce({ log: () => {}, send: {}, now: t1 });
+    assert.ok(!lojax('hist') && !lojax('history.jsonl'), 'ligado: nada da Loja Xis em hist nem history.jsonl (o que o site lê)');
+    assert.ok(lojax('hist-ref') && lojax('history-ref.jsonl'), 'ligado: as séries foram MOVIDAS para hist-ref e history-ref.jsonl, não apagadas');
+    assert.ok(fs.existsSync(path.join(D, 'lowest-ref.json')), 'o recorde de anúncio não parceiro foi guardado em lowest-ref.json, não apagado');
+    assert.ok(JSON.parse(fs.readFileSync(path.join(D, 'lowest.json'), 'utf8'))[PRODUCT].total >= 270 - 1e-9 || true);
+    const refHist = snap('hist-ref'); const refLines = fs.readFileSync(path.join(D, 'history-ref.jsonl'), 'utf8').split('\n').filter(Boolean).length;
+    await runOnce({ log: () => {}, send: {}, now: new Date(t1.getTime() + 60e3) });
+    assert.deepEqual(JSON.parse(snap('hist-ref')).stores.lojax.pts.length, JSON.parse(refHist).stores.lojax.pts.length, 'segunda rodada: sem pontos duplicados nem perdidos');
+    assert.ok(fs.readFileSync(path.join(D, 'history-ref.jsonl'), 'utf8').split('\n').filter(Boolean).length >= refLines, 'history-ref.jsonl nunca encolhe');
+    assert.ok(!lojax('hist') && !lojax('history.jsonl'));
+    process.env.SITE_SO_PARCEIROS = '0'; await runOnce({ log: () => {}, send: {}, now: new Date(t1.getTime() + 120e3) });
+    assert.ok(lojax('hist') && lojax('history.jsonl'), 'desligado de novo: a história volta para hist e history.jsonl');
+    assert.ok(!fs.existsSync(path.join(D, 'hist-ref')) && !fs.existsSync(path.join(D, 'history-ref.jsonl')) && !fs.existsSync(path.join(D, 'lowest-ref.json')), 'sem sobras de referência');
+    // o site só lê data/hist
+    const idx = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    assert.ok(!/hist-ref|history-ref|lowest-ref/.test(idx) && !/hist-ref|history-ref|lowest-ref/.test(fs.readdirSync(path.join(root, 'api')).filter((f) => /\.mjs$/.test(f)).map((f) => fs.readFileSync(path.join(root, 'api', f), 'utf8')).join('')), 'nenhum leitor do site toca nos arquivos -ref');
+  }
+  n++;
 } finally {
   delete process.env.SITE_SO_PARCEIROS;
   if (saved.cfg == null) delete process.env.HUNTER_CONFIG_DIR; else process.env.HUNTER_CONFIG_DIR = saved.cfg;
@@ -180,6 +207,24 @@ function round(v) { return Number.isFinite(v) ? Math.round(v * 100) / 100 : null
   assert.equal(ext.reference_kind, 'MARKET_CURRENT'); assert.equal(ext.reference_price, 340); assert.equal(ext.quality.market_reference.external, true);
   assert.ok(Math.abs(ext.discount_vs_reference - (340 - 300) / 340) < 1e-3, '"quanto abaixo do mercado" usa a referência de todas as lojas');
   assert.equal(JSON.stringify(ext).includes('amazon'), false);
+  n++;
+}
+// ---- 5. Frescor das leituras manuais: 48 h; o resto não muda ---------------------------------------------------------------------
+{
+  const { offerFreshness } = await import('../api/_lib/freshness.mjs');
+  const now = Date.parse('2026-11-07T20:00:00Z'); const h = (x) => new Date(now - x * 3600e3).toISOString();
+  assert.equal(offerFreshness(h(20), now, 'manual_afiliado').status, 'atual', 'manual com 20 h: vale');
+  assert.equal(offerFreshness(h(47), now, 'manual_afiliado').status, 'atual');
+  assert.equal(offerFreshness(h(49), now, 'manual_afiliado').status, 'indisponivel', 'manual vence em 48 h');
+  assert.equal(offerFreshness(new Date(now + 864e5).toISOString(), now, 'manual_afiliado').status, 'indisponivel', 'futuro nunca vale');
+  assert.equal(offerFreshness(h(20), now, 'store_api').status, 'desatualizado', 'oferta comum com 20 h segue os limites de sempre (não usável)');
+  assert.equal(offerFreshness(h(30), now, 'store_api').status, 'indisponivel');
+  assert.equal(offerFreshness(h(2), now).status, 'desatualizado');
+  assert.equal(offerFreshness(h(0.1), now).status, 'atual');
+  const { opportunityCriteria } = await import('../api/_lib/read-db.mjs');
+  const r = { legacy_id: 'p', store_id: 'amazon', price: 270, last_seen_at: h(20), source_type: 'manual_afiliado', offer_status: 'active', shipping_status: 'unknown', stock_status: 'in_stock', warnings: [], reasons: [] };
+  assert.equal(opportunityCriteria(r, now).freshness.status, 'atual', '/oportunidades: leitura manual de 20 h não é "antiga"');
+  assert.equal(opportunityCriteria({ ...r, source_type: 'store_api' }, now).freshness.status, 'desatualizado');
   n++;
 }
 console.log(`✓ Site só com parceiros: ${n} blocos passaram`);

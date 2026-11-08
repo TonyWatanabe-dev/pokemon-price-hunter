@@ -98,7 +98,7 @@ export function stateProductOffers(st, key, { page, limit, todas = false }) {
     shipping: { status: o.shippingKnown ? (o.shipping === 0 ? 'free' : 'known') : 'unknown', price: o.shippingKnown ? o.shipping : null },
     total_price: o.shippingKnown ? o.total : null, stock: STOCK_IN[o.stock] || 'unknown', quantity: o.quantity ?? null, status: o.stale ? 'pending' : 'active',
     confirmed: o.confirmed !== false, anomalous: !!o.anomalous, first_seen_at: o.firstSeen ?? null, last_seen_at: o.source_timestamp ?? null,
-    freshness: offerFreshness(o.source_timestamp ?? null),
+    freshness: offerFreshness(o.source_timestamp ?? null, undefined, o.sourceType),
   }));
   return { product: { id: p.id, slug: of[p.id], name: nameOf(p) }, items, total: list.length };
 }

@@ -31,7 +31,17 @@ export function classify(at, now = nowMs(), source = null) {
 }
 /** Frescor de UMA oferta, pelo horário da própria leitura (last_seen_at / source_timestamp), com os mesmos limites.
  *  Nunca herda o frescor da loja ou da resposta: oferta sem horário, inválido ou no futuro (> 5 min) = indisponivel. */
-export function offerFreshness(at, now = nowMs()) { const c = classify(at, now); return { status: c.status, ageMin: c.ageMin }; }
+// Leitura manual do dono (Amazon/Shopee, source_type 'manual_afiliado'; decisão de 07/11/2026): vale 48 h a partir da leitura
+// (capturedAt = last_seen_at), em vez de 30/90 min. Só estas ofertas; o resto segue os limites acima.
+export const MANUAL_SOURCE = 'manual_afiliado';
+export const MANUAL_MIN = 48 * 60;
+export function offerFreshness(at, now = nowMs(), sourceType = null) {
+  if (sourceType !== MANUAL_SOURCE) { const c = classify(at, now); return { status: c.status, ageMin: c.ageMin }; }
+  const t = Date.parse(at ?? '');
+  if (!Number.isFinite(t) || t - now > 5 * 60e3) return { status: 'indisponivel', ageMin: null };
+  const ageMin = Math.max(0, Math.round((now - t) / 6e4));
+  return { status: ageMin <= MANUAL_MIN ? 'atual' : 'indisponivel', ageMin };
+}
 export const usable = (fr) => !!fr && USABLE.has(fr.status);
 
 /** Horário que prova o frescor de um state.json (ver o topo do arquivo). */
