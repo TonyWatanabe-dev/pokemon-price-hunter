@@ -55,7 +55,7 @@ let n = 0;
   const quemUsa = walk('src').filter((f) => /from '(?:\.\.?\/)+(?:core\/)?parceiros\.js'/.test(fs.readFileSync(path.join(root, f), 'utf8')));
   assert.deepEqual(quemUsa, ['src/run.js'], 'só a rodada usa o módulo de parceiros');
   const wf = fs.readFileSync(path.join(root, '.github/workflows/hunter.yml'), 'utf8');
-  assert.equal((wf.match(/SITE_SO_PARCEIROS: \$\{\{ vars\.SITE_SO_PARCEIROS \|\| '0' \}\}/g) || []).length, 2, 'caça e banco leem a variável do repositório (padrão desligado: o dono liga com SITE_SO_PARCEIROS=1)');
+  assert.equal((wf.match(/SITE_SO_PARCEIROS: \$\{\{ vars\.SITE_SO_PARCEIROS \|\| '1' \}\}/g) || []).length, 2, 'caça e banco leem a variável do repositório (padrão ligado por decisão do dono; 0 desliga)');
   n++;
 }
 
