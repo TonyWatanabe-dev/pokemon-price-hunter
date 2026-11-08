@@ -1,0 +1,1050 @@
+[
+  {
+    "t": "2026-11-01T17:00:30.525Z",
+    "productId": "me05-desafio",
+    "offerId": "1abd393a862a",
+    "storeName": "Mercado Livre",
+    "to": 132,
+    "msrp": null,
+    "type": "drop",
+    "from": 134.9
+  },
+  {
+    "t": "2026-11-01T17:00:30.525Z",
+    "productId": "me03-desafio",
+    "offerId": "c85612501dd6",
+    "storeName": "Mercado Livre",
+    "to": 133.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 134.9
+  },
+  {
+    "t": "2026-11-01T22:15:28.375Z",
+    "productId": "me01-colecao_ex-mega-lucario",
+    "offerId": "c6baa4e1efe6",
+    "storeName": "Mercado Livre",
+    "to": 189.77,
+    "msrp": null,
+    "type": "drop",
+    "from": 191
+  },
+  {
+    "t": "2026-11-02T15:15:34.162Z",
+    "productId": "c30-etb",
+    "offerId": "530923267608",
+    "storeName": "Mercado Livre",
+    "to": 679.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 695.9
+  },
+  {
+    "t": "2026-11-02T19:15:25.825Z",
+    "productId": "me05-blister3",
+    "offerId": "5a8e7801a5ef",
+    "storeName": "Mercado Livre",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-02T20:45:23.841Z",
+    "productId": "me05-blister4",
+    "offerId": "a81251758ed9",
+    "storeName": "Mercado Livre",
+    "to": 40.24,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 59.9
+  },
+  {
+    "t": "2026-11-03T00:00:37.559Z",
+    "productId": "c30-colecao_poster",
+    "offerId": "42f8f0de6f7f",
+    "storeName": "Mercado Livre",
+    "to": 163,
+    "msrp": 115.99,
+    "type": "drop",
+    "from": 169
+  },
+  {
+    "t": "2026-11-03T13:30:31.037Z",
+    "productId": "me05-box36",
+    "offerId": "950fb96bf21c",
+    "storeName": "Mercado Livre",
+    "to": 437.65,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T15:15:24.817Z",
+    "productId": "c30-colecao_ex-sylveon",
+    "offerId": "0fa859319e71",
+    "storeName": "Mercado Livre",
+    "to": 261.59,
+    "msrp": null,
+    "type": "drop",
+    "from": 329.9
+  },
+  {
+    "t": "2026-11-03T17:07:26.960Z",
+    "productId": "me05-blister3",
+    "offerId": "5a8e7801a5ef",
+    "storeName": "Mercado Livre",
+    "to": 39,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T18:16:30.647Z",
+    "productId": "me05-blister3",
+    "offerId": "7a3d004b7bd3",
+    "storeName": "Mercado Livre",
+    "to": 29.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:00:37.677Z",
+    "productId": "me04-box36",
+    "offerId": "1fed9fbe094a",
+    "storeName": "Mercado Livre",
+    "to": 399.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 439.5
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-deck-mewtwo",
+    "offerId": "669523d2df07",
+    "storeName": "Mercado Livre",
+    "to": 79.9,
+    "msrp": null,
+    "type": "lowest",
+    "from": 89.06
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "jp36-booster-ja",
+    "offerId": "784096bd2ade",
+    "storeName": "Mercado Livre",
+    "to": 75,
+    "msrp": null,
+    "type": "lowest",
+    "from": 94.99
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-colecao_ex-mega-zygarde",
+    "offerId": "034455bc50ab",
+    "storeName": "Mercado Livre",
+    "to": 171.25,
+    "msrp": 179.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-colecao_ex-mega-zygarde",
+    "offerId": "302473cf8ede",
+    "storeName": "Mercado Livre",
+    "to": 171.25,
+    "msrp": 179.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-colecao_ex-mega-zygarde",
+    "offerId": "ed3e852ad41c",
+    "storeName": "Mercado Livre",
+    "to": 171.25,
+    "msrp": 179.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-colecao_ex-mega-zygarde",
+    "offerId": "cfff9cfea7aa",
+    "storeName": "Mercado Livre",
+    "to": 171.25,
+    "msrp": 179.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-colecao_ex-mega-zygarde",
+    "offerId": "6d356f47313d",
+    "storeName": "Mercado Livre",
+    "to": 171.25,
+    "msrp": 179.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-colecao_ex-mega-zygarde",
+    "offerId": "17c94aeba523",
+    "storeName": "Mercado Livre",
+    "to": 171.25,
+    "msrp": 179.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "778ca7f989de",
+    "storeName": "Mercado Livre",
+    "to": 129.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "051f74385fbe",
+    "storeName": "Mercado Livre",
+    "to": 139.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-03T23:15:44.236Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "2dd851208db0",
+    "storeName": "Mercado Livre",
+    "to": 129.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-04T02:44:33.874Z",
+    "productId": "c30-etb",
+    "offerId": "b258a1de2c65",
+    "storeName": "Mercado Livre",
+    "to": 699.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 739.99
+  },
+  {
+    "t": "2026-11-04T12:15:25.692Z",
+    "productId": "avulsos-colecao_ex-mega-zeraora",
+    "offerId": "75f96dd4fd64",
+    "storeName": "Mercado Livre",
+    "to": 139.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-04T14:30:30.128Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "21e4a05eb477",
+    "storeName": "Mercado Livre",
+    "to": 129.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-04T15:45:25.420Z",
+    "productId": "me05-desafio",
+    "offerId": "bac061866d6e",
+    "storeName": "Mercado Livre",
+    "to": 119.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 129.9
+  },
+  {
+    "t": "2026-11-04T15:45:25.420Z",
+    "productId": "me03-desafio",
+    "offerId": "6369ac936638",
+    "storeName": "Mercado Livre",
+    "to": 124.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 129.9
+  },
+  {
+    "t": "2026-11-04T17:00:36.481Z",
+    "productId": "c30-colecao_poster",
+    "offerId": "8888041d7d40",
+    "storeName": "Mercado Livre",
+    "to": 168.9,
+    "msrp": 115.99,
+    "type": "drop",
+    "from": 189.9
+  },
+  {
+    "t": "2026-11-04T20:15:23.295Z",
+    "productId": "swsh11-blister3",
+    "offerId": "f09bb37c7400",
+    "storeName": "Mercado Livre",
+    "to": 289.05,
+    "msrp": null,
+    "type": "drop",
+    "from": 297.99
+  },
+  {
+    "t": "2026-11-04T20:15:23.295Z",
+    "productId": "me04-box36",
+    "offerId": "2e082e885ded",
+    "storeName": "Mercado Livre",
+    "to": 419,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-04T20:30:25.041Z",
+    "productId": "c30-etb-en",
+    "offerId": "82c6a16e1a15",
+    "storeName": "Mercado Livre",
+    "to": 1031.55,
+    "msrp": null,
+    "type": "drop",
+    "from": 1079.16
+  },
+  {
+    "t": "2026-11-04T21:15:22.509Z",
+    "productId": "c30-etb",
+    "offerId": "b258a1de2c65",
+    "storeName": "Mercado Livre",
+    "to": 689.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 699.99
+  },
+  {
+    "t": "2026-11-04T22:30:24.302Z",
+    "productId": "sv1-desafio",
+    "offerId": "b93630604862",
+    "storeName": "Mercado Livre",
+    "to": 484.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 499.9
+  },
+  {
+    "t": "2026-11-04T22:30:24.302Z",
+    "productId": "sv1-desafio",
+    "offerId": "b93630604862",
+    "storeName": "Mercado Livre",
+    "to": 484.9,
+    "msrp": null,
+    "type": "lowest",
+    "from": 499.9
+  },
+  {
+    "t": "2026-11-05T03:00:28.380Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "d7af915eb61d",
+    "storeName": "Mercado Livre",
+    "to": 125.93,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-05T11:48:19.155Z",
+    "productId": "me02_5-colecao_ex-mega-lucario",
+    "offerId": "e9f8038871e1",
+    "storeName": "Mercado Livre",
+    "to": 549.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 599.99
+  },
+  {
+    "t": "2026-11-05T13:00:32.927Z",
+    "productId": "c30-etb",
+    "offerId": "b258a1de2c65",
+    "storeName": "Mercado Livre",
+    "to": 649.99,
+    "msrp": null,
+    "type": "drop",
+    "from": 689.99
+  },
+  {
+    "t": "2026-11-05T13:45:21.623Z",
+    "productId": "sv4-blister3",
+    "offerId": "56ddeacbf717",
+    "storeName": "Mercado Livre",
+    "to": 257.35,
+    "msrp": null,
+    "type": "lowest",
+    "from": 297.78
+  },
+  {
+    "t": "2026-11-05T15:00:31.730Z",
+    "productId": "me04-box36",
+    "offerId": "dd893791a614",
+    "storeName": "Mercado Livre",
+    "to": 422,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-05T15:15:25.009Z",
+    "productId": "me05-blister3",
+    "offerId": "b6e2396f7fa9",
+    "storeName": "Mercado Livre",
+    "to": 37.18,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-05T15:15:25.009Z",
+    "productId": "me05-etb",
+    "offerId": "6c6305fb762d",
+    "storeName": "Mercado Livre",
+    "to": 400.11,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 459.9
+  },
+  {
+    "t": "2026-11-05T15:15:25.009Z",
+    "productId": "sv8_5-colecao_premium",
+    "offerId": "08c684844634",
+    "storeName": "Mercado Livre",
+    "to": 494.91,
+    "msrp": null,
+    "type": "drop",
+    "from": 549.9
+  },
+  {
+    "t": "2026-11-05T18:15:25.825Z",
+    "productId": "c30-colecao_poster",
+    "offerId": "de38d9f93046",
+    "storeName": "Mercado Livre",
+    "to": 168,
+    "msrp": 115.99,
+    "type": "drop",
+    "from": 174
+  },
+  {
+    "t": "2026-11-05T19:22:27.659Z",
+    "productId": "me05-blister4",
+    "offerId": "a81251758ed9",
+    "storeName": "Mercado Livre",
+    "to": 42.88,
+    "msrp": 55.99,
+    "type": "drop",
+    "from": 49.9
+  },
+  {
+    "t": "2026-11-05T20:30:27.914Z",
+    "productId": "me04-box36",
+    "offerId": "dd893791a614",
+    "storeName": "Mercado Livre",
+    "to": 422,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-05T22:15:21.377Z",
+    "productId": "me02_5-blister3",
+    "offerId": "51fc35b85d82",
+    "storeName": "Mercado Livre",
+    "to": 118,
+    "msrp": null,
+    "type": "drop",
+    "from": 119
+  },
+  {
+    "t": "2026-11-06T00:08:48.689Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "778ca7f989de",
+    "storeName": "Mercado Livre",
+    "to": 129.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T00:30:25.319Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "21e4a05eb477",
+    "storeName": "Mercado Livre",
+    "to": 129.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T00:45:24.857Z",
+    "productId": "cn11-box36-zh",
+    "offerId": "ae2d64da9368",
+    "storeName": "Mercado Livre",
+    "to": 394.99,
+    "msrp": null,
+    "type": "lowest",
+    "from": 410
+  },
+  {
+    "t": "2026-11-06T00:45:24.857Z",
+    "productId": "me05-box36",
+    "offerId": "21c6a01e0d3c",
+    "storeName": "Mercado Livre",
+    "to": 409,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T01:30:25.484Z",
+    "productId": "avulsos-colecao_ex-mega-dragonite",
+    "offerId": "a11a9295372d",
+    "storeName": "Mercado Livre",
+    "to": 149.99,
+    "msrp": 139.99,
+    "type": "drop",
+    "from": 179.99
+  },
+  {
+    "t": "2026-11-06T01:30:25.484Z",
+    "productId": "avulsos-colecao_ex-mega-darkrai",
+    "offerId": "7d4c50c67e5f",
+    "storeName": "Mercado Livre",
+    "to": 138.71,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T02:00:28.355Z",
+    "productId": "me04-blister4",
+    "offerId": "82288baa4cf4",
+    "storeName": "Mercado Livre",
+    "to": 48.16,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T04:15:19.688Z",
+    "productId": "sv9-blister3",
+    "offerId": "68e8938a4cb8",
+    "storeName": "Mercado Livre",
+    "to": 97.5,
+    "msrp": null,
+    "type": "drop",
+    "from": 103
+  },
+  {
+    "t": "2026-11-06T04:15:19.688Z",
+    "productId": "sv8_5-blister3",
+    "offerId": "0add2511fd0d",
+    "storeName": "Mercado Livre",
+    "to": 117,
+    "msrp": null,
+    "type": "drop",
+    "from": 119.9
+  },
+  {
+    "t": "2026-11-06T04:30:25.346Z",
+    "productId": "swsh10-blister3",
+    "offerId": "5c9e1aabd6ec",
+    "storeName": "Mercado Livre",
+    "to": 257,
+    "msrp": null,
+    "type": "drop",
+    "from": 268.4
+  },
+  {
+    "t": "2026-11-06T11:30:28.178Z",
+    "productId": "avulsos-colecao_ex-mega-darkrai",
+    "offerId": "d42944bf5e46",
+    "storeName": "Mercado Livre",
+    "to": 135.99,
+    "msrp": 139.99,
+    "type": "drop",
+    "from": 144.9
+  },
+  {
+    "t": "2026-11-06T11:30:28.178Z",
+    "productId": "avulsos-colecao_ex-mega-zeraora",
+    "offerId": "4a5d4ab12b1b",
+    "storeName": "Mercado Livre",
+    "to": 139.11,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T12:00:29.273Z",
+    "productId": "c30-etb-en",
+    "offerId": "82c6a16e1a15",
+    "storeName": "Mercado Livre",
+    "to": 1027.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 1031.55
+  },
+  {
+    "t": "2026-11-06T13:00:31.413Z",
+    "productId": "avulsos-colecao_ex-mega-rayquaza-ja",
+    "offerId": "26c22cb19f8f",
+    "storeName": "Mercado Livre",
+    "to": 1383.3,
+    "msrp": null,
+    "type": "drop",
+    "from": 1542.3
+  },
+  {
+    "t": "2026-11-06T13:45:23.066Z",
+    "productId": "me04-etb",
+    "offerId": "f719f69ec560",
+    "storeName": "Mercado Livre",
+    "to": 479.5,
+    "msrp": 399.99,
+    "type": "drop",
+    "from": 499
+  },
+  {
+    "t": "2026-11-06T14:30:25.467Z",
+    "productId": "me05-box36",
+    "offerId": "21c6a01e0d3c",
+    "storeName": "Mercado Livre",
+    "to": 409,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T14:54:09.294Z",
+    "productId": "avulsos-colecao_ex-bellibolt",
+    "offerId": "4e47deebf6c3",
+    "storeName": "Mercado Livre",
+    "to": 294.3,
+    "msrp": null,
+    "type": "drop",
+    "from": 319.9
+  },
+  {
+    "t": "2026-11-06T14:54:09.294Z",
+    "productId": "me03-desafio",
+    "offerId": "872af0bd2cca",
+    "storeName": "Mercado Livre",
+    "to": 128.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 138.9
+  },
+  {
+    "t": "2026-11-06T15:30:27.234Z",
+    "productId": "sv4-blister3",
+    "offerId": "56ddeacbf717",
+    "storeName": "Mercado Livre",
+    "to": 249.63,
+    "msrp": null,
+    "type": "drop",
+    "from": 257.35
+  },
+  {
+    "t": "2026-11-06T15:30:27.234Z",
+    "productId": "sv4-blister3",
+    "offerId": "56ddeacbf717",
+    "storeName": "Mercado Livre",
+    "to": 249.63,
+    "msrp": null,
+    "type": "lowest",
+    "from": 257.35
+  },
+  {
+    "t": "2026-11-06T15:30:27.234Z",
+    "productId": "me04-blister1",
+    "offerId": "1b9ab6a96b93",
+    "storeName": "Mercado Livre",
+    "to": 12.08,
+    "msrp": 13.99,
+    "type": "drop",
+    "from": 13.79
+  },
+  {
+    "t": "2026-11-06T15:45:21.089Z",
+    "productId": "me02-blister4",
+    "offerId": "54ee0d22f9f3",
+    "storeName": "Mercado Livre",
+    "to": 53.25,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T17:00:29.401Z",
+    "productId": "me02_5-blister3",
+    "offerId": "51fc35b85d82",
+    "storeName": "Mercado Livre",
+    "to": 110,
+    "msrp": null,
+    "type": "drop",
+    "from": 118
+  },
+  {
+    "t": "2026-11-06T19:00:31.526Z",
+    "productId": "me03-blister1",
+    "offerId": "a196e06b5867",
+    "storeName": "Mercado Livre",
+    "to": 14.72,
+    "msrp": null,
+    "type": "drop",
+    "from": 18.4
+  },
+  {
+    "t": "2026-11-06T19:45:20.889Z",
+    "productId": "me04-blister3",
+    "offerId": "b0bd048d5930",
+    "storeName": "Mercado Livre",
+    "to": 39.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-06T20:15:20.399Z",
+    "productId": "sv6-colecao_ex-grafaiai",
+    "offerId": "a2d016936337",
+    "storeName": "Mercado Livre",
+    "to": 199,
+    "msrp": null,
+    "type": "lowest",
+    "from": 237.4
+  },
+  {
+    "t": "2026-11-07T00:00:30.963Z",
+    "productId": "avulsos-colecao_ex-charizard-en",
+    "offerId": "0f2bf41cde5b",
+    "storeName": "Mercado Livre",
+    "to": 3420.3,
+    "msrp": null,
+    "type": "lowest",
+    "from": 3799.99
+  },
+  {
+    "t": "2026-11-07T03:00:32.091Z",
+    "productId": "cn10-booster-zh",
+    "offerId": "090ea57b2b3b",
+    "storeName": "Mercado Livre",
+    "to": 88.92,
+    "msrp": null,
+    "type": "drop",
+    "from": 90.07
+  },
+  {
+    "t": "2026-11-07T03:00:32.091Z",
+    "productId": "cn10-booster-zh",
+    "offerId": "090ea57b2b3b",
+    "storeName": "Mercado Livre",
+    "to": 88.92,
+    "msrp": null,
+    "type": "lowest",
+    "from": 89.29
+  },
+  {
+    "t": "2026-11-07T03:30:27.204Z",
+    "productId": "me04-box36",
+    "offerId": "1fed9fbe094a",
+    "storeName": "Mercado Livre",
+    "to": 399.9,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-07T03:30:27.204Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "12fe75e7ac11",
+    "storeName": "Mercado Livre",
+    "to": 128.9,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-07T03:45:21.340Z",
+    "productId": "me04-blister3",
+    "offerId": "08d646fb8877",
+    "storeName": "Mercado Livre",
+    "to": 40.69,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-07T04:00:30.100Z",
+    "productId": "me05-box36",
+    "offerId": "3ab406ae483b",
+    "storeName": "Mercado Livre",
+    "to": 419.8,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-07T15:30:28.193Z",
+    "productId": "me01-colecao_ex-mega-gengar",
+    "offerId": "2589a4f01fb9",
+    "storeName": "Mercado Livre",
+    "to": 148.4,
+    "msrp": null,
+    "type": "drop",
+    "from": 166.41
+  },
+  {
+    "t": "2026-11-07T15:30:28.193Z",
+    "productId": "sv10_5r-box18",
+    "offerId": "16e0db803cf7",
+    "storeName": "Mercado Livre",
+    "to": 729,
+    "msrp": null,
+    "type": "drop",
+    "from": 740
+  },
+  {
+    "t": "2026-11-07T22:30:26.633Z",
+    "productId": "me05-box36",
+    "offerId": "950fb96bf21c",
+    "storeName": "Mercado Livre",
+    "to": 437.65,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-07T23:30:26.837Z",
+    "productId": "me03-etb",
+    "offerId": "2f1e7067994c",
+    "storeName": "Mercado Livre",
+    "to": 419,
+    "msrp": null,
+    "type": "drop",
+    "from": 429
+  },
+  {
+    "t": "2026-11-08T00:30:24.698Z",
+    "productId": "sv4-blister3",
+    "offerId": "56ddeacbf717",
+    "storeName": "Mercado Livre",
+    "to": 240.9,
+    "msrp": null,
+    "type": "drop",
+    "from": 249.63
+  },
+  {
+    "t": "2026-11-08T00:30:24.698Z",
+    "productId": "sv4-blister3",
+    "offerId": "56ddeacbf717",
+    "storeName": "Mercado Livre",
+    "to": 240.9,
+    "msrp": null,
+    "type": "lowest",
+    "from": 249.63
+  },
+  {
+    "t": "2026-11-08T01:00:32.134Z",
+    "productId": "c30-etb",
+    "offerId": "7288f4a1d71a",
+    "storeName": "Mercado Livre",
+    "to": 699,
+    "msrp": null,
+    "type": "drop",
+    "from": 706
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me04-blister4",
+    "offerId": "094e61ecc3ca",
+    "storeName": "Shopee",
+    "to": 54.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me04-box36",
+    "offerId": "0a9cdd9fed5a",
+    "storeName": "Amazon",
+    "to": 394.25,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "avulsos-deck-mega-lucario",
+    "offerId": "0e56610c2869",
+    "storeName": "Amazon",
+    "to": 118.37,
+    "msrp": 139.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-box36",
+    "offerId": "1c10a06b1e24",
+    "storeName": "Shopee",
+    "to": 449.9,
+    "msrp": 449.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister4",
+    "offerId": "256ba6e51c8e",
+    "storeName": "Shopee",
+    "to": 52.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister3",
+    "offerId": "379710d9bc9c",
+    "storeName": "Shopee",
+    "to": 39.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister4",
+    "offerId": "518b9c68286c",
+    "storeName": "Shopee",
+    "to": 52.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister3",
+    "offerId": "5525d0298f9c",
+    "storeName": "Shopee",
+    "to": 39.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me04-blister3",
+    "offerId": "5e3310cae179",
+    "storeName": "Shopee",
+    "to": 42.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "swsh12_5-lata",
+    "offerId": "60e0282c98e7",
+    "storeName": "Amazon",
+    "to": 636.5,
+    "msrp": null,
+    "type": "lowest",
+    "from": 649.99
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me04-blister3",
+    "offerId": "6950b8e64a52",
+    "storeName": "Shopee",
+    "to": 41.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me04-blister3",
+    "offerId": "6d11802b4fce",
+    "storeName": "Amazon",
+    "to": 41.8,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister4",
+    "offerId": "7280d55bd3b7",
+    "storeName": "Shopee",
+    "to": 49.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister3",
+    "offerId": "7415ebb7876f",
+    "storeName": "Amazon",
+    "to": 41.22,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-combo",
+    "offerId": "8ca9e7e553cc",
+    "storeName": "Shopee",
+    "to": 249.99,
+    "msrp": 250.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me05-blister4",
+    "offerId": "a03862a37cb6",
+    "storeName": "Amazon",
+    "to": 48.43,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me03-blister4",
+    "offerId": "a5f862bfdc3f",
+    "storeName": "Shopee",
+    "to": 52.9,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me02-etb",
+    "offerId": "ccb7ee68fc75",
+    "storeName": "Amazon",
+    "to": 927.01,
+    "msrp": null,
+    "type": "lowest",
+    "from": 997
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "sv10_5w-blister3",
+    "offerId": "e38b4826f8ce",
+    "storeName": "Amazon",
+    "to": 180.49,
+    "msrp": null,
+    "type": "lowest",
+    "from": 188.9
+  },
+  {
+    "t": "2026-11-08T01:45:21.199Z",
+    "productId": "me03-blister4",
+    "offerId": "efa5c297901c",
+    "storeName": "Amazon",
+    "to": 49.39,
+    "msrp": 55.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T03:15:20.140Z",
+    "productId": "me05-blister3",
+    "offerId": "8727e7c0a58a",
+    "storeName": "Mercado Livre",
+    "to": 39.9,
+    "msrp": 42.99,
+    "type": "new"
+  },
+  {
+    "t": "2026-11-08T04:45:21.643Z",
+    "productId": "sv8_5-blister3",
+    "offerId": "0add2511fd0d",
+    "storeName": "Mercado Livre",
+    "to": 113.49,
+    "msrp": null,
+    "type": "drop",
+    "from": 117
+  },
+  {
+    "t": "2026-11-08T04:45:21.643Z",
+    "productId": "sv8_5-blister3",
+    "offerId": "0add2511fd0d",
+    "storeName": "Mercado Livre",
+    "to": 113.49,
+    "msrp": null,
+    "type": "lowest",
+    "from": 117
+  }
+]
