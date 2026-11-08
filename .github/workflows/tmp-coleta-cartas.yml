@@ -65,7 +65,7 @@ jobs:
         if: contains(github.event.head_commit.message, 'inv-fotos')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/hires.py
         if: contains(github.event.head_commit.message, 'hires-hits')
-      - run: sudo apt-get install -y -qq ffmpeg python3-pil >/dev/null && python3 tools/tmp-cartas/lotes.py
+      - run: sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq ffmpeg python3-pil >/dev/null && python3 tools/tmp-cartas/lotes.py
         if: contains(github.event.head_commit.message, 'lotes-gsap')
       - run: sudo apt-get install -y -qq ffmpeg >/dev/null && python3 tools/tmp-cartas/gsap_trilha.py
         if: contains(github.event.head_commit.message, 'gsap-trilha')
