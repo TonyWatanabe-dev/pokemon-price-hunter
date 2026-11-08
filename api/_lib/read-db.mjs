@@ -88,6 +88,7 @@ export async function stateLikeFromDb(legacy, { dataAt } = {}) {
       storeValidated: l.storeValidated ?? false, releaseDate: l.releaseDate ?? null,
       sku: l.sku ?? null, ean: l.ean ?? null, source_timestamp: iso(r.last_seen_at),
       priceKindLabel: l.priceKindLabel ?? null, storeKind: l.storeKind ?? null, sellerKind: l.sellerKind ?? null,
+      manual: l.manual ?? null, sourceType: l.sourceType ?? null, capturedAt: l.capturedAt ?? null,
     };
   });
   // mesma ordem do state.json (o banco não garante ordem): empates nas listas do site saem iguais aos de hoje

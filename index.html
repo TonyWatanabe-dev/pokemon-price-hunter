@@ -2248,6 +2248,8 @@ const PERIODS=[[7,"7D"],[30,"30D"],[90,"90D"],[365,"1A"]];
 const fmtD=(d)=>{const [y,m,dd]=d.split("-");return`${dd}/${m}`};
 async function loadHist(pid){
   if(!(pid in HIST)){let h=null;try{h=(await histFromApi(pid))||await fetchData(`hist/${pid.replace(/[^a-z0-9_.-]/gi,"_")}.json`)}catch{}
+    /* só lojas do site: séries antigas do arquivo de histórico (rodadas anteriores) de lojas que o site não mostra saem aqui (a partir dos dados: fontes e ofertas do estado + parceiras) */
+    if(h&&h.stores){const ok=new Set([...(S?.sources||[]).map((x)=>x.id),...(S?.offers||[]).map((o)=>o.storeId),"mercadolivre","amazon","shopee"]);for(const sid of Object.keys(h.stores))if(!ok.has(sid))delete h.stores[sid]}
     /* leituras antigas não confiáveis (antes da correção do leitor de páginas) não entram no gráfico */
     const D=S.distrust;if(h&&D&&D.stores)for(const[sid,x]of Object.entries(h.stores||{})){if(D.stores.includes(sid))x.pts=x.pts.filter((p)=>p[0]>D.until);if(!x.pts.length)delete h.stores[sid]}
     /* falha não fica guardada (#83): voltar ao produto ou "Tentar de novo" busca outra vez */

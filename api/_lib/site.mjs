@@ -137,7 +137,7 @@ export function tipHits(st, q) {
     .map((t) => Object.fromEntries(Object.entries(t).filter(([k]) => !TIP_DROP.has(k))));
 }
 
-const PAGE_OFFER = [...OFFER_FIELDS, 'source_timestamp', 'ean', 'sku', 'priceKindLabel', 'storeKind', 'sellerKind'];
+const PAGE_OFFER = [...OFFER_FIELDS, 'source_timestamp', 'ean', 'sku', 'priceKindLabel', 'storeKind', 'sellerKind', 'manual', 'sourceType', 'capturedAt'];   // manual/sourceType/capturedAt: leitura manual de afiliado mostra "lido em" no site
 /**
  * Página do produto: o produto, todas as suas ofertas atuais, pistas do Telegram dele, lojas e reputação.
  * stats (Price Engine) define "preço médio" e "menor já visto"; sem histórico suficiente, o menor já visto do robô

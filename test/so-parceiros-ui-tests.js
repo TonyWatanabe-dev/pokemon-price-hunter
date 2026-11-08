@@ -139,6 +139,8 @@ await t('8. SPA (index.html): sem diretório de lojas, sem "Procurar em outras l
   assert.match(html, /lidoEm\(/, 'oferta manual mostra "Lido em dd/mm às hh:mm"');
   assert.match(html, /link\\\.amazon\|s\\\.shopee\\\.com\\\.br/, 'links manuais saem como patrocinados');
   assert.match(html, /A ordem das ofertas segue o preço, não a comissão/);
+  const lh = html.match(/async function loadHist\(pid\)\{[\s\S]*?\n  if\(view==="produto"/)?.[0] || '';
+  assert.match(lh, /"mercadolivre","amazon","shopee"/, 'histórico: séries de lojas que o site não mostra saem no front (arquivo antigo do ramo de dados)');
 });
 
 await t('9. SPA: nenhum nome de loja fora das parceiras escrito no código (copy, menu, rodapé, termos)', () => {
