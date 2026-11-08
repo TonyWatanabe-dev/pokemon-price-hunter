@@ -160,3 +160,13 @@ await t('10. social: só ofertas parceiras entram em prévia, ranking e Telegram
 });
 
 console.log(`✓ Site só com parceiros (interface): ${n} grupos passaram`);
+
+// Home (08/11/2026, pedido do dono): o selo da Home mostra só o número de ofertas, sem a quantidade de lojas.
+{
+  const fs = await import('node:fs');
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const i = html.indexOf('<span class="lv-head">'); const trecho = html.slice(i, html.indexOf('</div>', i));
+  assert.ok(i > 0 && /ofertas com estoque/.test(trecho), 'selo da Home com o número de ofertas');
+  assert.ok(!/lojas? parceiras?|nStores|counts\.stores/.test(trecho), 'selo da Home sem a quantidade de lojas');
+  console.log('✓ so-parceiros-ui: Home sem quantidade de lojas');
+}

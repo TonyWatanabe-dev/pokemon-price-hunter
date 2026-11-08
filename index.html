@@ -2065,14 +2065,14 @@ function renderDeals(){
   const noCopag=F.mode==="guardar"?raw.filter((e)=>!listed(e.p)):[];
   const list=sortEntries(base.slice());
   const all=(()=>{const keep={...F};F.group="";F.col="";F.store="";const r=entries();Object.assign(F,keep);return r})();
-  const nLive=S.slim?S.counts.liveOffers:OFF.filter(live).length,nStores=S.slim?S.counts.stores:new Set(OFF.filter(live).map((o)=>o.storeId)).size;
+  const nLive=S.slim?S.counts.liveOffers:OFF.filter(live).length;
   const nBelow=S.slim?(S.counts.belowCopag||0):OFF.filter((o)=>live(o)&&!o.anomalous&&o.discount>=.005&&P[o.productId]?.copagConfirmed).length;   /* mesma regra de api/_lib/home.mjs */
   const intro=!renderDeals.done;renderDeals.done=true;document.body.classList.toggle("intro",intro);
   $("#view").innerHTML=`<section class="stage"><div class="stage-in">
     <div class="stage-copy">
       <h1><span class="ln" style="--l:0"><span>Não procure preço.</span></span><span class="ln" style="--l:1"><span class="gold">Procure oportunidade.</span></span></h1>
       <p class="stage-sub" style="--d:420">O Hunter monitora preços de Pokémon TCG lacrado e encontra as melhores oportunidades do mercado brasileiro.</p>
-      <div class="live live-big" style="--d:520"><span><span class="lv-head"><span class="live-dot lv-dot2" aria-hidden="true"></span><span id="live-t">${freshTxt(freshState(S))[0]}</span></span><span class="lv-sep s1"> · </span><span class="lv-n"><b>${nStores}</b> ${nStores===1?"loja parceira":"lojas parceiras"}</span><span class="lv-sep"> · </span><span class="lv-n"><b>${nLive}</b> ofertas com estoque</span></span></div>
+      <div class="live live-big" style="--d:520"><span><span class="lv-head"><span class="live-dot lv-dot2" aria-hidden="true"></span><span id="live-t">${freshTxt(freshState(S))[0]}</span></span><span class="lv-sep s1"> · </span><span class="lv-n"><b>${nLive}</b> ofertas com estoque</span></span></div>
       ${nBelow?`<p class="live-below" style="--d:560"><b>${nBelow}</b> abaixo do preço Copag</p>`:""}
       ${tickerHTML()}
     </div>
