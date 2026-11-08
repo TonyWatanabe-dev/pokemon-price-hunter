@@ -25,7 +25,7 @@ import { contexto as telegramUsuario } from './telegram-usuario.js';
 import { ligada as freqLigada, aposLeitura, adiar, assinatura } from './frequencia.js';
 import { evaluate, dedupe, dispatch, transports, tipHits, dispatchTips, comparableDrop, prevBestOf, pruneSent, capJsonlLines } from './alerts.js';
 import { collectTips, firstPrice, tipVencida } from './tips.js';
-import { backfill, recordDay, trimJsonl, histSummary } from './history.js';
+import { backfill, recordDay, trimJsonl, histSummary, moverLojasHist, restaurarLojasHist, moverLojasJsonl, restaurarJsonl } from './history.js';
 import { recordActivity } from './activity.js';
 import { linkAgrees } from './gate.js';
 import { loadDistrust, trustedPoint } from './distrust.js';
@@ -34,6 +34,7 @@ import { redact } from './redact.js';
 import { verificarPistas, ofertaDuplicada, registroDeOferta, SOURCE_TYPE as PISTA_SOURCE } from './pistas-ofertas.js';
 import { destinosPistas } from './pistas-destino.js';
 import { accessToken as mlAccessToken } from './mlauth.js';
+import * as parceiros from './parceiros.js'; // site só com parceiros (SITE_SO_PARCEIROS): único ponto de src/ que fala com affiliates.mjs
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
 const round2 = (v) => v == null ? null : Math.round(v * 100) / 100;
@@ -197,6 +198,12 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     }
   } catch { /* sem pasta de alertas */ }
   const prev = readJson(dataPath('offers.json'), {});
+  // Site só com parceiros (07/11/2026): com SITE_SO_PARCEIROS=1 tudo o que é publicado (state.json, ranking, alertas, histórico do
+  // gráfico, banco) vem só de anúncios do ML com link do dono + leituras manuais da Amazon/Shopee. As demais lojas continuam sendo
+  // lidas só como referência de mercado (marketAverage/marketRef). Desligado: `pub` aceita tudo e nada muda.
+  const SO = parceiros.ligado();
+  const par = SO ? parceiros.carregar() : null;
+  const pub = SO ? (o) => parceiros.ehParceira(o, par) : () => true;
   const sources = readJson(dataPath('sources.json'), {});
   const lowest = readJson(dataPath('lowest.json'), {});
   const distrust = loadDistrust({ sources, prev, T });
@@ -209,6 +216,20 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && /^tcgpricehunter/.test(String(l.storeId))) delete lowest[pid];
   // Menor preço vindo de leitura antiga não confiável é descartado (o cache é refeito com as leituras novas).
   for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && !trustedPoint(distrust, l.storeId, l.at)) delete lowest[pid];
+  // Site só com parceiros: "menor já visto" de loja ou anúncio que não é parceiro sai; o recorde recomeça entre os parceiros.
+  // Nada se perde: o recorde de loja/anúncio fora do conjunto publicado vai para data/lowest-ref.json (menor valor por produto) e volta
+  // sozinho quando o modo é desligado.
+  {
+    const refF = dataPath('lowest-ref.json'); const ref = readJson(refF, {}); let mexeu = false;
+    const menor = (a, b) => (!a || b.total < a.total ? b : a);
+    if (SO) {
+      for (const [pid, l] of Object.entries(lowest)) if (l && typeof l === 'object' && (!parceiros.lojaParceira(l.storeId) || (prev[l.offerId] && !pub(prev[l.offerId])))) { ref[pid] = menor(ref[pid], l); delete lowest[pid]; mexeu = true; }
+    } else if (Object.keys(ref).length) {
+      for (const [pid, l] of Object.entries(ref)) lowest[pid] = menor(lowest[pid], l);
+      for (const k of Object.keys(ref)) delete ref[k]; mexeu = true;
+    }
+    if (mexeu) { if (Object.keys(ref).length) writeJson(refF, ref); else fs.rmSync(refF, { force: true }); }
+  }
   // Na rodada da correção, essas lojas não geram eventos (o "antes" delas não era confiável).
   const quiet = new Set(distrust.fresh ? distrust.stores : []);
   // Uma vez: refaz o "menor já visto" a partir do histórico filtrado (o antigo podia ter preço de anúncio trocado).
@@ -494,16 +515,25 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Fontes que falharam: mantém a última leitura, mas como estoque desconhecido (nunca inventa disponibilidade).
   // Oferta vinda de pista não passa por aqui: o bloco acima decide se ela fica ou sai.
   for (const [id, o] of Object.entries(prev)) {
-    if (offers[id] || o.sourceType === PISTA_SOURCE || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
+    if (offers[id] || o.manual || o.sourceType === PISTA_SOURCE || touched.has(o.storeId) || !stores.some((s) => s.id === o.storeId)) continue;
     const recent = skipped.has(o.storeId) && recentRead(o, now);
     offers[id] = recent ? carryShipping({ ...o }, now) : staleCopy(o, now);
+  }
+
+  // Leituras manuais do dono (Amazon/Shopee) entram como ofertas do conjunto publicado e vencem sozinhas (48 h). Já são confirmadas
+  // (leitura humana); o frete fica desconhecido. Entram depois dos blocos que carregam ofertas antigas: nunca viram stale.
+  if (SO) {
+    for (const m of parceiros.manuais(par, { now, products: registry })) {
+      const bo = registry[m.productId]?.boosters;
+      offers[m.id] = { ...m, firstSeen: prev[m.id]?.firstSeen || m.firstSeen, perBooster: bo ? round2(m.total / bo) : null };
+    }
   }
 
   // Confirmação: oferta nova, que trocou de produto ou que caiu mais de 3% só vai para Oportunidades, Radar e alertas
   // quando a leitura seguinte (15 min depois) repete o valor. Uma leitura isolada errada nunca vira destaque.
   const bootstrap = !Object.keys(prev).length; // primeira rodada de todas: não há leitura anterior para comparar
   for (const o of Object.values(offers)) {
-    if (o.stale) continue;
+    if (o.stale || o.manual) continue;
     if (bootstrap) { o.confirmed = true; o.pendingFrom = null; continue; }
     // Pista conferida nesta rodada: a API do ML e o preço postado no canal são duas leituras que já concordam.
     if (pistaNova.has(o.id)) { delete o.justConfirmed; delete o.dropFrom; o.confirmed = true; o.pendingFrom = null; continue; }
@@ -550,11 +580,14 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     const rawAvg = srt.length ? (srt.length % 2 ? srt[(srt.length - 1) / 2] : (srt[srt.length / 2 - 1] + srt[srt.length / 2]) / 2) : null;
     for (const o of list) o.anomalous = o.total > 0 && isAnomalous(o.total, cs.msrp, live.length >= 3 ? rawAvg : null);
     const clean = live.filter((o) => !o.anomalous);
+    // Referência de mercado: TODAS as lojas lidas (antes do filtro de publicação). Só vira número; nenhuma loja aparece.
     const marketAverage = clean.length >= 2 ? round2(clean.reduce((a, o) => a + o.total, 0) / clean.length) : null;
+    // Publicado: só parceiros (com a flag desligada, tudo). Contagens, menor preço e recorde vêm daqui.
+    const listPub = list.filter(pub); const cleanPub = clean.filter(pub);
     // Novo menor preço: só a oferta mais barata (confirmada) do produto, e só se for abaixo do recorde anterior.
-    const champ = clean.filter((x) => x.confirmed !== false).reduce((a, o) => (!a || o.total < a.total ? o : a), null);
+    const champ = cleanPub.filter((x) => x.confirmed !== false).reduce((a, o) => (!a || o.total < a.total ? o : a), null);
     if (champ && (!lowest[p.id] || champ.total < lowest[p.id].total)) { if (lowest[p.id] && !rebuiltLowest) newLowest.set(champ.id, lowest[p.id].total); lowest[p.id] = { total: champ.total, at: T, storeId: champ.storeId, offerId: champ.id }; }
-    products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: list.length, inStockCount: clean.length };
+    products[p.id] = { ...p, copagConfirmed: cs.confirmed, msrp: cs.confirmed ? cs.msrp : null, copagReason: cs.confirmed ? null : cs.reason, copagReference: cs.reference ?? null, copagReferenceUrl: cs.referenceUrl ?? null, marketAverage, lowestHistorical: lowest[p.id] || null, offerCount: listPub.length, inStockCount: cleanPub.length, marketRef: parceiros.marketRefOf(clean) };  // sempre presente (null sem mercado robusto): o estado publicado não revela o modo
   }
 
   const storeScores = Object.fromEntries(stores.map((s) => [s.id, storeScore(s, sources[s.id])]));
@@ -601,7 +634,8 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
   // Destino limpo (17/10/2026): o botão da pista não leva ao afiliado de quem postou; o site usa o link do dono ou o anúncio limpo.
   if (process.env.PISTAS_DESTINO !== '0') { try { await destinosPistas(tipStore, { now, max: positiveEnv('PISTAS_DESTINO_MAX', 30), log }); } catch (e) { log(`[pistas] destino: ${e.message}`); } }
-  const tips = Object.values(tipStore).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
+  // Site só com parceiros: pista aponta para qualquer loja; só publica a que leva a anúncio do ML com link do dono.
+  const tips = Object.values(tipStore).filter((t) => !SO || pub({ url: String(t.destino?.url ?? (typeof t.destino === 'string' ? t.destino : '') ?? '') || String(t.url ?? '') })).sort((a, b) => (b.productId ? 1 : 0) - (a.productId ? 1 : 0) || (b.discount ?? -9) - (a.discount ?? -9));
 
   // Bot: analisa links/promoções que você encaminhar para ele no Telegram.
   const inbox = readJson(dataPath('inbox.json'), {});
@@ -614,16 +648,16 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // (o site sem banco continua "sem nota oficial", nunca com nota de rodada anterior).
   const live = liveForScore;
   // Em paralelo, só leitura: o banco recebeu a rodada anterior? (vai para data/meta.json, seção ops)
-  const [off, dbHealth] = await Promise.all([readOfficial(Object.values(offers).filter(live).map((o) => o.id)), readDbHealth()]);
+  const [off, dbHealth] = await Promise.all([readOfficial(Object.values(offers).filter((o) => live(o) && pub(o)).map((o) => o.id)), readDbHealth()]);
   const opp = new Map();
-  for (const o of Object.values(offers)) { const x = live(o) ? officialFor(o, off.rows.get(o.id), now) : null; if (x) opp.set(o.id, x); }
+  for (const o of Object.values(offers)) { const x = live(o) && pub(o) ? officialFor(o, off.rows.get(o.id), now) : null; if (x) opp.set(o.id, x); }
   log(off.status === 'ok' ? `Nota oficial: ${opp.size} ofertas com nota válida (de ${off.rows.size} lidas)` : `Nota oficial indisponível (${off.reason}): alertas seguem sem nota`);
 
   // Alertas
-  const okOffers = Object.values(offers).filter((o) => o.confirmed !== false);
+  const okOffers = Object.values(offers).filter((o) => o.confirmed !== false && pub(o));
   // Queda só vale como novo melhor preço do produto: compara com a melhor oferta da rodada anterior na mesma base de frete (prevBestOf).
-  const prevBest = prevBestOf(Object.values(prev));
-  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false), products, { opp, log, prevBest }), sent, watch.settings, now.getTime(), offers);
+  const prevBest = prevBestOf(Object.values(prev).filter(pub));
+  const hits = dedupe(evaluate(watch.rules || [], okOffers, events.filter((e) => offers[e.offerId]?.confirmed !== false && pub(offers[e.offerId] || {})), products, { opp, log, prevBest }), sent, watch.settings, now.getTime(), offers);
   const delivered = [...await dispatch(hits, sent, { send, now }), ...await dispatchTips(tipHits(tips, sent, { tipMinDiscount: tipsCfg?.descontoMinimoAlerta ?? 0.15 }), sent, { send, now })];
   // Grava o registro de envios já: se a rodada cair depois daqui, o retry não reenvia os mesmos alertas.
   if (delivered.length) writeJson(dataPath('alerts-sent.json'), sent);
@@ -639,21 +673,39 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   }
 
   // Estado para painel e API
-  const all = Object.values(offers);
+  // `todas` = tudo o que foi lido (referência de mercado, revisão e arquivos de operação); `all` = o conjunto PUBLICADO.
+  const todas = Object.values(offers);
+  const all = todas.filter(pub);
   const ranked = rankBestDeals(all, opp);
   // Lojas fora da lista já saíram de sources no início da rodada (pruneSources); o filtro fica como garantia.
-  const listed = Object.entries(sources).filter(([id]) => stores.some((s) => s.id === id));
+  // Site só com parceiros: só as lojas parceiras; Amazon e Shopee não têm coleta (leitura manual do dono), então a fonte delas
+  // é montada aqui, só para o estado publicado (sources.json de operação não muda).
+  let listed = Object.entries(sources).filter(([id]) => stores.some((s) => s.id === id));
+  if (SO) {
+    listed = listed.filter(([id]) => parceiros.lojaParceira(id));
+    for (const [id, nome] of [['amazon', 'Amazon'], ['shopee', 'Shopee']]) {
+      const mine = all.filter((o) => o.storeId === id); if (!mine.length) continue;
+      const at = mine.reduce((m, o) => (o.source_timestamp > m ? o.source_timestamp : m), '');
+      listed = [...listed.filter(([x]) => x !== id), [id, { name: nome, kind: 'marketplace', url: null, status: 'ACTIVE', reason: 'leitura manual do dono', manual: true, checks: 1, ok: 1, fails: 0,
+        lastCheck: at, lastSuccess: at, listings: mine.length, matched: mine.length }]];
+    }
+  }
   const cov = listed.map(([, s]) => s).reduce((a, s) => { a.found++; a[s.status] = (a[s.status] || 0) + 1; return a; }, { found: 0 });
   // Histórico por produto e loja (arquivos pequenos em data/hist/) e limpeza do log bruto.
   try {
+    // Site só com parceiros: as lojas que não são parceiras saem das séries de data/hist (o site lê esses arquivos) e não entram mais.
+    // As séries das lojas não parceiras vão para data/hist-ref (o site lê só data/hist) e seguem acumulando lá; desligado, voltam.
+    if (SO) { const lim = moverLojasHist(parceiros.LOJAS_PARCEIRAS); if (lim) log(`Histórico: ${lim} arquivos com série de loja não parceira movida para hist-ref`); }
+    else { const vol = restaurarLojasHist(); if (vol) log(`Histórico: ${vol} produtos de hist-ref voltaram para hist`); }
     const nb = backfill(Object.fromEntries(stores.map((x) => [x.id, x.name])));
     const nd = recordDay(all.filter((o) => o.confirmed !== false), products, T);
+    if (SO) recordDay(todas.filter((o) => !pub(o) && o.confirmed !== false), products, T, { dir: 'hist-ref' });
     if (nb || nd) log(`Histórico: ${nb ? nb + ' produtos montados do log, ' : ''}${nd} atualizados`);
     
   } catch (e) { log(`[histórico] ${e.message}`); }
   for (const p of Object.values(products)) { try { p.hist = histSummary(p.id, distrust); } catch { p.hist = null; } }
   let activity = [];
-  try { activity = recordActivity({ T, offers, prev, products, newLowest, quiet, distrust, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])) }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
+  try { activity = recordActivity({ T, offers: SO ? Object.fromEntries(all.map((o) => [o.id, o])) : offers, prev: SO ? Object.fromEntries(Object.entries(prev).filter(([, o]) => pub(o))) : prev, products, newLowest, quiet, distrust, storeNames: Object.fromEntries(stores.map((x) => [x.id, x.name])), manter: SO ? (e) => pub(offers[e.offerId] || prev[e.offerId] || {}) : null }).slice(0, 160); } catch (e) { log(`[atividade] ${e.message}`); }
   const state = {
     generatedAt: T,
     dataAt: lastReadAt(all.filter((o) => !o.anomalous), T),
@@ -666,20 +718,21 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     // Preço fora do plausível não é publicado: fica em data/review.json para conferência.
     offers: all.filter((o) => !o.anomalous),
     sources: listed.map(([id, s]) => ({ id, ...s, score: storeScores[id] || null })),
-    unmatched: unmatched.slice(0, 200),
+    // Site só com parceiros: anúncio não casado de outra loja não é publicado.
+    unmatched: (SO ? unmatched.filter((u) => u.store === 'mercadolivre' && pub({ url: u.url })) : unmatched).slice(0, 200),
     tips: tips.slice(0, 150),
     activity,
-    distrust: { stores: distrust.stores, until: distrust.until },
-    tipSources: tipStatus,
+    distrust: { stores: SO ? distrust.stores.filter(parceiros.lojaParceira) : distrust.stores, until: distrust.until },
+    tipSources: SO ? [] : tipStatus,
     rules: watch.rules || [],
     // Reputação no Reclame Aqui: tabela consultada à mão (config/reclameaqui.json); o robô não acessa o site.
-    reputation: (() => { const r = readJson(configPath('reclameaqui.json'), null); return r ? { consultadoEm: r.consultadoEm, lojas: r.lojas } : null; })(),
+    reputation: (() => { const r = readJson(configPath('reclameaqui.json'), null); return r ? { consultadoEm: r.consultadoEm, lojas: SO ? Object.fromEntries(Object.entries(r.lojas || {}).filter(([id]) => parceiros.lojaParceira(id))) : r.lojas } : null; })(),
     // Só o nome público do bot, para o botão "Ativar alertas no Telegram" do site (ausente = recurso desligado).
     ...(tgBot ? { telegramUsuario: { bot: tgBot } } : {}),
-    recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].slice(0, 50),
+    recentAlerts: [...delivered, ...readJson(dataPath('state.json'), {}).recentAlerts || []].filter((a) => !SO || (a.kind !== 'tip' && a.offerId && pub(offers[a.offerId] || prev[a.offerId] || {}))).slice(0, 50),
   };
   writeJson(dataPath('offers.json'), offers);
-  writeJson(dataPath('review.json'), all.filter((o) => o.anomalous).map(({ id, storeId, productId, title, url, total, prices }) => ({ id, storeId, productId, title, url, total, prices })));
+  writeJson(dataPath('review.json'), todas.filter((o) => o.anomalous).map(({ id, storeId, productId, title, url, total, prices }) => ({ id, storeId, productId, title, url, total, prices })));
   writeJson(dataPath('sources.json'), sources);
   writeJson(dataPath('lowest.json'), lowest);
   writeJson(dataPath('copag-msrp.json'), copagSeen);
@@ -691,15 +744,25 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   writeJson(dataPath('tips.json'), tipStore);
   writeJson(dataPath('inbox.json'), inbox);
   writeJson(dataPath('state.json'), state);
-  appendJsonl(dataPath('history.jsonl'), history);
+  // Site só com parceiros: o history.jsonl alimenta o banco, o gráfico e as ferramentas de divulgação; só linhas de lojas parceiras.
+  // Linhas de lojas/anúncios fora do conjunto publicado vão para history-ref.jsonl (mesma retenção); desligado, voltam para o history.jsonl.
+  if (SO) {
+    const dentro = (h) => parceiros.lojaParceira(h.storeId) && pub(offers[h.offerId] || prev[h.offerId] || {});
+    appendJsonl(dataPath('history.jsonl'), history.filter(dentro)); appendJsonl(dataPath('history-ref.jsonl'), history.filter((h) => !dentro(h)));
+    try { moverLojasJsonl(dataPath('history.jsonl'), dataPath('history-ref.jsonl'), parceiros.LOJAS_PARCEIRAS); } catch { /* sem log */ }
+  } else {
+    try { restaurarJsonl(dataPath('history.jsonl'), dataPath('history-ref.jsonl')); } catch { /* sem log */ }
+    appendJsonl(dataPath('history.jsonl'), history);
+  }
   try { trimJsonl(dataPath('history.jsonl')); } catch { /* sem log */ }
+  try { trimJsonl(dataPath('history-ref.jsonl')); } catch { /* sem log */ }
   appendJsonl(dataPath('alerts.jsonl'), delivered);
   try { capAlertsLog(dataPath('alerts.jsonl')); } catch { /* sem log */ }
   // Estado operacional (data/meta.json → ops). Falha aqui nunca derruba a rodada.
   try {
     const rec = buildRunRecord({ startedAt, finishedAt: new Date().toISOString(), generatedAt: T, prevGeneratedAt,
       reader: readerSummary(off, opp.size), dbSync: syncStatus(dbHealth, prevGeneratedAt),
-      stores: storesSummary(sources, skipped.size - adiadas.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: all.length, alerts: delivered.length,
+      stores: storesSummary(sources, skipped.size - adiadas.size), watched: watchedSummary(sources), collectors: collectorsSummary(sources, T), offers: todas.length, alerts: delivered.length,
       tls: tlsModeFor(process.env.DATABASE_URL),      // modo TLS do banco (só o modo; ver docs/tls.md)
       copag: copagSummary(dbHealth?.copagRefs, T) });  // Copag oficial vencendo em até 7 dias (aviso copag_vencendo do vigia)
     rec.listingsRejected = rejectedSummary(sources, touched); // anúncios recusados pelo contrato nesta rodada (#47)

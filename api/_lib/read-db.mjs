@@ -2,6 +2,7 @@
 // paginadas e devolvendo só campos públicos (sem ids internos, confiança de matching, ids externos de vendedor,
 // dados de afiliado, fila de revisão etc.).
 import { q } from './db.mjs';
+import { idsParceiros } from './modo-parceiros.mjs';   // site só com parceiros: filtro por loja também no banco (linhas antigas de outras lojas não vazam)
 import { offerFreshness, usable } from './freshness.mjs';
 import { normalizeSearch, sqlFold } from './search.mjs';
 import { historicalContext, LABEL, confidenceLabel, currentReferenceView, contextReferenceView, referenceComparison, opportunityConfidenceLevel } from './references.mjs';
@@ -32,14 +33,15 @@ const PRODUCTS_SQL = `
 const OFFERS_SQL = `
   SELECT o.legacy_id, p.legacy_id AS product_legacy, o.store_id, st.name AS store_name, se.name AS seller_name, o.url, o.image_url,
          o.price, o.price_kind, o.shipping_price, o.shipping_status, o.total_price, o.stock_status, o.quantity, o.confirmed, o.anomalous,
-         o.status, o.first_seen_at, o.last_seen_at,
+         o.status, o.first_seen_at, o.last_seen_at, o.source_type,
          op.opportunity_score AS opp_score, op.opportunity_band AS opp_band, op.confidence AS opp_conf
     FROM hunter.offer o
     LEFT JOIN hunter.opportunity op ON op.offer_id = o.id
     JOIN hunter.product p ON p.id = o.product_id
     LEFT JOIN hunter.store st ON st.id = o.store_id
     LEFT JOIN hunter.seller se ON se.id = o.seller_id
-   WHERE o.status IN ('active', 'pending') AND o.legacy_id IS NOT NULL`;
+   WHERE o.status IN ('active', 'pending') AND o.legacy_id IS NOT NULL
+     AND ($1::text[] IS NULL OR o.store_id = ANY($1))`;   // $1: lojas parceiras (null = sem filtro; modo-parceiros.mjs)
 const COLLECTIONS_SQL = `SELECT code AS id, name, series, aliases FROM hunter.collection ORDER BY code`;
 
 /**
@@ -48,7 +50,7 @@ const COLLECTIONS_SQL = `SELECT code AS id, name, series, aliases FROM hunter.co
  * data de lançamento de pré-venda, validação da loja) é sobreposto a partir do state.json, por id de oferta/produto.
  */
 export async function stateLikeFromDb(legacy, { dataAt } = {}) {
-  const [prows, orows, crows] = [await q(PRODUCTS_SQL), await q(OFFERS_SQL), await q(COLLECTIONS_SQL)];
+  const [prows, orows, crows] = [await q(PRODUCTS_SQL), await q(OFFERS_SQL, [idsParceiros()]), await q(COLLECTIONS_SQL)];
   const LP = new Map((legacy.products || []).map((p) => [p.id, p]));
   const LO = new Map((legacy.offers || []).map((o) => [o.id, o]));
   const products = prows.map((r) => {
@@ -86,6 +88,7 @@ export async function stateLikeFromDb(legacy, { dataAt } = {}) {
       storeValidated: l.storeValidated ?? false, releaseDate: l.releaseDate ?? null,
       sku: l.sku ?? null, ean: l.ean ?? null, source_timestamp: iso(r.last_seen_at),
       priceKindLabel: l.priceKindLabel ?? null, storeKind: l.storeKind ?? null, sellerKind: l.sellerKind ?? null,
+      manual: l.manual ?? null, sourceType: l.sourceType ?? null, capturedAt: l.capturedAt ?? null,
     };
   });
   // mesma ordem do state.json (o banco não garante ordem): empates nas listas do site saem iguais aos de hoje
@@ -238,18 +241,18 @@ const offerOut = (r) => ({
   total_price: num(r.total_price),                      // nulo quando o frete é desconhecido (nunca inventado)
   stock: r.stock_status, quantity: r.quantity ?? null, status: r.status, confirmed: r.confirmed, anomalous: r.anomalous,
   first_seen_at: iso(r.first_seen_at), last_seen_at: iso(r.last_seen_at),
-  freshness: offerFreshness(iso(r.last_seen_at)),       // frescor desta oferta, não o da loja nem o da resposta
+  freshness: offerFreshness(iso(r.last_seen_at), undefined, r.source_type),       // frescor desta oferta, não o da loja nem o da resposta
 });
 export async function productOffers(key, { page, limit, todas = false }) {
   const p = await productRow(key); if (!p) return null;
   const rows = await q(`
     SELECT o.legacy_id, o.store_id, st.name AS store_name, o.marketplace_id, se.name AS seller_name, o.title_raw, o.url, o.image_url, o.price, o.price_kind,
            o.pix_price, o.list_price, o.shipping_status, o.shipping_price, o.total_price, o.stock_status, o.quantity, o.status, o.confirmed, o.anomalous,
-           o.first_seen_at, o.last_seen_at, count(*) OVER () AS total_rows
+           o.first_seen_at, o.last_seen_at, o.source_type, count(*) OVER () AS total_rows
       FROM hunter.offer o LEFT JOIN hunter.store st ON st.id = o.store_id LEFT JOIN hunter.seller se ON se.id = o.seller_id
-     WHERE o.product_id = $1 AND ($2::boolean OR o.status IN ('active', 'pending'))
+     WHERE o.product_id = $1 AND ($2::boolean OR o.status IN ('active', 'pending')) AND ($5::text[] IS NULL OR o.store_id = ANY($5))
      ORDER BY (o.status = 'active') DESC, (o.stock_status = 'in_stock') DESC, o.price ASC NULLS LAST, o.legacy_id
-     LIMIT $3 OFFSET $4`, [p.id, !!todas, limit, (page - 1) * limit]);
+     LIMIT $3 OFFSET $4`, [p.id, !!todas, limit, (page - 1) * limit, idsParceiros()]);
   return { product: { id: p.legacy_id, slug: p.slug, name: p.canonical_name }, items: rows.map(offerOut), total: rows.length ? Number(rows[0].total_rows) : 0 };
 }
 
@@ -258,7 +261,8 @@ export async function productHistory(key, { dias, lojas = false }) {
   const p = await productRow(key); if (!p) return null;
   const rows = await q(`SELECT d.store_id, s.name AS store_name, d.day, d.min_price, d.max_price, d.avg_price, d.close_price, d.offers FROM hunter.price_daily d
      LEFT JOIN hunter.store s ON s.id = d.store_id
-     WHERE d.product_id = $1 AND ($3::boolean OR d.store_id = '') AND d.day >= (current_date - $2::int) ORDER BY d.store_id, d.day`, [p.id, dias, !!lojas]);
+     WHERE d.product_id = $1 AND ($3::boolean OR d.store_id = '') AND d.day >= (current_date - $2::int)
+       AND ($4::text[] IS NULL OR d.store_id = '' OR d.store_id = ANY($4)) ORDER BY d.store_id, d.day`, [p.id, dias, !!lojas, idsParceiros()]);
   const pt = (r) => ({ day: iso(r.day).slice(0, 10), min: num(r.min_price), max: num(r.max_price), avg: num(r.avg_price), close: num(r.close_price), offers: r.offers });
   const out = { product: { id: p.legacy_id, slug: p.slug, name: p.canonical_name }, days: dias, series: rows.filter((r) => r.store_id === '').map(pt) };
   if (lojas) { out.stores = {}; for (const r of rows) if (r.store_id) (out.stores[r.store_id] ||= { name: r.store_name || r.store_id, series: [] }).series.push(pt(r)); }
@@ -314,15 +318,16 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
   // oferta de X (não some porque outra loja tem nota maior); com preço até R$ N, a melhor oferta dentro do limite.
   // Mesmas regras da view product_opportunity (com estoque, sem anomalia, mesma ordem de desempate).
   const SHOWN = "(CASE WHEN fx.shipping_status IN ('known', 'free') AND fx.total_price IS NOT NULL THEN fx.total_price ELSE ox.price END)";
+  const parceiras = idsParceiros();   // lojas parceiras (null = sem filtro): a melhor oferta de cada produto é escolhida SÓ entre elas
   const from = todas ? 'hunter.opportunity o'
-    : (loja != null || max != null) ? `(SELECT DISTINCT ON (ox.product_id) ox.* FROM hunter.opportunity ox JOIN hunter.offer fx ON fx.id = ox.offer_id
-        WHERE ox.stock_signal = 1 AND NOT ox.is_anomaly AND ($11::text IS NULL OR fx.store_id = $11) AND ($12::numeric IS NULL OR ${SHOWN} <= $12)
+    : (loja != null || max != null || parceiras) ? `(SELECT DISTINCT ON (ox.product_id) ox.* FROM hunter.opportunity ox JOIN hunter.offer fx ON fx.id = ox.offer_id
+        WHERE ox.stock_signal = 1 AND NOT ox.is_anomaly AND ($11::text IS NULL OR fx.store_id = $11) AND ($12::numeric IS NULL OR ${SHOWN} <= $12) AND ($14::text[] IS NULL OR fx.store_id = ANY($14))
         ORDER BY ox.product_id, ox.opportunity_score DESC, ox.confidence DESC, ox.price ASC, ox.offer_id) o`
     : 'hunter.product_opportunity o';
   const rows = await query(`
     SELECT o.offer_id, p.legacy_id, p.slug, p.canonical_name, p.attrs, p.image_url AS product_image, c.code AS col_code, c.name AS col_name,
            f.legacy_id AS offer_legacy, f.url, f.title_raw, f.image_url AS offer_image, f.first_seen_at, f.price_kind, f.total_price, f.shipping_status, f.stock_status, f.store_id, st.name AS store_name, f.marketplace_id,
-           f.last_seen_at, f.status AS offer_status, o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
+           f.last_seen_at, f.status AS offer_status, f.source_type, o.price, o.opportunity_score, o.opportunity_band, o.confidence, o.reasons, o.warnings, o.caps, o.engine_version, o.calculated_at,
            (SELECT max(created_at) FROM hunter.system_event WHERE type = 'ENGINE_HEARTBEAT') AS engine_run_at,
            o.reference_kind AS opp_reference_kind, o.reference_value AS opp_reference_value, o.reference_gap AS opp_reference_gap, s.variation_7d,
            s.reference_kind, s.reference_price, s.reference_confidence, s.reference_reason, (s.quality->'market_reference'->>'sources')::int AS market_sources, coalesce(s.quality->'market_reference'->>'composition', 'NONE') AS market_composition,
@@ -348,9 +353,10 @@ export async function listOpportunities({ page, limit, faixa = null, colecao = n
        AND ($11::text IS NULL OR f.store_id = $11)
        AND ($12::numeric IS NULL OR (CASE WHEN f.shipping_status IN ('known', 'free') AND f.total_price IS NOT NULL THEN f.total_price ELSE o.price END) <= $12)
        AND ($13::text IS NULL OR p.language = $13)
+       AND ($14::text[] IS NULL OR f.store_id = ANY($14))
      ORDER BY ${OPP_SORTS[ordem] || OPP_SORTS.score}
      LIMIT $4 OFFSET $5`, [faixa, colecao, minimo, limit, (page - 1) * limit, categoria, referencia ? OPP_REFERENCES[referencia] : null,
-    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto, loja, max, idioma ? (idioma === 'pt' ? 'pt-BR' : idioma) : null]);
+    abaixo != null ? abaixo / 100 : null, confiancaMinima != null ? confiancaMinima / 100 : null, produto, loja, max, idioma ? (idioma === 'pt' ? 'pt-BR' : idioma) : null, parceiras]);
   const changes = await offerChanges(rows.map((r) => r.offer_id), { query, now });
   // change e criteria são ADITIVOS (#53): campos, ordem, nota e paginação continuam os mesmos
   return { items: rows.map((r) => ({ ...opportunityOut(r), change: changes.get(String(r.offer_id)) ?? noChange('sem dados da oferta'), criteria: opportunityCriteria(r, now) })),
@@ -434,7 +440,7 @@ const opportunityOut = (r) => ({
 // (src/agents/social/elegiveis.js; um teste garante a igualdade); null se faltar algum dos três.
 export function opportunityCriteria(r, now = Date.now()) {
   const cmp = referenceComparison({ kind: r.opp_reference_kind, value: r.opp_reference_value, gap: r.opp_reference_gap, price: r.price, reasons: r.reasons });
-  const fr = offerFreshness(iso(r.last_seen_at), now instanceof Date ? now.getTime() : Number(now));
+  const fr = offerFreshness(iso(r.last_seen_at), now instanceof Date ? now.getTime() : Number(now), r.source_type);
   const price = num(r.price); const product = r.legacy_id != null ? String(r.legacy_id).trim() : ''; const store = r.store_id != null ? String(r.store_id).trim() : '';
   return {
     reference: { available: cmp.available, kind: cmp.reference_kind, value: cmp.reference_value, ...(cmp.available ? {} : { reason: cmp.reason }) },
@@ -470,7 +476,7 @@ export async function opportunityStores({ query = q } = {}) {
   const rows = await query(`
     SELECT f.store_id AS id, coalesce(st.name, f.store_id) AS name, count(DISTINCT o.product_id)::int AS products
       FROM hunter.opportunity o JOIN hunter.offer f ON f.id = o.offer_id LEFT JOIN hunter.store st ON st.id = f.store_id
-     WHERE o.stock_signal = 1 AND NOT o.is_anomaly AND f.store_id IS NOT NULL
-     GROUP BY f.store_id, st.name ORDER BY lower(coalesce(st.name, f.store_id))`);
+     WHERE o.stock_signal = 1 AND NOT o.is_anomaly AND f.store_id IS NOT NULL AND ($1::text[] IS NULL OR f.store_id = ANY($1))
+     GROUP BY f.store_id, st.name ORDER BY lower(coalesce(st.name, f.store_id))`, [idsParceiros()]);
   return rows.map((r) => ({ id: r.id, name: r.name, products: Number(r.products) }));
 }

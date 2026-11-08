@@ -3,6 +3,7 @@
 // Não há nota, ranking nem rótulo de confiabilidade: reputação sem fonte verificável não é prometida aqui.
 // Estados (status): com_ofertas (há oferta recente) · sem_dados_recentes (tem ofertas, mas nenhuma recente) · sem_ofertas (nenhuma oferta).
 import { live } from './site.mjs';
+import { soParceiros, lojaParceira } from './modo-parceiros.mjs';
 
 /** oferta sem leitura há mais que isto (ou marcada stale pelo robô) não conta como dado recente */
 export const RECENT_HOURS = 24;
@@ -53,6 +54,7 @@ export function siteStores(st, { now = Date.now() } = {}) {
       updatedAt: stamps.length ? new Date(Math.max(...stamps)).toISOString() : null,
     };
   });
+  if (soParceiros()) { for (let i = items.length - 1; i >= 0; i--) if (!lojaParceira(items[i].id)) items.splice(i, 1); }   // site só com parceiros
   items.sort((a, b) => b.activeOffers - a.activeOffers || String(a.name).localeCompare(String(b.name)) || String(a.id).localeCompare(String(b.id)));
   return { items, total: items.length };
 }

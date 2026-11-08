@@ -3,6 +3,7 @@
 //     retrocompatibilidade (campos antigos, ordem e parâmetros da consulta principal iguais) e falha da consulta extra
 //     sem derrubar o feed; (b) PostgreSQL real só com TEST_DATABASE_URL (sem ela, pula — sem encerrar o processo, porque
 //     este arquivo é importado no fim de test/offer-change-tests.js).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { listOpportunities, offerChanges } from '../api/_lib/read-db.mjs';
 import * as API from '../api/_lib/offer-change.mjs';
@@ -91,7 +92,7 @@ await t('retrocompatível: campos antigos, valores e parâmetros da consulta pri
   const db = fakeDb([row(11, 'p1', { shipping_status: 'unknown', total_price: null })], [chg(11)]);
   const args = { page: 2, limit: 5, faixa: 'boa', colecao: 'me05', minimo: 50, ordem: 'preco', categoria: 'ETB', referencia: 'copag', abaixo: 10, confiancaMinima: 60, produto: 'p1' };
   const r = await listOpportunities({ ...args, query: db.query, now: NOW });
-  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null, null], 'mesmos filtros e paginação (loja, max e idioma novos, no fim, nulos)');
+  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null, null, null], 'mesmos filtros e paginação (loja, max, idioma e lojas parceiras novos, no fim, nulos; modo desligado = sem filtro de loja)');
   assert.match(db.calls[0].sql, /FROM hunter\.product_opportunity o/, 'sem loja e sem preço máximo: mesma view de antes');
   assert.match(db.calls[0].sql, /ORDER BY o\.price ASC, o\.opportunity_score DESC, o\.offer_id\s+LIMIT \$4 OFFSET \$5/, 'mesma ordenação');
   const x = r.items[0];

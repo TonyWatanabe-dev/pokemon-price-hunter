@@ -1488,3 +1488,8 @@ Decisão do proprietário: IG/TikTok são linha editorial, sem post automático 
 - Bio do Instagram e do TikTok apontando para `/grupos`: feito em 16/10.
 - GitHub Pages despublicado em 16/10 (fonte em GitHub Actions, sem workflow de Pages): o site vive só na Vercel.
 - Pendências do proprietário: figurinha de link e enquetes nos stories pelo app; vídeos da semana 2 (unboxing Miraidon e próxima abertura) no Drive "Cortes Rede Sociais" com acesso por link; depois preencher `drive` em `semana2.json` e agendar.
+
+
+## Site só com parceiros, fase 1 (07/11/2026): implementado, NÃO publicado
+
+Decisão do proprietário em 07/11/2026. Estado: **implementado** na branch `site/so-parceiros` (filtro a montante em `src/run.js`, `api/_lib/affiliates.mjs`, `src/parceiros.js`, sync/Price Engine/db-validate, workflow e servidor com `SITE_SO_PARCEIROS` padrão ligado (decisão do dono); fase 2 (textos, /lojas, SSR, sitemap, social) no mesmo PR, `test/so-parceiros-tests.js`). **Integrado:** não. **Publicado:** não. **Validado em runtime:** não. Dependências da fase 2: cópia/UI e SSR do `index.html`, página /lojas, bloco "Procurar em outras lojas", sitemap, ferramentas sociais/Telegram, kit. A janela de frescor de 48 h das leituras manuais na API (`offerFreshness` com `source_type='manual_afiliado'`) já está nesta fase.

@@ -1,4 +1,5 @@
 // WhatsApp revezando ML → Shopee → Amazon, só afiliado e só promoção (pedido do dono em 02/11/2026).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { ofertasExternas, candidatoExterno, intercalar, melhoresDoSite, lerLeituras } from '../src/agents/social/externas.js';

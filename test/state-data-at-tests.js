@@ -1,6 +1,7 @@
 // Issue #621 — lacuna 4 de docs/frescor.md: generatedAt do state.json avança em toda rodada, mesmo quando todos os
 // coletores falham. O frescor do state.json (fallback da API, páginas e barra da UI) usa dataAt, a última leitura real
 // (maior source_timestamp das ofertas, que reaproveitar não renova). Falha total, parcial e recuperação; state.json antigo sem dataAt segue no generatedAt.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';

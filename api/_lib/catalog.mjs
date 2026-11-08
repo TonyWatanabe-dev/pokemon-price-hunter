@@ -4,6 +4,7 @@
 import { legacyState } from './legacy.mjs';
 import { stateLikeFromDb } from './read-db.mjs';
 import { dbDataAt, classify, stateDataAt, nowMs } from './freshness.mjs';
+import { estadoParceiro } from './modo-parceiros.mjs';
 
 const TTL_MS = 60_000;
 const cache = new Map();
@@ -18,6 +19,7 @@ export async function catalogState(source, { now = Date.now() } = {}) {
     st = await stateLikeFromDb(legacyOverlay(L?.st), { dataAt: await dbDataAt({ now }) });
     if (st.robotData) st.sources = sourcesFromDb(st.sources, st.offers);
   } else st = (await legacyState({ now })).st;
+  st = estadoParceiro(st);
   cache.set(source, { at: now, st });
   return st;
 }

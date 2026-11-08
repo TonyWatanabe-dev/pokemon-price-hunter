@@ -2,6 +2,7 @@
 // Trava as regras: só links do painel do dono (o mesmo de config/afiliados/shopee.json), casados pelo matcher do site com
 // confiança >= 0,8, selados, sem anúncio de várias opções; preço sem cupom como principal, sempre com data e hora; fora do
 // ranking (nenhum módulo de preço/ranking/API lê o arquivo) e mostrado só no bloco próprio.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { matchProduct } from '../src/match.js';
@@ -25,15 +26,14 @@ for (const o of doc.ofertas) {
   assert.equal(m.productId, o.productId, `${o.item}: casa com ${m.productId}`); assert.ok(m.confidence >= 0.8, `${o.item}: confiança ${m.confidence}`);
 }
 const html = read('index.html');
-assert.equal(html.match(/fetch\("\/data\/afiliados-shopee\.json"\)/g)?.length, 1, 'carregado num único lugar');
-assert.equal(html.match(/SHP\?\.ofertas|SHP\.ofertas/g)?.length, 1, 'lido só pelo shpBlock');
-const row = html.match(/function shpRow\(l\)\{[\s\S]*?\n/)[0] + html.match(/function shpRow\(l\)\{[\s\S]*?<\/a><\/div>`\}/)[0];
-assert.match(row, /money\(l\.price\)\}<\/b> <small>em \$\{esc\(when\)\}/, 'preço com data e hora');
-assert.match(row, /com cupom da Shopee/, 'valor com cupom marcado como tal');
-assert.match(row, /href="\$\{esc\(safeUrl\(l\.url\)\)\}" target="_blank" rel="noopener nofollow sponsored"/);
+// Emenda de 07/11/2026: o bloco "Também na Shopee" saiu do SPA; as ofertas manuais entram no ranking pelo estado servido (api/_lib/affiliates.mjs).
+assert.doesNotMatch(html, /afiliados-shopee\.json|function shpBlock|function shpRow|SHP\?\.ofertas/, 'o front não lê mais a lista da Shopee');
 assert.match(JSON.parse(read('package.json')).scripts.build, /cp config\/afiliados\/shopee-ofertas\.json public\/data\/afiliados-shopee\.json/);
-for (const f of ['src/core/price-engine.js', 'src/core/opportunity-engine.js', 'api/v1.mjs', 'api/pagina.mjs', 'api/_lib/affiliates.mjs'])
+// Emenda de 07/11/2026 (decisão do proprietário, site só com parceiros): api/_lib/affiliates.mjs passou a ler a lista, e SÓ ele
+// (ofertasManuaisParceiras, filtro de publicação). Motores e rotas continuam sem ler; test/so-parceiros-tests.js cobre o novo caminho.
+for (const f of ['src/core/price-engine.js', 'src/core/opportunity-engine.js', 'api/v1.mjs', 'api/pagina.mjs'])
   assert.doesNotMatch(read(f), /shopee-ofertas/, `${f} não pode ler a lista`);
+assert.match(read('api/_lib/affiliates.mjs'), /shopee-ofertas/, 'o módulo de afiliados é o único leitor da lista (emenda de 07/11/2026)');
 console.log(`✓ Também na Shopee: ${doc.ofertas.length} anúncios do dono, fora do ranking`);
 for (const f of ['config/afiliados/shopee-ofertas.json', 'config/afiliados/amazon.json'])
   assert.doesNotMatch(read(f), /\b1 unidades?\b/, `${f}: estoque de 1 vira "última unidade"`);

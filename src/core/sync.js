@@ -4,6 +4,7 @@ import { collectionsRows, productsRows, referenceRows, storesRows, offersRows, h
 import { ensureMonth } from '../db/partitions.js';
 import { KNOWN_TYPES } from './taxonomy.js';
 import { AVULSOS } from '../match.js';
+import { ligado as soParceiros } from './modo-site.js';
 
 const J = (v) => JSON.stringify(v);
 // Mesmo critério do `ts` de mappers.js: valor presente que não vira data válida.
@@ -215,6 +216,8 @@ export async function syncState(c, { state, catalog = null, historyLines = [], l
   // 7a) Ofertas que só existem no histórico (já sumiram das lojas): entram como 'removed' para o histórico não se perder
   // Ponto de histórico no futuro (> 5 min) também não entra: envenenaria o max(observed_at) abaixo e barraria o histórico real.
   historyLines = historyLines.filter((h) => !isFutureAt(h.t, nowMs));
+  // Site só com parceiros: o state.json já traz só as lojas parceiras (sources/offers); histórico de outra loja não entra no banco.
+  if (soParceiros()) { const ok = new Set((state.sources || []).map((x) => x.id)); historyLines = historyLines.filter((h) => ok.has(h.storeId)); }
   const hrows = historyRows(historyLines);
   const ghosts = [...new Map(historyLines.filter((h) => h.offerId && !oid.has(h.offerId) && pid.has(h.productId))
     .map((h) => [h.offerId, { legacy_id: h.offerId, product_id: pid.get(h.productId), store_id: h.storeId, marketplace_id: h.storeId === 'mercadolivre' ? 'mercadolivre' : 'direct', t: h.t }])).values()]

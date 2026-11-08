@@ -1,5 +1,6 @@
 // Monte seu kit: página + rota /api/v1/site/kit. K6 parcial (decisão do dono em 24/10): no menu e na Home, sem o aviso de
 // protótipo; continua fora do índice e do sitemap até o burn-in 7/7.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');

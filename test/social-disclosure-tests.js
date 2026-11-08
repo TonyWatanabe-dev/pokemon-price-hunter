@@ -1,5 +1,6 @@
 // Posts dos grupos (Telegram e WhatsApp) sem a frase de afiliado (decisão do proprietário, 24/10/2026): o resto do
 // post (título, preço, loja, link, cupom) segue igual. Offline: sem rede, banco ou secrets.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { montarLegenda, linkDeAfiliado, LEGENDA_MAX } from '../src/agents/social/legenda.js';
 import { legendaWhatsApp } from '../src/agents/social/whatsapp.js';

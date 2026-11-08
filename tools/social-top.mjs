@@ -25,6 +25,13 @@ export function vez(diario, id, now, regras = REGRAS_WHATSAPP) {
   return { pode: true, esperaMs: Math.max(0, ultimo + regras.intervaloMin * 60e3 - now) };
 }
 import { redact } from '../src/redact.js';
+import { soParceiros, lojaParceira } from '../api/_lib/modo-parceiros.mjs';
+
+/** Site só com parceiros: o ranking dos posts só traz oportunidades de lojas parceiras (a API já filtra; esta é a segunda barreira). */
+export function apenasParceiras(resp, env = process.env) {
+  if (!soParceiros(env) || !Array.isArray(resp?.data)) return resp;
+  return { ...resp, data: resp.data.filter((x) => lojaParceira(x?.store?.id)) };
+}
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url));
 export const API = 'https://tcgpricehunter.com.br/api/v1/oportunidades?limite=15&pagina=1&ordem=score';
@@ -87,7 +94,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, io =
       let resp;
       if (o.json) resp = lerJson(o.json, null);
       else { const r = await fetchFn(API, { signal: AbortSignal.timeout(20000) }); resp = r.ok ? await r.json() : null; if (!r.ok) { io.error(`API respondeu HTTP ${r.status}`); return 2; } }
-      const d = itensDaApi(resp, o.tipo, now());
+      const d = itensDaApi(apenasParceiras(resp, env), o.tipo, now());
       if (d.erro) { io.error(`sem post: ${d.erro}`); return 2; }
       fs.mkdirSync(o.dir, { recursive: true });
       const txt = legenda(o.tipo, d);

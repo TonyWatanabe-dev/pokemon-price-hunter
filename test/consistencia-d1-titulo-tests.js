@@ -4,6 +4,7 @@
 // O Googlebot executa o JS e indexa o título do app; antes, ele trocava o número do SSR/JSON-LD e omitia "(frete a calcular)".
 // Código real dos dois lados (handler do SSR e trecho da página num sandbox), com data/state.json versionado e um caso
 // sintético. Sem rede, sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

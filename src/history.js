@@ -24,7 +24,7 @@ function merge(file, pid, meta, byStore) {
   }
   const cut = day(new Date(Date.now() - KEEP_DAYS * 864e5).toISOString());
   for (const [sid, s] of Object.entries(h.stores)) { s.pts = s.pts.filter((p) => p[0] >= cut); if (!s.pts.length) delete h.stores[sid]; }
-  if (JSON.stringify(h) !== before) { fs.mkdirSync(dataPath('hist'), { recursive: true }); const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, JSON.stringify(h)); fs.renameSync(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; } return true; }
+  if (JSON.stringify(h) !== before) { fs.mkdirSync(file.slice(0, file.lastIndexOf('/')), { recursive: true }); const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, JSON.stringify(h)); fs.renameSync(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; } return true; }
   return false;
 }
 
@@ -53,7 +53,8 @@ export function backfill(storeNames) {
 }
 
 // A cada rodada: registra o menor preço do dia de cada loja (só ofertas válidas).
-export function recordDay(offers, products, T) {
+// opts.dir: pasta de destino ('hist' é o padrão; 'hist-ref' guarda a referência de mercado das lojas não parceiras).
+export function recordDay(offers, products, T, { dir = 'hist' } = {}) {
   const d = day(T); const by = {};
   const med = {};
   for (const o of offers) if (o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0) (med[o.productId] ||= []).push(o.total);
@@ -68,7 +69,7 @@ export function recordDay(offers, products, T) {
   let n = 0;
   for (const [pid, stores] of Object.entries(by)) {
     const p = products[pid] || {};
-    if (merge(histPath(pid), pid, { msrp: p.msrp ?? null, name: p.name || null, updated: T }, stores)) n++;
+    if (merge(dir === 'hist' ? histPath(pid) : dataPath(`${dir}/${safeId(pid)}.json`), pid, { msrp: p.msrp ?? null, name: p.name || null, updated: T }, stores)) n++;
   }
   return n;
 }
@@ -81,6 +82,68 @@ export function trimJsonl(file, days = 45) {
     const keep = fs.readFileSync(file, 'utf8').split('\n').filter((l) => { if (!l) return false; try { return JSON.parse(l).t >= cut; } catch { return false; } });
     fs.writeFileSync(file, keep.join('\n') + (keep.length ? '\n' : ''));
   } catch { /* sem arquivo */ }
+}
+
+// Site só com parceiros (SITE_SO_PARCEIROS): o site lê data/hist/<id>.json, então as séries de lojas que não são parceiras SAEM
+// de lá, mas nada se perde: vão para data/hist-ref/<id>.json (mesmo formato, mescla por loja e dia, nunca descarta ponto) e
+// continuam acumulando como referência de mercado. Idempotente. Devolve quantos arquivos de data/hist mudaram.
+const refPath = (pid) => dataPath(`hist-ref/${safeId(pid)}.json`);
+function mergeSeries(dst, src) {
+  for (const [sid, s] of Object.entries(src || {})) {
+    const d = (dst[sid] ||= { name: s.name, pts: [] }); d.name = s.name || d.name;
+    for (const [dia, v] of s.pts || []) { const i = d.pts.findIndex((p) => p[0] === dia); if (i < 0) d.pts.push([dia, v]); else if (v < d.pts[i][1]) d.pts[i][1] = v; }
+    d.pts.sort((x, y) => x[0].localeCompare(y[0]));
+  }
+}
+function gravar(file, obj) { fs.mkdirSync(file.slice(0, file.lastIndexOf('/')), { recursive: true }); const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, JSON.stringify(obj)); fs.renameSync(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; } }
+export function moverLojasHist(manter) {
+  const keep = new Set(manter); let n = 0; const dir = dataPath('hist');
+  let files; try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')); } catch { return 0; }
+  for (const f of files) {
+    const h = readJson(`${dir}/${f}`, null); if (!h || typeof h.stores !== 'object') continue;
+    const fora = Object.keys(h.stores).filter((sid) => !keep.has(sid)); if (!fora.length) continue;
+    const ref = readJson(refPath(h.productId || f.replace(/\.json$/, '')), null) || { productId: h.productId, stores: {} };
+    Object.assign(ref, { productId: h.productId ?? ref.productId, msrp: h.msrp ?? ref.msrp ?? null, name: h.name ?? ref.name ?? null, updated: h.updated ?? ref.updated });
+    mergeSeries(ref.stores, Object.fromEntries(fora.map((sid) => [sid, h.stores[sid]])));
+    gravar(refPath(h.productId || f.replace(/\.json$/, '')), ref);      // primeiro grava a cópia; só depois tira do arquivo público
+    for (const sid of fora) delete h.stores[sid];
+    gravar(`${dir}/${f}`, h); n++;
+  }
+  return n;
+}
+// Flag desligada: devolve tudo de data/hist-ref para data/hist e apaga a pasta. Devolve quantos produtos voltaram.
+export function restaurarLojasHist() {
+  const dir = dataPath('hist-ref'); let files; try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')); } catch { return 0; }
+  let n = 0;
+  for (const f of files) {
+    const ref = readJson(`${dir}/${f}`, null); if (!ref || typeof ref.stores !== 'object') continue;
+    const dst = dataPath(`hist/${f}`); const h = readJson(dst, null) || { productId: ref.productId, stores: {}, msrp: ref.msrp ?? null, name: ref.name ?? null, updated: ref.updated };
+    mergeSeries(h.stores, ref.stores); gravar(dst, h); n++;
+  }
+  for (const f of files) fs.rmSync(`${dir}/${f}`, { force: true });
+  try { fs.rmdirSync(dir); } catch { /* resta algo */ }
+  return n;
+}
+// history.jsonl: linhas de lojas fora da lista vão para o arquivo -ref (append; a retenção de trimJsonl vale nos dois). Só reescreve se algo saiu.
+export function moverLojasJsonl(file, refFile, manter) {
+  const keep = new Set(manter);
+  let txt; try { txt = fs.readFileSync(file, 'utf8'); } catch { return 0; }
+  const dentro = []; const fora = [];
+  for (const l of txt.split('\n')) { if (!l) continue; let ok = false; try { ok = keep.has(JSON.parse(l).storeId); } catch { ok = true; /* linha ilegível fica onde está */ } (ok ? dentro : fora).push(l); }
+  if (!fora.length) return 0;
+  fs.mkdirSync(refFile.slice(0, refFile.lastIndexOf('/')), { recursive: true });
+  fs.appendFileSync(refFile, fora.join('\n') + '\n');                   // primeiro a cópia, depois a remoção
+  const tmp = file + '.tmp'; try { fs.writeFileSync(tmp, dentro.join('\n') + (dentro.length ? '\n' : '')); fs.renameSync(tmp, file); } catch (e) { try { fs.unlinkSync(tmp); } catch { /* sem tmp */ } throw e; }
+  return fora.length;
+}
+export function restaurarJsonl(file, refFile) {
+  let ref; try { ref = fs.readFileSync(refFile, 'utf8'); } catch { return 0; }
+  let cur = ''; try { cur = fs.readFileSync(file, 'utf8'); } catch { /* novo */ }
+  const lines = [...cur.split('\n'), ...ref.split('\n')].filter(Boolean);
+  const t = (l) => { try { return JSON.parse(l).t || ''; } catch { return ''; } };
+  lines.sort((a, b) => t(a).localeCompare(t(b)));                       // sort estável: mantém a ordem dentro do mesmo instante
+  fs.writeFileSync(file, lines.join('\n') + '\n'); fs.rmSync(refFile, { force: true });
+  return ref.split('\n').filter(Boolean).length;
 }
 
 // Resumo do histórico de um produto (menor preço do dia entre todas as lojas), usado no ranking "maior queda".

@@ -29,7 +29,8 @@ function backfill(products, storeNames, now) {
   return out;
 }
 
-export function recordActivity({ T, offers, prev, products, newLowest, quiet = new Set(), distrust = null, storeNames }) {
+// manter (opcional): predicado sobre o evento; fora dele, o evento sai do arquivo (site só com parceiros).
+export function recordActivity({ T, offers, prev, products, newLowest, quiet = new Set(), distrust = null, storeNames, manter = null }) {
   const now = Date.parse(T);
   let log = readJson(FILE(), null);
   if (!Array.isArray(log)) log = backfill(products, storeNames, now);
@@ -51,7 +52,7 @@ export function recordActivity({ T, offers, prev, products, newLowest, quiet = n
     // Recorde que se repete a cada rodada (mesmo produto, mesmo valor ou maior) não é novidade.
     if (newLowest.has(o.id) && !log.some((e) => e.type === 'lowest' && e.productId === o.productId && e.to <= o.total && now - Date.parse(e.t) <= WIN)) fresh.push({ ...base, type: 'lowest', from: newLowest.get(o.id) });
   }
-  log = [...log, ...fresh].filter((e) => now - Date.parse(e.t) <= KEEP_MS).slice(-600);
+  log = [...log, ...fresh].filter((e) => now - Date.parse(e.t) <= KEEP_MS && (!manter || manter(e))).slice(-600);
   writeJson(FILE(), log);
   // Eventos de lojas com leitura antiga não confiável ficam no arquivo, mas não vão para o site.
   const sid = (e) => offers[e.offerId]?.storeId || prev[e.offerId]?.storeId;

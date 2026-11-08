@@ -1,6 +1,7 @@
 // Issue #43 — fluxo principal de compra: busca → resultado (card) → detalhe do produto → ofertas por loja.
 // Roda o código real de index.html (busca, dealCard, renderSearch, renderProduct, storeOffer) num sandbox, sem navegador.
 // Não exercita: navegador real, rede nem layout renderizado (só a presença de viewport e media queries no CSS).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -24,7 +25,7 @@ const code = [
   cutFn('function renderSearch'),
   cut('function scoreMeter', 'function dealCard'), cutFn('function dealCard'),
   cut('let curPid=null;', 'function openProduct'),
-  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* "Também na Amazon"', '/* Conta: login'),
+  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* Frete por CEP (issue #84)', '/* Conta: login'),
   line('let PENDING_HASH='), line('function hashScroll'),
 ].join('\n');
 
@@ -155,7 +156,7 @@ t('frete e preço desconhecidos ficam explícitos', () => {
 // ------------------------------------------------------------------ estados do detalhe: sem estoque, stale, inexistente
 t('detalhe sem estoque, só com oferta velha e produto inexistente', () => {
   const s = sandbox(); const d = detail(s, 'p-c');
-  assert.match(text(d), /Sem estoque confirmado agora/); assert.match(text(d), /Nenhuma loja com estoque confirmado agora/); assert.ok(!/class="big"/.test(d), 'sem preço "melhor" inventado');
+  assert.match(text(d), /Sem estoque confirmado agora/); assert.match(text(d), /Nenhuma loja parceira com estoque confirmado agora/); assert.ok(!/class="big"/.test(d), 'sem preço "melhor" inventado');
   assert.ok(!/a partir de/.test(s.ctx.document.title));
   s.ctx.OFF = [O3]; const velho = detail(s, 'p-a'); assert.ok(!/class="big"/.test(velho), 'só oferta stale: sem melhor preço'); assert.match(velho, /Leitura antiga/);
   const nf = detail(s, 'zzz'); assert.match(text(nf), /Produto não encontrado/); assert.match(nf, /role="search"/, 'oferece nova busca');

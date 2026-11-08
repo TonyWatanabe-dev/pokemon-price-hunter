@@ -1,5 +1,6 @@
 // Segurança de deploy (lição do incidente da Fase 5.6): tudo que a função da Vercel importa precisa estar no bundle.
 // Varre api/**: todo import relativo (estático ou dinâmico) tem de existir e não pode cair em pasta/arquivo do .vercelignore.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

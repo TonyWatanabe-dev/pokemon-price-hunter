@@ -7,6 +7,7 @@
 //  5    caches: memória do v1, do legacy ("cópia antiga") e do _seo; Cache-Control da CDN só com dado utilizável (limite do atraso)
 //  6    SSR × API do mesmo produto: recente (mesmo menor preço), 2 h (SSR sem preço, API marcada), 2 dias (SSR sem preço, API 503)
 //  7    sitemap com state vencido não usa a cópia
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

@@ -4,6 +4,7 @@
 // fonte e data; /termos e /privacidade têm título/canonical próprios; rotas privadas saem noindex (X-Robots-Tag);
 // descrições de até 160 caracteres; sitemap com lastmod por produto; imagens dos cards com alt, width/height e lazy.
 // Sem rede: o state.json vem de um fetch falso, num processo separado.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

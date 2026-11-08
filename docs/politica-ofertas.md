@@ -82,3 +82,10 @@ Superfícies: **site** (`index.html` + SSR `api/pagina.mjs`), **API v1** (`api/v
 4. **D4** — alinhar a view (migration nova) ao `oppOrder` ou o `oppOrder` à view; hoje eventos e site podem eleger ofertas diferentes no empate.
 5. **D6** — avaliar exigir `confirmed !== false` no kit (a nota já exige) antes de habilitar recomendação real.
 6. **D8** — avaliar `Offer.price` = preço do produto (frete em `shippingDetails` só com fonte) e marcar Pix como `priceSpecification`, conforme as diretrizes do Google.
+
+
+## Emenda de 07/11/2026: site só com parceiros
+
+Por decisão do proprietário em 07/11/2026, o site público passa a mostrar SÓ ofertas que levam o link de afiliado do dono: anúncios do Mercado Livre com link no mapa e as leituras manuais da Amazon e da Shopee (cada leitura sai sozinha em 48 h). As demais lojas continuam sendo lidas só como referência de mercado (ex.: "12% abaixo da média do mercado"); nome, link e oferta delas não são publicados. Isto emenda a regra "comissão nunca influencia ranking ou recomendação" em um ponto: a comissão passa a decidir QUEM entra no site. Entre os parceiros publicados a ordem continua por preço/nota e a comissão não reordena ninguém. A chave é a variável do repositório `SITE_SO_PARCEIROS` (padrão ligado, por decisão do dono; `0` em Settings → Actions → Variables e na env da Vercel volta ao antigo), lida só pelo workflow; ela não aparece em nenhum dado ou tela públicos.
+
+Efeito na seção 5 (Comissão e divulgação): vale a emenda acima; o desempate por afiliado (`afiliadoPreferido`) segue só para total igual.

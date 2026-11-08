@@ -1,6 +1,7 @@
 // Compartilhado pelas funções de SEO. Mesmo algoritmo de URL do site (tools/page.template.html: buildSlugs).
 import { byComparableTotal } from './_lib/offer-rank.mjs';
 import { classify, usable, stateDataAt } from './_lib/freshness.mjs';
+import { estadoParceiro } from './_lib/modo-parceiros.mjs';
 export const RAW = 'https://raw.githubusercontent.com/tonywatanabe-dev/pokemon-price-hunter/data/data/state.json';
 export const SITE = 'https://tcgpricehunter.com.br';
 const norm = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -25,14 +26,14 @@ let cache = { t: 0, s: null };
 // a plataforma derrubar a função. Estourou = mesma falha de rede de antes: cai no último state bom ainda em dia, ou lança.
 export const STATE_TIMEOUT_MS = 5000;
 export async function state({ timeoutMs = STATE_TIMEOUT_MS } = {}) {
-  if (cache.s && Date.now() - cache.t < 10 * 60e3) return cache.s;
+  if (cache.s && Date.now() - cache.t < 10 * 60e3) return estadoParceiro(cache.s);
   try {
     const r = await fetch(RAW, { signal: AbortSignal.timeout(timeoutMs) }); if (!r.ok) throw new Error('state ' + r.status);
-    cache = { t: Date.now(), s: await r.json() }; return cache.s;
+    cache = { t: Date.now(), s: await r.json() }; return estadoParceiro(cache.s);
   } catch (e) {
     // Falha do GitHub raw (429/5xx, rede): usa o último state bom enquanto ele ainda estiver dentro do frescor
     // (docs/auditorias/paginas-servidor.md §4, proposta 5). Sem cache ou com cache velho, lança como antes.
-    if (cache.s && usable(classify(stateDataAt(cache.s)))) return cache.s;
+    if (cache.s && usable(classify(stateDataAt(cache.s)))) return estadoParceiro(cache.s);
     throw e;
   }
 }

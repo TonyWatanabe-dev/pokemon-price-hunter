@@ -1,5 +1,6 @@
 // #690 — piloto Telegram: tudo offline (fetch falso). Prévia sem rede; envio só com ENVIAR + título conferido;
 // token nunca aparece na saída; sendPhoto com foto https e legenda até 1024; workflow manual e mínimo.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

@@ -1,5 +1,6 @@
 // Busca do site (issue #563): /api/v1/site/ofertas?busca=... devolve as pistas sem o texto bruto do canal
 // (TIP_DROP), mas o filtro por palavra que só aparece no texto continua funcionando. Sem rede e sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { tipHits } from '../api/_lib/site.mjs';
 import { setLegacyLoader } from '../api/_lib/legacy.mjs';

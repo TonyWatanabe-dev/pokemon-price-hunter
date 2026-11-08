@@ -42,7 +42,7 @@ export function lerArgs(argv) {
 /** Link do post: afiliado do anúncio quando configurado, senão a URL da oferta, intacta. */
 export function linkDe(oferta, afiliados) {
   const link = resolveOutbound(oferta.url, afiliados);
-  return { link, afiliado: link !== oferta.url };
+  return { link, afiliado: link !== oferta.url || (oferta.manual === true && oferta.sourceType === 'manual_afiliado') };
 }
 
 /** Todas as ofertas elegíveis agora, já com legenda aprovada, foto e link. Ordem: afiliado primeiro, depois a da prévia. */

@@ -1,4 +1,5 @@
 // Diretório de lojas (api/_lib/stores.mjs): domínio normalizado, HTTPS, loja sem oferta × sem dados recentes, dados desatualizados.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { normalizeDomain, safeUrl, siteStores, RECENT_HOURS } from '../api/_lib/stores.mjs';
 

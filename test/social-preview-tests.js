@@ -1,6 +1,7 @@
 // Social MVP — prévia local (issue #637): tools/social-preview.mjs ponta a ponta com state.json de fixture
 // (elegível, stale, sem horário, duplicada), gate SOCIAL_ENABLED / --dry-run, kill switch, disclosure e escrita
 // restrita à pasta de saída. Sem rede, banco, secrets nem process.env real.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -43,7 +44,7 @@ const STATE = {
 
 function tmp() { return fs.mkdtempSync(path.join(os.tmpdir(), 'social-preview-')); }
 function rodar(args, env = {}) {
-  return spawnSync(process.execPath, [tool, ...args], { cwd: root, encoding: 'utf8', env: { PATH: process.env.PATH, ...env } });
+  return spawnSync(process.execPath, [tool, ...args], { cwd: root, encoding: 'utf8', env: { PATH: process.env.PATH, SITE_SO_PARCEIROS: '0', ...env } });   // filho não herda o ambiente: modo desligado explícito (fixtures de várias lojas)
 }
 function comState(fn) {
   const dir = tmp();

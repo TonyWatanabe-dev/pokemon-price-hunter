@@ -2,6 +2,7 @@
 // mostra (/api/v1/site/pagina/prevenda → api/_lib/site.mjs sitePre: menor total; empate, a primeira do estado).
 // Antes, o SSR listava cada anúncio: o mesmo produto aparecia duas vezes (ex.: "Amigos de Jornada · Blister Quádruplo"
 // repetido) enquanto o app mostrava um cartão. Handler real com fetch falso do state.json; sem rede e sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';

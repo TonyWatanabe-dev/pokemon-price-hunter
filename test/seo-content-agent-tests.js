@@ -1,6 +1,7 @@
 // SEO & Content Agent — MVP somente leitura (issue #594): gate de prontidão desativado por padrão, casos dourados de
 // página (conteúdo vazio, dado desatualizado, canonical/metadados, ausência de evidência), sitemap, robots × noindex
 // e a CLI tools/seo-audit.mjs de ponta a ponta. Sem rede e sem banco: a CLI roda num processo separado com fetch local.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';

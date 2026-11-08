@@ -2,6 +2,7 @@
 // rota GET /api/v1/frete (+ /frete/estado), resolveVtexOffer (destino só do servidor, a partir do state.json),
 // cliente HTTP da cotação na API (api/_lib/shipping-fetch.mjs) e a interface da página do produto (index.html) num
 // sandbox vm, como os outros testes de página. Sem rede: loja falsa (setShippingFetch) ou fetchQuote injetado.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -284,7 +285,7 @@ await t('servidor recusou o CEP (400 invalid_cep): volta ao campo com erro', asy
 });
 
 await t('página: renderProduct reserva #pp-frete e o formulário é tratado pelo submit/change globais', () => {
-  assert.match(cut('function renderProduct(pid){', '/* "Também na Amazon"'), /<div id="pp-frete">\$\{fcBlock\(pid\)\}<\/div>/);
+  assert.match(cut('function renderProduct(pid){', '/* Frete por CEP (issue #84)'), /<div id="pp-frete">\$\{fcBlock\(pid\)\}<\/div>/);
   assert.match(html, /else if\(f\.id==="fc-form"\)\{e\.preventDefault\(\);fcSubmit\(f\)\}/);
   assert.match(html, /if\(t\.dataset\?\.fcm\)\{fcChoose\(t\.dataset\.fcm,t\.value\);return\}/);
 });

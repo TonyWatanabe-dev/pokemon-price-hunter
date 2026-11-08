@@ -2,6 +2,7 @@
 // anexado a URLs de compra. Roda o código real de index.html e de tools/page.template.html (cada um separado:
 // os dois arquivos ainda podem divergir, issue #98) e faz uma busca estática em src/, api/ e nas duas páginas.
 // Sem rede e sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

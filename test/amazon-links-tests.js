@@ -3,6 +3,7 @@
 // com a data e hora da leitura, fora do ranking (nenhum módulo de preço/ranking/API lê o arquivo) e mostrado só no
 // bloco próprio. O aviso de afiliado fica no rodapé e nos Termos.
 // Sem rede e sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -64,17 +65,10 @@ t('preço, ranking, Opportunity Score e API nunca leem a lista da Amazon', () =>
   assert.deepEqual(hits, [], `arquivo de afiliado lido por: ${hits.join(', ')}`);
 });
 
-t('front: a lista só é usada no bloco "Também na Amazon", com rel sponsored; aviso de afiliado no rodapé e nos Termos', () => {
+t('front: o bloco "Também na Amazon" saiu do SPA (site só com parceiros, 07/11/2026); aviso de afiliado segue no rodapé e nos Termos', () => {
   const src = read('index.html');
-  assert.equal(src.match(/fetch\("\/data\/afiliados-amazon\.json"\)/g)?.length, 1, 'a lista deve ser carregada num único lugar');
-  const block = src.match(/function amzBlock\(pid\)\{[\s\S]*?<\/section>`\}/)?.[0];
-  const row = src.match(/function amzRow\(l\)\{[\s\S]*?<\/div>`\}/)?.[0];
-  assert.ok(block && row, 'amzBlock/amzRow não encontrados');
-  assert.match(row, /rel="noopener nofollow sponsored"/);
-  assert.match(block, /Preço e disponibilidade na data e hora indicadas/, 'aviso de data e hora junto do preço');
-  assert.match(row, /money\(l\.price\)\}<\/b> <small>em \$\{esc\(when\)\}/, 'preço da Amazon sempre com a data e hora da leitura');
-  assert.equal(src.match(/AMZ\?\.links|AMZ\.links/g)?.length, 1, 'os links da Amazon só podem ser lidos pelo amzBlock');
-  assert.match(src, /[Cc]omo Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas/);
+  assert.doesNotMatch(src, /afiliados-amazon\.json|function amzBlock|function amzRow|AMZ\?\.links/, 'a lista da Amazon não é mais lida pelo front: as ofertas manuais entram pelo estado servido');
+  assert.match(src, /Mercado Livre, Amazon e Shopee são de afiliado|Associado da Amazon/);
 });
 
 t('build publica a lista em /data/ (e o buildCommand da Vercel cabe no limite de 256 caracteres)', () => {

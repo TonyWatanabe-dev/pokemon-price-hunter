@@ -3,6 +3,7 @@
 // A divulgação fica GERAL: rodapé (com a frase exigida do Programa de Associados da Amazon) e Termos. Continua valendo
 // o inventário: todo link marcado "sponsored" (atributo invisível, exigido para link pago) é uma das superfícies
 // conhecidas (ML anúncio, ML geral, Amazon e, desde 17/10, Shopee). Roda o código real do index.html em sandbox (vm). Sem rede e sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -17,45 +18,17 @@ const texto = (s) => semSr(s).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
 t('1. inventário: "sponsored" só nas superfícies conhecidas', () => {
   const codigo = html.split('\n').filter((l) => /sponsored/.test(l) && !/^\s*\/\*/.test(l));
-  const onde = codigo.map((l) => (/^const outRel=/.test(l) ? 'ml-anuncio' : /Ver na Amazon/.test(l) ? 'amazon' : /Ver na Shopee/.test(l) ? 'shopee' : /data-afil/.test(l) ? 'ml-geral' : `desconhecida: ${l.slice(0, 80)}`));
-  assert.deepEqual(onde.sort(), ['amazon', 'ml-anuncio', 'ml-geral', 'shopee'], 'superfície de afiliado nova precisa de entrada neste teste');
+  const onde = codigo.map((l) => (/^const outRel=/.test(l) ? 'ml-anuncio' : /data-afil/.test(l) ? 'ml-geral' : `desconhecida: ${l.slice(0, 80)}`));
+  assert.deepEqual(onde.sort(), ['ml-anuncio', 'ml-geral'], 'superfície de afiliado nova precisa de entrada neste teste');
 });
 
-const amz = block(/^const amzWhen=[\s\S]*?^function amzBlock\(pid\)\{[\s\S]*?<\/section>`\}/m);
-const ctx = { String, Number, Date, Array };
-vm.createContext(ctx);
-vm.runInContext(`${line('esc')}\n${line('safeUrl')}\n${line('money')}\n${line('ic')}\nlet AMZ=null;\n${amz}\n;globalThis.__t={amzBlock,set(v){AMZ=v}};`, ctx);
-const link = (pid, i) => ({ productId: pid, title: `Box ${i}`, url: `https://www.amazon.com.br/dp/B0HFNSM2T${i}?tag=tcgpricehunter-20`, price: 99.9, seller: 'Amazon.com.br', fulfilledBy: 'amazon', capturedAt: '2026-10-10T20:31:00Z' });
-
-t('2. bloco da Amazon: links com rel sponsored, sem etiqueta de afiliado visível', () => {
-  ctx.__t.set({ links: [link('p1', 1), link('p1', 2), link('p2', 3)] });
-  const out = ctx.__t.amzBlock('p1');
-  assert.equal((out.match(/rel="noopener nofollow sponsored"/g) || []).length, 2, 'só os links do produto');
-  assert.doesNotMatch(texto(out), /afiliad/i, 'nenhuma etiqueta de afiliado no bloco');
-  assert.doesNotMatch(out, /data-disclosure/);
-});
-
-t('3. sem link da Amazon para o produto: nada de bloco', () => {
-  ctx.__t.set({ links: [link('p2', 3)] });
-  assert.equal(ctx.__t.amzBlock('p1'), '');
-  ctx.__t.set({ links: [] });
-  assert.equal(ctx.__t.amzBlock('p1'), '');
-});
-
-t('3b. bloco da Shopee: sponsored, sem etiqueta de afiliado visível', () => {
-  const shp = block(/^function shpRow\(l\)\{[\s\S]*?^function shpBlock\(pid\)\{[\s\S]*?<\/section>`\}/m);
-  vm.runInContext(`let SHP=null;\n${shp}\n;globalThis.__s={shpBlock,set(v){SHP=v}};`, ctx);
-  const o = (pid, i, price) => ({ productId: pid, title: `Blister ${i}`, url: `https://s.shopee.com.br/Ab${i}`, price, priceCupom: price - 5, seller: 'Loja', selo: null, stockNote: null, capturedAt: '2026-10-17T21:45:00Z' });
-  ctx.__s.set({ ofertas: [o('p1', 1, 60), o('p1', 2, 50), o('p2', 3, 40)] });
-  const out = ctx.__s.shpBlock('p1');
-  assert.equal((out.match(/rel="noopener nofollow sponsored"/g) || []).length, 2, 'só os anúncios do produto');
-  assert.ok(out.indexOf('Blister 2') < out.indexOf('Blister 1'), 'mais barato primeiro');
-  assert.doesNotMatch(texto(out), /afiliad/i, 'nenhuma etiqueta de afiliado no bloco');
-  ctx.__s.set({ ofertas: [o('p2', 3, 40)] }); assert.equal(ctx.__s.shpBlock('p1'), '');
+t('2/3. blocos "Também na Amazon/Shopee" saíram do SPA (07/11/2026); links manuais usam o mesmo outRel sponsored', () => {
+  assert.doesNotMatch(html, /function amzBlock|function shpBlock|function amzRow|function shpRow/);
+  assert.match(line('outRel'), /link\\\.amazon\|s\\\.shopee\\\.com\\\.br/);
 });
 
 t('4. ML: destino com afiliado sai como sponsored (invisível); rodapé geral sem rótulo de afiliado', () => {
-  assert.match(line('outRel'), /outUrl\(u\)!==u\?" nofollow sponsored":""/);
+  assert.match(line('outRel'), /outUrl\(u\)!==u\|\|/);
   const foot = block(/^function footAfil\(\)[\s\S]*?(?=\nloadAfil\(\);)/m);
   assert.match(foot, /rel="noopener nofollow sponsored" data-afil>/);
   assert.doesNotMatch(foot, /afiliad/i);
@@ -68,8 +41,8 @@ t('5. nenhuma etiqueta de afiliado por link em lugar nenhum do site', () => {
 t('6. divulgação geral: rodapé com a frase da Amazon e a regra de desempate; Termos sempre', () => {
   const foot = block(/<footer class="foot">[\s\S]*?<\/footer>/);
   assert.match(foot, /Como Associado da Amazon, o TCG Price Hunter recebe por compras qualificadas\./);
-  assert.match(foot, /Mercado Livre e Shopee também são de afiliado/);
-  assert.match(foot, /Em empate de preço, a oferta com o nosso link aparece primeiro; ela nunca passa na frente de uma oferta mais barata\./);
+  assert.match(foot, /Os links para Mercado Livre, Amazon e Shopee são de afiliado/);
+  assert.match(foot, /A ordem das ofertas segue o preço, não a comissão\./);
   const termos = block(/<h3>4\. Compras são feitas com as lojas<\/h3>[\s\S]*?<h3>5\./);
   assert.doesNotMatch(termos, /\$\{AFIL/, 'aviso dos Termos não depende de ter link carregado');
   assert.match(termos, /Esses links não levam etiqueta no site e funcionam como qualquer outro\./);

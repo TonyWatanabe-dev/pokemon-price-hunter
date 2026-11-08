@@ -2,6 +2,7 @@
 // dados ausentes: estoque desconhecido não vira disponível, total com frete desconhecido nunca é comparado,
 // oferta stale/anômala/não confirmada não gera mudança, leitura repetida e preço que vai e volta não são queda.
 // Função pura (src/core/offer-change.js), sem banco. Registrado via import no fim de test/price-engine-tests.js.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { classifyOfferChange, CHANGE, CHANGE_LABEL } from '../src/core/offer-change.js';
 
