@@ -8,7 +8,8 @@ import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { SITE, fetchPublic } from './seo-public-smoke.mjs';
 
-export const SITE_PAGES = Object.freeze(['copag', 'pistas', 'prevenda', 'lojas']);
+// 'lojas' saiu em 07/11/2026 (site só com parceiros): o site não tem mais a tela /lojas; a rota da API segue (só parceiros), mas nada depende dela.
+export const SITE_PAGES = Object.freeze(['copag', 'pistas', 'prevenda']);
 export const MAX_LINKS = 25;
 const FRESH = new Set(['atual', 'atrasado']);
 const KNOWN = new Set(['atual', 'atrasado', 'desatualizado']);
@@ -58,7 +59,7 @@ export async function runPostDeploySmoke(get = fetchPublic, { maxLinks = MAX_LIN
   assert.equal(homeApi.response.headers.get('x-data-freshness'), fresh, '/api/v1/home precisa enviar X-Data-Freshness igual ao corpo');
   report.freshness = fresh;
 
-  // 2) Dados das páginas /precos, /pistas, /pre-vendas e /lojas.
+  // 2) Dados das páginas /precos, /pistas e /pre-vendas.
   for (const p of SITE_PAGES) {
     const d = json(await get('/api/v1/site/pagina/' + p), '/api/v1/site/pagina/' + p);
     assert.equal(d.v, 1, `/api/v1/site/pagina/${p} precisa trazer v: 1`);

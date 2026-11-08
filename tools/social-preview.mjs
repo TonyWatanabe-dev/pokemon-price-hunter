@@ -17,6 +17,8 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { offerFreshness } from '../api/_lib/freshness.mjs';
 import { slugs, SITE } from '../api/_seo.mjs';
+import { soParceiros, lojaParceira } from '../api/_lib/modo-parceiros.mjs';
+import { ofertaParceira } from '../api/_lib/affiliates.mjs';
 import { selecionarElegiveis, chaveDedupe, exigeDisclosure } from '../src/agents/social/elegiveis.js';
 import { gerarRascunho, CANAIS, DISCLOSURE } from '../src/agents/social/rascunho.js';
 import { enfileirar, aprovar, agendar, habilitado, validarFila, filaVazia } from '../src/agents/social/fila.js';
@@ -73,16 +75,22 @@ function entradaRascunho(o, produto, slug, disclosure) {
   };
 }
 
+/** Oferta que o site publica: leitura manual do dono (Amazon/Shopee) ou anúncio do ML com link de afiliado no mapa. */
+export const ehParceira = (o, affiliates) => isObj(o) && lojaParceira(o.storeId) && ((o.manual === true && o.sourceType === 'manual_afiliado') || ofertaParceira(o, affiliates ?? null));
+
 /** Prévia pura (sem I/O): devolve o objeto gravado em preview.json. `env` só é usado para SOCIAL_PAUSA; quem chama já
  *  passou pelo gate de SOCIAL_ENABLED (ou pediu --dry-run). Horário sugerido = "se aprovado agora": o calendário roda
  *  numa cópia com os itens aprovados; a fila devolvida continua toda em `rascunho`, à espera da decisão humana. */
-export function gerarPrevia(state, { canais = [...CANAIS], now, limite = LIMITE_PADRAO, siteUrl = SITE, env = {}, modo = 'dry-run', affiliates } = {}) {
+export function gerarPrevia(state, { canais = [...CANAIS], now, limite = LIMITE_PADRAO, siteUrl = SITE, env = {}, modo = 'dry-run', affiliates, parceiros = soParceiros(process.env) } = {}) {
   if (!isObj(state) || !Array.isArray(state.offers)) throw new Error('state.json inválido: esperado objeto com "offers" (lista)');
   const t = instante(now);
   const produtos = Array.isArray(state.products) ? state.products.filter((p) => isObj(p) && typeof p.id === 'string') : [];
   const P = new Map(produtos.map((p) => [p.id, p]));
   const { of: slugDe } = slugs(produtos);
-  const { elegiveis, recusadas } = selecionarElegiveis(state.offers, { now: t, limite });
+  // Site só com parceiros (07/11/2026): divulgação só de oferta que leva o link do dono (anúncio do ML com link no mapa ou leitura
+  // manual da Amazon/Shopee). Ligado por padrão; só SITE_SO_PARCEIROS=0 volta a considerar todas as lojas.
+  const ofertas = parceiros ? state.offers.filter((o) => ehParceira(o, affiliates)) : state.offers;
+  const { elegiveis, recusadas } = selecionarElegiveis(ofertas, { now: t, limite });
 
   const itens = []; const erros = [];
   let fila = filaVazia();
