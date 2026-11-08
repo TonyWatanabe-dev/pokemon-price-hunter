@@ -2,6 +2,7 @@
 // estatísticas, state sintético N× (ids/slugs únicos, idioma no fim do id), banco simulado cobrindo as rotas medidas,
 // um conjunto pequeno de ponta a ponta (status, contagens, fonte) e orçamentos de TAMANHO do slim. Tempo não é critério
 // (CI varia): só um teto folgado de 5 s por chamada, que pega travamento, não lentidão.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';

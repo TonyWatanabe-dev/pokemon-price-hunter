@@ -1,6 +1,7 @@
 // Lote E — conteúdo SEO (api/pagina.mjs, api/sitemap.mjs, api/_lib/guia.mjs, vercel.json, index.html):
 // /como-funciona com o guia completo (um h2 por seção) e perguntas frequentes (FAQPage); /tipo/blister reunindo os
 // formatos de blister; /guia/glossario com DefinedTermSet; os dois no sitemap. Sem rede: state.json vem de um fetch falso.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

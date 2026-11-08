@@ -1,6 +1,7 @@
 // Lote A (UX no celular) — PR #288: selo Reclame Aqui com prefixo, CTA única nos cartões, um H1 por rota,
 // eixo do gráfico sem marcas repetidas, % nas quedas e piso tipográfico/contraste no CSS.
 // Roda trechos reais de index.html num sandbox (mesmo método de home-page-tests.js e opportunities-page-tests.js).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -51,7 +52,7 @@ const flowCode = [
   cutFn('function renderSearch'),
   cut('function scoreMeter', 'function dealCard'), cutFn('function dealCard'),
   cut('let curPid=null;', 'function openProduct'),
-  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* "Também na Amazon"', '/* Conta: login'),
+  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* Frete por CEP (issue #84)', '/* Conta: login'),
   line('let PENDING_HASH='), line('function hashScroll'),
 ].join('\n');
 const NOW = Date.now(); const iso = (minAgo) => new Date(NOW - minAgo * 6e4).toISOString();

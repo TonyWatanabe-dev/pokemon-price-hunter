@@ -1,5 +1,6 @@
 // Issue #37 — UX de confiança: última leitura da oferta explícita (conhecida, antiga ou desconhecida) no cartão de
 // loja e na caixa de melhor preço. Roda o código real de index.html num sandbox; não há browser harness no ambiente.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -46,6 +47,6 @@ assert.match(text(storeOffer(offer({ shippingKnown: true, shipping: 12.5 }), {})
 
 // caixa de melhor preço (detalhe) mostra a leitura, com aviso quando desconhecida
 assert.match(html, /data-read="\$\{readKnown\(best\)\?"known":"unknown"\}"/, 'caixa de melhor preço tem a linha de leitura');
-assert.match(html, /\$\{readNote\(best\)\}\$\{readKnown\(best\)\?"":"\. Confira o preço na loja\."\}/);
+assert.match(html, /\$\{best\.manual\?lidoEm\(best\):readNote\(best\)\}\$\{readKnown\(best\)\?"":"\. Confira o preço na loja\."\}/);
 
 console.log('trust-ux-tests: ok');

@@ -1,5 +1,6 @@
 // Frescor por oferta: reaproveitar leitura antiga (falha da fonte) nunca renova o horário nem inventa estoque.
 // Puro (sem rede e sem banco): staleCopy / lastValidOf do robô + mapeamento para o banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import vm from 'node:vm';
 import { classify, usable } from '../api/_lib/freshness.mjs';
@@ -70,7 +71,7 @@ const uiCode = [
   cut('const BAND_UI=', 'const RARITY='),
   cut('function scoreMeter', 'function dealCard'), cutFn('function dealCard'),
   cut('let curPid=null;', 'function openProduct'),
-  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* "Também na Amazon"', '/* Conta: login'),
+  cutFn('function storeOffer'), cutFn('function renderProduct'), cut('/* Frete por CEP (issue #84)', '/* Conta: login'),
   line('let PENDING_HASH='), line('function hashScroll'),
 ].join('\n');
 const isoAgo = (min) => new Date(Date.now() - min * 6e4).toISOString();
@@ -117,11 +118,11 @@ t('7. card: sem nenhuma oferta, ou com leitura recente, mantém o texto atual', 
 t('8. página do produto só com oferta stale: aviso de leitura antiga com horário e loja', () => {
   const page = text(ui([uiOff('a', { stale: true, stock: 'UNKNOWN', source_timestamp: isoAgo(26 * 60) })]).detail(PROD.id));
   assert.match(page, /Leitura antiga Última leitura há 1 d, em Loja A\. Preço e estoque podem ter mudado/);
-  assert.doesNotMatch(page, /Nenhuma loja confirma estoque neste momento/);
+  assert.doesNotMatch(page, /Nenhuma loja parceira confirma estoque neste momento/);
   const vivo = text(ui([uiOff('a', { stale: true }), uiOff('b', {})]).detail(PROD.id));
   assert.match(vivo, /Melhor preço com estoque|Menor preço com estoque/, 'com oferta viva a caixa de compra não muda');
   const fora = text(ui([uiOff('a', { stock: 'OUT_OF_STOCK' })]).detail(PROD.id));
-  assert.match(fora, /Sem estoque confirmado agora Nenhuma loja confirma estoque neste momento/, 'leitura recente sem estoque mantém o texto atual');
+  assert.match(fora, /Sem estoque confirmado agora Nenhuma loja parceira confirma estoque neste momento/, 'leitura recente sem estoque mantém o texto atual (agora dizendo "loja parceira")');
 });
 
 console.log(`offer-freshness-tests: ${n} ok`);

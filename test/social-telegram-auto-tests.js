@@ -1,5 +1,6 @@
 // #690 — envio automático: regras do proprietário (5 min, nova sai na hora, 24 h, afiliado primeiro), travas e diário.
 // Offline: fetch falso.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

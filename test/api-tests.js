@@ -1,5 +1,6 @@
 // API v1 (FASE 3): resumo da Home, endpoints, paginação, cache, fallback, consistência com o state.json.
 // Roda sempre (fonte state.json), sem banco. A parte de banco fica em test/api-db-tests.js.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { slimHome } from '../api/_lib/home.mjs';

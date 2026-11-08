@@ -2,6 +2,7 @@
 // api/v1), roteados como no vercel.json (arquivo estático > rewrites; headers pela rota pedida), com o data/state.json do
 // repositório servido no lugar do GitHub. Não acessa a rede. Também confere que o smoke falha quando cada parte quebra
 // (API, busca, detalhe, assets sem cache imutável, link interno quebrado) e que dados velhos não reprovam o deploy.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -82,7 +83,7 @@ assert.deepEqual(internalLinks('<a href="/lojas">x</a><a href="/api/v1/home">a</
 assert.deepEqual(assetRefs('<link href="/assets/web/app-0123456789ab.css"><script src="/assets/web/app-0123456789ab.js"></script> url("/assets/web/rubik-v1.woff2")'), ['/assets/web/app-0123456789ab.css', '/assets/web/app-0123456789ab.js', '/assets/web/rubik-v1.woff2']);
 assert.deepEqual(sampleLinks(['/', '/colecao/a', '/colecao/b', '/colecao/c', '/lojas', '/tipo/x', '/guia/glossario', '/produto/p']), ['/', '/lojas', '/colecao/a', '/colecao/b', '/tipo/x', '/guia/glossario', '/produto/p']);
 assert.deepEqual(sampleLinks(['/a', '/b', '/c'], 2), ['/a', '/b']);
-assert.deepEqual(SITE_PAGES, ['copag', 'pistas', 'prevenda', 'lojas']);
+assert.deepEqual(SITE_PAGES, ['copag', 'pistas', 'prevenda']);   // /lojas saiu do site em 07/11/2026 (só parceiros)
 
 // 1) Contrato atual passa offline.
 const report = await runPostDeploySmoke((p) => localGet(p));
@@ -112,7 +113,7 @@ if (STALE) {
     'asset sem immutable': { '/assets/web/app-*': (o) => set(o, 'cache-control', 'public, max-age=31536000') },
     'asset com max-age curto': { '/assets/web/rubik-*': (o) => set(o, 'cache-control', 'public, max-age=60, immutable') },
     'asset sumiu (404)': { '/assets/web/app-*': status(404) },
-    'link interno quebrado': { '/lojas': status(404) },
+    'link interno quebrado': { '/como-funciona': status(404) },   // era /lojas, link do rodapé que saiu do site em 07/11/2026
   };
   for (const [name, mutate] of Object.entries(breaks)) {
     await assert.rejects(runPostDeploySmoke((p) => localGet(p, mutate)), assert.AssertionError, 'o smoke deveria falhar: ' + name);

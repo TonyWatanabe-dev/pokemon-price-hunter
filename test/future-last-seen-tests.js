@@ -3,6 +3,7 @@
 // 5 min no futuro não é gravado, que valor futuro já gravado não bloqueia a próxima leitura válida (recuperação) e que o
 // max(last_seen_at) do frescor e a página de lojas não tratam horário futuro como leitura válida.
 // O comportamento real no PostgreSQL da guarda está em db-tests.js e stock-events-db-tests.js.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -139,18 +140,13 @@ await t('9. frescor do banco: DB_AT_SQL não deixa last_seen_at futuro entrar no
   assert.match(DB_AT_SQL, /last_seen_at <= now\(\) \+ interval '5 minutes'/);
 });
 
-// Página de lojas: módulo e espelho do site (index.html) com o mesmo resultado.
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const a = html.indexOf('/* Frente 7: lojas (dados)'), b = html.indexOf('/* Frente 7: lojas (telas)');
-const ctx = vm.createContext({ live: (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0, URL, encodeURIComponent });
-vm.runInContext(html.slice(a, b) + ';globalThis.__ = { lojasNormalize };', ctx);
-const spaNormalize = ctx.__.lojasNormalize;
-await t('10. lojas: horário futuro não aparece como última leitura (servidor e site iguais)', () => {
+// Página de lojas: só o módulo do servidor (api/_lib/lojas.mjs). O espelho no index.html saiu com o modo só com parceiros (07/11/2026).
+await t('10. lojas: horário futuro não aparece como última leitura (servidor)', () => {
   const src = (id, extra = {}) => ({ id, name: id, kind: 'specialist', status: 'ACTIVE', url: `https://${id}.com.br`, platform: 'shopify', ...extra });
   const sources = [src('alfa', { lastSuccess: at(-30) }), src('beta', { lastSuccess: at(120) }), src('gama', { lastSuccess: at(-50) })];
   const offers = [offer('a1', at(-20), { storeId: 'alfa' }), offer('a2', at(120), { storeId: 'alfa' }), offer('b1', at(180), { storeId: 'beta' }),
     offer('g1', at(4), { storeId: 'gama' })];
-  for (const [nome, fn] of [['servidor', normalizeLojas], ['site', spaNormalize]]) {
+  for (const [nome, fn] of [['servidor', normalizeLojas]]) {
     const by = Object.fromEntries(JSON.parse(JSON.stringify(fn({ sources, offers, now: NOW }))).map((l) => [l.id, l.lastReadAt]));
     assert.equal(by.alfa, at(-20), `${nome}: ignora a oferta no futuro e usa a leitura válida`);
     assert.equal(by.beta, null, `${nome}: só horário futuro (oferta e lastSuccess) = sem leitura conhecida`);

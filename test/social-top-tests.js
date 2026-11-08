@@ -1,5 +1,6 @@
 // Top 3 / Top 10 do site nos grupos (24/10/2026): dados da API, legendas só com o link do site, falha fechada,
 // arte sem link de produto e envios (Telegram e WhatsApp) com rede e conexão falsas.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -86,7 +87,7 @@ let html = '';
 {
   const { out, io: o } = io();
   const fetchFn = async () => ({ ok: true, headers: { get: () => 'image/png' }, arrayBuffer: async () => new ArrayBuffer(8) });
-  const r = await main(['arte', '--tipo', 'top3', '--dir', dir, '--json', path.join(raiz, 'test/fixtures/oportunidades-top.json')], {}, o,
+  const r = await main(['arte', '--tipo', 'top3', '--dir', dir, '--json', path.join(raiz, 'test/fixtures/oportunidades-top.json')], { SITE_SO_PARCEIROS: '0' }, o,
     { now: () => AGORA, fetchFn, render: async (h, s) => { html = h; fs.writeFileSync(s, 'JPG'); } });
   assert.equal(r, 0, out.join('\n'));
   assert.ok(fs.existsSync(path.join(dir, 'top3.jpg')) && fs.readFileSync(path.join(dir, 'top3.txt'), 'utf8') === l3);
@@ -95,7 +96,7 @@ let html = '';
 { // dado velho: não gera nada
   const { out, io: o } = io(); const f = path.join(dir, 'velho.json');
   fs.writeFileSync(f, JSON.stringify({ ...API, meta: { ...API.meta, freshness: { status: 'pausado' } } }));
-  assert.equal(await main(['arte', '--tipo', 'top10', '--dir', dir, '--json', f], {}, o, { now: () => AGORA, render: async () => assert.fail('não renderiza') }), 2);
+  assert.equal(await main(['arte', '--tipo', 'top10', '--dir', dir, '--json', f], { SITE_SO_PARCEIROS: '0' }, o, { now: () => AGORA, render: async () => assert.fail('não renderiza') }), 2);
   assert.match(out.join(), /sem post/);
 }
 { // Telegram: título do chat confere, foto multipart com legenda HTML e token nunca aparece

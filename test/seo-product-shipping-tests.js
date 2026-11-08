@@ -5,6 +5,7 @@
 // conhecido) continua no corpo como frase própria e segue ordenando a tabela e a lista de /produtos (bestBy).
 // Nunca se inventa frete (sem shippingDetails/shippingRate). Estoque desconhecido não vira "com estoque" nem "sem estoque";
 // produto sem oferta com estoque segue com noindex (#141). Sem rede: o state.json vem de um fetch falso, em processo separado.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -117,7 +118,7 @@ await t('5. só estoque desconhecido: segue noindex (#141), sem preço e sem diz
   const p = pg['t=produto&slug=p4'];
   assert.equal(p.status, 200); assert.equal(p.noindex, true);
   assert.equal(product(p).offers, undefined, 'sem AggregateOffer'); assert.doesNotMatch(p.title + p.desc, /R\$ 50,00/);
-  assert.match(text(p.ssr), /Nenhuma loja acompanhada tem estoque confirmado deste produto agora/);
+  assert.match(text(p.ssr), /Sem oferta nas lojas parceiras agora/); // texto do modo só com parceiros (07/11/2026): vale nos dois modos, sem revelar a chave
 });
 
 await t('6. /produtos: melhor oferta de cada produto pela mesma regra (B em p1, F em p3)', () => {

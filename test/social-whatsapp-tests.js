@@ -1,5 +1,6 @@
 // #690 — WhatsApp (automação não oficial por decisão do proprietário): legenda, sessão cifrada, grupo exato, regras
 // mais espaçadas e fluxo de envio com conexão falsa (sem Baileys, sem rede).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

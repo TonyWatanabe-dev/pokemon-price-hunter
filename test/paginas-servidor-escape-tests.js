@@ -1,4 +1,5 @@
 // api/pagina.mjs: substituição literal (storeName/seller com $&, $`, $', $$) e slug malformado (404 + noindex). Sem rede.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';

@@ -2,6 +2,7 @@
 // das regras que ainda não tinham teste, sem mudar código. Vários casos registram DIVERGÊNCIAS entre superfícies (site,
 // API v1, Monte seu kit, grupos); se uma divergência for corrigida por decisão do dono, atualize o caso junto com a
 // correção e o documento. Offline: sem rede, banco, Firebase ou secrets.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';

@@ -2,6 +2,7 @@
 // 1) contrato de GET /api/v1/site/pagina/{copag,pistas,prevenda,lojas} (fonte state.json, sem banco);
 // 2) o código real do index.html (apiPageReady → loadPage → apiGet → API real) monta as quatro páginas sem fetchState,
 //    e o HTML sai idêntico ao do estado completo; 3) API fora do ar: cai no state.json (ensureFull), como antes.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -106,11 +107,13 @@ const cut = (a, b) => { const i = html.indexOf(a); const j = html.indexOf(b, i +
 const cutFn = (a) => { const i = html.indexOf(a); assert.ok(i > 0, a); const j = html.indexOf('\n}\n', i); return html.slice(i, j + 3); };
 const line = (p) => { const l = html.split('\n').find((x) => x.startsWith(p)); assert.ok(l, p); return l; };
 const m = html.match(/const API_VIEWS=new Set\((\[[^\]]*\])\)/);
-for (const v of ['copag', 'pistas', 'prevenda', 'lojas']) assert.ok(JSON.parse(m[1]).includes(v), `${v} em API_VIEWS`);
+for (const v of ['copag', 'pistas', 'prevenda']) assert.ok(JSON.parse(m[1]).includes(v), `${v} em API_VIEWS`);
+// Site só com parceiros (07/11/2026): o navegador não tem mais a tela /lojas (a rota da API segue, só com parceiros: testada acima).
+assert.ok(!JSON.parse(m[1]).includes('lojas'), 'lojas fora de API_VIEWS'); assert.ok(!/renderLojas|LOJAS_CFG|lojasNormalize/.test(html), 'tela de lojas removida do index.html');
 const code = [
   ...['const esc=', 'const money=', 'const pct=', 'const ago=', 'const ic=', 'const safeUrl=', 'const norm=', 'const live=', 'const label=', 'const refOf=', 'const REFNOTE=', 'const MK=',
     'const mkDomain=', 'const mkName=', 'const chan=', 'const slugify=', 'function buildSlugs'].map(line),
-  cutFn('function tipCard'), cutFn('function renderCopag'), cut('const LOJAS_CFG=', 'function renderLegal'), cut('const tipVs=', '/* Por que esta nota? Explicação'), cutFn('function renderPre'),
+  cutFn('function tipCard'), cutFn('function renderCopag'), cut('const tipVs=', '/* Por que esta nota? Explicação'), cutFn('function renderPre'),
   cut('function hydrateHome', 'async function fetchHome'), cut('const API_VIEWS=', '/* histórico do produto'), cut('let fullP=null;', 'let refreshing=false;'),
 ].join('\n');
 
@@ -126,12 +129,12 @@ function sandbox(st, { slim }) {
     fetch: async (url) => { const r = await call(url); return { status: r.statusCode, ok: r.statusCode >= 200 && r.statusCode < 300, json: async () => JSON.parse(r.body) }; },
   };
   vm.createContext(ctx);
-  vm.runInContext(code + '\n;globalThis.__label=label;globalThis.__={apiPageReady,renderCopag,renderTips,renderPre,renderLojas,buildSlugs,hydrateHome,get pageP(){return pageP},get PG(){return PG},get PAGE_DONE(){return PAGE_DONE},get SLUG(){return SLUG}};', ctx);
+  vm.runInContext(code + '\n;globalThis.__label=label;globalThis.__={apiPageReady,renderCopag,renderTips,renderPre,buildSlugs,hydrateHome,get pageP(){return pageP},get PG(){return PG},get PAGE_DONE(){return PAGE_DONE},get SLUG(){return SLUG}};', ctx);
   const S = slim ? ctx.__.hydrateHome(st) : st;
   vm.runInContext('(s)=>{S=s;P=Object.fromEntries(S.products.map((p)=>[p.id,p]));OFF=S.offers;buildSlugs()}', ctx)(S);
   return { ctx, n, out: () => view0.innerHTML };
 }
-const RENDER = { copag: 'renderCopag', pistas: 'renderTips', prevenda: 'renderPre', lojas: 'renderLojas' };
+const RENDER = { copag: 'renderCopag', pistas: 'renderTips', prevenda: 'renderPre' };
 const full = (v) => { const s = sandbox(fx(), { slim: false }); s.ctx.view = v; s.ctx.__[RENDER[v]](); return { html: s.out(), slug: { ...s.ctx.__.SLUG } }; };
 
 for (const v of Object.keys(RENDER)) {
@@ -153,8 +156,8 @@ for (const v of Object.keys(RENDER)) {
 await t('API fora do ar: cai no state.json (ensureFull), como antes', async () => {
   _cache.clear(); apiDown = true;
   const s = sandbox(JSON.parse(JSON.stringify(slimHome(fx(), { source: 'state', now }))), { slim: true });
-  s.ctx.view = 'lojas'; assert.equal(s.ctx.__.apiPageReady(), false); await s.ctx.__.pageP; await new Promise((r) => setTimeout(r, 0));
-  assert.equal(s.n.state, 1); assert.equal(s.n.init, 1); assert.equal(s.ctx.__.PAGE_DONE.has('pg:lojas'), false);
+  s.ctx.view = 'copag'; assert.equal(s.ctx.__.apiPageReady(), false); await s.ctx.__.pageP; await new Promise((r) => setTimeout(r, 0));
+  assert.equal(s.n.state, 1); assert.equal(s.n.init, 1); assert.equal(s.ctx.__.PAGE_DONE.has('pg:copag'), false);
   apiDown = false;
 });
 console.log('perf-paginas-api-tests ok');

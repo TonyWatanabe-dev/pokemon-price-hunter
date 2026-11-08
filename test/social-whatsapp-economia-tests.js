@@ -1,4 +1,5 @@
 // WhatsApp com foco em economia (pedido do dono em 03/11/2026): só blister 2/3/4, barato, com "De X por Y" honesto.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { focoEconomia, referencia, ordenarPorEconomia } from '../src/agents/social/economia.js';

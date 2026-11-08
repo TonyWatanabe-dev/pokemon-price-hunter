@@ -2,6 +2,7 @@
 // Antes, /api/v1/site/kit e /site/kit/cesta não mandavam priceKind e a kit-v3.js mostrava só "R$ 25,85 cada" para um valor
 // que no produto aparece "R$ 25,85 no Pix" (no cartão a loja cobra mais). Rota real (estado sintético, sem banco/rede) e
 // kit-v3.js real num DOM falso.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';

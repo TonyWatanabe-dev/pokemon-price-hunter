@@ -2,6 +2,7 @@
 // "Ref. da comunidade" (curto) / "Referência da comunidade" (longo), com a nota "preço divulgado fora do site da Copag; não
 // confirmado". "Copag" como nome de referência fica só para o preço oficial confirmado. Nenhum rótulo "internet" sobra.
 // Roda trechos reais de index.html num sandbox, o SSR de api/pagina.mjs num processo filho e os rótulos da API.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

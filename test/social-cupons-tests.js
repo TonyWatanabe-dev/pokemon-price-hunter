@@ -1,4 +1,5 @@
 // Dica de cupom do ML nos posts (#690): importação do CSV "Meus cupons" e escolha por oferta.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { validadeAte, importarCsv, cupomPara, dicaCupom, descontoEm } from '../src/agents/social/cupons.js';
 

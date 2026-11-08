@@ -1,5 +1,6 @@
 // Planilha do Mercado Livre do dono na fila do WhatsApp (06/11/2026): anúncio fora do catálogo, que o robô não enxerga,
 // entra com o preço lido e o link meli.la, pela mesma regra das leituras de Shopee e Amazon.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { ofertasExternas, candidatoExterno, lerLeituras } from '../src/agents/social/externas.js';

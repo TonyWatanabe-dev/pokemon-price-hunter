@@ -5,6 +5,7 @@
 //    sugestões tem nome acessível (axe: aria-input-field-name);
 //  • selo do Reclame Aqui com alvo de toque de 24 px (WCAG 2.5.8) e o texto do selo cinza sem opacidade (contraste 4,5:1).
 // Sem rede: o state.json é sintético e servido pelo fetch simulado.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -73,10 +74,10 @@ await t('coleção com um produto diz "1 produto" (description e texto); com doi
   const um = await get(`t=colecao&slug=${colSlug(state.collections[0])}`);
   assert.equal(um.status, 200);
   assert.doesNotMatch(um.body, /\b1 produtos\b/);
-  assert.match(um.body, /<meta name="description" content="Coleção Única Pokémon TCG lacrado: 1 produto em lojas do Brasil/);
+  assert.match(um.body, /<meta name="description" content="Coleção Única Pokémon TCG lacrado: 1 produto nas lojas parceiras/);
   assert.match(um.body, /<p>1 produto da coleção Coleção Única/);
   const dois = await get(`t=colecao&slug=${colSlug(state.collections[1])}`);
-  assert.match(dois.body, /2 produtos em lojas do Brasil/); assert.match(dois.body, /<p>2 produtos da coleção/);
+  assert.match(dois.body, /2 produtos nas lojas parceiras/); assert.match(dois.body, /<p>2 produtos da coleção/);
 });
 
 await t('formato com um produto diz "1 produto"', async () => {

@@ -4,6 +4,7 @@
 //   2. Madrugada (0h–7h em Brasília): só oferta nova sai.
 //   3. Preço do Pix sai como "no Pix" (avulsos, Top 3 e Top 10); preço base não ganha o rótulo.
 //   4. Frete desconhecido nunca vira "grátis": avulsos não falam de frete; no Top, "FRETE GRÁTIS" só com shipping=free.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';

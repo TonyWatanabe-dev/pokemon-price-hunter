@@ -1,5 +1,6 @@
 // Fase 6B.0 — contrato de /api/v1/oportunidades: categoria, referência, comparação com a referência ATUAL usada pelo motor,
 // filtros e ordens. Parte A pura (sempre). Parte B no PostgreSQL com TEST_DATABASE_URL (banco descartável).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { referenceComparison, opportunityConfidenceLevel } from '../src/core/references.js';
 import { calculateOpportunity, confidenceLevel } from '../src/core/opportunity-engine.js';

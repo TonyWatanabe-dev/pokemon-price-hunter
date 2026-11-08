@@ -1,6 +1,7 @@
 // Prazo nos fetches do SSR (docs/auditorias/paginas-servidor.md §4, proposta 6; parte de api/_lib/lojas.mjs): o fetch de
 // sources.json leva AbortSignal.timeout. Rede que nunca responde cai no caminho sem lojas (o mesmo de um sources.json
 // com erro) dentro do prazo, em vez de segurar a função até o 504. Caminho feliz inalterado. Sem rede: fetch simulado.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { setFreshnessClock } from '../api/_lib/freshness.mjs';
 import { loadSources, lojasFromState, RAW_SOURCES, SOURCES_TIMEOUT_MS } from '../api/_lib/lojas.mjs';

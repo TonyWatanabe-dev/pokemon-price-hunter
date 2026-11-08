@@ -7,6 +7,7 @@
 //  3. F4: contador c-hit, aviso "chegou no seu preço" e o selo do alerta só afirmam o preço com dado em dia (mesma
 //     checagem de setAlert: freshState(S).status === "atual").
 // Sem rede: state.json sintético no fetch simulado; trechos reais do index.html rodam num sandbox (node:vm).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';

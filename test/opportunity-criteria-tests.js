@@ -1,6 +1,7 @@
 // Feed /api/v1/oportunidades (#664): campo ADITIVO `criteria` por item — referência, desconto, frescor e confiança que o
 // Opportunity Engine já usou e gravou, mais a chave de deduplicação. Cliente de banco falso: nada é recalculado, nota,
 // faixa, ordem e parâmetros da consulta principal ficam iguais; a chave tem o mesmo formato de chaveDedupe (Social Media).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { listOpportunities, opportunityCriteria } from '../api/_lib/read-db.mjs';
 import { chaveDedupe } from '../src/agents/social/elegiveis.js';
@@ -76,7 +77,7 @@ await t('listOpportunities: criteria aditivo, nota/ordem/parâmetros intactos', 
   const db = fakeDb(rows);
   const args = { page: 2, limit: 5, faixa: 'boa', colecao: 'me05', minimo: 50, ordem: 'preco', categoria: 'ETB', referencia: 'copag', abaixo: 10, confiancaMinima: 60, produto: 'p1' };
   const r = await listOpportunities({ ...args, query: db.query, now: NOW });
-  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null, null], 'mesmos filtros e paginação (idioma nulo com produto)');
+  assert.deepEqual(db.calls[0].params, ['boa', 'me05', 50, 5, 5, 'ETB', 'COPAG_OFFICIAL_CURRENT', 0.1, 0.6, 'p1', null, null, null, null], 'mesmos filtros e paginação (idioma e lojas parceiras nulos com produto)');
   assert.match(db.calls[0].sql, /ORDER BY o\.price ASC, o\.opportunity_score DESC, o\.offer_id\s+LIMIT \$4 OFFSET \$5/, 'mesma ordenação');
   assert.match(db.calls[0].sql, /f\.last_seen_at, f\.status AS offer_status/, 'frescor e status lidos da própria oferta, na mesma consulta');
   assert.equal(db.calls.length, 2, 'sem N+1: consulta principal + mudança em lote');

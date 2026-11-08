@@ -1,6 +1,7 @@
 // Sitemap usa o último state bom se o fetch falhar dentro do frescor. Sem cache (ou com cache velho), só a Home
 // permanece indexável; as outras páginas fixas e dinâmicas recebem noindex e não devem aparecer no sitemap.
 // Sem rede: fetch simulado, cada cenário num processo separado (o cache de state() é do módulo).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';

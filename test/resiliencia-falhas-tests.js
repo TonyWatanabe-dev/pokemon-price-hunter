@@ -6,6 +6,7 @@
 // Não repete o que já está coberto em paginas-servidor-cache/-escape/-log, sitemap-falha/-stale, api-tests,
 // freshness-tests e freshness-empty-db (lá: 500/rede no sitemap, dado velho, slug %E0%A4%A, prazo com loader pendurado,
 // erro de banco com senha na mensagem, banco vazio).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';

@@ -2,6 +2,7 @@
 // toda loja conhecida aparece (monitorada, sem leitura automática, marketplace ou pausada) com link para a busca de Pokémon
 // na própria loja; o produto ganha "Procurar em outras lojas". Nunca um preço que o robô não leu; texto nunca diz "fora do ar".
 // Sem rede: state.json (com `sources`) vem de um fetch falso, como em seo-lote-e-tests.js.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -54,7 +55,7 @@ const state = { generatedAt: T, coverage: { found: O.length }, totals: { offers:
   collections: [{ id: 'c1', name: 'Escuridão Absoluta', series: 'S', aliases: [], products: 1 }], types: [{ id: 'blister_3', label: 'Blister Triplo', group: 'Blisters', products: 1 }],
   sources: SOURCES, activity: [], tips: [], bestDeals: [] };
 
-function render(queries, st = state) {
+function render(queries, st = state, env = {}) {
   const script = `import { setFreshnessClock } from ${JSON.stringify(pathToFileURL(path.join(root, 'api/_lib/freshness.mjs')).href)};
     setFreshnessClock(() => ${NOW}); const st = JSON.parse(process.argv[1]);
     globalThis.fetch = async () => new Response(JSON.stringify(st), { status: 200 });
@@ -69,7 +70,7 @@ function render(queries, st = state) {
     { const res = { setHeader() {}, end(b) { this.body = b; } }; await sm({}, res); out.sitemap = res.body; }
     console.log(JSON.stringify(out));`;
   const r = spawnSync(process.execPath, ['--input-type=module', '-e', script, JSON.stringify(st), JSON.stringify(queries)],
-    { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: { ...process.env, API_DATABASE_URL: '' } });
+    { cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, env: Object.fromEntries(Object.entries({ ...process.env, API_DATABASE_URL: '', ...env }).filter(([, v]) => v !== undefined)) });
   if (r.status !== 0) throw new Error(`falha ao renderizar (status ${r.status}, ${r.signal || r.error || ''}): ${r.stderr}`);
   return JSON.parse(r.stdout.trim().split('\n').pop());
 }
@@ -213,26 +214,26 @@ await t('5. sitemap tem /lojas; vercel.json reescreve /lojas e leva config/store
   assert.equal(parse(old['t=lojas'].body).noindex, true); assert.equal(parse(old['t=lojas'].body).ssr, '');
 });
 
-await t('6. site (index.html): rota /lojas, título, menu Mais, rodapé, redirecionamento antigo removido; LOJAS_CFG e lojasNormalize iguais ao módulo', () => {
-  assert.match(html, /const ROUTES=\{[^\n]*lojas:"lojas"/); assert.match(html, /const PATHS=\{[^\n]*lojas:"lojas"/); assert.match(html, /const TITLES=\{[^\n]*lojas:"Lojas de Pokémon TCG no Brasil"/);
-  assert.match(html, /view==="lojas"\)renderLojas\(\)/); assert.match(html, /<button type="button" data-go="lojas">/); assert.match(html, /<a href="\/lojas" data-go="lojas">Lojas<\/a>/);
-  assert.doesNotMatch(html, /página Lojas foi retirada/); assert.match(html, /OLDHASH=\{[^\n]*lojas:"lojas"/);
-  assert.match(html, /\$\{outrasLojasBlock\(p\)\}\s*<div id="pp-amz">/, 'bloco do produto logo abaixo de Onde comprar');
-  assert.match(html, /\[data-oppstore\]/, 'Ver ofertas abre Oportunidades filtrada pela loja');
-  const m = html.match(/^const LOJAS_CFG=(\{.*\});$/m); assert.ok(m, 'const LOJAS_CFG=... numa linha só');
-  const a = html.indexOf('/* Frente 7: lojas (dados)'), b = html.indexOf('/* Frente 7: lojas (telas)');
-  assert.ok(a > 0 && b > a);
-  const ctx = vm.createContext({ live: (o) => o.stock === 'IN_STOCK' && !o.stale && !o.anomalous && o.total > 0, URL, encodeURIComponent });
-  vm.runInContext(html.slice(a, b) + ';globalThis.__ = { LOJAS_CFG, lojasNormalize, outrasLojas, ljSearchUrl };', ctx);
-  const spa = ctx.__;
-  assert.deepEqual(JSON.parse(JSON.stringify(spa.LOJAS_CFG)), JSON.parse(JSON.stringify(LOJAS_CFG)));
-  const mine = spa.lojasNormalize({ sources: SOURCES, offers: O });
-  assert.deepEqual(JSON.parse(JSON.stringify(mine)), JSON.parse(JSON.stringify(L)), 'mesma lista no site e no servidor');
-  assert.deepEqual(JSON.parse(JSON.stringify(spa.outrasLojas(mine, 'Escuridão Absoluta Blister Triplo'))), JSON.parse(JSON.stringify(outrasLojas(L, 'Escuridão Absoluta Blister Triplo'))));
-  assert.equal(spa.ljSearchUrl(mine[0], 'ETB Alfa'), searchUrlFor(L[0], 'ETB Alfa'));
-  const fn = html.slice(b, html.indexOf('function renderLegal(kind){'));
-  assert.match(fn, /rel="noopener nofollow"/); assert.match(fn, /Buscar Pokémon na loja/); assert.match(fn, /Preços não lidos pelo Hunter — confira na loja\./); assert.doesNotMatch(fn, /fora do ar/);
-  assert.match(fn, /matchMedia\("\(min-width:860px\)"\)\.matches\?" open":""/, 'fechado no celular, aberto no desktop');
+await t('6. site (index.html): sem a tela /lojas, sem item de menu, sem link no rodapé e sem "Procurar em outras lojas" (modo só com parceiros, 07/11/2026); /lojas antigo volta para a Home', () => {
+  assert.doesNotMatch(html, /const ROUTES=\{[^\n]*lojas:/); assert.doesNotMatch(html, /const PATHS=\{[^\n]*lojas:/); assert.doesNotMatch(html, /const TITLES=\{[^\n]*lojas:/);
+  assert.doesNotMatch(html, /renderLojas|outrasLojasBlock|LOJAS_CFG|lojasNormalize|ljSearchUrl|data-go="lojas"/);
+  assert.doesNotMatch(html, /Procurar em outras lojas|Todas as lojas conhecidas/);
+  assert.match(html, /if\(location\.pathname==="\/lojas"\)history\.replaceState\(null,"","\/"\)/, 'endereço antigo cai na Home');
+  assert.match(html, /\[data-oppstore\]/, 'o atalho de filtro por loja das Oportunidades segue existindo');
 });
+
+await t('7. modo só com parceiros LIGADO (padrão do servidor): /lojas vira 301 para a Home, o produto não oferece "Procurar em outras lojas", o sitemap não lista /lojas e nenhuma loja fora das parceiras aparece', () => {
+  const on = render([Q[0], Q[1]], state, { SITE_SO_PARCEIROS: '1' });
+  assert.equal(on[Q[0]].status, 301); assert.ok(!on[Q[0]].body);
+  const p = parse(on[Q[1]].body);
+  assert.doesNotMatch(p.ssr, /Procurar em outras lojas|outras lojas|ssr-lojas/);
+  assert.doesNotMatch(on.sitemap, /\/lojas</);
+  // as ofertas de alfa/beta/gama (fora das parceiras) não aparecem em lugar nenhum: a oferta do Mercado Livre é antiga (stale), então o produto fica sem oferta
+  assert.doesNotMatch(p.ssr, /alfa|beta|gama|R\$ 80|R\$ 88/i); assert.match(p.ssr, /Sem oferta nas lojas parceiras agora/);
+  assert.doesNotMatch(on.sitemap, /\/produto\/escuridao-absoluta-blister-triplo/, 'produto sem oferta em estoque de parceiro não é anunciado no sitemap');
+  // variável ausente = ligado; só o valor 0 desliga
+  const dflt = render([Q[0]], state, { SITE_SO_PARCEIROS: undefined }); assert.equal(dflt[Q[0]].status, 301);
+});
+
 
 console.log(`✓ Lojas (Frente 7): ${n} grupos de testes passaram`);

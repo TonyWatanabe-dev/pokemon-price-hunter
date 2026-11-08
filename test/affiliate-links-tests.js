@@ -1,6 +1,7 @@
 // Links de afiliado do Mercado Livre (docs/afiliados.md): config central (config/affiliates.json, lida só por
 // api/_lib/affiliates.mjs), destino trocado só na saída (outUrl em index.html) e só para anúncio do ML com link próprio.
 // Prova também que ranking, melhor oferta e Opportunity Score são idênticos com e sem afiliado. Sem rede e sem banco.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -160,8 +161,9 @@ await t('página: link de afiliado sai com rel sponsored (como os da Amazon); UR
   for (const u of [ML_SEM_MAPA, ML_CATALOGO, OUTRA, OUTRA_COM_MLB, 'javascript:alert(1)', '', null, undefined]) assert.equal(outRel(u), '', String(u));
   const { outRel: semConfig } = page();
   for (const u of [ML_PDP, ML_ITEM, OUTRA]) assert.equal(semConfig(u), '', 'sem config: nada muda no rel');
-  // mesmo marcador do bloco "Também na Amazon" (#194)
-  assert.match(html, /rel="noopener nofollow sponsored">Ver na Amazon/);
+  // 07/11/2026: os blocos "Também na Amazon/Shopee" saíram; os links manuais (link.amazon, s.shopee.com.br) passam pelo mesmo outRel
+  assert.equal(` rel="noopener${outRel('https://link.amazon/x')}"`, ' rel="noopener nofollow sponsored"');
+  assert.equal(` rel="noopener${outRel('https://s.shopee.com.br/Ab1')}"`, ' rel="noopener nofollow sponsored"');
 });
 
 await t('página: só os botões de oferta passam por outUrl, sempre dentro de safeUrl, com nova aba, noopener e texto .sr', () => {
@@ -220,7 +222,8 @@ await t('motores e ranking não conhecem afiliado (nem importam o módulo)', () 
   for (const f of files) assert.doesNotMatch(read(f), /affiliates\.(?:mjs|json)|resolveOutbound|publicAffiliates|parseAffiliates|outUrl|\bAFIL\b/, f);
   const importers = [...fs.readdirSync(path.join(ROOT, 'api')), ...fs.readdirSync(path.join(ROOT, 'api/_lib')).map((f) => `_lib/${f}`)]
     .filter((f) => /\.mjs$/.test(f) && /affiliates\.mjs/.test(read(`api/${f}`)));
-  assert.deepEqual(importers, ['pagina.mjs', 'v1.mjs'], 'só as rotas que mostram ofertas leem a config (destino do clique e desempate)');
+  // _lib/modo-parceiros.mjs (07/11/2026): só o filtro de lojas parceiras lê a lista (ofertaParceira); não ordena nem pontua.
+  assert.deepEqual(importers, ['pagina.mjs', 'v1.mjs', '_lib/modo-parceiros.mjs'], 'só as rotas que mostram ofertas e o filtro de parceiras leem a config');
   // na página, as funções de ordem/melhor oferta/nota não tocam em AFIL/outUrl
   for (const name of ['bestLive', 'oppOrder', 'oppTotal']) {
     const m = html.match(new RegExp(`(?:function ${name}\\(|const ${name}=)[^\\n]*`)); if (m) assert.doesNotMatch(m[0], /outUrl|AFIL/, name);
