@@ -1,5 +1,6 @@
 // API v1 — parte de banco (PostgreSQL): separada de api-tests.js, que roda sempre (fonte state.json).
 // Sem TEST_DATABASE_URL, imprime "pulado". A fixture é a mesma de api-tests.js.
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import { slimHome } from '../api/_lib/home.mjs';
 import { setLegacyLoader } from '../api/_lib/legacy.mjs';

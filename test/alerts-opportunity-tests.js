@@ -1,5 +1,6 @@
 // 6C.3 — Alertas e bestDeals pela nota oficial do Opportunity Engine (sem Deal Score legado).
 // Parte A roda sempre (puro + falhas de conexão). Parte B roda com TEST_DATABASE_URL (banco descartável).
+process.env.SITE_SO_PARCEIROS = '0';   // site só com parceiros (07/11/2026): este teste cobre o comportamento com todas as lojas (modo desligado); o modo ligado é test/so-parceiros-ui-tests.js
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import net from 'node:net'; import os from 'node:os'; import path from 'node:path';
 process.env.HUNTER_CONFIG_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'opp-cfg-')); process.env.HUNTER_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'opp-data-'));
