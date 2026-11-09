@@ -1,0 +1,112 @@
+{
+ "semana": "Hype: IRE hoje 21h; vitrine em 07/12",
+ "pasta": "assets/social/agenda/videos",
+ "cancelar": [
+  {
+   "quando": "2026-12-07T19:00",
+   "plataforma": "instagram",
+   "trecho": "Mega Rayquaza ex IRE: R$ 1.071,10 na Liga. Mil",
+   "motivo": "IRE antecipado para 09/11"
+  },
+  {
+   "quando": "2026-12-07T19:00",
+   "plataforma": "tiktok",
+   "trecho": "Mega Rayquaza ex IRE: R$ 1.071,10 na Liga. Mil",
+   "motivo": "IRE antecipado para 09/11"
+  },
+  {
+   "quando": "2026-12-07T19:00",
+   "plataforma": "youtube",
+   "trecho": "Mega Rayquaza ex IRE: R$ 1.071,10 na Liga. Mil",
+   "motivo": "IRE antecipado para 09/11"
+  }
+ ],
+ "itens": [
+  {
+   "id": "rd-irehoje-in",
+   "quando": "2026-11-09T21:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_rd_ire.mp4",
+   "legenda": "🇺🇸 One Reinado Delta booster: Mega Rayquaza ex IRE\n\nUm booster do Reinado Delta (R$ 10,42 na box) e veio Mega Rayquaza ex IRE: R$ 1.071,10 na Liga. Mil reais num pack 🤯\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #reinadodelta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/RD_ire.jpg",
+   "capaMs": 18200
+  },
+  {
+   "id": "rd-vitrine-in",
+   "quando": "2026-12-07T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "instagram"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_rd_vitrine.mp4",
+   "legenda": "🇺🇸 Every hit from one Reinado Delta booster box\n\nOs 8 hits da booster box do Reinado Delta (R$ 375): R$ 1.270,31 em cartas na Liga, +R$ 895,31. Qual você queria? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #reinadodelta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/RD_vitrine.jpg",
+   "capaMs": 23000
+  },
+  {
+   "id": "rd-irehoje-ti",
+   "quando": "2026-11-09T21:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_rd_ire.mp4",
+   "legenda": "🇺🇸 One Reinado Delta booster: Mega Rayquaza ex IRE\n\nUm booster do Reinado Delta (R$ 10,42 na box) e veio Mega Rayquaza ex IRE: R$ 1.071,10 na Liga. Mil reais num pack 🤯\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #reinadodelta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/RD_ire.jpg",
+   "capaMs": 18200
+  },
+  {
+   "id": "rd-vitrine-ti",
+   "quando": "2026-12-07T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "tiktok"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_rd_vitrine.mp4",
+   "legenda": "🇺🇸 Every hit from one Reinado Delta booster box\n\nOs 8 hits da booster box do Reinado Delta (R$ 375): R$ 1.270,31 em cartas na Liga, +R$ 895,31. Qual você queria? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #reinadodelta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/RD_vitrine.jpg",
+   "capaMs": 23000
+  },
+  {
+   "id": "rd-irehoje-yo",
+   "quando": "2026-11-09T21:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_rd_ire.mp4",
+   "legenda": "🇺🇸 One Reinado Delta booster: Mega Rayquaza ex IRE\n\nUm booster do Reinado Delta (R$ 10,42 na box) e veio Mega Rayquaza ex IRE: R$ 1.071,10 na Liga. Mil reais num pack 🤯\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #reinadodelta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/RD_ire.jpg",
+   "capaMs": 18200,
+   "titulo": "Reinado Delta: saiu Mega Rayquaza ex IRE | 1 booster",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "reinado delta"
+   ]
+  },
+  {
+   "id": "rd-vitrine-yo",
+   "quando": "2026-12-07T19:00",
+   "tipo": "video",
+   "plataformas": [
+    "youtube"
+   ],
+   "url": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/V_rd_vitrine.mp4",
+   "legenda": "🇺🇸 Every hit from one Reinado Delta booster box\n\nOs 8 hits da booster box do Reinado Delta (R$ 375): R$ 1.270,31 em cartas na Liga, +R$ 895,31. Qual você queria? 👀\n\nO menor preço de Pokémon TCG do Brasil chega primeiro no grupo do WhatsApp: link na bio.\n\n#pokemontcg #pokemontcgbrasil #packopening #colecionador #reinadodelta",
+   "capa": "https://raw.githubusercontent.com/TonyWatanabe-dev/pokemon-price-hunter/social/coleta-cartas/tmp-render/capas_lotes/RD_vitrine.jpg",
+   "capaMs": 23000,
+   "titulo": "Todos os hits de uma booster box de Reinado Delta",
+   "tags": [
+    "pokemon tcg",
+    "pokemon tcg brasil",
+    "pack opening",
+    "reinado delta"
+   ]
+  }
+ ]
+}
