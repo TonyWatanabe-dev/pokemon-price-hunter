@@ -1,0 +1,329 @@
+{
+  "copag-25|me04-blister3": {
+    "at": "2026-10-13T02:45:24.286Z",
+    "total": 29.9,
+    "shippingKnown": false,
+    "discount": 0.3045,
+    "offerId": "4ac090c87bb4"
+  },
+  "copag-25|me05-etb": {
+    "at": "2026-10-12T16:45:23.060Z",
+    "total": 299,
+    "shippingKnown": false,
+    "discount": 0.2525,
+    "offerId": "7d1d061b5ddb"
+  },
+  "etb-300|me05-etb": {
+    "at": "2026-10-12T16:45:23.060Z",
+    "total": 299,
+    "shippingKnown": false,
+    "discount": 0.2525,
+    "offerId": "7d1d061b5ddb"
+  },
+  "copag-25|me05-blister4": {
+    "at": "2026-11-03T22:45:31.206Z",
+    "total": 40.74,
+    "shippingKnown": false,
+    "discount": 0.2724,
+    "offerId": "81d81b41b108"
+  },
+  "copag-25|me04-blister4": {
+    "at": "2026-11-07T19:30:28.535Z",
+    "total": 39.9,
+    "shippingKnown": false,
+    "discount": 0.2874,
+    "offerId": "5e6808f818e4"
+  },
+  "tip|fe2effe8b9da": {
+    "at": "2026-10-15T12:15:24.646Z",
+    "total": 39.9
+  },
+  "tipp|me04-blister4|39.9": {
+    "at": "2026-11-07T20:00:29.232Z",
+    "total": 39.9
+  },
+  "box-10-booster|me04-box36": {
+    "at": "2026-10-15T14:13:10.602Z",
+    "total": 356,
+    "shippingKnown": true,
+    "discount": null,
+    "offerId": "0c689cf0e0ab"
+  },
+  "tip|e9ebb6aec7bf": {
+    "at": "2026-10-15T22:30:26.611Z",
+    "total": 303.63
+  },
+  "tipp|me05-etb|303.63": {
+    "at": "2026-10-15T22:30:26.611Z",
+    "total": 303.63
+  },
+  "tip|f5d68a2f3179": {
+    "at": "2026-10-19T14:30:33.563Z",
+    "total": 310
+  },
+  "tipp|me05-etb|310": {
+    "at": "2026-10-19T14:30:33.563Z",
+    "total": 310
+  },
+  "copag-25|me05-blister3": {
+    "at": "2026-11-05T10:30:27.475Z",
+    "total": 25.85,
+    "shippingKnown": false,
+    "discount": 0.3987,
+    "offerId": "8c2c6d65c9a4"
+  },
+  "box-10-booster|me02-box36": {
+    "at": "2026-10-23T04:15:20.971Z",
+    "total": 7.93,
+    "shippingKnown": false,
+    "discount": null,
+    "offerId": "a62661c2531f"
+  },
+  "tip|6cd75a4ea65a": {
+    "at": "2026-10-23T16:30:33.476Z",
+    "total": 349.9
+  },
+  "tipp|me05-box36|349.9": {
+    "at": "2026-10-23T16:30:33.476Z",
+    "total": 349.9
+  },
+  "tip|b22124616fdc": {
+    "at": "2026-10-24T15:15:27.055Z",
+    "total": 303
+  },
+  "tipp|me05-box36|303": {
+    "at": "2026-10-24T15:15:27.055Z",
+    "total": 303
+  },
+  "tip|e5263de719ef": {
+    "at": "2026-10-26T12:30:29.592Z",
+    "total": 29
+  },
+  "tipp|me05-blister3|29": {
+    "at": "2026-11-07T03:15:22.247Z",
+    "total": 29
+  },
+  "tip|e4b670baaa1f": {
+    "at": "2026-10-27T14:00:34.418Z",
+    "total": 109.89
+  },
+  "tipp|avulsos-deck-mega-lucario|109.89": {
+    "at": "2026-10-27T14:00:34.418Z",
+    "total": 109.89
+  },
+  "etb-300|me05-etb-en": {
+    "at": "2026-10-31T14:15:22.955Z",
+    "total": 278.91,
+    "shippingKnown": false,
+    "discount": null,
+    "offerId": "36f0cc1af607"
+  },
+  "drop|f83945b64f93": {
+    "at": "2026-11-01T17:30:27.774Z",
+    "total": 398.99,
+    "shippingKnown": false,
+    "discount": null,
+    "offerId": "f83945b64f93"
+  },
+  "copag-25|me04-blister1": {
+    "at": "2026-11-04T19:30:25.967Z",
+    "total": 9.8,
+    "shippingKnown": false,
+    "discount": 0.2995,
+    "offerId": "9ef6f9c4fb7c"
+  },
+  "tip|3bf0bf589b04": {
+    "at": "2026-11-06T03:00:29.007Z",
+    "total": 327
+  },
+  "tipp|me04-box36|327": {
+    "at": "2026-11-06T03:00:29.007Z",
+    "total": 327
+  },
+  "tip|ea7f17f845be": {
+    "at": "2026-11-06T10:30:27.031Z",
+    "total": 33.9
+  },
+  "tipp|me04-blister4|33.9": {
+    "at": "2026-11-06T10:30:27.031Z",
+    "total": 33.9
+  },
+  "tip|88c2302b73de": {
+    "at": "2026-11-06T10:30:27.031Z",
+    "total": 29.9
+  },
+  "tipp|me05-blister3|29.9": {
+    "at": "2026-11-09T00:15:20.298Z",
+    "total": 29.9
+  },
+  "tip|bf163e253895": {
+    "at": "2026-11-06T13:15:22.033Z",
+    "total": 369.9
+  },
+  "tipp|me04-box36|369.9": {
+    "at": "2026-11-06T13:15:22.033Z",
+    "total": 369.9
+  },
+  "box-10-booster|me05-box36": {
+    "at": "2026-11-06T20:30:30.162Z",
+    "total": 357.99,
+    "shippingKnown": false,
+    "discount": 0.2044,
+    "offerId": "a9338687a96e"
+  },
+  "tip|651f6f51b7f5": {
+    "at": "2026-11-06T20:43:53.499Z",
+    "total": 112
+  },
+  "tipp|avulsos-colecao_ex-mega-darkrai|112": {
+    "at": "2026-11-09T12:15:22.587Z",
+    "total": 112
+  },
+  "tip|9e98c3a8fc3e": {
+    "at": "2026-11-06T20:43:53.499Z",
+    "total": 112
+  },
+  "tipp|avulsos-colecao_ex-mega-zeraora|112": {
+    "at": "2026-11-06T20:43:53.499Z",
+    "total": 112
+  },
+  "tip|5ed54c839b30": {
+    "at": "2026-11-06T23:15:22.488Z",
+    "total": 187.94
+  },
+  "tipp|me04-combo|187.94": {
+    "at": "2026-11-06T23:15:22.488Z",
+    "total": 187.94
+  },
+  "tip|2304df68898c": {
+    "at": "2026-11-06T23:15:22.488Z",
+    "total": 108
+  },
+  "tipp|avulsos-colecao_ex-mega-darkrai|108": {
+    "at": "2026-11-06T23:15:22.488Z",
+    "total": 108
+  },
+  "tip|48e4b0fe6bbc": {
+    "at": "2026-11-07T01:00:30.059Z",
+    "total": 358
+  },
+  "tipp|me04-box36|358": {
+    "at": "2026-11-07T01:00:30.059Z",
+    "total": 358
+  },
+  "tip|882bc5b3fb7f": {
+    "at": "2026-11-07T01:00:30.059Z",
+    "total": 359
+  },
+  "tipp|me05-box36|359": {
+    "at": "2026-11-07T01:00:30.059Z",
+    "total": 359
+  },
+  "tip|368e0a3a97e5": {
+    "at": "2026-11-07T01:00:30.059Z",
+    "total": 118
+  },
+  "tipp|avulsos-colecao_ex-mega-darkrai|118": {
+    "at": "2026-11-07T01:00:30.059Z",
+    "total": 118
+  },
+  "tip|70ff3deab6b8": {
+    "at": "2026-11-07T02:00:32.567Z",
+    "total": 319
+  },
+  "tipp|me05-etb|319": {
+    "at": "2026-11-07T02:00:32.567Z",
+    "total": 319
+  },
+  "tip|a1d3c0018e5c": {
+    "at": "2026-11-07T02:00:32.567Z",
+    "total": 111.99
+  },
+  "tipp|avulsos-colecao_ex-mega-darkrai|111.99": {
+    "at": "2026-11-07T02:00:32.567Z",
+    "total": 111.99
+  },
+  "tip|e331dc07ff77": {
+    "at": "2026-11-07T03:15:22.247Z",
+    "total": 29
+  },
+  "tip|b0220ce7452b": {
+    "at": "2026-11-07T03:15:22.247Z",
+    "total": 349.9
+  },
+  "tipp|me04-box36|349.9": {
+    "at": "2026-11-07T03:15:22.247Z",
+    "total": 349.9
+  },
+  "copag-25|me03-blister4": {
+    "at": "2026-11-07T12:45:25.321Z",
+    "total": 41.8,
+    "shippingKnown": false,
+    "discount": 0.2534,
+    "offerId": "4527cc424170"
+  },
+  "tip|329193c583a5": {
+    "at": "2026-11-07T13:45:21.543Z",
+    "total": 36
+  },
+  "tipp|me04-blister3|36": {
+    "at": "2026-11-07T13:45:21.543Z",
+    "total": 36
+  },
+  "tip|ca32e85daf48": {
+    "at": "2026-11-07T15:00:28.975Z",
+    "total": 29.9
+  },
+  "tip|f149fed2f8d5": {
+    "at": "2026-11-07T15:30:28.193Z",
+    "total": 107
+  },
+  "tipp|avulsos-deck-mega-lucario|107": {
+    "at": "2026-11-07T15:30:28.193Z",
+    "total": 107
+  },
+  "tip|695ee7ddd4ac": {
+    "at": "2026-11-07T16:00:31.190Z",
+    "total": 339.99
+  },
+  "tipp|me05-etb|339.99": {
+    "at": "2026-11-07T16:00:31.190Z",
+    "total": 339.99
+  },
+  "tip|c6b6a1701e73": {
+    "at": "2026-11-07T16:30:26.752Z",
+    "total": 339.15
+  },
+  "tipp|me05-etb|339.15": {
+    "at": "2026-11-07T16:30:26.752Z",
+    "total": 339.15
+  },
+  "tip|a82643635546": {
+    "at": "2026-11-07T20:00:29.232Z",
+    "total": 39.9
+  },
+  "tip|0dc3cb09db49": {
+    "at": "2026-11-07T22:45:22.330Z",
+    "total": 199.99
+  },
+  "tipp|me04-combo|199.99": {
+    "at": "2026-11-07T22:45:22.330Z",
+    "total": 199.99
+  },
+  "tip|bb4fd3b79aea": {
+    "at": "2026-11-09T00:15:20.298Z",
+    "total": 29.9
+  },
+  "tip|0759bcab0ce1": {
+    "at": "2026-11-09T12:15:22.587Z",
+    "total": 104
+  },
+  "tipp|avulsos-deck-mega-lucario|104": {
+    "at": "2026-11-09T12:15:22.587Z",
+    "total": 104
+  },
+  "tip|71913b9e2d1f": {
+    "at": "2026-11-09T12:15:22.587Z",
+    "total": 112
+  }
+}
