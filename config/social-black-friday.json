@@ -1,6 +1,6 @@
 {
  "_nota": "Campanha Black Friday (pedido do dono em 02/11/2026; planilha \"Ofertas BF Pokémon TCG\" do dono de 06/11/2026). Uma linha por anúncio, com o link de afiliado do dono (ML etiqueta tcgpricehunter, Shopee Sub ID tcgpricehunter, Amazon link curto da tag tcgpricehunte-20). preco e de são os do anúncio na leitura, sem frete; o \"de\" é do próprio vendedor. productId: mapeamento manual título a título para um produto do site (null quando não há correspondência segura). capturedAt da linha = hora da leitura daquela oferta (releitura de 07/11; a Shopee não relida fica com a de 06/11 e vence antes); capturedAt do arquivo = a mais recente. O grupo usa só as linhas com productId, fora do Pix e com preço até o sugerido Copag (ou 5% abaixo do menor preço do site); a Home mostra todas, com a data da leitura. Vale por validadeHoras (grupo e Home). Amazon só com link curto do dono: Display Escuridão Absoluta, Triplo Reinado Delta ficam de fora até ter link curto. imagem: a foto do produto que o site já usa (state.json, convertida para https); sem produto do site, a foto do próprio anúncio (og:image lida em 06/11 no navegador do dono).",
- "capturedAt": "2026-11-07T14:53:41Z",
+ "capturedAt": "2026-11-10T11:51:00Z",
  "validadeHoras": 48,
  "ofertas": [
   {
@@ -424,48 +424,18 @@
   },
   {
    "loja": "amazon",
-   "asin": "B0FWKQGPBX",
-   "link": "https://link.amazon/B05MW9CBR",
-   "titulo": "Ferramentas de Treinador",
-   "tipo": "Acessório",
-   "preco": 173.63,
-   "de": 250.99,
-   "pix": false,
-   "blackFriday": false,
-   "obs": null,
-   "productId": "avulsos-colecao_especial-ferramentas-de-treinador-fezandipiti",
-   "imagem": "https://rihappy.vteximg.com.br/arquivos/ids/9477608/17641922275378.jpg?v=638998277260900000",
-   "capturedAt": "2026-11-07T14:53:16Z"
-  },
-  {
-   "loja": "amazon",
-   "asin": "B0GWFNG7RG",
-   "link": "https://link.amazon/B07FeCIXR",
-   "titulo": "Display Caos Ascendente",
-   "tipo": "Display",
-   "preco": 394.25,
-   "de": 503.64,
-   "pix": false,
-   "blackFriday": false,
-   "obs": null,
-   "productId": "me04-box36",
-   "imagem": "https://acdn-us.mitiendanube.com/stores/005/656/297/products/bb-pt-af6d262fda7485000417789407906254-480-0.webp",
-   "capturedAt": "2026-11-07T14:53:20Z"
-  },
-  {
-   "loja": "amazon",
    "asin": "B0H3Q1XTG4",
    "link": "https://link.amazon/B00KWKjgN",
    "titulo": "Blister Quádruplo Escuridão Absoluta",
    "tipo": "Blister",
-   "preco": 48.36,
+   "preco": 48.33,
    "de": 55.99,
    "pix": false,
    "blackFriday": false,
    "obs": null,
    "productId": "me05-blister4",
    "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167103/Pokemon-TCG-Mega-Evolution—Pitch-Black---4pk-Blister---Front_PTBR.png?v=639198193344330000",
-   "capturedAt": "2026-11-07T14:53:24Z"
+   "capturedAt": "2026-11-10T11:51:00Z"
   },
   {
    "loja": "amazon",
@@ -473,14 +443,14 @@
    "link": "https://link.amazon/B065YtcFr",
    "titulo": "Triplo Caos Ascendente",
    "tipo": "Blister",
-   "preco": 41.8,
+   "preco": 42.31,
    "de": null,
    "pix": false,
    "blackFriday": false,
    "obs": null,
    "productId": "me04-blister3",
    "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/166976/Pokemon-TCG---Mega-Evolution—Chaos-Rising---Three-Booster-Blister---Front_PTBR.png?v=639149875329900000",
-   "capturedAt": "2026-11-07T14:53:27Z"
+   "capturedAt": "2026-11-10T11:51:00Z"
   },
   {
    "loja": "amazon",
@@ -495,7 +465,7 @@
    "obs": null,
    "productId": "avulsos-colecao_ilustracao-parceiro-inicial-serie-3",
    "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167154/Pokemon-TCG---First-Partner-Illustration-Collection—Series-3_PTBR.png?v=639201668237700000",
-   "capturedAt": "2026-11-07T14:53:41Z"
+   "capturedAt": "2026-11-10T11:51:00Z"
   }
  ]
 }
