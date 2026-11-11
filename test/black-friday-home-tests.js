@@ -54,7 +54,9 @@ t('asset no navegador: entra logo depois do palco, uma vez só, e o botão abre 
   let temSecao = false;
   const view = { querySelector: (s) => (s === ':scope>.stage' ? { insertAdjacentHTML: (pos, h) => { inserts.push([pos, h]); temSecao = true; } } : s === '#black-friday' ? (temSecao ? secao : null) : null) };
   const document = { readyState: 'complete', head: { appendChild() {} }, createElement: () => ({}), getElementById: (id) => (id === 'view' ? view : null) };
-  class D2 extends Date { static now() { return EM + 3600e3; } }
+  // Horário derivado do config publicado (1 h depois da leitura mais antiga), não de uma data fixa: o teste não quebra quando a campanha é relida.
+  const EM_ASSET = dadosSecao(lerCampanha()).em;
+  class D2 extends Date { static now() { return EM_ASSET + 3600e3; } }
   const ctx = { document, MutationObserver: class { constructor(f) { obs = f; } observe() {} }, Date: D2, console };
   vm.runInNewContext(code, ctx);
   assert.equal(inserts.length, 1); assert.equal(inserts[0][0], 'afterend'); assert.match(inserts[0][1], /id="black-friday"/);
