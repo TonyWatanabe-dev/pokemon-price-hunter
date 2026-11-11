@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { LINKS, candidatosCampanha, cartaAvulsa, fotoDoAnuncio, lerCampanha, lerCatalogo, seladoComPrecoBom } from '../src/agents/social/blackfriday.js';
+import { LINKS, candidatoCampanha, candidatosCampanha, cartaAvulsa, fotoDoAnuncio, lerCampanha, lerCatalogo, seladoComPrecoBom } from '../src/agents/social/blackfriday.js';
 import { candidatosWhatsApp } from '../tools/social-whatsapp.mjs';
 import { gerarCard } from '../tools/social-telegram-piloto.mjs';
 import { planejar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
@@ -137,3 +137,12 @@ if (py.status === 0) {
 }
 
 console.log(`social-blackfriday: ${n} testes ok`);
+
+// Cupom por anúncio no post (campo `cupom` da linha): aparece escapado e só quando existe.
+{
+  const base = { loja: 'shopee', titulo: 'Blister Triplo ME01', preco: 56.42, link: 'https://s.shopee.com.br/X1' };
+  const com = candidatoCampanha({ ...base, cupom: 'Cupom da loja: R$ 56,42 <b>(R$ 56,99 sem)</b>' }, Date.parse('2026-11-11T17:00:00Z'));
+  assert.match(com.item.texto, /🎟️ Cupom da loja: R\$ 56,42 &lt;b&gt;/);
+  const sem = candidatoCampanha(base, Date.parse('2026-11-11T17:00:00Z'));
+  assert.ok(!sem.item.texto.includes('🎟️'));
+}

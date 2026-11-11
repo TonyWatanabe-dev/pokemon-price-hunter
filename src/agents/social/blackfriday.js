@@ -113,7 +113,9 @@ export function candidatoCampanha(o, capturedAt, { productId = null, ref = null,
   const linhaRef = ref == null ? null : tipoRef === 'copag'
     ? (o.preco < ref - 0.009 ? `💰 Abaixo do preço sugerido Copag (${reais(ref)})` : `💰 No preço sugerido Copag (${reais(ref)})`)
     : `💰 Abaixo do menor preço das outras lojas (${reais(ref)})`;
-  const extra = [linhaRef, `🕒 Preço lido em ${quando(capturedAt)}; pode ter mudado`].filter(Boolean).join('\n');
+  // Cupom do anúncio (campo `cupom` da linha, lido na mesma leitura do preço): texto curto, escapado, sem inventar valor.
+  const cupom = typeof o.cupom === 'string' && o.cupom.trim() ? `🎟️ ${o.cupom.trim().slice(0, 140).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}` : null;
+  const extra = [cupom, linhaRef, `🕒 Preço lido em ${quando(capturedAt)}; pode ter mudado`].filter(Boolean).join('\n');
   const ofertaId = o.item ? `ml:${o.item}` : `${loja}:${o.link.split('/').pop()}`;
   const foto = typeof o.foto === 'string' && IMG.test(o.foto) ? o.foto : (typeof imagem === 'string' && /^https:\/\//.test(imagem) ? imagem : null);
   return {
