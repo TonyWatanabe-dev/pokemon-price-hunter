@@ -378,7 +378,8 @@
    "obs": "Com cupom da loja; R$ 56,99 sem cupom",
    "productId": "me01-blister4",
    "imagem": "https://cdn.awsli.com.br/800x800/2749/2749010/produto/370597262/d68be63333412275e03ddf7f64d5d669-pzx1x7e6l5.jpg",
-   "capturedAt": "2026-11-11T17:13:28Z"
+   "capturedAt": "2026-11-11T17:13:28Z",
+   "cupom": "Cupom da loja na página do anúncio: R$ 56,42 com cupom (R$ 56,99 sem)"
   },
   {
    "loja": "shopee",
@@ -420,7 +421,8 @@
    "obs": "Pix com cupom da loja; R$ 408,99 sem cupom",
    "productId": "me05-box36",
    "imagem": "https://copagloja.vteximg.com.br/arquivos/ids/167097/Pokemon-TCG-Mega-Evolution—Pitch-Black---Booster-Display---Left_PTBR.png?v=639198193009500000",
-   "capturedAt": "2026-11-11T17:13:28Z"
+   "capturedAt": "2026-11-11T17:13:28Z",
+   "cupom": "Cupom da loja na página do anúncio: R$ 384,66 no Pix com cupom (R$ 408,99 sem)"
   },
   {
    "loja": "amazon",
