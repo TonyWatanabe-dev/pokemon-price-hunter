@@ -1308,6 +1308,24 @@
       }
     },
     {
+      "id": "me06",
+      "name": "Reinado Delta",
+      "series": "Megaevolução",
+      "aliases": [
+        "reinado delta",
+        "reinado-delta",
+        "reinadodelta",
+        "me 06",
+        "me06",
+        "me6"
+      ],
+      "langAliases": {
+        "en": [
+          "delta reign"
+        ]
+      }
+    },
+    {
       "id": "c30",
       "name": "Celebração de 30 Anos",
       "series": "Especial",

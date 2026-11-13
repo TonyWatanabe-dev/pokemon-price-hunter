@@ -18,9 +18,10 @@ const ME06 = [
   'Combo Booster Box Pokémon Reinado Delta Megaevolução ME06 - 18 Pacotes',
 ];
 
-t('títulos reais de ME06 (fora do catálogo) não casam em ME01', () => {
+// 13/11/2026: ME06 entrou no catálogo; os mesmos títulos agora casam em me06 e continuam nunca caindo em ME01.
+t('títulos reais de ME06 casam em ME06, nunca em ME01', () => {
   for (const title of ME06) {
-    assert.equal(col(title), null, title);
+    assert.equal(col(title), 'me06', title);
     assert.notEqual(parseListing(title, catalog).collection, 'me01', title);
   }
 });

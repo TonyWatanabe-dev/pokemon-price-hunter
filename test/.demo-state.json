@@ -130,6 +130,7 @@
       },
       "offerCount": 1,
       "inStockCount": 1,
+      "marketRef": null,
       "hist": {
         "days": 1,
         "from": "2026-10-06",
@@ -176,6 +177,7 @@
       },
       "offerCount": 2,
       "inStockCount": 2,
+      "marketRef": null,
       "hist": {
         "days": 1,
         "from": "2026-10-06",
@@ -220,6 +222,7 @@
       },
       "offerCount": 4,
       "inStockCount": 2,
+      "marketRef": null,
       "hist": {
         "days": 1,
         "from": "2026-10-06",
@@ -262,6 +265,7 @@
       },
       "offerCount": 1,
       "inStockCount": 1,
+      "marketRef": null,
       "hist": {
         "days": 1,
         "from": "2026-10-06",
@@ -307,6 +311,7 @@
       },
       "offerCount": 1,
       "inStockCount": 1,
+      "marketRef": null,
       "hist": {
         "days": 1,
         "from": "2026-10-06",
@@ -352,6 +357,7 @@
       },
       "offerCount": 1,
       "inStockCount": 1,
+      "marketRef": null,
       "hist": {
         "days": 1,
         "from": "2026-10-06",
@@ -806,7 +812,7 @@
       "matched": 5,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 36,
+      "lastDurationMs": 28,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -840,7 +846,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 38,
+      "lastDurationMs": 29,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -873,7 +879,7 @@
       "matched": 2,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 12,
+      "lastDurationMs": 9,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -930,7 +936,7 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "bloqueio",
-      "lastDurationMs": 8,
+      "lastDurationMs": 7,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": 403,
@@ -983,7 +989,7 @@
       "matched": 1,
       "lastSuccess": "2026-10-06T10:25:00.000Z",
       "lastNonEmpty": "2026-10-06T10:25:00.000Z",
-      "lastDurationMs": 39,
+      "lastDurationMs": 30,
       "errorClass": null,
       "platformHint": null,
       "score": {
@@ -1010,12 +1016,12 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "plataforma",
-      "lastDurationMs": 13,
+      "lastDurationMs": 11,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": null,
         "errorCode": null,
-        "elapsedMs": 13,
+        "elapsedMs": 11,
         "server": null,
         "cfRay": null,
         "via": null,
@@ -1059,12 +1065,12 @@
       "netCode": null,
       "retryAfterSec": null,
       "errorClass": "plataforma",
-      "lastDurationMs": 14,
+      "lastDurationMs": 11,
       "lastFailure": {
         "at": "2026-10-06T10:25:00.000Z",
         "status": null,
         "errorCode": null,
-        "elapsedMs": 14,
+        "elapsedMs": 11,
         "server": null,
         "cfRay": null,
         "via": null,

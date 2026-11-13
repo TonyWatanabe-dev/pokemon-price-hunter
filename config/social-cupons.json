@@ -1,5 +1,5 @@
 {
- "fonte": "Cupons do ML lidos na conta do proprietário em 11/11/2026 (página Cupons, 'Mais de R$100'): só cupom geral sem nome de campanha (regra de src/agents/social/cupons.js). Cupom geral sem data ('Está esgotando!') vale 3 dias a partir da leitura. Cupons de loja (Newstation Sorocaba) mantidos da leitura de 02/11/2026, validade 30/11. Não há cupom ativo nas categorias Brinquedos e Hobbies e Antiguidades e Coleções em 11/11/2026.",
+ "fonte": "Cupons do ML lidos na conta do proprietário em 11/11/2026 (página Cupons, 'Mais de R$100'): só cupom geral sem nome de campanha (regra de src/agents/social/cupons.js). Cupom geral sem data ('Está esgotando!') vale 3 dias a partir da leitura. Cupons de loja (Newstation Sorocaba) mantidos da leitura de 02/11/2026, validade 30/11. Não há cupom ativo nas categorias Brinquedos e Hobbies e Antiguidades e Coleções em 11/11/2026. 13/11/2026 (pedido do dono: todo post com cupom e preço final): cupons de código das três lojas divulgados em sites de cupom (pelando, seletronic, melhorescartoes) no 11.11/esquenta Black Friday, não testados no carrinho; validade curta de propósito (somem sozinhos). Shopee: códigos de site todo; Amazon: BRINQU3DOS15 (Brinquedos e Jogos, app).",
  "exportadoEm": "2026-11-11",
  "cupons": [
   {
@@ -42,6 +42,61 @@
    "minimo": 60,
    "limite": 3,
    "vendedor": "Newstation Sorocaba",
+   "validoAte": "2026-11-30"
+  },
+  {
+   "loja": "shopee",
+   "escopo": "loja",
+   "tipo": "reais",
+   "valor": 100,
+   "minimo": 240,
+   "codigo": "11D011T3RRY3SH0P33",
+   "validoAte": "2026-11-15"
+  },
+  {
+   "loja": "shopee",
+   "escopo": "loja",
+   "tipo": "reais",
+   "valor": 70,
+   "minimo": 350,
+   "codigo": "C4RR1NH0CH310",
+   "validoAte": "2026-11-14"
+  },
+  {
+   "loja": "shopee",
+   "escopo": "loja",
+   "tipo": "reais",
+   "valor": 30,
+   "minimo": 100,
+   "codigo": "M3LH0R3S1111SHOPB",
+   "validoAte": "2026-11-14"
+  },
+  {
+   "loja": "shopee",
+   "escopo": "loja",
+   "tipo": "reais",
+   "valor": 20,
+   "minimo": 60,
+   "codigo": "S3GUND0U20",
+   "validoAte": "2026-11-14"
+  },
+  {
+   "loja": "shopee",
+   "escopo": "loja",
+   "tipo": "reais",
+   "valor": 10,
+   "minimo": 59,
+   "codigo": "F1MD011D011",
+   "validoAte": "2026-11-14"
+  },
+  {
+   "loja": "amazon",
+   "escopo": "categoria",
+   "tipo": "pct",
+   "valor": 15,
+   "minimo": 0,
+   "codigo": "BRINQU3DOS15",
+   "campanha": "Brinquedos e Jogos (só no app)",
    "validoAte": "2026-11-30"
   }
  ]
