@@ -1736,7 +1736,7 @@ const shipNote=(o)=>o.shippingKnown&&o.shipping>0?`Produto ${money(o.price)} + f
 /* DealCard: oportunidade → economia → Opportunity Score → Copag → preço → loja */
 function scoreMeter(x){if(!x)return`<div class="meter none"><span>Opportunity Score</span><strong title="${esc(NO_SCORE())}">Sem nota oficial</strong></div>`;const bu=bandUI(x.band);return`<div class="meter" style="--sc:${bu[1]}"><span>Opportunity Score</span><i aria-hidden="true"><b style="width:${Math.max(3,Math.min(100,x.score))}%"></b></i><strong>${x.score}<small>/100</small></strong></div>`}
 function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas que só têm o H1 antes dos cartões */
-  const{p,o,n}=e;const gg=g(p);const abrir=!opt.plain&&F.mode==="abrir"&&view==="deals";
+  const{p,o,n}=e;const gg=g(p);const abrir=!!opt.ppb||(!opt.plain&&F.mode==="abrir"&&view==="deals");   /* opt.ppb: a faixa "Blisters e unitários" mostra sempre o preço por booster */
   const r=refOf(p);const d=discOf(p,o);const hasD=!!(o&&r&&d!=null);
   const state=!o?"none":o.stock==="PRE_ORDER"?"pre":!live(o)?"oos":"";
   const old=!o?staleOnly(OFF.filter((x)=>x.productId===p.id)):o.stale?o:null;
@@ -1822,6 +1822,22 @@ store.set("seenBefore",true);
 function activity(){return(S.activity||[]).filter((e)=>P[e.productId])}
 function dedupeAct(list){const seen=new Set();return list.filter((e)=>{const k=e.type+e.productId;if(seen.has(k))return false;seen.add(k);return true})}
 /* Monte seu kit (K6 parcial, decisão do dono em 24/10): chamada na Home logo abaixo do pódio. A página segue fora do índice até o burn-in. */
+/* Faixa "Blisters e unitários" (13/11/2026, pedido do dono: destaque na Home para blister e unitário). Vem das mesmas
+   ofertas do estado (OFF/P), sem motor nem chamada nova: blister de 1 a 4 e booster avulso com estoque, a melhor oferta
+   de cada produto, do menor para o maior preço por booster — o número que compara formatos. Não mexe no Opportunity
+   Score nem na ordem do pódio; comissão não entra aqui. Sem oferta viva nesses formatos, a seção não aparece. */
+const FAIXA_FORMATOS=new Set(["blister_1","blister_2","blister_3","blister_4","booster_pack"]);
+function blisterRailHTML(){
+  const best=new Map();
+  for(const o of OFF){
+    if(!live(o)||!(o.perBooster>0))continue;
+    const p=P[o.productId];if(!p||!FAIXA_FORMATOS.has(p.type))continue;
+    const a=best.get(p.id);if(!a||o.perBooster<a.o.perBooster)best.set(p.id,{p,o,n:1})}
+  const list=[...best.values()].sort((a,b)=>a.o.perBooster-b.o.perBooster||a.o.total-b.o.total).slice(0,12);
+  if(!list.length)return"";
+  return`<section class="seq faixa-bl">${sectionHead("drop-f","Blisters e unitários","A melhor oferta de cada blister e booster avulso, do menor preço por booster para o maior.",`<span class="rail-ctl"><button class="prev" type="button" aria-label="Voltar">${ic("caret-down")}</button><button class="next" type="button" aria-label="Avançar">${ic("caret-down")}</button></span><a class="seeall" href="/oportunidades" data-fmt="Blisters">Ver todos ${ic("caret-down","icon chev")}</a>`)}
+    <div class="rail" tabindex="0" aria-label="Blisters e boosters avulsos, do menor preço por booster">${list.map((e,i)=>dealCard(e,{rail:true,rank:i,i,ppb:true})).join("")}</div></section>`;
+}
 function kitCtaHTML(){return`<a class="kit-cta" href="/monte-seu-kit" data-kit="home"><span class="kit-ic" aria-hidden="true">${ic("package-f")}</span><span class="kit-tx"><small>Monte seu kit</small><b>Sua jornada Pokémon começa aqui</b><span>Não sabe qual coleção comprar? Responda poucas perguntas e veja um kit dentro do seu orçamento, com preços reais das lojas.</span></span><span class="kit-go">Descobrir meu kit ideal${ic("caret-down","icon kit-chev")}</span></a>`}
 function sectionHead(icon,title,sub,action){return`<header class="sh2"><div><h2>${icon?ic(icon,"icon sh2-i"):""}${title}</h2>${sub?`<p>${sub}</p>`:""}</div>${action||""}</header>`}
 const seeAll=(go,label="Ver todas")=>`<a class="seeall" href="/${PATHS[go]??""}" data-go="${go}">${label} ${ic("caret-down","icon chev")}</a>`;
@@ -1961,10 +1977,10 @@ function paintHomeOpp(){
   pod.innerHTML=podiumOppHTML();rail.innerHTML=railOppHTML();hl.innerHTML=highlightsOppHTML();stageInit();revealInit();
   const tk=$(".stage .ticker");if(tk&&oppPaused()){tk.outerHTML=tickerHTML();startTicker()}   /* Lote 3: rótulo do radar segue o status */
 }
-let stageIO=null;let podIO=null,podT=0,podScroll=null;
+let stageIOs=[];let railAC=null;let podIO=null,podT=0,podScroll=null;   /* railAC: stageInit roda de novo a cada paintHomeOpp e a faixa #home-bl não é recriada, então os listeners das setas saem antes de serem ligados outra vez */
 function stageInit(){
-  if(stageIO)stageIO.disconnect();if(podIO)podIO.disconnect();clearTimeout(podT);if(podScroll)removeEventListener("scroll",podScroll);
-  const pod=$(".podium");const rail=$(".rail");const RM=reduceMotion();
+  stageIOs.forEach((io)=>io.disconnect());stageIOs=[];railAC?.abort();railAC=new AbortController();const sig=railAC.signal;if(podIO)podIO.disconnect();clearTimeout(podT);if(podScroll)removeEventListener("scroll",podScroll);
+  const pod=$(".podium");const rails=[...document.querySelectorAll(".rail")];const RM=reduceMotion();
   /* pódio: revela ao rolar. A linha fica em 55% da altura da tela, então o card que já aparece pela metade ao abrir espera o scroll.
      Sem rolagem em ~1 s, revela sozinho (a Home não fica vazia); quem rola antes segue só pela rolagem. Cada card revela uma vez só. */
   if(pod&&!RM&&"IntersectionObserver" in window){const cards=[...pod.querySelectorAll(".pod")];
@@ -1975,12 +1991,12 @@ function stageInit(){
       podScroll=()=>{clearTimeout(podT);removeEventListener("scroll",podScroll);podScroll=null};addEventListener("scroll",podScroll,{passive:true});
       podT=setTimeout(()=>{if(podScroll){removeEventListener("scroll",podScroll);podScroll=null}podIO.disconnect();cards.forEach(show)},1000)}
     catch{if(podIO)podIO.disconnect();cards.forEach((c)=>c.classList.remove("armed","go"))}}
-  if(rail){
+  for(const rail of rails){
     [...rail.children].forEach((c,i)=>c.style.setProperty("--i",Math.min(i,8)));
     const sec=rail.closest(".seq");const by=(dir)=>rail.scrollBy({left:dir*rail.clientWidth*.85,behavior:RM?"auto":"smooth"});
-    sec.querySelector(".rail-ctl .next")?.addEventListener("click",()=>by(1));sec.querySelector(".rail-ctl .prev")?.addEventListener("click",()=>by(-1));
+    sec.querySelector(".rail-ctl .next")?.addEventListener("click",()=>by(1),{signal:sig});sec.querySelector(".rail-ctl .prev")?.addEventListener("click",()=>by(-1),{signal:sig});
     if(!RM&&"IntersectionObserver" in window){rail.classList.add("armed");
-      stageIO=new IntersectionObserver(([e])=>{if(!e.isIntersecting)return;stageIO.disconnect();rail.classList.remove("armed");rail.classList.add("go");setTimeout(()=>rail.classList.remove("go"),2400)},{threshold:.2});stageIO.observe(rail)}
+      const io=new IntersectionObserver(([e])=>{if(!e.isIntersecting)return;io.disconnect();stageIOs=stageIOs.filter((x)=>x!==io);rail.classList.remove("armed");rail.classList.add("go");setTimeout(()=>rail.classList.remove("go"),2400)},{threshold:.2});io.observe(rail);stageIOs.push(io)}
   }
 }
 /* Seções da Início ganham .seen ao entrar na tela (uma vez): números contam, barras crescem */
@@ -2079,6 +2095,7 @@ function renderDeals(){
     <header class="stage-h" style="--d:600"><h2 id="pod-h">Melhores oportunidades agora</h2><p>As três primeiras na ordem do Opportunity Score. <a href="/oportunidades" data-go="oportunidades">Ver todas ${ic("caret-down","icon chev")}</a></p></header>
     <div class="home-slot" id="home-pod">${podiumOppHTML()}</div>
   </div></section>
+  <div class="home-slot" id="home-bl">${blisterRailHTML()}</div>
   ${kitCtaHTML()}
   <div class="home-slot" id="home-rail">${railOppHTML()}</div>
   ${colWallHTML()}
