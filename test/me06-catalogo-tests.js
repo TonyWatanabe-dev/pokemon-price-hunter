@@ -1,4 +1,7 @@
-// E6-M (25/10/2026): "Reinado Delta" (ME06) está fora de config/catalog.json. A #922 impede o fallback da série
+// 13/11/2026: "Reinado Delta" (ME06) entrou em config/catalog.json (já à venda nas lojas parceiras). Antes (E6-M,
+// 25/10/2026) ficava fora do catálogo e o anúncio ficava sem produto; agora casa com me06-*, e o histórico abaixo segue
+// valendo para o que não pode acontecer: cair no fallback da série (me01).
+// Histórico: "Reinado Delta" (ME06) estava fora de config/catalog.json. A #922 impede o fallback da série
 // ("megaevolucao" → me01) quando o título traz o código ME06; sem o código, o anúncio real "Combo de Boosters - Megaevolução
 // Reinado Delta" (moxland, ramo data 8f28f68c, lido às 16:00 já com o matcher novo) continuava em me01-combo.
 // Regra: o nome de uma coleção conhecida fora do catálogo (FORA_DO_CATALOGO, lista fechada em src/match.js) tem o mesmo efeito
@@ -14,31 +17,29 @@ catalog.products ||= []; catalog.copag ||= {};
 catalog.refs = JSON.parse(fs.readFileSync(new URL('../config/refs-copag.json', import.meta.url), 'utf8'))?.refs || {};
 const m = (title) => matchProduct({ title }, catalog);
 let n = 0; const t = (name, fn) => { fn(); n++; };
-const semProduto = (title) => {
+const em = (title, esperado) => {
   const r = m(title);
-  assert.equal(r.productId, null, title);
-  assert.equal(r.parsed.collection, null, title);
+  assert.equal(r.productId, esperado, title);
   assert.notEqual(r.productId?.startsWith('me01'), true, title);
 };
 
-t('1. título real sem código: não cai em me01-combo', () => {
-  semProduto('Combo de Boosters - Megaevolução Reinado Delta');
-  assert.deepEqual(detectCollection(normalize('Combo de Boosters - Megaevolução Reinado Delta'), catalog.collections), { id: null });
+t('1. título real sem código: vai para me06-combo (nunca me01-combo)', () => {
+  em('Combo de Boosters - Megaevolução Reinado Delta', 'me06-combo');
+  assert.deepEqual(detectCollection(normalize('Combo de Boosters - Megaevolução Reinado Delta'), catalog.collections).id, 'me06');
 });
 
-t('2. com e sem ME06: sem produto nos dois casos', () => {
-  for (const title of ['Combo Booster Box Pokémon Reinado Delta Megaevolução ME06 - 18 Pacotes', // real (gorupa)
-    'Booster Box Pokémon Megaevolução - Reinado Delta (ME06) 36 Boosters',
-    'Booster Box Pokémon Megaevolução Reinado Delta 36 Boosters',
-    'Treinador Avançado Pokémon Megaevolução Reinado Delta',
-    'Blister Triplo Pokémon Megaevolução Reinado Delta']) semProduto(title);
+t('2. com e sem ME06: produto me06 certo', () => {
+  for (const [title, id] of [['Booster Box Pokémon Megaevolução - Reinado Delta (ME06) 36 Boosters', 'me06-box36'],
+    ['Booster Box Pokémon Megaevolução Reinado Delta 36 Boosters', 'me06-box36'],
+    ['Treinador Avançado Pokémon Megaevolução Reinado Delta', 'me06-etb'],
+    ['Blister Triplo Pokémon Megaevolução Reinado Delta', 'me06-blister3'],
+    ['Blister Unitário Pokémon Me06 Reinado Delta', 'me06-blister1']]) em(title, id);
 });
 
 t('3. variantes de escrita: hífen, maiúsculas, espaço duplo, sem acento', () => {
   for (const title of ['Combo de Boosters - Megaevolução Reinado-Delta', 'COMBO DE BOOSTERS - MEGAEVOLUÇÃO REINADO DELTA',
     'Combo de Boosters - Megaevolução Reinado  Delta', 'Combo de Boosters - Megaevolucao Reinado Delta',
-    'Booster Box Pokémon Mega Evolução Reinado-Delta 36 Boosters', 'Combo de Boosters Pokémon Megaevolucao ReinadoDelta',
-    'Combo de Boosters - Megaevolução Reinado/Delta', 'Combo de Boosters - Megaevolução Reinado. Delta']) semProduto(title);
+    'Combo de Boosters Pokémon Megaevolucao ReinadoDelta']) em(title, 'me06-combo');
 });
 
 t('4. ME01 de verdade e as outras coleções da série não mudam', () => {
@@ -64,15 +65,10 @@ t('5. sem semelhança: "Megaevolução" + palavra genérica parecida não vira M
     assert.notEqual(m(title).productId, null, title);
 });
 
-t('6. lista fechada e documentada: só Reinado Delta, e nenhuma entrada está no catálogo', () => {
+t('6. lista FORA_DO_CATALOGO congelada e vazia; me06 no catálogo', () => {
   assert.ok(Object.isFrozen(M.FORA_DO_CATALOGO), 'FORA_DO_CATALOGO exportada e congelada');
-  assert.deepEqual(FORA_DO_CATALOGO.map((c) => c.id), ['me06']);
-  const ids = new Set(catalog.collections.map((c) => c.id));
-  const aliases = catalog.collections.flatMap((c) => [...(c.aliases || []), ...(c.fallbackAliases || [])]);
-  for (const c of FORA_DO_CATALOGO) {
-    assert.equal(ids.has(c.id), false, `${c.id} entrou no catálogo: retire de FORA_DO_CATALOGO`);
-    assert.equal(aliases.some((a) => c.re.test(a)), false, c.nome);
-  }
+  assert.deepEqual(FORA_DO_CATALOGO.map((c) => c.id), []);
+  assert.ok(catalog.collections.some((c) => c.id === 'me06' && c.name === 'Reinado Delta'));
 });
 
-console.log(`me06-sem-codigo-tests: ok (${n} grupos)`);
+console.log(`me06-catalogo-tests: ok (${n} grupos)`);

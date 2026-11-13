@@ -69,6 +69,9 @@ export function importarCsv(texto, exportadoEm, opts = {}) {
   return out;
 }
 
+/** Loja do cupom: campo `loja` (mercadolivre, shopee, amazon); sem ele, Mercado Livre (formato antigo do arquivo). */
+export const lojaDoCupom = (c) => (c && typeof c.loja === 'string' && c.loja ? c.loja : 'mercadolivre');
+
 /** Desconto que o cupom daria nesse preço (R$), respeitando o teto. */
 export function descontoEm(c, preco) {
   const bruto = c.tipo === 'pct' ? (preco * c.valor) / 100 : c.valor;
@@ -83,7 +86,7 @@ export function cupomPara(oferta, cupons, now = Date.now()) {
   if (!oferta || oferta.storeId !== 'mercadolivre' || !(oferta.price > 0) || !Array.isArray(cupons)) return null;
   const hoje = hojeBrt(now); const vend = chaveLoja(oferta.seller);
   const peso = { vendedor: 3, categoria: 2, ml: 1 };
-  const ok = cupons.filter((c) => c && c.validoAte >= hoje && oferta.price >= (c.minimo || 0)
+  const ok = cupons.filter((c) => c && lojaDoCupom(c) === 'mercadolivre' && c.validoAte >= hoje && oferta.price >= (c.minimo || 0)
     && (c.escopo !== 'vendedor' || (vend && chaveLoja(c.vendedor) === vend)));
   ok.sort((a, b) => descontoEm(b, oferta.price) - descontoEm(a, oferta.price) || peso[b.escopo] - peso[a.escopo]);
   return ok[0] && descontoEm(ok[0], oferta.price) > 0 ? ok[0] : null;
@@ -99,3 +102,41 @@ export function dicaCupom(oferta, cupons, now = Date.now()) {
   const min = c.minimo > 0 ? ` (mín. ${fmt(c.minimo)})` : '';
   return `🎟️ Cupom${onde}: ${quanto}${min} · ative em "Cupons" no ML`;
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Cupom com preço final nos posts dos grupos (pedido do dono em 13/11/2026: "SEMPRE colocar cupom de desconto, e o preço
+// que vai sair com o cupom atrelado. Se não tiver cupom, sugerir algum que esteja funcionando; se não tiver, não colocar
+// nada"). Vale para as três lojas: cada cupom de config/social-cupons.json pode ter `loja` e `codigo` (o código digitável;
+// sem código, o cupom é ativado na página "Cupons" da loja). Escolhe, entre os cupons vigentes daquela loja cujo mínimo o
+// preço alcança (e, se for de vendedor, do mesmo vendedor), o que dá mais desconto. Sem cupom que sirva: null (nada no post).
+// O preço final é estimativa: a loja pode personalizar ou esgotar o cupom, então o post diz "com o cupom" e não promete.
+const LOJAS_CUPOM = new Set(['mercadolivre', 'shopee', 'amazon']);
+const CODIGO = /^[A-Za-z0-9]{3,30}$/;
+const escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/** Melhor cupom vigente para { loja, preco, seller } (qualquer loja), ou null. */
+export function melhorCupom({ loja, preco, seller = null } = {}, cupons, now = Date.now()) {
+  if (!LOJAS_CUPOM.has(loja) || !(preco > 0) || !Array.isArray(cupons)) return null;
+  const hoje = hojeBrt(now); const vend = chaveLoja(seller);
+  const peso = { vendedor: 3, categoria: 2, ml: 1, loja: 1 };
+  const ok = cupons.filter((c) => c && lojaDoCupom(c) === loja && typeof c.validoAte === 'string' && c.validoAte >= hoje
+    && preco >= (c.minimo || 0) && (c.tipo === 'pct' || c.tipo === 'reais') && c.valor > 0
+    && (c.escopo !== 'vendedor' || (vend && chaveLoja(c.vendedor) === vend))
+    && (c.codigo == null || CODIGO.test(c.codigo)));
+  ok.sort((a, b) => descontoEm(b, preco) - descontoEm(a, preco) || (peso[b.escopo] || 0) - (peso[a.escopo] || 0));
+  const c = ok[0]; if (!c) return null;
+  const desconto = Math.min(descontoEm(c, preco), preco);
+  return desconto > 0 ? { cupom: c, desconto, final: Math.round((preco - desconto) * 100) / 100 } : null;
+}
+
+const ATIVAR = { mercadolivre: 'ative em "Cupons" no ML', shopee: 'resgate em "Cupons" na Shopee', amazon: 'resgate na página do produto na Amazon' };
+/** Linha do post (HTML do Telegram) com o cupom e o preço final, ou null quando não há cupom que sirva. */
+export function linhaCupomComPreco(oferta, cupons, now = Date.now()) {
+  const r = melhorCupom(oferta, cupons, now); if (!r) return null;
+  const { cupom: c, final } = r;
+  const quanto = c.tipo === 'pct' ? `${c.valor}% OFF${c.limite ? ` (até ${fmt(c.limite)})` : ''}` : `${fmt(c.valor)} OFF`;
+  const min = c.minimo > 0 ? `, mín. ${fmt(c.minimo)}` : '';
+  const onde = c.codigo ? `Cupom <b>${escHtml(c.codigo)}</b>` : `Cupom${c.escopo === 'vendedor' ? ' da loja' : ''} (${ATIVAR[lojaDoCupom(c)]})`;
+  return `🎟️ ${onde}: ${quanto}${min}\n➡️ Com o cupom sai por <b>${escHtml(reaisCentavos(final))}</b>`;
+}
+const reaisCentavos = (v) => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
