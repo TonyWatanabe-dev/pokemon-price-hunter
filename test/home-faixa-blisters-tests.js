@@ -87,4 +87,19 @@ t('6. a faixa é renderizada na Home entre o palco e o "Monte seu kit", e o link
   assert.ok(!/opportunity_score|opp_score|HOMEOPP|apiGet/.test(code), 'a faixa não lê o motor nem chama a API');
 });
 
+t('7. stageInit repetido não acumula listeners nas setas (a faixa não é recriada por paintHomeOpp)', () => {
+  const code = cut('let stageIOs=[];', 'function countUp(el){');
+  const mkBtn = () => { const h = []; return { h, addEventListener: (ev, fn, o) => { h.push(fn); o?.signal?.addEventListener?.('abort', () => { const i = h.indexOf(fn); if (i >= 0) h.splice(i, 1); }); } }; };
+  const next = mkBtn(), prev = mkBtn();
+  const rail = { children: [], clientWidth: 100, scrollBy() {}, classList: { add() {}, remove() {}, contains: () => false },
+    closest: () => ({ querySelector: (sel) => (sel.includes('next') ? next : prev) }) };
+  const ctx = { console, Math, Array, Number, String, AbortController, setTimeout, clearTimeout, removeEventListener() {}, addEventListener() {},
+    reduceMotion: () => true, $: () => null, window: {}, document: { querySelectorAll: () => [rail] } };
+  vm.createContext(ctx);
+  vm.runInContext(code + '\n;globalThis.__si=stageInit;', ctx);
+  ctx.__si(); ctx.__si(); ctx.__si();
+  assert.equal(next.h.length, 1, 'uma seta "avançar" ligada depois de 3 stageInit');
+  assert.equal(prev.h.length, 1, 'uma seta "voltar" ligada depois de 3 stageInit');
+});
+
 console.log(`✓ Home — faixa "Blisters e unitários": ${n} grupos de testes passaram`);

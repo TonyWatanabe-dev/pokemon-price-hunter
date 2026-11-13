@@ -1977,9 +1977,9 @@ function paintHomeOpp(){
   pod.innerHTML=podiumOppHTML();rail.innerHTML=railOppHTML();hl.innerHTML=highlightsOppHTML();stageInit();revealInit();
   const tk=$(".stage .ticker");if(tk&&oppPaused()){tk.outerHTML=tickerHTML();startTicker()}   /* Lote 3: rótulo do radar segue o status */
 }
-let stageIOs=[];let podIO=null,podT=0,podScroll=null;
+let stageIOs=[];let railAC=null;let podIO=null,podT=0,podScroll=null;   /* railAC: stageInit roda de novo a cada paintHomeOpp e a faixa #home-bl não é recriada, então os listeners das setas saem antes de serem ligados outra vez */
 function stageInit(){
-  stageIOs.forEach((io)=>io.disconnect());stageIOs=[];if(podIO)podIO.disconnect();clearTimeout(podT);if(podScroll)removeEventListener("scroll",podScroll);
+  stageIOs.forEach((io)=>io.disconnect());stageIOs=[];railAC?.abort();railAC=new AbortController();const sig=railAC.signal;if(podIO)podIO.disconnect();clearTimeout(podT);if(podScroll)removeEventListener("scroll",podScroll);
   const pod=$(".podium");const rails=[...document.querySelectorAll(".rail")];const RM=reduceMotion();
   /* pódio: revela ao rolar. A linha fica em 55% da altura da tela, então o card que já aparece pela metade ao abrir espera o scroll.
      Sem rolagem em ~1 s, revela sozinho (a Home não fica vazia); quem rola antes segue só pela rolagem. Cada card revela uma vez só. */
@@ -1994,7 +1994,7 @@ function stageInit(){
   for(const rail of rails){
     [...rail.children].forEach((c,i)=>c.style.setProperty("--i",Math.min(i,8)));
     const sec=rail.closest(".seq");const by=(dir)=>rail.scrollBy({left:dir*rail.clientWidth*.85,behavior:RM?"auto":"smooth"});
-    sec.querySelector(".rail-ctl .next")?.addEventListener("click",()=>by(1));sec.querySelector(".rail-ctl .prev")?.addEventListener("click",()=>by(-1));
+    sec.querySelector(".rail-ctl .next")?.addEventListener("click",()=>by(1),{signal:sig});sec.querySelector(".rail-ctl .prev")?.addEventListener("click",()=>by(-1),{signal:sig});
     if(!RM&&"IntersectionObserver" in window){rail.classList.add("armed");
       const io=new IntersectionObserver(([e])=>{if(!e.isIntersecting)return;io.disconnect();stageIOs=stageIOs.filter((x)=>x!==io);rail.classList.remove("armed");rail.classList.add("go");setTimeout(()=>rail.classList.remove("go"),2400)},{threshold:.2});io.observe(rail);stageIOs.push(io)}
   }
