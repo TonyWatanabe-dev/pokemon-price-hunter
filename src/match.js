@@ -89,9 +89,8 @@ export const groupOf = (type) => TYPE_GROUP[type] || 'Coleções';
 // textual: o nome no título normalizado (acento já removido; espaço, hífen ou nada entre as palavras) impede o fallback para a
 // coleção base da série, como o código de expansão. Não cria produto: o anúncio fica sem coleção até o catálogo ganhar a
 // coleção (aí o alias dela casa antes, em `hits`, e esta lista deixa de ter efeito para ela). Retire a entrada nessa hora.
-export const FORA_DO_CATALOGO = Object.freeze([
-  { id: 'me06', nome: 'Reinado Delta', serie: 'Megaevolução', re: /\breinado[\s/.-]{0,3}delta\b/ },
-]);
+// 13/11/2026: Reinado Delta (me06) entrou no catálogo (já à venda nas lojas parceiras); a lista ficou vazia.
+export const FORA_DO_CATALOGO = Object.freeze([]);
 const CODIGO_SERIE = /\b(?:me|sv|swsh)\s?0*\d+(?:[.,]\d+)?\b/;
 export function detectCollection(t, collections) {
   // langAliases: nome da coleção em outro idioma ({ en: ['surging sparks'], ja: [...] }). Casar só por ele dá a pista

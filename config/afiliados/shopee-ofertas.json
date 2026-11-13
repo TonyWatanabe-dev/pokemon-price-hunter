@@ -1,20 +1,20 @@
 {
  "program": "shopee",
- "updatedAt": "2026-11-07",
+ "updatedAt": "2026-11-13",
  "regras": "Anúncios da Shopee com link de afiliado do dono (config/afiliados/shopee.json), lidos pelo dono no Chrome. Entram só produtos selados, casados por src/match.js com confiança de 0,8 ou mais, sem anúncio de várias opções e sem vendedor de fora de TCG. price = preço sem cupom (o \"ou R$\" da página); priceCupom = o valor em destaque, que a Shopee mostra com cupom. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score.",
- "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos.",
+ "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos. Lote de 13/11/2026 (busca do dono no Chrome, Shopee ordenada por mais vendidos, links do Portal de Afiliados com Sub ID tcgpricehunter): 8 anúncios relidos (preço e link); preço exibido na busca (sem cupom), título normalizado com coleção e formato, horário aproximado da leitura.",
  "ofertas": [
   {
    "productId": "me01-blister4",
    "item": "464326997/22794443745",
    "title": "BLISTER QUÁDRUPLO MEGA EVOLUÇÃO ME01 COPAG POKÉMON TCG BOOSTER CARTAS LUCARIO GARDEVOIR EX QUAD PACK",
    "url": "https://s.shopee.com.br/7KxpDppJZI",
-   "price": 56.99,
-   "priceCupom": 56.42,
+   "price": 52.46,
+   "priceCupom": null,
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:01:14Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "me05-blister3",
@@ -26,7 +26,7 @@
    "seller": "Rodobanca",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:01:21Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "me05-combo",
@@ -62,7 +62,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:02:39Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "me05-blister1",
@@ -81,12 +81,12 @@
    "item": "464326997/49863977088",
    "title": "BLISTER TRIPLO SLOWPOKE EX MEGA EVOLUÇÃO ESCURIDÃO ABSOLUTA ME5 COPAG POKÉMON TCG BOOSTER CARTA PACK",
    "url": "https://s.shopee.com.br/9pfACR1nPP",
-   "price": 46.99,
-   "priceCupom": 46.52,
+   "price": 45.53,
+   "priceCupom": null,
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:02:56Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "me04-etb",
@@ -146,7 +146,7 @@
    "seller": "Superlegal Brinquedos",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:04:46Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "me03-blister4",
@@ -350,7 +350,7 @@
    "seller": "Efácil Oficial",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:07:36Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "me03-blister1",
@@ -398,7 +398,7 @@
    "seller": "Efácil Oficial",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:08:01Z"
+   "capturedAt": "2026-11-13T13:45:00Z"
   },
   {
    "productId": "sv9-blister4",
@@ -422,7 +422,7 @@
    "seller": "Hunter Card Game",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:08:16Z"
+   "capturedAt": "2026-11-13T12:20:00Z"
   },
   {
    "productId": "me01-blister4",

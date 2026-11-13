@@ -15,7 +15,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { candidatos, gerarCard } from './social-telegram-piloto.mjs';
+import { candidatos, gerarCard, carregarCupons } from './social-telegram-piloto.mjs';
+import { linhaCupomComPreco } from '../src/agents/social/cupons.js';
 import { loadAffiliates, mlListingId } from '../api/_lib/affiliates.mjs';
 import { ofertasExternas, candidatoExterno, intercalar, lerLeituras } from '../src/agents/social/externas.js';
 import { focoEconomia, ordenarPorEconomia } from '../src/agents/social/economia.js';
@@ -83,7 +84,19 @@ export function candidatosWhatsApp(state, opts = {}) {
   const produtos = new Map((state?.products || []).map((p) => [p.id, p]));
   const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, 100), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, 0.05),
     descontoForte: num(env.SOCIAL_DESCONTO_FORTE, 0.2), precoMaxForte: num(env.SOCIAL_PRECO_MAX_FORTE, 250) };
-  return ordenarPorEconomia(lista.map((c) => focoEconomia(c, cfg)).filter(Boolean));
+  const fila = ordenarPorEconomia(lista.map((c) => focoEconomia(c, cfg)).filter(Boolean));
+  if (env.SOCIAL_CUPONS === '0') return fila;
+  return fila.map((c) => comCupom(c, opts.cupons ?? carregarCupons(), opts.now ?? Date.now()));
+}
+
+/** 13/11/2026 (pedido do dono): todo post leva o melhor cupom vigente da loja e o preço que sai com ele; sem cupom que
+ *  sirva, nenhuma linha de cupom (a dica antiga do ML e a linha de cupom da campanha saem, para não haver duas). */
+export function comCupom(c, cupons, now) {
+  const loja = c.loja || c.oferta?.storeId; const preco = c.preco ?? c.oferta?.price;
+  const linha = linhaCupomComPreco({ loja, preco, seller: c.oferta?.seller ?? null }, cupons, now);
+  let texto = String(c.item?.texto ?? '').replace(/\n🎟️[^\n]*/g, '').replace(/\n➡️[^\n]*/g, '');
+  if (linha) texto = texto.replace(/(\n💰[^\n]*|\nPor <b>[^\n]*)(?![\s\S]*\n(?:💰|Por <b>))/, `$1\n${linha}`);
+  return { ...c, item: { ...c.item, texto }, cupom: linha ? true : false };
 }
 
 

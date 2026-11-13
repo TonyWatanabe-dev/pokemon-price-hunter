@@ -2,7 +2,8 @@
 // preços com de X por X, focar em economia mesmo [...] booster ou pack caros demais não vou perder tempo levando ao
 // grupo"). Puro: sem rede, banco ou secrets.
 //
-//   • blister duplo, triplo e quádruplo (produto do catálogo *-blister2/3/4, em português) até `precoMax` (padrão R$ 100);
+//   • blister unitário, duplo, triplo e quádruplo e booster avulso (*-blister1/2/3/4, *-booster, em português; unitário e
+//     booster desde 13/11/2026) até `precoMax` (padrão R$ 100);
 //   • qualquer outro produto em português só com desconto forte (`descontoForte`, padrão 20%) e até `precoMaxForte`
 //     (padrão R$ 250): oferta verdadeiramente barata entra, caixa cara não;
 //   • "De X por Y" com referência honesta e rotulada: o preço sugerido da Copag do produto; sem ele, a média do mercado
@@ -11,6 +12,9 @@
 import { reais } from './legenda.js';
 
 export const TIPOS = /-blister[234]$/;
+// 13/11/2026 (pedido do dono: "no grupo só quero as ofertas de todos os blisters, unitários e promoções de outros produtos
+// que realmente valem a pena"): blister unitário e booster avulso entram pela mesma regra dos blisters 2/3/4.
+export const TIPOS_FOCO = /-(blister[1234]|booster)$/;
 const IMPORTADO = /-(en|ja|zh|ko)$/;
 const pos = (v) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -30,7 +34,7 @@ export function focoEconomia(c, { produtos, precoMax = 100, economiaMin = 0.05, 
   const economia = 1 - preco / r.ref;
   // Blister 2/3/4: até precoMax com economiaMin. Outro produto (03/11: "ofertas verdadeiramente baratas, aonde os
   // descontos são bons"): só com desconto forte (descontoForte) e até precoMaxForte, para caixa cara não voltar.
-  const blister = TIPOS.test(pid);
+  const blister = TIPOS_FOCO.test(pid);
   if (blister ? (preco > precoMax || economia < economiaMin) : (preco > precoMaxForte || economia < descontoForte)) return null;
   let texto = String(c.item?.texto ?? '');
   if (!/\nPor <b>/.test(texto)) return null;                       // sem a linha "Por": não há como montar o "De X por Y"
@@ -62,5 +66,9 @@ export function ordenarPorEconomia(lista, { folga = 0.05 } = {}) {
   // 04/11/2026 ("melhor dar preferência para blister, ETBs e etc do que baralho"): baralho de batalha vai para o fim de cada bloco.
   const baralho = (c) => /-deck-/.test(c.oferta?.productId || '');
   const bloco = (l) => [...intercala(l.filter((c) => !baralho(c))), ...intercala(l.filter(baralho))];
-  return [...bloco(lista.filter((c) => c.blackFriday)), ...bloco(lista.filter((c) => !c.blackFriday))];
+  // 13/11/2026 ("tudo que for black friday de blister e unitário tem prioridade de postagem"): dentro de cada bloco
+  // (Black Friday / resto), blister de qualquer tamanho e booster avulso vêm antes dos outros produtos.
+  const foco = (c) => TIPOS_FOCO.test(c.oferta?.productId || '');
+  const parte = (l) => [...bloco(l.filter(foco)), ...bloco(l.filter((c) => !foco(c)))];
+  return [...parte(lista.filter((c) => c.blackFriday)), ...parte(lista.filter((c) => !c.blackFriday))];
 }
