@@ -14,7 +14,7 @@ const t = async (name, fn) => { try { await fn(); } catch (e) { e.message = `${n
 const line = (name) => { const m = html.match(new RegExp(`^(?:const|let) ${name}\\s*=.*$`, 'm')); assert.ok(m, `index.html: ${name} não encontrado`); return m[0]; };
 const block = (re) => { const m = html.match(re); assert.ok(m, `index.html: ${re} não encontrado`); return m[0]; };
 const loadSrc = block(/^async function loadAfil\(\)[\s\S]*?(?=\n\/\*)/m);
-const footSrc = block(/^function footAfil\(\)[\s\S]*?(?=\nloadAfil\(\);)/m);
+const footSrc = block(/^function footAfil\(\)[\s\S]*?(?=\nconst AFIL_PRONTO=loadAfil\(\))/m);
 
 // Roda loadAfil com a resposta dada; devolve o que foi inserido no rodapé e quantas vezes render() foi chamado.
 async function run(resposta, { ok = true, comS = true } = {}) {

@@ -29,7 +29,7 @@ t('2/3. blocos "Também na Amazon/Shopee" saíram do SPA (07/11/2026); links man
 
 t('4. ML: destino com afiliado sai como sponsored (invisível); rodapé geral sem rótulo de afiliado', () => {
   assert.match(line('outRel'), /outUrl\(u\)!==u\|\|/);
-  const foot = block(/^function footAfil\(\)[\s\S]*?(?=\nloadAfil\(\);)/m);
+  const foot = block(/^function footAfil\(\)[\s\S]*?(?=\nconst AFIL_PRONTO=loadAfil\(\))/m);
   assert.match(foot, /rel="noopener nofollow sponsored" data-afil>/);
   assert.doesNotMatch(foot, /afiliad/i);
 });

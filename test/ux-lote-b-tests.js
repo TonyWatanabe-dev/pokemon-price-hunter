@@ -43,7 +43,7 @@ function flowSandbox() {
     console, URLSearchParams, S: { collections: [col], products: PRODS, reputation: { lojas: {} } }, OFF: OFFS, P: Object.fromEntries(PRODS.map((p) => [p.id, p])), SLUG: {},
     F: { q: '', tipo: '', ord: '' }, view: 'busca', CHANGED: new Set(), HIST: {}, REFNOTE: 'ref', SEARCH_TIPS: new Map(), STOCK: { IN_STOCK: ['ok', 'Em estoque'], OUT_OF_STOCK: ['bad', 'Sem estoque'], PRE_ORDER: ['warn', 'Pré-venda'] },
     $: (sel) => slots[sel] || null, ic, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'blister', catChip: () => '',
-    isFav: () => false, mlDireto: () => null, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
+    isFav: () => false, ofertaAfil: (p, o) => o, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: (p, o) => (p.copagConfirmed && o ? 1 - o.total / p.msrp : null),
     searchBox: () => '<form role="search"></form>', track() {}, render() {}, history: { pushState() {} }, location: { pathname: '/busca', search: '' },
     document: { title: '', getElementById: () => null, querySelectorAll: () => [] },
@@ -83,7 +83,7 @@ await t('2. oppCard: Pix e referência continuam visíveis, "Por que esta nota?"
     historical_context: [], community_reference: null, warnings: [], reasons: [], engine_version: 'opportunity-v2.2', updated_at: new Date().toISOString() };
   const ctx = { console, URLSearchParams, Math, String, Number, Array, JSON, Object, Promise, setTimeout, Date, store: { get: (k, d) => d, set() {} },
     S: { collections: [], reputation: { lojas: {} } }, SLUG: {}, esc: (s) => String(s ?? ''), money: (v) => 'R$ ' + v.toFixed(2).replace('.', ','), ic, photo: () => '<div class="photo"></div>',
-    catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, mlDireto: () => null, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', afPref: () => 0,
+    catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, ofertaAfil: (p, o) => o, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', afPref: () => 0,
     pixTag: (o) => (o?.priceKind === 'pix' ? '<em class="pixk">no Pix</em>' : ''), ago: () => 'há 1 h', OFF: [], P: { 'sv4-box36': { liveCount: 5 } }, live: () => true,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: () => null };
   const { oppCard } = run(oppPage, ctx, 'oppCard');

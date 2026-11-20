@@ -117,7 +117,7 @@ await t('E2. todo "Ver oferta" do motor gera click_store, mesmo fora do estado (
   const run = (OFF, dataset) => { const c = { OFF }; vm.createContext(c); vm.runInContext(clickCode + ';globalThis.r=storeClick(' + JSON.stringify({ dataset }) + ');', c); return c.r; };
   assert.deepEqual({ ...run([], { store: 'of-1', pid: 'me04-etb', sid: 'loja-x', price: '1300' }) }, { store: 'loja-x', id: 'me04-etb', price: 1300, src: 'opp' });
   assert.deepEqual({ ...run([{ id: 'of-1', storeId: 's', productId: 'p', total: 9 }], { store: 'of-1' }) }, { store: 's', id: 'p', price: 9 }, 'oferta do estado: igual a antes');
-  assert.match(html, /const stb=t\.closest\("\[data-store\]"\);if\(stb\)\{const d=storeClick\(stb\);if\(d\)track\("click_store",d\);return\}/);
+  assert.match(html, /const stb=t\.closest\("\[data-store\]"\);if\(stb\)\{afilClick\(stb,e\);const d=storeClick\(stb\);if\(d\)track\("click_store",d\);return\}/);
 });
 
 // ================================================================== C — idade da nota, volta à aba, expiração após 90 min
