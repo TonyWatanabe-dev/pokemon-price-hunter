@@ -72,7 +72,7 @@ function flowSandbox() {
     SLUG: { 'p-a': 'caos-ascendente-blister-quadruplo-charizard', 'p-b': 'caos-ascendente-blister-quadruplo-pikachu' },
     F: { q: '' }, view: 'busca', CHANGED: new Set(), HIST: {}, REFNOTE: 'ref', SEARCH_TIPS: new Map(), STOCK: { IN_STOCK: ['ok', 'Em estoque'], OUT_OF_STOCK: ['bad', 'Sem estoque'], PRE_ORDER: ['warn', 'Pré-venda'] },
     $: (sel) => slots[sel] || null, ic, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'blister', catChip: () => '',
-    isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
+    mlDireto: () => null, isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', tipHits: () => [], liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: (p, o) => (p.copagConfirmed && o ? 1 - o.total / p.msrp : null),
     colHref: () => '', typeHref: () => '', favBtn: () => '', shareBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '<form role="search"></form>', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
     document: { title: '', getElementById: () => null, querySelectorAll: () => [] },
@@ -98,7 +98,7 @@ function oppSandbox(items, liveCount = 3) {
   const ctx = {
     console, URLSearchParams, Math, String, Number, Array, JSON, Object, Promise, setTimeout, Date,
     store: { get: (k, d) => d, set() {} }, S: { collections: [{ id: 'sv4', name: 'Fenda Paradoxal' }], reputation: { lojas: {} } }, SLUG: {},
-    esc, money, ic, photo: () => '<div class="photo"></div>', catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, raBadge: () => '',
+    esc, money, ic, photo: () => '<div class="photo"></div>', catOf: () => 'box', g: () => ({ c: '#000' }), catChip: () => '', isFav: () => false, mlDireto: () => null, raBadge: () => '',
     safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', afPref: () => 0, pixTag: () => '', ago: () => 'há 1 h', revealInit: undefined, OFF: [], P: Object.fromEntries(items.map((x) => [x.product.id, { liveCount }])), live: () => true,
     document: { addEventListener() {}, querySelectorAll: () => [] }, view: 'oportunidades', $: (sel) => (sel === '#view' ? view : null), IntersectionObserver: undefined,
     apiGet: async (path) => (path === 'oportunidades/lojas' ? { data: [] } : { data: items, meta: { page: 1, limit: 24, total: items.length, pages: 1, engine: 'opportunity-v2.2' } }),

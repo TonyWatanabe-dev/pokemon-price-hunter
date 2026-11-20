@@ -84,7 +84,7 @@ function ui(OFF, prod = PROD) {
     console, S: { collections: [], products: [prod], reputation: { lojas: {} } }, OFF, P: { [prod.id]: prod }, SLUG: {}, F: { q: '' }, view: 'produto', CHANGED: new Set(), HIST: {}, REFNOTE: 'ref',
     STOCK: { IN_STOCK: ['ok', 'Em estoque'], OUT_OF_STOCK: ['bad', 'Sem estoque'], PRE_ORDER: ['warn', 'Pré-venda'], UNKNOWN: ['', 'Estoque desconhecido'] },
     $: (sel) => slots[sel] || null, ic: (id) => `<i data-ic="${id}"></i>`, dial: () => '', g: () => ({ c: '#000', icon: 'x' }), catOf: () => 'caixa', catChip: () => '',
-    isFav: () => false, raBadge: () => '', photo: () => '<div class="photo"></div>', liveTips: () => [], tipCard: () => '',
+    isFav: () => false, mlDireto: () => null, raBadge: () => '', photo: () => '<div class="photo"></div>', liveTips: () => [], tipCard: () => '',
     refOf: (p) => (p.copagConfirmed ? { v: p.msrp } : null), discOf: () => null,
     colHref: () => '', typeHref: () => '', favBtn: () => '', shareBtn: () => '', alertBox: () => '', scoreBlock: () => '', searchBox: () => '', drawHist() {}, loadHist() {}, loadPpOpp() {}, outrasLojasBlock: () => '',
     document: { title: '', getElementById: () => null },

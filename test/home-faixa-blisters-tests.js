@@ -39,7 +39,7 @@ function run(offers = OFF, produtos = P) {
     OFF: offers, P: produtos, SLUG: {}, F: { mode: 'tudo' }, view: 'deals', CHANGED: new Set(), OFFPRE: {},
     live: (o) => o.stock === 'IN_STOCK', esc: (s) => String(s ?? ''), money: (v) => 'R$ ' + Number(v).toFixed(2).replace('.', ','),
     ic: (id) => `<i data-ic="${id}"></i>`, photo: () => '', catChip: () => '', catOf: () => 'blister', g: () => ({ c: '#000' }),
-    isFav: () => false, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', pixTag: () => '',
+    isFav: () => false, mlDireto: () => null, raBadge: () => '', safeUrl: (u) => u, outUrl: (u) => u, outRel: () => '', pixTag: () => '',
     label: (p) => p.type, storeTxt: (o) => o.storeName, refOf: () => null, discOf: () => null, oppOf: () => null,
     scoreMeter: () => '', shipNote: () => '', staleOnly: () => null, staleNote: () => '', bandUI: () => ['', ''], cmpLink: () => '',
     sectionHead: (icon, title, sub, action) => `<header><h2>${title}</h2><p>${sub}</p>${action || ''}</header>`,
@@ -49,7 +49,7 @@ function run(offers = OFF, produtos = P) {
   vm.runInContext(dealCardCode + code + '\n;globalThis.__h=blisterRailHTML();', ctx);
   return ctx.__h;
 }
-const ids = (h) => [...h.matchAll(/data-p="([^"]+)"/g)].map((m) => m[1]);
+const ids = (h) => [...h.matchAll(/class="deal-hit"[^>]*data-p="([^"]+)"/g)].map((m) => m[1]);
 
 t('1. ordem pelo menor preço por booster, um card por produto', () => {
   const h = run();
