@@ -1024,6 +1024,8 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .deal-store{font-size:13px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.deal-store em{font-style:normal;color:var(--muted)}
 /* Lote A: uma só ação primária por cartão, no mesmo botão preenchido do pódio (.pod-cta), com 44px de toque */
 .deal-cta{position:relative;z-index:2;flex:1 1 100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 14px;border-radius:999px;background:var(--btn);color:var(--btn-ink);font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap;transition:transform 140ms var(--ease-out),filter 160ms ease}
+.deal-cmp{position:relative;z-index:2;flex:1 1 100%;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line-soft);color:inherit;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+@media (hover:hover) and (pointer:fine){.deal-cmp:hover{border-color:currentColor}}
 .deal-cta .icon{width:15px;height:15px}.deal-cta:active{transform:scale(.96)}
 @media (hover:hover) and (pointer:fine){.deal-cta:hover{filter:brightness(1.08)}}
 .deal.oos .deal-ph,.deal.pre .deal-ph,.deal.none .deal-ph{opacity:.5;filter:saturate(.3)}
@@ -1756,12 +1758,17 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}${(ml=>ml?`<a class="deal-cta" href="${esc(safeUrl(outUrl(ml.url)))}" target="_blank" rel="noopener${outRel(ml.url)}" data-store="${esc(ml.id)}">Comprar no Mercado Livre${ml!==o?` · ${money(ml.total)}`:""}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>`:`<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>`)(live(o)?mlDireto(p.id,o):null)}<a class="deal-cmp" href="${href}#ondecomprar" data-p="${esc(p.id)}" data-hash="ondecomprar">Comparar ofertas${n>1?` (${n})`:""}</a></div>`
     :`<p class="deal-price"><span>${old?`${staleNote(old)}${r?` · Copag ${money(r.v)}`:""}`:r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
 }
 
+/* Compra direta no ML (pedido do dono, 20/11/2026): o card leva ao anúncio do Mercado Livre com o link de afiliado dele
+   (mapa AFIL.anuncios), sem passar pela página do produto; "Comparar ofertas" abre a comparação das lojas parceiras na página do produto.
+   Escolhe o anúncio ML com link próprio mais barato e disponível; sem nenhum, o card mantém "Ver oferta" da melhor oferta. */
+const afilML=(u)=>{const id=mlItem(u),a=id&&Object.hasOwn(AFIL.anuncios,id)?AFIL.anuncios[id]:null;return typeof a==="string"&&AFIL_OK.test(a)};  /* mesma regra do destino de afiliado: anúncio ML com link do dono no mapa */
+function mlDireto(pid,o){let b=null;for(const x of OFF.concat(o?[o]:[]))if(x&&x.productId===pid&&live(x)&&afilML(x.url)&&(!b||x.total<b.total))b=x;return b&&o&&o.total===b.total&&afilML(o.url)?o:b}
 const pocket=dealCard;
 
 /* Dados dos filtros: do estado completo (aqui) ou prontos da API (/api/v1/site/produtos → facets, mesma regra) */

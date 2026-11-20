@@ -168,8 +168,8 @@ await t('página: link de afiliado sai com rel sponsored (como os da Amazon); UR
 
 await t('página: só os botões de oferta passam por outUrl, sempre dentro de safeUrl, com nova aba, noopener e texto .sr', () => {
   const uses = [...html.matchAll(/outUrl\(/g)].length;
-  const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best)\.url\)\)\)\}" target="_blank" rel="noopener\$\{outRel\(\1\.url\)\}"/g)].length;
-  assert.equal(inHref, 6, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade), cada um com rel do mesmo destino');
+  const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best|ml)\.url\)\)\)\}" target="_blank" rel="noopener\$\{outRel\(\1\.url\)\}"/g)].length;
+  assert.equal(inHref, 7, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade) e "Comprar no Mercado Livre" do cartão (20/11/2026), cada um com rel do mesmo destino');
   assert.equal([...html.matchAll(/\boutRel\(/g)].length, inHref, 'outRel só nos botões de oferta');
   assert.equal(uses, inHref + 1, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel; sem selo desde 17/10)');
   assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 2, 'mais a definição e o uso em outRel; nenhum outro uso');
