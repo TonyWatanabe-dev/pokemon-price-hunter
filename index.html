@@ -1024,8 +1024,7 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 .deal-store{font-size:13px;color:var(--ink);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.deal-store em{font-style:normal;color:var(--muted)}
 /* Lote A: uma só ação primária por cartão, no mesmo botão preenchido do pódio (.pod-cta), com 44px de toque */
 .deal-cta{position:relative;z-index:2;flex:1 1 100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 14px;border-radius:999px;background:var(--btn);color:var(--btn-ink);font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap;transition:transform 140ms var(--ease-out),filter 160ms ease}
-.deal-cmp{position:relative;z-index:2;flex:1 1 100%;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line-soft);color:inherit;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
-@media (hover:hover) and (pointer:fine){.deal-cmp:hover{border-color:currentColor}}
+.deal-cmp{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 0 0;font-size:13px;font-weight:600;color:inherit;text-decoration:underline;text-underline-offset:3px}.deal-cmp .icon{width:14px;height:14px}
 .deal-cta .icon{width:15px;height:15px}.deal-cta:active{transform:scale(.96)}
 @media (hover:hover) and (pointer:fine){.deal-cta:hover{filter:brightness(1.08)}}
 .deal.oos .deal-ph,.deal.pre .deal-ph,.deal.none .deal-ph{opacity:.5;filter:saturate(.3)}
@@ -1543,7 +1542,7 @@ const safeUrl=(u)=>/^https?:\/\//i.test(String(u||"").trim())?String(u).trim():"
 /* Afiliados (docs/afiliados.md): muda o destino do clique em "Ver oferta" e, só em EMPATE de total, põe a oferta com nosso link primeiro (afPref,
    regra do dono de 17/10/2026; nunca acima de oferta mais barata). O dado da oferta (o.url), o preço e a nota não mudam. Sem etiqueta visível no link.
    Só anúncio do Mercado Livre com link próprio (gerado no painel para ESSE anúncio) troca; o resto abre na URL original. AFIL vem de /api/v1/afiliados. */
-let AFIL={anuncios:{},geral:null,shopee:{},amazon:{}};
+let AFIL={anuncios:{},geral:null,shopee:{},amazon:{}};let AFIL_LIDO=false;
 const AFIL_OK=/^https:\/\/(?:meli\.la|(?:www\.|produto\.)?mercadolivre\.com\.br)\/[^\s"'<>\\]*$/i;
 const mlItem=(u)=>{try{const x=new URL(String(u??"").trim());if(!/^https?:$/.test(x.protocol)||!/^(?:[a-z0-9-]+\.)*mercadoli(?:vre\.com\.br|bre\.com)$/.test(x.hostname))return null;const f=(x.searchParams.get("pdp_filters")||"").match(/item_id:(MLB\d{6,15})\b/i);if(f)return f[1].toUpperCase();const p=x.pathname.match(/^\/MLB-?(\d{6,15})(?:[-_/]|$)/i);return p?"MLB"+p[1]:null}catch{return null}};
 const outUrl=(u)=>{const id=mlItem(u),a=id&&Object.hasOwn(AFIL.anuncios,id)?AFIL.anuncios[id]:null;return typeof a==="string"&&AFIL_OK.test(a)?a:u};
@@ -1758,17 +1757,20 @@ function dealCard(e,opt={}){const H=opt.h||"h3";   /* opt.h: "h2" nas páginas q
     <p class="deal-price"><b data-price="${esc(o.id)}">${money(abrir?o.perBooster:o.total)}</b>${abrir?"":pixTag(o)}${abrir?`<span>por booster · total ${money(o.total)}</span>`:r?`<span>${r.net?`<em class="refnet" title="${esc(REFNOTE)}">Ref.</em>`:"Copag"} <s>${money(r.v)}</s></span>`:`<span>sem preço Copag</span>`}</p>
     ${opt.plain&&o&&live(o)&&!o.shippingKnown?`<p class="so-ship">${shipNote(o)}</p>`:""}
     ${o&&live(o)?scoreMeter(sx):""}
-    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}${(ml=>ml?`<a class="deal-cta" href="${esc(safeUrl(outUrl(ml.url)))}" target="_blank" rel="noopener${outRel(ml.url)}" data-store="${esc(ml.id)}">Comprar no Mercado Livre${ml!==o?` · ${money(ml.total)}`:""}<span class="sr"> (abre em nova aba)</span> ${ic("arrow-square-out")}</a>`:`<a class="deal-cta" href="${esc(safeUrl(outUrl(o.url)))}" target="_blank" rel="noopener${outRel(o.url)}" data-store="${esc(o.id)}">Ver oferta<span class="sr"> na ${esc(o.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>`)(live(o)?mlDireto(p.id,o):null)}<a class="deal-cmp" href="${href}#ondecomprar" data-p="${esc(p.id)}" data-hash="ondecomprar">Comparar ofertas${n>1?` (${n})`:""}</a></div>`
+    <div class="deal-foot"><span class="deal-store">${esc(storeTxt(o))}${n>1?` <em>+${n-1}</em>`:""}</span>${raBadge(o)}${(best=>`<a class="deal-cta" href="${esc(safeUrl(outUrl(best.url)))}" target="_blank" rel="noopener${outRel(best.url)}" data-store="${esc(best.id)}">Ver oferta${best!==o?` · ${money(best.total)}`:""}<span class="sr"> na ${esc(best.storeName)} (abre em nova aba)</span> ${ic("arrow-square-out")}</a>`)(live(o)?ofertaAfil(p.id,o):o)}</div>
+    <a class="deal-cmp" href="${href}#ondecomprar" data-p="${esc(p.id)}" data-hash="ondecomprar">${ic("storefront")}${n>1?`Comparar ${n} ofertas`:"Comparar ofertas"}</a>`
     :`<p class="deal-price"><span>${old?`${staleNote(old)}${r?` · Copag ${money(r.v)}`:""}`:r?`Copag ${money(r.v)}`:"Nenhuma loja com oferta agora"}</span></p>`}
   </div>
 </article>`;
 }
 
-/* Compra direta no ML (pedido do dono, 20/11/2026): o card leva ao anúncio do Mercado Livre com o link de afiliado dele
-   (mapa AFIL.anuncios), sem passar pela página do produto; "Comparar ofertas" abre a comparação das lojas parceiras na página do produto.
-   Escolhe o anúncio ML com link próprio mais barato e disponível; sem nenhum, o card mantém "Ver oferta" da melhor oferta. */
+/* "Ver oferta" sempre no link de afiliado do dono (pedidos de 20/11/2026): o botão do card abre direto a oferta mostrada
+   quando ela leva o link dele (ML no mapa AFIL.anuncios, Amazon link.amazon, Shopee s.shopee); senão, o anúncio ML com
+   link dele mais barato e disponível do produto. "Comparar ofertas" fica abaixo e abre a comparação na página do produto. */
 const afilML=(u)=>{const id=mlItem(u),a=id&&Object.hasOwn(AFIL.anuncios,id)?AFIL.anuncios[id]:null;return typeof a==="string"&&AFIL_OK.test(a)};  /* mesma regra do destino de afiliado: anúncio ML com link do dono no mapa */
+const comAfil=(o)=>!!o&&(afilML(o.url)||/^https:\/\/(link\.amazon|s\.shopee\.com\.br)\//.test(String(o.url||"")));
 function mlDireto(pid,o){let b=null;for(const x of OFF.concat(o?[o]:[]))if(x&&x.productId===pid&&live(x)&&afilML(x.url)&&(!b||x.total<b.total))b=x;return b&&o&&o.total===b.total&&afilML(o.url)?o:b}
+const ofertaAfil=(pid,o)=>comAfil(o)?o:mlDireto(pid,o)||o;
 const pocket=dealCard;
 
 /* Dados dos filtros: do estado completo (aqui) ou prontos da API (/api/v1/site/produtos → facets, mesma regra) */
@@ -3631,7 +3633,14 @@ async function loadAfil(){try{const r=await fetch("/api/v1/afiliados");if(!r.ok)
 /* Link geral do Mercado Livre: só no rodapé e só com destino confirmado pelo dono (config). Nunca no lugar de um anúncio. */
 function footAfil(){const f=document.querySelector(".foot-links");if(!f||!AFIL.geral||f.querySelector("[data-afil]"))return;
   f.insertAdjacentHTML("beforeend",`<a href="${esc(safeUrl(AFIL.geral.url))}" target="_blank" rel="noopener nofollow sponsored" data-afil>${esc(AFIL.geral.rotulo)}<span class="sr"> (abre em nova aba)</span></a>`)}
-loadAfil();   /* sem await: a página não espera a config */
+const AFIL_PRONTO=loadAfil().finally(()=>{AFIL_LIDO=true});   /* sem await: a página não espera a config */
+/* Clique em "Ver oferta" (20/11/2026: sempre o link de afiliado do dono). O cartão pode ter sido desenhado antes da config
+   chegar: no clique, o destino é recalculado; com a config ainda a caminho, espera por ela e só então abre a aba. */
+function afilClick(a,e){const u=a.getAttribute("href")||"";if(!/^https?:\/\//.test(u)||a.target!=="_blank")return;
+  const f=safeUrl(outUrl(u));if(f!==u&&f!=="#"){a.setAttribute("href",f);return}
+  if(AFIL_LIDO||!mlItem(u)||e.metaKey||e.ctrlKey||e.shiftKey)return;
+  e.preventDefault();   /* espera a config por até 2,5 s (o navegador ainda aceita abrir a aba) e abre o destino já resolvido */
+  Promise.race([AFIL_PRONTO,new Promise((r)=>setTimeout(r,2500))]).then(()=>{const d=safeUrl(outUrl(u));window.open(d==="#"?u:d,"_blank","noopener")})}
 async function load(){
   footRedes();   /* redes sociais no rodapé, mesmo sem preços */
   grpUI();   /* botão/barra dos grupos aparecem mesmo se os preços não carregarem; a página /comunidade também (abaixo) */
@@ -3674,7 +3683,7 @@ document.addEventListener("click",(e)=>{
   const fvb=t.closest("[data-fav]");if(fvb){e.preventDefault();toggleFav(fvb.dataset.fav);return}
   const aab=t.closest("[data-a]");if(aab){accAction(aab.dataset.a,aab);return}
   const tpb=t.closest("[data-tip]");if(tpb){track("click_store",{tip:tpb.dataset.tip});return}
-  const stb=t.closest("[data-store]");if(stb){const d=storeClick(stb);if(d)track("click_store",d);return}
+  const stb=t.closest("[data-store]");if(stb){afilClick(stb,e);const d=storeClick(stb);if(d)track("click_store",d);return}
   const grpb=t.closest("[data-group]");if(grpb){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();const [k,sl]=grpb.dataset.group.split("/");openGroup(k,sl);return}
   const bm=t.closest("[data-buscamore]");if(bm){moreBusca();return}
   const bt=t.closest("[data-btipo]");if(bt){F.tipo=F.tipo===bt.dataset.btipo?"":bt.dataset.btipo;buscaNav();track("filter_used",{f:"busca_tipo",v:F.tipo});return}

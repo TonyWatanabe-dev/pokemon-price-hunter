@@ -169,10 +169,11 @@ await t('página: link de afiliado sai com rel sponsored (como os da Amazon); UR
 await t('página: só os botões de oferta passam por outUrl, sempre dentro de safeUrl, com nova aba, noopener e texto .sr', () => {
   const uses = [...html.matchAll(/outUrl\(/g)].length;
   const inHref = [...html.matchAll(/href="\$\{esc\(safeUrl\(outUrl\((o|of|best|ml)\.url\)\)\)\}" target="_blank" rel="noopener\$\{outRel\(\1\.url\)\}"/g)].length;
-  assert.equal(inHref, 7, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade) e "Comprar no Mercado Livre" do cartão (20/11/2026), cada um com rel do mesmo destino');
+  assert.equal(inHref, 6, 'botões "Ver oferta" (cartões, pódio, página do produto, oportunidade), cada um com rel do mesmo destino');
   assert.equal([...html.matchAll(/\boutRel\(/g)].length, inHref, 'outRel só nos botões de oferta');
-  assert.equal(uses, inHref + 1, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel; sem selo desde 17/10)');
-  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 2, 'mais a definição e o uso em outRel; nenhum outro uso');
+  assert.equal(uses, inHref + 3, 'outUrl só é chamado dentro de safeUrl nos hrefs (mais o uso em outRel e os dois de afilClick, que recalcula o destino no clique — 20/11; sem selo desde 17/10)');
+  assert.equal([...html.matchAll(/safeUrl\(outUrl\(u\)\)/g)].length, 2, 'afilClick também passa por safeUrl');
+  assert.equal([...html.matchAll(/\boutUrl\b/g)].length, inHref + 4, 'mais a definição, o uso em outRel e os dois de afilClick; nenhum outro uso');
   for (const m of html.matchAll(/<a [^>]*href="\$\{esc\(safeUrl\(outUrl\([^"]*"[\s\S]{0,400}?<\/a>/g)) assert.match(m[0], /<span class="sr">[^<]*abre em nova aba\)<\/span>/, m[0].slice(0, 120));
   // link geral: só no rodapé, sem etiqueta (regra 17/10) e só com destino confirmado (geral != null)
   assert.match(html, /function footAfil\(\)\{[^\n]*if\(!f\|\|!AFIL\.geral/);
@@ -185,7 +186,7 @@ await t('página: o carregador aceita só entradas válidas e não bloqueia a p�
   assert.ok(fn, 'loadAfil não encontrado');
   assert.match(fn[0], /fetch\("\/api\/v1\/afiliados"\)/); assert.match(fn[0], /AFIL_OK\.test\(v\)/); assert.match(fn[0], /AFIL_OK\.test\(j\.geral\.url\)/);
   assert.match(fn[0], /s\\\.shopee\\\.com\\\.br/); assert.match(fn[0], /link\\\.amazon/);   // Shopee/Amazon (pistas): só links do painel
-  assert.match(html, /\nloadAfil\(\);/, 'chamado sem await: a página não espera a config');
+  assert.match(html, /\nconst AFIL_PRONTO=loadAfil\(\)\.finally\(/, 'chamado sem await: a página não espera a config (a promessa só serve ao clique antes da config chegar)');
 });
 
 // ------------------------------------------------------------------ 4. ranking, melhor oferta e score idênticos SEM empate
