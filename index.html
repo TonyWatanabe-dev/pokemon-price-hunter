@@ -777,6 +777,9 @@ body[data-fresh="atrasado"] .live-dot{background:#F2B451}body[data-fresh="desatu
 @media (prefers-reduced-motion:no-preference){.pod .pod-sheen{animation:sheen 4.8s cubic-bezier(.65,0,.35,1) infinite}.pod[data-r="2"] .pod-sheen{animation-delay:1.2s}.pod[data-r="3"] .pod-sheen{animation-delay:2.4s}}
 @keyframes sheen{0%,55%{background-position:120% 0}100%{background-position:-60% 0}}
 .pod-body{position:relative;z-index:2;padding:14px 18px 18px;display:flex;flex-direction:column;gap:2px;flex:1}
+/* 20/11/2026: o link do cartão (.deal-hit, z 3) cobria o corpo inteiro, e o clique em "Ver oferta" e em "Comparar" caía na página
+   do produto. O corpo fica por cima do link, mas deixa o clique passar; só os links e botões dele recebem o clique. */
+.pod-body{z-index:4;pointer-events:none}.pod-body a,.pod-body button{pointer-events:auto}
 .pod-col{margin:0;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pod-name{margin:2px 0 8px;font-size:clamp(17px,1.6vw,21px);font-weight:700;letter-spacing:-.015em;line-height:1.2;color:var(--ink)}
 .pod-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px}
