@@ -1,7 +1,15 @@
 {
- "fonte": "Cupons do ML lidos na conta do proprietário em 11/11/2026 (página Cupons, 'Mais de R$100'): só cupom geral sem nome de campanha (regra de src/agents/social/cupons.js). Cupom geral sem data ('Está esgotando!') vale 3 dias a partir da leitura. Cupons de loja (Newstation Sorocaba) mantidos da leitura de 02/11/2026, validade 30/11. Não há cupom ativo nas categorias Brinquedos e Hobbies e Antiguidades e Coleções em 11/11/2026. 13/11/2026 (pedido do dono: todo post com cupom e preço final): cupons de código das três lojas divulgados em sites de cupom (pelando, seletronic, melhorescartoes) no 11.11/esquenta Black Friday, não testados no carrinho; validade curta de propósito (somem sozinhos). Shopee: códigos de site todo; Amazon: BRINQU3DOS15 (Brinquedos e Jogos, app). 19/11/2026 (pedido do dono: cupons ativos): cupons do ML relidos na página Cupons da conta do dono (Brinquedos, Hobbies e Bebês, 10 páginas): os únicos de vendedor que vende Pokémon no site seguem sendo os da Newstation Sorocaba (até 30/11); nenhum cupom geral do ML sem campanha. Vencidos saíram. Shopee: códigos do Esquenta Black Friday divulgados em 18/11/2026 (seletronic, cupomdescontoo), não testados no carrinho, validade curta de propósito. Amazon: 10OFFBF e PRIMEIRA20BF aparecem na página do produto mas valem só na primeira compra, por isso não entram nos posts.",
- "exportadoEm": "2026-11-19",
+ "fonte": "Cupons do ML lidos na conta do proprietário em 11/11/2026 (página Cupons, 'Mais de R$100'): só cupom geral sem nome de campanha (regra de src/agents/social/cupons.js). Cupom geral sem data ('Está esgotando!') vale 3 dias a partir da leitura. Cupons de loja (Newstation Sorocaba) mantidos da leitura de 02/11/2026, validade 30/11. Não há cupom ativo nas categorias Brinquedos e Hobbies e Antiguidades e Coleções em 11/11/2026. 13/11/2026 (pedido do dono: todo post com cupom e preço final): cupons de código das três lojas divulgados em sites de cupom (pelando, seletronic, melhorescartoes) no 11.11/esquenta Black Friday, não testados no carrinho; validade curta de propósito (somem sozinhos). Shopee: códigos de site todo; Amazon: BRINQU3DOS15 (Brinquedos e Jogos, app). 19/11/2026 (pedido do dono: cupons ativos): cupons do ML relidos na página Cupons da conta do dono (Brinquedos, Hobbies e Bebês, 10 páginas): os únicos de vendedor que vende Pokémon no site seguem sendo os da Newstation Sorocaba (até 30/11); nenhum cupom geral do ML sem campanha. Vencidos saíram. Shopee: códigos do Esquenta Black Friday divulgados em 18/11/2026 (seletronic, cupomdescontoo), não testados no carrinho, validade curta de propósito. Amazon: 10OFFBF e PRIMEIRA20BF aparecem na página do produto mas valem só na primeira compra, por isso não entram nos posts. 20/11/2026 (pedido do dono: cupons ativos): página Cupons da conta do dono, categoria Brinquedos, Hobbies e Bebês (11 páginas, 305 cupons): entra 1 cupom geral do ML sem nome de campanha (10% OFF, mínimo R$ 29, limite R$ 20, 'Está esgotando!', vale 3 dias); de vendedor que vende Pokémon no site seguem só os da Newstation Sorocaba (até 30/11). Os 5 códigos da Shopee de 18/11 venceram e saíram; nenhum código novo da Shopee confirmado. Amazon: BRINQU3DOS15 segue até 30/11.",
+ "exportadoEm": "2026-11-20",
  "cupons": [
+  {
+   "escopo": "ml",
+   "tipo": "pct",
+   "valor": 10,
+   "minimo": 29,
+   "limite": 20,
+   "validoAte": "2026-11-23"
+  },
   {
    "escopo": "vendedor",
    "tipo": "pct",
@@ -29,51 +37,6 @@
    "codigo": "BRINQU3DOS15",
    "campanha": "Brinquedos e Jogos (só no app)",
    "validoAte": "2026-11-30"
-  },
-  {
-   "loja": "shopee",
-   "escopo": "loja",
-   "tipo": "reais",
-   "valor": 20,
-   "minimo": 60,
-   "codigo": "S3U4DMF4V",
-   "validoAte": "2026-11-19"
-  },
-  {
-   "loja": "shopee",
-   "escopo": "loja",
-   "tipo": "reais",
-   "valor": 15,
-   "minimo": 75,
-   "codigo": "N0VT0P5K",
-   "validoAte": "2026-11-19"
-  },
-  {
-   "loja": "shopee",
-   "escopo": "loja",
-   "tipo": "reais",
-   "valor": 10,
-   "minimo": 40,
-   "codigo": "A1ND4D4",
-   "validoAte": "2026-11-19"
-  },
-  {
-   "loja": "shopee",
-   "escopo": "loja",
-   "tipo": "reais",
-   "valor": 25,
-   "minimo": 199,
-   "codigo": "SHO1125",
-   "validoAte": "2026-11-19"
-  },
-  {
-   "loja": "shopee",
-   "escopo": "loja",
-   "tipo": "reais",
-   "valor": 70,
-   "minimo": 599,
-   "codigo": "SHO1170",
-   "validoAte": "2026-11-19"
   }
  ]
 }

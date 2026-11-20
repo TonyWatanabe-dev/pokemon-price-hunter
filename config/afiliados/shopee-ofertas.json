@@ -1,8 +1,8 @@
 {
  "program": "shopee",
- "updatedAt": "2026-11-19",
+ "updatedAt": "2026-11-20",
  "regras": "Anúncios da Shopee com link de afiliado do dono (config/afiliados/shopee.json), lidos pelo dono no Chrome. Entram só produtos selados, casados por src/match.js com confiança de 0,8 ou mais, sem anúncio de várias opções e sem vendedor de fora de TCG. price = preço sem cupom (o \"ou R$\" da página); priceCupom = o valor em destaque, que a Shopee mostra com cupom. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score.",
- "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos. Lote de 13/11/2026 (busca do dono no Chrome, Shopee ordenada por mais vendidos, links do Portal de Afiliados com Sub ID tcgpricehunter): 8 anúncios relidos (preço e link); preço exibido na busca (sem cupom), título normalizado com coleção e formato, horário aproximado da leitura. Lote de 18/11/2026 (23:19–23:21 BRT, UTC 19/11 02:19–02:21; busca do Portal de Afiliados por 'pokemon blister', 'blister triplo/quadruplo/duplo pokemon', 'pokemon booster copag' e 'pokemon box copag lacrado', 50 por busca; preço da oferta sem cupom e loja lidos do Portal; anúncios de várias opções e sem estoque ficaram fora): 27 relidos e 82 anúncios novos, 63 links novos do Link personalizado com Sub ID tcgpricehunter.",
+ "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos. Lote de 13/11/2026 (busca do dono no Chrome, Shopee ordenada por mais vendidos, links do Portal de Afiliados com Sub ID tcgpricehunter): 8 anúncios relidos (preço e link); preço exibido na busca (sem cupom), título normalizado com coleção e formato, horário aproximado da leitura. Lote de 18/11/2026 (23:19–23:21 BRT, UTC 19/11 02:19–02:21; busca do Portal de Afiliados por 'pokemon blister', 'blister triplo/quadruplo/duplo pokemon', 'pokemon booster copag' e 'pokemon box copag lacrado', 50 por busca; preço da oferta sem cupom e loja lidos do Portal; anúncios de várias opções e sem estoque ficaram fora): 27 relidos e 82 anúncios novos, 63 links novos do Link personalizado com Sub ID tcgpricehunter. Lote de 20/11/2026 (13:50–13:58 UTC, Portal de Afiliados, busca por packs, blisters unitário a quíntuplo, boosters, combos, ETB, display, 30 anos e coleções; anúncio de uma opção só, com estoque, casado por src/match.js com confiança ≥ 0,8; até 3 mais baratos por produto): 34 relidos e 165 novos; links com Sub ID tcgpricehunter.",
  "ofertas": [
   {
    "productId": "me01-blister4",
@@ -201,12 +201,12 @@
    "item": "1934646992/58269910181",
    "title": "Coleção Treinador Avançado Pokémon TCG 30 anos",
    "url": "https://s.shopee.com.br/8V9mcFiL0g",
-   "price": 726.64,
+   "price": 789.82,
    "priceCupom": null,
    "seller": "Castelo dos Mestres",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:05:51Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me04-blister1",
@@ -230,7 +230,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me04-blister3",
@@ -307,14 +307,14 @@
   {
    "productId": "c30-blister3",
    "item": "324620096/58219643074",
-   "title": "Pokémon TCG, Celebração de 30 anos – Blister Triplo com Adesivo Pokémon Lucario",
+   "title": "Pokémon TCG Blister Triplo Lucario com Adesivo Celebração 30 Anos",
    "url": "https://s.shopee.com.br/4fxVoPcJqC",
-   "price": 170.05,
+   "price": 183.65,
    "priceCupom": null,
    "seller": "Shiratori-Poke-Loja",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:07:14Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "c30-blister3",
@@ -326,7 +326,7 @@
    "seller": "O Recanto do Nerd",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "c30-blister2",
@@ -393,12 +393,12 @@
    "item": "822103155/58219540863",
    "title": "Cartas Pokemon Copag ME04 Blister Quádruplo",
    "url": "https://s.shopee.com.br/5q9TCYXsTv",
-   "price": 64.53,
+   "price": 39.9,
    "priceCupom": null,
    "seller": "Efácil Oficial",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "sv9-blister4",
@@ -446,7 +446,7 @@
    "seller": "EPIC ONE — Hobby Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me04-blister3",
@@ -645,12 +645,12 @@
    "item": "1061459383/58221271674",
    "title": "BOX Combo de Booster Caos Ascendente 18 Boosters Pokémon TCG - ORIGINAL COPAG",
    "url": "https://s.shopee.com.br/W80ogO4qh",
-   "price": 259,
+   "price": 246.05,
    "priceCupom": null,
    "seller": "Rifa_PokémomTCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me03-booster",
@@ -662,7 +662,7 @@
    "seller": "SOUTIL GADGETS",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister4",
@@ -705,12 +705,12 @@
    "item": "1061459383/58271289406",
    "title": "BOX Combo de Booster Pokémon TCG Escuridão Absoluta Copag Original Lacrado 18 Booster",
    "url": "https://s.shopee.com.br/qkrDJI0KX",
-   "price": 259,
+   "price": 246.05,
    "priceCupom": null,
    "seller": "Rifa_PokémomTCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-booster",
@@ -722,7 +722,7 @@
    "seller": "Reino Encantado Brinquedos",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-box36",
@@ -734,7 +734,7 @@
    "seller": "Psz3d",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me03-booster",
@@ -775,14 +775,14 @@
   {
    "productId": "me04-combo18",
    "item": "1167046154/58263728979",
-   "title": "Pokémon TCG - Combo de Boosters | Mini Display | 18 Boosters - MEGA EVOLUÇÃO CAOS ASCENDENTE",
+   "title": "Pokémon TCG - Combo de Boosters Mini Display 18 Boosters - MEGA EVOLUÇÃO CAOS ASCENDENTE",
    "url": "https://s.shopee.com.br/5VWglvU9yd",
    "price": 249.99,
-   "priceCupom": 237.5,
+   "priceCupom": null,
    "seller": "LojaMimic",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:18:23Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister4",
@@ -806,7 +806,7 @@
    "seller": "RAFN Coleções e Jogos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister4",
@@ -854,7 +854,7 @@
    "seller": "Vitrola Virtual",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "sv10_5w-blister3",
@@ -890,7 +890,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me06-blister3",
@@ -933,12 +933,12 @@
    "item": "453570610/58272378541",
    "title": "Pokémon Blister Triplo Reinado Delta -spritzee Me06 - Copag",
    "url": "https://s.shopee.com.br/2VtPAguCRR",
-   "price": 42.9,
+   "price": 39.9,
    "priceCupom": null,
    "seller": "Rodobanca",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me04-blister3",
@@ -986,7 +986,7 @@
    "seller": "RAFN Coleções e Jogos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "sv9-blister3",
@@ -998,7 +998,7 @@
    "seller": "RAFN Coleções e Jogos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister3",
@@ -1034,7 +1034,7 @@
    "seller": "Hunter Card Game",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister3",
@@ -1058,7 +1058,7 @@
    "seller": "Bazar Rosa Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me04-blister3",
@@ -1082,7 +1082,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me04-blister4",
@@ -1118,19 +1118,19 @@
    "seller": "Castilium Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me03-blister4",
    "item": "1330425977/58259578812",
-   "title": "Cartas Pokémon tcg Blister Quadrúplo Equilíbrio Perfeito carta especial Chikorita novo la",
+   "title": "Cartas Pokémon tcg Blister Quadrúplo Equilíbrio Perfeito carta especial Chikorita novo lacrado",
    "url": "https://s.shopee.com.br/5q9r8pchq0",
    "price": 49.89,
    "priceCupom": null,
    "seller": "ABRUXALOJATCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "sv8_5-blister4",
@@ -1142,7 +1142,7 @@
    "seller": "EPIC GAME - Santos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me02-blister4",
@@ -1154,7 +1154,7 @@
    "seller": "EPIC GAME - Santos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister4",
@@ -1190,7 +1190,7 @@
    "seller": "Arena Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me06-blister4",
@@ -1202,7 +1202,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister4",
@@ -1298,7 +1298,7 @@
    "seller": "Scoropad Toys",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "c30-blister2",
@@ -1382,7 +1382,7 @@
    "seller": "Margar",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "c30-blister2",
@@ -1550,19 +1550,19 @@
    "seller": "Fun GC",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "c30-combo",
    "item": "1054757185/58222557123",
-   "title": "Pokemon Mini booster box / Combo de booster Celebração 30 anos TCG - Lacrado Original Copa",
+   "title": "Pokemon Mini booster box / Combo de booster Celebração 30 anos TCG - Lacrado Original Copag PT-BR",
    "url": "https://s.shopee.com.br/7VI57vIHlV",
    "price": 359.9,
    "priceCupom": null,
    "seller": "Crtitical cards",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me06-box36",
@@ -1634,7 +1634,7 @@
    "seller": "Trenzinho Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me05-blister4",
@@ -1663,14 +1663,14 @@
   {
    "productId": "me06-box36",
    "item": "1182269567/58211495971",
-   "title": "Booster Box Pokémon Reinado Delta - 36 Pacotes Caixa Lacrada Display - Português Copag Ori",
+   "title": "Booster Box Pokémon Reinado Delta - 36 Pacotes Caixa Lacrada Display - Português Copag Original",
    "url": "https://s.shopee.com.br/BVUOS1OCX",
    "price": 441.5,
    "priceCupom": null,
    "seller": "Fun GC",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "me06-box36",
@@ -1682,7 +1682,7 @@
    "seller": "Packoratcg",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-20T13:55:00Z"
   },
   {
    "productId": "c30-colecao_poster",
@@ -1767,6 +1767,1986 @@
    "selo": null,
    "stockNote": null,
    "capturedAt": "2026-11-19T02:21:00Z"
+  },
+  {
+   "productId": "me05-blister4",
+   "item": "271009592/58222661573",
+   "title": "Blister Quádruplo coleção Pokémon ME05 Escuridão Absoluta",
+   "url": "https://s.shopee.com.br/8pnV4JNKIY",
+   "price": 49.9,
+   "priceCupom": null,
+   "seller": "Coleção Galática",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister4",
+   "item": "271009592/58272679553",
+   "title": "Blister Quádruplo Pokémon coleção Megaevolução ME03 Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/114dju4kbI",
+   "price": 49.9,
+   "priceCupom": null,
+   "seller": "Coleção Galática",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister1",
+   "item": "500113908/58213581309",
+   "title": "Blister Unitário Pokémon ME03 Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/qlDXlewWD",
+   "price": 10.79,
+   "priceCupom": null,
+   "seller": "Portal Card TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister1",
+   "item": "1330425977/22199474758",
+   "title": "Cartas Pokémon tcg Blister Unitário Equilíbrio Perfeito novo lacrado",
+   "url": "https://s.shopee.com.br/70LqsqJWy1",
+   "price": 16.55,
+   "priceCupom": null,
+   "seller": "ABRUXALOJATCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister1",
+   "item": "1275308322/58258002316",
+   "title": "Tcg Pokémon Mega Evolução Blister Unitário Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/6AmjtYkxcA",
+   "price": 16.9,
+   "priceCupom": null,
+   "seller": "FN Games",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-blister4",
+   "item": "271009592/58222660835",
+   "title": "Blister Quádruplo ME04 - Caos Ascendente Pokémon TCG Copag",
+   "url": "https://s.shopee.com.br/6AmjtOxncA",
+   "price": 49.9,
+   "priceCupom": null,
+   "seller": "Coleção Galática",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-blister4",
+   "item": "406053427/22099587663",
+   "title": "Pokémon Caos Ascendentes ME 04 - Blister Quadruplo - Mega Evolução - COPAG",
+   "url": "https://s.shopee.com.br/9zzSScEhyf",
+   "price": 49.9,
+   "priceCupom": null,
+   "seller": "Preço Justo Presentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-blister3",
+   "item": "1070230697/22095423287",
+   "title": "Pokemon TCG Celebraçao 30 Anos Blister Triplo Adesivo Exeggutor 3 Booster Ediçao Especial Colecionador Campeonato",
+   "url": "https://s.shopee.com.br/2qWHvE2txg",
+   "price": 197.5,
+   "priceCupom": null,
+   "seller": "Derek Import",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister3",
+   "item": "822103155/58218823639",
+   "title": "Cartas Pokémon Copag ME05 Blister Triplo",
+   "url": "https://s.shopee.com.br/8AXoH1Vscb",
+   "price": 29.9,
+   "priceCupom": null,
+   "seller": "Efácil Oficial",
+   "selo": "Loja Oficial",
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister3",
+   "item": "1937641662/58221771199",
+   "title": "Blister Triplo Pokémon TCG: Escuridão Absoluta (ME05)",
+   "url": "https://s.shopee.com.br/7VI7Tnl8UX",
+   "price": 34.9,
+   "priceCupom": null,
+   "seller": "DABTCGStore",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister3",
+   "item": "1936341329/58270879617",
+   "title": "Blister Triplo Pokémon ME05 Escuridão Absoluta",
+   "url": "https://s.shopee.com.br/8fU4rwTybk",
+   "price": 37,
+   "priceCupom": null,
+   "seller": "Wild Card Tcg",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-blister2",
+   "item": "958088879/58221816870",
+   "title": "Pokémon TCG 30 Anos Blister Duplo Eevee Original Lacrado",
+   "url": "https://s.shopee.com.br/1qdkjNl3ND",
+   "price": 119,
+   "priceCupom": null,
+   "seller": "Garagem 91 Miniaturas",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-blister1",
+   "item": "362214582/44132915864",
+   "title": "Blister Unitário Pokémon Me04 Caos Ascendente",
+   "url": "https://s.shopee.com.br/3B98K06nxi",
+   "price": 11.9,
+   "priceCupom": null,
+   "seller": "eBancas",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-blister1",
+   "item": "580791028/58217593025",
+   "title": "Blister Unitário Caos Ascendente ME04 - Pokémon",
+   "url": "https://s.shopee.com.br/906vGWBuuL",
+   "price": 14.2,
+   "priceCupom": null,
+   "seller": "Pokecoleção-Oficial",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister1",
+   "item": "378754014/58270178655",
+   "title": "Blister Unitário Pokémon Escuridão Absoluta",
+   "url": "https://s.shopee.com.br/8fU4ruDBaJ",
+   "price": 16.15,
+   "priceCupom": null,
+   "seller": "Dracards Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister1",
+   "item": "952529254/58271150942",
+   "title": "Pokémon Blister Unitário Escuridão Absoluta - Copag",
+   "url": "https://s.shopee.com.br/5LDGZs6njt",
+   "price": 16.79,
+   "priceCupom": null,
+   "seller": "Loja Toymania",
+   "selo": "Loja Oficial",
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister1",
+   "item": "408478907/58268754269",
+   "title": "Pokémon TCG Blister Unitário ME05 Escuridão Absoluta 6 Cartas - Copag",
+   "url": "https://s.shopee.com.br/5AtqNnNdrh",
+   "price": 18.9,
+   "priceCupom": null,
+   "seller": "Loja Soli3D",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-blister1",
+   "item": "524630721/58222223393",
+   "title": "Blister Unitário ME06 MegaEvolução Reinado Delta - Pokemon Tcg - COPAG",
+   "url": "https://s.shopee.com.br/40i45HrU3l",
+   "price": 14.9,
+   "priceCupom": null,
+   "seller": "Bazar Rosa Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-blister1",
+   "item": "821171986/58222713787",
+   "title": "POKEMON TCG BLISTER UNITARIO REINADO DELTA - COPAG",
+   "url": "https://s.shopee.com.br/4fxw6ZnwLE",
+   "price": 18.89,
+   "priceCupom": null,
+   "seller": "Reino Encantado Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-blister1",
+   "item": "472682724/58222327215",
+   "title": "Blister Unitário Reinado Delta ME06 - Pokémon",
+   "url": "https://s.shopee.com.br/1qdkjMCKRw",
+   "price": 21.25,
+   "priceCupom": null,
+   "seller": "Loja Life Geek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8_5-blister3",
+   "item": "216530401/22593819840",
+   "title": "POKÉMON TCG - BLISTER TRIPLO LEAFEON EV8.5 EVOLUÇÕES PRISMÁTICAS",
+   "url": "https://s.shopee.com.br/7puxsPjrod",
+   "price": 109.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8_5-blister3",
+   "item": "216530401/22498316633",
+   "title": "POKÉMON TCG - BLISTER TRIPLO GLACEON EV8.5 EVOLUÇÕES PRISMÁTICAS",
+   "url": "https://s.shopee.com.br/5q9tUk5A2d",
+   "price": 109.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-blister3",
+   "item": "809096542/58271737313",
+   "title": "Blister Triplo Pokémon TCG Caos Ascendente ME04 Charmeleon",
+   "url": "https://s.shopee.com.br/6q2QgaaPlx",
+   "price": 39.99,
+   "priceCupom": null,
+   "seller": "los Mattos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-blister3",
+   "item": "527300612/58222262532",
+   "title": "Pokémon TCG: Blister Triplo ME04 – Caos Ascendente",
+   "url": "https://s.shopee.com.br/8fU4rxpZTF",
+   "price": 41.9,
+   "priceCupom": null,
+   "seller": "Casa do Treinador Cards",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister4",
+   "item": "221858259/58206949549",
+   "title": "Pokémon TCG Blister Quádruplo Megaevolução Fogo Fantasmagórico ME02 Weavile Oficial Copag",
+   "url": "https://s.shopee.com.br/5LDctsNS4M",
+   "price": 52.9,
+   "priceCupom": null,
+   "seller": "Dragon's Lair Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister4",
+   "item": "879412833/23499240080",
+   "title": "Pokemon TCG Blister Quadruplo Fogo Fantasmagórico Sneasel",
+   "url": "https://s.shopee.com.br/9KjlfDZ1gt",
+   "price": 61,
+   "priceCupom": null,
+   "seller": "4Best Play",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-blister4",
+   "item": "453570610/22599882324",
+   "title": "Blister Quádruplo Pokémon: Reinado Delta - Seel - Copag",
+   "url": "https://s.shopee.com.br/5AuChS4uoZ",
+   "price": 52.9,
+   "priceCupom": null,
+   "seller": "Rodobanca",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-blister4",
+   "item": "760925545/23595376639",
+   "title": "Pokémon TCG Blister Quadruplo Reinado Delta 25 Cartas 4 Boosters Seel",
+   "url": "https://s.shopee.com.br/8AXoHBEdor",
+   "price": 54.9,
+   "priceCupom": null,
+   "seller": "Parolar Presentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister3",
+   "item": "500113908/58213606572",
+   "title": "Blister Triplo Pokémon Makuhita ME03 Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/gRnLSfZrA",
+   "price": 32.59,
+   "priceCupom": null,
+   "seller": "Portal Card TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister3",
+   "item": "367884924/58214735780",
+   "title": "Blister Triplo Pokémon Makuhita ME03 Equilíbrio Perfeito - Copag.",
+   "url": "https://s.shopee.com.br/2Vt5Ch7yoy",
+   "price": 39.99,
+   "priceCupom": null,
+   "seller": "Naelu Presentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister3",
+   "item": "379636844/58264730580",
+   "title": "Blister Triplo Pokémon Makuhita ME03 Equilíbrio Perfeito - Copag.",
+   "url": "https://s.shopee.com.br/8pnV4FTLGn",
+   "price": 39.99,
+   "priceCupom": null,
+   "seller": "Amor com Toque de Arte",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister3-en",
+   "item": "1828443947/58269585757",
+   "title": "Pokémon TCG Mega Evolution Pitch Black 3 Pack Blister Original",
+   "url": "https://s.shopee.com.br/5LDctl4HTc",
+   "price": 143.88,
+   "priceCupom": null,
+   "seller": "SUGOI CITY",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-blister1-en",
+   "item": "432783486/58268807365",
+   "title": "Pokemon Blister Unitário - ME 05 - Pitch Black ING",
+   "url": "https://s.shopee.com.br/5VX3643e8f",
+   "price": 58.8,
+   "priceCupom": null,
+   "seller": "Barão Geek House",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-blister1-en",
+   "item": "432783486/58268729143",
+   "title": "Pokemon Blister Unitário - ME 03 - Perfect Order ING",
+   "url": "https://s.shopee.com.br/5fqTIN30ni",
+   "price": 58.8,
+   "priceCupom": null,
+   "seller": "Barão Geek House",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister1",
+   "item": "1760496705/58258166820",
+   "title": "Pokémon TCG, Blister Unitário ME02 Fogo Fantasmagórico 6 Cartas",
+   "url": "https://s.shopee.com.br/1LhU8QroxG",
+   "price": 15,
+   "priceCupom": null,
+   "seller": "LOJA CARAMELO",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister1",
+   "item": "1938043155/58272702137",
+   "title": "Pokémon TCG Blister Unitário Fogo Fantasmagórico Português Copag",
+   "url": "https://s.shopee.com.br/8fU4rvL6GI",
+   "price": 19.9,
+   "priceCupom": null,
+   "seller": "Makelaa TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister1",
+   "item": "1828760210/58211570795",
+   "title": "Blister Unitario Megaevolução Fogo Fantasmagorico ME02 Booster - Copag - Cartas Pokémon TCG",
+   "url": "https://s.shopee.com.br/4LKjOL6qsG",
+   "price": 24.9,
+   "priceCupom": null,
+   "seller": "Kartikeia Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv9-blister1",
+   "item": "1546320418/22594057614",
+   "title": "Blister Unitário Pokémon Escarlate e Violeta 9 - Amigos de Jornada",
+   "url": "https://s.shopee.com.br/2gCritvYOu",
+   "price": 12,
+   "priceCupom": null,
+   "seller": "EVOLUCARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "swsh12_5-blister3",
+   "item": "216530401/19675857588",
+   "title": "POKÉMON TCG - BLISTER TRIPLO REALEZA ABSOLUTA RILLABOOM",
+   "url": "https://s.shopee.com.br/2gCriv3XIf",
+   "price": 199.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister3",
+   "item": "1823228855/58260637984",
+   "title": "Blister Triplo Pokémon Fogo Fantasmagórico - Cottonee",
+   "url": "https://s.shopee.com.br/5fqTIR5nNa",
+   "price": 39.9,
+   "priceCupom": null,
+   "seller": "GR Cards",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister3",
+   "item": "1766036214/58211166853",
+   "title": "CARTAS POKEMON ME02 BLISTER TRIPLO FOGO FANTASMAGORICO ( TERCFJXB )",
+   "url": "https://s.shopee.com.br/8KrETMCloM",
+   "price": 52.79,
+   "priceCupom": null,
+   "seller": "Dema papelaria",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-blister3",
+   "item": "832648489/22494682195",
+   "title": "Pokémon Mega Evolução Fogo Fantasmagórico Blister Triplo Whimsicott",
+   "url": "https://s.shopee.com.br/1qdkjbwztH",
+   "price": 54.9,
+   "priceCupom": null,
+   "seller": "EPIC GAME - Santos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv3-blister3",
+   "item": "216530401/58272281983",
+   "title": "POKÉMON TCG - BLISTER TRIPLO ESCARLATE E VIOLETA 3 - OBSIDIANA EM CHAMAS PAWMI",
+   "url": "https://s.shopee.com.br/60TJh34Whg",
+   "price": 145.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-blister3",
+   "item": "221858259/22799419101",
+   "title": "Pokémon TCG Blister Triplo Megaevolução ME01 Drifblim Oficial Copag",
+   "url": "https://s.shopee.com.br/6AmjtNgwqd",
+   "price": 39.9,
+   "priceCupom": null,
+   "seller": "Dragon's Lair Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-blister3",
+   "item": "1766036214/58214625693",
+   "title": "CARTAS POKEMON ME01 BLISTER TRIPLO MEGAEVOLUCAO (TERCFJH7)",
+   "url": "https://s.shopee.com.br/8AXoH3DP9J",
+   "price": 52,
+   "priceCupom": null,
+   "seller": "Dema papelaria",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-blister3",
+   "item": "969949342/58201578150",
+   "title": "POKÉMON TCG BLISTER TRIPLO MEGA EXPANSAO ME01 DRIFLOON COPAG",
+   "url": "https://s.shopee.com.br/8AXRxIPTqL",
+   "price": 59.9,
+   "priceCupom": null,
+   "seller": "Pomps Geek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "swsh4_5-blister3",
+   "item": "222269206/23794502146",
+   "title": "Blister Triplo Pokémon Destinos Brilhantes Português",
+   "url": "https://s.shopee.com.br/7KyhHWGZqC",
+   "price": 189.9,
+   "priceCupom": null,
+   "seller": "PokéPack",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv3-blister4",
+   "item": "216530401/58222257628",
+   "title": "POKÉMON TCG - Blister Quádruplo Escarlate e Violeta 3 - Obsidiana em Chamas - EEVEE",
+   "url": "https://s.shopee.com.br/7AfH5Dd8or",
+   "price": 185.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv4-blister4",
+   "item": "216530401/22092652122",
+   "title": "POKÉMON TCG - BLISTER QUADRUPLO ARCTIBAX ESCARLATE E VIOLETA 4 FENDA PARADOXAL",
+   "url": "https://s.shopee.com.br/1LhU8VLPpC",
+   "price": 190.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv4-blister4",
+   "item": "216530401/21997514898",
+   "title": "POKÉMON TCG - BLISTER QUADRUPLO CETITAN ESCARLATE E VIOLETA 4 FENDA PARADOXAL",
+   "url": "https://s.shopee.com.br/1W0uKoKmUF",
+   "price": 190.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-blister4",
+   "item": "1665203144/58219637916",
+   "title": "BLISTER QUÁDRUPLO MEGA EVOLUÇÃO ME01 COPAG POKÉMON TCG BOOSTER CARTAS LUCARIO GARDEVOIR EX QUAD PACK",
+   "url": "https://s.shopee.com.br/AKcIrEDRIl",
+   "price": 42.99,
+   "priceCupom": null,
+   "seller": "Brechó das Minis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-blister4",
+   "item": "428265631/58268701263",
+   "title": "BLISTER QUÁDRUPLO MEGA EVOLUÇÃO ME01 COPAG POKÉMON TCG BOOSTER CARTAS LUCARIO GARDEVOIR EX QUAD PACK",
+   "url": "https://s.shopee.com.br/9zz68lXfyr",
+   "price": 56.9,
+   "priceCupom": null,
+   "seller": "Dias tcg",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-blister4",
+   "item": "1766036214/22495186941",
+   "title": "CARTAS POKEMON ME01 BLISTER QUADRUPLO MEGAEVOLUCAO ( TERCFJH8 )",
+   "url": "https://s.shopee.com.br/5VX36BMojP",
+   "price": 72.59,
+   "priceCupom": null,
+   "seller": "Dema papelaria",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-combo",
+   "item": "422091218/58272134699",
+   "title": "Combo de Booster Pokémon celebração 30 anos",
+   "url": "https://s.shopee.com.br/9zzSSajyDf",
+   "price": 299,
+   "priceCupom": null,
+   "seller": "dorinhastory",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-combo18",
+   "item": "401584374/58212490442",
+   "title": "Combo de Pacotes Caos Ascendente 18 Booster Pokémon TCG",
+   "url": "https://s.shopee.com.br/2gCrj6cgqA",
+   "price": 318.99,
+   "priceCupom": null,
+   "seller": "MandaCards",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-combo18",
+   "item": "1368168403/58215846025",
+   "title": "Pokémon Copag Escuridão Absoluta Megaevolução – Combo 18 Pacotes Booster 108 Cartas",
+   "url": "https://s.shopee.com.br/AAIsetjKsg",
+   "price": 238.42,
+   "priceCupom": null,
+   "seller": "GMY PAPEIS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-combo18",
+   "item": "722076913/58214340679",
+   "title": "Pokémon Combo 18 booster Megaevolução - Escuridão Absoluta - Copag Lacrado",
+   "url": "https://s.shopee.com.br/2qWHvPc3VD",
+   "price": 249,
+   "priceCupom": null,
+   "seller": "MUNDO ANIME TOYS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-booster",
+   "item": "1760496705/58214463418",
+   "title": "Pacote Booster Pokémon TCG Equilíbrio Perfeito 6 Cartas",
+   "url": "https://s.shopee.com.br/4qHMJ6cpxm",
+   "price": 18.75,
+   "priceCupom": null,
+   "seller": "LOJA CARAMELO",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-booster",
+   "item": "1684747528/58216840349",
+   "title": "BOOSTER POKEMON UNITARIO EQUILIBRIO PERFEITO - COPAG",
+   "url": "https://s.shopee.com.br/5AuChibZHo",
+   "price": 19.89,
+   "priceCupom": null,
+   "seller": "BMB_Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-box36",
+   "item": "560111198/58266623901",
+   "title": "01 Caixa com 36 Booster - Pokémon TCG: Mega Evolução - Escuridão Absoluta Português",
+   "url": "https://s.shopee.com.br/50amVMzpF1",
+   "price": 427.41,
+   "priceCupom": null,
+   "seller": "Saint Geek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-box36",
+   "item": "225043474/58218444799",
+   "title": "Pokémon TCG Box Display Escuridão Absoluta ME05 Copag PT-BR 36 Boosters 216 Cartas",
+   "url": "https://s.shopee.com.br/5q9tUsF3m4",
+   "price": 429,
+   "priceCupom": null,
+   "seller": "Amazônia_3D",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-combo",
+   "item": "315886001/58221938768",
+   "title": "Pokémon Reinado Delta Combo de Booster Mini Booster Box",
+   "url": "https://s.shopee.com.br/2VtRWmi80E",
+   "price": 219.9,
+   "priceCupom": null,
+   "seller": "Psz3d",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-combo",
+   "item": "1492468988/58223109357",
+   "title": "Box Carta Pokemon Combo Booster Megaevolucao Reinado Delta",
+   "url": "https://s.shopee.com.br/3qOp7FYFTR",
+   "price": 229.99,
+   "priceCupom": null,
+   "seller": "LARPIDAM",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-combo",
+   "item": "1619647688/58273132300",
+   "title": "Box Carta Pokemon Combo Booster Megaevolucao Reinado Delta",
+   "url": "https://s.shopee.com.br/2La1KVQpxN",
+   "price": 229.99,
+   "priceCupom": null,
+   "seller": "Citeiva",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-booster",
+   "item": "524778265/58215594279",
+   "title": "Cartas de Pokémon Escuridão Absoluta - 1 Booster com 6 Cartas Colecionáveis 63x88mm",
+   "url": "https://s.shopee.com.br/3g5OuurI27",
+   "price": 19.44,
+   "priceCupom": null,
+   "seller": "Tudo Sobre Controle!!!",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-combo18",
+   "item": "1182269567/48171306225",
+   "title": "Combo De Booster Reinado Delta Pokémon TCG - 18 Pacotes - Produto Original Copag",
+   "url": "https://s.shopee.com.br/3g5OutwVQc",
+   "price": 254.3,
+   "priceCupom": null,
+   "seller": "Fun GC",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-combo18",
+   "item": "1182269567/22895068741",
+   "title": "Combo De Booster Coleção Reinado Delta Pokémon - 18 Pacotes 108 Cartas - Original Copag Português",
+   "url": "https://s.shopee.com.br/3qOp7Cvs5f",
+   "price": 254.3,
+   "priceCupom": null,
+   "seller": "Fun GC",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-combo18",
+   "item": "1553703646/58272505048",
+   "title": "Pokémon TCG Box Reinado Delta Combo de Booster 18 Boosters",
+   "url": "https://s.shopee.com.br/3LSYWKw9PH",
+   "price": 279.99,
+   "priceCupom": null,
+   "seller": "Batatinha_Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8_5-booster",
+   "item": "743612137/58200502992",
+   "title": "1 Booster Pacote de Cartas Pokémon TCG Evoluções Prismaticas Lacrado Copag 6 Cartas Raras Ultra Raras Brilhantes",
+   "url": "https://s.shopee.com.br/7fbXgAnHlP",
+   "price": 15.99,
+   "priceCupom": null,
+   "seller": "Luis Caçador de Hot Wheels",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10_5w-booster",
+   "item": "743612137/23893974723",
+   "title": "1 Booster Pacote de Cartas Pokémon TCG Fogo Branco Lacrado Copag 6 Cartas Raras Ultra Raras Brilhantes",
+   "url": "https://s.shopee.com.br/5VX36BvXA0",
+   "price": 15.99,
+   "priceCupom": null,
+   "seller": "Luis Caçador de Hot Wheels",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10-booster",
+   "item": "743612137/23694650639",
+   "title": "1 Booster Pacote de Cartas Pokémon TCG Rivais Predestinados Lacrado Copag 6 Cartas Raras Ultra Raras Brilhantes",
+   "url": "https://s.shopee.com.br/5LDctswAUz",
+   "price": 12.99,
+   "priceCupom": null,
+   "seller": "Luis Caçador de Hot Wheels",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv9-booster",
+   "item": "743612137/22494700659",
+   "title": "1 Booster Pacote de Cartas Pokémon TCG Amigos de Jornada Lacrado Copag 6 Cartas Raras Ultra Raras Brilhantes",
+   "url": "https://s.shopee.com.br/5q9tUnuGU6",
+   "price": 12.99,
+   "priceCupom": null,
+   "seller": "Luis Caçador de Hot Wheels",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-box36",
+   "item": "450761307/58260598751",
+   "title": "Pokémon Box 36 Boosters Caos Ascendente - Greninja- Copag",
+   "url": "https://s.shopee.com.br/AAIhQlUuTi",
+   "price": 429.9,
+   "priceCupom": null,
+   "seller": "Alexandre Miniaturas",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-box36",
+   "item": "807742891/58212048416",
+   "title": "Pokémon Box 36 Booster Caos Ascendente em Português",
+   "url": "https://s.shopee.com.br/8KrETUw0MG",
+   "price": 471,
+   "priceCupom": null,
+   "seller": "Jubiz Ecomm",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-box36",
+   "item": "1746556573/22599503049",
+   "title": "Pokémon Box 36 Boosters Caos Ascendente M Greninja Entregas Express",
+   "url": "https://s.shopee.com.br/2gCrj58hyb",
+   "price": 489.99,
+   "priceCupom": null,
+   "seller": "Clik Diversao",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-box36",
+   "item": "1934107676/58269530424",
+   "title": "Pokémon Mega Evolução - Equilibrio Perfeito - Caixa 36 Boosters - Copag Original",
+   "url": "https://s.shopee.com.br/7fbXgJoWyE",
+   "price": 449,
+   "priceCupom": null,
+   "seller": "Sekai Toys",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-box36",
+   "item": "810975905/58258696205",
+   "title": "Caixa de Boosters Pokémon Equilíbrio Perfeito - Contém 36 boosters",
+   "url": "https://s.shopee.com.br/7AfH5OqQz5",
+   "price": 449.99,
+   "priceCupom": null,
+   "seller": "Luna Card Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-box36",
+   "item": "722076913/58207714657",
+   "title": "Pokémon Mega Evolução - Equilibrio Perfeito - Caixa 36 Boosters - Copag Lacrado",
+   "url": "https://s.shopee.com.br/4fxw6fCFUK",
+   "price": 459,
+   "priceCupom": null,
+   "seller": "MUNDO ANIME TOYS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-booster",
+   "item": "743612137/22794693469",
+   "title": "1 Booster Pacote de Cartas Pokémon TCG Fogo Fantasmagórico Lacrado Copag 6 Cartas Raras Ultra Raras Brilhantes",
+   "url": "https://s.shopee.com.br/50amVHAyoQ",
+   "price": 12.99,
+   "priceCupom": null,
+   "seller": "Luis Caçador de Hot Wheels",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-booster",
+   "item": "1684747528/58209777462",
+   "title": "POKEMON BOOSTER UNITARIO - FOGO FANTASMAGORICO - COPAG",
+   "url": "https://s.shopee.com.br/80EO4tAP4X",
+   "price": 17.85,
+   "priceCupom": null,
+   "seller": "BMB_Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-booster",
+   "item": "352608347/58253438295",
+   "title": "Pokémon Tcg Booster Unitário Fogo Fantasmagórico Original",
+   "url": "https://s.shopee.com.br/1gJyCuQPnj",
+   "price": 18.99,
+   "priceCupom": null,
+   "seller": "NezukoShop",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-booster",
+   "item": "527300612/58272651477",
+   "title": "PACOTE DE BOOSTER INDIVIDUAL - POKÉMON MEGAEVOLUÇÃO: CAOS ASCENDENTE - Copag",
+   "url": "https://s.shopee.com.br/9KjlfF3Lr2",
+   "price": 17.9,
+   "priceCupom": null,
+   "seller": "Casa do Treinador Cards",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-booster",
+   "item": "807742891/23094998971",
+   "title": "Booster Pokemon Coleção Caos Ascendente Lacrado 6 Cartas",
+   "url": "https://s.shopee.com.br/8pnV4Pu6LL",
+   "price": 19,
+   "priceCupom": null,
+   "seller": "Jubiz Ecomm",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-booster",
+   "item": "1799947943/58270410957",
+   "title": "Booster Avulso Pokémon Caos Ascendente",
+   "url": "https://s.shopee.com.br/8fU4s6ujgI",
+   "price": 20.9,
+   "priceCupom": null,
+   "seller": "Pinguim TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_ex-sylveon",
+   "item": "324620096/58219648365",
+   "title": "Pokémon TCG Box Pokémon ex Sylveon Coleção Celebração 30 Anos",
+   "url": "https://s.shopee.com.br/9V3BrY2iW5",
+   "price": 318.06,
+   "priceCupom": null,
+   "seller": "Shiratori-Poke-Loja",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_poster",
+   "item": "1665203144/58221490907",
+   "title": "Pokémon 30 Anos Coleção Box Pôster Tcg 3 Boosters",
+   "url": "https://s.shopee.com.br/9AQLSwUNsZ",
+   "price": 169.99,
+   "priceCupom": null,
+   "seller": "Brechó das Minis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_poster",
+   "item": "444383763/58221825863",
+   "title": "Pokemon TCG Box Colecao Com Poster Celebracao 30 Anos Copag FSC Original",
+   "url": "https://s.shopee.com.br/9pg2GA1RqB",
+   "price": 180,
+   "priceCupom": null,
+   "seller": "Chuloco Games",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_poster",
+   "item": "1246508007/58270628010",
+   "title": "Box de Cartas Pokémon - Celebração de 30 anos - Coleção com Pôster - Copag",
+   "url": "https://s.shopee.com.br/1BvK4yfzp",
+   "price": 194.99,
+   "priceCupom": null,
+   "seller": "Superlegal Brinquedos",
+   "selo": "Loja Oficial",
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-colecao_ex-mega-lucario",
+   "item": "774797832/58258400904",
+   "title": "Box Coleção Mega Lucario EX - Heróis Excelsos - Pokémon TCG",
+   "url": "https://s.shopee.com.br/7VI7TsN7Lx",
+   "price": 849.97,
+   "priceCupom": null,
+   "seller": "FERA CARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-colecao_ex-mega-gardevoir",
+   "item": "774797832/58258401506",
+   "title": "Box Coleção Mega Gardevoir EX - Heróis Excelsos - Pokémon TCG",
+   "url": "https://s.shopee.com.br/7puxsULqg3",
+   "price": 749.99,
+   "priceCupom": null,
+   "seller": "FERA CARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-etb",
+   "item": "506350527/58223064035",
+   "title": "Box Pokémon TCG Treinador Avançado ME 6 Reinado Delta",
+   "url": "https://s.shopee.com.br/1gKKXBnGBg",
+   "price": 429.9,
+   "priceCupom": null,
+   "seller": "VVC Brinquedos e Presentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-etb",
+   "item": "1580956186/58273087067",
+   "title": "Box Pokémon TCG Treinador Avançado ME 6 Reinado Delta Copag",
+   "url": "https://s.shopee.com.br/1qdkjUmcqj",
+   "price": 429.9,
+   "priceCupom": null,
+   "seller": "Divat Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-etb",
+   "item": "712027346/58223064053",
+   "title": "Box Pokémon TCG Treinador Avançado ME 6 Reinado Delta",
+   "url": "https://s.shopee.com.br/3qOp7Arrp3",
+   "price": 429.9,
+   "priceCupom": null,
+   "seller": "BAMBOLÊ. BRINQUEDOS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-etb",
+   "item": "339570044/58270752376",
+   "title": "Pokémon - ETB Elite Trainer Box - 30 anos celebração",
+   "url": "https://s.shopee.com.br/9V3BrYbqWW",
+   "price": 790,
+   "priceCupom": null,
+   "seller": "KaCeRax Shop",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-etb",
+   "item": "810052424/22399784212",
+   "title": "ETB Celebração 30 Anos – Coleção Treinador Avançado Pokémon - Copag",
+   "url": "https://s.shopee.com.br/30pi7cvrA2",
+   "price": 799,
+   "priceCupom": null,
+   "seller": "Vortex Loja",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_miniatura",
+   "item": "385840874/58223209544",
+   "title": "Pokémon Celebração De 30 Anos - Box Coleção Miniatura Mewtwo Tcg",
+   "url": "https://s.shopee.com.br/80EO4nYpFM",
+   "price": 499.99,
+   "priceCupom": null,
+   "seller": "gourmande brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_miniatura",
+   "item": "385840874/58223217617",
+   "title": "Pokémon Celebração De 30 Anos - Box Coleção Miniatura Mew Tcg",
+   "url": "https://s.shopee.com.br/9AQLSwd7CQ",
+   "price": 499.99,
+   "priceCupom": null,
+   "seller": "gourmande brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-box6",
+   "item": "1502867802/22799871912",
+   "title": "Mini BB (Booster Box) Pokemon 30 anos (original) Portugues contendo 6 booster de 30 anos",
+   "url": "https://s.shopee.com.br/AUvj3SA54d",
+   "price": 349,
+   "priceCupom": null,
+   "seller": "bonettiminis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-box6",
+   "item": "1898512315/58222223660",
+   "title": "POKEMON TCG - COLECAO CELEBRACAO 30 ANOS BOOSTER BOX 6 PACOTES - COPAG",
+   "url": "https://s.shopee.com.br/8fU4s1f1DJ",
+   "price": 439.67,
+   "priceCupom": null,
+   "seller": "Fantastic Toys",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-colecao_premium",
+   "item": "801777435/58210150570",
+   "title": "(PT-BR) Pokémon TCG Lacrado - Box Coleção Premium - Heróis Excelsos - Mega Lucario",
+   "url": "https://s.shopee.com.br/2BGEonZKsC",
+   "price": 600,
+   "priceCupom": null,
+   "seller": "Gatinho Estelar",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8-etb",
+   "item": "541559976/18599623852",
+   "title": "Box Pokémon Treinador Avançado EV8 - Fagulhas Impetuosas Lacrado Original",
+   "url": "https://s.shopee.com.br/6AmNZqaeQJ",
+   "price": 559,
+   "priceCupom": null,
+   "seller": "magiapokemon",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8-etb",
+   "item": "339570044/58266868863",
+   "title": "Pokémon - ETB - Elite Trainer Box - Coleção Treinador Avançado - Fagulhas Impetuosas",
+   "url": "https://s.shopee.com.br/8fTiYLBtDI",
+   "price": 1499.99,
+   "priceCupom": null,
+   "seller": "KaCeRax Shop",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-etb-en",
+   "item": "386627382/58272321211",
+   "title": "Pokémon Tcg Mega Evolution Pitch Black Elite Trainer Box Ing",
+   "url": "https://s.shopee.com.br/7KyhHZwwwX",
+   "price": 449.9,
+   "priceCupom": null,
+   "seller": "Margar",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-etb-en",
+   "item": "482080190/58264515359",
+   "title": "Elite Trainer Box Pitch Black ETB Pokémon TCG - 100% original",
+   "url": "https://s.shopee.com.br/9KjlfFcTrV",
+   "price": 480,
+   "priceCupom": null,
+   "seller": "Game House Vila Velha",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-etb-en",
+   "item": "415924837/58265058500",
+   "title": "Pokémon TCG - Elite Trainer Box - Megaevolution 5 - Pitch Black (ING)",
+   "url": "https://s.shopee.com.br/7puxsV4BpL",
+   "price": 519.9,
+   "priceCupom": null,
+   "seller": "Action New",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-etb",
+   "item": "364428145/58213462066",
+   "title": "Box Treinador Avançado Equilíbrio Perfeito Pokemon Copag Pt",
+   "url": "https://s.shopee.com.br/4Ve9aluBc4",
+   "price": 369.9,
+   "priceCupom": null,
+   "seller": "BelgaTCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-etb",
+   "item": "801777435/23399446732",
+   "title": "(PT-BR) Pokémon TCG - Coleção Treinador Avançado - Megaevolução 3 - Equilíbrio Perfeito",
+   "url": "https://s.shopee.com.br/2VtRWjsU12",
+   "price": 389.99,
+   "priceCupom": null,
+   "seller": "Gatinho Estelar",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-etb",
+   "item": "206517223/58258028191",
+   "title": "Pokémon Box Treinador Avançado ME03 - Equilibrio Perfeito",
+   "url": "https://s.shopee.com.br/1gJyDYJ3b4",
+   "price": 399.9,
+   "priceCupom": null,
+   "seller": "TN Geek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-etb",
+   "item": "1414221194/58265797839",
+   "title": "Coleção Treinador Avançado Escuridão Absoluta Pokémon TCG Português",
+   "url": "https://s.shopee.com.br/3B98Jvm0eg",
+   "price": 349.9,
+   "priceCupom": null,
+   "seller": "Queiroz TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-etb",
+   "item": "298853669/58215741558",
+   "title": "Pokémon Coleção treinador Avançado Escuridão absoluta",
+   "url": "https://s.shopee.com.br/3VlyiXkjym",
+   "price": 369.9,
+   "priceCupom": null,
+   "seller": "VasGeek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me05-etb",
+   "item": "1788733268/23699649489",
+   "title": "Box Treinador Avançado Pokémon ME05 Escuridão Absoluta – Copag",
+   "url": "https://s.shopee.com.br/qkrDznR3w",
+   "price": 379.9,
+   "priceCupom": null,
+   "seller": "Master dos Preços",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-etb-en",
+   "item": "832648489/58210087570",
+   "title": "Pokémon Mega Evolution Perfect Order Elite Trainer Box EN",
+   "url": "https://s.shopee.com.br/7fbXgBvgGd",
+   "price": 529.9,
+   "priceCupom": null,
+   "seller": "EPIC GAME - Santos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-etb-en",
+   "item": "474208366/58210087524",
+   "title": "Pokémon Mega Evolution Perfect Order Elite Trainer Box EN",
+   "url": "https://s.shopee.com.br/2qWHvJaYqw",
+   "price": 529.9,
+   "priceCupom": null,
+   "seller": "EPIC ONE — Hobby Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-etb",
+   "item": "1895240737/58264904200",
+   "title": "Pokémon TCG Elite Trainer Box ETB Escarlate e Violeta Caos Ascendente Original",
+   "url": "https://s.shopee.com.br/5VX36D3vfE",
+   "price": 350,
+   "priceCupom": null,
+   "seller": "Gulmini TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-etb",
+   "item": "1847783445/22399519695",
+   "title": "Pokémon Treinador Avançado Mega Evolução – Caos Ascendente Copag (PT-BR)",
+   "url": "https://s.shopee.com.br/2La1KQt7M1",
+   "price": 374.9,
+   "priceCupom": null,
+   "seller": "Mieve TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-etb",
+   "item": "258605230/58215042500",
+   "title": "(PT-BR) Pokémon - Coleção Treinador Avançado - ME4 - Caos Ascendente",
+   "url": "https://s.shopee.com.br/6AmjtRx4Jw",
+   "price": 399,
+   "priceCupom": null,
+   "seller": "Rasga Booster TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv9-etb-en",
+   "item": "832648489/22899783625",
+   "title": "Pokémon Journey Together Elite Trainer Box EN",
+   "url": "https://s.shopee.com.br/5q9tUpBnst",
+   "price": 1549.9,
+   "priceCupom": null,
+   "seller": "EPIC GAME - Santos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv9-etb-en",
+   "item": "474208366/23395281776",
+   "title": "Pokémon Journey Together Elite Trainer Box EN",
+   "url": "https://s.shopee.com.br/7fbXgC4pAI",
+   "price": 1549.9,
+   "priceCupom": null,
+   "seller": "EPIC ONE — Hobby Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-etb",
+   "item": "1501431554/22394889435",
+   "title": "Coleção Treinador Avançado Heróis Excelsos ETB Pokémon TCG",
+   "url": "https://s.shopee.com.br/BVWkQWyJX",
+   "price": 399.9,
+   "priceCupom": null,
+   "seller": "pkmoonstore",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-etb",
+   "item": "317541193/23999360566",
+   "title": "Pokémon TCG Box Treinador Avançado Herois Excelsos Copag",
+   "url": "https://s.shopee.com.br/1gJyDWkGN5",
+   "price": 519.99,
+   "priceCupom": null,
+   "seller": "Man Cave Store Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-etb",
+   "item": "774797832/22199388898",
+   "title": "Coleção Treinador Avançado Heróis Excelsos ETB Pokémon TCG",
+   "url": "https://s.shopee.com.br/3qOp79WkpA",
+   "price": 1249.99,
+   "priceCupom": null,
+   "seller": "FERA CARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-etb",
+   "item": "801777435/58208374767",
+   "title": "(PT-BR) Pokémon TCG Lacrado - Coleção Treinador Avançado - Megaevolução 2 - Fogo Fantasmagórico - Mega Charizard X",
+   "url": "https://s.shopee.com.br/1qdkjVv1My",
+   "price": 1050,
+   "priceCupom": null,
+   "seller": "Gatinho Estelar",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-etb",
+   "item": "406305539/22094995419",
+   "title": "Caixa Treinador Avançado ETB Pokémon Fogo Fantasmagórico ME02",
+   "url": "https://s.shopee.com.br/AAIXvJsWJD",
+   "price": 1099.99,
+   "priceCupom": null,
+   "seller": "TCG Predial",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-etb",
+   "item": "774797832/58202531797",
+   "title": "Coleção Treinador Avançado Fogo Fantasmagórico ETB Pokémon TCG",
+   "url": "https://s.shopee.com.br/2qWHvJwUUz",
+   "price": 1099.99,
+   "priceCupom": null,
+   "seller": "FERA CARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "swsh12-etb",
+   "item": "329965944/23734514685",
+   "title": "Pokemon Box Treinador Avançado Vulpix Tempestade Prateada Cartas Português",
+   "url": "https://s.shopee.com.br/3VlcOpjELt",
+   "price": 2999.9,
+   "priceCupom": null,
+   "seller": "Two Head Games",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8_5-etb",
+   "item": "324620096/58222117579",
+   "title": "Pokémon TCG Box Treinador Avançado Evoluções Prismáticas Eevee",
+   "url": "https://s.shopee.com.br/1LhU8ZoWre",
+   "price": 1820.12,
+   "priceCupom": null,
+   "seller": "Shiratori-Poke-Loja",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-etb-en",
+   "item": "206517223/58222619608",
+   "title": "Pokémon Box Treinador Avançado ME06 - Reinado Delta (ING)",
+   "url": "https://s.shopee.com.br/1gKKXC9Ocq",
+   "price": 449.9,
+   "priceCupom": null,
+   "seller": "TN Geek",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10_5r-etb",
+   "item": "317541193/23594239083",
+   "title": "Coleção Treinador Avançado Raio Preto Zekrom Pokémon TCG Booster Produto Original Lacrado",
+   "url": "https://s.shopee.com.br/6fj0UO34zi",
+   "price": 749.99,
+   "priceCupom": null,
+   "seller": "Man Cave Store Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "swsh11-etb",
+   "item": "317541193/23494323706",
+   "title": "Box Pokémon Treinador Avançado Espada Escudo - Origem Perdida - Português",
+   "url": "https://s.shopee.com.br/7KyKxxB1EG",
+   "price": 1199.99,
+   "priceCupom": null,
+   "seller": "Man Cave Store Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv3-etb",
+   "item": "1891167342/22999655459",
+   "title": "Pokémon Box Treinador Avançado Obsidiana Em Chamas - Copag",
+   "url": "https://s.shopee.com.br/7VHlAGANtJ",
+   "price": 2500,
+   "priceCupom": null,
+   "seller": "TCG E BRINQUEDOS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv4-etb",
+   "item": "317541193/19297518247",
+   "title": "Pokémon Coleção Treinador Avançado Fenda Paradoxal - Lua Estrondo",
+   "url": "https://s.shopee.com.br/6q2Qgh2Rel",
+   "price": 1099.99,
+   "priceCupom": null,
+   "seller": "Man Cave Store Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv4_5-etb",
+   "item": "317541193/23494365938",
+   "title": "Pokémon Coleção Treinador Avançado - Destinos De Paldea",
+   "url": "https://s.shopee.com.br/2BGb87Xkm6",
+   "price": 1999.99,
+   "priceCupom": null,
+   "seller": "Man Cave Store Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10_5r-combo18",
+   "item": "333181962/58271360580",
+   "title": "Pokémon Combo de 18 pacotes de booster Raio Preto Escarlate e Violeta",
+   "url": "https://s.shopee.com.br/8pnV4QthH4",
+   "price": 788.9,
+   "priceCupom": null,
+   "seller": "Jogo Animal",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10_5r-combo18",
+   "item": "365433518/58266202273",
+   "title": "Pokémon Box Combo 18 Boosters mini display ev10.5 Raio Preto português",
+   "url": "https://s.shopee.com.br/4LKjOYO0nX",
+   "price": 999.97,
+   "priceCupom": null,
+   "seller": "GM Nostalgia - Nilton",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_ex-greninja",
+   "item": "597123348/22999869141",
+   "title": "Box Pokémon Coleção Greninja ex - Comemoração Pokémon 30 anos (Pt-Br)",
+   "url": "https://s.shopee.com.br/9pg2GECcQZ",
+   "price": 299.99,
+   "priceCupom": null,
+   "seller": "Gráfica Onixx",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-colecao_ex-greninja",
+   "item": "324620096/58269658860",
+   "title": "Pokémon TCG Box Pokémon ex Greninja Celebração 30 Anos",
+   "url": "https://s.shopee.com.br/9V3BrcDt6T",
+   "price": 318.06,
+   "priceCupom": null,
+   "seller": "Shiratori-Poke-Loja",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-booster",
+   "item": "435377005/58221976534",
+   "title": "Booster Pokémon TCG – Pacote de Cartas Colecionáveis - Pokémon 30 anos",
+   "url": "https://s.shopee.com.br/9fMc3vDFlW",
+   "price": 64.9,
+   "priceCupom": null,
+   "seller": "Bruline",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-booster",
+   "item": "503392283/58223118579",
+   "title": "Pokémon TCG Mega Evolução Reinado Delta – Booster Unitário Lacrado com 6 Cartas Adicionais",
+   "url": "https://s.shopee.com.br/9AQLT0ORFE",
+   "price": 15.99,
+   "priceCupom": null,
+   "seller": "LukardsTCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-booster",
+   "item": "760925545/58222824415",
+   "title": "Booster Pokémon Reinado Delta Mega Evolução 6 Cartas em Português",
+   "url": "https://s.shopee.com.br/80EO4sFH9o",
+   "price": 22.9,
+   "priceCupom": null,
+   "seller": "Parolar Presentes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me06-booster",
+   "item": "365912037/58272550126",
+   "title": "Pacote de Booster Pokémon Mega Evolução Reinado Delta com 6 Cartas de Jogo Adicionais",
+   "url": "https://s.shopee.com.br/7KyhHeHoVk",
+   "price": 26.9,
+   "priceCupom": null,
+   "seller": "LissiL",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-desafio",
+   "item": "422661618/10652734157",
+   "title": "Desafio Estratégico Pokémon Mega Evolução Caos Ascendente Copag Cards Cartas Boosters",
+   "url": "https://s.shopee.com.br/2qWHvO84dc",
+   "price": 179.99,
+   "priceCupom": null,
+   "seller": "suika games & animes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-combo",
+   "item": "569630698/58213087761",
+   "title": "Combo de Booster Caos Ascendente ME04 - Pokémon TCG",
+   "url": "https://s.shopee.com.br/8KrETW4Kb8",
+   "price": 200,
+   "priceCupom": null,
+   "seller": "EMO TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-combo",
+   "item": "352969207/58222255673",
+   "title": "Combo Booster Caos Ascendente Pokemon TCG",
+   "url": "https://s.shopee.com.br/9KjlfLRG2N",
+   "price": 215,
+   "priceCupom": null,
+   "seller": "Miau_Geek_",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me04-combo",
+   "item": "472103626/58263801874",
+   "title": "Combo de Booster Caos Ascendente Pokémon original copag",
+   "url": "https://s.shopee.com.br/9fMc3xPzMP",
+   "price": 249,
+   "priceCupom": null,
+   "seller": "AliadosTCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-combo6",
+   "item": "329965944/45571027849",
+   "title": "Pokemon Celebração 30 Anos Combo Com 6 Booster Cartas Português Copag",
+   "url": "https://s.shopee.com.br/AUvj3UMofc",
+   "price": 399.9,
+   "priceCupom": null,
+   "seller": "Two Head Games",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-combo6",
+   "item": "435377005/58271921597",
+   "title": "Pokémon TCG Celebração de 30 Anos – Combo com 6 Pacotes Booster – 36 Cartas",
+   "url": "https://s.shopee.com.br/80EO4vE44W",
+   "price": 400,
+   "priceCupom": null,
+   "seller": "Bruline",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv8_5-combo",
+   "item": "994594215/58203178819",
+   "title": "Combo Booster Evoluções Prismáticas EV8.5 - Pokémon TCG (PT-BR)",
+   "url": "https://s.shopee.com.br/50amVNv1Qr",
+   "price": 289.9,
+   "priceCupom": null,
+   "seller": "Mega Gengar TCG",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-combo18",
+   "item": "810975905/58258694462",
+   "title": "Mini Caixa de Boosters Pokémon Equilíbrio Perfeito - Contém 18 boosters",
+   "url": "https://s.shopee.com.br/4fxw6ndTIl",
+   "price": 250.99,
+   "priceCupom": null,
+   "seller": "Luna Card Store",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-combo18",
+   "item": "401584374/58208227036",
+   "title": "Combo de Pacotes Equilíbrio Perfeito 18 Booster Pokémon TCG",
+   "url": "https://s.shopee.com.br/8VAefp3hGB",
+   "price": 319.9,
+   "priceCupom": null,
+   "seller": "MandaCards",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10_5w-combo",
+   "item": "382600231/23398936027",
+   "title": "Combo De Booster Pokémon Fogo Branco Copag",
+   "url": "https://s.shopee.com.br/7KyhHg88cy",
+   "price": 459.9,
+   "priceCupom": null,
+   "seller": "Loja Pikachu",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv10_5w-combo",
+   "item": "365433518/58266206259",
+   "title": "Combo De Booster Pokémon Ev10.5 Fogo Branco",
+   "url": "https://s.shopee.com.br/1LhU8f3lSp",
+   "price": 999.97,
+   "priceCupom": null,
+   "seller": "GM Nostalgia - Nilton",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-combo",
+   "item": "1934646992/58271779414",
+   "title": "Combo de Booster Herois Excelsos Pokémon",
+   "url": "https://s.shopee.com.br/2VtRWoQCcO",
+   "price": 459.99,
+   "priceCupom": null,
+   "seller": "Castelo dos Mestres",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-combo",
+   "item": "406305539/22794960082",
+   "title": "Combo De Booster Minibox Pokémon Heróis Excelsos ME2.5",
+   "url": "https://s.shopee.com.br/7fbXgI6rx4",
+   "price": 600,
+   "priceCupom": null,
+   "seller": "TCG Predial",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-combo",
+   "item": "925688954/58263424070",
+   "title": "Pokemon me03 combo de booster equilibrio perfeito copag 36870",
+   "url": "https://s.shopee.com.br/3LSYWKa9UM",
+   "price": 275.9,
+   "priceCupom": null,
+   "seller": "Pirlimpimpim Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-combo",
+   "item": "1908384826/58219503152",
+   "title": "Combo De Booster Fogo Fantasmagórico - Pokémon Tcg Português",
+   "url": "https://s.shopee.com.br/60TJhEdgFq",
+   "price": 499.99,
+   "priceCupom": null,
+   "seller": "Hashi Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02-combo10",
+   "item": "1827704085/58211213316",
+   "title": "Combo 10 Boosters Megaevolução Fogo Fantasmagórico Pokémon Tcg COPAG",
+   "url": "https://s.shopee.com.br/6AmjtXd2ut",
+   "price": 169.9,
+   "priceCupom": null,
+   "seller": "LeleGameZ TGC Acessórios e Afins",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "sv4_5-combo",
+   "item": "365433518/23199448388",
+   "title": "Combo Booster Pokémon Escarlete E Violeta Destinos De Paldea",
+   "url": "https://s.shopee.com.br/70Lqt4ZsE4",
+   "price": 1117.96,
+   "priceCupom": null,
+   "seller": "GM Nostalgia - Nilton",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me01-combo",
+   "item": "221858259/22095000557",
+   "title": "Pokémon TCG Combo de Pacotes de Booster Megaevolução ME01 Oficial Copag",
+   "url": "https://s.shopee.com.br/AUvj3Vi4Ci",
+   "price": 269.9,
+   "priceCupom": null,
+   "seller": "Dragon's Lair Colecionáveis",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-combo18",
+   "item": "1794635970/58272557361",
+   "title": "Combo De Pacotes Heróis Excelsos Megaevolução 2.5 Pokémon TCG Original Lacrado Com 18 Boosters",
+   "url": "https://s.shopee.com.br/2BGb8CRTIM",
+   "price": 460,
+   "priceCupom": null,
+   "seller": "y7ipk0riz5",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "swsh4_5-lata",
+   "item": "216530401/20953104854",
+   "title": "Pokémon TCG - Lata Pokémon Boltund V Destinos Brilhantes",
+   "url": "https://s.shopee.com.br/1qdOPyJvSI",
+   "price": 449.99,
+   "priceCupom": null,
+   "seller": "RAFN Coleções e Jogos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "swsh12_5-lata",
+   "item": "774797832/58215868579",
+   "title": "Lata Realeza Absoluta Zapdos de Galar - Pokémon TCG",
+   "url": "https://s.shopee.com.br/906YxIxTJM",
+   "price": 539.99,
+   "priceCupom": null,
+   "seller": "FERA CARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me02_5-minilata-en",
+   "item": "774797832/58258548227",
+   "title": "Mini Lata Ascended Heroes Pikachu - Pokémon TCG",
+   "url": "https://s.shopee.com.br/80E1lRWkNt",
+   "price": 299.97,
+   "priceCupom": null,
+   "seller": "FERA CARDS",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-deck-umbreon",
+   "item": "821171986/58273025155",
+   "title": "POKEMON TCG 30 ANOS - BARALHO DE BATALHA UMBREON EX - COPAG",
+   "url": "https://s.shopee.com.br/8AXoHEDQjZ",
+   "price": 127.89,
+   "priceCupom": null,
+   "seller": "Reino Encantado Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "c30-deck-espeon",
+   "item": "821171986/58273021754",
+   "title": "POKEMON TCG 30 ANOS - BARALHO DE BATALHA ESPEON EX - COPAG",
+   "url": "https://s.shopee.com.br/8KrETXCnOc",
+   "price": 127.89,
+   "priceCupom": null,
+   "seller": "Reino Encantado Brinquedos",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
+  },
+  {
+   "productId": "me03-desafio",
+   "item": "422661618/22096072714",
+   "title": "Desafio Estratégico Pokémon Mega Evolução Equilíbrio Perfeito Copag Cards Cartas Boosters português",
+   "url": "https://s.shopee.com.br/1BO3wNdfqJ",
+   "price": 179.99,
+   "priceCupom": null,
+   "seller": "suika games & animes",
+   "selo": null,
+   "stockNote": null,
+   "capturedAt": "2026-11-20T13:55:00Z"
   }
  ],
  "foraDaLista": [
