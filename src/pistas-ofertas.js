@@ -4,7 +4,7 @@
 // com prova: anúncio ativo, novo, com estoque, do MESMO produto da pista e com preço no máximo 10% acima do postado
 // (acima disso a promoção acabou). Shopee e Amazon continuam só como pista: não há API para conferir.
 // Módulo puro: fetch, token, relógio e matching são injetados; nunca lança e nunca devolve o token.
-import { catalogStock, trustedSeller } from './adapters/mercadolivre.js';
+import { catalogStock, trustedSeller, pdpUrl } from './adapters/mercadolivre.js';
 import { matchProduct as defaultMatch } from './match.js';
 import { assertSafeUrl } from './urlguard.js';
 import { pickPrice, PRICE_LABEL } from './score.js';
@@ -93,31 +93,71 @@ export async function anuncioDoCatalogo(cat, { fetch, H }) {
   return null;
 }
 
+/** Máximo de páginas de catálogo consultadas por pista quando /items está fechado. */
+export const CATALOGO_MAX_POR_PISTA = 5;
+
+/**
+ * /items fechado para anúncios de terceiros (403 access_denied por anúncio desde 2025, ver docs/mercadolivre-api.md):
+ * procura o MLB da pista na lista oficial de vendedores do catálogo (/products/{id}/items), a mesma leitura que o
+ * adaptador usa como alternativa. Candidatos: a página /p/ do link e as páginas de catálogo do mesmo produto em
+ * data/ml-catalog.json. Devolve um anúncio no formato de /items (com catalogo e stockSource) ou null.
+ */
+export async function anuncioPeloCatalogo(mlb, { catalogo = null, productId = null, catalogoML = null, fetch, H }) {
+  const prods = catalogoML && typeof catalogoML === 'object' ? catalogoML : {};
+  const cands = [...new Set([catalogo, ...Object.entries(prods).filter(([, p]) => productId && p?.productId === productId).map(([pid]) => pid)].filter(Boolean))].slice(0, CATALOGO_MAX_POR_PISTA);
+  for (const pid of cands) {
+    try {
+      const r = await fetch(`${API}/products/${pid}/items`, H);
+      if (!r || !r.ok) continue;
+      const j = await r.json();
+      const it = (j?.results || []).find((x) => x && (x.item_id || x.id) === mlb);
+      if (!it) continue;
+      let title = prods[pid]?.name || null;
+      if (!title) { try { const r2 = await fetch(`${API}/products/${pid}`, H); if (r2 && r2.ok) { const p = await r2.json(); title = p?.name || null; } } catch { /* sem nome */ } }
+      const st = catalogStock(it, 'ml-catalog');
+      return {
+        id: mlb, title: title || '', price: it.price, original_price: it.original_price ?? null, status: 'active', condition: it.condition ?? null,
+        permalink: pdpUrl(pid, mlb), seller_id: it.seller_id ?? null, official_store_id: it.official_store_id ?? null,
+        official_store_name: it.official_store_name || null, shipping: it.shipping || null,
+        thumbnail: prods[pid]?.image || null, catalogo: pid, stockLido: st,
+      };
+    } catch { /* próxima página */ }
+  }
+  return null;
+}
+
 /**
  * Confere a pista na API oficial. Devolve { ok, motivo, oferta, mlb, produto }. `oferta` sai no formato do anúncio do
  * adaptador do ML (title, url, price { base }, listPrice, stock…) mais os campos da oferta (storeId, source_url…).
  */
-export async function verificarPista(tip, { fetch = globalThis.fetch, token, catalog, matchProduct = defaultMatch, mlb = null, now = new Date(), exigirReputacao = true, timeoutMs = TIMEOUT_MS } = {}) {
+export async function verificarPista(tip, { fetch = globalThis.fetch, token, catalog, matchProduct = defaultMatch, mlb = null, now = new Date(), exigirReputacao = true, timeoutMs = TIMEOUT_MS, catalogoML = null } = {}) {
   const rec = (motivo, extra = {}) => ({ ok: false, motivo, oferta: null, mlb: mlb || null, ...extra });
   try {
     if (!tip) return rec('pista sem produto');
     if (!token) return rec('sem token do Mercado Livre');
     const H = { headers: { authorization: `Bearer ${token}`, accept: 'application/json', 'user-agent': UA }, signal: AbortSignal.timeout(timeoutMs) };
+    let catalogo = null;
     if (!mlb) {
-      const r = await resolverLink(tip.url, { fetch, timeoutMs }); if (r.erro) return rec(`falha de rede (${r.erro})`); mlb = r.mlb;
+      const r = await resolverLink(tip.url, { fetch, timeoutMs }); if (r.erro) return rec(`falha de rede (${r.erro})`); mlb = r.mlb; catalogo = r.catalogo || null;
       // Link para a página de catálogo (/p/MLB…): o anúncio é o vencedor da compra (buy box) na API oficial de produtos.
       if (!mlb && r.catalogo) mlb = await anuncioDoCatalogo(r.catalogo, { fetch, H });
     }
     if (!mlb) return rec('link sem MLB');
     const res = await fetch(`${API}/items/${mlb}`, H);
     if (!res || res.status === 404) return rec('anúncio não encontrado');
-    if (res.status === 401 || res.status === 403) return rec(`API do ML recusou (${res.status})`);
-    if (!res.ok) return rec(`API do ML respondeu ${res.status}`);
-    const j = await res.json();
+    let j;
+    if (res.status === 401 || res.status === 403) {
+      // App comum não lê anúncio de outro vendedor em /items: confere pela lista oficial do catálogo.
+      j = await anuncioPeloCatalogo(mlb, { catalogo, productId: tip.productId || null, catalogoML, fetch, H });
+      if (!j) return rec(`API do ML recusou (${res.status})`);
+    } else {
+      if (!res.ok) return rec(`API do ML respondeu ${res.status}`);
+      j = await res.json();
+    }
     if (!j || typeof j !== 'object' || !j.id) return rec('resposta da API sem anúncio');
     if (j.status !== 'active') return rec(`status ${j.status || 'desconhecido'}`);
     if (j.condition && j.condition !== 'new') return rec('usado');
-    const st = catalogStock(j, STOCK_SOURCE);
+    const st = j.stockLido || catalogStock(j, STOCK_SOURCE);
     if (st.stock !== 'IN_STOCK') return rec(st.stock === 'OUT_OF_STOCK' ? 'sem estoque' : 'estoque não informado');
     const price = Number(j.price);
     if (!(price > 0)) return rec('sem preço');
@@ -146,7 +186,7 @@ export async function verificarPista(tip, { fetch = globalThis.fetch, token, cat
     const oferta = {
       storeId: STORE_ID, storeName: 'Mercado Livre', storeKind: 'marketplace',
       title: j.title, url: j.permalink, price: { base: price }, listPrice: j.original_price > price ? j.original_price : null,
-      stock: 'IN_STOCK', quantity: st.quantity, stockSource: STOCK_SOURCE,
+      stock: 'IN_STOCK', quantity: st.quantity, stockSource: j.stockLido ? st.stockSource : STOCK_SOURCE,
       shipping: j.shipping?.free_shipping ? 0 : null, sku: j.id, ean: null,
       image: https(j.pictures?.[0]?.secure_url || j.pictures?.[0]?.url || j.thumbnail) || null,
       seller: sellerName || 'Vendedor no Mercado Livre', sellerId: j.seller_id != null ? String(j.seller_id) : null,
@@ -208,10 +248,10 @@ export function registroDeOferta(oferta, { id, T, prev = null }) {
  * Confere as pistas selecionadas e anota cada uma em tipStore[id].verificada = { at, ok, motivo, mlb, ofertaId }.
  * Devolve as ofertas aprovadas (ainda sem id: quem integra em offers decide o id e o dedupe). Tolera qualquer falha.
  */
-export async function verificarPistas(tipStore, { fetch = globalThis.fetch, token, catalog, matchProduct = defaultMatch, now = new Date(), max = 10, revalidarMin = 60, log = () => {}, exigirReputacao = true } = {}) {
+export async function verificarPistas(tipStore, { fetch = globalThis.fetch, token, catalog, matchProduct = defaultMatch, now = new Date(), max = 10, revalidarMin = 60, log = () => {}, exigirReputacao = true, catalogoML = null } = {}) {
   const out = []; const fila = pistasParaVerificar(tipStore, { now, max, revalidarMin });
   for (const t of fila) {
-    const r = await verificarPista(t, { fetch, token, catalog, matchProduct, now, exigirReputacao });
+    const r = await verificarPista(t, { fetch, token, catalog, matchProduct, now, exigirReputacao, catalogoML });
     const antes = t.verificada || null;
     t.verificada = { at: now.toISOString(), ok: r.ok, motivo: r.motivo, mlb: r.mlb || antes?.mlb || null, ofertaId: r.ok ? antes?.ofertaId || null : null, versao: VERSAO };
     if (!r.ok) { delete t.virouOferta; log(`[pistas] ${t.id} (${t.productId}): ${r.motivo}`); continue; }

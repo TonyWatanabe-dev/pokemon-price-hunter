@@ -261,7 +261,7 @@ export async function runOnce({ log = console.log, send = transports, now = new 
       let token = null;
       try { token = (await mlAccessToken()).token || null; } catch (e) { log(`[pistas] token do ML indisponível: ${redact(e.message, { max: 120 })}`); }
       if (!token) log('[pistas] sem token do Mercado Livre: pistas do ML não conferidas nesta rodada');
-      else pistasOk = await verificarPistas(tipStore, { token, catalog, now, max: positiveEnv('PISTAS_VERIFICAR_MAX', 10), log });
+      else pistasOk = await verificarPistas(tipStore, { token, catalog, now, max: positiveEnv('PISTAS_VERIFICAR_MAX', 10), log, catalogoML: readJson(dataPath('ml-catalog.json'), {}).products || null });
       if (pistasOk.length) log(`[pistas] ${pistasOk.length} pista(s) do ML conferida(s) na API: viram oferta`);
     } catch (e) { log(`[pistas] verificação: ${redact(e?.message || e, { max: 160 })}`); }
   }

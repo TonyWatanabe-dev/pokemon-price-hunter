@@ -1,6 +1,6 @@
 name: "Mercado Livre: autorizar"
 # Rode uma vez (e de novo só se o ML pedir): cole o código que aparece em
-# https://tcg-price-hunter.vercel.app/ml/callback depois de autorizar o app.
+# https://tcgpricehunter.com.br/ml/callback depois de autorizar o app.
 on:
   workflow_dispatch:
     inputs:
@@ -36,6 +36,8 @@ jobs:
           ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
           ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
           ML_CODE: ${{ inputs.code }}
+          # Tem que ser o mesmo endereço de retorno usado no pedido do código (botão do site). Diferente = invalid_grant.
+          ML_REDIRECT_URI: https://tcgpricehunter.com.br/ml/callback
         run: node tools/ml-token.mjs exchange "$ML_CODE"
       - name: Guardar (criptografado) no ramo data
         env:
