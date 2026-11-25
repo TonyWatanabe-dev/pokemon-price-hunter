@@ -35,6 +35,7 @@ jobs:
         env:
           ML_CLIENT_ID: ${{ vars.ML_CLIENT_ID }}
           ML_CLIENT_SECRET: ${{ secrets.ML_CLIENT_SECRET }}
+          ML_REDIRECT_URI: ${{ vars.ML_REDIRECT_URI }}
           ML_CODE: ${{ inputs.code }}
         run: node tools/ml-token.mjs exchange "$ML_CODE"
       - name: Guardar (criptografado) no ramo data
