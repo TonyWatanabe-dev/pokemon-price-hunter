@@ -19,7 +19,7 @@ import { candidatos, gerarCard, carregarCupons } from './social-telegram-piloto.
 import { linhaCupomComPreco } from '../src/agents/social/cupons.js';
 import { loadAffiliates, mlListingId } from '../api/_lib/affiliates.mjs';
 import { ofertasExternas, candidatoExterno, intercalar, lerLeituras } from '../src/agents/social/externas.js';
-import { focoEconomia, ordenarPorEconomia } from '../src/agents/social/economia.js';
+import { focoEconomia, ordenarPorEconomia, padroesFoco } from '../src/agents/social/economia.js';
 import { comLinksSociais } from '../src/agents/social/afiliados-links.js';
 import { candidatosCampanha, fotoDoAnuncio, lerCampanha } from '../src/agents/social/blackfriday.js';
 import { planejar, registrar, REGRAS_WHATSAPP } from '../src/agents/social/auto.js';
@@ -75,6 +75,8 @@ function filaWhatsApp(state, { now, env = {}, afiliados = {}, leituras = { shope
 /** Fila do WhatsApp com o foco em economia (03/11/2026, src/agents/social/economia.js): só blister duplo/triplo/quádruplo
  *  até R$ 100 (SOCIAL_PRECO_MAX) e pelo menos 5% abaixo do sugerido Copag ou da média do mercado (SOCIAL_ECONOMIA_MIN),
  *  com "De X por Y"; outro produto só com 20%+ de desconto e até R$ 250 (SOCIAL_DESCONTO_FORTE, SOCIAL_PRECO_MAX_FORTE).
+ *  Na janela da Black Friday (25/11 a 01/12/2026, economia.js) o padrão é R$ 150 / 12% / R$ 400 e depois volta sozinho;
+ *  SOCIAL_FOCO_BF=0 desliga a janela.
  *  Só link de afiliado do dono (ML, Shopee, Amazon). Ordem (04/11): Black Friday primeiro, depois maior desconto e maior
  *  economia em reais (outra loja só passa na frente com desconto a até 5 pontos do melhor), baralho no fim. SOCIAL_FOCO=0 volta à fila completa. */
 export function candidatosWhatsApp(state, opts = {}) {
@@ -82,8 +84,11 @@ export function candidatosWhatsApp(state, opts = {}) {
   if (env.SOCIAL_FOCO === '0') return lista;
   const num = (v, d) => { const n = Number(v); return v != null && v !== '' && Number.isFinite(n) && n > 0 ? n : d; };
   const produtos = new Map((state?.products || []).map((p) => [p.id, p]));
-  const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, 100), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, 0.05),
-    descontoForte: num(env.SOCIAL_DESCONTO_FORTE, 0.2), precoMaxForte: num(env.SOCIAL_PRECO_MAX_FORTE, 250) };
+  // 25/11/2026 (pedido do dono): na semana da Black Friday o padrão do foco é mais folgado (padroesFoco); as variáveis
+  // SOCIAL_* continuam valendo mais que ele e SOCIAL_FOCO_BF=0 volta ao padrão de sempre.
+  const p0 = env.SOCIAL_FOCO_BF === '0' ? padroesFoco(0) : padroesFoco(opts.now ?? Date.now());
+  const cfg = { produtos, precoMax: num(env.SOCIAL_PRECO_MAX, p0.precoMax), economiaMin: num(env.SOCIAL_ECONOMIA_MIN, p0.economiaMin),
+    descontoForte: num(env.SOCIAL_DESCONTO_FORTE, p0.descontoForte), precoMaxForte: num(env.SOCIAL_PRECO_MAX_FORTE, p0.precoMaxForte) };
   const fila = ordenarPorEconomia(lista.map((c) => focoEconomia(c, cfg)).filter(Boolean));
   if (env.SOCIAL_CUPONS === '0') return fila;
   return fila.map((c) => comCupom(c, opts.cupons ?? carregarCupons(), opts.now ?? Date.now()));

@@ -11,6 +11,21 @@
 //   • o "De" do vendedor (listPrice) não é usado: costuma ser inflado.
 import { reais } from './legenda.js';
 
+// 25/11/2026 (pedido do dono, "afrouxar o filtro de economia só na Black Friday"): dentro da janela abaixo os tetos
+// sobem e o desconto forte cai, para a semana da Black Friday não barrar oferta boa de ETB/box; fora dela volta sozinho
+// ao padrão de 03/11. SOCIAL_FOCO_BF=0 desliga a janela; SOCIAL_PRECO_MAX e companhia continuam mandando mais que ela.
+export const JANELA_BF = { de: '2026-11-25T00:00:00-03:00', ate: '2026-12-01T23:59:59-03:00' };
+export const PADRAO = { precoMax: 100, economiaMin: 0.05, descontoForte: 0.2, precoMaxForte: 250 };
+export const PADRAO_BF = { precoMax: 150, economiaMin: 0.05, descontoForte: 0.12, precoMaxForte: 400 };
+
+/** Padrões do foco na hora `now`: os da Black Friday dentro da janela, os de sempre fora dela. */
+export function padroesFoco(now = Date.now(), { janela = JANELA_BF } = {}) {
+  const de = Date.parse(janela?.de); const ate = Date.parse(janela?.ate);
+  const t = Number(now);
+  const naJanela = Number.isFinite(de) && Number.isFinite(ate) && Number.isFinite(t) && t >= de && t <= ate;
+  return { ...(naJanela ? PADRAO_BF : PADRAO), blackFriday: naJanela };
+}
+
 export const TIPOS = /-blister[234]$/;
 // 13/11/2026 (pedido do dono: "no grupo só quero as ofertas de todos os blisters, unitários e promoções de outros produtos
 // que realmente valem a pena"): blister unitário e booster avulso entram pela mesma regra dos blisters 2/3/4.
@@ -27,7 +42,7 @@ export function referencia(produto) {
 }
 
 /** Candidato da fila → mesmo candidato com "De X (rótulo) ❌" e a economia no texto, ou null se não for o foco. */
-export function focoEconomia(c, { produtos, precoMax = 100, economiaMin = 0.05, descontoForte = 0.2, precoMaxForte = 250 } = {}) {
+export function focoEconomia(c, { produtos, precoMax = PADRAO.precoMax, economiaMin = PADRAO.economiaMin, descontoForte = PADRAO.descontoForte, precoMaxForte = PADRAO.precoMaxForte } = {}) {
   const pid = c?.oferta?.productId; const preco = pos(c?.preco ?? c?.oferta?.price);
   if (!pid || IMPORTADO.test(pid) || !preco) return null;
   const r = referencia(produtos?.get(pid)); if (!r) return null;
