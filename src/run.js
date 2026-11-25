@@ -33,7 +33,7 @@ import { processInbox } from './inbox.js';
 import { redact } from './redact.js';
 import { verificarPistas, ofertaDuplicada, registroDeOferta, SOURCE_TYPE as PISTA_SOURCE } from './pistas-ofertas.js';
 import { destinosPistas } from './pistas-destino.js';
-import { accessToken as mlAccessToken } from './mlauth.js';
+import { accessToken as mlAccessToken, authorizedAt as mlAuthorizedAt } from './mlauth.js';
 import * as parceiros from './parceiros.js'; // site só com parceiros (SITE_SO_PARCEIROS): único ponto de src/ que fala com affiliates.mjs
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
@@ -284,7 +284,9 @@ export async function runOnce({ log = console.log, send = transports, now = new 
     if (FREQ && adiar(src, store)) { skipped.add(store.id); adiadas.add(store.id); return; }
     // Loja que bloqueou ou falhou: espera cada vez mais antes de tentar de novo (backoffMs: 429 tem curva própria).
     if (['BLOCKED', 'ERROR'].includes(src.status) && src.fails > 0 && src.lastCheck) {
-      if (Date.now() - Date.parse(src.lastCheck) < backoffMs(src)) return;
+      // Mercado Livre reautorizado pelo dono depois do último bloqueio: tenta já, sem cumprir a espera (uma vez: a tentativa atualiza lastCheck).
+      const reautorizado = store.platform === 'mercadolivre' && (() => { const a = Date.parse(mlAuthorizedAt() || ''); return a > Date.parse(src.lastCheck); })();
+      if (!reautorizado && Date.now() - Date.parse(src.lastCheck) < backoffMs(src)) return;
     }
     src.checks++; src.lastCheck = T;
     const t0 = Date.now();

@@ -25,6 +25,9 @@ export function open(b64, secret = cfg().secret) {
   d.setAuthTag(buf.subarray(12, 28));
   return JSON.parse(Buffer.concat([d.update(buf.subarray(28)), d.final()]).toString('utf8'));
 }
+/** Hora da última autorização do dono (ISO) ou null. Nunca expõe o token. */
+// Arquivo gravado antes deste campo: usa a hora do token (a autorização de 25/11/2026 foi a última gravação).
+export const authorizedAt = () => { const o = load(); return o?.authorizedAt ?? o?.at ?? null; };
 export function load() {
   const { secret } = cfg(); if (!secret) return null;
   try { return open(fs.readFileSync(FILE(), 'utf8').trim(), secret); } catch { return null; }
@@ -42,7 +45,9 @@ async function tokenCall(params) {
   });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || !j.access_token) throw new Error(`OAuth do Mercado Livre recusou (${r.status}): ${j.error || ''} ${j.message || ''}`.trim());
-  const t = { access: j.access_token, refresh: j.refresh_token, expiresAt: Date.now() + (j.expires_in || 21600) * 1000, userId: j.user_id || null, scope: j.scope || null, at: new Date().toISOString() };
+  const t = { access: j.access_token, refresh: j.refresh_token, expiresAt: Date.now() + (j.expires_in || 21600) * 1000, userId: j.user_id || null, scope: j.scope || null, at: new Date().toISOString(),
+    // authorizedAt: hora da última autorização feita pelo dono (troca de código); a renovação preserva.
+    authorizedAt: params.grant_type === 'authorization_code' ? new Date().toISOString() : (() => { const o = load(); return o?.authorizedAt ?? o?.at ?? null; })() };
   save(t);
   return t;
 }
