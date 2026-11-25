@@ -1,9 +1,17 @@
 {
  "program": "mercadolivre",
- "updatedAt": "2026-11-06",
+ "updatedAt": "2026-11-25",
  "regras": "Planilha do dono com preço e link de afiliado meli.la de anúncios do Mercado Livre. Só selado casado por src/match.js com um produto do site. Usada só pela fila do WhatsApp (src/agents/social/externas.js): vale 24 h a partir de capturedAt e só entra como promoção (até o sugerido Copag ou o menor preço do site), passando pelo foco em economia. Anúncio que o robô ou a campanha já têm não repete. Nunca lida pelo site, ranking ou Opportunity Score.",
- "origem": "Planilha do dono de 06/11/2026 (lote das 10h, 1.516 linhas). Horário do arquivo em Brasília, gravado em UTC. Leitura de 2026-11-06T13:11:00Z a 2026-11-06T13:21:00Z. Fora: 567 produto não identificado, 116 recusado pelo matcher, 89 produto fora do site, 55 preço ilegível, 10 sem link, 72 acessório.",
+ "origem": "Planilha do dono de 06/11/2026 (lote das 10h, 1.516 linhas). Horário do arquivo em Brasília, gravado em UTC. Leitura de 2026-11-06T13:11:00Z a 2026-11-06T13:21:00Z. Fora: 567 produto não identificado, 116 recusado pelo matcher, 89 produto fora do site, 55 preço ilegível, 10 sem link, 72 acessório. 25/11/2026 (08:13–08:16 BRT): 2 anúncios lidos por Claude no Chrome do dono (página do anúncio: novo, +50 disponíveis, preço igual ao de 23/11), link meli.la do mapa de afiliados; teste com a API do ML barrada em /products/{id}/items.",
  "ofertas": [
+  {
+   "item": "MLB5540934195",
+   "productId": "me06-blister3",
+   "title": "Blister Triplo Pokémon TCG Reinado Delta - Spritzee",
+   "url": "https://meli.la/2SoRjRf",
+   "price": 31.99,
+   "capturedAt": "2026-11-25T11:15:59Z"
+  },
   {
    "item": "MLB6823331442",
    "productId": "me04-blister4",
@@ -18,7 +26,7 @@
    "title": "Blister Triplo Pokémon ME05 Escuridão Absoluta",
    "url": "https://meli.la/2LjTQXH",
    "price": 29.9,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-25T11:13:00Z"
   },
   {
    "item": "MLB7077055110",
