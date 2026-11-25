@@ -49,3 +49,9 @@ Com `/items` fechado, o ranking usa o estoque do catálogo (tabela acima). Teste
 ## Decisão de 12/10/2026 — publicação listada conta como disponível
 
 A primeira rodada com o diagnóstico provou que o payload real de `GET /products/{id}/items` **não traz `available_quantity` nem `status`** (campos: `item_id`, `seller_id`, `price`, `original_price`, `condition`, `listing_type_id`, `shipping`, `official_store_id`, `tags`…). Como o catálogo do Mercado Livre só lista anúncios ativos, o dono decidiu: publicação listada, com preço e condição nova, entra como `IN_STOCK` com `stockSource: ml-catalog-listed` (quantidade desconhecida). O Opportunity Engine continua aplicando o teto de marketplace. Quando `/items` abrir, a leitura por anúncio (`ml-items`) volta a mandar.
+
+## 25/11/2026 — pistas conferidas pelo catálogo quando `/items` dá 403
+
+`verificarPista` (`src/pistas-ofertas.js`) lia `GET /items/{MLB}` e, com o 403 por anúncio, toda pista do ML parava em "API do ML recusou (403)". Agora, nesse caso, procura o MLB da pista na lista oficial de vendedores de `GET /products/{id}/items` — primeiro a página `/p/` do link, depois as páginas de catálogo do mesmo produto em `data/ml-catalog.json` (no máximo 5 por pista). Achou: valem preço, condição, frete e vendedor da lista, estoque `ml-catalog-listed` e link da página do produto com o vendedor (`pdpUrl`), como no adaptador. Não achou: segue a recusa de antes (não definitiva, conferida de novo depois).
+
+O `ml-auth.yml` passou a trocar o código com `ML_REDIRECT_URI=https://tcgpricehunter.com.br/ml/callback`, o mesmo endereço do botão do site; endereços diferentes dão `invalid_grant`. Os dois endereços estão cadastrados no app do ML.

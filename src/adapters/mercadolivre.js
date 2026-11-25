@@ -10,7 +10,7 @@ import { dataPath, readJson, writeJson } from '../db.js';
 
 const API = 'https://api.mercadolibre.com';
 // Link do anúncio dentro da página do produto, com o vendedor já selecionado (o mesmo preço que publicamos).
-const pdpUrl = (productId, itemId) => `https://www.mercadolivre.com.br/p/${productId}?pdp_filters=item_id%3A${itemId}`;
+export const pdpUrl = (productId, itemId) => `https://www.mercadolivre.com.br/p/${productId}?pdp_filters=item_id%3A${itemId}`;
 const DAY = 864e5;
 
 // Nome de catálogo do ML é escrito por vendedor: barra kits, caixas fechadas, acessórios de terceiros
