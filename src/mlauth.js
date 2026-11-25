@@ -11,6 +11,9 @@ export const OAUTH_TIMEOUT_MS = 15000;   // prazo da chamada de token (troca e r
 export const REDIRECT = () => process.env.ML_REDIRECT_URI || 'https://tcg-price-hunter.vercel.app/ml/callback';
 // App ID é público (aparece na URL de autorização); só a Secret Key é segredo.
 const cfg = () => ({ id: process.env.ML_CLIENT_ID || '7868227182755647', secret: process.env.ML_CLIENT_SECRET });
+// App ID em uso (público, aparece na URL de autorização). Trocou de app no painel do ML (25/11/2026)? Defina a
+// variável ML_CLIENT_ID, o secret ML_CLIENT_SECRET e, se o retorno do app novo for outro, a variável ML_REDIRECT_URI.
+export const appId = () => cfg().id;
 const key = (secret) => crypto.createHash('sha256').update('tcgph-ml|' + secret).digest();
 
 export function seal(obj, secret = cfg().secret) {

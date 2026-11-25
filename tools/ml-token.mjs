@@ -2,13 +2,14 @@
 // node tools/ml-token.mjs refresh             → renova o acesso se estiver perto de vencer
 // Nunca imprime tokens.
 import fs from 'node:fs';
-import { exchange, accessToken, load } from '../src/mlauth.js';
+import { exchange, accessToken, load, appId, REDIRECT } from '../src/mlauth.js';
 
 const [cmd, arg] = process.argv.slice(2);
 const out = (k, v) => { if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `${k}=${v}\n`); };
 try {
   if (cmd === 'exchange') {
     if (!arg) throw new Error('informe o código devolvido pelo Mercado Livre');
+    console.log(`Trocando no app ${appId()} com retorno ${REDIRECT()}.`);   // os dois são públicos (vão na URL de autorização)
     const t = await exchange(arg.trim());
     console.log(`Autorizado. Conta ML ${t.userId ?? '?'}; acesso válido até ${new Date(t.expiresAt).toISOString()}.`);
     out('changed', 'true');
@@ -21,5 +22,8 @@ try {
   } else { console.log('uso: ml-token.mjs exchange <código> | refresh'); process.exit(2); }
 } catch (e) {
   console.log('Falhou: ' + e.message);
+  // invalid_grant: código de outro app, de outro retorno, já usado ou vencido (vale ~10 min e uma vez só).
+  if (/invalid_grant/.test(e.message)) console.log(`O código precisa vir do app ${appId()} e do retorno ${REDIRECT()}. Autorize de novo e rode uma vez só.`);
+  if (/invalid_client/.test(e.message)) console.log('invalid_client: a Secret Key (ML_CLIENT_SECRET) não é a desse App ID.');
   process.exit(cmd === 'refresh' ? 0 : 1); // na rodada normal, falha do ML não derruba a caça
 }
