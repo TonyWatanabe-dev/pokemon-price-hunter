@@ -1,9 +1,9 @@
 {
  "program": "amazon",
  "tag": "tcgpricehunter-20",
- "updatedAt": "2026-11-25",
+ "updatedAt": "2026-11-26",
  "regras": "Só anúncios Pokémon TCG casados por src/match.js com um produto do site e com marca Copag ou Pokémon na página da Amazon. Preço, vendedor e estoque lidos da página do produto na Amazon (oferta em destaque) no momento de capturedAt; o site mostra a data e hora junto do preço. Não é atualizado automaticamente. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score. Quando a Amazon escreve o formato em inglês (\"4-Pack Blister\", \"3-Pack Blister\", \"Advanced Trainer Box\"), matchTitle traz o mesmo título com o nome Copag do formato, e é ele que passa pelo matcher.",
- "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (22:05–22:17); 0 ASINs novos; 2 saíram para amazon-fora-do-site.json. Todos os 65 relidos pelo dono no Chrome em 02/11/2026 (22:32–22:36, UTC 03/11 01:32–01:36), oferta em destaque. 6 ASINs novos lidos pelo dono no Chrome em 03/11/2026 (23:09, UTC 04/11 02:09), oferta em destaque: 1 blister triplo e 5 Sleeved Booster (o matcher passou a ler \"Sleeved Booster\" como booster avulso). Relidos pelo dono no Chrome em 06/11/2026 (07:58–08:06, UTC 10:58–11:06; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 56 com preço, 15 sem oferta em destaque. Lote do dono de 06/11/2026 10:16–10:20 (BRT): 8 ASINs novos com link curto, 67 relidos. Relidos pelo dono em 07/11/2026 (10:27–10:31 BRT): 38 com preço, 6 sem oferta em destaque. Relidos no Chrome do dono em 10/11/2026 (leitura automática pelo Claude, 2026-11-10T11:42:00Z UTC): 60 com preço, 19 sem oferta em destaque; vendedor lido pelo ID do vendedor; avisos de estoque ('Somente N em estoque') não relidos. Relidos por Claude no Chrome do dono em 16/11/2026 (12:16–12:23 BRT): 59 com preço, 20 sem oferta em destaque. Relidos por Claude no Chrome do dono em 18/11/2026 (23:11–23:15 BRT, UTC 19/11 02:11–02:15): 59 com preço, 20 sem oferta em destaque; vendedor lido em \"Vendido por\" (02:37–02:40 UTC; 7 ASINs mudaram de vendedor/preço nessa releitura e ficaram com a hora dela). 13 ASINs novos (busca da Amazon na categoria Cartas de Troca, 18/11/2026 23:16–23:17 BRT), casados por src/match.js com produto do site e marca Pokémon/Copag, link curto gerado pela SiteStripe (getShortUrl, loja tcgpricehunte-20). Todos os 92 relidos no Chrome do dono em 20/11/2026 (13:43–13:48 UTC): 73 com preço, 19 sem oferta em destaque. Relidos por Claude no Chrome do dono em 25/11/2026 (06:50–06:57 BRT, UTC 09:50–09:57): 68 com oferta em destaque, 24 sem.",
+ "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (22:05–22:17); 0 ASINs novos; 2 saíram para amazon-fora-do-site.json. Todos os 65 relidos pelo dono no Chrome em 02/11/2026 (22:32–22:36, UTC 03/11 01:32–01:36), oferta em destaque. 6 ASINs novos lidos pelo dono no Chrome em 03/11/2026 (23:09, UTC 04/11 02:09), oferta em destaque: 1 blister triplo e 5 Sleeved Booster (o matcher passou a ler \"Sleeved Booster\" como booster avulso). Relidos pelo dono no Chrome em 06/11/2026 (07:58–08:06, UTC 10:58–11:06; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 56 com preço, 15 sem oferta em destaque. Lote do dono de 06/11/2026 10:16–10:20 (BRT): 8 ASINs novos com link curto, 67 relidos. Relidos pelo dono em 07/11/2026 (10:27–10:31 BRT): 38 com preço, 6 sem oferta em destaque. Relidos no Chrome do dono em 10/11/2026 (leitura automática pelo Claude, 2026-11-10T11:42:00Z UTC): 60 com preço, 19 sem oferta em destaque; vendedor lido pelo ID do vendedor; avisos de estoque ('Somente N em estoque') não relidos. Relidos por Claude no Chrome do dono em 16/11/2026 (12:16–12:23 BRT): 59 com preço, 20 sem oferta em destaque. Relidos por Claude no Chrome do dono em 18/11/2026 (23:11–23:15 BRT, UTC 19/11 02:11–02:15): 59 com preço, 20 sem oferta em destaque; vendedor lido em \"Vendido por\" (02:37–02:40 UTC; 7 ASINs mudaram de vendedor/preço nessa releitura e ficaram com a hora dela). 13 ASINs novos (busca da Amazon na categoria Cartas de Troca, 18/11/2026 23:16–23:17 BRT), casados por src/match.js com produto do site e marca Pokémon/Copag, link curto gerado pela SiteStripe (getShortUrl, loja tcgpricehunte-20). Todos os 92 relidos no Chrome do dono em 20/11/2026 (13:43–13:48 UTC): 73 com preço, 19 sem oferta em destaque. Relidos por Claude no Chrome do dono em 25/11/2026 (06:50–06:57 BRT, UTC 09:50–09:57): 68 com oferta em destaque, 24 sem. Relidos por Claude no Chrome do dono em 26/11/2026 (18:03–18:07 BRT, UTC 21:03–21:07): 70 com oferta em destaque, 22 sem.",
  "links": [
   {
    "productId": "c30-blister2",
@@ -14,7 +14,7 @@
    "seller": "voltxstore",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:50:31Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0894sCU8"
   },
   {
@@ -22,11 +22,11 @@
    "asin": "B0HDZJCZCY",
    "title": "Pokémon TCG, Celebração de 30 anos – Blister Triplo com Adesivo Pokémon Lucario",
    "url": "https://www.amazon.com.br/dp/B0HDZJCZCY?tag=tcgpricehunter-20",
-   "price": null,
-   "seller": null,
-   "fulfilledBy": null,
-   "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:50:35Z",
+   "price": 168.15,
+   "seller": "voltxstore",
+   "fulfilledBy": "amazon",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0bh6WFJN"
   },
   {
@@ -34,11 +34,11 @@
    "asin": "B0HDZYTNFD",
    "title": "Pokémon TCG, Celebração de 30 anos – Blister Triplo com Adesivo Pokémon Exeggutor",
    "url": "https://www.amazon.com.br/dp/B0HDZYTNFD?tag=tcgpricehunter-20",
-   "price": 168.05,
-   "seller": "Cano's Paper & Beauty",
+   "price": 168.15,
+   "seller": "voltxstore",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 7 em estoque.",
-   "capturedAt": "2026-11-25T09:50:39Z",
+   "stockNote": "Somente 4 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B01Bw1QX9"
   },
   {
@@ -50,7 +50,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:50:43Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B05vJd7JC"
   },
   {
@@ -58,11 +58,11 @@
    "asin": "B0HDZNQZ6R",
    "title": "Pokémon TCG, Celebração de 30 anos – Box Pokémon Ex Sylveon",
    "url": "https://www.amazon.com.br/dp/B0HDZNQZ6R?tag=tcgpricehunter-20",
-   "price": 341.97,
-   "seller": "SUMMER GEEK",
-   "fulfilledBy": "seller",
+   "price": 313.4,
+   "seller": "Level X TCG",
+   "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:50:47Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B056RdvOt"
   },
   {
@@ -70,11 +70,11 @@
    "asin": "B0HFNZP4JX",
    "title": "Pokémon TCG, Celebração de 30 anos – Box Pokémon Coleção com Pôster",
    "url": "https://www.amazon.com.br/dp/B0HFNZP4JX?tag=tcgpricehunter-20",
-   "price": 170.9,
-   "seller": "Odisseia Jogos",
+   "price": 179.0,
+   "seller": "voltxstore",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:50:52Z",
+   "stockNote": "Somente 1 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B05MdmNIS"
   },
   {
@@ -86,7 +86,7 @@
    "seller": "Mais1",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 5 em estoque.",
-   "capturedAt": "2026-11-25T09:50:57Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0esTaoaK"
   },
   {
@@ -98,7 +98,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-25T09:51:02Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B07hN4EPh"
   },
   {
@@ -109,8 +109,8 @@
    "price": 55.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:51:07Z",
+   "stockNote": "Somente 10 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B091ZPOCy"
   },
   {
@@ -122,7 +122,7 @@
    "seller": "NewStation",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:51:12Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B03OB3fE1"
   },
   {
@@ -134,7 +134,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:51:17Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0bqpAptV"
   },
   {
@@ -143,11 +143,11 @@
    "title": "Pokémon TCG: Mega Evolução - Equilíbrio Perfeito - 3-Pack Blister - Português",
    "matchTitle": "Pokémon TCG: Mega Evolução - Equilíbrio Perfeito - Blister Triplo - Português",
    "url": "https://www.amazon.com.br/dp/B0GP2QPHQ8?tag=tcgpricehunter-20",
-   "price": 42.74,
-   "seller": "Flower Cases",
+   "price": 31.61,
+   "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 7 em estoque.",
-   "capturedAt": "2026-11-25T09:51:23Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B01Rb9isr"
   },
   {
@@ -156,11 +156,11 @@
    "title": "Pokémon TCG: Mega Evolução - Equilíbrio Perfeito - 4-Pack Blister - Português",
    "matchTitle": "Pokémon TCG: Mega Evolução - Equilíbrio Perfeito - Blister Quádruplo - Português",
    "url": "https://www.amazon.com.br/dp/B0GP2J4W78?tag=tcgpricehunter-20",
-   "price": 47.19,
-   "seller": "Amazon.com.br",
+   "price": 49.39,
+   "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:51:28Z",
+   "stockNote": "Somente 2 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B09q2wbjt"
   },
   {
@@ -168,11 +168,11 @@
    "asin": "B0GP33SWPM",
    "title": "Pokémon TCG Box Display ME03 Equilíbrio Perfeito 216 Cartas",
    "url": "https://www.amazon.com.br/dp/B0GP33SWPM?tag=tcgpricehunter-20",
-   "price": 424.64,
-   "seller": "Amazon.com.br",
+   "price": 424.54,
+   "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:51:32Z",
+   "stockNote": "Somente 1 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B04jsysQC"
   },
   {
@@ -184,7 +184,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:51:37Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B02LLaDwK"
   },
   {
@@ -193,11 +193,11 @@
    "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - 4-Pack Blister - Português",
    "matchTitle": "Pokémon TCG: Mega Evolução - Caos Ascendente - Blister Quádruplo - Português",
    "url": "https://www.amazon.com.br/dp/B0GVVWLH7Z?tag=tcgpricehunter-20",
-   "price": 47.49,
-   "seller": "Flower Cases",
+   "price": 45.24,
+   "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 5 em estoque.",
-   "capturedAt": "2026-11-25T09:51:43Z",
+   "stockNote": "Somente 6 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B08D9Or3M"
   },
   {
@@ -205,11 +205,11 @@
    "asin": "B0GWFNG7RG",
    "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - Booster Display - Português",
    "url": "https://www.amazon.com.br/dp/B0GWFNG7RG?tag=tcgpricehunter-20",
-   "price": 389,
+   "price": 389.0,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:51:48Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B07FeCIXR"
   },
   {
@@ -221,7 +221,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:51:52Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B09u7Xdxj"
   },
   {
@@ -233,7 +233,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:51:57Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0grLpmtI"
   },
   {
@@ -246,7 +246,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:52:03Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0a4zL884"
   },
   {
@@ -256,10 +256,10 @@
    "matchTitle": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Blister Quádruplo",
    "url": "https://www.amazon.com.br/dp/B0H3Q1XTG4?tag=tcgpricehunter-20",
    "price": 50.34,
-   "seller": "Flower Cases",
+   "seller": "Dorémi Brinquedos",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-25T09:52:08Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B00KWKjgN"
   },
   {
@@ -268,11 +268,11 @@
    "title": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Advanced Trainer Box - Português, Jogo de Cartas",
    "matchTitle": "Pokémon TCG: Mega Evolução - Escuridão Absoluta - Treinador Avançado - Português, Jogo de Cartas",
    "url": "https://www.amazon.com.br/dp/B0H3QFF8Q7?tag=tcgpricehunter-20",
-   "price": 379.05,
-   "seller": "Flower Cases",
+   "price": 399.99,
+   "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:52:12Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0eckCZFL"
   },
   {
@@ -284,7 +284,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:52:17Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0bvI7S72"
   },
   {
@@ -296,7 +296,7 @@
    "seller": "Planetoy Online",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:52:22Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0aAvi27x"
   },
   {
@@ -308,7 +308,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:52:27Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0ih5EX6z"
   },
   {
@@ -320,7 +320,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-25T09:52:31Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B03gfQafq"
   },
   {
@@ -332,7 +332,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:52:36Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B00Klzwjh"
   },
   {
@@ -344,7 +344,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:52:40Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B093qg8JC"
   },
   {
@@ -356,7 +356,7 @@
    "seller": "Two Head Games",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-25T09:52:44Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B06nq65qD"
   },
   {
@@ -368,7 +368,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:52:48Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0iCvRlnK"
   },
   {
@@ -380,7 +380,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:52:53Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B04V893bH"
   },
   {
@@ -392,7 +392,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:52:57Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0fBh5JMB"
   },
   {
@@ -403,8 +403,8 @@
    "price": 23.9,
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:53:01Z",
+   "stockNote": "Somente 10 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B06HaYjBe"
   },
   {
@@ -416,7 +416,7 @@
    "seller": "Dalaran Games",
    "fulfilledBy": "seller",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:53:05Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B07AvTTIX"
   },
   {
@@ -424,11 +424,11 @@
    "asin": "B0HFTFK3WR",
    "title": "Pokémon - Desafio Estratégico - Megaevolução Escuridão Absoluta Jogo de TCG Copag",
    "url": "https://www.amazon.com.br/dp/B0HFTFK3WR?tag=tcgpricehunter-20",
-   "price": null,
-   "seller": null,
-   "fulfilledBy": null,
-   "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:53:10Z",
+   "price": 90.15,
+   "seller": "eFácil Oficial",
+   "fulfilledBy": "seller",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0gUk7hyy"
   },
   {
@@ -439,8 +439,8 @@
    "price": 124.45,
    "seller": "Store Zavi",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 4 em estoque.",
-   "capturedAt": "2026-11-25T09:53:16Z",
+   "stockNote": "Somente 3 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0g2dlGbn"
   },
   {
@@ -448,11 +448,11 @@
    "asin": "B0FL2NHLD7",
    "title": "Pokémon TCG, Blister Unitário com 6 Cartas, MegaExpansão ME01",
    "url": "https://www.amazon.com.br/dp/B0FL2NHLD7?tag=tcgpricehunter-20",
-   "price": 19.58,
-   "seller": "Giz Collore",
+   "price": 19.99,
+   "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:53:21Z",
+   "stockNote": "Somente 2 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0j90n6i6"
   },
   {
@@ -464,7 +464,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:53:25Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0eCDbuhb"
   },
   {
@@ -472,11 +472,11 @@
    "asin": "B0GVVN4T41",
    "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - 3-Pack Blister - Português",
    "url": "https://www.amazon.com.br/dp/B0GVVN4T41?tag=tcgpricehunter-20",
-   "price": 39.6,
-   "seller": "Flower Cases",
-   "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:53:29Z",
+   "price": null,
+   "seller": null,
+   "fulfilledBy": null,
+   "stockNote": "Sem oferta em destaque",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "matchTitle": "Pokémon TCG: Mega Evolução - Caos Ascendente - Blister Triplo - Português",
    "shortUrl": "https://link.amazon/B065YtcFr"
   },
@@ -485,11 +485,11 @@
    "asin": "B0FWKQGPBX",
    "title": "Pokémon TCG Ferramentas de Treinador Fezandipiti Ex 94 Cartas",
    "url": "https://www.amazon.com.br/dp/B0FWKQGPBX?tag=tcgpricehunter-20",
-   "price": 168.14,
-   "seller": "Amazon.com.br",
+   "price": 166.15,
+   "seller": "JRSP VARIEDADES",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:53:35Z",
+   "stockNote": "Somente 9 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B05MW9CBR"
   },
   {
@@ -500,8 +500,8 @@
    "price": 69.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-25T09:53:39Z",
+   "stockNote": "Somente 2 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B03zz45UY"
   },
   {
@@ -509,11 +509,11 @@
    "asin": "B0DQWV176X",
    "title": "Deck Pokemon Charizard Ex Batalha De Liga Copag",
    "url": "https://www.amazon.com.br/dp/B0DQWV176X?tag=tcgpricehunter-20",
-   "price": 154.9,
-   "seller": "Starhouse Mega Store",
+   "price": 132.9,
+   "seller": "Livraria Leitura plaza niteroi",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 9 em estoque.",
-   "capturedAt": "2026-11-25T09:53:43Z",
+   "stockNote": "Somente 6 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0cqjcmaJ"
   },
   {
@@ -521,11 +521,11 @@
    "asin": "B0G4S5XDZX",
    "title": "Pokémon TCG, Coleção Mega Venusaur Ex, Carta Laminada Promocional",
    "url": "https://www.amazon.com.br/dp/B0G4S5XDZX?tag=tcgpricehunter-20",
-   "price": 188.09,
-   "seller": "Dorémi Brinquedos",
+   "price": 185.24,
+   "seller": "AWEMAX",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 10 em estoque.",
-   "capturedAt": "2026-11-25T09:53:48Z",
+   "stockNote": "Somente 4 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0gN44m70"
   },
   {
@@ -537,7 +537,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:53:53Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B02bRfYoC"
   },
   {
@@ -549,7 +549,7 @@
    "seller": "Starhouse Mega Store",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:53:58Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0jb1h39p"
   },
   {
@@ -557,11 +557,11 @@
    "asin": "B0HM5K4KQF",
    "title": "Pokémon TCG Celebração De 30 Anos Box Coleção PT BR Greninja Ex Original Copag",
    "url": "https://www.amazon.com.br/dp/B0HM5K4KQF?tag=tcgpricehunter-20",
-   "price": null,
-   "seller": null,
-   "fulfilledBy": null,
-   "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:54:03Z",
+   "price": 541.49,
+   "seller": "Planetoy Online",
+   "fulfilledBy": "amazon",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B08hDfT7E"
   },
   {
@@ -569,11 +569,11 @@
    "asin": "B0G26MHQLB",
    "title": "Pokemon ME02 Fogo Fantasmagórico Qnt.Cartas:25,Blister:Quádruplo, Papel",
    "url": "https://www.amazon.com.br/dp/B0G26MHQLB?tag=tcgpricehunter-20",
-   "price": 66.4,
-   "seller": "CAROLINE F",
+   "price": 50.53,
+   "seller": "Dorémi Brinquedos",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:54:08Z",
+   "stockNote": "Somente 2 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0bFvfDeW"
   },
   {
@@ -584,8 +584,8 @@
    "price": 398.05,
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-25T09:54:13Z",
+   "stockNote": "Somente 1 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0ccZVeFK"
   },
   {
@@ -593,11 +593,11 @@
    "asin": "B0F2BDXW4J",
    "title": "The Pokémon TCG: Scarlet & Violet—Destined Rivals Elite Trainer Box",
    "url": "https://www.amazon.com.br/dp/B0F2BDXW4J?tag=tcgpricehunter-20",
-   "price": null,
-   "seller": null,
-   "fulfilledBy": null,
-   "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:54:18Z",
+   "price": 1235.12,
+   "seller": "J & M COLLECTIBLES",
+   "fulfilledBy": "amazon",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0dPAYKcX"
   },
   {
@@ -605,11 +605,11 @@
    "asin": "B0GYVHLP4L",
    "title": "Pokémon TCG: Mega Evolution - Pitch Black - Elite Trainer Box - Inglês, Jogo de Cartas",
    "url": "https://www.amazon.com.br/dp/B0GYVHLP4L?tag=tcgpricehunter-20",
-   "price": 409.9,
-   "seller": "Amazon.com.br",
+   "price": 389.4,
+   "seller": "PlaymatLindoia",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:54:24Z",
+   "stockNote": "Somente 5 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0aIQLwGG"
   },
   {
@@ -621,7 +621,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-25T09:54:28Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0fWoKIlS"
   },
   {
@@ -633,7 +633,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:54:33Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0fOPX9ys"
   },
   {
@@ -645,7 +645,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 6 em estoque.",
-   "capturedAt": "2026-11-25T09:54:38Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B04z6eKFC"
   },
   {
@@ -653,11 +653,11 @@
    "asin": "B0FVY433DG",
    "title": "Pokémon TCG, Box Display ME02 Fogo Fantasmagórico, Carta Colecionável",
    "url": "https://www.amazon.com.br/dp/B0FVY433DG?tag=tcgpricehunter-20",
-   "price": 566.33,
-   "seller": "Flower Cases",
-   "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:54:43Z",
+   "price": null,
+   "seller": null,
+   "fulfilledBy": null,
+   "stockNote": "Sem oferta em destaque",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0imwCaW3"
   },
   {
@@ -669,7 +669,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:54:48Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0eXB1pmy"
   },
   {
@@ -681,7 +681,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:54:53Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0hQOn8fo"
   },
   {
@@ -693,7 +693,7 @@
    "seller": "Planetoy Online",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-25T09:54:58Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0bAWy1LG"
   },
   {
@@ -702,10 +702,10 @@
    "title": "Blister Triplo Pokemon Megaevolução Drifblim Copag",
    "url": "https://www.amazon.com.br/dp/B0FST1GHNS?tag=tcgpricehunter-20",
    "price": 48.92,
-   "seller": "M K SUPRIMENTOS INDUSTRIAIS LT",
+   "seller": "M K SUPRIMENTOS INDUSTRIAIS LTDA",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:04Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0f7D4Q9g"
   },
   {
@@ -717,7 +717,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:08Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "matchTitle": "Pokémon TCG: Mega Evolution - Perfect Order - Blister Triplo - Inglês",
    "shortUrl": "https://link.amazon/B03StFz5B"
   },
@@ -730,7 +730,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-25T09:55:13Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B031LguOd"
   },
   {
@@ -742,7 +742,7 @@
    "seller": "Planetoy Online",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:18Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B02snJ8qy"
   },
   {
@@ -754,7 +754,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:55:23Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0je7fupq"
   },
   {
@@ -762,11 +762,11 @@
    "asin": "B0GYTWKXTR",
    "title": "Pokémon TCG: Mega Evolution - Pitch Black - 3-Pack Blister - Inglês, Jogo de Cartas",
    "url": "https://www.amazon.com.br/dp/B0GYTWKXTR?tag=tcgpricehunter-20",
-   "price": 129.9,
-   "seller": "Amazon.com.br",
+   "price": 123.4,
+   "seller": "Capital TCG",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:29Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "matchTitle": "Pokémon TCG: Mega Evolution - Pitch Black - Blister Triplo - Inglês, Jogo de Cartas",
    "shortUrl": "https://link.amazon/B0imkpEGv"
   },
@@ -779,7 +779,7 @@
    "seller": "SUMMER GEEK",
    "fulfilledBy": "seller",
    "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-25T09:55:33Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B04QQlYdn"
   },
   {
@@ -791,7 +791,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:55:37Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0bBnCkwN"
   },
   {
@@ -803,7 +803,7 @@
    "seller": "BatatinhaBrinquedos",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:55:41Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0iqQs14o"
   },
   {
@@ -815,7 +815,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:46Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B016qlO7S"
   },
   {
@@ -827,7 +827,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:50Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0eFIUqAe"
   },
   {
@@ -839,7 +839,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:54Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B085YaR86"
   },
   {
@@ -847,11 +847,11 @@
    "asin": "B0H27L3TKW",
    "title": "Pokémon TCG: Mega Evolution - Pitch Black - Sleeved Booster - Inglês",
    "url": "https://www.amazon.com.br/dp/B0H27L3TKW?tag=tcgpricehunter-20",
-   "price": 32.99,
-   "seller": "Amazon.com.br",
+   "price": 34.99,
+   "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:55:59Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B00YVFg96"
   },
   {
@@ -863,7 +863,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:56:05Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0fRkgy43"
   },
   {
@@ -875,7 +875,7 @@
    "seller": "Web StoreML",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:56:09Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0f7ADqG9"
   },
   {
@@ -887,7 +887,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:56:14Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0h5KF9Ls"
   },
   {
@@ -895,11 +895,11 @@
    "asin": "B0DLQJ613B",
    "title": "Pokémon TCG: Scarlet & Violet—Prismatic Evolutions Poster Collection",
    "url": "https://www.amazon.com.br/dp/B0DLQJ613B?tag=tcgpricehunter-20",
-   "price": 441.31,
-   "seller": "Kings Games",
+   "price": 346.91,
+   "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": null,
-   "capturedAt": "2026-11-25T09:56:19Z",
+   "stockNote": "Somente 4 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B00m96bFS"
   },
   {
@@ -907,11 +907,11 @@
    "asin": "B0GMRGBD7N",
    "title": "Blister Unitário Sortido Fogo Fantasmagórico 6 Cartas Copag",
    "url": "https://www.amazon.com.br/dp/B0GMRGBD7N?tag=tcgpricehunter-20",
-   "price": 20,
+   "price": 20.0,
    "seller": "SUMMER GEEK",
    "fulfilledBy": "seller",
    "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-25T09:56:24Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B08SB7NFQ"
   },
   {
@@ -923,7 +923,7 @@
    "seller": "Two Head Games",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:56:29Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B08CSW1nu"
   },
   {
@@ -935,7 +935,7 @@
    "seller": "Domaingames",
    "fulfilledBy": "seller",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:56:34Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0fUrR3ta"
   },
   {
@@ -947,7 +947,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:56:39Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B02b9JsaX"
   },
   {
@@ -959,7 +959,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:56:44Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B00QsK9j1"
   },
   {
@@ -972,7 +972,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:56:49Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B03JnJleZ"
   },
   {
@@ -985,7 +985,7 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:56:55Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0glWrX1Y"
   },
   {
@@ -993,11 +993,11 @@
    "asin": "B0HK1B2HMW",
    "title": "Pokémon TCG: Mega Evolution - Reinado Delta - Sleeved Booster - Português",
    "url": "https://www.amazon.com.br/dp/B0HK1B2HMW?tag=tcgpricehunter-20",
-   "price": 13.99,
+   "price": 11.99,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:56:59Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0e3TLiFY"
   },
   {
@@ -1006,11 +1006,11 @@
    "title": "Pokémon TCG: Mega Evolution - Reinado Delta - Advanced Trainer Box - Português",
    "matchTitle": "Pokémon TCG: Mega Evolution - Reinado Delta - Treinador Avançado - Português",
    "url": "https://www.amazon.com.br/dp/B0HK1KYQ6G?tag=tcgpricehunter-20",
-   "price": 385.35,
+   "price": 299.9,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:57:04Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0fvZ645Q"
   },
   {
@@ -1021,8 +1021,8 @@
    "price": 169.89,
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 8 em estoque.",
-   "capturedAt": "2026-11-25T09:57:09Z",
+   "stockNote": "Somente 7 em estoque.",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0et5vPo0"
   },
   {
@@ -1034,7 +1034,7 @@
    "seller": null,
    "fulfilledBy": null,
    "stockNote": "Sem oferta em destaque",
-   "capturedAt": "2026-11-25T09:57:14Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0hLTC93g"
   },
   {
@@ -1046,7 +1046,7 @@
    "seller": "Two Head Games",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 10 em estoque.",
-   "capturedAt": "2026-11-25T09:57:18Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0gBWEsMN"
   },
   {
@@ -1058,7 +1058,7 @@
    "seller": "PlaymatLindoia",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:57:23Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0jfM0V9N"
   },
   {
@@ -1070,7 +1070,7 @@
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
    "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:57:27Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B06aTPalg"
   },
   {
@@ -1078,11 +1078,11 @@
    "asin": "B0HMDDZ7BN",
    "title": "Pokémon Celebração de 30 anos – Baralho de Batalha Umbreon ex",
    "url": "https://www.amazon.com.br/dp/B0HMDDZ7BN?tag=tcgpricehunter-20",
-   "price": 177.9,
-   "seller": "Limiar Games",
+   "price": 149.99,
+   "seller": "lojailusoe",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:57:31Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B02mrIndw"
   },
   {
@@ -1090,11 +1090,11 @@
    "asin": "B0HMDJB39F",
    "title": "Pokémon Celebração de 30 anos – Baralho de Batalha Espeon ex",
    "url": "https://www.amazon.com.br/dp/B0HMDJB39F?tag=tcgpricehunter-20",
-   "price": 189.99,
-   "seller": "Pokenino",
+   "price": 112.89,
+   "seller": "REINO ENCANTADO DA CRIANÇA",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 8 em estoque.",
-   "capturedAt": "2026-11-25T09:57:35Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B0a3IfZTH"
   },
   {
@@ -1102,11 +1102,11 @@
    "asin": "B0HPYSVCPF",
    "title": "Pokémon - Desafio Estratégico - Megaevolução Caos Ascendente - Jogo de TCG",
    "url": "https://www.amazon.com.br/dp/B0HPYSVCPF?tag=tcgpricehunter-20",
-   "price": 150.95,
-   "seller": "Colecione Express",
+   "price": 132.99,
+   "seller": "WTS Store Ltda",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-25T09:57:40Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B02dyeX4f"
   },
   {
@@ -1118,10 +1118,10 @@
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-25T09:57:45Z",
+   "capturedAt": "2026-11-26T21:03:00Z",
    "shortUrl": "https://link.amazon/B01flmEdq"
   }
  ],
- "capturadoEm": "2026-11-20T13:48:00Z",
+ "capturadoEm": "2026-11-26T21:03:00Z",
  "shortUrlNota": "shortUrl: link curto gerado pelo dono na SiteStripe (17/10/2026, identificação tcgpricehunter-20) para os bots de Telegram/WhatsApp. O site continua usando url (www.amazon.com.br/dp/<ASIN>?tag=...), que mostra o produto e a tag."
 }

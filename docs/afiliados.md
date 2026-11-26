@@ -141,3 +141,13 @@ Pedido do dono: atualizar os links de afiliado de todos os produtos Pokémon TCG
 - **Amazon:** os 92 ASINs relidos (oferta em destaque, 13:43–13:48 UTC): 73 com preço, 19 sem oferta em destaque. Não entrou ASIN novo: a SiteStripe passou a devolver link curto `amzn.to` (o site só aceita `link.amazon`), e os 5 candidatos casados com produto do site ficaram de fora até essa decisão.
 - **Shopee:** busca no Portal de Afiliados (22 termos, até 150 resultados cada, ~2.000 anúncios). Entraram só anúncios de uma opção, com estoque, casados por `src/match.js` com confiança de 0,8 ou mais, até 3 mais baratos por produto: 199 em `shopee-ofertas.json` (34 relidos, 165 novos; 101 produtos) e 140 links novos em `shopee.json` (Link personalizado, Sub ID `tcgpricehunter`). Ficaram de fora 5 anúncios que o matcher casou com o produto errado (packs de "19/25 cartas" e "cartas das fotos" chamados de combo; "booster" de 36 cartas).
 - **Cupons (`config/social-cupons.json`):** entrou 1 cupom geral do ML sem nome de campanha (10% OFF, mínimo R$ 29, limite R$ 20, até 23/11); ficaram os da Newstation Sorocaba e o BRINQU3DOS15 da Amazon (até 30/11); os 5 códigos da Shopee de 18/11 venceram e saíram. Nenhum código novo da Shopee confirmado.
+
+## 26/11/2026: lote completo das três lojas
+
+Pedido do dono: atualizar os links de afiliado de todos os produtos Pokémon TCG nas três lojas (foco em packs, blisters e produtos com desconto), trazer os cupons ativos e publicar no site. Lido no Chrome do dono, com as sessões de afiliado dele.
+
+- **Mercado Livre:** 45 anúncios novos em `anuncios` (total 4.851), etiqueta `tcgpricehunter`, gerados da URL `MLB-<id>-_JM` (nunca `/p/`). Só o gerador de links foi usado: o robots.txt do ML proíbe leitura por agente de IA e a API devolve 403 desde 23/11, então preços, estoque e cupons do ML não foram lidos.
+- **Amazon:** 92 ASINs relidos (21:03–21:07 UTC): 70 com oferta em destaque, 22 sem. Nenhum ASIN novo (sem `link.amazon` da SiteStripe).
+- **Shopee:** 345 ofertas em `shopee-ofertas.json` (27 relidas, 33 novas) e 845 links em `shopee.json` (Sub ID `tcgpricehunter`). Fora: três anúncios com preço fora da curva, anúncios de várias opções e vendedores de outros nichos.
+- **Cupons:** `config/social-cupons.json` não foi alterado; nenhum cupom novo confirmado, os existentes vencem entre 29/11 e 21/12. Cupons do ML e da Shopee precisam de checagem do dono.
+- **Pendência do Portal da Shopee:** aviso de informações de pagamento e fiscais para receber comissões.
