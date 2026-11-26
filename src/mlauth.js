@@ -70,22 +70,60 @@ export async function accessToken({ marginMs = 30 * 60e3 } = {}) {
 // o app inteiro com 403 "PolicyAgent" mesmo com token dentro do prazo). Duas leituras leves:
 // /users/me (o token vale?) e a busca de catálogo (o app pode ler dados?). Nunca devolve o token.
 const API = 'https://api.mercadolibre.com';
-export async function probe(token, { timeoutMs = OAUTH_TIMEOUT_MS } = {}) {
+// mlb: id de anúncio (MLB…) para testar /items; quem chama obtém de api/_lib/affiliates.mjs (src/ não lê afiliados).
+export async function probe(token, { timeoutMs = OAUTH_TIMEOUT_MS, mlb = null } = {}) {
   const { getJson } = await import('./http.js');   // cliente com guarda de URL (sem fetch direto aqui)
-  const hit = async (path) => {
-    try { await getJson(API + path, { headers: { authorization: `Bearer ${token}` }, timeout: timeoutMs }); return { status: 200, policy: false, message: '' }; } catch (e) {
+  // withBody: devolve o JSON em `json` (uso interno; nunca é logado nem sai de probe).
+  const hit = async (path, withBody = false) => {
+    try { const j = await getJson(API + path, { headers: { authorization: `Bearer ${token}` }, timeout: timeoutMs }); return { status: 200, policy: false, message: '', ...(withBody ? { json: j } : {}) }; } catch (e) {
       const status = e.httpStatus ?? e.status ?? 0;
       const body = String(e.forensics?.bodyHead || '');
       return { status, policy: /PolicyAgent/.test(body), message: (status ? '' : String(e.message || e)).slice(0, 120) };
     }
   };
   const me = await hit('/users/me');
-  const catalog = me.status === 200 ? await hit('/products/search?status=active&site_id=MLB&q=pokemon%20copag&limit=1') : null;
+  const catalog = me.status === 200 ? await hit('/products/search?status=active&site_id=MLB&q=pokemon%20copag&limit=1', true) : null;
   const ok = me.status === 200 && catalog?.status === 200;
   let reason = null;
   if (!ok) {
     const bad = me.status !== 200 ? { where: 'conta (/users/me)', ...me } : { where: 'catálogo', ...catalog };
     reason = `${bad.where} respondeu ${bad.status || 'sem resposta'}${bad.policy ? ' (bloqueio de política do ML: PolicyAgent)' : ''}${bad.message ? `: ${bad.message}` : ''}`;
   }
-  return { ok, me: me.status, catalog: catalog?.status ?? null, policy: me.policy || !!catalog?.policy, reason };
+  const out = { ok, me: me.status, catalog: catalog?.status ?? null, policy: me.policy || !!catalog?.policy, reason };
+  if (ok) out.endpoints = await probeEndpoints(hit, catalog.json, mlb);
+  return out;
+}
+
+// Diagnóstico por endpoint (só código HTTP; nunca corpo, preço ou token). Leituras sequenciais.
+async function probeEndpoints(hit, catalogJson, mlb) {
+  const short = (r, extra = {}) => ({ status: r.status, policy: !!r.policy, ...extra });
+  const ep = {};
+  const pid = catalogJson?.results?.[0]?.id;
+  if (pid) {
+    const id = encodeURIComponent(String(pid));
+    const prod = await hit(`/products/${id}`, true);
+    ep.produto = short(prod, { buyBox: typeof prod.json?.buy_box_winner?.price === 'number' });
+    ep.produtoItems = short(await hit(`/products/${id}/items?limit=1`));
+  } else { ep.produto = null; ep.produtoItems = null; }
+  if (mlb && /^MLB\d+$/.test(mlb)) {
+    ep.item = short(await hit(`/items/${mlb}`));
+    const mg = await hit(`/items?ids=${mlb}`, true);
+    const code = Array.isArray(mg.json) ? mg.json[0]?.code : undefined;
+    ep.itemsMulti = short(mg, { code: Number.isInteger(code) ? code : null });
+  } else { ep.item = null; ep.itemsMulti = null; }
+  ep.siteSearch = short(await hit('/sites/MLB/search?q=pokemon&limit=1'));
+  return ep;
+}
+
+/** Uma linha legível da sonda de endpoints (só códigos; sem token, corpo ou preço). */
+export function endpointsLine(ep) {
+  if (!ep) return null;
+  const f = (n, r, extra = '') => `${n}=${r ? `${r.status}${r.policy ? ' PolicyAgent' : ''}${extra}` : 'n/d'}`;
+  return 'Sonda de endpoints: ' + [
+    f('produto', ep.produto, ep.produto ? ` (buyBox ${ep.produto.buyBox ? 'sim' : 'não'})` : ''),
+    f('produto/items', ep.produtoItems),
+    f('item', ep.item),
+    f('multiget', ep.itemsMulti, ep.itemsMulti?.code != null ? ` (item ${ep.itemsMulti.code})` : ''),
+    f('busca', ep.siteSearch),
+  ].join(' · ');
 }
