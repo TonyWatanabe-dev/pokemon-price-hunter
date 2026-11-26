@@ -151,3 +151,11 @@ Pedido do dono: atualizar os links de afiliado de todos os produtos Pokémon TCG
 - **Shopee:** 345 ofertas em `shopee-ofertas.json` (27 relidas, 33 novas) e 845 links em `shopee.json` (Sub ID `tcgpricehunter`). Fora: três anúncios com preço fora da curva, anúncios de várias opções e vendedores de outros nichos.
 - **Cupons:** `config/social-cupons.json` não foi alterado; nenhum cupom novo confirmado, os existentes vencem entre 29/11 e 21/12. Cupons do ML e da Shopee precisam de checagem do dono.
 - **Pendência do Portal da Shopee:** aviso de informações de pagamento e fiscais para receber comissões.
+
+## 26/11/2026: Shopee por planilha do Portal
+
+Pedido do dono: importar os links das 4 planilhas do "Obter Link em Massa" (Sub ID `tcgpricehunter`), exportadas em 26/11 entre 20:50 e 20:59 UTC (horário do nome do arquivo convertido de Brasília). Planilha não traz estoque nem número de opções: o filtro de várias opções é pelo título.
+
+- **Planilhas:** 101 linhas, 96 anúncios únicos (repetido entre arquivos: vale o mais recente).
+- **`shopee-ofertas.json`:** 65 relidos (preço e hora; nenhum preço mudou), 0 novos. `shopee.json`: 0 links novos (links existentes mantidos). Nenhum produto ganhou a primeira oferta da Shopee.
+- **Fora (31):** 12 já recusados em 03/11 (sem produto, faixa de preço por variação, vendedor de outro nicho, várias opções); 7 com confiança do matcher abaixo de 0,8 (ME01 e SV1); 5 sem produto no catálogo (booster box sem coleção, Pokémon GO, "1 pacote", "pack 36 booster"); kit de 2 blisters, 10 blisters e "Diversos"; 2 blisters quádruplos com preço fora do padrão (R$ 198,90 e R$ 248,90); 1 "booster de 36 cartas" que é box; 1 ETB acima do limite de 3 mais baratos.
