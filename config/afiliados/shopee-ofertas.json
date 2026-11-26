@@ -2,7 +2,7 @@
  "program": "shopee",
  "updatedAt": "2026-11-26",
  "regras": "Anúncios da Shopee com link de afiliado do dono (config/afiliados/shopee.json), lidos pelo dono no Chrome. Entram só produtos selados, casados por src/match.js com confiança de 0,8 ou mais, sem anúncio de várias opções e sem vendedor de fora de TCG. price = preço sem cupom (o \"ou R$\" da página); priceCupom = o valor em destaque, que a Shopee mostra com cupom. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score.",
- "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos. Lote de 13/11/2026 (busca do dono no Chrome, Shopee ordenada por mais vendidos, links do Portal de Afiliados com Sub ID tcgpricehunter): 8 anúncios relidos (preço e link); preço exibido na busca (sem cupom), título normalizado com coleção e formato, horário aproximado da leitura. Lote de 18/11/2026 (23:19–23:21 BRT, UTC 19/11 02:19–02:21; busca do Portal de Afiliados por 'pokemon blister', 'blister triplo/quadruplo/duplo pokemon', 'pokemon booster copag' e 'pokemon box copag lacrado', 50 por busca; preço da oferta sem cupom e loja lidos do Portal; anúncios de várias opções e sem estoque ficaram fora): 27 relidos e 82 anúncios novos, 63 links novos do Link personalizado com Sub ID tcgpricehunter. Lote de 20/11/2026 (13:50–13:58 UTC, Portal de Afiliados, busca por packs, blisters unitário a quíntuplo, boosters, combos, ETB, display, 30 anos e coleções; anúncio de uma opção só, com estoque, casado por src/match.js com confiança ≥ 0,8; até 3 mais baratos por produto): 34 relidos e 165 novos; links com Sub ID tcgpricehunter. Lote de 26/11/2026 (20:56 UTC, Portal de Afiliados, buscas por blister unitário/duplo/triplo/quádruplo, booster, box, ETB e coleções; geração em massa com Sub ID tcgpricehunter; casados por src/match.js com confiança ≥ 0,8, anúncio de uma opção só e com estoque na leitura da busca): 27 relidos (preço e hora) e 33 novos; sem vendedor de fora de TCG; 3 anúncios com preço muito acima do padrão do formato ficaram de fora.",
+ "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos. Lote de 13/11/2026 (busca do dono no Chrome, Shopee ordenada por mais vendidos, links do Portal de Afiliados com Sub ID tcgpricehunter): 8 anúncios relidos (preço e link); preço exibido na busca (sem cupom), título normalizado com coleção e formato, horário aproximado da leitura. Lote de 18/11/2026 (23:19–23:21 BRT, UTC 19/11 02:19–02:21; busca do Portal de Afiliados por 'pokemon blister', 'blister triplo/quadruplo/duplo pokemon', 'pokemon booster copag' e 'pokemon box copag lacrado', 50 por busca; preço da oferta sem cupom e loja lidos do Portal; anúncios de várias opções e sem estoque ficaram fora): 27 relidos e 82 anúncios novos, 63 links novos do Link personalizado com Sub ID tcgpricehunter. Lote de 20/11/2026 (13:50–13:58 UTC, Portal de Afiliados, busca por packs, blisters unitário a quíntuplo, boosters, combos, ETB, display, 30 anos e coleções; anúncio de uma opção só, com estoque, casado por src/match.js com confiança ≥ 0,8; até 3 mais baratos por produto): 34 relidos e 165 novos; links com Sub ID tcgpricehunter. Lote de 26/11/2026 (20:56 UTC, Portal de Afiliados, buscas por blister unitário/duplo/triplo/quádruplo, booster, box, ETB e coleções; geração em massa com Sub ID tcgpricehunter; casados por src/match.js com confiança ≥ 0,8, anúncio de uma opção só e com estoque na leitura da busca): 27 relidos (preço e hora) e 33 novos; sem vendedor de fora de TCG; 3 anúncios com preço muito acima do padrão do formato ficaram de fora. Lote de 26/11/2026 (20:50–20:59 UTC, horário de cada planilha convertido de Brasília): 4 planilhas do \"Obter Link em Massa\" do Portal de Afiliados exportadas pelo dono (Sub ID tcgpricehunter; os termos de busca não constam nas planilhas), 101 linhas e 96 anúncios únicos (repetido entre planilhas: vale a mais recente); casados por src/match.js com confiança ≥ 0,8, anúncio de uma opção só (filtro pelo título), até 3 mais baratos por produto: 65 relidos (preço, título e hora; preços iguais aos da leitura anterior, links existentes mantidos), 0 novos em ofertas e 0 links novos em shopee.json; 31 ficaram de fora (12 já recusados em 03/11, 7 com confiança do matcher abaixo de 0,8, 5 sem produto no catálogo, 2 de quantidade/várias opções (kit de 2 blisters, 10 blisters, \"Diversos\"), 2 com preço fora do padrão para blister quádruplo, 1 box de 36 cartas confundido com booster e 1 acima do limite de 3 por produto). A planilha não traz estoque nem número de opções (o filtro de várias opções é pelo título) e o anúncio estava listado no Portal no momento da exportação.",
  "ofertas": [
   {
    "productId": "me01-blister4",
@@ -26,7 +26,7 @@
    "seller": "Rodobanca",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-combo",
@@ -62,7 +62,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister1",
@@ -230,7 +230,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-26T20:50:32Z"
   },
   {
    "productId": "me04-blister3",
@@ -266,7 +266,7 @@
    "seller": "GOLD PAGE",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-26T20:50:32Z"
   },
   {
    "productId": "me03-blister1",
@@ -278,7 +278,7 @@
    "seller": "Baruque Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-26T20:50:32Z"
   },
   {
    "productId": "me04-blister4",
@@ -290,7 +290,7 @@
    "seller": "Poke X TCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-26T20:50:32Z"
   },
   {
    "productId": "me05-blister4",
@@ -326,7 +326,7 @@
    "seller": "O Recanto do Nerd",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-26T20:50:32Z"
   },
   {
    "productId": "c30-blister2",
@@ -787,14 +787,14 @@
   {
    "productId": "me05-blister4",
    "item": "1918575319/58272661703",
-   "title": "Blister Quádruplo Pokémon Me05 Escuridão Absoluta Copag Blister Quádruplo Pokémon Me05 Esc",
+   "title": "Blister Quádruplo Pokémon Me05 Escuridão Absoluta Copag Blister Quádruplo Pokémon Me05 Escuridão Absoluta Português",
    "url": "https://s.shopee.com.br/9Kjvi3t3FI",
    "price": 64.11,
    "priceCupom": null,
    "seller": "MundooBella",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "sv6_5-blister3",
@@ -890,7 +890,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-blister3",
@@ -907,14 +907,14 @@
   {
    "productId": "c30-blister3",
    "item": "1182269567/58269580570",
-   "title": "Pokémon Blister Triplo Celebração 30 Anos - 3 Boosters + Adesivos + Carta Promo - Portuguê",
+   "title": "Pokémon Blister Triplo Celebração 30 Anos - 3 Boosters + Adesivos + Carta Promo - Português Copag",
    "url": "https://s.shopee.com.br/AAJ2hapsYX",
    "price": 175.9,
    "priceCupom": null,
    "seller": "Fun GC",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister3",
@@ -938,7 +938,7 @@
    "seller": "Rodobanca",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister3",
@@ -1034,7 +1034,7 @@
    "seller": "Hunter Card Game",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister3",
@@ -1058,7 +1058,7 @@
    "seller": "Bazar Rosa Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister3",
@@ -1166,7 +1166,7 @@
    "seller": "Dias tcg",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-blister4",
@@ -1178,7 +1178,7 @@
    "seller": "Bazar Rosa Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "sv10-blister4",
@@ -1202,7 +1202,7 @@
    "seller": "Alexandre Miniaturas",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister4",
@@ -1298,7 +1298,7 @@
    "seller": "Scoropad Toys",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-blister2",
@@ -1339,14 +1339,14 @@
   {
    "productId": "c30-blister2",
    "item": "1079043874/23595369028",
-   "title": "Pokemon TCG Celebraçao 30 Anos Blister Duplo Moeda Eevee Coelcionavel Ediçao Especial 13 C",
+   "title": "Pokemon TCG Celebraçao 30 Anos Blister Duplo Moeda Eevee Coelcionavel Ediçao Especial 13 Cartas Original Copag",
    "url": "https://s.shopee.com.br/7fbhizzOdp",
    "price": 167.9,
    "priceCupom": null,
    "seller": "Nicck Import",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-blister2",
@@ -1586,7 +1586,7 @@
    "seller": "Dias tcg",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-box36",
@@ -1598,7 +1598,7 @@
    "seller": "Dias tcg",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-combo",
@@ -1627,14 +1627,14 @@
   {
    "productId": "me05-booster",
    "item": "1937234569/58221767135",
-   "title": "POKEMON TCG BOOSTER POKEMON UNITARIO ESCURIDAO ABSOLUTA COPAG -36883",
+   "title": "POKEMON TCG BOOSTER   POKEMON UNITARIO ESCURIDAO ABSOLUTA COPAG -36883",
    "url": "https://s.shopee.com.br/AKcSttpFEb",
    "price": 19.89,
    "priceCupom": null,
    "seller": "Trenzinho Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister4",
@@ -1658,7 +1658,7 @@
    "seller": "Scoropad Toys",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-box36",
@@ -1730,7 +1730,7 @@
    "seller": "Triad'Arte",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-colecao_poster",
@@ -1754,7 +1754,7 @@
    "seller": "Triad'Arte",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-booster",
@@ -1838,7 +1838,7 @@
    "seller": "Coleção Galática",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister4",
@@ -1958,7 +1958,7 @@
    "seller": "Loja Toymania",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister1",
@@ -1970,7 +1970,7 @@
    "seller": "Loja Soli3D",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-blister1",
@@ -1982,7 +1982,7 @@
    "seller": "Bazar Rosa Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-blister1",
@@ -1994,7 +1994,7 @@
    "seller": "Reino Encantado Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-blister1",
@@ -2126,7 +2126,7 @@
    "seller": "Naelu Presentes",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister3",
@@ -2210,7 +2210,7 @@
    "seller": "Kartikeia Jogos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "sv9-blister1",
@@ -3422,7 +3422,7 @@
    "seller": "LukardsTCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-booster",
@@ -3758,7 +3758,7 @@
    "seller": "Packoratcg",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister3",
@@ -3770,31 +3770,31 @@
    "seller": "ICHI TCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister3",
    "item": "810975905/58208701545",
-   "title": "Blister Triplo Pokémon Equilíbrio Perfeito – Makuhita – Produto Oficial Copag 100% em",
+   "title": "Blister Triplo Pokémon Equilíbrio Perfeito – Makuhita – Produto Oficial Copag 100% em português",
    "url": "https://s.shopee.com.br/114nmkOm9t",
    "price": 44.9,
    "priceCupom": null,
    "seller": "Luna Card Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me02-blister3",
    "item": "740278289/58258786161",
-   "title": "BLISTER Triplo Fogo Fantasmagorico COPAG POKÉMON TCG BOOSTER CARTAS LUCARIO GARDEVOIR",
+   "title": "BLISTER Triplo Fogo Fantasmagorico COPAG POKÉMON TCG BOOSTER CARTAS LUCARIO GARDEVOIR EX QUAD PACK",
    "url": "https://s.shopee.com.br/qlNaRPPUs",
    "price": 70,
    "priceCupom": null,
    "seller": "Poke X TCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister4",
@@ -3806,31 +3806,31 @@
    "seller": "LM Cards TCG e 3D",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister4",
    "item": "1789006016/58269647648",
-   "title": "Blister Quádruplo Pokémon TCG Megaevolução Equilíbrio Perfeito ME3 Copag Lacrado Ofic",
+   "title": "Blister Quádruplo Pokémon TCG Megaevolução Equilíbrio Perfeito ME3 Copag Lacrado Oficial Com Carta Promocional",
    "url": "https://s.shopee.com.br/2LaBNCJhSH",
    "price": 69.9,
    "priceCupom": null,
    "seller": "Nerd Loot",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister4",
    "item": "810975905/58208701449",
-   "title": "Blister Quádruplo Pokémon Equilibrio Perfeito – Chikorita – Produto Oficial Copag 100",
+   "title": "Blister Quádruplo Pokémon Equilibrio Perfeito – Chikorita – Produto Oficial Copag 100% em português",
    "url": "https://s.shopee.com.br/2BGlAtKKnG",
    "price": 55.9,
    "priceCupom": null,
    "seller": "Luna Card Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-blister4",
@@ -3842,19 +3842,19 @@
    "seller": "Miau_Geek_",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister4",
    "item": "416424303/23099884028",
-   "title": "Pokémon TCG Blister Quádruplo Caos Ascendente 4 Pack Original Copag Lacrado Promo Tox",
+   "title": "Pokémon TCG Blister Quádruplo Caos Ascendente 4 Pack Original Copag Lacrado Promo Toxel",
    "url": "https://s.shopee.com.br/30psAQHA6T",
    "price": 49.9,
    "priceCupom": null,
    "seller": "Achados_e_Pedidos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me02-blister4",
@@ -3866,7 +3866,7 @@
    "seller": "Hunter Card Game",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "sv9-blister1",
@@ -3878,7 +3878,7 @@
    "seller": "Papelaria Beh",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister1",
@@ -3890,7 +3890,7 @@
    "seller": "Pomps Geek",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister1",
@@ -3902,7 +3902,7 @@
    "seller": "Ri Happy",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister1",
@@ -3914,7 +3914,7 @@
    "seller": "Kleber Variedades",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister1",
@@ -3926,7 +3926,7 @@
    "seller": "LM Cards TCG e 3D",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister1",
@@ -3938,19 +3938,19 @@
    "seller": "M&M Fashion Kids",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "sv10-blister1",
    "item": "912370787/58216289292",
-   "title": "Blister Unitário Rivais Predestinados - Catas Pokémon, produto selado e original COPA",
+   "title": "Blister Unitário Rivais Predestinados - Catas Pokémon, produto selado e original COPAG",
    "url": "https://s.shopee.com.br/5LDmwi8HND",
    "price": 19,
    "priceCupom": null,
    "seller": "Dora Gueiros",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-booster",
@@ -3962,7 +3962,7 @@
    "seller": "Bacanas brinquedos Ltda",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister1",
@@ -3974,7 +3974,7 @@
    "seller": "BMB_Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me04-blister1",
@@ -3986,7 +3986,7 @@
    "seller": "StMa12345",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-blister1",
@@ -3998,7 +3998,7 @@
    "seller": "Fantastic Toys",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-blister1",
@@ -4010,19 +4010,19 @@
    "seller": "Doremi Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-blister2",
    "item": "1142882925/58270903310",
-   "title": "Blister Duplo Pokémon Celebração de 30 Anos com Moeda e Carta Eevee Copag Português O",
+   "title": "Blister Duplo Pokémon Celebração de 30 Anos com Moeda e Carta Eevee Copag Português Original",
    "url": "https://s.shopee.com.br/7VIHWh01yo",
    "price": 123.9,
    "priceCupom": null,
    "seller": "daikin presentes",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me02-booster",
@@ -4034,7 +4034,7 @@
    "seller": "TKU TCG Pokemon",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "sv9-box36",
@@ -4046,19 +4046,19 @@
    "seller": "Jogo Animal",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-etb",
    "item": "1828789822/58268974368",
-   "title": "Caixa do Treinador Avançado Pokémon TCG Equilíbrio Perfeito Copag Elite Trainer Box E",
+   "title": "Caixa do Treinador Avançado Pokémon TCG Equilíbrio Perfeito Copag Elite Trainer Box ETB 20 Boosters em Português",
    "url": "https://s.shopee.com.br/9V3LuMsPvO",
    "price": 479.88,
    "priceCupom": null,
    "seller": "The Dungeon Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me03-etb",
@@ -4070,19 +4070,19 @@
    "seller": "Shiratori-Poke-Loja",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me06-combo",
    "item": "524630721/58272251961",
-   "title": "Combo de Pacotes ME06 MegaEvolução Reinado Delta Mini Display - Mini Box - Booster -",
+   "title": "Combo de Pacotes ME06 MegaEvolução Reinado Delta Mini Display - Mini Box - Booster - Combo - Pokemon Tcg - COPAG",
    "url": "https://s.shopee.com.br/AUvt6Cobtc",
    "price": 250.99,
    "priceCupom": null,
    "seller": "Bazar Rosa Store",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "me05-booster",
@@ -4094,7 +4094,7 @@
    "seller": "Dudu Brinquedos",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-combo",
@@ -4106,7 +4106,7 @@
    "seller": "LM Cards TCG e 3D",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-combo",
@@ -4118,7 +4118,7 @@
    "seller": "Verto TCG",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-etb",
@@ -4130,7 +4130,7 @@
    "seller": "BRINKEDO LEGAL",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   },
   {
    "productId": "c30-blister3",
@@ -4142,7 +4142,7 @@
    "seller": "VVC Brinquedos e Presentes",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:56:00Z"
+   "capturedAt": "2026-11-26T20:59:43Z"
   }
  ],
  "foraDaLista": [
@@ -4222,6 +4222,25 @@
   "464326997/58258411127 — anúncio com faixa de preço por variação (R$ 19.99–R$ 59.99) [lote 03/11]",
   "450761307/58266479432 — não casou com segurança (sem produto, 0) [lote 03/11]",
   "464326997/55913956737 — anúncio com faixa de preço por variação (R$ 58.99–R$ 223.99) [lote 03/11]",
-  "450761307/58217405510 — não casou com segurança (sem produto, 0) [lote 03/11]"
+  "450761307/58217405510 — não casou com segurança (sem produto, 0) [lote 03/11]",
+  "395233850/22694174628 — não casou com segurança (sem produto, 0); \"1 pacote\" [lote 26/11 planilhas]",
+  "336654477/58201143649 — anúncio com várias opções (título com \"Diversos\") [lote 26/11 planilhas]",
+  "1061459383/58268271636 — quantidade diferente do catálogo (kit com 2 blisters triplos) [lote 26/11 planilhas]",
+  "799514988/23498370855 — quantidade diferente do catálogo (10 blisters unitários; vendedor de outro nicho) [lote 26/11 planilhas]",
+  "216530401/18229816797 — não casou com segurança (sem produto, 0); blister triplo Pokémon GO fora do catálogo [lote 26/11 planilhas]",
+  "821171986/58214252907 — não casou com segurança (sem produto, 0); \"pack 36 booster\" (box) sem coleção reconhecida [lote 26/11 planilhas]",
+  "408371725/58255897317 — não casou com segurança (sem produto, 0); booster box sem coleção no título [lote 26/11 planilhas]",
+  "339581566/58201076757 — não casou com segurança (sem produto, 0); booster box sem coleção no título [lote 26/11 planilhas]",
+  "1606212037/45819739154 — matcher confundiu (c30-booster, 0,85): \"booster de 36 cartas\" a R$ 449,99 é box/display, não booster unitário [lote 26/11 planilhas]",
+  "342614274/23494822980 — preço fora do padrão para blister quádruplo (R$ 198,90; 25 cartas); sem outra oferta de referência [lote 26/11 planilhas]",
+  "342614274/58222983190 — preço fora do padrão para blister quádruplo (R$ 248,90; 25 cartas) [lote 26/11 planilhas]",
+  "288492414/22694887249 — não casou com segurança (me01-blister3, 0,75) [lote 26/11 planilhas]",
+  "1383337686/22295083765 — não casou com segurança (me01-blister4, 0,75) [lote 26/11 planilhas]",
+  "400892284/58250037240 — não casou com segurança (me01-blister1, 0,75) [lote 26/11 planilhas]",
+  "329656052/20698025088 — não casou com segurança (sv1-blister1, 0,75) [lote 26/11 planilhas]",
+  "1587866188/23399464351 — não casou com segurança (me01-booster, 0,75) [lote 26/11 planilhas]",
+  "422661618/23033347969 — não casou com segurança (me01-box36, 0,75) [lote 26/11 planilhas]",
+  "288492414/58272764471 — não casou com segurança (me01-blister4, 0,7) [lote 26/11 planilhas]",
+  "372765275/58217970202 — acima do limite de 3 mais baratos do produto (me05-etb) [lote 26/11 planilhas]"
  ]
 }
