@@ -34,6 +34,10 @@ async function aoReceber(msg, sender) {
   if (msg.tipo === 'itens') {
     const lote = acumular(await ler(), msg.loja, msg.itens, dia(new Date()));
     await salvar(lote);
+    if (msg.url) {
+      const { buscas } = await chrome.storage.local.get('buscas');
+      await chrome.storage.local.set({ buscas: marcarBusca(buscas, msg.url, msg.naPagina, Date.now()) });
+    }
     if (sender.tab) {
       chrome.action.setBadgeBackgroundColor({ color: '#FFCB05', tabId: sender.tab.id });
       chrome.action.setBadgeText({ text: String(total(lote, msg.loja)), tabId: sender.tab.id });
