@@ -1,7 +1,7 @@
 {
  "program": "amazon",
  "tag": "tcgpricehunter-20",
- "updatedAt": "2026-11-26",
+ "updatedAt": "2026-11-27",
  "regras": "Só anúncios Pokémon TCG casados por src/match.js com um produto do site e com marca Copag ou Pokémon na página da Amazon. Preço, vendedor e estoque lidos da página do produto na Amazon (oferta em destaque) no momento de capturedAt; o site mostra a data e hora junto do preço. Não é atualizado automaticamente. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score. Quando a Amazon escreve o formato em inglês (\"4-Pack Blister\", \"3-Pack Blister\", \"Advanced Trainer Box\"), matchTitle traz o mesmo título com o nome Copag do formato, e é ele que passa pelo matcher.",
  "origem": "Busca da Amazon Brasil, categoria Cartas de Troca (n:16746755011), lida em 10/10/2026. Preços relidos pelo dono no Chrome em 17/10/2026 (19:04–19:07). Novos ASINs e preços lidos pelo dono no Chrome em 30/10/2026 (10:20–10:46). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (16:09–16:15). Todos os 67 relidos pelo dono no Chrome em 01/11/2026 (22:05–22:17); 0 ASINs novos; 2 saíram para amazon-fora-do-site.json. Todos os 65 relidos pelo dono no Chrome em 02/11/2026 (22:32–22:36, UTC 03/11 01:32–01:36), oferta em destaque. 6 ASINs novos lidos pelo dono no Chrome em 03/11/2026 (23:09, UTC 04/11 02:09), oferta em destaque: 1 blister triplo e 5 Sleeved Booster (o matcher passou a ler \"Sleeved Booster\" como booster avulso). Relidos pelo dono no Chrome em 06/11/2026 (07:58–08:06, UTC 10:58–11:06; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 56 com preço, 15 sem oferta em destaque. Lote do dono de 06/11/2026 10:16–10:20 (BRT): 8 ASINs novos com link curto, 67 relidos. Relidos pelo dono em 07/11/2026 (10:27–10:31 BRT): 38 com preço, 6 sem oferta em destaque. Relidos no Chrome do dono em 10/11/2026 (leitura automática pelo Claude, 2026-11-10T11:42:00Z UTC): 60 com preço, 19 sem oferta em destaque; vendedor lido pelo ID do vendedor; avisos de estoque ('Somente N em estoque') não relidos. Relidos por Claude no Chrome do dono em 16/11/2026 (12:16–12:23 BRT): 59 com preço, 20 sem oferta em destaque. Relidos por Claude no Chrome do dono em 18/11/2026 (23:11–23:15 BRT, UTC 19/11 02:11–02:15): 59 com preço, 20 sem oferta em destaque; vendedor lido em \"Vendido por\" (02:37–02:40 UTC; 7 ASINs mudaram de vendedor/preço nessa releitura e ficaram com a hora dela). 13 ASINs novos (busca da Amazon na categoria Cartas de Troca, 18/11/2026 23:16–23:17 BRT), casados por src/match.js com produto do site e marca Pokémon/Copag, link curto gerado pela SiteStripe (getShortUrl, loja tcgpricehunte-20). Todos os 92 relidos no Chrome do dono em 20/11/2026 (13:43–13:48 UTC): 73 com preço, 19 sem oferta em destaque. Relidos por Claude no Chrome do dono em 25/11/2026 (06:50–06:57 BRT, UTC 09:50–09:57): 68 com oferta em destaque, 24 sem. Relidos por Claude no Chrome do dono em 26/11/2026 (18:03–18:07 BRT, UTC 21:03–21:07): 70 com oferta em destaque, 22 sem.",
  "links": [
@@ -14,7 +14,7 @@
    "seller": "voltxstore",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "capturedAt": "2026-11-27T14:10:45Z",
    "shortUrl": "https://link.amazon/B0894sCU8"
   },
   {
@@ -26,7 +26,7 @@
    "seller": "voltxstore",
    "fulfilledBy": "amazon",
    "stockNote": null,
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "capturedAt": "2026-11-27T14:11:00Z",
    "shortUrl": "https://link.amazon/B0bh6WFJN"
   },
   {
@@ -37,8 +37,8 @@
    "price": 168.15,
    "seller": "voltxstore",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 4 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:11:00Z",
    "shortUrl": "https://link.amazon/B01Bw1QX9"
   },
   {
@@ -70,11 +70,11 @@
    "asin": "B0HFNZP4JX",
    "title": "Pokémon TCG, Celebração de 30 anos – Box Pokémon Coleção com Pôster",
    "url": "https://www.amazon.com.br/dp/B0HFNZP4JX?tag=tcgpricehunter-20",
-   "price": 179.0,
+   "price": 186.73,
    "seller": "voltxstore",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:11:00Z",
    "shortUrl": "https://link.amazon/B05MdmNIS"
   },
   {
@@ -85,8 +85,8 @@
    "price": 50.46,
    "seller": "Mais1",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 5 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:10:45Z",
    "shortUrl": "https://link.amazon/B0esTaoaK"
   },
   {
@@ -205,7 +205,7 @@
    "asin": "B0GWFNG7RG",
    "title": "Pokémon TCG: Mega Evolução - Caos Ascendente - Booster Display - Português",
    "url": "https://www.amazon.com.br/dp/B0GWFNG7RG?tag=tcgpricehunter-20",
-   "price": 389.0,
+   "price": 389,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
    "stockNote": null,
@@ -316,11 +316,11 @@
    "asin": "B0DVTB9ZHF",
    "title": "Pokémon TCG, Blister Unitário EV9 Amigos de Jornada",
    "url": "https://www.amazon.com.br/dp/B0DVTB9ZHF?tag=tcgpricehunter-20",
-   "price": 27.99,
+   "price": 27.98,
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:10:45Z",
    "shortUrl": "https://link.amazon/B03gfQafq"
   },
   {
@@ -355,8 +355,8 @@
    "price": 113.9,
    "seller": "Two Head Games",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:10:45Z",
    "shortUrl": "https://link.amazon/B06nq65qD"
   },
   {
@@ -581,11 +581,11 @@
    "asin": "B0GFZV1ZVV",
    "title": "Pokémon TCG: Mega Evolution - Perfect Order - Elite Trainer Box - Inglês",
    "url": "https://www.amazon.com.br/dp/B0GFZV1ZVV?tag=tcgpricehunter-20",
-   "price": 398.05,
+   "price": 389.99,
    "seller": "Flower Cases",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 1 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:11:07Z",
    "shortUrl": "https://link.amazon/B0ccZVeFK"
   },
   {
@@ -729,8 +729,8 @@
    "price": 50.91,
    "seller": "Amazon.com.br",
    "fulfilledBy": "amazon",
-   "stockNote": "Somente 3 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:10:45Z",
    "shortUrl": "https://link.amazon/B031LguOd"
   },
   {
@@ -778,8 +778,8 @@
    "price": 636.5,
    "seller": "SUMMER GEEK",
    "fulfilledBy": "seller",
-   "stockNote": "Somente 2 em estoque.",
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "stockNote": null,
+   "capturedAt": "2026-11-27T14:11:26Z",
    "shortUrl": "https://link.amazon/B04QQlYdn"
   },
   {
@@ -907,7 +907,7 @@
    "asin": "B0GMRGBD7N",
    "title": "Blister Unitário Sortido Fogo Fantasmagórico 6 Cartas Copag",
    "url": "https://www.amazon.com.br/dp/B0GMRGBD7N?tag=tcgpricehunter-20",
-   "price": 20.0,
+   "price": 20,
    "seller": "SUMMER GEEK",
    "fulfilledBy": "seller",
    "stockNote": "Somente 3 em estoque.",
@@ -935,7 +935,7 @@
    "seller": "Domaingames",
    "fulfilledBy": "seller",
    "stockNote": null,
-   "capturedAt": "2026-11-26T21:03:00Z",
+   "capturedAt": "2026-11-27T14:11:07Z",
    "shortUrl": "https://link.amazon/B0fUrR3ta"
   },
   {
