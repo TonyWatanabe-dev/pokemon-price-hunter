@@ -228,3 +228,21 @@ function round(v) { return Number.isFinite(v) ? Math.round(v * 100) / 100 : null
   n++;
 }
 console.log(`✓ Site só com parceiros: ${n} blocos passaram`);
+
+// ---- Leituras manuais do Mercado Livre e Amazon com tag (27/11/2026) ------------------------------------------------------------
+{
+  const now = new Date('2026-11-27T20:00:00Z'); const h = (x) => new Date(now.getTime() - x * 3600e3).toISOString();
+  const cfg = aff.parseAffiliates({ mercadolivre: { anuncios: { MLB5551000001: 'https://meli.la/abc' } } });
+  const ml = { ofertas: [
+    { productId: 'p1', item: 'MLB5551000001', title: 'Blister', price: 39.9, listPrice: 59.9, seller: 'loja', freeShipping: true, capturedAt: h(1) },
+    { productId: 'p1', item: 'MLB5551000002', title: 'sem link no mapa', price: 30, capturedAt: h(1) },
+    { productId: 'p1', item: 'MLB5551000001', title: 'vencida', price: 20, capturedAt: h(49) },
+    { productId: 'p9', item: 'MLB5551000001', title: 'produto inexistente', price: 20, capturedAt: h(1) },
+  ] };
+  const r = aff.ofertasManuaisParceiras({ now, products: { p1: {} }, amazon: { links: [] }, shopee: { ofertas: [] }, ml, cfg });
+  assert.equal(r.length, 1, 'ML: só anúncio com link no mapa, vigente e de produto existente');
+  assert.equal(r[0].storeId, 'mercadolivre'); assert.equal(r[0].url, 'https://produto.mercadolivre.com.br/MLB-5551000001-_JM');
+  assert.equal(r[0].listPrice, 59.9); assert.equal(r[0].shippingKnown, false, 'frete nunca vira zero');
+  assert.equal(aff.ofertaParceira(r[0], cfg), true, 'a oferta manual do ML passa no filtro de parceiros');
+  console.log('so-parceiros: leituras manuais do ML ok');
+}

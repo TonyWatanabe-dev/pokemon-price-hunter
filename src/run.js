@@ -34,6 +34,8 @@ import { redact } from './redact.js';
 import { verificarPistas, ofertaDuplicada, registroDeOferta, SOURCE_TYPE as PISTA_SOURCE } from './pistas-ofertas.js';
 import { destinosPistas } from './pistas-destino.js';
 import { accessToken as mlAccessToken, authorizedAt as mlAuthorizedAt } from './mlauth.js';
+// id do anúncio do ML (MLB…) numa URL de oferta: item_id do pdp_filters ou o MLB-<n> do caminho.
+const mlIdDe = (u) => { const m = /item_id(?:%3A|:)MLB-?(\d+)/i.exec(u || '') || /MLB-?(\d{6,})/.exec(u || ''); return m ? `MLB${m[1]}` : null; };
 import * as parceiros from './parceiros.js'; // site só com parceiros (SITE_SO_PARCEIROS): único ponto de src/ que fala com affiliates.mjs
 
 const hash = (s) => crypto.createHash('sha1').update(s).digest('hex').slice(0, 12);
@@ -525,7 +527,10 @@ export async function runOnce({ log = console.log, send = transports, now = new 
   // Leituras manuais do dono (Amazon/Shopee) entram como ofertas do conjunto publicado e vencem sozinhas (48 h). Já são confirmadas
   // (leitura humana); o frete fica desconhecido. Entram depois dos blocos que carregam ofertas antigas: nunca viram stale.
   if (SO) {
+    // Anúncio do ML que o robô já leu nesta rodada não repete pela leitura manual (vale a do robô).
+    const mlDoRobo = new Set(Object.values(offers).filter((o) => o.storeId === 'mercadolivre' && !o.manual && !o.stale).map((o) => mlIdDe(o.url)).filter(Boolean));
     for (const m of parceiros.manuais(par, { now, products: registry })) {
+      if (m.storeId === 'mercadolivre' && mlDoRobo.has(m.sku)) continue;
       const bo = registry[m.productId]?.boosters;
       offers[m.id] = { ...m, firstSeen: prev[m.id]?.firstSeen || m.firstSeen, perBooster: bo ? round2(m.total / bo) : null };
     }

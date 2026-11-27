@@ -120,7 +120,7 @@ export function ofertaParceira(o, cfg = null) {
 export function carregarParceiros({ dir = null } = {}) {
   const base = dir ? path.resolve(dir) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../config');
   const ler = (...p) => { try { return JSON.parse(fs.readFileSync(path.join(base, ...p), 'utf8')); } catch { return null; } };
-  return { cfg: parseAffiliates(ler('affiliates.json')), amazon: ler('afiliados', 'amazon.json'), shopee: ler('afiliados', 'shopee-ofertas.json') };
+  return { cfg: parseAffiliates(ler('affiliates.json')), amazon: ler('afiliados', 'amazon.json'), shopee: ler('afiliados', 'shopee-ofertas.json'), ml: ler('afiliados', 'ml-ofertas.json') };
 }
 
 const SEM_OFERTA = /esgotad|indispon|sem oferta|sem estoque|n[ãa]o dispon/i;
@@ -133,11 +133,12 @@ const idDe = (storeId, url) => crypto.createHash('sha1').update(`${storeId}|${ur
  * cada leitura some sozinha quando vence. Frete NUNCA vira zero: fica desconhecido e o total é só o preço.
  * Shopee: price = preço sem cupom (priceCupom segue como campo extra). products: mapa/lista/Set de ids de produto.
  */
-export function ofertasManuaisParceiras({ now = new Date(), maxHoras = 48, products = {}, amazon = undefined, shopee = undefined } = {}) {
-  if (amazon === undefined || shopee === undefined) {
+export function ofertasManuaisParceiras({ now = new Date(), maxHoras = 48, products = {}, amazon = undefined, shopee = undefined, ml = undefined, cfg = undefined } = {}) {
+  if (amazon === undefined || shopee === undefined || ml === undefined) {
     const lido = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return null; } };
     if (amazon === undefined) amazon = lido(AMAZON_FILE);
     if (shopee === undefined) shopee = lido(new URL('../../config/afiliados/shopee-ofertas.json', import.meta.url));
+    if (ml === undefined) ml = lido(new URL('../../config/afiliados/ml-ofertas.json', import.meta.url));
   }
   const ids = products instanceof Set ? products : new Set(Array.isArray(products) ? products.map((p) => p?.id ?? p) : Object.keys(products || {}));
   const t0 = (now instanceof Date ? now : new Date(now)).getTime();
@@ -168,8 +169,65 @@ export function ofertasManuaisParceiras({ now = new Date(), maxHoras = 48, produ
     const cupom = Number(s.priceCupom);
     out.push(base('shopee', 'Shopee', s, at, { url: s.url, sku: s.item, campos: { selo: s.selo ?? null, ...(Number.isFinite(cupom) && cupom > 0 ? { priceCupom: Math.round(cupom * 100) / 100 } : {}) } }));
   }
+  // Mercado Livre (leitura do dono na página de busca, desde 27/11/2026, com a API barrada): só anúncio que já tem link do dono
+  // no mapa. A URL é a do anúncio (MLB-<id>-_JM); o botão troca pelo link do mapa (outUrl), como nas ofertas do robô.
+  const mapa = (cfg || (Array.isArray(ml?.ofertas) && ml.ofertas.length ? loadAffiliates() : null))?.anuncios || {};
+  for (const m of Array.isArray(ml?.ofertas) ? ml.ofertas : []) {
+    const at = recente(m?.capturedAt);
+    const id = /^MLB\d{6,}$/.test(m?.item || '') ? m.item : null;
+    if (!ok(m, at) || !id || !mapa[id]) continue;
+    const url = `https://produto.mercadolivre.com.br/MLB-${id.slice(3)}-_JM`;
+    const lp = Number(m.listPrice);
+    const o = base('mercadolivre', 'Mercado Livre', m, at, { url, sku: id, campos: { freeShipping: m.freeShipping === true ? true : null } });
+    if (Number.isFinite(lp) && lp > o.price) o.listPrice = Math.round(lp * 100) / 100;
+    out.push(o);
+  }
   // Mesmo link repetido na lista: fica a leitura mais recente.
   const porId = new Map();
   for (const o of out) { const x = porId.get(o.id); if (!x || o.source_timestamp > x.source_timestamp) porId.set(o.id, o); }
   return [...porId.values()].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Botão "Capturar ofertas" (27/11/2026): grava a seleção de tools/captura-importar.mjs nas listas manuais que o site publica
+// por 48 h. Este é o único arquivo que lê/escreve a config de afiliados, por isso a gravação mora aqui. Nada de link é montado:
+// ML só entra se o anúncio já tem link no mapa; Shopee só com link em shopee.json; Amazon só ASIN que já tem link do dono em
+// amazon.json (os demais voltam em semLink, com a URL pública do anúncio, para o dono gerar o link no painel do programa).
+export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date().toISOString().slice(0, 10) } = {}) {
+  const base = dir ? path.resolve(dir) : path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../config');
+  const f = (...p) => path.join(base, ...p);
+  const ler = (p, d) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return d; } };
+  const mapa = parseAffiliates(ler(f('affiliates.json'), null)).anuncios || {};
+  const shLinks = ler(f('afiliados', 'shopee.json'), {})?.links || {};
+  const am = ler(f('afiliados', 'amazon.json'), { links: [] });
+  const mlArq = ler(f('afiliados', 'ml-ofertas.json'), null) || { program: 'mercadolivre',
+    regras: 'Leituras do dono nas páginas de busca do Mercado Livre (botão "Capturar ofertas", tools/captura). Só anúncio com link do dono no mapa de config/affiliates.json; vale 48 h a partir de capturedAt. Frete desconhecido. Gravado por tools/captura-importar.mjs.', ofertas: [] };
+  const shArq = ler(f('afiliados', 'shopee-ofertas.json'), { ofertas: [] });
+  const upsert = (lista, chave, n) => { const i = lista.findIndex((x) => x[chave] === n[chave]); if (i < 0) lista.push(n); else lista[i] = { ...lista[i], ...n }; };
+  const semLink = { mercadolivre: [], shopee: [], amazon: [] };
+  const gravados = { mercadolivre: 0, shopee: 0, amazon: 0 };
+  for (const it of sel) {
+    if (it.loja === 'mercadolivre') {
+      if (!mapa[it.id]) { semLink.mercadolivre.push(`https://produto.mercadolivre.com.br/MLB-${it.id.slice(3)}-_JM`); continue; }
+      upsert(mlArq.ofertas, 'item', { productId: it.productId, item: it.id, title: it.titulo, price: it.preco, listPrice: it.precoDe, seller: it.vendedor, freeShipping: it.freteGratis || null, capturedAt: it.capturadoEm });
+      gravados.mercadolivre++;
+    } else if (it.loja === 'shopee') {
+      const url = SHOPEE_LINK.test(shLinks[it.id] || '') ? shLinks[it.id] : null;
+      if (!url) { const [sh, item] = it.id.split('/'); semLink.shopee.push(`https://shopee.com.br/product/${sh}/${item}`); continue; }
+      upsert(shArq.ofertas, 'item', { productId: it.productId, item: it.id, title: it.titulo, url, price: it.preco, seller: it.vendedor, stockNote: null, capturedAt: it.capturadoEm });
+      gravados.shopee++;
+    } else if (it.loja === 'amazon') {
+      const ex = (am.links || []).find((x) => x.asin === it.id);
+      if (!ex || !AMAZON_CURTO.test(ex.shortUrl || '')) { semLink.amazon.push(`https://www.amazon.com.br/dp/${it.id}`); continue; }
+      Object.assign(ex, { productId: it.productId, title: it.titulo, price: it.preco, stockNote: null, capturedAt: it.capturadoEm, ...(it.vendedor ? { seller: it.vendedor } : {}) });
+      gravados.amazon++;
+    }
+  }
+  if (!seco) {
+    const w = (p, o) => fs.writeFileSync(p, JSON.stringify(o, null, 1) + '\n');
+    if (gravados.mercadolivre) { mlArq.updatedAt = hoje; w(f('afiliados', 'ml-ofertas.json'), mlArq); }
+    if (gravados.shopee) { shArq.updatedAt = hoje; w(f('afiliados', 'shopee-ofertas.json'), shArq); }
+    if (gravados.amazon) { am.updatedAt = hoje; w(f('afiliados', 'amazon.json'), am); }
+  }
+  return { gravados, semLink };
 }
