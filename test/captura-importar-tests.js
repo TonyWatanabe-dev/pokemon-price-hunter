@@ -42,3 +42,18 @@ console.log('captura-importar-tests: ok');
   assert.equal(am.links[0].price, 10); assert.equal(am.links[0].shortUrl, 'https://link.amazon/x1', 'link do dono preservado');
   console.log('captura-importar-tests: gravação ok');
 }
+
+// Kits e preço fora da curva (lote real de 27/11/2026).
+{
+  const L = (id, t, p) => ({ loja: 'mercadolivre', id, titulo: t, preco: p, capturadoEm: at });
+  const { sel } = selecionar([
+    L('MLB6661000001', 'Kit 2x Blister Triplo Pokémon Reinado Delta - Me06 Copag', 83),
+    L('MLB6661000002', 'Caixa Lacrada Pokémon 12 Blister Quadruplo Reinado Delta', 1799),
+    L('MLB6661000003', 'Blister Triplo Pokémon Reinado Delta Me06 Copag', 49),
+    L('MLB6661000004', 'Blister Triplo Pokémon Reinado Delta Me06 Copag Spritzee', 52),
+    L('MLB6661000005', 'Blister Triplo Pokémon Reinado Delta Me06', 50),
+    L('MLB6661000006', 'Blister Triplo Pokémon Reinado Delta Me06 Original', 529),
+  ], cat);
+  assert.deepEqual(sel.map((s) => s.id).sort(), ['MLB6661000003', 'MLB6661000004', 'MLB6661000005'], 'sem kit, caixa de vários e preço fora da curva');
+  console.log('captura-importar-tests: kits e outliers ok');
+}

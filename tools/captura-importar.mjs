@@ -23,7 +23,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export const MIN_CONF = 0.8;
 export const POR_PRODUTO = 5;
-const VARIAS_OPCOES = /\s(ou|\/)\s|sortid|escolha|variad|diversos|kit\s+\d+\s|\blote\b/i;
+const VARIAS_OPCOES = /\s(ou|\/)\s|sortid|escolha|variad|diversos|\blote\b|\b\d+\s*x\s|c\/\s*\d+\s*blister|\b([2-9]|1\d)\s*blisters?\b/i;
+// "Kit" junta vários produtos (2x blister, caixa com 12 blisters…); o Desafio Estratégico é o único produto vendido com esse nome.
+const KIT = (t) => /\bkit\b/i.test(t) && !/desafio estrat/i.test(t);
+// Preço fora da curva do próprio lote (caixa fechada lida como unidade, colecionável antigo): acima de 2x a mediana do produto.
+export const TETO_MEDIANA = 2;
 
 /** Normaliza um item do arquivo de captura; devolve null quando não serve. */
 export function normalizar(it) {
@@ -57,7 +61,7 @@ export function selecionar(itens, catalog) {
   }
   for (const it of vistos.values()) {
     if (cartaAvulsa(it.titulo)) { conta('carta avulsa'); continue; }
-    if (VARIAS_OPCOES.test(it.titulo)) { conta('várias opções/lote'); continue; }
+    if (VARIAS_OPCOES.test(it.titulo) || KIT(it.titulo)) { conta('várias opções/lote/kit'); continue; }
     const m = matchProduct({ title: it.titulo }, catalog);
     if (!m.productId || !(m.confidence >= MIN_CONF)) { conta('sem produto do catálogo'); continue; }
     ok.push({ ...it, productId: m.productId });
@@ -65,7 +69,14 @@ export function selecionar(itens, catalog) {
   const grupos = new Map();
   for (const it of ok) { const k = `${it.loja}|${it.productId}`; (grupos.get(k) || grupos.set(k, []).get(k)).push(it); }
   const sel = [];
-  for (const g of grupos.values()) { g.sort((a, b) => a.preco - b.preco); sel.push(...g.slice(0, POR_PRODUTO)); fora['além dos 5 mais baratos'] = (fora['além dos 5 mais baratos'] || 0) + Math.max(0, g.length - POR_PRODUTO); }
+  for (const g of grupos.values()) {
+    g.sort((a, b) => a.preco - b.preco);
+    const med = g[Math.floor((g.length - 1) / 2)].preco;
+    const n0 = g.length;
+    if (g.length >= 3) g.splice(0, g.length, ...g.filter((x) => x.preco <= med * TETO_MEDIANA));
+    if (g.length < n0) fora['preço fora da curva'] = (fora['preço fora da curva'] || 0) + (n0 - g.length);
+    sel.push(...g.slice(0, POR_PRODUTO)); fora['além dos 5 mais baratos'] = (fora['além dos 5 mais baratos'] || 0) + Math.max(0, g.length - POR_PRODUTO);
+  }
   return { sel, fora };
 }
 
