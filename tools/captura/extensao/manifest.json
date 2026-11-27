@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "TCG Price Hunter – Captura",
+  "version": "1.0.0",
+  "description": "Lê as buscas de Pokémon TCG que você abre no Mercado Livre, na Shopee e na Amazon e salva um arquivo em Downloads/tph-capturas. Não navega, não rola, não clica e não faz requisição.",
+  "permissions": ["storage", "downloads"],
+  "host_permissions": [
+    "https://lista.mercadolivre.com.br/*",
+    "https://www.mercadolivre.com.br/*",
+    "https://shopee.com.br/*",
+    "https://www.amazon.com.br/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "TCG Price Hunter – Captura", "default_popup": "popup.html" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://lista.mercadolivre.com.br/*",
+        "https://shopee.com.br/search*",
+        "https://www.amazon.com.br/s?*",
+        "https://www.amazon.com.br/s/*"
+      ],
+      "js": ["leitor.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
