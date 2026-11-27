@@ -32,16 +32,41 @@ console.log('captura-importar-tests: ok');
   fs.writeFileSync(path.join(dir, 'affiliates.json'), JSON.stringify({ mercadolivre: { anuncios: { MLB5551000001: 'https://meli.la/abc' } } }));
   fs.writeFileSync(path.join(dir, 'afiliados', 'shopee.json'), JSON.stringify({ links: { '111111/222222': 'https://s.shopee.com.br/AbC123' } }));
   fs.writeFileSync(path.join(dir, 'afiliados', 'amazon.json'), JSON.stringify({ links: [{ asin: 'B0ABCDEF12', productId: 'p', title: 't', price: 1, shortUrl: 'https://link.amazon/x1', capturedAt: '2026-11-01T00:00:00Z' }] }));
-  const s = (loja, id) => ({ loja, id, titulo: 'T', preco: 10, precoDe: null, vendedor: null, freteGratis: false, capturadoEm: at, productId: 'p1' });
-  const r = gravarCaptura([s('mercadolivre', 'MLB5551000001'), s('mercadolivre', 'MLB5551000009'), s('shopee', '111111/222222'), s('shopee', '111111/999999'), s('amazon', 'B0ABCDEF12'), s('amazon', 'B0NOVO0001')], { dir });
+  const s = (loja, id, vendedor = null) => ({ loja, id, titulo: 'T', preco: 10, precoDe: null, vendedor, freteGratis: false, capturadoEm: at, productId: 'p1' });
+  const r = gravarCaptura([s('mercadolivre', 'MLB5551000001'), s('mercadolivre', 'MLB5551000009'), s('shopee', '111111/222222', 'Loja Y'), s('shopee', '111111/999999'), s('amazon', 'B0ABCDEF12', 'Loja X'), s('amazon', 'B0NOVO0001')], { dir });
   assert.deepEqual(r.gravados, { mercadolivre: 1, shopee: 1, amazon: 1 });
   assert.deepEqual(Object.fromEntries(Object.entries(r.semLink).map(([k, v]) => [k, v.length])), { mercadolivre: 1, shopee: 1, amazon: 1 });
+  assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'amazon.json'), 'utf8')).links[0].seller, 'Loja X', 'vendedor da captura entra junto com o preço');
   const ml = JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'ml-ofertas.json'), 'utf8'));
   assert.equal(ml.ofertas[0].item, 'MLB5551000001');
   const le = JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'ml-leituras.json'), 'utf8'));
   assert.deepEqual(le.ofertas.map((x) => [x.item, x.url]), [['MLB5551000001', 'https://meli.la/abc']], 'captura do ML também vai para a fila do WhatsApp, com o link do mapa');
   const am = JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'amazon.json'), 'utf8'));
   assert.equal(am.links[0].price, 10); assert.equal(am.links[0].shortUrl, 'https://link.amazon/x1', 'link do dono preservado');
+
+  // Preço da Amazon sem vendedor conhecido não entra (27/11/2026): a linha fica como estava e sai em semVendedor.
+  {
+    const dir2 = fs.mkdtempSync(path.join(os.tmpdir(), 'cap2-')); fs.mkdirSync(path.join(dir2, 'afiliados'));
+    fs.writeFileSync(path.join(dir2, 'affiliates.json'), JSON.stringify({ mercadolivre: { anuncios: {} } }));
+    fs.writeFileSync(path.join(dir2, 'afiliados', 'amazon.json'), JSON.stringify({ links: [{ asin: 'B0ABCDEF12', productId: 'p', title: 't', price: 1, seller: null, shortUrl: 'https://link.amazon/x1', capturedAt: '2026-11-01T00:00:00Z' }] }));
+    const r2 = gravarCaptura([s('amazon', 'B0ABCDEF12')], { dir: dir2 });
+    assert.deepEqual(r2.gravados, { mercadolivre: 0, shopee: 0, amazon: 0 });
+    assert.deepEqual(r2.semVendedor.amazon, ['B0ABCDEF12']);
+    fs.writeFileSync(path.join(dir2, 'afiliados', 'shopee.json'), JSON.stringify({ links: { '111111/222222': 'https://s.shopee.com.br/AbC123' } }));
+    const r3 = gravarCaptura([s('shopee', '111111/222222')], { dir: dir2 });
+    assert.deepEqual(r3.gravados, { mercadolivre: 0, shopee: 0, amazon: 0 }, 'Shopee segue a mesma regra do vendedor');
+    assert.deepEqual(r3.semVendedor.shopee, ['111111/222222']);
+    // priceCupom zera na releitura: era o preço com cupom do preço antigo e passaria a valer mais que o preço novo.
+    fs.writeFileSync(path.join(dir2, 'afiliados', 'shopee-ofertas.json'), JSON.stringify({ ofertas: [{ item: '111111/222222', productId: 'p', title: 't', url: 'https://s.shopee.com.br/AbC123', price: 20, priceCupom: 18, seller: 'Loja Y', stockNote: null, capturedAt: '2026-11-01T00:00:00Z' }] }));
+    const r4 = gravarCaptura([s('shopee', '111111/222222')], { dir: dir2 });
+    assert.deepEqual(r4.gravados, { mercadolivre: 0, shopee: 1, amazon: 0 });
+    const sh2 = JSON.parse(fs.readFileSync(path.join(dir2, 'afiliados', 'shopee-ofertas.json'), 'utf8')).ofertas[0];
+    assert.equal(sh2.price, 10); assert.equal(sh2.priceCupom, null, 'cupom do preço antigo não sobrevive');
+    assert.equal(sh2.seller, 'Loja Y', 'vendedor que já estava na linha vale quando a captura não traz');
+    const am2 = JSON.parse(fs.readFileSync(path.join(dir2, 'afiliados', 'amazon.json'), 'utf8'));
+    assert.equal(am2.links[0].price, 1, 'preço antigo preservado'); assert.equal(am2.links[0].capturedAt, '2026-11-01T00:00:00Z');
+  }
+  console.log('captura-importar-tests: preço sem vendedor fica de fora');
   console.log('captura-importar-tests: gravação ok');
 }
 

@@ -1,6 +1,6 @@
 {
  "program": "shopee",
- "updatedAt": "2026-11-26",
+ "updatedAt": "2026-11-27",
  "regras": "Anúncios da Shopee com link de afiliado do dono (config/afiliados/shopee.json), lidos pelo dono no Chrome. Entram só produtos selados, casados por src/match.js com confiança de 0,8 ou mais, sem anúncio de várias opções e sem vendedor de fora de TCG. price = preço sem cupom (o \"ou R$\" da página); priceCupom = o valor em destaque, que a Shopee mostra com cupom. Não é atualizado automaticamente; o site mostra a data e a hora da leitura. Nunca lido pelo cálculo de preço, ranking ou Opportunity Score.",
  "origem": "Leitura do dono no Chrome em 01/11/2026 (22:01–22:20), 45 anúncios. Relida no Chrome do dono em 02/11/2026 (22:33–22:40), 18 anúncios; 1 esgotado saiu. Lote de 03/11/2026 (23:05, busca \"pokémon blister\" no Portal de Afiliados, páginas 1–5, links com Sub ID tcgpricehunter): 35 anúncios novos e 11 relidos (preço e hora; estoque não relido). Relida no Chrome do dono em 06/11/2026 (07:45–08:03, UTC 10:45–11:03; o arquivo trazia o horário em UTC+8, conferido pela hora do envio): 46 com preço novo, 6 esgotados. Lote do dono de 06/11/2026 10:11–10:22 (BRT): 11 anúncios da lista relidos. Lote do dono de 07/11/2026 (11:00–11:16 BRT, com vendedor): 13 anúncios novos, 52 relidos. Lote de 13/11/2026 (busca do dono no Chrome, Shopee ordenada por mais vendidos, links do Portal de Afiliados com Sub ID tcgpricehunter): 8 anúncios relidos (preço e link); preço exibido na busca (sem cupom), título normalizado com coleção e formato, horário aproximado da leitura. Lote de 18/11/2026 (23:19–23:21 BRT, UTC 19/11 02:19–02:21; busca do Portal de Afiliados por 'pokemon blister', 'blister triplo/quadruplo/duplo pokemon', 'pokemon booster copag' e 'pokemon box copag lacrado', 50 por busca; preço da oferta sem cupom e loja lidos do Portal; anúncios de várias opções e sem estoque ficaram fora): 27 relidos e 82 anúncios novos, 63 links novos do Link personalizado com Sub ID tcgpricehunter. Lote de 20/11/2026 (13:50–13:58 UTC, Portal de Afiliados, busca por packs, blisters unitário a quíntuplo, boosters, combos, ETB, display, 30 anos e coleções; anúncio de uma opção só, com estoque, casado por src/match.js com confiança ≥ 0,8; até 3 mais baratos por produto): 34 relidos e 165 novos; links com Sub ID tcgpricehunter. Lote de 26/11/2026 (20:56 UTC, Portal de Afiliados, buscas por blister unitário/duplo/triplo/quádruplo, booster, box, ETB e coleções; geração em massa com Sub ID tcgpricehunter; casados por src/match.js com confiança ≥ 0,8, anúncio de uma opção só e com estoque na leitura da busca): 27 relidos (preço e hora) e 33 novos; sem vendedor de fora de TCG; 3 anúncios com preço muito acima do padrão do formato ficaram de fora. Lote de 26/11/2026 (20:50–20:59 UTC, horário de cada planilha convertido de Brasília): 4 planilhas do \"Obter Link em Massa\" do Portal de Afiliados exportadas pelo dono (Sub ID tcgpricehunter; os termos de busca não constam nas planilhas), 101 linhas e 96 anúncios únicos (repetido entre planilhas: vale a mais recente); casados por src/match.js com confiança ≥ 0,8, anúncio de uma opção só (filtro pelo título), até 3 mais baratos por produto: 65 relidos (preço, título e hora; preços iguais aos da leitura anterior, links existentes mantidos), 0 novos em ofertas e 0 links novos em shopee.json; 31 ficaram de fora (12 já recusados em 03/11, 7 com confiança do matcher abaixo de 0,8, 5 sem produto no catálogo, 2 de quantidade/várias opções (kit de 2 blisters, 10 blisters, \"Diversos\"), 2 com preço fora do padrão para blister quádruplo, 1 box de 36 cartas confundido com booster e 1 acima do limite de 3 por produto). A planilha não traz estoque nem número de opções (o filtro de várias opções é pelo título) e o anúncio estava listado no Portal no momento da exportação.",
  "ofertas": [
@@ -14,7 +14,7 @@
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-13T13:45:00Z"
+   "capturedAt": "2026-11-27T18:26:49Z"
   },
   {
    "productId": "me05-blister3",
@@ -26,19 +26,19 @@
    "seller": "Rodobanca",
    "selo": "Indicado",
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:59:43Z"
+   "capturedAt": "2026-11-27T18:24:59Z"
   },
   {
    "productId": "me05-combo",
    "item": "464326997/53964025927",
    "title": "COMBO DE BOOSTER MINI DISPLAY ESCURIDÃO ABSOLUTA MEGA EVOLUÇÃO COPAG CARTAS POKÉMON TCG",
    "url": "https://s.shopee.com.br/6VOiEJ1DaA",
-   "price": 249.99,
-   "priceCupom": 235.12,
+   "price": 206.91,
+   "priceCupom": null,
    "seller": "Canal 40",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-07T14:01:49Z"
+   "capturedAt": "2026-11-27T18:26:49Z"
   },
   {
    "productId": "me05-booster",
@@ -141,12 +141,12 @@
    "item": "1246508007/58268248056",
    "title": "Jogo de Cartas Pokémon - Blister Duplo - Celebração de 30 Anos - Copag",
    "url": "https://s.shopee.com.br/gRR1D8VYp",
-   "price": 129.99,
+   "price": 123.5,
    "priceCupom": null,
    "seller": "Superlegal Brinquedos",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-27T18:26:53Z"
   },
   {
    "productId": "me03-blister4",
@@ -201,12 +201,12 @@
    "item": "1934646992/58269910181",
    "title": "Coleção Treinador Avançado Pokémon TCG 30 anos",
    "url": "https://s.shopee.com.br/8V9mcFiL0g",
-   "price": 789.82,
+   "price": 726.64,
    "priceCupom": null,
    "seller": "Castelo dos Mestres",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-27T18:26:53Z"
   },
   {
    "productId": "me04-blister1",
@@ -345,12 +345,12 @@
    "item": "822103155/58268927860",
    "title": "Cartas Pokémon Copag ME04 Blister Triplo",
    "url": "https://s.shopee.com.br/7puXaEQGQ7",
-   "price": 53.2,
+   "price": 29.9,
    "priceCupom": null,
    "seller": "Efácil Oficial",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-19T02:21:00Z"
+   "capturedAt": "2026-11-27T18:26:48Z"
   },
   {
    "productId": "me03-blister1",
@@ -398,7 +398,7 @@
    "seller": "Efácil Oficial",
    "selo": "Loja Oficial",
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-27T18:26:48Z"
   },
   {
    "productId": "sv9-blister4",
@@ -938,7 +938,7 @@
    "seller": "Rodobanca",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-26T20:59:43Z"
+   "capturedAt": "2026-11-27T18:24:59Z"
   },
   {
    "productId": "me04-blister3",
@@ -2090,7 +2090,7 @@
    "seller": "Rodobanca",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-27T18:24:59Z"
   },
   {
    "productId": "me06-blister4",
@@ -2505,12 +2505,12 @@
    "item": "315886001/58221938768",
    "title": "Pokémon Reinado Delta Combo de Booster Mini Booster Box",
    "url": "https://s.shopee.com.br/2VtRWmi80E",
-   "price": 219.9,
+   "price": 208.91,
    "priceCupom": null,
    "seller": "Psz3d",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-27T18:26:53Z"
   },
   {
    "productId": "me06-combo",
@@ -2805,12 +2805,12 @@
    "item": "444383763/58221825863",
    "title": "Pokemon TCG Box Colecao Com Poster Celebracao 30 Anos Copag FSC Original",
    "url": "https://s.shopee.com.br/9pg2GA1RqB",
-   "price": 180,
+   "price": 153.43,
    "priceCupom": null,
    "seller": "Chuloco Games",
    "selo": null,
    "stockNote": null,
-   "capturedAt": "2026-11-20T13:55:00Z"
+   "capturedAt": "2026-11-27T18:26:53Z"
   },
   {
    "productId": "c30-colecao_poster",

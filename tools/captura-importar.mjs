@@ -104,9 +104,9 @@ async function main() {
   let cap = null; try { cap = JSON.parse(fs.readFileSync(path.resolve(arq), 'utf8')); } catch (e) { console.error('arquivo ilegível:', e.message); process.exit(2); }
   const itens = Array.isArray(cap?.itens) ? cap.itens : Array.isArray(cap) ? cap : [];
   const { sel, fora } = selecionar(itens, loadCatalog());
-  const { gravados, semLink } = gravarCaptura(sel, { seco });
+  const { gravados, semLink, semVendedor } = gravarCaptura(sel, { seco });
   if (!seco) for (const [loja, l] of Object.entries(semLink)) fs.writeFileSync(path.join(root, 'tools', 'captura', `sem-link-${loja}.txt`), l.join('\n') + (l.length ? '\n' : ''));
-  console.log(JSON.stringify({ lidos: itens.length, selecionados: sel.length, gravados, semLink: Object.fromEntries(Object.entries(semLink).map(([k, v]) => [k, v.length])), fora, seco, diagnostico: cap?.diagnostico ? 'há diagnóstico no arquivo (página sem leitura)' : null }, null, 1));
+  console.log(JSON.stringify({ lidos: itens.length, selecionados: sel.length, gravados, semLink: Object.fromEntries(Object.entries(semLink).map(([k, v]) => [k, v.length])), semVendedor: { amazon: (semVendedor?.amazon || []).length, shopee: (semVendedor?.shopee || []).length }, fora, seco, diagnostico: cap?.diagnostico ? 'há diagnóstico no arquivo (página sem leitura)' : null }, null, 1));
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();

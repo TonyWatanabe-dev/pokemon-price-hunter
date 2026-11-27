@@ -24,7 +24,7 @@ const REJECT = [
   // fala de embalagem lacrada. "Box … com carta promo 065/165" e "Carta Pokemon Box Zacian EX" (loja que chama box de carta)
   // continuam sendo caixa; o código de loja "15606/36932" não é número de carta.
   [{ test: (t) => CARTA_INICIO.test(t) && NUMERO_CARTA.test(t) && !EMBALAGEM.test(t) }, 'carta avulsa, não é produto lacrado'],
-  [/\b(sleeves?|shields?|protetor(es)? de cartas|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
+  [/\b(sleeves?|shields?|protetor(es)? de cartas|(caixa|capa|cápsula|capsula) protetora|binder avulso|pasta avulsa|deck ?box avulsa|playmat|tapete|porta ?cards?|toploader|case vazi[oa]|caixa vazi[oa]|vazi[oa]s?|pelucia|chaveiro|camiseta|caneca)\b/, 'acessório ou item não-TCG'],
 ];
 // "Pasta Fichário Pokémon ...": fichário/pasta avulso. O produto lacrado é a "Coleção com Fichário" (box/coleção com boosters).
 const DECK_BOX = /\b(deck ?box(es)?|porta ?deck|caixa (para|de) deck)\b/;
