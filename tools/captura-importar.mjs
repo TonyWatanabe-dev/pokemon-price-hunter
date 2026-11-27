@@ -58,7 +58,7 @@ export function normalizar(it) {
   const at = Date.parse(it.capturadoEm || '');
   if (!Number.isFinite(at)) return null;
   return { loja, id, titulo: it.titulo.trim().replace(/\s+/g, ' '), preco: Math.round(preco * 100) / 100, precoDe: de > preco ? Math.round(de * 100) / 100 : null,
-    vendedor: it.vendedor ? String(it.vendedor).trim().slice(0, 80) : null, freteGratis: it.freteGratis === true, capturadoEm: new Date(at).toISOString() };
+    vendedor: it.vendedor ? String(it.vendedor).trim().slice(0, 80) : null, freteGratis: it.freteGratis === true, capturadoEm: new Date(at).toISOString().replace(/\.\d{3}Z$/, 'Z') };
 }
 
 /** Casa com o catálogo e filtra (selado, uma opção, confiança mínima); fica até POR_PRODUTO mais baratos por produto e loja. */
