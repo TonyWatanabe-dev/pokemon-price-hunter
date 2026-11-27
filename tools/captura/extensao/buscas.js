@@ -119,14 +119,14 @@ const BUSCAS = {
    "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20blister"
   },
   {
-   "rotulo": "booster",
+   "rotulo": "booster copag",
    "pagina": 1,
-   "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20booster"
+   "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20booster%20copag"
   },
   {
    "rotulo": "treinador avançado",
    "pagina": 1,
-   "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20treinador%20avan%C3%A7ado"
+   "url": "https://shopee.com.br/search?keyword=pokemon%20treinador%20avan%C3%A7ado"
   },
   {
    "rotulo": "box coleção",
@@ -134,14 +134,14 @@ const BUSCAS = {
    "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20box%20cole%C3%A7%C3%A3o"
   },
   {
-   "rotulo": "escuridão absoluta",
+   "rotulo": "reinado delta",
    "pagina": 1,
-   "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20escurid%C3%A3o%20absoluta"
+   "url": "https://shopee.com.br/search?keyword=pokemon%20reinado%20delta"
   },
   {
-   "rotulo": "booster box",
+   "rotulo": "30 anos",
    "pagina": 1,
-   "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%20booster%20box"
+   "url": "https://shopee.com.br/search?keyword=pokemon%20tcg%2030%20anos"
   }
  ],
  "amazon": [
@@ -151,14 +151,14 @@ const BUSCAS = {
    "url": "https://www.amazon.com.br/s?k=pokemon+tcg+blister"
   },
   {
-   "rotulo": "booster",
+   "rotulo": "booster copag",
    "pagina": 1,
-   "url": "https://www.amazon.com.br/s?k=pokemon+tcg+booster"
+   "url": "https://www.amazon.com.br/s?k=pokemon+tcg+booster+copag"
   },
   {
    "rotulo": "treinador avançado",
    "pagina": 1,
-   "url": "https://www.amazon.com.br/s?k=pokemon+tcg+treinador+avan%C3%A7ado"
+   "url": "https://www.amazon.com.br/s?k=pokemon+treinador+avan%C3%A7ado"
   },
   {
    "rotulo": "box coleção",
@@ -166,14 +166,14 @@ const BUSCAS = {
    "url": "https://www.amazon.com.br/s?k=pokemon+tcg+box+cole%C3%A7%C3%A3o"
   },
   {
-   "rotulo": "escuridão absoluta",
+   "rotulo": "reinado delta",
    "pagina": 1,
-   "url": "https://www.amazon.com.br/s?k=pokemon+tcg+escurid%C3%A3o+absoluta"
+   "url": "https://www.amazon.com.br/s?k=pokemon+reinado+delta"
   },
   {
-   "rotulo": "booster box",
+   "rotulo": "30 anos",
    "pagina": 1,
-   "url": "https://www.amazon.com.br/s?k=pokemon+tcg+booster+box"
+   "url": "https://www.amazon.com.br/s?k=pokemon+tcg+30+anos"
   }
  ]
 };

@@ -11,16 +11,16 @@ import { listaDeBuscas } from './robo-ml.mjs';
 const dir = fileURLToPath(new URL('.', import.meta.url));
 const AVISO = '// GERADO por tools/captura/build-extensao.mjs — não edite aqui; edite a fonte e rode o build.\n';
 
-// Mesmos termos das buscas públicas do ML (pokemon-tcg-…), em texto de busca para a Shopee e a Amazon.
+// Mesmos termos da página "Capturar ofertas" do dono (Shopee e Amazon).
 export const TERMOS = Object.freeze([
-  'pokemon tcg blister', 'pokemon tcg booster', 'pokemon tcg treinador avançado',
-  'pokemon tcg box coleção', 'pokemon tcg escuridão absoluta', 'pokemon tcg booster box',
+  'pokemon tcg blister', 'pokemon tcg booster copag', 'pokemon treinador avançado',
+  'pokemon tcg box coleção', 'pokemon reinado delta', 'pokemon tcg 30 anos',
 ]);
 
 export function buscasDaExtensao() {
   const ml = listaDeBuscas().map((b) => ({ rotulo: b.slug.replace(/^pokemon-tcg-?/, '').replace(/-/g, ' ') || 'pokemon tcg', pagina: b.pagina, url: b.url }));
-  const shopee = TERMOS.map((t) => ({ rotulo: t.replace(/^pokemon tcg ?/, '') || 'pokemon tcg', pagina: 1, url: 'https://shopee.com.br/search?keyword=' + encodeURIComponent(t) }));
-  const amazon = TERMOS.map((t) => ({ rotulo: t.replace(/^pokemon tcg ?/, '') || 'pokemon tcg', pagina: 1, url: 'https://www.amazon.com.br/s?k=' + encodeURIComponent(t).replace(/%20/g, '+') }));
+  const shopee = TERMOS.map((t) => ({ rotulo: t.replace(/^pokemon (tcg )?/, '') || 'pokemon tcg', pagina: 1, url: 'https://shopee.com.br/search?keyword=' + encodeURIComponent(t) }));
+  const amazon = TERMOS.map((t) => ({ rotulo: t.replace(/^pokemon (tcg )?/, '') || 'pokemon tcg', pagina: 1, url: 'https://www.amazon.com.br/s?k=' + encodeURIComponent(t).replace(/%20/g, '+') }));
   return { mercadolivre: ml, shopee, amazon };
 }
 
