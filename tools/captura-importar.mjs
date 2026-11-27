@@ -8,7 +8,8 @@
 //   - Mercado Livre → config/afiliados/ml-ofertas.json   (só anúncio com link do dono no mapa de config/affiliates.json)
 //   - Shopee        → config/afiliados/shopee-ofertas.json (só anúncio com link do dono em config/afiliados/shopee.json)
 //   - Amazon        → config/afiliados/amazon.json        (só ASIN que já tem o link curto do dono; o preço é atualizado)
-// Entra só selado casado por src/match.js com confiança ≥ 0,8, sem carta avulsa, com preço; até 5 mais baratos por produto e loja.
+// Entra só selado casado por src/match.js com confiança ≥ 0,8, sem carta avulsa nem kit, com preço até o teto do formato (tetoDe) e
+// até 2x a mediana do produto no lote (grupos de 3+); até 5 mais baratos por produto e loja.
 // Anúncios sem link do dono saem em tools/captura/sem-link-<loja>.txt (URL por linha) para gerar os links no painel de cada
 // programa; depois de gravar os links, rode o importador de novo com o mesmo arquivo.
 import fs from 'node:fs';
@@ -28,6 +29,21 @@ const VARIAS_OPCOES = /\s(ou|\/)\s|sortid|escolha|variad|diversos|\blote\b|\b\d+
 const KIT = (t) => /\bkit\b/i.test(t) && !/desafio estrat/i.test(t);
 // Preço fora da curva do próprio lote (caixa fechada lida como unidade, colecionável antigo): acima de 2x a mediana do produto.
 export const TETO_MEDIANA = 2;
+// Teto absoluto por tipo de produto (vale para qualquer grupo, inclusive com 1–2 ofertas): acima disso é caixa/lote lido como
+// unidade ou colecionável fora de catálogo, nunca oportunidade. Valores ~3x o sugerido Copag atual de cada formato.
+export function tetoDe(productId) {
+  const id = String(productId || '');
+  const n = (re) => { const m = re.exec(id); return m ? Number(m[1]) : null; };
+  const bl = n(/-blister(\d)\b/); if (bl) return [0, 120, 200, 250, 300, 350][bl] || 350;
+  const co = n(/-combo(\d+)\b/); if (co) return co * 60;
+  const bx = n(/-box(\d+)\b/); if (bx) return bx * 45;
+  if (/-booster(?:-|$)/.test(id)) return 120;
+  if (/-etb(?:-|$)/.test(id)) return 900;
+  if (/-desafio(?:-|$)/.test(id)) return 600;
+  if (/-colecao_premium/.test(id)) return 900;
+  if (/-colecao/.test(id)) return 700;
+  return 800;
+}
 
 /** Normaliza um item do arquivo de captura; devolve null quando não serve. */
 export function normalizar(it) {
@@ -64,6 +80,7 @@ export function selecionar(itens, catalog) {
     if (VARIAS_OPCOES.test(it.titulo) || KIT(it.titulo)) { conta('várias opções/lote/kit'); continue; }
     const m = matchProduct({ title: it.titulo }, catalog);
     if (!m.productId || !(m.confidence >= MIN_CONF)) { conta('sem produto do catálogo'); continue; }
+    if (it.preco > tetoDe(m.productId)) { conta('preço acima do teto do formato'); continue; }
     ok.push({ ...it, productId: m.productId });
   }
   const grupos = new Map();

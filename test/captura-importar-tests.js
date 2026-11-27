@@ -57,3 +57,15 @@ console.log('captura-importar-tests: ok');
   assert.deepEqual(sel.map((s) => s.id).sort(), ['MLB6661000003', 'MLB6661000004', 'MLB6661000005'], 'sem kit, caixa de vários e preço fora da curva');
   console.log('captura-importar-tests: kits e outliers ok');
 }
+
+// Teto por formato vale também para grupo de 1 oferta (revisão da PR #1069).
+{
+  const { tetoDe } = await import('../tools/captura-importar.mjs');
+  assert.equal(tetoDe('me06-blister3'), 250); assert.equal(tetoDe('sv9-etb-en'), 900); assert.equal(tetoDe('me06-box36'), 1620); assert.equal(tetoDe('c30-booster'), 120);
+  const L = (id, t, p) => ({ loja: 'mercadolivre', id, titulo: t, preco: p, capturadoEm: at });
+  const { sel } = selecionar([L('MLB6662000001', 'Box Pokémon TCG Treinador Avançado ME 6 Reinado Delta', 1999)], cat);
+  assert.equal(sel.length, 0, 'ETB a R$ 1.999 sozinho no grupo não passa');
+  const { sel: s2 } = selecionar([L('MLB6662000002', 'Box Pokémon TCG Treinador Avançado ME 6 Reinado Delta', 399)], cat);
+  assert.equal(s2.length, 1, 'ETB a preço normal passa');
+  console.log('captura-importar-tests: teto por formato ok');
+}
