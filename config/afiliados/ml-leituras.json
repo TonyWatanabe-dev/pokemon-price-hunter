@@ -1,6 +1,6 @@
 {
  "program": "mercadolivre",
- "updatedAt": "2026-11-25",
+ "updatedAt": "2026-11-27",
  "regras": "Planilha do dono com preço e link de afiliado meli.la de anúncios do Mercado Livre. Só selado casado por src/match.js com um produto do site. Usada só pela fila do WhatsApp (src/agents/social/externas.js): vale 24 h a partir de capturedAt e só entra como promoção (até o sugerido Copag ou o menor preço do site), passando pelo foco em economia. Anúncio que o robô ou a campanha já têm não repete. Nunca lida pelo site, ranking ou Opportunity Score.",
  "origem": "Planilha do dono de 06/11/2026 (lote das 10h, 1.516 linhas). Horário do arquivo em Brasília, gravado em UTC. Leitura de 2026-11-06T13:11:00Z a 2026-11-06T13:21:00Z. Fora: 567 produto não identificado, 116 recusado pelo matcher, 89 produto fora do site, 55 preço ilegível, 10 sem link, 72 acessório. 25/11/2026 (08:13–08:16 BRT): 2 anúncios lidos por Claude no Chrome do dono (página do anúncio: novo, +50 disponíveis, preço igual ao de 23/11), link meli.la do mapa de afiliados; teste com a API do ML barrada em /products/{id}/items. 25/11/2026 (15:40 UTC, pedido do dono com foco em Black Friday): os 460 anúncios do ML com link de afiliado do dono relidos por Claude no Chrome do dono, na página do próprio anúncio (catálogo + pdp_filters=item_id), porque a API do ML segue barrada (403 PolicyAgent). Blisters primeiro. Entraram 440 com preço e compra liberada (290 'Estoque disponível'; 150 confirmados no buybox: 148 'Última em estoque!' e 2 com quantidade); 20 ficaram de fora por não ter preço na página (anúncio sem oferta ativa).",
  "ofertas": [
@@ -10,23 +10,23 @@
    "title": "Blister Triplo Pokémon TCG Reinado Delta - Spritzee",
    "url": "https://meli.la/2SoRjRf",
    "price": 31.99,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:24:12.127Z"
   },
   {
    "item": "MLB6823331442",
    "productId": "me04-blister4",
    "title": "Pokémon ME04 Caos Ascendente Blister Quádruplo Toxel 4 Boosters copag",
    "url": "https://meli.la/2wkaTFK",
-   "price": 39.9,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 45.24,
+   "capturedAt": "2026-11-27T13:24:34.407Z"
   },
   {
    "item": "MLB7077055152",
    "productId": "me05-blister3",
    "title": "Blister Triplo Pokémon ME05 Escuridão Absoluta",
    "url": "https://meli.la/2LjTQXH",
-   "price": 29.9,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 27.81,
+   "capturedAt": "2026-11-27T13:24:12.127Z"
   },
   {
    "item": "MLB7077055110",
@@ -42,7 +42,7 @@
    "title": "Pokemon - TCG Blister Unitário Caos Ascendente",
    "url": "https://meli.la/1MtiE2V",
    "price": 19,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:23:52.575Z"
   },
   {
    "item": "MLB5399438895",
@@ -113,8 +113,8 @@
    "productId": "me03-blister4",
    "title": "Blister Quádruplo Pokémon Equilíbrio Perfeito Mega Evolução",
    "url": "https://meli.la/1i8PoQ7",
-   "price": 48,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 54.9,
+   "capturedAt": "2026-11-27T13:24:44.511Z"
   },
   {
    "item": "MLB6897227974",
@@ -137,8 +137,8 @@
    "productId": "sv8_5-combo",
    "title": "Combo De Booster Ev8.5 - Evoluções Prismáticas Copag Pokemon",
    "url": "https://meli.la/2ZDXx9N",
-   "price": 542.77,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 469.99,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
   },
   {
    "item": "MLB5312006147",
@@ -234,15 +234,15 @@
    "title": "Booster - Me05 Escuridão Absoluta - Pokémon Tcg - 6 Cartas",
    "url": "https://meli.la/2aELFiz",
    "price": 21.9,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:23:57.519Z"
   },
   {
    "item": "MLB5337864499",
    "productId": "c30-combo",
    "title": "Combo De Boosters Pokémon 30 Anos Celebração Copag Original",
    "url": "https://meli.la/2GDGx9i",
-   "price": 357,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 329.9,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
   },
   {
    "item": "MLB7862527148",
@@ -274,7 +274,7 @@
    "title": "Blister Unitário Pokémon ME03 Equilíbrio Perfeito",
    "url": "https://meli.la/2GwJf54",
    "price": 19,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:23:52.575Z"
   },
   {
    "item": "MLB4726276737",
@@ -282,7 +282,7 @@
    "title": "Booster - Equilíbrio Perfeito - Pokémon Tcg - 6 Cartas",
    "url": "https://meli.la/2DtR5Yb",
    "price": 21.9,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:21:14.808Z"
   },
   {
    "item": "MLB7645730240",
@@ -321,8 +321,8 @@
    "productId": "me05-box36",
    "title": "Box Display Pokémon C/36 Booster Me05 Escuridão Absoluta",
    "url": "https://meli.la/1DMmVqX",
-   "price": 449.9,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 436.39,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
   },
   {
    "item": "MLB6646623916",
@@ -337,7 +337,7 @@
    "productId": "swsh11-box36",
    "title": "Box Booster Com 36 Booster De 6 Cards Pokemon Origem Perdida",
    "url": "https://meli.la/1c1fmEW",
-   "price": 1702.0,
+   "price": 1702,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -345,24 +345,24 @@
    "productId": "me04-combo",
    "title": "Booster Box Combo Pacotes Caos Ascendente Portugues Pokemon",
    "url": "https://meli.la/1g58U1b",
-   "price": 308.99,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 247.19,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
   },
   {
    "item": "MLB7024668884",
    "productId": "me05-blister1",
    "title": "Blister Unitário Pokémon Me05 Escuridão Absoluta",
    "url": "https://meli.la/1PwxPTG",
-   "price": 13.28,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 13.54,
+   "capturedAt": "2026-11-27T13:23:48.551Z"
   },
   {
    "item": "MLB5146640451",
    "productId": "me05-booster",
    "title": "Booster Pokémon Me05 6 Cartas Copag Original",
    "url": "https://meli.la/1JGNofy",
-   "price": 19.51,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 19,
+   "capturedAt": "2026-11-27T13:23:52.575Z"
   },
   {
    "item": "MLB5283312999",
@@ -370,7 +370,7 @@
    "title": "1 Booster Pokémon 30 Anos Celebração Com 6 Cartas Portugues",
    "url": "https://meli.la/1QCodiP",
    "price": 99.99,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:25:12.543Z"
   },
   {
    "item": "MLB5152192395",
@@ -489,8 +489,8 @@
    "productId": "sv4-booster",
    "title": "Booster Avulso Fenda Paradoxal Pokemon Português",
    "url": "https://meli.la/2UKGwwv",
-   "price": 64.01,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "price": 65.99,
+   "capturedAt": "2026-11-27T13:24:55.127Z"
   },
   {
    "item": "MLB4409317125",
@@ -514,7 +514,7 @@
    "title": "Pack Booster Pokémon Tcg Equilíbrio Perfeito De 6 Cartas Hol",
    "url": "https://meli.la/1ACSUob",
    "price": 28.99,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:24:05.431Z"
   },
   {
    "item": "MLB6642690376",
@@ -562,7 +562,7 @@
    "title": "Booster Pokémon Celebração 30 Anos Unitário Com 6 Cartas Tcg",
    "url": "https://meli.la/1zVaqqk",
    "price": 95.03,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:25:12.543Z"
   },
   {
    "item": "MLB6824624392",
@@ -570,7 +570,7 @@
    "title": "Booster Avulso Pokemon Megaevolução Caos Ascendente",
    "url": "https://meli.la/2PNGTyu",
    "price": 19.9,
-   "capturedAt": "2026-11-06T13:11:00Z"
+   "capturedAt": "2026-11-27T13:23:52.575Z"
   },
   {
    "item": "MLB5419544721",
@@ -682,7 +682,7 @@
    "title": "Booster Avulso Mega Dream Ex Pokemon Japonês",
    "url": "https://meli.la/1YExoAS",
    "price": 75,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "capturedAt": "2026-11-27T13:25:02.215Z"
   },
   {
    "item": "MLB7897338368",
@@ -769,8 +769,8 @@
    "productId": "c30-blister2",
    "title": "Blister Duplo Pokémon Eevee 30 Anos 2 Boosters Copag",
    "url": "https://meli.la/2CBPZf4",
-   "price": 144.02,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 110.26,
+   "capturedAt": "2026-11-27T13:25:22.303Z"
   },
   {
    "item": "MLB6989895544",
@@ -786,7 +786,7 @@
    "title": "Combo De Booster 30 Anos Coleção Pokemon Celebração Copag Pt",
    "url": "https://meli.la/1N99FQ6",
    "price": 329.79,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "capturedAt": "2026-11-27T13:25:48.615Z"
   },
   {
    "item": "MLB5312265839",
@@ -833,8 +833,8 @@
    "productId": "me04-box36",
    "title": "Box 36 Booster Pokémon Caos Ascendente Copag Origin. Lacrado",
    "url": "https://meli.la/22uPvq6",
-   "price": 418.99,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 408.73,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
   },
   {
    "item": "MLB5354954893",
@@ -929,8 +929,8 @@
    "productId": "me04-box36",
    "title": "Pokémon Box 36 Boosters Caos Ascendente-greninja- Copag",
    "url": "https://meli.la/1mBbjHT",
-   "price": 422.9,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 395.51,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
   },
   {
    "item": "MLB5407190409",
@@ -977,8 +977,8 @@
    "productId": "me03-booster",
    "title": "Pack Booster Pokémon TCG Equilíbrio Perfeito de 6 Cartas Holográficas em Português",
    "url": "https://meli.la/15EvqFv",
-   "price": 20.99,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 20,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
   },
   {
    "item": "MLB7626496528",
@@ -1121,8 +1121,8 @@
    "productId": "me02-blister1",
    "title": "Blister Unitário Pokemon Fogo Fantasmagórico",
    "url": "https://meli.la/1xf7aKQ",
-   "price": 34.91,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 35.99,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
   },
   {
    "item": "MLB7126758002",
@@ -1145,8 +1145,8 @@
    "productId": "me04-blister1",
    "title": "Blister Unitário Pokémon Copag Me04 Caos Ascendente",
    "url": "https://meli.la/2T47Vr4",
-   "price": 11.9,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 10.62,
+   "capturedAt": "2026-11-27T13:23:48.551Z"
   },
   {
    "item": "MLB7377730604",
@@ -1177,8 +1177,8 @@
    "productId": "me02_5-blister3",
    "title": "Blister Triplo Heróis Excelsos Gastly Pokemon Copag Lacrado",
    "url": "https://meli.la/1KGi9HS",
-   "price": 145.2,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 132.99,
+   "capturedAt": "2026-11-27T13:25:22.303Z"
   },
   {
    "item": "MLB7773080684",
@@ -1257,8 +1257,8 @@
    "productId": "c30-blister3",
    "title": "Pokémon Celebração De 30 Anos - Blister Triplo Lucario",
    "url": "https://meli.la/1EoFEFt",
-   "price": 179,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 165,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
   },
   {
    "item": "MLB7912329210",
@@ -1385,8 +1385,8 @@
    "productId": "me04-blister4",
    "title": "Blister Quadrúplo Pokémon Me 04 Caos Ascendente - Copag",
    "url": "https://meli.la/1yMeeDi",
-   "price": 44.99,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "price": 46.99,
+   "capturedAt": "2026-11-27T13:24:34.407Z"
   },
   {
    "item": "MLB7777450976",
@@ -1506,7 +1506,7 @@
    "title": "Pokémon Blister Quádruplo Golduck Mega Evolução Me01 Copag",
    "url": "https://meli.la/2CnTGTC",
    "price": 59.9,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "capturedAt": "2026-11-27T13:24:51.679Z"
   },
   {
    "item": "MLB7743596084",
@@ -1618,7 +1618,7 @@
    "title": "Pokémon Escuridão Absoluta Me05 Blister Unitário",
    "url": "https://meli.la/2QLagyK",
    "price": 16.9,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "capturedAt": "2026-11-27T13:21:08.400Z"
   },
   {
    "item": "MLB4307258645",
@@ -1626,7 +1626,7 @@
    "title": "Blister Triplo Megaevolução 2 Fogo Fantasmagorico Pokemon",
    "url": "https://meli.la/1sGrAjU",
    "price": 54.2,
-   "capturedAt": "2026-11-06T13:12:00Z"
+   "capturedAt": "2026-11-27T13:24:44.511Z"
   },
   {
    "item": "MLB5147525387",
@@ -1874,7 +1874,7 @@
    "title": "Blister Quádruplo Pokémon Mega Evolução Equilíbrio Perfeito",
    "url": "https://meli.la/2pZez2R",
    "price": 55.99,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "capturedAt": "2026-11-27T13:21:40.316Z"
   },
   {
    "item": "MLB6971774396",
@@ -1946,7 +1946,7 @@
    "title": "Blister Triplo Pokémon Tempestade Prateada Cranidos Copag",
    "url": "https://meli.la/1PgcbKo",
    "price": 229.6,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:25:38.798Z"
   },
   {
    "item": "MLB7117174646",
@@ -2146,7 +2146,7 @@
    "title": "Pokémon Tcg Blister Triplo Mega Expansao Me01 Drifloon Copag",
    "url": "https://meli.la/2Mgv1f4",
    "price": 59.9,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "capturedAt": "2026-11-27T13:21:44.424Z"
   },
   {
    "item": "MLB7895252578",
@@ -2169,8 +2169,8 @@
    "productId": "me02-blister3",
    "title": "Blister Triplo Pokémon Mega Fogo Fantasmagórico Whimsicott",
    "url": "https://meli.la/2GEyQaD",
-   "price": 51.64,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "price": 48.49,
+   "capturedAt": "2026-11-27T13:24:37.881Z"
   },
   {
    "item": "MLB5840055184",
@@ -2226,7 +2226,7 @@
    "title": "Blister Triplo Pokemon Tempestade Prateada Basculin De Hisui",
    "url": "https://meli.la/1Yim6Zo",
    "price": 229.6,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "capturedAt": "2026-11-27T13:25:38.798Z"
   },
   {
    "item": "MLB4971093641",
@@ -2249,8 +2249,8 @@
    "productId": "sv10-blister1",
    "title": "Blister Unitário Rivais Predestinados Pokémon Tcg Copag",
    "url": "https://meli.la/2KcDtgE",
-   "price": 43.19,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "price": 39.76,
+   "capturedAt": "2026-11-27T13:24:26.535Z"
   },
   {
    "item": "MLB5178526529",
@@ -2569,8 +2569,8 @@
    "productId": "c30-blister2",
    "title": "Pokémon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
    "url": "https://meli.la/2wfhfvh",
-   "price": 118.9,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "price": 112.95,
+   "capturedAt": "2026-11-27T13:25:18.960Z"
   },
   {
    "item": "MLB5251334895",
@@ -2601,8 +2601,8 @@
    "productId": "sv8_5-blister4",
    "title": "Pokemon - Blister Quadruplo - Evolucoes Prismaticas - Copag",
    "url": "https://meli.la/2NnkmxS",
-   "price": 179.99,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "price": 174.59,
+   "capturedAt": "2026-11-27T13:22:27.048Z"
   },
   {
    "item": "MLB5277812225",
@@ -2906,7 +2906,7 @@
    "title": "Pokemon Treinador Avançado Megaevolução Escuridão Absoluta",
    "url": "https://meli.la/2jQwpgv",
    "price": 400.11,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "capturedAt": "2026-11-27T13:25:52.143Z"
   },
   {
    "item": "MLB5015147085",
@@ -2993,8 +2993,8 @@
    "productId": "me04-etb",
    "title": "Box Treinador Avançado Me 04 Caos Ascendente Pokemon Copag",
    "url": "https://meli.la/2foKscF",
-   "price": 499.99,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "price": 459.99,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
   },
   {
    "item": "MLB5467639641",
@@ -3129,8 +3129,8 @@
    "productId": "c30-colecao_ex-greninja",
    "title": "Pokémon Celebração De 30 Anos Box Ex Greninja Greninja Ex",
    "url": "https://meli.la/1g43vkQ",
-   "price": 289.9,
-   "capturedAt": "2026-11-06T13:13:00Z"
+   "price": 266.71,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
   },
   {
    "item": "MLB5491994845",
@@ -3625,8 +3625,8 @@
    "productId": "me03-etb",
    "title": "Pokémon Equilíbrio Perfeito Treinador Avançado Etb Copag",
    "url": "https://meli.la/24xjTu7",
-   "price": 478.97,
-   "capturedAt": "2026-11-06T13:14:00Z"
+   "price": 435.5,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
   },
   {
    "item": "MLB5472794441",
@@ -4497,8 +4497,8 @@
    "productId": "me05-desafio",
    "title": "Pokémon Desafio Estratégico Escuridão Absoluta Build Battle",
    "url": "https://meli.la/1mFqdUy",
-   "price": 143.99,
-   "capturedAt": "2026-11-06T13:16:00Z"
+   "price": 134.99,
+   "capturedAt": "2026-11-27T13:25:25.535Z"
   },
   {
    "item": "MLB5089615530",
@@ -4625,7 +4625,7 @@
    "productId": "sv8_5-colecao_premium",
    "title": "Box Pokémon Coleção Premium Evoluções Prismáticas Copag 2025",
    "url": "https://meli.la/1yiNauL",
-   "price": 506.0,
+   "price": 506,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -4633,8 +4633,8 @@
    "productId": "sv8_5-colecao_premium",
    "title": "Pokémon Box Ev8.5 Premium Evoluções Prismáticas 62 Cartas",
    "url": "https://meli.la/1ff128x",
-   "price": 569.9,
-   "capturedAt": "2026-11-06T13:16:00Z"
+   "price": 561.11,
+   "capturedAt": "2026-11-27T13:25:59.934Z"
   },
   {
    "item": "MLB5724941262",
@@ -4978,7 +4978,7 @@
    "title": "Blister Unitário Pokémon Obsidiana Em Chamas Ev3 33487 Copag",
    "url": "https://meli.la/1xPwMQo",
    "price": 67.39,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:24:55.127Z"
   },
   {
    "item": "MLB5238618867",
@@ -5233,8 +5233,8 @@
    "productId": "sv9-blister3",
    "title": "Blister Triplo Pokémon TCG Amigos de Jornada com Scraggy – Escarlate e Violeta",
    "url": "https://meli.la/2pfMtiq",
-   "price": 97.46,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 95.17,
+   "capturedAt": "2026-11-27T13:25:12.543Z"
   },
   {
    "item": "MLB5454090799",
@@ -5265,8 +5265,8 @@
    "productId": "me02_5-blister3",
    "title": "Jogo De Cartas Blister Triplo Pokémon Gastly Me02.5 Heróis Excelsos",
    "url": "https://meli.la/2HmgWru",
-   "price": 124.6,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 128.89,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
   },
   {
    "item": "MLB7461770700",
@@ -5329,7 +5329,7 @@
    "productId": "sv10_5r-blister3",
    "title": "Blister Triplo Pokemon Escarlate Violeta Raio Preto Reuniclus",
    "url": "https://meli.la/2XGX3UJ",
-   "price": 159.0,
+   "price": 159,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -5338,7 +5338,7 @@
    "title": "Pokémon TCG Blister Triplo Rivais Predestinados com Zebstrika - Português",
    "url": "https://meli.la/2SXT22o",
    "price": 159.99,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:22:22.752Z"
   },
   {
    "item": "MLB7863017232",
@@ -5361,7 +5361,7 @@
    "productId": "c30-blister3",
    "title": "Pokémon Celebração de 30 anos – Blister Triplo com Adesivo Exeggutor",
    "url": "https://meli.la/24xSLyX",
-   "price": 169.0,
+   "price": 169,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -5393,7 +5393,7 @@
    "productId": "sv4_5-blister3",
    "title": "Blister Triplo Pokémon Destinos De Paldea Copag Idioma Português Fidough",
    "url": "https://meli.la/1mCMqYk",
-   "price": 209.0,
+   "price": 209,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -5417,8 +5417,8 @@
    "productId": "swsh10-blister3",
    "title": "Triple Pack Blister Triplo Pokemon Estrelas Radiantes Toxel",
    "url": "https://meli.la/1Xs6LiB",
-   "price": 244.44,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 226.8,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
   },
   {
    "item": "MLB8011662616",
@@ -5433,8 +5433,8 @@
    "productId": "swsh11-blister3",
    "title": "Blister Triplo Cartinha Do Pokemon Origem Perdida Croagunk",
    "url": "https://meli.la/24dYwhB",
-   "price": 257.2,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 212.96,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
   },
   {
    "item": "MLB7921157270",
@@ -5530,7 +5530,7 @@
    "title": "Pokémon Caos Ascendentes - Blister Quadruplo - Mega Evolução - ME04",
    "url": "https://meli.la/1nhxR9t",
    "price": 39.99,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:24:26.535Z"
   },
   {
    "item": "MLB7952622010",
@@ -5618,7 +5618,7 @@
    "title": "Pokemon Blister Quádruplo Zarude Rivais Predestinados Pokémon Português Br",
    "url": "https://meli.la/1rFDmca",
    "price": 123.49,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:25:22.303Z"
   },
   {
    "item": "MLB5462031463",
@@ -5722,7 +5722,7 @@
    "title": "Blister Quádruplo Pokémon Evoluções Em Paldea Varoom Copag",
    "url": "https://meli.la/2SHjAWx",
    "price": 289.9,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:22:36.968Z"
   },
   {
    "item": "MLB7686830740",
@@ -5841,7 +5841,7 @@
    "productId": "jp37-booster-ja",
    "title": "Booster Pokémon Tcg Japonês Nihil Zero Nihil zero Booster unitário",
    "url": "https://meli.la/2BLtxLE",
-   "price": 40.0,
+   "price": 40,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -5881,8 +5881,8 @@
    "productId": "cn10-booster-zh",
    "title": "Booster Pokémon Gengar Ed China Gem Pack Vol. 3 Gem Pack Vol.3 Chinese Gem Pack Gem Pack Vol3 Chinês",
    "url": "https://meli.la/2te3Box",
-   "price": 90.0,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 90,
+   "capturedAt": "2026-11-27T13:25:09.423Z"
   },
   {
    "item": "MLB4180420744",
@@ -5929,7 +5929,7 @@
    "productId": "jp22-box30-ja",
    "title": "Caixa de cartas Cyber Judge Pokémon com 30 envelopes japoneses",
    "url": "https://meli.la/2igE8aa",
-   "price": 899.0,
+   "price": 899,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6017,7 +6017,7 @@
    "productId": "me04-box36",
    "title": "Booster Box 36 pacotes - Display 216 Cartas Pokémon Caos Ascendente Copag Português",
    "url": "https://meli.la/1JUdp44",
-   "price": 419.0,
+   "price": 419,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6073,7 +6073,7 @@
    "productId": "me03-box36",
    "title": "Pokémon Box 36 Booster Equilíbrio Perfeito Mega Zygarde Ex Pokemon Português",
    "url": "https://meli.la/1Eiuvip",
-   "price": 499.0,
+   "price": 499,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6145,7 +6145,7 @@
    "productId": "swsh5-box36",
    "title": "Box Booster Pokemon Espada Escudo 5 Estilos De Batalha C/ 36",
    "url": "https://meli.la/2cFoaSn",
-   "price": 2499.0,
+   "price": 2499,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6185,7 +6185,7 @@
    "productId": "sv7-colecao_ex-lupo",
    "title": "Box Coleção Zacian Do Lupo Ex Pokémon Tcg Coroa Estelar",
    "url": "https://meli.la/2vgyznU",
-   "price": 159.0,
+   "price": 159,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6489,7 +6489,7 @@
    "productId": "me02-colecao_ex-mega-venusaur",
    "title": "Box Pokémon Mega Venusaur Ex - Fogo Fantasmagórico",
    "url": "https://meli.la/2H5eKzF",
-   "price": 229.0,
+   "price": 229,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6561,7 +6561,7 @@
    "productId": "me02_5-colecao_ex-mega-feraligator",
    "title": "Box Pokémon Tcg Me 2.5 Herois Excelsos Mega Feraligator Ex",
    "url": "https://meli.la/11gbNS5",
-   "price": 288.0,
+   "price": 288,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6649,7 +6649,7 @@
    "productId": "me02_5-colecao_ex-mega-feraligator",
    "title": "Box Pokémon Tcg Me 2.5 Herois Excelsos Mega Feraligator Ex",
    "url": "https://meli.la/1Q3SDLN",
-   "price": 369.0,
+   "price": 369,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -6937,8 +6937,8 @@
    "productId": "c30-colecao_poster-en",
    "title": "Coleção de Pôster Pokémon Celebração de 30 Anos com 3 Cartas Promocionais e 3 Boosters Inglês",
    "url": "https://meli.la/2EMzM6Q",
-   "price": 209.99,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 219,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
   },
   {
    "item": "MLB5583036369",
@@ -6985,7 +6985,7 @@
    "productId": "sv8_5-colecao_premium",
    "title": "Box Pokémon Coleção Premium Evoluções Prismáticas Copag 2025",
    "url": "https://meli.la/18NdsB4",
-   "price": 549.0,
+   "price": 549,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7041,7 +7041,7 @@
    "productId": "swsh1-colecao_premium",
    "title": "Box Pokémon Espada e Escudo Ultrapremium Charizard de Cartas TCG - Copag",
    "url": "https://meli.la/1sSnPec",
-   "price": 3843.0,
+   "price": 3843,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7049,7 +7049,7 @@
    "productId": "swsh1-colecao_premium",
    "title": "Box Pokémon Espada e Escudo Ultrapremium Charizard de Cartas TCG - Copag",
    "url": "https://meli.la/1Hd832G",
-   "price": 4285.0,
+   "price": 4285,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7145,7 +7145,7 @@
    "productId": "me02-combo",
    "title": "Combo De Booster Pokémon Me02 Fogo Fantasmagórico Pokémon",
    "url": "https://meli.la/1GSymWo",
-   "price": 371.0,
+   "price": 371,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7154,7 +7154,7 @@
    "title": "Combo De Booster Pokémon Me02 Fogo Fantasmagórico Pokémon",
    "url": "https://meli.la/2795zCL",
    "price": 394.68,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "capturedAt": "2026-11-27T13:22:44.296Z"
   },
   {
    "item": "MLB4326735587",
@@ -7209,7 +7209,7 @@
    "productId": "sv4_5-combo",
    "title": "Combo Booster Pokémon Escarlete E Violeta Destinos De Paldea",
    "url": "https://meli.la/2WFqvtP",
-   "price": 929.0,
+   "price": 929,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7297,7 +7297,7 @@
    "productId": "sv6_5-deck",
    "title": "Cards Pokémon Baralho Deck Batalha Fábulas Nebulosas Copag Idioma Pt-br Victini",
    "url": "https://meli.la/1yWW7fr",
-   "price": 120.0,
+   "price": 120,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7503,10 +7503,10 @@
   {
    "item": "MLB8003897870",
    "productId": "me06-etb",
-   "title": "Box Pokémon TCG Treinador Avançado ME 6 Reinado Delta",
+   "title": "Box Pokemon Treinador Avançado Reinado Delta Copag Português",
    "url": "https://meli.la/2fimzCn",
-   "price": 329.99,
-   "capturedAt": "2026-11-25T15:40:55Z"
+   "price": 299.9,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
   },
   {
    "item": "MLB8016578084",
@@ -7745,7 +7745,7 @@
    "productId": "me01-etb-en",
    "title": "Box Treinador Avançado Pokémon TCG Mega Evolução Heróis Ascendidos Inglês",
    "url": "https://meli.la/2YFvrgQ",
-   "price": 1226.0,
+   "price": 1226,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7953,7 +7953,7 @@
    "productId": "swsh12_5-etb",
    "title": "Box Treinador Avançado Realeza Absoluta E T B Pokémon Copag",
    "url": "https://meli.la/2WNTCuh",
-   "price": 2488.0,
+   "price": 2488,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7961,7 +7961,7 @@
    "productId": "sv3-etb",
    "title": "Pokémon Box Treinador Avançado Obsidiana Em Chamas - Copag",
    "url": "https://meli.la/27ai9KF",
-   "price": 2600.0,
+   "price": 2600,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -7993,7 +7993,7 @@
    "productId": "cel25-etb-en",
    "title": "Celebrações da Pokémon Tcg Elite Trainer Box seladas em inglês",
    "url": "https://meli.la/185vwRm",
-   "price": 6072.0,
+   "price": 6072,
    "capturedAt": "2026-11-25T15:40:55Z"
   },
   {
@@ -8011,6 +8011,1998 @@
    "url": "https://meli.la/2NFq8vY",
    "price": 879.99,
    "capturedAt": "2026-11-25T15:40:55Z"
+  },
+  {
+   "item": "MLB5605801639",
+   "productId": "me06-blister3",
+   "title": "Blister Triplo Pokémon Tcg Reinado Delta - Spritzee Portuguê",
+   "url": "https://meli.la/1ftpKJh",
+   "price": 32.99,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB5604785161",
+   "productId": "me06-blister3",
+   "title": "Pokémon Reinado Delta Megaevolução Triple Blister 19 Cartas",
+   "url": "https://meli.la/13DYwRw",
+   "price": 34.99,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB5576934313",
+   "productId": "me06-blister3",
+   "title": "Pokémon Blister Triplo Megaevolução Reinado Delta - Spritzee",
+   "url": "https://meli.la/23vXgpj",
+   "price": 35.86,
+   "capturedAt": "2026-11-27T13:20:53.976Z"
+  },
+  {
+   "item": "MLB5615559045",
+   "productId": "me06-blister3",
+   "title": "Blister Triplo Pokémon Tcg Reinado Delta Spritzee Português",
+   "url": "https://meli.la/1Rcp4aK",
+   "price": 37.57,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB5511841635",
+   "productId": "me04-blister1",
+   "title": "Blister Unitário Pokémon Copag Me04 Caos Ascendente",
+   "url": "https://meli.la/1sDWkXk",
+   "price": 7.99,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB7237165466",
+   "productId": "me04-blister1",
+   "title": "Blister Unitário Pokémon Me04 Caos Ascendente",
+   "url": "https://meli.la/179K8Na",
+   "price": 13.57,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5352796543",
+   "productId": "me04-blister1",
+   "title": "Pokemon - Tcg Blister Unitário Caos Ascendente",
+   "url": "https://meli.la/29QR4PV",
+   "price": 14.99,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB7875782534",
+   "productId": "me04-blister4",
+   "title": "Blister Quadruplo Toxel Pokémon Caos Ascendente Tcg Copag",
+   "url": "https://meli.la/1fmsQia",
+   "price": 44.99,
+   "capturedAt": "2026-11-27T13:21:26.248Z"
+  },
+  {
+   "item": "MLB5095313799",
+   "productId": "me04-blister4",
+   "title": "Pokémon Me04 Caos Ascendente Blister Quádruplo Toxel 4 Boost",
+   "url": "https://meli.la/12uUMDB",
+   "price": 48.62,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB7934267098",
+   "productId": "me05-blister3",
+   "title": "Blister Triplo Pokémon Me05 Escuridão Absoluta",
+   "url": "https://meli.la/2wCBcL2",
+   "price": 32.99,
+   "capturedAt": "2026-11-27T13:21:22.728Z"
+  },
+  {
+   "item": "MLB5540899637",
+   "productId": "me05-blister3",
+   "title": "Pokémon Tcg Blíster Triplo Escuridão Absoluta",
+   "url": "https://meli.la/17mCYyD",
+   "price": 35,
+   "capturedAt": "2026-11-27T13:22:50.911Z"
+  },
+  {
+   "item": "MLB5554691349",
+   "productId": "me05-blister3",
+   "title": "Blister Triplo Pokémon Me05 Escuridão Absoluta",
+   "url": "https://meli.la/1AgZeeN",
+   "price": 36,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB4932164837",
+   "productId": "me05-blister3",
+   "title": "Blister Triplo Pokémon Me05 Escuridão Absoluta Slowpoke Tcg",
+   "url": "https://meli.la/2SyPZzG",
+   "price": 36.9,
+   "capturedAt": "2026-11-27T13:24:16.351Z"
+  },
+  {
+   "item": "MLB5561413871",
+   "productId": "me06-blister4",
+   "title": "Pokémon Blister Quádruplo Reinado Delta Seel Me06 Copag Tcg",
+   "url": "https://meli.la/1c2PSMY",
+   "price": 47.9,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB5540827417",
+   "productId": "me06-blister4",
+   "title": "Blister Quádruplo Pokémon Tcg Reinado Delta - Seel",
+   "url": "https://meli.la/33eHZuo",
+   "price": 49,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB5568789965",
+   "productId": "me06-blister4",
+   "title": "Blister Quádruplo Pokémon Tcg Reinado Delta - Seel",
+   "url": "https://meli.la/33GEwcH",
+   "price": 49,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB7973845194",
+   "productId": "me06-blister4",
+   "title": "Blister Quádruplo Pokémon Tcg Reinado Delta - Seel",
+   "url": "https://meli.la/13zJRt5",
+   "price": 49.13,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB5516096339",
+   "productId": "me06-blister4",
+   "title": "Blister Quádruplo Pokémon Reinado Delta - 4 Boosters Copag",
+   "url": "https://meli.la/2EJik8s",
+   "price": 49.41,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB6990934438",
+   "productId": "me04-box36",
+   "title": "Booster Box 36 pacotes - Display 216 Cartas Pokémon Caos Ascendente Copag Português",
+   "url": "https://meli.la/1QVUu1h",
+   "price": 417.99,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB7829187096",
+   "productId": "me05-etb",
+   "title": "Cartas Pokémon Coleção Escuridão Absoluta Treinador Avançado 121 Cards Copag",
+   "url": "https://meli.la/2JwYM2c",
+   "price": 399,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5563328543",
+   "productId": "me05-etb",
+   "title": "Box Treinador Avançado Escuridão Absoluta Me05 Etb- Pokémon",
+   "url": "https://meli.la/16CDKtG",
+   "price": 429.9,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7123248536",
+   "productId": "me05-etb",
+   "title": "Pokemon Box Treinador Avançado Etb Escuridão Absoluta Pt-br",
+   "url": "https://meli.la/1d3gKcv",
+   "price": 432.39,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB7159275658",
+   "productId": "me05-etb",
+   "title": "Box Pokemon Treinador Avançado Escuridão Absoluta 121 Cartas",
+   "url": "https://meli.la/1pR6wEd",
+   "price": 441.51,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB8041952586",
+   "productId": "c30-blister3",
+   "title": "Pokémon Celebração De 30 Anos Blister Triplo Com Ad Lucario",
+   "url": "https://meli.la/2VQHqWp",
+   "price": 149.9,
+   "capturedAt": "2026-11-27T13:22:19.232Z"
+  },
+  {
+   "item": "MLB8040851974",
+   "productId": "c30-blister3",
+   "title": "Blister Triplo Exeggutor Pokémon Celebração 30 Anos",
+   "url": "https://meli.la/24Prdcw",
+   "price": 159,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB5391427207",
+   "productId": "c30-blister3",
+   "title": "Blister Triplo Lucario 30 Anos Pokémon Tcg Português 19 Cart",
+   "url": "https://meli.la/256LtJP",
+   "price": 159.9,
+   "capturedAt": "2026-11-27T13:25:28.654Z"
+  },
+  {
+   "item": "MLB5326269903",
+   "productId": "c30-blister3",
+   "title": "Pokemon 30 Anos Blister Triplo 19 Cartas Com Adesivo Lucario",
+   "url": "https://meli.la/1yry3mj",
+   "price": 161.4,
+   "capturedAt": "2026-11-27T13:25:28.654Z"
+  },
+  {
+   "item": "MLB8055611280",
+   "productId": "me02_5-blister3",
+   "title": "Copag Blister Triplo Pokémon Heróis Excelsos",
+   "url": "https://meli.la/1sCQ4aA",
+   "price": 105.99,
+   "capturedAt": "2026-11-27T13:22:08.336Z"
+  },
+  {
+   "item": "MLB7461770698",
+   "productId": "me02_5-blister3",
+   "title": "Copag Blister Triplo Pokémon Heróis Excelsos Português",
+   "url": "https://meli.la/1N4ryAo",
+   "price": 129,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB5272205523",
+   "productId": "me02_5-blister3",
+   "title": "Pokémon Blister Triplo Heróis Excelsos Charmander - Copag",
+   "url": "https://meli.la/1E66GPn",
+   "price": 133.2,
+   "capturedAt": "2026-11-27T13:25:22.303Z"
+  },
+  {
+   "item": "MLB4836905127",
+   "productId": "me05-blister4",
+   "title": "Booster Quádruplo Escuridão Absoluta Português",
+   "url": "https://meli.la/23KLUa7",
+   "price": 43.5,
+   "capturedAt": "2026-11-27T13:24:30.527Z"
+  },
+  {
+   "item": "MLB5540078541",
+   "productId": "me05-blister4",
+   "title": "Pokémon Tcg Blíster Quádruplo Escuridão Absoluta",
+   "url": "https://meli.la/1FyPogM",
+   "price": 45,
+   "capturedAt": "2026-11-27T13:21:26.248Z"
+  },
+  {
+   "item": "MLB7320200660",
+   "productId": "me05-blister4",
+   "title": "Blister Quadrúplo Pokémon Me05 Escuridão Absoluta 25 Cartas",
+   "url": "https://meli.la/2woxUYz",
+   "price": 45.33,
+   "capturedAt": "2026-11-27T13:21:26.248Z"
+  },
+  {
+   "item": "MLB4999853931",
+   "productId": "me05-blister4",
+   "title": "Blister Quadrúplo Pokémon Me05 Escuridão Absoluta",
+   "url": "https://meli.la/32oGY3Q",
+   "price": 45.7,
+   "capturedAt": "2026-11-27T13:21:26.248Z"
+  },
+  {
+   "item": "MLB7972451192",
+   "productId": "me05-blister4",
+   "title": "Blister Quadruplo Pokémon Me05 Escuridão Absoluta - Copag",
+   "url": "https://meli.la/2ZyARt1",
+   "price": 46.9,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB5944702782",
+   "productId": "me02-blister3",
+   "title": "Blister Triplo Pokémon Mega Fogo Fantasmagórico Cottonee",
+   "url": "https://meli.la/33W4ghe",
+   "price": 51.65,
+   "capturedAt": "2026-11-27T13:24:41.255Z"
+  },
+  {
+   "item": "MLB5173226677",
+   "productId": "me02-blister3",
+   "title": "Pokémon Blister Triplo Fogo Fantasmagórico Com 19 Cartas",
+   "url": "https://meli.la/2Duk5Qg",
+   "price": 55,
+   "capturedAt": "2026-11-27T13:21:40.316Z"
+  },
+  {
+   "item": "MLB4306883611",
+   "productId": "me02-blister3",
+   "title": "Blister Triplo Pokémon Fogo Fantasmagórico Whimsicott",
+   "url": "https://meli.la/21mojut",
+   "price": 55.2,
+   "capturedAt": "2026-11-27T13:21:40.316Z"
+  },
+  {
+   "item": "MLB7765072256",
+   "productId": "me03-blister3",
+   "title": "Pokémon Blister Triplo Equilíbrio Perfeito + Makuhita Portug",
+   "url": "https://meli.la/1AEEWZL",
+   "price": 35.89,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB5221600613",
+   "productId": "me03-blister3",
+   "title": "Pokémon Equilíbrio Perfeito Blister Triplo Copag Português",
+   "url": "https://meli.la/19nGNcc",
+   "price": 36,
+   "capturedAt": "2026-11-27T13:24:16.351Z"
+  },
+  {
+   "item": "MLB7608513248",
+   "productId": "me03-blister3",
+   "title": "Pokémon Blister Triplo Equilíbrio Perfeito Makuhita Me03",
+   "url": "https://meli.la/2i4Mv5q",
+   "price": 39.75,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB6618611506",
+   "productId": "me03-blister3",
+   "title": "Pokémon Equilíbrio Perfeito - Blister Triplo Português",
+   "url": "https://meli.la/1AEk7Bc",
+   "price": 42.9,
+   "capturedAt": "2026-11-27T13:21:22.728Z"
+  },
+  {
+   "item": "MLB7182538610",
+   "productId": "me03-blister3",
+   "title": "Blister Triplo Pokémon Makuhita Equilíbrio Perfeito",
+   "url": "https://meli.la/2sFKXca",
+   "price": 46.9,
+   "capturedAt": "2026-11-27T13:22:50.911Z"
+  },
+  {
+   "item": "MLB7947085988",
+   "productId": "me03-blister1",
+   "title": "Pokémon Blister Unitário Megaevoluçãome01 Tcg Português Equilíbrio Perfeito - Blister Unitário Português",
+   "url": "https://meli.la/1shGFjF",
+   "price": 14.24,
+   "capturedAt": "2026-11-27T13:21:14.808Z"
+  },
+  {
+   "item": "MLB7574527224",
+   "productId": "me03-blister1",
+   "title": "Blister Unitário Pokémon Me03 Equilíbrio Perfeito",
+   "url": "https://meli.la/2viDoCv",
+   "price": 18.9,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB7876744144",
+   "productId": "me03-blister1",
+   "title": "Blister Unitário Equilíbrio Perfeito | Pokémon Tcg [pt-br]",
+   "url": "https://meli.la/14YUkb5",
+   "price": 19.9,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5352631463",
+   "productId": "me03-blister1",
+   "title": "Blister Unitário Pokémon Me03 Equilíbrio Perfeito",
+   "url": "https://meli.la/2RcWsFi",
+   "price": 20.8,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5468365729",
+   "productId": "me05-booster",
+   "title": "Pokémon ME05 Escuridão Absoluta Booster 6 Cartas Copag",
+   "url": "https://meli.la/1o2QNMK",
+   "price": 19,
+   "capturedAt": "2026-11-27T13:23:52.575Z"
+  },
+  {
+   "item": "MLB8058975360",
+   "productId": "me05-booster",
+   "title": "Pokémon Me05 Escuridão Absoluta Booster 6 Cartas Copag",
+   "url": "https://meli.la/2EYwKKb",
+   "price": 21,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB6589163008",
+   "productId": "me03-blister4",
+   "title": "Pokémon,blister Quadrúplo-chikorita Me03 Equilíbrio Perfeito",
+   "url": "https://meli.la/24XG2hY",
+   "price": 52.9,
+   "capturedAt": "2026-11-27T13:21:37.640Z"
+  },
+  {
+   "item": "MLB7182633262",
+   "productId": "me03-blister4",
+   "title": "Blister Quadrúplo Pokémon Chikorita Equilíbrio Perfeito",
+   "url": "https://meli.la/2HJycMV",
+   "price": 55.9,
+   "capturedAt": "2026-11-27T13:24:44.511Z"
+  },
+  {
+   "item": "MLB6642683006",
+   "productId": "me03-blister4",
+   "title": "Blister Quadruplo Equilíbrio Perfeito Pokémon Chikorita Pt",
+   "url": "https://meli.la/2xbF6Ct",
+   "price": 59.9,
+   "capturedAt": "2026-11-27T13:21:44.424Z"
+  },
+  {
+   "item": "MLB7951708710",
+   "productId": "me06-etb",
+   "title": "Pokemon Treinador Avançado Etb - Reinado Delta - Lacrado Br",
+   "url": "https://meli.la/1RZeXYz",
+   "price": 379.9,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7966715778",
+   "productId": "me06-etb",
+   "title": "Pokémon Box Treinador Avançado Reinado Delta 121 Cartas Etb",
+   "url": "https://meli.la/1smZJAS",
+   "price": 382.69,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB5542142323",
+   "productId": "me06-etb",
+   "title": "Coleção Treinador Avançado Etb Reinado Delta Lacrado Pokémon",
+   "url": "https://meli.la/1XewQGQ",
+   "price": 399.79,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB5596517683",
+   "productId": "me06-etb",
+   "title": "Etb Reinado Delta Pokémon Tcg Treinador Avançado",
+   "url": "https://meli.la/1vsrmLE",
+   "price": 399.9,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB5545649783",
+   "productId": "me06-blister1",
+   "title": "Cartas Pokémon Blister Unitário - Me06 - Reinado Delta",
+   "url": "https://meli.la/1Emi2fu",
+   "price": 16.45,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB7992002542",
+   "productId": "me06-blister1",
+   "title": "Pokemon Blister Unitario Megaevolução 6 Reinado Delta Copag",
+   "url": "https://meli.la/2z4WGgQ",
+   "price": 17,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB7956576650",
+   "productId": "me06-blister1",
+   "title": "Pokémon Blister Unitário Me06 Reinado Delta - Copag",
+   "url": "https://meli.la/16JF2eB",
+   "price": 18.99,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5541453535",
+   "productId": "me06-blister1",
+   "title": "Blister Unitário - Coleção Reinado Delta",
+   "url": "https://meli.la/187Jw9z",
+   "price": 19.95,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5541436861",
+   "productId": "me06-blister1",
+   "title": "Blister Unitário - Coleção Reinado Delta",
+   "url": "https://meli.la/1AHvsdE",
+   "price": 20.05,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB8036913076",
+   "productId": "me02_5-blister4",
+   "title": "Blister Quadruplo Pokemon Heróis Excelsos Komala Copag Português",
+   "url": "https://meli.la/2qLr5xe",
+   "price": 129.99,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB7161315236",
+   "productId": "me02_5-blister4",
+   "title": "Blister Quádruplo Heróis Excelsos Komala Pokémon - Me02.5",
+   "url": "https://meli.la/2AWYGJC",
+   "price": 174.41,
+   "capturedAt": "2026-11-27T13:22:27.048Z"
+  },
+  {
+   "item": "MLB6216810244",
+   "productId": "me02_5-blister4",
+   "title": "Blister Quádruplo Komala Do Lauro Heróis Excelsos Pokémon",
+   "url": "https://meli.la/1H8jKJA",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB6216926630",
+   "productId": "me02_5-blister4",
+   "title": "Blister Quádruplo Tangela Da Érica Heróis Excelsos Pokémon",
+   "url": "https://meli.la/1WUWrU6",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB5461179689",
+   "productId": "sv8_5-blister3",
+   "title": "Pokémon Tcg Blister Triplo Evoluções Prismaticas Leafeon",
+   "url": "https://meli.la/16WQn21",
+   "price": 119.9,
+   "capturedAt": "2026-11-27T13:22:08.336Z"
+  },
+  {
+   "item": "MLB5433807113",
+   "productId": "sv8_5-blister3",
+   "title": "Blister Triplo Evoluções Prismáticas Pokémon Copag Original",
+   "url": "https://meli.la/2CoSHCE",
+   "price": 126,
+   "capturedAt": "2026-11-27T13:25:22.303Z"
+  },
+  {
+   "item": "MLB7855399686",
+   "productId": "sv8_5-blister3",
+   "title": "Blister Triplo Evoluções Prismáticas Pokémon Copag Original",
+   "url": "https://meli.la/2wD564i",
+   "price": 129.9,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB7933910564",
+   "productId": "sv8_5-blister3",
+   "title": "Pokémon TCG Blister Triplo Evoluções Prismáticas - Glaceon",
+   "url": "https://meli.la/28hXDhR",
+   "price": 129.9,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB7679797642",
+   "productId": "sv8_5-blister3",
+   "title": "Pokémon Tcg Blister Triplo Evoluções Prismaticas Leafeon",
+   "url": "https://meli.la/2xxyc4Y",
+   "price": 133.99,
+   "capturedAt": "2026-11-27T13:25:25.535Z"
+  },
+  {
+   "item": "MLB5589109587",
+   "productId": "sv6-blister1",
+   "title": "Pokémon Blister Unitário Ev6 Máscaras Do Crepúsculo",
+   "url": "https://meli.la/32CGEcK",
+   "price": 80,
+   "capturedAt": "2026-11-27T13:22:04.712Z"
+  },
+  {
+   "item": "MLB8003897902",
+   "productId": "me06-box36",
+   "title": "Pokémon Caixa De Boosters Reinado Delta C/36",
+   "url": "https://meli.la/26nKCUi",
+   "price": 359.99,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB5483275029",
+   "productId": "me06-box36",
+   "title": "Booster Box Pokémon Reinado Delta 36 Boosters Português Lacr",
+   "url": "https://meli.la/1xNxctQ",
+   "price": 379.93,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB7902698858",
+   "productId": "me06-box36",
+   "title": "Booster Box Pokémon Reinado Delta 36 Boosters Tcg Original",
+   "url": "https://meli.la/2Ncc6SZ",
+   "price": 441.51,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB5583843657",
+   "productId": "me06-box36",
+   "title": "Box Pokémon Reinado Delta Me06 Copag 36 Boosters 216 Cartas",
+   "url": "https://meli.la/2d5B91i",
+   "price": 508.16,
+   "capturedAt": "2026-11-27T13:22:44.296Z"
+  },
+  {
+   "item": "MLB5583885329",
+   "productId": "me06-box36",
+   "title": "Box Pokémon Tcg Reinado Delta Me06 36 Boosters Copag",
+   "url": "https://meli.la/1BSpznP",
+   "price": 536.65,
+   "capturedAt": "2026-11-27T13:22:44.296Z"
+  },
+  {
+   "item": "MLB8030778442",
+   "productId": "c30-blister2",
+   "title": "Blister Duplo Com Moeda Celebração 30 Anos Pokémon Tcg Pt-br",
+   "url": "https://meli.la/11tC2pR",
+   "price": 109.25,
+   "capturedAt": "2026-11-27T13:22:08.336Z"
+  },
+  {
+   "item": "MLB5322272343",
+   "productId": "c30-blister2",
+   "title": "Pokemon Celebração 30 Anos Blister Duplo Com Moeda Eevee",
+   "url": "https://meli.la/1cgains",
+   "price": 110.39,
+   "capturedAt": "2026-11-27T13:25:18.960Z"
+  },
+  {
+   "item": "MLB7908860344",
+   "productId": "c30-blister2",
+   "title": "Pré-venda Pacote Duplo Comemoração 30 Anos Pokémon Copag Por",
+   "url": "https://meli.la/1eHnmyT",
+   "price": 110.39,
+   "capturedAt": "2026-11-27T13:22:08.336Z"
+  },
+  {
+   "item": "MLB7056377398",
+   "productId": "swsh10-blister3",
+   "title": "Triple Pack Blister Triplo Pokemon Estrelas Radiantes",
+   "url": "https://meli.la/1L8gRAF",
+   "price": 220.32,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
+  },
+  {
+   "item": "MLB7972499642",
+   "productId": "me05-blister1",
+   "title": "Blister Unitário Pokémon Me05 Escuridão Absoluta - Copag",
+   "url": "https://meli.la/13S9FpT",
+   "price": 16.9,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5545468917",
+   "productId": "me05-blister1",
+   "title": "Blister Unitário Pokémon Me05 Escuridão Absoluta - Copag",
+   "url": "https://meli.la/2hy2iu3",
+   "price": 16.9,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5399898923",
+   "productId": "me05-blister1",
+   "title": "Pokémon Tcg Me05 Escuridão Absoluta Blister Unitário Com 6",
+   "url": "https://meli.la/1D7VmG4",
+   "price": 17.41,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB8017980612",
+   "productId": "me06-booster",
+   "title": "Booster Unitário Reinado Delta - Pokémon Tcg Me6",
+   "url": "https://meli.la/2Fn7u8g",
+   "price": 17.99,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB4804122497",
+   "productId": "me04-booster",
+   "title": "Booster Caos Ascendente Megaevolução Pokémon",
+   "url": "https://meli.la/1DeFzCV",
+   "price": 19.9,
+   "capturedAt": "2026-11-27T13:23:52.575Z"
+  },
+  {
+   "item": "MLB5620104299",
+   "productId": "me04-booster",
+   "title": "Booster Avulso Pokémon Caos Ascendente Copag Português",
+   "url": "https://meli.la/1B4fqYt",
+   "price": 20,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB5558470299",
+   "productId": "me04-booster",
+   "title": "Booster Caos Ascendente Copag Pokémon Pt-br",
+   "url": "https://meli.la/1hoWSTp",
+   "price": 21,
+   "capturedAt": "2026-11-27T13:21:08.400Z"
+  },
+  {
+   "item": "MLB4726431133",
+   "productId": "me04-booster",
+   "title": "Booster - Caos Ascendente - Pokémon Tcg - 6 Cartas",
+   "url": "https://meli.la/1Hru9eu",
+   "price": 21.9,
+   "capturedAt": "2026-11-27T13:22:50.911Z"
+  },
+  {
+   "item": "MLB5979846788",
+   "productId": "me01-blister1",
+   "title": "Pokémon Blister Unitário Me01 Nintendo Mega Evolução",
+   "url": "https://meli.la/1ci83L3",
+   "price": 26.9,
+   "capturedAt": "2026-11-27T13:21:14.808Z"
+  },
+  {
+   "item": "MLB5458414373",
+   "productId": "sv9-blister1",
+   "title": "Pokémon Tcg, Blister Unitário Ev9 Amigos De Jornada",
+   "url": "https://meli.la/2UYvrRe",
+   "price": 27.98,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB5257101895",
+   "productId": "me02-blister1",
+   "title": "Blister Unitário - Megaevolução 2 - Fogo Fantasmagórico",
+   "url": "https://meli.la/1fjK2t1",
+   "price": 28.49,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB5589106897",
+   "productId": "me02-blister1",
+   "title": "Blister Unitario Fogo Fantasmagórico Pokemon Copag",
+   "url": "https://meli.la/2AYg9xe",
+   "price": 40,
+   "capturedAt": "2026-11-27T13:21:22.728Z"
+  },
+  {
+   "item": "MLB6881704564",
+   "productId": "me03-blister1-en",
+   "title": "(ing) Blister Unitário Megaevolução 3 - Equilíbrio Perfeito",
+   "url": "https://meli.la/1enQjQz",
+   "price": 37.95,
+   "capturedAt": "2026-11-27T13:21:18.984Z"
+  },
+  {
+   "item": "MLB4932298831",
+   "productId": "me04-blister3",
+   "title": "Pokémon Blister Triplo Me04 Caos Ascendente",
+   "url": "https://meli.la/2wevByT",
+   "price": 41.9,
+   "capturedAt": "2026-11-27T13:21:22.728Z"
+  },
+  {
+   "item": "MLB6796971446",
+   "productId": "me04-blister3",
+   "title": "Blister Triplo Pokémon Tcg Caos Ascendente - Charmeleon",
+   "url": "https://meli.la/2VufXdS",
+   "price": 47.99,
+   "capturedAt": "2026-11-27T13:21:30.600Z"
+  },
+  {
+   "item": "MLB4693509029",
+   "productId": "me04-blister3",
+   "title": "Blister Triplo Pokémon Charmeleon - Caos Ascendente",
+   "url": "https://meli.la/1FZcnTG",
+   "price": 49.9,
+   "capturedAt": "2026-11-27T13:21:34.352Z"
+  },
+  {
+   "item": "MLB4690583403",
+   "productId": "me04-blister3",
+   "title": "Pokémon Caos Ascendente Blister Triplo Charmeleon",
+   "url": "https://meli.la/17YsZeY",
+   "price": 51.9,
+   "capturedAt": "2026-11-27T13:21:37.640Z"
+  },
+  {
+   "item": "MLB4832801801",
+   "productId": "me04-blister3",
+   "title": "Blister Triplo Caos Ascendente Megaevolução Charmeleon Copag",
+   "url": "https://meli.la/2d4aReH",
+   "price": 51.99,
+   "capturedAt": "2026-11-27T13:21:37.640Z"
+  },
+  {
+   "item": "MLB7439290070",
+   "productId": "me01-blister3",
+   "title": "Blister Triplo Me01 Megaevolução - Driflblim",
+   "url": "https://meli.la/2nSmYxu",
+   "price": 44.06,
+   "capturedAt": "2026-11-27T13:21:26.248Z"
+  },
+  {
+   "item": "MLB5964844024",
+   "productId": "me01-blister3",
+   "title": "Pokémon Blister Triplo Mega Evolução Drifblim Me01",
+   "url": "https://meli.la/1rHtPH1",
+   "price": 44.9,
+   "capturedAt": "2026-11-27T13:22:50.911Z"
+  },
+  {
+   "item": "MLB5286893635",
+   "productId": "me01-blister4",
+   "title": "Pokémon Mega Evolução Me01 Blister Quádruplo Copag",
+   "url": "https://meli.la/2T149G2",
+   "price": 55,
+   "capturedAt": "2026-11-27T13:21:40.316Z"
+  },
+  {
+   "item": "MLB4324718337",
+   "productId": "me01-blister4",
+   "title": "Pokémon 1 Blister Quádruplo Psyduck Mega Evolução Me01 Copag",
+   "url": "https://meli.la/2kcQdZp",
+   "price": 56.9,
+   "capturedAt": "2026-11-27T13:24:48.287Z"
+  },
+  {
+   "item": "MLB7525783244",
+   "productId": "me01-blister4",
+   "title": "Blister Quadruplo Me01 Mega Evolucao Pokemon Pt-br",
+   "url": "https://meli.la/2sepAL9",
+   "price": 69.9,
+   "capturedAt": "2026-11-27T13:22:54.192Z"
+  },
+  {
+   "item": "MLB4349234197",
+   "productId": "me01-blister4",
+   "title": "Pokémon Tcg Blister Quadruplo Mega Expansao Me01 Golduck",
+   "url": "https://meli.la/15oJgqG",
+   "price": 75.9,
+   "capturedAt": "2026-11-27T13:22:01.481Z"
+  },
+  {
+   "item": "MLB7827063392",
+   "productId": "me05-colecao",
+   "title": "Coleção Megaevolução Escuridão Absoluta 3 Pacotes - Pokemon",
+   "url": "https://meli.la/1zgNkKq",
+   "price": 64.9,
+   "capturedAt": "2026-11-27T13:21:51.041Z"
+  },
+  {
+   "item": "MLB7575086900",
+   "productId": "sv3-blister1",
+   "title": "Blister Unitário Pokemon Obsidiana Em Chamas",
+   "url": "https://meli.la/1zhAAFv",
+   "price": 71.99,
+   "capturedAt": "2026-11-27T13:25:02.215Z"
+  },
+  {
+   "item": "MLB4987261093",
+   "productId": "me02-blister4",
+   "title": "Pokemon Tcg Quadruplo Mega Evolução Fogo Fantasmagórico",
+   "url": "https://meli.la/25uH4wS",
+   "price": 67.12,
+   "capturedAt": "2026-11-27T13:24:55.127Z"
+  },
+  {
+   "item": "MLB5933667374",
+   "productId": "me02-blister4",
+   "title": "Pokémon Fogo Fantasmagórico Blister Quadruplo Weavile",
+   "url": "https://meli.la/2Y1RubL",
+   "price": 67.8,
+   "capturedAt": "2026-11-27T13:22:54.192Z"
+  },
+  {
+   "item": "MLB5933692172",
+   "productId": "me02-blister4",
+   "title": "Pokémon Fogo Fantasmagórico Blister Quadruplo Sneasel",
+   "url": "https://meli.la/29JHpi1",
+   "price": 67.8,
+   "capturedAt": "2026-11-27T13:22:54.192Z"
+  },
+  {
+   "item": "MLB5265875897",
+   "productId": "me02-blister4",
+   "title": "Pokémon Tcg Quadruplo Fogo Fantasmagorico Português",
+   "url": "https://meli.la/29b6F2i",
+   "price": 68.9,
+   "capturedAt": "2026-11-27T13:24:58.815Z"
+  },
+  {
+   "item": "MLB7673444828",
+   "productId": "me02-blister4",
+   "title": "Blister Quádruplo Pokémon Weavile De Fogo Fantasmagórico Br",
+   "url": "https://meli.la/1eGPjYY",
+   "price": 69.9,
+   "capturedAt": "2026-11-27T13:21:57.744Z"
+  },
+  {
+   "item": "MLB5406577639",
+   "productId": "me04-colecao",
+   "title": "Coleção Megaevolução Caos Ascendente 4 Pacotes - Pokemon Tcg",
+   "url": "https://meli.la/1GHQ5pp",
+   "price": 69.9,
+   "capturedAt": "2026-11-27T13:21:57.744Z"
+  },
+  {
+   "item": "MLB7680563166",
+   "productId": "swsh10-blister1",
+   "title": "Pokemon Blister Unitario Espada E Escudo Estrelas Radiantes",
+   "url": "https://meli.la/2t5zxKL",
+   "price": 69.99,
+   "capturedAt": "2026-11-27T13:21:57.744Z"
+  },
+  {
+   "item": "MLB5933629118",
+   "productId": "me02-blister1-en",
+   "title": "Pokémon Mega Evolution Phantasmal Flames Blister Unitário En",
+   "url": "https://meli.la/1mADVvC",
+   "price": 76.53,
+   "capturedAt": "2026-11-27T13:25:02.215Z"
+  },
+  {
+   "item": "MLB5933718348",
+   "productId": "me02-blister1-en",
+   "title": "Pokémon Mega Evolution Phantasmal Flames Blister Unitário En",
+   "url": "https://meli.la/244Yj1g",
+   "price": 78.9,
+   "capturedAt": "2026-11-27T13:22:01.481Z"
+  },
+  {
+   "item": "MLB5557150453",
+   "productId": "sv9-blister3",
+   "title": "Pokemon Blister Triplo Amigos De Jornada",
+   "url": "https://meli.la/2D1DJfX",
+   "price": 72,
+   "capturedAt": "2026-11-27T13:22:54.192Z"
+  },
+  {
+   "item": "MLB6655857500",
+   "productId": "sv9-blister3",
+   "title": "Blister Triplo Amigos De Jornada Scraggy Lacrada Copag",
+   "url": "https://meli.la/2uRRjng",
+   "price": 107.99,
+   "capturedAt": "2026-11-27T13:22:08.336Z"
+  },
+  {
+   "item": "MLB5554928205",
+   "productId": "sv7-blister3",
+   "title": "Blister Triplo Pokemon Coroa Estelar Porygon2 - Original",
+   "url": "https://meli.la/2ympSLH",
+   "price": 120,
+   "capturedAt": "2026-11-27T13:22:08.336Z"
+  },
+  {
+   "item": "MLB5306376141",
+   "productId": "sv7-blister3",
+   "title": "Blister Triplo Pokemon Coroa Estelar Horsea Tcg",
+   "url": "https://meli.la/1RVNAtC",
+   "price": 132.99,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB4288690849",
+   "productId": "sv7-blister3",
+   "title": "Pokémon Blister Triplo Coroa Estelar Porygon2 - Copag",
+   "url": "https://meli.la/2b5rN3m",
+   "price": 139.99,
+   "capturedAt": "2026-11-27T13:22:19.232Z"
+  },
+  {
+   "item": "MLB7192525536",
+   "productId": "sv10-blister4",
+   "title": "Cartas Pokémon Blister Quádruplo Rivais Predestinados Copag - Zarude",
+   "url": "https://meli.la/1Sbq4Jg",
+   "price": 127.41,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB4284480275",
+   "productId": "sv10-blister4",
+   "title": "Blister Quadruplo Zarude - Rivais Predestinados Pokémon Tcg",
+   "url": "https://meli.la/1E97Mf5",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:22:27.048Z"
+  },
+  {
+   "item": "MLB5579497603",
+   "productId": "me06-blister3-en",
+   "title": "Blister Triplo Delta Reign Pokémon Inglês Original Lacrado",
+   "url": "https://meli.la/1Bbp8RE",
+   "price": 128.9,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB5589590673",
+   "productId": "me06-blister3-en",
+   "title": "Blister Triplo Delta Reign Pokémon Inglês",
+   "url": "https://meli.la/21NpJNK",
+   "price": 144.9,
+   "capturedAt": "2026-11-27T13:22:19.232Z"
+  },
+  {
+   "item": "MLB8029184358",
+   "productId": "me06-blister3-en",
+   "title": "Pokémon Mega Evolution Delta Reign Blister Triplo Seel En",
+   "url": "https://meli.la/1NWUKQV",
+   "price": 159.9,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB8029184360",
+   "productId": "me06-blister3-en",
+   "title": "Pokémon Mega Evolution Delta Reign Blister Triplo Seel En",
+   "url": "https://meli.la/2UNfev9",
+   "price": 159.9,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB4887935763",
+   "productId": "me05-blister3-en",
+   "title": "Blister Triplo Inglês Pitch Black Escuridão Absoluta Tcg",
+   "url": "https://meli.la/2kdaHem",
+   "price": 130.09,
+   "capturedAt": "2026-11-27T13:22:12.024Z"
+  },
+  {
+   "item": "MLB5147643405",
+   "productId": "me05-blister3-en",
+   "title": "Blister Triplo Pokemon Pitch Black Binacle Ingles",
+   "url": "https://meli.la/2UBwwJx",
+   "price": 158.99,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB5087360491",
+   "productId": "me05-blister3-en",
+   "title": "Triple Pack Pitch Black Pokémon Inglês Blister Triplo Inglês",
+   "url": "https://meli.la/1Nerhgo",
+   "price": 165,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB5497055269",
+   "productId": "me05-blister3-en",
+   "title": "Blister Triplo Binacle - Pitch Black - Pokémon Tcg Inglês",
+   "url": "https://meli.la/2y7oLg2",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB8061248976",
+   "productId": "sv9-blister4",
+   "title": "Pokémon Blister Quádruplo Amigos De Jornada - Scrafty Copag",
+   "url": "https://meli.la/1gDKwsy",
+   "price": 135.7,
+   "capturedAt": "2026-11-27T13:22:19.232Z"
+  },
+  {
+   "item": "MLB4015245477",
+   "productId": "sv9-blister4",
+   "title": "Pokémon Blister Quádruplo Amigos De Jornada - Scrafty",
+   "url": "https://meli.la/29JvTnJ",
+   "price": 169.99,
+   "capturedAt": "2026-11-27T13:22:27.048Z"
+  },
+  {
+   "item": "MLB5331887256",
+   "productId": "sv9-blister4",
+   "title": "Pokémon Blister Quádruplo Amigos De Jornada - Yanmega",
+   "url": "https://meli.la/1CB9omA",
+   "price": 169.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB4041618615",
+   "productId": "sv9-blister4",
+   "title": "Blister Quádruplo Amigos De Jornada Yanmega E Scrafty - Ev9",
+   "url": "https://meli.la/1kA1m5H",
+   "price": 269.91,
+   "capturedAt": "2026-11-27T13:25:42.026Z"
+  },
+  {
+   "item": "MLB5378664695",
+   "productId": "sv8_5-blister4",
+   "title": "Blister Quádruplo - Evoluções Prismáticas - Vaporeon",
+   "url": "https://meli.la/1Vsunsf",
+   "price": 142.9,
+   "capturedAt": "2026-11-27T13:22:19.232Z"
+  },
+  {
+   "item": "MLB7177211128",
+   "productId": "sv8_5-blister4",
+   "title": "Blister Quádruplo Evoluções Prismáticas Pokémon - Jolteon",
+   "url": "https://meli.la/2AaBGnF",
+   "price": 154.9,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB5054480641",
+   "productId": "sv8_5-blister4",
+   "title": "Blister Quádruplo Evoluções Prismáticas Pokémon Vaporeon",
+   "url": "https://meli.la/1bwqwAm",
+   "price": 168.99,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB7580504520",
+   "productId": "sv8_5-blister4",
+   "title": "Copag Pokemon Blister Quadruplo Ev 8.5 Evoluções Prismáticas Idioma Português Jolteon",
+   "url": "https://meli.la/2XAyckm",
+   "price": 168.99,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB5276806381",
+   "productId": "cel25-blister2",
+   "title": "Blister Duplo Pokémon Celebrações Eevee 13 Cartas Com Moeda",
+   "url": "https://meli.la/14gfmgQ",
+   "price": 149.9,
+   "capturedAt": "2026-11-27T13:22:19.232Z"
+  },
+  {
+   "item": "MLB7438802562",
+   "productId": "sv10-blister3",
+   "title": "Blister Triplo Pokémon TCG Rivais Predestinados Kangaskhan Holográfico para Jogo de Estratégia em Português",
+   "url": "https://meli.la/1aviPF2",
+   "price": 159.99,
+   "capturedAt": "2026-11-27T13:22:22.752Z"
+  },
+  {
+   "item": "MLB7407775476",
+   "productId": "sv10-blister3",
+   "title": "Blister Triplo Rivais Predestinados Pokémon Kangaskhan Tcg",
+   "url": "https://meli.la/1Xwem9Z",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:22:27.048Z"
+  },
+  {
+   "item": "MLB7410386188",
+   "productId": "sv10-blister3",
+   "title": "Blister Triplo Rivais Predestinados Zebstrika Pokémon",
+   "url": "https://meli.la/1rfyyES",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:25:32.279Z"
+  },
+  {
+   "item": "MLB5326330519",
+   "productId": "c30-colecao_poster",
+   "title": "Pokémon Celebração De 30 Anos - Box Coleção Com Pôster Copag",
+   "url": "https://meli.la/169Ycf1",
+   "price": 179.1,
+   "capturedAt": "2026-11-27T13:25:32.279Z"
+  },
+  {
+   "item": "MLB5407304779",
+   "productId": "c30-colecao_poster",
+   "title": "Box Pokémon com Pôster Celebração de 30 Anos",
+   "url": "https://meli.la/2cD5k6G",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:25:32.279Z"
+  },
+  {
+   "item": "MLB7736509346",
+   "productId": "c30-colecao_poster",
+   "title": "Box Pokémon Com Pôster Celebração De 30 Anos Original Copag",
+   "url": "https://meli.la/2BGK7Sp",
+   "price": 179.99,
+   "capturedAt": "2026-11-27T13:25:32.279Z"
+  },
+  {
+   "item": "MLB7735986034",
+   "productId": "c30-colecao_poster",
+   "title": "Caixa Pokémon Tcg Celebração De 30 Anos Coleção Com Pôster",
+   "url": "https://meli.la/154M4oH",
+   "price": 189.9,
+   "capturedAt": "2026-11-27T13:25:35.439Z"
+  },
+  {
+   "item": "MLB7740449058",
+   "productId": "c30-colecao_poster",
+   "title": "Box Pokémon Com Pôster Celebração De 30 Anos Copag Portugues",
+   "url": "https://meli.la/2s28b7K",
+   "price": 198.6,
+   "capturedAt": "2026-11-27T13:25:35.439Z"
+  },
+  {
+   "item": "MLB5612552623",
+   "productId": "sv10_5w-blister3",
+   "title": "Blister Triplo Pokémon Fogo Branco com Gothitelle Holográfica de Copag",
+   "url": "https://meli.la/1YeszJs",
+   "price": 185.17,
+   "capturedAt": "2026-11-27T13:22:27.048Z"
+  },
+  {
+   "item": "MLB5715833162",
+   "productId": "sv10_5w-blister3",
+   "title": "Pokémon Blister Triplo Fogo Branco Gothitelle - Copag",
+   "url": "https://meli.la/1vrhMie",
+   "price": 199.99,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB7574750154",
+   "productId": "sv10_5-blister4",
+   "title": "Blister Quádruplo Pokémon Fogo Branco E Raio Preto Snivy",
+   "url": "https://meli.la/28a8DiB",
+   "price": 189.9,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB4810786321",
+   "productId": "sv10_5-blister4",
+   "title": "Blister Quádruplo Fogo Branco E Raio Preto Português 25 Cart",
+   "url": "https://meli.la/1LGNbqy",
+   "price": 199.99,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB7322104686",
+   "productId": "sv10_5-blister4",
+   "title": "Blister Quádruplo Pokémon Fogo Branco E Raio Preto Copag Pt",
+   "url": "https://meli.la/1EnP5Ka",
+   "price": 259.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB7322189970",
+   "productId": "sv10_5-blister4",
+   "title": "Blister Quádruplo Pokémon Fogo Branco E Raio Preto Copag Pt",
+   "url": "https://meli.la/2xWhZrt",
+   "price": 259.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB7330569336",
+   "productId": "sv10_5-blister4",
+   "title": "Blister Quádruplo Pokémon Fogo Branco/raio Preto Oshawott Pt",
+   "url": "https://meli.la/215MkLH",
+   "price": 259.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB4617289255",
+   "productId": "sv5-blister3",
+   "title": "Blister Triplo Pokémon Forças Temporais Carvanha",
+   "url": "https://meli.la/2nBkb3i",
+   "price": 189.99,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB5147492985",
+   "productId": "sv5-blister3",
+   "title": "Blister Triplo Pokemon Forças Temporais - Carvanha",
+   "url": "https://meli.la/15m2HTq",
+   "price": 229.99,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB5147525385",
+   "productId": "sv5-blister3",
+   "title": "Blister Triplo Pokemon Forças Temporais - Bellibolt",
+   "url": "https://meli.la/1TXshW1",
+   "price": 229.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB5147525379",
+   "productId": "sv6_5-blister3",
+   "title": "Blister Triplo Pokemon Fábulas Nebulosas Pecharunt",
+   "url": "https://meli.la/2ToUgTA",
+   "price": 192.99,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB5554825445",
+   "productId": "sv8-blister3",
+   "title": "Blister Triplo Fagulhas Impetuosas Wooper Pokemon - Novo",
+   "url": "https://meli.la/2wo1CE2",
+   "price": 199.98,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB5099377743",
+   "productId": "sv8-blister3",
+   "title": "Blister Triplo Fagulhas Impetuosas Pachirisu Pokemon",
+   "url": "https://meli.la/2btsdrk",
+   "price": 216.5,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB7467397014",
+   "productId": "sv8-blister3",
+   "title": "Blister Triplo Fagulhas Impetuosas Wooper Pokemon",
+   "url": "https://meli.la/1Ca6PBZ",
+   "price": 218.3,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB4547566054",
+   "productId": "sv5-blister4",
+   "title": "Blister Quadruplo Cleffa - Forças Temporais - Pokémon Tcg",
+   "url": "https://meli.la/2eK5rf2",
+   "price": 199.99,
+   "capturedAt": "2026-11-27T13:22:30.408Z"
+  },
+  {
+   "item": "MLB4547708530",
+   "productId": "sv5-blister4",
+   "title": "Blister Quadruplo Cyclizar - Forças Temporais - Pokémon Tcg",
+   "url": "https://meli.la/219NAwH",
+   "price": 199.99,
+   "capturedAt": "2026-11-27T13:25:35.439Z"
+  },
+  {
+   "item": "MLB7481053360",
+   "productId": "sv5-blister4",
+   "title": "Blister Quádruplo Pokemon Forças Temporais - Cleffa",
+   "url": "https://meli.la/2uYys95",
+   "price": 272.31,
+   "capturedAt": "2026-11-27T13:22:36.968Z"
+  },
+  {
+   "item": "MLB7718430434",
+   "productId": "sv5-blister4",
+   "title": "Blister Quádruplo Pokemon Forças Temporais Cyclizar Tcg",
+   "url": "https://meli.la/1r8bJ6r",
+   "price": 295.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB5394352443",
+   "productId": "c30-blister3-en",
+   "title": "Pokemon Coleção 30 Anos Blister Triplo Lucario Inglês",
+   "url": "https://meli.la/2u4aWsg",
+   "price": 230.23,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
+  },
+  {
+   "item": "MLB7835914492",
+   "productId": "me02-colecao_ex-mega-venusaur",
+   "title": "Box Pokémon Mega Venusaur Ex - Fogo Fantasmagórico",
+   "url": "https://meli.la/2uppKu8",
+   "price": 224.95,
+   "capturedAt": "2026-11-27T13:25:42.026Z"
+  },
+  {
+   "item": "MLB5147604617",
+   "productId": "swsh2-blister3",
+   "title": "Blister Triplo Pokemon Rixa Rebelde - Noctowl",
+   "url": "https://meli.la/1EMhamY",
+   "price": 232.02,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB5321243155",
+   "productId": "swsh11-blister4",
+   "title": "Blister Quádruplo Pack Origem Perdida Pokémon Tcg 1magnus",
+   "url": "https://meli.la/2PE7ufB",
+   "price": 257.57,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB7735116918",
+   "productId": "swsh11-blister4",
+   "title": "Blister Quádruplo Pack Origem Perdida Pokémon Tcg 1magnus",
+   "url": "https://meli.la/1Su7xnp",
+   "price": 257.57,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB4191384446",
+   "productId": "sv4-blister4",
+   "title": "Blister Quadruplo Cetitan - Fenda Paradoxal - Pokémon Tcg",
+   "url": "https://meli.la/1q4DUmM",
+   "price": 257.59,
+   "capturedAt": "2026-11-27T13:22:33.832Z"
+  },
+  {
+   "item": "MLB4191454122",
+   "productId": "sv4-blister4",
+   "title": "Blister Quadruplo Arctibax - Fenda Paradoxal - Pokémon Tcg",
+   "url": "https://meli.la/1s3vNJ9",
+   "price": 279.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB4918604725",
+   "productId": "sv4-blister4",
+   "title": "Pokémon Quádruplo Cetitan Ev04 Fenda Paradoxal Copag",
+   "url": "https://meli.la/2hGuhT7",
+   "price": 299.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB7481077742",
+   "productId": "swsh2-blister4",
+   "title": "Blister Quádruplo Pokemon Rixa Rebelde - Duraludon",
+   "url": "https://meli.la/2rELe2y",
+   "price": 262.19,
+   "capturedAt": "2026-11-27T13:22:36.968Z"
+  },
+  {
+   "item": "MLB7481092742",
+   "productId": "sv2-blister4",
+   "title": "Blister Quádruplo Pokemon Evoluções Em Paldea - Tinkatink",
+   "url": "https://meli.la/245LckR",
+   "price": 282.35,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB7481053236",
+   "productId": "swsh10-blister4",
+   "title": "Blister Quádruplo Pokemon Estrelas Radiantes Sylveon",
+   "url": "https://meli.la/1vEAhpd",
+   "price": 282.35,
+   "capturedAt": "2026-11-27T13:22:36.968Z"
+  },
+  {
+   "item": "MLB7859886744",
+   "productId": "c30-colecao_fichario",
+   "title": "Box Pokémon Celebração 30 anos Coleção com Fichario",
+   "url": "https://meli.la/19u3gWb",
+   "price": 349.29,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB5407594557",
+   "productId": "c30-colecao_fichario",
+   "title": "Pokémon Coleção 30 Anos Com Fichário - Português Copag",
+   "url": "https://meli.la/2xqHz9x",
+   "price": 351.4,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB5318094127",
+   "productId": "c30-colecao_fichario",
+   "title": "Pokémon Celebração De 30 Anos - Box Coleção Com Fichário",
+   "url": "https://meli.la/27zX3WU",
+   "price": 359.1,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5337143033",
+   "productId": "c30-colecao_fichario",
+   "title": "Pokémon Celebração De 30 Anos Box Coleção Com Fichário",
+   "url": "https://meli.la/1XSfnhb",
+   "price": 360.9,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5317842327",
+   "productId": "c30-colecao_fichario",
+   "title": "Box Pokémon Celebração 30 Anos Com Fichário E 30 Cartas",
+   "url": "https://meli.la/2Tfh6Ko",
+   "price": 367.97,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB7575086910",
+   "productId": "me05-blister1-en",
+   "title": "Blister Unitário Pokemon Pitch Black Ingles",
+   "url": "https://meli.la/1FDLuzz",
+   "price": 54.99,
+   "capturedAt": "2026-11-27T13:22:50.911Z"
+  },
+  {
+   "item": "MLB5306328031",
+   "productId": "sv2-blister3",
+   "title": "Blister Triplo Pokemon Evoluções Em Paldea Growlithe",
+   "url": "https://meli.la/2dTCRwW",
+   "price": 229.6,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB5147525373",
+   "productId": "sv10_5r-blister3",
+   "title": "Blister Triplo Pokemon Raio Preto Reuniclus",
+   "url": "https://meli.la/1x54nXn",
+   "price": 229.99,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB5574038925",
+   "productId": "c30-colecao",
+   "title": "Coleção Cartas Pokémon 30 Anos",
+   "url": "https://meli.la/13BMAiC",
+   "price": 260,
+   "capturedAt": "2026-11-27T13:22:58.104Z"
+  },
+  {
+   "item": "MLB5546436565",
+   "productId": "c30-etb-en",
+   "title": "Pokémon Tcg 30 Anos Mini Booster Box Etb - Inglês Copag",
+   "url": "https://meli.la/1rRMETk",
+   "price": 499.99,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB5526401173",
+   "productId": "c30-etb-en",
+   "title": "Pokémon Tcg 30 Anos Mini Booster Box Etb - Inglês Copag",
+   "url": "https://meli.la/1j1JtnN",
+   "price": 610,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7679409210",
+   "productId": "c30-etb-en",
+   "title": "Etb Pokémon Celebração 30 Anos Treinador Avançado Inglês Tcg",
+   "url": "https://meli.la/2k8vXYQ",
+   "price": 864.8,
+   "capturedAt": "2026-11-27T13:26:03.054Z"
+  },
+  {
+   "item": "MLB6797637036",
+   "productId": "me03-etb",
+   "title": "Elite Trainer Box Pokémon Equilíbrio Perfeito",
+   "url": "https://meli.la/31j82ny",
+   "price": 390.91,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7379760272",
+   "productId": "me03-etb",
+   "title": "Pokémon Tcg Box Treinador Avançado Equilíbrio Perfeito Copag - Português",
+   "url": "https://meli.la/1Ur5Xg2",
+   "price": 399,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5371558119",
+   "productId": "me03-etb",
+   "title": "Pokemon Etb Equilíbrio Perfeito Copag",
+   "url": "https://meli.la/13Cp7ad",
+   "price": 413.08,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB6871591370",
+   "productId": "me03-etb",
+   "title": "Box Treinador Avançado Equilíbrio Perfeito Pokémon Tcg Copag",
+   "url": "https://meli.la/1jWmKdF",
+   "price": 436.9,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5536311139",
+   "productId": "me03-etb-en",
+   "title": "Pokémon Tcg Perfect Order Me03 Elite Trainer Box Etb Inglês",
+   "url": "https://meli.la/2ZUAgmD",
+   "price": 434.64,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB4893125453",
+   "productId": "me05-etb-en",
+   "title": "Mega Evolution - Pitch Black - Elite Trainer Box - Ingles",
+   "url": "https://meli.la/1i93wgu",
+   "price": 454.93,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB7995872702",
+   "productId": "me05-etb-en",
+   "title": "Pokémon Etb Mega Evolution Pitch Black Elite Trainer Inglês",
+   "url": "https://meli.la/2oBjzoz",
+   "price": 479,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7758872780",
+   "productId": "me05-etb-en",
+   "title": "Pokémon TCG - Pitch Black - Elite Trainer Box em inglês",
+   "url": "https://meli.la/1xETQSR",
+   "price": 509.24,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7836532370",
+   "productId": "me06-etb-en",
+   "title": "Etb Delta Reign Inglês Pokémon - Pré Venda",
+   "url": "https://meli.la/19YLDEu",
+   "price": 532.53,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB5544531019",
+   "productId": "me06-etb-en",
+   "title": "Pokemon Elite Trainer Box (etb) Reinado Delta (ingles) Reign",
+   "url": "https://meli.la/2CPRGUZ",
+   "price": 539.91,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB8029109284",
+   "productId": "me06-etb-en",
+   "title": "Elite Trainer Box Pokémon Tcg Mega Evolution Delta Reign En",
+   "url": "https://meli.la/1g8JKML",
+   "price": 549.9,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB8029109294",
+   "productId": "me06-etb-en",
+   "title": "Elite Trainer Box Pokémon Tcg Mega Evolution Delta Reign En",
+   "url": "https://meli.la/17moGje",
+   "price": 549.9,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB5401129753",
+   "productId": "me06-etb-en",
+   "title": "Reinado Delta Etb Inglês Pokemon",
+   "url": "https://meli.la/2pbRrYx",
+   "price": 562.5,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB7536178492",
+   "productId": "me04-etb",
+   "title": "Elite Trainer Box Pokemon Chaos Rising Caos Ascendente Etb",
+   "url": "https://meli.la/32B659F",
+   "price": 493.11,
+   "capturedAt": "2026-11-27T13:23:21.119Z"
+  },
+  {
+   "item": "MLB5492657293",
+   "productId": "c30-etb",
+   "title": "Box Celebração De 30 Anos Coleção Treinador Avançado (pt-br)",
+   "url": "https://meli.la/2mtBCXS",
+   "price": 624,
+   "capturedAt": "2026-11-27T13:23:28.199Z"
+  },
+  {
+   "item": "MLB7773760800",
+   "productId": "c30-etb",
+   "title": "Box Celebração De 30 Anos Coleção Treinador Avançado (pt-br)",
+   "url": "https://meli.la/1MJHD9i",
+   "price": 678.96,
+   "capturedAt": "2026-11-27T13:23:28.199Z"
+  },
+  {
+   "item": "MLB5317787743",
+   "productId": "c30-etb",
+   "title": "Box Celebração De 30 Anos Coleção Treinador Avançado (pt-br)",
+   "url": "https://meli.la/2WbitLP",
+   "price": 679.99,
+   "capturedAt": "2026-11-27T13:25:59.934Z"
+  },
+  {
+   "item": "MLB7891206578",
+   "productId": "c30-etb",
+   "title": "Etb Pokémon 30 Anos Português Nova Coleção Pokémon Copag",
+   "url": "https://meli.la/1SJHMdE",
+   "price": 680,
+   "capturedAt": "2026-11-27T13:23:28.199Z"
+  },
+  {
+   "item": "MLB5557481053",
+   "productId": "me04-etb-en",
+   "title": "Etb Chaos Rising Em Inglês (caos Ascendente) Pokémon",
+   "url": "https://meli.la/24iYBqU",
+   "price": 664.05,
+   "capturedAt": "2026-11-27T13:23:28.199Z"
+  },
+  {
+   "item": "MLB5087429587",
+   "productId": "sv6-booster",
+   "title": "Pokemon Booster Unitário Escarlate E Violeta 6 Cartas",
+   "url": "https://meli.la/2beDHgZ",
+   "price": 49.9,
+   "capturedAt": "2026-11-27T13:24:37.881Z"
+  },
+  {
+   "item": "MLB7915990958",
+   "productId": "sv8_5-combo",
+   "title": "Booster Combo Ev8.5 - Evoluções Prismáticas - Copag",
+   "url": "https://meli.la/29nbawN",
+   "price": 53.8,
+   "capturedAt": "2026-11-27T13:24:44.511Z"
+  },
+  {
+   "item": "MLB7439689540",
+   "productId": "cn12-booster-zh",
+   "title": "Booster Avulso Gem Pack Volume 5 Chines Pokemon",
+   "url": "https://meli.la/1c4soBr",
+   "price": 93.99,
+   "capturedAt": "2026-11-27T13:25:09.423Z"
+  },
+  {
+   "item": "MLB7739342844",
+   "productId": "c30-booster-en",
+   "title": "1 Booster Pokémon 30 Anos Celebração Com 5 Cartas Ingles Tcg",
+   "url": "https://meli.la/1pa1CG5",
+   "price": 109.99,
+   "capturedAt": "2026-11-27T13:25:15.751Z"
+  },
+  {
+   "item": "MLB8030714308",
+   "productId": "me05-desafio",
+   "title": "Pokémon Deck Desafio Estratégico Escuridão Absoluta 88 Cartas",
+   "url": "https://meli.la/1Gw5nTq",
+   "price": 116.9,
+   "capturedAt": "2026-11-27T13:25:18.960Z"
+  },
+  {
+   "item": "MLB7731381176",
+   "productId": "me05-desafio",
+   "title": "Box Pokémon Desafio Estratégico Escuridão Absoluta 88 Cartas",
+   "url": "https://meli.la/1YeVSDG",
+   "price": 126.28,
+   "capturedAt": "2026-11-27T13:25:22.303Z"
+  },
+  {
+   "item": "MLB7734085254",
+   "productId": "me05-desafio",
+   "title": "Pokémon Desafio Estrategico Tcg Me05 Escuridão Absoluta",
+   "url": "https://meli.la/1yLgiAy",
+   "price": 155.9,
+   "capturedAt": "2026-11-27T13:25:28.654Z"
+  },
+  {
+   "item": "MLB5407412051",
+   "productId": "me05-desafio",
+   "title": "Pokémon Tcg Deck Desafio Estratégico Escuridão Absoluta",
+   "url": "https://meli.la/2kpfMBM",
+   "price": 164,
+   "capturedAt": "2026-11-27T13:25:28.654Z"
+  },
+  {
+   "item": "MLB5217150219",
+   "productId": "jp36-colecao_ex-chines-zh",
+   "title": "1 Pack 10 Cartas Pokemon Rr Chines Mega Dream Ex Golden Box",
+   "url": "https://meli.la/1LXwogg",
+   "price": 129.9,
+   "capturedAt": "2026-11-27T13:25:22.303Z"
+  },
+  {
+   "item": "MLB4006383611",
+   "productId": "me03-desafio",
+   "title": "Desafio Estratégico Pokémon Cartas Equilíbrio Perfeito Cards",
+   "url": "https://meli.la/18MxBbn",
+   "price": 148.99,
+   "capturedAt": "2026-11-27T13:25:25.535Z"
+  },
+  {
+   "item": "MLB5150832183",
+   "productId": "me03-desafio",
+   "title": "Kit Pokémon Desafio Estratégico Me03 Equilíbrio Perfeito - C",
+   "url": "https://meli.la/166yYKb",
+   "price": 173.67,
+   "capturedAt": "2026-11-27T13:25:32.279Z"
+  },
+  {
+   "item": "MLB5191869249",
+   "productId": "me04-desafio",
+   "title": "Kit Pokémon Desafio Estratégico Me04 Caos Ascendente - Copag",
+   "url": "https://meli.la/1y1YE3B",
+   "price": 201,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
+  },
+  {
+   "item": "MLB7512461874",
+   "productId": "me04-combo18",
+   "title": "Combo Booster Pokémon Caos Ascendente Pt - 18 Boosters",
+   "url": "https://meli.la/2qxdgAa",
+   "price": 239.31,
+   "capturedAt": "2026-11-27T13:25:38.798Z"
+  },
+  {
+   "item": "MLB4941455529",
+   "productId": "me04-combo18",
+   "title": "Combo 18 Boosters Caos Ascendente Copag Pokémon Tcg Original",
+   "url": "https://meli.la/1eGwCk7",
+   "price": 242,
+   "capturedAt": "2026-11-27T13:25:42.026Z"
+  },
+  {
+   "item": "MLB5338091703",
+   "productId": "c30-colecao_ex-sylveon",
+   "title": "Box Pokémon Sylveon Ex Celebração 30 Anos Copag Português",
+   "url": "https://meli.la/1xtAfqt",
+   "price": 271.31,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB5409777801",
+   "productId": "c30-colecao_ex-sylveon",
+   "title": "Box Celebração de 30 Anos - Coleção Sylveon ex [PTBR]",
+   "url": "https://meli.la/2k9dXwK",
+   "price": 275.9,
+   "capturedAt": "2026-11-27T13:25:42.026Z"
+  },
+  {
+   "item": "MLB7794912376",
+   "productId": "c30-colecao_ex-sylveon",
+   "title": "Pokémon Celebração De 30 Anos Box Ex Sylveon Sylveon Ex",
+   "url": "https://meli.la/34jHEwQ",
+   "price": 285.11,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB8061367470",
+   "productId": "c30-colecao_ex-sylveon",
+   "title": "Pokémon Celebração de 30 anos – Box Ex Sylveon",
+   "url": "https://meli.la/29gpqY7",
+   "price": 299,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB5305169659",
+   "productId": "c30-colecao_ex-greninja",
+   "title": "Box Com 26 Cartas Pokémon Coleção 30 Anos Greninja Ex",
+   "url": "https://meli.la/2zNwuJp",
+   "price": 275.94,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB8059748738",
+   "productId": "c30-colecao_ex-greninja",
+   "title": "Pokémon Celebração De 30 Anos - Box Ex Greninja - Copag",
+   "url": "https://meli.la/1qJm5VK",
+   "price": 279.9,
+   "capturedAt": "2026-11-27T13:25:42.026Z"
+  },
+  {
+   "item": "MLB7740948548",
+   "productId": "c30-colecao_ex-greninja",
+   "title": "Pokémon Celebração De 30 Anos Box Ex Greninja",
+   "url": "https://meli.la/2jkcHob",
+   "price": 284.05,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB7692222568",
+   "productId": "c30-colecao_ex-greninja",
+   "title": "Pokémon Celebração 30 Anos - Coleção Greninja Ex",
+   "url": "https://meli.la/2xp9ovf",
+   "price": 294,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB5426614449",
+   "productId": "me06-combo",
+   "title": "Pokémon Combo De Booster Reinado Delta Pré Venda",
+   "url": "https://meli.la/2UEkd87",
+   "price": 289,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB5605821161",
+   "productId": "c30-colecao_ilustracao",
+   "title": "Box Coleção Ilustração Parceiro Inicial 30anos Série 1 Copag",
+   "url": "https://meli.la/1zsJXpF",
+   "price": 289.9,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB7040175332",
+   "productId": "c30-colecao_ilustracao",
+   "title": "Box Coleção Ilustração Parceiro Inicial 30anos Série 1 Copag",
+   "url": "https://meli.la/1qo8bws",
+   "price": 315.39,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB4935834985",
+   "productId": "me05-combo18",
+   "title": "Pokémon Combo De Pacotes Escuridão Absoluta 18 Booster Ptbr",
+   "url": "https://meli.la/1Y4TqBx",
+   "price": 266.79,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB4660639067",
+   "productId": "me02_5-colecao_ex-mega-meganium",
+   "title": "Box Pokémon Mega Meganium Ex Me2.5 - Copag",
+   "url": "https://meli.la/2koT2Dh",
+   "price": 313.49,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB5617423979",
+   "productId": "c30-combo",
+   "title": "Combo Booster Pokémon Celebração 30 Anos Copag Original",
+   "url": "https://meli.la/2KetqeU",
+   "price": 318.99,
+   "capturedAt": "2026-11-27T13:25:45.143Z"
+  },
+  {
+   "item": "MLB8032766874",
+   "productId": "c30-combo",
+   "title": "Combo De Booster Pokémon Celebração 30 Anos Copag Portugues",
+   "url": "https://meli.la/15iJftU",
+   "price": 331.11,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB7775616866",
+   "productId": "c30-combo",
+   "title": "Combo De Boosters Pokémon Celebração 30 Anos Copag Portugues",
+   "url": "https://meli.la/2uuZBbB",
+   "price": 347.13,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB6731523276",
+   "productId": "me02_5-colecao_ex-mega-feraligatr",
+   "title": "Box Pokémon Mega Feraligatr Ex Me2.5 - Copag",
+   "url": "https://meli.la/14QG2mm",
+   "price": 320,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB5360076654",
+   "productId": "sv9-combo-en",
+   "title": "Combo De Pacote Amigos De Jornada Booster Cartas Pokemon En",
+   "url": "https://meli.la/2i2pdiR",
+   "price": 321.17,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB5408282295",
+   "productId": "c30-colecao_ex-sylveon-en",
+   "title": "Box Pokemon 30 Anos Sylveon Ex Ingles 30th Celebration Tcg",
+   "url": "https://meli.la/161JEAh",
+   "price": 359,
+   "capturedAt": "2026-11-27T13:25:48.615Z"
+  },
+  {
+   "item": "MLB7724353672",
+   "productId": "c30-colecao_ex-sylveon-en",
+   "title": "Box Pokemon 30 Anos Sylveon Ex Ingles 30th Celebration Tcg",
+   "url": "https://meli.la/1gfAgzK",
+   "price": 493.11,
+   "capturedAt": "2026-11-27T13:25:59.934Z"
+  },
+  {
+   "item": "MLB4131997441",
+   "productId": "sv10_5-colecao_poster",
+   "title": "Box Pokemon Black Bolt E White Flare Unova Poster Collection",
+   "url": "https://meli.la/21e2c2m",
+   "price": 378.2,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5512105286",
+   "productId": "sv10_5-colecao_poster",
+   "title": "Box Pokemon Black Bolt E White Flare Unova Poster Collection",
+   "url": "https://meli.la/1Pw261y",
+   "price": 389.9,
+   "capturedAt": "2026-11-27T13:25:52.143Z"
+  },
+  {
+   "item": "MLB5189409623",
+   "productId": "me05-box36",
+   "title": "Box 36 Boosters Pokemon Escuridão Absoluta Darkrai - Copag",
+   "url": "https://meli.la/2phpCLN",
+   "price": 449.9,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB5304989321",
+   "productId": "c30-colecao_ex-greninja-en",
+   "title": "Box Pokémon Celebração 30 Anos Coleção Greninja Ex Inglês",
+   "url": "https://meli.la/1MFPm7o",
+   "price": 450.99,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB3909685457",
+   "productId": "sv8-desafio",
+   "title": "Kit Desafio Estratégico Pokémon Ev8 Fagulhas Impetuosas",
+   "url": "https://meli.la/2vWoVer",
+   "price": 459.91,
+   "capturedAt": "2026-11-27T13:25:56.374Z"
+  },
+  {
+   "item": "MLB4363065753",
+   "productId": "me02-box36",
+   "title": "Booster Box Fogo Fantasmagórico (36 Boosters)",
+   "url": "https://meli.la/1mNDTz9",
+   "price": 542.71,
+   "capturedAt": "2026-11-27T13:25:59.934Z"
+  },
+  {
+   "item": "MLB7609860822",
+   "productId": "sv10_5w-combo18",
+   "title": "Mini Booster Box Pokémon Fogo Branco Combo De 18 Pacotes",
+   "url": "https://meli.la/16NGcbY",
+   "price": 619.99,
+   "capturedAt": "2026-11-27T13:25:59.934Z"
+  },
+  {
+   "item": "MLB6646623908",
+   "productId": "sv10-box36",
+   "title": "Cartas Pokémon Box 36 Boosters Rivais Predestinados Copag",
+   "url": "https://meli.la/26z6JQJ",
+   "price": 1287,
+   "capturedAt": "2026-11-27T13:26:06.058Z"
   }
  ]
 }

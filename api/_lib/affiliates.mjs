@@ -203,6 +203,8 @@ export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date()
   const mlArq = ler(f('afiliados', 'ml-ofertas.json'), null) || { program: 'mercadolivre',
     regras: 'Leituras do dono nas páginas de busca do Mercado Livre (botão "Capturar ofertas", tools/captura). Só anúncio com link do dono no mapa de config/affiliates.json; vale 48 h a partir de capturedAt. Frete desconhecido. Gravado por tools/captura-importar.mjs.', ofertas: [] };
   const shArq = ler(f('afiliados', 'shopee-ofertas.json'), { ofertas: [] });
+  // A fila do WhatsApp lê o ML por ml-leituras.json (link meli.la do mapa, 24 h; src/agents/social/externas.js): a captura entra lá também.
+  const leArq = ler(f('afiliados', 'ml-leituras.json'), null) || { program: 'mercadolivre', ofertas: [] };
   const upsert = (lista, chave, n) => { const i = lista.findIndex((x) => x[chave] === n[chave]); if (i < 0) lista.push(n); else lista[i] = { ...lista[i], ...n }; };
   const semLink = { mercadolivre: [], shopee: [], amazon: [] };
   const gravados = { mercadolivre: 0, shopee: 0, amazon: 0 };
@@ -210,6 +212,7 @@ export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date()
     if (it.loja === 'mercadolivre') {
       if (!mapa[it.id]) { semLink.mercadolivre.push(`https://produto.mercadolivre.com.br/MLB-${it.id.slice(3)}-_JM`); continue; }
       upsert(mlArq.ofertas, 'item', { productId: it.productId, item: it.id, title: it.titulo, price: it.preco, listPrice: it.precoDe, seller: it.vendedor, freeShipping: it.freteGratis || null, capturedAt: it.capturadoEm });
+      upsert(leArq.ofertas, 'item', { item: it.id, productId: it.productId, title: it.titulo, url: mapa[it.id], price: it.preco, capturedAt: it.capturadoEm });
       gravados.mercadolivre++;
     } else if (it.loja === 'shopee') {
       const url = SHOPEE_LINK.test(shLinks[it.id] || '') ? shLinks[it.id] : null;
@@ -225,7 +228,7 @@ export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date()
   }
   if (!seco) {
     const w = (p, o) => fs.writeFileSync(p, JSON.stringify(o, null, 1) + '\n');
-    if (gravados.mercadolivre) { mlArq.updatedAt = hoje; w(f('afiliados', 'ml-ofertas.json'), mlArq); }
+    if (gravados.mercadolivre) { mlArq.updatedAt = hoje; w(f('afiliados', 'ml-ofertas.json'), mlArq); leArq.updatedAt = hoje; w(f('afiliados', 'ml-leituras.json'), leArq); }
     if (gravados.shopee) { shArq.updatedAt = hoje; w(f('afiliados', 'shopee-ofertas.json'), shArq); }
     if (gravados.amazon) { am.updatedAt = hoje; w(f('afiliados', 'amazon.json'), am); }
   }
