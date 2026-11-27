@@ -207,6 +207,7 @@ export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date()
   const leArq = ler(f('afiliados', 'ml-leituras.json'), null) || { program: 'mercadolivre', ofertas: [] };
   const upsert = (lista, chave, n) => { const i = lista.findIndex((x) => x[chave] === n[chave]); if (i < 0) lista.push(n); else lista[i] = { ...lista[i], ...n }; };
   const semLink = { mercadolivre: [], shopee: [], amazon: [] };
+  const semVendedor = { amazon: [], shopee: [] };
   const gravados = { mercadolivre: 0, shopee: 0, amazon: 0 };
   for (const it of sel) {
     if (it.loja === 'mercadolivre') {
@@ -217,12 +218,21 @@ export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date()
     } else if (it.loja === 'shopee') {
       const url = SHOPEE_LINK.test(shLinks[it.id] || '') ? shLinks[it.id] : null;
       if (!url) { const [sh, item] = it.id.split('/'); semLink.shopee.push(`https://shopee.com.br/product/${sh}/${item}`); continue; }
-      upsert(shArq.ofertas, 'item', { productId: it.productId, item: it.id, title: it.titulo, url, price: it.preco, seller: it.vendedor, stockNote: null, capturedAt: it.capturadoEm });
+      // Mesma regra da Amazon (27/11/2026): preço só entra com vendedor conhecido; a captura da busca nem sempre traz o nome,
+      // e aí vale o vendedor que já estava na linha. Sem nenhum dos dois, a leitura fica de fora.
+      const vendedorSh = it.vendedor || (shArq.ofertas.find((x) => x.item === it.id) || {}).seller || null;
+      if (it.preco != null && !vendedorSh) { semVendedor.shopee.push(it.id); continue; }
+      // priceCupom zera na releitura: o preço com cupom era do preço antigo e passaria a valer mais que o novo.
+      upsert(shArq.ofertas, 'item', { productId: it.productId, item: it.id, title: it.titulo, url, price: it.preco, priceCupom: null, seller: vendedorSh, stockNote: null, capturedAt: it.capturadoEm });
       gravados.shopee++;
     } else if (it.loja === 'amazon') {
       const ex = (am.links || []).find((x) => x.asin === it.id);
       if (!ex || !AMAZON_CURTO.test(ex.shortUrl || '')) { semLink.amazon.push(`https://www.amazon.com.br/dp/${it.id}`); continue; }
-      Object.assign(ex, { productId: it.productId, title: it.titulo, price: it.preco, stockNote: null, capturedAt: it.capturadoEm, ...(it.vendedor ? { seller: it.vendedor } : {}) });
+      // Preço da Amazon só entra com vendedor conhecido (27/11/2026): a captura às vezes não acha o vendedor na página de
+      // busca, e preço sem saber quem vende não vai para o site nem para o grupo. Nesse caso a linha fica como estava.
+      const vendedor = it.vendedor || ex.seller || null;
+      if (it.preco != null && !vendedor) { semVendedor.amazon.push(it.id); continue; }
+      Object.assign(ex, { productId: it.productId, title: it.titulo, price: it.preco, stockNote: null, capturedAt: it.capturadoEm, seller: vendedor });
       gravados.amazon++;
     }
   }
@@ -232,5 +242,5 @@ export function gravarCaptura(sel, { dir = null, seco = false, hoje = new Date()
     if (gravados.shopee) { shArq.updatedAt = hoje; w(f('afiliados', 'shopee-ofertas.json'), shArq); }
     if (gravados.amazon) { am.updatedAt = hoje; w(f('afiliados', 'amazon.json'), am); }
   }
-  return { gravados, semLink };
+  return { gravados, semLink, semVendedor };
 }
