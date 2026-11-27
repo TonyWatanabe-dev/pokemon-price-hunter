@@ -119,9 +119,32 @@ const bs = buscasDaExtensao();
 assert.deepEqual([bs.mercadolivre.length, bs.shopee.length, bs.amazon.length], [22, 6, 6], '11 buscas do ML com pág. 2, 6 da Shopee, 6 da Amazon');
 assert.ok(bs.mercadolivre.every((b) => b.url.startsWith('https://lista.mercadolivre.com.br/')));
 assert.ok(bs.amazon.every((b) => b.url.startsWith('https://www.amazon.com.br/s?k=')) && bs.shopee.every((b) => b.url.startsWith('https://shopee.com.br/search?keyword=')));
+// buscas feitas (✓ no popup)
+const K = vm.runInNewContext(`${fs.readFileSync(path.join(EXT, 'lote.js'), 'utf8')}\n;({chaveBusca, marcarBusca, estadoBusca, VALIDADE_BUSCA_MS})`, { URL });
+assert.equal(K.chaveBusca('https://lista.mercadolivre.com.br/pokemon-tcg-blister-duplo#D[A:x]'), 'mercadolivre:/pokemon-tcg-blister-duplo');
+assert.notEqual(K.chaveBusca('https://lista.mercadolivre.com.br/pokemon-tcg-blister-duplo_Desde_49_NoIndex_True'), K.chaveBusca('https://lista.mercadolivre.com.br/pokemon-tcg-blister-duplo'), 'pág. 2 é outra busca');
+assert.equal(K.chaveBusca('https://shopee.com.br/search?keyword=pokemon%20tcg%20blister&page=0'), K.chaveBusca('https://shopee.com.br/search?keyword=Pokemon+TCG+blister'));
+assert.equal(K.chaveBusca('https://www.amazon.com.br/s?k=pokemon+tcg+blister&ref=nb'), 'amazon:pokemon tcg blister');
+assert.equal(K.chaveBusca('https://www.amazon.com.br/dp/B0X'), null);
+const T0 = Date.UTC(2026, 10, 27, 18);
+let bus = K.marcarBusca({}, 'https://www.amazon.com.br/s?k=pokemon+tcg+blister', 12, T0);
+assert.deepEqual(viaJson(K.estadoBusca(bus, 'https://www.amazon.com.br/s?k=pokemon+tcg+blister', T0 + 1000)), { feita: true, em: T0, n: 12 });
+bus = K.marcarBusca(bus, 'https://www.amazon.com.br/s?k=pokemon+tcg+blister', 5, T0 + 2000);
+assert.equal(bus['amazon:pokemon tcg blister'].n, 12, 'guarda o maior número lido na mesma janela');
+assert.equal(K.estadoBusca(bus, 'https://www.amazon.com.br/s?k=pokemon+tcg+blister', T0 + K.VALIDADE_BUSCA_MS + 5000).feita, false, 'vence em 48 h');
+assert.deepEqual(K.marcarBusca(bus, 'https://www.amazon.com.br/s?k=x', 0, T0), bus, 'página sem ofertas não marca');
+
 // a extensão não faz requisição nem abre páginas sozinha
 for (const f of ['background.js', 'popup.js', 'content.js', 'leitor.js', 'lote.js']) {
-  const src = fs.readFileSync(path.join(EXT, f), 'utf8').replace(/\/\/.*$/gm, '');
+  let src = fs.readFileSync(path.join(EXT, f), 'utf8').replace(/\/\/.*$/gm, '');
+  // Única exceção: o botão do popup abre as buscas pendentes em abas, e só no clique do dono (bt.onclick).
+  if (f === 'popup.js') {
+    const usos = src.match(/chrome\.tabs\.\w+/g) || [];
+    assert.deepEqual([...new Set(usos)], ['chrome.tabs.create'], 'popup só usa chrome.tabs.create');
+    const clique = src.indexOf('bt.onclick');
+    assert.ok(clique > 0 && src.indexOf('chrome.tabs.create') > clique, 'abas só abrem dentro do clique do dono');
+    src = src.replace(/chrome\.tabs\.create/g, '');
+  }
   assert.ok(!/\bfetch\s*\(|XMLHttpRequest|WebSocket|chrome\.tabs\.|window\.open|\.click\(\)|scrollTo|scrollBy|chrome\.cookies/.test(src), `${f} não pode fazer requisição, navegar, rolar ou clicar`);
 }
 // o favorito continua gerando JavaScript válido com o leitor embutido

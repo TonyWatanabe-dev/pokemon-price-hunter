@@ -8,10 +8,12 @@
   const ler = () => {
     const { loja, itens } = lerPagina(document, location, new Date().toISOString());
     if (!loja) return;
-    const novos = itensValidos(itens).filter((i) => enviados.get(i.id) !== i.preco);
+    const validos = itensValidos(itens);
+    const novos = validos.filter((i) => enviados.get(i.id) !== i.preco);
     if (!novos.length) return;
     for (const i of novos) enviados.set(i.id, i.preco);
-    try { chrome.runtime.sendMessage({ tipo: 'itens', loja, itens: novos }).catch(() => {}); } catch { /* extensão recarregada */ }
+    // url + total lido na página: o popup marca esta busca como feita (✓ hora, n ofertas).
+    try { chrome.runtime.sendMessage({ tipo: 'itens', loja, itens: novos, url: location.href, naPagina: validos.length }).catch(() => {}); } catch { /* extensão recarregada */ }
   };
   let t = null;
   const aoMudar = () => { clearTimeout(t); t = setTimeout(ler, 2000); };

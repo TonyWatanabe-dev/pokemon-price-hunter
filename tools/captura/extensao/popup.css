@@ -9,3 +9,7 @@ details { margin: 4px 0; }
 summary { cursor: pointer; font-weight: 600; }
 .links { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 4px 0 2px 12px; }
 .links a { color: #0a58ca; }
+.links a.feita{color:#2e9e4f}
+.links a.pendente{font-weight:600}
+#abrir{margin:6px 0 10px;width:100%;padding:8px;border:0;border-radius:8px;background:#FFCB05;font-weight:700;cursor:pointer}
+#abrir:disabled{background:#ccc;cursor:default}
