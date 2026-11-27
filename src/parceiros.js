@@ -15,7 +15,7 @@ export const carregar = (env = process.env) => carregarParceiros({ dir: env?.HUN
 export const ehParceira = (o, par) => !!o && (o.manual === true && o.sourceType === 'manual_afiliado' ? LOJAS_PARCEIRAS.includes(o.storeId) : ofertaParceira(o, par.cfg));
 
 /** Leituras manuais vigentes (somem sozinhas: 48 h) já no formato de oferta do robô. */
-export const manuais = (par, { now, products, maxHoras = 48 }) => ofertasManuaisParceiras({ now, products, maxHoras, amazon: par.amazon, shopee: par.shopee });
+export const manuais = (par, { now, products, maxHoras = 48 }) => ofertasManuaisParceiras({ now, products, maxHoras, amazon: par.amazon, shopee: par.shopee, ml: par.ml ?? null, cfg: par.cfg });
 
 /**
  * Referência de mercado de um produto a partir de TODAS as ofertas limpas (todas as lojas), antes do filtro de publicação:

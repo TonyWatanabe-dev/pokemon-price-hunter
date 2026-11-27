@@ -159,3 +159,12 @@ Pedido do dono: importar os links das 4 planilhas do "Obter Link em Massa" (Sub 
 - **Planilhas:** 101 linhas, 96 anúncios únicos (repetido entre arquivos: vale o mais recente).
 - **`shopee-ofertas.json`:** 65 relidos (preço e hora; nenhum preço mudou), 0 novos. `shopee.json`: 0 links novos (links existentes mantidos). Nenhum produto ganhou a primeira oferta da Shopee.
 - **Fora (31):** 12 já recusados em 03/11 (sem produto, faixa de preço por variação, vendedor de outro nicho, várias opções); 7 com confiança do matcher abaixo de 0,8 (ME01 e SV1); 5 sem produto no catálogo (booster box sem coleção, Pokémon GO, "1 pacote", "pack 36 booster"); kit de 2 blisters, 10 blisters e "Diversos"; 2 blisters quádruplos com preço fora do padrão (R$ 198,90 e R$ 248,90); 1 "booster de 36 cartas" que é box; 1 ETB acima do limite de 3 mais baratos.
+
+## 27/11/2026: botão "Capturar ofertas" (ML, Shopee e Amazon)
+
+A API do ML barra a leitura de anúncios de terceiros (403 PolicyAgent em `/products/{id}/items` desde 23/11; o canal de suporte é só para integradores certificados). Decisão do dono: as três lojas passam a ser lidas por ele mesmo, com poucos cliques.
+
+- **Captura (no navegador do dono):** favorito gerado por `node tools/captura/build.mjs` a partir de `tools/captura/bookmarklet.js`. Na busca aberta por ele, um clique lê só o que está na tela (id, título, preço, preço "de", vendedor, frete grátis) e soma no `localStorage` da loja; "Baixar arquivo" gera `captura-<loja>-….json`. O script não navega, não pagina e não faz requisição.
+- **Importação:** `node tools/captura-importar.mjs <arquivo>` casa com `src/match.js` (≥ 0,8), tira carta avulsa e anúncio de várias opções, fica até 5 mais baratos por produto e loja e grava: ML em `config/afiliados/ml-ofertas.json` (só anúncio com link no mapa), Shopee em `shopee-ofertas.json` (só com link em `shopee.json`), Amazon em `amazon.json`. Sem link do dono vai para `tools/captura/sem-link-<loja>.txt`. A gravação fica em `gravarCaptura` (`api/_lib/affiliates.mjs`, único arquivo que lê a config de afiliados) (gerar no painel e rodar de novo).
+- **Site:** `ofertasManuaisParceiras` passou a aceitar o ML (URL do anúncio `MLB-<id>-_JM`; o botão troca pelo link do mapa) com a mesma validade de 48 h e frete desconhecido. Anúncio que o robô já leu na rodada não repete (`src/run.js`).
+- **Amazon:** só ASIN que já tem o link curto do dono (`link.amazon`) é atualizado; ASIN novo vai para `sem-link-amazon.txt`. O código não monta link nem `tag=` (testes de isolamento e de links de saída).
