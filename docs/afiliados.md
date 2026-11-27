@@ -168,3 +168,15 @@ A API do ML barra a leitura de anúncios de terceiros (403 PolicyAgent em `/prod
 - **Importação:** `node tools/captura-importar.mjs <arquivo>` casa com `src/match.js` (≥ 0,8), tira carta avulsa e anúncio de várias opções, fica até 5 mais baratos por produto e loja e grava: ML em `config/afiliados/ml-ofertas.json` (só anúncio com link no mapa), Shopee em `shopee-ofertas.json` (só com link em `shopee.json`), Amazon em `amazon.json`. Sem link do dono vai para `tools/captura/sem-link-<loja>.txt`. A gravação fica em `gravarCaptura` (`api/_lib/affiliates.mjs`, único arquivo que lê a config de afiliados) (gerar no painel e rodar de novo).
 - **Site:** `ofertasManuaisParceiras` passou a aceitar o ML (URL do anúncio `MLB-<id>-_JM`; o botão troca pelo link do mapa) com a mesma validade de 48 h e frete desconhecido. Anúncio que o robô já leu na rodada não repete (`src/run.js`).
 - **Amazon:** só ASIN que já tem o link curto do dono (`link.amazon`) é atualizado; ASIN novo vai para `sem-link-amazon.txt`. O código não monta link nem `tag=` (testes de isolamento e de links de saída).
+
+## 27/11/2026: robô local do ML
+
+Complemento do botão "Capturar ofertas": um robô que roda **no PC do dono** (Agendador do Windows, a cada 6 h; nunca no GitHub Actions) e alimenta o mesmo fluxo sem clique.
+
+- **O que lê:** só as buscas públicas do ML do favorito (11 buscas `pokemon-tcg-…`, páginas 1 e 2 = 22 páginas em `lista.mercadolivre.com.br`). Mesma leitura do favorito (id MLB, título, preço, preço "de", vendedor, frete grátis). Saída em `tools/captura/auto/captura-mercadolivre-<data-hora>.json` (`origem: 'robo-local'`), que segue para `tools/captura-importar.mjs`.
+- **Como se identifica:** `User-Agent: TCGPriceHunterBot/1.0 (+https://tcgpricehunter.com.br/bot)`. Sem cookie, login, proxy ou rotação de IP. Baixa o `robots.txt` antes de tudo (URL bloqueada para o nosso UA é pulada; se o arquivo não carregar, aborta).
+- **Ritmo:** uma requisição por vez, 8 s + 0–4 s de intervalo.
+- **Para na hora (código 2, sem nova tentativa e sem gravar nada)** se alguma resposta não for 200, cair em verificação/CAPTCHA/login (`captcha`, `account-verification`, `/jms/`, `suspicious` na URL final) ou vier sem nenhum cartão.
+- **Orquestração:** `tools/captura/robo-ml-tarefa.mjs`, num clone dedicado do repo: branch `robo-ml/<data-hora>` a partir de `origin/main`, robô, importador e, se `config/afiliados` mudou, commit, PR e merge (auto-merge se o repo permitir; senão espera os checks). Checks vermelhos deixam o PR aberto. Nunca push direto na `main`. `sem-link-mercadolivre.txt` é ignorado pelo git e não entra no commit.
+- **Log:** `tools/captura/auto/robo-ml.log` (data, buscas, itens, resultado, PR). A pasta `tools/captura/auto/` está no `.gitignore`.
+- **Estado:** implementado e testado com fixture sintética (`test/robo-ml-tests.js`); ainda não integrado nem validado em runtime (nenhuma leitura real foi feita ao ML nesta tarefa).
