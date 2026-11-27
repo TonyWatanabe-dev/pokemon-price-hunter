@@ -7,9 +7,9 @@ import { loadCatalog } from '../src/run.js';
 
 const catalog = await loadCatalog();
 const m = (t) => matchProduct({ title: t }, catalog);
-let n = 0; const t = (nome, fn) => { try { fn(); n++; } catch (e) { e.message = `[${nome}] ${e.message}`; throw e; } };
+let n = 0; const t = async (nome, fn) => { try { await fn(); n++; } catch (e) { e.message = `[${nome}] ${e.message}`; throw e; } };
 
-t('protetor de ETB/box não casa com produto lacrado', () => {
+await t('protetor de ETB/box não casa com produto lacrado', () => {
   for (const titulo of [
     'Caixa Protetora De Etb Pokémon Trainer Box 30 Anos Português',
     'Capa Protetora Para Booster Box Pokémon Escuridão Absoluta',
@@ -20,14 +20,14 @@ t('protetor de ETB/box não casa com produto lacrado', () => {
   }
 });
 
-t('o produto de verdade continua casando', () => {
+await t('o produto de verdade continua casando', () => {
   const etb = m('Box Treinador Avançado Pokémon TCG Celebração 30 Anos');
   assert.equal(etb.productId, 'c30-etb'); assert.ok(etb.confidence >= 0.8);
   const bl = m('Blister Triplo Pokémon TCG Reinado Delta - Spritzee');
   assert.equal(bl.productId, 'me06-blister3'); assert.ok(bl.confidence >= 0.8);
 });
 
-t('nenhuma oferta publicada hoje é caixa protetora', async () => {
+await t('nenhuma oferta publicada hoje é caixa protetora', async () => {
   const fs = await import('node:fs');
   for (const arq of ['config/afiliados/ml-ofertas.json', 'config/afiliados/shopee-ofertas.json']) {
     const doc = JSON.parse(fs.readFileSync(new URL('../' + arq, import.meta.url), 'utf8'));
