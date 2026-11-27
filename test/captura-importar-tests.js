@@ -38,6 +38,8 @@ console.log('captura-importar-tests: ok');
   assert.deepEqual(Object.fromEntries(Object.entries(r.semLink).map(([k, v]) => [k, v.length])), { mercadolivre: 1, shopee: 1, amazon: 1 });
   const ml = JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'ml-ofertas.json'), 'utf8'));
   assert.equal(ml.ofertas[0].item, 'MLB5551000001');
+  const le = JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'ml-leituras.json'), 'utf8'));
+  assert.deepEqual(le.ofertas.map((x) => [x.item, x.url]), [['MLB5551000001', 'https://meli.la/abc']], 'captura do ML também vai para a fila do WhatsApp, com o link do mapa');
   const am = JSON.parse(fs.readFileSync(path.join(dir, 'afiliados', 'amazon.json'), 'utf8'));
   assert.equal(am.links[0].price, 10); assert.equal(am.links[0].shortUrl, 'https://link.amazon/x1', 'link do dono preservado');
   console.log('captura-importar-tests: gravação ok');
